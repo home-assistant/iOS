@@ -15,6 +15,7 @@ PODS:
     - OMGHTTPURLRQ/FormURLEncode
     - OMGHTTPURLRQ/UserAgent
   - OMGHTTPURLRQ/UserAgent (3.1.1)
+  - PermissionScope (1.0.2)
   - PromiseKit (3.1.0):
     - PromiseKit/Foundation (= 3.1.0)
     - PromiseKit/QuartzCore (= 3.1.0)
@@ -27,6 +28,7 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (3.1.0):
     - PromiseKit/CorePromise
+  - SwiftLocation (0.2.0)
   - SwiftyJSON (2.3.2)
   - Whisper (2.1)
 
@@ -38,7 +40,9 @@ DEPENDENCIES:
   - Eureka (~> 1.5)
   - IKEventSource (from `https://github.com/inaka/EventSource.git`, branch `swift-2.0`)
   - MBProgressHUD (~> 0.9.2)
+  - PermissionScope
   - PromiseKit
+  - SwiftLocation
   - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
   - Whisper
 
@@ -66,7 +70,9 @@ SPEC CHECKSUMS:
   IKEventSource: 5857cbc6ca06be24f12ecbc980a58007e24413b4
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   OMGHTTPURLRQ: 633f98ee745aeda02345935a52eec1784cddb589
+  PermissionScope: 860828c5516d349b6f49e5491799cfef33c5ccc7
   PromiseKit: 7ed2a3fc5217695305a55a8c47cb3a17ff5fde0d
+  SwiftLocation: ea78ae4a822581bde7379d98c8513273723c8840
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
   Whisper: 18b574de21a089c0d664b115f26e0d9ccbbadbab
 

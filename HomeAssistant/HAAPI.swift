@@ -11,8 +11,11 @@ import Alamofire
 import PromiseKit
 import SwiftyJSON
 import IKEventSource
+import SwiftLocation
 
 class HomeAssistantAPI: NSObject {
+    
+    let prefs = NSUserDefaults.standardUserDefaults()
     
     let manager:Alamofire.Manager
     
@@ -33,24 +36,13 @@ class HomeAssistantAPI: NSObject {
         let eventSource: EventSource = EventSource(url: baseAPIURL+"stream", headers: ["X-HA-Access": apiPassword])
         
         eventSource.onOpen {
-            // When opened
             print("SSE: Connection Opened")
         }
         
         eventSource.onError { (error) in
-            // When errors
             print("SSE: Error", error)
         }
-        
-        //        eventSource.onMessage { (id, event, data) in
-        //            // Here you get an event without event name!
-        //            print("SSE: New message!", event, data)
-        //            if let dataFromString = data!.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
-        //                let json = JSON(data: dataFromString)
-        //                print("JSON", json)
-        //            }
-        //        }
-        
+
         eventSource.onMessage { (id, event, data) in
             if let dataFromString = data!.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
                 let json = JSON(data: dataFromString)
@@ -64,8 +56,43 @@ class HomeAssistantAPI: NSObject {
                 
             }
         }
-        
     }
+    
+    func trackLocation() {
+        UIDevice.currentDevice().batteryMonitoringEnabled = true
+        do {
+            try SwiftLocation.shared.significantLocation({ (location) -> Void in
+                // a new significant location has arrived
+                print("NEW LOCATION!!!!", location)
+                let battery = UIDevice.currentDevice().batteryLevel
+                let latlongstring = [location!.coordinate.latitude.description, location!.coordinate.longitude.description]
+                var deviceId = "iphone"
+                if let dID = self.prefs.stringForKey("deviceId") {
+                    deviceId = dID
+                }
+                let batlevel = String(Int(battery*100))
+                let locationUpdate = ["battery": batlevel, "gps": latlongstring, "hostname": UIDevice().name, "dev_id": deviceId]
+                print("About to send this to device_tracker/see", locationUpdate)
+                var notification = UILocalNotification()
+                notification.alertBody = "Significant location change detected, alerting Home Assistant"
+                notification.alertAction = "open"
+                notification.fireDate = NSDate()
+                notification.soundName = UILocalNotificationDefaultSoundName // play default sound
+                UIApplication.sharedApplication().scheduleLocalNotification(notification)
+                self.CallService("device_tracker", service: "see", serviceData: locationUpdate as! [String : AnyObject]).then {_ in
+                    print("Device seen!")
+                }
+            }, onFail: { (error) -> Void in
+                // something went wrong. request will be cancelled automatically
+                print("SOMETHING WENT WRONG!!!", error)
+            })
+        } catch {
+            print("Error when trying to get sig location changes!!")
+        }
+        // Sometime in the future... you may want to interrupt the subscription
+//        SwiftLocation.shared.cancelRequest(requestID)
+    }
+    
     func GET(url:String) -> Promise<JSON> {
         let queryUrl = baseAPIURL+url
         return Promise { fulfill, reject in

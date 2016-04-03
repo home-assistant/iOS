@@ -11,16 +11,31 @@ import Eureka
 import SwiftyJSON
 import MBProgressHUD
 import Whisper
+import PermissionScope
 
 class FirstViewController: FormViewController {
+    
+    let pscope = PermissionScope()
     
     override func viewDidLoad() {
         let prefs = NSUserDefaults.standardUserDefaults()
 
         super.viewDidLoad()
         
+        pscope.addPermission(NotificationsPermission(notificationCategories: nil),
+                             message: "We use this to let you\r\nsend notifications to your device.")
+        pscope.addPermission(LocationWhileInUsePermission(),
+                             message: "We use this to track\r\nwhere you are and notify Home Assistant.")
+        
+        pscope.show({ finished, results in
+            print("got results \(results)")
+        }, cancelled: { (results) -> Void in
+            print("thing was cancelled")
+        })
+        
         if let baseURL = prefs.stringForKey("baseURL") {
             let APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: prefs.stringForKey("apiPassword")!)
+            APIClientSharedInstance.trackLocation()
             MBProgressHUD.showHUDAddedTo(self.view, animated: true)
             self.form
                 +++ Section()
@@ -104,8 +119,7 @@ class FirstViewController: FormViewController {
     }
     
     func StateChangedSSEEvent(notification: NSNotification){
-        //Take Action on Notification
-        print("notification", notification)
+//        print("notification", notification)
         let json = JSON(notification.userInfo!)
         let entityId = json["data"]["entity_id"].stringValue
         let entityType = getEntityType(json["data"]["entity_id"].stringValue)

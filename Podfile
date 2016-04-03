@@ -4,16 +4,18 @@ platform :ios, '9.0'
 use_frameworks!
 
 target 'HomeAssistant' do
+  pod 'AWSCognito'
+  pod 'AWSCore'
+  pod 'AWSSNS'
   pod 'Alamofire', '~> 3.0'
   pod 'Eureka', '~> 1.5'
-  pod 'PromiseKit'
-  pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
-  pod 'MBProgressHUD', '~> 0.9.2'
   pod 'IKEventSource', :git => 'https://github.com/inaka/EventSource.git', :branch => 'swift-2.0'
+  pod 'MBProgressHUD', '~> 0.9.2'
+  pod 'PermissionScope'
+  pod 'PromiseKit'
+  pod 'SwiftLocation'
+  pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
   pod 'Whisper'
-  pod 'AWSCore'
-  pod 'AWSCognito'
-  pod 'AWSSNS'
 end
 
 target 'HomeAssistantTests' do
