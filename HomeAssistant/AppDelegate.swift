@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AWSSNS
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        let credentialsProvider = AWSCognitoCredentialsProvider(regionType:.USEast1, identityPoolId:"us-east-1:2b1692f3-c9d3-4d81-b7e9-83cd084f3a59")
+        
+        let configuration = AWSServiceConfiguration(region:.USWest2, credentialsProvider:credentialsProvider)
+        
+        AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
+        
+        let notificationTypes: UIUserNotificationType = [UIUserNotificationType.Alert, UIUserNotificationType.Badge, UIUserNotificationType.Sound]
+        let pushNotificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)
+        application.registerUserNotificationSettings(pushNotificationSettings)
+        application.registerForRemoteNotifications()
         return true
     }
 
@@ -41,6 +52,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        let deviceTokenString = "\(deviceToken)"
+            .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString:"<>"))
+            .stringByReplacingOccurrencesOfString(" ", withString: "")
+        print("Registering with deviceTokenString: \(deviceTokenString)")
+        
+        let sns = AWSSNS.defaultSNS()
+        let request = AWSSNSCreatePlatformEndpointInput()
+        request.token = deviceTokenString
+        request.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS_SANDBOX/HomeAssistant"
+        sns.createPlatformEndpoint(request).continueWithBlock { (task: AWSTask!) -> AnyObject! in
+            if task.error != nil {
+                print("Error: \(task.error)")
+            } else {
+                let createEndpointResponse = task.result as! AWSSNSCreateEndpointResponse
+                print("endpointArn: \(createEndpointResponse.endpointArn)")
+            }
+            
+            return nil
+        }
+    }
+    
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        print("Error when trying to register for push", error)
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        print("Received remote notification!", userInfo)
+    }
 
 }
 

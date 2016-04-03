@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E36319C48CF8F82D7702470 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88052763960E54E202BAED19 /* Pods_HomeAssistant.framework */; };
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
 		B657A8EC1CA646EB00121384 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8EB1CA646EB00121384 /* FirstViewController.swift */; };
 		B657A8EE1CA646EB00121384 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8ED1CA646EB00121384 /* SecondViewController.swift */; };
@@ -15,6 +16,7 @@
 		B657A8F61CA646EB00121384 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */; };
 		B657A9011CA646EB00121384 /* HomeAssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9001CA646EB00121384 /* HomeAssistantTests.swift */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
+		B657A91A1CA647C500121384 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +37,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5790ADF749393A229F29A51B /* Pods-HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.release.xcconfig"; sourceTree = "<group>"; };
+		88052763960E54E202BAED19 /* Pods_HomeAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		92AFEE5E5170AAC8E1C39DEE /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
 		B657A8E61CA646EB00121384 /* HomeAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B657A8EB1CA646EB00121384 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -49,6 +54,8 @@
 		B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HomeAssistantUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
 		B657A90D1CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAAPI.swift; sourceTree = "<group>"; };
+		B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HomeAssistant-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E36319C48CF8F82D7702470 /* Pods_HomeAssistant.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,6 +84,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		29278BB24639BA945D3D86B4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				88052763960E54E202BAED19 /* Pods_HomeAssistant.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		999D6D6DE4BCAC6DAD78AD20 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				92AFEE5E5170AAC8E1C39DEE /* Pods-HomeAssistant.debug.xcconfig */,
+				5790ADF749393A229F29A51B /* Pods-HomeAssistant.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		B657A8DD1CA646EB00121384 = {
 			isa = PBXGroup;
 			children = (
@@ -83,6 +108,8 @@
 				B657A8FF1CA646EB00121384 /* HomeAssistantTests */,
 				B657A90A1CA646EB00121384 /* HomeAssistantUITests */,
 				B657A8E71CA646EB00121384 /* Products */,
+				999D6D6DE4BCAC6DAD78AD20 /* Pods */,
+				29278BB24639BA945D3D86B4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -106,6 +133,8 @@
 				B657A8F21CA646EB00121384 /* Assets.xcassets */,
 				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
 				B657A8F71CA646EB00121384 /* Info.plist */,
+				B657A9191CA647C500121384 /* HAAPI.swift */,
+				B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */,
 			);
 			path = HomeAssistant;
 			sourceTree = "<group>";
@@ -135,9 +164,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B657A9101CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistant" */;
 			buildPhases = (
+				DD514255CDAFED1D636735E9 /* Check Pods Manifest.lock */,
 				B657A8E21CA646EB00121384 /* Sources */,
 				B657A8E31CA646EB00121384 /* Frameworks */,
 				B657A8E41CA646EB00121384 /* Resources */,
+				A8C8507CD59406CF59ABD2A4 /* Embed Pods Frameworks */,
+				FDB76AF813D330C227A96AA6 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -196,6 +228,12 @@
 				TargetAttributes = {
 					B657A8E51CA646EB00121384 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = UTQFCBPQRF;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					B657A8FB1CA646EB00121384 = {
 						CreatedOnToolsVersion = 7.3;
@@ -254,12 +292,61 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		A8C8507CD59406CF59ABD2A4 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DD514255CDAFED1D636735E9 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FDB76AF813D330C227A96AA6 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		B657A8E21CA646EB00121384 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				B657A8EE1CA646EB00121384 /* SecondViewController.swift in Sources */,
+				B657A91A1CA647C500121384 /* HAAPI.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				B657A8EC1CA646EB00121384 /* FirstViewController.swift in Sources */,
 			);
@@ -403,23 +490,27 @@
 		};
 		B657A9111CA646EB00121384 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 92AFEE5E5170AAC8E1C39DEE /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = HomeAssistant/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
 			};
 			name = Debug;
 		};
 		B657A9121CA646EB00121384 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5790ADF749393A229F29A51B /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = HomeAssistant/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -488,6 +579,7 @@
 				B657A9121CA646EB00121384 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B657A9131CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistantTests" */ = {
 			isa = XCConfigurationList;
@@ -496,6 +588,7 @@
 				B657A9151CA646EB00121384 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B657A9161CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistantUITests" */ = {
 			isa = XCConfigurationList;
@@ -504,6 +597,7 @@
 				B657A9181CA646EB00121384 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
