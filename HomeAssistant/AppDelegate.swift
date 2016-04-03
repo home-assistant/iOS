@@ -8,15 +8,23 @@
 
 import UIKit
 import AWSSNS
+import Fabric
+import Crashlytics
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
+    
+    var APIClientSharedInstance : HomeAssistantAPI?
+    
+    let prefs = NSUserDefaults.standardUserDefaults()
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        Fabric.with([Crashlytics.self])
+        
         let credentialsProvider = AWSCognitoCredentialsProvider(regionType:.USEast1, identityPoolId:"us-east-1:2b1692f3-c9d3-4d81-b7e9-83cd084f3a59")
         
         let configuration = AWSServiceConfiguration(region:.USWest2, credentialsProvider:credentialsProvider)
@@ -27,6 +35,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let pushNotificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)
         application.registerUserNotificationSettings(pushNotificationSettings)
         application.registerForRemoteNotifications()
+        
+        if let baseURL = prefs.stringForKey("baseURL") {
+            APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: prefs.stringForKey("apiPassword")!)
+            APIClientSharedInstance!.trackLocation(self.prefs.stringForKey("deviceId")!)
+        }
+        
         return true
     }
 
@@ -67,7 +81,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print("Error: \(task.error)")
             } else {
                 let createEndpointResponse = task.result as! AWSSNSCreateEndpointResponse
-                print("endpointArn: \(createEndpointResponse.endpointArn)")
+                print("endpointArn:", createEndpointResponse.endpointArn!)
+                self.prefs.setValue(createEndpointResponse.endpointArn!, forKey: "endpointARN")
             }
             
             return nil

@@ -17,6 +17,7 @@
 		B657A9011CA646EB00121384 /* HomeAssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9001CA646EB00121384 /* HomeAssistantTests.swift */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B657A91A1CA647C500121384 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
+		B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E857A11CB1CCCC00F96925 /* Utils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,8 @@
 		B657A90D1CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAAPI.swift; sourceTree = "<group>"; };
 		B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HomeAssistant-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
+		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		B6E857A31CB1DF8B00F96925 /* HomeAssistant_Dev.mobileprovision */ = {isa = PBXFileReference; lastKnownFileType = file; path = HomeAssistant_Dev.mobileprovision; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +138,8 @@
 				B657A8F71CA646EB00121384 /* Info.plist */,
 				B657A9191CA647C500121384 /* HAAPI.swift */,
 				B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */,
+				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
+				B6E857A31CB1DF8B00F96925 /* HomeAssistant_Dev.mobileprovision */,
 			);
 			path = HomeAssistant;
 			sourceTree = "<group>";
@@ -170,6 +175,7 @@
 				B657A8E41CA646EB00121384 /* Resources */,
 				A8C8507CD59406CF59ABD2A4 /* Embed Pods Frameworks */,
 				FDB76AF813D330C227A96AA6 /* Copy Pods Resources */,
+				B6E8579C1CB1167200F96925 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -232,6 +238,9 @@
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
+							};
+							com.apple.HomeKit = {
+								enabled = 0;
 							};
 							com.apple.Push = {
 								enabled = 1;
@@ -311,6 +320,19 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		B6E8579C1CB1167200F96925 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" af2930e95b69736a32e543d07fe9c8078649a61e d1e18a77ecf813c5a72de304e2eb0bf1c2afc6098612966ac15ef9f1589ff506";
+		};
 		DD514255CDAFED1D636735E9 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -348,6 +370,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */,
 				B657A8EE1CA646EB00121384 /* SecondViewController.swift in Sources */,
 				B657A91A1CA647C500121384 /* HAAPI.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
@@ -496,6 +519,7 @@
 			baseConfigurationReference = 92AFEE5E5170AAC8E1C39DEE /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				INFOPLIST_FILE = HomeAssistant/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;

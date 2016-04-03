@@ -5,7 +5,10 @@ PODS:
   - AWSCore (2.3.6)
   - AWSSNS (2.3.6):
     - AWSCore (= 2.3.6)
+  - Crashlytics (3.7.0):
+    - Fabric (~> 1.6.3)
   - Eureka (1.5.0)
+  - Fabric (1.6.7)
   - IKEventSource (1.0.1)
   - MBProgressHUD (0.9.2)
   - OMGHTTPURLRQ (3.1.1):
@@ -37,7 +40,9 @@ DEPENDENCIES:
   - AWSCognito
   - AWSCore
   - AWSSNS
+  - Crashlytics
   - Eureka (~> 1.5)
+  - Fabric
   - IKEventSource (from `https://github.com/inaka/EventSource.git`, branch `swift-2.0`)
   - MBProgressHUD (~> 0.9.2)
   - PermissionScope
@@ -66,7 +71,9 @@ SPEC CHECKSUMS:
   AWSCognito: af54fe65171c7c994c134e5d29b1ee60ee234825
   AWSCore: 917d84b32974136194a905b98c0ae25c9f3350b8
   AWSSNS: 37c7f4c80657a621fbabccf7d0f352e3c018fbd0
+  Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
   Eureka: 2fb37bb50569c62ee3284689d5b7aca694b040e0
+  Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   IKEventSource: 5857cbc6ca06be24f12ecbc980a58007e24413b4
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   OMGHTTPURLRQ: 633f98ee745aeda02345935a52eec1784cddb589

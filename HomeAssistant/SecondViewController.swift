@@ -20,6 +20,7 @@ class SecondViewController: FormViewController {
         var baseURL = "https://homeassistant.thegrand.systems"
         var apiPass = "mypassword"
         var deviceId = "iphone"
+        var endpointARN = "N/A"
         if let base = prefs.stringForKey("baseURL") {
             baseURL = base
         }
@@ -29,6 +30,11 @@ class SecondViewController: FormViewController {
         if let dID = prefs.stringForKey("deviceId") {
             deviceId = dID
         }
+        if let eARN = prefs.stringForKey("endpointARN") {
+            endpointARN = eARN
+        }
+        
+        let splitARN = endpointARN.componentsSeparatedByString("/").last
         
         form
             +++ Section(header: "Settings", footer: "")
@@ -53,6 +59,13 @@ class SecondViewController: FormViewController {
                 self.prefs.setValue(urlRow!.value!.absoluteString, forKey: "baseURL")
                 self.prefs.setValue(apiPasswordRow!.value!, forKey: "apiPassword")
                 self.prefs.setValue(deviceIdRow!.value!, forKey: "deviceId")
+            }
+            
+            +++ Section(header: "Push information", footer: "")
+            <<< TextAreaRow() {
+                $0.placeholder = "EndpointArn"
+                $0.value = splitARN
+                $0.disabled = true
             }
     }
 

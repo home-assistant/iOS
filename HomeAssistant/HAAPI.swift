@@ -17,7 +17,7 @@ class HomeAssistantAPI: NSObject {
     
     let prefs = NSUserDefaults.standardUserDefaults()
     
-    let manager:Alamofire.Manager
+    let manager:Alamofire.Manager?
     
     var baseAPIURL : String = "https://homeassistant.thegrand.systems/api/"
     var apiPassword : String = "thegrand1212"
@@ -51,89 +51,78 @@ class HomeAssistantAPI: NSObject {
                     NSNotificationCenter.defaultCenter().postNotificationName("EntityStateChanged", object: nil, userInfo: json.object as? [NSObject : AnyObject])
                     
                 default:
-                    print("unknown event type!!", json["event_type"])
+                    print("unknown event type!! SSE event is \(event!) and event_type is", json["event_type"])
                 }
                 
             }
         }
     }
     
-    func trackLocation() {
+    func trackLocation(deviceId: String) {
         UIDevice.currentDevice().batteryMonitoringEnabled = true
         do {
             try SwiftLocation.shared.significantLocation({ (location) -> Void in
                 // a new significant location has arrived
-                print("NEW LOCATION!!!!", location)
-                let battery = UIDevice.currentDevice().batteryLevel
-                let latlongstring = [location!.coordinate.latitude.description, location!.coordinate.longitude.description]
-                var deviceId = "iphone"
-                if let dID = self.prefs.stringForKey("deviceId") {
-                    deviceId = dID
+                let locationUpdate = [
+                    "battery": Int(UIDevice.currentDevice().batteryLevel*100),
+                    "gps": [location!.coordinate.latitude, location!.coordinate.longitude],
+                    "gps_accuracy": location!.horizontalAccuracy,
+                    "hostname": UIDevice().name,
+                    "dev_id": deviceId
+                ]
+//                print("About to send this to device_tracker/see", locationUpdate)
+                
+                self.CallService("device_tracker", service: "see", serviceData: locationUpdate as! [String : AnyObject]).then {_ in
+                    print("Device seen!")
                 }
-                let batlevel = String(Int(battery*100))
-                let locationUpdate = ["battery": batlevel, "gps": latlongstring, "hostname": UIDevice().name, "dev_id": deviceId]
-                print("About to send this to device_tracker/see", locationUpdate)
-                var notification = UILocalNotification()
+                
+                let notification = UILocalNotification()
                 notification.alertBody = "Significant location change detected, alerting Home Assistant"
                 notification.alertAction = "open"
                 notification.fireDate = NSDate()
                 notification.soundName = UILocalNotificationDefaultSoundName // play default sound
                 UIApplication.sharedApplication().scheduleLocalNotification(notification)
-                self.CallService("device_tracker", service: "see", serviceData: locationUpdate as! [String : AnyObject]).then {_ in
-                    print("Device seen!")
-                }
             }, onFail: { (error) -> Void in
                 // something went wrong. request will be cancelled automatically
-                print("SOMETHING WENT WRONG!!!", error)
+                print("Something went wrong when trying to get significant location updates! Error was:", error)
             })
         } catch {
             print("Error when trying to get sig location changes!!")
         }
-        // Sometime in the future... you may want to interrupt the subscription
-//        SwiftLocation.shared.cancelRequest(requestID)
     }
     
     func GET(url:String) -> Promise<JSON> {
         let queryUrl = baseAPIURL+url
         return Promise { fulfill, reject in
-            self.manager.request(.GET, queryUrl).responseJSON { response in
-//                print("Request", response.request)  // original URL request
-//                print("Response", response.response) // URL response
-//                print("Data", response.data)     // server data
-//                print("Result", response.result)   // result of response serialization
-                
+            self.manager!.request(.GET, queryUrl).responseJSON { response in
                 switch response.result {
-                case .Success:
-                    if let value = response.result.value {
-                        let json = JSON(value)
-//                        print("JSON: \(json)")
-                        fulfill(json)
-                    }
-                case .Failure(let error):
-                    print(error)
-                    reject(error)
+                    case .Success:
+                        if let value = response.result.value {
+                            fulfill(JSON(value))
+                        } else {
+                            print("Response was not JSON!", response)
+                        }
+                    case .Failure(let error):
+                        print("Error on GET request to \(url):", error)
+                        reject(error)
                 }
             }
         }
     }
+    
     func POST(url:String, parameters: [String: AnyObject]) -> Promise<JSON> {
         let queryUrl = baseAPIURL+url
         return Promise { fulfill, reject in
-            self.manager.request(.POST, queryUrl, parameters: parameters, encoding: .JSON).responseJSON { response in
-//                print("Request", response.request)  // original URL request
-//                print("Response", response.response) // URL response
-//                print("Data", response.data)     // server data
-//                print("Result", response.result)   // result of response serialization
-                
+            self.manager!.request(.POST, queryUrl, parameters: parameters, encoding: .JSON).responseJSON { response in
                 switch response.result {
                 case .Success:
                     if let value = response.result.value {
-                        let json = JSON(value)
-//                        print("JSON: \(json)")
-                        fulfill(json)
+                        fulfill(JSON(value))
+                    } else {
+                        print("Response was not JSON!", response)
                     }
                 case .Failure(let error):
-                    print(error)
+                    print("Error on GET request to \(url):", error)
                     reject(error)
                 }
             }
@@ -188,10 +177,6 @@ class HomeAssistantAPI: NSObject {
         return POST("services/"+domain+"/"+service, parameters: serviceData)
     }
     
-    func getEntityType(entityId: String) -> String {
-        return entityId.componentsSeparatedByString(".")[0]
-    }
-    
     func turnOn(entityId: String) -> Promise<JSON> {
         return CallService("homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
     }
@@ -203,8 +188,4 @@ class HomeAssistantAPI: NSObject {
     func toggle(entityId: String) -> Promise<JSON> {
         return CallService("homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
     }
-}
-
-func getEntityType(entityId: String) -> String {
-    return entityId.componentsSeparatedByString(".")[0]
 }
