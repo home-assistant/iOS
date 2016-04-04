@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		6E36319C48CF8F82D7702470 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88052763960E54E202BAED19 /* Pods_HomeAssistant.framework */; };
+		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
+		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
+		B6393F8C1CB260E800503916 /* EntityAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */; };
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
 		B657A8EC1CA646EB00121384 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8EB1CA646EB00121384 /* FirstViewController.swift */; };
 		B657A8EE1CA646EB00121384 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8ED1CA646EB00121384 /* SecondViewController.swift */; };
@@ -42,6 +45,9 @@
 		5790ADF749393A229F29A51B /* Pods-HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.release.xcconfig"; sourceTree = "<group>"; };
 		88052763960E54E202BAED19 /* Pods_HomeAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		92AFEE5E5170AAC8E1C39DEE /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
+		B6393F851CB255F200503916 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
+		B6393F871CB2561100503916 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityAttributesViewController.swift; sourceTree = "<group>"; };
 		B657A8E61CA646EB00121384 /* HomeAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B657A8EB1CA646EB00121384 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -67,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
 				6E36319C48CF8F82D7702470 /* Pods_HomeAssistant.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -91,6 +98,7 @@
 		29278BB24639BA945D3D86B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B6393F871CB2561100503916 /* MapKit.framework */,
 				88052763960E54E202BAED19 /* Pods_HomeAssistant.framework */,
 			);
 			name = Frameworks;
@@ -141,6 +149,8 @@
 				B657A9191CA647C500121384 /* HAAPI.swift */,
 				B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
+				B6393F851CB255F200503916 /* EurekaLocationRow.swift */,
+				B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */,
 			);
 			path = HomeAssistant;
 			sourceTree = "<group>";
@@ -250,6 +260,9 @@
 							};
 							com.apple.HomeKit = {
 								enabled = 0;
+							};
+							com.apple.Maps.iOS = {
+								enabled = 1;
 							};
 							com.apple.Push = {
 								enabled = 1;
@@ -380,8 +393,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6393F8C1CB260E800503916 /* EntityAttributesViewController.swift in Sources */,
 				B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */,
 				B657A8EE1CA646EB00121384 /* SecondViewController.swift in Sources */,
+				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
 				B657A91A1CA647C500121384 /* HAAPI.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				B657A8EC1CA646EB00121384 /* FirstViewController.swift in Sources */,
@@ -457,6 +472,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -504,6 +520,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -531,7 +548,7 @@
 			baseConfigurationReference = 92AFEE5E5170AAC8E1C39DEE /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				INFOPLIST_FILE = HomeAssistant/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
@@ -546,7 +563,7 @@
 			baseConfigurationReference = 5790ADF749393A229F29A51B /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				INFOPLIST_FILE = HomeAssistant/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;

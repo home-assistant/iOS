@@ -12,6 +12,7 @@ PODS:
   - FontAwesomeKit/Core (2.2.2)
   - FontAwesomeKit/MaterialDesignIcons (2.2.2):
     - FontAwesomeKit/Core
+  - HanekeSwift (0.10.1)
   - IKEventSource (1.0.1)
   - MBProgressHUD (0.9.2)
   - OMGHTTPURLRQ (3.1.1):
@@ -48,6 +49,7 @@ DEPENDENCIES:
   - Fabric
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`,
     branch `Material-Design-Icons`)
+  - HanekeSwift
   - IKEventSource (from `https://github.com/inaka/EventSource.git`, branch `swift-2.0`)
   - MBProgressHUD (~> 0.9.2)
   - PermissionScope
@@ -86,6 +88,7 @@ SPEC CHECKSUMS:
   Eureka: 2fb37bb50569c62ee3284689d5b7aca694b040e0
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   FontAwesomeKit: e1d7c3b635dba2ebc2ec77e9b2ac9f6c0af0e350
+  HanekeSwift: 08e47d3d0f2899ec58e5d257beba0de619aca9e8
   IKEventSource: 5857cbc6ca06be24f12ecbc980a58007e24413b4
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   OMGHTTPURLRQ: 633f98ee745aeda02345935a52eec1784cddb589

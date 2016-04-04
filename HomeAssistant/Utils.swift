@@ -11,6 +11,7 @@ import SwiftyJSON
 import FontAwesomeKit
 import Alamofire
 import PromiseKit
+import Haneke
 
 func delay(delay:Double, closure:()->()) {
     dispatch_after(
@@ -122,7 +123,7 @@ func iconForDomainAndState(domain: String, state: String) -> String {
     }
 }
 
-func binarySensorIcon(entity: JSON) -> String {
+func binarySensorIcon(entity: SwiftyJSON.JSON) -> String {
     let activated = (entity["state"].stringValue == "off");
     switch (entity["attributes"]["sensor_class"].stringValue) {
     case "opening":
@@ -146,7 +147,7 @@ func binarySensorIcon(entity: JSON) -> String {
     }
 }
 
-func stateIcon(entity: JSON) -> String {
+func stateIcon(entity: SwiftyJSON.JSON) -> String {
     let domain = getEntityType(entity["entity_id"].stringValue)
     if (entity["attributes"]["icon"].exists()) {
         return entity["attributes"]["icon"].stringValue;
@@ -166,32 +167,35 @@ func stateIcon(entity: JSON) -> String {
     return iconForDomainAndState(domain, state: entity["state"].stringValue);
 }
 
-func generateIconForEntity(entity: JSON) -> Promise<UIImage> {
-    let entityType = getEntityType(entity["entity_id"].stringValue)
+let entityPicturesCache = Cache<UIImage>(name: "entity_pictures")
+
+func getEntityPicture(entityPictureURL: String) -> Promise<UIImage> {
     return Promise { fulfill, reject in
-        if entity["attributes"]["entity_picture"].exists() {
-            Alamofire.request(.GET, entity["attributes"]["entity_picture"].stringValue).response { (request, response, data, error) in
-                let image = UIImage(data: data!, scale:1)!.scaledToSize(CGSize(width: 30, height: 30))
-                fulfill(image)
-            }
-        } else {
-            let iconName = stateIcon(entity)
-            var color = colorWithHexString("#44739E", alpha: 1)
-            if (entityType == "light" || entityType == "switch" || entityType == "binary_sensor" || entityType == "sun") && (entity["state"].stringValue == "on" || entity["state"].stringValue == "above_horizon") {
-                color = colorWithHexString("#DCC91F", alpha: 1)
-            }
-            if entityType == "light" && entity["state"].stringValue == "on" && entity["attributes"]["rgb_color"].exists() {
-                let red = CGFloat(entity["attributes"]["rgb_color"][0].doubleValue/255.0)
-                let green = CGFloat(entity["attributes"]["rgb_color"][1].doubleValue/255.0)
-                let blue = CGFloat(entity["attributes"]["rgb_color"][2].doubleValue/255.0)
-                color = UIColor.init(red: red, green: green, blue: blue, alpha: 1)
-            }
-            if entity["state"].stringValue == "unavailable" {
-                color = colorWithHexString("#bdbdbd", alpha: 1)
-            }
-            fulfill(getIconForIdentifier(iconName, iconWidth: 30, iconHeight: 30, color: color))
+        let URL = NSURL(string: entityPictureURL)
+        let fetcher = NetworkFetcher<UIImage>(URL: URL!)
+        entityPicturesCache.fetch(fetcher: fetcher).onSuccess { image in
+            fulfill(image.scaledToSize(CGSize(width: 30, height: 30)))
         }
     }
+}
+
+func generateIconForEntity(entity: SwiftyJSON.JSON) -> UIImage {
+    let entityType = getEntityType(entity["entity_id"].stringValue)
+    let iconName = stateIcon(entity)
+    var color = colorWithHexString("#44739E", alpha: 1)
+    if (entityType == "light" || entityType == "switch" || entityType == "binary_sensor" || entityType == "sun") && (entity["state"].stringValue == "on" || entity["state"].stringValue == "above_horizon") {
+        color = colorWithHexString("#DCC91F", alpha: 1)
+    }
+    if entityType == "light" && entity["state"].stringValue == "on" && entity["attributes"]["rgb_color"].exists() {
+        let red = CGFloat(entity["attributes"]["rgb_color"][0].doubleValue/255.0)
+        let green = CGFloat(entity["attributes"]["rgb_color"][1].doubleValue/255.0)
+        let blue = CGFloat(entity["attributes"]["rgb_color"][2].doubleValue/255.0)
+        color = UIColor.init(red: red, green: green, blue: blue, alpha: 1)
+    }
+    if entity["state"].stringValue == "unavailable" {
+        color = colorWithHexString("#bdbdbd", alpha: 1)
+    }
+    return getIconForIdentifier(iconName, iconWidth: 30, iconHeight: 30, color: color)
 }
 
 extension UIImage{

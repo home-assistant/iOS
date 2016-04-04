@@ -13,6 +13,9 @@ import SwiftyJSON
 import IKEventSource
 import SwiftLocation
 import CoreLocation
+import Whisper
+
+let prefs = NSUserDefaults.standardUserDefaults()
 
 class HomeAssistantAPI: NSObject {
     
@@ -21,7 +24,7 @@ class HomeAssistantAPI: NSObject {
     var baseAPIURL : String = "https://homeassistant.thegrand.systems/api/"
     var apiPassword : String = "thegrand1212"
     
-    let prefs = NSUserDefaults.standardUserDefaults()
+    var mostRecentlySentMessage : String = String()
     
     init(baseAPIUrl: String, APIPassword: String) {
         baseAPIURL = baseAPIUrl+"/api/"
@@ -137,6 +140,7 @@ class HomeAssistantAPI: NSObject {
     }
     
     func POST(url:String, parameters: [String: AnyObject]) -> Promise<JSON> {
+        mostRecentlySentMessage = url
         let queryUrl = baseAPIURL+url
         return Promise { fulfill, reject in
             self.manager!.request(.POST, queryUrl, parameters: parameters, encoding: .JSON).responseJSON { response in
@@ -192,26 +196,32 @@ class HomeAssistantAPI: NSObject {
     }
     
     func SetState(entityId: String, state: String) -> Promise<JSON> {
+        Whistle(Murmur(title: getEntityType(entityId)+" state set to "+state))
         return POST("states/"+entityId, parameters: ["state": state])
     }
     
     func CreateEvent(eventType: String, eventData: [String:AnyObject]) -> Promise<JSON> {
+        Whistle(Murmur(title: eventType+" created"))
         return POST("events/"+eventType, parameters: eventData)
     }
     
     func CallService(domain: String, service: String, serviceData: [String:AnyObject]) -> Promise<JSON> {
+        Whistle(Murmur(title: domain+"/"+service+" called"))
         return POST("services/"+domain+"/"+service, parameters: serviceData)
     }
     
     func turnOn(entityId: String) -> Promise<JSON> {
+        Whistle(Murmur(title: entityId+" turned on"))
         return CallService("homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
     }
     
     func turnOff(entityId: String) -> Promise<JSON> {
+        Whistle(Murmur(title: entityId+" turned off"))
         return CallService("homeassistant", service: "turn_off", serviceData: ["entity_id": entityId])
     }
     
     func toggle(entityId: String) -> Promise<JSON> {
+        Whistle(Murmur(title: entityId+" toggled"))
         return CallService("homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
     }
 }
