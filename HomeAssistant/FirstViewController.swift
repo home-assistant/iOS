@@ -110,9 +110,10 @@ class FirstViewController: FormViewController {
                                         } else {
                                             APIClientSharedInstance.turnOff(subJson["entity_id"].stringValue)
                                         }
-                                    }.cellUpdate { cell, row in
-                                        print("CellUpdate")
-                                        cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
+                                    }.cellSetup { cell, row in
+                                        generateIconForEntity(self.updatedStates[rowTag]!).then { image in
+                                            cell.imageView?.image = image
+                                        }
                                     }
                         case "script", "scene":
                             sectionCounts[groupToAdd]! = sectionCounts[groupToAdd]! + 1
@@ -121,9 +122,10 @@ class FirstViewController: FormViewController {
                                     $0.title = subJson["attributes"]["friendly_name"].stringValue
                                     }.onCellSelection { cell, row -> Void in
                                         APIClientSharedInstance.turnOn(subJson["entity_id"].stringValue)
-                                    }.cellUpdate { cell, row in
-                                        print("CellUpdate")
-                                        cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
+                                    }.cellSetup { cell, row in
+                                        generateIconForEntity(self.updatedStates[rowTag]!).then { image in
+                                            cell.imageView?.image = image
+                                        }
                                     }
                         case "weblink":
                             sectionCounts[groupToAdd]! = sectionCounts[groupToAdd]! + 1
@@ -132,9 +134,10 @@ class FirstViewController: FormViewController {
                                     <<< ButtonRow(rowTag) {
                                         $0.title = subJson["attributes"]["friendly_name"].stringValue
                                         $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback { return SFSafariViewController(URL: url, entersReaderIfAvailable: false) }, completionCallback: { vc in vc.navigationController?.popViewControllerAnimated(true) })
-                                        }.cellUpdate { cell, row in
-                                            print("CellUpdate")
-                                            cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
+                                        }.cellSetup { cell, row in
+                                            generateIconForEntity(self.updatedStates[rowTag]!).then { image in
+                                                cell.imageView?.image = image
+                                            }
                                         }
                             }
                         case "binary_sensor", "sensor", "device_tracker", "media_player", "thermostat", "sun":
@@ -146,9 +149,10 @@ class FirstViewController: FormViewController {
                                         if entityType == "sensor" || entityType == "thermostat" {
                                             $0.value = subJson["state"].stringValue + " " + subJson["attributes"]["unit_of_measurement"].stringValue
                                         }
-                                    }.cellUpdate { cell, row in
-                                        print("CellUpdate")
-                                        cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
+                                    }.cellSetup { cell, row in
+                                        generateIconForEntity(self.updatedStates[rowTag]!).then { image in
+                                            cell.imageView?.image = image
+                                        }
                                     }
                         default:
                             print("We don't want this type", entityType)
@@ -188,30 +192,31 @@ class FirstViewController: FormViewController {
         if entityType == "sensor" {
             subtitleString = newState + " " + json["data"]["new_state"]["attributes"]["unit_of_measurement"].stringValue+". It was "+json["data"]["old_state"]["state"].stringValue + " " + json["data"]["old_state"]["attributes"]["unit_of_measurement"].stringValue
         }
-        let icon = generateIconForEntity(json["data"]["new_state"])
-        let announcement = Announcement(title: friendly_name, subtitle: subtitleString, image: icon)
-        Shout(announcement, to: self)
-        var groupMapEntry = [String]()
-        if let groupMapTest = self.groupsMap[entityId] {
-            groupMapEntry = groupMapTest
-        } else {
-            groupMapEntry = ["ungrouped"]
-        }
-        for group in groupMapEntry {
-            let rowTag = group+"_"+entityId
-            updatedStates[rowTag] = json["data"]["new_state"]
-            if entityType == "switch" || entityType == "light" {
-                if let row : SwitchRow = self.form.rowByTag(rowTag) {
-                    row.value = (newState == "on") ? true : false
-                    row.updateCell()
-                }
+        generateIconForEntity(json["data"]["new_state"]).then { icon -> Void in
+            let announcement = Announcement(title: friendly_name, subtitle: subtitleString, image: icon)
+            Shout(announcement, to: self)
+            var groupMapEntry = [String]()
+            if let groupMapTest = self.groupsMap[entityId] {
+                groupMapEntry = groupMapTest
             } else {
-                if let row : LabelRow = self.form.rowByTag(rowTag) {
-                    row.value = newState
-                    if entityType == "sensor" || entityType == "thermostat" {
-                        row.value = newState + " " + json["data"]["new_state"]["attributes"]["unit_of_measurement"].stringValue
+                groupMapEntry = ["ungrouped"]
+            }
+            for group in groupMapEntry {
+                let rowTag = group+"_"+entityId
+                self.updatedStates[rowTag] = json["data"]["new_state"]
+                if entityType == "switch" || entityType == "light" {
+                    if let row : SwitchRow = self.form.rowByTag(rowTag) {
+                        row.value = (newState == "on") ? true : false
+                        row.updateCell()
                     }
-                    row.updateCell()
+                } else {
+                    if let row : LabelRow = self.form.rowByTag(rowTag) {
+                        row.value = newState
+                        if entityType == "sensor" || entityType == "thermostat" {
+                            row.value = newState + " " + json["data"]["new_state"]["attributes"]["unit_of_measurement"].stringValue
+                        }
+                        row.updateCell()
+                    }
                 }
             }
         }

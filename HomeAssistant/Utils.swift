@@ -9,6 +9,8 @@
 import Foundation
 import SwiftyJSON
 import FontAwesomeKit
+import Alamofire
+import PromiseKit
 
 func delay(delay:Double, closure:()->()) {
     dispatch_after(
@@ -164,21 +166,40 @@ func stateIcon(entity: JSON) -> String {
     return iconForDomainAndState(domain, state: entity["state"].stringValue);
 }
 
-func generateIconForEntity(entity: JSON) -> UIImage {
+func generateIconForEntity(entity: JSON) -> Promise<UIImage> {
     let entityType = getEntityType(entity["entity_id"].stringValue)
-    let iconName = stateIcon(entity)
-    var color = colorWithHexString("#44739E", alpha: 1)
-    if (entityType == "light" || entityType == "switch" || entityType == "binary_sensor" || entityType == "sun") && (entity["state"].stringValue == "on" || entity["state"].stringValue == "above_horizon") {
-        color = colorWithHexString("#DCC91F", alpha: 1)
+    return Promise { fulfill, reject in
+        if entity["attributes"]["entity_picture"].exists() {
+            Alamofire.request(.GET, entity["attributes"]["entity_picture"].stringValue).response { (request, response, data, error) in
+                let image = UIImage(data: data!, scale:1)!.scaledToSize(CGSize(width: 30, height: 30))
+                fulfill(image)
+            }
+        } else {
+            let iconName = stateIcon(entity)
+            var color = colorWithHexString("#44739E", alpha: 1)
+            if (entityType == "light" || entityType == "switch" || entityType == "binary_sensor" || entityType == "sun") && (entity["state"].stringValue == "on" || entity["state"].stringValue == "above_horizon") {
+                color = colorWithHexString("#DCC91F", alpha: 1)
+            }
+            if entityType == "light" && entity["state"].stringValue == "on" && entity["attributes"]["rgb_color"].exists() {
+                let red = CGFloat(entity["attributes"]["rgb_color"][0].doubleValue/255.0)
+                let green = CGFloat(entity["attributes"]["rgb_color"][1].doubleValue/255.0)
+                let blue = CGFloat(entity["attributes"]["rgb_color"][2].doubleValue/255.0)
+                color = UIColor.init(red: red, green: green, blue: blue, alpha: 1)
+            }
+            if entity["state"].stringValue == "unavailable" {
+                color = colorWithHexString("#bdbdbd", alpha: 1)
+            }
+            fulfill(getIconForIdentifier(iconName, iconWidth: 30, iconHeight: 30, color: color))
+        }
     }
-    if entityType == "light" && entity["state"].stringValue == "on" && entity["attributes"]["rgb_color"].exists() {
-        let red = CGFloat(entity["attributes"]["rgb_color"][0].doubleValue/255.0)
-        let green = CGFloat(entity["attributes"]["rgb_color"][1].doubleValue/255.0)
-        let blue = CGFloat(entity["attributes"]["rgb_color"][2].doubleValue/255.0)
-        color = UIColor.init(red: red, green: green, blue: blue, alpha: 1)
+}
+
+extension UIImage{
+    func scaledToSize(size: CGSize) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0);
+        self.drawInRect(CGRectMake(0, 0, size.width, size.height))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage
     }
-    if entity["state"].stringValue == "unavailable" {
-        color = colorWithHexString("#bdbdbd", alpha: 1)
-    }
-    return getIconForIdentifier(iconName, iconWidth: 30, iconHeight: 30, color: color)
 }
