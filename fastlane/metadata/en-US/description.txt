@@ -1,0 +1,1 @@
+Home Assistant for iOS is the official companion app to Home Assistant, an open-source home automation platform running on Python 3.
