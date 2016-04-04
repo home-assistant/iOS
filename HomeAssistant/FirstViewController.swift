@@ -13,16 +13,28 @@ import SwiftyJSON
 import MBProgressHUD
 import Whisper
 import PermissionScope
+import FontAwesomeKit
 
 class FirstViewController: FormViewController {
+    
+    let prefs = NSUserDefaults.standardUserDefaults()
     
     let pscope = PermissionScope()
     
     var groupsMap = [String:[String]]()
     
+    var updatedStates = [String:JSON]()
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        
+        if let locationName = prefs.stringForKey("location_name") {
+            self.title = locationName
+            let tabBarIcon = getIconForIdentifier("mdi:home", iconWidth: 20, iconHeight: 20, color: UIColor.grayColor())
+            
+            self.tabBarItem = UITabBarItem(title: locationName, image: tabBarIcon, tag: 0)
+        }
         
         pscope.addPermission(NotificationsPermission(notificationCategories: nil),
                              message: "We use this to let you\r\nsend notifications to your device.")
@@ -31,6 +43,10 @@ class FirstViewController: FormViewController {
         
         pscope.show({ finished, results in
             print("got results \(results)")
+            if results[0].status == .Authorized {
+                print("User authorized the use of notifications")
+                UIApplication.sharedApplication().registerForRemoteNotifications()
+            }
         }, cancelled: { (results) -> Void in
             print("thing was cancelled")
         })
@@ -40,7 +56,6 @@ class FirstViewController: FormViewController {
             self.form
                 +++ Section()
             APIClientSharedInstance.GetBootstrap().then { bootstrap -> Void in
-                self.title = bootstrap["config"]["location_name"].stringValue
                 let sortedStates = bootstrap["states"].arrayValue.sort { $0["entity_id"].stringValue > $1["entity_id"].stringValue }
                 let allGroups = bootstrap["states"].arrayValue.filter {
                     return getEntityType($0["entity_id"].stringValue) == "group"
@@ -66,7 +81,7 @@ class FirstViewController: FormViewController {
                 self.form
                     +++ Section(header: "Ungrouped", footer: "\n\n"){
                         $0.tag = "ungrouped"
-                }
+                    }
                 for subJson in sortedStates {
                     let entityType = getEntityType(subJson["entity_id"].stringValue)
                     if entityType != "group" && subJson["attributes"]["hidden"].bool == true {
@@ -81,6 +96,7 @@ class FirstViewController: FormViewController {
                     for groupToAdd in groupMapEntry {
                         let groupSection: Section = self.form.sectionByTag(groupToAdd)!
                         let rowTag = groupToAdd+"_"+subJson["entity_id"].stringValue
+                        self.updatedStates[rowTag] = subJson
                         switch entityType {
                         case "switch", "light", "input_boolean":
                             sectionCounts[groupToAdd]! = sectionCounts[groupToAdd]! + 1
@@ -94,7 +110,10 @@ class FirstViewController: FormViewController {
                                         } else {
                                             APIClientSharedInstance.turnOff(subJson["entity_id"].stringValue)
                                         }
-                            }
+                                    }.cellUpdate { cell, row in
+                                        print("CellUpdate")
+                                        cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
+                                    }
                         case "script", "scene":
                             sectionCounts[groupToAdd]! = sectionCounts[groupToAdd]! + 1
                             groupSection
@@ -102,6 +121,9 @@ class FirstViewController: FormViewController {
                                     $0.title = subJson["attributes"]["friendly_name"].stringValue
                                     }.onCellSelection { cell, row -> Void in
                                         APIClientSharedInstance.turnOn(subJson["entity_id"].stringValue)
+                                    }.cellUpdate { cell, row in
+                                        print("CellUpdate")
+                                        cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
                                     }
                         case "weblink":
                             sectionCounts[groupToAdd]! = sectionCounts[groupToAdd]! + 1
@@ -110,18 +132,24 @@ class FirstViewController: FormViewController {
                                     <<< ButtonRow(rowTag) {
                                         $0.title = subJson["attributes"]["friendly_name"].stringValue
                                         $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback { return SFSafariViewController(URL: url, entersReaderIfAvailable: false) }, completionCallback: { vc in vc.navigationController?.popViewControllerAnimated(true) })
-                                }
+                                        }.cellUpdate { cell, row in
+                                            print("CellUpdate")
+                                            cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
+                                        }
                             }
                         case "binary_sensor", "sensor", "device_tracker", "media_player", "thermostat", "sun":
                             sectionCounts[groupToAdd]! = sectionCounts[groupToAdd]! + 1
                             groupSection
                                 <<< LabelRow(rowTag) {
-                                    $0.title = subJson["attributes"]["friendly_name"].stringValue
-                                    $0.value = subJson["state"].stringValue
-                                    if entityType == "sensor" || entityType == "thermostat" {
-                                        $0.value = subJson["state"].stringValue + " " + subJson["attributes"]["unit_of_measurement"].stringValue
+                                        $0.title = subJson["attributes"]["friendly_name"].stringValue
+                                        $0.value = subJson["state"].stringValue
+                                        if entityType == "sensor" || entityType == "thermostat" {
+                                            $0.value = subJson["state"].stringValue + " " + subJson["attributes"]["unit_of_measurement"].stringValue
+                                        }
+                                    }.cellUpdate { cell, row in
+                                        print("CellUpdate")
+                                        cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
                                     }
-                            }
                         default:
                             print("We don't want this type", entityType)
                         }
@@ -160,7 +188,8 @@ class FirstViewController: FormViewController {
         if entityType == "sensor" {
             subtitleString = newState + " " + json["data"]["new_state"]["attributes"]["unit_of_measurement"].stringValue+". It was "+json["data"]["old_state"]["state"].stringValue + " " + json["data"]["old_state"]["attributes"]["unit_of_measurement"].stringValue
         }
-        let announcement = Announcement(title: friendly_name, subtitle: subtitleString)
+        let icon = generateIconForEntity(json["data"]["new_state"])
+        let announcement = Announcement(title: friendly_name, subtitle: subtitleString, image: icon)
         Shout(announcement, to: self)
         var groupMapEntry = [String]()
         if let groupMapTest = self.groupsMap[entityId] {
@@ -170,6 +199,7 @@ class FirstViewController: FormViewController {
         }
         for group in groupMapEntry {
             let rowTag = group+"_"+entityId
+            updatedStates[rowTag] = json["data"]["new_state"]
             if entityType == "switch" || entityType == "light" {
                 if let row : SwitchRow = self.form.rowByTag(rowTag) {
                     row.value = (newState == "on") ? true : false

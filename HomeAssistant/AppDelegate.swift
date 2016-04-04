@@ -22,7 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let prefs = NSUserDefaults.standardUserDefaults()
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
         Fabric.with([Crashlytics.self])
         
         let credentialsProvider = AWSCognitoCredentialsProvider(regionType:.USEast1, identityPoolId:"us-east-1:2b1692f3-c9d3-4d81-b7e9-83cd084f3a59")
@@ -31,13 +30,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
         
-        let notificationTypes: UIUserNotificationType = [UIUserNotificationType.Alert, UIUserNotificationType.Badge, UIUserNotificationType.Sound]
-        let pushNotificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)
-        application.registerUserNotificationSettings(pushNotificationSettings)
-        application.registerForRemoteNotifications()
-        
         if let baseURL = prefs.stringForKey("baseURL") {
             APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: prefs.stringForKey("apiPassword")!)
+            APIClientSharedInstance!.GetConfig().then { config -> Void in
+                self.prefs.setValue(config["location_name"].stringValue, forKey: "location_name")
+                self.prefs.setValue(config["latitude"].doubleValue, forKey: "latitude")
+                self.prefs.setValue(config["longitude"].doubleValue, forKey: "longitude")
+                self.prefs.setValue(config["temperature_unit"].stringValue, forKey: "temperature_unit")
+                self.prefs.setValue(config["time_zone"].stringValue, forKey: "time_zone")
+                self.prefs.setValue(config["version"].stringValue, forKey: "version")
+            }
             APIClientSharedInstance!.trackLocation(self.prefs.stringForKey("deviceId")!)
         }
         

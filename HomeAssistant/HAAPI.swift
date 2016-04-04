@@ -12,15 +12,16 @@ import PromiseKit
 import SwiftyJSON
 import IKEventSource
 import SwiftLocation
+import CoreLocation
 
 class HomeAssistantAPI: NSObject {
-    
-    let prefs = NSUserDefaults.standardUserDefaults()
     
     let manager:Alamofire.Manager?
     
     var baseAPIURL : String = "https://homeassistant.thegrand.systems/api/"
     var apiPassword : String = "thegrand1212"
+    
+    let prefs = NSUserDefaults.standardUserDefaults()
     
     init(baseAPIUrl: String, APIPassword: String) {
         baseAPIURL = baseAPIUrl+"/api/"
@@ -58,30 +59,40 @@ class HomeAssistantAPI: NSObject {
         }
     }
     
+    func submitLocation(updateType: String, deviceId: String, latitude: Double, longitude: Double, accuracy: Double, locationName: String) {
+        UIDevice.currentDevice().batteryMonitoringEnabled = true
+        
+        var locationUpdate : [String:AnyObject] = [
+            "battery": Int(UIDevice.currentDevice().batteryLevel*100),
+            "gps": [latitude, longitude],
+            "gps_accuracy": accuracy,
+            "hostname": UIDevice().name,
+            "dev_id": deviceId
+        ]
+        
+        if locationName != "" {
+           locationUpdate["location_name"] = locationName
+        }
+        
+        self.CallService("device_tracker", service: "see", serviceData: locationUpdate).then {_ in
+            print("Device seen!")
+        }
+        
+        UIDevice.currentDevice().batteryMonitoringEnabled = false
+        
+        let notification = UILocalNotification()
+        notification.alertBody = updateType+", alerting Home Assistant"
+        notification.alertAction = "open"
+        notification.fireDate = NSDate()
+        notification.soundName = UILocalNotificationDefaultSoundName
+        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+    }
+    
     func trackLocation(deviceId: String) {
         UIDevice.currentDevice().batteryMonitoringEnabled = true
         do {
             try SwiftLocation.shared.significantLocation({ (location) -> Void in
-                // a new significant location has arrived
-                let locationUpdate = [
-                    "battery": Int(UIDevice.currentDevice().batteryLevel*100),
-                    "gps": [location!.coordinate.latitude, location!.coordinate.longitude],
-                    "gps_accuracy": location!.horizontalAccuracy,
-                    "hostname": UIDevice().name,
-                    "dev_id": deviceId
-                ]
-//                print("About to send this to device_tracker/see", locationUpdate)
-                
-                self.CallService("device_tracker", service: "see", serviceData: locationUpdate as! [String : AnyObject]).then {_ in
-                    print("Device seen!")
-                }
-                
-                let notification = UILocalNotification()
-                notification.alertBody = "Significant location change detected, alerting Home Assistant"
-                notification.alertAction = "open"
-                notification.fireDate = NSDate()
-                notification.soundName = UILocalNotificationDefaultSoundName // play default sound
-                UIApplication.sharedApplication().scheduleLocalNotification(notification)
+                self.submitLocation("Significant location change detected", deviceId: deviceId, latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, accuracy: location!.horizontalAccuracy, locationName: "")
             }, onFail: { (error) -> Void in
                 // something went wrong. request will be cancelled automatically
                 print("Something went wrong when trying to get significant location updates! Error was:", error)
@@ -89,6 +100,21 @@ class HomeAssistantAPI: NSObject {
         } catch {
             print("Error when trying to get sig location changes!!")
         }
+
+        let regionCoordinates = CLLocationCoordinate2DMake(prefs.doubleForKey("latitude"), prefs.doubleForKey("longitude"))
+        let region = CLCircularRegion(center: regionCoordinates, radius: CLLocationDistance(5000), identifier: "home_location")
+        do {
+            try SwiftLocation.shared.monitorRegion(region, onEnter: { (region) -> Void in
+                print("Region entered!", region)
+                self.submitLocation("Region entered", deviceId: deviceId, latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 5000, locationName: "home")
+            }) { (region) -> Void in
+                print("Region exited!", region)
+                self.submitLocation("Region exited", deviceId: deviceId, latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 5000, locationName: "not_home")
+            }
+        } catch {
+            print("Error when setting up home region location monitoring")
+        }
+
     }
     
     func GET(url:String) -> Promise<JSON> {
