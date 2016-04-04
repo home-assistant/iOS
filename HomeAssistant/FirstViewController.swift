@@ -171,7 +171,7 @@ class FirstViewController: FormViewController {
                         case "input_select":
                             sectionCounts[groupToAdd]! = sectionCounts[groupToAdd]! + 1
                             groupSection
-                                <<< PushRow<String>(rowTag) {
+                                <<< PickerInlineRow<String>(rowTag) {
                                     $0.title = subJson["attributes"]["friendly_name"].stringValue
                                     $0.value = subJson["state"].stringValue
                                     $0.options = subJson["attributes"]["options"].arrayObject as! [String]
