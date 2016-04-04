@@ -90,9 +90,9 @@ class FirstViewController: FormViewController {
                                     $0.value = (subJson["state"].stringValue == "on") ? true : false
                                     }.onChange { row -> Void in
                                         if (row.value == true) {
-                                            APIClientSharedInstance.turnOn(row.tag!)
+                                            APIClientSharedInstance.turnOn(subJson["entity_id"].stringValue)
                                         } else {
-                                            APIClientSharedInstance.turnOff(row.tag!)
+                                            APIClientSharedInstance.turnOff(subJson["entity_id"].stringValue)
                                         }
                             }
                         case "script", "scene":
@@ -101,8 +101,8 @@ class FirstViewController: FormViewController {
                                 <<< ButtonRow(rowTag) {
                                     $0.title = subJson["attributes"]["friendly_name"].stringValue
                                     }.onCellSelection { cell, row -> Void in
-                                        APIClientSharedInstance.turnOn(row.tag!)
-                            }
+                                        APIClientSharedInstance.turnOn(subJson["entity_id"].stringValue)
+                                    }
                         case "weblink":
                             sectionCounts[groupToAdd]! = sectionCounts[groupToAdd]! + 1
                             if let url = NSURL(string: subJson["state"].stringValue) {
