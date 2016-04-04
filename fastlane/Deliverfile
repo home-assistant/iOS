@@ -8,3 +8,13 @@
 
 app_identifier "io.robbie.HomeAssistant" # The bundle identifier of your app
 username "me@robbiet.us" # your Apple ID user
+
+app_review_information(
+  first_name: "Robbie",
+  last_name: "Trencheny",
+  phone_number: "+1 (925) 884-3728",
+  email_address: "me@robbiet.us",
+  demo_user: "https://privatedemo.home-assistant.io",
+  demo_password: "demoprivate",
+  notes: "The username and password go into the Base URL and API password fields, respectively, on the More tab."
+)
