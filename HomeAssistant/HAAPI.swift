@@ -107,7 +107,7 @@ class HomeAssistantAPI: NSObject {
         }
 
         let regionCoordinates = CLLocationCoordinate2DMake(prefs.doubleForKey("latitude"), prefs.doubleForKey("longitude"))
-        let region = CLCircularRegion(center: regionCoordinates, radius: CLLocationDistance(5000), identifier: "home_location")
+        let region = CLCircularRegion(center: regionCoordinates, radius: CLLocationDistance(1000), identifier: "home_location")
         do {
             try SwiftLocation.shared.monitorRegion(region, onEnter: { (region) -> Void in
                 print("Region entered!", region)
