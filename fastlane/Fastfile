@@ -12,14 +12,14 @@
 # This is the minimum version number required.
 # Update this, if you use features of a newer version
 fastlane_version "1.70.0"
-
+REQUIRED_XCODE_VERSION = "7.3"
 default_platform :ios
 
 platform :ios do
   before_all do
     # ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
     cocoapods
-    
+
   end
 
   desc "Runs all the tests"
@@ -27,9 +27,38 @@ platform :ios do
     scan
   end
 
+  def change_log_since_last_tag
+    # http://git-scm.com/docs/pretty-formats
+    # <short hash> <commit title>
+    return changelog_from_git_commits(pretty: '%h %s')
+  end
+
+  def version_string(version_number, build_number)
+    "#{version_number} (#{build_number})"
+  end
+
+  def tag_name(build_type, version_number, build_number)
+    "#{build_type}/#{version_number}/#{build_number}"
+  end
+
+  def load_keys
+    begin
+      import("keys")
+    rescue => exception
+      UI.error("fastlane/keys file not found. To use this Fastfile, copy fastlane/keys.template into fastlane/keys and fill in the values")
+      raise exception
+    end
+  end
+
+  private_lane :verify_xcode_version do
+    ensure_xcode_version(version: REQUIRED_XCODE_VERSION)
+  end
+
   desc "Submit a new Beta Build to Apple TestFlight"
   desc "This will also make sure the profile is up to date"
   lane :beta do
+    increment_build_number
+    commit_version_bump
     # match(type: "appstore") # more information: https://codesigning.guide
     gym(scheme: "HomeAssistant") # Build your app - more options available
     pilot
@@ -38,8 +67,80 @@ platform :ios do
     # You can also use other beta testing services here (run `fastlane actions`)
   end
 
+  lane :testflight do |options|
+    load_keys
+
+    ensure_git_branch(
+      branch: "(master|release\\S+|hotfix\\S+)"
+    )
+
+    # ensure_git_status_clean
+
+    verify_xcode_version
+
+    version_number = options[:version_number] || get_version_number
+
+    raise "Missing version number: use version_number parameter" unless version_number != nil
+
+    increment_version_number(version_number: version_number)
+    build_number = increment_build_number
+    complete_version_number = version_string(version_number, build_number)
+
+    commit_version_bump(
+      message: "Version bump to #{complete_version_number}",
+      xcodeproj: "HomeAssistant.xcodeproj"
+    )
+
+    change_log = change_log_since_last_tag
+
+    skip_metadata = options[:skip_metadata]
+
+    unless skip_metadata == true
+      clear_derived_data
+      # screenshots
+      update_metadata
+    else
+      Helper.log.info("Skipping taking screenshots and uploading metadata".green)
+    end
+
+    clean_build_artifacts
+    clear_derived_data
+
+    sigh(output_path: "/tmp")
+    gym(
+      scheme: "HomeAssistant",
+      configuration: "Release",
+      clean: true
+    )
+
+    testflight(
+      changelog: change_log,
+      skip_submission: true,
+      distribute_external: false
+    )
+
+    set_github_release(
+      repository_name: "home-assistant/home-assistant-iOS",
+      api_token: ENV["GITHUB_API_TOKEN"],
+      name: complete_version_number,
+      tag_name: tag_name("testflight", version_number, build_number),
+      commitish: git_branch,
+      description: change_log_since_last_tag,
+      is_prerelease: false
+    )
+
+    # slack(
+    #   message: "Submitted build of Home Assistant to TestFlight: v#{complete_version_number}",
+    #   channel: "#general"
+    # )
+
+    rocket
+  end
+
   desc "Deploy a new version to the App Store"
   lane :appstore do
+    increment_build_number
+    commit_version_bump
     # match(type: "appstore")
     # snapshot
     gym(scheme: "HomeAssistant") # Build your app - more options available
