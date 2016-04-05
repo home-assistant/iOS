@@ -41,9 +41,11 @@ class HomeAssistantAPI: NSObject {
         
         eventSource.onOpen {
             print("SSE: Connection Opened")
+            Whistle(Murmur(title: "Connected to HA realtime API!"))
         }
         
         eventSource.onError { (error) in
+            Whistle(Murmur(title: "SSE Error! \(error?.description)"))
             print("SSE: Error", error)
         }
 

@@ -27,7 +27,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
     }
     
     override func viewWillAppear(animated: Bool) {
-        
+
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         
         var tabViewControllers : [UIViewController] = []
@@ -95,6 +95,12 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
             }
         } else {
             print("Skip!")
+            dispatch_async(dispatch_get_main_queue(), {
+                let settingsView = SettingsViewController()
+                settingsView.title = "Settings"
+                let navController = UINavigationController(rootViewController: settingsView)
+                self.presentViewController(navController, animated: true, completion: nil)
+            })
         }
         let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
         

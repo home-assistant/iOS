@@ -74,6 +74,7 @@ class GroupViewController: FormViewController {
             case "binary_sensor", "sensor", "media_player", "thermostat", "sun":
                 self.form.last! <<< ButtonRow(rowTag) {
                     $0.title = entity["attributes"]["friendly_name"].stringValue
+                    $0.value = self.updatedStates[rowTag]!["state"].stringValue + " " + self.updatedStates[rowTag]!["attributes"]["unit_of_measurement"].stringValue
                     $0.presentationMode = .Show(controllerProvider: ControllerProvider.Callback {
                         let attributesView = EntityAttributesViewController()
                         attributesView.entity = entity
@@ -91,18 +92,22 @@ class GroupViewController: FormViewController {
                     cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
                 }
             case "device_tracker":
-                self.form.last! <<< LocationRow(rowTag) {
-                    $0.title = entity["attributes"]["friendly_name"].stringValue
-                    $0.value = CLLocation(latitude: entity["attributes"]["latitude"].doubleValue, longitude: entity["attributes"]["longitude"].doubleValue)
-                    }.cellUpdate { cell, row in
-                        var detailText = self.updatedStates[rowTag]!["state"].stringValue
-                        if self.updatedStates[rowTag]!["state"].stringValue == "home" {
-                            detailText = "Home"
-                        } else if self.updatedStates[rowTag]!["state"].stringValue == "not_home" {
-                            detailText = "Not home"
-                        }
-                        cell.detailTextLabel?.text = detailText
-                        cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
+                if entity["attributes"]["latitude"].exists() && entity["attributes"]["longitude"].exists() {
+                    self.form.last! <<< LocationRow(rowTag) {
+                        $0.title = entity["attributes"]["friendly_name"].stringValue
+                        $0.value = CLLocation(latitude: entity["attributes"]["latitude"].doubleValue, longitude: entity["attributes"]["longitude"].doubleValue)
+                        }.cellUpdate { cell, row in
+                            var detailText = self.updatedStates[rowTag]!["state"].stringValue
+                            if self.updatedStates[rowTag]!["state"].stringValue == "home" {
+                                detailText = "Home"
+                            } else if self.updatedStates[rowTag]!["state"].stringValue == "not_home" {
+                                detailText = "Not home"
+                            }
+                            cell.detailTextLabel?.text = detailText
+                            cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
+                    }
+                } else {
+                    // TODO: Need an else here to show a textrow if lat/long isn't set
                 }
             case "input_select":
                 self.form.last! <<< PickerInlineRow<String>(rowTag) {
