@@ -12,8 +12,7 @@
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
 		B6393F8C1CB260E800503916 /* EntityAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */; };
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
-		B657A8EC1CA646EB00121384 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8EB1CA646EB00121384 /* FirstViewController.swift */; };
-		B657A8EE1CA646EB00121384 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8ED1CA646EB00121384 /* SecondViewController.swift */; };
+		B657A8EE1CA646EB00121384 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8ED1CA646EB00121384 /* SettingsViewController.swift */; };
 		B657A8F11CA646EB00121384 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8EF1CA646EB00121384 /* Main.storyboard */; };
 		B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F21CA646EB00121384 /* Assets.xcassets */; };
 		B657A8F61CA646EB00121384 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */; };
@@ -22,6 +21,8 @@
 		B657A91A1CA647C500121384 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
 		B6E1237B1CB1EBE100375722 /* SNSLambda.js in Resources */ = {isa = PBXBuildFile; fileRef = B6E1237A1CB1EBE100375722 /* SNSLambda.js */; };
 		B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E857A11CB1CCCC00F96925 /* Utils.swift */; };
+		B6F7004A1CB34FA600753BAB /* GroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F700491CB34FA600753BAB /* GroupViewController.swift */; };
+		B6F700521CB374F700753BAB /* RootTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F700511CB374F700753BAB /* RootTabBarViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,8 +51,7 @@
 		B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityAttributesViewController.swift; sourceTree = "<group>"; };
 		B657A8E61CA646EB00121384 /* HomeAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B657A8EB1CA646EB00121384 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
-		B657A8ED1CA646EB00121384 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		B657A8ED1CA646EB00121384 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B657A8F01CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B657A8F21CA646EB00121384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B657A8F51CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -66,6 +66,8 @@
 		B6E1237A1CB1EBE100375722 /* SNSLambda.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = SNSLambda.js; sourceTree = "<group>"; };
 		B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HomeAssistant-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		B6F700491CB34FA600753BAB /* GroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupViewController.swift; sourceTree = "<group>"; };
+		B6F700511CB374F700753BAB /* RootTabBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootTabBarViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,8 +142,8 @@
 			children = (
 				B6E123791CB1EBB500375722 /* External */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
-				B657A8EB1CA646EB00121384 /* FirstViewController.swift */,
-				B657A8ED1CA646EB00121384 /* SecondViewController.swift */,
+				B6F700491CB34FA600753BAB /* GroupViewController.swift */,
+				B657A8ED1CA646EB00121384 /* SettingsViewController.swift */,
 				B657A8EF1CA646EB00121384 /* Main.storyboard */,
 				B657A8F21CA646EB00121384 /* Assets.xcassets */,
 				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
@@ -151,6 +153,7 @@
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 				B6393F851CB255F200503916 /* EurekaLocationRow.swift */,
 				B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */,
+				B6F700511CB374F700753BAB /* RootTabBarViewController.swift */,
 			);
 			path = HomeAssistant;
 			sourceTree = "<group>";
@@ -393,13 +396,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6F7004A1CB34FA600753BAB /* GroupViewController.swift in Sources */,
 				B6393F8C1CB260E800503916 /* EntityAttributesViewController.swift in Sources */,
+				B6F700521CB374F700753BAB /* RootTabBarViewController.swift in Sources */,
 				B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */,
-				B657A8EE1CA646EB00121384 /* SecondViewController.swift in Sources */,
+				B657A8EE1CA646EB00121384 /* SettingsViewController.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
 				B657A91A1CA647C500121384 /* HAAPI.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
-				B657A8EC1CA646EB00121384 /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

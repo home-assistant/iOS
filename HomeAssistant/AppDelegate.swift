@@ -10,14 +10,15 @@ import UIKit
 import AWSSNS
 import Fabric
 import Crashlytics
-
+import PermissionScope
+import SwiftyJSON
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    var APIClientSharedInstance : HomeAssistantAPI?
+    var APIClientSharedInstance : HomeAssistantAPI!
     
     let prefs = NSUserDefaults.standardUserDefaults()
     
@@ -30,6 +31,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
         
+        let pscope = PermissionScope()
+        
+        pscope.addPermission(NotificationsPermission(notificationCategories: nil),
+                             message: "We use this to let you\r\nsend notifications to your device.")
+        pscope.addPermission(LocationAlwaysPermission(),
+                             message: "We use this to track\r\nwhere you are and notify Home Assistant.")
+        
+        pscope.show({ finished, results in
+            print("got results \(results)")
+            if results[0].status == .Authorized {
+                print("User authorized the use of notifications")
+                UIApplication.sharedApplication().registerForRemoteNotifications()
+            }
+            }, cancelled: { (results) -> Void in
+                print("thing was cancelled")
+        })
+        
         if let baseURL = prefs.stringForKey("baseURL") {
             APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: prefs.stringForKey("apiPassword")!)
             APIClientSharedInstance!.GetConfig().then { config -> Void in
@@ -39,13 +57,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self.prefs.setValue(config["temperature_unit"].stringValue, forKey: "temperature_unit")
                 self.prefs.setValue(config["time_zone"].stringValue, forKey: "time_zone")
                 self.prefs.setValue(config["version"].stringValue, forKey: "version")
+                if config["components"].arrayValue.contains("device_tracker") {
+                    print("Found device_tracker in config components, starting location monitoring!")
+                    self.APIClientSharedInstance!.trackLocation(self.prefs.stringForKey("deviceId")!)
+                }
             }
-            APIClientSharedInstance!.trackLocation(self.prefs.stringForKey("deviceId")!)
         }
         
         return true
     }
-
+        
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
@@ -98,6 +119,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         print("Received remote notification!", userInfo)
     }
-
 }
 

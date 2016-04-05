@@ -17,7 +17,18 @@ class EntityAttributesViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        print("Entity", entity)
+        self.title = "Attributes"
+        
+        form +++ Section()
+        
+        for attribute in entity["attributes"] {
+            print("Attribute!", attribute)
+            form.last! <<< TextRow(attribute.0){
+                $0.title = attribute.0.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
+                $0.value = attribute.1.stringValue
+            }
+        }
+        
         
         // Do any additional setup after loading the view.
     }

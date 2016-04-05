@@ -60,6 +60,69 @@ func intFromHexString(hexStr: String) -> UInt32 {
     return hexInt
 }
 
+func iconForDomain(domain: String) -> String {
+    switch (domain) {
+    case "alarm_control_panel":
+        return "mdi:bell-outline";
+    case "automation":
+        return "mdi:playlist-play";
+    case "binary_sensor":
+        return "mdi:radiobox-blank";
+    case "camera":
+        return "mdi:video";
+    case "configurator":
+        return "mdi:settings";
+    case "conversation":
+        return "mdi:text-to-speech";
+    case "device_tracker":
+        return "mdi:account";
+    case "garage_door":
+        return "mdi:glassdoor";
+    case "group":
+        return "mdi:google-circles-communities";
+    case "homeassistant":
+        return "mdi:home";
+    case "input_boolean":
+        return "mdi:drawing";
+    case "input_select":
+        return "mdi:format-list-bulleted";
+    case "input_slider":
+        return "mdi:ray-vertex";
+    case "light":
+        return "mdi:lightbulb";
+    case "lock":
+        return "mdi:lock-open";
+    case "media_player":
+        return "mdi:cast";
+    case "notify":
+        return "mdi:comment-alert";
+    case "proximity":
+        return "mdi:apple-safari";
+    case "rollershutter":
+        return "mdi:window-closed";
+    case "scene":
+        return "mdi:google-pages";
+    case "script":
+        return "mdi:file-document";
+    case "sensor":
+        return "mdi:eye";
+    case "simple_alarm":
+        return "mdi:bell";
+    case "sun":
+        return "mdi:white-balance-sunny";
+    case "switch":
+        return "mdi:flash";
+    case "thermostat":
+        return "mdi:nest-thermostat";
+    case "updater":
+        return "mdi:cloud-upload";
+    case "weblink":
+        return "mdi:open-in-new";
+    default:
+        return "mdi:bookmark";
+    }
+}
+
 func iconForDomainAndState(domain: String, state: String) -> String {
     switch (domain) {
     case "alarm_control_panel":
