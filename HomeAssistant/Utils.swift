@@ -212,6 +212,9 @@ func binarySensorIcon(entity: SwiftyJSON.JSON) -> String {
 
 func stateIcon(entity: SwiftyJSON.JSON) -> String {
     let domain = getEntityType(entity["entity_id"].stringValue)
+    if (entity["attributes"]["mobile_icon"].exists()) {
+        return entity["attributes"]["mobile_icon"].stringValue
+    }
     if (entity["attributes"]["icon"].exists()) {
         return entity["attributes"]["icon"].stringValue;
     }

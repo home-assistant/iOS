@@ -85,6 +85,9 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     if group["attributes"]["icon"].exists() {
                         groupIcon = group["attributes"]["icon"].stringValue
                     }
+                    if group["attributes"]["mobile_icon"].exists() {
+                        groupIcon = group["attributes"]["mobile_icon"].stringValue
+                    }
                     let icon = getIconForIdentifier(groupIcon, iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
                     groupView.tabBarItem = UITabBarItem(title: title, image: icon, tag: index)
                     let navController = UINavigationController(rootViewController: groupView)
