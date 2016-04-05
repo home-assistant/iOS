@@ -18,39 +18,29 @@ class SettingsViewController: FormViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        var baseURL = "https://homeassistant.thegrand.systems"
-        var apiPass = "mypassword"
-        var deviceId = "iphone"
-        var endpointARN = "N/A"
-        if let base = prefs.stringForKey("baseURL") {
-            baseURL = base
-        }
-        if let pass = prefs.stringForKey("apiPassword") {
-            apiPass = pass
-        }
-        if let dID = prefs.stringForKey("deviceId") {
-            deviceId = dID
-        }
-        if let eARN = prefs.stringForKey("endpointARN") {
-            endpointARN = eARN
-        }
-        
-        let splitARN = endpointARN.componentsSeparatedByString("/").last
-        
         form
             +++ Section(header: "Settings", footer: "Format should be protocol://hostname_or_ip:portnumber. NO slashes. Only provide a port number if not using 80/443. Examples: http://192.168.1.2:8123, https://demo.home-assistant.io.")
             <<< URLRow("baseURL") {
                 $0.title = "Base URL"
-                $0.value = NSURL(string: baseURL)
+                if let baseURL = prefs.stringForKey("baseURL") {
+                    $0.value = NSURL(string: baseURL)
+                }
+                $0.placeholder = "https://homeassistant.myhouse.com"
             }
             +++ Section(header: "Settings", footer: "")
             <<< PasswordRow("apiPassword") {
                 $0.title = "API Password"
-                $0.value = apiPass
+                if let apiPass = prefs.stringForKey("apiPassword") {
+                    $0.value = apiPass
+                }
+                $0.placeholder = "password"
             }
             <<< TextRow("deviceId") {
                 $0.title = "Device ID (location tracking)"
-                $0.value = deviceId
+                if let deviceId = prefs.stringForKey("deviceId") {
+                    $0.value = deviceId
+                }
+                $0.placeholder = "iphone"
             }
             <<< ButtonRow() {
                 $0.title = "Save"
@@ -86,12 +76,12 @@ class SettingsViewController: FormViewController {
                 })
             }
             
-            if endpointARN != "N/A" {
+            if let endpointArn = prefs.stringForKey("endpointARN") {
                 self.form.last!
                     +++ Section(header: "Push information", footer: "")
                         <<< TextAreaRow() {
                             $0.placeholder = "EndpointArn"
-                            $0.value = splitARN
+                            $0.value = endpointArn.componentsSeparatedByString("/").last
                             $0.disabled = true
                     }
             }
