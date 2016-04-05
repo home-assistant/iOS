@@ -17,15 +17,25 @@ class EntityAttributesViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = "Attributes"
+        if entity["attributes"]["friendly_name"].exists() {
+            self.title = entity["attributes"]["friendly_name"].stringValue
+        } else {
+            self.title = "Attributes"
+        }
         
         form +++ Section()
         
+        form.last! <<< TextRow("state"){
+            $0.title = "State"
+            $0.value = entity["state"].stringValue
+            $0.disabled = true
+        }
+        
         for attribute in entity["attributes"] {
-            print("Attribute!", attribute)
             form.last! <<< TextRow(attribute.0){
                 $0.title = attribute.0.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
                 $0.value = attribute.1.stringValue
+                $0.disabled = true
             }
         }
         

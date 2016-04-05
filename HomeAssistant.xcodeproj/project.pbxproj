@@ -144,6 +144,7 @@
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				B6F700491CB34FA600753BAB /* GroupViewController.swift */,
 				B657A8ED1CA646EB00121384 /* SettingsViewController.swift */,
+				B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */,
 				B657A8EF1CA646EB00121384 /* Main.storyboard */,
 				B657A8F21CA646EB00121384 /* Assets.xcassets */,
 				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
@@ -152,7 +153,6 @@
 				B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 				B6393F851CB255F200503916 /* EurekaLocationRow.swift */,
-				B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */,
 				B6F700511CB374F700753BAB /* RootTabBarViewController.swift */,
 			);
 			path = HomeAssistant;

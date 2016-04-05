@@ -236,8 +236,16 @@ func stateIcon(entity: SwiftyJSON.JSON) -> String {
 let entityPicturesCache = Cache<UIImage>(name: "entity_pictures")
 
 func getEntityPicture(entityPictureURL: String) -> Promise<UIImage> {
+    print("Entity picture URL!!! '\(entityPictureURL)'")
+    var url = entityPictureURL
     return Promise { fulfill, reject in
-        let URL = NSURL(string: entityPictureURL)
+        if url.containsString("/local/") {
+            if let baseURL = prefs.stringForKey("baseURL") {
+                url = baseURL+url
+                print("Replaced /local/ URL", url)
+            }
+        }
+        let URL = NSURL(string: url)
         let fetcher = NetworkFetcher<UIImage>(URL: URL!)
         entityPicturesCache.fetch(fetcher: fetcher).onSuccess { image in
             fulfill(image.scaledToSize(CGSize(width: 30, height: 30)))

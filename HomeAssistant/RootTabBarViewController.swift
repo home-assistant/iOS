@@ -18,11 +18,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
         // Do any additional setup after loading the view.
         delegate = self
-        
-        let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
-        
-        self.moreNavigationController.topViewController!.navigationItem.leftBarButtonItem = UIBarButtonItem(image: settingsIcon, style: UIBarButtonItemStyle.Plain, target: self, action: #selector(RootTabBarViewController.openSettings(_:)))
-        
+
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)), name:"EntityStateChanged", object: nil)
     }
     
@@ -52,6 +48,15 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                         shouldReturn = false
                     }
                     if $0["attributes"]["auto"].exists() && $0["attributes"]["auto"].boolValue {
+                        shouldReturn = false
+                    }
+                    // If all entities are a group, return false
+                    var groupCheck = [String]()
+                    for entity in $0["attributes"]["entity_id"].arrayValue {
+                        groupCheck.append(getEntityType(entity.stringValue))
+                    }
+                    let uniqueCheck = Array(Set(groupCheck))
+                    if uniqueCheck.count == 1 && uniqueCheck[0] == "group" {
                         shouldReturn = false
                     }
                     return shouldReturn

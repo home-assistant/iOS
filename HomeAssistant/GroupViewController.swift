@@ -51,9 +51,14 @@ class GroupViewController: FormViewController {
                         } else {
                             self.APIClientSharedInstance.turnOff(entity["entity_id"].stringValue)
                         }
-                    }.cellUpdate { cell, row in
+                    }.cellSetup { cell, row in
                         cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
-                }
+                        if self.updatedStates[rowTag]!["attributes"]["entity_picture"].exists() {
+                          getEntityPicture(self.updatedStates[rowTag]!["attributes"]["entity_picture"].stringValue).then { image in
+                              cell.imageView?.image = image
+                          }
+                        }
+                    }
             case "script", "scene":
                 self.form.last! <<< ButtonRow(rowTag) {
                     $0.title = entity["attributes"]["friendly_name"].stringValue
@@ -61,7 +66,12 @@ class GroupViewController: FormViewController {
                         self.APIClientSharedInstance.turnOn(entity["entity_id"].stringValue)
                     }.cellUpdate { cell, row in
                         cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
-                }
+                        if self.updatedStates[rowTag]!["attributes"]["entity_picture"].exists() {
+                            getEntityPicture(self.updatedStates[rowTag]!["attributes"]["entity_picture"].stringValue).then { image in
+                                cell.imageView?.image = image
+                            }
+                        }
+                    }
             case "weblink":
                 if let url = NSURL(string: entity["state"].stringValue) {
                     self.form.last! <<< ButtonRow(rowTag) {
@@ -69,12 +79,17 @@ class GroupViewController: FormViewController {
                         $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback { return SFSafariViewController(URL: url, entersReaderIfAvailable: false) }, completionCallback: { vc in vc.navigationController?.popViewControllerAnimated(true) })
                         }.cellUpdate { cell, row in
                             cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
-                    }
+                            if self.updatedStates[rowTag]!["attributes"]["entity_picture"].exists() {
+                                getEntityPicture(self.updatedStates[rowTag]!["attributes"]["entity_picture"].stringValue).then { image in
+                                    cell.imageView?.image = image
+                                }
+                            }
+                        }
                 }
             case "binary_sensor", "sensor", "media_player", "thermostat", "sun":
                 self.form.last! <<< ButtonRow(rowTag) {
                     $0.title = entity["attributes"]["friendly_name"].stringValue
-                    $0.value = self.updatedStates[rowTag]!["state"].stringValue + " " + self.updatedStates[rowTag]!["attributes"]["unit_of_measurement"].stringValue
+                    $0.cellStyle = .Value1
                     $0.presentationMode = .Show(controllerProvider: ControllerProvider.Callback {
                         let attributesView = EntityAttributesViewController()
                         attributesView.entity = entity
@@ -82,14 +97,17 @@ class GroupViewController: FormViewController {
                     }, completionCallback: {
                         vc in vc.navigationController?.popViewControllerAnimated(true)
                     })
-                }.cellSetup { cell, row in
-                    cell.detailTextLabel?.text = self.updatedStates[rowTag]!["state"].stringValue
                 }.cellUpdate { cell, row in
-                    cell.detailTextLabel?.text = self.updatedStates[rowTag]!["state"].stringValue
+                    cell.detailTextLabel?.text = self.updatedStates[rowTag]!["state"].stringValue.capitalizedString
                     if self.updatedStates[rowTag]!["attributes"]["unit_of_measurement"].exists() {
-                        cell.detailTextLabel?.text = self.updatedStates[rowTag]!["state"].stringValue + " " + self.updatedStates[rowTag]!["attributes"]["unit_of_measurement"].stringValue
+                        cell.detailTextLabel?.text = (self.updatedStates[rowTag]!["state"].stringValue + " " + self.updatedStates[rowTag]!["attributes"]["unit_of_measurement"].stringValue).capitalizedString
                     }
                     cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
+                    if self.updatedStates[rowTag]!["attributes"]["entity_picture"].exists() {
+                        getEntityPicture(self.updatedStates[rowTag]!["attributes"]["entity_picture"].stringValue).then { image in
+                            cell.imageView?.image = image
+                        }
+                    }
                 }
             case "device_tracker":
                 if entity["attributes"]["latitude"].exists() && entity["attributes"]["longitude"].exists() {
@@ -105,9 +123,33 @@ class GroupViewController: FormViewController {
                             }
                             cell.detailTextLabel?.text = detailText
                             cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
+                            if self.updatedStates[rowTag]!["attributes"]["entity_picture"].exists() {
+                                getEntityPicture(self.updatedStates[rowTag]!["attributes"]["entity_picture"].stringValue).then { image in
+                                    cell.imageView?.image = image
+                                }
+                            }
                     }
                 } else {
-                    // TODO: Need an else here to show a textrow if lat/long isn't set
+                    self.form.last! <<< ButtonRow(rowTag) {
+                        $0.title = entity["attributes"]["friendly_name"].stringValue
+                        $0.cellStyle = .Value1
+                        $0.presentationMode = .Show(controllerProvider: ControllerProvider.Callback {
+                            let attributesView = EntityAttributesViewController()
+                            attributesView.entity = entity
+                            return attributesView
+                        }, completionCallback: { vc in vc.navigationController?.popViewControllerAnimated(true) })
+                        }.cellUpdate { cell, row in
+                            cell.detailTextLabel?.text = self.updatedStates[rowTag]!["state"].stringValue.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
+                            if self.updatedStates[rowTag]!["attributes"]["unit_of_measurement"].exists() {
+                                cell.detailTextLabel?.text = (self.updatedStates[rowTag]!["state"].stringValue + " " + self.updatedStates[rowTag]!["attributes"]["unit_of_measurement"].stringValue).stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
+                            }
+                            cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
+                            if self.updatedStates[rowTag]!["attributes"]["entity_picture"].exists() {
+                                getEntityPicture(self.updatedStates[rowTag]!["attributes"]["entity_picture"].stringValue).then { image in
+                                    cell.imageView?.image = image
+                                }
+                            }
+                    }
                 }
             case "input_select":
                 self.form.last! <<< PickerInlineRow<String>(rowTag) {
@@ -118,7 +160,12 @@ class GroupViewController: FormViewController {
                         self.APIClientSharedInstance.CallService("input_select", service: "select_option", serviceData: ["entity_id": entity["entity_id"].stringValue, "option": row.value!])
                     }.cellUpdate { cell, row in
                         cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
-                }
+                        if self.updatedStates[rowTag]!["attributes"]["entity_picture"].exists() {
+                            getEntityPicture(self.updatedStates[rowTag]!["attributes"]["entity_picture"].stringValue).then { image in
+                                cell.imageView?.image = image
+                            }
+                        }
+                    }
             case "lock":
                 self.form.last! <<< SwitchRow(rowTag) {
                     $0.title = entity["attributes"]["friendly_name"].stringValue
@@ -131,7 +178,12 @@ class GroupViewController: FormViewController {
                         }
                     }.cellUpdate { cell, row in
                         cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
-                }
+                        if self.updatedStates[rowTag]!["attributes"]["entity_picture"].exists() {
+                            getEntityPicture(self.updatedStates[rowTag]!["attributes"]["entity_picture"].stringValue).then { image in
+                                cell.imageView?.image = image
+                            }
+                        }
+                    }
             case "garage_door":
                 self.form.last! <<< SwitchRow(rowTag) {
                     $0.title = entity["attributes"]["friendly_name"].stringValue
@@ -144,7 +196,12 @@ class GroupViewController: FormViewController {
                         }
                     }.cellUpdate { cell, row in
                         cell.imageView?.image = generateIconForEntity(self.updatedStates[rowTag]!)
-                }
+                            if self.updatedStates[rowTag]!["attributes"]["entity_picture"].exists() {
+                                getEntityPicture(self.updatedStates[rowTag]!["attributes"]["entity_picture"].stringValue).then { image in
+                                    cell.imageView?.image = image
+                                }
+                            }
+                        }
             default:
                 print("We don't want this type", entityType)
             }
