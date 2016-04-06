@@ -54,9 +54,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                self.APIClientSharedInstance.GetHistoryMapped().then { history in
 //                    print("history", history)
 //                }
-                self.APIClientSharedInstance.GetStatesMapped().then { states in
-                    print("states", states)
-                }
+//                self.APIClientSharedInstance.GetStatesMapped().then { states in
+//                    print("states", states)
+//                }
             }
         }
     }
