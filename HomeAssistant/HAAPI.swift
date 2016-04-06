@@ -14,6 +14,7 @@ import IKEventSource
 import SwiftLocation
 import CoreLocation
 import Whisper
+import AlamofireObjectMapper
 
 let prefs = NSUserDefaults.standardUserDefaults()
 
@@ -169,6 +170,22 @@ class HomeAssistantAPI: NSObject {
         return GET("config")
     }
     
+    func GetConfigMapped() -> Promise<ConfigResponse> {
+        let queryUrl = baseAPIURL+"config"
+        print("queryUrl", queryUrl)
+        return Promise { fulfill, reject in
+            self.manager!.request(.GET, queryUrl).responseObject { (response: Response<ConfigResponse, NSError>) in
+                switch response.result {
+                case .Success:
+                    fulfill(response.result.value!)
+                case .Failure(let error):
+                    print("Error on GET request:", error)
+                    reject(error)
+                }
+            }
+        }
+    }
+    
     func GetBootstrap() -> Promise<JSON> {
         return GET("bootstrap")
     }
@@ -181,16 +198,83 @@ class HomeAssistantAPI: NSObject {
         return GET("services")
     }
     
+    func GetServicesMapped() -> Promise<[ServicesResponse]> {
+        let queryUrl = baseAPIURL+"services"
+        print("queryUrl", queryUrl)
+        return Promise { fulfill, reject in
+            self.manager!.request(.GET, queryUrl).responseArray { (response: Response<[ServicesResponse], NSError>) in
+                switch response.result {
+                case .Success:
+                    fulfill(response.result.value!)
+                case .Failure(let error):
+                    print("Error on GET request:", error)
+                    reject(error)
+                }
+            }
+        }
+    }
+    
     func GetHistory() -> Promise<JSON> {
         return GET("history")
+    }
+    
+    func GetHistoryMapped() -> Promise<[HistoryResponse]> {
+        let queryUrl = baseAPIURL+"history/period/2016-4-4"
+        print("queryUrl", queryUrl)
+        return Promise { fulfill, reject in
+            self.manager!.request(.GET, queryUrl).responseArray { (response: Response<[HistoryResponse], NSError>) in
+                switch response.result {
+                case .Success:
+                    if let historyArray = response.result.value {
+                        print("HISTORYARRAY", historyArray)
+                        fulfill(historyArray)
+                    }
+                case .Failure(let error):
+                    print("Error on GET request:", error)
+                    reject(error)
+                }
+            }
+        }
     }
     
     func GetStates() -> Promise<JSON> {
         return GET("states")
     }
     
+    func GetStatesMapped() -> Promise<[Entity]> {
+        let queryUrl = baseAPIURL+"states"
+        print("queryUrl", queryUrl)
+        return Promise { fulfill, reject in
+            self.manager!.request(.GET, queryUrl).responseArray { (response: Response<[Entity], NSError>) in
+                switch response.result {
+                case .Success:
+                    fulfill(response.result.value!)
+                case .Failure(let error):
+                    print("Error on GET request:", error)
+                    reject(error)
+                }
+            }
+        }
+    }
+    
     func GetStateForEntityId(entityId: String) -> Promise<JSON> {
         return GET("states/"+entityId)
+    }
+    
+    func GetStateForEntityIdMapped(entityId: String) -> Promise<Entity> {
+        let queryUrl = baseAPIURL+"states/"+entityId
+        print("queryUrl", queryUrl)
+        return Promise { fulfill, reject in
+            self.manager!.request(.GET, queryUrl).responseObject { (response: Response<Entity, NSError>) in
+                switch response.result {
+                case .Success:
+                    fulfill(response.result.value!)
+                case .Failure(let error):
+                    print("Error on GET request:", error)
+                    reject(error)
+                }
+            }
+        }
     }
     
     func GetErrorLog() -> Promise<JSON> {

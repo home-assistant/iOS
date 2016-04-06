@@ -8,7 +8,6 @@
         <!--Root Tab Bar View Controller-->
         <scene sceneID="CLB-r5-47K">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="JYc-fT-8wv" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tabBarController id="T0M-BL-zKE" customClass="RootTabBarViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="TV9-X4-42P">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
@@ -16,6 +15,7 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                 </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="JYc-fT-8wv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="476" y="-741"/>
         </scene>

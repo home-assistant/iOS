@@ -51,6 +51,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     print("Found device_tracker in config components, starting location monitoring!")
                     self.APIClientSharedInstance!.trackLocation(self.prefs.stringForKey("deviceId")!)
                 }
+//                self.APIClientSharedInstance.GetHistoryMapped().then { history in
+//                    print("history", history)
+//                }
+                self.APIClientSharedInstance.GetStatesMapped().then { states in
+                    print("states", states)
+                }
             }
         }
     }

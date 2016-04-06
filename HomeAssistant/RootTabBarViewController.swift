@@ -17,8 +17,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        delegate = self
-
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)), name:"EntityStateChanged", object: nil)
     }
     
@@ -30,6 +28,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         
         let firstGroupView = GroupViewController()
         firstGroupView.title = "Loading..."
+        
         self.viewControllers = [firstGroupView]
         
         if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
@@ -95,10 +94,33 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     }
                     let icon = getIconForIdentifier(groupIcon, iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
                     groupView.tabBarItem = UITabBarItem(title: title, image: icon, tag: index)
+                    
+                    let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+                    
+                    let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+                    
+                    var rightBarItems : [UIBarButtonItem] = []
+                    
+                    rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: Selector("sendCurrentLocation")))
+                    
+                    rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: Selector("openMapView:")))
+                    
+                    groupView.navigationItem.setRightBarButtonItems(rightBarItems, animated: true)
+                    
                     let navController = UINavigationController(rootViewController: groupView)
+                    
                     tabViewControllers.append(navController)
                 }
+                let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+                
+                let settingsView = SettingsViewController()
+                settingsView.title = "Settings"
+                settingsView.tabBarItem = UITabBarItem(title: "Settings", image: settingsIcon, tag: 1)
+                
+                tabViewControllers.append(settingsView)
+                
                 self.viewControllers = tabViewControllers
+                
                 MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
             }
         } else {
@@ -110,9 +132,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 self.presentViewController(navController, animated: true, completion: nil)
             })
         }
-        let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
-        
-        self.moreNavigationController.topViewController!.navigationItem.leftBarButtonItem = UIBarButtonItem(image: settingsIcon, style: UIBarButtonItemStyle.Plain, target: self, action: #selector(RootTabBarViewController.openSettings(_:)))
     }
     
     func tabBarController(tabBarController: UITabBarController, shouldSelectViewController viewController: UIViewController) -> Bool {
@@ -124,19 +143,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    func openSettings(sender: UIBarButtonItem) {
-        let settingsView = SettingsViewController()
-        settingsView.title = "Settings"
-        settingsView.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(RootTabBarViewController.closeSettings(_:)))
-        let navController = UINavigationController(rootViewController: settingsView)
-        self.presentViewController(navController, animated: true, completion: nil)
-    }
-    
-    @IBAction func closeSettings(sender: UIBarButtonItem) {
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
-
     
     func StateChangedSSEEvent(notification: NSNotification){
         let json = JSON(notification.userInfo!)

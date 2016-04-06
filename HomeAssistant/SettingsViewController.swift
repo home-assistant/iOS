@@ -18,6 +18,10 @@ class SettingsViewController: FormViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        let aboutButton = UIBarButtonItem(title: "About", style: .Plain, target: self, action: Selector(""))
+        
+        self.navigationItem.rightBarButtonItem = aboutButton
+        
         form
             +++ Section(header: "Settings", footer: "Format should be protocol://hostname_or_ip:portnumber. NO slashes. Only provide a port number if not using 80/443. Examples: http://192.168.1.2:8123, https://demo.home-assistant.io.")
             <<< URLRow("baseURL") {

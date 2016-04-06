@@ -21,6 +21,29 @@
 		B657A91A1CA647C500121384 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
 		B6E1237B1CB1EBE100375722 /* SNSLambda.js in Resources */ = {isa = PBXBuildFile; fileRef = B6E1237A1CB1EBE100375722 /* SNSLambda.js */; };
 		B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E857A11CB1CCCC00F96925 /* Utils.swift */; };
+		B6F02BE91CB46AF40029ABE7 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BE81CB46AF40029ABE7 /* Entity.swift */; };
+		B6F02BEB1CB46D090029ABE7 /* GroupComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BEA1CB46D090029ABE7 /* GroupComponent.swift */; };
+		B6F02BEE1CB46EB10029ABE7 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BED1CB46EB10029ABE7 /* Status.swift */; };
+		B6F02BF01CB46EC70029ABE7 /* Bootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BEF1CB46EC70029ABE7 /* Bootstrap.swift */; };
+		B6F02BF21CB470570029ABE7 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF11CB470570029ABE7 /* Config.swift */; };
+		B6F02BF61CB4728D0029ABE7 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF51CB4728D0029ABE7 /* History.swift */; };
+		B6F02BFA1CB47F930029ABE7 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF91CB47F930029ABE7 /* Events.swift */; };
+		B6F02BFC1CB4800C0029ABE7 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BFB1CB4800C0029ABE7 /* Services.swift */; };
+		B6F02C0F1CB489770029ABE7 /* BinarySensorComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C001CB489770029ABE7 /* BinarySensorComponent.swift */; };
+		B6F02C101CB489770029ABE7 /* DeviceTrackerComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C011CB489770029ABE7 /* DeviceTrackerComponent.swift */; };
+		B6F02C111CB489770029ABE7 /* GarageDoorComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C021CB489770029ABE7 /* GarageDoorComponent.swift */; };
+		B6F02C121CB489770029ABE7 /* InputBooleanComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C031CB489770029ABE7 /* InputBooleanComponent.swift */; };
+		B6F02C131CB489770029ABE7 /* InputSelectComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C041CB489770029ABE7 /* InputSelectComponent.swift */; };
+		B6F02C141CB489770029ABE7 /* LightComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C051CB489770029ABE7 /* LightComponent.swift */; };
+		B6F02C151CB489770029ABE7 /* LockComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C061CB489770029ABE7 /* LockComponent.swift */; };
+		B6F02C161CB489770029ABE7 /* MediaPlayerComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C071CB489770029ABE7 /* MediaPlayerComponent.swift */; };
+		B6F02C171CB489770029ABE7 /* SceneComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C081CB489770029ABE7 /* SceneComponent.swift */; };
+		B6F02C181CB489770029ABE7 /* ScriptComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C091CB489770029ABE7 /* ScriptComponent.swift */; };
+		B6F02C191CB489770029ABE7 /* SensorComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C0A1CB489770029ABE7 /* SensorComponent.swift */; };
+		B6F02C1A1CB489770029ABE7 /* SunComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C0B1CB489770029ABE7 /* SunComponent.swift */; };
+		B6F02C1B1CB489770029ABE7 /* SwitchComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C0C1CB489770029ABE7 /* SwitchComponent.swift */; };
+		B6F02C1C1CB489770029ABE7 /* ThermostatComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C0D1CB489770029ABE7 /* ThermostatComponent.swift */; };
+		B6F02C1D1CB489770029ABE7 /* WeblinkComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C0E1CB489770029ABE7 /* WeblinkComponent.swift */; };
 		B6F7004A1CB34FA600753BAB /* GroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F700491CB34FA600753BAB /* GroupViewController.swift */; };
 		B6F700521CB374F700753BAB /* RootTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F700511CB374F700753BAB /* RootTabBarViewController.swift */; };
 /* End PBXBuildFile section */
@@ -66,6 +89,29 @@
 		B6E1237A1CB1EBE100375722 /* SNSLambda.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = SNSLambda.js; sourceTree = "<group>"; };
 		B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HomeAssistant-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		B6F02BE81CB46AF40029ABE7 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
+		B6F02BEA1CB46D090029ABE7 /* GroupComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupComponent.swift; sourceTree = "<group>"; };
+		B6F02BED1CB46EB10029ABE7 /* Status.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
+		B6F02BEF1CB46EC70029ABE7 /* Bootstrap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bootstrap.swift; sourceTree = "<group>"; };
+		B6F02BF11CB470570029ABE7 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		B6F02BF51CB4728D0029ABE7 /* History.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
+		B6F02BF91CB47F930029ABE7 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
+		B6F02BFB1CB4800C0029ABE7 /* Services.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
+		B6F02C001CB489770029ABE7 /* BinarySensorComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinarySensorComponent.swift; sourceTree = "<group>"; };
+		B6F02C011CB489770029ABE7 /* DeviceTrackerComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceTrackerComponent.swift; sourceTree = "<group>"; };
+		B6F02C021CB489770029ABE7 /* GarageDoorComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GarageDoorComponent.swift; sourceTree = "<group>"; };
+		B6F02C031CB489770029ABE7 /* InputBooleanComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputBooleanComponent.swift; sourceTree = "<group>"; };
+		B6F02C041CB489770029ABE7 /* InputSelectComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputSelectComponent.swift; sourceTree = "<group>"; };
+		B6F02C051CB489770029ABE7 /* LightComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightComponent.swift; sourceTree = "<group>"; };
+		B6F02C061CB489770029ABE7 /* LockComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LockComponent.swift; sourceTree = "<group>"; };
+		B6F02C071CB489770029ABE7 /* MediaPlayerComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPlayerComponent.swift; sourceTree = "<group>"; };
+		B6F02C081CB489770029ABE7 /* SceneComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneComponent.swift; sourceTree = "<group>"; };
+		B6F02C091CB489770029ABE7 /* ScriptComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptComponent.swift; sourceTree = "<group>"; };
+		B6F02C0A1CB489770029ABE7 /* SensorComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SensorComponent.swift; sourceTree = "<group>"; };
+		B6F02C0B1CB489770029ABE7 /* SunComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SunComponent.swift; sourceTree = "<group>"; };
+		B6F02C0C1CB489770029ABE7 /* SwitchComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchComponent.swift; sourceTree = "<group>"; };
+		B6F02C0D1CB489770029ABE7 /* ThermostatComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThermostatComponent.swift; sourceTree = "<group>"; };
+		B6F02C0E1CB489770029ABE7 /* WeblinkComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeblinkComponent.swift; sourceTree = "<group>"; };
 		B6F700491CB34FA600753BAB /* GroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupViewController.swift; sourceTree = "<group>"; };
 		B6F700511CB374F700753BAB /* RootTabBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootTabBarViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -140,6 +186,7 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
+				B6F02BE71CB4698A0029ABE7 /* Classes */,
 				B6E123791CB1EBB500375722 /* External */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				B6F700491CB34FA600753BAB /* GroupViewController.swift */,
@@ -182,6 +229,60 @@
 				B6E1237A1CB1EBE100375722 /* SNSLambda.js */,
 			);
 			name = External;
+			sourceTree = "<group>";
+		};
+		B6F02BE71CB4698A0029ABE7 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				B6F02C1E1CB4ABF30029ABE7 /* Row Types */,
+				B6F02BFF1CB4880C0029ABE7 /* Components */,
+				B6F02BEC1CB46E810029ABE7 /* HA API Responses */,
+				B6F02BE81CB46AF40029ABE7 /* Entity.swift */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		B6F02BEC1CB46E810029ABE7 /* HA API Responses */ = {
+			isa = PBXGroup;
+			children = (
+				B6F02BED1CB46EB10029ABE7 /* Status.swift */,
+				B6F02BEF1CB46EC70029ABE7 /* Bootstrap.swift */,
+				B6F02BF11CB470570029ABE7 /* Config.swift */,
+				B6F02BF51CB4728D0029ABE7 /* History.swift */,
+				B6F02BF91CB47F930029ABE7 /* Events.swift */,
+				B6F02BFB1CB4800C0029ABE7 /* Services.swift */,
+			);
+			name = "HA API Responses";
+			sourceTree = "<group>";
+		};
+		B6F02BFF1CB4880C0029ABE7 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				B6F02C001CB489770029ABE7 /* BinarySensorComponent.swift */,
+				B6F02C011CB489770029ABE7 /* DeviceTrackerComponent.swift */,
+				B6F02C021CB489770029ABE7 /* GarageDoorComponent.swift */,
+				B6F02BEA1CB46D090029ABE7 /* GroupComponent.swift */,
+				B6F02C031CB489770029ABE7 /* InputBooleanComponent.swift */,
+				B6F02C041CB489770029ABE7 /* InputSelectComponent.swift */,
+				B6F02C051CB489770029ABE7 /* LightComponent.swift */,
+				B6F02C061CB489770029ABE7 /* LockComponent.swift */,
+				B6F02C071CB489770029ABE7 /* MediaPlayerComponent.swift */,
+				B6F02C081CB489770029ABE7 /* SceneComponent.swift */,
+				B6F02C091CB489770029ABE7 /* ScriptComponent.swift */,
+				B6F02C0A1CB489770029ABE7 /* SensorComponent.swift */,
+				B6F02C0B1CB489770029ABE7 /* SunComponent.swift */,
+				B6F02C0C1CB489770029ABE7 /* SwitchComponent.swift */,
+				B6F02C0D1CB489770029ABE7 /* ThermostatComponent.swift */,
+				B6F02C0E1CB489770029ABE7 /* WeblinkComponent.swift */,
+			);
+			name = Components;
+			sourceTree = "<group>";
+		};
+		B6F02C1E1CB4ABF30029ABE7 /* Row Types */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Row Types";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -397,12 +498,35 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6F7004A1CB34FA600753BAB /* GroupViewController.swift in Sources */,
+				B6F02BE91CB46AF40029ABE7 /* Entity.swift in Sources */,
+				B6F02C1A1CB489770029ABE7 /* SunComponent.swift in Sources */,
+				B6F02C1C1CB489770029ABE7 /* ThermostatComponent.swift in Sources */,
+				B6F02C151CB489770029ABE7 /* LockComponent.swift in Sources */,
+				B6F02C131CB489770029ABE7 /* InputSelectComponent.swift in Sources */,
+				B6F02BF61CB4728D0029ABE7 /* History.swift in Sources */,
+				B6F02C181CB489770029ABE7 /* ScriptComponent.swift in Sources */,
+				B6F02C161CB489770029ABE7 /* MediaPlayerComponent.swift in Sources */,
 				B6393F8C1CB260E800503916 /* EntityAttributesViewController.swift in Sources */,
+				B6F02BEB1CB46D090029ABE7 /* GroupComponent.swift in Sources */,
 				B6F700521CB374F700753BAB /* RootTabBarViewController.swift in Sources */,
 				B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */,
+				B6F02BF21CB470570029ABE7 /* Config.swift in Sources */,
+				B6F02BEE1CB46EB10029ABE7 /* Status.swift in Sources */,
+				B6F02C1D1CB489770029ABE7 /* WeblinkComponent.swift in Sources */,
 				B657A8EE1CA646EB00121384 /* SettingsViewController.swift in Sources */,
+				B6F02BFC1CB4800C0029ABE7 /* Services.swift in Sources */,
+				B6F02BF01CB46EC70029ABE7 /* Bootstrap.swift in Sources */,
+				B6F02BFA1CB47F930029ABE7 /* Events.swift in Sources */,
+				B6F02C0F1CB489770029ABE7 /* BinarySensorComponent.swift in Sources */,
+				B6F02C121CB489770029ABE7 /* InputBooleanComponent.swift in Sources */,
+				B6F02C101CB489770029ABE7 /* DeviceTrackerComponent.swift in Sources */,
+				B6F02C191CB489770029ABE7 /* SensorComponent.swift in Sources */,
+				B6F02C141CB489770029ABE7 /* LightComponent.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
+				B6F02C171CB489770029ABE7 /* SceneComponent.swift in Sources */,
 				B657A91A1CA647C500121384 /* HAAPI.swift in Sources */,
+				B6F02C1B1CB489770029ABE7 /* SwitchComponent.swift in Sources */,
+				B6F02C111CB489770029ABE7 /* GarageDoorComponent.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
