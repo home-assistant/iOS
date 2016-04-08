@@ -30,6 +30,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let configuration = AWSServiceConfiguration(region:.USWest2, credentialsProvider:credentialsProvider)
         
         AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
+    
+//        let discovery = Discovery()
+//    
+//        let queue = dispatch_queue_create("io.robbie.homeassistant", nil);
+//        dispatch_async(queue) { () -> Void in
+//            NSLog("Starting discovery")
+//            discovery.stop()
+//            discovery.start()
+//            sleep(10)
+//            NSLog("Stopping discovery")
+//            discovery.stop()
+//        }
         
         initAPI()
         
@@ -39,7 +51,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func initAPI() {
         if let baseURL = prefs.stringForKey("baseURL") {
             print("BaseURL is", baseURL)
-            APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: prefs.stringForKey("apiPassword")!)
+            var apiPass = ""
+            if let pass = prefs.stringForKey("apiPassword") {
+                apiPass = pass
+            }
+            APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: apiPass)
             APIClientSharedInstance!.GetConfig().then { config -> Void in
                 self.prefs.setValue(config["location_name"].stringValue, forKey: "location_name")
                 self.prefs.setValue(config["latitude"].doubleValue, forKey: "latitude")
