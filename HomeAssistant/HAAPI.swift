@@ -56,8 +56,8 @@ class HomeAssistantAPI: NSObject {
         }
         
         eventSource.onError { (error) in
-            Whistle(Murmur(title: "SSE Error! \(error?.description)"))
-            print("SSE: Error", error)
+            Whistle(Murmur(title: "SSE Error! \(error?.localizedDescription)"))
+            print("SSE: Error", error?.localizedDescription)
         }
 
         eventSource.onMessage { (id, event, data) in
