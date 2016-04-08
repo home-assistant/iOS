@@ -105,7 +105,6 @@ class HomeAssistantAPI: NSObject {
     }
     
     func trackLocation(deviceId: String) {
-        UIDevice.currentDevice().batteryMonitoringEnabled = true
         do {
             try SwiftLocation.shared.significantLocation({ (location) -> Void in
                 self.submitLocation("Significant location change detected", deviceId: deviceId, latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, accuracy: location!.horizontalAccuracy, locationName: "")
@@ -131,6 +130,24 @@ class HomeAssistantAPI: NSObject {
             print("Error when setting up home region location monitoring")
         }
 
+    }
+    
+    func sendOneshotLocation() -> Promise<Bool> {
+        return Promise { fulfill, reject in
+            if let deviceId = prefs.stringForKey("deviceId") {
+                do {
+                    try SwiftLocation.shared.currentLocation(Accuracy.Neighborhood, timeout: 20, onSuccess: { (location) -> Void in
+                        self.submitLocation("One off location update requested", deviceId: deviceId, latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, accuracy: location!.horizontalAccuracy, locationName: "")
+                        fulfill(true)
+                    }) { (error) -> Void in
+                        print("Error when trying to get a oneshot location!", error)
+                        reject(error!)
+                    }
+                } catch {
+                    print("Error when getting a oneshot location!")
+                }
+            }
+        }
     }
     
     func GET(url:String) -> Promise<JSON> {

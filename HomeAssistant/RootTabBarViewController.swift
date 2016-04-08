@@ -101,7 +101,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     
                     var rightBarItems : [UIBarButtonItem] = []
                     
-                    rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: Selector("sendCurrentLocation")))
+                    rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
                     
                     rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
                     
@@ -163,6 +163,22 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         devicesMapView.title = "All Devices"
         let navController = UINavigationController(rootViewController: devicesMapView)
         self.presentViewController(navController, animated: true, completion: nil)
+    }
+    
+    func sendCurrentLocation(sender: UIButton) {
+        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.sendOneshotLocation().then { success -> Void in
+                print("Did succeed?", success)
+                let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
+            }.error { error in
+                let nserror = error as NSError
+                let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
+        }
     }
     
     /*
