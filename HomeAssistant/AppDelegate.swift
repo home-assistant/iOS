@@ -12,6 +12,18 @@ import Fabric
 import Crashlytics
 import PermissionScope
 import SwiftyJSON
+import RealmSwift
+
+let realmConfig = Realm.Configuration(
+    schemaVersion: 1,
+    
+    migrationBlock: { migration, oldSchemaVersion in
+        if (oldSchemaVersion < 1) {
+        }
+})
+
+let realm = try! Realm(configuration: realmConfig)
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -23,6 +35,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let prefs = NSUserDefaults.standardUserDefaults()
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        Realm.Configuration.defaultConfiguration = realmConfig
+        print("Realm file path", Realm.Configuration.defaultConfiguration.path!)
         Fabric.with([Crashlytics.self])
         
         let credentialsProvider = AWSCognitoCredentialsProvider(regionType:.USEast1, identityPoolId:"us-east-1:2b1692f3-c9d3-4d81-b7e9-83cd084f3a59")
@@ -73,6 +87,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                self.APIClientSharedInstance.GetStatesMapped().then { states in
 //                    print("states", states)
 //                }
+            }
+            self.APIClientSharedInstance.GetStatesMapped().then { states in
+                print("states", states)
             }
         }
     }

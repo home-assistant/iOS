@@ -39,6 +39,11 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (3.1.0):
     - PromiseKit/CorePromise
+  - Realm (0.98.6):
+    - Realm/Headers (= 0.98.6)
+  - Realm/Headers (0.98.6)
+  - RealmSwift (0.98.6):
+    - Realm (= 0.98.6)
   - SwiftLocation (0.2.0)
   - SwiftyJSON (2.3.2)
   - Whisper (2.1)
@@ -60,6 +65,7 @@ DEPENDENCIES:
   - ObjectMapper (~> 1.2)
   - PermissionScope
   - PromiseKit
+  - RealmSwift
   - SwiftLocation
   - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
   - Whisper
@@ -102,6 +108,8 @@ SPEC CHECKSUMS:
   OMGHTTPURLRQ: 633f98ee745aeda02345935a52eec1784cddb589
   PermissionScope: 860828c5516d349b6f49e5491799cfef33c5ccc7
   PromiseKit: 7ed2a3fc5217695305a55a8c47cb3a17ff5fde0d
+  Realm: 44803f35418c5d89b27825a564247fcd190de37e
+  RealmSwift: c7239c52c83f8c43525a5269ba7be1694da33afc
   SwiftLocation: ea78ae4a822581bde7379d98c8513273723c8840
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
   Whisper: 18b574de21a089c0d664b115f26e0d9ccbbadbab

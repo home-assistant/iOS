@@ -8,20 +8,22 @@
 
 import Foundation
 import ObjectMapper
+import RealmSwift
 
-class Entity: MappableCluster {
-    var ID: String?
-    var Domain: String?
-    var State: String?
-    var Attributes: [String : AnyObject] = [:]
-    var FriendlyName: String?
-    var Hidden: Bool?
-    var Icon: String?
-    var Picture: String?
-    var LastChanged: NSDate?
-    var LastUpdated: NSDate?
+class Entity: Object, MappableCluster {
+    dynamic var ID: String? = nil
+    dynamic var Domain: String? = nil
+    dynamic var State: String? = nil
+//    private dynamic var attributesData: NSData?
+    dynamic var Attributes: [String:AnyObject] = [:]
+    dynamic var FriendlyName: String? = nil
+    dynamic var Hidden = false
+    dynamic var Icon: String? = nil
+    dynamic var Picture: String? = nil
+    dynamic var LastChanged: NSDate? = nil
+    dynamic var LastUpdated: NSDate? = nil
     
-    static func objectForMapping(map: Map) -> Mappable? {
+    class func objectForMapping(map: Map) -> Mappable? {
         if let entityId: String = map["entity_id"].value() {
             let entityType = getEntityType(entityId)
             switch entityType {
@@ -65,8 +67,8 @@ class Entity: MappableCluster {
         return nil
     }
     
-    required init?(_ map: Map) {
-        
+    required convenience init?(_ map: Map) {
+        self.init()
     }
     
     func mapping(map: Map) {
@@ -80,6 +82,14 @@ class Entity: MappableCluster {
         Picture       <- map["attributes.entity_picture"]
         LastChanged   <- (map["last_changed"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
         LastUpdated   <- (map["last_updated"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
+    }
+    
+    override class func ignoredProperties() -> [String] {
+        return ["Attributes"]
+    }
+    
+    override static func primaryKey() -> String? {
+        return "ID"
     }
     
 }

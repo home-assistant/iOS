@@ -19,6 +19,7 @@ target 'HomeAssistant' do
   pod 'ObjectMapper', '~> 1.2'
   pod 'PermissionScope'
   pod 'PromiseKit'
+  pod 'RealmSwift'
   pod 'SwiftLocation'
   pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
   pod 'Whisper'

@@ -16,7 +16,11 @@ class Light: Entity {
     var RGBColor: [Int]?
     
     required init?(_ map: Map) {
-        super.init(map)
+        super.init(value: map)
+    }
+    
+    required init() {
+        super.init()
     }
     
     override func mapping(map: Map) {
