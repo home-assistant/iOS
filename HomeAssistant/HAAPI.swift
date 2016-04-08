@@ -22,23 +22,33 @@ class HomeAssistantAPI: NSObject {
     
     let manager:Alamofire.Manager?
     
-    var baseAPIURL : String = "https://homeassistant.thegrand.systems/api/"
-    var apiPassword : String = "thegrand1212"
+    var baseAPIURL : String = ""
+    var apiPassword : String = ""
     
     var mostRecentlySentMessage : String = String()
+    
+    var services = [NSNetService]()
     
     init(baseAPIUrl: String, APIPassword: String) {
         baseAPIURL = baseAPIUrl+"/api/"
         apiPassword = APIPassword
         var defaultHeaders = Alamofire.Manager.sharedInstance.session.configuration.HTTPAdditionalHeaders ?? [:]
-        defaultHeaders["X-HA-Access"] = apiPassword
+        if apiPassword != "" {
+            defaultHeaders["X-HA-Access"] = apiPassword
+        }
         
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         configuration.HTTPAdditionalHeaders = defaultHeaders
         
         self.manager = Alamofire.Manager(configuration: configuration)
         
-        let eventSource: EventSource = EventSource(url: baseAPIURL+"stream", headers: ["X-HA-Access": apiPassword])
+        var sseHeaders : [String:String] = [:]
+        
+        if apiPassword != "" {
+            sseHeaders["X-HA-Access"] = apiPassword
+        }
+        
+        let eventSource: EventSource = EventSource(url: baseAPIURL+"stream", headers: sseHeaders)
         
         eventSource.onOpen {
             print("SSE: Connection Opened")
