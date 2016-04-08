@@ -12,6 +12,7 @@ import FontAwesomeKit
 import Alamofire
 import PromiseKit
 import Haneke
+import Crashlytics
 
 func delay(delay:Double, closure:()->()) {
     dispatch_after(
@@ -256,6 +257,7 @@ func getEntityPicture(entityPictureURL: String) -> Promise<UIImage> {
 func generateIconForEntity(entity: SwiftyJSON.JSON) -> UIImage {
     let entityType = getEntityType(entity["entity_id"].stringValue)
     let iconName = stateIcon(entity)
+    Crashlytics.sharedInstance().setObjectValue(iconName, forKey: "iconName")
     var color = colorWithHexString("#44739E", alpha: 1)
     if (entityType == "light" || entityType == "switch" || entityType == "binary_sensor" || entityType == "sun") && (entity["state"].stringValue == "on" || entity["state"].stringValue == "above_horizon") {
         color = colorWithHexString("#DCC91F", alpha: 1)
