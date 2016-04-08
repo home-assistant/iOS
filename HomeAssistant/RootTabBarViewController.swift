@@ -103,7 +103,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     
                     rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: Selector("sendCurrentLocation")))
                     
-                    rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: Selector("openMapView:")))
+                    rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
                     
                     groupView.navigationItem.setRightBarButtonItems(rightBarItems, animated: true)
                     
@@ -158,6 +158,13 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 //        Shout(announcement, to: self.navigationController!)
     }
 
+    func openMapView(sender: UIButton) {
+        let devicesMapView = DevicesMapViewController()
+        devicesMapView.title = "All Devices"
+        let navController = UINavigationController(rootViewController: devicesMapView)
+        self.presentViewController(navController, animated: true, completion: nil)
+    }
+    
     /*
     // MARK: - Navigation
 
