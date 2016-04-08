@@ -8,16 +8,21 @@
 
 import Foundation
 import ObjectMapper
+import RealmSwift
 
 class Switch: SwitchableEntity {
     
-    var Location: String?
-    var NodeID: String?
-    var TodayMilliwattHours: Int?
-    var CurrentPowerMilliwattHours: Int?
+    dynamic var Location: String? = nil
+    dynamic var NodeID: String? = nil
+    var TodayMilliwattHours = RealmOptional<Int>()
+    var CurrentPowerMilliwattHours = RealmOptional<Int>()
     
     required init?(_ map: Map) {
-        super.init(map)
+        super.init(value: map)
+    }
+    
+    required init() {
+        super.init()
     }
     
     override func mapping(map: Map) {

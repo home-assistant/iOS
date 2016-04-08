@@ -12,6 +12,17 @@ import Fabric
 import Crashlytics
 import DeviceKit
 import PromiseKit
+import RealmSwift
+
+let realmConfig = Realm.Configuration(
+    schemaVersion: 1,
+    
+    migrationBlock: { migration, oldSchemaVersion in
+        if (oldSchemaVersion < 1) {
+        }
+})
+
+let realm = try! Realm(configuration: realmConfig)
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,6 +32,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let prefs = NSUserDefaults.standardUserDefaults()
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        Realm.Configuration.defaultConfiguration = realmConfig
+        print("Realm file path", Realm.Configuration.defaultConfiguration.path!)
         Fabric.with([Crashlytics.self])
         
         AWSLogger.defaultLogger().logLevel = .Info
@@ -55,6 +68,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let navController = UINavigationController(rootViewController: settingsView)
                 self.window?.makeKeyAndVisible()
                 self.window?.rootViewController!.presentViewController(navController, animated: true, completion: nil)
+            }
+            self.APIClientSharedInstance.GetStatesMapped().then { states in
+                print("states", states)
             }
         }
     }

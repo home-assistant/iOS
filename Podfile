@@ -23,6 +23,7 @@ target 'HomeAssistant' do
   pod 'PermissionScope'
   pod 'PromiseKit'
   pod 'SwiftDate'
+  pod 'RealmSwift'
   pod 'SwiftLocation'
   pod 'Whisper'
 end

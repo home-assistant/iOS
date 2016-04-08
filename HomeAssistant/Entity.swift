@@ -8,24 +8,25 @@
 
 import Foundation
 import ObjectMapper
+import RealmSwift
 
-class Entity: StaticMappable {
+class Entity: Object, StaticMappable {
     let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
     
-    var ID: String = ""
-    var Domain: String = ""
-    var State: String = ""
-    var Attributes: [String : AnyObject] = [:]
-    var FriendlyName: String?
-    var Hidden: Bool = false
-    var Icon: String?
-    var MobileIcon: String?
-    var Picture: String?
+    dynamic var ID: String? = nil
+    dynamic var Domain: String? = nil
+    dynamic var State: String? = nil
+    dynamic var Attributes: [String:AnyObject] = [:]
+    dynamic var FriendlyName: String? = nil
+    dynamic var Hidden = false
+    dynamic var Icon: String? = nil
+    dynamic var MobileIcon: String? = nil
+    dynamic var Picture: String? = nil
     var DownloadedPicture: UIImage?
-    var LastChanged: NSDate?
-    var LastUpdated: NSDate?
+    dynamic var LastChanged: NSDate? = nil
+    dynamic var LastUpdated: NSDate? = nil
     
-    static func objectForMapping(map: Map) -> Mappable? {
+    class func objectForMapping(map: Map) -> Mappable? {
         if let entityId: String = map["entity_id"].value() {
             let entityType = EntityIDToDomainTransform().transformFromJSON(entityId)!
             switch entityType {
@@ -79,7 +80,7 @@ class Entity: StaticMappable {
     }
     
     required init?(_ map: Map) {
-        
+        self.init()
     }
     
     func mapping(map: Map) {
@@ -212,6 +213,15 @@ class Entity: StaticMappable {
         if self.Icon != nil { icon = self.Icon! }
         return getIconForIdentifier(icon, iconWidth: 30, iconHeight: 30, color: EntityColor())
     }
+
+    override class func ignoredProperties() -> [String] {
+        return ["Attributes"]
+    }
+    
+    override static func primaryKey() -> String? {
+        return "ID"
+    }
+    
 }
 
 public class EntityIDToDomainTransform: TransformType {
