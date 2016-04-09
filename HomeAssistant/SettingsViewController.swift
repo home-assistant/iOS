@@ -18,9 +18,9 @@ class SettingsViewController: FormViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let aboutButton = UIBarButtonItem(title: "About", style: .Plain, target: self, action: Selector(""))
-        
-        self.navigationItem.rightBarButtonItem = aboutButton
+//        let aboutButton = UIBarButtonItem(title: "About", style: .Plain, target: self, action: Selector(""))
+//        
+//        self.navigationItem.rightBarButtonItem = aboutButton
         
         form
             +++ Section(header: "Settings", footer: "Format should be protocol://hostname_or_ip:portnumber. NO slashes. Only provide a port number if not using 80/443. Examples: http://192.168.1.2:8123, https://demo.home-assistant.io.")
@@ -46,15 +46,21 @@ class SettingsViewController: FormViewController {
                 }
                 $0.placeholder = "iphone"
             }
+            <<< SwitchRow("allowAllGroups") {
+                $0.title = "Show all groups"
+                $0.value = prefs.boolForKey("allowAllGroups")
+            }
             <<< ButtonRow() {
                 $0.title = "Save"
             }.onCellSelection {_,_ in 
                 let urlRow: URLRow? = self.form.rowByTag("baseURL")
                 let apiPasswordRow: PasswordRow? = self.form.rowByTag("apiPassword")
                 let deviceIdRow: TextRow? = self.form.rowByTag("deviceId")
+                let allowAllGroupsRow: SwitchRow? = self.form.rowByTag("allowAllGroups")
                 self.prefs.setValue(urlRow!.value!.absoluteString, forKey: "baseURL")
                 self.prefs.setValue(apiPasswordRow!.value!, forKey: "apiPassword")
                 self.prefs.setValue(deviceIdRow!.value!, forKey: "deviceId")
+                self.prefs.setBool(allowAllGroupsRow!.value!, forKey: "allowAllGroups")
                 let pscope = PermissionScope()
                 
                 pscope.addPermission(NotificationsPermission(notificationCategories: nil),

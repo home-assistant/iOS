@@ -10,13 +10,14 @@ import Foundation
 import ObjectMapper
 
 class Entity: MappableCluster {
-    var ID: String?
-    var Domain: String?
-    var State: String?
+    var ID: String = ""
+    var Domain: String = ""
+    var State: String = ""
     var Attributes: [String : AnyObject] = [:]
     var FriendlyName: String?
-    var Hidden: Bool?
+    var Hidden: Bool = false
     var Icon: String?
+    var MobileIcon: String?
     var Picture: String?
     var LastChanged: NSDate?
     var LastUpdated: NSDate?
@@ -77,9 +78,26 @@ class Entity: MappableCluster {
         FriendlyName  <- map["attributes.friendly_name"]
         Hidden        <- map["attributes.hidden"]
         Icon          <- map["attributes.icon"]
+        MobileIcon    <- map["attributes.mobile_icon"]
         Picture       <- map["attributes.entity_picture"]
         LastChanged   <- (map["last_changed"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
         LastUpdated   <- (map["last_updated"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
+    }
+    
+    func turnOn() {
+        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.turnOnEntity(self)
+        }
+    }
+    func turnOff() {
+        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.turnOffEntity(self)
+        }
+    }
+    func toggle() {
+        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.toggleEntity(self)
+        }
     }
     
 }

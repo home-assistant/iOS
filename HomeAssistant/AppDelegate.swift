@@ -11,7 +11,6 @@ import AWSSNS
 import Fabric
 import Crashlytics
 import PermissionScope
-import SwiftyJSON
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -57,22 +56,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: apiPass)
             APIClientSharedInstance!.GetConfig().then { config -> Void in
-                self.prefs.setValue(config["location_name"].stringValue, forKey: "location_name")
-                self.prefs.setValue(config["latitude"].doubleValue, forKey: "latitude")
-                self.prefs.setValue(config["longitude"].doubleValue, forKey: "longitude")
-                self.prefs.setValue(config["temperature_unit"].stringValue, forKey: "temperature_unit")
-                self.prefs.setValue(config["time_zone"].stringValue, forKey: "time_zone")
-                self.prefs.setValue(config["version"].stringValue, forKey: "version")
-                if PermissionScope().statusLocationAlways() == .Authorized && config["components"].arrayValue.contains("device_tracker") {
+                self.prefs.setValue(config.LocationName, forKey: "location_name")
+                self.prefs.setValue(config.Latitude, forKey: "latitude")
+                self.prefs.setValue(config.Longitude, forKey: "longitude")
+                self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
+                self.prefs.setValue(config.Timezone, forKey: "time_zone")
+                self.prefs.setValue(config.Version, forKey: "version")
+                if PermissionScope().statusLocationAlways() == .Authorized && config.Components!.contains("device_tracker") {
                     print("Found device_tracker in config components, starting location monitoring!")
                     self.APIClientSharedInstance!.trackLocation(self.prefs.stringForKey("deviceId")!)
                 }
-//                self.APIClientSharedInstance.GetHistoryMapped().then { history in
-//                    print("history", history)
-//                }
-//                self.APIClientSharedInstance.GetStatesMapped().then { states in
-//                    print("states", states)
-//                }
             }
         }
     }

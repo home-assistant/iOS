@@ -15,6 +15,8 @@
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
 		B6393F8C1CB260E800503916 /* EntityAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */; };
+		B64D047A1CB8908B00B945C8 /* StateChanged.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D04791CB8908B00B945C8 /* StateChanged.swift */; };
+		B64D047D1CB8916300B945C8 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D047C1CB8916300B945C8 /* Event.swift */; };
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
 		B657A8EE1CA646EB00121384 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8ED1CA646EB00121384 /* SettingsViewController.swift */; };
 		B657A8F11CA646EB00121384 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8EF1CA646EB00121384 /* Main.storyboard */; };
@@ -80,6 +82,8 @@
 		B6393F851CB255F200503916 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
 		B6393F871CB2561100503916 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityAttributesViewController.swift; sourceTree = "<group>"; };
+		B64D04791CB8908B00B945C8 /* StateChanged.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateChanged.swift; sourceTree = "<group>"; };
+		B64D047C1CB8916300B945C8 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		B657A8E61CA646EB00121384 /* HomeAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B657A8ED1CA646EB00121384 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -178,6 +182,15 @@
 			name = SwitchWithInfoButton;
 			sourceTree = "<group>";
 		};
+		B64D047B1CB8915500B945C8 /* SSE */ = {
+			isa = PBXGroup;
+			children = (
+				B64D04791CB8908B00B945C8 /* StateChanged.swift */,
+				B64D047C1CB8916300B945C8 /* Event.swift */,
+			);
+			name = SSE;
+			sourceTree = "<group>";
+		};
 		B657A8DD1CA646EB00121384 = {
 			isa = PBXGroup;
 			children = (
@@ -264,6 +277,7 @@
 		B6F02BEC1CB46E810029ABE7 /* HA API Responses */ = {
 			isa = PBXGroup;
 			children = (
+				B64D047B1CB8915500B945C8 /* SSE */,
 				B6F02BED1CB46EB10029ABE7 /* Status.swift */,
 				B6F02BEF1CB46EC70029ABE7 /* Bootstrap.swift */,
 				B6F02BF11CB470570029ABE7 /* Config.swift */,
@@ -531,6 +545,7 @@
 				B6F02BEB1CB46D090029ABE7 /* GroupComponent.swift in Sources */,
 				B60B35BA1CB6019B00887BE1 /* SwitchWithInfoButton.swift in Sources */,
 				B6F700521CB374F700753BAB /* RootTabBarViewController.swift in Sources */,
+				B64D047A1CB8908B00B945C8 /* StateChanged.swift in Sources */,
 				B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */,
 				B6F02BF21CB470570029ABE7 /* Config.swift in Sources */,
 				B6F02BEE1CB46EB10029ABE7 /* Status.swift in Sources */,
@@ -545,6 +560,7 @@
 				B6F02C191CB489770029ABE7 /* SensorComponent.swift in Sources */,
 				B6F02C141CB489770029ABE7 /* LightComponent.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
+				B64D047D1CB8916300B945C8 /* Event.swift in Sources */,
 				B6F02C171CB489770029ABE7 /* SceneComponent.swift in Sources */,
 				B657A91A1CA647C500121384 /* HAAPI.swift in Sources */,
 				B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */,

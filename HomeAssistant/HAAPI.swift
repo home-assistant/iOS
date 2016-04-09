@@ -15,6 +15,7 @@ import SwiftLocation
 import CoreLocation
 import Whisper
 import AlamofireObjectMapper
+import ObjectMapper
 
 let prefs = NSUserDefaults.standardUserDefaults()
 
@@ -61,16 +62,15 @@ class HomeAssistantAPI: NSObject {
         }
 
         eventSource.onMessage { (id, event, data) in
-            if let dataFromString = data!.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
-                let json = JSON(data: dataFromString)
-                switch json["event_type"] {
+            if let event = Mapper<SSEEvent>().map(data) {
+                let JSONString = Mapper().toJSONString(event, prettyPrint: false)
+                let jsonDict : [NSObject:AnyObject] = ["jsonObject": JSONString!]
+                switch event.Type {
                 case "state_changed":
-                    NSNotificationCenter.defaultCenter().postNotificationName("EntityStateChanged", object: nil, userInfo: json.object as? [NSObject : AnyObject])
-                    
+                    NSNotificationCenter.defaultCenter().postNotificationName("EntityStateChanged", object: nil, userInfo: jsonDict)
                 default:
-                    print("unknown event type!! SSE event is \(event!) and event_type is", json["event_type"])
+                    print("unknown event_type:", event.Type)
                 }
-                
             }
         }
     }
@@ -189,17 +189,23 @@ class HomeAssistantAPI: NSObject {
         }
     }
     
-    func GetStatus() -> Promise<JSON> {
-        return GET("")
-    }
-    
-    func GetConfig() -> Promise<JSON> {
-        return GET("config")
-    }
-    
-    func GetConfigMapped() -> Promise<ConfigResponse> {
+    func GetStatus() -> Promise<StatusResponse> {
         let queryUrl = baseAPIURL+"config"
-        print("queryUrl", queryUrl)
+        return Promise { fulfill, reject in
+            self.manager!.request(.GET, queryUrl).responseObject { (response: Response<StatusResponse, NSError>) in
+                switch response.result {
+                case .Success:
+                    fulfill(response.result.value!)
+                case .Failure(let error):
+                    print("Error on GET request:", error)
+                    reject(error)
+                }
+            }
+        }
+    }
+    
+    func GetConfig() -> Promise<ConfigResponse> {
+        let queryUrl = baseAPIURL+"config"
         return Promise { fulfill, reject in
             self.manager!.request(.GET, queryUrl).responseObject { (response: Response<ConfigResponse, NSError>) in
                 switch response.result {
@@ -221,13 +227,8 @@ class HomeAssistantAPI: NSObject {
         return GET("events")
     }
     
-    func GetServices() -> Promise<JSON> {
-        return GET("services")
-    }
-    
-    func GetServicesMapped() -> Promise<[ServicesResponse]> {
+    func GetServices() -> Promise<[ServicesResponse]> {
         let queryUrl = baseAPIURL+"services"
-        print("queryUrl", queryUrl)
         return Promise { fulfill, reject in
             self.manager!.request(.GET, queryUrl).responseArray { (response: Response<[ServicesResponse], NSError>) in
                 switch response.result {
@@ -247,7 +248,6 @@ class HomeAssistantAPI: NSObject {
     
     func GetHistoryMapped() -> Promise<[HistoryResponse]> {
         let queryUrl = baseAPIURL+"history/period/2016-4-4"
-        print("queryUrl", queryUrl)
         return Promise { fulfill, reject in
             self.manager!.request(.GET, queryUrl).responseArray { (response: Response<[HistoryResponse], NSError>) in
                 switch response.result {
@@ -264,13 +264,8 @@ class HomeAssistantAPI: NSObject {
         }
     }
     
-    func GetStates() -> Promise<JSON> {
-        return GET("states")
-    }
-    
-    func GetStatesMapped() -> Promise<[Entity]> {
+    func GetStates() -> Promise<[Entity]> {
         let queryUrl = baseAPIURL+"states"
-        print("queryUrl", queryUrl)
         return Promise { fulfill, reject in
             self.manager!.request(.GET, queryUrl).responseArray { (response: Response<[Entity], NSError>) in
                 switch response.result {
@@ -290,7 +285,6 @@ class HomeAssistantAPI: NSObject {
     
     func GetStateForEntityIdMapped(entityId: String) -> Promise<Entity> {
         let queryUrl = baseAPIURL+"states/"+entityId
-        print("queryUrl", queryUrl)
         return Promise { fulfill, reject in
             self.manager!.request(.GET, queryUrl).responseObject { (response: Response<Entity, NSError>) in
                 switch response.result {
@@ -319,7 +313,7 @@ class HomeAssistantAPI: NSObject {
     }
     
     func CallService(domain: String, service: String, serviceData: [String:AnyObject]) -> Promise<JSON> {
-        Whistle(Murmur(title: domain+"/"+service+" called"))
+//        Whistle(Murmur(title: domain+"/"+service+" called"))
         return POST("services/"+domain+"/"+service, parameters: serviceData)
     }
     
@@ -328,13 +322,40 @@ class HomeAssistantAPI: NSObject {
         return CallService("homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
     }
     
+    func turnOnEntity(entity: Entity) -> Promise<JSON> {
+        var title = entity.ID
+        if let friendlyName = entity.FriendlyName {
+            title = friendlyName
+        }
+        Whistle(Murmur(title: title+" turned on"))
+        return CallService("homeassistant", service: "turn_on", serviceData: ["entity_id": entity.ID])
+    }
+    
     func turnOff(entityId: String) -> Promise<JSON> {
         Whistle(Murmur(title: entityId+" turned off"))
         return CallService("homeassistant", service: "turn_off", serviceData: ["entity_id": entityId])
     }
     
+    func turnOffEntity(entity: Entity) -> Promise<JSON> {
+        var title = entity.ID
+        if let friendlyName = entity.FriendlyName {
+            title = friendlyName
+        }
+        Whistle(Murmur(title: title+" turned off"))
+        return CallService("homeassistant", service: "turn_off", serviceData: ["entity_id": entity.ID])
+    }
+    
     func toggle(entityId: String) -> Promise<JSON> {
         Whistle(Murmur(title: entityId+" toggled"))
         return CallService("homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
+    }
+    
+    func toggleEntity(entity: Entity) -> Promise<JSON> {
+        var title = entity.ID
+        if let friendlyName = entity.FriendlyName {
+            title = friendlyName
+        }
+        Whistle(Murmur(title: title+" toggled"))
+        return CallService("homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
 }
