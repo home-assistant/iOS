@@ -388,5 +388,29 @@ class HomeAssistantAPI: NSObject {
         let deviceContainer : [String : AnyObject] = ["device": deviceInfo, "pushToken": pushToken, "app": appInfo]
         return POST("ios/identify", parameters: deviceContainer)
     }
+    
+    func getImage(imageUrl: String) -> Promise<UIImage> {
+        var url = imageUrl
+        if url.containsString("/local/") || url.containsString("/api/") {
+            if let baseURL = prefs.stringForKey("baseURL") {
+                url = baseURL+url
+            }
+        }
+        return Promise { fulfill, reject in
+            self.manager!.request(.GET, url).responseImage { response in
+                switch response.result {
+                case .Success:
+                    if let value = response.result.value {
+                        fulfill(value)
+                    } else {
+                        print("Response was not an image!", response)
+                    }
+                case .Failure(let error):
+                    print("Error on GET image request to \(url):", error)
+                    reject(error)
+                }
+            }
+        }
+    }
 
 }
