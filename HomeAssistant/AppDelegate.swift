@@ -55,6 +55,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 apiPass = pass
             }
             APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: apiPass)
+            APIClientSharedInstance.identifyDevice().then { ident -> Void in
+                print("Identified!", ident)
+            }
             APIClientSharedInstance!.GetConfig().then { config -> Void in
                 self.prefs.setValue(config.LocationName, forKey: "location_name")
                 self.prefs.setValue(config.Latitude, forKey: "latitude")

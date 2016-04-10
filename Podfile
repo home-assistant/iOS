@@ -11,6 +11,7 @@ target 'HomeAssistant' do
   pod 'Alamofire', '~> 3.0'
   pod 'AlamofireObjectMapper', '~> 3.0'
   pod 'Crashlytics'
+  pod 'DeviceKit', '~> 0.3.2'
   pod 'Eureka', '~> 1.5'
   pod 'Fabric'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'

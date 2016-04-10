@@ -11,6 +11,7 @@ PODS:
     - AWSCore (= 2.3.6)
   - Crashlytics (3.7.0):
     - Fabric (~> 1.6.3)
+  - DeviceKit (0.3.2)
   - Eureka (1.5.0)
   - Fabric (1.6.7)
   - FontAwesomeKit/Core (2.2.2)
@@ -52,6 +53,7 @@ DEPENDENCIES:
   - AWSCore
   - AWSSNS
   - Crashlytics
+  - DeviceKit (~> 0.3.2)
   - Eureka (~> 1.5)
   - Fabric
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`,
@@ -95,6 +97,7 @@ SPEC CHECKSUMS:
   AWSCore: 917d84b32974136194a905b98c0ae25c9f3350b8
   AWSSNS: 37c7f4c80657a621fbabccf7d0f352e3c018fbd0
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
+  DeviceKit: 79182140c0aa8daaf4f4b3920e0b079f5fa9db79
   Eureka: 2fb37bb50569c62ee3284689d5b7aca694b040e0
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   FontAwesomeKit: e1d7c3b635dba2ebc2ec77e9b2ac9f6c0af0e350

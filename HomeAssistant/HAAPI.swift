@@ -16,6 +16,7 @@ import CoreLocation
 import Whisper
 import AlamofireObjectMapper
 import ObjectMapper
+import DeviceKit
 
 let prefs = NSUserDefaults.standardUserDefaults()
 
@@ -354,5 +355,21 @@ class HomeAssistantAPI: NSObject {
         }
         Whistle(Murmur(title: title+" toggled"))
         return CallService("homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
+    }
+    
+    func identifyDevice() -> Promise<JSON> {
+        let device = UIDevice.currentDevice()
+        let deviceKitDevice = Device()
+        let deviceInfo = ["name": device.name, "systemName": device.systemName, "systemVersion": device.systemVersion, "model": device.model, "localizedModel": device.localizedModel, "identifierForVendor": device.identifierForVendor!.UUIDString, "type": deviceKitDevice.description]
+        let buildNumber : Int? = Int(NSBundle.mainBundle().infoDictionary!["CFBundleVersion"]! as! String)
+        let versionNumber = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"]!
+        let bundleID = NSBundle.mainBundle().bundleIdentifier
+        let appInfo : [String: AnyObject] = ["bundleIdentifer": bundleID!, "versionNumber": versionNumber, "buildNumber": buildNumber!]
+        var pushToken = ""
+        if let endpointArn = prefs.stringForKey("endpointARN") {
+            pushToken = endpointArn.componentsSeparatedByString("/").last!
+        }
+        let deviceContainer = ["device": deviceInfo, "pushToken": pushToken, "app": appInfo]
+        return POST("ios/identify", parameters: deviceContainer as! [String : AnyObject])
     }
 }
