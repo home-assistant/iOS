@@ -107,10 +107,14 @@ class GroupViewController: FormViewController {
                         if let updatedState = self.updatedStates[rowTag] {
                             cell.detailTextLabel?.text = updatedState.State.capitalizedString
                             if let sensor = updatedState as? Sensor {
-                                cell.detailTextLabel?.text = (sensor.State + " " + sensor.UnitOfMeasurement!).capitalizedString
+                                if let uom = sensor.UnitOfMeasurement {
+                                    cell.detailTextLabel?.text = (sensor.State + " " + uom).capitalizedString
+                                }
                             }
                             if let thermostat = updatedState as? Thermostat {
-                                cell.detailTextLabel?.text = (thermostat.State + " " + thermostat.UnitOfMeasurement!).capitalizedString
+                                if let uom = thermostat.UnitOfMeasurement {
+                                    cell.detailTextLabel?.text = (thermostat.State + " " + uom).capitalizedString
+                                }
                             }
                             cell.imageView?.image = generateIconForEntityClass(updatedState)
                             if let picture = updatedState.Picture {
