@@ -290,7 +290,7 @@ func getEntityPicture(entityPictureURL: String) -> Promise<UIImage> {
     print("Entity picture URL!!! '\(entityPictureURL)'")
     var url = entityPictureURL
     return Promise { fulfill, reject in
-        if url.containsString("/local/") {
+        if url.containsString("/local/") || url.containsString("/api/") {
             if let baseURL = prefs.stringForKey("baseURL") {
                 url = baseURL+url
                 print("Replaced /local/ URL", url)
@@ -299,7 +299,7 @@ func getEntityPicture(entityPictureURL: String) -> Promise<UIImage> {
         let URL = NSURL(string: url)
         let fetcher = NetworkFetcher<UIImage>(URL: URL!)
         entityPicturesCache.fetch(fetcher: fetcher).onSuccess { image in
-            fulfill(image.scaledToSize(CGSize(width: 30, height: 30)))
+            fulfill(image)
         }
     }
 }
