@@ -22,6 +22,11 @@ class SettingsViewController: FormViewController {
 //        
 //        self.navigationItem.rightBarButtonItem = aboutButton
         
+        let pscope = PermissionScope()
+        
+        pscope.addPermission(NotificationsPermission(notificationCategories: nil),
+                             message: "We use this to let you\r\nsend notifications to your device.")
+        
         form
             +++ Section(header: "Settings", footer: "Format should be protocol://hostname_or_ip:portnumber. NO slashes. Only provide a port number if not using 80/443. Examples: http://192.168.1.2:8123, https://demo.home-assistant.io.")
             <<< URLRow("baseURL") {
@@ -52,21 +57,39 @@ class SettingsViewController: FormViewController {
             }
             <<< ButtonRow() {
                 $0.title = "Save"
-            }.onCellSelection {_,_ in 
+            }.onCellSelection {_,_ in
                 let urlRow: URLRow? = self.form.rowByTag("baseURL")
                 let apiPasswordRow: PasswordRow? = self.form.rowByTag("apiPassword")
                 let deviceIdRow: TextRow? = self.form.rowByTag("deviceId")
                 let allowAllGroupsRow: SwitchRow? = self.form.rowByTag("allowAllGroups")
+                
+                if let baseURL = urlRow!.value?.absoluteString {
+                    print("BaseURL is", baseURL)
+                    var apiPass = ""
+                    if let pass = apiPasswordRow?.value {
+                        apiPass = pass
+                    }
+                    let APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: apiPass)
+                    APIClientSharedInstance.GetConfig().then { config -> Void in
+                        self.prefs.setValue(config.LocationName, forKey: "location_name")
+                        self.prefs.setValue(config.Latitude, forKey: "latitude")
+                        self.prefs.setValue(config.Longitude, forKey: "longitude")
+                        self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
+                        self.prefs.setValue(config.Timezone, forKey: "time_zone")
+                        self.prefs.setValue(config.Version, forKey: "version")
+                        if config.Components!.contains("device_tracker") {
+                            pscope.addPermission(LocationAlwaysPermission(),
+                                message: "We use this to inform\r\nHome Assistant of your device presence.")
+                        }
+                    }
+                } else {
+                    print("Error when trying to save")
+                }
+                
                 self.prefs.setValue(urlRow!.value!.absoluteString, forKey: "baseURL")
                 self.prefs.setValue(apiPasswordRow!.value!, forKey: "apiPassword")
                 self.prefs.setValue(deviceIdRow!.value!, forKey: "deviceId")
                 self.prefs.setBool(allowAllGroupsRow!.value!, forKey: "allowAllGroups")
-                let pscope = PermissionScope()
-                
-                pscope.addPermission(NotificationsPermission(notificationCategories: nil),
-                    message: "We use this to let you\r\nsend notifications to your device.")
-                pscope.addPermission(LocationAlwaysPermission(),
-                    message: "We use this to inform\r\nHome Assistant of your presence.")
                 
                 pscope.show({ finished, results in
                     print("got results \(results)")
