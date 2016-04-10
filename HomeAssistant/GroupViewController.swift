@@ -109,6 +109,9 @@ class GroupViewController: FormViewController {
                             if let sensor = updatedState as? Sensor {
                                 cell.detailTextLabel?.text = (sensor.State + " " + sensor.UnitOfMeasurement!).capitalizedString
                             }
+                            if let thermostat = updatedState as? Thermostat {
+                                cell.detailTextLabel?.text = (thermostat.State + " " + thermostat.UnitOfMeasurement!).capitalizedString
+                            }
                             cell.imageView?.image = generateIconForEntityClass(updatedState)
                             if let picture = updatedState.Picture {
                                 getEntityPicture(picture).then { image in
