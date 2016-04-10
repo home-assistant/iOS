@@ -46,6 +46,12 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     if $0.Domain != "group" { // We only want groups
                         return false
                     }
+                    print("It should be a group", $0)
+                    if let groupZeroZero = $0 as? Group {
+                        print("OKAY!!!!")
+                    } else {
+                        print("FAILURE")
+                    }
                     let groupZero = $0 as! Group
                     if prefs.boolForKey("allowAllGroups") == false {
                         if groupZero.Hidden == true {

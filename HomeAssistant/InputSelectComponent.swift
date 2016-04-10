@@ -30,4 +30,7 @@ class InputSelect: Entity {
     override var ComponentIcon: String {
         return "mdi:format-list-bulleted"
     }
+    override class func ignoredProperties() -> [String] {
+        return ["Options"]
+    }
 }
