@@ -58,6 +58,8 @@ class Entity: MappableCluster {
                 return Thermostat(map)
             case "weblink":
                 return Weblink(map)
+            case "zone":
+                return Zone(map)
             default:
                 print("No component ObjectMapper found for:", entityId, entityType)
                 return Entity(map)
@@ -99,7 +101,6 @@ class Entity: MappableCluster {
             APIClientSharedInstance.toggleEntity(self)
         }
     }
-    
 }
 
 public class EntityIDToDomainTransform: TransformType {
