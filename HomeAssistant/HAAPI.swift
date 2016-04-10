@@ -8,6 +8,7 @@
 
 import Foundation
 import Alamofire
+import AlamofireImage
 import PromiseKit
 import SwiftyJSON
 import IKEventSource
@@ -113,19 +114,34 @@ class HomeAssistantAPI: NSObject {
         } catch {
             print("Error when trying to get sig location changes!!")
         }
-
-        let regionCoordinates = CLLocationCoordinate2DMake(prefs.doubleForKey("latitude"), prefs.doubleForKey("longitude"))
-        let region = CLCircularRegion(center: regionCoordinates, radius: CLLocationDistance(1000), identifier: "home_location")
-        do {
-            try SwiftLocation.shared.monitorRegion(region, onEnter: { (region) -> Void in
-                print("Region entered!", region)
-                self.submitLocation("Region entered", deviceId: deviceId, latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 5000, locationName: "home")
-            }) { (region) -> Void in
-                print("Region exited!", region)
-                self.submitLocation("Region exited", deviceId: deviceId, latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 5000, locationName: "not_home")
+        
+        self.GetStates().then { states -> Void in
+            for zone in states.filter({ return $0.Domain == "zone" }) {
+                let zone = zone as! Zone
+                if zone.Latitude != nil && zone.Longitude != nil {
+                    let regionCoordinates = CLLocationCoordinate2DMake(zone.Latitude!, zone.Longitude!)
+                    let region = CLCircularRegion(center: regionCoordinates, radius: CLLocationDistance(zone.Radius!), identifier: zone.ID)
+                    do {
+                        try SwiftLocation.shared.monitorRegion(region, onEnter: { (region) -> Void in
+                            print("Region entered!", region)
+                            var title = "Region"
+                            if let friendlyName = zone.FriendlyName {
+                                title = friendlyName+" zone"
+                            }
+                            self.submitLocation(title+" entered", deviceId: deviceId, latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 1, locationName: "")
+                        }) { (region) -> Void in
+                            print("Region exited!", region)
+                            var title = "Region"
+                            if let friendlyName = zone.FriendlyName {
+                                title = friendlyName+" zone"
+                            }
+                            self.submitLocation(title+" exited", deviceId: deviceId, latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 1, locationName: "")
+                        }
+                    } catch {
+                        print("Error when setting up home region location monitoring")
+                    }
+                }
             }
-        } catch {
-            print("Error when setting up home region location monitoring")
         }
 
     }
@@ -369,7 +385,8 @@ class HomeAssistantAPI: NSObject {
         if let endpointArn = prefs.stringForKey("endpointARN") {
             pushToken = endpointArn.componentsSeparatedByString("/").last!
         }
-        let deviceContainer = ["device": deviceInfo, "pushToken": pushToken, "app": appInfo]
-        return POST("ios/identify", parameters: deviceContainer as! [String : AnyObject])
+        let deviceContainer : [String : AnyObject] = ["device": deviceInfo, "pushToken": pushToken, "app": appInfo]
+        return POST("ios/identify", parameters: deviceContainer)
     }
+
 }
