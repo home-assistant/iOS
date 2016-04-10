@@ -22,19 +22,39 @@ class EntityAttributesViewController: FormViewController {
             self.title = "Attributes"
         }
         
-        form +++ Section()
-        
-        form.last! <<< TextRow("state"){
-            $0.title = "State"
-            $0.value = entity!.State
-            $0.disabled = true
+        if let picture = self.entity?.Picture {
+            form +++ Section(header: "Picture", footer: "")
+                <<< TextAreaRow("entity_picture"){
+                    $0.disabled = true
+                    $0.cell.textView.scrollEnabled = false
+                }.cellUpdate { cell, row in
+                    (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance.getImage(picture).then { image -> Void in
+                        let attachment = NSTextAttachment()
+                        attachment.image = image
+                        attachment.bounds = CGRectMake(0, 0, image.size.width, image.size.height)
+                        let attString = NSAttributedString(attachment: attachment)
+                        let result = NSMutableAttributedString(attributedString: attString)
+                        
+                        let paragraphStyle = NSMutableParagraphStyle()
+                        paragraphStyle.alignment = .Center
+                        
+                        let attrs:[String:AnyObject] = [NSParagraphStyleAttributeName: paragraphStyle]
+                        let range = NSMakeRange(0, result.length)
+                        result.addAttributes(attrs, range: range)
+                        
+                        cell.textView.textStorage.setAttributedString(result)
+                        cell.height = { attachment.bounds.height + 20 }
+                        self.tableView?.beginUpdates()
+                        self.tableView?.endUpdates()
+                    }
+                }
         }
         
-        print("Entity", entity!.Attributes)
+        form +++ Section(header: "Attributes", footer: "")
         
-        if let attributes = entity?.Attributes {
+        if var attributes = entity?.Attributes {
+            attributes["state"] = entity?.State
             for attribute in attributes {
-                print("Attribute", attribute)
                 let prettyLabel = attribute.0.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
                 switch attribute.0 {
                     case "fan":
@@ -68,6 +88,9 @@ class EntityAttributesViewController: FormViewController {
                         form.last! <<< SliderRow(attribute.0){
                             $0.title = prettyLabel
                             $0.value = Float(thermostat.Temperature!)
+                            $0.maximumValue = 120.0
+                            $0.steps = 120
+                            
                         }.onChange { row -> Void in
                             thermostat.setTemperature(row.value!)
                         }
@@ -99,14 +122,19 @@ class EntityAttributesViewController: FormViewController {
                         form.last! <<< SliderRow(attribute.0){
                             $0.title = prettyLabel
                             $0.value = volume
+                            $0.maximumValue = 100
+                            $0.steps = 100
                         }.onChange { row -> Void in
                             mediaPlayer.setVolume(row.value!)
                         }
                         break
+                    case "entity_picture", "supported_media_commands":
+                        // Skip these attributes
+                        break
                     default:
                         form.last! <<< TextRow(attribute.0){
                             $0.title = prettyLabel
-                            $0.value = String(attribute.1)
+                            $0.value = String(attribute.1).capitalizedString
                             $0.disabled = true
                         }
                 }
