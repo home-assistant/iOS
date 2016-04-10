@@ -9,6 +9,7 @@ target 'HomeAssistant' do
   pod 'AWSCore'
   pod 'AWSSNS'
   pod 'Alamofire', '~> 3.0'
+  pod 'AlamofireImage', '~> 2.0'
   pod 'AlamofireObjectMapper', '~> 3.0'
   pod 'Crashlytics'
   pod 'DeviceKit', '~> 0.3.2'

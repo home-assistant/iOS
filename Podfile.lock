@@ -1,6 +1,8 @@
 PODS:
   - AcknowList (0.2.2)
   - Alamofire (3.3.0)
+  - AlamofireImage (2.4.0):
+    - Alamofire (~> 3.3)
   - AlamofireObjectMapper (3.0.0):
     - Alamofire (~> 3.2)
     - ObjectMapper (~> 1.0)
@@ -48,6 +50,7 @@ PODS:
 DEPENDENCIES:
   - AcknowList
   - Alamofire (~> 3.0)
+  - AlamofireImage (~> 2.0)
   - AlamofireObjectMapper (~> 3.0)
   - AWSCognito
   - AWSCore
@@ -92,6 +95,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AcknowList: 00d912fe6d2a169f950b91f80de2342532377662
   Alamofire: 9054db4a1b1ca9e363223183e01cea380159a27c
+  AlamofireImage: 87408b652e0f5ae5fe364035f15aea8b9b24c77e
   AlamofireObjectMapper: 2d16585d06177be0116d76de73497e77437798af
   AWSCognito: af54fe65171c7c994c134e5d29b1ee60ee234825
   AWSCore: 917d84b32974136194a905b98c0ae25c9f3350b8
