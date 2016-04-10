@@ -134,9 +134,6 @@ class GroupViewController: FormViewController {
                         }.cellUpdate { cell, row in
                             if let updatedState = self.updatedStates[rowTag] {
                                 cell.detailTextLabel?.text = updatedState.State.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
-                                if let sensor = updatedState as? Sensor {
-                                    cell.detailTextLabel?.text = (sensor.State + " " + sensor.UnitOfMeasurement!).stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
-                                }
                                 cell.imageView?.image = generateIconForEntityClass(updatedState)
                                 if let picture = updatedState.Picture {
                                     getEntityPicture(picture).then { image in
