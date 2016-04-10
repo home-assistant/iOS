@@ -35,10 +35,15 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
             APIClientSharedInstance.GetStates().then { states -> Void in
                 print("states", states)
                 let allGroups = states.filter {
-                    let entityType = getEntityType($0.ID)
                     var shouldReturn = true
-                    if entityType != "group" { // We only want groups
+                    if $0.Domain != "group" { // We only want groups
                         return false
+                    }
+                    print("It should be a group", $0)
+                    if let groupZeroZero = $0 as? Group {
+                        print("OKAY!!!!")
+                    } else {
+                        print("FAILURE")
                     }
                     let groupZero = $0 as! Group
                     if prefs.boolForKey("allowAllGroups") == false {

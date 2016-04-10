@@ -8,12 +8,13 @@
 
 import Foundation
 import ObjectMapper
+import RealmSwift
 
 class Light: Entity {
     
-    var Brightness: Float?
-    var ColorTemp: Float?
-    var RGBColor: [Int]?
+    var Brightness = RealmOptional<Float>()
+    var ColorTemp = RealmOptional<Float>()
+    dynamic var RGBColor: [Int]?
     
     required init?(_ map: Map) {
         super.init(value: map)
@@ -29,5 +30,9 @@ class Light: Entity {
         Brightness   <- map["attributes.brightness"]
         ColorTemp    <- map["attributes.color_temp"]
         RGBColor     <- map["attributes.rgb_color"]
+    }
+    
+    override class func ignoredProperties() -> [String] {
+        return ["RGBColor"]
     }
 }

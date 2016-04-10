@@ -26,4 +26,8 @@ class InputSelect: Entity {
         
         Options          <- map["attributes.options"]
     }
+    
+    override class func ignoredProperties() -> [String] {
+        return ["Options"]
+    }
 }

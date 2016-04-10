@@ -26,4 +26,8 @@ class Scene: Entity {
         
         EntityIds     <- map["attributes.entity_id"]
     }
+    
+    override class func ignoredProperties() -> [String] {
+        return ["EntityIds"]
+    }
 }

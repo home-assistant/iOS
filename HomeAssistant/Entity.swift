@@ -11,18 +11,18 @@ import ObjectMapper
 import RealmSwift
 
 class Entity: Object, MappableCluster {
-    var ID: String = ""
-    var Domain: String = ""
-    var State: String = ""
-    var Attributes: [String : AnyObject] = [:]
+    dynamic var ID = ""
+    dynamic var Domain: String = ""
+    dynamic var State: String = ""
+    dynamic var Attributes: [String : AnyObject] = [:]
 //    private dynamic var attributesData: NSData?
-    var FriendlyName: String?
-    var Hidden: Bool = false
-    var Icon: String?
-    var MobileIcon: String?
-    var Picture: String?
-    var LastChanged: NSDate?
-    var LastUpdated: NSDate?
+    dynamic var FriendlyName: String?
+    dynamic var Hidden: Bool = false
+    dynamic var Icon: String?
+    dynamic var MobileIcon: String?
+    dynamic var Picture: String?
+    dynamic var LastChanged: NSDate?
+    dynamic var LastUpdated: NSDate?
     
     class func objectForMapping(map: Map) -> Mappable? {
         if let entityId: String = map["entity_id"].value() {
@@ -68,7 +68,7 @@ class Entity: Object, MappableCluster {
         return nil
     }
     
-    required convenience init?(_ map: Map) {
+    convenience required init?(_ map: Map) {
         self.init()
     }
     
@@ -93,7 +93,7 @@ class Entity: Object, MappableCluster {
     override static func primaryKey() -> String? {
         return "ID"
     }
-        
+    
     func turnOn() {
         if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
             APIClientSharedInstance.turnOnEntity(self)
