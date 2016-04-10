@@ -1,4 +1,5 @@
 PODS:
+  - AcknowList (0.2.2)
   - Alamofire (3.3.0)
   - AlamofireObjectMapper (3.0.0):
     - Alamofire (~> 3.2)
@@ -44,6 +45,7 @@ PODS:
   - Whisper (2.1)
 
 DEPENDENCIES:
+  - AcknowList
   - Alamofire (~> 3.0)
   - AlamofireObjectMapper (~> 3.0)
   - AWSCognito
@@ -86,6 +88,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/SwiftyJSON/SwiftyJSON.git
 
 SPEC CHECKSUMS:
+  AcknowList: 00d912fe6d2a169f950b91f80de2342532377662
   Alamofire: 9054db4a1b1ca9e363223183e01cea380159a27c
   AlamofireObjectMapper: 2d16585d06177be0116d76de73497e77437798af
   AWSCognito: af54fe65171c7c994c134e5d29b1ee60ee234825

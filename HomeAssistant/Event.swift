@@ -9,7 +9,7 @@
 import Foundation
 import ObjectMapper
 
-class SSEEvent: Mappable {
+class SSEEvent: MappableCluster {
     var Type: String = ""
     var TimeFired: NSDate?
     var Origin: String = ""
@@ -23,8 +23,12 @@ class SSEEvent: Mappable {
             switch eventType {
             case "state_changed":
                 return StateChangedEvent(map)
+            case "call_service":
+                return CallServiceEvent(map)
+            case "service_executed":
+                return ServiceExecutedEvent(map)
             default:
-                print("No ObjectMapper found for:", eventType)
+                print("No SSE Event ObjectMapper found for:", eventType)
                 return nil
             }
         }
@@ -32,7 +36,7 @@ class SSEEvent: Mappable {
     }
     
     func mapping(map: Map) {
-        Type <- map["event_type"]
+        Type      <- map["event_type"]
         TimeFired <- (map["time_fired"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
         Origin    <- map["origin"]
     }

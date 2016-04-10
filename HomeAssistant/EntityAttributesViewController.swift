@@ -35,10 +35,80 @@ class EntityAttributesViewController: FormViewController {
         if let attributes = entity?.Attributes {
             for attribute in attributes {
                 print("Attribute", attribute)
-                form.last! <<< TextRow(attribute.0){
-                    $0.title = attribute.0.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
-                    $0.value = String(attribute.1)
-                    $0.disabled = true
+                let prettyLabel = attribute.0.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
+                switch attribute.0 {
+                    case "fan":
+                        let thermostat = entity as! Thermostat
+                        form.last! <<< SwitchRow(attribute.0){
+                            $0.title = prettyLabel
+                            $0.value = thermostat.Fan
+                        }.onChange { row -> Void in
+                            if (row.value == true) {
+                                thermostat.turnFanOn()
+                            } else {
+                                thermostat.turnFanOff()
+                            }
+                        }
+                        break
+                    case "away_mode":
+                        let thermostat = entity as! Thermostat
+                        form.last! <<< SwitchRow(attribute.0){
+                            $0.title = prettyLabel
+                            $0.value = thermostat.AwayMode
+                        }.onChange { row -> Void in
+                            if (row.value == true) {
+                                thermostat.setAwayModeOn()
+                            } else {
+                                thermostat.setAwayModeOff()
+                            }
+                        }
+                        break
+                    case "temperature":
+                        let thermostat = entity as! Thermostat
+                        form.last! <<< SliderRow(attribute.0){
+                            $0.title = prettyLabel
+                            $0.value = Float(thermostat.Temperature!)
+                        }.onChange { row -> Void in
+                            thermostat.setTemperature(row.value!)
+                        }
+                        break
+                    case "media_duration":
+                        let mediaPlayer = entity as! MediaPlayer
+                        form.last! <<< TextRow(attribute.0){
+                            $0.title = prettyLabel
+                            $0.value = mediaPlayer.humanReadableMediaDuration()
+                            $0.disabled = true
+                        }
+                        break
+                    case "is_volume_muted":
+                        let mediaPlayer = entity as! MediaPlayer
+                        form.last! <<< SwitchRow(attribute.0){
+                            $0.title = "Mute"
+                            $0.value = mediaPlayer.IsVolumeMuted
+                        }.onChange { row -> Void in
+                            if (row.value == true) {
+                                mediaPlayer.muteOn()
+                            } else {
+                                mediaPlayer.muteOff()
+                            }
+                        }
+                        break
+                    case "volume_level":
+                        let mediaPlayer = entity as! MediaPlayer
+                        let volume = Float(attribute.1 as! NSNumber)*100
+                        form.last! <<< SliderRow(attribute.0){
+                            $0.title = prettyLabel
+                            $0.value = volume
+                        }.onChange { row -> Void in
+                            mediaPlayer.setVolume(row.value!)
+                        }
+                        break
+                    default:
+                        form.last! <<< TextRow(attribute.0){
+                            $0.title = prettyLabel
+                            $0.value = String(attribute.1)
+                            $0.disabled = true
+                        }
                 }
             }
         }

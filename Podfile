@@ -4,6 +4,7 @@ platform :ios, '9.0'
 use_frameworks!
 
 target 'HomeAssistant' do
+  pod 'AcknowList'
   pod 'AWSCognito'
   pod 'AWSCore'
   pod 'AWSSNS'

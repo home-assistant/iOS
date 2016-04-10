@@ -59,8 +59,8 @@ class Entity: MappableCluster {
             case "weblink":
                 return Weblink(map)
             default:
-                print("No ObjectMapper found for:", entityType)
-                return nil
+                print("No component ObjectMapper found for:", entityId, entityType)
+                return Entity(map)
             }
         }
         return nil

@@ -57,20 +57,17 @@ class HomeAssistantAPI: NSObject {
         }
         
         eventSource.onError { (error) in
-            Whistle(Murmur(title: "SSE Error! \(error?.localizedDescription)"))
-            print("SSE: Error", error?.localizedDescription)
+            if let localizedDescription = error?.localizedDescription {
+                Whistle(Murmur(title: "SSE Error! \(localizedDescription)"))
+            }
+            print("SSE: Error", error)
         }
-
-        eventSource.onMessage { (id, event, data) in
+        
+        eventSource.onMessage { (id, eventName, data) in
             if let event = Mapper<SSEEvent>().map(data) {
-                let JSONString = Mapper().toJSONString(event, prettyPrint: false)
-                let jsonDict : [NSObject:AnyObject] = ["jsonObject": JSONString!]
-                switch event.Type {
-                case "state_changed":
-                    NSNotificationCenter.defaultCenter().postNotificationName("EntityStateChanged", object: nil, userInfo: jsonDict)
-                default:
-                    print("unknown event_type:", event.Type)
-                }
+                NSNotificationCenter.defaultCenter().postNotificationName("sse."+event.Type, object: nil, userInfo: event.toJSON())
+            } else {
+                print("Unable to ObjectMap this SSE message", eventName, data)
             }
         }
     }

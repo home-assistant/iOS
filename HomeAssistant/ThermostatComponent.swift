@@ -38,4 +38,29 @@ class Thermostat: Entity {
         TargetTemperatureLow  <- map["attributes.target_temp_low"]
         UnitOfMeasurement     <- map["attributes.unit_of_measurement"]
     }
+    func turnFanOn() {
+        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.CallService("thermostat", service: "set_fan_mode", serviceData: ["entity_id": self.ID, "fan": "on"])
+        }
+    }
+    func turnFanOff() {
+        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.CallService("thermostat", service: "set_fan_mode", serviceData: ["entity_id": self.ID, "fan": "off"])
+        }
+    }
+    func setAwayModeOn() {
+        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.CallService("thermostat", service: "set_away_mode", serviceData: ["entity_id": self.ID, "away_mode": "on"])
+        }
+    }
+    func setAwayModeOff() {
+        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.CallService("thermostat", service: "set_away_mode", serviceData: ["entity_id": self.ID, "away_mode": "off"])
+        }
+    }
+    func setTemperature(newTemp: Float) {
+        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.CallService("thermostat", service: "set_temperature", serviceData: ["entity_id": self.ID, "temperature": newTemp])
+        }
+    }
 }

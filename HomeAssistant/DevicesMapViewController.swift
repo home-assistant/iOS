@@ -17,7 +17,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        var mapView = MKMapView()
+        let mapView = MKMapView()
         
         mapView.mapType = .Standard
         mapView.frame = view.frame

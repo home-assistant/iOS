@@ -9,6 +9,7 @@
 import UIKit
 import Eureka
 import PermissionScope
+import AcknowList
 
 class SettingsViewController: FormViewController {
 
@@ -18,9 +19,9 @@ class SettingsViewController: FormViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-//        let aboutButton = UIBarButtonItem(title: "About", style: .Plain, target: self, action: Selector(""))
-//        
-//        self.navigationItem.rightBarButtonItem = aboutButton
+        let aboutButton = UIBarButtonItem(title: "About", style: .Plain, target: self, action: #selector(SettingsViewController.aboutButtonPressed(_:)))
+        
+        self.navigationItem.rightBarButtonItem = aboutButton
         
         let pscope = PermissionScope()
         
@@ -110,7 +111,8 @@ class SettingsViewController: FormViewController {
             }
             
             if let endpointArn = prefs.stringForKey("endpointARN") {
-                self.form.last!
+                print("endpoint", endpointArn)
+                form
                     +++ Section(header: "Push information", footer: "")
                         <<< TextAreaRow() {
                             $0.placeholder = "EndpointArn"
@@ -125,6 +127,13 @@ class SettingsViewController: FormViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    
+    func aboutButtonPressed(sender: UIButton) {
+        let viewController = AcknowListViewController()
+        if let navigationController = self.navigationController {
+            navigationController.pushViewController(viewController, animated: true)
+        }
+    }
 
 }
 

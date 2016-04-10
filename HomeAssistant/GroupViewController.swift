@@ -98,10 +98,10 @@ class GroupViewController: FormViewController {
                         $0.cellStyle = .Value1
                         $0.presentationMode = .Show(controllerProvider: ControllerProvider.Callback {
                             let attributesView = EntityAttributesViewController()
-                            attributesView.entity = entity
+                            attributesView.entity = self.updatedStates[rowTag]
                             return attributesView
-                            }, completionCallback: {
-                                vc in vc.navigationController?.popViewControllerAnimated(true)
+                        }, completionCallback: {
+                            vc in vc.navigationController?.popViewControllerAnimated(true)
                         })
                     }.cellUpdate { cell, row in
                         if let updatedState = self.updatedStates[rowTag] {
@@ -154,7 +154,7 @@ class GroupViewController: FormViewController {
                             $0.cellStyle = .Value1
                             $0.presentationMode = .Show(controllerProvider: ControllerProvider.Callback {
                                 let attributesView = EntityAttributesViewController()
-                                attributesView.entity = entity
+                                attributesView.entity = self.updatedStates[rowTag]
                                 return attributesView
                             }, completionCallback: { vc in vc.navigationController?.popViewControllerAnimated(true) })
                         }.cellUpdate { cell, row in
@@ -234,7 +234,7 @@ class GroupViewController: FormViewController {
                 }
             }
             
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(GroupViewController.StateChangedSSEEvent(_:)), name:"EntityStateChanged", object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(GroupViewController.StateChangedSSEEvent(_:)), name:"sse.state_changed", object: nil)
         }
         
         override func didReceiveMemoryWarning() {
@@ -244,16 +244,10 @@ class GroupViewController: FormViewController {
         
         func StateChangedSSEEvent(notification: NSNotification){
             if let userInfo = notification.userInfo {
-                if let event = Mapper<StateChangedEvent>().map(userInfo["jsonObject"]) {
+                if let event = Mapper<StateChangedEvent>().map(userInfo) {
                     let newState = event.NewState! as Entity
-//                    let oldState = event.OldState! as Entity
-//                    var subtitleString = newState.FriendlyName!+" is now "+newState.State+". It was "+oldState.State
-//                    if let newStateSensor = newState as? Sensor {
-//                        let oldStateSensor = oldState as! Sensor
-//                        subtitleString = "\(newStateSensor.State) \(newStateSensor.UnitOfMeasurement) . It was \(oldState.State) \(oldStateSensor.UnitOfMeasurement)"
-//                    }
                     let icon = generateIconForEntityClass(newState)
-                    self.updatedStates[event.EntityID!]! = newState
+                    self.updatedStates[event.EntityID!] = newState
                     if event.EntityDomain == "switch" || event.EntityDomain == "light" || event.EntityDomain == "input_boolean" {
                         if let row : SwitchRow = self.form.rowByTag(event.EntityID!) {
                             row.value = (newState.State == "on") ? true : false

@@ -17,7 +17,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)), name:"EntityStateChanged", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)), name:"sse.state_changed", object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -33,7 +33,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         
         if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
             APIClientSharedInstance.GetStates().then { states -> Void in
-                print("states", states)
                 let allGroups = states.filter {
                     let entityType = getEntityType($0.ID)
                     var shouldReturn = true
@@ -79,7 +78,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                         }
                     }
                 }
-                print("allGroups", allGroups)
                 for (index, group) in allGroups.enumerate() {
                     let groupView = GroupViewController()
                     groupView.APIClientSharedInstance = APIClientSharedInstance
