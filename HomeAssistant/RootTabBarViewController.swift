@@ -41,18 +41,19 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                         return false
                     }
                     let groupZero = $0 as! Group
-//                    print("groupZero hidden attr", groupZero.Hidden)
-//                    if groupZero.Hidden == true {
-//                        shouldReturn = false
-//                    }
-                    if let view = groupZero.Attributes["view"] as? Bool {
-                        if view == false {
+                    if prefs.boolForKey("allowAllGroups") == false {
+                        if groupZero.Hidden == true {
                             shouldReturn = false
                         }
-                    }
-                    if let auto = groupZero.Attributes["auto"] as? Bool {
-                        if auto == true {
-                            shouldReturn = false
+                        if let view = groupZero.Attributes["view"] as? Bool {
+                            if view == false {
+                                shouldReturn = false
+                            }
+                        }
+                        if let auto = groupZero.Attributes["auto"] as? Bool {
+                            if auto == true {
+                                shouldReturn = false
+                            }
                         }
                     }
                     // If all entities are a group, return false
