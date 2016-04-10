@@ -7,9 +7,9 @@
 //
 
 import UIKit
-import SwiftyJSON
 import MBProgressHUD
 import Whisper
+import ObjectMapper
 
 class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
@@ -32,27 +32,34 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         self.viewControllers = [firstGroupView]
         
         if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.GetBootstrap().then { bootstrap -> Void in
-                let allGroups = bootstrap["states"].arrayValue.filter {
-                    let entityId = $0["entity_id"].stringValue
-                    let entityType = getEntityType(entityId)
+            APIClientSharedInstance.GetStates().then { states -> Void in
+                print("states", states)
+                let allGroups = states.filter {
+                    let entityType = getEntityType($0.ID)
                     var shouldReturn = true
                     if entityType != "group" { // We only want groups
                         return false
                     }
-                    if $0["attributes"]["hidden"].exists() && $0["attributes"]["hidden"].boolValue == false {
-                        shouldReturn = false
-                    }
-                    if $0["attributes"]["view"].exists() && $0["attributes"]["view"].boolValue == false {
-                        shouldReturn = false
-                    }
-                    if $0["attributes"]["auto"].exists() && $0["attributes"]["auto"].boolValue {
-                        shouldReturn = false
+                    let groupZero = $0 as! Group
+                    if prefs.boolForKey("allowAllGroups") == false {
+                        if groupZero.Hidden == true {
+                            shouldReturn = false
+                        }
+                        if let view = groupZero.Attributes["view"] as? Bool {
+                            if view == false {
+                                shouldReturn = false
+                            }
+                        }
+                        if let auto = groupZero.Attributes["auto"] as? Bool {
+                            if auto == true {
+                                shouldReturn = false
+                            }
+                        }
                     }
                     // If all entities are a group, return false
                     var groupCheck = [String]()
-                    for entity in $0["attributes"]["entity_id"].arrayValue {
-                        groupCheck.append(getEntityType(entity.stringValue))
+                    for entity in groupZero.EntityIds {
+                        groupCheck.append(getEntityType(entity))
                     }
                     let uniqueCheck = Array(Set(groupCheck))
                     if uniqueCheck.count == 1 && uniqueCheck[0] == "group" {
@@ -60,42 +67,43 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     }
                     return shouldReturn
                 }.sort {
-                    if $0["entity_id"].stringValue.containsString("group.all_") == true {
+                    let groupZero = $0 as! Group
+                    let groupOne = $1 as! Group
+                    if groupZero.IsAllGroup == true {
                         return false
                     } else {
-                        if $0["attributes"]["order"].exists() && $1["attributes"]["order"].exists() {
-                            return $0["attributes"]["order"].intValue < $1["attributes"]["order"].intValue
+                        if groupZero.Order != nil && groupOne.Order != nil {
+                            return groupZero.Order < groupOne.Order
                         } else {
-                            return $0["attributes"]["friendly_name"].stringValue < $1["attributes"]["friendly_name"].stringValue
+                            return groupZero.FriendlyName < groupOne.FriendlyName
                         }
                     }
                 }
+                print("allGroups", allGroups)
                 for (index, group) in allGroups.enumerate() {
-                    let title = group["attributes"]["friendly_name"].stringValue.capitalizedString
                     let groupView = GroupViewController()
                     groupView.APIClientSharedInstance = APIClientSharedInstance
-                    groupView.receivedGroup = group
-                    var sendingEntities = [AnyObject]()
-                    let filteredEntities = bootstrap["states"].filter {
-                        return group["attributes"]["entity_id"].arrayValue.contains($0.1["entity_id"])
+                    groupView.receivedGroup = group as? Group
+                    groupView.receivedEntities = states.filter {
+                        return (group as! Group).EntityIds.contains($0.ID)
                     }
-                    for (_,subJson):(String, JSON) in filteredEntities {
-                        sendingEntities.append(subJson.object)
+                    var friendlyName = "Entity"
+                    if let friendly = group.FriendlyName {
+                        friendlyName = friendly
                     }
-                    groupView.receivedEntities = JSON(sendingEntities)
-                    groupView.title = title
-                    groupView.tabBarItem.title = title
-                    var groupIcon = iconForDomain(getEntityType(group["attributes"]["entity_id"][0].stringValue))
-                    if group["attributes"]["icon"].exists() {
-                        groupIcon = group["attributes"]["icon"].stringValue
+                    groupView.title = friendlyName.capitalizedString
+                    groupView.tabBarItem.title = friendlyName.capitalizedString
+                    var groupIcon = iconForDomain(getEntityType((group as! Group).EntityIds[0]))
+                    if group.Icon != nil {
+                        groupIcon = group.Icon!
                     }
-                    if group["attributes"]["mobile_icon"].exists() {
-                        groupIcon = group["attributes"]["mobile_icon"].stringValue
+                    if group.MobileIcon != nil {
+                        groupIcon = group.MobileIcon!
                     }
                     let icon = getIconForIdentifier(groupIcon, iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
-                    groupView.tabBarItem = UITabBarItem(title: title, image: icon, tag: index)
+                    groupView.tabBarItem = UITabBarItem(title: friendlyName.capitalizedString, image: icon, tag: index)
                     
-                    let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+//                    let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
                     
                     let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
                     
@@ -103,7 +111,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     
                     rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
                     
-                    rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
+//                    rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
                     
                     groupView.navigationItem.setRightBarButtonItems(rightBarItems, animated: true)
                     
@@ -145,17 +153,18 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
     }
     
     func StateChangedSSEEvent(notification: NSNotification){
-        let json = JSON(notification.userInfo!)
-        let friendly_name = json["data"]["new_state"]["attributes"]["friendly_name"].stringValue
-        let newState = json["data"]["new_state"]["state"].stringValue
-        var subtitleString = friendly_name+" is now "+newState+". It was "+json["data"]["old_state"]["state"].stringValue
-        if json["data"]["new_state"]["attributes"]["unit_of_measurement"].exists() && json["data"]["old_state"]["attributes"]["unit_of_measurement"].exists() {
-            subtitleString = newState + " " + json["data"]["new_state"]["attributes"]["unit_of_measurement"].stringValue+". It was "+json["data"]["old_state"]["state"].stringValue + " " + json["data"]["old_state"]["attributes"]["unit_of_measurement"].stringValue
+        if let userInfo = notification.userInfo {
+            if let event = Mapper<StateChangedEvent>().map(userInfo["jsonObject"]) {
+                let newState = event.NewState! as Entity
+                let oldState = event.OldState! as Entity
+                var subtitleString = newState.FriendlyName!+" is now "+newState.State+". It was "+oldState.State
+                if let newStateSensor = newState as? Sensor {
+                    let oldStateSensor = oldState as! Sensor
+                    subtitleString = "\(newStateSensor.State) \(newStateSensor.UnitOfMeasurement) . It was \(oldState.State) \(oldStateSensor.UnitOfMeasurement)"
+                }
+                Whistle(Murmur(title: subtitleString))
+            }
         }
-        Whistle(Murmur(title: subtitleString))
-//        let icon = generateIconForEntity(json["data"]["new_state"])
-//        let announcement = Announcement(title: friendly_name, subtitle: subtitleString, image: icon)
-//        Shout(announcement, to: self.navigationController!)
     }
 
     func openMapView(sender: UIButton) {

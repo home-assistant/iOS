@@ -26,6 +26,7 @@ let onOffStateTransform = TransformOf<Bool, String>(fromJSON: { (value: String?)
 class BinarySensor: Entity {
     
     var IsOn: Bool?
+    var SensorClass: String?
     
     required init?(_ map: Map) {
         super.init(value: map)
@@ -38,6 +39,7 @@ class BinarySensor: Entity {
     override func mapping(map: Map) {
         super.mapping(map)
         
-        IsOn    <- (map["state"], onOffStateTransform)
+        IsOn         <- (map["state"], onOffStateTransform)
+        SensorClass  <- map["attributes.sensor_class"]
     }
 }

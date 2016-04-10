@@ -20,10 +20,10 @@ let isAllGroupTransform = TransformOf<Bool, String>(fromJSON: { (value: String?)
 
 class Group: Entity {
     
-    var IsAllGroup: Bool?
-    var Auto: Bool?
+    var IsAllGroup: Bool = false
+    var Auto: Bool = false
     var Order: Int?
-    var EntityIds: [String]?
+    var EntityIds: [String] = [String]()
     
     required init?(_ map: Map) {
         super.init(value: map)

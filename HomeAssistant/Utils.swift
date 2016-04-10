@@ -211,6 +211,34 @@ func binarySensorIcon(entity: SwiftyJSON.JSON) -> String {
     }
 }
 
+func binarySensorIconEntity(entity: BinarySensor) -> String {
+    let activated = (entity.IsOn == false);
+    if entity.SensorClass == nil {
+        return activated ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle";
+    }
+    switch (entity.SensorClass!) {
+    case "opening":
+        return activated ? "mdi:crop-square" : "mdi:exit-to-app";
+    case "moisture":
+        return activated ? "mdi:water-off" : "mdi:water";
+    case "light":
+        return activated ? "mdi:brightness-5" : "mdi:brightness-7";
+    case "sound":
+        return activated ? "mdi:music-note-off" : "mdi:music-note";
+    case "vibration":
+        return activated ? "mdi:crop-portrait" : "mdi:vibrate";
+    case "connectivity":
+        return activated ? "mdi:server-network-off" : "mdi:server-network";
+    case "safety", "gas", "smoke", "power":
+        return activated ? "mdi:verified" : "mdi:alert";
+    case "motion":
+        return activated ? "mdi:walk" : "mdi:run";
+    default:
+        return activated ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle";
+    }
+}
+
+
 func stateIcon(entity: SwiftyJSON.JSON) -> String {
     let domain = getEntityType(entity["entity_id"].stringValue)
     if (entity["attributes"]["mobile_icon"].exists()) {
@@ -233,6 +261,28 @@ func stateIcon(entity: SwiftyJSON.JSON) -> String {
     
     return iconForDomainAndState(domain, state: entity["state"].stringValue);
 }
+
+func stateIconEntity(entity: Entity) -> String {
+    if entity.MobileIcon != nil {
+        return entity.MobileIcon!
+    }
+    if entity.Icon != nil {
+        return entity.Icon!;
+    }
+    
+    if let sensor = entity as? Sensor {
+        if (sensor.UnitOfMeasurement == "°C" || sensor.UnitOfMeasurement == "°F") {
+            return "mdi:thermometer"
+        } else if (sensor.UnitOfMeasurement == "Mice") {
+            return "mdi:mouse-variant"
+        }
+    } else if let binarySensor = entity as? BinarySensor {
+        return binarySensorIconEntity(binarySensor)
+    }
+    
+    return iconForDomainAndState(entity.Domain, state: entity.State);
+}
+
 
 let entityPicturesCache = Cache<UIImage>(name: "entity_pictures")
 
@@ -273,6 +323,27 @@ func generateIconForEntity(entity: SwiftyJSON.JSON) -> UIImage {
     }
     return getIconForIdentifier(iconName, iconWidth: 30, iconHeight: 30, color: color)
 }
+
+func generateIconForEntityClass(entity: Entity) -> UIImage {
+    let iconName = stateIconEntity(entity)
+    Crashlytics.sharedInstance().setObjectValue(iconName, forKey: "iconName")
+    var color = colorWithHexString("#44739E", alpha: 1)
+    if (entity.Domain == "light" || entity.Domain == "switch" || entity.Domain == "binary_sensor" || entity.Domain == "sun") && (entity.State == "on" || entity.State == "above_horizon") {
+        color = colorWithHexString("#DCC91F", alpha: 1)
+    }
+    if entity.Domain == "light" && entity.State == "on" && entity.Attributes["rgb_color"] != nil {
+        let rgb = entity.Attributes["rgb_color"]!
+        let red = CGFloat(rgb[0].doubleValue/255.0)
+        let green = CGFloat(rgb[1].doubleValue/255.0)
+        let blue = CGFloat(rgb[2].doubleValue/255.0)
+        color = UIColor.init(red: red, green: green, blue: blue, alpha: 1)
+    }
+    if entity.State == "unavailable" {
+        color = colorWithHexString("#bdbdbd", alpha: 1)
+    }
+    return getIconForIdentifier(iconName, iconWidth: 30, iconHeight: 30, color: color)
+}
+
 
 extension UIImage{
     func scaledToSize(size: CGSize) -> UIImage{

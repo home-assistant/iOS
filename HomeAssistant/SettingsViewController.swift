@@ -18,9 +18,14 @@ class SettingsViewController: FormViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let aboutButton = UIBarButtonItem(title: "About", style: .Plain, target: self, action: Selector(""))
+//        let aboutButton = UIBarButtonItem(title: "About", style: .Plain, target: self, action: Selector(""))
+//        
+//        self.navigationItem.rightBarButtonItem = aboutButton
         
-        self.navigationItem.rightBarButtonItem = aboutButton
+        let pscope = PermissionScope()
+        
+        pscope.addPermission(NotificationsPermission(notificationCategories: nil),
+                             message: "We use this to let you\r\nsend notifications to your device.")
         
         form
             +++ Section(header: "Settings", footer: "Format should be protocol://hostname_or_ip:portnumber. NO slashes. Only provide a port number if not using 80/443. Examples: http://192.168.1.2:8123, https://demo.home-assistant.io.")
@@ -46,21 +51,45 @@ class SettingsViewController: FormViewController {
                 }
                 $0.placeholder = "iphone"
             }
+            <<< SwitchRow("allowAllGroups") {
+                $0.title = "Show all groups"
+                $0.value = prefs.boolForKey("allowAllGroups")
+            }
             <<< ButtonRow() {
                 $0.title = "Save"
-            }.onCellSelection {_,_ in 
+            }.onCellSelection {_,_ in
                 let urlRow: URLRow? = self.form.rowByTag("baseURL")
                 let apiPasswordRow: PasswordRow? = self.form.rowByTag("apiPassword")
                 let deviceIdRow: TextRow? = self.form.rowByTag("deviceId")
+                let allowAllGroupsRow: SwitchRow? = self.form.rowByTag("allowAllGroups")
+                
+                if let baseURL = urlRow!.value?.absoluteString {
+                    print("BaseURL is", baseURL)
+                    var apiPass = ""
+                    if let pass = apiPasswordRow?.value {
+                        apiPass = pass
+                    }
+                    let APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: apiPass)
+                    APIClientSharedInstance.GetConfig().then { config -> Void in
+                        self.prefs.setValue(config.LocationName, forKey: "location_name")
+                        self.prefs.setValue(config.Latitude, forKey: "latitude")
+                        self.prefs.setValue(config.Longitude, forKey: "longitude")
+                        self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
+                        self.prefs.setValue(config.Timezone, forKey: "time_zone")
+                        self.prefs.setValue(config.Version, forKey: "version")
+                        if config.Components!.contains("device_tracker") {
+                            pscope.addPermission(LocationAlwaysPermission(),
+                                message: "We use this to inform\r\nHome Assistant of your device presence.")
+                        }
+                    }
+                } else {
+                    print("Error when trying to save")
+                }
+                
                 self.prefs.setValue(urlRow!.value!.absoluteString, forKey: "baseURL")
                 self.prefs.setValue(apiPasswordRow!.value!, forKey: "apiPassword")
                 self.prefs.setValue(deviceIdRow!.value!, forKey: "deviceId")
-                let pscope = PermissionScope()
-                
-                pscope.addPermission(NotificationsPermission(notificationCategories: nil),
-                    message: "We use this to let you\r\nsend notifications to your device.")
-                pscope.addPermission(LocationAlwaysPermission(),
-                    message: "We use this to inform\r\nHome Assistant of your presence.")
+                self.prefs.setBool(allowAllGroupsRow!.value!, forKey: "allowAllGroups")
                 
                 pscope.show({ finished, results in
                     print("got results \(results)")

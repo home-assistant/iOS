@@ -11,17 +11,18 @@ import ObjectMapper
 import RealmSwift
 
 class Entity: Object, MappableCluster {
-    dynamic var ID: String? = nil
-    dynamic var Domain: String? = nil
-    dynamic var State: String? = nil
+    var ID: String = ""
+    var Domain: String = ""
+    var State: String = ""
+    var Attributes: [String : AnyObject] = [:]
 //    private dynamic var attributesData: NSData?
-    dynamic var Attributes: [String:AnyObject] = [:]
-    dynamic var FriendlyName: String? = nil
-    dynamic var Hidden = false
-    dynamic var Icon: String? = nil
-    dynamic var Picture: String? = nil
-    dynamic var LastChanged: NSDate? = nil
-    dynamic var LastUpdated: NSDate? = nil
+    var FriendlyName: String?
+    var Hidden: Bool = false
+    var Icon: String?
+    var MobileIcon: String?
+    var Picture: String?
+    var LastChanged: NSDate?
+    var LastUpdated: NSDate?
     
     class func objectForMapping(map: Map) -> Mappable? {
         if let entityId: String = map["entity_id"].value() {
@@ -79,6 +80,7 @@ class Entity: Object, MappableCluster {
         FriendlyName  <- map["attributes.friendly_name"]
         Hidden        <- map["attributes.hidden"]
         Icon          <- map["attributes.icon"]
+        MobileIcon    <- map["attributes.mobile_icon"]
         Picture       <- map["attributes.entity_picture"]
         LastChanged   <- (map["last_changed"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
         LastUpdated   <- (map["last_updated"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
@@ -90,6 +92,24 @@ class Entity: Object, MappableCluster {
     
     override static func primaryKey() -> String? {
         return "ID"
+    }
+        
+    func turnOn() {
+        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.turnOnEntity(self)
+        }
+    }
+    
+    func turnOff() {
+        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.turnOffEntity(self)
+        }
+    }
+    
+    func toggle() {
+        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.toggleEntity(self)
+        }
     }
     
 }
