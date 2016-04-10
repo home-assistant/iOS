@@ -56,7 +56,7 @@ class GroupViewController: FormViewController {
                             cell.imageView?.image = generateIconForEntityClass(updatedState)
                             if let picture = updatedState.Picture {
                                 getEntityPicture(picture).then { image in
-                                    cell.imageView?.image = image
+                                    cell.imageView?.image = image.scaledToSize(CGSize(width: 30, height: 30))
                                 }
                             }
                         }
@@ -71,7 +71,7 @@ class GroupViewController: FormViewController {
                             cell.imageView?.image = generateIconForEntityClass(updatedState)
                             if let picture = updatedState.Picture {
                                 getEntityPicture(picture).then { image in
-                                    cell.imageView?.image = image
+                                    cell.imageView?.image = image.scaledToSize(CGSize(width: 30, height: 30))
                                 }
                             }
                         }
@@ -86,13 +86,13 @@ class GroupViewController: FormViewController {
                                 cell.imageView?.image = generateIconForEntityClass(updatedState)
                                 if let picture = updatedState.Picture {
                                     getEntityPicture(picture).then { image in
-                                        cell.imageView?.image = image
+                                        cell.imageView?.image = image.scaledToSize(CGSize(width: 30, height: 30))
                                     }
                                 }
                             }
                         }
                     }
-                case "binary_sensor", "sensor", "media_player", "thermostat", "sun":
+                case "binary_sensor", "camera", "sensor", "media_player", "thermostat", "sun":
                     self.form.last! <<< ButtonRow(rowTag) {
                         $0.title = entity.FriendlyName
                         $0.cellStyle = .Value1
@@ -119,7 +119,7 @@ class GroupViewController: FormViewController {
                             cell.imageView?.image = generateIconForEntityClass(updatedState)
                             if let picture = updatedState.Picture {
                                 getEntityPicture(picture).then { image in
-                                    cell.imageView?.image = image
+                                    cell.imageView?.image = image.scaledToSize(CGSize(width: 30, height: 30))
                                 }
                             }
                         }
@@ -133,17 +133,14 @@ class GroupViewController: FormViewController {
                             $0.value = CLLocation(latitude: latitude, longitude: longitude)
                         }.cellUpdate { cell, row in
                             if let updatedState = self.updatedStates[rowTag] {
-                                var detailText = updatedState.State
-                                if updatedState.State == "home" {
-                                    detailText = "Home"
-                                } else if updatedState.State == "not_home" {
-                                    detailText = "Not home"
+                                cell.detailTextLabel?.text = updatedState.State.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
+                                if let sensor = updatedState as? Sensor {
+                                    cell.detailTextLabel?.text = (sensor.State + " " + sensor.UnitOfMeasurement!).stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
                                 }
-                                cell.detailTextLabel?.text = detailText
                                 cell.imageView?.image = generateIconForEntityClass(updatedState)
                                 if let picture = updatedState.Picture {
                                     getEntityPicture(picture).then { image in
-                                        cell.imageView?.image = image
+                                        cell.imageView?.image = image.scaledToSize(CGSize(width: 30, height: 30))
                                     }
                                 }
                             }
@@ -166,7 +163,7 @@ class GroupViewController: FormViewController {
                                 cell.imageView?.image = generateIconForEntityClass(updatedState)
                                 if let picture = updatedState.Picture {
                                     getEntityPicture(picture).then { image in
-                                        cell.imageView?.image = image
+                                        cell.imageView?.image = image.scaledToSize(CGSize(width: 30, height: 30))
                                     }
                                 }
                             }
@@ -184,7 +181,7 @@ class GroupViewController: FormViewController {
                             cell.imageView?.image = generateIconForEntityClass(updatedState)
                             if let picture = updatedState.Picture {
                                 getEntityPicture(picture).then { image in
-                                    cell.imageView?.image = image
+                                    cell.imageView?.image = image.scaledToSize(CGSize(width: 30, height: 30))
                                 }
                             }
                         }
@@ -204,7 +201,7 @@ class GroupViewController: FormViewController {
                             cell.imageView?.image = generateIconForEntityClass(updatedState)
                             if let picture = updatedState.Picture {
                                 getEntityPicture(picture).then { image in
-                                    cell.imageView?.image = image
+                                    cell.imageView?.image = image.scaledToSize(CGSize(width: 30, height: 30))
                                 }
                             }
                         }
@@ -224,7 +221,7 @@ class GroupViewController: FormViewController {
                             cell.imageView?.image = generateIconForEntityClass(updatedState)
                             if let picture = updatedState.Picture {
                                 getEntityPicture(picture).then { image in
-                                    cell.imageView?.image = image
+                                    cell.imageView?.image = image.scaledToSize(CGSize(width: 30, height: 30))
                                 }
                             }
                         }
@@ -245,25 +242,26 @@ class GroupViewController: FormViewController {
         func StateChangedSSEEvent(notification: NSNotification){
             if let userInfo = notification.userInfo {
                 if let event = Mapper<StateChangedEvent>().map(userInfo) {
-                    let newState = event.NewState! as Entity
-                    let icon = generateIconForEntityClass(newState)
-                    self.updatedStates[event.EntityID!] = newState
-                    if event.EntityDomain == "switch" || event.EntityDomain == "light" || event.EntityDomain == "input_boolean" {
-                        if let row : SwitchRow = self.form.rowByTag(event.EntityID!) {
-                            row.value = (newState.State == "on") ? true : false
-                            row.cell.imageView?.image = icon
-                            row.updateCell()
-                            row.reload()
-                        }
-                    } else {
-                        if let row : LabelRow = self.form.rowByTag(event.EntityID!) {
-                            row.value = newState.State
-                            if let newStateSensor = newState as? Sensor {
-                                row.value = newState.State + " " + newStateSensor.UnitOfMeasurement!
+                    if let newState = event.NewState {
+                        let icon = generateIconForEntityClass(newState)
+                        self.updatedStates[event.EntityID!] = newState
+                        if event.EntityDomain == "switch" || event.EntityDomain == "light" || event.EntityDomain == "input_boolean" {
+                            if let row : SwitchRow = self.form.rowByTag(event.EntityID!) {
+                                row.value = (newState.State == "on") ? true : false
+                                row.cell.imageView?.image = icon
+                                row.updateCell()
+                                row.reload()
                             }
-                            row.cell.imageView?.image = icon
-                            row.updateCell()
-                            row.reload()
+                        } else {
+                            if let row : LabelRow = self.form.rowByTag(event.EntityID!) {
+                                row.value = newState.State
+                                if let newStateSensor = newState as? Sensor {
+                                    row.value = newState.State + " " + newStateSensor.UnitOfMeasurement!
+                                }
+                                row.cell.imageView?.image = icon
+                                row.updateCell()
+                                row.reload()
+                            }
                         }
                     }
                 }
