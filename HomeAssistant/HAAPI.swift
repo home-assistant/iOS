@@ -389,7 +389,12 @@ class HomeAssistantAPI: NSObject {
         if let deviceTrackerId = prefs.stringForKey("deviceId") {
             deviceContainer["deviceId"] = deviceTrackerId
         }
-        let permissionsContainer : [String:String] = ["location": PermissionScope().statusLocationAlways().description, "notifications": PermissionScope().statusNotifications().description]
+        var permissionsContainer : [String] = []
+        for status in PermissionScope().permissionStatuses([NotificationsPermission().type, LocationAlwaysPermission().type]) {
+            if status.1 == .Authorized {
+                permissionsContainer.append(status.0.prettyDescription.lowercaseString)
+            }
+        }
         deviceContainer["permissions"] = permissionsContainer
         return POST("ios/identify", parameters: deviceContainer)
     }
