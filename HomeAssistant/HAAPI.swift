@@ -67,6 +67,7 @@ class HomeAssistantAPI: NSObject {
         }
         
         eventSource.onMessage { (id, eventName, data) in
+            if data == "ping" { return }
             if let event = Mapper<SSEEvent>().map(data) {
                 NSNotificationCenter.defaultCenter().postNotificationName("sse."+event.Type, object: nil, userInfo: event.toJSON())
             } else {
