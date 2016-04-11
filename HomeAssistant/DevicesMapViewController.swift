@@ -55,6 +55,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         mapView.mapType = .Standard
         mapView.frame = view.frame
         mapView.delegate = self
+        mapView.showsUserLocation = false
         mapView.showsPointsOfInterest = false
         view.addSubview(mapView)
         

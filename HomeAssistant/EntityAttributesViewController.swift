@@ -23,10 +23,12 @@ class EntityAttributesViewController: FormViewController {
         }
         
         if let picture = self.entity?.Picture {
-            form +++ Section(header: "Picture", footer: "")
+            form +++ Section()
                 <<< TextAreaRow("entity_picture"){
                     $0.disabled = true
                     $0.cell.textView.scrollEnabled = false
+                    $0.cell.textView.backgroundColor = .clearColor()
+                    $0.cell.backgroundColor = .clearColor()
                 }.cellUpdate { cell, row in
                     (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance.getImage(picture).then { image -> Void in
                         let attachment = NSTextAttachment()
@@ -128,7 +130,7 @@ class EntityAttributesViewController: FormViewController {
                             mediaPlayer.setVolume(row.value!)
                         }
                         break
-                    case "entity_picture", "supported_media_commands":
+                    case "entity_picture", "icon", "supported_media_commands":
                         // Skip these attributes
                         break
                     default:
