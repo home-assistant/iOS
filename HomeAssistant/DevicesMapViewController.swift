@@ -147,7 +147,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? DeviceAnnotation {
-            let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "reuse")
+            let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: annotation.device?.ID)
             annotationView.animatesDrop = true
             annotationView.canShowCallout = true
             if let picture = annotation.device?.Picture {
