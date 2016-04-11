@@ -23,13 +23,34 @@ class SettingsViewController: FormViewController {
         
         self.navigationItem.rightBarButtonItem = aboutButton
         
+        let discovery = Discovery()
+        
+        let queue = dispatch_queue_create("io.robbie.homeassistant", nil);
+        dispatch_async(queue) { () -> Void in
+            NSLog("Starting Home Assistant discovery")
+            discovery.stop()
+            discovery.start()
+            sleep(60)
+            NSLog("Stopping Home Assistant discovery")
+            discovery.stop()
+        }
+
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)), name:"homeassistant.discovered", object: nil)
+        
+        form
+            +++ Section(header: "Discovered Home Assistants", footer: ""){
+                $0.tag = "discoveredInstances"
+                $0.hidden = true
+            }
+        
+        
         let pscope = PermissionScope()
         
         pscope.addPermission(NotificationsPermission(notificationCategories: nil),
                              message: "We use this to let you\r\nsend notifications to your device.")
         
         form
-            +++ Section(header: "Settings", footer: "Format should be protocol://hostname_or_ip:portnumber. NO slashes. Only provide a port number if not using 80/443. Examples: http://192.168.1.2:8123, https://demo.home-assistant.io.")
+            +++ Section(header: "", footer: "Format should be protocol://hostname_or_ip:portnumber. NO slashes. Only provide a port number if not using 80/443. Examples: http://192.168.1.2:8123, https://demo.home-assistant.io.")
             <<< URLRow("baseURL") {
                 $0.title = "Base URL"
                 if let baseURL = prefs.stringForKey("baseURL") {
@@ -46,11 +67,15 @@ class SettingsViewController: FormViewController {
                 $0.placeholder = "password"
             }
             <<< TextRow("deviceId") {
+                let cleanModel = UIDevice.currentDevice().model.lowercaseString.stringByReplacingOccurrencesOfString(" ", withString: "")
+                $0.placeholder = cleanModel
                 $0.title = "Device ID (location tracking)"
                 if let deviceId = prefs.stringForKey("deviceId") {
                     $0.value = deviceId
+                } else {
+                    $0.value = cleanModel
                 }
-                $0.placeholder = "iphone"
+                $0.cell.textField.autocapitalizationType = .None
             }
             <<< SwitchRow("allowAllGroups") {
                 $0.title = "Show all groups"
@@ -71,6 +96,9 @@ class SettingsViewController: FormViewController {
                         apiPass = pass
                     }
                     let APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: apiPass)
+                    APIClientSharedInstance.identifyDevice().then { ident -> Void in
+                        print("Identified!", ident)
+                    }
                     APIClientSharedInstance.GetConfig().then { config -> Void in
                         self.prefs.setValue(config.LocationName, forKey: "location_name")
                         self.prefs.setValue(config.Latitude, forKey: "latitude")
@@ -135,5 +163,42 @@ class SettingsViewController: FormViewController {
         }
     }
 
+    func HomeAssistantDiscovered(notification: NSNotification){
+        let discoverySection : Section = self.form.sectionByTag("discoveredInstances")!
+        discoverySection.hidden = false
+        if let userInfo = notification.userInfo as? [String:AnyObject] {
+            let name = userInfo["name"] as! String
+            if let row = self.form.rowByTag(name) {
+                print("Row already exists, skip!")
+            } else {
+                let baseUrl = userInfo["baseUrl"] as! String
+                let version = userInfo["version"] as! String
+                let needsAuth = userInfo["needs_auth"] as! Bool
+                discoverySection
+                    <<< ButtonRow(name) {
+                            $0.title = name
+                            $0.cellStyle = UITableViewCellStyle.Subtitle
+                        }.cellUpdate { cell, row in
+                            cell.textLabel?.textColor = .blackColor()
+                            cell.detailTextLabel?.text = baseUrl + " - " + version
+                        }.onCellSelection({ cell, row in
+                            print("Changed!")
+                            let urlRow: URLRow? = self.form.rowByTag("baseURL")
+                            urlRow!.value = NSURL(string: baseUrl)
+                            urlRow?.updateCell()
+                            if needsAuth == false {
+                                let apiPasswordRow: PasswordRow? = self.form.rowByTag("apiPassword")
+                                apiPasswordRow?.value = ""
+                                apiPasswordRow?.hidden = false
+                                apiPasswordRow?.evaluateHidden()
+                                apiPasswordRow?.updateCell()
+                            }
+                        })
+                self.tableView?.reloadData()
+            }
+        }
+        discoverySection.evaluateHidden()
+    }
+    
 }
 

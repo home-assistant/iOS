@@ -29,19 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let configuration = AWSServiceConfiguration(region:.USWest2, credentialsProvider:credentialsProvider)
         
         AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
-    
-//        let discovery = Discovery()
-//    
-//        let queue = dispatch_queue_create("io.robbie.homeassistant", nil);
-//        dispatch_async(queue) { () -> Void in
-//            NSLog("Starting discovery")
-//            discovery.stop()
-//            discovery.start()
-//            sleep(10)
-//            NSLog("Stopping discovery")
-//            discovery.stop()
-//        }
-        
+
         initAPI()
         
         return true

@@ -10,7 +10,6 @@
 		6E36319C48CF8F82D7702470 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88052763960E54E202BAED19 /* Pods_HomeAssistant.framework */; };
 		B60B35BA1CB6019B00887BE1 /* SwitchWithInfoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B35B91CB6019B00887BE1 /* SwitchWithInfoButton.swift */; };
 		B60B35BF1CB62AA200887BE1 /* SwitchWithInfoButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = B60B35BE1CB62AA200887BE1 /* SwitchWithInfoButton.xib */; };
-		B60B35C11CB63D2A00887BE1 /* DiscoverHA.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B35C01CB63D2A00887BE1 /* DiscoverHA.swift */; };
 		B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B624DE171CB8369200F413CE /* DevicesMapViewController.swift */; };
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
@@ -29,6 +28,7 @@
 		B6E47E881CBA01310027F6CA /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E871CBA01310027F6CA /* CallService.swift */; };
 		B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */; };
 		B6E47E8E1CBA3EDB0027F6CA /* ZoneComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */; };
+		B6E47E9A1CBB47EC0027F6CA /* DeviceUID.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E991CBB47EC0027F6CA /* DeviceUID.m */; };
 		B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E857A11CB1CCCC00F96925 /* Utils.swift */; };
 		B6F02BE91CB46AF40029ABE7 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BE81CB46AF40029ABE7 /* Entity.swift */; };
 		B6F02BEB1CB46D090029ABE7 /* GroupComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BEA1CB46D090029ABE7 /* GroupComponent.swift */; };
@@ -80,7 +80,6 @@
 		92AFEE5E5170AAC8E1C39DEE /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
 		B60B35B91CB6019B00887BE1 /* SwitchWithInfoButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchWithInfoButton.swift; sourceTree = "<group>"; };
 		B60B35BE1CB62AA200887BE1 /* SwitchWithInfoButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SwitchWithInfoButton.xib; sourceTree = "<group>"; };
-		B60B35C01CB63D2A00887BE1 /* DiscoverHA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverHA.swift; sourceTree = "<group>"; };
 		B624DE171CB8369200F413CE /* DevicesMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesMapViewController.swift; sourceTree = "<group>"; };
 		B6393F851CB255F200503916 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
 		B6393F871CB2561100503916 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -105,6 +104,8 @@
 		B6E47E871CBA01310027F6CA /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceExecuted.swift; sourceTree = "<group>"; };
 		B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneComponent.swift; sourceTree = "<group>"; };
+		B6E47E981CBB47CC0027F6CA /* DeviceUID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceUID.h; sourceTree = "<group>"; };
+		B6E47E991CBB47EC0027F6CA /* DeviceUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceUID.m; sourceTree = "<group>"; };
 		B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HomeAssistant-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		B6F02BE81CB46AF40029ABE7 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
@@ -239,8 +240,9 @@
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 				B6393F851CB255F200503916 /* EurekaLocationRow.swift */,
 				B6F700511CB374F700753BAB /* RootTabBarViewController.swift */,
-				B60B35C01CB63D2A00887BE1 /* DiscoverHA.swift */,
 				B624DE171CB8369200F413CE /* DevicesMapViewController.swift */,
+				B6E47E981CBB47CC0027F6CA /* DeviceUID.h */,
+				B6E47E991CBB47EC0027F6CA /* DeviceUID.m */,
 			);
 			path = HomeAssistant;
 			sourceTree = "<group>";
@@ -579,6 +581,7 @@
 				B6F02BF01CB46EC70029ABE7 /* Bootstrap.swift in Sources */,
 				B6F02BFA1CB47F930029ABE7 /* Events.swift in Sources */,
 				B6F02C0F1CB489770029ABE7 /* BinarySensorComponent.swift in Sources */,
+				B6E47E9A1CBB47EC0027F6CA /* DeviceUID.m in Sources */,
 				B6F02C121CB489770029ABE7 /* InputBooleanComponent.swift in Sources */,
 				B6F02C101CB489770029ABE7 /* DeviceTrackerComponent.swift in Sources */,
 				B6F02C191CB489770029ABE7 /* SensorComponent.swift in Sources */,
@@ -589,7 +592,6 @@
 				B6F02C171CB489770029ABE7 /* SceneComponent.swift in Sources */,
 				B657A91A1CA647C500121384 /* HAAPI.swift in Sources */,
 				B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */,
-				B60B35C11CB63D2A00887BE1 /* DiscoverHA.swift in Sources */,
 				B6F02C1B1CB489770029ABE7 /* SwitchComponent.swift in Sources */,
 				B6F02C111CB489770029ABE7 /* GarageDoorComponent.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,

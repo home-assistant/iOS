@@ -12,7 +12,7 @@ import ObjectMapper
 class SSEEvent: MappableCluster {
     var Type: String = ""
     var TimeFired: NSDate?
-    var Origin: String = ""
+    var Origin: String?
     
     required init?(_ map: Map){
         

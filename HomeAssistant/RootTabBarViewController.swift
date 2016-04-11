@@ -10,6 +10,7 @@ import UIKit
 import MBProgressHUD
 import Whisper
 import ObjectMapper
+import PermissionScope
 
 class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
@@ -103,11 +104,13 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     
 //                    let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
                     
-                    let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
-                    
                     var rightBarItems : [UIBarButtonItem] = []
                     
-                    rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
+                    if PermissionScope().statusLocationAlways() == .Authorized {
+                        let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+                        
+                        rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
+                    }
                     
 //                    rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
                     
@@ -174,6 +177,9 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
     
     func sendCurrentLocation(sender: UIButton) {
         if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
+            APIClientSharedInstance.identifyDevice().then { ident -> Void in
+                print("Identified!", ident)
+            }
             APIClientSharedInstance.sendOneshotLocation().then { success -> Void in
                 print("Did succeed?", success)
                 let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.Alert)

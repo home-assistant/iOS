@@ -18,6 +18,7 @@ import Whisper
 import AlamofireObjectMapper
 import ObjectMapper
 import DeviceKit
+import PermissionScope
 
 let prefs = NSUserDefaults.standardUserDefaults()
 
@@ -376,16 +377,20 @@ class HomeAssistantAPI: NSObject {
     func identifyDevice() -> Promise<JSON> {
         let device = UIDevice.currentDevice()
         let deviceKitDevice = Device()
-        let deviceInfo = ["name": device.name, "systemName": device.systemName, "systemVersion": device.systemVersion, "model": device.model, "localizedModel": device.localizedModel, "identifierForVendor": device.identifierForVendor!.UUIDString, "type": deviceKitDevice.description]
+        let deviceInfo = ["name": device.name, "systemName": device.systemName, "systemVersion": device.systemVersion, "model": device.model, "localizedModel": device.localizedModel, "type": deviceKitDevice.description, "permanentID": DeviceUID.uid()]
         let buildNumber : Int? = Int(NSBundle.mainBundle().infoDictionary!["CFBundleVersion"]! as! String)
         let versionNumber = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"]!
         let bundleID = NSBundle.mainBundle().bundleIdentifier
         let appInfo : [String: AnyObject] = ["bundleIdentifer": bundleID!, "versionNumber": versionNumber, "buildNumber": buildNumber!]
-        var pushToken = ""
+        var deviceContainer : [String : AnyObject] = ["device": deviceInfo, "app": appInfo, "permissions": [:]]
         if let endpointArn = prefs.stringForKey("endpointARN") {
-            pushToken = endpointArn.componentsSeparatedByString("/").last!
+            deviceContainer["pushToken"] = endpointArn.componentsSeparatedByString("/").last!
         }
-        let deviceContainer : [String : AnyObject] = ["device": deviceInfo, "pushToken": pushToken, "app": appInfo]
+        if let deviceTrackerId = prefs.stringForKey("deviceId") {
+            deviceContainer["deviceId"] = deviceTrackerId
+        }
+        let permissionsContainer : [String:String] = ["location": PermissionScope().statusLocationAlways().description, "notifications": PermissionScope().statusNotifications().description]
+        deviceContainer["permissions"] = permissionsContainer
         return POST("ios/identify", parameters: deviceContainer)
     }
     
@@ -413,4 +418,95 @@ class HomeAssistantAPI: NSObject {
         }
     }
 
+}
+
+class BrowserDelegate : NSObject, NSNetServiceBrowserDelegate, NSNetServiceDelegate {
+    var resolving = [NSNetService]()
+    
+    func ipv4Enpoint(data: NSData) -> String {
+        var address = sockaddr()
+        data.getBytes(&address, length: sizeof(sockaddr))
+        if address.sa_family == sa_family_t(AF_INET) {
+            var addressIPv4 = sockaddr_in()
+            data.getBytes(&addressIPv4, length: sizeof(sockaddr))
+            let host = String.fromCString(inet_ntoa(addressIPv4.sin_addr))
+            let port = Int(CFSwapInt16(addressIPv4.sin_port))
+            return host!+":"+String(port)
+        }
+        return ""
+    }
+    
+    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didFindDomain domainName: String, moreComing moreDomainsComing: Bool) {
+        NSLog("BrowserDelegate.netServiceBrowser.didFindDomain")
+    }
+    
+    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didRemoveDomain domainName: String, moreComing moreDomainsComing: Bool) {
+        NSLog("BrowserDelegate.netServiceBrowser.didRemoveDomain")
+    }
+    
+    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didFindService netService: NSNetService, moreComing moreServicesComing: Bool) {
+        NSLog("BrowserDelegate.netServiceBrowser.didFindService")
+        netService.delegate = self
+        resolving.append(netService)
+        netService.resolveWithTimeout(0.0)
+    }
+    
+    func netServiceDidResolveAddress(sender: NSNetService) {
+        let dataDict = NSNetService.dictionaryFromTXTRecordData(sender.TXTRecordData()!)
+        let baseUrl = copyStringFromTXTDict(dataDict, which: "base_url")
+        let needsPassword = (copyStringFromTXTDict(dataDict, which: "requires_api_password") == "true")
+        let version = copyStringFromTXTDict(dataDict, which: "version")
+        let discoveryInfo : [NSObject:AnyObject] = ["name": sender.name, "baseUrl": baseUrl!, "needs_auth": needsPassword, "version": version!]
+        NSNotificationCenter.defaultCenter().postNotificationName("homeassistant.discovered", object: nil, userInfo: discoveryInfo)
+    }
+    
+    private func copyStringFromTXTDict(dict: [NSObject : AnyObject], which: String) -> String? {
+        if let data = dict[which] as? NSData {
+            return NSString(data: data, encoding: NSUTF8StringEncoding) as? String
+        }
+        else {
+            return nil
+        }
+    }
+    
+    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didRemoveService netService: NSNetService, moreComing moreServicesComing: Bool) {
+        NSLog("BrowserDelegate.netServiceBrowser.didRemoveService")
+    }
+    
+    func netServiceBrowserWillSearch(aNetServiceBrowser: NSNetServiceBrowser){
+        NSLog("BrowserDelegate.netServiceBrowserWillSearch")
+    }
+    
+    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didNotSearch errorInfo: [String : NSNumber]) {
+        NSLog("BrowserDelegate.netServiceBrowser.didNotSearch")
+    }
+    
+//    func netServiceBrowserDidStopSearch(netServiceBrowser: NSNetServiceBrowser) {
+//        NSLog("BrowserDelegate.netServiceBrowserDidStopSearch")
+//    }
+    
+}
+
+
+class Discovery {
+    let BM_DOMAIN = "local."
+    let BM_TYPE = "_home-assistant._tcp."
+    
+    var nsb: NSNetServiceBrowser
+    var nsbdel: BrowserDelegate?
+    
+    init() {
+        self.nsb = NSNetServiceBrowser()
+    }
+    
+    func start() {
+        self.nsbdel = BrowserDelegate()
+        nsb.delegate = nsbdel
+        nsb.searchForServicesOfType(BM_TYPE, inDomain: BM_DOMAIN)
+    }
+    
+    func stop() {
+        nsb.stop()
+    }
+    
 }
