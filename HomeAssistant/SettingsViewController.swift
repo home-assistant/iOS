@@ -49,6 +49,9 @@ class SettingsViewController: FormViewController {
         pscope.addPermission(NotificationsPermission(notificationCategories: nil),
                              message: "We use this to let you\r\nsend notifications to your device.")
         
+        pscope.addPermission(LocationAlwaysPermission(),
+                             message: "We use this to inform\r\nHome Assistant of your device presence.")
+        
         form
             +++ Section(header: "", footer: "Format should be protocol://hostname_or_ip:portnumber. NO slashes. Only provide a port number if not using 80/443. Examples: http://192.168.1.2:8123, https://demo.home-assistant.io.")
             <<< URLRow("baseURL") {
@@ -106,10 +109,6 @@ class SettingsViewController: FormViewController {
                         self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
                         self.prefs.setValue(config.Timezone, forKey: "time_zone")
                         self.prefs.setValue(config.Version, forKey: "version")
-                        if config.Components!.contains("device_tracker") {
-                            pscope.addPermission(LocationAlwaysPermission(),
-                                message: "We use this to inform\r\nHome Assistant of your device presence.")
-                        }
                     }
                 } else {
                     print("Error when trying to save")
@@ -168,7 +167,7 @@ class SettingsViewController: FormViewController {
         discoverySection.hidden = false
         if let userInfo = notification.userInfo as? [String:AnyObject] {
             let name = userInfo["name"] as! String
-            if let row = self.form.rowByTag(name) {
+            if self.form.rowByTag(name) != nil {
                 print("Row already exists, skip!")
             } else {
                 let baseUrl = userInfo["baseUrl"] as! String

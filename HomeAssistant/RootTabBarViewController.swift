@@ -14,6 +14,9 @@ import PermissionScope
 
 class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
+    var deviceTrackerEntities = [Entity]()
+    var zoneEntities = [Entity]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -34,6 +37,8 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         
         if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
             APIClientSharedInstance.GetStates().then { states -> Void in
+                self.deviceTrackerEntities = states.filter { return $0.Domain == "device_tracker" }
+                self.zoneEntities = states.filter { return $0.Domain == "zone" }
                 let allGroups = states.filter {
                     let entityType = getEntityType($0.ID)
                     var shouldReturn = true
@@ -102,8 +107,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     let icon = getIconForIdentifier(groupIcon, iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
                     groupView.tabBarItem = UITabBarItem(title: friendlyName.capitalizedString, image: icon, tag: index)
                     
-//                    let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
-                    
                     var rightBarItems : [UIBarButtonItem] = []
                     
                     if PermissionScope().statusLocationAlways() == .Authorized {
@@ -112,7 +115,9 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                         rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
                     }
                     
-//                    rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
+                    let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+                    
+                    rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
                     
                     groupView.navigationItem.setRightBarButtonItems(rightBarItems, animated: true)
                     
@@ -170,7 +175,9 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
     func openMapView(sender: UIButton) {
         let devicesMapView = DevicesMapViewController()
-        devicesMapView.title = "All Devices"
+        devicesMapView.devices = deviceTrackerEntities
+        devicesMapView.zones = zoneEntities
+        
         let navController = UINavigationController(rootViewController: devicesMapView)
         self.presentViewController(navController, animated: true, completion: nil)
     }

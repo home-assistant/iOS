@@ -198,7 +198,7 @@ class HomeAssistantAPI: NSObject {
                         print("Response was not JSON!", response)
                     }
                 case .Failure(let error):
-                    print("Error on GET request to \(url):", error)
+                    print("Error on POST request to \(url):", error)
                     reject(error)
                 }
             }

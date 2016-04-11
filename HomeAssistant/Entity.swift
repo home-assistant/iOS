@@ -10,6 +10,8 @@ import Foundation
 import ObjectMapper
 
 class Entity: MappableCluster {
+    let prefs = NSUserDefaults.standardUserDefaults()
+    
     var ID: String = ""
     var Domain: String = ""
     var State: String = ""
@@ -73,6 +75,11 @@ class Entity: MappableCluster {
     }
     
     func mapping(map: Map) {
+        var timezone = NSTimeZone.localTimeZone()
+        if let HATimezone = prefs.stringForKey("time_zone") {
+            timezone = NSTimeZone(name: HATimezone)!
+        }
+        
         ID            <- map["entity_id"]
         Domain        <- (map["entity_id"], EntityIDToDomainTransform())
         State         <- map["state"]
@@ -82,8 +89,8 @@ class Entity: MappableCluster {
         Icon          <- map["attributes.icon"]
         MobileIcon    <- map["attributes.mobile_icon"]
         Picture       <- map["attributes.entity_picture"]
-        LastChanged   <- (map["last_changed"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
-        LastUpdated   <- (map["last_updated"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
+        LastChanged   <- (map["last_changed"], CustomDateFormatTransformWithTimezone(formatString: "HH:mm:ss dd-MM-yyyy", timezone: timezone))
+        LastUpdated   <- (map["last_updated"], CustomDateFormatTransformWithTimezone(formatString: "HH:mm:ss dd-MM-yyyy", timezone: timezone))
     }
     
     func turnOn() {
@@ -118,5 +125,17 @@ public class EntityIDToDomainTransform: TransformType {
     
     public func transformToJSON(value: String?) -> String? {
         return nil
+    }
+}
+
+public class CustomDateFormatTransformWithTimezone: DateFormatterTransform {
+    
+    public init(formatString: String, timezone: NSTimeZone) {
+        let formatter = NSDateFormatter()
+        formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        formatter.dateFormat = formatString
+        formatter.timeZone = timezone
+        
+        super.init(dateFormatter: formatter)
     }
 }
