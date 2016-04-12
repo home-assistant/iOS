@@ -11,6 +11,16 @@ sudo gem install fastlane
 fastlane ios test
 ```
 Runs all the tests
+### ios xcode
+```
+fastlane ios xcode
+```
+Installs FixCode which disables the "Fix Issue" button in Xcode
+### ios certs
+```
+fastlane ios certs
+```
+Fetches the provisioning profiles so you can build locally and deploy to your device
 ### ios beta
 ```
 fastlane ios beta

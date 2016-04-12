@@ -18,13 +18,25 @@ default_platform :ios
 platform :ios do
   before_all do
     # ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
-    cocoapods
-
+    # cocoapods
   end
 
   desc "Runs all the tests"
   lane :test do
     scan
+  end
+
+  desc "Installs FixCode which disables the \"Fix Issue\" button in Xcode"
+  lane :xcode do
+    install_xcode_plugin(
+      url: "https://github.com/fastlane/FixCode/releases/download/0.2.0/FixCode.xcplugin.zip"
+    )
+  end
+
+  desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
+  lane :certs do
+    match(type: "development")
+    match(type: "appstore")
   end
 
   def change_log_since_last_tag
@@ -59,8 +71,8 @@ platform :ios do
   lane :beta do
     increment_build_number
     commit_version_bump
-    # match(type: "appstore") # more information: https://codesigning.guide
-    gym(scheme: "HomeAssistant") # Build your app - more options available
+    match(type: "appstore")
+    gym(scheme: "HomeAssistant")
     pilot
 
     # sh "your_script.sh"
@@ -113,11 +125,11 @@ platform :ios do
       clean: true
     )
 
-    testflight(
-      changelog: change_log,
-      skip_submission: true,
-      distribute_external: false
-    )
+    # testflight(
+    #   changelog: change_log,
+    #   skip_submission: true,
+    #   distribute_external: false
+    # )
 
     set_github_release(
       repository_name: "home-assistant/home-assistant-iOS",
@@ -141,7 +153,7 @@ platform :ios do
   lane :appstore do
     increment_build_number
     commit_version_bump
-    # match(type: "appstore")
+    match(type: "appstore")
     # snapshot
     gym(scheme: "HomeAssistant") # Build your app - more options available
     deliver(force: true)
