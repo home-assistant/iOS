@@ -1,0 +1,9 @@
+git_url "https://github.com/home-assistant/ios-certificates"
+
+type "development" # The default type, can be: appstore, adhoc or development
+
+app_identifier "io.robbie.HomeAssistant"
+# username "user@fastlane.tools" # Your Apple Developer Portal username
+
+# For all available options run `match --help`
+# Remove the # in the beginning of the line to enable the other options
