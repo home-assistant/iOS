@@ -105,16 +105,6 @@ platform :ios do
 
     change_log = change_log_since_last_tag
 
-    skip_metadata = options[:skip_metadata]
-
-    unless skip_metadata == true
-      clear_derived_data
-      # screenshots
-      update_metadata
-    else
-      Helper.log.info("Skipping taking screenshots and uploading metadata".green)
-    end
-
     clean_build_artifacts
     clear_derived_data
 
