@@ -64,177 +64,177 @@ func intFromHexString(hexStr: String) -> UInt32 {
 func iconForDomain(domain: String) -> String {
     switch (domain) {
     case "alarm_control_panel":
-        return "mdi:bell-outline";
+        return "mdi:bell-outline"
     case "automation":
-        return "mdi:playlist-play";
+        return "mdi:playlist-play"
     case "binary_sensor":
-        return "mdi:radiobox-blank";
+        return "mdi:radiobox-blank"
     case "camera":
-        return "mdi:video";
+        return "mdi:video"
     case "configurator":
-        return "mdi:settings";
+        return "mdi:settings"
     case "conversation":
-        return "mdi:text-to-speech";
+        return "mdi:text-to-speech"
     case "device_tracker":
-        return "mdi:account";
+        return "mdi:account"
     case "garage_door":
-        return "mdi:glassdoor";
+        return "mdi:glassdoor"
     case "group":
-        return "mdi:google-circles-communities";
+        return "mdi:google-circles-communities"
     case "homeassistant":
-        return "mdi:home";
+        return "mdi:home"
     case "input_boolean":
-        return "mdi:drawing";
+        return "mdi:drawing"
     case "input_select":
-        return "mdi:format-list-bulleted";
+        return "mdi:format-list-bulleted"
     case "input_slider":
-        return "mdi:ray-vertex";
+        return "mdi:ray-vertex"
     case "light":
-        return "mdi:lightbulb";
+        return "mdi:lightbulb"
     case "lock":
-        return "mdi:lock-open";
+        return "mdi:lock-open"
     case "media_player":
-        return "mdi:cast";
+        return "mdi:cast"
     case "notify":
-        return "mdi:comment-alert";
+        return "mdi:comment-alert"
     case "proximity":
-        return "mdi:apple-safari";
+        return "mdi:apple-safari"
     case "rollershutter":
-        return "mdi:window-closed";
+        return "mdi:window-closed"
     case "scene":
-        return "mdi:google-pages";
+        return "mdi:google-pages"
     case "script":
-        return "mdi:file-document";
+        return "mdi:file-document"
     case "sensor":
-        return "mdi:eye";
+        return "mdi:eye"
     case "simple_alarm":
-        return "mdi:bell";
+        return "mdi:bell"
     case "sun":
-        return "mdi:white-balance-sunny";
+        return "mdi:white-balance-sunny"
     case "switch":
-        return "mdi:flash";
+        return "mdi:flash"
     case "thermostat":
-        return "mdi:nest-thermostat";
+        return "mdi:nest-thermostat"
     case "updater":
-        return "mdi:cloud-upload";
+        return "mdi:cloud-upload"
     case "weblink":
-        return "mdi:open-in-new";
+        return "mdi:open-in-new"
     default:
-        return "mdi:bookmark";
+        return "mdi:bookmark"
     }
 }
 
 func iconForDomainAndState(domain: String, state: String) -> String {
     switch (domain) {
     case "alarm_control_panel":
-        return (state == "disarmed") ? "mdi:bell-outline" : "mdi:bell";
+        return (state == "disarmed") ? "mdi:bell-outline" : "mdi:bell"
     case "automation":
-        return "mdi:playlist-play";
+        return "mdi:playlist-play"
     case "binary_sensor":
-        return (state == "off") ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle";
+        return (state == "off") ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle"
     case "camera":
-        return "mdi:video";
+        return "mdi:video"
     case "configurator":
-        return "mdi:settings";
+        return "mdi:settings"
     case "conversation":
-        return "mdi:text-to-speech";
+        return "mdi:text-to-speech"
     case "device_tracker":
-        return "mdi:account";
+        return "mdi:account"
     case "garage_door":
-        return "mdi:glassdoor";
+        return "mdi:glassdoor"
     case "group":
-        return "mdi:google-circles-communities";
+        return "mdi:google-circles-communities"
     case "homeassistant":
-        return "mdi:home";
+        return "mdi:home"
     case "input_boolean":
-        return "mdi:drawing";
+        return "mdi:drawing"
     case "input_select":
-        return "mdi:format-list-bulleted";
+        return "mdi:format-list-bulleted"
     case "input_slider":
-        return "mdi:ray-vertex";
+        return "mdi:ray-vertex"
     case "light":
-        return "mdi:lightbulb";
+        return "mdi:lightbulb"
     case "lock":
-        return (state == "unlocked") ? "mdi:lock-open" : "mdi:lock";
+        return (state == "unlocked") ? "mdi:lock-open" : "mdi:lock"
     case "media_player":
         return (state != "off" && state != "idle") ? "mdi:cast-connected" : "mdi:cast"
     case "notify":
-        return "mdi:comment-alert";
+        return "mdi:comment-alert"
     case "proximity":
-        return "mdi:apple-safari";
+        return "mdi:apple-safari"
     case "rollershutter":
-        return (state == "open") ? "mdi:window-open" : "mdi:window-closed";
+        return (state == "open") ? "mdi:window-open" : "mdi:window-closed"
     case "scene":
-        return "mdi:google-pages";
+        return "mdi:google-pages"
     case "script":
-        return "mdi:file-document";
+        return "mdi:file-document"
     case "sensor":
-        return "mdi:eye";
+        return "mdi:eye"
     case "simple_alarm":
-        return "mdi:bell";
+        return "mdi:bell"
     case "sun":
-        return "mdi:white-balance-sunny";
+        return "mdi:white-balance-sunny"
     case "switch":
-        return "mdi:flash";
+        return "mdi:flash"
     case "thermostat":
-        return "mdi:nest-thermostat";
+        return "mdi:nest-thermostat"
     case "updater":
-        return "mdi:cloud-upload";
+        return "mdi:cloud-upload"
     case "weblink":
-        return "mdi:open-in-new";
+        return "mdi:open-in-new"
     default:
         return "mdi:bookmark"
     }
 }
 
 func binarySensorIcon(entity: SwiftyJSON.JSON) -> String {
-    let activated = (entity["state"].stringValue == "off");
+    let activated = (entity["state"].stringValue == "off")
     switch (entity["attributes"]["sensor_class"].stringValue) {
     case "opening":
-        return activated ? "mdi:crop-square" : "mdi:exit-to-app";
+        return activated ? "mdi:crop-square" : "mdi:exit-to-app"
     case "moisture":
-        return activated ? "mdi:water-off" : "mdi:water";
+        return activated ? "mdi:water-off" : "mdi:water"
     case "light":
-        return activated ? "mdi:brightness-5" : "mdi:brightness-7";
+        return activated ? "mdi:brightness-5" : "mdi:brightness-7"
     case "sound":
-        return activated ? "mdi:music-note-off" : "mdi:music-note";
+        return activated ? "mdi:music-note-off" : "mdi:music-note"
     case "vibration":
-        return activated ? "mdi:crop-portrait" : "mdi:vibrate";
+        return activated ? "mdi:crop-portrait" : "mdi:vibrate"
     case "connectivity":
-        return activated ? "mdi:server-network-off" : "mdi:server-network";
+        return activated ? "mdi:server-network-off" : "mdi:server-network"
     case "safety", "gas", "smoke", "power":
-        return activated ? "mdi:verified" : "mdi:alert";
+        return activated ? "mdi:verified" : "mdi:alert"
     case "motion":
-        return activated ? "mdi:walk" : "mdi:run";
+        return activated ? "mdi:walk" : "mdi:run"
     default:
-        return activated ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle";
+        return activated ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle"
     }
 }
 
 func binarySensorIconEntity(entity: BinarySensor) -> String {
-    let activated = (entity.IsOn == false);
+    let activated = (entity.IsOn == false)
     if entity.SensorClass == nil {
-        return activated ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle";
+        return activated ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle"
     }
     switch (entity.SensorClass!) {
     case "opening":
-        return activated ? "mdi:crop-square" : "mdi:exit-to-app";
+        return activated ? "mdi:crop-square" : "mdi:exit-to-app"
     case "moisture":
-        return activated ? "mdi:water-off" : "mdi:water";
+        return activated ? "mdi:water-off" : "mdi:water"
     case "light":
-        return activated ? "mdi:brightness-5" : "mdi:brightness-7";
+        return activated ? "mdi:brightness-5" : "mdi:brightness-7"
     case "sound":
-        return activated ? "mdi:music-note-off" : "mdi:music-note";
+        return activated ? "mdi:music-note-off" : "mdi:music-note"
     case "vibration":
-        return activated ? "mdi:crop-portrait" : "mdi:vibrate";
+        return activated ? "mdi:crop-portrait" : "mdi:vibrate"
     case "connectivity":
-        return activated ? "mdi:server-network-off" : "mdi:server-network";
+        return activated ? "mdi:server-network-off" : "mdi:server-network"
     case "safety", "gas", "smoke", "power":
-        return activated ? "mdi:verified" : "mdi:alert";
+        return activated ? "mdi:verified" : "mdi:alert"
     case "motion":
-        return activated ? "mdi:walk" : "mdi:run";
+        return activated ? "mdi:walk" : "mdi:run"
     default:
-        return activated ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle";
+        return activated ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle"
     }
 }
 
@@ -245,21 +245,21 @@ func stateIcon(entity: SwiftyJSON.JSON) -> String {
         return entity["attributes"]["mobile_icon"].stringValue
     }
     if (entity["attributes"]["icon"].exists()) {
-        return entity["attributes"]["icon"].stringValue;
+        return entity["attributes"]["icon"].stringValue
     }
     
     if (entity["attributes"]["unit_of_measurement"].exists() && domain == "sensor") {
-        let unit = entity["attributes"]["unit_of_measurement"].stringValue;
+        let unit = entity["attributes"]["unit_of_measurement"].stringValue
         if (unit == "°C" || unit == "°F") {
-            return "mdi:thermometer";
+            return "mdi:thermometer"
         } else if (unit == "Mice") {
-            return "mdi:mouse-variant";
+            return "mdi:mouse-variant"
         }
     } else if (domain == "binary_sensor") {
-        return binarySensorIcon(entity);
+        return binarySensorIcon(entity)
     }
     
-    return iconForDomainAndState(domain, state: entity["state"].stringValue);
+    return iconForDomainAndState(domain, state: entity["state"].stringValue)
 }
 
 func stateIconEntity(entity: Entity) -> String {
@@ -267,7 +267,7 @@ func stateIconEntity(entity: Entity) -> String {
         return entity.MobileIcon!
     }
     if entity.Icon != nil {
-        return entity.Icon!;
+        return entity.Icon!
     }
     
     if let sensor = entity as? Sensor {
@@ -280,14 +280,13 @@ func stateIconEntity(entity: Entity) -> String {
         return binarySensorIconEntity(binarySensor)
     }
     
-    return iconForDomainAndState(entity.Domain, state: entity.State);
+    return iconForDomainAndState(entity.Domain, state: entity.State)
 }
 
 
 let entityPicturesCache = Cache<UIImage>(name: "entity_pictures")
 
 func getEntityPicture(entityPictureURL: String) -> Promise<UIImage> {
-    print("Entity picture URL!!! '\(entityPictureURL)'")
     var url = entityPictureURL
     return Promise { fulfill, reject in
         if url.containsString("/local/") || url.containsString("/api/") {
@@ -347,7 +346,7 @@ func generateIconForEntityClass(entity: Entity) -> UIImage {
 
 extension UIImage{
     func scaledToSize(size: CGSize) -> UIImage{
-        UIGraphicsBeginImageContextWithOptions(size, false, 0.0);
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
         self.drawInRect(CGRectMake(0, 0, size.width, size.height))
         let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
