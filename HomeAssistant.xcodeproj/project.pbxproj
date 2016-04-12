@@ -745,6 +745,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
+				CURRENT_PROJECT_VERSION = 2;
 				INFOPLIST_FILE = HomeAssistant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -799,6 +800,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "7733f447-b2e5-4bd5-befb-ebfec2c5f2b2";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -808,6 +810,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
+				CURRENT_PROJECT_VERSION = 2;
 				INFOPLIST_FILE = HomeAssistant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -862,6 +865,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "7733f447-b2e5-4bd5-befb-ebfec2c5f2b2";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
