@@ -72,7 +72,7 @@ platform :ios do
     increment_build_number
     commit_version_bump
     match(type: "appstore")
-    gym(scheme: "HomeAssistant", workspace: "HomeAssistant.xcworkspace")
+    gym(scheme: "HomeAssistant", workspace: "HomeAssistant.xcworkspace", output_directory: "./build")
     pilot
 
     # sh "your_script.sh"
@@ -113,21 +113,21 @@ platform :ios do
       workspace: "HomeAssistant.xcworkspace",
       scheme: "HomeAssistant",
       configuration: "Release",
-      clean: true
+      clean: true,
+      output_directory: "./build"
     )
 
-    # testflight(
-    #   changelog: change_log,
-    #   skip_submission: true,
-    #   distribute_external: false
-    # )
+    testflight(
+      changelog: change_log,
+      skip_submission: true,
+      distribute_external: false
+    )
 
     set_github_release(
       repository_name: "home-assistant/home-assistant-iOS",
       api_token: ENV["GITHUB_API_TOKEN"],
       name: complete_version_number,
       tag_name: tag_name("testflight", version_number, build_number),
-      commitish: git_branch,
       description: change_log_since_last_tag,
       is_prerelease: false
     )
@@ -146,7 +146,7 @@ platform :ios do
     commit_version_bump
     match(type: "appstore")
     # snapshot
-    gym(scheme: "HomeAssistant", workspace: "HomeAssistant.xcworkspace") # Build your app - more options available
+    gym(scheme: "HomeAssistant", workspace: "HomeAssistant.xcworkspace", output_directory: "./build") # Build your app - more options available
     deliver(force: true)
     # frameit
   end
