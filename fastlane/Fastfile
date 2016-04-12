@@ -72,7 +72,7 @@ platform :ios do
     increment_build_number
     commit_version_bump
     match(type: "appstore")
-    gym(scheme: "HomeAssistant")
+    gym(scheme: "HomeAssistant", workspace: "HomeAssistant.xcworkspace")
     pilot
 
     # sh "your_script.sh"
@@ -110,6 +110,7 @@ platform :ios do
 
     sigh(output_path: "/tmp")
     gym(
+      workspace: "HomeAssistant.xcworkspace",
       scheme: "HomeAssistant",
       configuration: "Release",
       clean: true
@@ -145,7 +146,7 @@ platform :ios do
     commit_version_bump
     match(type: "appstore")
     # snapshot
-    gym(scheme: "HomeAssistant") # Build your app - more options available
+    gym(scheme: "HomeAssistant", workspace: "HomeAssistant.xcworkspace") # Build your app - more options available
     deliver(force: true)
     # frameit
   end
