@@ -149,7 +149,7 @@ platform :ios do
 
   after_all do |lane|
     # This block is called, only if the executed lane was successful
-
+    # Should really have Gitter hooks
   end
 
   error do |lane, exception|
