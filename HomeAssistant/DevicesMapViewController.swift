@@ -85,10 +85,10 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             dropPin.title = device.FriendlyName
             var subtitle = ""
             if let changedTime = device.LastChanged {
-                subtitle = "Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago"
+                subtitle = "Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago / "
             }
             if let battery = device.Battery {
-                subtitle += " / Battery: "+String(battery)+"%"
+                subtitle += "Battery: "+String(battery)+"%"
             }
             dropPin.subtitle = subtitle
             dropPin.device = device
