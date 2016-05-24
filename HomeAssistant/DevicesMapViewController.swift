@@ -83,14 +83,14 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             let dropPin = DeviceAnnotation()
             dropPin.coordinate = device.locationCoordinates()
             dropPin.title = device.FriendlyName
-            var subtitle = ""
+            var subtitlePieces : [String] = []
             if let changedTime = device.LastChanged {
-                subtitle = "Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago / "
+                subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago")
             }
             if let battery = device.Battery {
-                subtitle += "Battery: "+String(battery)+"%"
+                subtitlePieces.append("Battery: "+String(battery)+"%")
             }
-            dropPin.subtitle = subtitle
+            dropPin.subtitle = subtitlePieces.joinWithSeparator(" / ")
             dropPin.device = device
             mapView.addAnnotation(dropPin)
             
@@ -157,7 +157,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             } else {
                 annotationView.leftCalloutAccessoryView = UIImageView(image: generateIconForEntityClass(annotation.device!))
             }
-            annotationView.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+//            annotationView.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
             return annotationView
         } else {
             return nil

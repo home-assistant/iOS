@@ -41,26 +41,26 @@ class GroupViewController: FormViewController {
             let entityType = getEntityType(rowTag)
             self.updatedStates[rowTag] = entity
             switch entityType {
-                case "switch", "light", "input_boolean":
-                    self.form.last! <<< SwitchRow(rowTag) {
-                        $0.title = entity.FriendlyName
-                        $0.value = (entity.State == "on") ? true : false
-                    }.onChange { row -> Void in
-                        if (row.value == true) {
-                            self.APIClientSharedInstance.turnOn(entity.ID)
-                        } else {
-                            self.APIClientSharedInstance.turnOff(entity.ID)
-                        }
-                    }.cellSetup { cell, row in
-                        if let updatedState = self.updatedStates[rowTag] {
-                            cell.imageView?.image = generateIconForEntityClass(updatedState)
-                            if let picture = updatedState.Picture {
-                                getEntityPicture(picture).then { image in
-                                    cell.imageView?.image = image.scaledToSize(CGSize(width: 30, height: 30))
-                                }
-                            }
-                        }
-                    }
+//                case "switch", "light", "input_boolean":
+//                    self.form.last! <<< SwitchRow(rowTag) {
+//                        $0.title = entity.FriendlyName
+//                        $0.value = (entity.State == "on") ? true : false
+//                    }.onChange { row -> Void in
+//                        if (row.value == true) {
+//                            self.APIClientSharedInstance.turnOn(entity.ID)
+//                        } else {
+//                            self.APIClientSharedInstance.turnOff(entity.ID)
+//                        }
+//                    }.cellSetup { cell, row in
+//                        if let updatedState = self.updatedStates[rowTag] {
+//                            cell.imageView?.image = generateIconForEntityClass(updatedState)
+//                            if let picture = updatedState.Picture {
+//                                getEntityPicture(picture).then { image in
+//                                    cell.imageView?.image = image.scaledToSize(CGSize(width: 30, height: 30))
+//                                }
+//                            }
+//                        }
+//                    }
                 case "script", "scene":
                     self.form.last! <<< ButtonRow(rowTag) {
                         $0.title = entity.FriendlyName
@@ -92,7 +92,7 @@ class GroupViewController: FormViewController {
                             }
                         }
                     }
-                case "binary_sensor", "camera", "sensor", "media_player", "thermostat", "sun":
+                case "switch", "light", "input_boolean", "binary_sensor", "camera", "sensor", "media_player", "thermostat", "sun":
                     self.form.last! <<< ButtonRow(rowTag) {
                         $0.title = entity.FriendlyName
                         $0.cellStyle = .Value1

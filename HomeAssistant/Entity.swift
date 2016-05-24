@@ -89,8 +89,8 @@ class Entity: MappableCluster {
         Icon          <- map["attributes.icon"]
         MobileIcon    <- map["attributes.mobile_icon"]
         Picture       <- map["attributes.entity_picture"]
-        LastChanged   <- (map["last_changed"], CustomDateFormatTransformWithTimezone(formatString: "HH:mm:ss dd-MM-yyyy", timezone: timezone))
-        LastUpdated   <- (map["last_updated"], CustomDateFormatTransformWithTimezone(formatString: "HH:mm:ss dd-MM-yyyy", timezone: timezone))
+        LastChanged   <- (map["last_changed"], CustomDateFormatTransformWithTimezone(formatString: "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone: timezone))
+        LastUpdated   <- (map["last_updated"], CustomDateFormatTransformWithTimezone(formatString: "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone: timezone))
     }
     
     func turnOn() {

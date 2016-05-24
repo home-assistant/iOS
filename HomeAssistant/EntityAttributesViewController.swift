@@ -133,6 +133,21 @@ class EntityAttributesViewController: FormViewController {
                     case "entity_picture", "icon", "supported_media_commands":
                         // Skip these attributes
                         break
+                    case "state":
+                        if entity?.Domain == "switch" || entity?.Domain == "light" || entity?.Domain == "input_boolean" {
+                            form.last! <<< SwitchRow(attribute.0) {
+                                $0.title = entity?.FriendlyName
+                                $0.value = (entity?.State == "on") ? true : false
+                            }.onChange { row -> Void in
+                                if (row.value == true) {
+                                    (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance.turnOn(self.entity!.ID)
+                                } else {
+                                    (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance.turnOff(self.entity!.ID)
+                                }
+                            }
+                        } else {
+                            fallthrough
+                        }
                     default:
                         form.last! <<< TextRow(attribute.0){
                             $0.title = prettyLabel
