@@ -30,6 +30,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
 
+        if PermissionScope().statusNotifications() == .Authorized {
+            print("Notifications authorized, registering for remote notifications!")
+            UIApplication.sharedApplication().registerForRemoteNotifications()
+        }
+        
         initAPI()
         
         return true
