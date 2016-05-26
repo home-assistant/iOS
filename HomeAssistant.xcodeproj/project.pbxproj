@@ -24,6 +24,21 @@
 		B657A9011CA646EB00121384 /* HomeAssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9001CA646EB00121384 /* HomeAssistantTests.swift */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B657A91A1CA647C500121384 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
+		B66428021CF79FC800903804 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F31CF79FC700903804 /* US-EN-Daisy-Back-Door-Motion.wav */; };
+		B66428031CF79FC800903804 /* US-EN-Daisy-Back-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F41CF79FC700903804 /* US-EN-Daisy-Back-Door-Open.wav */; };
+		B66428041CF79FC800903804 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F51CF79FC700903804 /* US-EN-Daisy-Front-Door-Motion.wav */; };
+		B66428051CF79FC800903804 /* US-EN-Daisy-Front-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F61CF79FC700903804 /* US-EN-Daisy-Front-Door-Open.wav */; };
+		B66428061CF79FC800903804 /* US-EN-Daisy-Front-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F71CF79FC700903804 /* US-EN-Daisy-Front-Window-Open.wav */; };
+		B66428071CF79FC800903804 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F81CF79FC700903804 /* US-EN-Daisy-Garage-Door-Open.wav */; };
+		B66428081CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F91CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav */; };
+		B66428091CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FA1CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav */; };
+		B664280A1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FB1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav */; };
+		B664280B1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FC1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav */; };
+		B664280C1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FD1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav */; };
+		B664280D1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FE1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav */; };
+		B664280E1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FF1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav */; };
+		B664280F1CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
+		B66428101CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
 		B6E1237B1CB1EBE100375722 /* SNSLambda.js in Resources */ = {isa = PBXBuildFile; fileRef = B6E1237A1CB1EBE100375722 /* SNSLambda.js */; };
 		B6E47E881CBA01310027F6CA /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E871CBA01310027F6CA /* CallService.swift */; };
 		B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */; };
@@ -100,6 +115,21 @@
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
 		B657A90D1CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAAPI.swift; sourceTree = "<group>"; };
+		B66427F31CF79FC700903804 /* US-EN-Daisy-Back-Door-Motion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Back-Door-Motion.wav"; sourceTree = "<group>"; };
+		B66427F41CF79FC700903804 /* US-EN-Daisy-Back-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Back-Door-Open.wav"; sourceTree = "<group>"; };
+		B66427F51CF79FC700903804 /* US-EN-Daisy-Front-Door-Motion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Door-Motion.wav"; sourceTree = "<group>"; };
+		B66427F61CF79FC700903804 /* US-EN-Daisy-Front-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Door-Open.wav"; sourceTree = "<group>"; };
+		B66427F71CF79FC700903804 /* US-EN-Daisy-Front-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Window-Open.wav"; sourceTree = "<group>"; };
+		B66427F81CF79FC700903804 /* US-EN-Daisy-Garage-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Garage-Door-Open.wav"; sourceTree = "<group>"; };
+		B66427F91CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Guest-Bath-Leak.wav"; sourceTree = "<group>"; };
+		B66427FA1CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Kitchen-Sink-Leak.wav"; sourceTree = "<group>"; };
+		B66427FB1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Kitchen-Window-Open.wav"; sourceTree = "<group>"; };
+		B66427FC1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Laundry-Room-Leak.wav"; sourceTree = "<group>"; };
+		B66427FD1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Master-Bath-Leak.wav"; sourceTree = "<group>"; };
+		B66427FE1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Master-Bedroom-Window-Open.wav"; sourceTree = "<group>"; };
+		B66427FF1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Office-Window-Open.wav"; sourceTree = "<group>"; };
+		B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
+		B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
 		B6E1237A1CB1EBE100375722 /* SNSLambda.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = SNSLambda.js; sourceTree = "<group>"; };
 		B6E47E871CBA01310027F6CA /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceExecuted.swift; sourceTree = "<group>"; };
@@ -225,6 +255,7 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
+				B66427F21CF79FC700903804 /* Sounds */,
 				B6F02BE71CB4698A0029ABE7 /* Classes */,
 				B6E123791CB1EBB500375722 /* External */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
@@ -263,6 +294,28 @@
 				B657A90D1CA646EB00121384 /* Info.plist */,
 			);
 			path = HomeAssistantUITests;
+			sourceTree = "<group>";
+		};
+		B66427F21CF79FC700903804 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				B66427F31CF79FC700903804 /* US-EN-Daisy-Back-Door-Motion.wav */,
+				B66427F41CF79FC700903804 /* US-EN-Daisy-Back-Door-Open.wav */,
+				B66427F51CF79FC700903804 /* US-EN-Daisy-Front-Door-Motion.wav */,
+				B66427F61CF79FC700903804 /* US-EN-Daisy-Front-Door-Open.wav */,
+				B66427F71CF79FC700903804 /* US-EN-Daisy-Front-Window-Open.wav */,
+				B66427F81CF79FC700903804 /* US-EN-Daisy-Garage-Door-Open.wav */,
+				B66427F91CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav */,
+				B66427FA1CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav */,
+				B66427FB1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav */,
+				B66427FC1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav */,
+				B66427FD1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav */,
+				B66427FE1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav */,
+				B66427FF1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav */,
+				B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */,
+				B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */,
+			);
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 		B6E123791CB1EBB500375722 /* External */ = {
@@ -454,11 +507,26 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B664280E1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav in Resources */,
 				B6E1237B1CB1EBE100375722 /* SNSLambda.js in Resources */,
+				B664280B1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav in Resources */,
+				B66428081CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav in Resources */,
+				B66428051CF79FC800903804 /* US-EN-Daisy-Front-Door-Open.wav in Resources */,
+				B664280C1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav in Resources */,
+				B66428091CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav in Resources */,
+				B664280F1CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */,
 				B657A8F61CA646EB00121384 /* LaunchScreen.storyboard in Resources */,
+				B66428041CF79FC800903804 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */,
+				B664280D1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav in Resources */,
+				B66428071CF79FC800903804 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */,
+				B66428101CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */,
+				B66428031CF79FC800903804 /* US-EN-Daisy-Back-Door-Open.wav in Resources */,
 				B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */,
+				B66428061CF79FC800903804 /* US-EN-Daisy-Front-Window-Open.wav in Resources */,
 				B657A8F11CA646EB00121384 /* Main.storyboard in Resources */,
+				B66428021CF79FC800903804 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */,
 				B60B35BF1CB62AA200887BE1 /* SwitchWithInfoButton.xib in Resources */,
+				B664280A1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
