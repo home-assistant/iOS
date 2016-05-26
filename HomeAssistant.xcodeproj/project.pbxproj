@@ -668,8 +668,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -691,7 +691,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "$(sigh_io.robbie.HomeAssistant_appstore)";
+				PROVISIONING_PROFILE = "7228afbb-57fc-4e0a-8432-c028de4a87c0";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -744,8 +744,8 @@
 			baseConfigurationReference = 92AFEE5E5170AAC8E1C39DEE /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				CURRENT_PROJECT_VERSION = 19;
 				INFOPLIST_FILE = HomeAssistant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -799,7 +799,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "$(sigh_io.robbie.HomeAssistant_appstore)";
+				PROVISIONING_PROFILE = "7228afbb-57fc-4e0a-8432-c028de4a87c0";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
