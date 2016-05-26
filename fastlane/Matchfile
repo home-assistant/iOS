@@ -1,6 +1,6 @@
 git_url "https://github.com/home-assistant/ios-certificates"
 
-type "development" # The default type, can be: appstore, adhoc or development
+type "appstore" # The default type, can be: appstore, adhoc or development
 
 app_identifier "io.robbie.HomeAssistant"
 username "me@robbiet.us" # Your Apple Developer Portal username
