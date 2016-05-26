@@ -74,7 +74,7 @@ platform :ios do
   desc "Submit a new Beta Build to Apple TestFlight"
   desc "This will also make sure the profile is up to date"
   lane :beta do
-    increment_build_number
+    increment_build_number(build_number:"18")
     commit_version_bump
     match(type: "appstore")
     gym(scheme: "HomeAssistant", workspace: "HomeAssistant.xcworkspace", output_directory: "./build")
