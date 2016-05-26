@@ -21,6 +21,11 @@ Installs FixCode which disables the "Fix Issue" button in Xcode
 fastlane ios certs
 ```
 Fetches the provisioning profiles so you can build locally and deploy to your device
+### ios push
+```
+fastlane ios push
+```
+Creates a new push certificate, ready to be uploaded to SNS
 ### ios beta
 ```
 fastlane ios beta

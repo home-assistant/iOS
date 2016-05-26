@@ -38,6 +38,12 @@ platform :ios do
     match(type: "appstore")
   end
 
+  desc "Creates a new push certificate, ready to be uploaded to SNS"
+  lane :push do
+    pem(generate_p12: true, save_private_key: true)
+    puts "------------------ Please upload the .p12 file to SNS ------------------ ".yellow
+  end
+
   def change_log_since_last_tag
     # http://git-scm.com/docs/pretty-formats
     # <short hash> <commit title>
@@ -107,7 +113,7 @@ platform :ios do
     clean_build_artifacts
     clear_derived_data
 
-    sigh(output_path: "/tmp")
+    match(readonly: true)
     gym(
       workspace: "HomeAssistant.xcworkspace",
       scheme: "HomeAssistant",
@@ -116,7 +122,7 @@ platform :ios do
       output_directory: "./build"
     )
 
-    testflight(
+    pilot(
       changelog: change_log,
       skip_submission: true,
       distribute_external: false
