@@ -126,9 +126,7 @@ public class HomeAssistantAPI {
         self.GetStates().then { states -> Void in
             for zone in states.filter({ return $0.Domain == "zone" }) {
                 let zone = zone as! Zone
-                print("Setting up zone", zone.Latitude, zone.Longitude)
                 if zone.Latitude != nil && zone.Longitude != nil {
-                    print("Lat/long are not nil!")
                     let regionCoordinates = CLLocationCoordinate2DMake(zone.Latitude!, zone.Longitude!)
                     try BeaconManager.shared.monitorGeographicRegion(centeredAt: regionCoordinates, radius: zone.Radius!, onEnter: { (region) -> Void in
                         print("Region entered!", region)

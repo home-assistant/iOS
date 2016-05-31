@@ -63,7 +63,7 @@ class Entity: Mappable {
             case "zone":
                 return Zone(map)
             default:
-                print("No component ObjectMapper found for:", entityId, entityType)
+                print("No component ObjectMapper found for:", entityId, entityType, map.JSONDictionary)
                 return Entity(map)
             }
         }

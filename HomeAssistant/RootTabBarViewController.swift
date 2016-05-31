@@ -182,9 +182,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
     }
     
     func sendCurrentLocation(sender: UIButton) {
-        HomeAssistantAPI.sharedInstance.identifyDevice().then { ident -> Void in
-            print("Identified!", ident)
-        }
         HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
             print("Did succeed?", success)
             let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.Alert)
