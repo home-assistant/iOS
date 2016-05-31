@@ -240,7 +240,7 @@ class GroupViewController: FormViewController {
                     if let newState = event.NewState {
                         let icon = generateIconForEntityClass(newState)
                         self.updatedStates[event.EntityID!] = newState
-                        if event.EntityDomain == "switch" || event.EntityDomain == "light" || event.EntityDomain == "input_boolean" {
+                        if event.EntityDomain == "lock" || event.EntityDomain == "garage_door" {
                             if let row : SwitchRow = self.form.rowByTag(event.EntityID!) {
                                 row.value = (newState.State == "on") ? true : false
                                 row.cell.imageView?.image = icon
@@ -248,7 +248,7 @@ class GroupViewController: FormViewController {
                                 row.reload()
                             }
                         } else {
-                            if let row : LabelRow = self.form.rowByTag(event.EntityID!) {
+                            if let row : ButtonRow = self.form.rowByTag(event.EntityID!) {
                                 row.value = newState.State
                                 if let newStateSensor = newState as? Sensor {
                                     row.value = newState.State + " " + newStateSensor.UnitOfMeasurement!
