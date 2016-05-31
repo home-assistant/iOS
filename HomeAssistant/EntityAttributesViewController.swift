@@ -8,6 +8,7 @@
 
 import UIKit
 import Eureka
+import ObjectMapper
 
 class EntityAttributesViewController: FormViewController {
 
@@ -130,7 +131,7 @@ class EntityAttributesViewController: FormViewController {
                             mediaPlayer.setVolume(row.value!)
                         }
                         break
-                    case "entity_picture", "icon", "supported_media_commands":
+                    case "entity_picture", "icon", "supported_media_commands", "hidden", "assumed_state":
                         // Skip these attributes
                         break
                     case "state":
@@ -160,6 +161,7 @@ class EntityAttributesViewController: FormViewController {
         
         
         // Do any additional setup after loading the view.
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EntityAttributesViewController.StateChangedSSEEvent(_:)), name:"sse.state_changed", object: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -168,14 +170,53 @@ class EntityAttributesViewController: FormViewController {
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func StateChangedSSEEvent(notification: NSNotification){
+        if let userInfo = notification.userInfo {
+            if let event = Mapper<StateChangedEvent>().map(userInfo) {
+                if event.EntityID != entity!.ID { return }
+                if let newState = event.NewState {
+                    var updateDict : [String:AnyObject] = [:]
+                    newState.Attributes["state"] = entity?.State
+                    for (key, value) in newState.Attributes {
+                        switch key {
+                        case "fan":
+                            updateDict[key] = (entity as! Thermostat).Fan!
+                            break
+                        case "away_mode":
+                            updateDict[key] = (entity as! Thermostat).AwayMode!
+                            break
+                        case "temperature":
+                            updateDict[key] = Float((entity as! Thermostat).Temperature!)
+                            break
+                        case "media_duration":
+                            updateDict[key] = (entity as! MediaPlayer).humanReadableMediaDuration()
+                            break
+                        case "is_volume_muted":
+                            updateDict[key] = (entity as! MediaPlayer).IsVolumeMuted!
+                            break
+                        case "volume_level":
+                            updateDict[key] = Float(value as! NSNumber)*100
+                            break
+                        case "entity_picture", "icon", "supported_media_commands", "hidden", "assumed_state":
+                            // Skip these attributes
+                            break
+                        case "state":
+                            if entity?.Domain == "switch" || entity?.Domain == "light" || entity?.Domain == "input_boolean" {
+                                updateDict["state"] = (entity?.State == "on") as Bool
+                            } else {
+                                fallthrough
+                            }
+                            break
+                        default:
+                            updateDict[key] = String(value)
+                            break
+                        }
+                    }
+                    // fatal error: can't unsafeBitCast between types of different sizes
+                    self.form.setValues(updateDict)
+                }
+            }
+        }
     }
-    */
 
 }
