@@ -116,16 +116,12 @@ public class HomeAssistantAPI {
     }
     
     func trackLocation(deviceId: String) {
-        do {
-            try SwiftLocation.shared.significantLocation({ (location) -> Void in
-                self.submitLocation("Significant location change detected", deviceId: deviceId, latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, accuracy: location!.horizontalAccuracy, locationName: "")
-            }, onFail: { (error) -> Void in
-                // something went wrong. request will be cancelled automatically
-                print("Something went wrong when trying to get significant location updates! Error was:", error)
-            })
-        } catch {
-            print("Error when trying to get sig location changes!!")
-        }
+        LocationManager.shared.observeLocations(.Neighborhood, frequency: .Significant, onSuccess: { (location) -> Void in
+            self.submitLocation("Significant location change detected", deviceId: deviceId, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
+        }, onError: { (error) -> Void in
+            // something went wrong. request will be cancelled automatically
+            print("Something went wrong when trying to get significant location updates! Error was:", error)
+        })
         
         self.GetStates().then { states -> Void in
             for zone in states.filter({ return $0.Domain == "zone" }) {
@@ -134,25 +130,20 @@ public class HomeAssistantAPI {
                 if zone.Latitude != nil && zone.Longitude != nil {
                     print("Lat/long are not nil!")
                     let regionCoordinates = CLLocationCoordinate2DMake(zone.Latitude!, zone.Longitude!)
-                    let region = CLCircularRegion(center: regionCoordinates, radius: CLLocationDistance(zone.Radius!), identifier: zone.ID)
-                    do {
-                        try SwiftLocation.shared.monitorRegion(region, onEnter: { (region) -> Void in
-                            print("Region entered!", region)
-                            var title = "Region"
-                            if let friendlyName = zone.FriendlyName {
-                                title = friendlyName+" zone"
-                            }
-                            self.submitLocation(title+" entered", deviceId: deviceId, latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 1, locationName: "")
-                        }) { (region) -> Void in
-                            print("Region exited!", region)
-                            var title = "Region"
-                            if let friendlyName = zone.FriendlyName {
-                                title = friendlyName+" zone"
-                            }
-                            self.submitLocation(title+" exited", deviceId: deviceId, latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 1, locationName: "")
+                    try BeaconManager.shared.monitorGeographicRegion(centeredAt: regionCoordinates, radius: zone.Radius!, onEnter: { (region) -> Void in
+                        print("Region entered!", region)
+                        var title = "Region"
+                        if let friendlyName = zone.FriendlyName {
+                            title = friendlyName+" zone"
                         }
-                    } catch {
-                        print("Error when setting up home region location monitoring")
+                        self.submitLocation(title+" entered", deviceId: deviceId, latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 1, locationName: "")
+                    }) { (region) -> Void in
+                        print("Region exited!", region)
+                        var title = "Region"
+                        if let friendlyName = zone.FriendlyName {
+                            title = friendlyName+" zone"
+                        }
+                        self.submitLocation(title+" exited", deviceId: deviceId, latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 1, locationName: "")
                     }
                 }
             }
@@ -165,16 +156,12 @@ public class HomeAssistantAPI {
     func sendOneshotLocation() -> Promise<Bool> {
         return Promise { fulfill, reject in
             if let deviceId = prefs.stringForKey("deviceId") {
-                do {
-                    try SwiftLocation.shared.currentLocation(Accuracy.Neighborhood, timeout: 20, onSuccess: { (location) -> Void in
-                        self.submitLocation("One off location update requested", deviceId: deviceId, latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude, accuracy: location!.horizontalAccuracy, locationName: "")
-                        fulfill(true)
-                    }) { (error) -> Void in
-                        print("Error when trying to get a oneshot location!", error)
-                        reject(error!)
-                    }
-                } catch {
-                    print("Error when getting a oneshot location!")
+                LocationManager.shared.observeLocations(.Neighborhood, frequency: .OneShot, onSuccess: { (location) -> Void in
+                    self.submitLocation("One off location update requested", deviceId: deviceId, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
+                    fulfill(true)
+                }) { (error) -> Void in
+                    print("Error when trying to get a oneshot location!", error)
+                    reject(error)
                 }
             }
         }

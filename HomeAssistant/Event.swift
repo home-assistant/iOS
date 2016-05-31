@@ -9,7 +9,7 @@
 import Foundation
 import ObjectMapper
 
-class SSEEvent: MappableCluster {
+class SSEEvent: Mappable {
     var Type: String = ""
     var TimeFired: NSDate?
     var Origin: String?

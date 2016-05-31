@@ -9,7 +9,7 @@
 import Foundation
 import ObjectMapper
 
-class Entity: MappableCluster {
+class Entity: Mappable {
     let prefs = NSUserDefaults.standardUserDefaults()
     
     var ID: String = ""

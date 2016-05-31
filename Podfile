@@ -17,7 +17,7 @@ target 'HomeAssistant' do
   pod 'Fabric'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
   pod 'HanekeSwift'
-  pod 'IKEventSource', :git => 'https://github.com/inaka/EventSource.git', :branch => 'swift-2.0'
+  pod 'IKEventSource'
   pod 'MBProgressHUD', '~> 0.9.2'
   pod 'ObjectMapper', '~> 1.2'
   pod 'PermissionScope'

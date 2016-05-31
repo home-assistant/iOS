@@ -1,52 +1,52 @@
 PODS:
-  - AcknowList (0.2.2)
-  - Alamofire (3.3.0)
+  - AcknowList (1.0)
+  - Alamofire (3.4.0)
   - AlamofireImage (2.4.0):
     - Alamofire (~> 3.3)
   - AlamofireObjectMapper (3.0.0):
     - Alamofire (~> 3.2)
     - ObjectMapper (~> 1.0)
-  - AWSCognito (2.3.6):
-    - AWSCore (= 2.3.6)
-  - AWSCore (2.3.6)
-  - AWSSNS (2.3.6):
-    - AWSCore (= 2.3.6)
+  - AWSCognito (2.4.2):
+    - AWSCore (= 2.4.2)
+  - AWSCore (2.4.2)
+  - AWSSNS (2.4.2):
+    - AWSCore (= 2.4.2)
   - Crashlytics (3.7.0):
     - Fabric (~> 1.6.3)
   - DeviceKit (0.3.2)
-  - Eureka (1.5.0)
+  - Eureka (1.6.0)
   - Fabric (1.6.7)
   - FontAwesomeKit/Core (2.2.2)
   - FontAwesomeKit/MaterialDesignIcons (2.2.2):
     - FontAwesomeKit/Core
   - HanekeSwift (0.10.1)
-  - IKEventSource (1.0.1)
+  - IKEventSource (1.1.3)
   - MBProgressHUD (0.9.2)
-  - ObjectMapper (1.2.0)
-  - OMGHTTPURLRQ (3.1.1):
-    - OMGHTTPURLRQ/RQ (= 3.1.1)
-  - OMGHTTPURLRQ/FormURLEncode (3.1.1)
-  - OMGHTTPURLRQ/RQ (3.1.1):
+  - ObjectMapper (1.3.0)
+  - OMGHTTPURLRQ (3.1.2):
+    - OMGHTTPURLRQ/RQ (= 3.1.2)
+  - OMGHTTPURLRQ/FormURLEncode (3.1.2)
+  - OMGHTTPURLRQ/RQ (3.1.2):
     - OMGHTTPURLRQ/FormURLEncode
     - OMGHTTPURLRQ/UserAgent
-  - OMGHTTPURLRQ/UserAgent (3.1.1)
+  - OMGHTTPURLRQ/UserAgent (3.1.2)
   - PermissionScope (1.0.2)
-  - PromiseKit (3.1.0):
-    - PromiseKit/Foundation (= 3.1.0)
-    - PromiseKit/QuartzCore (= 3.1.0)
-    - PromiseKit/UIKit (= 3.1.0)
-  - PromiseKit/CorePromise (3.1.0)
-  - PromiseKit/Foundation (3.1.0):
+  - PromiseKit (3.2.0):
+    - PromiseKit/Foundation (= 3.2.0)
+    - PromiseKit/QuartzCore (= 3.2.0)
+    - PromiseKit/UIKit (= 3.2.0)
+  - PromiseKit/CorePromise (3.2.0)
+  - PromiseKit/Foundation (3.2.0):
     - OMGHTTPURLRQ (~> 3.1.0)
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (3.1.0):
+  - PromiseKit/QuartzCore (3.2.0):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (3.1.0):
+  - PromiseKit/UIKit (3.2.0):
     - PromiseKit/CorePromise
   - SwiftDate (3.0.8)
-  - SwiftLocation (0.2.0)
+  - SwiftLocation (0.9.0)
   - SwiftyJSON (2.3.2)
-  - Whisper (2.1)
+  - Whisper (3.0.0)
 
 DEPENDENCIES:
   - AcknowList
@@ -63,7 +63,7 @@ DEPENDENCIES:
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`,
     branch `Material-Design-Icons`)
   - HanekeSwift
-  - IKEventSource (from `https://github.com/inaka/EventSource.git`, branch `swift-2.0`)
+  - IKEventSource
   - MBProgressHUD (~> 0.9.2)
   - ObjectMapper (~> 1.2)
   - PermissionScope
@@ -77,9 +77,6 @@ EXTERNAL SOURCES:
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
-  IKEventSource:
-    :branch: swift-2.0
-    :git: https://github.com/inaka/EventSource.git
   SwiftyJSON:
     :git: https://github.com/SwiftyJSON/SwiftyJSON.git
 
@@ -87,36 +84,33 @@ CHECKOUT OPTIONS:
   FontAwesomeKit:
     :commit: 4adcf98a9cf5d33c96e053375c5972b3a7bea313
     :git: https://github.com/robbiet480/FontAwesomeKit.git
-  IKEventSource:
-    :commit: bfef3833b2681b6221709f4e34c8b3381258866c
-    :git: https://github.com/inaka/EventSource.git
   SwiftyJSON:
     :commit: 2a5b70f06001316d4fb54501edc70b4084705da0
     :git: https://github.com/SwiftyJSON/SwiftyJSON.git
 
 SPEC CHECKSUMS:
-  AcknowList: 00d912fe6d2a169f950b91f80de2342532377662
-  Alamofire: 9054db4a1b1ca9e363223183e01cea380159a27c
+  AcknowList: 06a183d117b7e2bb0c6f5654366d2912dc64a6c4
+  Alamofire: c19a627cefd6a95f840401c49ab1f124e07f54ee
   AlamofireImage: 87408b652e0f5ae5fe364035f15aea8b9b24c77e
   AlamofireObjectMapper: 2d16585d06177be0116d76de73497e77437798af
-  AWSCognito: af54fe65171c7c994c134e5d29b1ee60ee234825
-  AWSCore: 917d84b32974136194a905b98c0ae25c9f3350b8
-  AWSSNS: 37c7f4c80657a621fbabccf7d0f352e3c018fbd0
+  AWSCognito: 87cf3dadb17eed732c1c3fe21624fa8f15ef84ec
+  AWSCore: 08cc4318682a518ad73e452900336ba54e823e03
+  AWSSNS: bd87a2013d8be90f5f4d3f3d3726d4584714fdfb
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
   DeviceKit: 79182140c0aa8daaf4f4b3920e0b079f5fa9db79
-  Eureka: 2fb37bb50569c62ee3284689d5b7aca694b040e0
+  Eureka: ef5b9ac93aedeecfe50d98b1ac7678bf09a1fc62
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   FontAwesomeKit: e1d7c3b635dba2ebc2ec77e9b2ac9f6c0af0e350
   HanekeSwift: 08e47d3d0f2899ec58e5d257beba0de619aca9e8
-  IKEventSource: 5857cbc6ca06be24f12ecbc980a58007e24413b4
+  IKEventSource: 323157f5afd0dd65e0742f8906f2f2bd1e747f3e
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
-  ObjectMapper: b1e9c7c8a9f6400b72690c80072c131504caa66f
-  OMGHTTPURLRQ: 633f98ee745aeda02345935a52eec1784cddb589
+  ObjectMapper: 4eb08a726e9791a93b2632049951b56a7c17e471
+  OMGHTTPURLRQ: 38316b56d88125c600bcdb16df8329147da2b0ee
   PermissionScope: 860828c5516d349b6f49e5491799cfef33c5ccc7
-  PromiseKit: 7ed2a3fc5217695305a55a8c47cb3a17ff5fde0d
+  PromiseKit: 1db024241265f428137a9f3c00ff9590740c4be6
   SwiftDate: 971f8b9394f664f2226b9c3ab64e801a7291c612
-  SwiftLocation: ea78ae4a822581bde7379d98c8513273723c8840
+  SwiftLocation: f18e71300a89f2a81001c9615b7694150e6b84de
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
-  Whisper: 18b574de21a089c0d664b115f26e0d9ccbbadbab
+  Whisper: 42a3ee7c2936f861b23d41bd6cd7dfd22f102405
 
 COCOAPODS: 0.39.0
