@@ -11,13 +11,13 @@ import AWSSNS
 import Fabric
 import Crashlytics
 import PermissionScope
+import DeviceKit
+import PromiseKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    
-    var APIClientSharedInstance : HomeAssistantAPI!
     
     let prefs = NSUserDefaults.standardUserDefaults()
     
@@ -37,6 +37,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         initAPI()
         
+        let discovery = Bonjour()
+        
+        let queue = dispatch_queue_create("io.robbie.homeassistant", nil);
+        dispatch_async(queue) { () -> Void in
+            NSLog("Publishing app to Bonjour")
+            discovery.stopPublish()
+            discovery.startPublish()
+            sleep(600)
+            NSLog("Unpublishing app from Bonjour")
+            discovery.stopPublish()
+        }
+
+        
         return true
     }
     
@@ -47,11 +60,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let pass = prefs.stringForKey("apiPassword") {
                 apiPass = pass
             }
-            APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: apiPass)
-            APIClientSharedInstance.identifyDevice().then { ident -> Void in
-                print("Identified!", ident)
-            }
-            APIClientSharedInstance!.GetConfig().then { config -> Void in
+            HomeAssistantAPI.sharedInstance.setupWithAuth(baseURL, APIPassword: apiPass)
+            when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig()).then { ident, config -> Void in
                 self.prefs.setValue(config.LocationName, forKey: "location_name")
                 self.prefs.setValue(config.Latitude, forKey: "latitude")
                 self.prefs.setValue(config.Longitude, forKey: "longitude")
@@ -60,8 +70,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 self.prefs.setValue(config.Version, forKey: "version")
                 if PermissionScope().statusLocationAlways() == .Authorized && config.Components!.contains("device_tracker") {
                     print("Found device_tracker in config components, starting location monitoring!")
-                    self.APIClientSharedInstance!.trackLocation(self.prefs.stringForKey("deviceId")!)
+                    HomeAssistantAPI.sharedInstance.trackLocation(self.prefs.stringForKey("deviceId")!)
                 }
+                print("Identified!", ident)
+            }.error { error in
+                print("Error at launch!", error)
+                let settingsView = SettingsViewController()
+                settingsView.title = "Settings"
+                settingsView.showErrorConnectingMessage = true
+                let navController = UINavigationController(rootViewController: settingsView)
+                self.window?.makeKeyAndVisible()
+                self.window?.rootViewController!.presentViewController(navController, animated: true, completion: nil)
             }
         }
     }
@@ -97,7 +116,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let sns = AWSSNS.defaultSNS()
         let request = AWSSNSCreatePlatformEndpointInput()
         request.token = deviceTokenString
-        request.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS/HomeAssistant"
+        request.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS_SANDBOX/HomeAssistant"
         sns.createPlatformEndpoint(request).continueWithBlock { (task: AWSTask!) -> AnyObject! in
             if task.error != nil {
                 print("Error: \(task.error)")
@@ -105,6 +124,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let createEndpointResponse = task.result as! AWSSNSCreateEndpointResponse
                 print("endpointArn:", createEndpointResponse.endpointArn!)
                 self.prefs.setValue(createEndpointResponse.endpointArn!, forKey: "endpointARN")
+                self.prefs.setValue(deviceTokenString, forKey: "deviceToken")
             }
             
             return nil
@@ -117,6 +137,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         print("Received remote notification!", userInfo)
+    }
+    
+    func application(application: UIApplication,  didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        print("Received remote notification in completion handler!", userInfo)
+        completionHandler(UIBackgroundFetchResult.NoData)
+    }
+    
+    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], withResponseInfo responseInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
+        print("Action button hit", identifier)
+        print("Remote notification payload", userInfo)
+        print("ResponseInfo", responseInfo)
+        let device = Device()
+        var eventData : [String:AnyObject] = ["actionName": identifier!, "sourceDevicePermanentID": DeviceUID.uid(), "sourceDeviceName": device.name]
+        if let dataDict = userInfo["homeassistant"] {
+            eventData["action_data"] = dataDict
+        }
+        if !responseInfo.isEmpty {
+            eventData["response_info"] = responseInfo
+        }
+        HomeAssistantAPI.sharedInstance.CreateEvent("ios.notification_action_fired", eventData: eventData).then { _ in
+            completionHandler()
+        }.error { _ in
+            completionHandler()
+        }
     }
 }
 

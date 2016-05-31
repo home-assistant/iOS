@@ -39,6 +39,7 @@
 		B664280E1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FF1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav */; };
 		B664280F1CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
 		B66428101CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
+		B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66428111CF7A83200903804 /* PushConfiguration.swift */; };
 		B6E1237B1CB1EBE100375722 /* SNSLambda.js in Resources */ = {isa = PBXBuildFile; fileRef = B6E1237A1CB1EBE100375722 /* SNSLambda.js */; };
 		B6E47E881CBA01310027F6CA /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E871CBA01310027F6CA /* CallService.swift */; };
 		B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */; };
@@ -130,6 +131,7 @@
 		B66427FF1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Office-Window-Open.wav"; sourceTree = "<group>"; };
 		B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
 		B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
+		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
 		B6E1237A1CB1EBE100375722 /* SNSLambda.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = SNSLambda.js; sourceTree = "<group>"; };
 		B6E47E871CBA01310027F6CA /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceExecuted.swift; sourceTree = "<group>"; };
@@ -347,6 +349,7 @@
 				B6F02BF51CB4728D0029ABE7 /* History.swift */,
 				B6F02BF91CB47F930029ABE7 /* Events.swift */,
 				B6F02BFB1CB4800C0029ABE7 /* Services.swift */,
+				B66428111CF7A83200903804 /* PushConfiguration.swift */,
 			);
 			name = "HA API Responses";
 			sourceTree = "<group>";
@@ -651,6 +654,7 @@
 				B6F02C0F1CB489770029ABE7 /* BinarySensorComponent.swift in Sources */,
 				B6E47E9A1CBB47EC0027F6CA /* DeviceUID.m in Sources */,
 				B6F02C121CB489770029ABE7 /* InputBooleanComponent.swift in Sources */,
+				B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */,
 				B6F02C101CB489770029ABE7 /* DeviceTrackerComponent.swift in Sources */,
 				B6F02C191CB489770029ABE7 /* SensorComponent.swift in Sources */,
 				B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */,

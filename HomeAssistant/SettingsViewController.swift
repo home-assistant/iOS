@@ -10,47 +10,50 @@ import UIKit
 import Eureka
 import PermissionScope
 import AcknowList
+import PromiseKit
 
 class SettingsViewController: FormViewController {
 
     let prefs = NSUserDefaults.standardUserDefaults()
     
+    var showErrorConnectingMessage = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let aboutButton = UIBarButtonItem(title: "About", style: .Plain, target: self, action: #selector(SettingsViewController.aboutButtonPressed(_:)))
+        if !showErrorConnectingMessage {
+            let aboutButton = UIBarButtonItem(title: "About", style: .Plain, target: self, action: #selector(SettingsViewController.aboutButtonPressed(_:)))
+            
+            self.navigationItem.rightBarButtonItem = aboutButton
+        }
         
-        self.navigationItem.rightBarButtonItem = aboutButton
-        
-        let discovery = Discovery()
+        let discovery = Bonjour()
         
         let queue = dispatch_queue_create("io.robbie.homeassistant", nil);
         dispatch_async(queue) { () -> Void in
             NSLog("Starting Home Assistant discovery")
-            discovery.stop()
-            discovery.start()
+            discovery.stopDiscovery()
+            discovery.startDiscovery()
             sleep(60)
             NSLog("Stopping Home Assistant discovery")
-            discovery.stop()
+            discovery.stopDiscovery()
         }
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)), name:"homeassistant.discovered", object: nil)
+        
+        if showErrorConnectingMessage {
+            let alert = UIAlertController(title: "Connection error", message: "There was an error connecting to Home Assistant. Please confirm the below details and hit save to attempt to reconnect", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
         
         form
             +++ Section(header: "Discovered Home Assistants", footer: ""){
                 $0.tag = "discoveredInstances"
                 $0.hidden = true
             }
-        
-        
         let pscope = PermissionScope()
-        
-        pscope.addPermission(NotificationsPermission(notificationCategories: nil),
-                             message: "We use this to let you\r\nsend notifications to your device.")
-        
-        pscope.addPermission(LocationAlwaysPermission(),
-                             message: "We use this to inform\r\nHome Assistant of your device presence.")
         
         form
             +++ Section(header: "", footer: "Format should be protocol://hostname_or_ip:portnumber. NO slashes. Only provide a port number if not using 80/443. Examples: http://192.168.1.2:8123, https://demo.home-assistant.io.")
@@ -98,18 +101,39 @@ class SettingsViewController: FormViewController {
                     if let pass = apiPasswordRow?.value {
                         apiPass = pass
                     }
-                    let APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: apiPass)
-                    APIClientSharedInstance.identifyDevice().then { ident -> Void in
-                        print("Identified!", ident)
-                    }
-                    APIClientSharedInstance.GetConfig().then { config -> Void in
+                    HomeAssistantAPI.sharedInstance.setupWithAuth(baseURL, APIPassword: apiPass)
+                    when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig(), HomeAssistantAPI.sharedInstance.setupPushActions()).then {identify, config, categories -> Void in
                         self.prefs.setValue(config.LocationName, forKey: "location_name")
                         self.prefs.setValue(config.Latitude, forKey: "latitude")
                         self.prefs.setValue(config.Longitude, forKey: "longitude")
                         self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
                         self.prefs.setValue(config.Timezone, forKey: "time_zone")
                         self.prefs.setValue(config.Version, forKey: "version")
+                        pscope.addPermission(LocationAlwaysPermission(),
+                            message: "We use this to inform\r\nHome Assistant of your device presence.")
+                        pscope.addPermission(NotificationsPermission(notificationCategories: categories),
+                            message: "We use this to let you\r\nsend notifications to your device.")
+                        pscope.show({ finished, results in
+                            print("got results \(results)")
+                            if results[0].status == .Authorized {
+                                print("User authorized the use of notifications")
+                                UIApplication.sharedApplication().registerForRemoteNotifications()
+                            }
+                            if finished {
+                                print("Finished, resetting API")
+                                self.dismissViewControllerAnimated(true, completion: nil)
+                                (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
+                            }
+                        }, cancelled: { (results) -> Void in
+                            print("thing was cancelled")
+                            self.dismissViewControllerAnimated(true, completion: nil)
+                            (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
+                        })
+                    }.error { error in
+                        print("Error on saving!", error)
                     }
+//                    let settings = UIUserNotificationSettings(forTypes: [UIUserNotificationType.Alert, UIUserNotificationType.Sound, UIUserNotificationType.Badge], categories: categories)
+//                    UIApplication.sharedApplication().registerUserNotificationSettings(settings)
                 } else {
                     print("Error when trying to save")
                 }
@@ -118,23 +142,6 @@ class SettingsViewController: FormViewController {
                 self.prefs.setValue(apiPasswordRow!.value!, forKey: "apiPassword")
                 self.prefs.setValue(deviceIdRow!.value!, forKey: "deviceId")
                 self.prefs.setBool(allowAllGroupsRow!.value!, forKey: "allowAllGroups")
-                
-                pscope.show({ finished, results in
-                    print("got results \(results)")
-                    if results[0].status == .Authorized {
-                        print("User authorized the use of notifications")
-                        UIApplication.sharedApplication().registerForRemoteNotifications()
-                    }
-                    if finished {
-                        print("Finished, resetting API")
-                        self.dismissViewControllerAnimated(true, completion: nil)
-                        (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
-                    }
-                }, cancelled: { (results) -> Void in
-                    print("thing was cancelled")
-                    self.dismissViewControllerAnimated(true, completion: nil)
-                    (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
-                })
             }
             
             if let endpointArn = prefs.stringForKey("endpointARN") {

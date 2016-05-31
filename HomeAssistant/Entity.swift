@@ -94,19 +94,13 @@ class Entity: MappableCluster {
     }
     
     func turnOn() {
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.turnOnEntity(self)
-        }
+        HomeAssistantAPI.sharedInstance.turnOnEntity(self)
     }
     func turnOff() {
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.turnOffEntity(self)
-        }
+        HomeAssistantAPI.sharedInstance.turnOffEntity(self)
     }
     func toggle() {
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.toggleEntity(self)
-        }
+        HomeAssistantAPI.sharedInstance.toggleEntity(self)
     }
 }
 

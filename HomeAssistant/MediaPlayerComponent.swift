@@ -60,19 +60,13 @@ class MediaPlayer: Entity {
     }
     
     func muteOn() {
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.CallService("media_player", service: "volume_mute", serviceData: ["entity_id": self.ID, "is_volume_muted": "on"])
-        }
+        HomeAssistantAPI.sharedInstance.CallService("media_player", service: "volume_mute", serviceData: ["entity_id": self.ID, "is_volume_muted": "on"])
     }
     func muteOff() {
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.CallService("media_player", service: "volume_mute", serviceData: ["entity_id": self.ID, "is_volume_muted": "off"])
-        }
+        HomeAssistantAPI.sharedInstance.CallService("media_player", service: "volume_mute", serviceData: ["entity_id": self.ID, "is_volume_muted": "off"])
     }
     func setVolume(newVolume: Float) {
         let fixedVolume = newVolume/100
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.CallService("media_player", service: "volume_set", serviceData: ["entity_id": self.ID, "volume_level": fixedVolume])
-        }
+        HomeAssistantAPI.sharedInstance.CallService("media_player", service: "volume_set", serviceData: ["entity_id": self.ID, "volume_level": fixedVolume])
     }
 }

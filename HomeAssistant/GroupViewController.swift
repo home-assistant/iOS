@@ -28,8 +28,6 @@ class GroupViewController: FormViewController {
     
     var sendingEntity : Entity?
     
-    var APIClientSharedInstance : HomeAssistantAPI!
-    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -47,9 +45,9 @@ class GroupViewController: FormViewController {
 //                        $0.value = (entity.State == "on") ? true : false
 //                    }.onChange { row -> Void in
 //                        if (row.value == true) {
-//                            self.APIClientSharedInstance.turnOn(entity.ID)
+//                            HomeAssistantAPI.sharedInstance.turnOn(entity.ID)
 //                        } else {
-//                            self.APIClientSharedInstance.turnOff(entity.ID)
+//                            HomeAssistantAPI.sharedInstance.turnOff(entity.ID)
 //                        }
 //                    }.cellSetup { cell, row in
 //                        if let updatedState = self.updatedStates[rowTag] {
@@ -65,7 +63,7 @@ class GroupViewController: FormViewController {
                     self.form.last! <<< ButtonRow(rowTag) {
                         $0.title = entity.FriendlyName
                     }.onCellSelection { cell, row -> Void in
-                        self.APIClientSharedInstance.turnOn(entity.ID)
+                        HomeAssistantAPI.sharedInstance.turnOn(entity.ID)
                     }.cellUpdate { cell, row in
                         if let updatedState = self.updatedStates[rowTag] {
                             cell.imageView?.image = generateIconForEntityClass(updatedState)
@@ -172,7 +170,7 @@ class GroupViewController: FormViewController {
                         $0.value = entity.State
                         $0.options = entity.Attributes["options"] as! [String]
                     }.onChange { row -> Void in
-                        self.APIClientSharedInstance.CallService("input_select", service: "select_option", serviceData: ["entity_id": entity.ID, "option": row.value!])
+                        HomeAssistantAPI.sharedInstance.CallService("input_select", service: "select_option", serviceData: ["entity_id": entity.ID, "option": row.value!])
                     }.cellUpdate { cell, row in
                         if let updatedState = self.updatedStates[rowTag] {
                             cell.imageView?.image = generateIconForEntityClass(updatedState)
@@ -189,9 +187,9 @@ class GroupViewController: FormViewController {
                         $0.value = (entity.State == "locked") ? true : false
                     }.onChange { row -> Void in
                         if (row.value == true) {
-                            self.APIClientSharedInstance.CallService("lock", service: "lock", serviceData: ["entity_id": entity.ID])
+                            HomeAssistantAPI.sharedInstance.CallService("lock", service: "lock", serviceData: ["entity_id": entity.ID])
                         } else {
-                            self.APIClientSharedInstance.CallService("lock", service: "unlock", serviceData: ["entity_id": entity.ID])
+                            HomeAssistantAPI.sharedInstance.CallService("lock", service: "unlock", serviceData: ["entity_id": entity.ID])
                         }
                     }.cellUpdate { cell, row in
                         if let updatedState = self.updatedStates[rowTag] {
@@ -209,9 +207,9 @@ class GroupViewController: FormViewController {
                         $0.value = (entity.State == "open") ? true : false
                     }.onChange { row -> Void in
                         if (row.value == true) {
-                            self.APIClientSharedInstance.CallService("garage_door", service: "open", serviceData: ["entity_id": entity.ID])
+                            HomeAssistantAPI.sharedInstance.CallService("garage_door", service: "open", serviceData: ["entity_id": entity.ID])
                         } else {
-                            self.APIClientSharedInstance.CallService("garage_door", service: "close", serviceData: ["entity_id": entity.ID])
+                            HomeAssistantAPI.sharedInstance.CallService("garage_door", service: "close", serviceData: ["entity_id": entity.ID])
                         }
                     }.cellUpdate { cell, row in
                         if let updatedState = self.updatedStates[rowTag] {

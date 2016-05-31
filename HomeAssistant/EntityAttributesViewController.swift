@@ -30,7 +30,7 @@ class EntityAttributesViewController: FormViewController {
                     $0.cell.textView.backgroundColor = .clearColor()
                     $0.cell.backgroundColor = .clearColor()
                 }.cellUpdate { cell, row in
-                    (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance.getImage(picture).then { image -> Void in
+                    HomeAssistantAPI.sharedInstance.getImage(picture).then { image -> Void in
                         let attachment = NSTextAttachment()
                         attachment.image = image
                         attachment.bounds = CGRectMake(0, 0, image.size.width, image.size.height)
@@ -140,9 +140,9 @@ class EntityAttributesViewController: FormViewController {
                                 $0.value = (entity?.State == "on") ? true : false
                             }.onChange { row -> Void in
                                 if (row.value == true) {
-                                    (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance.turnOn(self.entity!.ID)
+                                    HomeAssistantAPI.sharedInstance.turnOn(self.entity!.ID)
                                 } else {
-                                    (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance.turnOff(self.entity!.ID)
+                                    HomeAssistantAPI.sharedInstance.turnOff(self.entity!.ID)
                                 }
                             }
                         } else {

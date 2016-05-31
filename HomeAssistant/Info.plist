@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -48,7 +50,11 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>To send location to Home Assistant</string>
 	<key>UIBackgroundModes</key>
-	<array/>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

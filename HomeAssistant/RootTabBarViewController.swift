@@ -35,8 +35,8 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         
         self.viewControllers = [firstGroupView]
         
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.GetStates().then { states -> Void in
+        if HomeAssistantAPI.sharedInstance.baseAPIURL != "" {
+            HomeAssistantAPI.sharedInstance.GetStates().then { states -> Void in
                 self.deviceTrackerEntities = states.filter { return $0.Domain == "device_tracker" }
                 self.zoneEntities = states.filter { return $0.Domain == "zone" }
                 let allGroups = states.filter {
@@ -86,7 +86,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 }
                 for (index, group) in allGroups.enumerate() {
                     let groupView = GroupViewController()
-                    groupView.APIClientSharedInstance = APIClientSharedInstance
                     groupView.receivedGroup = group as? Group
                     groupView.receivedEntities = states.filter {
                         return (group as! Group).EntityIds.contains($0.ID)
@@ -183,21 +182,19 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
     }
     
     func sendCurrentLocation(sender: UIButton) {
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.identifyDevice().then { ident -> Void in
-                print("Identified!", ident)
-            }
-            APIClientSharedInstance.sendOneshotLocation().then { success -> Void in
-                print("Did succeed?", success)
-                let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
-            }.error { error in
-                let nserror = error as NSError
-                let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
-            }
+        HomeAssistantAPI.sharedInstance.identifyDevice().then { ident -> Void in
+            print("Identified!", ident)
+        }
+        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
+            print("Did succeed?", success)
+            let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }.error { error in
+            let nserror = error as NSError
+            let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
         }
     }
     

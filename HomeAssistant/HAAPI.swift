@@ -22,9 +22,15 @@ import PermissionScope
 
 let prefs = NSUserDefaults.standardUserDefaults()
 
-class HomeAssistantAPI: NSObject {
+public class HomeAssistantAPI {
     
-    let manager:Alamofire.Manager?
+    class var sharedInstance:HomeAssistantAPI {
+        get {
+            return APIClientSharedInstance;
+        }
+    }
+    
+    private var manager : Alamofire.Manager?
     
     var baseAPIURL : String = ""
     var apiPassword : String = ""
@@ -33,9 +39,9 @@ class HomeAssistantAPI: NSObject {
     
     var services = [NSNetService]()
     
-    init(baseAPIUrl: String, APIPassword: String) {
-        baseAPIURL = baseAPIUrl+"/api/"
-        apiPassword = APIPassword
+    func setupWithAuth(baseAPIUrl: String, APIPassword: String) {
+        self.baseAPIURL = baseAPIUrl+"/api/"
+        self.apiPassword = APIPassword
         var defaultHeaders = Alamofire.Manager.sharedInstance.session.configuration.HTTPAdditionalHeaders ?? [:]
         if apiPassword != "" {
             defaultHeaders["X-HA-Access"] = apiPassword
@@ -43,9 +49,13 @@ class HomeAssistantAPI: NSObject {
         
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         configuration.HTTPAdditionalHeaders = defaultHeaders
+        configuration.timeoutIntervalForResource = 3 // seconds
         
         self.manager = Alamofire.Manager(configuration: configuration)
-        
+        startStream()
+    }
+    
+    func startStream() {
         var sseHeaders : [String:String] = [:]
         
         if apiPassword != "" {
@@ -120,7 +130,9 @@ class HomeAssistantAPI: NSObject {
         self.GetStates().then { states -> Void in
             for zone in states.filter({ return $0.Domain == "zone" }) {
                 let zone = zone as! Zone
+                print("Setting up zone", zone.Latitude, zone.Longitude)
                 if zone.Latitude != nil && zone.Longitude != nil {
+                    print("Lat/long are not nil!")
                     let regionCoordinates = CLLocationCoordinate2DMake(zone.Latitude!, zone.Longitude!)
                     let region = CLCircularRegion(center: regionCoordinates, radius: CLLocationDistance(zone.Radius!), identifier: zone.ID)
                     do {
@@ -144,6 +156,8 @@ class HomeAssistantAPI: NSObject {
                     }
                 }
             }
+        }.error { error in
+            print("Error when getting states!")
         }
 
     }
@@ -178,7 +192,7 @@ class HomeAssistantAPI: NSObject {
                             print("Response was not JSON!", response)
                         }
                     case .Failure(let error):
-                        print("Error on GET request to \(url):", error)
+                        print("Error on GET request to \(queryUrl):", error)
                         reject(error)
                 }
             }
@@ -198,7 +212,7 @@ class HomeAssistantAPI: NSObject {
                         print("Response was not JSON!", response)
                     }
                 case .Failure(let error):
-                    print("Error on POST request to \(url):", error)
+                    print("Error on POST request to \(queryUrl):", error)
                     reject(error)
                 }
             }
@@ -375,7 +389,7 @@ class HomeAssistantAPI: NSObject {
         return CallService("homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
     
-    func identifyDevice() -> Promise<JSON> {
+    func buildIdentifyDict() -> [String:AnyObject] {
         let device = UIDevice.currentDevice()
         let deviceKitDevice = Device()
         let deviceInfo = ["name": device.name, "systemName": device.systemName, "systemVersion": device.systemVersion, "model": device.model, "localizedModel": device.localizedModel, "type": deviceKitDevice.description, "permanentID": DeviceUID.uid()]
@@ -385,7 +399,10 @@ class HomeAssistantAPI: NSObject {
         let appInfo : [String: AnyObject] = ["bundleIdentifer": bundleID!, "versionNumber": versionNumber, "buildNumber": buildNumber!]
         var deviceContainer : [String : AnyObject] = ["device": deviceInfo, "app": appInfo, "permissions": [:]]
         if let endpointArn = prefs.stringForKey("endpointARN") {
-            deviceContainer["pushToken"] = endpointArn.componentsSeparatedByString("/").last!
+            deviceContainer["pushId"] = endpointArn.componentsSeparatedByString("/").last!
+        }
+        if let deviceToken = prefs.stringForKey("deviceToken") {
+            deviceContainer["pushToken"] = deviceToken
         }
         if let deviceTrackerId = prefs.stringForKey("deviceId") {
             deviceContainer["deviceId"] = deviceTrackerId
@@ -397,7 +414,54 @@ class HomeAssistantAPI: NSObject {
             }
         }
         deviceContainer["permissions"] = permissionsContainer
-        return POST("ios/identify", parameters: deviceContainer)
+        return deviceContainer
+    }
+    
+    func identifyDevice() -> Promise<JSON> {
+        return POST("ios/identify", parameters: buildIdentifyDict())
+    }
+    
+    func setupPushActions() -> Promise<Set<UIUserNotificationCategory>> {
+        let queryUrl = baseAPIURL+"ios/push"
+        return Promise { fulfill, reject in
+            self.manager!.request(.GET, queryUrl).responseArray { (response: Response<[PushCategory], NSError>) in
+                switch response.result {
+                case .Success:
+                    var allCategories = Set<UIMutableUserNotificationCategory>()
+                    for category in response.result.value! {
+                        let finalCategory = UIMutableUserNotificationCategory()
+                        finalCategory.identifier = category.Identifier
+                        var defaultCategoryActions = [UIMutableUserNotificationAction]()
+                        var minimalCategoryActions = [UIMutableUserNotificationAction]()
+                        for action in category.Actions! {
+                            let newAction = UIMutableUserNotificationAction()
+                            newAction.title = action.Title
+                            newAction.identifier = action.Identifier
+                            newAction.authenticationRequired = action.AuthenticationRequired!
+                            newAction.destructive = action.Destructive!
+                            newAction.behavior = (action.Behavior == "default") ? UIUserNotificationActionBehavior.Default : UIUserNotificationActionBehavior.TextInput
+                            newAction.activationMode = (action.ActivationMode == "foreground") ? UIUserNotificationActivationMode.Foreground : UIUserNotificationActivationMode.Background
+                            if let params = action.Parameters {
+                                newAction.parameters = params
+                                print("Got params", params)
+                            }
+                            if (action.Context == "default") {
+                                defaultCategoryActions.append(newAction)
+                            } else {
+                                minimalCategoryActions.append(newAction)
+                            }
+                        }
+                        finalCategory.setActions(defaultCategoryActions, forContext: UIUserNotificationActionContext.Default)
+                        finalCategory.setActions(minimalCategoryActions, forContext: UIUserNotificationActionContext.Minimal)
+                        allCategories.insert(finalCategory)
+                    }
+                    fulfill(allCategories)
+                case .Failure(let error):
+                    print("Error on GET request:", error)
+                    reject(error)
+                }
+            }
+        }
     }
     
     func getImage(imageUrl: String) -> Promise<UIImage> {
@@ -425,6 +489,8 @@ class HomeAssistantAPI: NSObject {
     }
 
 }
+
+let APIClientSharedInstance = HomeAssistantAPI()
 
 class BrowserDelegate : NSObject, NSNetServiceBrowserDelegate, NSNetServiceDelegate {
     var resolving = [NSNetService]()
@@ -493,26 +559,93 @@ class BrowserDelegate : NSObject, NSNetServiceBrowserDelegate, NSNetServiceDeleg
     
 }
 
-
-class Discovery {
-    let BM_DOMAIN = "local."
-    let BM_TYPE = "_home-assistant._tcp."
+class BMNSDelegate : NSObject, NSNetServiceDelegate {
+    func netServiceWillPublish(sender: NSNetService) {
+        print("netServiceWillPublish:\(sender)");
+    }
     
+//    func netService(sender: NSNetService, didNotPublish errorDict: [NSObject : AnyObject]) {
+//        print("didNotPublish:\(sender)");
+//    }
+    
+    func netServiceDidPublish(sender: NSNetService) {
+        print("netServiceDidPublish:\(sender)");
+    }
+    
+    func netServiceWillResolve(sender: NSNetService) {
+        print("netServiceWillResolve:\(sender)");
+    }
+    
+//    func netService(sender: NSNetService, didNotResolve errorDict: [NSObject : AnyObject]) {
+//        print("netServiceDidNotResolve:\(sender)");
+//    }
+    
+    func netServiceDidResolveAddress(sender: NSNetService) {
+        print("netServiceDidResolve:\(sender)");
+    }
+    
+    func netService(sender: NSNetService, didUpdateTXTRecordData data: NSData) {
+        print("netServiceDidUpdateTXTRecordData:\(sender)");
+    }
+    
+    func netServiceDidStop(sender: NSNetService) {
+        print("netServiceDidStopService:\(sender)");
+    }
+    
+    func netService(sender: NSNetService,
+                    didAcceptConnectionWithInputStream inputStream: NSInputStream,
+                                                       outputStream stream: NSOutputStream) {
+        print("netServiceDidAcceptConnection:\(sender)");
+    }
+}
+
+class Bonjour {
     var nsb: NSNetServiceBrowser
+    var nsp: NSNetService
     var nsbdel: BrowserDelegate?
+    var nspdel: BMNSDelegate?
     
     init() {
         self.nsb = NSNetServiceBrowser()
+        self.nsp = NSNetService(domain: "local", type: "_ha_ios._tcp.", name: "HomeAssistantiOS", port: 65535)
     }
     
-    func start() {
+    func buildPublishDict() -> [String: NSData] {
+        let buildNumber = NSBundle.mainBundle().infoDictionary!["CFBundleVersion"]!
+        let versionNumber = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"]!
+        let bundleID = NSBundle.mainBundle().bundleIdentifier
+        let publishDict : [String:AnyObject] = ["permanentID": DeviceUID.uid(), "bundleIdentifer": bundleID!, "versionNumber": versionNumber, "buildNumber": buildNumber]
+        var publishDictionary = [String: NSData]()
+        for (key, value) in publishDict {
+            guard let val = value.dataUsingEncoding(NSUTF8StringEncoding)
+                else
+            {
+                continue
+            }
+            publishDictionary[key] = val
+        }
+        return publishDictionary
+    }
+    
+    func startDiscovery() {
         self.nsbdel = BrowserDelegate()
         nsb.delegate = nsbdel
-        nsb.searchForServicesOfType(BM_TYPE, inDomain: BM_DOMAIN)
+        nsb.searchForServicesOfType("_home-assistant._tcp.", inDomain: "local.")
     }
     
-    func stop() {
+    func stopDiscovery() {
         nsb.stop()
+    }
+    
+    func startPublish() {
+        self.nspdel = BMNSDelegate()
+        nsp.delegate = nspdel
+        nsp.setTXTRecordData(NSNetService.dataFromTXTRecordDictionary(buildPublishDict()))
+        nsp.publish()
+    }
+    
+    func stopPublish() {
+        nsp.stop()
     }
     
 }
