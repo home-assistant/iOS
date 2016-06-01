@@ -11,6 +11,7 @@ import Eureka
 import PermissionScope
 import AcknowList
 import PromiseKit
+import Crashlytics
 
 class SettingsViewController: FormViewController {
 
@@ -18,9 +19,31 @@ class SettingsViewController: FormViewController {
     
     var showErrorConnectingMessage = false
     
+    @IBOutlet var emailInput: UITextField!
+    func emailEntered(sender: UIAlertAction) {
+        print("Captured email", emailInput.text)
+        Crashlytics.sharedInstance().setUserEmail(emailInput.text)
+        print("First launch, setting NSUserDefault.")
+//        NSUserDefaults.standardUserDefaults().setBool(true, forKey: "launchedBefore")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("launchedBefore")
+        if launchedBefore {
+            print("Not first launch.")
+        } else {
+            let alert = UIAlertController(title: "Welcome", message: "Please enter the email address you used to sign up for the beta program with.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: emailEntered))
+            alert.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
+                textField.placeholder = "myawesomeemail@gmail.com"
+                textField.keyboardType = .EmailAddress
+                self.emailInput = textField
+            })
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
         
         if !showErrorConnectingMessage {
             let aboutButton = UIBarButtonItem(title: "About", style: .Plain, target: self, action: #selector(SettingsViewController.aboutButtonPressed(_:)))
@@ -95,75 +118,29 @@ class SettingsViewController: FormViewController {
                 let deviceIdRow: TextRow? = self.form.rowByTag("deviceId")
                 let allowAllGroupsRow: SwitchRow? = self.form.rowByTag("allowAllGroups")
                 
-                if let baseURL = urlRow!.value?.absoluteString {
-                    print("BaseURL is", baseURL)
-//                    var apiPass = ""
-//                    if let pass = apiPasswordRow?.value {
-//                        apiPass = pass
-//                    }
-//                    HomeAssistantAPI.sharedInstance.setupWithAuth(baseURL, APIPassword: apiPass)
-//                    when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig(), HomeAssistantAPI.sharedInstance.setupPushActions()).then {identify, config, categories -> Void in
-//                        self.prefs.setValue(config.LocationName, forKey: "location_name")
-//                        self.prefs.setValue(config.Latitude, forKey: "latitude")
-//                        self.prefs.setValue(config.Longitude, forKey: "longitude")
-//                        self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
-//                        self.prefs.setValue(config.Timezone, forKey: "time_zone")
-//                        self.prefs.setValue(config.Version, forKey: "version")
-//                        pscope.addPermission(LocationAlwaysPermission(),
-//                            message: "We use this to inform\r\nHome Assistant of your device presence.")
-//                        pscope.addPermission(NotificationsPermission(notificationCategories: categories),
-//                            message: "We use this to let you\r\nsend notifications to your device.")
-//                        pscope.show({ finished, results in
-//                            print("got results \(results)")
-//                            if results[0].status == .Authorized {
-//                                print("User authorized the use of notifications")
-//                                UIApplication.sharedApplication().registerForRemoteNotifications()
-//                            }
-//                            if finished {
-//                                print("Finished, resetting API")
-//                                self.dismissViewControllerAnimated(true, completion: nil)
-//                                (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
-//                            }
-//                        }, cancelled: { (results) -> Void in
-//                            print("thing was cancelled")
-//                            self.dismissViewControllerAnimated(true, completion: nil)
-//                            (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
-//                        })
-//                    }.error { error in
-//                        print("Error on saving!", error)
-//                    }
-//                    let settings = UIUserNotificationSettings(forTypes: [UIUserNotificationType.Alert, UIUserNotificationType.Sound, UIUserNotificationType.Badge], categories: categories)
-//                    UIApplication.sharedApplication().registerUserNotificationSettings(settings)
-                    pscope.addPermission(LocationAlwaysPermission(),
-                        message: "We use this to inform\r\nHome Assistant of your device presence.")
-                    pscope.addPermission(NotificationsPermission(),
-                        message: "We use this to let you\r\nsend notifications to your device.")
-                    pscope.show({ finished, results in
-                        print("got results \(results)")
-                        if results[0].status == .Authorized {
-                            print("User authorized the use of notifications")
-                            UIApplication.sharedApplication().registerForRemoteNotifications()
-                        }
-                        if finished {
-                            print("Finished, resetting API")
-                            self.dismissViewControllerAnimated(true, completion: nil)
-                            (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
-                        }
-                        }, cancelled: { (results) -> Void in
-                            print("thing was cancelled")
-                            self.dismissViewControllerAnimated(true, completion: nil)
-                            (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
-                    })
-                } else {
-                    print("Error when trying to save")
-                }
-                
                 self.prefs.setValue(urlRow!.value!.absoluteString, forKey: "baseURL")
                 self.prefs.setValue(apiPasswordRow!.value!, forKey: "apiPassword")
                 self.prefs.setValue(deviceIdRow!.value!, forKey: "deviceId")
                 self.prefs.setBool(allowAllGroupsRow!.value!, forKey: "allowAllGroups")
+                
+                pscope.addPermission(LocationAlwaysPermission(),
+                    message: "We use this to inform\r\nHome Assistant of your device presence.")
+                pscope.addPermission(NotificationsPermission(),
+                    message: "We use this to let you\r\nsend notifications to your device.")
+                pscope.show({ finished, results in
+                    print("PermissionScope results:", results)
+                    if finished {
+                        print("Finished, resetting API")
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                        (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
+                    }
+                }, cancelled: { (results) -> Void in
+                    print("thing was cancelled")
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                    (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
+                })
             }
-            
+        
             if let endpointArn = prefs.stringForKey("endpointARN") {
                 print("endpoint", endpointArn)
                 form
@@ -208,7 +185,6 @@ class SettingsViewController: FormViewController {
                             cell.textLabel?.textColor = .blackColor()
                             cell.detailTextLabel?.text = baseUrl + " - " + version
                         }.onCellSelection({ cell, row in
-                            print("Changed!")
                             let urlRow: URLRow? = self.form.rowByTag("baseURL")
                             urlRow!.value = NSURL(string: baseUrl)
                             urlRow?.updateCell()

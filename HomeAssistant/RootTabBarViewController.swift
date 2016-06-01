@@ -137,7 +137,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
             }
         } else {
-            print("Skip!")
             dispatch_async(dispatch_get_main_queue(), {
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"

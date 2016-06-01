@@ -509,15 +509,15 @@ class BrowserDelegate : NSObject, NSNetServiceBrowserDelegate, NSNetServiceDeleg
     }
     
     func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didFindDomain domainName: String, moreComing moreDomainsComing: Bool) {
-        NSLog("BrowserDelegate.netServiceBrowser.didFindDomain")
+//        NSLog("BrowserDelegate.netServiceBrowser.didFindDomain")
     }
     
     func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didRemoveDomain domainName: String, moreComing moreDomainsComing: Bool) {
-        NSLog("BrowserDelegate.netServiceBrowser.didRemoveDomain")
+//        NSLog("BrowserDelegate.netServiceBrowser.didRemoveDomain")
     }
     
     func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didFindService netService: NSNetService, moreComing moreServicesComing: Bool) {
-        NSLog("BrowserDelegate.netServiceBrowser.didFindService")
+//        NSLog("BrowserDelegate.netServiceBrowser.didFindService")
         netService.delegate = self
         resolving.append(netService)
         netService.resolveWithTimeout(0.0)
@@ -542,15 +542,15 @@ class BrowserDelegate : NSObject, NSNetServiceBrowserDelegate, NSNetServiceDeleg
     }
     
     func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didRemoveService netService: NSNetService, moreComing moreServicesComing: Bool) {
-        NSLog("BrowserDelegate.netServiceBrowser.didRemoveService")
+//        NSLog("BrowserDelegate.netServiceBrowser.didRemoveService")
     }
     
     func netServiceBrowserWillSearch(aNetServiceBrowser: NSNetServiceBrowser){
-        NSLog("BrowserDelegate.netServiceBrowserWillSearch")
+//        NSLog("BrowserDelegate.netServiceBrowserWillSearch")
     }
     
     func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didNotSearch errorInfo: [String : NSNumber]) {
-        NSLog("BrowserDelegate.netServiceBrowser.didNotSearch")
+//        NSLog("BrowserDelegate.netServiceBrowser.didNotSearch")
     }
     
 //    func netServiceBrowserDidStopSearch(netServiceBrowser: NSNetServiceBrowser) {
