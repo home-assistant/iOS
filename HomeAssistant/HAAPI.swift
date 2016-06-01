@@ -638,8 +638,8 @@ class Bonjour {
     }
     
     func startPublish() {
-        self.nspdel = BMNSDelegate()
-        nsp.delegate = nspdel
+//        self.nspdel = BMNSDelegate()
+//        nsp.delegate = nspdel
         nsp.setTXTRecordData(NSNetService.dataFromTXTRecordDictionary(buildPublishDict()))
         nsp.publish()
     }
