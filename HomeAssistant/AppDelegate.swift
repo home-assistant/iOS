@@ -63,7 +63,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 apiPass = pass
             }
             HomeAssistantAPI.sharedInstance.setupWithAuth(baseURL, APIPassword: apiPass)
-            when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig()).then { ident, config -> Void in
+//            when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig()).then { ident, config -> Void in
+//            print("Identified!", ident)
+            HomeAssistantAPI.sharedInstance.GetConfig().then { config -> Void in
                 self.prefs.setValue(config.LocationName, forKey: "location_name")
                 self.prefs.setValue(config.Latitude, forKey: "latitude")
                 self.prefs.setValue(config.Longitude, forKey: "longitude")
@@ -74,7 +76,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     print("Found device_tracker in config components, starting location monitoring!")
                     HomeAssistantAPI.sharedInstance.trackLocation(self.prefs.stringForKey("deviceId")!)
                 }
-                print("Identified!", ident)
             }.error { error in
                 print("Error at launch!", error)
                 Crashlytics.sharedInstance().recordError(error)
