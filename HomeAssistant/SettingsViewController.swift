@@ -101,39 +101,59 @@ class SettingsViewController: FormViewController {
                     if let pass = apiPasswordRow?.value {
                         apiPass = pass
                     }
-                    HomeAssistantAPI.sharedInstance.setupWithAuth(baseURL, APIPassword: apiPass)
-                    when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig(), HomeAssistantAPI.sharedInstance.setupPushActions()).then {identify, config, categories -> Void in
-                        self.prefs.setValue(config.LocationName, forKey: "location_name")
-                        self.prefs.setValue(config.Latitude, forKey: "latitude")
-                        self.prefs.setValue(config.Longitude, forKey: "longitude")
-                        self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
-                        self.prefs.setValue(config.Timezone, forKey: "time_zone")
-                        self.prefs.setValue(config.Version, forKey: "version")
-                        pscope.addPermission(LocationAlwaysPermission(),
-                            message: "We use this to inform\r\nHome Assistant of your device presence.")
-                        pscope.addPermission(NotificationsPermission(notificationCategories: categories),
-                            message: "We use this to let you\r\nsend notifications to your device.")
-                        pscope.show({ finished, results in
-                            print("got results \(results)")
-                            if results[0].status == .Authorized {
-                                print("User authorized the use of notifications")
-                                UIApplication.sharedApplication().registerForRemoteNotifications()
-                            }
-                            if finished {
-                                print("Finished, resetting API")
-                                self.dismissViewControllerAnimated(true, completion: nil)
-                                (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
-                            }
+//                    HomeAssistantAPI.sharedInstance.setupWithAuth(baseURL, APIPassword: apiPass)
+//                    when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig(), HomeAssistantAPI.sharedInstance.setupPushActions()).then {identify, config, categories -> Void in
+//                        self.prefs.setValue(config.LocationName, forKey: "location_name")
+//                        self.prefs.setValue(config.Latitude, forKey: "latitude")
+//                        self.prefs.setValue(config.Longitude, forKey: "longitude")
+//                        self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
+//                        self.prefs.setValue(config.Timezone, forKey: "time_zone")
+//                        self.prefs.setValue(config.Version, forKey: "version")
+//                        pscope.addPermission(LocationAlwaysPermission(),
+//                            message: "We use this to inform\r\nHome Assistant of your device presence.")
+//                        pscope.addPermission(NotificationsPermission(notificationCategories: categories),
+//                            message: "We use this to let you\r\nsend notifications to your device.")
+//                        pscope.show({ finished, results in
+//                            print("got results \(results)")
+//                            if results[0].status == .Authorized {
+//                                print("User authorized the use of notifications")
+//                                UIApplication.sharedApplication().registerForRemoteNotifications()
+//                            }
+//                            if finished {
+//                                print("Finished, resetting API")
+//                                self.dismissViewControllerAnimated(true, completion: nil)
+//                                (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
+//                            }
+//                        }, cancelled: { (results) -> Void in
+//                            print("thing was cancelled")
+//                            self.dismissViewControllerAnimated(true, completion: nil)
+//                            (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
+//                        })
+//                    }.error { error in
+//                        print("Error on saving!", error)
+//                    }
+//                    let settings = UIUserNotificationSettings(forTypes: [UIUserNotificationType.Alert, UIUserNotificationType.Sound, UIUserNotificationType.Badge], categories: categories)
+//                    UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+                    pscope.addPermission(LocationAlwaysPermission(),
+                        message: "We use this to inform\r\nHome Assistant of your device presence.")
+                    pscope.addPermission(NotificationsPermission(),
+                        message: "We use this to let you\r\nsend notifications to your device.")
+                    pscope.show({ finished, results in
+                        print("got results \(results)")
+                        if results[0].status == .Authorized {
+                            print("User authorized the use of notifications")
+                            UIApplication.sharedApplication().registerForRemoteNotifications()
+                        }
+                        if finished {
+                            print("Finished, resetting API")
+                            self.dismissViewControllerAnimated(true, completion: nil)
+                            HomeAssistantAPI.sharedInstance.initAPI()
+                        }
                         }, cancelled: { (results) -> Void in
                             print("thing was cancelled")
                             self.dismissViewControllerAnimated(true, completion: nil)
-                            (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
-                        })
-                    }.error { error in
-                        print("Error on saving!", error)
-                    }
-//                    let settings = UIUserNotificationSettings(forTypes: [UIUserNotificationType.Alert, UIUserNotificationType.Sound, UIUserNotificationType.Badge], categories: categories)
-//                    UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+                            HomeAssistantAPI.sharedInstance.initAPI()
+                    })
                 } else {
                     print("Error when trying to save")
                 }
