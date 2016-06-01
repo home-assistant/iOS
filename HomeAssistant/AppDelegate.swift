@@ -77,6 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print("Identified!", ident)
             }.error { error in
                 print("Error at launch!", error)
+                Crashlytics.sharedInstance().recordError(error)
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"
                 settingsView.showErrorConnectingMessage = true
@@ -122,6 +123,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         sns.createPlatformEndpoint(request).continueWithBlock { (task: AWSTask!) -> AnyObject! in
             if task.error != nil {
                 print("Error: \(task.error)")
+                Crashlytics.sharedInstance().recordError(error)
             } else {
                 let createEndpointResponse = task.result as! AWSSNSCreateEndpointResponse
                 print("endpointArn:", createEndpointResponse.endpointArn!)
@@ -135,6 +137,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
         print("Error when trying to register for push", error)
+        Crashlytics.sharedInstance().recordError(error)
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
@@ -161,6 +164,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         HomeAssistantAPI.sharedInstance.CreateEvent("ios.notification_action_fired", eventData: eventData).then { _ in
             completionHandler()
         }.error { _ in
+            Crashlytics.sharedInstance().recordError(error)
             completionHandler()
         }
     }

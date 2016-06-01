@@ -73,6 +73,7 @@ public class HomeAssistantAPI {
             if let localizedDescription = error?.localizedDescription {
                 Whistle(Murmur(title: "SSE Error! \(localizedDescription)"))
             }
+            Crashlytics.sharedInstance().recordError(error)
             print("SSE: Error", error)
         }
         
@@ -121,6 +122,7 @@ public class HomeAssistantAPI {
         }, onError: { (error) -> Void in
             // something went wrong. request will be cancelled automatically
             print("Something went wrong when trying to get significant location updates! Error was:", error)
+            Crashlytics.sharedInstance().recordError(error)
         })
         
         self.GetStates().then { states -> Void in
@@ -147,6 +149,7 @@ public class HomeAssistantAPI {
             }
         }.error { error in
             print("Error when getting states!")
+            Crashlytics.sharedInstance().recordError(error)
         }
 
     }
@@ -159,6 +162,7 @@ public class HomeAssistantAPI {
                     fulfill(true)
                 }) { (error) -> Void in
                     print("Error when trying to get a oneshot location!", error)
+                    Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
             }
@@ -178,6 +182,7 @@ public class HomeAssistantAPI {
                         }
                     case .Failure(let error):
                         print("Error on GET request to \(queryUrl):", error)
+                        Crashlytics.sharedInstance().recordError(error)
                         reject(error)
                 }
             }
@@ -198,6 +203,7 @@ public class HomeAssistantAPI {
                     }
                 case .Failure(let error):
                     print("Error on POST request to \(queryUrl):", error)
+                    Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
             }
@@ -212,7 +218,8 @@ public class HomeAssistantAPI {
                 case .Success:
                     fulfill(response.result.value!)
                 case .Failure(let error):
-                    print("Error on GET request:", error)
+                    print("Error on GetStatus() request:", error)
+                    Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
             }
@@ -227,7 +234,8 @@ public class HomeAssistantAPI {
                 case .Success:
                     fulfill(response.result.value!)
                 case .Failure(let error):
-                    print("Error on GET request:", error)
+                    print("Error on GetConfig() request:", error)
+                    Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
             }
@@ -250,7 +258,8 @@ public class HomeAssistantAPI {
                 case .Success:
                     fulfill(response.result.value!)
                 case .Failure(let error):
-                    print("Error on GET request:", error)
+                    print("Error on GetServices() request:", error)
+                    Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
             }
@@ -272,7 +281,8 @@ public class HomeAssistantAPI {
                         fulfill(historyArray)
                     }
                 case .Failure(let error):
-                    print("Error on GET request:", error)
+                    print("Error on GetHistoryMapped() request:", error)
+                    Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
             }
@@ -287,7 +297,8 @@ public class HomeAssistantAPI {
                 case .Success:
                     fulfill(response.result.value!)
                 case .Failure(let error):
-                    print("Error on GET request:", error)
+                    print("Error on GetStates() request:", error)
+                    Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
             }
@@ -306,7 +317,8 @@ public class HomeAssistantAPI {
                 case .Success:
                     fulfill(response.result.value!)
                 case .Failure(let error):
-                    print("Error on GET request:", error)
+                    print("Error on GetStateForEntityIdMapped() request:", error)
+                    Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
             }
@@ -442,7 +454,8 @@ public class HomeAssistantAPI {
                     }
                     fulfill(allCategories)
                 case .Failure(let error):
-                    print("Error on GET request:", error)
+                    print("Error on setupPushActions() request:", error)
+                    Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
             }
@@ -466,7 +479,8 @@ public class HomeAssistantAPI {
                         print("Response was not an image!", response)
                     }
                 case .Failure(let error):
-                    print("Error on GET image request to \(url):", error)
+                    print("Error on getImage() request to \(url):", error)
+                    Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
             }
