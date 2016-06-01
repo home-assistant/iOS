@@ -19,6 +19,7 @@ import AlamofireObjectMapper
 import ObjectMapper
 import DeviceKit
 import PermissionScope
+import Crashlytics
 
 let prefs = NSUserDefaults.standardUserDefaults()
 
@@ -73,7 +74,7 @@ public class HomeAssistantAPI {
             if let localizedDescription = error?.localizedDescription {
                 Whistle(Murmur(title: "SSE Error! \(localizedDescription)"))
             }
-            Crashlytics.sharedInstance().recordError(error)
+            Crashlytics.sharedInstance().recordError(error!)
             print("SSE: Error", error)
         }
         
@@ -122,7 +123,7 @@ public class HomeAssistantAPI {
         }, onError: { (error) -> Void in
             // something went wrong. request will be cancelled automatically
             print("Something went wrong when trying to get significant location updates! Error was:", error)
-            Crashlytics.sharedInstance().recordError(error)
+            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
         })
         
         self.GetStates().then { states -> Void in
@@ -148,8 +149,8 @@ public class HomeAssistantAPI {
                 }
             }
         }.error { error in
-            print("Error when getting states!")
-            Crashlytics.sharedInstance().recordError(error)
+            print("Error when getting states!", error)
+            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
         }
 
     }
@@ -162,7 +163,7 @@ public class HomeAssistantAPI {
                     fulfill(true)
                 }) { (error) -> Void in
                     print("Error when trying to get a oneshot location!", error)
-                    Crashlytics.sharedInstance().recordError(error)
+                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
                     reject(error)
                 }
             }

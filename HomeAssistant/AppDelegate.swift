@@ -78,7 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }.error { error in
                 print("Error at launch!", error)
-                Crashlytics.sharedInstance().recordError(error)
+                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"
                 settingsView.showErrorConnectingMessage = true
@@ -124,7 +124,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         sns.createPlatformEndpoint(request).continueWithBlock { (task: AWSTask!) -> AnyObject! in
             if task.error != nil {
                 print("Error: \(task.error)")
-                Crashlytics.sharedInstance().recordError(error)
+                Crashlytics.sharedInstance().recordError(task.error!)
             } else {
                 let createEndpointResponse = task.result as! AWSSNSCreateEndpointResponse
                 print("endpointArn:", createEndpointResponse.endpointArn!)
@@ -164,8 +164,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         HomeAssistantAPI.sharedInstance.CreateEvent("ios.notification_action_fired", eventData: eventData).then { _ in
             completionHandler()
-        }.error { _ in
-            Crashlytics.sharedInstance().recordError(error)
+        }.error { error in
+            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
             completionHandler()
         }
     }
