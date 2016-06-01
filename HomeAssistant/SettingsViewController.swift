@@ -147,12 +147,12 @@ class SettingsViewController: FormViewController {
                         if finished {
                             print("Finished, resetting API")
                             self.dismissViewControllerAnimated(true, completion: nil)
-                            HomeAssistantAPI.sharedInstance.initAPI()
+                            (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
                         }
                         }, cancelled: { (results) -> Void in
                             print("thing was cancelled")
                             self.dismissViewControllerAnimated(true, completion: nil)
-                            HomeAssistantAPI.sharedInstance.initAPI()
+                            (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
                     })
                 } else {
                     print("Error when trying to save")
