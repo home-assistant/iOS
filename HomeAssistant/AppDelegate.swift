@@ -31,26 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let configuration = AWSServiceConfiguration(region:.USWest2, credentialsProvider:credentialsProvider)
         
         AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
-        
-        if PermissionScope().statusNotifications() == .Authorized {
-            print("Notifications authorized, registering for remote notifications!")
-            UIApplication.sharedApplication().registerForRemoteNotifications()
-        }
-        
-        initAPI()
-        
-        let discovery = Bonjour()
-        
-        let queue = dispatch_queue_create("io.robbie.homeassistant", nil);
-        dispatch_async(queue) { () -> Void in
-            print("Publishing app to Bonjour")
-            discovery.stopPublish()
-            discovery.startPublish()
-            sleep(600)
-            print("Unpublishing app from Bonjour")
-            discovery.stopPublish()
-        }
 
+        initAPI()
         
         return true
     }
@@ -63,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 apiPass = pass
             }
             HomeAssistantAPI.sharedInstance.Setup(baseURL, APIPassword: apiPass)
-            HomeAssistantAPI.sharedInstance.Connect().then { _ -> Void in
+            HomeAssistantAPI.sharedInstance.Connect().error { _ -> Void in
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"
                 settingsView.showErrorConnectingMessage = true
