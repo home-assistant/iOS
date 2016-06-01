@@ -28,6 +28,8 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         
+        let tabBarIconColor = colorWithHexString("#44739E", alpha: 1)
+        
         var tabViewControllers : [UIViewController] = []
         
         let firstGroupView = GroupViewController()
@@ -103,18 +105,18 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     if group.MobileIcon != nil {
                         groupIcon = group.MobileIcon!
                     }
-                    let icon = getIconForIdentifier(groupIcon, iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+                    let icon = getIconForIdentifier(groupIcon, iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
                     groupView.tabBarItem = UITabBarItem(title: friendlyName.capitalizedString, image: icon, tag: index)
                     
                     var rightBarItems : [UIBarButtonItem] = []
                     
                     if PermissionScope().statusLocationAlways() == .Authorized {
-                        let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+                        let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
                         
                         rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
                     }
                     
-                    let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+                    let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
                     
                     rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
                     
@@ -124,13 +126,13 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     
                     tabViewControllers.append(navController)
                 }
-                let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+                let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
                 
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"
                 settingsView.tabBarItem = UITabBarItem(title: "Settings", image: settingsIcon, tag: 1)
-                
-                tabViewControllers.append(settingsView)
+            
+                tabViewControllers.append(UINavigationController(rootViewController: settingsView))
                 
                 self.viewControllers = tabViewControllers
                 
