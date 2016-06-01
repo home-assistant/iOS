@@ -46,12 +46,18 @@ public class HomeAssistantAPI {
     
     var services = [NSNetService]()
     
+    var headers = [String:String]()
+    
     func Setup(baseAPIUrl: String, APIPassword: String) {
         self.baseAPIURL = baseAPIUrl+"/api/"
         self.apiPassword = APIPassword
-        var defaultHeaders = Alamofire.Manager.sharedInstance.session.configuration.HTTPAdditionalHeaders ?? [:]
         if apiPassword != "" {
-            defaultHeaders["X-HA-Access"] = apiPassword
+            headers["X-HA-Access"] = apiPassword
+        }
+        
+        var defaultHeaders = Alamofire.Manager.sharedInstance.session.configuration.HTTPAdditionalHeaders ?? [:]
+        for (header, value) in headers {
+            defaultHeaders[header] = value
         }
         
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
@@ -109,13 +115,7 @@ public class HomeAssistantAPI {
     }
     
     func startStream() {
-        var sseHeaders : [String:String] = [:]
-        
-        if apiPassword != "" {
-            sseHeaders["X-HA-Access"] = apiPassword
-        }
-        
-        let eventSource: EventSource = EventSource(url: baseAPIURL+"stream", headers: sseHeaders)
+        let eventSource: EventSource = EventSource(url: baseAPIURL+"stream", headers: headers)
         
         eventSource.onOpen {
             print("SSE: Connection Opened")
@@ -532,122 +532,99 @@ public class HomeAssistantAPI {
 
 }
 
-class BrowserDelegate : NSObject, NSNetServiceBrowserDelegate, NSNetServiceDelegate {
+class BonjourDelegate : NSObject, NSNetServiceBrowserDelegate, NSNetServiceDelegate {
+    
     var resolving = [NSNetService]()
+    var resolvingDict = [String:NSNetService]()
     
-    func ipv4Enpoint(data: NSData) -> String {
-        var address = sockaddr()
-        data.getBytes(&address, length: sizeof(sockaddr))
-        if address.sa_family == sa_family_t(AF_INET) {
-            var addressIPv4 = sockaddr_in()
-            data.getBytes(&addressIPv4, length: sizeof(sockaddr))
-            let host = String.fromCString(inet_ntoa(addressIPv4.sin_addr))
-            let port = Int(CFSwapInt16(addressIPv4.sin_port))
-            return host!+":"+String(port)
-        }
-        return ""
-    }
-    
-    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didFindDomain domainName: String, moreComing moreDomainsComing: Bool) {
-//        NSLog("BrowserDelegate.netServiceBrowser.didFindDomain")
-    }
-    
-    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didRemoveDomain domainName: String, moreComing moreDomainsComing: Bool) {
-//        NSLog("BrowserDelegate.netServiceBrowser.didRemoveDomain")
-    }
+    // Browser methods
     
     func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didFindService netService: NSNetService, moreComing moreServicesComing: Bool) {
-//        NSLog("BrowserDelegate.netServiceBrowser.didFindService")
+        NSLog("BonjourDelegate.Browser.didFindService")
         netService.delegate = self
-        resolving.append(netService)
+        resolvingDict[netService.name] = netService
         netService.resolveWithTimeout(0.0)
     }
     
     func netServiceDidResolveAddress(sender: NSNetService) {
+        NSLog("BonjourDelegate.Browser.netServiceDidResolveAddress")
         let dataDict = NSNetService.dictionaryFromTXTRecordData(sender.TXTRecordData()!)
         let baseUrl = copyStringFromTXTDict(dataDict, which: "base_url")
         let requiresAPIPassword = (copyStringFromTXTDict(dataDict, which: "requires_api_password") == "true")
+        let useSSL = (copyStringFromTXTDict(dataDict, which: "use_ssl") == "true")
         let version = copyStringFromTXTDict(dataDict, which: "version")
-        let discoveryInfo : [NSObject:AnyObject] = ["name": sender.name, "baseUrl": baseUrl!, "requires_api_password": requiresAPIPassword, "version": version!]
+        let discoveryInfo : [NSObject:AnyObject] = ["name": sender.name, "baseUrl": baseUrl!, "requires_api_password": requiresAPIPassword, "version": version!, "use_ssl": useSSL]
         NSNotificationCenter.defaultCenter().postNotificationName("homeassistant.discovered", object: nil, userInfo: discoveryInfo)
     }
+    
+    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didRemoveService netService: NSNetService, moreComing moreServicesComing: Bool) {
+        NSLog("BonjourDelegate.Browser.didRemoveService")
+        let discoveryInfo : [NSObject:AnyObject] = ["name": netService.name]
+        NSNotificationCenter.defaultCenter().postNotificationName("homeassistant.undiscovered", object: nil, userInfo: discoveryInfo)
+        resolvingDict.removeValueForKey(netService.name)
+    }
+    
+//    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didFindDomain domainName: String, moreComing moreDomainsComing: Bool) {
+//        NSLog("BonjourDelegate.Browser.netServiceBrowser.didFindDomain")
+//    }
+//    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didRemoveDomain domainName: String, moreComing moreDomainsComing: Bool) {
+//        NSLog("BonjourDelegate.Browser.netServiceBrowser.didRemoveDomain")
+//    }
+//    func netServiceBrowserWillSearch(netServiceBrowser: NSNetServiceBrowser){
+//        NSLog("BonjourDelegate.Browser.netServiceBrowserWillSearch")
+//    }
+//    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didNotSearch errorInfo: [String : NSNumber]) {
+//        NSLog("BonjourDelegate.Browser.netServiceBrowser.didNotSearch")
+//    }
+//    func netServiceBrowserDidStopSearch(netServiceBrowser: NSNetServiceBrowser) {
+//        NSLog("BonjourDelegate.Browser.netServiceBrowserDidStopSearch")
+//    }
+//    func netServiceWillPublish(sender: NSNetService) {
+//        NSLog("BonjourDelegate.Browser.netServiceWillPublish:\(sender)");
+//    }
     
     private func copyStringFromTXTDict(dict: [NSObject : AnyObject], which: String) -> String? {
         if let data = dict[which] as? NSData {
             return NSString(data: data, encoding: NSUTF8StringEncoding) as? String
-        }
-        else {
+        } else {
             return nil
         }
     }
     
-    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didRemoveService netService: NSNetService, moreComing moreServicesComing: Bool) {
-//        NSLog("BrowserDelegate.netServiceBrowser.didRemoveService")
-    }
+    // Publisher methods
     
-    func netServiceBrowserWillSearch(aNetServiceBrowser: NSNetServiceBrowser){
-//        NSLog("BrowserDelegate.netServiceBrowserWillSearch")
-    }
-    
-    func netServiceBrowser(netServiceBrowser: NSNetServiceBrowser, didNotSearch errorInfo: [String : NSNumber]) {
-//        NSLog("BrowserDelegate.netServiceBrowser.didNotSearch")
-    }
-    
-//    func netServiceBrowserDidStopSearch(netServiceBrowser: NSNetServiceBrowser) {
-//        NSLog("BrowserDelegate.netServiceBrowserDidStopSearch")
+//    func netService(sender: NSNetService, didNotPublish errorDict: [String : NSNumber]) {
+//        NSLog("BonjourDelegate.Publisher.didNotPublish:\(sender)");
+//    }
+//    func netServiceDidPublish(sender: NSNetService) {
+//        NSLog("BonjourDelegate.Publisher.netServiceDidPublish:\(sender)");
+//    }
+//    func netServiceWillResolve(sender: NSNetService) {
+//        NSLog("BonjourDelegate.Publisher.netServiceWillResolve:\(sender)");
+//    }
+//    func netService(sender: NSNetService, didNotResolve errorDict: [String : NSNumber]) {
+//        NSLog("BonjourDelegate.Publisher.netServiceDidNotResolve:\(sender)");
+//    }
+//    func netService(sender: NSNetService, didUpdateTXTRecordData data: NSData) {
+//        NSLog("BonjourDelegate.Publisher.netServiceDidUpdateTXTRecordData:\(sender)");
+//    }
+//    func netServiceDidStop(sender: NSNetService) {
+//        NSLog("BonjourDelegate.Publisher.netServiceDidStopService:\(sender)");
+//    }
+//    func netService(sender: NSNetService, didAcceptConnectionWithInputStream inputStream: NSInputStream, outputStream stream: NSOutputStream) {
+//        NSLog("BonjourDelegate.Publisher.netServiceDidAcceptConnection:\(sender)");
 //    }
     
-}
-
-class BMNSDelegate : NSObject, NSNetServiceDelegate {
-    func netServiceWillPublish(sender: NSNetService) {
-        print("netServiceWillPublish:\(sender)");
-    }
-    
-//    func netService(sender: NSNetService, didNotPublish errorDict: [NSObject : AnyObject]) {
-//        print("didNotPublish:\(sender)");
-//    }
-    
-    func netServiceDidPublish(sender: NSNetService) {
-        print("netServiceDidPublish:\(sender)");
-    }
-    
-    func netServiceWillResolve(sender: NSNetService) {
-        print("netServiceWillResolve:\(sender)");
-    }
-    
-//    func netService(sender: NSNetService, didNotResolve errorDict: [NSObject : AnyObject]) {
-//        print("netServiceDidNotResolve:\(sender)");
-//    }
-    
-    func netServiceDidResolveAddress(sender: NSNetService) {
-        print("netServiceDidResolve:\(sender)");
-    }
-    
-    func netService(sender: NSNetService, didUpdateTXTRecordData data: NSData) {
-        print("netServiceDidUpdateTXTRecordData:\(sender)");
-    }
-    
-    func netServiceDidStop(sender: NSNetService) {
-        print("netServiceDidStopService:\(sender)");
-    }
-    
-    func netService(sender: NSNetService,
-                    didAcceptConnectionWithInputStream inputStream: NSInputStream,
-                                                       outputStream stream: NSOutputStream) {
-        print("netServiceDidAcceptConnection:\(sender)");
-    }
 }
 
 class Bonjour {
     var nsb: NSNetServiceBrowser
     var nsp: NSNetService
-    var nsbdel: BrowserDelegate?
-    var nspdel: BMNSDelegate?
+    var nsdel: BonjourDelegate?
     
     init() {
         self.nsb = NSNetServiceBrowser()
-        self.nsp = NSNetService(domain: "local", type: "_ha_ios._tcp.", name: "HomeAssistantiOS", port: 65535)
+        self.nsp = NSNetService(domain: "local", type: "_home-assistant-ios._tcp.", name: "Home Assistant iOS App", port: 65535)
     }
     
     func buildPublishDict() -> [String: NSData] {
@@ -668,8 +645,8 @@ class Bonjour {
     }
     
     func startDiscovery() {
-        self.nsbdel = BrowserDelegate()
-        nsb.delegate = nsbdel
+        self.nsdel = BonjourDelegate()
+        nsb.delegate = nsdel
         nsb.searchForServicesOfType("_home-assistant._tcp.", inDomain: "local.")
     }
     
@@ -678,8 +655,8 @@ class Bonjour {
     }
     
     func startPublish() {
-//        self.nspdel = BMNSDelegate()
-//        nsp.delegate = nspdel
+//        self.nsdel = BonjourDelegate()
+//        nsp.delegate = nsdel
         nsp.setTXTRecordData(NSNetService.dataFromTXTRecordDictionary(buildPublishDict()))
         nsp.publish()
     }
