@@ -24,6 +24,7 @@
 		B657A9011CA646EB00121384 /* HomeAssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9001CA646EB00121384 /* HomeAssistantTests.swift */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B657A91A1CA647C500121384 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
+		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B66428021CF79FC800903804 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F31CF79FC700903804 /* US-EN-Daisy-Back-Door-Motion.wav */; };
 		B66428031CF79FC800903804 /* US-EN-Daisy-Back-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F41CF79FC700903804 /* US-EN-Daisy-Back-Door-Open.wav */; };
 		B66428041CF79FC800903804 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F51CF79FC700903804 /* US-EN-Daisy-Front-Door-Motion.wav */; };
@@ -116,6 +117,7 @@
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
 		B657A90D1CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAAPI.swift; sourceTree = "<group>"; };
+		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
 		B66427F31CF79FC700903804 /* US-EN-Daisy-Back-Door-Motion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Back-Door-Motion.wav"; sourceTree = "<group>"; };
 		B66427F41CF79FC700903804 /* US-EN-Daisy-Back-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Back-Door-Open.wav"; sourceTree = "<group>"; };
 		B66427F51CF79FC700903804 /* US-EN-Daisy-Front-Door-Motion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Door-Motion.wav"; sourceTree = "<group>"; };
@@ -276,6 +278,7 @@
 				B624DE171CB8369200F413CE /* DevicesMapViewController.swift */,
 				B6E47E981CBB47CC0027F6CA /* DeviceUID.h */,
 				B6E47E991CBB47EC0027F6CA /* DeviceUID.m */,
+				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
 			);
 			path = HomeAssistant;
 			sourceTree = "<group>";
@@ -633,6 +636,7 @@
 				B6F02C1A1CB489770029ABE7 /* SunComponent.swift in Sources */,
 				B6F02C1C1CB489770029ABE7 /* ThermostatComponent.swift in Sources */,
 				B6F02C151CB489770029ABE7 /* LockComponent.swift in Sources */,
+				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B6F02C131CB489770029ABE7 /* InputSelectComponent.swift in Sources */,
 				B6F02BF61CB4728D0029ABE7 /* History.swift in Sources */,
 				B6F02C181CB489770029ABE7 /* ScriptComponent.swift in Sources */,
