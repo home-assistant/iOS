@@ -6,11 +6,11 @@ PODS:
   - AlamofireObjectMapper (3.0.0):
     - Alamofire (~> 3.2)
     - ObjectMapper (~> 1.0)
-  - AWSCognito (2.4.2):
-    - AWSCore (= 2.4.2)
-  - AWSCore (2.4.2)
-  - AWSSNS (2.4.2):
-    - AWSCore (= 2.4.2)
+  - AWSCognito (2.4.3):
+    - AWSCore (= 2.4.3)
+  - AWSCore (2.4.3)
+  - AWSSNS (2.4.3):
+    - AWSCore (= 2.4.3)
   - Crashlytics (3.7.0):
     - Fabric (~> 1.6.3)
   - DeviceKit (0.3.2)
@@ -93,9 +93,9 @@ SPEC CHECKSUMS:
   Alamofire: c19a627cefd6a95f840401c49ab1f124e07f54ee
   AlamofireImage: 87408b652e0f5ae5fe364035f15aea8b9b24c77e
   AlamofireObjectMapper: 2d16585d06177be0116d76de73497e77437798af
-  AWSCognito: 87cf3dadb17eed732c1c3fe21624fa8f15ef84ec
-  AWSCore: 08cc4318682a518ad73e452900336ba54e823e03
-  AWSSNS: bd87a2013d8be90f5f4d3f3d3726d4584714fdfb
+  AWSCognito: 9a83fcecccd8b9efaa82fec7722ee2a4c723b0fe
+  AWSCore: 1b1edbf65f948804c9d522f1c49e29f51f72c6d8
+  AWSSNS: 4dde743fe01ad3f1581bb1005dbb7fb59b518c1e
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
   DeviceKit: 79182140c0aa8daaf4f4b3920e0b079f5fa9db79
   Eureka: ef5b9ac93aedeecfe50d98b1ac7678bf09a1fc62

@@ -5,12 +5,12 @@ use_frameworks!
 
 target 'HomeAssistant' do
   pod 'AcknowList'
-  pod 'AWSCognito'
-  pod 'AWSCore'
-  pod 'AWSSNS'
   pod 'Alamofire', '~> 3.0'
   pod 'AlamofireImage', '~> 2.0'
   pod 'AlamofireObjectMapper', '~> 3.0'
+  pod 'AWSCognito'
+  pod 'AWSCore'
+  pod 'AWSSNS'
   pod 'Crashlytics'
   pod 'DeviceKit', '~> 0.3.2'
   pod 'Eureka', '~> 1.5'
