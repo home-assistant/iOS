@@ -24,17 +24,15 @@ class SettingsViewController: FormViewController {
         print("Captured email", emailInput.text)
         Crashlytics.sharedInstance().setUserEmail(emailInput.text)
         print("First launch, setting NSUserDefault.")
-//        NSUserDefaults.standardUserDefaults().setBool(true, forKey: "launchedBefore")
+        prefs.setBool(true, forKey: "emailSet")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("launchedBefore")
-        if launchedBefore {
-            print("Not first launch.")
-        } else {
+        if prefs.boolForKey("emailSet") == false {
+            print("This is first launch, let's prompt user for email.")
             let alert = UIAlertController(title: "Welcome", message: "Please enter the email address you used to sign up for the beta program with.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: emailEntered))
             alert.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
