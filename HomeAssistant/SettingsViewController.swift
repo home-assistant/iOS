@@ -97,10 +97,10 @@ class SettingsViewController: FormViewController {
                 
                 if let baseURL = urlRow!.value?.absoluteString {
                     print("BaseURL is", baseURL)
-                    var apiPass = ""
-                    if let pass = apiPasswordRow?.value {
-                        apiPass = pass
-                    }
+//                    var apiPass = ""
+//                    if let pass = apiPasswordRow?.value {
+//                        apiPass = pass
+//                    }
 //                    HomeAssistantAPI.sharedInstance.setupWithAuth(baseURL, APIPassword: apiPass)
 //                    when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig(), HomeAssistantAPI.sharedInstance.setupPushActions()).then {identify, config, categories -> Void in
 //                        self.prefs.setValue(config.LocationName, forKey: "location_name")
