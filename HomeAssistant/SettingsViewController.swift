@@ -19,14 +19,6 @@ class SettingsViewController: FormViewController {
     
     var showErrorConnectingMessage = false
     
-    @IBOutlet var emailInput: UITextField!
-    func emailEntered(sender: UIAlertAction) {
-        print("Captured email", emailInput.text)
-        Crashlytics.sharedInstance().setUserEmail(emailInput.text)
-        print("First launch, setting NSUserDefault.")
-        prefs.setBool(true, forKey: "emailSet")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -84,7 +76,12 @@ class SettingsViewController: FormViewController {
                     $0.value = NSURL(string: baseURL)
                 }
                 $0.placeholder = "https://homeassistant.myhouse.com"
-            }
+            }.onChange({ _ in
+                let apiPasswordRow: PasswordRow = self.form.rowByTag("apiPassword")!
+                apiPasswordRow.value = ""
+                apiPasswordRow.disabled = false
+                apiPasswordRow.evaluateDisabled()
+            })
             +++ Section(header: "Settings", footer: "")
             <<< PasswordRow("apiPassword") {
                 $0.title = "API Password"
@@ -111,15 +108,26 @@ class SettingsViewController: FormViewController {
             <<< ButtonRow() {
                 $0.title = "Save"
             }.onCellSelection {_,_ in
-                let urlRow: URLRow? = self.form.rowByTag("baseURL")
-                let apiPasswordRow: PasswordRow? = self.form.rowByTag("apiPassword")
-                let deviceIdRow: TextRow? = self.form.rowByTag("deviceId")
-                let allowAllGroupsRow: SwitchRow? = self.form.rowByTag("allowAllGroups")
-                
-                self.prefs.setValue(urlRow!.value!.absoluteString, forKey: "baseURL")
-                self.prefs.setValue(apiPasswordRow!.value!, forKey: "apiPassword")
-                self.prefs.setValue(deviceIdRow!.value!, forKey: "deviceId")
-                self.prefs.setBool(allowAllGroupsRow!.value!, forKey: "allowAllGroups")
+                if let urlRow: URLRow = self.form.rowByTag("baseURL") {
+                    if let url = urlRow.value {
+                        self.prefs.setValue(url.absoluteString, forKey: "baseURL")
+                    }
+                }
+                if let apiPasswordRow: PasswordRow = self.form.rowByTag("apiPassword") {
+                    if let password = apiPasswordRow.value {
+                        self.prefs.setValue(password, forKey: "apiPassword")
+                    }
+                }
+                if let deviceIdRow: TextRow = self.form.rowByTag("deviceId") {
+                    if let deviceId = deviceIdRow.value {
+                        self.prefs.setValue(deviceId, forKey: "deviceId")
+                    }
+                }
+                if let allowAllGroupsRow: SwitchRow = self.form.rowByTag("allowAllGroups") {
+                    if let allowAllGroups = allowAllGroupsRow.value {
+                        self.prefs.setBool(allowAllGroups, forKey: "allowAllGroups")
+                    }
+                }
                 
                 pscope.addPermission(LocationAlwaysPermission(),
                     message: "We use this to inform\r\nHome Assistant of your device presence.")
@@ -169,12 +177,10 @@ class SettingsViewController: FormViewController {
         discoverySection.hidden = false
         if let userInfo = notification.userInfo as? [String:AnyObject] {
             let name = userInfo["name"] as! String
-            if self.form.rowByTag(name) != nil {
-                print("Row already exists, skip!")
-            } else {
+            if self.form.rowByTag(name) == nil {
                 let baseUrl = userInfo["baseUrl"] as! String
                 let version = userInfo["version"] as! String
-                let needsAuth = userInfo["needs_auth"] as! Bool
+                let requiresAPIPassword = userInfo["requires_api_password"] as! Bool
                 discoverySection
                     <<< ButtonRow(name) {
                             $0.title = name
@@ -183,21 +189,26 @@ class SettingsViewController: FormViewController {
                             cell.textLabel?.textColor = .blackColor()
                             cell.detailTextLabel?.text = baseUrl + " - " + version
                         }.onCellSelection({ cell, row in
-                            let urlRow: URLRow? = self.form.rowByTag("baseURL")
-                            urlRow!.value = NSURL(string: baseUrl)
-                            urlRow?.updateCell()
-                            if needsAuth == false {
-                                let apiPasswordRow: PasswordRow? = self.form.rowByTag("apiPassword")
-                                apiPasswordRow?.value = ""
-                                apiPasswordRow?.hidden = false
-                                apiPasswordRow?.evaluateHidden()
-                                apiPasswordRow?.updateCell()
-                            }
+                            let urlRow: URLRow = self.form.rowByTag("baseURL")!
+                            urlRow.value = NSURL(string: baseUrl)
+                            urlRow.updateCell()
+                            let apiPasswordRow: PasswordRow = self.form.rowByTag("apiPassword")!
+                            apiPasswordRow.value = ""
+                            apiPasswordRow.disabled = Condition(booleanLiteral: !requiresAPIPassword)
+                            apiPasswordRow.evaluateDisabled()
                         })
                 self.tableView?.reloadData()
             }
         }
         discoverySection.evaluateHidden()
+    }
+    
+    @IBOutlet var emailInput: UITextField!
+    func emailEntered(sender: UIAlertAction) {
+        print("Captured email", emailInput.text)
+        Crashlytics.sharedInstance().setUserEmail(emailInput.text)
+        print("First launch, setting NSUserDefault.")
+        prefs.setBool(true, forKey: "emailSet")
     }
     
 }

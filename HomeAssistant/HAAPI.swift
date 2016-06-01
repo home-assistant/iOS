@@ -23,6 +23,8 @@ import Crashlytics
 
 let prefs = NSUserDefaults.standardUserDefaults()
 
+let APIClientSharedInstance = HomeAssistantAPI()
+
 public class HomeAssistantAPI {
     
     class var sharedInstance:HomeAssistantAPI {
@@ -36,11 +38,15 @@ public class HomeAssistantAPI {
     var baseAPIURL : String = ""
     var apiPassword : String = ""
     
+    var deviceID : String = ""
+    var endpointARN : String = ""
+    var deviceToken : String = ""
+    
     var mostRecentlySentMessage : String = String()
     
     var services = [NSNetService]()
     
-    func setupWithAuth(baseAPIUrl: String, APIPassword: String) {
+    func Setup(baseAPIUrl: String, APIPassword: String) {
         self.baseAPIURL = baseAPIUrl+"/api/"
         self.apiPassword = APIPassword
         var defaultHeaders = Alamofire.Manager.sharedInstance.session.configuration.HTTPAdditionalHeaders ?? [:]
@@ -53,7 +59,53 @@ public class HomeAssistantAPI {
         configuration.timeoutIntervalForResource = 3 // seconds
         
         self.manager = Alamofire.Manager(configuration: configuration)
-        startStream()
+        
+        if let deviceId = prefs.stringForKey("deviceId") {
+            deviceID = deviceId
+        }
+        
+        if let endpointArn = prefs.stringForKey("endpointARN") {
+            endpointARN = endpointArn
+        }
+        
+        if let deviceTok = prefs.stringForKey("deviceToken") {
+            deviceToken = deviceTok
+        }
+        
+    }
+
+    func Connect() -> Promise<Bool> {
+        return Promise { fulfill, reject in
+            //            when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig()).then { ident, config -> Void in
+            //            print("Identified!", ident)
+            GetConfig().then { config -> Void in
+                prefs.setValue(config.LocationName, forKey: "location_name")
+                prefs.setValue(config.Latitude, forKey: "latitude")
+                prefs.setValue(config.Longitude, forKey: "longitude")
+                prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
+                prefs.setValue(config.Timezone, forKey: "time_zone")
+                prefs.setValue(config.Version, forKey: "version")
+                
+                Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
+                
+                if PermissionScope().statusLocationAlways() == .Authorized && config.Components!.contains("device_tracker") {
+                    print("Found device_tracker in config components, starting location monitoring!")
+                    self.trackLocation(self.deviceID)
+                }
+                
+                if PermissionScope().statusNotifications() == .Authorized {
+                    print("User authorized the use of notifications")
+                    UIApplication.sharedApplication().registerForRemoteNotifications()
+                }
+                self.startStream()
+                fulfill(true)
+            }.error { error in
+                print("Error at launch!", error)
+                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                reject(error)
+            }
+
+        }
     }
     
     func startStream() {
@@ -67,15 +119,15 @@ public class HomeAssistantAPI {
         
         eventSource.onOpen {
             print("SSE: Connection Opened")
-            Whistle(Murmur(title: "Connected to HA realtime API!"))
+            Whistle(Murmur(title: "Connected to Home Assistant"))
         }
         
-        eventSource.onError { (error) in
-            if let localizedDescription = error?.localizedDescription {
-                Whistle(Murmur(title: "SSE Error! \(localizedDescription)"))
+        eventSource.onError { error in
+            if let err = error {
+                Crashlytics.sharedInstance().recordError(err)
+                print("SSE: ", err)
+                Whistle(Murmur(title: "SSE Error! \(err.localizedDescription)"))
             }
-            Crashlytics.sharedInstance().recordError(error!)
-            print("SSE: Error", error)
         }
         
         eventSource.onMessage { (id, eventName, data) in
@@ -88,7 +140,7 @@ public class HomeAssistantAPI {
         }
     }
     
-    func submitLocation(updateType: String, deviceId: String, latitude: Double, longitude: Double, accuracy: Double, locationName: String) {
+    func submitLocation(updateType: String, latitude: Double, longitude: Double, accuracy: Double, locationName: String) {
         UIDevice.currentDevice().batteryMonitoringEnabled = true
         
         var locationUpdate : [String:AnyObject] = [
@@ -96,7 +148,7 @@ public class HomeAssistantAPI {
             "gps": [latitude, longitude],
             "gps_accuracy": accuracy,
             "hostname": UIDevice().name,
-            "dev_id": deviceId
+            "dev_id": deviceID
         ]
         
         if locationName != "" {
@@ -119,7 +171,7 @@ public class HomeAssistantAPI {
     
     func trackLocation(deviceId: String) {
         LocationManager.shared.observeLocations(.Neighborhood, frequency: .Significant, onSuccess: { (location) -> Void in
-            self.submitLocation("Significant location change detected", deviceId: deviceId, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
+            self.submitLocation("Significant location change detected", latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
         }, onError: { (error) -> Void in
             // something went wrong. request will be cancelled automatically
             print("Something went wrong when trying to get significant location updates! Error was:", error)
@@ -137,14 +189,14 @@ public class HomeAssistantAPI {
                         if let friendlyName = zone.FriendlyName {
                             title = friendlyName+" zone"
                         }
-                        self.submitLocation(title+" entered", deviceId: deviceId, latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 1, locationName: "")
+                        self.submitLocation(title+" entered", latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 1, locationName: "")
                     }) { (region) -> Void in
                         print("Region exited!", region)
                         var title = "Region"
                         if let friendlyName = zone.FriendlyName {
                             title = friendlyName+" zone"
                         }
-                        self.submitLocation(title+" exited", deviceId: deviceId, latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 1, locationName: "")
+                        self.submitLocation(title+" exited", latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 1, locationName: "")
                     }
                 }
             }
@@ -157,15 +209,13 @@ public class HomeAssistantAPI {
     
     func sendOneshotLocation() -> Promise<Bool> {
         return Promise { fulfill, reject in
-            if let deviceId = prefs.stringForKey("deviceId") {
-                LocationManager.shared.observeLocations(.Neighborhood, frequency: .OneShot, onSuccess: { (location) -> Void in
-                    self.submitLocation("One off location update requested", deviceId: deviceId, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
-                    fulfill(true)
-                }) { (error) -> Void in
-                    print("Error when trying to get a oneshot location!", error)
-                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                    reject(error)
-                }
+            LocationManager.shared.observeLocations(.Neighborhood, frequency: .OneShot, onSuccess: { (location) -> Void in
+                self.submitLocation("One off location update requested", latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
+                fulfill(true)
+            }) { (error) -> Void in
+                print("Error when trying to get a oneshot location!", error)
+                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                reject(error)
             }
         }
     }
@@ -396,15 +446,9 @@ public class HomeAssistantAPI {
         let bundleID = NSBundle.mainBundle().bundleIdentifier
         let appInfo : [String: AnyObject] = ["bundleIdentifer": bundleID!, "versionNumber": versionNumber, "buildNumber": buildNumber!]
         var deviceContainer : [String : AnyObject] = ["device": deviceInfo, "app": appInfo, "permissions": [:]]
-        if let endpointArn = prefs.stringForKey("endpointARN") {
-            deviceContainer["pushId"] = endpointArn.componentsSeparatedByString("/").last!
-        }
-        if let deviceToken = prefs.stringForKey("deviceToken") {
-            deviceContainer["pushToken"] = deviceToken
-        }
-        if let deviceTrackerId = prefs.stringForKey("deviceId") {
-            deviceContainer["deviceId"] = deviceTrackerId
-        }
+        deviceContainer["pushId"] = endpointARN.componentsSeparatedByString("/").last!
+        deviceContainer["pushToken"] = deviceToken
+        deviceContainer["deviceId"] = deviceID
         var permissionsContainer : [String] = []
         for status in PermissionScope().permissionStatuses([NotificationsPermission().type, LocationAlwaysPermission().type]) {
             if status.1 == .Authorized {
@@ -466,9 +510,7 @@ public class HomeAssistantAPI {
     func getImage(imageUrl: String) -> Promise<UIImage> {
         var url = imageUrl
         if url.containsString("/local/") || url.containsString("/api/") {
-            if let baseURL = prefs.stringForKey("baseURL") {
-                url = baseURL+url
-            }
+            url = baseAPIURL+url
         }
         return Promise { fulfill, reject in
             self.manager!.request(.GET, url).responseImage { response in
@@ -489,8 +531,6 @@ public class HomeAssistantAPI {
     }
 
 }
-
-let APIClientSharedInstance = HomeAssistantAPI()
 
 class BrowserDelegate : NSObject, NSNetServiceBrowserDelegate, NSNetServiceDelegate {
     var resolving = [NSNetService]()
@@ -526,9 +566,9 @@ class BrowserDelegate : NSObject, NSNetServiceBrowserDelegate, NSNetServiceDeleg
     func netServiceDidResolveAddress(sender: NSNetService) {
         let dataDict = NSNetService.dictionaryFromTXTRecordData(sender.TXTRecordData()!)
         let baseUrl = copyStringFromTXTDict(dataDict, which: "base_url")
-        let needsPassword = (copyStringFromTXTDict(dataDict, which: "requires_api_password") == "true")
+        let requiresAPIPassword = (copyStringFromTXTDict(dataDict, which: "requires_api_password") == "true")
         let version = copyStringFromTXTDict(dataDict, which: "version")
-        let discoveryInfo : [NSObject:AnyObject] = ["name": sender.name, "baseUrl": baseUrl!, "needs_auth": needsPassword, "version": version!]
+        let discoveryInfo : [NSObject:AnyObject] = ["name": sender.name, "baseUrl": baseUrl!, "requires_api_password": requiresAPIPassword, "version": version!]
         NSNotificationCenter.defaultCenter().postNotificationName("homeassistant.discovered", object: nil, userInfo: discoveryInfo)
     }
     

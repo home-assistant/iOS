@@ -62,32 +62,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let pass = prefs.stringForKey("apiPassword") {
                 apiPass = pass
             }
-            HomeAssistantAPI.sharedInstance.setupWithAuth(baseURL, APIPassword: apiPass)
-//            when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig()).then { ident, config -> Void in
-//            print("Identified!", ident)
-            HomeAssistantAPI.sharedInstance.GetConfig().then { config -> Void in
-                self.prefs.setValue(config.LocationName, forKey: "location_name")
-                self.prefs.setValue(config.Latitude, forKey: "latitude")
-                self.prefs.setValue(config.Longitude, forKey: "longitude")
-                self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
-                self.prefs.setValue(config.Timezone, forKey: "time_zone")
-                self.prefs.setValue(config.Version, forKey: "version")
-                
-                Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
-                
-                if PermissionScope().statusLocationAlways() == .Authorized && config.Components!.contains("device_tracker") {
-                    print("Found device_tracker in config components, starting location monitoring!")
-                    HomeAssistantAPI.sharedInstance.trackLocation(self.prefs.stringForKey("deviceId")!)
-                }
-                
-                if PermissionScope().statusNotifications() == .Authorized {
-                    print("User authorized the use of notifications")
-                    UIApplication.sharedApplication().registerForRemoteNotifications()
-                }
-                
-            }.error { error in
-                print("Error at launch!", error)
-                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+            HomeAssistantAPI.sharedInstance.Setup(baseURL, APIPassword: apiPass)
+            HomeAssistantAPI.sharedInstance.Connect().then { _ -> Void in
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"
                 settingsView.showErrorConnectingMessage = true
