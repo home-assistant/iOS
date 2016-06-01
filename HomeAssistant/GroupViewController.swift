@@ -78,7 +78,9 @@ class GroupViewController: FormViewController {
                     if let url = NSURL(string: entity.State) {
                         self.form.last! <<< ButtonRow(rowTag) {
                             $0.title = entity.FriendlyName
-                            $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback { return SFSafariViewController(URL: url, entersReaderIfAvailable: false) }, completionCallback: { vc in vc.navigationController?.popViewControllerAnimated(true) })
+                            if url.scheme == "http" || url.scheme == "https" {
+                                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback { return SFSafariViewController(URL: url, entersReaderIfAvailable: false) }, completionCallback: { vc in vc.navigationController?.popViewControllerAnimated(true) })
+                            }
                         }.cellUpdate { cell, row in
                             if let updatedState = self.updatedStates[rowTag] {
                                 cell.imageView?.image = generateIconForEntityClass(updatedState)
@@ -87,6 +89,10 @@ class GroupViewController: FormViewController {
                                         cell.imageView?.image = image.scaledToSize(CGSize(width: 30, height: 30))
                                     }
                                 }
+                            }
+                        }.onCellSelection { cell, row -> Void in
+                            if url.scheme != "http" && url.scheme != "https" {
+                                UIApplication.sharedApplication().openURL(url)
                             }
                         }
                     }
