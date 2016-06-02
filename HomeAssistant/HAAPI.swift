@@ -98,7 +98,7 @@ public class HomeAssistantAPI {
                 
                 if PermissionScope().statusLocationAlways() == .Authorized && config.Components!.contains("device_tracker") {
                     print("Found device_tracker in config components, starting location monitoring!")
-                    self.trackLocation(self.deviceID)
+                    self.trackLocation()
                 }
                 
                 if PermissionScope().statusNotifications() == .Authorized {
@@ -173,7 +173,7 @@ public class HomeAssistantAPI {
         UIApplication.sharedApplication().scheduleLocalNotification(notification)
     }
     
-    func trackLocation(deviceId: String) {
+    func trackLocation() {
         LocationManager.shared.observeLocations(.Neighborhood, frequency: .Significant, onSuccess: { (location) -> Void in
             self.submitLocation("Significant location change detected", latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
         }, onError: { (error) -> Void in
