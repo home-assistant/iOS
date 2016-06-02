@@ -87,6 +87,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     }
                 }
                 for (index, group) in allGroups.enumerate() {
+                    if (group as! Group).EntityIds.count < 1 { continue }
                     let groupView = GroupViewController()
                     groupView.receivedGroup = group as? Group
                     groupView.receivedEntities = states.filter {
