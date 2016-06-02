@@ -21,14 +21,6 @@ class Thermostat: Entity {
     var Temperature: Int?
     var UnitOfMeasurement: String?
     
-    required init?(_ map: Map) {
-        super.init(value: map)
-    }
-    
-    required init() {
-        super.init()
-    }
-    
     override func mapping(map: Map) {
         super.mapping(map)
         

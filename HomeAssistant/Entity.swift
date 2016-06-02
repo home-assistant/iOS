@@ -26,7 +26,7 @@ class Entity: Object, Mappable {
     dynamic var LastChanged: NSDate?
     dynamic var LastUpdated: NSDate?
     
-    class func objectForMapping(map: Map) -> Mappable? {
+    func objectForMapping(map: Map) -> Mappable? {
         if let entityId: String = map["entity_id"].value() {
             let entityType = getEntityType(entityId)
             switch entityType {
@@ -72,10 +72,12 @@ class Entity: Object, Mappable {
         return nil
     }
     
-    convenience required init?(_ map: Map) {
+    // More info: https://github.com/Hearst-DD/ObjectMapper/issues/462
+    
+    required convenience init?(_ map: Map) {
         self.init()
     }
-    
+
     func mapping(map: Map) {
         var timezone = NSTimeZone.localTimeZone()
         if let HATimezone = prefs.stringForKey("time_zone") {

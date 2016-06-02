@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         Realm.Configuration.defaultConfiguration = realmConfig
-        print("Realm file path", Realm.Configuration.defaultConfiguration.path!)
+        print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL?.absoluteString)
         Fabric.with([Crashlytics.self])
         
         AWSLogger.defaultLogger().logLevel = .Info
@@ -70,9 +70,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let navController = UINavigationController(rootViewController: settingsView)
                 self.window?.makeKeyAndVisible()
                 self.window?.rootViewController!.presentViewController(navController, animated: true, completion: nil)
-            }
-            self.APIClientSharedInstance.GetStates().then { states in
-                print("states", states)
             }
         }
     }

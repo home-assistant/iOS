@@ -20,10 +20,6 @@ class DeviceAnnotation: MKPointAnnotation {
     var device: DeviceTracker?
 }
 
-class ZoneAnnotation: MKPointAnnotation {
-    var zone: Zone?
-}
-
 class HACircle: MKCircle {
     var type: String = "zone"
 }

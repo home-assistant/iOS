@@ -25,14 +25,6 @@ class Group: Entity {
     var Order: Int?
     var EntityIds: [String] = [String]()
     
-    required init?(_ map: Map) {
-        super.init(value: map)
-    }
-    
-    required init() {
-        super.init()
-    }
-    
     override func mapping(map: Map) {
         super.mapping(map)
         

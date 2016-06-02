@@ -15,14 +15,6 @@ class Sun: Entity {
     var NextRising: NSDate?
     var NextSetting: NSDate?
     
-    required init?(_ map: Map) {
-        super.init(value: map)
-    }
-    
-    required init() {
-        super.init()
-    }
-    
     override func mapping(map: Map) {
         super.mapping(map)
         
