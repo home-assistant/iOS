@@ -41,7 +41,6 @@
 		B664280F1CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
 		B66428101CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
 		B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66428111CF7A83200903804 /* PushConfiguration.swift */; };
-		B6E1237B1CB1EBE100375722 /* SNSLambda.js in Resources */ = {isa = PBXBuildFile; fileRef = B6E1237A1CB1EBE100375722 /* SNSLambda.js */; };
 		B6E47E881CBA01310027F6CA /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E871CBA01310027F6CA /* CallService.swift */; };
 		B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */; };
 		B6E47E8E1CBA3EDB0027F6CA /* ZoneComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */; };
@@ -134,7 +133,6 @@
 		B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
 		B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
 		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
-		B6E1237A1CB1EBE100375722 /* SNSLambda.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = SNSLambda.js; sourceTree = "<group>"; };
 		B6E47E871CBA01310027F6CA /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceExecuted.swift; sourceTree = "<group>"; };
 		B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneComponent.swift; sourceTree = "<group>"; };
@@ -261,7 +259,6 @@
 			children = (
 				B66427F21CF79FC700903804 /* Sounds */,
 				B6F02BE71CB4698A0029ABE7 /* Classes */,
-				B6E123791CB1EBB500375722 /* External */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				B6F700491CB34FA600753BAB /* GroupViewController.swift */,
 				B657A8ED1CA646EB00121384 /* SettingsViewController.swift */,
@@ -321,14 +318,6 @@
 				B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */,
 			);
 			path = Sounds;
-			sourceTree = "<group>";
-		};
-		B6E123791CB1EBB500375722 /* External */ = {
-			isa = PBXGroup;
-			children = (
-				B6E1237A1CB1EBE100375722 /* SNSLambda.js */,
-			);
-			name = External;
 			sourceTree = "<group>";
 		};
 		B6F02BE71CB4698A0029ABE7 /* Classes */ = {
@@ -514,7 +503,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B664280E1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav in Resources */,
-				B6E1237B1CB1EBE100375722 /* SNSLambda.js in Resources */,
 				B664280B1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav in Resources */,
 				B66428081CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav in Resources */,
 				B66428051CF79FC800903804 /* US-EN-Daisy-Front-Door-Open.wav in Resources */,
