@@ -49,7 +49,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         
         let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(DevicesMapViewController.sendCurrentLocation(_:)))
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(DevicesMapViewController.closeMapView(_:)))
         
@@ -66,9 +66,9 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         let locateMeButton = MKUserTrackingBarButtonItem(mapView: mapView)
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: self, action: nil)
         let segmentedControlButtonItem = UIBarButtonItem(customView: typeController)
-        let bookmarksButton = UIBarButtonItem(barButtonSystemItem: .Bookmarks, target: self, action: nil)
+//        let bookmarksButton = UIBarButtonItem(barButtonSystemItem: .Bookmarks, target: self, action: nil)
         
-        self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace, bookmarksButton], animated: true)
+        self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
         
         for zone in zones! {
             let zone = zone as! Zone
@@ -180,4 +180,17 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    func sendCurrentLocation(sender: UIBarButtonItem) {
+        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
+            print("Did succeed?", success)
+            let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }.error { error in
+            let nserror = error as NSError
+            let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+    }
 }
