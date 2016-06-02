@@ -102,6 +102,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 Crashlytics.sharedInstance().setUserIdentifier(createEndpointResponse.endpointArn!.componentsSeparatedByString("/").last!)
                 self.prefs.setValue(createEndpointResponse.endpointArn!, forKey: "endpointARN")
                 self.prefs.setValue(deviceTokenString, forKey: "deviceToken")
+                let subrequest = AWSSNSSubscribeInput()
+                subrequest.topicArn = "arn:aws:sns:us-west-2:663692594824:HomeAssistantiOSBetaTesters"
+                subrequest.endpoint = createEndpointResponse.endpointArn
+                subrequest.protocols = "application"
+                sns.subscribe(subrequest).continueWithBlock { (subTask: AWSTask!) -> AnyObject! in
+                    if subTask.error != nil {
+                        print("Error: \(subTask.error)")
+                        Crashlytics.sharedInstance().recordError(subTask.error!)
+                    } else {
+                        print("Subscribed endpoint to broadcast topic")
+                    }
+                    
+                    return nil
+                }
             }
             
             return nil
