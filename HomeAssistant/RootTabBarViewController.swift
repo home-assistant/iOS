@@ -10,19 +10,25 @@ import UIKit
 import MBProgressHUD
 import Whisper
 import ObjectMapper
+import PermissionScope
 
 class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
+    var deviceTrackerEntities = [Entity]()
+    var zoneEntities = [Entity]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)), name:"EntityStateChanged", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)), name:"sse.state_changed", object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
 
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        
+        let tabBarIconColor = colorWithHexString("#44739E", alpha: 1)
         
         var tabViewControllers : [UIViewController] = []
         
@@ -31,9 +37,10 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         
         self.viewControllers = [firstGroupView]
         
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.GetStates().then { states -> Void in
-                print("states", states)
+        if HomeAssistantAPI.sharedInstance.baseAPIURL != "" {
+            HomeAssistantAPI.sharedInstance.GetStates().then { states -> Void in
+                self.deviceTrackerEntities = states.filter { return $0.Domain == "device_tracker" }
+                self.zoneEntities = states.filter { return $0.Domain == "zone" }
                 let allGroups = states.filter {
                     var shouldReturn = true
                     if $0.Domain != "group" { // We only want groups
@@ -84,10 +91,8 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                         }
                     }
                 }
-                print("allGroups", allGroups)
                 for (index, group) in allGroups.enumerate() {
                     let groupView = GroupViewController()
-                    groupView.APIClientSharedInstance = APIClientSharedInstance
                     groupView.receivedGroup = group as? Group
                     groupView.receivedEntities = states.filter {
                         return (group as! Group).EntityIds.contains($0.ID)
@@ -105,18 +110,20 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     if group.MobileIcon != nil {
                         groupIcon = group.MobileIcon!
                     }
-                    let icon = getIconForIdentifier(groupIcon, iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+                    let icon = getIconForIdentifier(groupIcon, iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
                     groupView.tabBarItem = UITabBarItem(title: friendlyName.capitalizedString, image: icon, tag: index)
-                    
-//                    let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
-                    
-                    let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
                     
                     var rightBarItems : [UIBarButtonItem] = []
                     
-                    rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
+                    if PermissionScope().statusLocationAlways() == .Authorized {
+                        let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
+                        
+                        rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
+                    }
                     
-//                    rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
+                    let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
+                    
+                    rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
                     
                     groupView.navigationItem.setRightBarButtonItems(rightBarItems, animated: true)
                     
@@ -124,20 +131,19 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     
                     tabViewControllers.append(navController)
                 }
-                let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+                let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
                 
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"
                 settingsView.tabBarItem = UITabBarItem(title: "Settings", image: settingsIcon, tag: 1)
-                
-                tabViewControllers.append(settingsView)
+            
+                tabViewControllers.append(UINavigationController(rootViewController: settingsView))
                 
                 self.viewControllers = tabViewControllers
                 
                 MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
             }
         } else {
-            print("Skip!")
             dispatch_async(dispatch_get_main_queue(), {
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"
@@ -174,24 +180,24 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
     func openMapView(sender: UIButton) {
         let devicesMapView = DevicesMapViewController()
-        devicesMapView.title = "All Devices"
+        devicesMapView.devices = deviceTrackerEntities
+        devicesMapView.zones = zoneEntities
+        
         let navController = UINavigationController(rootViewController: devicesMapView)
         self.presentViewController(navController, animated: true, completion: nil)
     }
     
     func sendCurrentLocation(sender: UIButton) {
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.sendOneshotLocation().then { success -> Void in
-                print("Did succeed?", success)
-                let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
-            }.error { error in
-                let nserror = error as NSError
-                let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
-            }
+        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
+            print("Did succeed?", success)
+            let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }.error { error in
+            let nserror = error as NSError
+            let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
         }
     }
     

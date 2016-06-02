@@ -10,7 +10,6 @@
 		6E36319C48CF8F82D7702470 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88052763960E54E202BAED19 /* Pods_HomeAssistant.framework */; };
 		B60B35BA1CB6019B00887BE1 /* SwitchWithInfoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B35B91CB6019B00887BE1 /* SwitchWithInfoButton.swift */; };
 		B60B35BF1CB62AA200887BE1 /* SwitchWithInfoButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = B60B35BE1CB62AA200887BE1 /* SwitchWithInfoButton.xib */; };
-		B60B35C11CB63D2A00887BE1 /* DiscoverHA.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B35C01CB63D2A00887BE1 /* DiscoverHA.swift */; };
 		B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B624DE171CB8369200F413CE /* DevicesMapViewController.swift */; };
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
@@ -25,7 +24,28 @@
 		B657A9011CA646EB00121384 /* HomeAssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9001CA646EB00121384 /* HomeAssistantTests.swift */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B657A91A1CA647C500121384 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
+		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
+		B66428021CF79FC800903804 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F31CF79FC700903804 /* US-EN-Daisy-Back-Door-Motion.wav */; };
+		B66428031CF79FC800903804 /* US-EN-Daisy-Back-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F41CF79FC700903804 /* US-EN-Daisy-Back-Door-Open.wav */; };
+		B66428041CF79FC800903804 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F51CF79FC700903804 /* US-EN-Daisy-Front-Door-Motion.wav */; };
+		B66428051CF79FC800903804 /* US-EN-Daisy-Front-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F61CF79FC700903804 /* US-EN-Daisy-Front-Door-Open.wav */; };
+		B66428061CF79FC800903804 /* US-EN-Daisy-Front-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F71CF79FC700903804 /* US-EN-Daisy-Front-Window-Open.wav */; };
+		B66428071CF79FC800903804 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F81CF79FC700903804 /* US-EN-Daisy-Garage-Door-Open.wav */; };
+		B66428081CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F91CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav */; };
+		B66428091CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FA1CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav */; };
+		B664280A1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FB1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav */; };
+		B664280B1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FC1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav */; };
+		B664280C1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FD1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav */; };
+		B664280D1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FE1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav */; };
+		B664280E1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FF1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav */; };
+		B664280F1CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
+		B66428101CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
+		B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66428111CF7A83200903804 /* PushConfiguration.swift */; };
 		B6E1237B1CB1EBE100375722 /* SNSLambda.js in Resources */ = {isa = PBXBuildFile; fileRef = B6E1237A1CB1EBE100375722 /* SNSLambda.js */; };
+		B6E47E881CBA01310027F6CA /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E871CBA01310027F6CA /* CallService.swift */; };
+		B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */; };
+		B6E47E8E1CBA3EDB0027F6CA /* ZoneComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */; };
+		B6E47E9A1CBB47EC0027F6CA /* DeviceUID.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E991CBB47EC0027F6CA /* DeviceUID.m */; };
 		B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E857A11CB1CCCC00F96925 /* Utils.swift */; };
 		B6F02BE91CB46AF40029ABE7 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BE81CB46AF40029ABE7 /* Entity.swift */; };
 		B6F02BEB1CB46D090029ABE7 /* GroupComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BEA1CB46D090029ABE7 /* GroupComponent.swift */; };
@@ -77,7 +97,6 @@
 		92AFEE5E5170AAC8E1C39DEE /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
 		B60B35B91CB6019B00887BE1 /* SwitchWithInfoButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchWithInfoButton.swift; sourceTree = "<group>"; };
 		B60B35BE1CB62AA200887BE1 /* SwitchWithInfoButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SwitchWithInfoButton.xib; sourceTree = "<group>"; };
-		B60B35C01CB63D2A00887BE1 /* DiscoverHA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverHA.swift; sourceTree = "<group>"; };
 		B624DE171CB8369200F413CE /* DevicesMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesMapViewController.swift; sourceTree = "<group>"; };
 		B6393F851CB255F200503916 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
 		B6393F871CB2561100503916 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -98,7 +117,29 @@
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
 		B657A90D1CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAAPI.swift; sourceTree = "<group>"; };
+		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
+		B66427F31CF79FC700903804 /* US-EN-Daisy-Back-Door-Motion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Back-Door-Motion.wav"; sourceTree = "<group>"; };
+		B66427F41CF79FC700903804 /* US-EN-Daisy-Back-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Back-Door-Open.wav"; sourceTree = "<group>"; };
+		B66427F51CF79FC700903804 /* US-EN-Daisy-Front-Door-Motion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Door-Motion.wav"; sourceTree = "<group>"; };
+		B66427F61CF79FC700903804 /* US-EN-Daisy-Front-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Door-Open.wav"; sourceTree = "<group>"; };
+		B66427F71CF79FC700903804 /* US-EN-Daisy-Front-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Window-Open.wav"; sourceTree = "<group>"; };
+		B66427F81CF79FC700903804 /* US-EN-Daisy-Garage-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Garage-Door-Open.wav"; sourceTree = "<group>"; };
+		B66427F91CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Guest-Bath-Leak.wav"; sourceTree = "<group>"; };
+		B66427FA1CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Kitchen-Sink-Leak.wav"; sourceTree = "<group>"; };
+		B66427FB1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Kitchen-Window-Open.wav"; sourceTree = "<group>"; };
+		B66427FC1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Laundry-Room-Leak.wav"; sourceTree = "<group>"; };
+		B66427FD1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Master-Bath-Leak.wav"; sourceTree = "<group>"; };
+		B66427FE1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Master-Bedroom-Window-Open.wav"; sourceTree = "<group>"; };
+		B66427FF1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Office-Window-Open.wav"; sourceTree = "<group>"; };
+		B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
+		B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
+		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
 		B6E1237A1CB1EBE100375722 /* SNSLambda.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = SNSLambda.js; sourceTree = "<group>"; };
+		B6E47E871CBA01310027F6CA /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
+		B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceExecuted.swift; sourceTree = "<group>"; };
+		B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneComponent.swift; sourceTree = "<group>"; };
+		B6E47E981CBB47CC0027F6CA /* DeviceUID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceUID.h; sourceTree = "<group>"; };
+		B6E47E991CBB47EC0027F6CA /* DeviceUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceUID.m; sourceTree = "<group>"; };
 		B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HomeAssistant-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		B6F02BE81CB46AF40029ABE7 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
@@ -187,6 +228,8 @@
 			children = (
 				B64D04791CB8908B00B945C8 /* StateChanged.swift */,
 				B64D047C1CB8916300B945C8 /* Event.swift */,
+				B6E47E871CBA01310027F6CA /* CallService.swift */,
+				B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */,
 			);
 			name = SSE;
 			sourceTree = "<group>";
@@ -216,6 +259,7 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
+				B66427F21CF79FC700903804 /* Sounds */,
 				B6F02BE71CB4698A0029ABE7 /* Classes */,
 				B6E123791CB1EBB500375722 /* External */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
@@ -231,8 +275,10 @@
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 				B6393F851CB255F200503916 /* EurekaLocationRow.swift */,
 				B6F700511CB374F700753BAB /* RootTabBarViewController.swift */,
-				B60B35C01CB63D2A00887BE1 /* DiscoverHA.swift */,
 				B624DE171CB8369200F413CE /* DevicesMapViewController.swift */,
+				B6E47E981CBB47CC0027F6CA /* DeviceUID.h */,
+				B6E47E991CBB47EC0027F6CA /* DeviceUID.m */,
+				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
 			);
 			path = HomeAssistant;
 			sourceTree = "<group>";
@@ -253,6 +299,28 @@
 				B657A90D1CA646EB00121384 /* Info.plist */,
 			);
 			path = HomeAssistantUITests;
+			sourceTree = "<group>";
+		};
+		B66427F21CF79FC700903804 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				B66427F31CF79FC700903804 /* US-EN-Daisy-Back-Door-Motion.wav */,
+				B66427F41CF79FC700903804 /* US-EN-Daisy-Back-Door-Open.wav */,
+				B66427F51CF79FC700903804 /* US-EN-Daisy-Front-Door-Motion.wav */,
+				B66427F61CF79FC700903804 /* US-EN-Daisy-Front-Door-Open.wav */,
+				B66427F71CF79FC700903804 /* US-EN-Daisy-Front-Window-Open.wav */,
+				B66427F81CF79FC700903804 /* US-EN-Daisy-Garage-Door-Open.wav */,
+				B66427F91CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav */,
+				B66427FA1CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav */,
+				B66427FB1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav */,
+				B66427FC1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav */,
+				B66427FD1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav */,
+				B66427FE1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav */,
+				B66427FF1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav */,
+				B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */,
+				B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */,
+			);
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 		B6E123791CB1EBB500375722 /* External */ = {
@@ -284,6 +352,7 @@
 				B6F02BF51CB4728D0029ABE7 /* History.swift */,
 				B6F02BF91CB47F930029ABE7 /* Events.swift */,
 				B6F02BFB1CB4800C0029ABE7 /* Services.swift */,
+				B66428111CF7A83200903804 /* PushConfiguration.swift */,
 			);
 			name = "HA API Responses";
 			sourceTree = "<group>";
@@ -307,6 +376,7 @@
 				B6F02C0C1CB489770029ABE7 /* SwitchComponent.swift */,
 				B6F02C0D1CB489770029ABE7 /* ThermostatComponent.swift */,
 				B6F02C0E1CB489770029ABE7 /* WeblinkComponent.swift */,
+				B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */,
 			);
 			name = Components;
 			sourceTree = "<group>";
@@ -333,6 +403,7 @@
 				A8C8507CD59406CF59ABD2A4 /* Embed Pods Frameworks */,
 				FDB76AF813D330C227A96AA6 /* Copy Pods Resources */,
 				B6E8579C1CB1167200F96925 /* ShellScript */,
+				B6E47E861CB9FD350027F6CA /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -442,11 +513,26 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B664280E1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav in Resources */,
 				B6E1237B1CB1EBE100375722 /* SNSLambda.js in Resources */,
+				B664280B1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav in Resources */,
+				B66428081CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav in Resources */,
+				B66428051CF79FC800903804 /* US-EN-Daisy-Front-Door-Open.wav in Resources */,
+				B664280C1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav in Resources */,
+				B66428091CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav in Resources */,
+				B664280F1CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */,
 				B657A8F61CA646EB00121384 /* LaunchScreen.storyboard in Resources */,
+				B66428041CF79FC800903804 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */,
+				B664280D1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav in Resources */,
+				B66428071CF79FC800903804 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */,
+				B66428101CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */,
+				B66428031CF79FC800903804 /* US-EN-Daisy-Back-Door-Open.wav in Resources */,
 				B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */,
+				B66428061CF79FC800903804 /* US-EN-Daisy-Front-Window-Open.wav in Resources */,
 				B657A8F11CA646EB00121384 /* Main.storyboard in Resources */,
+				B66428021CF79FC800903804 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */,
 				B60B35BF1CB62AA200887BE1 /* SwitchWithInfoButton.xib in Resources */,
+				B664280A1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +567,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		B6E47E861CB9FD350027F6CA /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp \"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-acknowledgements.plist\" \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Pods-acknowledgements.plist\"";
 		};
 		B6E8579C1CB1167200F96925 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -537,6 +636,7 @@
 				B6F02C1A1CB489770029ABE7 /* SunComponent.swift in Sources */,
 				B6F02C1C1CB489770029ABE7 /* ThermostatComponent.swift in Sources */,
 				B6F02C151CB489770029ABE7 /* LockComponent.swift in Sources */,
+				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B6F02C131CB489770029ABE7 /* InputSelectComponent.swift in Sources */,
 				B6F02BF61CB4728D0029ABE7 /* History.swift in Sources */,
 				B6F02C181CB489770029ABE7 /* ScriptComponent.swift in Sources */,
@@ -547,6 +647,7 @@
 				B6F700521CB374F700753BAB /* RootTabBarViewController.swift in Sources */,
 				B64D047A1CB8908B00B945C8 /* StateChanged.swift in Sources */,
 				B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */,
+				B6E47E8E1CBA3EDB0027F6CA /* ZoneComponent.swift in Sources */,
 				B6F02BF21CB470570029ABE7 /* Config.swift in Sources */,
 				B6F02BEE1CB46EB10029ABE7 /* Status.swift in Sources */,
 				B6F02C1D1CB489770029ABE7 /* WeblinkComponent.swift in Sources */,
@@ -555,19 +656,22 @@
 				B6F02BF01CB46EC70029ABE7 /* Bootstrap.swift in Sources */,
 				B6F02BFA1CB47F930029ABE7 /* Events.swift in Sources */,
 				B6F02C0F1CB489770029ABE7 /* BinarySensorComponent.swift in Sources */,
+				B6E47E9A1CBB47EC0027F6CA /* DeviceUID.m in Sources */,
 				B6F02C121CB489770029ABE7 /* InputBooleanComponent.swift in Sources */,
+				B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */,
 				B6F02C101CB489770029ABE7 /* DeviceTrackerComponent.swift in Sources */,
 				B6F02C191CB489770029ABE7 /* SensorComponent.swift in Sources */,
+				B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */,
 				B6F02C141CB489770029ABE7 /* LightComponent.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
 				B64D047D1CB8916300B945C8 /* Event.swift in Sources */,
 				B6F02C171CB489770029ABE7 /* SceneComponent.swift in Sources */,
 				B657A91A1CA647C500121384 /* HAAPI.swift in Sources */,
 				B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */,
-				B60B35C11CB63D2A00887BE1 /* DiscoverHA.swift in Sources */,
 				B6F02C1B1CB489770029ABE7 /* SwitchComponent.swift in Sources */,
 				B6F02C111CB489770029ABE7 /* GarageDoorComponent.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
+				B6E47E881CBA01310027F6CA /* CallService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -660,10 +764,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "7733f447-b2e5-4bd5-befb-ebfec2c5f2b2";
+				PROVISIONING_PROFILE = "7228afbb-57fc-4e0a-8432-c028de4a87c0";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -688,8 +792,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -702,9 +806,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "7733f447-b2e5-4bd5-befb-ebfec2c5f2b2";
+				PROVISIONING_PROFILE = "$(sigh_io.robbie.HomeAssistant_appstore)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -717,6 +821,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
+				CURRENT_PROJECT_VERSION = 24;
 				INFOPLIST_FILE = HomeAssistant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -769,8 +875,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "7733f447-b2e5-4bd5-befb-ebfec2c5f2b2";
+				PROVISIONING_PROFILE = "7228afbb-57fc-4e0a-8432-c028de4a87c0";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -779,7 +886,9 @@
 			baseConfigurationReference = 5790ADF749393A229F29A51B /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CURRENT_PROJECT_VERSION = 24;
 				INFOPLIST_FILE = HomeAssistant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -832,8 +941,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "7733f447-b2e5-4bd5-befb-ebfec2c5f2b2";
+				PROVISIONING_PROFILE = "$(sigh_io.robbie.HomeAssistant_appstore)";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};

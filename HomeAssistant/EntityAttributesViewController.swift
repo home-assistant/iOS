@@ -8,6 +8,7 @@
 
 import UIKit
 import Eureka
+import ObjectMapper
 
 class EntityAttributesViewController: FormViewController {
 
@@ -22,29 +23,145 @@ class EntityAttributesViewController: FormViewController {
             self.title = "Attributes"
         }
         
-        form +++ Section()
-        
-        form.last! <<< TextRow("state"){
-            $0.title = "State"
-            $0.value = entity!.State
-            $0.disabled = true
+        if let picture = self.entity?.Picture {
+            form +++ Section()
+                <<< TextAreaRow("entity_picture"){
+                    $0.disabled = true
+                    $0.cell.textView.scrollEnabled = false
+                    $0.cell.textView.backgroundColor = .clearColor()
+                    $0.cell.backgroundColor = .clearColor()
+                }.cellUpdate { cell, row in
+                    HomeAssistantAPI.sharedInstance.getImage(picture).then { image -> Void in
+                        let attachment = NSTextAttachment()
+                        attachment.image = image
+                        attachment.bounds = CGRectMake(0, 0, image.size.width, image.size.height)
+                        let attString = NSAttributedString(attachment: attachment)
+                        let result = NSMutableAttributedString(attributedString: attString)
+                        
+                        let paragraphStyle = NSMutableParagraphStyle()
+                        paragraphStyle.alignment = .Center
+                        
+                        let attrs:[String:AnyObject] = [NSParagraphStyleAttributeName: paragraphStyle]
+                        let range = NSMakeRange(0, result.length)
+                        result.addAttributes(attrs, range: range)
+                        
+                        cell.textView.textStorage.setAttributedString(result)
+                        cell.height = { attachment.bounds.height + 20 }
+                        self.tableView?.beginUpdates()
+                        self.tableView?.endUpdates()
+                    }
+                }
         }
         
-        print("Entity", entity!.Attributes)
+        form +++ Section(header: "Attributes", footer: "")
         
-        if let attributes = entity?.Attributes {
+        if var attributes = entity?.Attributes {
+            attributes["state"] = entity?.State
             for attribute in attributes {
-                print("Attribute", attribute)
-                form.last! <<< TextRow(attribute.0){
-                    $0.title = attribute.0.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
-                    $0.value = String(attribute.1)
-                    $0.disabled = true
+                let prettyLabel = attribute.0.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
+                switch attribute.0 {
+                    case "fan":
+                        let thermostat = entity as! Thermostat
+                        form.last! <<< SwitchRow(attribute.0){
+                            $0.title = prettyLabel
+                            $0.value = thermostat.Fan
+                        }.onChange { row -> Void in
+                            if (row.value == true) {
+                                thermostat.turnFanOn()
+                            } else {
+                                thermostat.turnFanOff()
+                            }
+                        }
+                        break
+                    case "away_mode":
+                        let thermostat = entity as! Thermostat
+                        form.last! <<< SwitchRow(attribute.0){
+                            $0.title = prettyLabel
+                            $0.value = thermostat.AwayMode
+                        }.onChange { row -> Void in
+                            if (row.value == true) {
+                                thermostat.setAwayModeOn()
+                            } else {
+                                thermostat.setAwayModeOff()
+                            }
+                        }
+                        break
+                    case "temperature":
+                        let thermostat = entity as! Thermostat
+                        form.last! <<< SliderRow(attribute.0){
+                            $0.title = prettyLabel
+                            $0.value = Float(thermostat.Temperature!)
+                            $0.maximumValue = 120.0
+                            $0.steps = 120
+                            
+                        }.onChange { row -> Void in
+                            thermostat.setTemperature(row.value!)
+                        }
+                        break
+                    case "media_duration":
+                        let mediaPlayer = entity as! MediaPlayer
+                        form.last! <<< TextRow(attribute.0){
+                            $0.title = prettyLabel
+                            $0.value = mediaPlayer.humanReadableMediaDuration()
+                            $0.disabled = true
+                        }
+                        break
+                    case "is_volume_muted":
+                        let mediaPlayer = entity as! MediaPlayer
+                        form.last! <<< SwitchRow(attribute.0){
+                            $0.title = "Mute"
+                            $0.value = mediaPlayer.IsVolumeMuted
+                        }.onChange { row -> Void in
+                            if (row.value == true) {
+                                mediaPlayer.muteOn()
+                            } else {
+                                mediaPlayer.muteOff()
+                            }
+                        }
+                        break
+                    case "volume_level":
+                        let mediaPlayer = entity as! MediaPlayer
+                        let volume = Float(attribute.1 as! NSNumber)*100
+                        form.last! <<< SliderRow(attribute.0){
+                            $0.title = prettyLabel
+                            $0.value = volume
+                            $0.maximumValue = 100
+                            $0.steps = 100
+                        }.onChange { row -> Void in
+                            mediaPlayer.setVolume(row.value!)
+                        }
+                        break
+                    case "entity_picture", "icon", "supported_media_commands", "hidden", "assumed_state":
+                        // Skip these attributes
+                        break
+                    case "state":
+                        if entity?.Domain == "switch" || entity?.Domain == "light" || entity?.Domain == "input_boolean" {
+                            form.last! <<< SwitchRow(attribute.0) {
+                                $0.title = entity?.FriendlyName
+                                $0.value = (entity?.State == "on") ? true : false
+                            }.onChange { row -> Void in
+                                if (row.value == true) {
+                                    HomeAssistantAPI.sharedInstance.turnOn(self.entity!.ID)
+                                } else {
+                                    HomeAssistantAPI.sharedInstance.turnOff(self.entity!.ID)
+                                }
+                            }
+                        } else {
+                            fallthrough
+                        }
+                    default:
+                        form.last! <<< TextRow(attribute.0){
+                            $0.title = prettyLabel
+                            $0.value = String(attribute.1).capitalizedString
+                            $0.disabled = true
+                        }
                 }
             }
         }
         
         
         // Do any additional setup after loading the view.
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EntityAttributesViewController.StateChangedSSEEvent(_:)), name:"sse.state_changed", object: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -53,14 +170,53 @@ class EntityAttributesViewController: FormViewController {
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func StateChangedSSEEvent(notification: NSNotification){
+        if let userInfo = notification.userInfo {
+            if let event = Mapper<StateChangedEvent>().map(userInfo) {
+                if event.EntityID != entity!.ID { return }
+                if let newState = event.NewState {
+                    var updateDict : [String:AnyObject] = [:]
+                    newState.Attributes["state"] = entity?.State
+                    for (key, value) in newState.Attributes {
+                        switch key {
+                        case "fan":
+                            updateDict[key] = (entity as! Thermostat).Fan!
+                            break
+                        case "away_mode":
+                            updateDict[key] = (entity as! Thermostat).AwayMode!
+                            break
+                        case "temperature":
+                            updateDict[key] = Float((entity as! Thermostat).Temperature!)
+                            break
+                        case "media_duration":
+                            updateDict[key] = (entity as! MediaPlayer).humanReadableMediaDuration()
+                            break
+                        case "is_volume_muted":
+                            updateDict[key] = (entity as! MediaPlayer).IsVolumeMuted!
+                            break
+                        case "volume_level":
+                            updateDict[key] = Float(value as! NSNumber)*100
+                            break
+                        case "entity_picture", "icon", "supported_media_commands", "hidden", "assumed_state":
+                            // Skip these attributes
+                            break
+                        case "state":
+                            if entity?.Domain == "switch" || entity?.Domain == "light" || entity?.Domain == "input_boolean" {
+                                updateDict["state"] = (entity?.State == "on") as Bool
+                            } else {
+                                fallthrough
+                            }
+                            break
+                        default:
+                            updateDict[key] = String(value)
+                            break
+                        }
+                    }
+                    // fatal error: can't unsafeBitCast between types of different sizes
+                    self.form.setValues(updateDict)
+                }
+            }
+        }
     }
-    */
 
 }

@@ -11,6 +11,8 @@ import AWSSNS
 import Fabric
 import Crashlytics
 import PermissionScope
+import DeviceKit
+import PromiseKit
 import RealmSwift
 
 let realmConfig = Realm.Configuration(
@@ -23,12 +25,11 @@ let realmConfig = Realm.Configuration(
 
 let realm = try! Realm(configuration: realmConfig)
 
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    
-    var APIClientSharedInstance : HomeAssistantAPI!
     
     let prefs = NSUserDefaults.standardUserDefaults()
     
@@ -37,24 +38,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Realm file path", Realm.Configuration.defaultConfiguration.path!)
         Fabric.with([Crashlytics.self])
         
+        AWSLogger.defaultLogger().logLevel = .Info
+        
         let credentialsProvider = AWSCognitoCredentialsProvider(regionType:.USEast1, identityPoolId:"us-east-1:2b1692f3-c9d3-4d81-b7e9-83cd084f3a59")
         
         let configuration = AWSServiceConfiguration(region:.USWest2, credentialsProvider:credentialsProvider)
         
         AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
-    
-//        let discovery = Discovery()
-//    
-//        let queue = dispatch_queue_create("io.robbie.homeassistant", nil);
-//        dispatch_async(queue) { () -> Void in
-//            NSLog("Starting discovery")
-//            discovery.stop()
-//            discovery.start()
-//            sleep(10)
-//            NSLog("Stopping discovery")
-//            discovery.stop()
-//        }
-        
+
         initAPI()
         
         return true
@@ -62,23 +53,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func initAPI() {
         if let baseURL = prefs.stringForKey("baseURL") {
-            print("BaseURL is", baseURL)
+            print("Base URL is", baseURL)
             var apiPass = ""
             if let pass = prefs.stringForKey("apiPassword") {
                 apiPass = pass
             }
-            APIClientSharedInstance = HomeAssistantAPI(baseAPIUrl: baseURL, APIPassword: apiPass)
-            APIClientSharedInstance!.GetConfig().then { config -> Void in
-                self.prefs.setValue(config.LocationName, forKey: "location_name")
-                self.prefs.setValue(config.Latitude, forKey: "latitude")
-                self.prefs.setValue(config.Longitude, forKey: "longitude")
-                self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
-                self.prefs.setValue(config.Timezone, forKey: "time_zone")
-                self.prefs.setValue(config.Version, forKey: "version")
-                if PermissionScope().statusLocationAlways() == .Authorized && config.Components!.contains("device_tracker") {
-                    print("Found device_tracker in config components, starting location monitoring!")
-                    self.APIClientSharedInstance!.trackLocation(self.prefs.stringForKey("deviceId")!)
-                }
+            firstly {
+                HomeAssistantAPI.sharedInstance.Setup(baseURL, APIPassword: apiPass)
+            }.then {_ in 
+                HomeAssistantAPI.sharedInstance.Connect()
+            }.error { err -> Void in
+                print("ERROR", err)
+                let settingsView = SettingsViewController()
+                settingsView.title = "Settings"
+                settingsView.showErrorConnectingMessage = true
+                let navController = UINavigationController(rootViewController: settingsView)
+                self.window?.makeKeyAndVisible()
+                self.window?.rootViewController!.presentViewController(navController, animated: true, completion: nil)
             }
             self.APIClientSharedInstance.GetStates().then { states in
                 print("states", states)
@@ -117,14 +108,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let sns = AWSSNS.defaultSNS()
         let request = AWSSNSCreatePlatformEndpointInput()
         request.token = deviceTokenString
-        request.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS_SANDBOX/HomeAssistant"
+        request.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS/HomeAssistant"
         sns.createPlatformEndpoint(request).continueWithBlock { (task: AWSTask!) -> AnyObject! in
             if task.error != nil {
                 print("Error: \(task.error)")
+                Crashlytics.sharedInstance().recordError(task.error!)
             } else {
                 let createEndpointResponse = task.result as! AWSSNSCreateEndpointResponse
                 print("endpointArn:", createEndpointResponse.endpointArn!)
+                Crashlytics.sharedInstance().setUserIdentifier(createEndpointResponse.endpointArn!.componentsSeparatedByString("/").last!)
                 self.prefs.setValue(createEndpointResponse.endpointArn!, forKey: "endpointARN")
+                self.prefs.setValue(deviceTokenString, forKey: "deviceToken")
+                let subrequest = AWSSNSSubscribeInput()
+                subrequest.topicArn = "arn:aws:sns:us-west-2:663692594824:HomeAssistantiOSBetaTesters"
+                subrequest.endpoint = createEndpointResponse.endpointArn
+                subrequest.protocols = "application"
+                sns.subscribe(subrequest).continueWithBlock { (subTask: AWSTask!) -> AnyObject! in
+                    if subTask.error != nil {
+                        print("Error: \(subTask.error)")
+                        Crashlytics.sharedInstance().recordError(subTask.error!)
+                    } else {
+                        print("Subscribed endpoint to broadcast topic")
+                    }
+                    
+                    return nil
+                }
             }
             
             return nil
@@ -133,10 +141,57 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
         print("Error when trying to register for push", error)
+        Crashlytics.sharedInstance().recordError(error)
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         print("Received remote notification!", userInfo)
+    }
+    
+    func application(application: UIApplication,  didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        print("Received remote notification in completion handler!", userInfo)
+        completionHandler(UIBackgroundFetchResult.NoData)
+    }
+    
+    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], withResponseInfo responseInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
+        print("Action button hit", identifier)
+        print("Remote notification payload", userInfo)
+        print("ResponseInfo", responseInfo)
+        let device = Device()
+        var eventData : [String:AnyObject] = ["actionName": identifier!, "sourceDevicePermanentID": DeviceUID.uid(), "sourceDeviceName": device.name]
+        if let dataDict = userInfo["homeassistant"] {
+            eventData["action_data"] = dataDict
+        }
+        if !responseInfo.isEmpty {
+            eventData["response_info"] = responseInfo
+        }
+        HomeAssistantAPI.sharedInstance.CreateEvent("ios.notification_action_fired", eventData: eventData).then { _ in
+            completionHandler()
+        }.error { error in
+            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+            completionHandler()
+        }
+    }
+    
+    func application(application: UIApplication, openURL url: NSURL, options: [String: AnyObject]) -> Bool {
+        var serviceData = [String:AnyObject]()
+        for (k,v) in url.queryDictionary! {
+            serviceData[k] = v
+        }
+        for (k,v) in options {
+            serviceData[k] = v
+        }
+        switch url.host! {
+        case "call_service": // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
+            HomeAssistantAPI.sharedInstance.CallService(getEntityType(url.pathComponents![1]), service: url.pathComponents![1].componentsSeparatedByString(".")[1], serviceData: serviceData)
+            break
+        case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
+            HomeAssistantAPI.sharedInstance.CreateEvent(url.pathComponents![1], eventData: serviceData)
+            break
+        default:
+            print("Can't route", url.host)
+        }
+        return true
     }
 }
 

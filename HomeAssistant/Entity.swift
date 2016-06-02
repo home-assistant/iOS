@@ -10,12 +10,14 @@ import Foundation
 import ObjectMapper
 import RealmSwift
 
-class Entity: Object, MappableCluster {
+class Entity: Object, Mappable {
+    let prefs = NSUserDefaults.standardUserDefaults()
+    
     dynamic var ID = ""
     dynamic var Domain: String = ""
     dynamic var State: String = ""
     dynamic var Attributes: [String : AnyObject] = [:]
-//    private dynamic var attributesData: NSData?
+    //    private dynamic var attributesData: NSData?
     dynamic var FriendlyName: String?
     dynamic var Hidden: Bool = false
     dynamic var Icon: String?
@@ -60,9 +62,11 @@ class Entity: Object, MappableCluster {
                 return Thermostat(map)
             case "weblink":
                 return Weblink(map)
+            case "zone":
+                return Zone(map)
             default:
-                print("No ObjectMapper found for:", entityType)
-                return nil
+                print("No component ObjectMapper found for:", entityId, entityType, map.JSONDictionary)
+                return Entity(map)
             }
         }
         return nil
@@ -73,6 +77,11 @@ class Entity: Object, MappableCluster {
     }
     
     func mapping(map: Map) {
+        var timezone = NSTimeZone.localTimeZone()
+        if let HATimezone = prefs.stringForKey("time_zone") {
+            timezone = NSTimeZone(name: HATimezone)!
+        }
+        
         ID            <- map["entity_id"]
         Domain        <- (map["entity_id"], EntityIDToDomainTransform())
         State         <- map["state"]
@@ -82,8 +91,8 @@ class Entity: Object, MappableCluster {
         Icon          <- map["attributes.icon"]
         MobileIcon    <- map["attributes.mobile_icon"]
         Picture       <- map["attributes.entity_picture"]
-        LastChanged   <- (map["last_changed"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
-        LastUpdated   <- (map["last_updated"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
+        LastChanged   <- (map["last_changed"], CustomDateFormatTransformWithTimezone(formatString: "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone: timezone))
+        LastUpdated   <- (map["last_updated"], CustomDateFormatTransformWithTimezone(formatString: "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone: timezone))
     }
     
     override class func ignoredProperties() -> [String] {
@@ -95,23 +104,16 @@ class Entity: Object, MappableCluster {
     }
     
     func turnOn() {
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.turnOnEntity(self)
-        }
+        HomeAssistantAPI.sharedInstance.turnOnEntity(self)
     }
     
     func turnOff() {
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.turnOffEntity(self)
-        }
+        HomeAssistantAPI.sharedInstance.turnOffEntity(self)
     }
     
     func toggle() {
-        if let APIClientSharedInstance = (UIApplication.sharedApplication().delegate as! AppDelegate).APIClientSharedInstance {
-            APIClientSharedInstance.toggleEntity(self)
-        }
+        HomeAssistantAPI.sharedInstance.toggleEntity(self)
     }
-    
 }
 
 public class EntityIDToDomainTransform: TransformType {
@@ -129,5 +131,17 @@ public class EntityIDToDomainTransform: TransformType {
     
     public func transformToJSON(value: String?) -> String? {
         return nil
+    }
+}
+
+public class CustomDateFormatTransformWithTimezone: DateFormatterTransform {
+    
+    public init(formatString: String, timezone: NSTimeZone) {
+        let formatter = NSDateFormatter()
+        formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        formatter.dateFormat = formatString
+        formatter.timeZone = timezone
+        
+        super.init(dateFormatter: formatter)
     }
 }

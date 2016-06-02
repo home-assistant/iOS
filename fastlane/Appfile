@@ -1,5 +1,5 @@
+apple_id "me@robbiet.us"
 app_identifier "io.robbie.HomeAssistant" # The bundle identifier of your app
-apple_id "me@robbiet.us" # Your Apple email address
 
 team_id "UTQFCBPQRF"  # Developer Portal Team ID
 

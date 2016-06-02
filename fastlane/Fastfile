@@ -17,14 +17,31 @@ default_platform :ios
 
 platform :ios do
   before_all do
-    # ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
-    cocoapods
-
+    # cocoapods
   end
 
   desc "Runs all the tests"
   lane :test do
     scan
+  end
+
+  desc "Installs FixCode which disables the \"Fix Issue\" button in Xcode"
+  lane :xcode do
+    install_xcode_plugin(
+      url: "https://github.com/fastlane/FixCode/releases/download/0.2.0/FixCode.xcplugin.zip"
+    )
+  end
+
+  desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
+  lane :certs do
+    match(type: "development")
+    match(type: "appstore")
+  end
+
+  desc "Creates a new push certificate, ready to be uploaded to SNS"
+  lane :push do
+    pem(generate_p12: true, save_private_key: true)
+    puts "------------------ Please upload the .p12 file to SNS ------------------ ".yellow
   end
 
   def change_log_since_last_tag
@@ -59,8 +76,8 @@ platform :ios do
   lane :beta do
     increment_build_number
     commit_version_bump
-    # match(type: "appstore") # more information: https://codesigning.guide
-    gym(scheme: "HomeAssistant") # Build your app - more options available
+    match(type: "appstore")
+    gym(scheme: "HomeAssistant", workspace: "HomeAssistant.xcworkspace", output_directory: "./build")
     pilot
 
     # sh "your_script.sh"
@@ -93,27 +110,19 @@ platform :ios do
 
     change_log = change_log_since_last_tag
 
-    skip_metadata = options[:skip_metadata]
-
-    unless skip_metadata == true
-      clear_derived_data
-      # screenshots
-      update_metadata
-    else
-      Helper.log.info("Skipping taking screenshots and uploading metadata".green)
-    end
-
     clean_build_artifacts
     clear_derived_data
 
-    sigh(output_path: "/tmp")
+    match(readonly: true)
     gym(
+      workspace: "HomeAssistant.xcworkspace",
       scheme: "HomeAssistant",
       configuration: "Release",
-      clean: true
+      clean: true,
+      output_directory: "./build"
     )
 
-    testflight(
+    pilot(
       changelog: change_log,
       skip_submission: true,
       distribute_external: false
@@ -124,15 +133,9 @@ platform :ios do
       api_token: ENV["GITHUB_API_TOKEN"],
       name: complete_version_number,
       tag_name: tag_name("testflight", version_number, build_number),
-      commitish: git_branch,
       description: change_log_since_last_tag,
       is_prerelease: false
     )
-
-    # slack(
-    #   message: "Submitted build of Home Assistant to TestFlight: v#{complete_version_number}",
-    #   channel: "#general"
-    # )
 
     rocket
   end
@@ -141,9 +144,9 @@ platform :ios do
   lane :appstore do
     increment_build_number
     commit_version_bump
-    # match(type: "appstore")
+    match(type: "appstore")
     # snapshot
-    gym(scheme: "HomeAssistant") # Build your app - more options available
+    gym(scheme: "HomeAssistant", workspace: "HomeAssistant.xcworkspace", output_directory: "./build") # Build your app - more options available
     deliver(force: true)
     # frameit
   end
@@ -152,17 +155,10 @@ platform :ios do
 
   after_all do |lane|
     # This block is called, only if the executed lane was successful
-
-    # slack(
-    #   message: "Successfully deployed new App Update."
-    # )
+    # Should really have Gitter hooks
   end
 
   error do |lane, exception|
-    # slack(
-    #   message: exception.message,
-    #   success: false
-    # )
   end
 end
 
