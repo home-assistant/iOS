@@ -78,9 +78,7 @@ public class HomeAssistantAPI {
             deviceToken = deviceTok
         }
         
-        return Promise { fulfill, reject in
-            return GetStatus()
-        }
+        return GetStatus()
         
     }
 
