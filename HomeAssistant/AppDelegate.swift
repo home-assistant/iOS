@@ -44,8 +44,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let pass = prefs.stringForKey("apiPassword") {
                 apiPass = pass
             }
-            HomeAssistantAPI.sharedInstance.Setup(baseURL, APIPassword: apiPass)
-            HomeAssistantAPI.sharedInstance.Connect().error { _ -> Void in
+            firstly {
+                HomeAssistantAPI.sharedInstance.Setup(baseURL, APIPassword: apiPass)
+            }.then {_ in 
+                HomeAssistantAPI.sharedInstance.Connect()
+            }.error { err -> Void in
+                print("ERROR", err)
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"
                 settingsView.showErrorConnectingMessage = true
