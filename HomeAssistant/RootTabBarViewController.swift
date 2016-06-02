@@ -87,11 +87,12 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     }
                 }
                 for (index, group) in allGroups.enumerate() {
-                    if (group as! Group).EntityIds.count < 1 { continue }
+                    let group = (group as! Group)
+                    if group.EntityIds.count < 1 { continue }
                     let groupView = GroupViewController()
-                    groupView.receivedGroup = group as? Group
+                    groupView.receivedGroup = group
                     groupView.receivedEntities = states.filter {
-                        return (group as! Group).EntityIds.contains($0.ID)
+                        return group.EntityIds.contains($0.ID)
                     }
                     var friendlyName = "Entity"
                     if let friendly = group.FriendlyName {
@@ -99,7 +100,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     }
                     groupView.title = friendlyName.capitalizedString
                     groupView.tabBarItem.title = friendlyName.capitalizedString
-                    var groupIcon = iconForDomain(getEntityType((group as! Group).EntityIds[0]))
+                    var groupIcon = iconForDomain(getEntityType(group.EntityIds[0]))
                     if group.Icon != nil {
                         groupIcon = group.Icon!
                     }
