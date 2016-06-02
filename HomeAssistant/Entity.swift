@@ -26,7 +26,7 @@ class Entity: Object, StaticMappable {
     dynamic var LastChanged: NSDate? = nil
     dynamic var LastUpdated: NSDate? = nil
     
-    class func objectForMapping(map: Map) -> Mappable? {
+    func objectForMapping(map: Map) -> Mappable? {
         if let entityId: String = map["entity_id"].value() {
             let entityType = EntityIDToDomainTransform().transformFromJSON(entityId)!
             switch entityType {
@@ -80,9 +80,10 @@ class Entity: Object, StaticMappable {
     }
     
     required init?(_ map: Map) {
+        // More info: https://github.com/Hearst-DD/ObjectMapper/issues/462
         self.init()
     }
-    
+
     func mapping(map: Map) {
         ID            <- map["entity_id"]
         Domain        <- (map["entity_id"], EntityIDToDomainTransform())

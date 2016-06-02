@@ -26,15 +26,7 @@ let isLockedTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -
 class Lock: Entity {
     
     var IsLocked: Bool?
-    
-    required init?(_ map: Map) {
-        super.init(value: map)
-    }
-    
-    required init() {
-        super.init()
-    }
-    
+
     override func mapping(map: Map) {
         super.mapping(map)
         

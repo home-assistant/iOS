@@ -16,14 +16,6 @@ class Light: SwitchableEntity {
     var ColorTemp = RealmOptional<Float>()
     dynamic var RGBColor: [Int]?
     
-    required init?(_ map: Map) {
-        super.init(value: map)
-    }
-    
-    required init() {
-        super.init()
-    }
-    
     override func mapping(map: Map) {
         super.mapping(map)
         
