@@ -48,7 +48,7 @@ public class HomeAssistantAPI {
     
     var headers = [String:String]()
     
-    func Setup(baseAPIUrl: String, APIPassword: String) {
+    func Setup(baseAPIUrl: String, APIPassword: String) -> Promise<StatusResponse> {
         self.baseAPIURL = baseAPIUrl+"/api/"
         self.apiPassword = APIPassword
         if apiPassword != "" {
@@ -76,6 +76,10 @@ public class HomeAssistantAPI {
         
         if let deviceTok = prefs.stringForKey("deviceToken") {
             deviceToken = deviceTok
+        }
+        
+        return Promise { fulfill, reject in
+            return GetStatus()
         }
         
     }
@@ -157,6 +161,8 @@ public class HomeAssistantAPI {
         
         self.CallService("device_tracker", service: "see", serviceData: locationUpdate).then {_ in
             print("Device seen!")
+        }.error { err in
+            Crashlytics.sharedInstance().recordError(err as NSError)
         }
         
         UIDevice.currentDevice().batteryMonitoringEnabled = false
@@ -223,7 +229,7 @@ public class HomeAssistantAPI {
     func GET(url:String) -> Promise<JSON> {
         let queryUrl = baseAPIURL+url
         return Promise { fulfill, reject in
-            self.manager!.request(.GET, queryUrl).responseJSON { response in
+            self.manager!.request(.GET, queryUrl).validate().responseJSON { response in
                 switch response.result {
                     case .Success:
                         if let value = response.result.value {
@@ -244,7 +250,7 @@ public class HomeAssistantAPI {
         mostRecentlySentMessage = url
         let queryUrl = baseAPIURL+url
         return Promise { fulfill, reject in
-            self.manager!.request(.POST, queryUrl, parameters: parameters, encoding: .JSON).responseJSON { response in
+            self.manager!.request(.POST, queryUrl, parameters: parameters, encoding: .JSON).validate().responseJSON { response in
                 switch response.result {
                 case .Success:
                     if let value = response.result.value {
@@ -262,9 +268,9 @@ public class HomeAssistantAPI {
     }
     
     func GetStatus() -> Promise<StatusResponse> {
-        let queryUrl = baseAPIURL+"config"
+        let queryUrl = baseAPIURL
         return Promise { fulfill, reject in
-            self.manager!.request(.GET, queryUrl).responseObject { (response: Response<StatusResponse, NSError>) in
+            self.manager!.request(.GET, queryUrl).validate().responseObject { (response: Response<StatusResponse, NSError>) in
                 switch response.result {
                 case .Success:
                     fulfill(response.result.value!)
@@ -280,7 +286,7 @@ public class HomeAssistantAPI {
     func GetConfig() -> Promise<ConfigResponse> {
         let queryUrl = baseAPIURL+"config"
         return Promise { fulfill, reject in
-            self.manager!.request(.GET, queryUrl).responseObject { (response: Response<ConfigResponse, NSError>) in
+            self.manager!.request(.GET, queryUrl).validate().responseObject { (response: Response<ConfigResponse, NSError>) in
                 switch response.result {
                 case .Success:
                     fulfill(response.result.value!)
@@ -304,7 +310,7 @@ public class HomeAssistantAPI {
     func GetServices() -> Promise<[ServicesResponse]> {
         let queryUrl = baseAPIURL+"services"
         return Promise { fulfill, reject in
-            self.manager!.request(.GET, queryUrl).responseArray { (response: Response<[ServicesResponse], NSError>) in
+            self.manager!.request(.GET, queryUrl).validate().responseArray { (response: Response<[ServicesResponse], NSError>) in
                 switch response.result {
                 case .Success:
                     fulfill(response.result.value!)
@@ -324,7 +330,7 @@ public class HomeAssistantAPI {
     func GetHistoryMapped() -> Promise<[HistoryResponse]> {
         let queryUrl = baseAPIURL+"history/period/2016-4-4"
         return Promise { fulfill, reject in
-            self.manager!.request(.GET, queryUrl).responseArray { (response: Response<[HistoryResponse], NSError>) in
+            self.manager!.request(.GET, queryUrl).validate().responseArray { (response: Response<[HistoryResponse], NSError>) in
                 switch response.result {
                 case .Success:
                     if let historyArray = response.result.value {
@@ -343,7 +349,7 @@ public class HomeAssistantAPI {
     func GetStates() -> Promise<[Entity]> {
         let queryUrl = baseAPIURL+"states"
         return Promise { fulfill, reject in
-            self.manager!.request(.GET, queryUrl).responseArray { (response: Response<[Entity], NSError>) in
+            self.manager!.request(.GET, queryUrl).validate().responseArray { (response: Response<[Entity], NSError>) in
                 switch response.result {
                 case .Success:
                     fulfill(response.result.value!)
@@ -363,7 +369,7 @@ public class HomeAssistantAPI {
     func GetStateForEntityIdMapped(entityId: String) -> Promise<Entity> {
         let queryUrl = baseAPIURL+"states/"+entityId
         return Promise { fulfill, reject in
-            self.manager!.request(.GET, queryUrl).responseObject { (response: Response<Entity, NSError>) in
+            self.manager!.request(.GET, queryUrl).validate().responseObject { (response: Response<Entity, NSError>) in
                 switch response.result {
                 case .Success:
                     fulfill(response.result.value!)
@@ -466,7 +472,7 @@ public class HomeAssistantAPI {
     func setupPushActions() -> Promise<Set<UIUserNotificationCategory>> {
         let queryUrl = baseAPIURL+"ios/push"
         return Promise { fulfill, reject in
-            self.manager!.request(.GET, queryUrl).responseArray { (response: Response<[PushCategory], NSError>) in
+            self.manager!.request(.GET, queryUrl).validate().responseArray { (response: Response<[PushCategory], NSError>) in
                 switch response.result {
                 case .Success:
                     var allCategories = Set<UIMutableUserNotificationCategory>()
@@ -513,7 +519,7 @@ public class HomeAssistantAPI {
             url = baseAPIURL+url
         }
         return Promise { fulfill, reject in
-            self.manager!.request(.GET, url).responseImage { response in
+            self.manager!.request(.GET, url).validate().responseImage { response in
                 switch response.result {
                 case .Success:
                     if let value = response.result.value {
