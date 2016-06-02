@@ -11,19 +11,20 @@ import ObjectMapper
 
 let isOKTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
     return Bool(value! == "API running.")
-    }, toJSON: { (value: Bool?) -> String? in
-        if let value = value {
-            if value == true {
-                return "API running."
-            } else {
-                return "API not running."
-            }
+}, toJSON: { (value: Bool?) -> String? in
+    if let value = value {
+        if value == true {
+            return "API running."
+        } else {
+            return "API not running or an error was encountered."
         }
-        return nil
+    }
+    return nil
 })
 
 
 class StatusResponse: Mappable {
+    var Result: String?
     var Message: String?
     var IsOK: Bool?
     
@@ -32,6 +33,7 @@ class StatusResponse: Mappable {
     }
     
     func mapping(map: Map) {
+        Result  <- map["result"]
         Message <- map["message"]
         IsOK    <- (map["message"], isOKTransform)
     }
