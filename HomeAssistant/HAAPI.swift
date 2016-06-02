@@ -555,7 +555,7 @@ class BonjourDelegate : NSObject, NSNetServiceBrowserDelegate, NSNetServiceDeleg
         let dataDict = NSNetService.dictionaryFromTXTRecordData(sender.TXTRecordData()!)
         let baseUrl = copyStringFromTXTDict(dataDict, which: "base_url")
         let requiresAPIPassword = (copyStringFromTXTDict(dataDict, which: "requires_api_password") == "true")
-        let useSSL = (copyStringFromTXTDict(dataDict, which: "use_ssl") == "true")
+        let useSSL = (baseUrl![4] == "s")
         let version = copyStringFromTXTDict(dataDict, which: "version")
         let discoveryInfo : [NSObject:AnyObject] = ["name": sender.name, "baseUrl": baseUrl!, "requires_api_password": requiresAPIPassword, "version": version!, "use_ssl": useSSL]
         NSNotificationCenter.defaultCenter().postNotificationName("homeassistant.discovered", object: nil, userInfo: discoveryInfo)
