@@ -13,6 +13,7 @@ import Alamofire
 import PromiseKit
 import Haneke
 import Crashlytics
+import SystemConfiguration.CaptiveNetwork
 
 func delay(delay:Double, closure:()->()) {
     dispatch_after(
@@ -343,6 +344,20 @@ func generateIconForEntityClass(entity: Entity) -> UIImage {
     return getIconForIdentifier(iconName, iconWidth: 30, iconHeight: 30, color: color)
 }
 
+func getCurrentWifiSSID() -> String {
+    var currentSSID = "Unknown"
+    let interfaces:CFArray! = CNCopySupportedInterfaces()
+    for i in 0..<CFArrayGetCount(interfaces){
+        let interfaceName: UnsafePointer<Void> = CFArrayGetValueAtIndex(interfaces, i)
+        let rec = unsafeBitCast(interfaceName, AnyObject.self)
+        let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)")
+        if unsafeInterfaceData != nil {
+            let interfaceData = unsafeInterfaceData! as Dictionary!
+            currentSSID = interfaceData["SSID"] as! String
+        }
+    }
+    return currentSSID
+}
 
 extension UIImage{
     func scaledToSize(size: CGSize) -> UIImage{
