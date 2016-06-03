@@ -238,7 +238,7 @@ public class HomeAssistantAPI {
                             print("Response was not JSON!", response)
                         }
                     case .Failure(let error):
-                        print("Error on GET request to \(queryUrl):", error)
+                        CLSLogv("Error on GET request to %@: %@", getVaList([queryUrl, error.localizedDescription]))
                         Crashlytics.sharedInstance().recordError(error)
                         reject(error)
                 }
@@ -259,7 +259,7 @@ public class HomeAssistantAPI {
                         print("Response was not JSON!", response)
                     }
                 case .Failure(let error):
-                    print("Error on POST request to \(queryUrl):", error)
+                    CLSLogv("Error on POST request to %@: %@", getVaList([queryUrl, error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
@@ -275,7 +275,7 @@ public class HomeAssistantAPI {
                 case .Success:
                     fulfill(response.result.value!)
                 case .Failure(let error):
-                    print("Error on GetStatus() request:", error)
+                    CLSLogv("Error on GetStatus() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
@@ -291,7 +291,7 @@ public class HomeAssistantAPI {
                 case .Success:
                     fulfill(response.result.value!)
                 case .Failure(let error):
-                    print("Error on GetConfig() request:", error)
+                    CLSLogv("Error on GetConfig() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
@@ -315,7 +315,7 @@ public class HomeAssistantAPI {
                 case .Success:
                     fulfill(response.result.value!)
                 case .Failure(let error):
-                    print("Error on GetServices() request:", error)
+                    CLSLogv("Error on GetServices() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
@@ -338,7 +338,7 @@ public class HomeAssistantAPI {
                         fulfill(historyArray)
                     }
                 case .Failure(let error):
-                    print("Error on GetHistoryMapped() request:", error)
+                    CLSLogv("Error on GetHistoryMapped() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
@@ -354,7 +354,7 @@ public class HomeAssistantAPI {
                 case .Success:
                     fulfill(response.result.value!)
                 case .Failure(let error):
-                    print("Error on GetStates() request:", error)
+                    CLSLogv("Error on GetStates() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
@@ -374,7 +374,7 @@ public class HomeAssistantAPI {
                 case .Success:
                     fulfill(response.result.value!)
                 case .Failure(let error):
-                    print("Error on GetStateForEntityIdMapped() request:", error)
+                    CLSLogv("Error on GetStateForEntityIdMapped() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
@@ -505,7 +505,7 @@ public class HomeAssistantAPI {
                     }
                     fulfill(allCategories)
                 case .Failure(let error):
-                    print("Error on setupPushActions() request:", error)
+                    CLSLogv("Error on setupPushActions() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
@@ -528,7 +528,7 @@ public class HomeAssistantAPI {
                         print("Response was not an image!", response)
                     }
                 case .Failure(let error):
-                    print("Error on getImage() request to \(url):", error)
+                    CLSLogv("Error on getImage() request to %@: %@", getVaList([url, error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
