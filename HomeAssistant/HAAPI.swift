@@ -145,8 +145,21 @@ public class HomeAssistantAPI {
     func submitLocation(updateType: String, latitude: Double, longitude: Double, accuracy: Double, locationName: String) {
         UIDevice.currentDevice().batteryMonitoringEnabled = true
         
+        var batteryState = "Unplugged"
+        switch UIDevice.currentDevice().batteryState {
+            case .Unknown:
+                batteryState = "Unknown"
+            case .Charging:
+                batteryState = "Charging"
+            case .Unplugged:
+                batteryState = "Unplugged"
+            case .Full:
+                batteryState = "Full"
+        }
+        
         var locationUpdate : [String:AnyObject] = [
             "battery": Int(UIDevice.currentDevice().batteryLevel*100),
+            "battery_status": batteryState,
             "gps": [latitude, longitude],
             "gps_accuracy": accuracy,
             "hostname": UIDevice().name,
