@@ -15,15 +15,6 @@ import Haneke
 import Crashlytics
 import SystemConfiguration.CaptiveNetwork
 
-func delay(delay:Double, closure:()->()) {
-    dispatch_after(
-        dispatch_time(
-            DISPATCH_TIME_NOW,
-            Int64(delay * Double(NSEC_PER_SEC))
-        ),
-        dispatch_get_main_queue(), closure)
-}
-
 func getEntityType(entityId: String) -> String {
     return entityId.componentsSeparatedByString(".")[0]
 }
@@ -188,30 +179,6 @@ func iconForDomainAndState(domain: String, state: String) -> String {
     }
 }
 
-func binarySensorIcon(entity: SwiftyJSON.JSON) -> String {
-    let activated = (entity["state"].stringValue == "off")
-    switch (entity["attributes"]["sensor_class"].stringValue) {
-    case "opening":
-        return activated ? "mdi:crop-square" : "mdi:exit-to-app"
-    case "moisture":
-        return activated ? "mdi:water-off" : "mdi:water"
-    case "light":
-        return activated ? "mdi:brightness-5" : "mdi:brightness-7"
-    case "sound":
-        return activated ? "mdi:music-note-off" : "mdi:music-note"
-    case "vibration":
-        return activated ? "mdi:crop-portrait" : "mdi:vibrate"
-    case "connectivity":
-        return activated ? "mdi:server-network-off" : "mdi:server-network"
-    case "safety", "gas", "smoke", "power":
-        return activated ? "mdi:verified" : "mdi:alert"
-    case "motion":
-        return activated ? "mdi:walk" : "mdi:run"
-    default:
-        return activated ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle"
-    }
-}
-
 func binarySensorIconEntity(entity: BinarySensor) -> String {
     let activated = (entity.IsOn == false)
     if entity.SensorClass == nil {
@@ -239,30 +206,6 @@ func binarySensorIconEntity(entity: BinarySensor) -> String {
     }
 }
 
-
-func stateIcon(entity: SwiftyJSON.JSON) -> String {
-    let domain = getEntityType(entity["entity_id"].stringValue)
-    if (entity["attributes"]["mobile_icon"].exists()) {
-        return entity["attributes"]["mobile_icon"].stringValue
-    }
-    if (entity["attributes"]["icon"].exists()) {
-        return entity["attributes"]["icon"].stringValue
-    }
-    
-    if (entity["attributes"]["unit_of_measurement"].exists() && domain == "sensor") {
-        let unit = entity["attributes"]["unit_of_measurement"].stringValue
-        if (unit == "°C" || unit == "°F") {
-            return "mdi:thermometer"
-        } else if (unit == "Mice") {
-            return "mdi:mouse-variant"
-        }
-    } else if (domain == "binary_sensor") {
-        return binarySensorIcon(entity)
-    }
-    
-    return iconForDomainAndState(domain, state: entity["state"].stringValue)
-}
-
 func stateIconEntity(entity: Entity) -> String {
     if entity.MobileIcon != nil {
         return entity.MobileIcon!
@@ -284,7 +227,6 @@ func stateIconEntity(entity: Entity) -> String {
     return iconForDomainAndState(entity.Domain, state: entity.State)
 }
 
-
 let entityPicturesCache = Cache<UIImage>(name: "entity_pictures")
 
 func getEntityPicture(entityPictureURL: String) -> Promise<UIImage> {
@@ -302,26 +244,6 @@ func getEntityPicture(entityPictureURL: String) -> Promise<UIImage> {
             fulfill(image)
         }
     }
-}
-
-func generateIconForEntity(entity: SwiftyJSON.JSON) -> UIImage {
-    let entityType = getEntityType(entity["entity_id"].stringValue)
-    let iconName = stateIcon(entity)
-    Crashlytics.sharedInstance().setObjectValue(iconName, forKey: "iconName")
-    var color = colorWithHexString("#44739E", alpha: 1)
-    if (entityType == "light" || entityType == "switch" || entityType == "binary_sensor" || entityType == "sun") && (entity["state"].stringValue == "on" || entity["state"].stringValue == "above_horizon") {
-        color = colorWithHexString("#DCC91F", alpha: 1)
-    }
-    if entityType == "light" && entity["state"].stringValue == "on" && entity["attributes"]["rgb_color"].exists() {
-        let red = CGFloat(entity["attributes"]["rgb_color"][0].doubleValue/255.0)
-        let green = CGFloat(entity["attributes"]["rgb_color"][1].doubleValue/255.0)
-        let blue = CGFloat(entity["attributes"]["rgb_color"][2].doubleValue/255.0)
-        color = UIColor.init(red: red, green: green, blue: blue, alpha: 1)
-    }
-    if entity["state"].stringValue == "unavailable" {
-        color = colorWithHexString("#bdbdbd", alpha: 1)
-    }
-    return getIconForIdentifier(iconName, iconWidth: 30, iconHeight: 30, color: color)
 }
 
 func generateIconForEntityClass(entity: Entity) -> UIImage {
