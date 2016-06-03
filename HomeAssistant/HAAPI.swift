@@ -108,6 +108,17 @@ public class HomeAssistantAPI {
                     print("User authorized the use of notifications")
                     UIApplication.sharedApplication().registerForRemoteNotifications()
                 }
+                
+                if self.loadedComponents.contains("ios") {
+                    CLSLogv("iOS component loaded, attempting identify and setup of push categories %@", getVaList(["this is a silly string!"]))
+                    when(self.identifyDevice(), self.setupPushActions()).then { _, categories -> Void in
+                        UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Alert, .Sound, .Badge], categories: categories))
+                    }.error { error -> Void in
+                        print("Error when attempting an identify or setup push actions", error)
+                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                    }
+                }
+                
                 self.startStream()
                 fulfill(true)
             }.error { error in
