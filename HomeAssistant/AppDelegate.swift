@@ -10,7 +10,6 @@ import UIKit
 import AWSSNS
 import Fabric
 import Crashlytics
-import PermissionScope
 import DeviceKit
 import PromiseKit
 
