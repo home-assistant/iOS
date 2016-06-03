@@ -245,16 +245,16 @@ class GroupViewController: FormViewController {
                 if let event = Mapper<StateChangedEvent>().map(userInfo) {
                     if let newState = event.NewState {
                         let icon = generateIconForEntityClass(newState)
-                        self.updatedStates[event.EntityID!] = newState
-                        if event.EntityDomain == "lock" || event.EntityDomain == "garage_door" {
-                            if let row : SwitchRow = self.form.rowByTag(event.EntityID!) {
+                        self.updatedStates[newState.ID] = newState
+                        if newState.Domain == "lock" || newState.Domain == "garage_door" {
+                            if let row : SwitchRow = self.form.rowByTag(newState.ID) {
                                 row.value = (newState.State == "on") ? true : false
                                 row.cell.imageView?.image = icon
                                 row.updateCell()
                                 row.reload()
                             }
                         } else {
-                            if let row : ButtonRow = self.form.rowByTag(event.EntityID!) {
+                            if let row : ButtonRow = self.form.rowByTag(newState.ID) {
                                 row.value = newState.State
                                 if let newStateSensor = newState as? Sensor {
                                     row.value = newState.State + " " + newStateSensor.UnitOfMeasurement!
