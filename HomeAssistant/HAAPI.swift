@@ -99,7 +99,7 @@ public class HomeAssistantAPI {
                 
                 Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
                 
-                if PermissionScope().statusLocationAlways() == .Authorized && self.loadedComponents.contains("device_tracker") {
+                if self.locationEnabled() {
                     print("Found device_tracker in config components, starting location monitoring!")
                     self.trackLocation()
                 }
