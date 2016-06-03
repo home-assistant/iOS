@@ -16,8 +16,8 @@ PODS:
   - DeviceKit (0.3.2)
   - Eureka (1.6.0)
   - Fabric (1.6.7)
-  - FontAwesomeKit/Core (2.2.2)
-  - FontAwesomeKit/MaterialDesignIcons (2.2.2):
+  - FontAwesomeKit/Core (2.2.3)
+  - FontAwesomeKit/MaterialDesignIcons (2.2.3):
     - FontAwesomeKit/Core
   - HanekeSwift (0.10.1)
   - IKEventSource (1.1.3)
@@ -82,7 +82,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   FontAwesomeKit:
-    :commit: 4adcf98a9cf5d33c96e053375c5972b3a7bea313
+    :commit: f71894d5bb06c5e20c902a715da24d2c2acdf6ee
     :git: https://github.com/robbiet480/FontAwesomeKit.git
   SwiftyJSON:
     :commit: 2a5b70f06001316d4fb54501edc70b4084705da0
@@ -100,7 +100,7 @@ SPEC CHECKSUMS:
   DeviceKit: 79182140c0aa8daaf4f4b3920e0b079f5fa9db79
   Eureka: ef5b9ac93aedeecfe50d98b1ac7678bf09a1fc62
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
-  FontAwesomeKit: e1d7c3b635dba2ebc2ec77e9b2ac9f6c0af0e350
+  FontAwesomeKit: 7336af53079bde1943da68c20a2d06436e3ef1ca
   HanekeSwift: 08e47d3d0f2899ec58e5d257beba0de619aca9e8
   IKEventSource: 323157f5afd0dd65e0742f8906f2f2bd1e747f3e
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
