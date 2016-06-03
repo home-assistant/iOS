@@ -91,7 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let sns = AWSSNS.defaultSNS()
         let request = AWSSNSCreatePlatformEndpointInput()
         request.token = deviceTokenString
-        request.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS/HomeAssistant"
+        request.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS_SANDBOX/HomeAssistant"
         sns.createPlatformEndpoint(request).continueWithBlock { (task: AWSTask!) -> AnyObject! in
             if task.error != nil {
                 print("Error: \(task.error)")
@@ -131,9 +131,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Received remote notification!", userInfo)
     }
     
-    func application(application: UIApplication,  didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         print("Received remote notification in completion handler!", userInfo)
-        completionHandler(UIBackgroundFetchResult.NoData)
+        
+        if let hadict = userInfo["homeassistant"] {
+            if let command = hadict["command"]! {
+                switch command {
+                case "request_location_update":
+                    print("Received remote request to provide a location update")
+                    HomeAssistantAPI.sharedInstance.sendOneshotLocation("").then { success -> Void in
+                        print("Did successfully send location when requested via APNS?", success)
+                        completionHandler(UIBackgroundFetchResult.NoData)
+                    }.error { error in
+                        print("Error when attempting to submit location update")
+                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                        completionHandler(UIBackgroundFetchResult.Failed)
+                    }
+                default:
+                    print("Received unknown command via APNS!", userInfo["homeassistant"]!["command"])
+                    completionHandler(UIBackgroundFetchResult.NoData)
+                }
+            }
+        }
     }
     
     func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], withResponseInfo responseInfo: [NSObject : AnyObject], completionHandler: () -> Void) {

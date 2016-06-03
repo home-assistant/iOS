@@ -181,7 +181,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func sendCurrentLocation(sender: UIBarButtonItem) {
-        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
+        HomeAssistantAPI.sharedInstance.sendOneshotLocation("One off location update requested").then { success -> Void in
             print("Did succeed?", success)
             let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))

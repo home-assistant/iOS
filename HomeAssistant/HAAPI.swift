@@ -165,12 +165,14 @@ public class HomeAssistantAPI {
         
         UIDevice.currentDevice().batteryMonitoringEnabled = false
         
-        let notification = UILocalNotification()
-        notification.alertBody = updateType+", alerting Home Assistant"
-        notification.alertAction = "open"
-        notification.fireDate = NSDate()
-        notification.soundName = UILocalNotificationDefaultSoundName
-        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        if updateType != "" {
+            let notification = UILocalNotification()
+            notification.alertBody = updateType
+            notification.alertAction = "open"
+            notification.fireDate = NSDate()
+            notification.soundName = UILocalNotificationDefaultSoundName
+            UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        }
     }
     
     func trackLocation() {
@@ -211,10 +213,10 @@ public class HomeAssistantAPI {
 
     }
     
-    func sendOneshotLocation() -> Promise<Bool> {
+    func sendOneshotLocation(notifyString: String) -> Promise<Bool> {
         return Promise { fulfill, reject in
             LocationManager.shared.observeLocations(.Neighborhood, frequency: .OneShot, onSuccess: { (location) -> Void in
-                self.submitLocation("One off location update requested", latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
+                self.submitLocation(notifyString, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
                 fulfill(true)
             }) { (error) -> Void in
                 print("Error when trying to get a oneshot location!", error)
