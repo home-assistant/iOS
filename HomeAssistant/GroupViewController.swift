@@ -1,5 +1,5 @@
 //
-//  FirstViewController.swift
+//  GroupViewController.swift
 //  HomeAssistant
 //
 //  Created by Robbie Trencheny on 3/25/16.
@@ -9,10 +9,6 @@
 import UIKit
 import SafariServices
 import Eureka
-import MBProgressHUD
-import Whisper
-import PermissionScope
-import FontAwesomeKit
 import CoreLocation
 import ObjectMapper
 
