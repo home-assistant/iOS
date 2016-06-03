@@ -110,19 +110,19 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     let icon = getIconForIdentifier(groupIcon, iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
                     groupView.tabBarItem = UITabBarItem(title: friendlyName.capitalizedString, image: icon, tag: index)
                     
-                    var rightBarItems : [UIBarButtonItem] = []
-                    
-                    if PermissionScope().statusLocationAlways() == .Authorized {
+                    if HomeAssistantAPI.sharedInstance.locationEnabled() {
+                        var rightBarItems : [UIBarButtonItem] = []
+                        
                         let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
                         
                         rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
+                        
+                        let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
+                        
+                        rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
+                        
+                        groupView.navigationItem.setRightBarButtonItems(rightBarItems, animated: true)
                     }
-                    
-                    let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
-                    
-                    rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
-                    
-                    groupView.navigationItem.setRightBarButtonItems(rightBarItems, animated: true)
                     
                     let navController = UINavigationController(rootViewController: groupView)
                     

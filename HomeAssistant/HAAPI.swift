@@ -48,6 +48,8 @@ public class HomeAssistantAPI {
     
     var headers = [String:String]()
     
+    var loadedComponents = [String]()
+    
     func Setup(baseAPIUrl: String, APIPassword: String) -> Promise<StatusResponse> {
         self.baseAPIURL = baseAPIUrl+"/api/"
         self.apiPassword = APIPassword
@@ -87,6 +89,7 @@ public class HomeAssistantAPI {
             //            when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig()).then { ident, config -> Void in
             //            print("Identified!", ident)
             GetConfig().then { config -> Void in
+                self.loadedComponents = config.Components!
                 prefs.setValue(config.LocationName, forKey: "location_name")
                 prefs.setValue(config.Latitude, forKey: "latitude")
                 prefs.setValue(config.Longitude, forKey: "longitude")
@@ -96,7 +99,7 @@ public class HomeAssistantAPI {
                 
                 Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
                 
-                if PermissionScope().statusLocationAlways() == .Authorized && config.Components!.contains("device_tracker") {
+                if PermissionScope().statusLocationAlways() == .Authorized && self.loadedComponents.contains("device_tracker") {
                     print("Found device_tracker in config components, starting location monitoring!")
                     self.trackLocation()
                 }
@@ -547,6 +550,10 @@ public class HomeAssistantAPI {
                 }
             }
         }
+    }
+    
+    func locationEnabled() -> Bool {
+        return PermissionScope().statusLocationAlways() == .Authorized && self.loadedComponents.contains("device_tracker")
     }
 
 }
