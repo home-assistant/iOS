@@ -24,7 +24,6 @@ target 'HomeAssistant' do
   pod 'PromiseKit'
   pod 'SwiftDate'
   pod 'SwiftLocation'
-  pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
   pod 'Whisper'
 end
 

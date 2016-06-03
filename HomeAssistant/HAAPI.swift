@@ -10,7 +10,6 @@ import Foundation
 import Alamofire
 import AlamofireImage
 import PromiseKit
-import SwiftyJSON
 import IKEventSource
 import SwiftLocation
 import CoreLocation
@@ -253,47 +252,6 @@ public class HomeAssistantAPI {
         }
     }
     
-    func GET(url:String) -> Promise<JSON> {
-        let queryUrl = baseAPIURL+url
-        return Promise { fulfill, reject in
-            self.manager!.request(.GET, queryUrl).validate().responseJSON { response in
-                switch response.result {
-                    case .Success:
-                        if let value = response.result.value {
-                            fulfill(JSON(value))
-                        } else {
-                            print("Response was not JSON!", response)
-                        }
-                    case .Failure(let error):
-                        CLSLogv("Error on GET request to %@: %@", getVaList([queryUrl, error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                        reject(error)
-                }
-            }
-        }
-    }
-    
-    func POST(url:String, parameters: [String: AnyObject]) -> Promise<JSON> {
-        mostRecentlySentMessage = url
-        let queryUrl = baseAPIURL+url
-        return Promise { fulfill, reject in
-            self.manager!.request(.POST, queryUrl, parameters: parameters, encoding: .JSON).validate().responseJSON { response in
-                switch response.result {
-                case .Success:
-                    if let value = response.result.value {
-                        fulfill(JSON(value))
-                    } else {
-                        print("Response was not JSON!", response)
-                    }
-                case .Failure(let error):
-                    CLSLogv("Error on POST request to %@: %@", getVaList([queryUrl, error.localizedDescription]))
-                    Crashlytics.sharedInstance().recordError(error)
-                    reject(error)
-                }
-            }
-        }
-    }
-    
     func GetStatus() -> Promise<StatusResponse> {
         let queryUrl = baseAPIURL
         return Promise { fulfill, reject in
@@ -326,14 +284,6 @@ public class HomeAssistantAPI {
         }
     }
     
-    func GetBootstrap() -> Promise<JSON> {
-        return GET("bootstrap")
-    }
-    
-    func GetEvents() -> Promise<JSON> {
-        return GET("events")
-    }
-    
     func GetServices() -> Promise<[ServicesResponse]> {
         let queryUrl = baseAPIURL+"services"
         return Promise { fulfill, reject in
@@ -348,10 +298,6 @@ public class HomeAssistantAPI {
                 }
             }
         }
-    }
-    
-    func GetHistory() -> Promise<JSON> {
-        return GET("history")
     }
     
     func GetHistoryMapped() -> Promise<[HistoryResponse]> {
@@ -389,10 +335,6 @@ public class HomeAssistantAPI {
         }
     }
     
-    func GetStateForEntityId(entityId: String) -> Promise<JSON> {
-        return GET("states/"+entityId)
-    }
-    
     func GetStateForEntityIdMapped(entityId: String) -> Promise<Entity> {
         let queryUrl = baseAPIURL+"states/"+entityId
         return Promise { fulfill, reject in
@@ -409,31 +351,81 @@ public class HomeAssistantAPI {
         }
     }
     
-    func GetErrorLog() -> Promise<JSON> {
-        return GET("error_log")
+    func GetErrorLog() -> Promise<String> {
+        let queryUrl = baseAPIURL+"error_log"
+        return Promise { fulfill, reject in
+            self.manager!.request(.GET, queryUrl).validate().responseString { response in
+                switch response.result {
+                case .Success:
+                    fulfill(response.result.value!)
+                case .Failure(let error):
+                    CLSLogv("Error on GetErrorLog() request: %@", getVaList([error.localizedDescription]))
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
+            }
+        }
     }
     
-    func SetState(entityId: String, state: String) -> Promise<JSON> {
-        Whistle(Murmur(title: getEntityType(entityId)+" state set to "+state))
-        return POST("states/"+entityId, parameters: ["state": state])
+    func SetState(entityId: String, state: String) -> Promise<Entity> {
+        let queryUrl = baseAPIURL+"states/"+entityId
+        return Promise { fulfill, reject in
+            self.manager!.request(.POST, queryUrl, parameters: ["state": state], encoding: .JSON).validate().responseObject { (response: Response<Entity, NSError>) in
+                switch response.result {
+                case .Success:
+                    Whistle(Murmur(title: getEntityType(entityId)+" state set to "+state))
+                    fulfill(response.result.value!)
+                case .Failure(let error):
+                    CLSLogv("Error when attemping to SetState(): %@", getVaList([error.localizedDescription]))
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
+            }
+        }
     }
     
-    func CreateEvent(eventType: String, eventData: [String:AnyObject]) -> Promise<JSON> {
-        Whistle(Murmur(title: eventType+" created"))
-        return POST("events/"+eventType, parameters: eventData)
+    func CreateEvent(eventType: String, eventData: [String:AnyObject]) -> Promise<String> {
+        let queryUrl = baseAPIURL+"events/"+eventType
+        return Promise { fulfill, reject in
+            self.manager!.request(.POST, queryUrl, parameters: eventData, encoding: .JSON).validate().responseJSON { response in
+                switch response.result {
+                case .Success:
+                    if let jsonDict = response.result.value as? [String : String] {
+                        Whistle(Murmur(title: eventType+" created"))
+                        fulfill(jsonDict["message"]!)
+                    }
+                case .Failure(let error):
+                    CLSLogv("Error when attemping to CreateEvent(): %@", getVaList([error.localizedDescription]))
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
+            }
+        }
     }
     
-    func CallService(domain: String, service: String, serviceData: [String:AnyObject]) -> Promise<JSON> {
+    func CallService(domain: String, service: String, serviceData: [String:AnyObject]) -> Promise<[ServicesResponse]> {
 //        Whistle(Murmur(title: domain+"/"+service+" called"))
-        return POST("services/"+domain+"/"+service, parameters: serviceData)
+        let queryUrl = baseAPIURL+"services/"+domain+"/"+service
+        return Promise { fulfill, reject in
+            self.manager!.request(.POST, queryUrl, parameters: serviceData, encoding: .JSON).validate().responseArray { (response: Response<[ServicesResponse], NSError>) in
+                switch response.result {
+                case .Success:
+                    fulfill(response.result.value!)
+                case .Failure(let error):
+                    CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
+            }
+        }
     }
     
-    func turnOn(entityId: String) -> Promise<JSON> {
+    func turnOn(entityId: String) -> Promise<[ServicesResponse]> {
         Whistle(Murmur(title: entityId+" turned on"))
         return CallService("homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
     }
     
-    func turnOnEntity(entity: Entity) -> Promise<JSON> {
+    func turnOnEntity(entity: Entity) -> Promise<[ServicesResponse]> {
         var title = entity.ID
         if let friendlyName = entity.FriendlyName {
             title = friendlyName
@@ -442,12 +434,12 @@ public class HomeAssistantAPI {
         return CallService("homeassistant", service: "turn_on", serviceData: ["entity_id": entity.ID])
     }
     
-    func turnOff(entityId: String) -> Promise<JSON> {
+    func turnOff(entityId: String) -> Promise<[ServicesResponse]> {
         Whistle(Murmur(title: entityId+" turned off"))
         return CallService("homeassistant", service: "turn_off", serviceData: ["entity_id": entityId])
     }
     
-    func turnOffEntity(entity: Entity) -> Promise<JSON> {
+    func turnOffEntity(entity: Entity) -> Promise<[ServicesResponse]> {
         var title = entity.ID
         if let friendlyName = entity.FriendlyName {
             title = friendlyName
@@ -456,12 +448,12 @@ public class HomeAssistantAPI {
         return CallService("homeassistant", service: "turn_off", serviceData: ["entity_id": entity.ID])
     }
     
-    func toggle(entityId: String) -> Promise<JSON> {
+    func toggle(entityId: String) -> Promise<[ServicesResponse]> {
         Whistle(Murmur(title: entityId+" toggled"))
         return CallService("homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
     }
     
-    func toggleEntity(entity: Entity) -> Promise<JSON> {
+    func toggleEntity(entity: Entity) -> Promise<[ServicesResponse]> {
         var title = entity.ID
         if let friendlyName = entity.FriendlyName {
             title = friendlyName
@@ -492,8 +484,20 @@ public class HomeAssistantAPI {
         return deviceContainer
     }
     
-    func identifyDevice() -> Promise<JSON> {
-        return POST("ios/identify", parameters: buildIdentifyDict())
+    func identifyDevice() -> Promise<String> {
+        let queryUrl = baseAPIURL+"ios/identify"
+        return Promise { fulfill, reject in
+            self.manager!.request(.POST, queryUrl, parameters: buildIdentifyDict(), encoding: .JSON).validate().responseString { response in
+                switch response.result {
+                case .Success:
+                    fulfill(response.result.value!)
+                case .Failure(let error):
+                    CLSLogv("Error when attemping to identifyDevice(): %@", getVaList([error.localizedDescription]))
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
+            }
+        }
     }
     
     func setupPushActions() -> Promise<Set<UIUserNotificationCategory>> {

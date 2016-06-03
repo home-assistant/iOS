@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftyJSON
 import FontAwesomeKit
 import Alamofire
 import PromiseKit

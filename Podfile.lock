@@ -45,7 +45,6 @@ PODS:
     - PromiseKit/CorePromise
   - SwiftDate (3.0.8)
   - SwiftLocation (0.9.0)
-  - SwiftyJSON (2.3.2)
   - Whisper (3.0.0)
 
 DEPENDENCIES:
@@ -70,23 +69,17 @@ DEPENDENCIES:
   - PromiseKit
   - SwiftDate
   - SwiftLocation
-  - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
   - Whisper
 
 EXTERNAL SOURCES:
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
-  SwiftyJSON:
-    :git: https://github.com/SwiftyJSON/SwiftyJSON.git
 
 CHECKOUT OPTIONS:
   FontAwesomeKit:
     :commit: f71894d5bb06c5e20c902a715da24d2c2acdf6ee
     :git: https://github.com/robbiet480/FontAwesomeKit.git
-  SwiftyJSON:
-    :commit: 2a5b70f06001316d4fb54501edc70b4084705da0
-    :git: https://github.com/SwiftyJSON/SwiftyJSON.git
 
 SPEC CHECKSUMS:
   AcknowList: 06a183d117b7e2bb0c6f5654366d2912dc64a6c4
@@ -110,7 +103,6 @@ SPEC CHECKSUMS:
   PromiseKit: 1db024241265f428137a9f3c00ff9590740c4be6
   SwiftDate: 971f8b9394f664f2226b9c3ab64e801a7291c612
   SwiftLocation: f18e71300a89f2a81001c9615b7694150e6b84de
-  SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
   Whisper: 42a3ee7c2936f861b23d41bd6cd7dfd22f102405
 
 COCOAPODS: 0.39.0
