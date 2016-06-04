@@ -90,6 +90,6 @@ class MediaPlayer: SwitchableEntity {
     }
     
     override func StateIcon() -> String {
-        return (self.IsOn! && self.IsIdle == false) ? "mdi:cast-connected" : "mdi:cast"
+        return (self.State != "off" && self.State != "idle") ? "mdi:cast-connected" : "mdi:cast"
     }
 }
