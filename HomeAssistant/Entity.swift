@@ -177,19 +177,39 @@ class Entity: Mappable {
     }
     
     func StateIcon() -> String {
-        return self.ComponentIcon
+        switch self {
+        case is BinarySensor:
+            return (self as! BinarySensor).StateIcon()
+        case is Lock:
+            return (self as! Lock).StateIcon()
+        case is MediaPlayer:
+            return (self as! MediaPlayer).StateIcon()
+        case is Sensor:
+            return (self as! Sensor).StateIcon()
+        default:
+            return self.ComponentIcon
+        }
     }
 
     func EntityColor() -> UIColor {
-        let hexColor = self.State == "unavailable" ? "#bdbdbd" : "#44739E"
-        return colorWithHexString(hexColor, alpha: 1)
+        switch self {
+        case is Light:
+            return (self as! Light).EntityColor()
+        case is Sun:
+            return (self as! Sun).EntityColor()
+        case is SwitchableEntity:
+            return (self as! SwitchableEntity).EntityColor()
+        default:
+            let hexColor = self.State == "unavailable" ? "#bdbdbd" : "#44739E"
+            return colorWithHexString(hexColor, alpha: 1)
+        }
     }
     
     func EntityIcon() -> UIImage {
         var icon = self.StateIcon()
         if self.MobileIcon != nil { icon = self.MobileIcon! }
         if self.Icon != nil { icon = self.Icon! }
-        return getIconForIdentifier(icon, iconWidth: 30, iconHeight: 30, color: self.EntityColor())
+        return getIconForIdentifier(icon, iconWidth: 30, iconHeight: 30, color: EntityColor())
     }
 }
 
