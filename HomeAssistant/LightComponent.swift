@@ -28,9 +28,13 @@ class Light: SwitchableEntity {
     }
     
     override func EntityColor() -> UIColor {
-        if self.State == "on" {
-            if let rgb = self.RGBColor {
-                return UIColor.init(red: CGFloat(rgb[0]), green: CGFloat(rgb[1]), blue: CGFloat(rgb[2]), alpha: 1)
+        if self.IsOn! {
+            if self.Attributes["rgb_color"] != nil {
+                let rgb = self.Attributes["rgb_color"]!
+                let red = CGFloat(rgb[0].doubleValue/255.0)
+                let green = CGFloat(rgb[1].doubleValue/255.0)
+                let blue = CGFloat(rgb[2].doubleValue/255.0)
+                return UIColor.init(red: red, green: green, blue: blue, alpha: 1)
             } else {
                 return colorWithHexString("#DCC91F", alpha: 1)
             }
