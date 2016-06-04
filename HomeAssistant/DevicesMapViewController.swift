@@ -143,12 +143,10 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: annotation.device?.ID)
             annotationView.animatesDrop = true
             annotationView.canShowCallout = true
-            if let picture = annotation.device?.Picture {
-                getEntityPicture(picture).then { image in
-                    annotationView.leftCalloutAccessoryView = UIImageView(image: image)
-                }
+            if let picture = annotation.device?.DownloadedPicture {
+                annotationView.leftCalloutAccessoryView = UIImageView(image: picture)
             } else {
-                annotationView.leftCalloutAccessoryView = UIImageView(image: generateIconForEntityClass(annotation.device!))
+                annotationView.leftCalloutAccessoryView = UIImageView(image: annotation.device!.EntityIcon())
             }
 //            annotationView.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
             return annotationView

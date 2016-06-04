@@ -26,4 +26,12 @@ class Sun: Entity {
         NextRising   <- (map["attributes.next_rising"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
         NextSetting  <- (map["attributes.next_setting"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
     }
+    
+    override func EntityColor() -> UIColor {
+        return self.State == "above_horizon" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
+    }
+    
+    override var ComponentIcon: String {
+        return "mdi:white-balance-sunny"
+    }
 }

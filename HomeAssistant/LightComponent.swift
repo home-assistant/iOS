@@ -9,7 +9,7 @@
 import Foundation
 import ObjectMapper
 
-class Light: Entity {
+class Light: SwitchableEntity {
     
     var Brightness: Float?
     var ColorTemp: Float?
@@ -25,5 +25,21 @@ class Light: Entity {
         Brightness   <- map["attributes.brightness"]
         ColorTemp    <- map["attributes.color_temp"]
         RGBColor     <- map["attributes.rgb_color"]
+    }
+    
+    override func EntityColor() -> UIColor {
+        if self.State == "on" {
+            if let rgb = self.RGBColor {
+                return UIColor.init(red: CGFloat(rgb[0]), green: CGFloat(rgb[1]), blue: CGFloat(rgb[2]), alpha: 1)
+            } else {
+                return colorWithHexString("#DCC91F", alpha: 1)
+            }
+        } else {
+            return self.DefaultEntityUIColor
+        }
+    }
+    
+    override var ComponentIcon: String {
+        return "mdi:lightbulb"
     }
 }

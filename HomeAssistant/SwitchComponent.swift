@@ -9,7 +9,7 @@
 import Foundation
 import ObjectMapper
 
-class Switch: Entity {
+class Switch: SwitchableEntity {
     
     var Location: String?
     var NodeID: String?
@@ -27,5 +27,9 @@ class Switch: Entity {
         CurrentPowerMilliwattHours   <- map["attributes.current_power_mwh"]
         NodeID                       <- map["attributes.node_id"]
         Location                     <- map["attributes.location"]
+    }
+    
+    override var ComponentIcon: String {
+        return "mdi:flash"
     }
 }

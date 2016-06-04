@@ -37,7 +37,7 @@ class SSEEvent: Mappable {
     
     func mapping(map: Map) {
         Type      <- map["event_type"]
-        TimeFired <- (map["time_fired"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
+        TimeFired <- (map["time_fired"], HomeAssistantTimestampTransform())
         Origin    <- map["origin"]
     }
 }

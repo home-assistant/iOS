@@ -37,4 +37,8 @@ class Group: Entity {
         Order         <- map["attributes.order"]
         EntityIds     <- map["attributes.entity_id"]
     }
+    
+    override var ComponentIcon: String {
+        return "mdi:google-circles-communities"
+    }
 }

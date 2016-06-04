@@ -53,4 +53,8 @@ class Thermostat: Entity {
     func setTemperature(newTemp: Float) {
         HomeAssistantAPI.sharedInstance.CallService("thermostat", service: "set_temperature", serviceData: ["entity_id": self.ID, "temperature": newTemp])
     }
+    
+    override var ComponentIcon: String {
+        return "mdi:nest-thermostat"
+    }
 }

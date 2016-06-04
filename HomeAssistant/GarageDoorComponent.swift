@@ -11,15 +11,15 @@ import ObjectMapper
 
 let garageIsOpenTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
     return Bool(String(value!) == "open")
-    }, toJSON: { (value: Bool?) -> String? in
-        if let value = value {
-            if value == true {
-                return "open"
-            } else {
-                return "closed"
-            }
+}, toJSON: { (value: Bool?) -> String? in
+    if let value = value {
+        if value == true {
+            return "open"
+        } else {
+            return "closed"
         }
-        return nil
+    }
+    return nil
 })
 
 
@@ -35,5 +35,9 @@ class GarageDoor: Entity {
         super.mapping(map)
         
         IsOpen    <- (map["state"], garageIsOpenTransform)
+    }
+    
+    override var ComponentIcon: String {
+        return "mdi:glassdoor"
     }
 }

@@ -11,15 +11,15 @@ import ObjectMapper
 
 let isLockedTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
     return Bool(String(value!) == "locked")
-    }, toJSON: { (value: Bool?) -> String? in
-        if let value = value {
-            if value == true {
-                return "locked"
-            } else {
-                return "unlocked"
-            }
+}, toJSON: { (value: Bool?) -> String? in
+    if let value = value {
+        if value == true {
+            return "locked"
+        } else {
+            return "unlocked"
         }
-        return nil
+    }
+    return nil
 })
 
 
@@ -35,5 +35,13 @@ class Lock: Entity {
         super.mapping(map)
         
         IsLocked    <- (map["state"], isLockedTransform)
+    }
+    
+    override var ComponentIcon: String {
+        return "mdi:lock-open"
+    }
+    
+    override func StateIcon() -> String {
+        return (self.State == "unlocked") ? "mdi:lock-open" : "mdi:lock"
     }
 }

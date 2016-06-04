@@ -373,7 +373,7 @@ public class HomeAssistantAPI {
             self.manager!.request(.POST, queryUrl, parameters: ["state": state], encoding: .JSON).validate().responseObject { (response: Response<Entity, NSError>) in
                 switch response.result {
                 case .Success:
-                    Whistle(Murmur(title: getEntityType(entityId)+" state set to "+state))
+                    Whistle(Murmur(title: Entity(id: entityId).Domain+" state set to "+state))
                     fulfill(response.result.value!)
                 case .Failure(let error):
                     CLSLogv("Error when attemping to SetState(): %@", getVaList([error.localizedDescription]))

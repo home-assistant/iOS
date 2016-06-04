@@ -9,9 +9,7 @@
 import Foundation
 import ObjectMapper
 
-class InputBoolean: Entity {
-    
-    var IsOn: Bool?
+class InputBoolean: SwitchableEntity {
     
     required init?(_ map: Map) {
         super.init(map)
@@ -19,7 +17,9 @@ class InputBoolean: Entity {
     
     override func mapping(map: Map) {
         super.mapping(map)
-        
-        IsOn    <- (map["state"], onOffStateTransform)
+    }
+    
+    override var ComponentIcon: String {
+        return "mdi:drawing"
     }
 }

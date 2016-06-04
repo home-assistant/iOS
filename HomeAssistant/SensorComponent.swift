@@ -24,4 +24,20 @@ class Sensor: Entity {
         UnitOfMeasurement <- map["attributes.unit_of_measurement"]
         SensorClass       <- map["attributes.sensor_class"]
     }
+    
+    override var ComponentIcon: String {
+        return "mdi:eye"
+    }
+    
+    override func StateIcon() -> String {
+        if self.MobileIcon != nil { return self.MobileIcon! }
+        if self.Icon != nil { return self.Icon! }
+        
+        if (self.UnitOfMeasurement == "°C" || self.UnitOfMeasurement == "°F") {
+            return "mdi:thermometer"
+        } else if (self.UnitOfMeasurement == "Mice") {
+            return "mdi:mouse-variant"
+        }
+        return ComponentIcon
+    }
 }

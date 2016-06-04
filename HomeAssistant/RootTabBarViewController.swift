@@ -42,9 +42,8 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 self.deviceTrackerEntities = states.filter { return $0.Domain == "device_tracker" }
                 self.zoneEntities = states.filter { return $0.Domain == "zone" }
                 let allGroups = states.filter {
-                    let entityType = getEntityType($0.ID)
                     var shouldReturn = true
-                    if entityType != "group" { // We only want groups
+                    if $0.Domain != "group" { // We only want groups
                         return false
                     }
                     let groupZero = $0 as! Group
@@ -66,7 +65,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     // If all entities are a group, return false
                     var groupCheck = [String]()
                     for entity in groupZero.EntityIds {
-                        groupCheck.append(getEntityType(entity))
+                        groupCheck.append(Entity(id: entity).Domain)
                     }
                     let uniqueCheck = Array(Set(groupCheck))
                     if uniqueCheck.count == 1 && uniqueCheck[0] == "group" {
@@ -100,14 +99,12 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     }
                     groupView.title = friendlyName.capitalizedString
                     groupView.tabBarItem.title = friendlyName.capitalizedString
-                    var groupIcon = iconForDomain(getEntityType(group.EntityIds[0]))
-                    if group.Icon != nil {
-                        groupIcon = group.Icon!
-                    }
-                    if group.MobileIcon != nil {
-                        groupIcon = group.MobileIcon!
-                    }
-                    let icon = getIconForIdentifier(groupIcon, iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
+                    let firstEntity = Entity(id: group.EntityIds[0])
+                    print("StateIcon", firstEntity.StateIcon())
+                    var firstEntityIcon = firstEntity.StateIcon()
+                    if firstEntity.MobileIcon != nil { firstEntityIcon = firstEntity.MobileIcon! }
+                    if firstEntity.Icon != nil { firstEntityIcon = firstEntity.Icon! }
+                    let icon = getIconForIdentifier(firstEntityIcon, iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
                     groupView.tabBarItem = UITabBarItem(title: friendlyName.capitalizedString, image: icon, tag: index)
                     
                     if HomeAssistantAPI.sharedInstance.locationEnabled() {

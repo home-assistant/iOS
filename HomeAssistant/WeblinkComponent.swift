@@ -22,4 +22,8 @@ class Weblink: Entity {
         
         URL    <- (map["attributes.url"], URLTransform())
     }
+    
+    override var ComponentIcon: String {
+        return "mdi:open-in-new"
+    }
 }

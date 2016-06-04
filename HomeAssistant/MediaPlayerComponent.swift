@@ -11,20 +11,34 @@ import ObjectMapper
 
 let isPlayingTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
     return Bool(String(value!) == "playing")
-    }, toJSON: { (value: Bool?) -> String? in
-        if let value = value {
-            if value == true {
-                return "playing"
-            } else {
-                return "paused"
-            }
+}, toJSON: { (value: Bool?) -> String? in
+    if let value = value {
+        if value == true {
+            return "playing"
+        } else {
+            return "paused"
         }
-        return nil
+    }
+    return nil
 })
 
-class MediaPlayer: Entity {
+let isIdleTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
+    return Bool(String(value!) == "idle")
+}, toJSON: { (value: Bool?) -> String? in
+    if let value = value {
+        if value == true {
+            return "idle"
+        } else {
+            return ""
+        }
+    }
+    return nil
+})
+
+class MediaPlayer: SwitchableEntity {
     
-    var IsPlaying: Bool?
+    var IsPlaying: Bool = false
+    var IsIdle: Bool = false
     var IsVolumeMuted: Bool?
     var MediaContentID: String?
     var MediaContentType: String?
@@ -40,6 +54,7 @@ class MediaPlayer: Entity {
         super.mapping(map)
         
         IsPlaying        <- (map["state"], isPlayingTransform)
+        IsIdle           <- (map["state"], isIdleTransform)
         IsVolumeMuted    <- map["attributes.is_volume_muted"]
         MediaContentID   <- map["attributes.media_content_id"]
         MediaContentType <- map["attributes.media_content_type"]
@@ -68,5 +83,13 @@ class MediaPlayer: Entity {
     func setVolume(newVolume: Float) {
         let fixedVolume = newVolume/100
         HomeAssistantAPI.sharedInstance.CallService("media_player", service: "volume_set", serviceData: ["entity_id": self.ID, "volume_level": fixedVolume])
+    }
+    
+    override var ComponentIcon: String {
+        return "mdi:cast"
+    }
+    
+    override func StateIcon() -> String {
+        return (self.IsOn! && self.IsIdle == false) ? "mdi:cast-connected" : "mdi:cast"
     }
 }

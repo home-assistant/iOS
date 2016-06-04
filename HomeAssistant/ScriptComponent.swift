@@ -9,9 +9,8 @@
 import Foundation
 import ObjectMapper
 
-class Script: Entity {
+class Script: SwitchableEntity {
     
-    var IsOn: Bool?
     var CanCancel: Bool?
     
     required init?(_ map: Map) {
@@ -21,7 +20,10 @@ class Script: Entity {
     override func mapping(map: Map) {
         super.mapping(map)
         
-        IsOn      <- (map["state"], onOffStateTransform)
         CanCancel <- map["attributes.can_cancel"]
+    }
+    
+    override var ComponentIcon: String {
+        return "mdi:file-document"
     }
 }

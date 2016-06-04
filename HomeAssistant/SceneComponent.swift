@@ -22,4 +22,8 @@ class Scene: Entity {
         
         EntityIds     <- map["attributes.entity_id"]
     }
+    
+    override var ComponentIcon: String {
+        return "mdi:google-pages"
+    }
 }

@@ -52,4 +52,8 @@ class DeviceTracker: Entity {
             return CLLocationCoordinate2D()
         }
     }
+    
+    override var ComponentIcon: String {
+        return "mdi:account"
+    }
 }

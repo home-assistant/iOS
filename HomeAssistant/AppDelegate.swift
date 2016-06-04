@@ -184,7 +184,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         switch url.host! {
         case "call_service": // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
-            HomeAssistantAPI.sharedInstance.CallService(getEntityType(url.pathComponents![1]), service: url.pathComponents![1].componentsSeparatedByString(".")[1], serviceData: serviceData)
+            HomeAssistantAPI.sharedInstance.CallService(EntityIDToDomainTransform().transformFromJSON(url.pathComponents![1])!, service: url.pathComponents![1].componentsSeparatedByString(".")[1], serviceData: serviceData)
             break
         case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
             HomeAssistantAPI.sharedInstance.CreateEvent(url.pathComponents![1], eventData: serviceData)

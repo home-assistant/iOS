@@ -22,4 +22,8 @@ class InputSelect: Entity {
         
         Options          <- map["attributes.options"]
     }
+    
+    override var ComponentIcon: String {
+        return "mdi:format-list-bulleted"
+    }
 }
