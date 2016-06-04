@@ -100,7 +100,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     groupView.title = friendlyName.capitalizedString
                     groupView.tabBarItem.title = friendlyName.capitalizedString
                     let firstEntity = Entity(id: group.EntityIds[0])
-                    print("StateIcon", firstEntity.StateIcon())
                     var firstEntityIcon = firstEntity.StateIcon()
                     if firstEntity.MobileIcon != nil { firstEntityIcon = firstEntity.MobileIcon! }
                     if firstEntity.Icon != nil { firstEntityIcon = firstEntity.Icon! }
