@@ -46,7 +46,7 @@ class GroupViewController: FormViewController {
 //                        }
 //                    }.cellSetup { cell, row in
 //                        if let updatedState = self.updatedStates[rowTag] {
-//                            cell.imageView?.image = entity.EntityIcon()
+//                            cell.imageView?.image = updatedState.EntityIcon()
 //                            if let picture = updatedState.DownloadedPicture {
 //                                cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
 //                            }
@@ -59,7 +59,7 @@ class GroupViewController: FormViewController {
                         HomeAssistantAPI.sharedInstance.turnOn(entity.ID)
                     }.cellUpdate { cell, row in
                         if let updatedState = self.updatedStates[rowTag] {
-                            cell.imageView?.image = entity.EntityIcon()
+                            cell.imageView?.image = updatedState.EntityIcon()
                             if let picture = updatedState.DownloadedPicture {
                                 cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                             }
@@ -74,7 +74,7 @@ class GroupViewController: FormViewController {
                         }
                         }.cellUpdate { cell, row in
                             if let updatedState = self.updatedStates[rowTag] {
-                                cell.imageView?.image = entity.EntityIcon()
+                                cell.imageView?.image = updatedState.EntityIcon()
                                 if let picture = updatedState.DownloadedPicture {
                                     cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                                 }
@@ -109,7 +109,7 @@ class GroupViewController: FormViewController {
                                     cell.detailTextLabel?.text = (thermostat.State + " " + uom).capitalizedString
                                 }
                             }
-                            cell.imageView?.image = entity.EntityIcon()
+                            cell.imageView?.image = updatedState.EntityIcon()
                             if let picture = updatedState.DownloadedPicture {
                                 cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                             }
@@ -125,7 +125,7 @@ class GroupViewController: FormViewController {
                         }.cellUpdate { cell, row in
                             if let updatedState = self.updatedStates[rowTag] {
                                 cell.detailTextLabel?.text = updatedState.State.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
-                                cell.imageView?.image = entity.EntityIcon()
+                                cell.imageView?.image = updatedState.EntityIcon()
                                 if let picture = updatedState.DownloadedPicture {
                                     cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                                 }
@@ -146,7 +146,7 @@ class GroupViewController: FormViewController {
                                 if let sensor = updatedState as? Sensor {
                                     cell.detailTextLabel?.text = (sensor.State + " " + sensor.UnitOfMeasurement!).stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
                                 }
-                                cell.imageView?.image = entity.EntityIcon()
+                                cell.imageView?.image = updatedState.EntityIcon()
                                 if let picture = updatedState.DownloadedPicture {
                                     cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                                 }
@@ -162,7 +162,7 @@ class GroupViewController: FormViewController {
                         HomeAssistantAPI.sharedInstance.CallService("input_select", service: "select_option", serviceData: ["entity_id": entity.ID, "option": row.value!])
                     }.cellUpdate { cell, row in
                         if let updatedState = self.updatedStates[rowTag] {
-                            cell.imageView?.image = entity.EntityIcon()
+                            cell.imageView?.image = updatedState.EntityIcon()
                             if let picture = updatedState.DownloadedPicture {
                                 cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                             }
@@ -180,7 +180,7 @@ class GroupViewController: FormViewController {
                         }
                     }.cellUpdate { cell, row in
                         if let updatedState = self.updatedStates[rowTag] {
-                            cell.imageView?.image = entity.EntityIcon()
+                            cell.imageView?.image = updatedState.EntityIcon()
                             if let picture = updatedState.DownloadedPicture {
                                 cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                             }
@@ -198,7 +198,7 @@ class GroupViewController: FormViewController {
                         }
                     }.cellUpdate { cell, row in
                         if let updatedState = self.updatedStates[rowTag] {
-                            cell.imageView?.image = entity.EntityIcon()
+                            cell.imageView?.image = updatedState.EntityIcon()
                             if let picture = updatedState.DownloadedPicture {
                                 cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                             }
