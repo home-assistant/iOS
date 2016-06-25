@@ -191,14 +191,14 @@ public class HomeAssistantAPI {
         
         UIDevice.currentDevice().batteryMonitoringEnabled = false
         
-        if updateType != "" {
-            let notification = UILocalNotification()
-            notification.alertBody = updateType
-            notification.alertAction = "open"
-            notification.fireDate = NSDate()
-            notification.soundName = UILocalNotificationDefaultSoundName
-            UIApplication.sharedApplication().scheduleLocalNotification(notification)
-        }
+//        if updateType != "" {
+//            let notification = UILocalNotification()
+//            notification.alertBody = updateType
+//            notification.alertAction = "open"
+//            notification.fireDate = NSDate()
+//            notification.soundName = UILocalNotificationDefaultSoundName
+//            UIApplication.sharedApplication().scheduleLocalNotification(notification)
+//        }
     }
     
     func trackLocation() {
