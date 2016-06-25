@@ -8,6 +8,136 @@
 
 /* Begin PBXBuildFile section */
 		6E36319C48CF8F82D7702470 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88052763960E54E202BAED19 /* Pods_HomeAssistant.framework */; };
+		B60615BB1D1F117700249C11 /* Sounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60614B51D1F117700249C11 /* Sounds.csv */; };
+		B606160A1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615051D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav */; };
+		B606160B1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615061D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav */; };
+		B606160C1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Opened.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615071D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Opened.wav */; };
+		B606160D1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Unlocked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615081D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Unlocked.wav */; };
+		B606160E1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Closed.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615091D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Closed.wav */; };
+		B606160F1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Locked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606150A1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Locked.wav */; };
+		B60616101D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606150B1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav */; };
+		B60616111D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Unlocked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606150C1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Unlocked.wav */; };
+		B60616121D1F117700249C11 /* US-EN-Morgan-Freeman-Boss-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606150D1D1F117700249C11 /* US-EN-Morgan-Freeman-Boss-Is-Arriving.wav */; };
+		B60616131D1F117700249C11 /* US-EN-Morgan-Freeman-Boyfriend-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606150E1D1F117700249C11 /* US-EN-Morgan-Freeman-Boyfriend-Is-Arriving.wav */; };
+		B60616141D1F117700249C11 /* US-EN-Morgan-Freeman-Cleaning-Supplies-Closet-Opened.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606150F1D1F117700249C11 /* US-EN-Morgan-Freeman-Cleaning-Supplies-Closet-Opened.wav */; };
+		B60616151D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615101D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav */; };
+		B60616161D1F117700249C11 /* US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615111D1F117700249C11 /* US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav */; };
+		B60616171D1F117700249C11 /* US-EN-Morgan-Freeman-Friend-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615121D1F117700249C11 /* US-EN-Morgan-Freeman-Friend-Is-Arriving.wav */; };
+		B60616181D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Closed.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615131D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Closed.wav */; };
+		B60616191D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Locked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615141D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Locked.wav */; };
+		B606161A1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Opened.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615151D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Opened.wav */; };
+		B606161B1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Unlocked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615161D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Unlocked.wav */; };
+		B606161C1D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Closed.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615171D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Closed.wav */; };
+		B606161D1D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Opened.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615181D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Opened.wav */; };
+		B606161E1D1F117700249C11 /* US-EN-Morgan-Freeman-Girlfriend-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615191D1F117700249C11 /* US-EN-Morgan-Freeman-Girlfriend-Is-Arriving.wav */; };
+		B606161F1D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Morning.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606151A1D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Morning.wav */; };
+		B60616201D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Night.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606151B1D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Night.wav */; };
+		B60616211D1F117700249C11 /* US-EN-Morgan-Freeman-Liquor-Cabinet-Opened.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606151C1D1F117700249C11 /* US-EN-Morgan-Freeman-Liquor-Cabinet-Opened.wav */; };
+		B60616221D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-Detected.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606151D1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-Detected.wav */; };
+		B60616231D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Basement.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606151E1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Basement.wav */; };
+		B60616241D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Bedroom.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606151F1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Bedroom.wav */; };
+		B60616251D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Game-Room.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615201D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Game-Room.wav */; };
+		B60616261D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Garage.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615211D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Garage.wav */; };
+		B60616271D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615221D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav */; };
+		B60616281D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Living-Room.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615231D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Living-Room.wav */; };
+		B60616291D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Theater.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615241D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Theater.wav */; };
+		B606162A1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615251D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav */; };
+		B606162B1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615261D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav */; };
+		B606162C1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Locked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615271D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Locked.wav */; };
+		B606162D1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615281D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav */; };
+		B606162E1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615291D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav */; };
+		B606162F1D1F117700249C11 /* US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606152A1D1F117700249C11 /* US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav */; };
+		B60616301D1F117700249C11 /* US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606152B1D1F117700249C11 /* US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav */; };
+		B60616311D1F117700249C11 /* US-EN-Morgan-Freeman-Setting-The-Mood.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606152C1D1F117700249C11 /* US-EN-Morgan-Freeman-Setting-The-Mood.wav */; };
+		B60616321D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-A-Flood.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606152D1D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-A-Flood.wav */; };
+		B60616331D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606152E1D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav */; };
+		B60616341D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Smoke.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606152F1D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Smoke.wav */; };
+		B60616351D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Basement.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615301D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Basement.wav */; };
+		B60616361D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615311D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav */; };
+		B60616371D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615321D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav */; };
+		B60616381D1F117700249C11 /* US-EN-Morgan-Freeman-Someone-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615331D1F117700249C11 /* US-EN-Morgan-Freeman-Someone-Is-Arriving.wav */; };
+		B60616391D1F117700249C11 /* US-EN-Morgan-Freeman-Son-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615341D1F117700249C11 /* US-EN-Morgan-Freeman-Son-Is-Arriving.wav */; };
+		B606163A1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Movie-Mode.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615351D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Movie-Mode.wav */; };
+		B606163B1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Party-Mode.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615361D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Party-Mode.wav */; };
+		B606163C1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Romance-Mode.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615371D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Romance-Mode.wav */; };
+		B606163D1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-All-The-Lights.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615381D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-All-The-Lights.wav */; };
+		B606163E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Air-Conditioner.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615391D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Air-Conditioner.wav */; };
+		B606163F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Bar-Lights.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606153A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Bar-Lights.wav */; };
+		B60616401D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Chandelier.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606153B1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Chandelier.wav */; };
+		B60616411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606153C1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav */; };
+		B60616421D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Hallway-Lights.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606153D1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Hallway-Lights.wav */; };
+		B60616431D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Kitchen-Light.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606153E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Kitchen-Light.wav */; };
+		B60616441D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Light.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606153F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Light.wav */; };
+		B60616451D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Lights.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615401D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Lights.wav */; };
+		B60616461D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Mood-Lights.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Mood-Lights.wav */; };
+		B60616471D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-TV.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615421D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-TV.wav */; };
+		B60616481D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Air-Conditioner.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615431D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Air-Conditioner.wav */; };
+		B60616491D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Bar-Lights.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615441D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Bar-Lights.wav */; };
+		B606164A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Chandelier.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615451D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Chandelier.wav */; };
+		B606164B1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Family-Room-Lights.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615461D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Family-Room-Lights.wav */; };
+		B606164C1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Hallway-Lights.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615471D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Hallway-Lights.wav */; };
+		B606164D1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Kitchen-Light.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615481D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Kitchen-Light.wav */; };
+		B606164E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Light.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615491D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Light.wav */; };
+		B606164F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Lights.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606154A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Lights.wav */; };
+		B60616501D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606154B1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav */; };
+		B60616511D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-TV.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606154C1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-TV.wav */; };
+		B60616521D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606154D1D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav */; };
+		B60616531D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Basement.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606154E1D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Basement.wav */; };
+		B60616541D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Garage.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606154F1D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Garage.wav */; };
+		B60616551D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Kitchen.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615501D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Kitchen.wav */; };
+		B60616561D1F117700249C11 /* US-EN-Morgan-Freeman-Welcome-Home.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615511D1F117700249C11 /* US-EN-Morgan-Freeman-Welcome-Home.wav */; };
+		B60616571D1F117700249C11 /* US-EN-Morgan-Freeman-Wife-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615521D1F117700249C11 /* US-EN-Morgan-Freeman-Wife-Is-Arriving.wav */; };
+		B60616581D1F117700249C11 /* Sounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60615541D1F117700249C11 /* Sounds.csv */; };
+		B606167B1D1F117700249C11 /* US-EN-Alexa-Back-Door-Opened.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615781D1F117700249C11 /* US-EN-Alexa-Back-Door-Opened.wav */; };
+		B606167C1D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615791D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav */; };
+		B606167D1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606157A1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav */; };
+		B606167E1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Unlocked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606157B1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Unlocked.wav */; };
+		B606167F1D1F117700249C11 /* US-EN-Alexa-Boyfriend-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606157C1D1F117700249C11 /* US-EN-Alexa-Boyfriend-Is-Arriving.wav */; };
+		B60616801D1F117700249C11 /* US-EN-Alexa-Daughter-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606157D1D1F117700249C11 /* US-EN-Alexa-Daughter-Is-Arriving.wav */; };
+		B60616811D1F117700249C11 /* US-EN-Alexa-Front-Door-Opened.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606157E1D1F117700249C11 /* US-EN-Alexa-Front-Door-Opened.wav */; };
+		B60616821D1F117700249C11 /* US-EN-Alexa-Front-Door-Unlocked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606157F1D1F117700249C11 /* US-EN-Alexa-Front-Door-Unlocked.wav */; };
+		B60616831D1F117700249C11 /* US-EN-Alexa-Garage-Door-Opened.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615801D1F117700249C11 /* US-EN-Alexa-Garage-Door-Opened.wav */; };
+		B60616841D1F117700249C11 /* US-EN-Alexa-Girlfriend-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615811D1F117700249C11 /* US-EN-Alexa-Girlfriend-Is-Arriving.wav */; };
+		B60616851D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615821D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav */; };
+		B60616861D1F117700249C11 /* US-EN-Alexa-Good-Night.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615831D1F117700249C11 /* US-EN-Alexa-Good-Night.wav */; };
+		B60616871D1F117700249C11 /* US-EN-Alexa-Husband-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615841D1F117700249C11 /* US-EN-Alexa-Husband-Is-Arriving.wav */; };
+		B60616881D1F117700249C11 /* US-EN-Alexa-Mail-Has-Arrived.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615851D1F117700249C11 /* US-EN-Alexa-Mail-Has-Arrived.wav */; };
+		B60616891D1F117700249C11 /* US-EN-Alexa-Motion-At-Back-Door.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615861D1F117700249C11 /* US-EN-Alexa-Motion-At-Back-Door.wav */; };
+		B606168A1D1F117700249C11 /* US-EN-Alexa-Motion-At-Front-Door.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615871D1F117700249C11 /* US-EN-Alexa-Motion-At-Front-Door.wav */; };
+		B606168B1D1F117700249C11 /* US-EN-Alexa-Motion-Detected-Generic.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615881D1F117700249C11 /* US-EN-Alexa-Motion-Detected-Generic.wav */; };
+		B606168C1D1F117700249C11 /* US-EN-Alexa-Motion-In-Back-Yard.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615891D1F117700249C11 /* US-EN-Alexa-Motion-In-Back-Yard.wav */; };
+		B606168D1D1F117700249C11 /* US-EN-Alexa-Motion-In-Basement.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606158A1D1F117700249C11 /* US-EN-Alexa-Motion-In-Basement.wav */; };
+		B606168E1D1F117700249C11 /* US-EN-Alexa-Motion-In-Front-Yard.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606158B1D1F117700249C11 /* US-EN-Alexa-Motion-In-Front-Yard.wav */; };
+		B606168F1D1F117700249C11 /* US-EN-Alexa-Motion-In-Garage.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606158C1D1F117700249C11 /* US-EN-Alexa-Motion-In-Garage.wav */; };
+		B60616901D1F117700249C11 /* US-EN-Alexa-Patio-Door-Opened.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606158D1D1F117700249C11 /* US-EN-Alexa-Patio-Door-Opened.wav */; };
+		B60616911D1F117700249C11 /* US-EN-Alexa-Patio-Door-Unlocked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606158E1D1F117700249C11 /* US-EN-Alexa-Patio-Door-Unlocked.wav */; };
+		B60616921D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-Generic.wav in Resources */ = {isa = PBXBuildFile; fileRef = B606158F1D1F117700249C11 /* US-EN-Alexa-Smoke-Detected-Generic.wav */; };
+		B60616931D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Basement.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615901D1F117700249C11 /* US-EN-Alexa-Smoke-Detected-In-Basement.wav */; };
+		B60616941D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Garage.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615911D1F117700249C11 /* US-EN-Alexa-Smoke-Detected-In-Garage.wav */; };
+		B60616951D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Kitchen.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615921D1F117700249C11 /* US-EN-Alexa-Smoke-Detected-In-Kitchen.wav */; };
+		B60616961D1F117800249C11 /* US-EN-Alexa-Son-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615931D1F117700249C11 /* US-EN-Alexa-Son-Is-Arriving.wav */; };
+		B60616971D1F117800249C11 /* US-EN-Alexa-Water-Detected-Generic.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615941D1F117700249C11 /* US-EN-Alexa-Water-Detected-Generic.wav */; };
+		B60616981D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Basement.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615951D1F117700249C11 /* US-EN-Alexa-Water-Detected-In-Basement.wav */; };
+		B60616991D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615961D1F117700249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav */; };
+		B606169A1D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Kitchen.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615971D1F117700249C11 /* US-EN-Alexa-Water-Detected-In-Kitchen.wav */; };
+		B606169B1D1F117800249C11 /* US-EN-Alexa-Welcome-Home.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615981D1F117700249C11 /* US-EN-Alexa-Welcome-Home.wav */; };
+		B606169C1D1F117800249C11 /* US-EN-Alexa-Wife-Is-Arriving.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615991D1F117700249C11 /* US-EN-Alexa-Wife-Is-Arriving.wav */; };
+		B606169D1D1F117800249C11 /* Sounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B606159B1D1F117700249C11 /* Sounds.csv */; };
+		B60616AD1D1F117800249C11 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615AC1D1F117700249C11 /* US-EN-Daisy-Back-Door-Motion.wav */; };
+		B60616AE1D1F117800249C11 /* US-EN-Daisy-Back-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615AD1D1F117700249C11 /* US-EN-Daisy-Back-Door-Open.wav */; };
+		B60616AF1D1F117800249C11 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615AE1D1F117700249C11 /* US-EN-Daisy-Front-Door-Motion.wav */; };
+		B60616B01D1F117800249C11 /* US-EN-Daisy-Front-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615AF1D1F117700249C11 /* US-EN-Daisy-Front-Door-Open.wav */; };
+		B60616B11D1F117800249C11 /* US-EN-Daisy-Front-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B01D1F117700249C11 /* US-EN-Daisy-Front-Window-Open.wav */; };
+		B60616B21D1F117800249C11 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B11D1F117700249C11 /* US-EN-Daisy-Garage-Door-Open.wav */; };
+		B60616B31D1F117800249C11 /* US-EN-Daisy-Guest-Bath-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B21D1F117700249C11 /* US-EN-Daisy-Guest-Bath-Leak.wav */; };
+		B60616B41D1F117800249C11 /* US-EN-Daisy-Kitchen-Sink-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B31D1F117700249C11 /* US-EN-Daisy-Kitchen-Sink-Leak.wav */; };
+		B60616B51D1F117800249C11 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B41D1F117700249C11 /* US-EN-Daisy-Kitchen-Window-Open.wav */; };
+		B60616B61D1F117800249C11 /* US-EN-Daisy-Laundry-Room-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B51D1F117700249C11 /* US-EN-Daisy-Laundry-Room-Leak.wav */; };
+		B60616B71D1F117800249C11 /* US-EN-Daisy-Master-Bath-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B61D1F117700249C11 /* US-EN-Daisy-Master-Bath-Leak.wav */; };
+		B60616B81D1F117800249C11 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B71D1F117700249C11 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav */; };
+		B60616B91D1F117800249C11 /* US-EN-Daisy-Office-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B81D1F117700249C11 /* US-EN-Daisy-Office-Window-Open.wav */; };
+		B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
+		B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
 		B60B35BA1CB6019B00887BE1 /* SwitchWithInfoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B35B91CB6019B00887BE1 /* SwitchWithInfoButton.swift */; };
 		B60B35BF1CB62AA200887BE1 /* SwitchWithInfoButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = B60B35BE1CB62AA200887BE1 /* SwitchWithInfoButton.xib */; };
 		B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B624DE171CB8369200F413CE /* DevicesMapViewController.swift */; };
@@ -25,21 +155,6 @@
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B657A91A1CA647C500121384 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
-		B66428021CF79FC800903804 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F31CF79FC700903804 /* US-EN-Daisy-Back-Door-Motion.wav */; };
-		B66428031CF79FC800903804 /* US-EN-Daisy-Back-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F41CF79FC700903804 /* US-EN-Daisy-Back-Door-Open.wav */; };
-		B66428041CF79FC800903804 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F51CF79FC700903804 /* US-EN-Daisy-Front-Door-Motion.wav */; };
-		B66428051CF79FC800903804 /* US-EN-Daisy-Front-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F61CF79FC700903804 /* US-EN-Daisy-Front-Door-Open.wav */; };
-		B66428061CF79FC800903804 /* US-EN-Daisy-Front-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F71CF79FC700903804 /* US-EN-Daisy-Front-Window-Open.wav */; };
-		B66428071CF79FC800903804 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F81CF79FC700903804 /* US-EN-Daisy-Garage-Door-Open.wav */; };
-		B66428081CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427F91CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav */; };
-		B66428091CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FA1CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav */; };
-		B664280A1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FB1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav */; };
-		B664280B1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FC1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav */; };
-		B664280C1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FD1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav */; };
-		B664280D1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FE1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav */; };
-		B664280E1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66427FF1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav */; };
-		B664280F1CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
-		B66428101CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
 		B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66428111CF7A83200903804 /* PushConfiguration.swift */; };
 		B6767A511D0234E700F2A08B /* SwitchableEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6767A501D0234E700F2A08B /* SwitchableEntity.swift */; };
 		B6E47E881CBA01310027F6CA /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E871CBA01310027F6CA /* CallService.swift */; };
@@ -95,6 +210,136 @@
 		5790ADF749393A229F29A51B /* Pods-HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.release.xcconfig"; sourceTree = "<group>"; };
 		88052763960E54E202BAED19 /* Pods_HomeAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		92AFEE5E5170AAC8E1C39DEE /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
+		B60614B51D1F117700249C11 /* Sounds.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sounds.csv; sourceTree = "<group>"; };
+		B60615051D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Back-Door-Closed.wav"; sourceTree = "<group>"; };
+		B60615061D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Back-Door-Locked.wav"; sourceTree = "<group>"; };
+		B60615071D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Opened.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Back-Door-Opened.wav"; sourceTree = "<group>"; };
+		B60615081D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Unlocked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Back-Door-Unlocked.wav"; sourceTree = "<group>"; };
+		B60615091D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Closed.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Basement-Door-Closed.wav"; sourceTree = "<group>"; };
+		B606150A1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Locked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Basement-Door-Locked.wav"; sourceTree = "<group>"; };
+		B606150B1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Basement-Door-Opened.wav"; sourceTree = "<group>"; };
+		B606150C1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Unlocked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Basement-Door-Unlocked.wav"; sourceTree = "<group>"; };
+		B606150D1D1F117700249C11 /* US-EN-Morgan-Freeman-Boss-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Boss-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B606150E1D1F117700249C11 /* US-EN-Morgan-Freeman-Boyfriend-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Boyfriend-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B606150F1D1F117700249C11 /* US-EN-Morgan-Freeman-Cleaning-Supplies-Closet-Opened.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Cleaning-Supplies-Closet-Opened.wav"; sourceTree = "<group>"; };
+		B60615101D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B60615111D1F117700249C11 /* US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B60615121D1F117700249C11 /* US-EN-Morgan-Freeman-Friend-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Friend-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B60615131D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Closed.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Front-Door-Closed.wav"; sourceTree = "<group>"; };
+		B60615141D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Locked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Front-Door-Locked.wav"; sourceTree = "<group>"; };
+		B60615151D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Opened.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Front-Door-Opened.wav"; sourceTree = "<group>"; };
+		B60615161D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Unlocked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Front-Door-Unlocked.wav"; sourceTree = "<group>"; };
+		B60615171D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Closed.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Garage-Door-Closed.wav"; sourceTree = "<group>"; };
+		B60615181D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Opened.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Garage-Door-Opened.wav"; sourceTree = "<group>"; };
+		B60615191D1F117700249C11 /* US-EN-Morgan-Freeman-Girlfriend-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Girlfriend-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B606151A1D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Morning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Good-Morning.wav"; sourceTree = "<group>"; };
+		B606151B1D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Night.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Good-Night.wav"; sourceTree = "<group>"; };
+		B606151C1D1F117700249C11 /* US-EN-Morgan-Freeman-Liquor-Cabinet-Opened.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Liquor-Cabinet-Opened.wav"; sourceTree = "<group>"; };
+		B606151D1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-Detected.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Motion-Detected.wav"; sourceTree = "<group>"; };
+		B606151E1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Basement.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Motion-In-Basement.wav"; sourceTree = "<group>"; };
+		B606151F1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Bedroom.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Motion-In-Bedroom.wav"; sourceTree = "<group>"; };
+		B60615201D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Game-Room.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Motion-In-Game-Room.wav"; sourceTree = "<group>"; };
+		B60615211D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Garage.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Motion-In-Garage.wav"; sourceTree = "<group>"; };
+		B60615221D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Motion-In-Kitchen.wav"; sourceTree = "<group>"; };
+		B60615231D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Living-Room.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Motion-In-Living-Room.wav"; sourceTree = "<group>"; };
+		B60615241D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Theater.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Motion-In-Theater.wav"; sourceTree = "<group>"; };
+		B60615251D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav"; sourceTree = "<group>"; };
+		B60615261D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Patio-Door-Closed.wav"; sourceTree = "<group>"; };
+		B60615271D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Locked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Patio-Door-Locked.wav"; sourceTree = "<group>"; };
+		B60615281D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Patio-Door-Opened.wav"; sourceTree = "<group>"; };
+		B60615291D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav"; sourceTree = "<group>"; };
+		B606152A1D1F117700249C11 /* US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B606152B1D1F117700249C11 /* US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav"; sourceTree = "<group>"; };
+		B606152C1D1F117700249C11 /* US-EN-Morgan-Freeman-Setting-The-Mood.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Setting-The-Mood.wav"; sourceTree = "<group>"; };
+		B606152D1D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-A-Flood.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Smartthings-Detected-A-Flood.wav"; sourceTree = "<group>"; };
+		B606152E1D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav"; sourceTree = "<group>"; };
+		B606152F1D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Smoke.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Smartthings-Detected-Smoke.wav"; sourceTree = "<group>"; };
+		B60615301D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Basement.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Smoke-Detected-In-Basement.wav"; sourceTree = "<group>"; };
+		B60615311D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav"; sourceTree = "<group>"; };
+		B60615321D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav"; sourceTree = "<group>"; };
+		B60615331D1F117700249C11 /* US-EN-Morgan-Freeman-Someone-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Someone-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B60615341D1F117700249C11 /* US-EN-Morgan-Freeman-Son-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Son-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B60615351D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Movie-Mode.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Starting-Movie-Mode.wav"; sourceTree = "<group>"; };
+		B60615361D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Party-Mode.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Starting-Party-Mode.wav"; sourceTree = "<group>"; };
+		B60615371D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Romance-Mode.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Starting-Romance-Mode.wav"; sourceTree = "<group>"; };
+		B60615381D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-All-The-Lights.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-Off-All-The-Lights.wav"; sourceTree = "<group>"; };
+		B60615391D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Air-Conditioner.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-Off-The-Air-Conditioner.wav"; sourceTree = "<group>"; };
+		B606153A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Bar-Lights.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-Off-The-Bar-Lights.wav"; sourceTree = "<group>"; };
+		B606153B1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Chandelier.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-Off-The-Chandelier.wav"; sourceTree = "<group>"; };
+		B606153C1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav"; sourceTree = "<group>"; };
+		B606153D1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Hallway-Lights.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-Off-The-Hallway-Lights.wav"; sourceTree = "<group>"; };
+		B606153E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Kitchen-Light.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-Off-The-Kitchen-Light.wav"; sourceTree = "<group>"; };
+		B606153F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Light.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-Off-The-Light.wav"; sourceTree = "<group>"; };
+		B60615401D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Lights.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-Off-The-Lights.wav"; sourceTree = "<group>"; };
+		B60615411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Mood-Lights.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-Off-The-Mood-Lights.wav"; sourceTree = "<group>"; };
+		B60615421D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-TV.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-Off-The-TV.wav"; sourceTree = "<group>"; };
+		B60615431D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Air-Conditioner.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-On-The-Air-Conditioner.wav"; sourceTree = "<group>"; };
+		B60615441D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Bar-Lights.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-On-The-Bar-Lights.wav"; sourceTree = "<group>"; };
+		B60615451D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Chandelier.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-On-The-Chandelier.wav"; sourceTree = "<group>"; };
+		B60615461D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Family-Room-Lights.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-On-The-Family-Room-Lights.wav"; sourceTree = "<group>"; };
+		B60615471D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Hallway-Lights.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-On-The-Hallway-Lights.wav"; sourceTree = "<group>"; };
+		B60615481D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Kitchen-Light.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-On-The-Kitchen-Light.wav"; sourceTree = "<group>"; };
+		B60615491D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Light.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-On-The-Light.wav"; sourceTree = "<group>"; };
+		B606154A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Lights.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-On-The-Lights.wav"; sourceTree = "<group>"; };
+		B606154B1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav"; sourceTree = "<group>"; };
+		B606154C1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-TV.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Turning-On-The-TV.wav"; sourceTree = "<group>"; };
+		B606154D1D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Vacate-The-Premises.wav"; sourceTree = "<group>"; };
+		B606154E1D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Basement.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Water-Detected-In-Basement.wav"; sourceTree = "<group>"; };
+		B606154F1D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Garage.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Water-Detected-In-Garage.wav"; sourceTree = "<group>"; };
+		B60615501D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Kitchen.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Water-Detected-In-Kitchen.wav"; sourceTree = "<group>"; };
+		B60615511D1F117700249C11 /* US-EN-Morgan-Freeman-Welcome-Home.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Welcome-Home.wav"; sourceTree = "<group>"; };
+		B60615521D1F117700249C11 /* US-EN-Morgan-Freeman-Wife-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Wife-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B60615541D1F117700249C11 /* Sounds.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sounds.csv; sourceTree = "<group>"; };
+		B60615781D1F117700249C11 /* US-EN-Alexa-Back-Door-Opened.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Back-Door-Opened.wav"; sourceTree = "<group>"; };
+		B60615791D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Back-Door-Unlocked.wav"; sourceTree = "<group>"; };
+		B606157A1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Basement-Door-Opened.wav"; sourceTree = "<group>"; };
+		B606157B1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Unlocked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Basement-Door-Unlocked.wav"; sourceTree = "<group>"; };
+		B606157C1D1F117700249C11 /* US-EN-Alexa-Boyfriend-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Boyfriend-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B606157D1D1F117700249C11 /* US-EN-Alexa-Daughter-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Daughter-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B606157E1D1F117700249C11 /* US-EN-Alexa-Front-Door-Opened.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Front-Door-Opened.wav"; sourceTree = "<group>"; };
+		B606157F1D1F117700249C11 /* US-EN-Alexa-Front-Door-Unlocked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Front-Door-Unlocked.wav"; sourceTree = "<group>"; };
+		B60615801D1F117700249C11 /* US-EN-Alexa-Garage-Door-Opened.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Garage-Door-Opened.wav"; sourceTree = "<group>"; };
+		B60615811D1F117700249C11 /* US-EN-Alexa-Girlfriend-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Girlfriend-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B60615821D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Good-Morning.wav"; sourceTree = "<group>"; };
+		B60615831D1F117700249C11 /* US-EN-Alexa-Good-Night.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Good-Night.wav"; sourceTree = "<group>"; };
+		B60615841D1F117700249C11 /* US-EN-Alexa-Husband-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Husband-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B60615851D1F117700249C11 /* US-EN-Alexa-Mail-Has-Arrived.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Mail-Has-Arrived.wav"; sourceTree = "<group>"; };
+		B60615861D1F117700249C11 /* US-EN-Alexa-Motion-At-Back-Door.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Motion-At-Back-Door.wav"; sourceTree = "<group>"; };
+		B60615871D1F117700249C11 /* US-EN-Alexa-Motion-At-Front-Door.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Motion-At-Front-Door.wav"; sourceTree = "<group>"; };
+		B60615881D1F117700249C11 /* US-EN-Alexa-Motion-Detected-Generic.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Motion-Detected-Generic.wav"; sourceTree = "<group>"; };
+		B60615891D1F117700249C11 /* US-EN-Alexa-Motion-In-Back-Yard.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Motion-In-Back-Yard.wav"; sourceTree = "<group>"; };
+		B606158A1D1F117700249C11 /* US-EN-Alexa-Motion-In-Basement.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Motion-In-Basement.wav"; sourceTree = "<group>"; };
+		B606158B1D1F117700249C11 /* US-EN-Alexa-Motion-In-Front-Yard.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Motion-In-Front-Yard.wav"; sourceTree = "<group>"; };
+		B606158C1D1F117700249C11 /* US-EN-Alexa-Motion-In-Garage.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Motion-In-Garage.wav"; sourceTree = "<group>"; };
+		B606158D1D1F117700249C11 /* US-EN-Alexa-Patio-Door-Opened.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Patio-Door-Opened.wav"; sourceTree = "<group>"; };
+		B606158E1D1F117700249C11 /* US-EN-Alexa-Patio-Door-Unlocked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Patio-Door-Unlocked.wav"; sourceTree = "<group>"; };
+		B606158F1D1F117700249C11 /* US-EN-Alexa-Smoke-Detected-Generic.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Smoke-Detected-Generic.wav"; sourceTree = "<group>"; };
+		B60615901D1F117700249C11 /* US-EN-Alexa-Smoke-Detected-In-Basement.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Smoke-Detected-In-Basement.wav"; sourceTree = "<group>"; };
+		B60615911D1F117700249C11 /* US-EN-Alexa-Smoke-Detected-In-Garage.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Smoke-Detected-In-Garage.wav"; sourceTree = "<group>"; };
+		B60615921D1F117700249C11 /* US-EN-Alexa-Smoke-Detected-In-Kitchen.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Smoke-Detected-In-Kitchen.wav"; sourceTree = "<group>"; };
+		B60615931D1F117700249C11 /* US-EN-Alexa-Son-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Son-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B60615941D1F117700249C11 /* US-EN-Alexa-Water-Detected-Generic.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Water-Detected-Generic.wav"; sourceTree = "<group>"; };
+		B60615951D1F117700249C11 /* US-EN-Alexa-Water-Detected-In-Basement.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Water-Detected-In-Basement.wav"; sourceTree = "<group>"; };
+		B60615961D1F117700249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Water-Detected-In-Garage.wav"; sourceTree = "<group>"; };
+		B60615971D1F117700249C11 /* US-EN-Alexa-Water-Detected-In-Kitchen.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Water-Detected-In-Kitchen.wav"; sourceTree = "<group>"; };
+		B60615981D1F117700249C11 /* US-EN-Alexa-Welcome-Home.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Welcome-Home.wav"; sourceTree = "<group>"; };
+		B60615991D1F117700249C11 /* US-EN-Alexa-Wife-Is-Arriving.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Alexa-Wife-Is-Arriving.wav"; sourceTree = "<group>"; };
+		B606159B1D1F117700249C11 /* Sounds.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Sounds.csv; sourceTree = "<group>"; };
+		B60615AC1D1F117700249C11 /* US-EN-Daisy-Back-Door-Motion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Back-Door-Motion.wav"; sourceTree = "<group>"; };
+		B60615AD1D1F117700249C11 /* US-EN-Daisy-Back-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Back-Door-Open.wav"; sourceTree = "<group>"; };
+		B60615AE1D1F117700249C11 /* US-EN-Daisy-Front-Door-Motion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Door-Motion.wav"; sourceTree = "<group>"; };
+		B60615AF1D1F117700249C11 /* US-EN-Daisy-Front-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Door-Open.wav"; sourceTree = "<group>"; };
+		B60615B01D1F117700249C11 /* US-EN-Daisy-Front-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Window-Open.wav"; sourceTree = "<group>"; };
+		B60615B11D1F117700249C11 /* US-EN-Daisy-Garage-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Garage-Door-Open.wav"; sourceTree = "<group>"; };
+		B60615B21D1F117700249C11 /* US-EN-Daisy-Guest-Bath-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Guest-Bath-Leak.wav"; sourceTree = "<group>"; };
+		B60615B31D1F117700249C11 /* US-EN-Daisy-Kitchen-Sink-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Kitchen-Sink-Leak.wav"; sourceTree = "<group>"; };
+		B60615B41D1F117700249C11 /* US-EN-Daisy-Kitchen-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Kitchen-Window-Open.wav"; sourceTree = "<group>"; };
+		B60615B51D1F117700249C11 /* US-EN-Daisy-Laundry-Room-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Laundry-Room-Leak.wav"; sourceTree = "<group>"; };
+		B60615B61D1F117700249C11 /* US-EN-Daisy-Master-Bath-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Master-Bath-Leak.wav"; sourceTree = "<group>"; };
+		B60615B71D1F117700249C11 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Master-Bedroom-Window-Open.wav"; sourceTree = "<group>"; };
+		B60615B81D1F117700249C11 /* US-EN-Daisy-Office-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Office-Window-Open.wav"; sourceTree = "<group>"; };
+		B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
+		B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
 		B60B35B91CB6019B00887BE1 /* SwitchWithInfoButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchWithInfoButton.swift; sourceTree = "<group>"; };
 		B60B35BE1CB62AA200887BE1 /* SwitchWithInfoButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SwitchWithInfoButton.xib; sourceTree = "<group>"; };
 		B624DE171CB8369200F413CE /* DevicesMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesMapViewController.swift; sourceTree = "<group>"; };
@@ -118,21 +363,6 @@
 		B657A90D1CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HAAPI.swift; sourceTree = "<group>"; };
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
-		B66427F31CF79FC700903804 /* US-EN-Daisy-Back-Door-Motion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Back-Door-Motion.wav"; sourceTree = "<group>"; };
-		B66427F41CF79FC700903804 /* US-EN-Daisy-Back-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Back-Door-Open.wav"; sourceTree = "<group>"; };
-		B66427F51CF79FC700903804 /* US-EN-Daisy-Front-Door-Motion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Door-Motion.wav"; sourceTree = "<group>"; };
-		B66427F61CF79FC700903804 /* US-EN-Daisy-Front-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Door-Open.wav"; sourceTree = "<group>"; };
-		B66427F71CF79FC700903804 /* US-EN-Daisy-Front-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Front-Window-Open.wav"; sourceTree = "<group>"; };
-		B66427F81CF79FC700903804 /* US-EN-Daisy-Garage-Door-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Garage-Door-Open.wav"; sourceTree = "<group>"; };
-		B66427F91CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Guest-Bath-Leak.wav"; sourceTree = "<group>"; };
-		B66427FA1CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Kitchen-Sink-Leak.wav"; sourceTree = "<group>"; };
-		B66427FB1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Kitchen-Window-Open.wav"; sourceTree = "<group>"; };
-		B66427FC1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Laundry-Room-Leak.wav"; sourceTree = "<group>"; };
-		B66427FD1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Master-Bath-Leak.wav"; sourceTree = "<group>"; };
-		B66427FE1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Master-Bedroom-Window-Open.wav"; sourceTree = "<group>"; };
-		B66427FF1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Office-Window-Open.wav"; sourceTree = "<group>"; };
-		B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
-		B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
 		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B6E47E871CBA01310027F6CA /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
@@ -214,6 +444,167 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		B60614B31D1F116D00249C11 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				B60614B41D1F117700249C11 /* MorganFreeman */,
+				B60615531D1F117700249C11 /* Alexa */,
+				B606159A1D1F117700249C11 /* Generic */,
+			);
+			name = Sounds;
+			sourceTree = "<group>";
+		};
+		B60614B41D1F117700249C11 /* MorganFreeman */ = {
+			isa = PBXGroup;
+			children = (
+				B60614B51D1F117700249C11 /* Sounds.csv */,
+				B60615051D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav */,
+				B60615061D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav */,
+				B60615071D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Opened.wav */,
+				B60615081D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Unlocked.wav */,
+				B60615091D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Closed.wav */,
+				B606150A1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Locked.wav */,
+				B606150B1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav */,
+				B606150C1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Unlocked.wav */,
+				B606150D1D1F117700249C11 /* US-EN-Morgan-Freeman-Boss-Is-Arriving.wav */,
+				B606150E1D1F117700249C11 /* US-EN-Morgan-Freeman-Boyfriend-Is-Arriving.wav */,
+				B606150F1D1F117700249C11 /* US-EN-Morgan-Freeman-Cleaning-Supplies-Closet-Opened.wav */,
+				B60615101D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav */,
+				B60615111D1F117700249C11 /* US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav */,
+				B60615121D1F117700249C11 /* US-EN-Morgan-Freeman-Friend-Is-Arriving.wav */,
+				B60615131D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Closed.wav */,
+				B60615141D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Locked.wav */,
+				B60615151D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Opened.wav */,
+				B60615161D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Unlocked.wav */,
+				B60615171D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Closed.wav */,
+				B60615181D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Opened.wav */,
+				B60615191D1F117700249C11 /* US-EN-Morgan-Freeman-Girlfriend-Is-Arriving.wav */,
+				B606151A1D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Morning.wav */,
+				B606151B1D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Night.wav */,
+				B606151C1D1F117700249C11 /* US-EN-Morgan-Freeman-Liquor-Cabinet-Opened.wav */,
+				B606151D1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-Detected.wav */,
+				B606151E1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Basement.wav */,
+				B606151F1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Bedroom.wav */,
+				B60615201D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Game-Room.wav */,
+				B60615211D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Garage.wav */,
+				B60615221D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav */,
+				B60615231D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Living-Room.wav */,
+				B60615241D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Theater.wav */,
+				B60615251D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav */,
+				B60615261D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav */,
+				B60615271D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Locked.wav */,
+				B60615281D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav */,
+				B60615291D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav */,
+				B606152A1D1F117700249C11 /* US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav */,
+				B606152B1D1F117700249C11 /* US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav */,
+				B606152C1D1F117700249C11 /* US-EN-Morgan-Freeman-Setting-The-Mood.wav */,
+				B606152D1D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-A-Flood.wav */,
+				B606152E1D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav */,
+				B606152F1D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Smoke.wav */,
+				B60615301D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Basement.wav */,
+				B60615311D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav */,
+				B60615321D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav */,
+				B60615331D1F117700249C11 /* US-EN-Morgan-Freeman-Someone-Is-Arriving.wav */,
+				B60615341D1F117700249C11 /* US-EN-Morgan-Freeman-Son-Is-Arriving.wav */,
+				B60615351D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Movie-Mode.wav */,
+				B60615361D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Party-Mode.wav */,
+				B60615371D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Romance-Mode.wav */,
+				B60615381D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-All-The-Lights.wav */,
+				B60615391D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Air-Conditioner.wav */,
+				B606153A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Bar-Lights.wav */,
+				B606153B1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Chandelier.wav */,
+				B606153C1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav */,
+				B606153D1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Hallway-Lights.wav */,
+				B606153E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Kitchen-Light.wav */,
+				B606153F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Light.wav */,
+				B60615401D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Lights.wav */,
+				B60615411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Mood-Lights.wav */,
+				B60615421D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-TV.wav */,
+				B60615431D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Air-Conditioner.wav */,
+				B60615441D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Bar-Lights.wav */,
+				B60615451D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Chandelier.wav */,
+				B60615461D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Family-Room-Lights.wav */,
+				B60615471D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Hallway-Lights.wav */,
+				B60615481D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Kitchen-Light.wav */,
+				B60615491D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Light.wav */,
+				B606154A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Lights.wav */,
+				B606154B1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav */,
+				B606154C1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-TV.wav */,
+				B606154D1D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav */,
+				B606154E1D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Basement.wav */,
+				B606154F1D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Garage.wav */,
+				B60615501D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Kitchen.wav */,
+				B60615511D1F117700249C11 /* US-EN-Morgan-Freeman-Welcome-Home.wav */,
+				B60615521D1F117700249C11 /* US-EN-Morgan-Freeman-Wife-Is-Arriving.wav */,
+			);
+			path = MorganFreeman;
+			sourceTree = "<group>";
+		};
+		B60615531D1F117700249C11 /* Alexa */ = {
+			isa = PBXGroup;
+			children = (
+				B60615541D1F117700249C11 /* Sounds.csv */,
+				B60615781D1F117700249C11 /* US-EN-Alexa-Back-Door-Opened.wav */,
+				B60615791D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav */,
+				B606157A1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav */,
+				B606157B1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Unlocked.wav */,
+				B606157C1D1F117700249C11 /* US-EN-Alexa-Boyfriend-Is-Arriving.wav */,
+				B606157D1D1F117700249C11 /* US-EN-Alexa-Daughter-Is-Arriving.wav */,
+				B606157E1D1F117700249C11 /* US-EN-Alexa-Front-Door-Opened.wav */,
+				B606157F1D1F117700249C11 /* US-EN-Alexa-Front-Door-Unlocked.wav */,
+				B60615801D1F117700249C11 /* US-EN-Alexa-Garage-Door-Opened.wav */,
+				B60615811D1F117700249C11 /* US-EN-Alexa-Girlfriend-Is-Arriving.wav */,
+				B60615821D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav */,
+				B60615831D1F117700249C11 /* US-EN-Alexa-Good-Night.wav */,
+				B60615841D1F117700249C11 /* US-EN-Alexa-Husband-Is-Arriving.wav */,
+				B60615851D1F117700249C11 /* US-EN-Alexa-Mail-Has-Arrived.wav */,
+				B60615861D1F117700249C11 /* US-EN-Alexa-Motion-At-Back-Door.wav */,
+				B60615871D1F117700249C11 /* US-EN-Alexa-Motion-At-Front-Door.wav */,
+				B60615881D1F117700249C11 /* US-EN-Alexa-Motion-Detected-Generic.wav */,
+				B60615891D1F117700249C11 /* US-EN-Alexa-Motion-In-Back-Yard.wav */,
+				B606158A1D1F117700249C11 /* US-EN-Alexa-Motion-In-Basement.wav */,
+				B606158B1D1F117700249C11 /* US-EN-Alexa-Motion-In-Front-Yard.wav */,
+				B606158C1D1F117700249C11 /* US-EN-Alexa-Motion-In-Garage.wav */,
+				B606158D1D1F117700249C11 /* US-EN-Alexa-Patio-Door-Opened.wav */,
+				B606158E1D1F117700249C11 /* US-EN-Alexa-Patio-Door-Unlocked.wav */,
+				B606158F1D1F117700249C11 /* US-EN-Alexa-Smoke-Detected-Generic.wav */,
+				B60615901D1F117700249C11 /* US-EN-Alexa-Smoke-Detected-In-Basement.wav */,
+				B60615911D1F117700249C11 /* US-EN-Alexa-Smoke-Detected-In-Garage.wav */,
+				B60615921D1F117700249C11 /* US-EN-Alexa-Smoke-Detected-In-Kitchen.wav */,
+				B60615931D1F117700249C11 /* US-EN-Alexa-Son-Is-Arriving.wav */,
+				B60615941D1F117700249C11 /* US-EN-Alexa-Water-Detected-Generic.wav */,
+				B60615951D1F117700249C11 /* US-EN-Alexa-Water-Detected-In-Basement.wav */,
+				B60615961D1F117700249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav */,
+				B60615971D1F117700249C11 /* US-EN-Alexa-Water-Detected-In-Kitchen.wav */,
+				B60615981D1F117700249C11 /* US-EN-Alexa-Welcome-Home.wav */,
+				B60615991D1F117700249C11 /* US-EN-Alexa-Wife-Is-Arriving.wav */,
+			);
+			path = Alexa;
+			sourceTree = "<group>";
+		};
+		B606159A1D1F117700249C11 /* Generic */ = {
+			isa = PBXGroup;
+			children = (
+				B606159B1D1F117700249C11 /* Sounds.csv */,
+				B60615AC1D1F117700249C11 /* US-EN-Daisy-Back-Door-Motion.wav */,
+				B60615AD1D1F117700249C11 /* US-EN-Daisy-Back-Door-Open.wav */,
+				B60615AE1D1F117700249C11 /* US-EN-Daisy-Front-Door-Motion.wav */,
+				B60615AF1D1F117700249C11 /* US-EN-Daisy-Front-Door-Open.wav */,
+				B60615B01D1F117700249C11 /* US-EN-Daisy-Front-Window-Open.wav */,
+				B60615B11D1F117700249C11 /* US-EN-Daisy-Garage-Door-Open.wav */,
+				B60615B21D1F117700249C11 /* US-EN-Daisy-Guest-Bath-Leak.wav */,
+				B60615B31D1F117700249C11 /* US-EN-Daisy-Kitchen-Sink-Leak.wav */,
+				B60615B41D1F117700249C11 /* US-EN-Daisy-Kitchen-Window-Open.wav */,
+				B60615B51D1F117700249C11 /* US-EN-Daisy-Laundry-Room-Leak.wav */,
+				B60615B61D1F117700249C11 /* US-EN-Daisy-Master-Bath-Leak.wav */,
+				B60615B71D1F117700249C11 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav */,
+				B60615B81D1F117700249C11 /* US-EN-Daisy-Office-Window-Open.wav */,
+				B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */,
+				B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */,
+			);
+			path = Generic;
+			sourceTree = "<group>";
+		};
 		B60B35BD1CB62A8200887BE1 /* SwitchWithInfoButton */ = {
 			isa = PBXGroup;
 			children = (
@@ -259,7 +650,7 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
-				B66427F21CF79FC700903804 /* Sounds */,
+				B60614B31D1F116D00249C11 /* Sounds */,
 				B6F02BE71CB4698A0029ABE7 /* Classes */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				B6F700491CB34FA600753BAB /* GroupViewController.swift */,
@@ -298,28 +689,6 @@
 				B657A90D1CA646EB00121384 /* Info.plist */,
 			);
 			path = HomeAssistantUITests;
-			sourceTree = "<group>";
-		};
-		B66427F21CF79FC700903804 /* Sounds */ = {
-			isa = PBXGroup;
-			children = (
-				B66427F31CF79FC700903804 /* US-EN-Daisy-Back-Door-Motion.wav */,
-				B66427F41CF79FC700903804 /* US-EN-Daisy-Back-Door-Open.wav */,
-				B66427F51CF79FC700903804 /* US-EN-Daisy-Front-Door-Motion.wav */,
-				B66427F61CF79FC700903804 /* US-EN-Daisy-Front-Door-Open.wav */,
-				B66427F71CF79FC700903804 /* US-EN-Daisy-Front-Window-Open.wav */,
-				B66427F81CF79FC700903804 /* US-EN-Daisy-Garage-Door-Open.wav */,
-				B66427F91CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav */,
-				B66427FA1CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav */,
-				B66427FB1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav */,
-				B66427FC1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav */,
-				B66427FD1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav */,
-				B66427FE1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav */,
-				B66427FF1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav */,
-				B66428001CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav */,
-				B66428011CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav */,
-			);
-			path = Sounds;
 			sourceTree = "<group>";
 		};
 		B6F02BE71CB4698A0029ABE7 /* Classes */ = {
@@ -505,25 +874,140 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B664280E1CF79FC800903804 /* US-EN-Daisy-Office-Window-Open.wav in Resources */,
-				B664280B1CF79FC800903804 /* US-EN-Daisy-Laundry-Room-Leak.wav in Resources */,
-				B66428081CF79FC800903804 /* US-EN-Daisy-Guest-Bath-Leak.wav in Resources */,
-				B66428051CF79FC800903804 /* US-EN-Daisy-Front-Door-Open.wav in Resources */,
-				B664280C1CF79FC800903804 /* US-EN-Daisy-Master-Bath-Leak.wav in Resources */,
-				B66428091CF79FC800903804 /* US-EN-Daisy-Kitchen-Sink-Leak.wav in Resources */,
-				B664280F1CF79FC800903804 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */,
+				B606162C1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Locked.wav in Resources */,
+				B606160E1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Closed.wav in Resources */,
+				B60616B61D1F117800249C11 /* US-EN-Daisy-Laundry-Room-Leak.wav in Resources */,
+				B60616861D1F117700249C11 /* US-EN-Alexa-Good-Night.wav in Resources */,
+				B60616221D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-Detected.wav in Resources */,
+				B606163B1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Party-Mode.wav in Resources */,
+				B606168B1D1F117700249C11 /* US-EN-Alexa-Motion-Detected-Generic.wav in Resources */,
+				B606168E1D1F117700249C11 /* US-EN-Alexa-Motion-In-Front-Yard.wav in Resources */,
+				B60616261D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Garage.wav in Resources */,
+				B60616941D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Garage.wav in Resources */,
+				B606163F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Bar-Lights.wav in Resources */,
+				B606167B1D1F117700249C11 /* US-EN-Alexa-Back-Door-Opened.wav in Resources */,
+				B60616481D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Air-Conditioner.wav in Resources */,
+				B60616911D1F117700249C11 /* US-EN-Alexa-Patio-Door-Unlocked.wav in Resources */,
+				B606164F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Lights.wav in Resources */,
+				B606169C1D1F117800249C11 /* US-EN-Alexa-Wife-Is-Arriving.wav in Resources */,
+				B60616211D1F117700249C11 /* US-EN-Morgan-Freeman-Liquor-Cabinet-Opened.wav in Resources */,
+				B60616331D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav in Resources */,
+				B606164E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Light.wav in Resources */,
+				B60616AD1D1F117800249C11 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */,
+				B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */,
+				B60616251D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Game-Room.wav in Resources */,
+				B60616891D1F117700249C11 /* US-EN-Alexa-Motion-At-Back-Door.wav in Resources */,
+				B60616561D1F117700249C11 /* US-EN-Morgan-Freeman-Welcome-Home.wav in Resources */,
 				B657A8F61CA646EB00121384 /* LaunchScreen.storyboard in Resources */,
-				B66428041CF79FC800903804 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */,
-				B664280D1CF79FC800903804 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav in Resources */,
-				B66428071CF79FC800903804 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */,
-				B66428101CF79FC800903804 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */,
-				B66428031CF79FC800903804 /* US-EN-Daisy-Back-Door-Open.wav in Resources */,
+				B60616431D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Kitchen-Light.wav in Resources */,
+				B60616341D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Smoke.wav in Resources */,
+				B60616841D1F117700249C11 /* US-EN-Alexa-Girlfriend-Is-Arriving.wav in Resources */,
+				B60616321D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-A-Flood.wav in Resources */,
+				B60616351D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Basement.wav in Resources */,
+				B606164B1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Family-Room-Lights.wav in Resources */,
+				B60616821D1F117700249C11 /* US-EN-Alexa-Front-Door-Unlocked.wav in Resources */,
+				B60616961D1F117800249C11 /* US-EN-Alexa-Son-Is-Arriving.wav in Resources */,
+				B60616581D1F117700249C11 /* Sounds.csv in Resources */,
+				B606164C1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Hallway-Lights.wav in Resources */,
+				B60616B81D1F117800249C11 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav in Resources */,
+				B606164D1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Kitchen-Light.wav in Resources */,
+				B60616831D1F117700249C11 /* US-EN-Alexa-Garage-Door-Opened.wav in Resources */,
+				B60616401D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Chandelier.wav in Resources */,
+				B60616981D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Basement.wav in Resources */,
 				B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */,
-				B66428061CF79FC800903804 /* US-EN-Daisy-Front-Window-Open.wav in Resources */,
+				B60616B21D1F117800249C11 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */,
+				B60616171D1F117700249C11 /* US-EN-Morgan-Freeman-Friend-Is-Arriving.wav in Resources */,
+				B606160C1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Opened.wav in Resources */,
+				B60616241D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Bedroom.wav in Resources */,
+				B60616531D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Basement.wav in Resources */,
+				B60616B11D1F117800249C11 /* US-EN-Daisy-Front-Window-Open.wav in Resources */,
+				B606161D1D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Opened.wav in Resources */,
+				B60616B51D1F117800249C11 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */,
+				B606161C1D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Closed.wav in Resources */,
+				B60616291D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Theater.wav in Resources */,
+				B60616141D1F117700249C11 /* US-EN-Morgan-Freeman-Cleaning-Supplies-Closet-Opened.wav in Resources */,
+				B60616881D1F117700249C11 /* US-EN-Alexa-Mail-Has-Arrived.wav in Resources */,
+				B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */,
+				B60616801D1F117700249C11 /* US-EN-Alexa-Daughter-Is-Arriving.wav in Resources */,
 				B657A8F11CA646EB00121384 /* Main.storyboard in Resources */,
-				B66428021CF79FC800903804 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */,
+				B60616421D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Hallway-Lights.wav in Resources */,
+				B60616571D1F117700249C11 /* US-EN-Morgan-Freeman-Wife-Is-Arriving.wav in Resources */,
+				B60616391D1F117700249C11 /* US-EN-Morgan-Freeman-Son-Is-Arriving.wav in Resources */,
+				B60616B71D1F117800249C11 /* US-EN-Daisy-Master-Bath-Leak.wav in Resources */,
+				B60616901D1F117700249C11 /* US-EN-Alexa-Patio-Door-Opened.wav in Resources */,
+				B606161E1D1F117700249C11 /* US-EN-Morgan-Freeman-Girlfriend-Is-Arriving.wav in Resources */,
+				B60616191D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Locked.wav in Resources */,
+				B60616B41D1F117800249C11 /* US-EN-Daisy-Kitchen-Sink-Leak.wav in Resources */,
+				B606169B1D1F117800249C11 /* US-EN-Alexa-Welcome-Home.wav in Resources */,
+				B60616971D1F117800249C11 /* US-EN-Alexa-Water-Detected-Generic.wav in Resources */,
+				B60616921D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-Generic.wav in Resources */,
+				B60616301D1F117700249C11 /* US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav in Resources */,
+				B60616161D1F117700249C11 /* US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav in Resources */,
+				B606161A1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Opened.wav in Resources */,
+				B60616121D1F117700249C11 /* US-EN-Morgan-Freeman-Boss-Is-Arriving.wav in Resources */,
+				B60616281D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Living-Room.wav in Resources */,
+				B606167F1D1F117700249C11 /* US-EN-Alexa-Boyfriend-Is-Arriving.wav in Resources */,
+				B60616461D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Mood-Lights.wav in Resources */,
+				B606168C1D1F117700249C11 /* US-EN-Alexa-Motion-In-Back-Yard.wav in Resources */,
+				B60616B91D1F117800249C11 /* US-EN-Daisy-Office-Window-Open.wav in Resources */,
+				B60616B31D1F117800249C11 /* US-EN-Daisy-Guest-Bath-Leak.wav in Resources */,
+				B606161F1D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Morning.wav in Resources */,
+				B606163D1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-All-The-Lights.wav in Resources */,
+				B606167E1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Unlocked.wav in Resources */,
+				B606163C1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Romance-Mode.wav in Resources */,
+				B60616541D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Garage.wav in Resources */,
+				B606162D1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav in Resources */,
+				B60616991D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav in Resources */,
+				B60616411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav in Resources */,
+				B60616851D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav in Resources */,
+				B606162B1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav in Resources */,
+				B60616371D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav in Resources */,
+				B60616471D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-TV.wav in Resources */,
+				B60616181D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Closed.wav in Resources */,
+				B606162A1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav in Resources */,
+				B60616811D1F117700249C11 /* US-EN-Alexa-Front-Door-Opened.wav in Resources */,
+				B606163A1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Movie-Mode.wav in Resources */,
+				B60616201D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Night.wav in Resources */,
+				B606168D1D1F117700249C11 /* US-EN-Alexa-Motion-In-Basement.wav in Resources */,
+				B606169D1D1F117800249C11 /* Sounds.csv in Resources */,
+				B606160A1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav in Resources */,
+				B60616111D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Unlocked.wav in Resources */,
+				B60616AE1D1F117800249C11 /* US-EN-Daisy-Back-Door-Open.wav in Resources */,
+				B60616951D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Kitchen.wav in Resources */,
+				B60616451D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Lights.wav in Resources */,
+				B606160B1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav in Resources */,
+				B606164A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Chandelier.wav in Resources */,
+				B60616AF1D1F117800249C11 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */,
+				B606160D1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Unlocked.wav in Resources */,
+				B606168A1D1F117700249C11 /* US-EN-Alexa-Motion-At-Front-Door.wav in Resources */,
+				B60616231D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Basement.wav in Resources */,
+				B60616491D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Bar-Lights.wav in Resources */,
+				B60616381D1F117700249C11 /* US-EN-Morgan-Freeman-Someone-Is-Arriving.wav in Resources */,
+				B60616B01D1F117800249C11 /* US-EN-Daisy-Front-Door-Open.wav in Resources */,
+				B606162E1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav in Resources */,
+				B60616441D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Light.wav in Resources */,
+				B60616361D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav in Resources */,
+				B60616511D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-TV.wav in Resources */,
+				B60616151D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav in Resources */,
+				B60616521D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav in Resources */,
+				B60616101D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav in Resources */,
+				B606167D1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav in Resources */,
+				B60616931D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Basement.wav in Resources */,
+				B60616271D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav in Resources */,
+				B606167C1D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav in Resources */,
+				B60615BB1D1F117700249C11 /* Sounds.csv in Resources */,
 				B60B35BF1CB62AA200887BE1 /* SwitchWithInfoButton.xib in Resources */,
-				B664280A1CF79FC800903804 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */,
+				B606160F1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Locked.wav in Resources */,
+				B606161B1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Unlocked.wav in Resources */,
+				B606169A1D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Kitchen.wav in Resources */,
+				B606168F1D1F117700249C11 /* US-EN-Alexa-Motion-In-Garage.wav in Resources */,
+				B60616311D1F117700249C11 /* US-EN-Morgan-Freeman-Setting-The-Mood.wav in Resources */,
+				B606162F1D1F117700249C11 /* US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav in Resources */,
+				B60616131D1F117700249C11 /* US-EN-Morgan-Freeman-Boyfriend-Is-Arriving.wav in Resources */,
+				B606163E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Air-Conditioner.wav in Resources */,
+				B60616551D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Kitchen.wav in Resources */,
+				B60616871D1F117700249C11 /* US-EN-Alexa-Husband-Is-Arriving.wav in Resources */,
+				B60616501D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

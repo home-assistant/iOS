@@ -1,0 +1,36 @@
+# Source: https://community.smartthings.com/t/release-alexa-voice-notification-smartapp-compatible-with-any-bluetooth-sonos-speaker/34375
+# Github: https://github.com/nelemansc/SmartThings/blob/master/AlexaVoiceNotifications
+Mail has arrived,http://s3.amazonaws.com/alexavoicenotifications/MailArrived.mp3,US-EN-Alexa-Mail-Has-Arrived.wav,10
+Motion detected - Generic,http://s3.amazonaws.com/alexavoicenotifications/MotionDetected.mp3,US-EN-Alexa-Motion-Detected-Generic.wav,3
+Motion in basement,http://s3.amazonaws.com/alexavoicenotifications/MotionBasement.mp3,US-EN-Alexa-Motion-In-Basement.wav,3
+Motion in garage,http://s3.amazonaws.com/alexavoicenotifications/MotionGarage.mp3,US-EN-Alexa-Motion-In-Garage.wav,3
+Motion in front yard,http://s3.amazonaws.com/alexavoicenotifications/MotionFrontYard.mp3,US-EN-Alexa-Motion-In-Front-Yard.wav,3
+Motion in back yard,http://s3.amazonaws.com/alexavoicenotifications/MotionBackYard.mp3,US-EN-Alexa-Motion-In-Back-Yard.wav,3
+Motion at front door,http://s3.amazonaws.com/alexavoicenotifications/MotionFrontDoor.mp3,US-EN-Alexa-Motion-At-Front-Door.wav,3
+Motion at back door,http://s3.amazonaws.com/alexavoicenotifications/MotionBackDoor.mp3,US-EN-Alexa-Motion-At-Back-Door.wav,3
+Back door opened,http://s3.amazonaws.com/alexavoicenotifications/OpenedBackDoor.mp3,US-EN-Alexa-Back-Door-Opened.wav,3
+Basement door opened,http://s3.amazonaws.com/alexavoicenotifications/OpenedBasementDoor.mp3,US-EN-Alexa-Basement-Door-Opened.wav,3
+Front door opened,http://s3.amazonaws.com/alexavoicenotifications/OpenedFrontDoor.mp3,US-EN-Alexa-Front-Door-Opened.wav,3
+Garage door opened,http://s3.amazonaws.com/alexavoicenotifications/OpenedGarageDoor.mp3,US-EN-Alexa-Garage-Door-Opened.wav,3
+Patio door opened,http://s3.amazonaws.com/alexavoicenotifications/OpenedPatioDoor.mp3,US-EN-Alexa-Patio-Door-Opened.wav,3
+Good Morning,http://s3.amazonaws.com/alexavoicenotifications/GoodMorning.mp3,US-EN-Alexa-Good-Morning.wav,3
+Good Night,http://s3.amazonaws.com/alexavoicenotifications/GoodNight.mp3,US-EN-Alexa-Good-Night.wav,3
+Front door unlocked,http://s3.amazonaws.com/alexavoicenotifications/UnlockedFrontDoor.mp3,US-EN-Alexa-Front-Door-Unlocked.wav,6
+Back door unlocked,http://s3.amazonaws.com/alexavoicenotifications/UnlockedBackDoor.mp3,US-EN-Alexa-Back-Door-Unlocked.wav,6
+Basement door unlocked,http://s3.amazonaws.com/alexavoicenotifications/UnlockedBasementDoor.mp3,US-EN-Alexa-Basement-Door-Unlocked.wav,6
+Patio door unlocked,http://s3.amazonaws.com/alexavoicenotifications/UnlockedPatioDoor.mp3,US-EN-Alexa-Patio-Door-Unlocked.wav,6
+Water detected - Generic,http://s3.amazonaws.com/alexavoicenotifications/WaterDetected.mp3,US-EN-Alexa-Water-Detected-Generic.wav,6
+Water detected in basement,http://s3.amazonaws.com/alexavoicenotifications/WaterDetectedBasement.mp3,US-EN-Alexa-Water-Detected-In-Basement.wav,6
+Water detected in kitchen,http://s3.amazonaws.com/alexavoicenotifications/WaterDetectedKitchen.mp3,US-EN-Alexa-Water-Detected-In-Kitchen.wav,6
+Water detected in garage,http://s3.amazonaws.com/alexavoicenotifications/WaterDetectedGarage.mp3,US-EN-Alexa-Water-Detected-In-Garage.wav,6
+Smoke detected - Generic,http://s3.amazonaws.com/alexavoicenotifications/SmokeDetected.mp3,US-EN-Alexa-Smoke-Detected-Generic.wav,6
+Smoke detected in kitchen,http://s3.amazonaws.com/alexavoicenotifications/SmokeDetectedKitchen.mp3,US-EN-Alexa-Smoke-Detected-In-Kitchen.wav,6
+Smoke detected in garage,http://s3.amazonaws.com/alexavoicenotifications/SmokeDetectedGarage.mp3,US-EN-Alexa-Smoke-Detected-In-Garage.wav,6
+Smoke detected in basement,http://s3.amazonaws.com/alexavoicenotifications/SmokeDetectedBasement.mp3,US-EN-Alexa-Smoke-Detected-In-Basement.wav,6
+Boyfriend is arriving,http://s3.amazonaws.com/alexavoicenotifications/ArrivingBoyfriend.mp3,US-EN-Alexa-Boyfriend-Is-Arriving.wav,6
+Girlfriend is arriving,http://s3.amazonaws.com/alexavoicenotifications/ArrivingGirlfriend.mp3,US-EN-Alexa-Girlfriend-Is-Arriving.wav,6
+Husband is arriving,http://s3.amazonaws.com/alexavoicenotifications/ArrivingHusband.mp3,US-EN-Alexa-Husband-Is-Arriving.wav,6
+Wife is arriving,http://s3.amazonaws.com/alexavoicenotifications/ArrivingWife.mp3,US-EN-Alexa-Wife-Is-Arriving.wav,6
+Son is arriving,http://s3.amazonaws.com/alexavoicenotifications/ArrivingSon.mp3,US-EN-Alexa-Son-Is-Arriving.wav,6
+Daughter is arriving,http://s3.amazonaws.com/alexavoicenotifications/ArrivingDaughter.mp3,US-EN-Alexa-Daughter-Is-Arriving.wav,6
+Welcome Home,http://s3.amazonaws.com/alexavoicenotifications/WelcomeHome.mp3,US-EN-Alexa-Welcome-Home.wav,6
