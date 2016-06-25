@@ -1,5 +1,4 @@
-# Source: https://community.smartthings.com/t/sonos-notifications-morgan-freeman-edition/21377
-# Github: https://github.com/nelemansc/SmartThings/blob/master/MorganFreemanSonos
+https://community.smartthings.com/t/sonos-notifications-morgan-freeman-edition/21377,https://github.com/nelemansc/SmartThings/blob/master/MorganFreemanSonos,,
 Motion detected,https://s3.amazonaws.com/smartthingssmartapps/motion+detected+generic.mp3,US-EN-Morgan-Freeman-Motion-Detected.wav,3
 Motion in basement,https://s3.amazonaws.com/smartthingssmartapps/Motion+in+Basement.mp3,US-EN-Morgan-Freeman-Motion-In-Basement.wav,3
 Motion in garage,https://s3.amazonaws.com/smartthingssmartapps/Motion+in+Garage.mp3,US-EN-Morgan-Freeman-Motion-In-Garage.wav,3

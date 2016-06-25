@@ -1,5 +1,4 @@
-# Source: https://community.smartthings.com/t/release-alexa-voice-notification-smartapp-compatible-with-any-bluetooth-sonos-speaker/34375
-# Github: https://github.com/nelemansc/SmartThings/blob/master/AlexaVoiceNotifications
+https://community.smartthings.com/t/release-alexa-voice-notification-smartapp-compatible-with-any-bluetooth-sonos-speaker/34375,https://github.com/nelemansc/SmartThings/blob/master/AlexaVoiceNotifications,,
 Mail has arrived,http://s3.amazonaws.com/alexavoicenotifications/MailArrived.mp3,US-EN-Alexa-Mail-Has-Arrived.wav,10
 Motion detected - Generic,http://s3.amazonaws.com/alexavoicenotifications/MotionDetected.mp3,US-EN-Alexa-Motion-Detected-Generic.wav,3
 Motion in basement,http://s3.amazonaws.com/alexavoicenotifications/MotionBasement.mp3,US-EN-Alexa-Motion-In-Basement.wav,3
