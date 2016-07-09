@@ -191,19 +191,20 @@ public class HomeAssistantAPI {
         
         UIDevice.currentDevice().batteryMonitoringEnabled = false
         
-//        if updateType != "" {
-//            let notification = UILocalNotification()
-//            notification.alertBody = updateType
-//            notification.alertAction = "open"
-//            notification.fireDate = NSDate()
-//            notification.soundName = UILocalNotificationDefaultSoundName
-//            UIApplication.sharedApplication().scheduleLocalNotification(notification)
-//        }
+        if updateType != "" {
+            let notification = UILocalNotification()
+            notification.alertBody = updateType
+            notification.alertAction = "open"
+            notification.fireDate = NSDate()
+            notification.soundName = UILocalNotificationDefaultSoundName
+            UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        }
     }
     
     func trackLocation() {
         LocationManager.shared.observeLocations(.Neighborhood, frequency: .Significant, onSuccess: { (location) -> Void in
-            self.submitLocation("Significant location change detected", latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
+            // Previously, "" was "Significant location change detected"
+            self.submitLocation("", latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
         }, onError: { (error) -> Void in
             // something went wrong. request will be cancelled automatically
             print("Something went wrong when trying to get significant location updates! Error was:", error)
