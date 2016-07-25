@@ -117,7 +117,7 @@ public class HomeAssistantAPI {
                         Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
                     }
                 }
-                
+//                self.GetHistory()
                 self.startStream()
                 fulfill(true)
             }.error { error in
@@ -237,6 +237,24 @@ public class HomeAssistantAPI {
             print("Error when getting states!", error)
             Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
         }
+        
+        self.getBeacons().then { beacons -> Void in
+            for beacon in beacons {
+                try BeaconManager.shared.monitorForBeacon(proximityUUID: beacon.UUID!, major: beacon.Major!, minor: beacon.Minor!, onFound: { beaconsFound in
+                    // beaconsFound is an array of found beacons ([CLBeacon]) but in this case it contains only one beacon
+                    print("Beacons found!", beaconsFound)
+                    for beacon in beaconsFound {
+                        print("Single beacon!", beacon)
+                    }
+                }) { error in
+                    // something bad happened
+                    print("Error when monitoring for beacons", error)
+                }
+            }
+        }.error { error in
+            print("Error when getting beacons!", error)
+            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+        }
 
     }
     
@@ -301,24 +319,24 @@ public class HomeAssistantAPI {
         }
     }
     
-    func GetHistoryMapped() -> Promise<[HistoryResponse]> {
-        let queryUrl = baseAPIURL+"history/period/2016-4-4"
-        return Promise { fulfill, reject in
-            self.manager!.request(.GET, queryUrl).validate().responseArray { (response: Response<[HistoryResponse], NSError>) in
-                switch response.result {
-                case .Success:
-                    if let historyArray = response.result.value {
-                        print("HISTORYARRAY", historyArray)
-                        fulfill(historyArray)
-                    }
-                case .Failure(let error):
-                    CLSLogv("Error on GetHistoryMapped() request: %@", getVaList([error.localizedDescription]))
-                    Crashlytics.sharedInstance().recordError(error)
-                    reject(error)
-                }
-            }
-        }
-    }
+//    func GetHistory() -> Promise<HistoryResponse> {
+//        let queryUrl = baseAPIURL+"history/period?filter_entity_id=sensor.uberpool_time"
+//        return Promise { fulfill, reject in
+//            self.manager!.request(.GET, queryUrl).validate().responseJSON { response in
+//                switch response.result {
+//                case .Success:
+//                    print("GOT HISTORY", queryUrl)
+//                    let mapped = Mapper<HistoryResponse>().map(response.result.value!)
+//                    print("MAPPED", mapped)
+//                    fulfill(mapped!)
+//                case .Failure(let error):
+//                    CLSLogv("Error on GetHistory() request: %@", getVaList([error.localizedDescription]))
+//                    Crashlytics.sharedInstance().recordError(error)
+//                    reject(error)
+//                }
+//            }
+//        }
+//    }
     
     func GetStates() -> Promise<[Entity]> {
         let queryUrl = baseAPIURL+"states"
@@ -538,6 +556,22 @@ public class HomeAssistantAPI {
                     fulfill(allCategories)
                 case .Failure(let error):
                     CLSLogv("Error on setupPushActions() request: %@", getVaList([error.localizedDescription]))
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
+            }
+        }
+    }
+    
+    func getBeacons() -> Promise<[Beacon]> {
+        let queryUrl = baseAPIURL+"ios/beacons"
+        return Promise { fulfill, reject in
+            self.manager!.request(.GET, queryUrl).validate().responseArray { (response: Response<[Beacon], NSError>) in
+                switch response.result {
+                case .Success:
+                    fulfill(response.result.value!)
+                case .Failure(let error):
+                    CLSLogv("Error when attemping to getBeacons(): %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
