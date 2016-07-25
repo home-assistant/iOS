@@ -59,6 +59,19 @@ func getCurrentWifiSSID() -> String {
     return currentSSID
 }
 
+func movePushNotificationSounds() {
+    var paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+    for path in paths {
+        print("Path", path)
+    }
+    let fileManager: NSFileManager = NSFileManager()
+    let fileList = try! fileManager.contentsOfDirectoryAtPath(paths[0])
+    for file in fileList {
+        print("Moving", file, "to Library/Sounds")
+        try! fileManager.moveItemAtPath(file, toPath: "subfolder/hello.swift")
+    }
+}
+
 extension UIImage{
     func scaledToSize(size: CGSize) -> UIImage{
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
