@@ -23,10 +23,6 @@ let realmConfig = Realm.Configuration(
 })
 
 let realm = try! Realm(configuration: realmConfig)
-<<<<<<< HEAD
-=======
-
->>>>>>> 6986042696983c2d10b089b4c97ddfae2e5b0c65
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
