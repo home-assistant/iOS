@@ -104,13 +104,12 @@ class SettingsViewController: FormViewController {
                 $0.hidden = Condition(booleanLiteral: showErrorConnectingMessage)
             }
             <<< TextRow("deviceId") {
-                let cleanModel = UIDevice.currentDevice().model.lowercaseString.stringByReplacingOccurrencesOfString(" ", withString: "")
-                $0.placeholder = cleanModel
+                $0.placeholder = UIDevice.currentDevice().name
                 $0.title = "Device ID (location tracking)"
                 if let deviceId = prefs.stringForKey("deviceId") {
                     $0.value = deviceId
                 } else {
-                    $0.value = cleanModel
+                    $0.value = UIDevice.currentDevice().name
                 }
                 $0.cell.textField.autocapitalizationType = .None
             }
