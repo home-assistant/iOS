@@ -51,11 +51,6 @@ PODS:
   - SwiftDate (3.0.8)
   - SwiftLocation (1.0.4)
   - Whisper (3.1.1)
-  - Realm (0.98.6):
-    - Realm/Headers (= 0.98.6)
-  - Realm/Headers (0.98.6)
-  - RealmSwift (0.98.6):
-    - Realm (= 0.98.6)
 
 DEPENDENCIES:
   - AcknowList
@@ -79,7 +74,6 @@ DEPENDENCIES:
   - PromiseKit
   - RealmSwift
   - SwiftDate
-  - RealmSwift
   - SwiftLocation
   - Whisper
 
@@ -118,7 +112,5 @@ SPEC CHECKSUMS:
   SwiftDate: 971f8b9394f664f2226b9c3ab64e801a7291c612
   SwiftLocation: 00682ad3598aa54936f34ec42ed53fceb37c22a4
   Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453
-  Realm: 44803f35418c5d89b27825a564247fcd190de37e
-  RealmSwift: c7239c52c83f8c43525a5269ba7be1694da33afc
 
 COCOAPODS: 0.39.0
