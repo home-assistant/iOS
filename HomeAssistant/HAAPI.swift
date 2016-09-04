@@ -492,6 +492,7 @@ public class HomeAssistantAPI {
         var deviceContainer : [String : AnyObject] = ["device": deviceInfo, "app": appInfo, "permissions": [:]]
         deviceContainer["pushId"] = endpointARN.componentsSeparatedByString("/").last!
         deviceContainer["pushToken"] = deviceToken
+        deviceContainer["pushSounds"] = listAllInstalledPushNotificationSounds()
         deviceContainer["deviceId"] = deviceID
         var permissionsContainer : [String] = []
         for status in PermissionScope().permissionStatuses([NotificationsPermission().type, LocationAlwaysPermission().type]) {

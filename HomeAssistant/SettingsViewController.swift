@@ -128,13 +128,31 @@ class SettingsViewController: FormViewController {
             if showErrorConnectingMessage == false {
                 if let endpointArn = prefs.stringForKey("endpointARN") {
                     form
-                        +++ Section(header: "Push information", footer: "")
+                        +++ Section(header: "Push Notifications", footer: "")
                         <<< TextAreaRow() {
                             $0.placeholder = "EndpointArn"
                             $0.value = endpointArn.componentsSeparatedByString("/").last
                             $0.disabled = true
                             $0.textAreaHeight = TextAreaHeight.Dynamic(initialTextViewHeight: 40)
-                    }
+                        }
+                        
+                        <<< ButtonRow() {
+                            $0.title = "Import sounds from iTunes"
+                        }.onCellSelection {_,_ in
+                            movePushNotificationSounds()
+                        }
+                    
+//                        <<< ButtonRow() {
+//                            $0.title = "Import system sounds"
+//                        }.onCellSelection {_,_ in
+////                            copySystemSounds()
+//                            let list = getSoundList()
+//                            print("system sounds list", list)
+//                            for sound in list {
+//                                copyFileToDirectory(sound)
+//                            }
+//
+//                        }
                 }
             }
     }

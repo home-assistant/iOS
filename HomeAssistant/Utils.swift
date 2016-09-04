@@ -59,17 +59,78 @@ func getCurrentWifiSSID() -> String {
     return currentSSID
 }
 
+// Thanks to http://stackoverflow.com/a/35624018/486182
+// Must reboot device after installing new push sounds (http://stackoverflow.com/questions/34998278/change-push-notification-sound-file-only-works-after-ios-reboot)
+
 func movePushNotificationSounds() {
-    var paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
-    for path in paths {
-        print("Path", path)
-    }
+    
     let fileManager: NSFileManager = NSFileManager()
-    let fileList = try! fileManager.contentsOfDirectoryAtPath(paths[0])
-    for file in fileList {
-        print("Moving", file, "to Library/Sounds")
-        try! fileManager.moveItemAtPath(file, toPath: "subfolder/hello.swift")
+    
+    let libraryPath = try! fileManager.URLForDirectory(.LibraryDirectory, inDomain: NSSearchPathDomainMask.UserDomainMask, appropriateForURL: nil, create: false)
+    let librarySoundsPath = libraryPath.URLByAppendingPathComponent("Sounds")
+    print("librarySoundsPath", librarySoundsPath)
+    if (!librarySoundsPath.checkResourceIsReachableAndReturnError(nil)) {
+        print("Creating sounds directory at", librarySoundsPath)
+        try! fileManager.createDirectoryAtURL(librarySoundsPath, withIntermediateDirectories: true, attributes: nil)
     }
+    
+    let documentsPath = try! fileManager.URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+    let fileList = try! fileManager.contentsOfDirectoryAtURL(documentsPath, includingPropertiesForKeys: nil, options: NSDirectoryEnumerationOptions())
+    print("fileList", fileList)
+    for file in fileList {
+        let finalUrl = librarySoundsPath.URLByAppendingPathComponent(file.lastPathComponent!)
+        print("Moving", file, "to", finalUrl)
+        if (finalUrl.checkResourceIsReachableAndReturnError(nil)) {
+            print("File already existed, removing it first!")
+            try! fileManager.removeItemAtURL(finalUrl)
+        }
+        try! fileManager.moveItemAtURL(file, toURL: finalUrl)
+    }
+}
+
+func getSoundList() -> [String] {
+    var result:[String] = []
+    let fileManager = NSFileManager.defaultManager()
+    let enumerator:NSDirectoryEnumerator = fileManager.enumeratorAtPath("/System/Library/Audio/UISounds")!
+    for url in enumerator.allObjects {
+        result.append(url as! String)
+    }
+    return result
+}
+
+// copy sound file to /Library/Sounds directory, it will be auto detect and played when a push notification arrive
+func copyFileToDirectory(fileName:String) {
+    let fileManager = NSFileManager.defaultManager()
+    
+    let libraryDir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.LibraryDirectory, NSSearchPathDomainMask.UserDomainMask, true)
+    let directoryPath = "\(libraryDir.first!)/Sounds"
+    try! fileManager.createDirectoryAtPath(directoryPath, withIntermediateDirectories: true, attributes: nil)
+    
+    let systemSoundPath = "/System/Library/Audio/UISounds/New/\(fileName)"
+    let notificationSoundPath = "\(directoryPath)/\(fileName)"
+    
+    let fileExist = fileManager.fileExistsAtPath(notificationSoundPath)
+    if (fileExist) {
+        try! fileManager.removeItemAtPath(notificationSoundPath)
+    }
+    try! fileManager.copyItemAtPath(systemSoundPath, toPath: notificationSoundPath)
+}
+
+func listAllInstalledPushNotificationSounds() -> [String] {
+    let fileManager: NSFileManager = NSFileManager()
+    
+    let libraryPath = try! fileManager.URLForDirectory(.LibraryDirectory, inDomain: NSSearchPathDomainMask.UserDomainMask, appropriateForURL: nil, create: false)
+    let librarySoundsPath = libraryPath.URLByAppendingPathComponent("Sounds")
+    
+    let librarySoundsContents = fileManager.enumeratorAtURL(librarySoundsPath, includingPropertiesForKeys: nil, options: NSDirectoryEnumerationOptions(), errorHandler: nil)!
+    
+    var allSounds = [String]()
+    
+    for obj in librarySoundsContents.allObjects {
+        let file = obj as! NSURL
+        allSounds.append(file.lastPathComponent!)
+    }
+    return allSounds
 }
 
 extension UIImage{
