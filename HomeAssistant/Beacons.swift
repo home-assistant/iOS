@@ -7,14 +7,15 @@
 //
 
 import Foundation
+import CoreLocation
 import ObjectMapper
 
 class Beacon: Mappable {
     var Name: String?
     var Zone: String?
     var UUID: String?
-    var Major: UInt16?
-    var Minor: UInt16?
+    var Major: Int?
+    var Minor: Int?
     var Radius: Int?
     
     required init?(_ map: Map){

@@ -237,24 +237,24 @@ public class HomeAssistantAPI {
             print("Error when getting states!", error)
             Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
         }
+
+//        let location = Location()
         
-        self.getBeacons().then { beacons -> Void in
-            for beacon in beacons {
-                try BeaconManager.shared.monitorForBeacon(proximityUUID: beacon.UUID!, major: beacon.Major!, minor: beacon.Minor!, onFound: { beaconsFound in
-                    // beaconsFound is an array of found beacons ([CLBeacon]) but in this case it contains only one beacon
-                    print("Beacons found!", beaconsFound)
-                    for beacon in beaconsFound {
-                        print("Single beacon!", beacon)
-                    }
-                }) { error in
-                    // something bad happened
-                    print("Error when monitoring for beacons", error)
-                }
-            }
-        }.error { error in
-            print("Error when getting beacons!", error)
-            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-        }
+//        self.getBeacons().then { beacons -> Void in
+//            for beacon in beacons {
+//                print("Got beacon from HA", beacon.UUID, beacon.Major, beacon.Minor)
+//                try BeaconManager.shared.monitorForBeacon(proximityUUID: beacon.UUID!, major: UInt16(beacon.Major!), minor: UInt16(beacon.Minor!), onFound: { beaconsFound in
+//                    // beaconsFound is an array of found beacons ([CLBeacon]) but in this case it contains only one beacon
+//                    print("beaconsFound", beaconsFound)
+//                }) { error in
+//                    // something bad happened
+//                    print("Error happened on beacons", error)
+//                }
+//            }
+//        }.error { error in
+//            print("Error when getting beacons!", error)
+//            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+//        }
 
     }
     
@@ -741,4 +741,94 @@ class Bonjour {
         nsp.stop()
     }
     
+}
+
+class Location {
+    let locationManager = CLLocationManager()
+    init(){
+        locationManager.requestAlwaysAuthorization()
+        locationManager.delegate = LocationDelegate()
+        if let uuid = NSUUID(UUIDString: "B9407F30-F5F8-466E-AFF9-25556B57FE6D") {
+            let beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: "iBeacon")
+            beaconRegion.notifyOnEntry = true
+            beaconRegion.notifyOnExit = true
+            locationManager.startMonitoringForRegion(beaconRegion)
+//            locationManager.startRangingBeaconsInRegion(beaconRegion)
+            locationManager.requestStateForRegion(beaconRegion)
+        }
+    }
+}
+
+class LocationDelegate: NSObject, CLLocationManagerDelegate {
+    
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        print("Auth status", status)
+//        if status == .AuthorizedAlways {
+//            if CLLocationManager.isMonitoringAvailableForClass(CLBeaconRegion.self) {
+//                if CLLocationManager.isRangingAvailable() {
+//                    let uuid = NSUUID(UUIDString: "B9407F30-F5F8-466E-AFF9-25556B57FE6D")!
+//                    let beaconRegion = CLBeaconRegion(proximityUUID: uuid, major: 60042, minor: 43814, identifier: "MyBeacon")
+//                    
+//                    manager.startMonitoringForRegion(beaconRegion)
+//                    manager.startRangingBeaconsInRegion(beaconRegion)
+//                }
+//            }
+//        }
+//        switch status {
+//        case .Denied, .Restricted:
+//            let err = LocationError.AuthorizationDidChange(newStatus: status)
+//            self.cancelAllGeographicLocationMonitors(err)
+//            break
+//        case .AuthorizedAlways, .AuthorizedWhenInUse:
+//            self.startAllPendingGeographicLocationMonitors()
+//            break
+//        default:
+//            break
+//        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didDetermineState state: CLRegionState, forRegion region: CLRegion) {
+        print("State determined for region", region.identifier, "is", state)
+//        if let request = self.monitoredGeoRegions.filter({ request in request.region == region }).first {
+//            switch state {
+//            case .Inside:
+//                request.onRegionEntered?()
+//            case .Outside:
+//                request.onRegionExited?()
+//            default:
+//                break
+//            }
+//        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        print("Region entered!", region.identifier)
+    }
+    
+    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
+        print("Region exited!", region.identifier)
+    }
+    
+    func locationManager(manager: CLLocationManager, monitoringDidFailForRegion region: CLRegion?, withError error: NSError) {
+        print("Monitoring failed for region", region!.identifier, "with error", error)
+    }
+    
+    @objc func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
+        print("didRangeBeacons", beacons, "for region", region.identifier)
+//        if let request = self.monitoredBeacons.filter({request in return request.beaconRegion == region}).first {
+//            request.onRangeDidFoundBeacons?(beacons)
+//        }
+        if beacons.count > 0 {
+            print("Got beacons", beacons)
+        } else {
+            print("No beacons found!")
+        }
+    }
+    
+    @objc func locationManager(manager: CLLocationManager, rangingBeaconsDidFailForRegion region: CLBeaconRegion, withError error: NSError) {
+//        if let request = self.monitoredBeacons.filter({request in return request.beaconRegion == region}).first {
+//            request.onRangeDidFail?(LocationError.LocationManager(error: error))
+//            self.stopMonitorForBeaconRegion(request)
+//        }
+    }
 }
