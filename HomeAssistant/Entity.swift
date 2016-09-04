@@ -9,13 +9,14 @@
 import Foundation
 import ObjectMapper
 import RealmSwift
+import Realm
 
 class Entity: Object, StaticMappable {
     let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
     
-    dynamic var ID: String? = nil
-    dynamic var Domain: String? = nil
-    dynamic var State: String? = nil
+    dynamic var ID: String = ""
+    dynamic var Domain: String = ""
+    dynamic var State: String = ""
     dynamic var Attributes: [String:AnyObject] = [:]
     dynamic var FriendlyName: String? = nil
     dynamic var Hidden = false
@@ -26,7 +27,19 @@ class Entity: Object, StaticMappable {
     dynamic var LastChanged: NSDate? = nil
     dynamic var LastUpdated: NSDate? = nil
     
-    func objectForMapping(map: Map) -> Mappable? {
+    // MARK: - Requireds - https://github.com/Hearst-DD/ObjectMapper/issues/462
+    required init() { super.init() }
+    required init?(_ map: Map) { super.init() }
+    required init(value: AnyObject, schema: RLMSchema) { super.init(value: value, schema: schema) }
+    required init(realm: RLMRealm, schema: RLMObjectSchema) { super.init(realm: realm, schema: schema) }
+    
+    init(id: String) {
+        super.init()
+        self.ID = id
+        self.Domain = EntityIDToDomainTransform().transformFromJSON(self.ID)!
+    }
+    
+    class func objectForMapping(map: Map) -> Mappable? {
         if let entityId: String = map["entity_id"].value() {
             let entityType = EntityIDToDomainTransform().transformFromJSON(entityId)!
             switch entityType {
@@ -73,16 +86,6 @@ class Entity: Object, StaticMappable {
         }
         return nil
     }
-    
-    init(id: String) {
-        self.ID = id
-        self.Domain = EntityIDToDomainTransform().transformFromJSON(self.ID)!
-    }
-    
-    required init?(_ map: Map) {
-        // More info: https://github.com/Hearst-DD/ObjectMapper/issues/462
-        self.init()
-    }
 
     func mapping(map: Map) {
         ID            <- map["entity_id"]
@@ -107,7 +110,7 @@ class Entity: Object, StaticMappable {
     }
     
     override class func ignoredProperties() -> [String] {
-        return ["Attributes"]
+        return ["Attributes", "DownloadedPicture"]
     }
     
     override static func primaryKey() -> String? {
