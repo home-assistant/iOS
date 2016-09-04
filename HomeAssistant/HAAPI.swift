@@ -19,6 +19,7 @@ import ObjectMapper
 import DeviceKit
 import PermissionScope
 import Crashlytics
+import RealmSwift
 
 let prefs = NSUserDefaults.standardUserDefaults()
 
@@ -339,12 +340,21 @@ public class HomeAssistantAPI {
 //        }
 //    }
     
+    func storeEntities(entities: [Entity]) {
+        for entity in entities {
+            try! realm.write {
+                realm.create(Entity.self, value: entity, update: true)
+            }
+        }
+    }
+    
     func GetStates() -> Promise<[Entity]> {
         let queryUrl = baseAPIURL+"states"
         return Promise { fulfill, reject in
             self.manager!.request(.GET, queryUrl).validate().responseArray { (response: Response<[Entity], NSError>) in
                 switch response.result {
                 case .Success:
+                    self.storeEntities(response.result.value!)
                     fulfill(response.result.value!)
                 case .Failure(let error):
                     CLSLogv("Error on GetStates() request: %@", getVaList([error.localizedDescription]))
