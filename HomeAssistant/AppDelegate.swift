@@ -160,7 +160,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         completionHandler(UIBackgroundFetchResult.Failed)
                     }
                 default:
-                    print("Received unknown command via APNS!", userInfo["homeassistant"]!["command"])
+                    print("Received unknown command via APNS!", userInfo)
                     completionHandler(UIBackgroundFetchResult.NoData)
                 }
             }
