@@ -581,8 +581,8 @@ public class HomeAssistantAPI {
     
     func getImage(imageUrl: String) -> Promise<UIImage> {
         var url = imageUrl
-        if url.containsString("/local/") || url.containsString("/api/") {
-            url = baseAPIURL+url
+        if url.hasPrefix("/local/") || url.hasPrefix("/api/") {
+            url = baseAPIURL+url.stringByReplacingOccurrencesOfString("/api/", withString: "").stringByReplacingOccurrencesOfString("/local/", withString: "")
         }
         return Promise { fulfill, reject in
             self.manager!.request(.GET, url).validate().responseImage { response in
