@@ -27,6 +27,11 @@ class Entity: Object, StaticMappable {
     dynamic var LastChanged: NSDate? = nil
     dynamic var LastUpdated: NSDate? = nil
     
+    // Z-Wave properties
+    dynamic var Location: String? = nil
+    dynamic var NodeID: String? = nil
+    var BatteryLevel = RealmOptional<Int>()
+    
     // MARK: - Requireds - https://github.com/Hearst-DD/ObjectMapper/issues/462
     required init() { super.init() }
     required init?(_ map: Map) { super.init() }
@@ -100,6 +105,11 @@ class Entity: Object, StaticMappable {
         LastChanged   <- (map["last_changed"], HomeAssistantTimestampTransform())
         LastUpdated   <- (map["last_updated"], HomeAssistantTimestampTransform())
         
+        // Z-Wave properties
+        NodeID        <- map["attributes.node_id"]
+        Location      <- map["attributes.location"]
+        BatteryLevel      <- map["attributes.battery_level"]
+        
         if let pic = self.Picture {
             HomeAssistantAPI.sharedInstance.getImage(pic).then { image -> Void in
                 self.DownloadedPicture = image
@@ -132,25 +142,33 @@ class Entity: Object, StaticMappable {
     var ComponentIcon : String {
         switch (self.Domain) {
         case "alarm_control_panel":
-            return (self.State == "disarmed") ? "mdi:bell-outline" : "mdi:bell"
+            return "mdi:bell"
         case "automation":
             return "mdi:playlist-play"
         case "binary_sensor":
-            return "mdi:radiobox-blank"
+            return "mdi:checkbox-marked-circle"
         case "camera":
             return "mdi:video"
+        case "climate":
+            return "mdi:nest-thermostat"
         case "configurator":
             return "mdi:settings"
         case "conversation":
             return "mdi:text-to-speech"
+        case "cover":
+            return "mdi:window-closed"
         case "device_tracker":
             return "mdi:account"
+        case "fan":
+            return "mdi:fan"
         case "garage_door":
             return "mdi:glassdoor"
         case "group":
             return "mdi:google-circles-communities"
         case "homeassistant":
             return "mdi:home"
+        case "hvac":
+            return "mdi:air-conditioner"
         case "input_boolean":
             return "mdi:drawing"
         case "input_select":
@@ -160,7 +178,7 @@ class Entity: Object, StaticMappable {
         case "light":
             return "mdi:lightbulb"
         case "lock":
-            return "mdi:lock-open"
+            return "mdi:lock"
         case "media_player":
             return "mdi:cast"
         case "notify":
@@ -168,7 +186,7 @@ class Entity: Object, StaticMappable {
         case "proximity":
             return "mdi:apple-safari"
         case "rollershutter":
-            return (self.State == "open") ? "mdi:window-open" : "mdi:window-closed"
+            return "mdi:window-closed"
         case "scene":
             return "mdi:google-pages"
         case "script":
@@ -188,6 +206,7 @@ class Entity: Object, StaticMappable {
         case "weblink":
             return "mdi:open-in-new"
         default:
+            print("Unable to find icon for domain \(self.Domain) (\(self.State))")
             return "mdi:bookmark"
         }
     }
@@ -230,6 +249,10 @@ class Entity: Object, StaticMappable {
     
 }
 
+public class StringObject: Object {
+    public dynamic var value: String?
+}
+
 public class EntityIDToDomainTransform: TransformType {
     public typealias Object = String
     public typealias JSON = String
@@ -254,11 +277,34 @@ public class HomeAssistantTimestampTransform: DateFormatterTransform {
         let formatter = NSDateFormatter()
         formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        formatter.timeZone = NSTimeZone.localTimeZone()
         if let HATimezone = NSUserDefaults.standardUserDefaults().stringForKey("time_zone") {
             formatter.timeZone = NSTimeZone(name: HATimezone)!
+        } else {
+            formatter.timeZone = NSTimeZone.localTimeZone()
         }
         
         super.init(dateFormatter: formatter)
+    }
+}
+
+public class ComponentBoolTransform: TransformType {
+    
+    public typealias Object = Bool
+    public typealias JSON = String
+    
+    let trueValue: String
+    let falseValue: String
+    
+    public init(trueValue: String, falseValue: String) {
+        self.trueValue = trueValue
+        self.falseValue = falseValue
+    }
+    
+    public func transformFromJSON(value: AnyObject?) -> Bool? {
+        return (String(value!) == self.trueValue)
+    }
+    
+    public func transformToJSON(value: Bool?) -> String? {
+        return (value == true) ? self.trueValue : self.falseValue
     }
 }

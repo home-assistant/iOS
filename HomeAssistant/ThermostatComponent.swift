@@ -24,9 +24,9 @@ class Thermostat: Entity {
     override func mapping(map: Map) {
         super.mapping(map)
         
-        AwayMode              <- (map["attributes.away_mode"], onOffStateTransform)
+        AwayMode              <- (map["attributes.away_mode"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         CurrentTemperature    <- map["attributes.current_temperature"]
-        Fan                   <- (map["attributes.fan"], onOffStateTransform)
+        Fan                   <- (map["attributes.fan"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         Temperature           <- map["attributes.temperature"]
         MaximumTemperature    <- map["attributes.max_temp"]
         MinimumTemperature    <- map["attributes.min_temp"]

@@ -40,8 +40,8 @@ class Climate: Entity {
     override func mapping(map: Map) {
         super.mapping(map)
         
-        AuxHeat              <- (map["attributes.aux_heat"], onOffStateTransform)
-        AwayMode             <- (map["attributes.away_mode"], onOffStateTransform)
+        AuxHeat              <- (map["attributes.aux_heat"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
+        AwayMode             <- (map["attributes.away_mode"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         CurrentHumidity      <- map["attributes.current_humidity"]
         CurrentTemperature   <- map["attributes.current_temperature"]
         FanMode              <- map["attributes.fan_mode"]
@@ -51,7 +51,7 @@ class Climate: Entity {
         MinimumHumidity      <- map["attributes.min_humidity"]
         MinimumTemp          <- map["attributes.min_temp"]
         OperationMode        <- map["attributes.operation_mode"]
-        SwingMode            <- (map["attributes.swing_mode"], onOffStateTransform)
+        SwingMode            <- (map["attributes.swing_mode"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         Temperature          <- map["attributes.temperature"]
         UnitOfMeasurement    <- map["attributes.unit_of_measurement"]
         
@@ -123,8 +123,4 @@ class Climate: Entity {
     override var ComponentIcon: String {
         return "mdi:nest-thermostat"
     }
-}
-
-public class StringObject: Object {
-    public dynamic var value: String?
 }

@@ -12,8 +12,6 @@ import RealmSwift
 
 class Switch: SwitchableEntity {
     
-    dynamic var Location: String? = nil
-    dynamic var NodeID: String? = nil
     var TodayMilliwattHours = RealmOptional<Int>()
     var CurrentPowerMilliwattHours = RealmOptional<Int>()
     
@@ -22,8 +20,6 @@ class Switch: SwitchableEntity {
         
         TodayMilliwattHours          <- map["attributes.today_mwh"]
         CurrentPowerMilliwattHours   <- map["attributes.current_power_mwh"]
-        NodeID                       <- map["attributes.node_id"]
-        Location                     <- map["attributes.location"]
     }
     
     override var ComponentIcon: String {

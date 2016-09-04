@@ -11,7 +11,7 @@ import ObjectMapper
 
 class Script: SwitchableEntity {
     
-    var CanCancel: Bool?
+    dynamic var CanCancel: Bool = false
     
     override func mapping(map: Map) {
         super.mapping(map)

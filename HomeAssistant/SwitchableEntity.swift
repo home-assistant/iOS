@@ -11,20 +11,6 @@ import ObjectMapper
 import Realm
 import RealmSwift
 
-let onOffStateTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
-    return Bool(String(value!) == "on")
-}, toJSON: { (value: Bool?) -> String? in
-    if let value = value {
-        if value == true {
-            return "on"
-        } else {
-            return "off"
-        }
-    }
-    return nil
-})
-
-
 class SwitchableEntity: Entity {
     
     var IsOn: Bool?
@@ -38,7 +24,7 @@ class SwitchableEntity: Entity {
     override func mapping(map: Map) {
         super.mapping(map)
         
-        IsOn         <- (map["state"], onOffStateTransform)
+        IsOn         <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
     }
     
     override func EntityColor() -> UIColor {

@@ -9,28 +9,14 @@
 import Foundation
 import ObjectMapper
 
-let garageIsOpenTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
-    return Bool(String(value!) == "open")
-}, toJSON: { (value: Bool?) -> String? in
-    if let value = value {
-        if value == true {
-            return "open"
-        } else {
-            return "closed"
-        }
-    }
-    return nil
-})
-
-
 class GarageDoor: Entity {
     
-    var IsOpen: Bool?
+    dynamic var IsOpen: Bool = false
     
     override func mapping(map: Map) {
         super.mapping(map)
         
-        IsOpen    <- (map["state"], garageIsOpenTransform)
+        IsOpen    <- (map["state"], ComponentBoolTransform(trueValue: "open", falseValue: "closed"))
     }
     
     override var ComponentIcon: String {

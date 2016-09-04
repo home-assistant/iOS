@@ -9,28 +9,14 @@
 import Foundation
 import ObjectMapper
 
-let isLockedTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
-    return Bool(String(value!) == "locked")
-}, toJSON: { (value: Bool?) -> String? in
-    if let value = value {
-        if value == true {
-            return "locked"
-        } else {
-            return "unlocked"
-        }
-    }
-    return nil
-})
-
-
 class Lock: Entity {
     
-    var IsLocked: Bool?
+    dynamic var IsLocked: Bool = false
 
     override func mapping(map: Map) {
         super.mapping(map)
         
-        IsLocked    <- (map["state"], isLockedTransform)
+        IsLocked    <- (map["state"], ComponentBoolTransform(trueValue: "locked", falseValue: "unlocked"))
     }
     
     override var ComponentIcon: String {

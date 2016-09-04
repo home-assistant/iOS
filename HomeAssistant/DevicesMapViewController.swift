@@ -77,7 +77,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         
         for device in devices! {
             let device = device as! DeviceTracker
-            if device.Latitude == nil || device.Longitude == nil {
+            if device.Latitude.value == nil || device.Longitude.value == nil {
                 continue
             }
             let dropPin = DeviceAnnotation()
@@ -87,14 +87,14 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             if let changedTime = device.LastChanged {
                 subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago")
             }
-            if let battery = device.Battery {
+            if let battery = device.Battery.value {
                 subtitlePieces.append("Battery: "+String(battery)+"%")
             }
             dropPin.subtitle = subtitlePieces.joinWithSeparator(" / ")
             dropPin.device = device
             mapView.addAnnotation(dropPin)
             
-            if let radius = device.GPSAccuracy {
+            if let radius = device.GPSAccuracy.value {
                 let circle = HACircle.init(centerCoordinate: device.locationCoordinates(), radius: radius)
                 circle.type = "device"
                 mapView.addOverlay(circle)

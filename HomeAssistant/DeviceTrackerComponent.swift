@@ -8,28 +8,16 @@
 
 import Foundation
 import ObjectMapper
+import RealmSwift
 import CoreLocation
-
-let isHomeStateTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
-    return Bool(String(value!) == "home")
-    }, toJSON: { (value: Bool?) -> String? in
-        if let value = value {
-            if value == true {
-                return "home"
-            } else {
-                return "not_home"
-            }
-        }
-        return nil
-})
 
 class DeviceTracker: Entity {
     
-    var Latitude: Double?
-    var Longitude: Double?
-    var Battery: Int?
-    var GPSAccuracy: Double?
-    var IsHome: Bool?
+    var Latitude = RealmOptional<Double>()
+    var Longitude = RealmOptional<Double>()
+    var Battery = RealmOptional<Int>()
+    var GPSAccuracy = RealmOptional<Double>() // It's a double for direct use in CLLocationDistance
+    dynamic var IsHome: Bool = false
     
     override func mapping(map: Map) {
         super.mapping(map)
@@ -38,12 +26,12 @@ class DeviceTracker: Entity {
         Longitude    <- map["attributes.longitude"]
         Battery      <- map["attributes.battery"]
         GPSAccuracy  <- map["attributes.gps_accuracy"]
-        IsHome       <- (map["state"], isHomeStateTransform)
+        IsHome       <- (map["state"], ComponentBoolTransform(trueValue: "home", falseValue: "not_home"))
     }
     
     func locationCoordinates() -> CLLocationCoordinate2D {
-        if self.Latitude != nil && self.Longitude != nil {
-            return CLLocationCoordinate2D(latitude: self.Latitude!, longitude: self.Longitude!)
+        if self.Latitude.value != nil && self.Longitude.value != nil {
+            return CLLocationCoordinate2D(latitude: self.Latitude.value!, longitude: self.Longitude.value!)
         } else {
             return CLLocationCoordinate2D()
         }

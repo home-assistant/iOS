@@ -110,7 +110,7 @@ class EntityAttributesViewController: FormViewController {
                         let mediaPlayer = entity as! MediaPlayer
                         form.last! <<< SwitchRow(attribute.0){
                             $0.title = "Mute"
-                            $0.value = mediaPlayer.IsVolumeMuted
+                            $0.value = mediaPlayer.IsVolumeMuted.value
                         }.onChange { row -> Void in
                             if (row.value == true) {
                                 mediaPlayer.muteOn()
@@ -192,7 +192,7 @@ class EntityAttributesViewController: FormViewController {
                             updateDict[key] = (entity as! MediaPlayer).humanReadableMediaDuration()
                             break
                         case "is_volume_muted":
-                            updateDict[key] = (entity as! MediaPlayer).IsVolumeMuted!
+                            updateDict[key] = (entity as! MediaPlayer).IsVolumeMuted
                             break
                         case "volume_level":
                             updateDict[key] = Float(value as! NSNumber)*100

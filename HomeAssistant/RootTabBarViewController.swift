@@ -78,8 +78,8 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     if groupZero.IsAllGroup == true {
                         return false
                     } else {
-                        if groupZero.Order != nil && groupOne.Order != nil {
-                            return groupZero.Order < groupOne.Order
+                        if groupZero.Order.value != nil && groupOne.Order.value != nil {
+                            return groupZero.Order.value < groupOne.Order.value
                         } else {
                             return groupZero.FriendlyName < groupOne.FriendlyName
                         }
