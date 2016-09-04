@@ -166,7 +166,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     let oldStateSensor = oldState as! Sensor
                     subtitleString = "\(newStateSensor.State) \(newStateSensor.UnitOfMeasurement) . It was \(oldState.State) \(oldStateSensor.UnitOfMeasurement)"
                 }
-                Whistle(Murmur(title: subtitleString))
+                show(whistle: Murmur(title: subtitleString), action: .Show(1))
             }
         }
     }

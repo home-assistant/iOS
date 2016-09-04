@@ -9,7 +9,7 @@
 import Foundation
 import ObjectMapper
 
-class Entity: Mappable {
+class Entity: StaticMappable {
     let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
     
     var ID: String = ""

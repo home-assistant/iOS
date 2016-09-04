@@ -49,6 +49,8 @@ public class HomeAssistantAPI {
     
     var loadedComponents = [String]()
     
+    let Location = LocationManager()
+    
     func Setup(baseAPIUrl: String, APIPassword: String) -> Promise<StatusResponse> {
         self.baseAPIURL = baseAPIUrl+"/api/"
         self.apiPassword = APIPassword
@@ -134,14 +136,14 @@ public class HomeAssistantAPI {
         
         eventSource.onOpen {
             print("SSE: Connection Opened")
-            Whistle(Murmur(title: "Connected to Home Assistant"))
+            show(whistle: Murmur(title: "Connected to Home Assistant"), action: .Show(1))
         }
         
         eventSource.onError { error in
             if let err = error {
                 Crashlytics.sharedInstance().recordError(err)
                 print("SSE: ", err)
-                Whistle(Murmur(title: "SSE Error! \(err.localizedDescription)"))
+                show(whistle: Murmur(title: "SSE Error! \(err.localizedDescription)"), action: .Show(1))
             }
         }
         
@@ -202,21 +204,21 @@ public class HomeAssistantAPI {
     }
     
     func trackLocation() {
-        LocationManager.shared.observeLocations(.Neighborhood, frequency: .Significant, onSuccess: { (location) -> Void in
-            // Previously, "" was "Significant location change detected"
+        Location.getLocation(withAccuracy: .Neighborhood, frequency: .Significant, timeout: 50, onSuccess: { (location) in
+            // You will receive at max one event if desidered accuracy can be achieved; this because you have set .OneShot as frequency.
             self.submitLocation("", latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
-        }, onError: { (error) -> Void in
+        }) { (lastValidLocation, error) in
             // something went wrong. request will be cancelled automatically
             print("Something went wrong when trying to get significant location updates! Error was:", error)
             Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-        })
+        }
         
         self.GetStates().then { states -> Void in
             for zone in states.filter({ return $0.Domain == "zone" }) {
                 let zone = zone as! Zone
                 if zone.Latitude != nil && zone.Longitude != nil {
                     let regionCoordinates = CLLocationCoordinate2DMake(zone.Latitude!, zone.Longitude!)
-                    try BeaconManager.shared.monitorGeographicRegion(centeredAt: regionCoordinates, radius: zone.Radius!, onEnter: { (region) -> Void in
+                    try Beacons.monitor(geographicRegion: regionCoordinates, radius: zone.Radius!, onStateDidChange: { (region) -> Void in
                         print("Region entered!", region)
                         var title = "Region"
                         if let friendlyName = zone.FriendlyName {
@@ -243,7 +245,7 @@ public class HomeAssistantAPI {
 //        self.getBeacons().then { beacons -> Void in
 //            for beacon in beacons {
 //                print("Got beacon from HA", beacon.UUID, beacon.Major, beacon.Minor)
-//                try BeaconManager.shared.monitorForBeacon(proximityUUID: beacon.UUID!, major: UInt16(beacon.Major!), minor: UInt16(beacon.Minor!), onFound: { beaconsFound in
+//                try Beacons.monitorForBeacon(proximityUUID: beacon.UUID!, major: UInt16(beacon.Major!), minor: UInt16(beacon.Minor!), onFound: { beaconsFound in
 //                    // beaconsFound is an array of found beacons ([CLBeacon]) but in this case it contains only one beacon
 //                    print("beaconsFound", beaconsFound)
 //                }) { error in
@@ -260,10 +262,11 @@ public class HomeAssistantAPI {
     
     func sendOneshotLocation(notifyString: String) -> Promise<Bool> {
         return Promise { fulfill, reject in
-            LocationManager.shared.observeLocations(.Neighborhood, frequency: .OneShot, onSuccess: { (location) -> Void in
-                self.submitLocation(notifyString, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
+            Location.getLocation(withAccuracy: .Neighborhood, frequency: .Significant, timeout: 50, onSuccess: { (location) in
+                // You will receive at max one event if desidered accuracy can be achieved; this because you have set .OneShot as frequency.
+                self.submitLocation("", latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
                 fulfill(true)
-            }) { (error) -> Void in
+            }) { (lastValidLocation, error) in
                 print("Error when trying to get a oneshot location!", error)
                 Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
                 reject(error)
@@ -392,7 +395,7 @@ public class HomeAssistantAPI {
             self.manager!.request(.POST, queryUrl, parameters: ["state": state], encoding: .JSON).validate().responseObject { (response: Response<Entity, NSError>) in
                 switch response.result {
                 case .Success:
-                    Whistle(Murmur(title: Entity(id: entityId).Domain+" state set to "+state))
+                    show(whistle: Murmur(title: Entity(id: entityId).Domain+" state set to "+state), action: .Show(1))
                     fulfill(response.result.value!)
                 case .Failure(let error):
                     CLSLogv("Error when attemping to SetState(): %@", getVaList([error.localizedDescription]))
@@ -410,7 +413,7 @@ public class HomeAssistantAPI {
                 switch response.result {
                 case .Success:
                     if let jsonDict = response.result.value as? [String : String] {
-                        Whistle(Murmur(title: eventType+" created"))
+                        show(whistle: Murmur(title: eventType+" created"), action: .Show(1))
                         fulfill(jsonDict["message"]!)
                     }
                 case .Failure(let error):
@@ -423,7 +426,7 @@ public class HomeAssistantAPI {
     }
     
     func CallService(domain: String, service: String, serviceData: [String:AnyObject]) -> Promise<[ServicesResponse]> {
-//        Whistle(Murmur(title: domain+"/"+service+" called"))
+//        show(whistle: Murmur(title: domain+"/"+service+" called"), action: .Show(1))
         let queryUrl = baseAPIURL+"services/"+domain+"/"+service
         return Promise { fulfill, reject in
             self.manager!.request(.POST, queryUrl, parameters: serviceData, encoding: .JSON).validate().responseArray { (response: Response<[ServicesResponse], NSError>) in
@@ -440,7 +443,7 @@ public class HomeAssistantAPI {
     }
     
     func turnOn(entityId: String) -> Promise<[ServicesResponse]> {
-        Whistle(Murmur(title: entityId+" turned on"))
+        show(whistle: Murmur(title: entityId+" turned on"), action: .Show(1))
         return CallService("homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
     }
     
@@ -449,12 +452,12 @@ public class HomeAssistantAPI {
         if let friendlyName = entity.FriendlyName {
             title = friendlyName
         }
-        Whistle(Murmur(title: title+" turned on"))
+        show(whistle: Murmur(title: title+" turned on"), action: .Show(1))
         return CallService("homeassistant", service: "turn_on", serviceData: ["entity_id": entity.ID])
     }
     
     func turnOff(entityId: String) -> Promise<[ServicesResponse]> {
-        Whistle(Murmur(title: entityId+" turned off"))
+        show(whistle: Murmur(title: entityId+" turned off"), action: .Show(1))
         return CallService("homeassistant", service: "turn_off", serviceData: ["entity_id": entityId])
     }
     
@@ -463,12 +466,12 @@ public class HomeAssistantAPI {
         if let friendlyName = entity.FriendlyName {
             title = friendlyName
         }
-        Whistle(Murmur(title: title+" turned off"))
+        show(whistle: Murmur(title: title+" turned off"), action: .Show(1))
         return CallService("homeassistant", service: "turn_off", serviceData: ["entity_id": entity.ID])
     }
     
     func toggle(entityId: String) -> Promise<[ServicesResponse]> {
-        Whistle(Murmur(title: entityId+" toggled"))
+        show(whistle: Murmur(title: entityId+" toggled"), action: .Show(1))
         return CallService("homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
     }
     
@@ -477,7 +480,7 @@ public class HomeAssistantAPI {
         if let friendlyName = entity.FriendlyName {
             title = friendlyName
         }
-        Whistle(Murmur(title: title+" toggled"))
+        show(whistle: Murmur(title: title+" toggled"), action: .Show(1))
         return CallService("homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
     
