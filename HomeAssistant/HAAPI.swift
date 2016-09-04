@@ -101,12 +101,10 @@ public class HomeAssistantAPI {
                 Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
                 
                 if self.locationEnabled() {
-                    print("Found device_tracker in config components, starting location monitoring!")
                     self.trackLocation()
                 }
                 
                 if PermissionScope().statusNotifications() == .Authorized {
-                    print("User authorized the use of notifications")
                     UIApplication.sharedApplication().registerForRemoteNotifications()
                 }
                 
@@ -545,7 +543,6 @@ public class HomeAssistantAPI {
                             newAction.activationMode = (action.ActivationMode == "foreground") ? UIUserNotificationActivationMode.Foreground : UIUserNotificationActivationMode.Background
                             if let params = action.Parameters {
                                 newAction.parameters = params
-                                print("Got params", params)
                             }
                             if (action.Context == "default") {
                                 defaultCategoryActions.append(newAction)

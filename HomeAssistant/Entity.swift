@@ -66,7 +66,7 @@ class Entity: StaticMappable {
             case "zone":
                 return Zone(map)
             default:
-                print("No component ObjectMapper found for:", entityId)
+                print("No class found for:", entityType)
                 return Entity(map)
             }
         }
@@ -97,7 +97,6 @@ class Entity: StaticMappable {
         
         if let pic = self.Picture {
             HomeAssistantAPI.sharedInstance.getImage(pic).then { image -> Void in
-                print("Downloaded image!", pic)
                 self.DownloadedPicture = image
             }.error { err -> Void in
                 print("Error when attempting to download image", err)

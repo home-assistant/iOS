@@ -205,7 +205,7 @@ class GroupViewController: FormViewController {
                         }
                 }
             default:
-                print("We don't want this type", entity.Domain)
+                print("There is no row type defined for \(entity.Domain) so we are skipping it")
             }
         }
         
