@@ -157,6 +157,7 @@
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66428111CF7A83200903804 /* PushConfiguration.swift */; };
 		B6767A511D0234E700F2A08B /* SwitchableEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6767A501D0234E700F2A08B /* SwitchableEntity.swift */; };
+		B6880B2B1D7B9E6400CCB899 /* ClimateComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6880B2A1D7B9E6400CCB899 /* ClimateComponent.swift */; };
 		B6E47E881CBA01310027F6CA /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E871CBA01310027F6CA /* CallService.swift */; };
 		B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */; };
 		B6E47E8E1CBA3EDB0027F6CA /* ZoneComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */; };
@@ -366,6 +367,7 @@
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
 		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
+		B6880B2A1D7B9E6400CCB899 /* ClimateComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClimateComponent.swift; sourceTree = "<group>"; };
 		B6E47E871CBA01310027F6CA /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceExecuted.swift; sourceTree = "<group>"; };
 		B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneComponent.swift; sourceTree = "<group>"; };
@@ -725,6 +727,7 @@
 			isa = PBXGroup;
 			children = (
 				B6F02C001CB489770029ABE7 /* BinarySensorComponent.swift */,
+				B6880B2A1D7B9E6400CCB899 /* ClimateComponent.swift */,
 				B6F02C011CB489770029ABE7 /* DeviceTrackerComponent.swift */,
 				B6F02C021CB489770029ABE7 /* GarageDoorComponent.swift */,
 				B6F02BEA1CB46D090029ABE7 /* GroupComponent.swift */,
@@ -1152,6 +1155,7 @@
 				B6F02C111CB489770029ABE7 /* GarageDoorComponent.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				B6E47E881CBA01310027F6CA /* CallService.swift in Sources */,
+				B6880B2B1D7B9E6400CCB899 /* ClimateComponent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -31,6 +31,8 @@ class Entity: Mappable {
             switch entityType {
             case "binary_sensor":
                 return BinarySensor(map)
+            case "climate":
+                return Climate(map)
             case "device_tracker":
                 return DeviceTracker(map)
             case "group":
