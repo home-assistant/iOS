@@ -68,7 +68,6 @@ func movePushNotificationSounds() {
     
     let libraryPath = try! fileManager.URLForDirectory(.LibraryDirectory, inDomain: NSSearchPathDomainMask.UserDomainMask, appropriateForURL: nil, create: false)
     let librarySoundsPath = libraryPath.URLByAppendingPathComponent("Sounds")
-    print("librarySoundsPath", librarySoundsPath)
     if (!librarySoundsPath.checkResourceIsReachableAndReturnError(nil)) {
         print("Creating sounds directory at", librarySoundsPath)
         try! fileManager.createDirectoryAtURL(librarySoundsPath, withIntermediateDirectories: true, attributes: nil)
@@ -76,7 +75,6 @@ func movePushNotificationSounds() {
     
     let documentsPath = try! fileManager.URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
     let fileList = try! fileManager.contentsOfDirectoryAtURL(documentsPath, includingPropertiesForKeys: nil, options: NSDirectoryEnumerationOptions())
-    print("fileList", fileList)
     for file in fileList {
         let finalUrl = librarySoundsPath.URLByAppendingPathComponent(file.lastPathComponent!)
         print("Moving", file, "to", finalUrl)
