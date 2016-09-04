@@ -1,28 +1,56 @@
 https://community.smartthings.com/t/sonos-notifications-morgan-freeman-edition/21377,https://github.com/nelemansc/SmartThings/blob/master/MorganFreemanSonos,,
-Motion detected,https://s3.amazonaws.com/smartthingssmartapps/motion+detected+generic.mp3,US-EN-Morgan-Freeman-Motion-Detected.wav,3
-Motion in basement,https://s3.amazonaws.com/smartthingssmartapps/Motion+in+Basement.mp3,US-EN-Morgan-Freeman-Motion-In-Basement.wav,3
-Motion in garage,https://s3.amazonaws.com/smartthingssmartapps/Motion+in+Garage.mp3,US-EN-Morgan-Freeman-Motion-In-Garage.wav,3
-Motion in game room,https://s3.amazonaws.com/smartthingssmartapps/motion+in+game+room.mp3,US-EN-Morgan-Freeman-Motion-In-Game-Room.wav,3
-Motion in bedroom,https://s3.amazonaws.com/smartthingssmartapps/motion+in+bedroom.mp3,US-EN-Morgan-Freeman-Motion-In-Bedroom.wav,3
-Motion in living room,https://s3.amazonaws.com/smartthingssmartapps/motion+in+living+room.mp3,US-EN-Morgan-Freeman-Motion-In-Living-Room.wav,3
-Motion in theater,https://s3.amazonaws.com/smartthingssmartapps/motion+in+theater.mp3,US-EN-Morgan-Freeman-Motion-In-Theater.wav,3
-Motion in wine cellar,https://s3.amazonaws.com/smartthingssmartapps/motion+in+wine+cellar.mp3,US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav,3
-Motion in kitchen,https://s3.amazonaws.com/smartthingssmartapps/motion+in+kitchen.mp3,US-EN-Morgan-Freeman-Motion-In-Kitchen.wav,3
+Back door closed,https://s3.amazonaws.com/smartthingssmartapps/back+door+closed.mp3,US-EN-Morgan-Freeman-Back-Door-Closed.wav,6
+Back door locked,https://s3.amazonaws.com/smartthingssmartapps/back+door+locked.mp3,US-EN-Morgan-Freeman-Back-Door-Locked.wav,6
 Back door opened,https://s3.amazonaws.com/smartthingssmartapps/back+door+opened.mp3,US-EN-Morgan-Freeman-Back-Door-Opened.wav,3
+Back door unlocked,https://s3.amazonaws.com/smartthingssmartapps/back+door+unlocked.mp3,US-EN-Morgan-Freeman-Back-Door-Unlocked.wav,6
+Basement door closed,https://s3.amazonaws.com/smartthingssmartapps/basement+door+closed.mp3,US-EN-Morgan-Freeman-Basement-Door-Closed.wav,6
+Basement door locked,https://s3.amazonaws.com/smartthingssmartapps/basement+door+locked.mp3,US-EN-Morgan-Freeman-Basement-Door-Locked.wav,6
 Basement door opened,https://s3.amazonaws.com/smartthingssmartapps/Basement+Door+has+been+opened.mp3,US-EN-Morgan-Freeman-Basement-Door-Opened.wav,3
+Basement door unlocked,https://s3.amazonaws.com/smartthingssmartapps/basement+door+unlocked.mp3,US-EN-Morgan-Freeman-Basement-Door-Unlocked.wav,6
+Your boss is arriving,https://s3.amazonaws.com/smartthingssmartapps/Boss+is+arriving.mp3,US-EN-Morgan-Freeman-Boss-Is-Arriving.wav,6
+Your boyfriend is arriving,https://s3.amazonaws.com/smartthingssmartapps/Boyfriend+is+arriving.mp3,US-EN-Morgan-Freeman-Boyfriend-Is-Arriving.wav,6
 Cleaning Supplies Closet Opened,https://s3.amazonaws.com/smartthingssmartapps/Cleaning+Supplies+Cabinet+has+been+opened.mp3,US-EN-Morgan-Freeman-Cleaning-Supplies-Closet-Opened.wav,3
+Your coworker is arriving,https://s3.amazonaws.com/smartthingssmartapps/Coworker+is+arriving.mp3,US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav,6
+Your daughter is arriving,https://s3.amazonaws.com/smartthingssmartapps/Daughter+is+arriving.mp3,US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav,6
+Your friend is arriving,https://s3.amazonaws.com/smartthingssmartapps/Friend+is+arriving.mp3,US-EN-Morgan-Freeman-Friend-Is-Arriving.wav,6
+Front door closed,https://s3.amazonaws.com/smartthingssmartapps/front+door+closed.mp3,US-EN-Morgan-Freeman-Front-Door-Closed.wav,6
+Front door locked,https://s3.amazonaws.com/smartthingssmartapps/front+door+locked.mp3,US-EN-Morgan-Freeman-Front-Door-Locked.wav,6
 Front door opened,https://s3.amazonaws.com/smartthingssmartapps/Front+Door+has+been+opened.mp3,US-EN-Morgan-Freeman-Front-Door-Opened.wav,3
+Front door unlocked,https://s3.amazonaws.com/smartthingssmartapps/front+door+unlocked.mp3,US-EN-Morgan-Freeman-Front-Door-Unlocked.wav,6
+Garage door closed,https://s3.amazonaws.com/smartthingssmartapps/garage+door+closed.mp3,US-EN-Morgan-Freeman-Garage-Door-Closed.wav,6
+Garage door opened,https://s3.amazonaws.com/smartthingssmartapps/garage+door+opened.mp3,US-EN-Morgan-Freeman-Garage-Door-Opened.wav,6
+Your girlfriend is arriving,https://s3.amazonaws.com/smartthingssmartapps/Girlfriend+arriving.mp3,US-EN-Morgan-Freeman-Girlfriend-Is-Arriving.wav,6
 Good Morning,https://s3.amazonaws.com/smartthingssmartapps/Good+morning.mp3,US-EN-Morgan-Freeman-Good-Morning.wav,3
 Good Night,https://s3.amazonaws.com/smartthingssmartapps/Good+night.mp3,US-EN-Morgan-Freeman-Good-Night.wav,3
 Liquor Cabinet Opened,https://s3.amazonaws.com/smartthingssmartapps/Liquor+Cabinet+has+been+opened.mp3,US-EN-Morgan-Freeman-Liquor-Cabinet-Opened.wav,3
+Motion detected,https://s3.amazonaws.com/smartthingssmartapps/motion+detected+generic.mp3,US-EN-Morgan-Freeman-Motion-Detected.wav,3
+Motion has been detected in the basement,https://s3.amazonaws.com/smartthingssmartapps/Motion+in+Basement.mp3,US-EN-Morgan-Freeman-Motion-In-Basement.wav,3
+Motion has been detected in the bedroom,https://s3.amazonaws.com/smartthingssmartapps/motion+in+bedroom.mp3,US-EN-Morgan-Freeman-Motion-In-Bedroom.wav,3
+Motion has been detected in the game room,https://s3.amazonaws.com/smartthingssmartapps/motion+in+game+room.mp3,US-EN-Morgan-Freeman-Motion-In-Game-Room.wav,3
+Motion has been detected in the garage,https://s3.amazonaws.com/smartthingssmartapps/Motion+in+Garage.mp3,US-EN-Morgan-Freeman-Motion-In-Garage.wav,3
+Motion has been detected in the kitchen,https://s3.amazonaws.com/smartthingssmartapps/motion+in+kitchen.mp3,US-EN-Morgan-Freeman-Motion-In-Kitchen.wav,3
+Motion has been detected in the living room,https://s3.amazonaws.com/smartthingssmartapps/motion+in+living+room.mp3,US-EN-Morgan-Freeman-Motion-In-Living-Room.wav,3
+Motion has been detected in the theater,https://s3.amazonaws.com/smartthingssmartapps/motion+in+theater.mp3,US-EN-Morgan-Freeman-Motion-In-Theater.wav,3
+Motion has been detected in the wine cellar,https://s3.amazonaws.com/smartthingssmartapps/motion+in+wine+cellar.mp3,US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav,3
+Patio door closed,https://s3.amazonaws.com/smartthingssmartapps/patio+door+closed.mp3,US-EN-Morgan-Freeman-Patio-Door-Closed.wav,6
+Patio door locked,https://s3.amazonaws.com/smartthingssmartapps/patio+door+locked.mp3,US-EN-Morgan-Freeman-Patio-Door-Locked.wav,6
 Patio door opened,https://s3.amazonaws.com/smartthingssmartapps/Patio+Door+has+been+opened.mp3,US-EN-Morgan-Freeman-Patio-Door-Opened.wav,3
+Patio door unlocked,https://s3.amazonaws.com/smartthingssmartapps/patio+door+unlocked.mp3,US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav,6
+Your roommate is arriving,https://s3.amazonaws.com/smartthingssmartapps/roommate+is+arriving.mp3,US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav,6
 Searching for car keys,https://s3.amazonaws.com/smartthingssmartapps/Searching+for+car+keys.mp3,US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav,3
 Setting the mood,https://s3.amazonaws.com/smartthingssmartapps/Setting+the+mood.mp3,US-EN-Morgan-Freeman-Setting-The-Mood.wav,3
+Smartthings detected a flood,https://s3.amazonaws.com/smartthingssmartapps/SmartThings+detected+flood.mp3,US-EN-Morgan-Freeman-Smartthings-Detected-A-Flood.wav,6
+Smartthings detected carbon monoxide,https://s3.amazonaws.com/smartthingssmartapps/SmartThings+detected+CO.mp3,US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav,6
+Smartthings detected smoke,https://s3.amazonaws.com/smartthingssmartapps/SmartThings+detected+smoke.mp3,US-EN-Morgan-Freeman-Smartthings-Detected-Smoke.wav,6
+Smoke has been detected in the basement,https://s3.amazonaws.com/smartthingssmartapps/Smoke+in+basement.mp3,US-EN-Morgan-Freeman-Smoke-Detected-In-Basement.wav,6
+Smoke has been detected in the garage,https://s3.amazonaws.com/smartthingssmartapps/Smoke+in+garage.mp3,US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav,6
+Smoke has been detected in the kitchen,https://s3.amazonaws.com/smartthingssmartapps/Smoke+in+kitchen.mp3,US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav,6
+Someone is arriving,https://s3.amazonaws.com/smartthingssmartapps/Someone+is+arriving.mp3,US-EN-Morgan-Freeman-Someone-Is-Arriving.wav,6
+Your son is arriving,https://s3.amazonaws.com/smartthingssmartapps/son+is+arriving.mp3,US-EN-Morgan-Freeman-Son-Is-Arriving.wav,6
 Starting Movie Mode,https://s3.amazonaws.com/smartthingssmartapps/Starting+Movie+Mode.mp3,US-EN-Morgan-Freeman-Starting-Movie-Mode.wav,3
 Starting Party Mode,https://s3.amazonaws.com/smartthingssmartapps/Starting+Party+Mode.mp3,US-EN-Morgan-Freeman-Starting-Party-Mode.wav,3
 Starting Romance Mode,https://s3.amazonaws.com/smartthingssmartapps/Starting+Romance+Mode.mp3,US-EN-Morgan-Freeman-Starting-Romance-Mode.wav,3
 Turning off all the lights,https://s3.amazonaws.com/smartthingssmartapps/Turning+off+all+the+lights.mp3,US-EN-Morgan-Freeman-Turning-Off-All-The-Lights.wav,3
-Turning off the TV,https://s3.amazonaws.com/smartthingssmartapps/Turning+off+the+TV.mp3,US-EN-Morgan-Freeman-Turning-Off-The-TV.wav,3
 Turning off the air conditioner,https://s3.amazonaws.com/smartthingssmartapps/Turning+off+the+air+conditioner.mp3,US-EN-Morgan-Freeman-Turning-Off-The-Air-Conditioner.wav,3
 Turning off the bar lights,https://s3.amazonaws.com/smartthingssmartapps/Turning+off+the+bar+lights.mp3,US-EN-Morgan-Freeman-Turning-Off-The-Bar-Lights.wav,3
 Turning off the chandelier,https://s3.amazonaws.com/smartthingssmartapps/Turning+off+the+chandelier.mp3,US-EN-Morgan-Freeman-Turning-Off-The-Chandelier.wav,3
@@ -32,7 +60,7 @@ Turning off the kitchen light,https://s3.amazonaws.com/smartthingssmartapps/Turn
 Turning off the light,https://s3.amazonaws.com/smartthingssmartapps/Turning+off+the+light.mp3,US-EN-Morgan-Freeman-Turning-Off-The-Light.wav,3
 Turning off the lights,https://s3.amazonaws.com/smartthingssmartapps/Turning+off+the+lights.mp3,US-EN-Morgan-Freeman-Turning-Off-The-Lights.wav,3
 Turning off the mood lights,https://s3.amazonaws.com/smartthingssmartapps/Turning+off+the+mood+lights.mp3,US-EN-Morgan-Freeman-Turning-Off-The-Mood-Lights.wav,3
-Turning on the TV,https://s3.amazonaws.com/smartthingssmartapps/Turning+on+the+TV.mp3,US-EN-Morgan-Freeman-Turning-On-The-TV.wav,3
+Turning off the TV,https://s3.amazonaws.com/smartthingssmartapps/Turning+off+the+TV.mp3,US-EN-Morgan-Freeman-Turning-Off-The-TV.wav,3
 Turning on the air conditioner,https://s3.amazonaws.com/smartthingssmartapps/Turning+on+the+air+conditioner.mp3,US-EN-Morgan-Freeman-Turning-On-The-Air-Conditioner.wav,3
 Turning on the bar lights,https://s3.amazonaws.com/smartthingssmartapps/Turning+on+the+bar+lights.mp3,US-EN-Morgan-Freeman-Turning-On-The-Bar-Lights.wav,3
 Turning on the chandelier,https://s3.amazonaws.com/smartthingssmartapps/Turning+on+the+chandelier.mp3,US-EN-Morgan-Freeman-Turning-On-The-Chandelier.wav,3
@@ -42,38 +70,10 @@ Turning on the kitchen light,https://s3.amazonaws.com/smartthingssmartapps/Turni
 Turning on the light,https://s3.amazonaws.com/smartthingssmartapps/Turning+on+the+light.mp3,US-EN-Morgan-Freeman-Turning-On-The-Light.wav,3
 Turning on the lights,https://s3.amazonaws.com/smartthingssmartapps/Turning+on+the+lights.mp3,US-EN-Morgan-Freeman-Turning-On-The-Lights.wav,3
 Turning on the mood lights,https://s3.amazonaws.com/smartthingssmartapps/Turning+on+the+mood+lights.mp3,US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav,3
+Turning on the TV,https://s3.amazonaws.com/smartthingssmartapps/Turning+on+the+TV.mp3,US-EN-Morgan-Freeman-Turning-On-The-TV.wav,3
 Vacate the premises,https://s3.amazonaws.com/smartthingssmartapps/Vacate+the+premesis.mp3,US-EN-Morgan-Freeman-Vacate-The-Premises.wav,6
-Front door closed,https://s3.amazonaws.com/smartthingssmartapps/front+door+closed.mp3,US-EN-Morgan-Freeman-Front-Door-Closed.wav,6
-Front door locked,https://s3.amazonaws.com/smartthingssmartapps/front+door+locked.mp3,US-EN-Morgan-Freeman-Front-Door-Locked.wav,6
-Front door unlocked,https://s3.amazonaws.com/smartthingssmartapps/front+door+unlocked.mp3,US-EN-Morgan-Freeman-Front-Door-Unlocked.wav,6
-Back door closed,https://s3.amazonaws.com/smartthingssmartapps/back+door+closed.mp3,US-EN-Morgan-Freeman-Back-Door-Closed.wav,6
-Back door locked,https://s3.amazonaws.com/smartthingssmartapps/back+door+locked.mp3,US-EN-Morgan-Freeman-Back-Door-Locked.wav,6
-Back door unlocked,https://s3.amazonaws.com/smartthingssmartapps/back+door+unlocked.mp3,US-EN-Morgan-Freeman-Back-Door-Unlocked.wav,6
-Basement door closed,https://s3.amazonaws.com/smartthingssmartapps/basement+door+closed.mp3,US-EN-Morgan-Freeman-Basement-Door-Closed.wav,6
-Basement door locked,https://s3.amazonaws.com/smartthingssmartapps/basement+door+locked.mp3,US-EN-Morgan-Freeman-Basement-Door-Locked.wav,6
-Basement door unlocked,https://s3.amazonaws.com/smartthingssmartapps/basement+door+unlocked.mp3,US-EN-Morgan-Freeman-Basement-Door-Unlocked.wav,6
-Garage door opened,https://s3.amazonaws.com/smartthingssmartapps/garage+door+opened.mp3,US-EN-Morgan-Freeman-Garage-Door-Opened.wav,6
-Garage door closed,https://s3.amazonaws.com/smartthingssmartapps/garage+door+closed.mp3,US-EN-Morgan-Freeman-Garage-Door-Closed.wav,6
-Patio door closed,https://s3.amazonaws.com/smartthingssmartapps/patio+door+closed.mp3,US-EN-Morgan-Freeman-Patio-Door-Closed.wav,6
-Patio door locked,https://s3.amazonaws.com/smartthingssmartapps/patio+door+locked.mp3,US-EN-Morgan-Freeman-Patio-Door-Locked.wav,6
-Patio door unlocked,https://s3.amazonaws.com/smartthingssmartapps/patio+door+unlocked.mp3,US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav,6
 Water detected in basement,https://s3.amazonaws.com/smartthingssmartapps/Water+in+basement.mp3,US-EN-Morgan-Freeman-Water-Detected-In-Basement.wav,6
-Water detected in kitchen,https://s3.amazonaws.com/smartthingssmartapps/Water+in+kitchen.mp3,US-EN-Morgan-Freeman-Water-Detected-In-Kitchen.wav,6
 Water detected in garage,https://s3.amazonaws.com/smartthingssmartapps/Water+in+garage.mp3,US-EN-Morgan-Freeman-Water-Detected-In-Garage.wav,6
-Smoke detected in kitchen,https://s3.amazonaws.com/smartthingssmartapps/Smoke+in+kitchen.mp3,US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav,6
-Smoke detected in garage,https://s3.amazonaws.com/smartthingssmartapps/Smoke+in+garage.mp3,US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav,6
-Smoke detected in basement,https://s3.amazonaws.com/smartthingssmartapps/Smoke+in+basement.mp3,US-EN-Morgan-Freeman-Smoke-Detected-In-Basement.wav,6
-Someone is arriving,https://s3.amazonaws.com/smartthingssmartapps/Someone+is+arriving.mp3,US-EN-Morgan-Freeman-Someone-Is-Arriving.wav,6
-Boss is arriving,https://s3.amazonaws.com/smartthingssmartapps/Boss+is+arriving.mp3,US-EN-Morgan-Freeman-Boss-Is-Arriving.wav,6
-Boyfriend is arriving,https://s3.amazonaws.com/smartthingssmartapps/Boyfriend+is+arriving.mp3,US-EN-Morgan-Freeman-Boyfriend-Is-Arriving.wav,6
-Coworker is arriving,https://s3.amazonaws.com/smartthingssmartapps/Coworker+is+arriving.mp3,US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav,6
-Daughter is arriving,https://s3.amazonaws.com/smartthingssmartapps/Daughter+is+arriving.mp3,US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav,6
-Friend is arriving,https://s3.amazonaws.com/smartthingssmartapps/Friend+is+arriving.mp3,US-EN-Morgan-Freeman-Friend-Is-Arriving.wav,6
-Girlfriend is arriving,https://s3.amazonaws.com/smartthingssmartapps/Girlfriend+arriving.mp3,US-EN-Morgan-Freeman-Girlfriend-Is-Arriving.wav,6
-Roommate is arriving,https://s3.amazonaws.com/smartthingssmartapps/roommate+is+arriving.mp3,US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav,6
-Son is arriving,https://s3.amazonaws.com/smartthingssmartapps/son+is+arriving.mp3,US-EN-Morgan-Freeman-Son-Is-Arriving.wav,6
-Wife is arriving,https://s3.amazonaws.com/smartthingssmartapps/wife+is+arriving.mp3,US-EN-Morgan-Freeman-Wife-Is-Arriving.wav,6
-Smartthings detected a flood,https://s3.amazonaws.com/smartthingssmartapps/SmartThings+detected+flood.mp3,US-EN-Morgan-Freeman-Smartthings-Detected-A-Flood.wav,6
-Smartthings detected carbon monoxide,https://s3.amazonaws.com/smartthingssmartapps/SmartThings+detected+CO.mp3,US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav,6
-Smartthings detected smoke,https://s3.amazonaws.com/smartthingssmartapps/SmartThings+detected+smoke.mp3,US-EN-Morgan-Freeman-Smartthings-Detected-Smoke.wav,6
+Water detected in kitchen,https://s3.amazonaws.com/smartthingssmartapps/Water+in+kitchen.mp3,US-EN-Morgan-Freeman-Water-Detected-In-Kitchen.wav,6
 Welcome Home,https://s3.amazonaws.com/smartthingssmartapps/Welcome+Home.mp3,US-EN-Morgan-Freeman-Welcome-Home.wav,6
+Your wife is arriving,https://s3.amazonaws.com/smartthingssmartapps/wife+is+arriving.mp3,US-EN-Morgan-Freeman-Wife-Is-Arriving.wav,6
