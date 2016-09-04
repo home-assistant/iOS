@@ -43,6 +43,7 @@ class Light: SwitchableEntity {
     override var ComponentIcon: String {
         return "mdi:lightbulb"
     }
+
     override class func ignoredProperties() -> [String] {
         return ["RGBColor"]
     }

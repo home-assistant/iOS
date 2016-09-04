@@ -22,6 +22,7 @@ target 'HomeAssistant' do
   pod 'ObjectMapper', '~> 1.2'
   pod 'PermissionScope'
   pod 'PromiseKit'
+  pod 'RealmSwift'
   pod 'SwiftDate'
   pod 'RealmSwift'
   pod 'SwiftLocation'

@@ -106,12 +106,22 @@ class Entity: Object, StaticMappable {
         }
     }
     
+    override class func ignoredProperties() -> [String] {
+        return ["Attributes"]
+    }
+    
+    override static func primaryKey() -> String? {
+        return "ID"
+    }
+    
     func turnOn() {
         HomeAssistantAPI.sharedInstance.turnOnEntity(self)
     }
+    
     func turnOff() {
         HomeAssistantAPI.sharedInstance.turnOffEntity(self)
     }
+    
     func toggle() {
         HomeAssistantAPI.sharedInstance.toggleEntity(self)
     }
@@ -213,14 +223,6 @@ class Entity: Object, StaticMappable {
         if self.MobileIcon != nil { icon = self.MobileIcon! }
         if self.Icon != nil { icon = self.Icon! }
         return getIconForIdentifier(icon, iconWidth: 30, iconHeight: 30, color: EntityColor())
-    }
-
-    override class func ignoredProperties() -> [String] {
-        return ["Attributes"]
-    }
-    
-    override static func primaryKey() -> String? {
-        return "ID"
     }
     
 }

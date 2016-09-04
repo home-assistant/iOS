@@ -37,6 +37,7 @@ class Group: Entity {
     override var ComponentIcon: String {
         return "mdi:google-circles-communities"
     }
+
     override class func ignoredProperties() -> [String] {
         return ["EntityIds"]
     }

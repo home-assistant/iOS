@@ -10,7 +10,6 @@ import Foundation
 import ObjectMapper
 
 class InputBoolean: SwitchableEntity {
-    
     override func mapping(map: Map) {
         super.mapping(map)
     }

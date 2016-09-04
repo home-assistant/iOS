@@ -43,6 +43,11 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (3.5.1):
     - PromiseKit/CorePromise
+  - Realm (1.0.0):
+    - Realm/Headers (= 1.0.0)
+  - Realm/Headers (1.0.0)
+  - RealmSwift (1.0.0):
+    - Realm (= 1.0.0)
   - SwiftDate (3.0.8)
   - SwiftLocation (1.0.4)
   - Whisper (3.1.1)
@@ -72,6 +77,7 @@ DEPENDENCIES:
   - ObjectMapper (~> 1.2)
   - PermissionScope
   - PromiseKit
+  - RealmSwift
   - SwiftDate
   - RealmSwift
   - SwiftLocation
@@ -107,6 +113,8 @@ SPEC CHECKSUMS:
   OMGHTTPURLRQ: 1e54807cb7d5dbb506926e53498e1e9ac5720c79
   PermissionScope: 860828c5516d349b6f49e5491799cfef33c5ccc7
   PromiseKit: 99ea973444a4bff6c38ffb97fa1bb175e619bcf0
+  Realm: e15cd8e7c11d3e576f628ba0b7cb855269b4991c
+  RealmSwift: 3229306d020d96f83b335f87a0dcbf2cef0e6a2b
   SwiftDate: 971f8b9394f664f2226b9c3ab64e801a7291c612
   SwiftLocation: 00682ad3598aa54936f34ec42ed53fceb37c22a4
   Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453

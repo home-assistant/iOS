@@ -22,6 +22,7 @@ class Scene: Entity {
     override var ComponentIcon: String {
         return "mdi:google-pages"
     }
+
     override class func ignoredProperties() -> [String] {
         return ["EntityIds"]
     }
