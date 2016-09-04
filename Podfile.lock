@@ -54,22 +54,22 @@ PODS:
 
 DEPENDENCIES:
   - AcknowList
-  - Alamofire (~> 3.0)
-  - AlamofireImage (~> 2.0)
-  - AlamofireObjectMapper (~> 3.0)
+  - Alamofire
+  - AlamofireImage
+  - AlamofireObjectMapper
   - AWSCognito
   - AWSCore
   - AWSSNS
   - Crashlytics
-  - DeviceKit (~> 0.3.2)
-  - Eureka (~> 1.5)
+  - DeviceKit
+  - Eureka
   - Fabric
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`,
     branch `Material-Design-Icons`)
   - HanekeSwift
   - IKEventSource
-  - MBProgressHUD (~> 0.9.2)
-  - ObjectMapper (~> 1.2)
+  - MBProgressHUD
+  - ObjectMapper
   - PermissionScope
   - PromiseKit
   - RealmSwift
