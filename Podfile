@@ -20,6 +20,7 @@ target 'HomeAssistant' do
   pod 'IKEventSource'
   pod 'MBProgressHUD'
   pod 'ObjectMapper'
+  pod 'ObjectMapper+Realm'
   pod 'PermissionScope'
   pod 'PromiseKit'
   pod 'RealmSwift'

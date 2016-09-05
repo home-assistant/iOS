@@ -23,6 +23,9 @@ PODS:
   - IKEventSource (1.1.4)
   - MBProgressHUD (1.0.0)
   - ObjectMapper (1.4.0)
+  - ObjectMapper+Realm (0.1):
+    - ObjectMapper
+    - RealmSwift
   - OMGHTTPURLRQ (3.2.0):
     - OMGHTTPURLRQ/RQ (= 3.2.0)
   - OMGHTTPURLRQ/FormURLEncode (3.2.0)
@@ -70,6 +73,7 @@ DEPENDENCIES:
   - IKEventSource
   - MBProgressHUD
   - ObjectMapper
+  - ObjectMapper+Realm
   - PermissionScope
   - PromiseKit
   - RealmSwift
@@ -104,6 +108,7 @@ SPEC CHECKSUMS:
   IKEventSource: 7a3b82627c83ce247fed75b1b03f0c32a0759639
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   ObjectMapper: a07ad0462c5adf014adc0f89ef04c29b626e855e
+  ObjectMapper+Realm: dbcf666c2081d82dc527b054c574b9f3777df060
   OMGHTTPURLRQ: 1e54807cb7d5dbb506926e53498e1e9ac5720c79
   PermissionScope: 860828c5516d349b6f49e5491799cfef33c5ccc7
   PromiseKit: 99ea973444a4bff6c38ffb97fa1bb175e619bcf0
