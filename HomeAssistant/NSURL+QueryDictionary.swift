@@ -8,15 +8,15 @@
 //
 
 import Foundation
-extension NSURL
+extension URL
 {
-    @objc var queryDictionary:[String: [String]]? {
+    var queryDictionary:[String: [String]]? {
         get {
             if let query = self.query {
                 var dictionary = [String: [String]]()
                 
-                for keyValueString in query.componentsSeparatedByString("&") {
-                    var parts = keyValueString.componentsSeparatedByString("=")
+                for keyValueString in query.components(separatedBy: "&") {
+                    var parts = keyValueString.components(separatedBy: "=")
                     if parts.count < 2 { continue; }
                     
                     let key = parts[0].stringByRemovingPercentEncoding!

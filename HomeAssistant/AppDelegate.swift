@@ -29,9 +29,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    let prefs = NSUserDefaults.standardUserDefaults()
+    let prefs = UserDefaults.standard
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: Any]?) -> Bool {
         Realm.Configuration.defaultConfiguration = realmConfig
         print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.absoluteString)
         Fabric.with([Crashlytics.self])
@@ -50,10 +50,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func initAPI() {
-        if let baseURL = prefs.stringForKey("baseURL") {
+        if let baseURL = prefs.string(forKey: "baseURL") {
             print("Base URL is", baseURL)
             var apiPass = ""
-            if let pass = prefs.stringForKey("apiPassword") {
+            if let pass = prefs.string(forKey: "apiPassword") {
                 apiPass = pass
             }
             firstly {
@@ -72,32 +72,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func applicationWillResignActive(application: UIApplication) {
+    func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     }
 
-    func applicationDidEnterBackground(application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     }
 
-    func applicationWillEnterForeground(application: UIApplication) {
+    func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     }
 
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     }
 
-    func applicationWillTerminate(application: UIApplication) {
+    func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let deviceTokenString = "\(deviceToken)"
-            .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString:"<>"))
-            .stringByReplacingOccurrencesOfString(" ", withString: "")
+            .trimmingCharacters(in: CharacterSet(charactersIn:"<>"))
+            .replacingOccurrences(of: " ", with: "")
         print("Registering with deviceTokenString: \(deviceTokenString)")
         
         let sns = AWSSNS.defaultSNS()
@@ -134,16 +134,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("Error when trying to register for push", error)
         Crashlytics.sharedInstance().recordError(error)
     }
     
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : Any]) {
         print("Received remote notification!", userInfo)
     }
     
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("Received remote notification in completion handler!", userInfo)
         
         if let hadict = userInfo["homeassistant"] {
@@ -153,21 +153,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     print("Received remote request to provide a location update")
                     HomeAssistantAPI.sharedInstance.sendOneshotLocation("").then { success -> Void in
                         print("Did successfully send location when requested via APNS?", success)
-                        completionHandler(UIBackgroundFetchResult.NoData)
+                        completionHandler(UIBackgroundFetchResult.noData)
                     }.error { error in
                         print("Error when attempting to submit location update")
                         Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                        completionHandler(UIBackgroundFetchResult.Failed)
+                        completionHandler(UIBackgroundFetchResult.failed)
                     }
                 default:
                     print("Received unknown command via APNS!", userInfo)
-                    completionHandler(UIBackgroundFetchResult.NoData)
+                    completionHandler(UIBackgroundFetchResult.noData)
                 }
             }
         }
     }
     
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], withResponseInfo responseInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
+    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : Any], withResponseInfo responseInfo: [NSObject : Any], completionHandler: @escaping () -> Void) {
         print("Action button hit", identifier)
         print("Remote notification payload", userInfo)
         print("ResponseInfo", responseInfo)
@@ -187,7 +187,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func application(application: UIApplication, openURL url: NSURL, options: [String: AnyObject]) -> Bool {
+    func application(_ application: UIApplication, open url: URL, options: [String: Any]) -> Bool {
         var serviceData = [String:AnyObject]()
         for (k,v) in url.queryDictionary! {
             serviceData[k] = v
@@ -197,7 +197,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         switch url.host! {
         case "call_service": // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
-            HomeAssistantAPI.sharedInstance.CallService(EntityIDToDomainTransform().transformFromJSON(url.pathComponents![1])!, service: url.pathComponents![1].componentsSeparatedByString(".")[1], serviceData: serviceData)
+            HomeAssistantAPI.sharedInstance.CallService(EntityIDToDomainTransform().transformFromJSON(url.pathComponents![1])!, service: url.pathComponents![1].components(separatedBy: ".")[1], serviceData: serviceData)
             break
         case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
             HomeAssistantAPI.sharedInstance.CreateEvent(url.pathComponents![1], eventData: serviceData)

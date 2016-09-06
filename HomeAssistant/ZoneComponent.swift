@@ -16,7 +16,7 @@ class Zone: Entity {
     var Longitude: Double?
     var Radius: Double?
     
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         
         Latitude  <- map["attributes.latitude"]

@@ -36,7 +36,7 @@ class Climate: Entity {
     required init(value: AnyObject, schema: RLMSchema) { super.init(value: value, schema: schema) }
     required init(realm: RLMRealm, schema: RLMObjectSchema) { super.init(realm: realm, schema: schema) }
     
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         
         AuxHeat              <- (map["attributes.aux_heat"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
@@ -94,19 +94,19 @@ class Climate: Entity {
         HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_away_mode", serviceData: ["entity_id": self.ID, "away_mode": "off"])
     }
     
-    func SetTemperature(newTemp: Float) {
+    func SetTemperature(_ newTemp: Float) {
         HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_temperature", serviceData: ["entity_id": self.ID, "temperature": newTemp])
     }
     
-    func SetHumidity(newHumidity: Int) {
+    func SetHumidity(_ newHumidity: Int) {
         HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_humidity", serviceData: ["entity_id": self.ID, "humidity": newHumidity])
     }
     
-    func SetSwingMode(newSwingMode: String) {
+    func SetSwingMode(_ newSwingMode: String) {
         HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_swing_mode", serviceData: ["entity_id": self.ID, "swing_mode": newSwingMode])
     }
     
-    func SetOperationMode(newOperationMode: String) {
+    func SetOperationMode(_ newOperationMode: String) {
         HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_operation_mode", serviceData: ["entity_id": self.ID, "operation_mode": newOperationMode])
     }
     

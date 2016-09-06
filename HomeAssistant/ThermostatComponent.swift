@@ -20,7 +20,7 @@ class Thermostat: Entity {
     var TargetTemperatureLow: Int?
     var Temperature: Int?
     
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         
         AwayMode              <- (map["attributes.away_mode"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
@@ -44,7 +44,7 @@ class Thermostat: Entity {
     func setAwayModeOff() {
         HomeAssistantAPI.sharedInstance.CallService("thermostat", service: "set_away_mode", serviceData: ["entity_id": self.ID, "away_mode": "off"])
     }
-    func setTemperature(newTemp: Float) {
+    func setTemperature(_ newTemp: Float) {
         HomeAssistantAPI.sharedInstance.CallService("thermostat", service: "set_temperature", serviceData: ["entity_id": self.ID, "temperature": newTemp])
     }
     

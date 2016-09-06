@@ -16,7 +16,7 @@ class ServiceExecutedEvent: SSEEvent {
         super.init(map)
     }
     
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         ServiceCallID <- map["data.service_call_id"]
     }

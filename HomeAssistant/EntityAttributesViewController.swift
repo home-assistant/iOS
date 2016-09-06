@@ -165,7 +165,7 @@ class EntityAttributesViewController: FormViewController {
         
         
         // Do any additional setup after loading the view.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EntityAttributesViewController.StateChangedSSEEvent(_:)), name:"sse.state_changed", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(EntityAttributesViewController.StateChangedSSEEvent(_:)), name:NSNotification.Name(rawValue: "sse.state_changed"), object: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -174,8 +174,8 @@ class EntityAttributesViewController: FormViewController {
     }
     
 
-    func StateChangedSSEEvent(notification: NSNotification){
-        if let userInfo = notification.userInfo {
+    func StateChangedSSEEvent(_ notification: Notification){
+        if let userInfo = (notification as NSNotification).userInfo {
             if let event = Mapper<StateChangedEvent>().map(userInfo) {
                 if event.EntityID != entityID { return }
                 let entity = realm.objectForPrimaryKey(Entity.self, key: entityID)

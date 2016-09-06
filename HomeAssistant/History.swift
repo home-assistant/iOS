@@ -19,7 +19,7 @@ class HistoryResponse: Mappable {
         print("MAP", map)
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         print("map", map)
         Entities <- map
 //        EntityId <- map["message"]
@@ -36,7 +36,7 @@ class HistoryGroup: Mappable {
                 print("MAP", map)
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
                 print("map", map)
         Events <- map
         //        EntityId <- map["message"]

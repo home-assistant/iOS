@@ -16,7 +16,7 @@ class Light: SwitchableEntity {
     var ColorTemp = RealmOptional<Float>()
     dynamic var RGBColor: [Int]?
     
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         
         Brightness   <- map["attributes.brightness"]

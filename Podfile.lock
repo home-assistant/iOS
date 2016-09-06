@@ -1,10 +1,10 @@
 PODS:
   - AcknowList (1.0)
-  - Alamofire (3.4.2)
-  - AlamofireImage (2.4.1):
-    - Alamofire (~> 3.3)
-  - AlamofireObjectMapper (3.0.2):
-    - Alamofire (~> 3.2)
+  - Alamofire (4.0.0-beta.1)
+  - AlamofireImage (3.0.0-beta.1):
+    - Alamofire (= 4.0.0-beta.1)
+  - AlamofireObjectMapper (4.0.0-beta):
+    - Alamofire (~> 4.0.0-beta.1)
     - ObjectMapper (~> 1.0)
   - AWSCognito (2.4.7):
     - AWSCore (= 2.4.7)
@@ -19,13 +19,9 @@ PODS:
   - FontAwesomeKit/Core (2.2.3)
   - FontAwesomeKit/MaterialDesignIcons (2.2.3):
     - FontAwesomeKit/Core
-  - HanekeSwift (0.10.1)
   - IKEventSource (1.1.4)
   - MBProgressHUD (1.0.0)
   - ObjectMapper (1.4.0)
-  - ObjectMapper+Realm (0.1):
-    - ObjectMapper
-    - RealmSwift
   - OMGHTTPURLRQ (3.2.0):
     - OMGHTTPURLRQ/RQ (= 3.2.0)
   - OMGHTTPURLRQ/FormURLEncode (3.2.0)
@@ -51,56 +47,134 @@ PODS:
   - Realm/Headers (1.0.2)
   - RealmSwift (1.0.2):
     - Realm (= 1.0.2)
-  - SwiftDate (3.0.8)
+  - SwiftDate (3.0.9)
   - SwiftLocation (1.0.4)
-  - Whisper (3.1.1)
+  - Whisper (3.0.0)
 
 DEPENDENCIES:
-  - AcknowList
-  - Alamofire
-  - AlamofireImage
-  - AlamofireObjectMapper
+  - AcknowList (from `https://github.com/vtourraine/AcknowList.git`, branch `swift-3`)
+  - Alamofire (from `https://github.com/Alamofire/Alamofire.git`, commit `3cc5b4e8453bec9fd6b973d60e6b0605a38e4cf4`)
+  - AlamofireImage (from `https://github.com/Alamofire/AlamofireImage.git`, branch
+    `swift3`)
+  - AlamofireObjectMapper (from `https://github.com/tristanhimmelman/AlamofireObjectMapper.git`,
+    commit `c677c0c6cf4223820b666eee725ccd2647e9f1c3`)
   - AWSCognito
   - AWSCore
   - AWSSNS
   - Crashlytics
-  - DeviceKit
-  - Eureka
+  - DeviceKit (from `https://github.com/dennisweissmann/DeviceKit.git`, branch `swift-3`)
+  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `Swift3`)
   - Fabric
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`,
     branch `Material-Design-Icons`)
-  - HanekeSwift
   - IKEventSource
   - MBProgressHUD
-  - ObjectMapper (from `https://github.com/Hearst-DD/ObjectMapper.git`)
-  - ObjectMapper+Realm
-  - PermissionScope
+  - ObjectMapper (from `https://github.com/Hearst-DD/ObjectMapper.git`, branch `swift-3`)
+  - PermissionScope (from `https://github.com/nickoneill/PermissionScope.git`, branch
+    `swift3`)
   - PromiseKit
-  - RealmSwift
-  - SwiftDate
-  - SwiftLocation
-  - Whisper
+  - Realm (from `https://github.com/realm/realm-cocoa.git`, branch `master`)
+  - RealmSwift (from `https://github.com/realm/realm-cocoa.git`, branch `master`)
+  - SwiftDate (from `https://github.com/JackieQi/SwiftDate.git`, branch `feature/swift_3`)
+  - SwiftLocation (from `https://github.com/robbiet480/SwiftLocation.git`, branch
+    `feature/swift3-latest-master`)
+  - Whisper (from `https://github.com/Holmusk/Whisper.git`, branch `swift3`)
 
 EXTERNAL SOURCES:
+  AcknowList:
+    :branch: swift-3
+    :git: https://github.com/vtourraine/AcknowList.git
+  Alamofire:
+    :commit: 3cc5b4e8453bec9fd6b973d60e6b0605a38e4cf4
+    :git: https://github.com/Alamofire/Alamofire.git
+  AlamofireImage:
+    :branch: swift3
+    :git: https://github.com/Alamofire/AlamofireImage.git
+  AlamofireObjectMapper:
+    :commit: c677c0c6cf4223820b666eee725ccd2647e9f1c3
+    :git: https://github.com/tristanhimmelman/AlamofireObjectMapper.git
+  DeviceKit:
+    :branch: swift-3
+    :git: https://github.com/dennisweissmann/DeviceKit.git
+  Eureka:
+    :branch: Swift3
+    :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
   ObjectMapper:
+    :branch: swift-3
     :git: https://github.com/Hearst-DD/ObjectMapper.git
+  PermissionScope:
+    :branch: swift3
+    :git: https://github.com/nickoneill/PermissionScope.git
+  Realm:
+    :branch: master
+    :git: https://github.com/realm/realm-cocoa.git
+    :submodules: true
+  RealmSwift:
+    :branch: master
+    :git: https://github.com/realm/realm-cocoa.git
+    :submodules: true
+  SwiftDate:
+    :branch: feature/swift_3
+    :git: https://github.com/JackieQi/SwiftDate.git
+  SwiftLocation:
+    :branch: feature/swift3-latest-master
+    :git: https://github.com/robbiet480/SwiftLocation.git
+  Whisper:
+    :branch: swift3
+    :git: https://github.com/Holmusk/Whisper.git
 
 CHECKOUT OPTIONS:
+  AcknowList:
+    :commit: 264bbad04801a3625973f2fdeb7a5cf8a75bf654
+    :git: https://github.com/vtourraine/AcknowList.git
+  Alamofire:
+    :commit: 3cc5b4e8453bec9fd6b973d60e6b0605a38e4cf4
+    :git: https://github.com/Alamofire/Alamofire.git
+  AlamofireImage:
+    :commit: b02916e89cb7158994df04bf282b3170964e1eaa
+    :git: https://github.com/Alamofire/AlamofireImage.git
+  AlamofireObjectMapper:
+    :commit: c677c0c6cf4223820b666eee725ccd2647e9f1c3
+    :git: https://github.com/tristanhimmelman/AlamofireObjectMapper.git
+  DeviceKit:
+    :commit: 03b4c6ace5491c37d5d8c330c3ba45f86c47aad3
+    :git: https://github.com/dennisweissmann/DeviceKit.git
+  Eureka:
+    :commit: 681299540086d6974380d363be4b686a066f9bd5
+    :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :commit: f71894d5bb06c5e20c902a715da24d2c2acdf6ee
     :git: https://github.com/robbiet480/FontAwesomeKit.git
   ObjectMapper:
-    :commit: 5a1ccbd3c2dcaf3f6a275d48bbf339674284c847
+    :commit: 16a2c9e9ba4c9949497699a21338d99f58b2686d
     :git: https://github.com/Hearst-DD/ObjectMapper.git
+  PermissionScope:
+    :commit: 6cc38490429f6a37bc6f2f62a12fdaf27b4e52cf
+    :git: https://github.com/nickoneill/PermissionScope.git
+  Realm:
+    :commit: 88bf015b5cf58053fb045c5b86e0ef6de156928a
+    :git: https://github.com/realm/realm-cocoa.git
+  RealmSwift:
+    :commit: 88bf015b5cf58053fb045c5b86e0ef6de156928a
+    :git: https://github.com/realm/realm-cocoa.git
+  SwiftDate:
+    :commit: 0bbb7a87abc1da3056f864bbc5e7a58769654743
+    :git: https://github.com/JackieQi/SwiftDate.git
+  SwiftLocation:
+    :commit: 3024b42c25a901bd1eb0da076605fb4cdd55a0b8
+    :git: https://github.com/robbiet480/SwiftLocation.git
+  Whisper:
+    :commit: 5b7c8df1fa509dba954dc1468886eac091be225a
+    :git: https://github.com/Holmusk/Whisper.git
 
 SPEC CHECKSUMS:
   AcknowList: 06a183d117b7e2bb0c6f5654366d2912dc64a6c4
-  Alamofire: 6aa33201d20d069e1598891cf928883ff1888c7a
-  AlamofireImage: 3ccf3347d9ea24580dc11fb892770a0be6a29826
-  AlamofireObjectMapper: 70f97cbf45c01c48d26aa07a1a7059a60ed7411d
+  Alamofire: 698bf56c9e48d3248168e4a3a90588ac2e23836a
+  AlamofireImage: 1204674be7d67ea8efb61f38b2683a5ca0066452
+  AlamofireObjectMapper: 92747d4cb69eacceb6a5e2499cd3354f6c51482e
   AWSCognito: 6aa404f15d1eb2b4b51f45322a409257b3248e79
   AWSCore: 9a729a3c0050a51ece3547d546c327acdac7838a
   AWSSNS: 45b3a02693808251ed388afcab0e90ec05b53f72
@@ -109,18 +183,16 @@ SPEC CHECKSUMS:
   Eureka: 2020d9faeef7b7e9adeb9e3d8af779e5931c1897
   Fabric: 5755268d0171435ab167e3d0878a28a777deaf10
   FontAwesomeKit: 7336af53079bde1943da68c20a2d06436e3ef1ca
-  HanekeSwift: 08e47d3d0f2899ec58e5d257beba0de619aca9e8
   IKEventSource: 7a3b82627c83ce247fed75b1b03f0c32a0759639
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   ObjectMapper: a07ad0462c5adf014adc0f89ef04c29b626e855e
-  ObjectMapper+Realm: dbcf666c2081d82dc527b054c574b9f3777df060
   OMGHTTPURLRQ: 1e54807cb7d5dbb506926e53498e1e9ac5720c79
   PermissionScope: 860828c5516d349b6f49e5491799cfef33c5ccc7
   PromiseKit: 99ea973444a4bff6c38ffb97fa1bb175e619bcf0
-  Realm: 9d5c46a4d7d27958530a8dfc58f63a99e5c2cba3
-  RealmSwift: 82f3ac5e24530143dddfde2033acc0d308f27d96
-  SwiftDate: 971f8b9394f664f2226b9c3ab64e801a7291c612
+  Realm: 2948cfa3a05b7acc446abc4c124d443df646c8de
+  RealmSwift: 4816c8608630a9a00bba6d726bb30b4bab6dd6bf
+  SwiftDate: fa487d9b7d8c3070ea2553486902494f4915465d
   SwiftLocation: 00682ad3598aa54936f34ec42ed53fceb37c22a4
-  Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453
+  Whisper: 42a3ee7c2936f861b23d41bd6cd7dfd22f102405
 
 COCOAPODS: 0.39.0

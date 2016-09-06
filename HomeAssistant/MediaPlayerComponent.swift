@@ -25,7 +25,7 @@ class MediaPlayer: SwitchableEntity {
     let StoredSourceList = List<StringObject>()
     
     
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         
         IsPlaying        <- (map["state"], ComponentBoolTransform(trueValue: "playing", falseValue: "paused"))
@@ -69,7 +69,7 @@ class MediaPlayer: SwitchableEntity {
     func muteOff() {
         HomeAssistantAPI.sharedInstance.CallService("media_player", service: "volume_mute", serviceData: ["entity_id": self.ID, "is_volume_muted": "off"])
     }
-    func setVolume(newVolume: Float) {
+    func setVolume(_ newVolume: Float) {
         let fixedVolume = newVolume/100
         HomeAssistantAPI.sharedInstance.CallService("media_player", service: "volume_set", serviceData: ["entity_id": self.ID, "volume_level": fixedVolume])
     }

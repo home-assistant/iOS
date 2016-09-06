@@ -18,12 +18,12 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)), name:"sse.state_changed", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)), name:NSNotification.Name(rawValue: "sse.state_changed"), object: nil)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
 
-        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        MBProgressHUD.showAdded(to: self.view, animated: true)
 
         self.delegate = self
         
@@ -37,7 +37,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         self.viewControllers = [firstGroupView]
         
         if HomeAssistantAPI.sharedInstance.baseAPIURL == "" {
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"
                 let navController = UINavigationController(rootViewController: settingsView)
@@ -126,22 +126,22 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         
         self.customizableViewControllers = tabViewControllers
         
-        MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+        MBProgressHUD.hideAllHUDs(for: self.view, animated: true)
     }
     
-    func tabBarController(tabBarController: UITabBarController, shouldSelectViewController viewController: UIViewController) -> Bool {
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         return true;
     }
     
-    func tabBarController(tabBarController: UITabBarController, willEndCustomizingViewControllers viewControllers: [UIViewController], changed: Bool) {
+    func tabBarController(_ tabBarController: UITabBarController, willEndCustomizing viewControllers: [UIViewController], changed: Bool) {
         
     }
     
-    func tabBarController(tabBarController: UITabBarController, didEndCustomizingViewControllers viewControllers: [UIViewController], changed: Bool) {
+    func tabBarController(_ tabBarController: UITabBarController, didEndCustomizing viewControllers: [UIViewController], changed: Bool) {
         if (changed) {
-            for (index, view) in viewControllers.enumerate() {
+            for (index, view) in viewControllers.enumerated() {
                 if let groupView = (view as! UINavigationController).viewControllers[0] as? GroupViewController {
-                    let update = ["ID": groupView.GroupID, "Order": index]
+                    let update = ["ID": groupView.GroupID, "Order": index] as [String : Any]
                     try! realm.write {
                         realm.create(Group.self, value: update, update: true)
                     }
@@ -158,8 +158,8 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    func StateChangedSSEEvent(notification: NSNotification){
-        if let userInfo = notification.userInfo {
+    func StateChangedSSEEvent(_ notification: Notification){
+        if let userInfo = (notification as NSNotification).userInfo {
             if let event = Mapper<StateChangedEvent>().map(userInfo["jsonObject"]) {
                 let newState = event.NewState! as Entity
                 let oldState = event.OldState! as Entity
@@ -173,19 +173,19 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         }
     }
 
-    func openMapView(sender: UIButton) {
+    func openMapView(_ sender: UIButton) {
         let devicesMapView = DevicesMapViewController()
         
         let navController = UINavigationController(rootViewController: devicesMapView)
-        self.presentViewController(navController, animated: true, completion: nil)
+        self.present(navController, animated: true, completion: nil)
     }
     
-    func sendCurrentLocation(sender: UIButton) {
+    func sendCurrentLocation(_ sender: UIButton) {
         HomeAssistantAPI.sharedInstance.sendOneshotLocation("One off location update requested").then { success -> Void in
             print("Did succeed?", success)
-            let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }.error { error in
             let nserror = error as NSError
             let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.Alert)

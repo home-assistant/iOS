@@ -30,14 +30,14 @@ public final class LocationRow : SelectorRow<CLLocation, PushSelectorCell<CLLoca
     }
 }
 
-public class MapViewController : UIViewController, TypedRowControllerType, MKMapViewDelegate {
+open class MapViewController : UIViewController, TypedRowControllerType, MKMapViewDelegate {
     
-    public var row: RowOf<CLLocation>!
-    public var completionCallback : ((UIViewController) -> ())?
+    open var row: RowOf<CLLocation>!
+    open var completionCallback : ((UIViewController) -> ())?
     
     lazy var mapView : MKMapView = { [unowned self] in
         let v = MKMapView(frame: self.view.bounds)
-        v.autoresizingMask = UIViewAutoresizing.FlexibleWidth.union(UIViewAutoresizing.FlexibleHeight)
+        v.autoresizingMask = UIViewAutoresizing.flexibleWidth.union(UIViewAutoresizing.flexibleHeight)
         return v
         }()
     
@@ -46,7 +46,7 @@ public class MapViewController : UIViewController, TypedRowControllerType, MKMap
         super.init(coder: aDecoder)
     }
     
-    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -55,7 +55,7 @@ public class MapViewController : UIViewController, TypedRowControllerType, MKMap
         completionCallback = callback
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(mapView)
         
@@ -71,7 +71,7 @@ public class MapViewController : UIViewController, TypedRowControllerType, MKMap
         
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         let newPin = MKPointAnnotation()
@@ -82,11 +82,11 @@ public class MapViewController : UIViewController, TypedRowControllerType, MKMap
     
     
     func updateTitle(){
-        let fmt = NSNumberFormatter()
+        let fmt = NumberFormatter()
         fmt.maximumFractionDigits = 4
         fmt.minimumFractionDigits = 4
-        let latitude = fmt.stringFromNumber(mapView.centerCoordinate.latitude)!
-        let longitude = fmt.stringFromNumber(mapView.centerCoordinate.longitude)!
+        let latitude = fmt.string(from: NSNumber(mapView.centerCoordinate.latitude))!
+        let longitude = fmt.string(from: NSNumber(mapView.centerCoordinate.longitude))!
         title = "\(latitude), \(longitude)"
     }
     

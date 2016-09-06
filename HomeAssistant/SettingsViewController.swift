@@ -15,7 +15,7 @@ import Crashlytics
 
 class SettingsViewController: FormViewController {
 
-    let prefs = NSUserDefaults.standardUserDefaults()
+    let prefs = UserDefaults.standard
     
     var showErrorConnectingMessage = false
     
@@ -26,26 +26,26 @@ class SettingsViewController: FormViewController {
         var hideAbout = false
         var hideLowerSave = false
         
-        if prefs.boolForKey("emailSet") == false {
+        if prefs.bool(forKey: "emailSet") == false {
             print("This is first launch, let's prompt user for email.")
-            let alert = UIAlertController(title: "Welcome", message: "Please enter the email address you used to sign up for the beta program with.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: emailEntered))
-            alert.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
+            let alert = UIAlertController(title: "Welcome", message: "Please enter the email address you used to sign up for the beta program with.", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: emailEntered))
+            alert.addTextField(configurationHandler: {(textField: UITextField!) in
                 textField.placeholder = "myawesomeemail@gmail.com"
-                textField.keyboardType = .EmailAddress
+                textField.keyboardType = .emailAddress
                 self.emailInput = textField
             })
             self.presentViewController(alert, animated: true, completion: nil)
         }
         
         if showErrorConnectingMessage {
-            let alert = UIAlertController(title: "Connection error", message: "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            let alert = UIAlertController(title: "Connection error", message: "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect.", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
             hideAbout = true
             hideLowerSave = true
         }
-        if prefs.stringForKey("baseURL") == nil {
+        if prefs.string(forKey: "baseURL") == nil {
             hideAbout = true
             hideLowerSave = true
         }
@@ -53,8 +53,8 @@ class SettingsViewController: FormViewController {
         
         let discovery = Bonjour()
         
-        let queue = dispatch_queue_create("io.robbie.homeassistant", nil);
-        dispatch_async(queue) { () -> Void in
+        let queue = DispatchQueue(label: "io.robbie.homeassistant", attributes: []);
+        queue.async { () -> Void in
             NSLog("Attempting to discover Home Assistant instances, also publishing app to Bonjour/mDNS to hopefully have HA load the iOS/ZeroConf components.")
             discovery.stopDiscovery()
             discovery.stopPublish()
@@ -69,9 +69,9 @@ class SettingsViewController: FormViewController {
             discovery.stopPublish()
         }
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)), name:"homeassistant.discovered", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)), name:NSNotification.Name(rawValue: "homeassistant.discovered"), object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SettingsViewController.HomeAssistantUndiscovered(_:)), name:"homeassistant.undiscovered", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.HomeAssistantUndiscovered(_:)), name:NSNotification.Name(rawValue: "homeassistant.undiscovered"), object: nil)
         
         form
             +++ Section(header: "Discovered Home Assistants", footer: ""){
@@ -125,7 +125,7 @@ class SettingsViewController: FormViewController {
             }
         
             if showErrorConnectingMessage == false {
-                if let endpointArn = prefs.stringForKey("endpointARN") {
+                if let endpointArn = prefs.string(forKey: "endpointARN") {
                     form
                         +++ Section(header: "Push Notifications", footer: "")
                         <<< TextAreaRow() {
@@ -162,18 +162,18 @@ class SettingsViewController: FormViewController {
     }
 
     
-    func aboutButtonPressed(sender: UIButton) {
+    func aboutButtonPressed(_ sender: UIButton) {
         let viewController = AcknowListViewController()
         if let navigationController = self.navigationController {
             navigationController.pushViewController(viewController, animated: true)
         }
     }
 
-    func HomeAssistantDiscovered(notification: NSNotification){
+    func HomeAssistantDiscovered(_ notification: Notification){
         let discoverySection : Section = self.form.sectionByTag("discoveredInstances")!
         discoverySection.hidden = false
         discoverySection.evaluateHidden()
-        if let userInfo = notification.userInfo as? [String:AnyObject] {
+        if let userInfo = (notification as NSNotification).userInfo as? [String:AnyObject] {
             let name = userInfo["name"] as! String
             let baseUrl = userInfo["baseUrl"] as! String
             let requiresAPIPassword = userInfo["requires_api_password"] as! Bool
@@ -207,8 +207,8 @@ class SettingsViewController: FormViewController {
         }
     }
 
-    func HomeAssistantUndiscovered(notification: NSNotification){
-        if let userInfo = notification.userInfo as? [String:AnyObject] {
+    func HomeAssistantUndiscovered(_ notification: Notification){
+        if let userInfo = (notification as NSNotification).userInfo as? [String:AnyObject] {
             let name = userInfo["name"] as! String
             if let removingRow : ButtonRow = self.form.rowByTag(name) {
                 removingRow.hidden = true
@@ -223,14 +223,14 @@ class SettingsViewController: FormViewController {
 
     
     @IBOutlet var emailInput: UITextField!
-    func emailEntered(sender: UIAlertAction) {
+    func emailEntered(_ sender: UIAlertAction) {
         print("Captured email", emailInput.text)
         Crashlytics.sharedInstance().setUserEmail(emailInput.text)
         print("First launch, setting NSUserDefault.")
-        prefs.setBool(true, forKey: "emailSet")
+        prefs.set(true, forKey: "emailSet")
     }
     
-    func saveSettingsButton(sender: UIButton) {
+    func saveSettingsButton(_ sender: UIButton) {
         saveSettings()
     }
     

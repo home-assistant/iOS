@@ -224,7 +224,7 @@ class GroupViewController: FormViewController {
             }
         }
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(GroupViewController.StateChangedSSEEvent(_:)), name:"sse.state_changed", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(GroupViewController.StateChangedSSEEvent(_:)), name:NSNotification.Name(rawValue: "sse.state_changed"), object: nil)
     }
     
     override func didReceiveMemoryWarning() {
@@ -232,8 +232,8 @@ class GroupViewController: FormViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func StateChangedSSEEvent(notification: NSNotification){
-        if let userInfo = notification.userInfo {
+    func StateChangedSSEEvent(_ notification: Notification){
+        if let userInfo = (notification as NSNotification).userInfo {
             if let event = Mapper<StateChangedEvent>().map(userInfo) {
                 if let newState = event.NewState {
                     self.entitys[newState.ID] = newState
@@ -260,11 +260,11 @@ class GroupViewController: FormViewController {
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepareForSegue(_ segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         if segue.identifier == "ShowEntityAttributes" {
-            let entityAttributesViewController = segue.destinationViewController as! EntityAttributesViewController
+            let entityAttributesViewController = segue.destination as! EntityAttributesViewController
             entityAttributesViewController.entityID = sendingEntity!.ID
         }
     }

@@ -19,7 +19,7 @@ class StateChangedEvent: SSEEvent {
         super.init(map)
     }
     
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         NewState  <- map["data.new_state"]
         OldState  <- map["data.old_state"]

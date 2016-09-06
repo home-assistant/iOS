@@ -13,7 +13,7 @@ class Lock: Entity {
     
     dynamic var IsLocked: Bool = false
 
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         
         IsLocked    <- (map["state"], ComponentBoolTransform(trueValue: "locked", falseValue: "unlocked"))

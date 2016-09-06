@@ -32,7 +32,7 @@ class StatusResponse: Mappable {
         
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         Result  <- map["result"]
         Message <- map["message"]
         IsOK    <- (map["message"], isOKTransform)

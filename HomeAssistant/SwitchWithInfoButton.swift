@@ -11,10 +11,10 @@ import Eureka
 import Foundation
 public final class SwitchWithInfoButtonCell : Cell<Bool>, CellType {
     
-    @IBAction func InfoButton(sender: UIButton) {
+    @IBAction func InfoButton(_ sender: UIButton) {
         print("Button hit!")
     }
-    @IBAction func Switch(sender: UISwitch) {
+    @IBAction func Switch(_ sender: UISwitch) {
         print("Switch!")
         
     }
@@ -47,7 +47,7 @@ public final class SwitchWithInfoButtonCell : Cell<Bool>, CellType {
 
 // MARK: SwitchWithInfoButtonRow
 
-public class _SwitchWithInfoButtonRow: Row<Bool, SwitchWithInfoButtonCell> {
+open class _SwitchWithInfoButtonRow: Row<Bool, SwitchWithInfoButtonCell> {
     required public init(tag: String?) {
         super.init(tag: tag)
         displayValueFor = nil

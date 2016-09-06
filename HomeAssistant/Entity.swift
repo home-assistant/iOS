@@ -23,7 +23,7 @@ class Entity: Object, StaticMappable {
                 return [String: AnyObject]()
             }
             do {
-                let dict = try NSJSONSerialization.JSONObjectWithData(dictionaryData, options: []) as? [String: AnyObject]
+                let dict = try JSONSerialization.jsonObject(with: dictionaryData, options: []) as? [String: AnyObject]
                 return dict!
             } catch {
                 return [String: AnyObject]()
@@ -32,14 +32,14 @@ class Entity: Object, StaticMappable {
         
         set {
             do {
-                let data = try NSJSONSerialization.dataWithJSONObject(newValue, options: [])
+                let data = try JSONSerialization.data(withJSONObject: newValue, options: [])
                 attributesData = data
             } catch {
                 attributesData = nil
             }
         }
     }
-    private dynamic var attributesData: NSData?
+    fileprivate dynamic var attributesData: Data?
     dynamic var FriendlyName: String? = nil
     dynamic var Hidden = false
     dynamic var Icon: String? = nil
@@ -47,8 +47,8 @@ class Entity: Object, StaticMappable {
     dynamic var Picture: String? = nil
     var DownloadedPicture: UIImage?
     var UnitOfMeasurement: String?
-    dynamic var LastChanged: NSDate? = nil
-    dynamic var LastUpdated: NSDate? = nil
+    dynamic var LastChanged: Date? = nil
+    dynamic var LastUpdated: Date? = nil
 //    let Groups = LinkingObjects(fromType: Group.self, property: "Entities")
     
     // Z-Wave properties
@@ -65,12 +65,12 @@ class Entity: Object, StaticMappable {
     init(id: String) {
         super.init()
         self.ID = id
-        self.Domain = EntityIDToDomainTransform().transformFromJSON(self.ID)!
+        self.Domain = EntityIDToDomainTransform().transformFromJSON(self.ID as AnyObject?)!
     }
     
-    class func objectForMapping(map: Map) -> Mappable? {
+    class func objectForMapping(_ map: Map) -> Mappable? {
         if let entityId: String = map["entity_id"].value() {
-            let entityType = EntityIDToDomainTransform().transformFromJSON(entityId)!
+            let entityType = EntityIDToDomainTransform().transformFromJSON(entityId as AnyObject?)!
             switch entityType {
             case "binary_sensor":
                 return BinarySensor(map)
@@ -118,7 +118,7 @@ class Entity: Object, StaticMappable {
         return nil
     }
 
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         ID                <- map["entity_id"]
         Domain            <- (map["entity_id"], EntityIDToDomainTransform())
         State             <- map["state"]
@@ -284,51 +284,51 @@ class Entity: Object, StaticMappable {
         if let friendly = self.FriendlyName {
             return friendly
         } else {
-            return self.ID.stringByReplacingOccurrencesOfString("\(self.Domain).", withString: "").capitalizedString
+            return self.ID.replacingOccurrences(of: "\(self.Domain).", with: "").capitalized
         }
     }
     
 }
 
-public class StringObject: Object {
-    public dynamic var value: String?
+open class StringObject: Object {
+    open dynamic var value: String?
 }
 
-public class EntityIDToDomainTransform: TransformType {
+open class EntityIDToDomainTransform: TransformType {
     public typealias Object = String
     public typealias JSON = String
     
     public init() {}
     
-    public func transformFromJSON(value: AnyObject?) -> String? {
+    open func transformFromJSON(_ value: AnyObject?) -> String? {
         if let entityId = value as? String {
-            return entityId.componentsSeparatedByString(".")[0]
+            return entityId.components(separatedBy: ".")[0]
         }
         return nil
     }
     
-    public func transformToJSON(value: String?) -> String? {
+    open func transformToJSON(_ value: String?) -> String? {
         return nil
     }
 }
 
-public class HomeAssistantTimestampTransform: DateFormatterTransform {
+open class HomeAssistantTimestampTransform: DateFormatterTransform {
     
     public init() {
-        let formatter = NSDateFormatter()
-        formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let formatter = DateFormatter()
+        formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        if let HATimezone = NSUserDefaults.standardUserDefaults().stringForKey("time_zone") {
-            formatter.timeZone = NSTimeZone(name: HATimezone)!
+        if let HATimezone = UserDefaults.standard.string(forKey: "time_zone") {
+            formatter.timeZone = NSTimeZone(identifier: HATimezone)!
         } else {
-            formatter.timeZone = NSTimeZone.localTimeZone()
+            formatter.timeZone = NSTimeZone.autoupdatingCurrent
         }
         
         super.init(dateFormatter: formatter)
     }
 }
 
-public class ComponentBoolTransform: TransformType {
+open class ComponentBoolTransform: TransformType {
     
     public typealias Object = Bool
     public typealias JSON = String
@@ -341,11 +341,11 @@ public class ComponentBoolTransform: TransformType {
         self.falseValue = falseValue
     }
     
-    public func transformFromJSON(value: AnyObject?) -> Bool? {
+    open func transformFromJSON(_ value: AnyObject?) -> Bool? {
         return (String(value!) == self.trueValue)
     }
     
-    public func transformToJSON(value: Bool?) -> String? {
+    open func transformToJSON(_ value: Bool?) -> String? {
         return (value == true) ? self.trueValue : self.falseValue
     }
 }

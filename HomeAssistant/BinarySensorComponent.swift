@@ -13,7 +13,7 @@ class BinarySensor: SwitchableEntity {
     
     dynamic var SensorClass: String? = nil
     
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         
         SensorClass  <- map["attributes.sensor_class"]

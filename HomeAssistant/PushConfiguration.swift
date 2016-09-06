@@ -19,7 +19,7 @@ class PushCategory: Mappable {
         
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         Name        <- map["name"]
         Identifier  <- map["identifier"]
         Actions     <- map["actions"]
@@ -40,7 +40,7 @@ class PushAction: Mappable {
         
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         Title                  <- map["title"]
         Identifier             <- map["identifier"]
         AuthenticationRequired <- map["authenticationRequired"]
