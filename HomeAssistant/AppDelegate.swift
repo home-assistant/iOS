@@ -15,7 +15,7 @@ import PromiseKit
 import RealmSwift
 
 let realmConfig = Realm.Configuration(
-    schemaVersion: 7,
+    schemaVersion: 1,
     
     migrationBlock: { migration, oldSchemaVersion in
         if (oldSchemaVersion < 1) {
