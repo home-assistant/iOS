@@ -72,7 +72,7 @@ DEPENDENCIES:
   - HanekeSwift
   - IKEventSource
   - MBProgressHUD
-  - ObjectMapper
+  - ObjectMapper (from `https://github.com/Hearst-DD/ObjectMapper.git`)
   - ObjectMapper+Realm
   - PermissionScope
   - PromiseKit
@@ -85,11 +85,16 @@ EXTERNAL SOURCES:
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
+  ObjectMapper:
+    :git: https://github.com/Hearst-DD/ObjectMapper.git
 
 CHECKOUT OPTIONS:
   FontAwesomeKit:
     :commit: f71894d5bb06c5e20c902a715da24d2c2acdf6ee
     :git: https://github.com/robbiet480/FontAwesomeKit.git
+  ObjectMapper:
+    :commit: 5a1ccbd3c2dcaf3f6a275d48bbf339674284c847
+    :git: https://github.com/Hearst-DD/ObjectMapper.git
 
 SPEC CHECKSUMS:
   AcknowList: 06a183d117b7e2bb0c6f5654366d2912dc64a6c4

@@ -146,6 +146,7 @@
 		B6393F8C1CB260E800503916 /* EntityAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */; };
 		B64D047A1CB8908B00B945C8 /* StateChanged.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D04791CB8908B00B945C8 /* StateChanged.swift */; };
 		B64D047D1CB8916300B945C8 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D047C1CB8916300B945C8 /* Event.swift */; };
+		B64D09AF1D7D561E008EB487 /* InputSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D09AE1D7D561E008EB487 /* InputSlider.swift */; };
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
 		B657A8EE1CA646EB00121384 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8ED1CA646EB00121384 /* SettingsViewController.swift */; };
 		B657A8F11CA646EB00121384 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8EF1CA646EB00121384 /* Main.storyboard */; };
@@ -350,6 +351,7 @@
 		B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityAttributesViewController.swift; sourceTree = "<group>"; };
 		B64D04791CB8908B00B945C8 /* StateChanged.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateChanged.swift; sourceTree = "<group>"; };
 		B64D047C1CB8916300B945C8 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		B64D09AE1D7D561E008EB487 /* InputSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputSlider.swift; sourceTree = "<group>"; };
 		B657A8E61CA646EB00121384 /* HomeAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B657A8ED1CA646EB00121384 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -732,6 +734,7 @@
 				B6F02C021CB489770029ABE7 /* GarageDoorComponent.swift */,
 				B6F02BEA1CB46D090029ABE7 /* GroupComponent.swift */,
 				B6F02C031CB489770029ABE7 /* InputBooleanComponent.swift */,
+				B64D09AE1D7D561E008EB487 /* InputSlider.swift */,
 				B6F02C041CB489770029ABE7 /* InputSelectComponent.swift */,
 				B6F02C051CB489770029ABE7 /* LightComponent.swift */,
 				B6F02C061CB489770029ABE7 /* LockComponent.swift */,
@@ -1116,6 +1119,7 @@
 				B6F02BE91CB46AF40029ABE7 /* Entity.swift in Sources */,
 				B6F02C1A1CB489770029ABE7 /* SunComponent.swift in Sources */,
 				B6F02C1C1CB489770029ABE7 /* ThermostatComponent.swift in Sources */,
+				B64D09AF1D7D561E008EB487 /* InputSlider.swift in Sources */,
 				B6F02C151CB489770029ABE7 /* LockComponent.swift in Sources */,
 				B6767A511D0234E700F2A08B /* SwitchableEntity.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,

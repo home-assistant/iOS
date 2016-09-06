@@ -19,7 +19,6 @@ class Thermostat: Entity {
     var TargetTemperatureHigh: Int?
     var TargetTemperatureLow: Int?
     var Temperature: Int?
-    var UnitOfMeasurement: String?
     
     override func mapping(map: Map) {
         super.mapping(map)
@@ -32,7 +31,6 @@ class Thermostat: Entity {
         MinimumTemperature    <- map["attributes.min_temp"]
         TargetTemperatureHigh <- map["attributes.target_temp_high"]
         TargetTemperatureLow  <- map["attributes.target_temp_low"]
-        UnitOfMeasurement     <- map["attributes.unit_of_measurement"]
     }
     func turnFanOn() {
         HomeAssistantAPI.sharedInstance.CallService("thermostat", service: "set_fan_mode", serviceData: ["entity_id": self.ID, "fan": "on"])

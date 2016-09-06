@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import SwiftDate
+import RealmSwift
 
 enum MapType: Int {
     case Standard = 0
@@ -26,15 +27,15 @@ class HACircle: MKCircle {
 
 class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
-    var devices: [Entity]?
-    var zones: [Entity]?
-    
     var mapView: MKMapView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.title = "Devices & Zones"
+        
+        let devices = realm.objects(DeviceTracker.self)
+        let zones = realm.objects(Zone.self)
         
         self.navigationController?.toolbarHidden = false
         
@@ -66,8 +67,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         
         self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
         
-        for zone in zones! {
-            let zone = zone as! Zone
+        for zone in zones {
             if let radius = zone.Radius {
                 let circle = HACircle.init(centerCoordinate: zone.locationCoordinates(), radius: radius)
                 circle.type = "zone"
@@ -75,14 +75,13 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             }
         }
         
-        for device in devices! {
-            let device = device as! DeviceTracker
+        for device in devices {
             if device.Latitude.value == nil || device.Longitude.value == nil {
                 continue
             }
             let dropPin = DeviceAnnotation()
             dropPin.coordinate = device.locationCoordinates()
-            dropPin.title = device.FriendlyName
+            dropPin.title = device.Name
             var subtitlePieces : [String] = []
             if let changedTime = device.LastChanged {
                 subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago")
@@ -142,7 +141,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             if let picture = annotation.device?.DownloadedPicture {
                 annotationView.leftCalloutAccessoryView = UIImageView(image: picture)
             } else {
-                annotationView.leftCalloutAccessoryView = UIImageView(image: annotation.device!.EntityIcon())
+                annotationView.leftCalloutAccessoryView = UIImageView(image: annotation.device!.EntityIcon)
             }
 //            annotationView.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
             return annotationView

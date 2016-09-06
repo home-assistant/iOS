@@ -19,7 +19,7 @@ target 'HomeAssistant' do
   pod 'HanekeSwift'
   pod 'IKEventSource'
   pod 'MBProgressHUD'
-  pod 'ObjectMapper'
+  pod 'ObjectMapper', :git => 'https://github.com/Hearst-DD/ObjectMapper.git'
   pod 'ObjectMapper+Realm'
   pod 'PermissionScope'
   pod 'PromiseKit'

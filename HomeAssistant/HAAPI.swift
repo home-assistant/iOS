@@ -149,6 +149,9 @@ public class HomeAssistantAPI {
         eventSource.onMessage { (id, eventName, data) in
             if data == "ping" { return }
             if let event = Mapper<SSEEvent>().map(data) {
+                if let mapped = event as? StateChangedEvent {
+                    HomeAssistantAPI.sharedInstance.storeEntities([mapped.NewState!])
+                }
                 NSNotificationCenter.defaultCenter().postNotificationName("sse."+event.Type, object: nil, userInfo: event.toJSON())
             } else {
                 print("Unable to ObjectMap this SSE message", eventName, data)
@@ -343,6 +346,43 @@ public class HomeAssistantAPI {
     func storeEntities(entities: [Entity]) {
         for entity in entities {
             try! realm.write {
+                if let mapped = entity as? BinarySensor {
+                    realm.create(BinarySensor.self, value: mapped, update: true)
+                } else if let mapped = entity as? Climate {
+                    realm.create(Climate.self, value: mapped, update: true)
+                } else if let mapped = entity as? DeviceTracker {
+                    realm.create(DeviceTracker.self, value: mapped, update: true)
+                } else if let mapped = entity as? GarageDoor {
+                    realm.create(GarageDoor.self, value: mapped, update: true)
+                } else if let mapped = entity as? Group {
+                    realm.create(Group.self, value: mapped, update: true)
+                } else if let mapped = entity as? InputBoolean {
+                    realm.create(InputBoolean.self, value: mapped, update: true)
+                } else if let mapped = entity as? InputSelect {
+                    realm.create(InputSelect.self, value: mapped, update: true)
+                } else if let mapped = entity as? Light {
+                    realm.create(Light.self, value: mapped, update: true)
+                } else if let mapped = entity as? Lock {
+                    realm.create(Lock.self, value: mapped, update: true)
+                } else if let mapped = entity as? MediaPlayer {
+                    realm.create(MediaPlayer.self, value: mapped, update: true)
+                } else if let mapped = entity as? Scene {
+                    realm.create(Scene.self, value: mapped, update: true)
+                } else if let mapped = entity as? Script {
+                    realm.create(Script.self, value: mapped, update: true)
+                } else if let mapped = entity as? Sensor {
+                    realm.create(Sensor.self, value: mapped, update: true)
+                } else if let mapped = entity as? Sun {
+                    realm.create(Sun.self, value: mapped, update: true)
+                } else if let mapped = entity as? Switch {
+                    realm.create(Switch.self, value: mapped, update: true)
+                } else if let mapped = entity as? Thermostat {
+                    realm.create(Thermostat.self, value: mapped, update: true)
+                } else if let mapped = entity as? Weblink {
+                    realm.create(Weblink.self, value: mapped, update: true)
+                } else if let mapped = entity as? Zone {
+                    realm.create(Zone.self, value: mapped, update: true)
+                }
                 realm.create(Entity.self, value: entity, update: true)
             }
         }
@@ -371,6 +411,7 @@ public class HomeAssistantAPI {
             self.manager!.request(.GET, queryUrl).validate().responseObject { (response: Response<Entity, NSError>) in
                 switch response.result {
                 case .Success:
+                    self.storeEntities([response.result.value!])
                     fulfill(response.result.value!)
                 case .Failure(let error):
                     CLSLogv("Error on GetStateForEntityIdMapped() request: %@", getVaList([error.localizedDescription]))
@@ -403,7 +444,8 @@ public class HomeAssistantAPI {
             self.manager!.request(.POST, queryUrl, parameters: ["state": state], encoding: .JSON).validate().responseObject { (response: Response<Entity, NSError>) in
                 switch response.result {
                 case .Success:
-                    show(whistle: Murmur(title: Entity(id: entityId).Domain+" state set to "+state), action: .Show(1))
+                    show(whistle: Murmur(title: response.result.value!.Domain+" state set to "+response.result.value!.State), action: .Show(1))
+                    self.storeEntities([response.result.value!])
                     fulfill(response.result.value!)
                 case .Failure(let error):
                     CLSLogv("Error when attemping to SetState(): %@", getVaList([error.localizedDescription]))
@@ -456,11 +498,7 @@ public class HomeAssistantAPI {
     }
     
     func turnOnEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        var title = entity.ID
-        if let friendlyName = entity.FriendlyName {
-            title = friendlyName
-        }
-        show(whistle: Murmur(title: title+" turned on"), action: .Show(1))
+        show(whistle: Murmur(title: "\(entity.Name) turned on"), action: .Show(1))
         return CallService("homeassistant", service: "turn_on", serviceData: ["entity_id": entity.ID])
     }
     
@@ -470,25 +508,18 @@ public class HomeAssistantAPI {
     }
     
     func turnOffEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        var title = entity.ID
-        if let friendlyName = entity.FriendlyName {
-            title = friendlyName
-        }
-        show(whistle: Murmur(title: title+" turned off"), action: .Show(1))
+        show(whistle: Murmur(title: "\(entity.Name) turned off"), action: .Show(1))
         return CallService("homeassistant", service: "turn_off", serviceData: ["entity_id": entity.ID])
     }
     
     func toggle(entityId: String) -> Promise<[ServicesResponse]> {
-        show(whistle: Murmur(title: entityId+" toggled"), action: .Show(1))
+        let entity = realm.objectForPrimaryKey(Entity.self, key: entityId)
+        show(whistle: Murmur(title: "\(entity!.Name) toggled"), action: .Show(1))
         return CallService("homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
     }
     
     func toggleEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        var title = entity.ID
-        if let friendlyName = entity.FriendlyName {
-            title = friendlyName
-        }
-        show(whistle: Murmur(title: title+" toggled"), action: .Show(1))
+        show(whistle: Murmur(title: "\(entity.Name) toggled"), action: .Show(1))
         return CallService("homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
     

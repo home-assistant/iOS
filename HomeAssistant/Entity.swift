@@ -17,15 +17,39 @@ class Entity: Object, StaticMappable {
     dynamic var ID: String = ""
     dynamic var Domain: String = ""
     dynamic var State: String = ""
-    dynamic var Attributes: [String:AnyObject] = [:]
+    dynamic var Attributes: [String:AnyObject] {
+        get {
+            guard let dictionaryData = attributesData else {
+                return [String: AnyObject]()
+            }
+            do {
+                let dict = try NSJSONSerialization.JSONObjectWithData(dictionaryData, options: []) as? [String: AnyObject]
+                return dict!
+            } catch {
+                return [String: AnyObject]()
+            }
+        }
+        
+        set {
+            do {
+                let data = try NSJSONSerialization.dataWithJSONObject(newValue, options: [])
+                attributesData = data
+            } catch {
+                attributesData = nil
+            }
+        }
+    }
+    private dynamic var attributesData: NSData?
     dynamic var FriendlyName: String? = nil
     dynamic var Hidden = false
     dynamic var Icon: String? = nil
     dynamic var MobileIcon: String? = nil
     dynamic var Picture: String? = nil
     var DownloadedPicture: UIImage?
+    var UnitOfMeasurement: String?
     dynamic var LastChanged: NSDate? = nil
     dynamic var LastUpdated: NSDate? = nil
+//    let Groups = LinkingObjects(fromType: Group.self, property: "Entities")
     
     // Z-Wave properties
     dynamic var Location: String? = nil
@@ -60,6 +84,8 @@ class Entity: Object, StaticMappable {
                 return GarageDoor(map)
             case "input_boolean":
                 return InputBoolean(map)
+            case "input_slider":
+                return InputSlider(map)
             case "input_select":
                 return InputSelect(map)
             case "light":
@@ -93,28 +119,29 @@ class Entity: Object, StaticMappable {
     }
 
     func mapping(map: Map) {
-        ID            <- map["entity_id"]
-        Domain        <- (map["entity_id"], EntityIDToDomainTransform())
-        State         <- map["state"]
-        Attributes    <- map["attributes"]
-        FriendlyName  <- map["attributes.friendly_name"]
-        Hidden        <- map["attributes.hidden"]
-        Icon          <- map["attributes.icon"]
-        MobileIcon    <- map["attributes.mobile_icon"]
-        Picture       <- map["attributes.entity_picture"]
-        LastChanged   <- (map["last_changed"], HomeAssistantTimestampTransform())
-        LastUpdated   <- (map["last_updated"], HomeAssistantTimestampTransform())
+        ID                <- map["entity_id"]
+        Domain            <- (map["entity_id"], EntityIDToDomainTransform())
+        State             <- map["state"]
+        Attributes        <- map["attributes"]
+        FriendlyName      <- map["attributes.friendly_name"]
+        Hidden            <- map["attributes.hidden"]
+        Icon              <- map["attributes.icon"]
+        MobileIcon        <- map["attributes.mobile_icon"]
+        Picture           <- map["attributes.entity_picture"]
+        UnitOfMeasurement <- map["attributes.unit_of_measurement"]
+        LastChanged       <- (map["last_changed"], HomeAssistantTimestampTransform())
+        LastUpdated       <- (map["last_updated"], HomeAssistantTimestampTransform())
         
         // Z-Wave properties
-        NodeID        <- map["attributes.node_id"]
-        Location      <- map["attributes.location"]
+        NodeID            <- map["attributes.node_id"]
+        Location          <- map["attributes.location"]
         BatteryLevel      <- map["attributes.battery_level"]
         
         if let pic = self.Picture {
             HomeAssistantAPI.sharedInstance.getImage(pic).then { image -> Void in
                 self.DownloadedPicture = image
-            }.error { err -> Void in
-                print("Error when attempting to download image", err)
+                }.error { err -> Void in
+                    print("Error when attempting to download image", err)
             }
         }
     }
@@ -219,9 +246,15 @@ class Entity: Object, StaticMappable {
             return (self as! Lock).StateIcon()
         case is MediaPlayer:
             return (self as! MediaPlayer).StateIcon()
-        case is Sensor:
-            return (self as! Sensor).StateIcon()
         default:
+            if self.MobileIcon != nil { return self.MobileIcon! }
+            if self.Icon != nil { return self.Icon! }
+            
+            if (self.UnitOfMeasurement == "°C" || self.UnitOfMeasurement == "°F") {
+                return "mdi:thermometer"
+            } else if (self.UnitOfMeasurement == "Mice") {
+                return "mdi:mouse-variant"
+            }
             return self.ComponentIcon
         }
     }
@@ -240,11 +273,19 @@ class Entity: Object, StaticMappable {
         }
     }
     
-    func EntityIcon() -> UIImage {
+    var EntityIcon: UIImage {
         var icon = self.StateIcon()
         if self.MobileIcon != nil { icon = self.MobileIcon! }
         if self.Icon != nil { icon = self.Icon! }
         return getIconForIdentifier(icon, iconWidth: 30, iconHeight: 30, color: EntityColor())
+    }
+    
+    var Name : String {
+        if let friendly = self.FriendlyName {
+            return friendly
+        } else {
+            return self.ID.stringByReplacingOccurrencesOfString("\(self.Domain).", withString: "").capitalizedString
+        }
     }
     
 }

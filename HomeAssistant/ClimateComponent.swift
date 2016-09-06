@@ -29,7 +29,6 @@ class Climate: Entity {
     let SwingList = List<StringObject>()
     dynamic var SwingMode = false
     var Temperature = RealmOptional<Float>()
-    dynamic var UnitOfMeasurement: String? = nil
     
     // MARK: - Requireds
     required init() { super.init() }
@@ -53,7 +52,6 @@ class Climate: Entity {
         OperationMode        <- map["attributes.operation_mode"]
         SwingMode            <- (map["attributes.swing_mode"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         Temperature          <- map["attributes.temperature"]
-        UnitOfMeasurement    <- map["attributes.unit_of_measurement"]
         
         var FanList: [String]? = nil
         FanList              <- map["attributes.fan_list"]

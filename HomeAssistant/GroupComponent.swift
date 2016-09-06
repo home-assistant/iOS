@@ -22,27 +22,24 @@ let isAllGroupTransform = TransformOf<Bool, String>(fromJSON: { (value: String?)
 class Group: Entity {
     
     dynamic var IsAllGroup: Bool = false
+    dynamic var View: Bool = false
     dynamic var Auto: Bool = false
     var Order = RealmOptional<Int>()
-    dynamic var EntityIds: [String] = [String]()
-    let StoredEntityIds = List<StringObject>()
-    
+    var Entities = List<Entity>()
+    dynamic var EntityIds = [String]()
     
     override func mapping(map: Map) {
         super.mapping(map)
         
         IsAllGroup    <- (map["entity_id"], isAllGroupTransform)
+        View          <- map["attributes.view"]
         Auto          <- map["attributes.auto"]
         Order         <- map["attributes.order"]
         
         EntityIds     <- map["attributes.entity_id"]
         
-        var StoredEntityIds: [String]? = nil
-        StoredEntityIds     <- map["attributes.entity_id"]
-        StoredEntityIds?.forEach { option in
-            let value = StringObject()
-            value.value = option
-            self.StoredEntityIds.append(value)
+        EntityIds.forEach { entityId in
+            self.Entities.append(Entity(id: entityId))
         }
     }
     

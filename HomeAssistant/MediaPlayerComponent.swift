@@ -20,6 +20,10 @@ class MediaPlayer: SwitchableEntity {
     var MediaDuration = RealmOptional<Int>()
     dynamic var MediaTitle: String? = nil
     var VolumeLevel = RealmOptional<Float>()
+    dynamic var Source: String? = nil
+    dynamic var SourceList: [String] = [String]()
+    let StoredSourceList = List<StringObject>()
+    
     
     override func mapping(map: Map) {
         super.mapping(map)
@@ -31,7 +35,21 @@ class MediaPlayer: SwitchableEntity {
         MediaContentType <- map["attributes.media_content_type"]
         MediaDuration    <- map["attributes.media_duration"]
         MediaTitle       <- map["attributes.media_title"]
+        Source           <- map["attributes.source"]
         VolumeLevel      <- map["attributes.volume_level"]
+        SourceList       <- map["attributes.source_list"]
+        
+        var StoredSourceList: [String]? = nil
+        StoredSourceList     <- map["attributes.source_list"]
+        StoredSourceList?.forEach { option in
+            let value = StringObject()
+            value.value = option
+            self.StoredSourceList.append(value)
+        }
+    }
+    
+    override class func ignoredProperties() -> [String] {
+        return ["SourceList"]
     }
     
     func humanReadableMediaDuration() -> String {
