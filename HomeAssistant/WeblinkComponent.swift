@@ -11,16 +11,12 @@ import ObjectMapper
 
 class Weblink: Entity {
     
-    var URL: NSURL?
-    
-    required init?(_ map: Map) {
-        super.init(map)
-    }
+    var URL: String?
     
     override func mapping(map: Map) {
         super.mapping(map)
         
-        URL    <- (map["attributes.url"], URLTransform())
+        URL    <- map["attributes.url"]
     }
     
     override var ComponentIcon: String {

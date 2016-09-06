@@ -8,23 +8,20 @@
 
 import Foundation
 import ObjectMapper
+import RealmSwift
 
 class Sun: Entity {
     
-    var Elevation: Float?
-    var NextRising: NSDate?
-    var NextSetting: NSDate?
-    
-    required init?(_ map: Map) {
-        super.init(map)
-    }
+    var Elevation = RealmOptional<Float>()
+    var NextRising: NSDate? = nil
+    var NextSetting: NSDate? = nil
     
     override func mapping(map: Map) {
         super.mapping(map)
         
         Elevation    <- map["attributes.elevation"]
-        NextRising   <- (map["attributes.next_rising"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
-        NextSetting  <- (map["attributes.next_setting"], CustomDateFormatTransform(formatString: "HH:mm:ss dd-MM-YYYY"))
+        NextRising   <- (map["attributes.next_rising"], HomeAssistantTimestampTransform())
+        NextSetting  <- (map["attributes.next_setting"], HomeAssistantTimestampTransform())
     }
     
     override func EntityColor() -> UIColor {

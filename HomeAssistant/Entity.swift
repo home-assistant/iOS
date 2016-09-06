@@ -8,24 +8,67 @@
 
 import Foundation
 import ObjectMapper
+import RealmSwift
+import Realm
 
-class Entity: StaticMappable {
+class Entity: Object, StaticMappable {
     let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
     
-    var ID: String = ""
-    var Domain: String = ""
-    var State: String = ""
-    var Attributes: [String : AnyObject] = [:]
-    var FriendlyName: String?
-    var Hidden: Bool = false
-    var Icon: String?
-    var MobileIcon: String?
-    var Picture: String?
+    dynamic var ID: String = ""
+    dynamic var Domain: String = ""
+    dynamic var State: String = ""
+    dynamic var Attributes: [String:AnyObject] {
+        get {
+            guard let dictionaryData = attributesData else {
+                return [String: AnyObject]()
+            }
+            do {
+                let dict = try NSJSONSerialization.JSONObjectWithData(dictionaryData, options: []) as? [String: AnyObject]
+                return dict!
+            } catch {
+                return [String: AnyObject]()
+            }
+        }
+        
+        set {
+            do {
+                let data = try NSJSONSerialization.dataWithJSONObject(newValue, options: [])
+                attributesData = data
+            } catch {
+                attributesData = nil
+            }
+        }
+    }
+    private dynamic var attributesData: NSData?
+    dynamic var FriendlyName: String? = nil
+    dynamic var Hidden = false
+    dynamic var Icon: String? = nil
+    dynamic var MobileIcon: String? = nil
+    dynamic var Picture: String? = nil
     var DownloadedPicture: UIImage?
-    var LastChanged: NSDate?
-    var LastUpdated: NSDate?
+    var UnitOfMeasurement: String?
+    dynamic var LastChanged: NSDate? = nil
+    dynamic var LastUpdated: NSDate? = nil
+//    let Groups = LinkingObjects(fromType: Group.self, property: "Entities")
     
-    static func objectForMapping(map: Map) -> Mappable? {
+    // Z-Wave properties
+    dynamic var Location: String? = nil
+    dynamic var NodeID: String? = nil
+    var BatteryLevel = RealmOptional<Int>()
+    
+    // MARK: - Requireds - https://github.com/Hearst-DD/ObjectMapper/issues/462
+    required init() { super.init() }
+    required init?(_ map: Map) { super.init() }
+    required init(value: AnyObject, schema: RLMSchema) { super.init(value: value, schema: schema) }
+    required init(realm: RLMRealm, schema: RLMObjectSchema) { super.init(realm: realm, schema: schema) }
+    
+    init(id: String) {
+        super.init()
+        self.ID = id
+        self.Domain = EntityIDToDomainTransform().transformFromJSON(self.ID)!
+    }
+    
+    class func objectForMapping(map: Map) -> Mappable? {
         if let entityId: String = map["entity_id"].value() {
             let entityType = EntityIDToDomainTransform().transformFromJSON(entityId)!
             switch entityType {
@@ -41,6 +84,8 @@ class Entity: StaticMappable {
                 return GarageDoor(map)
             case "input_boolean":
                 return InputBoolean(map)
+            case "input_slider":
+                return InputSlider(map)
             case "input_select":
                 return InputSelect(map)
             case "light":
@@ -72,44 +117,51 @@ class Entity: StaticMappable {
         }
         return nil
     }
-    
-    init(id: String) {
-        self.ID = id
-        self.Domain = EntityIDToDomainTransform().transformFromJSON(self.ID)!
-    }
-    
-    required init?(_ map: Map) {
-        
-    }
-    
+
     func mapping(map: Map) {
-        ID            <- map["entity_id"]
-        Domain        <- (map["entity_id"], EntityIDToDomainTransform())
-        State         <- map["state"]
-        Attributes    <- map["attributes"]
-        FriendlyName  <- map["attributes.friendly_name"]
-        Hidden        <- map["attributes.hidden"]
-        Icon          <- map["attributes.icon"]
-        MobileIcon    <- map["attributes.mobile_icon"]
-        Picture       <- map["attributes.entity_picture"]
-        LastChanged   <- (map["last_changed"], HomeAssistantTimestampTransform())
-        LastUpdated   <- (map["last_updated"], HomeAssistantTimestampTransform())
+        ID                <- map["entity_id"]
+        Domain            <- (map["entity_id"], EntityIDToDomainTransform())
+        State             <- map["state"]
+        Attributes        <- map["attributes"]
+        FriendlyName      <- map["attributes.friendly_name"]
+        Hidden            <- map["attributes.hidden"]
+        Icon              <- map["attributes.icon"]
+        MobileIcon        <- map["attributes.mobile_icon"]
+        Picture           <- map["attributes.entity_picture"]
+        UnitOfMeasurement <- map["attributes.unit_of_measurement"]
+        LastChanged       <- (map["last_changed"], HomeAssistantTimestampTransform())
+        LastUpdated       <- (map["last_updated"], HomeAssistantTimestampTransform())
+        
+        // Z-Wave properties
+        NodeID            <- map["attributes.node_id"]
+        Location          <- map["attributes.location"]
+        BatteryLevel      <- map["attributes.battery_level"]
         
         if let pic = self.Picture {
             HomeAssistantAPI.sharedInstance.getImage(pic).then { image -> Void in
                 self.DownloadedPicture = image
-            }.error { err -> Void in
-                print("Error when attempting to download image", err)
+                }.error { err -> Void in
+                    print("Error when attempting to download image", err)
             }
         }
+    }
+    
+    override class func ignoredProperties() -> [String] {
+        return ["Attributes", "DownloadedPicture"]
+    }
+    
+    override static func primaryKey() -> String? {
+        return "ID"
     }
     
     func turnOn() {
         HomeAssistantAPI.sharedInstance.turnOnEntity(self)
     }
+    
     func turnOff() {
         HomeAssistantAPI.sharedInstance.turnOffEntity(self)
     }
+    
     func toggle() {
         HomeAssistantAPI.sharedInstance.toggleEntity(self)
     }
@@ -117,25 +169,33 @@ class Entity: StaticMappable {
     var ComponentIcon : String {
         switch (self.Domain) {
         case "alarm_control_panel":
-            return (self.State == "disarmed") ? "mdi:bell-outline" : "mdi:bell"
+            return "mdi:bell"
         case "automation":
             return "mdi:playlist-play"
         case "binary_sensor":
-            return "mdi:radiobox-blank"
+            return "mdi:checkbox-marked-circle"
         case "camera":
             return "mdi:video"
+        case "climate":
+            return "mdi:nest-thermostat"
         case "configurator":
             return "mdi:settings"
         case "conversation":
             return "mdi:text-to-speech"
+        case "cover":
+            return "mdi:window-closed"
         case "device_tracker":
             return "mdi:account"
+        case "fan":
+            return "mdi:fan"
         case "garage_door":
             return "mdi:glassdoor"
         case "group":
             return "mdi:google-circles-communities"
         case "homeassistant":
             return "mdi:home"
+        case "hvac":
+            return "mdi:air-conditioner"
         case "input_boolean":
             return "mdi:drawing"
         case "input_select":
@@ -145,7 +205,7 @@ class Entity: StaticMappable {
         case "light":
             return "mdi:lightbulb"
         case "lock":
-            return "mdi:lock-open"
+            return "mdi:lock"
         case "media_player":
             return "mdi:cast"
         case "notify":
@@ -153,7 +213,7 @@ class Entity: StaticMappable {
         case "proximity":
             return "mdi:apple-safari"
         case "rollershutter":
-            return (self.State == "open") ? "mdi:window-open" : "mdi:window-closed"
+            return "mdi:window-closed"
         case "scene":
             return "mdi:google-pages"
         case "script":
@@ -173,6 +233,7 @@ class Entity: StaticMappable {
         case "weblink":
             return "mdi:open-in-new"
         default:
+            print("Unable to find icon for domain \(self.Domain) (\(self.State))")
             return "mdi:bookmark"
         }
     }
@@ -185,9 +246,15 @@ class Entity: StaticMappable {
             return (self as! Lock).StateIcon()
         case is MediaPlayer:
             return (self as! MediaPlayer).StateIcon()
-        case is Sensor:
-            return (self as! Sensor).StateIcon()
         default:
+            if self.MobileIcon != nil { return self.MobileIcon! }
+            if self.Icon != nil { return self.Icon! }
+            
+            if (self.UnitOfMeasurement == "°C" || self.UnitOfMeasurement == "°F") {
+                return "mdi:thermometer"
+            } else if (self.UnitOfMeasurement == "Mice") {
+                return "mdi:mouse-variant"
+            }
             return self.ComponentIcon
         }
     }
@@ -206,12 +273,25 @@ class Entity: StaticMappable {
         }
     }
     
-    func EntityIcon() -> UIImage {
+    var EntityIcon: UIImage {
         var icon = self.StateIcon()
         if self.MobileIcon != nil { icon = self.MobileIcon! }
         if self.Icon != nil { icon = self.Icon! }
         return getIconForIdentifier(icon, iconWidth: 30, iconHeight: 30, color: EntityColor())
     }
+    
+    var Name : String {
+        if let friendly = self.FriendlyName {
+            return friendly
+        } else {
+            return self.ID.stringByReplacingOccurrencesOfString("\(self.Domain).", withString: "").capitalizedString
+        }
+    }
+    
+}
+
+public class StringObject: Object {
+    public dynamic var value: String?
 }
 
 public class EntityIDToDomainTransform: TransformType {
@@ -238,11 +318,34 @@ public class HomeAssistantTimestampTransform: DateFormatterTransform {
         let formatter = NSDateFormatter()
         formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        formatter.timeZone = NSTimeZone.localTimeZone()
         if let HATimezone = NSUserDefaults.standardUserDefaults().stringForKey("time_zone") {
             formatter.timeZone = NSTimeZone(name: HATimezone)!
+        } else {
+            formatter.timeZone = NSTimeZone.localTimeZone()
         }
         
         super.init(dateFormatter: formatter)
+    }
+}
+
+public class ComponentBoolTransform: TransformType {
+    
+    public typealias Object = Bool
+    public typealias JSON = String
+    
+    let trueValue: String
+    let falseValue: String
+    
+    public init(trueValue: String, falseValue: String) {
+        self.trueValue = trueValue
+        self.falseValue = falseValue
+    }
+    
+    public func transformFromJSON(value: AnyObject?) -> Bool? {
+        return (String(value!) == self.trueValue)
+    }
+    
+    public func transformToJSON(value: Bool?) -> String? {
+        return (value == true) ? self.trueValue : self.falseValue
     }
 }

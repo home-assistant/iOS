@@ -8,63 +8,52 @@
 
 import Foundation
 import ObjectMapper
-
-let isPlayingTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
-    return Bool(String(value!) == "playing")
-}, toJSON: { (value: Bool?) -> String? in
-    if let value = value {
-        if value == true {
-            return "playing"
-        } else {
-            return "paused"
-        }
-    }
-    return nil
-})
-
-let isIdleTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
-    return Bool(String(value!) == "idle")
-}, toJSON: { (value: Bool?) -> String? in
-    if let value = value {
-        if value == true {
-            return "idle"
-        } else {
-            return ""
-        }
-    }
-    return nil
-})
+import RealmSwift
 
 class MediaPlayer: SwitchableEntity {
     
-    var IsPlaying: Bool = false
-    var IsIdle: Bool = false
-    var IsVolumeMuted: Bool?
-    var MediaContentID: String?
-    var MediaContentType: String?
-    var MediaDuration: Int?
-    var MediaTitle: String?
-    var VolumeLevel: Float?
+    dynamic var IsPlaying: Bool = false
+    dynamic var IsIdle: Bool = false
+    var IsVolumeMuted = RealmOptional<Bool>()
+    dynamic var MediaContentID: String? = nil
+    dynamic var MediaContentType: String? = nil
+    var MediaDuration = RealmOptional<Int>()
+    dynamic var MediaTitle: String? = nil
+    var VolumeLevel = RealmOptional<Float>()
+    dynamic var Source: String? = nil
+    dynamic var SourceList: [String] = [String]()
+    let StoredSourceList = List<StringObject>()
     
-    required init?(_ map: Map) {
-        super.init(map)
-    }
     
     override func mapping(map: Map) {
         super.mapping(map)
         
-        IsPlaying        <- (map["state"], isPlayingTransform)
-        IsIdle           <- (map["state"], isIdleTransform)
+        IsPlaying        <- (map["state"], ComponentBoolTransform(trueValue: "playing", falseValue: "paused"))
+        IsIdle           <- (map["state"], ComponentBoolTransform(trueValue: "idle", falseValue: ""))
         IsVolumeMuted    <- map["attributes.is_volume_muted"]
         MediaContentID   <- map["attributes.media_content_id"]
         MediaContentType <- map["attributes.media_content_type"]
         MediaDuration    <- map["attributes.media_duration"]
         MediaTitle       <- map["attributes.media_title"]
+        Source           <- map["attributes.source"]
         VolumeLevel      <- map["attributes.volume_level"]
+        SourceList       <- map["attributes.source_list"]
+        
+        var StoredSourceList: [String]? = nil
+        StoredSourceList     <- map["attributes.source_list"]
+        StoredSourceList?.forEach { option in
+            let value = StringObject()
+            value.value = option
+            self.StoredSourceList.append(value)
+        }
+    }
+    
+    override class func ignoredProperties() -> [String] {
+        return ["SourceList"]
     }
     
     func humanReadableMediaDuration() -> String {
-        if let durationSeconds = self.MediaDuration {
+        if let durationSeconds = self.MediaDuration.value {
             let hours = durationSeconds / 3600
             let minutes = (durationSeconds % 3600) / 60
             let seconds = (durationSeconds % 3600) % 60

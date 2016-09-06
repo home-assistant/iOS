@@ -8,16 +8,13 @@
 
 import Foundation
 import ObjectMapper
+import RealmSwift
 
 class Light: SwitchableEntity {
     
-    var Brightness: Float?
-    var ColorTemp: Float?
-    var RGBColor: [Int]?
-    
-    required init?(_ map: Map) {
-        super.init(map)
-    }
+    var Brightness = RealmOptional<Float>()
+    var ColorTemp = RealmOptional<Float>()
+    dynamic var RGBColor: [Int]?
     
     override func mapping(map: Map) {
         super.mapping(map)
@@ -45,5 +42,9 @@ class Light: SwitchableEntity {
     
     override var ComponentIcon: String {
         return "mdi:lightbulb"
+    }
+
+    override class func ignoredProperties() -> [String] {
+        return ["RGBColor"]
     }
 }

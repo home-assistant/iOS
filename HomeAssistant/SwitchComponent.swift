@@ -8,25 +8,18 @@
 
 import Foundation
 import ObjectMapper
+import RealmSwift
 
 class Switch: SwitchableEntity {
     
-    var Location: String?
-    var NodeID: String?
-    var TodayMilliwattHours: Int?
-    var CurrentPowerMilliwattHours: Int?
-    
-    required init?(_ map: Map) {
-        super.init(map)
-    }
+    var TodayMilliwattHours = RealmOptional<Int>()
+    var CurrentPowerMilliwattHours = RealmOptional<Int>()
     
     override func mapping(map: Map) {
         super.mapping(map)
         
         TodayMilliwattHours          <- map["attributes.today_mwh"]
         CurrentPowerMilliwattHours   <- map["attributes.current_power_mwh"]
-        NodeID                       <- map["attributes.node_id"]
-        Location                     <- map["attributes.location"]
     }
     
     override var ComponentIcon: String {

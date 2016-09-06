@@ -11,17 +11,11 @@ import ObjectMapper
 
 class Sensor: Entity {
     
-    var UnitOfMeasurement: String?
-    var SensorClass: String?
-    
-    required init?(_ map: Map) {
-        super.init(map)
-    }
-    
+    dynamic var SensorClass: String? = nil
+
     override func mapping(map: Map) {
         super.mapping(map)
         
-        UnitOfMeasurement <- map["attributes.unit_of_measurement"]
         SensorClass       <- map["attributes.sensor_class"]
     }
     
@@ -29,15 +23,4 @@ class Sensor: Entity {
         return "mdi:eye"
     }
     
-    override func StateIcon() -> String {
-        if self.MobileIcon != nil { return self.MobileIcon! }
-        if self.Icon != nil { return self.Icon! }
-        
-        if (self.UnitOfMeasurement == "°C" || self.UnitOfMeasurement == "°F") {
-            return "mdi:thermometer"
-        } else if (self.UnitOfMeasurement == "Mice") {
-            return "mdi:mouse-variant"
-        }
-        return ComponentIcon
-    }
 }

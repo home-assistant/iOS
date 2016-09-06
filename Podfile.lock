@@ -21,8 +21,11 @@ PODS:
     - FontAwesomeKit/Core
   - HanekeSwift (0.10.1)
   - IKEventSource (1.1.4)
-  - MBProgressHUD (0.9.2)
+  - MBProgressHUD (1.0.0)
   - ObjectMapper (1.4.0)
+  - ObjectMapper+Realm (0.1):
+    - ObjectMapper
+    - RealmSwift
   - OMGHTTPURLRQ (3.2.0):
     - OMGHTTPURLRQ/RQ (= 3.2.0)
   - OMGHTTPURLRQ/FormURLEncode (3.2.0)
@@ -43,30 +46,37 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (3.5.1):
     - PromiseKit/CorePromise
+  - Realm (1.0.2):
+    - Realm/Headers (= 1.0.2)
+  - Realm/Headers (1.0.2)
+  - RealmSwift (1.0.2):
+    - Realm (= 1.0.2)
   - SwiftDate (3.0.8)
   - SwiftLocation (1.0.4)
   - Whisper (3.1.1)
 
 DEPENDENCIES:
   - AcknowList
-  - Alamofire (~> 3.0)
-  - AlamofireImage (~> 2.0)
-  - AlamofireObjectMapper (~> 3.0)
+  - Alamofire
+  - AlamofireImage
+  - AlamofireObjectMapper
   - AWSCognito
   - AWSCore
   - AWSSNS
   - Crashlytics
-  - DeviceKit (~> 0.3.2)
-  - Eureka (~> 1.5)
+  - DeviceKit
+  - Eureka
   - Fabric
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`,
     branch `Material-Design-Icons`)
   - HanekeSwift
   - IKEventSource
-  - MBProgressHUD (~> 0.9.2)
-  - ObjectMapper (~> 1.2)
+  - MBProgressHUD
+  - ObjectMapper (from `https://github.com/Hearst-DD/ObjectMapper.git`)
+  - ObjectMapper+Realm
   - PermissionScope
   - PromiseKit
+  - RealmSwift
   - SwiftDate
   - SwiftLocation
   - Whisper
@@ -75,11 +85,16 @@ EXTERNAL SOURCES:
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
+  ObjectMapper:
+    :git: https://github.com/Hearst-DD/ObjectMapper.git
 
 CHECKOUT OPTIONS:
   FontAwesomeKit:
     :commit: f71894d5bb06c5e20c902a715da24d2c2acdf6ee
     :git: https://github.com/robbiet480/FontAwesomeKit.git
+  ObjectMapper:
+    :commit: 5a1ccbd3c2dcaf3f6a275d48bbf339674284c847
+    :git: https://github.com/Hearst-DD/ObjectMapper.git
 
 SPEC CHECKSUMS:
   AcknowList: 06a183d117b7e2bb0c6f5654366d2912dc64a6c4
@@ -96,11 +111,14 @@ SPEC CHECKSUMS:
   FontAwesomeKit: 7336af53079bde1943da68c20a2d06436e3ef1ca
   HanekeSwift: 08e47d3d0f2899ec58e5d257beba0de619aca9e8
   IKEventSource: 7a3b82627c83ce247fed75b1b03f0c32a0759639
-  MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
+  MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   ObjectMapper: a07ad0462c5adf014adc0f89ef04c29b626e855e
+  ObjectMapper+Realm: dbcf666c2081d82dc527b054c574b9f3777df060
   OMGHTTPURLRQ: 1e54807cb7d5dbb506926e53498e1e9ac5720c79
   PermissionScope: 860828c5516d349b6f49e5491799cfef33c5ccc7
   PromiseKit: 99ea973444a4bff6c38ffb97fa1bb175e619bcf0
+  Realm: 9d5c46a4d7d27958530a8dfc58f63a99e5c2cba3
+  RealmSwift: 82f3ac5e24530143dddfde2033acc0d308f27d96
   SwiftDate: 971f8b9394f664f2226b9c3ab64e801a7291c612
   SwiftLocation: 00682ad3598aa54936f34ec42ed53fceb37c22a4
   Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453

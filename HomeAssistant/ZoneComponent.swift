@@ -16,10 +16,6 @@ class Zone: Entity {
     var Longitude: Double?
     var Radius: Double?
     
-    required init?(_ map: Map) {
-        super.init(map)
-    }
-    
     override func mapping(map: Map) {
         super.mapping(map)
         

@@ -11,11 +11,7 @@ import ObjectMapper
 
 class BinarySensor: SwitchableEntity {
     
-    var SensorClass: String?
-    
-    required init?(_ map: Map) {
-        super.init(map)
-    }
+    dynamic var SensorClass: String? = nil
     
     override func mapping(map: Map) {
         super.mapping(map)
@@ -36,22 +32,24 @@ class BinarySensor: SwitchableEntity {
             return "mdi:checkbox-marked-circle"
         }
         switch (self.SensorClass!) {
-            case "opening":
-                return activated ? "mdi:crop-square" : "mdi:exit-to-app"
-            case "moisture":
-                return activated ? "mdi:water-off" : "mdi:water"
+            case "connectivity":
+                return activated ? "mdi:server-network-off" : "mdi:server-network"
             case "light":
                 return activated ? "mdi:brightness-5" : "mdi:brightness-7"
+            case "moisture":
+                return activated ? "mdi:water-off" : "mdi:water"
+            case "motion":
+                return activated ? "mdi:walk" : "mdi:run"
+            case "occupancy":
+                return activated ? "mdi:home" : "mdi:home-outline"
+            case "opening":
+                return activated ? "mdi:crop-square" : "mdi:exit-to-app"
             case "sound":
                 return activated ? "mdi:music-note-off" : "mdi:music-note"
             case "vibration":
                 return activated ? "mdi:crop-portrait" : "mdi:vibrate"
-            case "connectivity":
-                return activated ? "mdi:server-network-off" : "mdi:server-network"
-            case "safety", "gas", "smoke", "power":
+            case "gas", "power", "safety", "smoke":
                 return activated ? "mdi:verified" : "mdi:alert"
-            case "motion":
-                return activated ? "mdi:walk" : "mdi:run"
             default:
                 return activated ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle"
         }

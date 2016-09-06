@@ -9,21 +9,20 @@
 import UIKit
 import Eureka
 import ObjectMapper
+import RealmSwift
 
 class EntityAttributesViewController: FormViewController {
 
-    var entity: Entity?
+    var entityID: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if entity?.FriendlyName != nil {
-            self.title = entity?.FriendlyName
-        } else {
-            self.title = "Attributes"
-        }
+        let entity = realm.objectForPrimaryKey(Entity.self, key: entityID)
         
-        if let picture = self.entity?.Picture {
+        self.title = (entity?.FriendlyName != nil) ? entity?.Name : "Attributes"
+        
+        if let picture = entity!.Picture {
             form +++ Section()
                 <<< TextAreaRow("entity_picture"){
                     $0.disabled = true
@@ -55,113 +54,118 @@ class EntityAttributesViewController: FormViewController {
         
         form +++ Section(header: "Attributes", footer: "")
         
-        if var attributes = entity?.Attributes {
-            attributes["state"] = entity?.State
-            for attribute in attributes {
-                let prettyLabel = attribute.0.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
-                switch attribute.0 {
-                    case "fan":
-                        let thermostat = entity as! Thermostat
-                        form.last! <<< SwitchRow(attribute.0){
-                            $0.title = prettyLabel
-                            $0.value = thermostat.Fan
-                        }.onChange { row -> Void in
-                            if (row.value == true) {
-                                thermostat.turnFanOn()
-                            } else {
-                                thermostat.turnFanOff()
-                            }
-                        }
-                        break
-                    case "away_mode":
-                        let thermostat = entity as! Thermostat
-                        form.last! <<< SwitchRow(attribute.0){
-                            $0.title = prettyLabel
-                            $0.value = thermostat.AwayMode
-                        }.onChange { row -> Void in
-                            if (row.value == true) {
-                                thermostat.setAwayModeOn()
-                            } else {
-                                thermostat.setAwayModeOff()
-                            }
-                        }
-                        break
-                    case "temperature":
-                        let thermostat = entity as! Thermostat
-                        form.last! <<< SliderRow(attribute.0){
-                            $0.title = prettyLabel
-                            $0.value = Float(thermostat.Temperature!)
-                            $0.maximumValue = 120.0
-                            $0.steps = 120
-                            
-                        }.onChange { row -> Void in
-                            thermostat.setTemperature(row.value!)
-                        }
-                        break
-                    case "media_duration":
-                        let mediaPlayer = entity as! MediaPlayer
-                        form.last! <<< TextRow(attribute.0){
-                            $0.title = prettyLabel
-                            $0.value = mediaPlayer.humanReadableMediaDuration()
-                            $0.disabled = true
-                        }
-                        break
-                    case "is_volume_muted":
-                        let mediaPlayer = entity as! MediaPlayer
-                        form.last! <<< SwitchRow(attribute.0){
-                            $0.title = "Mute"
-                            $0.value = mediaPlayer.IsVolumeMuted
-                        }.onChange { row -> Void in
-                            if (row.value == true) {
-                                mediaPlayer.muteOn()
-                            } else {
-                                mediaPlayer.muteOff()
-                            }
-                        }
-                        break
-                    case "volume_level":
-                        let mediaPlayer = entity as! MediaPlayer
-                        let volume = Float(attribute.1 as! NSNumber)*100
-                        form.last! <<< SliderRow(attribute.0){
-                            $0.title = prettyLabel
-                            $0.value = volume
-                            $0.maximumValue = 100
-                            $0.steps = 100
-                        }.onChange { row -> Void in
-                            mediaPlayer.setVolume(row.value!)
-                        }
-                        break
-                    case "entity_picture", "icon", "supported_media_commands", "hidden", "assumed_state":
-                        // Skip these attributes
-                        break
-                    case "state":
-                        if entity?.Domain == "switch" || entity?.Domain == "light" || entity?.Domain == "input_boolean" {
-                            form.last! <<< SwitchRow(attribute.0) {
-                                $0.title = entity?.FriendlyName
-                                $0.value = (entity?.State == "on") ? true : false
-                            }.onChange { row -> Void in
-                                if (row.value == true) {
-                                    HomeAssistantAPI.sharedInstance.turnOn(self.entity!.ID)
-                                } else {
-                                    HomeAssistantAPI.sharedInstance.turnOff(self.entity!.ID)
-                                }
-                            }
+        var attributes = entity!.Attributes
+        
+        attributes["state"] = entity?.State
+        for attribute in attributes {
+            let prettyLabel = attribute.0.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
+            switch attribute.0 {
+            case "fan":
+                if let thermostat = entity as? Thermostat {
+                    form.last! <<< SwitchRow(attribute.0){
+                        $0.title = prettyLabel
+                        $0.value = thermostat.Fan
+                    }.onChange { row -> Void in
+                        if (row.value == true) {
+                            thermostat.turnFanOn()
                         } else {
-                            fallthrough
+                            thermostat.turnFanOff()
                         }
-                    default:
-                        form.last! <<< TextRow(attribute.0){
-                            $0.title = prettyLabel
-                            $0.value = String(attribute.1).capitalizedString
-                            $0.disabled = true
+                    }
+                }
+                break
+            case "away_mode":
+                if let thermostat = entity as? Thermostat {
+                    form.last! <<< SwitchRow(attribute.0){
+                        $0.title = prettyLabel
+                        $0.value = thermostat.AwayMode
+                    }.onChange { row -> Void in
+                        if (row.value == true) {
+                            thermostat.setAwayModeOn()
+                        } else {
+                            thermostat.setAwayModeOff()
                         }
+                    }
+                }
+                break
+            case "temperature":
+                if let thermostat = entity as? Thermostat {
+                    form.last! <<< SliderRow(attribute.0){
+                        $0.title = prettyLabel
+                        $0.value = Float(thermostat.Temperature!)
+                        $0.maximumValue = 120.0
+                        $0.steps = 120
+                    }.onChange { row -> Void in
+                        thermostat.setTemperature(row.value!)
+                    }
+                }
+                break
+            case "media_duration":
+                if let mediaPlayer = entity as? MediaPlayer {
+                    form.last! <<< TextRow(attribute.0){
+                        $0.title = prettyLabel
+                        $0.value = mediaPlayer.humanReadableMediaDuration()
+                        $0.disabled = true
+                    }
+                }
+                break
+            case "is_volume_muted":
+                if let mediaPlayer = entity as? MediaPlayer {
+                    form.last! <<< SwitchRow(attribute.0){
+                        $0.title = "Mute"
+                        $0.value = mediaPlayer.IsVolumeMuted.value
+                    }.onChange { row -> Void in
+                        if (row.value == true) {
+                            mediaPlayer.muteOn()
+                        } else {
+                            mediaPlayer.muteOff()
+                        }
+                    }
+                }
+                break
+            case "volume_level":
+                if let mediaPlayer = entity as? MediaPlayer {
+                    let volume = Float(attribute.1 as! NSNumber)*100
+                    form.last! <<< SliderRow(attribute.0){
+                        $0.title = prettyLabel
+                        $0.value = volume
+                        $0.maximumValue = 100
+                        $0.steps = 100
+                    }.onChange { row -> Void in
+                        mediaPlayer.setVolume(row.value!)
+                    }
+                }
+                break
+            case "entity_picture", "icon", "supported_media_commands", "hidden", "assumed_state":
+                // Skip these attributes
+                break
+            case "state":
+                if entity?.Domain == "switch" || entity?.Domain == "light" || entity?.Domain == "input_boolean" {
+                    form.last! <<< SwitchRow(attribute.0) {
+                        $0.title = entity?.Name
+                        $0.value = (entity?.State == "on") ? true : false
+                    }.onChange { row -> Void in
+                        if (row.value == true) {
+                            HomeAssistantAPI.sharedInstance.turnOn(entity!.ID)
+                        } else {
+                            HomeAssistantAPI.sharedInstance.turnOff(entity!.ID)
+                        }
+                    }
+                } else {
+                    fallthrough
+                }
+            default:
+                form.last! <<< TextRow(attribute.0){
+                    $0.title = prettyLabel
+                    $0.value = String(attribute.1).capitalizedString
+                    $0.disabled = true
                 }
             }
         }
         
         
         // Do any additional setup after loading the view.
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EntityAttributesViewController.StateChangedSSEEvent(_:)), name:"sse.state_changed", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EntityAttributesViewController.StateChangedSSEEvent(_:)), name:"sse.state_changed", object: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -173,7 +177,8 @@ class EntityAttributesViewController: FormViewController {
     func StateChangedSSEEvent(notification: NSNotification){
         if let userInfo = notification.userInfo {
             if let event = Mapper<StateChangedEvent>().map(userInfo) {
-                if event.EntityID != entity!.ID { return }
+                if event.EntityID != entityID { return }
+                let entity = realm.objectForPrimaryKey(Entity.self, key: entityID)
                 if let newState = event.NewState {
                     var updateDict : [String:AnyObject] = [:]
                     newState.Attributes["state"] = entity?.State
@@ -192,7 +197,7 @@ class EntityAttributesViewController: FormViewController {
                             updateDict[key] = (entity as! MediaPlayer).humanReadableMediaDuration()
                             break
                         case "is_volume_muted":
-                            updateDict[key] = (entity as! MediaPlayer).IsVolumeMuted!
+                            updateDict[key] = (entity as! MediaPlayer).IsVolumeMuted
                             break
                         case "volume_level":
                             updateDict[key] = Float(value as! NSNumber)*100

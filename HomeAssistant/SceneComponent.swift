@@ -8,22 +8,28 @@
 
 import Foundation
 import ObjectMapper
+import RealmSwift
 
 class Scene: Entity {
     
-    var EntityIds: [String]?
-    
-    required init?(_ map: Map) {
-        super.init(map)
-    }
+    var Entities = List<Entity>()
+    dynamic var EntityIds = [String]()
     
     override func mapping(map: Map) {
         super.mapping(map)
         
         EntityIds     <- map["attributes.entity_id"]
+        
+        EntityIds.forEach { entityId in
+            self.Entities.append(Entity(id: entityId))
+        }
     }
     
     override var ComponentIcon: String {
         return "mdi:google-pages"
+    }
+    
+    override class func ignoredProperties() -> [String] {
+        return ["EntityIds"]
     }
 }
