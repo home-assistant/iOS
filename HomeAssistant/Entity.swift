@@ -59,7 +59,7 @@ class Entity: Object, StaticMappable {
     // MARK: - Requireds - https://github.com/Hearst-DD/ObjectMapper/issues/462
     required init() { super.init() }
     required init?(_ map: Map) { super.init() }
-    required init(value: AnyObject, schema: RLMSchema) { super.init(value: value, schema: schema) }
+    required init(value: Any, schema: RLMSchema) { super.init(value: value, schema: schema) }
     required init(realm: RLMRealm, schema: RLMObjectSchema) { super.init(realm: realm, schema: schema) }
     
     init(id: String) {
@@ -138,10 +138,10 @@ class Entity: Object, StaticMappable {
         BatteryLevel      <- map["attributes.battery_level"]
         
         if let pic = self.Picture {
-            HomeAssistantAPI.sharedInstance.getImage(pic).then { image -> Void in
+            HomeAssistantAPI.sharedInstance.getImage(imageUrl: pic).then { image -> Void in
                 self.DownloadedPicture = image
-                }.error { err -> Void in
-                    print("Error when attempting to download image", err)
+            }.catch { err -> Void in
+                print("Error when attempting to download image", err)
             }
         }
     }
@@ -155,15 +155,15 @@ class Entity: Object, StaticMappable {
     }
     
     func turnOn() {
-        HomeAssistantAPI.sharedInstance.turnOnEntity(self)
+        let _ = HomeAssistantAPI.sharedInstance.turnOnEntity(entity: self)
     }
     
     func turnOff() {
-        HomeAssistantAPI.sharedInstance.turnOffEntity(self)
+        let _ = HomeAssistantAPI.sharedInstance.turnOffEntity(entity: self)
     }
     
     func toggle() {
-        HomeAssistantAPI.sharedInstance.toggleEntity(self)
+        let _ = HomeAssistantAPI.sharedInstance.toggleEntity(entity: self)
     }
     
     var ComponentIcon : String {
@@ -300,7 +300,7 @@ open class EntityIDToDomainTransform: TransformType {
     
     public init() {}
     
-    open func transformFromJSON(_ value: AnyObject?) -> String? {
+    public func transformFromJSON(_ value: Any?) -> String? {
         if let entityId = value as? String {
             return entityId.components(separatedBy: ".")[0]
         }
@@ -319,9 +319,9 @@ open class HomeAssistantTimestampTransform: DateFormatterTransform {
         formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         if let HATimezone = UserDefaults.standard.string(forKey: "time_zone") {
-            formatter.timeZone = NSTimeZone(identifier: HATimezone)!
+            formatter.timeZone = TimeZone(identifier: HATimezone)!
         } else {
-            formatter.timeZone = NSTimeZone.autoupdatingCurrent
+            formatter.timeZone = TimeZone.autoupdatingCurrent
         }
         
         super.init(dateFormatter: formatter)
@@ -341,8 +341,8 @@ open class ComponentBoolTransform: TransformType {
         self.falseValue = falseValue
     }
     
-    open func transformFromJSON(_ value: AnyObject?) -> Bool? {
-        return (String(value!) == self.trueValue)
+    public func transformFromJSON(_ value: Any?) -> Bool? {
+        return ((value! as! String) == self.trueValue)
     }
     
     open func transformToJSON(_ value: Bool?) -> String? {

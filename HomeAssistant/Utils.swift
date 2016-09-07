@@ -44,21 +44,6 @@ func intFromHexString(_ hexStr: String) -> UInt32 {
     return hexInt
 }
 
-func getCurrentWifiSSID() -> String {
-    var currentSSID = "Unknown"
-    let interfaces:CFArray! = CNCopySupportedInterfaces()
-    for i in 0..<CFArrayGetCount(interfaces){
-        let interfaceName: UnsafeRawPointer = CFArrayGetValueAtIndex(interfaces, i)
-        let rec = unsafeBitCast(interfaceName, to: AnyObject.self)
-        let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)") as CFString as CFString as CFString as CFString as CFString as CFString as CFString
-        if unsafeInterfaceData != nil {
-            let interfaceData = unsafeInterfaceData! as Dictionary!
-            currentSSID = interfaceData["SSID"] as! String
-        }
-    }
-    return currentSSID
-}
-
 // Thanks to http://stackoverflow.com/a/35624018/486182
 // Must reboot device after installing new push sounds (http://stackoverflow.com/questions/34998278/change-push-notification-sound-file-only-works-after-ios-reboot)
 
@@ -153,7 +138,7 @@ extension String {
     
     subscript (r: Range<Int>) -> String {
         let start = characters.index(startIndex, offsetBy: r.lowerBound)
-        let end = <#T##String.CharacterView corresponding to `start`##String.CharacterView#>.index(start, offsetBy: r.upperBound - r.lowerBound)
+        let end = String.CharacterView.index(start, offsetBy: r.upperBound - r.lowerBound)
         return self[Range(start ..< end)]
     }
 }

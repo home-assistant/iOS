@@ -64,14 +64,14 @@ class MediaPlayer: SwitchableEntity {
     }
     
     func muteOn() {
-        HomeAssistantAPI.sharedInstance.CallService("media_player", service: "volume_mute", serviceData: ["entity_id": self.ID, "is_volume_muted": "on"])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player", service: "volume_mute", serviceData: ["entity_id": self.ID as AnyObject, "is_volume_muted": "on" as AnyObject])
     }
     func muteOff() {
-        HomeAssistantAPI.sharedInstance.CallService("media_player", service: "volume_mute", serviceData: ["entity_id": self.ID, "is_volume_muted": "off"])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player", service: "volume_mute", serviceData: ["entity_id": self.ID as AnyObject, "is_volume_muted": "off" as AnyObject])
     }
     func setVolume(_ newVolume: Float) {
         let fixedVolume = newVolume/100
-        HomeAssistantAPI.sharedInstance.CallService("media_player", service: "volume_set", serviceData: ["entity_id": self.ID, "volume_level": fixedVolume])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player", service: "volume_set", serviceData: ["entity_id": self.ID as AnyObject, "volume_level": fixedVolume as AnyObject])
     }
     
     override var ComponentIcon: String {

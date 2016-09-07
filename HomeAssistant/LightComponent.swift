@@ -28,7 +28,7 @@ class Light: SwitchableEntity {
         if self.IsOn! {
             if self.Attributes["rgb_color"] != nil {
                 let rgb = self.Attributes["rgb_color"]!
-                let red = CGFloat(rgb[0].doubleValue/255.0)
+                let red = CGFloat((rgb[0]).doubleValue/255.0)
                 let green = CGFloat(rgb[1].doubleValue/255.0)
                 let blue = CGFloat(rgb[2].doubleValue/255.0)
                 return UIColor.init(red: red, green: green, blue: blue, alpha: 1)

@@ -33,7 +33,7 @@ class Climate: Entity {
     // MARK: - Requireds
     required init() { super.init() }
     required init?(_ map: Map) { super.init() }
-    required init(value: AnyObject, schema: RLMSchema) { super.init(value: value, schema: schema) }
+    required init(value: Any, schema: RLMSchema) { super.init(value: value, schema: schema) }
     required init(realm: RLMRealm, schema: RLMObjectSchema) { super.init(realm: realm, schema: schema) }
     
     override func mapping(_ map: Map) {
@@ -79,43 +79,43 @@ class Climate: Entity {
     }
     
     func TurnFanOn() {
-        HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_fan_mode", serviceData: ["entity_id": self.ID, "fan": "on"])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "climate", service: "set_fan_mode", serviceData: ["entity_id": self.ID as AnyObject, "fan": "on" as AnyObject])
     }
     
     func TurnFanOff() {
-        HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_fan_mode", serviceData: ["entity_id": self.ID, "fan": "off"])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "climate", service: "set_fan_mode", serviceData: ["entity_id": self.ID as AnyObject, "fan": "off" as AnyObject])
     }
     
     func SetAwayModeOn() {
-        HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_away_mode", serviceData: ["entity_id": self.ID, "away_mode": "on"])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "climate", service: "set_away_mode", serviceData: ["entity_id": self.ID as AnyObject, "away_mode": "on" as AnyObject])
     }
     
     func SetAwayModeOff() {
-        HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_away_mode", serviceData: ["entity_id": self.ID, "away_mode": "off"])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "climate", service: "set_away_mode", serviceData: ["entity_id": self.ID as AnyObject, "away_mode": "off" as AnyObject])
     }
     
     func SetTemperature(_ newTemp: Float) {
-        HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_temperature", serviceData: ["entity_id": self.ID, "temperature": newTemp])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "climate", service: "set_temperature", serviceData: ["entity_id": self.ID as AnyObject, "temperature": newTemp as AnyObject])
     }
     
     func SetHumidity(_ newHumidity: Int) {
-        HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_humidity", serviceData: ["entity_id": self.ID, "humidity": newHumidity])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "climate", service: "set_humidity", serviceData: ["entity_id": self.ID as AnyObject, "humidity": newHumidity as AnyObject])
     }
     
     func SetSwingMode(_ newSwingMode: String) {
-        HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_swing_mode", serviceData: ["entity_id": self.ID, "swing_mode": newSwingMode])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "climate", service: "set_swing_mode", serviceData: ["entity_id": self.ID as AnyObject, "swing_mode": newSwingMode as AnyObject])
     }
     
     func SetOperationMode(_ newOperationMode: String) {
-        HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_operation_mode", serviceData: ["entity_id": self.ID, "operation_mode": newOperationMode])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "climate", service: "set_operation_mode", serviceData: ["entity_id": self.ID as AnyObject, "operation_mode": newOperationMode as AnyObject])
     }
     
     func TurnAuxHeatOn() {
-        HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_aux_heat", serviceData: ["entity_id": self.ID, "aux_heat": "on"])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "climate", service: "set_aux_heat", serviceData: ["entity_id": self.ID as AnyObject, "aux_heat": "on" as AnyObject])
     }
     
     func TurnAuxHeatOff() {
-        HomeAssistantAPI.sharedInstance.CallService("climate", service: "set_aux_heat", serviceData: ["entity_id": self.ID, "aux_heat": "off"])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "climate", service: "set_aux_heat", serviceData: ["entity_id": self.ID as AnyObject, "aux_heat": "off" as AnyObject])
     }
     
     override var ComponentIcon: String {

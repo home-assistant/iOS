@@ -9,10 +9,6 @@
 #ifndef HomeAssistant_Bridging_Header_h
 #define HomeAssistant_Bridging_Header_h
 
-#import <AWSCore/AWSCore.h>
-#import <AWSSNS/AWSSNS.h>
-#import <AWSCognito/AWSCognito.h>
-
 #import "DeviceUID.h"
 
 #endif /* HomeAssistant_Bridging_Header_h */

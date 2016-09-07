@@ -34,8 +34,8 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
         self.title = "Devices & Zones"
         
-        let devices = realm.objects(DeviceTracker.self)
-        let zones = realm.objects(Zone.self)
+        let devices = realm.allObjects(ofType: DeviceTracker.self)
+        let zones = realm.allObjects(ofType: Zone.self)
         
         self.navigationController?.isToolbarHidden = false
         
@@ -71,7 +71,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             if let radius = zone.Radius {
                 let circle = HACircle.init(centerCoordinate: zone.locationCoordinates(), radius: radius)
                 circle.type = "zone"
-                mapView.addOverlay(circle)
+                mapView.add(circle)
             }
         }
         
@@ -89,14 +89,14 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             if let battery = device.Battery.value {
                 subtitlePieces.append("Battery: "+String(battery)+"%")
             }
-            dropPin.subtitle = subtitlePieces.joinWithSeparator(" / ")
+            dropPin.subtitle = subtitlePieces.joined(separator: " / ")
             dropPin.device = device
             mapView.addAnnotation(dropPin)
             
             if let radius = device.GPSAccuracy.value {
                 let circle = HACircle.init(centerCoordinate: device.locationCoordinates(), radius: radius)
                 circle.type = "device"
-                mapView.addOverlay(circle)
+                mapView.add(circle)
             }
             
         }
@@ -174,12 +174,12 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func sendCurrentLocation(_ sender: UIBarButtonItem) {
-        HomeAssistantAPI.sharedInstance.sendOneshotLocation("One off location update requested").then { success -> Void in
+        HomeAssistantAPI.sharedInstance.sendOneshotLocation(notifyString: "One off location update requested").then { success -> Void in
             print("Did succeed?", success)
             let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
-        }.error { error in
+        }.catch {error in
             let nserror = error as NSError
             let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))

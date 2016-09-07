@@ -35,13 +35,13 @@ class SettingsViewController: FormViewController {
                 textField.keyboardType = .emailAddress
                 self.emailInput = textField
             })
-            self.presentViewController(alert, animated: true, completion: nil)
+            self.present(alert, animated: true, completion: nil)
         }
         
         if showErrorConnectingMessage {
             let alert = UIAlertController(title: "Connection error", message: "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect.", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            self.present(alert, animated: true, completion: nil)
             hideAbout = true
             hideLowerSave = true
         }
@@ -49,7 +49,7 @@ class SettingsViewController: FormViewController {
             hideAbout = true
             hideLowerSave = true
         }
-        self.navigationItem.rightBarButtonItem = hideAbout ? UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: #selector(SettingsViewController.saveSettingsButton(_:))) : UIBarButtonItem(title: "About", style: .Plain, target: self, action: #selector(SettingsViewController.aboutButtonPressed(_:)))
+        self.navigationItem.rightBarButtonItem = hideAbout ? UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(SettingsViewController.saveSettingsButton(_:))) : UIBarButtonItem(title: "About", style: .plain, target: self, action: #selector(SettingsViewController.aboutButtonPressed(_:)))
         
         let discovery = Bonjour()
         
@@ -83,8 +83,8 @@ class SettingsViewController: FormViewController {
             +++ Section(header: "Connection information", footer: "URL format should be protocol://hostname_or_ip:portnumber. NO slashes. Only provide a port number if not using 80/443. Examples: http://192.168.1.2:8123, https://demo.home-assistant.io.\r\nIf you do not have an API password set, leave the field blank.")
             <<< URLRow("baseURL") {
                 $0.title = "Base URL"
-                if let baseURL = prefs.stringForKey("baseURL") {
-                    $0.value = NSURL(string: baseURL)
+                if let baseURL = prefs.string(forKey: "baseURL") {
+                    $0.value = URL(string: baseURL)
                 }
                 $0.placeholder = "https://homeassistant.myhouse.com"
             }.onChange({ _ in
@@ -95,7 +95,7 @@ class SettingsViewController: FormViewController {
             })
             <<< PasswordRow("apiPassword") {
                 $0.title = "API Password"
-                if let apiPass = prefs.stringForKey("apiPassword") {
+                if let apiPass = prefs.string(forKey: "apiPassword") {
                     $0.value = apiPass
                 }
                 $0.placeholder = "password"
@@ -104,18 +104,18 @@ class SettingsViewController: FormViewController {
                 $0.hidden = Condition(booleanLiteral: showErrorConnectingMessage)
             }
             <<< TextRow("deviceId") {
-                $0.placeholder = UIDevice.currentDevice().name
+                $0.placeholder = UIDevice.current.name
                 $0.title = "Device ID (location tracking)"
-                if let deviceId = prefs.stringForKey("deviceId") {
+                if let deviceId = prefs.string(forKey: "deviceId") {
                     $0.value = deviceId
                 } else {
-                    $0.value = UIDevice.currentDevice().name
+                    $0.value = UIDevice.current.name
                 }
-                $0.cell.textField.autocapitalizationType = .None
+                $0.cell.textField.autocapitalizationType = .none
             }
             <<< SwitchRow("allowAllGroups") {
                 $0.title = "Show all groups"
-                $0.value = prefs.boolForKey("allowAllGroups")
+                $0.value = prefs.bool(forKey: "allowAllGroups")
             }
             <<< ButtonRow() {
                 $0.title = "Save"
@@ -130,9 +130,9 @@ class SettingsViewController: FormViewController {
                         +++ Section(header: "Push Notifications", footer: "")
                         <<< TextAreaRow() {
                             $0.placeholder = "EndpointArn"
-                            $0.value = endpointArn.componentsSeparatedByString("/").last
+                            $0.value = endpointArn.componentsSeparated(by: "/").last
                             $0.disabled = true
-                            $0.textAreaHeight = TextAreaHeight.Dynamic(initialTextViewHeight: 40)
+                            $0.textAreaHeight = TextAreaHeight.dynamic(initialTextViewHeight: 40)
                         }
                         
                         <<< ButtonRow() {
@@ -252,7 +252,7 @@ class SettingsViewController: FormViewController {
         }
         if let allowAllGroupsRow: SwitchRow = self.form.rowByTag("allowAllGroups") {
             if let allowAllGroups = allowAllGroupsRow.value {
-                self.prefs.setBool(allowAllGroups, forKey: "allowAllGroups")
+                self.prefs.set(allowAllGroups, forKey: "allowAllGroups")
             }
         }
         
@@ -265,13 +265,13 @@ class SettingsViewController: FormViewController {
         pscope.show({finished, results in
             if finished {
                 print("Permissions finished, resetting API!")
-                self.dismissViewControllerAnimated(true, completion: nil)
-                (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
+                self.dismiss(animated: true, completion: nil)
+                (UIApplication.shared.delegate as! AppDelegate).initAPI()
             }
         }, cancelled: { (results) -> Void in
             print("Permissions finished, resetting API!")
-            self.dismissViewControllerAnimated(true, completion: nil)
-            (UIApplication.sharedApplication().delegate as! AppDelegate).initAPI()
+            self.dismiss(animated: true, completion: nil)
+            (UIApplication.shared.delegate as! AppDelegate).initAPI()
         })
     }
     

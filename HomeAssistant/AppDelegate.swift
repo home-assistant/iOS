@@ -36,13 +36,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.absoluteString)
         Fabric.with([Crashlytics.self])
         
-        AWSLogger.defaultLogger().logLevel = .Info
+        AWSLogger.default().logLevel = .info
         
-        let credentialsProvider = AWSCognitoCredentialsProvider(regionType:.USEast1, identityPoolId:"us-east-1:2b1692f3-c9d3-4d81-b7e9-83cd084f3a59")
+        let credentialsProvider = AWSCognitoCredentialsProvider(regionType:.usEast1, identityPoolId:"us-east-1:2b1692f3-c9d3-4d81-b7e9-83cd084f3a59")
         
-        let configuration = AWSServiceConfiguration(region:.USWest2, credentialsProvider:credentialsProvider)
+        let configuration = AWSServiceConfiguration(region:.usWest2, credentialsProvider:credentialsProvider)
         
-        AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
+        AWSServiceManager.default().defaultServiceConfiguration = configuration
 
         initAPI()
         
@@ -60,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 HomeAssistantAPI.sharedInstance.Setup(baseURL, APIPassword: apiPass)
             }.then {_ in 
                 HomeAssistantAPI.sharedInstance.Connect()
-            }.error { err -> Void in
+            }.catch {err -> Void in
                 print("ERROR", err)
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"
@@ -100,25 +100,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             .replacingOccurrences(of: " ", with: "")
         print("Registering with deviceTokenString: \(deviceTokenString)")
         
-        let sns = AWSSNS.defaultSNS()
+        let sns = AWSSNS.default()
         let request = AWSSNSCreatePlatformEndpointInput()
-        request.token = deviceTokenString
-        request.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS_SANDBOX/HomeAssistant"
-        sns.createPlatformEndpoint(request).continueWithBlock { (task: AWSTask!) -> AnyObject! in
+        request?.token = deviceTokenString
+        request?.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS_SANDBOX/HomeAssistant"
+        sns.createPlatformEndpoint(request!).continue { (task: AWSTask!) -> AnyObject! in
             if task.error != nil {
                 print("Error: \(task.error)")
                 Crashlytics.sharedInstance().recordError(task.error!)
             } else {
                 let createEndpointResponse = task.result as! AWSSNSCreateEndpointResponse
                 print("endpointArn:", createEndpointResponse.endpointArn!)
-                Crashlytics.sharedInstance().setUserIdentifier(createEndpointResponse.endpointArn!.componentsSeparatedByString("/").last!)
+                Crashlytics.sharedInstance().setUserIdentifier(createEndpointResponse.endpointArn!.components(separatedBy: "/").last!)
                 self.prefs.setValue(createEndpointResponse.endpointArn!, forKey: "endpointARN")
                 self.prefs.setValue(deviceTokenString, forKey: "deviceToken")
                 let subrequest = AWSSNSSubscribeInput()
                 subrequest.topicArn = "arn:aws:sns:us-west-2:663692594824:HomeAssistantiOSBetaTesters"
                 subrequest.endpoint = createEndpointResponse.endpointArn
                 subrequest.protocols = "application"
-                sns.subscribe(subrequest).continueWithBlock { (subTask: AWSTask!) -> AnyObject! in
+                sns.subscribe(subrequest).continue { (subTask: AWSTask!) -> AnyObject! in
                     if subTask.error != nil {
                         print("Error: \(subTask.error)")
                         Crashlytics.sharedInstance().recordError(subTask.error!)
@@ -154,7 +154,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     HomeAssistantAPI.sharedInstance.sendOneshotLocation("").then { success -> Void in
                         print("Did successfully send location when requested via APNS?", success)
                         completionHandler(UIBackgroundFetchResult.noData)
-                    }.error { error in
+                    }.catch {error in
                         print("Error when attempting to submit location update")
                         Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
                         completionHandler(UIBackgroundFetchResult.failed)
@@ -172,7 +172,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Remote notification payload", userInfo)
         print("ResponseInfo", responseInfo)
         let device = Device()
-        var eventData : [String:AnyObject] = ["actionName": identifier!, "sourceDevicePermanentID": DeviceUID.uid(), "sourceDeviceName": device.name]
+        var eventData : [String:AnyObject] = ["actionName": identifier! as AnyObject, "sourceDevicePermanentID": DeviceUID.uid() as AnyObject, "sourceDeviceName": device.name as AnyObject]
         if let dataDict = userInfo["homeassistant"] {
             eventData["action_data"] = dataDict
         }
@@ -181,7 +181,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         HomeAssistantAPI.sharedInstance.CreateEvent("ios.notification_action_fired", eventData: eventData).then { _ in
             completionHandler()
-        }.error { error in
+        }.catch {error in
             Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
             completionHandler()
         }

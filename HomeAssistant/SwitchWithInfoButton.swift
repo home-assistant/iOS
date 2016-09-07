@@ -28,10 +28,10 @@ public final class SwitchWithInfoButtonCell : Cell<Bool>, CellType {
         RowLabel.text = row.title
         if let value = row.value {
             print("Value is", value)
-            Switch.on = value
+            Switch.isOn = value
         }
         super.setup()
-        selectionStyle = .None
+        selectionStyle = .none
     }
     
     public override func update() {
@@ -40,7 +40,7 @@ public final class SwitchWithInfoButtonCell : Cell<Bool>, CellType {
         RowLabel.text = row.title
         if let value = row.value {
             print("At update, Value is", value)
-            Switch.on = value
+            Switch.isOn = value
         }
     }
 }
@@ -51,7 +51,7 @@ open class _SwitchWithInfoButtonRow: Row<Bool, SwitchWithInfoButtonCell> {
     required public init(tag: String?) {
         super.init(tag: tag)
         displayValueFor = nil
-        cellProvider = CellProvider<SwitchWithInfoButtonCell>(nibName: "SwitchWithInfoButton")
+        CellProvider = CellProvider<SwitchWithInfoButtonCell>(nibName: "SwitchWithInfoButton")
     }
 }
 

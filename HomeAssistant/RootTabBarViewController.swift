@@ -41,7 +41,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"
                 let navController = UINavigationController(rootViewController: settingsView)
-                self.presentViewController(navController, animated: true, completion: nil)
+                self.present(navController, animated: true, completion: nil)
             })
         }
         
@@ -143,7 +143,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 if let groupView = (view as! UINavigationController).viewControllers[0] as? GroupViewController {
                     let update = ["ID": groupView.GroupID, "Order": index] as [String : Any]
                     try! realm.write {
-                        realm.create(Group.self, value: update, update: true)
+                        realm.createObject(ofType: Group.self, populatedWith: update as AnyObject, update: true)
                     }
                     print("\(index): \(groupView.tabBarItem.title!) New: \(index) Old: \(groupView.Order!)")
                 } else {
@@ -168,7 +168,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     let oldStateSensor = oldState as! Sensor
                     subtitleString = "\(newStateSensor.State) \(newStateSensor.UnitOfMeasurement) . It was \(oldState.State) \(oldStateSensor.UnitOfMeasurement)"
                 }
-                show(whistle: Murmur(title: subtitleString), action: .Show(1))
+                show(Murmur(title: subtitleString), sender: .Show(1))
             }
         }
     }
@@ -181,14 +181,14 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
     }
     
     func sendCurrentLocation(_ sender: UIButton) {
-        HomeAssistantAPI.sharedInstance.sendOneshotLocation("One off location update requested").then { success -> Void in
+        HomeAssistantAPI.sharedInstance.sendOneshotLocation(notifyString: "One off location update requested").then { success -> Void in
             print("Did succeed?", success)
             let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
-        }.error { error in
+        }.catch {error in
             let nserror = error as NSError
-            let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.Alert)
+            let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         }

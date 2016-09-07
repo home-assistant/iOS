@@ -19,8 +19,8 @@ extension URL
                     var parts = keyValueString.components(separatedBy: "=")
                     if parts.count < 2 { continue; }
                     
-                    let key = parts[0].stringByRemovingPercentEncoding!
-                    let value = parts[1].stringByRemovingPercentEncoding!
+                    let key = parts[0].removingPercentEncoding!
+                    let value = parts[1].removingPercentEncoding!
                     
                     var values = dictionary[key] ?? [String]()
                     values.append(value)
