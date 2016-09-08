@@ -529,24 +529,32 @@ public class HomeAssistantAPI {
     func buildIdentifyDict() -> [String:Any] {
         let device = UIDevice.current
         let deviceKitDevice = Device()
-        let deviceInfo = ["name": device.name, "systemName": device.systemName, "systemVersion": device.systemVersion, "model": device.model, "localizedModel": device.localizedModel, "type": deviceKitDevice.description, "permanentID": DeviceUID.uid()]
-        let buildNumber : Int? = Int(Bundle.main.infoDictionary!["CFBundleVersion"]! as! String)
-        let versionNumber = Bundle.main.infoDictionary!["CFBundleShortVersionString"]!
-        let bundleID = Bundle.main.bundleIdentifier
-        let appInfo : [String: Any] = ["bundleIdentifer": bundleID!, "versionNumber": versionNumber, "buildNumber": buildNumber!]
-        var deviceContainer : [String : Any] = ["device": deviceInfo, "app": appInfo, "permissions": [:]]
-        deviceContainer["pushId"] = endpointARN.components(separatedBy: "/").last!
-        deviceContainer["pushToken"] = deviceToken
-        deviceContainer["pushSounds"] = listAllInstalledPushNotificationSounds()
-        deviceContainer["deviceId"] = deviceID
+        
         var permissionsContainer : [String] = []
         for status in PermissionScope().permissionStatuses([NotificationsPermission().type, LocationAlwaysPermission().type]) {
             if status.1 == .authorized {
                 permissionsContainer.append(status.0.prettyDescription.lowercased())
             }
         }
-        deviceContainer["permissions"] = permissionsContainer
-        return deviceContainer
+        
+        let ident = IdentifyRequest()
+        ident.AppBuildNumber = Int(string: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String)
+        ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
+        ident.AppVersionNumber = Double(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)
+        ident.DeviceID = deviceID
+        ident.DeviceLocalizedModel = device.localizedModel
+        ident.DeviceModel = device.model
+        ident.DeviceName = device.name
+        ident.DevicePermanentID = DeviceUID.uid()
+        ident.DeviceSystemName = device.systemName
+        ident.DeviceSystemVersion = device.systemVersion
+        ident.DeviceType = deviceKitDevice.description
+        ident.Permissions = permissionsContainer
+        ident.PushID = endpointARN.components(separatedBy: "/").last!
+        ident.PushSounds = listAllInstalledPushNotificationSounds()
+        ident.PushToken = deviceToken
+        
+        return Mapper().toJSON(ident)
     }
     
     func identifyDevice() -> Promise<String> {
