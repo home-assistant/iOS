@@ -284,7 +284,7 @@ class Entity: Object, StaticMappable {
         if let friendly = self.FriendlyName {
             return friendly
         } else {
-            return self.ID.replacingOccurrences(of: "\(self.Domain).", with: "").capitalized
+            return self.ID.replacingOccurrences(of: "\(self.Domain).", with: "").replacingOccurrences(of: "_", with: " ").capitalized
         }
     }
     
