@@ -113,10 +113,10 @@ class SettingsViewController: FormViewController {
                 }
                 $0.cell.textField.autocapitalizationType = .none
             }
-            <<< SwitchRow("allowAllGroups") {
-                $0.title = "Show all groups"
-                $0.value = prefs.bool(forKey: "allowAllGroups")
-            }
+//            <<< SwitchRow("allowAllGroups") {
+//                $0.title = "Show all groups"
+//                $0.value = prefs.bool(forKey: "allowAllGroups")
+//            }
             <<< ButtonRow() {
                 $0.title = "Save"
                 $0.hidden = Condition(booleanLiteral: hideLowerSave)

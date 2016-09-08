@@ -47,11 +47,14 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         
         let allGroups = realm.allObjects(ofType: Group.self).filter {
             var shouldReturn = true
-            if prefs.bool(forKey: "allowAllGroups") == false {
-                shouldReturn = !$0.Auto
-                shouldReturn = !$0.Hidden
-                shouldReturn = $0.View
-            }
+//            if prefs.bool(forKey: "allowAllGroups") == false {
+//                shouldReturn = (!$0.Auto && !$0.Hidden && $0.View)
+//                print("$0.Auto: \($0.Auto) !$0.Auto: \(!$0.Auto)")
+//                print("$0.Hidden: \($0.Hidden) !$0.Hidden: \(!$0.Hidden)")
+//                print("$0.View: \($0.View) !$0.View: \(!$0.View)")
+//                print("ShouldReturn is now", shouldReturn)
+//            }
+            print("")
             // If all entities are a group, return false
             var groupCheck = [String]()
             for entity in $0.Entities {
