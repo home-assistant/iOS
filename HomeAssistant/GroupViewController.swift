@@ -20,7 +20,7 @@ class GroupViewController: FormViewController {
     var GroupID: String = ""
     var Order: Int?
     
-    var entitys = [String:Entity]()
+    var entities = [String:Entity]()
     
     var sendingEntity : Entity?
     
@@ -228,7 +228,6 @@ class GroupViewController: FormViewController {
         if let userInfo = (notification as NSNotification).userInfo {
             if let event = Mapper<StateChangedEvent>().map(userInfo) {
                 if let newState = event.NewState {
-                    self.entitys[newState.ID] = newState
                     if newState.Domain == "lock" || newState.Domain == "garage_door" {
                         if let row : SwitchRow = self.form.rowByTag(newState.ID) {
                             row.value = (newState.State == "on") ? true : false
