@@ -63,11 +63,11 @@ class GroupViewController: FormViewController {
                             }
                     }
                 case "weblink":
-                    if let url = NSURL(string: entity.State) {
+                    if let url = URL(string: entity.State) {
                         self.form.last! <<< ButtonRow(entity.ID) {
                             $0.title = entity.Name
                             if url.scheme == "http" || url.scheme == "https" {
-                                $0.presentationMode = .PresentModally(controllerProvider: ControllerProvider.Callback { return SFSafariViewController(URL: url, entersReaderIfAvailable: false) }, completionCallback: { vc in vc.navigationController?.popViewControllerAnimated(true) })
+                                $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback { return SFSafariViewController(url: url, entersReaderIfAvailable: false) }, completionCallback: { vc in vc.navigationController?.popViewController(animated: true) })
                             }
                             }.cellUpdate { cell, row in
                                 cell.imageView?.image = entity.EntityIcon
@@ -84,12 +84,12 @@ class GroupViewController: FormViewController {
                     self.form.last! <<< ButtonRow(entity.ID) {
                         $0.title = entity.Name
                         $0.cellStyle = .value1
-                        $0.presentationMode = .Show(controllerProvider: ControllerProvider.Callback {
+                        $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                             let attributesView = EntityAttributesViewController()
                             attributesView.entityID = entity.ID
                             return attributesView
                             }, completionCallback: {
-                                vc in vc.navigationController?.popViewControllerAnimated(true)
+                                vc in vc.navigationController?.popViewController(animated: true)
                         })
                     }.cellUpdate { cell, row in
                         cell.detailTextLabel?.text = entity.State.capitalized
@@ -117,26 +117,26 @@ class GroupViewController: FormViewController {
                         self.form.last! <<< LocationRow(entity.ID) {
                             $0.title = entity.Name
                             $0.value = CLLocation(latitude: latitude, longitude: longitude)
-                            }.cellUpdate { cell, row in
-                                cell.detailTextLabel?.text = entity.State.stringByReplacingOccurrencesOfString("_", withString: " ").capitalized
-                                cell.imageView?.image = entity.EntityIcon
-                                if let picture = entity.DownloadedPicture {
-                                    cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
-                                }
+                        }.cellUpdate { cell, row in
+                            cell.detailTextLabel?.text = entity.CleanedState
+                            cell.imageView?.image = entity.EntityIcon
+                            if let picture = entity.DownloadedPicture {
+                                cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
+                            }
                         }
                     } else {
                         self.form.last! <<< ButtonRow(entity.ID) {
                             $0.title = entity.Name
                             $0.cellStyle = .value1
-                            $0.presentationMode = .Show(controllerProvider: ControllerProvider.Callback {
+                            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                                 let attributesView = EntityAttributesViewController()
                                 attributesView.entityID = entity.ID
                                 return attributesView
-                                }, completionCallback: { vc in vc.navigationController?.popViewControllerAnimated(true) })
+                                }, completionCallback: { vc in vc.navigationController?.popViewController(animated: true) })
                             }.cellUpdate { cell, row in
-                                cell.detailTextLabel?.text = entity.State.stringByReplacingOccurrencesOfString("_", withString: " ").capitalized
+                                cell.detailTextLabel?.text = entity.CleanedState
                                 if let sensor = entity as? Sensor {
-                                    cell.detailTextLabel?.text = (sensor.State + " " + sensor.UnitOfMeasurement!).stringByReplacingOccurrencesOfString("_", withString: " ").capitalized
+                                    cell.detailTextLabel?.text = (sensor.State + " " + sensor.UnitOfMeasurement!).replacingOccurrences(of: "_", with: " ").capitalized
                                 }
                                 cell.imageView?.image = entity.EntityIcon
                                 if let picture = entity.DownloadedPicture {

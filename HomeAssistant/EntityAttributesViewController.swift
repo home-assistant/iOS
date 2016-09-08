@@ -30,10 +30,10 @@ class EntityAttributesViewController: FormViewController {
                     $0.cell.textView.backgroundColor = UIColor.clear
                     $0.cell.backgroundColor = UIColor.clear
                 }.cellUpdate { cell, row in
-                    HomeAssistantAPI.sharedInstance.getImage(imageUrl: picture).then { image -> Void in
+                    let _ = HomeAssistantAPI.sharedInstance.getImage(imageUrl: picture).then { image -> Void in
                         let attachment = NSTextAttachment()
                         attachment.image = image
-                        attachment.bounds = CGRect(0, 0, image.size.width, image.size.height)
+                        attachment.bounds = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
                         let attString = NSAttributedString(attachment: attachment)
                         let result = NSMutableAttributedString(attributedString: attString)
                         
@@ -58,7 +58,7 @@ class EntityAttributesViewController: FormViewController {
         
         attributes["state"] = entity?.State
         for attribute in attributes {
-            let prettyLabel = attribute.0.stringByReplacingOccurrencesOfString("_", withString: " ").capitalized
+            let prettyLabel = attribute.0.replacingOccurrences(of: "_", with: " ").capitalized
             switch attribute.0 {
             case "fan":
                 if let thermostat = entity as? Thermostat {
@@ -157,7 +157,7 @@ class EntityAttributesViewController: FormViewController {
             default:
                 form.last! <<< TextRow(attribute.0){
                     $0.title = prettyLabel
-                    $0.value = String(attribute.1).capitalized
+                    $0.value = String(describing: attribute.1).capitalized
                     $0.disabled = true
                 }
             }
@@ -180,7 +180,7 @@ class EntityAttributesViewController: FormViewController {
                 if event.EntityID != entityID { return }
                 let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityID as AnyObject)
                 if let newState = event.NewState {
-                    var updateDict : [String:AnyObject] = [:]
+                    var updateDict : [String:Any] = [:]
                     newState.Attributes["state"] = entity?.State
                     for (key, value) in newState.Attributes {
                         switch key {
@@ -213,7 +213,7 @@ class EntityAttributesViewController: FormViewController {
                             }
                             break
                         default:
-                            updateDict[key] = String(value)
+                            updateDict[key] = String(describing: value)
                             break
                         }
                     }

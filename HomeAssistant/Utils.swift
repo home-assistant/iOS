@@ -53,7 +53,8 @@ func movePushNotificationSounds() {
     
     let libraryPath = try! fileManager.url(for: .libraryDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
     let librarySoundsPath = libraryPath.appendingPathComponent("Sounds")
-    if (!(librarySoundsPath as NSURL).checkResourceIsReachableAndReturnError(nil)) {
+    let librarySoundsURL = librarySoundsPath as URL
+    if try! librarySoundsURL.checkResourceIsReachable() == false {
         print("Creating sounds directory at", librarySoundsPath)
         try! fileManager.createDirectory(at: librarySoundsPath, withIntermediateDirectories: true, attributes: nil)
     }
@@ -63,7 +64,7 @@ func movePushNotificationSounds() {
     for file in fileList {
         let finalUrl = librarySoundsPath.appendingPathComponent(file.lastPathComponent)
         print("Moving", file, "to", finalUrl)
-        if ((finalUrl as NSURL).checkResourceIsReachableAndReturnError(nil)) {
+        if try! (finalUrl as URL).checkResourceIsReachable() == false {
             print("File already existed, removing it first!")
             try! fileManager.removeItem(at: finalUrl)
         }
@@ -134,11 +135,5 @@ extension String {
     
     subscript (i: Int) -> String {
         return String(self[i] as Character)
-    }
-    
-    subscript (r: Range<Int>) -> String {
-        let start = characters.index(startIndex, offsetBy: r.lowerBound)
-        let end = String.CharacterView.index(start, offsetBy: r.upperBound - r.lowerBound)
-        return self[Range(start ..< end)]
     }
 }

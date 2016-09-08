@@ -30,12 +30,6 @@ class Climate: Entity {
     dynamic var SwingMode = false
     var Temperature = RealmOptional<Float>()
     
-    // MARK: - Requireds
-    required init() { super.init() }
-    required init?(_ map: Map) { super.init() }
-    required init(value: Any, schema: RLMSchema) { super.init(value: value, schema: schema) }
-    required init(realm: RLMRealm, schema: RLMObjectSchema) { super.init(realm: realm, schema: schema) }
-    
     override func mapping(_ map: Map) {
         super.mapping(map)
         

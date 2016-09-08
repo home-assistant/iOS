@@ -11,12 +11,12 @@ import ObjectMapper
 import RealmSwift
 
 let isAllGroupTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
-    return Bool((String(value!).rangeOfString("group.all_") != nil))
-    }, toJSON: { (value: Bool?) -> String? in
-        if let value = value {
-            return String(value)
-        }
-        return nil
+    return value!.hasPrefix("group.all_")
+}, toJSON: { (value: Bool?) -> String? in
+    if let value = value {
+        return String(value)
+    }
+    return nil
 })
 
 class Group: Entity {

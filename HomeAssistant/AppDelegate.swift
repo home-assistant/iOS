@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let prefs = UserDefaults.standard
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
         Realm.Configuration.defaultConfiguration = realmConfig
         print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.absoluteString)
         Fabric.with([Crashlytics.self])
@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 apiPass = pass
             }
             firstly {
-                HomeAssistantAPI.sharedInstance.Setup(baseURL, APIPassword: apiPass)
+                HomeAssistantAPI.sharedInstance.Setup(baseAPIUrl: baseURL, APIPassword: apiPass)
             }.then {_ in 
                 HomeAssistantAPI.sharedInstance.Connect()
             }.catch {err -> Void in
@@ -67,7 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 settingsView.showErrorConnectingMessage = true
                 let navController = UINavigationController(rootViewController: settingsView)
                 self.window?.makeKeyAndVisible()
-                self.window?.rootViewController!.presentViewController(navController, animated: true, completion: nil)
+                self.window?.rootViewController!.present(navController, animated: true, completion: nil)
             }
         }
     }
@@ -104,21 +104,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let request = AWSSNSCreatePlatformEndpointInput()
         request?.token = deviceTokenString
         request?.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS_SANDBOX/HomeAssistant"
-        sns.createPlatformEndpoint(request!).continue { (task: AWSTask!) -> AnyObject! in
+        sns.createPlatformEndpoint(request!).continue({ (task: AWSTask!) -> Any? in
             if task.error != nil {
                 print("Error: \(task.error)")
                 Crashlytics.sharedInstance().recordError(task.error!)
             } else {
-                let createEndpointResponse = task.result as! AWSSNSCreateEndpointResponse
+                let createEndpointResponse = task.result!
                 print("endpointArn:", createEndpointResponse.endpointArn!)
                 Crashlytics.sharedInstance().setUserIdentifier(createEndpointResponse.endpointArn!.components(separatedBy: "/").last!)
                 self.prefs.setValue(createEndpointResponse.endpointArn!, forKey: "endpointARN")
                 self.prefs.setValue(deviceTokenString, forKey: "deviceToken")
-                let subrequest = AWSSNSSubscribeInput()
-                subrequest.topicArn = "arn:aws:sns:us-west-2:663692594824:HomeAssistantiOSBetaTesters"
-                subrequest.endpoint = createEndpointResponse.endpointArn
-                subrequest.protocols = "application"
-                sns.subscribe(subrequest).continue { (subTask: AWSTask!) -> AnyObject! in
+                let subrequest = try! AWSSNSSubscribeInput(dictionary: [
+                    "topicArn": "arn:aws:sns:us-west-2:663692594824:HomeAssistantiOSBetaTesters",
+                    "endpoint": createEndpointResponse.endpointArn,
+                    "protocols": "application"
+                ], error: ())
+                sns.subscribe(subrequest).continue ({ (subTask: AWSTask!) -> AnyObject! in
                     if subTask.error != nil {
                         print("Error: \(subTask.error)")
                         Crashlytics.sharedInstance().recordError(subTask.error!)
@@ -127,31 +128,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     }
                     
                     return nil
-                }
+                })
             }
             
             return nil
-        }
+        })
     }
     
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Swift.Error) {
         print("Error when trying to register for push", error)
         Crashlytics.sharedInstance().recordError(error)
     }
     
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : Any]) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
         print("Received remote notification!", userInfo)
     }
     
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        print("Received remote notification in completion handler!", userInfo)
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        print("Received remote notification in completion handler!")
         
-        if let hadict = userInfo["homeassistant"] {
-            if let command = hadict["command"]! {
+        let userInfoDict = userInfo as! [String:Any]
+
+        if let hadict = userInfoDict["homeassistant"] as? [String:String] {
+            if let command = hadict["command"] {
                 switch command {
                 case "request_location_update":
                     print("Received remote request to provide a location update")
-                    HomeAssistantAPI.sharedInstance.sendOneshotLocation("").then { success -> Void in
+                    HomeAssistantAPI.sharedInstance.sendOneshotLocation(notifyString: "").then { success -> Void in
                         print("Did successfully send location when requested via APNS?", success)
                         completionHandler(UIBackgroundFetchResult.noData)
                     }.catch {error in
@@ -167,19 +170,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : Any], withResponseInfo responseInfo: [NSObject : Any], completionHandler: @escaping () -> Void) {
+    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], withResponseInfo responseInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {
         print("Action button hit", identifier)
         print("Remote notification payload", userInfo)
         print("ResponseInfo", responseInfo)
         let device = Device()
-        var eventData : [String:AnyObject] = ["actionName": identifier! as AnyObject, "sourceDevicePermanentID": DeviceUID.uid() as AnyObject, "sourceDeviceName": device.name as AnyObject]
+        var eventData : [String:Any] = ["actionName": identifier! as AnyObject, "sourceDevicePermanentID": DeviceUID.uid() as AnyObject, "sourceDeviceName": device.name as AnyObject]
         if let dataDict = userInfo["homeassistant"] {
             eventData["action_data"] = dataDict
         }
         if !responseInfo.isEmpty {
             eventData["response_info"] = responseInfo
         }
-        HomeAssistantAPI.sharedInstance.CreateEvent("ios.notification_action_fired", eventData: eventData).then { _ in
+        HomeAssistantAPI.sharedInstance.CreateEvent(eventType: "ios.notification_action_fired", eventData: eventData).then { _ in
             completionHandler()
         }.catch {error in
             Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
@@ -187,20 +190,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func application(_ application: UIApplication, open url: URL, options: [String: Any]) -> Bool {
-        var serviceData = [String:AnyObject]()
-        for (k,v) in url.queryDictionary! {
-            serviceData[k] = v
-        }
-        for (k,v) in options {
-            serviceData[k] = v
-        }
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        var serviceData : [String:String] = url.queryItems!
+        serviceData["sourceApplication"] = options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String
         switch url.host! {
         case "call_service": // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
-            HomeAssistantAPI.sharedInstance.CallService(EntityIDToDomainTransform().transformFromJSON(url.pathComponents![1])!, service: url.pathComponents![1].components(separatedBy: ".")[1], serviceData: serviceData)
+            let _ = HomeAssistantAPI.sharedInstance.CallService(domain: EntityIDToDomainTransform().transformFromJSON(url.pathComponents[1])!, service: url.pathComponents[1].components(separatedBy: ".")[1], serviceData: serviceData)
             break
         case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
-            HomeAssistantAPI.sharedInstance.CreateEvent(url.pathComponents![1], eventData: serviceData)
+            let _ = HomeAssistantAPI.sharedInstance.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
             break
         default:
             print("Can't route", url.host)

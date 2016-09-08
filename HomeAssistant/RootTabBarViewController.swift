@@ -45,9 +45,9 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
             })
         }
         
-        let allGroups = realm.objects(Group.self).filter {
+        let allGroups = realm.allObjects(ofType: Group.self).filter {
             var shouldReturn = true
-            if prefs.boolForKey("allowAllGroups") == false {
+            if prefs.bool(forKey: "allowAllGroups") == false {
                 shouldReturn = !$0.Auto
                 shouldReturn = !$0.Hidden
                 shouldReturn = $0.View
@@ -62,18 +62,18 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 shouldReturn = false
             }
             return shouldReturn
-        }.sort {
+        }.sorted {
             if $0.IsAllGroup == true {
                 return false
             } else {
                 if $0.Order.value != nil && $1.Order.value != nil {
-                    return $0.Order.value < $1.Order.value
+                    return $0.Order.value! < $1.Order.value!
                 } else {
-                    return $0.FriendlyName < $1.FriendlyName
+                    return $0.FriendlyName! < $1.FriendlyName!
                 }
             }
         }
-        for (index, group) in allGroups.enumerate() {
+        for (index, group) in allGroups.enumerated() {
             if group.Entities.count < 1 { continue }
             let groupView = GroupViewController()
             groupView.GroupID = String(group.ID)
@@ -99,11 +99,11 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 
                 let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
                 
-                rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
+                rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
                 
                 let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
                 
-                rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .Plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
+                rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
                 
                 groupView.navigationItem.setRightBarButtonItems(rightBarItems, animated: true)
             }
@@ -168,7 +168,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     let oldStateSensor = oldState as! Sensor
                     subtitleString = "\(newStateSensor.State) \(newStateSensor.UnitOfMeasurement) . It was \(oldState.State) \(oldStateSensor.UnitOfMeasurement)"
                 }
-                show(Murmur(title: subtitleString), sender: .Show(1))
+                let _ = Murmur(title: subtitleString)
             }
         }
     }
@@ -189,8 +189,8 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         }.catch {error in
             let nserror = error as NSError
             let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
     

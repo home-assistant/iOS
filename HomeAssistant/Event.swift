@@ -10,23 +10,21 @@ import Foundation
 import ObjectMapper
 
 class SSEEvent: StaticMappable {
-    var Type: String = ""
+    var EventType: String = ""
     var TimeFired: Date?
     var Origin: String?
     
-    required init?(_ map: Map){
-        
-    }
+    init(){}
     
-    static func objectForMapping(_ map: Map) -> Mappable? {
+    public static func objectForMapping(_ map: Map) -> BaseMappable? {
         if let eventType: String = map["event_type"].value() {
             switch eventType {
             case "state_changed":
-                return StateChangedEvent(map)
+                return StateChangedEvent()
             case "call_service":
-                return CallServiceEvent(map)
+                return CallServiceEvent()
             case "service_executed":
-                return ServiceExecutedEvent(map)
+                return ServiceExecutedEvent()
             default:
                 print("No SSE Event ObjectMapper found for:", eventType)
                 return nil
@@ -36,7 +34,7 @@ class SSEEvent: StaticMappable {
     }
     
     func mapping(_ map: Map) {
-        Type      <- map["event_type"]
+        EventType <- map["event_type"]
         TimeFired <- (map["time_fired"], HomeAssistantTimestampTransform())
         Origin    <- map["origin"]
     }

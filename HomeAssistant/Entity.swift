@@ -17,16 +17,16 @@ class Entity: Object, StaticMappable {
     dynamic var ID: String = ""
     dynamic var Domain: String = ""
     dynamic var State: String = ""
-    dynamic var Attributes: [String:AnyObject] {
+    dynamic var Attributes: [String:Any] {
         get {
             guard let dictionaryData = attributesData else {
-                return [String: AnyObject]()
+                return [String: Any]()
             }
             do {
-                let dict = try JSONSerialization.jsonObject(with: dictionaryData, options: []) as? [String: AnyObject]
+                let dict = try JSONSerialization.jsonObject(with: dictionaryData, options: []) as? [String: Any]
                 return dict!
             } catch {
-                return [String: AnyObject]()
+                return [String: Any]()
             }
         }
         
@@ -65,12 +65,12 @@ class Entity: Object, StaticMappable {
     init(id: String) {
         super.init()
         self.ID = id
-        self.Domain = EntityIDToDomainTransform().transformFromJSON(self.ID as AnyObject?)!
+        self.Domain = EntityIDToDomainTransform().transformFromJSON(self.ID as Any?)!
     }
     
-    class func objectForMapping(_ map: Map) -> Mappable? {
+    public static func objectForMapping(_ map: Map) -> BaseMappable? {
         if let entityId: String = map["entity_id"].value() {
-            let entityType = EntityIDToDomainTransform().transformFromJSON(entityId as AnyObject?)!
+            let entityType = EntityIDToDomainTransform().transformFromJSON(entityId as Any?)!
             switch entityType {
             case "binary_sensor":
                 return BinarySensor(map)
@@ -288,6 +288,9 @@ class Entity: Object, StaticMappable {
         }
     }
     
+    var CleanedState : String {
+        return self.State.replacingOccurrences(of: "_", with: " ").capitalized
+    }
 }
 
 open class StringObject: Object {

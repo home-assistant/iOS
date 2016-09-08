@@ -139,8 +139,6 @@
 		B60616B91D1F117800249C11 /* US-EN-Daisy-Office-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B81D1F117700249C11 /* US-EN-Daisy-Office-Window-Open.wav */; };
 		B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
 		B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
-		B60B35BA1CB6019B00887BE1 /* SwitchWithInfoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B35B91CB6019B00887BE1 /* SwitchWithInfoButton.swift */; };
-		B60B35BF1CB62AA200887BE1 /* SwitchWithInfoButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = B60B35BE1CB62AA200887BE1 /* SwitchWithInfoButton.xib */; };
 		B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B624DE171CB8369200F413CE /* DevicesMapViewController.swift */; };
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
@@ -349,8 +347,6 @@
 		B60615B81D1F117700249C11 /* US-EN-Daisy-Office-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Office-Window-Open.wav"; sourceTree = "<group>"; };
 		B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
 		B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
-		B60B35B91CB6019B00887BE1 /* SwitchWithInfoButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchWithInfoButton.swift; sourceTree = "<group>"; };
-		B60B35BE1CB62AA200887BE1 /* SwitchWithInfoButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SwitchWithInfoButton.xib; sourceTree = "<group>"; };
 		B624DE171CB8369200F413CE /* DevicesMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesMapViewController.swift; sourceTree = "<group>"; };
 		B6393F851CB255F200503916 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
 		B6393F871CB2561100503916 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -627,15 +623,6 @@
 			path = Generic;
 			sourceTree = "<group>";
 		};
-		B60B35BD1CB62A8200887BE1 /* SwitchWithInfoButton */ = {
-			isa = PBXGroup;
-			children = (
-				B60B35B91CB6019B00887BE1 /* SwitchWithInfoButton.swift */,
-				B60B35BE1CB62AA200887BE1 /* SwitchWithInfoButton.xib */,
-			);
-			name = SwitchWithInfoButton;
-			sourceTree = "<group>";
-		};
 		B64D047B1CB8915500B945C8 /* SSE */ = {
 			isa = PBXGroup;
 			children = (
@@ -716,7 +703,6 @@
 		B6F02BE71CB4698A0029ABE7 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				B6F02C1E1CB4ABF30029ABE7 /* Row Types */,
 				B6F02BFF1CB4880C0029ABE7 /* Components */,
 				B6F02BEC1CB46E810029ABE7 /* HA API Responses */,
 				B6F02BE81CB46AF40029ABE7 /* Entity.swift */,
@@ -765,14 +751,6 @@
 				B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */,
 			);
 			name = Components;
-			sourceTree = "<group>";
-		};
-		B6F02C1E1CB4ABF30029ABE7 /* Row Types */ = {
-			isa = PBXGroup;
-			children = (
-				B60B35BD1CB62A8200887BE1 /* SwitchWithInfoButton */,
-			);
-			name = "Row Types";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1029,7 +1007,6 @@
 				B60616271D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav in Resources */,
 				B606167C1D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav in Resources */,
 				B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */,
-				B60B35BF1CB62AA200887BE1 /* SwitchWithInfoButton.xib in Resources */,
 				B606160F1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Locked.wav in Resources */,
 				B606161B1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Unlocked.wav in Resources */,
 				B606169A1D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Kitchen.wav in Resources */,
@@ -1228,7 +1205,6 @@
 				B6F02C161CB489770029ABE7 /* MediaPlayerComponent.swift in Sources */,
 				B6393F8C1CB260E800503916 /* EntityAttributesViewController.swift in Sources */,
 				B6F02BEB1CB46D090029ABE7 /* GroupComponent.swift in Sources */,
-				B60B35BA1CB6019B00887BE1 /* SwitchWithInfoButton.swift in Sources */,
 				B6F700521CB374F700753BAB /* RootTabBarViewController.swift in Sources */,
 				B64D047A1CB8908B00B945C8 /* StateChanged.swift in Sources */,
 				B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */,
@@ -1441,13 +1417,9 @@
 					"-framework",
 					"\"FontAwesomeKit\"",
 					"-framework",
-					"\"Haneke\"",
-					"-framework",
 					"\"IKEventSource\"",
 					"-framework",
 					"\"MBProgressHUD\"",
-					"-framework",
-					"\"OMGHTTPURLRQ\"",
 					"-framework",
 					"\"PermissionScope\"",
 					"-framework",
@@ -1507,13 +1479,9 @@
 					"-framework",
 					"\"FontAwesomeKit\"",
 					"-framework",
-					"\"Haneke\"",
-					"-framework",
 					"\"IKEventSource\"",
 					"-framework",
 					"\"MBProgressHUD\"",
-					"-framework",
-					"\"OMGHTTPURLRQ\"",
 					"-framework",
 					"\"PermissionScope\"",
 					"-framework",

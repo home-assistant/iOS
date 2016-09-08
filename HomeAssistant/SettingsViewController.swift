@@ -130,7 +130,7 @@ class SettingsViewController: FormViewController {
                         +++ Section(header: "Push Notifications", footer: "")
                         <<< TextAreaRow() {
                             $0.placeholder = "EndpointArn"
-                            $0.value = endpointArn.componentsSeparated(by: "/").last
+                            $0.value = endpointArn.components(separatedBy: "/").last
                             $0.disabled = true
                             $0.textAreaHeight = TextAreaHeight.dynamic(initialTextViewHeight: 40)
                         }
@@ -173,7 +173,7 @@ class SettingsViewController: FormViewController {
         let discoverySection : Section = self.form.sectionByTag("discoveredInstances")!
         discoverySection.hidden = false
         discoverySection.evaluateHidden()
-        if let userInfo = (notification as NSNotification).userInfo as? [String:AnyObject] {
+        if let userInfo = (notification as Notification).userInfo {
             let name = userInfo["name"] as! String
             let baseUrl = userInfo["baseUrl"] as! String
             let requiresAPIPassword = userInfo["requires_api_password"] as! Bool
@@ -183,13 +183,13 @@ class SettingsViewController: FormViewController {
                 discoverySection
                     <<< ButtonRow(name) {
                             $0.title = name
-                            $0.cellStyle = UITableViewCellStyle.Subtitle
+                            $0.cellStyle = UITableViewCellStyle.subtitle
                         }.cellUpdate { cell, row in
-                            cell.textLabel?.textColor = .blackColor()
+                            cell.textLabel?.textColor = UIColor.black
                             cell.detailTextLabel?.text = baseUrl + " - " + (userInfo["version"] as! String) + " - " + (useSSL ? "HTTPS" : "HTTP") + needsPass
                         }.onCellSelection({ cell, row in
                             let urlRow: URLRow = self.form.rowByTag("baseURL")!
-                            urlRow.value = NSURL(string: baseUrl)
+                            urlRow.value = URL(string: baseUrl)
                             urlRow.updateCell()
                             let apiPasswordRow: PasswordRow = self.form.rowByTag("apiPassword")!
                             apiPasswordRow.value = ""
@@ -208,7 +208,7 @@ class SettingsViewController: FormViewController {
     }
 
     func HomeAssistantUndiscovered(_ notification: Notification){
-        if let userInfo = (notification as NSNotification).userInfo as? [String:AnyObject] {
+        if let userInfo = (notification as Notification).userInfo {
             let name = userInfo["name"] as! String
             if let removingRow : ButtonRow = self.form.rowByTag(name) {
                 removingRow.hidden = true

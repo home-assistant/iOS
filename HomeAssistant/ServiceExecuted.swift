@@ -11,11 +11,7 @@ import ObjectMapper
 
 class ServiceExecutedEvent: SSEEvent {
     var ServiceCallID: String?
-    
-    required init?(_ map: Map) {
-        super.init(map)
-    }
-    
+        
     override func mapping(_ map: Map) {
         super.mapping(map)
         ServiceCallID <- map["data.service_call_id"]

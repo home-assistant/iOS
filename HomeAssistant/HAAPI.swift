@@ -111,8 +111,11 @@ public class HomeAssistantAPI {
                 
                 if self.loadedComponents.contains("ios") {
                     CLSLogv("iOS component loaded, attempting identify and setup of push categories %@", getVaList(["this is a silly string!"]))
-                    when(self.identifyDevice(), self.setupPushActions()).then { _, categories -> Void in
-                        UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Alert, .Sound, .Badge], categories: categories))
+                    self.identifyDevice().then {_ in 
+                        return self.setupPushActions()
+//                        Commented because iOS 10
+//                    }.then { categories in
+//                        UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [UIUserNotificationType.alert, UIUserNotificationType.sound, UIUserNotificationType.badge], categories: categories))
                     }.catch {error -> Void in
                         print("Error when attempting an identify or setup push actions", error)
                         Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
@@ -135,14 +138,14 @@ public class HomeAssistantAPI {
         
         eventSource.onOpen {
             print("SSE: Connection Opened")
-            Whisper.show(whistle: Murmur(title: "Connected to Home Assistant"), action: .Show(1))
+            let _ = Murmur(title: "Connected to Home Assistant")
         }
         
         eventSource.onError { error in
             if let err = error {
                 Crashlytics.sharedInstance().recordError(err)
                 print("SSE: ", err)
-                Whisper.show(whistle: Murmur(title: "SSE Error! \(err.localizedDescription)"), action: .Show(1))
+                let _ = Murmur(title: "SSE Error! \(err.localizedDescription)")
             }
         }
         
@@ -152,7 +155,7 @@ public class HomeAssistantAPI {
                 if let mapped = event as? StateChangedEvent {
                     HomeAssistantAPI.sharedInstance.storeEntities(entities: [mapped.NewState!])
                 }
-                NotificationCenter.default.postNotificationName("sse."+event.Type, object: nil, userInfo: event.toJSON())
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.\(event.EventType)"), object: nil, userInfo: event.toJSON())
             } else {
                 print("Unable to ObjectMap this SSE message", eventName, data)
             }
@@ -187,7 +190,7 @@ public class HomeAssistantAPI {
            locationUpdate["location_name"] = locationName
         }
         
-        self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate as [String : AnyObject]).then {_ in
+        self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate as [String : Any]).then {_ in
             print("Device seen!")
         }.catch {err in
             Crashlytics.sharedInstance().recordError(err as NSError)
@@ -279,11 +282,11 @@ public class HomeAssistantAPI {
     func GetStatus() -> Promise<StatusResponse> {
         let queryUrl = baseAPIURL
         return Promise { fulfill, reject in
-            self.manager!.request(queryUrl, withMethod: .get).validate().responseObject { (response: Response<StatusResponse, NSError>) in
+            let _ = self.manager!.request(queryUrl, method: .get).validate().responseObject { (response: DataResponse<StatusResponse>) in
                 switch response.result {
-                case .Success:
+                case .success:
                     fulfill(response.result.value!)
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error on GetStatus() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -295,11 +298,11 @@ public class HomeAssistantAPI {
     func GetConfig() -> Promise<ConfigResponse> {
         let queryUrl = baseAPIURL+"config"
         return Promise { fulfill, reject in
-            self.manager!.request(queryUrl, withMethod: .get).validate().responseObject { (response: Response<ConfigResponse, NSError>) in
+            let _ = self.manager!.request(queryUrl, method: .get).validate().responseObject { (response: DataResponse<ConfigResponse>) in
                 switch response.result {
-                case .Success:
+                case .success:
                     fulfill(response.result.value!)
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error on GetConfig() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -311,11 +314,11 @@ public class HomeAssistantAPI {
     func GetServices() -> Promise<[ServicesResponse]> {
         let queryUrl = baseAPIURL+"services"
         return Promise { fulfill, reject in
-            self.manager!.request(queryUrl, withMethod: .get).validate().responseArray { (response: Response<[ServicesResponse], NSError>) in
+            let _ = self.manager!.request(queryUrl, method: .get).validate().responseArray { (response: DataResponse<[ServicesResponse]>) in
                 switch response.result {
-                case .Success:
+                case .success:
                     fulfill(response.result.value!)
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error on GetServices() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -327,14 +330,14 @@ public class HomeAssistantAPI {
 //    func GetHistory() -> Promise<HistoryResponse> {
 //        let queryUrl = baseAPIURL+"history/period?filter_entity_id=sensor.uberpool_time"
 //        return Promise { fulfill, reject in
-//            self.manager!.request(queryUrl, withMethod: .get).validate().responseJSON { response in
+//            let _ = self.manager!.request(queryUrl, method: .get).validate().responseJSON { response in
 //                switch response.result {
-//                case .Success:
+//                case .success:
 //                    print("GOT HISTORY", queryUrl)
 //                    let mapped = Mapper<HistoryResponse>().map(response.result.value!)
 //                    print("MAPPED", mapped)
 //                    fulfill(mapped!)
-//                case .Failure(let error):
+//                case .failure(let error):
 //                    CLSLogv("Error on GetHistory() request: %@", getVaList([error.localizedDescription]))
 //                    Crashlytics.sharedInstance().recordError(error)
 //                    reject(error)
@@ -391,12 +394,12 @@ public class HomeAssistantAPI {
     func GetStates() -> Promise<[Entity]> {
         let queryUrl = baseAPIURL+"states"
         return Promise { fulfill, reject in
-            self.manager!.request(queryUrl, withMethod: .get).validate().responseArray { (response: Response<[Entity], NSError>) in
+            let _ = self.manager!.request(queryUrl, method: .get).validate().responseArray { (response: DataResponse<[Entity]>) -> Void in
                 switch response.result {
-                case .Success:
-                    self.storeEntities(response.result.value!)
+                case .success:
+                    self.storeEntities(entities: response.result.value!)
                     fulfill(response.result.value!)
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error on GetStates() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -408,12 +411,12 @@ public class HomeAssistantAPI {
     func GetStateForEntityIdMapped(entityId: String) -> Promise<Entity> {
         let queryUrl = baseAPIURL+"states/"+entityId
         return Promise { fulfill, reject in
-            self.manager!.request(queryUrl, withMethod: .get).validate().responseObject { (response: Response<Entity, NSError>) in
+            let _ = self.manager!.request(queryUrl, method: .get).validate().responseObject { (response: DataResponse<Entity>) -> Void in
                 switch response.result {
-                case .Success:
-                    self.storeEntities([response.result.value!])
+                case .success:
+                    self.storeEntities(entities: [response.result.value!])
                     fulfill(response.result.value!)
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error on GetStateForEntityIdMapped() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -425,11 +428,11 @@ public class HomeAssistantAPI {
     func GetErrorLog() -> Promise<String> {
         let queryUrl = baseAPIURL+"error_log"
         return Promise { fulfill, reject in
-            self.manager!.request(queryUrl, withMethod: .get).validate().responseString { response in
+            let _ = self.manager!.request(queryUrl, method: .get).validate().responseString { response in
                 switch response.result {
-                case .Success:
+                case .success:
                     fulfill(response.result.value!)
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error on GetErrorLog() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -441,13 +444,13 @@ public class HomeAssistantAPI {
     func SetState(entityId: String, state: String) -> Promise<Entity> {
         let queryUrl = baseAPIURL+"states/"+entityId
         return Promise { fulfill, reject in
-            self.manager!.request(.POST, withMethod: queryUrl, parameters: ["state": state], encoding: .JSON).validate().responseObject { (response: Response<Entity, NSError>) in
+            let _ = self.manager!.request(queryUrl, method: .post, parameters: ["state": state], encoding: .json).validate().responseObject { (response: DataResponse<Entity>) in
                 switch response.result {
-                case .Success:
-                    show(whistle: Murmur(title: response.result.value!.Domain+" state set to "+response.result.value!.State), action: .Show(1))
-                    self.storeEntities([response.result.value!])
+                case .success:
+                    let _ = Murmur(title: response.result.value!.Domain+" state set to "+response.result.value!.State)
+                    self.storeEntities(entities: [response.result.value!])
                     fulfill(response.result.value!)
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error when attemping to SetState(): %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -456,17 +459,17 @@ public class HomeAssistantAPI {
         }
     }
     
-    func CreateEvent(eventType: String, eventData: [String:AnyObject]) -> Promise<String> {
+    func CreateEvent(eventType: String, eventData: [String:Any]) -> Promise<String> {
         let queryUrl = baseAPIURL+"events/"+eventType
         return Promise { fulfill, reject in
-            self.manager!.request(.POST, withMethod: queryUrl, parameters: eventData, encoding: .JSON).validate().responseJSON { response in
+            let _ = self.manager!.request(queryUrl, method: .post, parameters: eventData, encoding: .json).validate().responseJSON { response in
                 switch response.result {
-                case .Success:
+                case .success:
                     if let jsonDict = response.result.value as? [String : String] {
-                        show(whistle: Murmur(title: eventType+" created"), action: .Show(1))
+                        let _ = Murmur(title: eventType+" created")
                         fulfill(jsonDict["message"]!)
                     }
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error when attemping to CreateEvent(): %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -475,15 +478,15 @@ public class HomeAssistantAPI {
         }
     }
     
-    func CallService(domain: String, service: String, serviceData: [String:AnyObject]) -> Promise<[ServicesResponse]> {
-//        show(whistle: Murmur(title: domain+"/"+service+" called"), action: .Show(1))
+    func CallService(domain: String, service: String, serviceData: [String:Any]) -> Promise<[ServicesResponse]> {
+//        let _ = Murmur(title: domain+"/"+service+" called")
         let queryUrl = baseAPIURL+"services/"+domain+"/"+service
         return Promise { fulfill, reject in
-            self.manager!.request(.POST, withMethod: queryUrl, parameters: serviceData, encoding: .JSON).validate().responseArray { (response: Response<[ServicesResponse], NSError>) in
+            let _ = self.manager!.request(queryUrl, method: .post, parameters: serviceData, encoding: .json).validate().responseArray { (response: DataResponse<[ServicesResponse]>) in
                 switch response.result {
-                case .Success:
+                case .success:
                     fulfill(response.result.value!)
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -493,53 +496,53 @@ public class HomeAssistantAPI {
     }
     
     func turnOn(entityId: String) -> Promise<[ServicesResponse]> {
-        show(whistle: Murmur(title: entityId+" turned on"), action: .Show(1))
-        return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entityId as AnyObject])
+        let _ = Murmur(title: entityId+" turned on")
+        return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
     }
     
     func turnOnEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        show(whistle: Murmur(title: "\(entity.Name) turned on"), action: .Show(1))
-        return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entity.ID as AnyObject])
+        let _ = Murmur(title: "\(entity.Name) turned on")
+        return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entity.ID])
     }
     
     func turnOff(entityId: String) -> Promise<[ServicesResponse]> {
-        show(whistle: Murmur(title: entityId+" turned off"), action: .Show(1))
-        return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entityId as AnyObject])
+        let _ = Murmur(title: entityId+" turned off")
+        return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entityId])
     }
     
     func turnOffEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        show(whistle: Murmur(title: "\(entity.Name) turned off"), action: .Show(1))
-        return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entity.ID as AnyObject])
+        let _ = Murmur(title: "\(entity.Name) turned off")
+        return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entity.ID])
     }
     
     func toggle(entityId: String) -> Promise<[ServicesResponse]> {
-        let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityId as AnyObject)
-        show(whistle: Murmur(title: "\(entity!.Name) toggled"), action: .Show(1))
-        return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entityId as AnyObject])
+        let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityId)
+        let _ = Murmur(title: "\(entity!.Name) toggled")
+        return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
     }
     
     func toggleEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        show(whistle: Murmur(title: "\(entity.Name) toggled"), action: .Show(1))
-        return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID as AnyObject])
+        let _ = Murmur(title: "\(entity.Name) toggled")
+        return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
     
-    func buildIdentifyDict() -> [String:AnyObject] {
+    func buildIdentifyDict() -> [String:Any] {
         let device = UIDevice.current
         let deviceKitDevice = Device()
         let deviceInfo = ["name": device.name, "systemName": device.systemName, "systemVersion": device.systemVersion, "model": device.model, "localizedModel": device.localizedModel, "type": deviceKitDevice.description, "permanentID": DeviceUID.uid()]
         let buildNumber : Int? = Int(Bundle.main.infoDictionary!["CFBundleVersion"]! as! String)
         let versionNumber = Bundle.main.infoDictionary!["CFBundleShortVersionString"]!
         let bundleID = Bundle.main.bundleIdentifier
-        let appInfo : [String: AnyObject] = ["bundleIdentifer": bundleID! as AnyObject, "versionNumber": versionNumber as AnyObject, "buildNumber": buildNumber!]
-        var deviceContainer : [String : AnyObject] = ["device": deviceInfo as AnyObject, "app": appInfo as AnyObject, "permissions": [:]]
-        deviceContainer["pushId"] = endpointARN.componentsSeparatedByString("/").last!
+        let appInfo : [String: Any] = ["bundleIdentifer": bundleID!, "versionNumber": versionNumber, "buildNumber": buildNumber!]
+        var deviceContainer : [String : Any] = ["device": deviceInfo, "app": appInfo, "permissions": [:]]
+        deviceContainer["pushId"] = endpointARN.components(separatedBy: "/").last!
         deviceContainer["pushToken"] = deviceToken
         deviceContainer["pushSounds"] = listAllInstalledPushNotificationSounds()
         deviceContainer["deviceId"] = deviceID
         var permissionsContainer : [String] = []
         for status in PermissionScope().permissionStatuses([NotificationsPermission().type, LocationAlwaysPermission().type]) {
-            if status.1 == .Authorized {
-                permissionsContainer.append(status.0.prettyDescription.lowercased)
+            if status.1 == .authorized {
+                permissionsContainer.append(status.0.prettyDescription.lowercased())
             }
         }
         deviceContainer["permissions"] = permissionsContainer
@@ -549,11 +552,11 @@ public class HomeAssistantAPI {
     func identifyDevice() -> Promise<String> {
         let queryUrl = baseAPIURL+"ios/identify"
         return Promise { fulfill, reject in
-            self.manager!.request(.POST, withMethod: queryUrl, parameters: buildIdentifyDict(), encoding: .JSON).validate().responseString { response in
+            let _ = self.manager!.request(queryUrl, method: .post, parameters: buildIdentifyDict(), encoding: .json).validate().responseString { response in
                 switch response.result {
-                case .Success:
+                case .success:
                     fulfill(response.result.value!)
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error when attemping to identifyDevice(): %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -565,9 +568,9 @@ public class HomeAssistantAPI {
     func setupPushActions() -> Promise<Set<UIUserNotificationCategory>> {
         let queryUrl = baseAPIURL+"ios/push"
         return Promise { fulfill, reject in
-            self.manager!.request(queryUrl, withMethod: .get).validate().responseArray { (response: Response<[PushCategory], NSError>) in
+            let _ = self.manager!.request(queryUrl, method: .get).validate().responseArray { (response: DataResponse<[PushCategory]>) in
                 switch response.result {
-                case .Success:
+                case .success:
                     var allCategories = Set<UIMutableUserNotificationCategory>()
                     for category in response.result.value! {
                         let finalCategory = UIMutableUserNotificationCategory()
@@ -578,10 +581,10 @@ public class HomeAssistantAPI {
                             let newAction = UIMutableUserNotificationAction()
                             newAction.title = action.Title
                             newAction.identifier = action.Identifier
-                            newAction.authenticationRequired = action.AuthenticationRequired!
-                            newAction.destructive = action.Destructive!
-                            newAction.behavior = (action.Behavior == "default") ? UIUserNotificationActionBehavior.Default : UIUserNotificationActionBehavior.TextInput
-                            newAction.activationMode = (action.ActivationMode == "foreground") ? UIUserNotificationActivationMode.Foreground : UIUserNotificationActivationMode.Background
+                            newAction.isAuthenticationRequired = action.AuthenticationRequired!
+                            newAction.isDestructive = action.Destructive!
+                            newAction.behavior = (action.Behavior == "default") ? UIUserNotificationActionBehavior.default : UIUserNotificationActionBehavior.textInput
+                            newAction.activationMode = (action.ActivationMode == "foreground") ? UIUserNotificationActivationMode.foreground : UIUserNotificationActivationMode.background
                             if let params = action.Parameters {
                                 newAction.parameters = params
                             }
@@ -591,12 +594,12 @@ public class HomeAssistantAPI {
                                 minimalCategoryActions.append(newAction)
                             }
                         }
-                        finalCategory.setActions(defaultCategoryActions, forContext: UIUserNotificationActionContext.Default)
-                        finalCategory.setActions(minimalCategoryActions, forContext: UIUserNotificationActionContext.Minimal)
+                        finalCategory.setActions(defaultCategoryActions, for: UIUserNotificationActionContext.default)
+                        finalCategory.setActions(minimalCategoryActions, for: UIUserNotificationActionContext.minimal)
                         allCategories.insert(finalCategory)
                     }
                     fulfill(allCategories)
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error on setupPushActions() request: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -608,11 +611,11 @@ public class HomeAssistantAPI {
     func getBeacons() -> Promise<[Beacon]> {
         let queryUrl = baseAPIURL+"ios/beacons"
         return Promise { fulfill, reject in
-            self.manager!.request(queryUrl, withMethod: .get).validate().responseArray { (response: Response<[Beacon], NSError>) in
+            let _ = self.manager!.request(queryUrl, method: .get).validate().responseArray { (response: DataResponse<[Beacon]>) in
                 switch response.result {
-                case .Success:
+                case .success:
                     fulfill(response.result.value!)
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error when attemping to getBeacons(): %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -624,18 +627,18 @@ public class HomeAssistantAPI {
     func getImage(imageUrl: String) -> Promise<UIImage> {
         var url = imageUrl
         if url.hasPrefix("/local/") || url.hasPrefix("/api/") {
-            url = baseAPIURL+url.stringByReplacingOccurrencesOfString("/api/", withString: "").stringByReplacingOccurrencesOfString("/local/", withString: "")
+            url = baseAPIURL+url.replacingOccurrences(of: "/api/", with: "").replacingOccurrences(of: "/local", with: "")
         }
         return Promise { fulfill, reject in
-            self.manager!.request(url, withMethod: .get).validate().responseImage { response in
+            let _ = self.manager!.request(url, method: .get).validate().responseImage { response in
                 switch response.result {
-                case .Success:
+                case .success:
                     if let value = response.result.value {
                         fulfill(value)
                     } else {
                         print("Response was not an image!", response)
                     }
-                case .Failure(let error):
+                case .failure(let error):
                     CLSLogv("Error on getImage() request to %@: %@", getVaList([url, error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
@@ -645,7 +648,7 @@ public class HomeAssistantAPI {
     }
     
     func locationEnabled() -> Bool {
-        return PermissionScope().statusLocationAlways() == .Authorized && self.loadedComponents.contains("device_tracker")
+        return PermissionScope().statusLocationAlways() == .authorized && self.loadedComponents.contains("device_tracker")
     }
 
 }
@@ -667,18 +670,18 @@ class BonjourDelegate : NSObject, NetServiceBrowserDelegate, NetServiceDelegate 
     func netServiceDidResolveAddress(_ sender: NetService) {
         NSLog("BonjourDelegate.Browser.netServiceDidResolveAddress")
         let dataDict = NetService.dictionary(fromTXTRecord: sender.txtRecordData()!)
-        let baseUrl = copyStringFromTXTDict(dict: dataDict as [NSObject : AnyObject], which: "base_url")
-        let requiresAPIPassword = (copyStringFromTXTDict(dict: dataDict as [NSObject : AnyObject], which: "requires_api_password") == "true")
+        let baseUrl = copyStringFromTXTDict(dict: dataDict, which: "base_url")
+        let requiresAPIPassword = (copyStringFromTXTDict(dict: dataDict, which: "requires_api_password") == "true")
         let useSSL = (baseUrl![4] == "s")
-        let version = copyStringFromTXTDict(dict: dataDict as [NSObject : AnyObject], which: "version")
-        let discoveryInfo : [NSObject:AnyObject] = ["name" as NSObject: sender.name as AnyObject, "baseUrl" as NSObject: baseUrl!, "requires_api_password": requiresAPIPassword, "version": version!, "use_ssl": useSSL]
-        NotificationCenter.defaultCenter.postNotificationName("homeassistant.discovered", object: nil, userInfo: discoveryInfo)
+        let version = copyStringFromTXTDict(dict: dataDict, which: "version")
+        let discoveryInfo : [String:Any] = ["name": sender.name, "baseUrl": baseUrl!, "requires_api_password": requiresAPIPassword, "version": version!, "use_ssl": useSSL]
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.discovered"), object: nil, userInfo: discoveryInfo)
     }
     
     func netServiceBrowser(_ netServiceBrowser: NetServiceBrowser, didRemove netService: NetService, moreComing moreServicesComing: Bool) {
         NSLog("BonjourDelegate.Browser.didRemoveService")
-        let discoveryInfo : [NSObject:AnyObject] = ["name" as NSObject: netService.name as AnyObject]
-        NotificationCenter.defaultCenter.postNotificationName("homeassistant.undiscovered", object: nil, userInfo: discoveryInfo)
+        let discoveryInfo : [NSObject:Any] = ["name" as NSObject: netService.name]
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.undiscovered"), object: nil, userInfo: discoveryInfo)
         resolvingDict.removeValue(forKey: netService.name)
     }
     
@@ -701,9 +704,9 @@ class BonjourDelegate : NSObject, NetServiceBrowserDelegate, NetServiceDelegate 
 //        NSLog("BonjourDelegate.Browser.netServiceWillPublish:\(sender)");
 //    }
     
-    private func copyStringFromTXTDict(dict: [NSObject : AnyObject], which: String) -> String? {
-        if let data = dict[which] as? NSData {
-            return NSString(data: data, encoding: NSUTF8StringEncoding) as? String
+    private func copyStringFromTXTDict(dict: [String : Data], which: String) -> String? {
+        if let data = dict[which] {
+            return String(data: data, encoding: .utf8)
         } else {
             return nil
         }
@@ -745,21 +748,13 @@ class Bonjour {
         self.nsp = NetService(domain: "local", type: "_home-assistant-ios._tcp.", name: "Home Assistant iOS App", port: 65535)
     }
     
-    func buildPublishDict() -> [String: NSData] {
-        let buildNumber = Bundle.main.infoDictionary!["CFBundleVersion"]!
-        let versionNumber = Bundle.main.infoDictionary!["CFBundleShortVersionString"]!
-        let bundleID = Bundle.main.bundleIdentifier
-        let publishDict : [String:AnyObject] = ["permanentID": DeviceUID.uid() as AnyObject, "bundleIdentifer": bundleID! as AnyObject, "versionNumber": versionNumber as AnyObject, "buildNumber": buildNumber as AnyObject]
-        var publishDictionary = [String: NSData]()
-        for (key, value) in publishDict {
-            guard let val = value.dataUsingEncoding(NSUTF8StringEncoding)
-                else
-            {
-                continue
-            }
-            publishDictionary[key] = val
-        }
-        return publishDictionary
+    func buildPublishDict() -> [String: Data] {
+        return [
+            "permanentID": DeviceUID.uid().data(using: .utf8)!,
+            "bundleIdentifer": Bundle.main.bundleIdentifier!.data(using: .utf8)!,
+            "versionNumber": (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String).data(using: .utf8)!,
+            "buildNumber": (Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String).data(using: .utf8)!
+        ]
     }
     
     func startDiscovery() {
@@ -775,7 +770,7 @@ class Bonjour {
     func startPublish() {
 //        self.nsdel = BonjourDelegate()
 //        nsp.delegate = nsdel
-        nsp.setTXTRecord(NetService.data(fromTXTRecord: buildPublishDict() as [String : Data]))
+        nsp.setTXTRecord(NetService.data(fromTXTRecord: buildPublishDict()))
         nsp.publish()
     }
     
@@ -790,7 +785,7 @@ class Location {
     init(){
         locationManager.requestAlwaysAuthorization()
         locationManager.delegate = LocationDelegate()
-        if let uuid = NSUUID(UUIDString: "B9407F30-F5F8-466E-AFF9-25556B57FE6D") {
+        if let uuid = NSUUID(uuidString: "B9407F30-F5F8-466E-AFF9-25556B57FE6D") {
             let beaconRegion = CLBeaconRegion(proximityUUID: uuid as UUID, identifier: "iBeacon")
             beaconRegion.notifyOnEntry = true
             beaconRegion.notifyOnExit = true
@@ -803,7 +798,7 @@ class Location {
 
 class LocationDelegate: NSObject, CLLocationManagerDelegate {
     
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         print("Auth status", status)
 //        if status == .AuthorizedAlways {
 //            if CLLocationManager.isMonitoringAvailableForClass(CLBeaconRegion.self) {
@@ -829,7 +824,7 @@ class LocationDelegate: NSObject, CLLocationManagerDelegate {
 //        }
     }
     
-    func locationManager(manager: CLLocationManager, didDetermineState state: CLRegionState, forRegion region: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
         print("State determined for region", region.identifier, "is", state)
 //        if let request = self.monitoredGeoRegions.filter({ request in request.region == region }).first {
 //            switch state {
@@ -843,19 +838,19 @@ class LocationDelegate: NSObject, CLLocationManagerDelegate {
 //        }
     }
     
-    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         print("Region entered!", region.identifier)
     }
     
-    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         print("Region exited!", region.identifier)
     }
     
-    func locationManager(manager: CLLocationManager, monitoringDidFailForRegion region: CLRegion?, withError error: NSError) {
+    func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Swift.Error) {
         print("Monitoring failed for region", region!.identifier, "with error", error)
     }
     
-    @objc func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
+    func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
         print("didRangeBeacons", beacons, "for region", region.identifier)
 //        if let request = self.monitoredBeacons.filter({request in return request.beaconRegion == region}).first {
 //            request.onRangeDidFoundBeacons?(beacons)
@@ -867,7 +862,7 @@ class LocationDelegate: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    @objc func locationManager(manager: CLLocationManager, rangingBeaconsDidFailForRegion region: CLBeaconRegion, withError error: NSError) {
+    func locationManager(_ manager: CLLocationManager, rangingBeaconsDidFailFor region: CLBeaconRegion, withError error: Swift.Error) {
 //        if let request = self.monitoredBeacons.filter({request in return request.beaconRegion == region}).first {
 //            request.onRangeDidFail?(LocationError.LocationManager(error: error))
 //            self.stopMonitorForBeaconRegion(request)

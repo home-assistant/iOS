@@ -69,7 +69,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         
         for zone in zones {
             if let radius = zone.Radius {
-                let circle = HACircle.init(centerCoordinate: zone.locationCoordinates(), radius: radius)
+                let circle = HACircle.init(center: zone.locationCoordinates(), radius: radius)
                 circle.type = "zone"
                 mapView.add(circle)
             }
@@ -83,9 +83,9 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             dropPin.coordinate = device.locationCoordinates()
             dropPin.title = device.Name
             var subtitlePieces : [String] = []
-            if let changedTime = device.LastChanged {
-                subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago")
-            }
+//            if let changedTime = device.LastChanged {
+//                subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago")
+//            }
             if let battery = device.Battery.value {
                 subtitlePieces.append("Battery: "+String(battery)+"%")
             }
@@ -94,7 +94,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             mapView.addAnnotation(dropPin)
             
             if let radius = device.GPSAccuracy.value {
-                let circle = HACircle.init(centerCoordinate: device.locationCoordinates(), radius: radius)
+                let circle = HACircle.init(center: device.locationCoordinates(), radius: radius)
                 circle.type = "device"
                 mapView.add(circle)
             }
