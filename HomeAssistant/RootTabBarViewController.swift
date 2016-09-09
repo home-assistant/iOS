@@ -23,7 +23,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
 
-        MBProgressHUD.showAdded(to: self.view, animated: true)
+        let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
 
         self.delegate = self
         
@@ -129,7 +129,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         
         self.customizableViewControllers = tabViewControllers
         
-        MBProgressHUD.hideAllHUDs(for: self.view, animated: true)
+        hud.hide(animated: true)
     }
     
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {

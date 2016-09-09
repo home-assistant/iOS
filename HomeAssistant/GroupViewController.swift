@@ -67,7 +67,7 @@ class GroupViewController: FormViewController {
                         self.form.last! <<< ButtonRow(entity.ID) {
                             $0.title = entity.Name
                             if url.scheme == "http" || url.scheme == "https" {
-                                $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback { return SFSafariViewController(url: url, entersReaderIfAvailable: false) }, completionCallback: { vc in vc.navigationController?.popViewController(animated: true) })
+                                $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback { return SFSafariViewController(url: url, entersReaderIfAvailable: false) }, completionCallback: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
                             }
                             }.cellUpdate { cell, row in
                                 cell.imageView?.image = entity.EntityIcon
@@ -89,7 +89,7 @@ class GroupViewController: FormViewController {
                             attributesView.entityID = entity.ID
                             return attributesView
                             }, completionCallback: {
-                                vc in vc.navigationController?.popViewController(animated: true)
+                                vc in let _ = vc.navigationController?.popViewController(animated: true)
                         })
                     }.cellUpdate { cell, row in
                         cell.detailTextLabel?.text = entity.State.capitalized
@@ -132,7 +132,7 @@ class GroupViewController: FormViewController {
                                 let attributesView = EntityAttributesViewController()
                                 attributesView.entityID = entity.ID
                                 return attributesView
-                                }, completionCallback: { vc in vc.navigationController?.popViewController(animated: true) })
+                                }, completionCallback: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
                             }.cellUpdate { cell, row in
                                 cell.detailTextLabel?.text = entity.CleanedState
                                 if let sensor = entity as? Sensor {
