@@ -39,7 +39,6 @@ PODS:
   - Realm/Headers (1.0.2)
   - RealmSwift (1.0.2):
     - Realm (= 1.0.2)
-  - SwiftDate (3.0.9)
   - SwiftLocation (1.0.6)
   - Whisper (3.0.0)
 
@@ -63,7 +62,6 @@ DEPENDENCIES:
   - PromiseKit
   - Realm (from `https://github.com/realm/realm-cocoa.git`)
   - RealmSwift (from `https://github.com/realm/realm-cocoa.git`)
-  - SwiftDate (from `https://github.com/JackieQi/SwiftDate.git`, branch `feature/swift_3`)
   - SwiftLocation (from `https://github.com/malcommac/SwiftLocation.git`, branch `master`)
   - Whisper (from `https://github.com/Holmusk/Whisper.git`, branch `swift3`)
 
@@ -104,9 +102,6 @@ EXTERNAL SOURCES:
   RealmSwift:
     :git: https://github.com/realm/realm-cocoa.git
     :submodules: true
-  SwiftDate:
-    :branch: feature/swift_3
-    :git: https://github.com/JackieQi/SwiftDate.git
   SwiftLocation:
     :branch: master
     :git: https://github.com/malcommac/SwiftLocation.git
@@ -153,9 +148,6 @@ CHECKOUT OPTIONS:
     :commit: 742e530446e7c3b74abdf902b9109ab8f1086753
     :git: https://github.com/realm/realm-cocoa.git
     :submodules: true
-  SwiftDate:
-    :commit: 0bbb7a87abc1da3056f864bbc5e7a58769654743
-    :git: https://github.com/JackieQi/SwiftDate.git
   SwiftLocation:
     :commit: 67ad796eb5d49f409c4ac7956356033bbdbe2aa7
     :git: https://github.com/malcommac/SwiftLocation.git
@@ -183,10 +175,9 @@ SPEC CHECKSUMS:
   PromiseKit: 97edc7fb2fb7d2c68c8e09d1f79b3ab7bcb6b06a
   Realm: 2948cfa3a05b7acc446abc4c124d443df646c8de
   RealmSwift: 4816c8608630a9a00bba6d726bb30b4bab6dd6bf
-  SwiftDate: fa487d9b7d8c3070ea2553486902494f4915465d
   SwiftLocation: 60fe7d6f2d6e622ccc80563560d40915d24c3fc3
   Whisper: 42a3ee7c2936f861b23d41bd6cd7dfd22f102405
 
-PODFILE CHECKSUM: ea7a6a10e94d8fcc293fdcd80ac2ed226585be88
+PODFILE CHECKSUM: e09ed282daac3c3e64069abaff7ba0e06e00d1cc
 
 COCOAPODS: 1.1.0.beta.2

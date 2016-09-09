@@ -8,7 +8,6 @@
 
 import UIKit
 import MapKit
-import SwiftDate
 import RealmSwift
 
 enum MapType: Int {
