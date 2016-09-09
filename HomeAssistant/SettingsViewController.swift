@@ -104,12 +104,11 @@ class SettingsViewController: FormViewController {
                 $0.hidden = Condition(booleanLiteral: showErrorConnectingMessage)
             }
             <<< TextRow("deviceId") {
-                $0.placeholder = UIDevice.current.name
                 $0.title = "Device ID (location tracking)"
                 if let deviceId = prefs.string(forKey: "deviceId") {
                     $0.value = deviceId
                 } else {
-                    $0.value = UIDevice.current.name
+                    $0.value = removeSpecialCharsFromString(text: UIDevice.current.name).replacingOccurrences(of: " ", with: "_").lowercased()
                 }
                 $0.cell.textField.autocapitalizationType = .none
             }
@@ -264,7 +263,7 @@ class SettingsViewController: FormViewController {
                              message: "We use this to let you\r\nsend notifications to your device.")
         pscope.show({finished, results in
             if finished {
-                print("Permissions finished, resetting API!")
+                print("Permissions finished, resetting API!", results)
                 self.dismiss(animated: true, completion: nil)
                 (UIApplication.shared.delegate as! AppDelegate).initAPI()
             }
@@ -277,3 +276,8 @@ class SettingsViewController: FormViewController {
     
 }
 
+func removeSpecialCharsFromString(text: String) -> String {
+    let okayChars : Set<Character> =
+        Set("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890".characters)
+    return String(text.characters.filter {okayChars.contains($0) })
+}
