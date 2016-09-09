@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>APNSAttachmentService.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>24</integer>
+		</dict>
 		<key>HomeAssistant.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -23,6 +28,11 @@
 			<true/>
 		</dict>
 		<key>B657A9061CA646EB00121384</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B6AAD7A01D827DD40090B220</key>
 		<dict>
 			<key>primary</key>
 			<true/>

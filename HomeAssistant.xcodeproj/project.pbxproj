@@ -159,6 +159,8 @@
 		B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66428111CF7A83200903804 /* PushConfiguration.swift */; };
 		B6767A511D0234E700F2A08B /* SwitchableEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6767A501D0234E700F2A08B /* SwitchableEntity.swift */; };
 		B6880B2B1D7B9E6400CCB899 /* ClimateComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6880B2A1D7B9E6400CCB899 /* ClimateComponent.swift */; };
+		B6AAD7A41D827DD40090B220 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AAD7A31D827DD40090B220 /* NotificationService.swift */; };
+		B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6E47E881CBA01310027F6CA /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E871CBA01310027F6CA /* CallService.swift */; };
 		B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */; };
 		B6E47E8E1CBA3EDB0027F6CA /* ZoneComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */; };
@@ -208,7 +210,28 @@
 			remoteGlobalIDString = B657A8E51CA646EB00121384;
 			remoteInfo = HomeAssistant;
 		};
+		B6AAD7A61D827DD40090B220 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B6AAD7A01D827DD40090B220;
+			remoteInfo = APNSAttachmentService;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B6AAD7AC1D827DD40090B220 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		055E7B0DD053FB7FF5126165 /* Pods-HomeAssistantUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -375,6 +398,9 @@
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B6880B2A1D7B9E6400CCB899 /* ClimateComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClimateComponent.swift; sourceTree = "<group>"; };
 		B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeAssistant.entitlements; sourceTree = "<group>"; };
+		B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = APNSAttachmentService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6AAD7A31D827DD40090B220 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		B6AAD7A51D827DD40090B220 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B6E47E871CBA01310027F6CA /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceExecuted.swift; sourceTree = "<group>"; };
 		B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneComponent.swift; sourceTree = "<group>"; };
@@ -435,6 +461,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				F88F0593CC7882D233B611E3 /* Pods_HomeAssistantUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B6AAD79E1D827DD40090B220 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -643,6 +676,7 @@
 				B657A8E81CA646EB00121384 /* HomeAssistant */,
 				B657A8FF1CA646EB00121384 /* HomeAssistantTests */,
 				B657A90A1CA646EB00121384 /* HomeAssistantUITests */,
+				B6AAD7A21D827DD40090B220 /* APNSAttachmentService */,
 				B657A8E71CA646EB00121384 /* Products */,
 				29278BB24639BA945D3D86B4 /* Frameworks */,
 				AAB60FA4DE371AD957F6907B /* Pods */,
@@ -655,6 +689,7 @@
 				B657A8E61CA646EB00121384 /* HomeAssistant.app */,
 				B657A8FC1CA646EB00121384 /* HomeAssistantTests.xctest */,
 				B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */,
+				B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -702,6 +737,15 @@
 				B657A90D1CA646EB00121384 /* Info.plist */,
 			);
 			path = HomeAssistantUITests;
+			sourceTree = "<group>";
+		};
+		B6AAD7A21D827DD40090B220 /* APNSAttachmentService */ = {
+			isa = PBXGroup;
+			children = (
+				B6AAD7A31D827DD40090B220 /* NotificationService.swift */,
+				B6AAD7A51D827DD40090B220 /* Info.plist */,
+			);
+			path = APNSAttachmentService;
 			sourceTree = "<group>";
 		};
 		B6F02BE71CB4698A0029ABE7 /* Classes */ = {
@@ -773,10 +817,12 @@
 				B6E47E861CB9FD350027F6CA /* ShellScript */,
 				D458061599D246B74530F402 /* [CP] Embed Pods Frameworks */,
 				EB3BEB157867EEEFE3AFD2F3 /* [CP] Copy Pods Resources */,
+				B6AAD7AC1D827DD40090B220 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B6AAD7A71D827DD40090B220 /* PBXTargetDependency */,
 			);
 			name = HomeAssistant;
 			productName = HomeAssistant;
@@ -824,13 +870,30 @@
 			productReference = B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		B6AAD7A01D827DD40090B220 /* APNSAttachmentService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B6AAD7A91D827DD40090B220 /* Build configuration list for PBXNativeTarget "APNSAttachmentService" */;
+			buildPhases = (
+				B6AAD79D1D827DD40090B220 /* Sources */,
+				B6AAD79E1D827DD40090B220 /* Frameworks */,
+				B6AAD79F1D827DD40090B220 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = APNSAttachmentService;
+			productName = APNSAttachmentService;
+			productReference = B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		B657A8DE1CA646EB00121384 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0730;
+				LastSwiftUpdateCheck = 0800;
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Robbie Trencheny";
 				TargetAttributes = {
@@ -863,6 +926,11 @@
 						LastSwiftMigration = 0800;
 						TestTargetID = B657A8E51CA646EB00121384;
 					};
+					B6AAD7A01D827DD40090B220 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = UTQFCBPQRF;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = B657A8E11CA646EB00121384 /* Build configuration list for PBXProject "HomeAssistant" */;
@@ -881,6 +949,7 @@
 				B657A8E51CA646EB00121384 /* HomeAssistant */,
 				B657A8FB1CA646EB00121384 /* HomeAssistantTests */,
 				B657A9061CA646EB00121384 /* HomeAssistantUITests */,
+				B6AAD7A01D827DD40090B220 /* APNSAttachmentService */,
 			);
 		};
 /* End PBXProject section */
@@ -1034,6 +1103,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B657A9051CA646EB00121384 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B6AAD79F1D827DD40090B220 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1260,6 +1336,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B6AAD79D1D827DD40090B220 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B6AAD7A41D827DD40090B220 /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1272,6 +1356,11 @@
 			isa = PBXTargetDependency;
 			target = B657A8E51CA646EB00121384 /* HomeAssistant */;
 			targetProxy = B657A9081CA646EB00121384 /* PBXContainerItemProxy */;
+		};
+		B6AAD7A71D827DD40090B220 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B6AAD7A01D827DD40090B220 /* APNSAttachmentService */;
+			targetProxy = B6AAD7A61D827DD40090B220 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1573,6 +1662,45 @@
 			};
 			name = Release;
 		};
+		B6AAD7AA1D827DD40090B220 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.APNSAttachmentService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		B6AAD7AB1D827DD40090B220 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.APNSAttachmentService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1611,6 +1739,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		B6AAD7A91D827DD40090B220 /* Build configuration list for PBXNativeTarget "APNSAttachmentService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B6AAD7AA1D827DD40090B220 /* Debug */,
+				B6AAD7AB1D827DD40090B220 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
