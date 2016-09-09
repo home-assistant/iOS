@@ -35,6 +35,8 @@ class PushAction: Mappable {
     var Destructive: Bool?
     var Context: String?
     var Parameters: [String:AnyObject]?
+    var TextInputButtonTitle: String?
+    var TextInputPlaceholder: String?
     
     required init?(_ map: Map){
         
@@ -49,5 +51,7 @@ class PushAction: Mappable {
         Destructive            <- map["destructive"]
         Context                <- map["context"]
         Parameters             <- map["parameters"]
+        TextInputButtonTitle   <- map["textInputButtonTitle"]
+        TextInputPlaceholder   <- map["textInputPlaceholder"]
     }
 }

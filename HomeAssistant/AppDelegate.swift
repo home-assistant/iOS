@@ -13,6 +13,7 @@ import Crashlytics
 import DeviceKit
 import PromiseKit
 import RealmSwift
+import UserNotifications
 
 let realmConfig = Realm.Configuration(
     schemaVersion: 1,
@@ -44,6 +45,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         AWSServiceManager.default().defaultServiceConfiguration = configuration
 
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.current().delegate = NotificationManager()
+        }
+        
         initAPI()
         
         return true
@@ -95,9 +100,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let deviceTokenString = "\(deviceToken)"
-            .trimmingCharacters(in: CharacterSet(charactersIn:"<>"))
-            .replacingOccurrences(of: " ", with: "")
+
+        let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
+        
         print("Registering with deviceTokenString: \(deviceTokenString)")
         
         let sns = AWSSNS.default()
@@ -140,15 +145,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Crashlytics.sharedInstance().recordError(error)
     }
     
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-        print("Received remote notification!", userInfo)
-    }
-    
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("Received remote notification in completion handler!")
         
         let userInfoDict = userInfo as! [String:Any]
-
+        
         if let hadict = userInfoDict["homeassistant"] as? [String:String] {
             if let command = hadict["command"] {
                 switch command {
@@ -157,10 +158,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     HomeAssistantAPI.sharedInstance.sendOneshotLocation(notifyString: "").then { success -> Void in
                         print("Did successfully send location when requested via APNS?", success)
                         completionHandler(UIBackgroundFetchResult.noData)
-                    }.catch {error in
-                        print("Error when attempting to submit location update")
-                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                        completionHandler(UIBackgroundFetchResult.failed)
+                        }.catch {error in
+                            print("Error when attempting to submit location update")
+                            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                            completionHandler(UIBackgroundFetchResult.failed)
                     }
                 default:
                     print("Received unknown command via APNS!", userInfo)
@@ -184,9 +185,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         HomeAssistantAPI.sharedInstance.CreateEvent(eventType: "ios.notification_action_fired", eventData: eventData).then { _ in
             completionHandler()
-        }.catch {error in
-            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-            completionHandler()
+            }.catch {error in
+                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                completionHandler()
         }
     }
     

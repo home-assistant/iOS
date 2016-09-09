@@ -11,7 +11,7 @@ PODS:
   - AWSCore (2.4.7)
   - AWSSNS (2.4.7):
     - AWSCore (= 2.4.7)
-  - Crashlytics (3.8.0):
+  - Crashlytics (3.8.1):
     - Fabric (~> 1.6.3)
   - DeviceKit (0.3.4)
   - Eureka (1.7.0)
@@ -59,7 +59,7 @@ DEPENDENCIES:
   - IKEventSource (from `https://github.com/robbiet480/EventSource.git`, branch `swift3`)
   - MBProgressHUD
   - ObjectMapper (from `https://github.com/Hearst-DD/ObjectMapper.git`, branch `swift-3`)
-  - PermissionScope (from `https://github.com/nickoneill/PermissionScope.git`, branch `swift3`)
+  - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `swift3-ios10-usernotifications`)
   - PromiseKit
   - Realm (from `https://github.com/realm/realm-cocoa.git`)
   - RealmSwift (from `https://github.com/realm/realm-cocoa.git`)
@@ -96,8 +96,8 @@ EXTERNAL SOURCES:
     :branch: swift-3
     :git: https://github.com/Hearst-DD/ObjectMapper.git
   PermissionScope:
-    :branch: swift3
-    :git: https://github.com/nickoneill/PermissionScope.git
+    :branch: swift3-ios10-usernotifications
+    :git: https://github.com/robbiet480/PermissionScope.git
   Realm:
     :git: https://github.com/realm/realm-cocoa.git
     :submodules: true
@@ -143,8 +143,8 @@ CHECKOUT OPTIONS:
     :commit: 0ba8034e626f973fc8449081c0463a0de1940b3f
     :git: https://github.com/Hearst-DD/ObjectMapper.git
   PermissionScope:
-    :commit: 6cc38490429f6a37bc6f2f62a12fdaf27b4e52cf
-    :git: https://github.com/nickoneill/PermissionScope.git
+    :commit: 9ecd581723dabc40a5a0b0f5e3c342f71254075e
+    :git: https://github.com/robbiet480/PermissionScope.git
   Realm:
     :commit: 912b12ae11bf83a0c18b43ba48debb098b64f781
     :git: https://github.com/realm/realm-cocoa.git
@@ -171,7 +171,7 @@ SPEC CHECKSUMS:
   AWSCognito: 6aa404f15d1eb2b4b51f45322a409257b3248e79
   AWSCore: 9a729a3c0050a51ece3547d546c327acdac7838a
   AWSSNS: 45b3a02693808251ed388afcab0e90ec05b53f72
-  Crashlytics: 8601d9c74a4c4d28f3e7f408bf4c0e490c70e8b4
+  Crashlytics: 4391d8df0b125345e9f209c5db6e7f40a6a8435d
   DeviceKit: b414b210c225ae19b77a47e64cb04f187c1c4f9a
   Eureka: 2020d9faeef7b7e9adeb9e3d8af779e5931c1897
   Fabric: 5755268d0171435ab167e3d0878a28a777deaf10
@@ -187,6 +187,6 @@ SPEC CHECKSUMS:
   SwiftLocation: 00682ad3598aa54936f34ec42ed53fceb37c22a4
   Whisper: 42a3ee7c2936f861b23d41bd6cd7dfd22f102405
 
-PODFILE CHECKSUM: ac4bef76854918438e5d4e7c0e9b26447ca9bced
+PODFILE CHECKSUM: 6ade63f3cb54dbced21129b4a6ee5069e06dd1ae
 
 COCOAPODS: 1.0.1

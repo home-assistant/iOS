@@ -20,6 +20,7 @@ import DeviceKit
 import PermissionScope
 import Crashlytics
 import RealmSwift
+import UserNotifications
 
 let prefs = UserDefaults.standard
 
@@ -53,6 +54,9 @@ public class HomeAssistantAPI {
     let Location = LocationManager()
     
     func Setup(baseAPIUrl: String, APIPassword: String) -> Promise<StatusResponse> {
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.current().delegate = NotificationManager()
+        }
         self.baseAPIURL = baseAPIUrl+"/api/"
         self.apiPassword = APIPassword
         if apiPassword != "" {
@@ -85,7 +89,7 @@ public class HomeAssistantAPI {
         return GetStatus()
         
     }
-
+    
     func Connect() -> Promise<Bool> {
         return Promise { fulfill, reject in
             //            when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig()).then { ident, config -> Void in
@@ -105,20 +109,33 @@ public class HomeAssistantAPI {
                     self.trackLocation()
                 }
                 
-                if PermissionScope().statusNotifications() == .authorized {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-                
                 if self.loadedComponents.contains("ios") {
                     CLSLogv("iOS component loaded, attempting identify and setup of push categories %@", getVaList(["this is a silly string!"]))
-                    self.identifyDevice().then {_ in 
-                        return self.setupPushActions()
-//                        Commented because iOS 10
-//                    }.then { categories in
-//                        UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [UIUserNotificationType.alert, UIUserNotificationType.sound, UIUserNotificationType.badge], categories: categories))
-                    }.catch {error -> Void in
-                        print("Error when attempting an identify or setup push actions", error)
-                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                    PermissionScope().statusNotifications(completionHandler: { (status) in
+                        if status == .authorized {
+                            UIApplication.shared.registerForRemoteNotifications()
+                        }
+                    })
+                    if #available(iOS 10, *) {
+                        self.identifyDevice().then {_ -> Promise<Set<UNNotificationCategory>> in
+                            return self.setupUserNotificationPushActions()
+                        }.then { categories -> Void in
+                            UNUserNotificationCenter.current().setNotificationCategories(categories)
+                        }.catch {error -> Void in
+                            print("Error when attempting an identify or setup push actions", error)
+                            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                        }
+                    } else {
+                        self.identifyDevice().then {_ -> Promise<Set<UIUserNotificationCategory>> in
+                            return self.setupPushActions()
+                        }.then { categories -> Void in
+                            let types:UIUserNotificationType = ([.alert, .badge, .sound])
+                            let settings = UIUserNotificationSettings(types: types, categories: categories)
+                            UIApplication.shared.registerUserNotificationSettings(settings)
+                        }.catch {error -> Void in
+                            print("Error when attempting an identify or setup push actions", error)
+                            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                        }
                     }
                 }
 //                self.GetHistory()
@@ -616,6 +633,48 @@ public class HomeAssistantAPI {
         }
     }
     
+    @available(iOS 10, *)
+    func setupUserNotificationPushActions() -> Promise<Set<UNNotificationCategory>> {
+        let queryUrl = baseAPIURL+"ios/push"
+        return Promise { fulfill, reject in
+            let _ = self.manager!.request(queryUrl, method: .get).validate().responseArray { (response: DataResponse<[PushCategory]>) in
+                switch response.result {
+                case .success:
+                    var allCategories = Set<UNNotificationCategory>()
+                    for category in response.result.value! {
+                        var categoryActions = [UNNotificationAction]()
+                        for action in category.Actions! {
+                            var actionOptions = UNNotificationActionOptions([])
+                            if action.AuthenticationRequired! {
+                                actionOptions.insert(.authenticationRequired)
+                            }
+                            if action.Destructive! {
+                                actionOptions.insert(.destructive)
+                            }
+                            if (action.ActivationMode == "foreground") {
+                                actionOptions.insert(.foreground)
+                            }
+                            if (action.Behavior == "default") {
+                                let newAction = UNNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions)
+                                categoryActions.append(newAction)
+                            } else if (action.Behavior == "TextInput") {
+                                let newAction = UNTextInputNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions, textInputButtonTitle: action.TextInputButtonTitle!, textInputPlaceholder: action.TextInputPlaceholder!)
+                                categoryActions.append(newAction)
+                            }
+                        }
+                        let finalCategory = UNNotificationCategory.init(identifier: category.Identifier!, actions: categoryActions, intentIdentifiers: [], options: [.customDismissAction])
+                        allCategories.insert(finalCategory)
+                    }
+                    fulfill(allCategories)
+                case .failure(let error):
+                    CLSLogv("Error on setupUserNotificationPushActions() request: %@", getVaList([error.localizedDescription]))
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
+            }
+        }
+    }
+    
     func getBeacons() -> Promise<[Beacon]> {
         let queryUrl = baseAPIURL+"ios/beacons"
         return Promise { fulfill, reject in
@@ -875,5 +934,34 @@ class LocationDelegate: NSObject, CLLocationManagerDelegate {
 //            request.onRangeDidFail?(LocationError.LocationManager(error: error))
 //            self.stopMonitorForBeaconRegion(request)
 //        }
+    }
+}
+
+// This isn't getting called at all currently????
+@available(iOS 10.0, *)
+class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
+    public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        print("UserNotification didReceive!", response)
+        print("Action button hit", response.actionIdentifier)
+        print("response", response)
+        let device = Device()
+        var eventData : [String:Any] = ["actionName": response.actionIdentifier, "sourceDevicePermanentID": DeviceUID.uid(), "sourceDeviceName": device.name]
+        if let dataDict = response.notification.request.content.userInfo["homeassistant"] {
+            eventData["action_data"] = dataDict
+        }
+        if let textInput = response as? UNTextInputNotificationResponse {
+            eventData["response_info"] = textInput.userText
+        }
+        HomeAssistantAPI.sharedInstance.CreateEvent(eventType: "ios.notification_action_fired", eventData: eventData).then { _ in
+            completionHandler()
+        }.catch {error in
+            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+            completionHandler()
+        }
+    }
+    
+    public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("UserNotification willPresent!", notification)
+        completionHandler([.alert, .badge, .sound])
     }
 }
