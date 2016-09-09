@@ -40,7 +40,7 @@ PODS:
   - RealmSwift (1.0.2):
     - Realm (= 1.0.2)
   - SwiftDate (3.0.9)
-  - SwiftLocation (1.0.4)
+  - SwiftLocation (1.0.6)
   - Whisper (3.0.0)
 
 DEPENDENCIES:
@@ -53,7 +53,7 @@ DEPENDENCIES:
   - AWSSNS
   - Crashlytics
   - DeviceKit (from `https://github.com/dennisweissmann/DeviceKit.git`, branch `swift-3`)
-  - Eureka (from `https://github.com/GeneralScripting/Eureka.git`, branch `Swift3`)
+  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `Swift3`)
   - Fabric
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
   - IKEventSource (from `https://github.com/robbiet480/EventSource.git`, branch `swift3`)
@@ -64,7 +64,7 @@ DEPENDENCIES:
   - Realm (from `https://github.com/realm/realm-cocoa.git`)
   - RealmSwift (from `https://github.com/realm/realm-cocoa.git`)
   - SwiftDate (from `https://github.com/JackieQi/SwiftDate.git`, branch `feature/swift_3`)
-  - SwiftLocation (from `https://github.com/robbiet480/SwiftLocation.git`, branch `swift-3.0`)
+  - SwiftLocation (from `https://github.com/malcommac/SwiftLocation.git`, branch `master`)
   - Whisper (from `https://github.com/Holmusk/Whisper.git`, branch `swift3`)
 
 EXTERNAL SOURCES:
@@ -85,7 +85,7 @@ EXTERNAL SOURCES:
     :git: https://github.com/dennisweissmann/DeviceKit.git
   Eureka:
     :branch: Swift3
-    :git: https://github.com/GeneralScripting/Eureka.git
+    :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
@@ -108,8 +108,8 @@ EXTERNAL SOURCES:
     :branch: feature/swift_3
     :git: https://github.com/JackieQi/SwiftDate.git
   SwiftLocation:
-    :branch: swift-3.0
-    :git: https://github.com/robbiet480/SwiftLocation.git
+    :branch: master
+    :git: https://github.com/malcommac/SwiftLocation.git
   Whisper:
     :branch: swift3
     :git: https://github.com/Holmusk/Whisper.git
@@ -122,22 +122,22 @@ CHECKOUT OPTIONS:
     :commit: ce3598093fe6125350cbdc59e3cf72aba7c82222
     :git: https://github.com/nickplee/Alamofire.git
   AlamofireImage:
-    :commit: 457745025d6fe2cadbce5d1a3d40d6b5f6a92858
+    :commit: 0469d9ebab544478ba6644a9881aba3833ce1a86
     :git: https://github.com/calmcom/AlamofireImage.git
   AlamofireObjectMapper:
     :commit: c8e42a0eaecfb98a390e01ea05b735c7259e3c55
     :git: https://github.com/asynchrony/AlamofireObjectMapper.git
   DeviceKit:
-    :commit: 03b4c6ace5491c37d5d8c330c3ba45f86c47aad3
+    :commit: a33e8e7ca619158784797734a6d9d54d81991f0e
     :git: https://github.com/dennisweissmann/DeviceKit.git
   Eureka:
-    :commit: f7c6299173ba6c626ae27b9a3526896cd3bd8e4b
-    :git: https://github.com/GeneralScripting/Eureka.git
+    :commit: c6230f61f2c718ecdfd270ca163f4766fa47bbe9
+    :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
-    :commit: f71894d5bb06c5e20c902a715da24d2c2acdf6ee
+    :commit: a9f8d5988707e65db922dda047e0395b72eeedf3
     :git: https://github.com/robbiet480/FontAwesomeKit.git
   IKEventSource:
-    :commit: 60e91f1ce1cd44c816633e3afa485c7b2a6d4396
+    :commit: 888ccedd4af1bccb3847940553598ab80ee5fb9f
     :git: https://github.com/robbiet480/EventSource.git
   ObjectMapper:
     :commit: 0ba8034e626f973fc8449081c0463a0de1940b3f
@@ -146,19 +146,19 @@ CHECKOUT OPTIONS:
     :commit: 9ecd581723dabc40a5a0b0f5e3c342f71254075e
     :git: https://github.com/robbiet480/PermissionScope.git
   Realm:
-    :commit: 912b12ae11bf83a0c18b43ba48debb098b64f781
+    :commit: 742e530446e7c3b74abdf902b9109ab8f1086753
     :git: https://github.com/realm/realm-cocoa.git
     :submodules: true
   RealmSwift:
-    :commit: 912b12ae11bf83a0c18b43ba48debb098b64f781
+    :commit: 742e530446e7c3b74abdf902b9109ab8f1086753
     :git: https://github.com/realm/realm-cocoa.git
     :submodules: true
   SwiftDate:
     :commit: 0bbb7a87abc1da3056f864bbc5e7a58769654743
     :git: https://github.com/JackieQi/SwiftDate.git
   SwiftLocation:
-    :commit: ae51d8b4374b70e56dd05504ccfa4e6e23ba41a5
-    :git: https://github.com/robbiet480/SwiftLocation.git
+    :commit: 67ad796eb5d49f409c4ac7956356033bbdbe2aa7
+    :git: https://github.com/malcommac/SwiftLocation.git
   Whisper:
     :commit: 5b7c8df1fa509dba954dc1468886eac091be225a
     :git: https://github.com/Holmusk/Whisper.git
@@ -184,9 +184,9 @@ SPEC CHECKSUMS:
   Realm: 2948cfa3a05b7acc446abc4c124d443df646c8de
   RealmSwift: 4816c8608630a9a00bba6d726bb30b4bab6dd6bf
   SwiftDate: fa487d9b7d8c3070ea2553486902494f4915465d
-  SwiftLocation: 00682ad3598aa54936f34ec42ed53fceb37c22a4
+  SwiftLocation: 60fe7d6f2d6e622ccc80563560d40915d24c3fc3
   Whisper: 42a3ee7c2936f861b23d41bd6cd7dfd22f102405
 
-PODFILE CHECKSUM: 6ade63f3cb54dbced21129b4a6ee5069e06dd1ae
+PODFILE CHECKSUM: ea7a6a10e94d8fcc293fdcd80ac2ed226585be88
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.0.beta.2

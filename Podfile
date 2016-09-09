@@ -13,7 +13,7 @@ target 'HomeAssistant' do
   pod 'AWSSNS'
   pod 'Crashlytics'
   pod 'DeviceKit', :git => 'https://github.com/dennisweissmann/DeviceKit.git', :branch => 'swift-3'
-  pod 'Eureka', :git => 'https://github.com/GeneralScripting/Eureka.git', :branch => 'Swift3'
+  pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'Swift3'
   pod 'Fabric'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
   pod 'IKEventSource', :git => 'https://github.com/robbiet480/EventSource.git', :branch => 'swift3'
@@ -24,7 +24,7 @@ target 'HomeAssistant' do
   pod 'Realm', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
   pod 'RealmSwift', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
   pod 'SwiftDate', :git => 'https://github.com/JackieQi/SwiftDate.git', :branch => 'feature/swift_3'
-  pod 'SwiftLocation', :git => 'https://github.com/robbiet480/SwiftLocation.git', :branch => 'swift-3.0'
+  pod 'SwiftLocation', :git => 'https://github.com/malcommac/SwiftLocation.git', :branch => 'master'
   pod 'Whisper', :git => 'https://github.com/Holmusk/Whisper.git', :branch => 'swift3'
 end
 
