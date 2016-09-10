@@ -33,9 +33,6 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
         self.title = "Devices & Zones"
         
-        let devices = realm.allObjects(ofType: DeviceTracker.self)
-        let zones = realm.allObjects(ofType: Zone.self)
-        
         self.navigationController?.isToolbarHidden = false
         
         let items = ["Standard", "Hybrid", "Satellite"]
@@ -66,13 +63,13 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         
         self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
         
-        for zone in zones {
+        for zone in realm.allObjects(ofType: Zone.self) {
             let circle = HACircle.init(center: zone.locationCoordinates(), radius: CLLocationDistance(zone.Radius))
             circle.type = "zone"
             mapView.add(circle)
         }
         
-        for device in devices {
+        for device in realm.allObjects(ofType: DeviceTracker.self) {
             if device.Latitude.value == nil || device.Longitude.value == nil {
                 continue
             }
@@ -152,12 +149,12 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             let circle = MKCircleRenderer(overlay: overlay)
             if overlay.type == "zone" {
                 circle.strokeColor = UIColor.red
-                circle.fillColor = UIColor(red: 255, green: 0, blue: 0, alpha: 0.1)
+                circle.fillColor = UIColor.red.withAlphaComponent(0.1)
                 circle.lineWidth = 1
                 circle.lineDashPattern = [2, 5]
             } else if overlay.type == "device" {
                 circle.strokeColor = UIColor.blue
-                circle.fillColor = UIColor(red: 0, green: 0, blue: 255, alpha: 0.1)
+                circle.fillColor = UIColor.blue.withAlphaComponent(0.1)
                 circle.lineWidth = 1
             }
             return circle
@@ -172,7 +169,6 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
     
     func sendCurrentLocation(_ sender: UIBarButtonItem) {
         HomeAssistantAPI.sharedInstance.sendOneshotLocation(notifyString: "One off location update requested").then { success -> Void in
-            print("Did succeed?", success)
             let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
