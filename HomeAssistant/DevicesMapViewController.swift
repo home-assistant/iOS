@@ -67,11 +67,9 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
         
         for zone in zones {
-            if let radius = zone.Radius {
-                let circle = HACircle.init(center: zone.locationCoordinates(), radius: radius)
-                circle.type = "zone"
-                mapView.add(circle)
-            }
+            let circle = HACircle.init(center: zone.locationCoordinates(), radius: CLLocationDistance(zone.Radius))
+            circle.type = "zone"
+            mapView.add(circle)
         }
         
         for device in devices {

@@ -92,8 +92,6 @@ public class HomeAssistantAPI {
     
     func Connect() -> Promise<Bool> {
         return Promise { fulfill, reject in
-            //            when(HomeAssistantAPI.sharedInstance.identifyDevice(), HomeAssistantAPI.sharedInstance.GetConfig()).then { ident, config -> Void in
-            //            print("Identified!", ident)
             GetConfig().then { config -> Void in
                 self.loadedComponents = config.Components!
                 prefs.setValue(config.LocationName, forKey: "location_name")
@@ -104,6 +102,8 @@ public class HomeAssistantAPI {
                 prefs.setValue(config.Version, forKey: "version")
                 
                 Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
+                
+                let _ = self.GetStates()
                 
                 if self.locationEnabled() {
                     self.trackLocation()
@@ -134,22 +134,22 @@ public class HomeAssistantAPI {
             if #available(iOS 10, *) {
                 self.identifyDevice().then {_ -> Promise<Set<UNNotificationCategory>> in
                     return self.setupUserNotificationPushActions()
-                    }.then { categories -> Void in
-                        UNUserNotificationCenter.current().setNotificationCategories(categories)
-                    }.catch {error -> Void in
-                        print("Error when attempting an identify or setup push actions", error)
-                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                }.then { categories -> Void in
+                    UNUserNotificationCenter.current().setNotificationCategories(categories)
+                }.catch {error -> Void in
+                    print("Error when attempting an identify or setup push actions", error)
+                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
                 }
             } else {
                 self.identifyDevice().then {_ -> Promise<Set<UIUserNotificationCategory>> in
                     return self.setupPushActions()
-                    }.then { categories -> Void in
-                        let types:UIUserNotificationType = ([.alert, .badge, .sound])
-                        let settings = UIUserNotificationSettings(types: types, categories: categories)
-                        UIApplication.shared.registerUserNotificationSettings(settings)
-                    }.catch {error -> Void in
-                        print("Error when attempting an identify or setup push actions", error)
-                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                }.then { categories -> Void in
+                    let types:UIUserNotificationType = ([.alert, .badge, .sound])
+                    let settings = UIUserNotificationSettings(types: types, categories: categories)
+                    UIApplication.shared.registerUserNotificationSettings(settings)
+                }.catch {error -> Void in
+                    print("Error when attempting an identify or setup push actions", error)
+                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
                 }
             }
         }
@@ -175,7 +175,9 @@ public class HomeAssistantAPI {
             if data == "ping" { return }
             if let event = Mapper<SSEEvent>().map(data) {
                 if let mapped = event as? StateChangedEvent {
-                    HomeAssistantAPI.sharedInstance.storeEntities(entities: [mapped.NewState!])
+                    if let newState = mapped.NewState {
+                        HomeAssistantAPI.sharedInstance.storeEntities(entities: [newState])
+                    }
                 }
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.\(event.EventType)"), object: nil, userInfo: event.toJSON())
             } else {
@@ -184,33 +186,29 @@ public class HomeAssistantAPI {
         }
     }
     
-    func submitLocation(updateType: String, latitude: Double, longitude: Double, accuracy: Double, locationName: String) {
+    func submitLocation(updateType: LocationUpdateTypes, coordinates: CLLocationCoordinate2D, accuracy: CLLocationAccuracy, zone: Zone? = nil) {
         UIDevice.current.isBatteryMonitoringEnabled = true
         
         var batteryState = "Unplugged"
         switch UIDevice.current.batteryState {
-            case .unknown:
-                batteryState = "Unknown"
-            case .charging:
-                batteryState = "Charging"
-            case .unplugged:
-                batteryState = "Unplugged"
-            case .full:
-                batteryState = "Full"
+        case .unknown:
+            batteryState = "Unknown"
+        case .charging:
+            batteryState = "Charging"
+        case .unplugged:
+            batteryState = "Unplugged"
+        case .full:
+            batteryState = "Full"
         }
         
-        var locationUpdate : [String:Any] = [
+        let locationUpdate : [String:Any] = [
             "battery": Int(UIDevice.current.batteryLevel*100),
             "battery_status": batteryState,
-            "gps": [latitude, longitude],
+            "gps": [coordinates.latitude, coordinates.longitude],
             "gps_accuracy": accuracy,
             "hostname": UIDevice().name,
             "dev_id": deviceID
         ]
-        
-        if locationName != "" {
-           locationUpdate["location_name"] = locationName
-        }
         
         self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate as [String : Any]).then {_ in
             print("Device seen!")
@@ -220,51 +218,79 @@ public class HomeAssistantAPI {
         
         UIDevice.current.isBatteryMonitoringEnabled = false
         
-        if updateType != "" {
-            let notification = UILocalNotification()
-            notification.alertBody = updateType
-            notification.alertAction = "open"
-            notification.fireDate = NSDate() as Date
-            notification.soundName = UILocalNotificationDefaultSoundName
-            UIApplication.shared.scheduleLocalNotification(notification)
+        let notificationTitle = "Location change"
+        var notificationBody = ""
+        var notificationIdentifer = ""
+        var shouldNotify = false
+        
+        switch updateType {
+            case .RegionEnter:
+                notificationBody = "\(zone!.Name) entered"
+                notificationIdentifer = "\(zone!.Name)_entered"
+                shouldNotify = zone!.enterNotification
+            case .RegionExit:
+                notificationBody = "\(zone!.Name) exited"
+                notificationIdentifer = "\(zone!.Name)_exited"
+                shouldNotify = zone!.exitNotification
+            case .SignificantLocationUpdate:
+                notificationBody = "Significant location change detected, notifying Home Assistant"
+                notificationIdentifer = "sig_change"
+                shouldNotify = true
+            default:
+                notificationBody = ""
         }
+        
+        if shouldNotify {
+            if #available(iOS 10.0, *) {
+                let content = UNMutableNotificationContent()
+                content.title = notificationTitle
+                content.body = notificationBody
+                content.sound = UNNotificationSound.default()
+                
+                UNUserNotificationCenter.current().add(UNNotificationRequest.init(identifier: notificationIdentifer, content: content, trigger: nil))
+            } else {
+                let notification = UILocalNotification()
+                notification.alertTitle = notificationTitle
+                notification.alertBody = notificationBody
+                notification.alertAction = "open"
+                notification.fireDate = NSDate() as Date
+                notification.soundName = UILocalNotificationDefaultSoundName
+                UIApplication.shared.scheduleLocalNotification(notification)
+            }
+        }
+
     }
     
     func trackLocation() {
         let _ = Location.getLocation(withAccuracy: .neighborhood, frequency: .significant, timeout: 50, onSuccess: { (location) in
             // You will receive at max one event if desidered accuracy can be achieved; this because you have set .OneShot as frequency.
-            self.submitLocation(updateType: "", latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
+            self.submitLocation(updateType: .Manual, coordinates: location.coordinate, accuracy: location.horizontalAccuracy, zone: nil)
         }) { (lastValidLocation, error) in
             // something went wrong. request will be cancelled automatically
             print("Something went wrong when trying to get significant location updates! Error was:", error)
             Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
         }
         
-        self.GetStates().then { states -> Void in
-            for zone in states.filter({ return $0.Domain == "zone" }) {
-                let zone = zone as! Zone
-                if zone.Latitude != nil && zone.Longitude != nil {
-                    let regionCoordinates = CLLocationCoordinate2DMake(zone.Latitude!, zone.Longitude!)
-                    let _ = try Beacons.monitor(geographicRegion: regionCoordinates, radius: zone.Radius!, onStateDidChange: { (region) -> Void in
-                        print("Region entered!", region)
-                        var title = "Region"
-                        if let friendlyName = zone.FriendlyName {
-                            title = friendlyName+" zone"
-                        }
-                        self.submitLocation(updateType: title+" entered", latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 1, locationName: "")
-                    }) { (region) -> Void in
-                        print("Region exited!", region)
-                        var title = "Region"
-                        if let friendlyName = zone.FriendlyName {
-                            title = friendlyName+" zone"
-                        }
-                        self.submitLocation(updateType: title+" exited", latitude: regionCoordinates.latitude, longitude: regionCoordinates.longitude, accuracy: 1, locationName: "")
-                    }
-                }
+        for zone in realm.allObjects(ofType: Zone.self) {
+            if zone.trackingEnabled == false {
+                print("Skipping zone set to not track!")
+                continue
             }
-        }.catch {error in
-            print("Error when getting states!", error)
-            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+            do {
+                let _ = try Beacons.monitor(geographicRegion: zone.locationCoordinates(), radius: CLLocationDistance(zone.Radius), onStateDidChange: { newState in
+                    var updateType = LocationUpdateTypes.RegionEnter
+                    if newState == RegionState.exited {
+                        updateType = LocationUpdateTypes.RegionExit
+                    }
+                    self.submitLocation(updateType: updateType, coordinates: zone.locationCoordinates(), accuracy: 1, zone: zone)
+                }) { error in
+                    CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
+                    Crashlytics.sharedInstance().recordError(error)
+                }
+            } catch let error {
+                CLSLogv("Error when setting up zones for tracking: %@", getVaList([error.localizedDescription]))
+                Crashlytics.sharedInstance().recordError(error)
+            }
         }
 
 //        let location = Location()
@@ -289,9 +315,8 @@ public class HomeAssistantAPI {
     
     func sendOneshotLocation(notifyString: String) -> Promise<Bool> {
         return Promise { fulfill, reject in
-            let _ = Location.getLocation(withAccuracy: .neighborhood, frequency: .significant, timeout: 50, onSuccess: { (location) in
-                // You will receive at max one event if desidered accuracy can be achieved; this because you have set .OneShot as frequency.
-                self.submitLocation(updateType: "", latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, accuracy: location.horizontalAccuracy, locationName: "")
+            let _ = Location.getLocation(withAccuracy: .neighborhood, frequency: .oneShot, timeout: 50, onSuccess: { (location) in
+                self.submitLocation(updateType: .Manual, coordinates: location.coordinate, accuracy: location.horizontalAccuracy, zone: nil)
                 fulfill(true)
             }) { (lastValidLocation, error) in
                 print("Error when trying to get a oneshot location!", error)
@@ -720,7 +745,8 @@ public class HomeAssistantAPI {
     }
     
     func locationEnabled() -> Bool {
-        return PermissionScope().statusLocationAlways() == .authorized && self.loadedComponents.contains("device_tracker")
+//        return PermissionScope().statusLocationAlways() == .authorized && self.loadedComponents.contains("device_tracker")
+        return PermissionScope().statusLocationAlways() == .authorized
     }
 
 }
@@ -969,4 +995,13 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         print("UserNotification willPresent!", notification)
         completionHandler([.alert, .badge, .sound])
     }
+}
+
+enum LocationUpdateTypes {
+    case RegionEnter
+    case RegionExit
+    case BeaconRegionEnter
+    case BeaconRegionExit
+    case Manual
+    case SignificantLocationUpdate
 }

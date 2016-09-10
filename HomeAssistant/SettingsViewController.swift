@@ -82,7 +82,7 @@ class SettingsViewController: FormViewController {
         form
             +++ Section(header: "Connection information", footer: "URL format should be protocol://hostname_or_ip:portnumber. NO slashes. Only provide a port number if not using 80/443. Examples: http://192.168.1.2:8123, https://demo.home-assistant.io.\r\nIf you do not have an API password set, leave the field blank.")
             <<< URLRow("baseURL") {
-                $0.title = "Base URL"
+                $0.title = "URL"
                 if let baseURL = prefs.string(forKey: "baseURL") {
                     $0.value = URL(string: baseURL)
                 }
@@ -94,7 +94,7 @@ class SettingsViewController: FormViewController {
                 apiPasswordRow.evaluateDisabled()
             })
             <<< PasswordRow("apiPassword") {
-                $0.title = "API Password"
+                $0.title = "Password"
                 if let apiPass = prefs.string(forKey: "apiPassword") {
                     $0.value = apiPass
                 }
@@ -104,7 +104,7 @@ class SettingsViewController: FormViewController {
                 $0.hidden = Condition(booleanLiteral: showErrorConnectingMessage)
             }
             <<< TextRow("deviceId") {
-                $0.title = "Device ID (location tracking)"
+                $0.title = "Device ID"
                 if let deviceId = prefs.string(forKey: "deviceId") {
                     $0.value = deviceId
                 } else {
@@ -116,49 +116,127 @@ class SettingsViewController: FormViewController {
 //                $0.title = "Show all groups"
 //                $0.value = prefs.bool(forKey: "allowAllGroups")
 //            }
-            <<< ButtonRow() {
-                $0.title = "Save"
-                $0.hidden = Condition(booleanLiteral: hideLowerSave)
-            }.onCellSelection {_,_ in
-                self.saveSettings()
-            }
+//            +++ Section()
+//            <<< ButtonRow("connectionSettings") {
+//                $0.title = "Connection Settings"
+//                $0.cellStyle = .value1
+//                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+//                    return EntityAttributesViewController()
+//                }, completionCallback: {
+//                    vc in let _ = vc.navigationController?.popViewController(animated: true)
+//                })
+//            }
+//            
+//            <<< ButtonRow("displaySettings") {
+//                $0.title = "Display Settings"
+//                $0.cellStyle = .value1
+//                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+//                    return EntityAttributesViewController()
+//                }, completionCallback: {
+//                    vc in let _ = vc.navigationController?.popViewController(animated: true)
+//                })
+//            }
+//            
+//            <<< ButtonRow("locationSettings") {
+//                $0.title = "Location Settings"
+//                $0.cellStyle = .value1
+//                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+//                    return EntityAttributesViewController()
+//                }, completionCallback: {
+//                    vc in let _ = vc.navigationController?.popViewController(animated: true)
+//                })
+//            }
+//            
+//            <<< ButtonRow("pushSettings") {
+//                $0.title = "Push Settings"
+//                $0.cellStyle = .value1
+//                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+//                    return EntityAttributesViewController()
+//                }, completionCallback: {
+//                    vc in let _ = vc.navigationController?.popViewController(animated: true)
+//                })
+//            }
         
-            if showErrorConnectingMessage == false {
-                if let endpointArn = prefs.string(forKey: "endpointARN") {
-                    form
-                        +++ Section(header: "Push Notifications", footer: "")
-                        <<< TextAreaRow() {
-                            $0.placeholder = "EndpointArn"
-                            $0.value = endpointArn.components(separatedBy: "/").last
-                            $0.disabled = true
-                            $0.textAreaHeight = TextAreaHeight.dynamic(initialTextViewHeight: 40)
-                        }
-                        
-                        <<< ButtonRow() {
-                            $0.title = "Update push settings"
-                        }.onCellSelection {_,_ in
-                            HomeAssistantAPI.sharedInstance.setupPush()
-                        }
-                        
-                        <<< ButtonRow() {
-                            $0.title = "Import sounds from iTunes"
-                        }.onCellSelection {_,_ in
-                            movePushNotificationSounds()
-                        }
+        if showErrorConnectingMessage == false {
+            if let endpointArn = prefs.string(forKey: "endpointARN") {
+                form
+                    +++ Section(header: "Push Notifications", footer: "")
+                    <<< TextAreaRow() {
+                        $0.placeholder = "EndpointArn"
+                        $0.value = endpointArn.components(separatedBy: "/").last
+                        $0.disabled = true
+                        $0.textAreaHeight = TextAreaHeight.dynamic(initialTextViewHeight: 40)
+                    }
                     
-//                        <<< ButtonRow() {
-//                            $0.title = "Import system sounds"
-//                        }.onCellSelection {_,_ in
-////                            copySystemSounds()
-//                            let list = getSoundList()
-//                            print("system sounds list", list)
-//                            for sound in list {
-//                                copyFileToDirectory(sound)
-//                            }
-//
-//                        }
-                }
+                    <<< ButtonRow() {
+                        $0.title = "Update push settings"
+                    }.onCellSelection {_,_ in
+                        HomeAssistantAPI.sharedInstance.setupPush()
+                    }
+                    
+                    <<< ButtonRow() {
+                        $0.title = "Import sounds from iTunes"
+                    }.onCellSelection {_,_ in
+                        movePushNotificationSounds()
+                    }
+
+                    <<< ButtonRow() {
+                        $0.title = "Import system sounds"
+                    }.onCellSelection {_,_ in
+                        let list = getSoundList()
+                        print("system sounds list", list)
+                        for sound in list {
+                            copyFileToDirectory(sound)
+                        }
+
+                    }
             }
+        }
+        
+        for zone in realm.allObjects(ofType: Zone.self) {
+            print("Zone attributes", zone.Attributes)
+            
+            form
+                +++ Section(header: zone.Name, footer: "") {
+                    $0.tag = zone.ID
+                }
+                <<< SwitchRow() {
+                    $0.title = "Updates Enabled"
+                    $0.value = zone.trackingEnabled
+                }.onChange { row in
+                    try! realm.write { zone.trackingEnabled = row.value! }
+                }
+                <<< LocationRow() {
+                    $0.title = "Location"
+                    $0.value = zone.location()
+                }
+                <<< LabelRow(){
+                    $0.title = "Radius"
+                    $0.value = "\(Int(zone.Radius)) m"
+                }
+                <<< SwitchRow() {
+                    $0.title = "Enter Notification"
+                    $0.value = zone.enterNotification
+                }.onChange { row in
+                    try! realm.write { zone.enterNotification = row.value! }
+                }
+                <<< SwitchRow() {
+                    $0.title = "Exit Notification"
+                    $0.value = zone.exitNotification
+                }.onChange { row in
+                    try! realm.write { zone.exitNotification = row.value! }
+                }
+        }
+        
+        
+            form
+                +++ Section("")
+                    <<< ButtonRow() {
+                        $0.title = "Save"
+                        $0.hidden = Condition(booleanLiteral: hideLowerSave)
+                    }.onCellSelection {_,_ in
+                        self.saveSettings()
+                    }
     }
 
     override func didReceiveMemoryWarning() {

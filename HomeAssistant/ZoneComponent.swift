@@ -12,9 +12,12 @@ import CoreLocation
 
 class Zone: Entity {
     
-    var Latitude: Double?
-    var Longitude: Double?
-    var Radius: Double?
+    dynamic var Latitude:Double = 0.0
+    dynamic var Longitude:Double = 0.0
+    dynamic var Radius:Double = 0.0
+    dynamic var trackingEnabled = true
+    dynamic var enterNotification = true
+    dynamic var exitNotification = true
     
     override func mapping(_ map: Map) {
         super.mapping(map)
@@ -25,10 +28,10 @@ class Zone: Entity {
     }
     
     func locationCoordinates() -> CLLocationCoordinate2D {
-        if self.Latitude != nil && self.Longitude != nil {
-            return CLLocationCoordinate2D(latitude: self.Latitude!, longitude: self.Longitude!)
-        } else {
-            return CLLocationCoordinate2D()
-        }
+        return CLLocationCoordinate2D(latitude: CLLocationDegrees(self.Latitude), longitude: CLLocationDegrees(self.Longitude))
+    }
+    
+    func location() -> CLLocation {
+        return CLLocation(latitude: CLLocationDegrees(self.Latitude), longitude: CLLocationDegrees(self.Longitude))
     }
 }
