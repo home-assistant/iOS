@@ -45,8 +45,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         AWSServiceManager.default().defaultServiceConfiguration = configuration
 
-        if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().delegate = NotificationManager()
+        if #available(iOS 10, *) {
+            UNUserNotificationCenter.current().delegate = self
         }
         
         initAPI()
@@ -208,3 +208,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+@available(iOS 10, *)
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        print("UserNotification didReceive!", response)
+        print("Action button hit", response.actionIdentifier)
+        print("response", response)
+        let device = Device()
+        var eventData : [String:Any] = ["actionName": response.actionIdentifier, "sourceDevicePermanentID": DeviceUID.uid(), "sourceDeviceName": device.name]
+        if let dataDict = response.notification.request.content.userInfo["homeassistant"] {
+            eventData["action_data"] = dataDict
+        }
+        if let textInput = response as? UNTextInputNotificationResponse {
+            eventData["response_info"] = textInput.userText
+        }
+        HomeAssistantAPI.sharedInstance.CreateEvent(eventType: "ios.notification_action_fired", eventData: eventData).then { _ in
+            completionHandler()
+        }.catch {error in
+            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+            completionHandler()
+        }
+    }
+    
+    public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("UserNotification willPresent!", notification)
+        completionHandler([.alert, .badge, .sound])
+    }
+}

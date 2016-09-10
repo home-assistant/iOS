@@ -54,9 +54,6 @@ public class HomeAssistantAPI {
     let Location = LocationManager()
     
     func Setup(baseAPIUrl: String, APIPassword: String) -> Promise<StatusResponse> {
-        if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().delegate = NotificationManager()
-        }
         self.baseAPIURL = baseAPIUrl+"/api/"
         self.apiPassword = APIPassword
         if apiPassword != "" {
@@ -241,7 +238,7 @@ public class HomeAssistantAPI {
         }
         
         if shouldNotify {
-            if #available(iOS 10.0, *) {
+            if #available(iOS 10, *) {
                 let content = UNMutableNotificationContent()
                 content.title = notificationTitle
                 content.body = notificationBody
@@ -965,35 +962,6 @@ class LocationDelegate: NSObject, CLLocationManagerDelegate {
 //            request.onRangeDidFail?(LocationError.LocationManager(error: error))
 //            self.stopMonitorForBeaconRegion(request)
 //        }
-    }
-}
-
-// This isn't getting called at all currently????
-@available(iOS 10.0, *)
-class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
-    public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        print("UserNotification didReceive!", response)
-        print("Action button hit", response.actionIdentifier)
-        print("response", response)
-        let device = Device()
-        var eventData : [String:Any] = ["actionName": response.actionIdentifier, "sourceDevicePermanentID": DeviceUID.uid(), "sourceDeviceName": device.name]
-        if let dataDict = response.notification.request.content.userInfo["homeassistant"] {
-            eventData["action_data"] = dataDict
-        }
-        if let textInput = response as? UNTextInputNotificationResponse {
-            eventData["response_info"] = textInput.userText
-        }
-        HomeAssistantAPI.sharedInstance.CreateEvent(eventType: "ios.notification_action_fired", eventData: eventData).then { _ in
-            completionHandler()
-        }.catch {error in
-            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-            completionHandler()
-        }
-    }
-    
-    public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("UserNotification willPresent!", notification)
-        completionHandler([.alert, .badge, .sound])
     }
 }
 
