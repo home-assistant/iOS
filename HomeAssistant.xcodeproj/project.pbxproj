@@ -140,6 +140,11 @@
 		B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
 		B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
 		B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B624DE171CB8369200F413CE /* DevicesMapViewController.swift */; };
+		B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
+		B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
+		B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B627CB0D1D83C87B0057173E /* NotificationViewController.swift */; };
+		B627CB111D83C87B0057173E /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B627CB0F1D83C87B0057173E /* MainInterface.storyboard */; };
+		B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B62A67A01D80E933009E46F9 /* IdentifyRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */; };
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
@@ -196,6 +201,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		B627CB131D83C87B0057173E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B627CB061D83C87B0057173E;
+			remoteInfo = NotificationContentExtension;
+		};
 		B657A8FD1CA646EB00121384 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
@@ -227,6 +239,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */,
+				B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -372,6 +385,12 @@
 		B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
 		B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
 		B624DE171CB8369200F413CE /* DevicesMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesMapViewController.swift; sourceTree = "<group>"; };
+		B627CB071D83C87B0057173E /* NotificationContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B627CB081D83C87B0057173E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
+		B627CB0D1D83C87B0057173E /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
+		B627CB101D83C87B0057173E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		B627CB121D83C87B0057173E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyRequest.swift; sourceTree = "<group>"; };
 		B6393F851CB255F200503916 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
 		B6393F871CB2561100503916 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -439,6 +458,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B627CB041D83C87B0057173E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */,
+				B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B657A8E31CA646EB00121384 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -481,6 +509,8 @@
 				352613F4CF40158FA40BF5D3 /* Pods_HomeAssistant.framework */,
 				50EA5FF6155A1CAA7A186D73 /* Pods_HomeAssistantTests.framework */,
 				923F8D630AC5BA0C36905E8A /* Pods_HomeAssistantUITests.framework */,
+				B627CB081D83C87B0057173E /* UserNotifications.framework */,
+				B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -659,6 +689,16 @@
 			path = Generic;
 			sourceTree = "<group>";
 		};
+		B627CB0C1D83C87B0057173E /* NotificationContentExtension */ = {
+			isa = PBXGroup;
+			children = (
+				B627CB0D1D83C87B0057173E /* NotificationViewController.swift */,
+				B627CB0F1D83C87B0057173E /* MainInterface.storyboard */,
+				B627CB121D83C87B0057173E /* Info.plist */,
+			);
+			path = NotificationContentExtension;
+			sourceTree = "<group>";
+		};
 		B64D047B1CB8915500B945C8 /* SSE */ = {
 			isa = PBXGroup;
 			children = (
@@ -677,6 +717,7 @@
 				B657A8FF1CA646EB00121384 /* HomeAssistantTests */,
 				B657A90A1CA646EB00121384 /* HomeAssistantUITests */,
 				B6AAD7A21D827DD40090B220 /* APNSAttachmentService */,
+				B627CB0C1D83C87B0057173E /* NotificationContentExtension */,
 				B657A8E71CA646EB00121384 /* Products */,
 				29278BB24639BA945D3D86B4 /* Frameworks */,
 				AAB60FA4DE371AD957F6907B /* Pods */,
@@ -690,6 +731,7 @@
 				B657A8FC1CA646EB00121384 /* HomeAssistantTests.xctest */,
 				B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */,
 				B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */,
+				B627CB071D83C87B0057173E /* NotificationContentExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -805,6 +847,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B627CB061D83C87B0057173E /* NotificationContentExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "NotificationContentExtension" */;
+			buildPhases = (
+				B627CB031D83C87B0057173E /* Sources */,
+				B627CB041D83C87B0057173E /* Frameworks */,
+				B627CB051D83C87B0057173E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NotificationContentExtension;
+			productName = NotificationContentExtension;
+			productReference = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		B657A8E51CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B657A9101CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistant" */;
@@ -823,6 +882,7 @@
 			);
 			dependencies = (
 				B6AAD7A71D827DD40090B220 /* PBXTargetDependency */,
+				B627CB141D83C87B0057173E /* PBXTargetDependency */,
 			);
 			name = HomeAssistant;
 			productName = HomeAssistant;
@@ -898,6 +958,11 @@
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Robbie Trencheny";
 				TargetAttributes = {
+					B627CB061D83C87B0057173E = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = UTQFCBPQRF;
+						ProvisioningStyle = Automatic;
+					};
 					B657A8E51CA646EB00121384 = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = UTQFCBPQRF;
@@ -951,11 +1016,20 @@
 				B657A8FB1CA646EB00121384 /* HomeAssistantTests */,
 				B657A9061CA646EB00121384 /* HomeAssistantUITests */,
 				B6AAD7A01D827DD40090B220 /* APNSAttachmentService */,
+				B627CB061D83C87B0057173E /* NotificationContentExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		B627CB051D83C87B0057173E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B627CB111D83C87B0057173E /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B657A8E41CA646EB00121384 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1284,6 +1358,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B627CB031D83C87B0057173E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B657A8E21CA646EB00121384 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1363,6 +1445,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		B627CB141D83C87B0057173E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B627CB061D83C87B0057173E /* NotificationContentExtension */;
+			targetProxy = B627CB131D83C87B0057173E /* PBXContainerItemProxy */;
+		};
 		B657A8FE1CA646EB00121384 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B657A8E51CA646EB00121384 /* HomeAssistant */;
@@ -1381,6 +1468,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		B627CB0F1D83C87B0057173E /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B627CB101D83C87B0057173E /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
 		B657A8EF1CA646EB00121384 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1400,6 +1495,46 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		B627CB161D83C87B0057173E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.NotificationContentExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		B627CB171D83C87B0057173E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.NotificationContentExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "$(sigh_io.robbie.HomeAssistant.NotificationContentExtension_appstore)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
 		B657A90E1CA646EB00121384 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1498,6 +1633,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6410E5092616A0DD9241A91D /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/HomeAssistant.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
@@ -1562,6 +1698,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 366FD7D1C50AFCED407FEBB6 /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/HomeAssistant.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -1718,6 +1855,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "NotificationContentExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B627CB161D83C87B0057173E /* Debug */,
+				B627CB171D83C87B0057173E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		B657A8E11CA646EB00121384 /* Build configuration list for PBXProject "HomeAssistant" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
