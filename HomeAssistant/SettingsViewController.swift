@@ -135,6 +135,12 @@ class SettingsViewController: FormViewController {
                         }
                         
                         <<< ButtonRow() {
+                            $0.title = "Update push settings"
+                        }.onCellSelection {_,_ in
+                            HomeAssistantAPI.sharedInstance.setupPush()
+                        }
+                        
+                        <<< ButtonRow() {
                             $0.title = "Import sounds from iTunes"
                         }.onCellSelection {_,_ in
                             movePushNotificationSounds()

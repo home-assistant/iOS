@@ -109,35 +109,8 @@ public class HomeAssistantAPI {
                     self.trackLocation()
                 }
                 
-                if self.loadedComponents.contains("ios") {
-                    CLSLogv("iOS component loaded, attempting identify and setup of push categories %@", getVaList(["this is a silly string!"]))
-                    PermissionScope().statusNotifications(completionHandler: { (status) in
-                        if status == .authorized {
-                            UIApplication.shared.registerForRemoteNotifications()
-                        }
-                    })
-                    if #available(iOS 10, *) {
-                        self.identifyDevice().then {_ -> Promise<Set<UNNotificationCategory>> in
-                            return self.setupUserNotificationPushActions()
-                        }.then { categories -> Void in
-                            UNUserNotificationCenter.current().setNotificationCategories(categories)
-                        }.catch {error -> Void in
-                            print("Error when attempting an identify or setup push actions", error)
-                            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                        }
-                    } else {
-                        self.identifyDevice().then {_ -> Promise<Set<UIUserNotificationCategory>> in
-                            return self.setupPushActions()
-                        }.then { categories -> Void in
-                            let types:UIUserNotificationType = ([.alert, .badge, .sound])
-                            let settings = UIUserNotificationSettings(types: types, categories: categories)
-                            UIApplication.shared.registerUserNotificationSettings(settings)
-                        }.catch {error -> Void in
-                            print("Error when attempting an identify or setup push actions", error)
-                            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                        }
-                    }
-                }
+                self.setupPush()
+                
 //                self.GetHistory()
                 self.startStream()
                 fulfill(true)
@@ -147,6 +120,38 @@ public class HomeAssistantAPI {
                 reject(error)
             }
 
+        }
+    }
+    
+    func setupPush() {
+        if self.loadedComponents.contains("ios") {
+            CLSLogv("iOS component loaded, attempting identify and setup of push categories %@", getVaList(["this is a silly string!"]))
+            PermissionScope().statusNotifications(completionHandler: { (status) in
+                if status == .authorized {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            })
+            if #available(iOS 10, *) {
+                self.identifyDevice().then {_ -> Promise<Set<UNNotificationCategory>> in
+                    return self.setupUserNotificationPushActions()
+                    }.then { categories -> Void in
+                        UNUserNotificationCenter.current().setNotificationCategories(categories)
+                    }.catch {error -> Void in
+                        print("Error when attempting an identify or setup push actions", error)
+                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                }
+            } else {
+                self.identifyDevice().then {_ -> Promise<Set<UIUserNotificationCategory>> in
+                    return self.setupPushActions()
+                    }.then { categories -> Void in
+                        let types:UIUserNotificationType = ([.alert, .badge, .sound])
+                        let settings = UIUserNotificationSettings(types: types, categories: categories)
+                        UIApplication.shared.registerUserNotificationSettings(settings)
+                    }.catch {error -> Void in
+                        print("Error when attempting an identify or setup push actions", error)
+                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                }
+            }
         }
     }
     
