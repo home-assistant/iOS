@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
         Realm.Configuration.defaultConfiguration = realmConfig
-        print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.absoluteString)
+        print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.path)
         Fabric.with([Crashlytics.self])
         
         AWSLogger.default().logLevel = .info
