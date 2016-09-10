@@ -194,8 +194,6 @@ class SettingsViewController: FormViewController {
         }
         
         for zone in realm.allObjects(ofType: Zone.self) {
-            print("Zone attributes", zone.Attributes)
-            
             form
                 +++ Section(header: zone.Name, footer: "") {
                     $0.tag = zone.ID
