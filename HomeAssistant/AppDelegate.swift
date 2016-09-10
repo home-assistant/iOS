@@ -158,10 +158,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     HomeAssistantAPI.sharedInstance.sendOneshotLocation(notifyString: "").then { success -> Void in
                         print("Did successfully send location when requested via APNS?", success)
                         completionHandler(UIBackgroundFetchResult.noData)
-                        }.catch {error in
-                            print("Error when attempting to submit location update")
-                            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                            completionHandler(UIBackgroundFetchResult.failed)
+                    }.catch {error in
+                        print("Error when attempting to submit location update")
+                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                        completionHandler(UIBackgroundFetchResult.failed)
                     }
                 default:
                     print("Received unknown command via APNS!", userInfo)
@@ -172,23 +172,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [AnyHashable : Any], withResponseInfo responseInfo: [AnyHashable : Any], completionHandler: @escaping () -> Void) {
-        print("Action button hit", identifier)
-        print("Remote notification payload", userInfo)
-        print("ResponseInfo", responseInfo)
-        let device = Device()
-        var eventData : [String:Any] = ["actionName": identifier! as AnyObject, "sourceDevicePermanentID": DeviceUID.uid() as AnyObject, "sourceDeviceName": device.name as AnyObject]
-        if let dataDict = userInfo["homeassistant"] {
-            eventData["action_data"] = dataDict
+        var userInput:String? = nil
+        if let userText = responseInfo[UIUserNotificationActionResponseTypedTextKey] as? String {
+            userInput = userText
         }
-        if !responseInfo.isEmpty {
-            eventData["response_info"] = responseInfo
-        }
-        HomeAssistantAPI.sharedInstance.CreateEvent(eventType: "ios.notification_action_fired", eventData: eventData).then { _ in
-            completionHandler()
-            }.catch {error in
-                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                completionHandler()
-        }
+        let _ = HomeAssistantAPI.sharedInstance.handlePushAction(identifier: identifier!, userInfo: userInfo, userInput: userInput)
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -211,21 +199,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 @available(iOS 10, *)
 extension AppDelegate: UNUserNotificationCenterDelegate {
     public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        print("UserNotification didReceive!", response)
-        print("Action button hit", response.actionIdentifier)
-        print("response", response)
-        let device = Device()
-        var eventData : [String:Any] = ["actionName": response.actionIdentifier, "sourceDevicePermanentID": DeviceUID.uid(), "sourceDeviceName": device.name]
-        if let dataDict = response.notification.request.content.userInfo["homeassistant"] {
-            eventData["action_data"] = dataDict
-        }
+        var userText : String? = nil
         if let textInput = response as? UNTextInputNotificationResponse {
-            eventData["response_info"] = textInput.userText
+            userText = textInput.userText
         }
-        HomeAssistantAPI.sharedInstance.CreateEvent(eventType: "ios.notification_action_fired", eventData: eventData).then { _ in
+        HomeAssistantAPI.sharedInstance.handlePushAction(identifier: response.actionIdentifier, userInfo: response.notification.request.content.userInfo, userInput: userText).then { _ in
             completionHandler()
-        }.catch {error in
-            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+        }.catch { err -> Void in
+            print("Error: \(err)")
+            Crashlytics.sharedInstance().recordError(err)
             completionHandler()
         }
     }

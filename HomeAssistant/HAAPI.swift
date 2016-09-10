@@ -120,38 +120,6 @@ public class HomeAssistantAPI {
         }
     }
     
-    func setupPush() {
-        if self.loadedComponents.contains("ios") {
-            CLSLogv("iOS component loaded, attempting identify and setup of push categories %@", getVaList(["this is a silly string!"]))
-            PermissionScope().statusNotifications(completionHandler: { (status) in
-                if status == .authorized {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-            })
-            if #available(iOS 10, *) {
-                self.identifyDevice().then {_ -> Promise<Set<UNNotificationCategory>> in
-                    return self.setupUserNotificationPushActions()
-                }.then { categories -> Void in
-                    UNUserNotificationCenter.current().setNotificationCategories(categories)
-                }.catch {error -> Void in
-                    print("Error when attempting an identify or setup push actions", error)
-                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                }
-            } else {
-                self.identifyDevice().then {_ -> Promise<Set<UIUserNotificationCategory>> in
-                    return self.setupPushActions()
-                }.then { categories -> Void in
-                    let types:UIUserNotificationType = ([.alert, .badge, .sound])
-                    let settings = UIUserNotificationSettings(types: types, categories: categories)
-                    UIApplication.shared.registerUserNotificationSettings(settings)
-                }.catch {error -> Void in
-                    print("Error when attempting an identify or setup push actions", error)
-                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                }
-            }
-        }
-    }
-    
     func startStream() {
         let eventSource: EventSource = EventSource(url: baseAPIURL+"stream", headers: headers)
         
@@ -698,6 +666,57 @@ public class HomeAssistantAPI {
                     Crashlytics.sharedInstance().recordError(error)
                     reject(error)
                 }
+            }
+        }
+    }
+    
+    func setupPush() {
+        if self.loadedComponents.contains("ios") {
+            CLSLogv("iOS component loaded, attempting identify and setup of push categories %@", getVaList(["this is a silly string!"]))
+            PermissionScope().statusNotifications(completionHandler: { (status) in
+                if status == .authorized {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            })
+            if #available(iOS 10, *) {
+                self.identifyDevice().then {_ -> Promise<Set<UNNotificationCategory>> in
+                    return self.setupUserNotificationPushActions()
+                    }.then { categories -> Void in
+                        UNUserNotificationCenter.current().setNotificationCategories(categories)
+                    }.catch {error -> Void in
+                        print("Error when attempting an identify or setup push actions", error)
+                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                }
+            } else {
+                self.identifyDevice().then {_ -> Promise<Set<UIUserNotificationCategory>> in
+                    return self.setupPushActions()
+                    }.then { categories -> Void in
+                        let types:UIUserNotificationType = ([.alert, .badge, .sound])
+                        let settings = UIUserNotificationSettings(types: types, categories: categories)
+                        UIApplication.shared.registerUserNotificationSettings(settings)
+                    }.catch {error -> Void in
+                        print("Error when attempting an identify or setup push actions", error)
+                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                }
+            }
+        }
+    }
+    
+    func handlePushAction(identifier: String, userInfo: [AnyHashable : Any], userInput: String?) -> Promise<Bool> {
+        return Promise { fulfill, reject in
+            let device = Device()
+            var eventData : [String:Any] = ["actionName": identifier, "sourceDevicePermanentID": DeviceUID.uid(), "sourceDeviceName": device.name]
+            if let dataDict = userInfo["homeassistant"] {
+                eventData["action_data"] = dataDict
+            }
+            if let textInput = userInput {
+                eventData["response_info"] = textInput
+            }
+            HomeAssistantAPI.sharedInstance.CreateEvent(eventType: "ios.notification_action_fired", eventData: eventData).then { _ in
+                fulfill(true)
+            }.catch {error in
+                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                reject(error)
             }
         }
     }
