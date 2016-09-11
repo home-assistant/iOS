@@ -1,8 +1,8 @@
 PODS:
   - AcknowList (1.0)
-  - Alamofire (4.0.0-beta.2)
-  - AlamofireImage (3.0.0-beta.1):
-    - Alamofire (= 4.0.0-beta.2)
+  - Alamofire (4.0.0)
+  - AlamofireImage (3.0.0):
+    - Alamofire (~> 4.0)
   - AlamofireObjectMapper (4.0.0-beta):
     - Alamofire (~> 4.0-beta)
     - ObjectMapper (~> 1.0)
@@ -13,7 +13,7 @@ PODS:
     - AWSCore (= 2.4.7)
   - Crashlytics (3.8.1):
     - Fabric (~> 1.6.3)
-  - DeviceKit (0.3.4)
+  - DeviceKit (1.0.0)
   - Eureka (1.7.0)
   - Fabric (1.6.8)
   - FontAwesomeKit/Core (2.2.3)
@@ -44,14 +44,14 @@ PODS:
 
 DEPENDENCIES:
   - AcknowList (from `https://github.com/vtourraine/AcknowList.git`, branch `swift-3`)
-  - Alamofire (from `https://github.com/nickplee/Alamofire.git`, branch `swift3`)
-  - AlamofireImage (from `https://github.com/calmcom/AlamofireImage.git`, branch `swift3`)
-  - AlamofireObjectMapper (from `https://github.com/asynchrony/AlamofireObjectMapper.git`, branch `swift-3`)
+  - Alamofire (~> 4.0)
+  - AlamofireImage (~> 3.0)
+  - AlamofireObjectMapper (from `https://github.com/tristanhimmelman/AlamofireObjectMapper.git`, branch `swift-3`)
   - AWSCognito
   - AWSCore
   - AWSSNS
   - Crashlytics
-  - DeviceKit (from `https://github.com/dennisweissmann/DeviceKit.git`, branch `swift-3`)
+  - DeviceKit (from `https://github.com/dennisweissmann/DeviceKit.git`, branch `master`)
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `Swift3`)
   - Fabric
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
@@ -69,17 +69,11 @@ EXTERNAL SOURCES:
   AcknowList:
     :branch: swift-3
     :git: https://github.com/vtourraine/AcknowList.git
-  Alamofire:
-    :branch: swift3
-    :git: https://github.com/nickplee/Alamofire.git
-  AlamofireImage:
-    :branch: swift3
-    :git: https://github.com/calmcom/AlamofireImage.git
   AlamofireObjectMapper:
     :branch: swift-3
-    :git: https://github.com/asynchrony/AlamofireObjectMapper.git
+    :git: https://github.com/tristanhimmelman/AlamofireObjectMapper.git
   DeviceKit:
-    :branch: swift-3
+    :branch: master
     :git: https://github.com/dennisweissmann/DeviceKit.git
   Eureka:
     :branch: Swift3
@@ -113,17 +107,11 @@ CHECKOUT OPTIONS:
   AcknowList:
     :commit: 264bbad04801a3625973f2fdeb7a5cf8a75bf654
     :git: https://github.com/vtourraine/AcknowList.git
-  Alamofire:
-    :commit: ce3598093fe6125350cbdc59e3cf72aba7c82222
-    :git: https://github.com/nickplee/Alamofire.git
-  AlamofireImage:
-    :commit: 0469d9ebab544478ba6644a9881aba3833ce1a86
-    :git: https://github.com/calmcom/AlamofireImage.git
   AlamofireObjectMapper:
-    :commit: c8e42a0eaecfb98a390e01ea05b735c7259e3c55
-    :git: https://github.com/asynchrony/AlamofireObjectMapper.git
+    :commit: fa517807bd064e19de0ce0078a64a6523cdf92df
+    :git: https://github.com/tristanhimmelman/AlamofireObjectMapper.git
   DeviceKit:
-    :commit: a33e8e7ca619158784797734a6d9d54d81991f0e
+    :commit: 0ffd9822471b9e757557254c83496e845ac90a4d
     :git: https://github.com/dennisweissmann/DeviceKit.git
   Eureka:
     :commit: c6230f61f2c718ecdfd270ca163f4766fa47bbe9
@@ -157,14 +145,14 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AcknowList: 06a183d117b7e2bb0c6f5654366d2912dc64a6c4
-  Alamofire: 7f837be535fe424db2b87d9117f13836939719ca
-  AlamofireImage: 02e8e913060e2af662e562b3d530ed9bd8bd42aa
+  Alamofire: fef59f00388f267e52d9b432aa5d93dc97190f14
+  AlamofireImage: 6594aa1139a67dcd36cde6da79ea4e5b318e60fb
   AlamofireObjectMapper: 0e3c1b56acc9cd8c8afd872fba855349fa2f02fc
   AWSCognito: 6aa404f15d1eb2b4b51f45322a409257b3248e79
   AWSCore: 9a729a3c0050a51ece3547d546c327acdac7838a
   AWSSNS: 45b3a02693808251ed388afcab0e90ec05b53f72
   Crashlytics: 4391d8df0b125345e9f209c5db6e7f40a6a8435d
-  DeviceKit: b414b210c225ae19b77a47e64cb04f187c1c4f9a
+  DeviceKit: ddead7f3a7c9603ba3a63cb748566428c38dd11f
   Eureka: 2020d9faeef7b7e9adeb9e3d8af779e5931c1897
   Fabric: 5755268d0171435ab167e3d0878a28a777deaf10
   FontAwesomeKit: 7336af53079bde1943da68c20a2d06436e3ef1ca
@@ -178,6 +166,6 @@ SPEC CHECKSUMS:
   SwiftLocation: 60fe7d6f2d6e622ccc80563560d40915d24c3fc3
   Whisper: 42a3ee7c2936f861b23d41bd6cd7dfd22f102405
 
-PODFILE CHECKSUM: e09ed282daac3c3e64069abaff7ba0e06e00d1cc
+PODFILE CHECKSUM: ff75fd38ac21c2384c463c329d53fd3beb9dc23c
 
-COCOAPODS: 1.1.0.beta.2
+COCOAPODS: 1.0.1

@@ -5,14 +5,14 @@ use_frameworks!
 
 target 'HomeAssistant' do
   pod 'AcknowList', :git => 'https://github.com/vtourraine/AcknowList.git', :branch => 'swift-3'
-  pod 'Alamofire', :git => 'https://github.com/nickplee/Alamofire.git', :branch => 'swift3'
-  pod 'AlamofireImage', :git => 'https://github.com/calmcom/AlamofireImage.git', :branch => 'swift3'
-  pod 'AlamofireObjectMapper', :git => 'https://github.com/asynchrony/AlamofireObjectMapper.git', :branch => 'swift-3'
+  pod 'Alamofire', '~> 4.0'
+  pod 'AlamofireImage', '~> 3.0'
+  pod 'AlamofireObjectMapper', :git => 'https://github.com/tristanhimmelman/AlamofireObjectMapper.git', :branch => 'swift-3'
   pod 'AWSCognito'
   pod 'AWSCore'
   pod 'AWSSNS'
   pod 'Crashlytics'
-  pod 'DeviceKit', :git => 'https://github.com/dennisweissmann/DeviceKit.git', :branch => 'swift-3'
+  pod 'DeviceKit', :git => 'https://github.com/dennisweissmann/DeviceKit.git', :branch => 'master'
   pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'Swift3'
   pod 'Fabric'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
