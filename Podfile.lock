@@ -62,7 +62,7 @@ DEPENDENCIES:
   - PromiseKit
   - Realm (from `https://github.com/realm/realm-cocoa.git`)
   - RealmSwift (from `https://github.com/realm/realm-cocoa.git`)
-  - SwiftLocation (from `https://github.com/malcommac/SwiftLocation.git`, branch `master`)
+  - SwiftLocation (from `https://github.com/malcommac/SwiftLocation.git`, commit `af2b78f3daf8e78c60537dd02103262676b53c3c`)
   - Whisper (from `https://github.com/Holmusk/Whisper.git`, branch `swift3`)
 
 EXTERNAL SOURCES:
@@ -97,7 +97,7 @@ EXTERNAL SOURCES:
     :git: https://github.com/realm/realm-cocoa.git
     :submodules: true
   SwiftLocation:
-    :branch: master
+    :commit: af2b78f3daf8e78c60537dd02103262676b53c3c
     :git: https://github.com/malcommac/SwiftLocation.git
   Whisper:
     :branch: swift3
@@ -137,7 +137,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/realm/realm-cocoa.git
     :submodules: true
   SwiftLocation:
-    :commit: 67ad796eb5d49f409c4ac7956356033bbdbe2aa7
+    :commit: af2b78f3daf8e78c60537dd02103262676b53c3c
     :git: https://github.com/malcommac/SwiftLocation.git
   Whisper:
     :commit: 5b7c8df1fa509dba954dc1468886eac091be225a
@@ -163,9 +163,9 @@ SPEC CHECKSUMS:
   PromiseKit: 97edc7fb2fb7d2c68c8e09d1f79b3ab7bcb6b06a
   Realm: 2948cfa3a05b7acc446abc4c124d443df646c8de
   RealmSwift: 4816c8608630a9a00bba6d726bb30b4bab6dd6bf
-  SwiftLocation: 60fe7d6f2d6e622ccc80563560d40915d24c3fc3
+  SwiftLocation: 4e68bfd474e3a38ef82bd1d90619bed013706d06
   Whisper: 42a3ee7c2936f861b23d41bd6cd7dfd22f102405
 
-PODFILE CHECKSUM: ff75fd38ac21c2384c463c329d53fd3beb9dc23c
+PODFILE CHECKSUM: 3b6df7cd8b66e76d276c908b78d4636dd58ecdfe
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.0.rc.1
