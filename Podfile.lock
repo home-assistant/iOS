@@ -4,7 +4,7 @@ PODS:
   - AlamofireImage (3.0.0):
     - Alamofire (~> 4.0)
   - AlamofireObjectMapper (4.0.0-beta):
-    - Alamofire (~> 4.0-beta)
+    - Alamofire (~> 4.0)
     - ObjectMapper (~> 1.0)
   - AWSCognito (2.4.7):
     - AWSCore (= 2.4.7)
@@ -108,7 +108,7 @@ CHECKOUT OPTIONS:
     :commit: 264bbad04801a3625973f2fdeb7a5cf8a75bf654
     :git: https://github.com/vtourraine/AcknowList.git
   AlamofireObjectMapper:
-    :commit: fa517807bd064e19de0ce0078a64a6523cdf92df
+    :commit: c7c7715d97f8b3c133e6e90def047b662b502fc2
     :git: https://github.com/tristanhimmelman/AlamofireObjectMapper.git
   DeviceKit:
     :commit: 0ffd9822471b9e757557254c83496e845ac90a4d
@@ -147,7 +147,7 @@ SPEC CHECKSUMS:
   AcknowList: 06a183d117b7e2bb0c6f5654366d2912dc64a6c4
   Alamofire: fef59f00388f267e52d9b432aa5d93dc97190f14
   AlamofireImage: 6594aa1139a67dcd36cde6da79ea4e5b318e60fb
-  AlamofireObjectMapper: 0e3c1b56acc9cd8c8afd872fba855349fa2f02fc
+  AlamofireObjectMapper: 2148f08cae0ee5615a66dc6054aac516d2628e35
   AWSCognito: 6aa404f15d1eb2b4b51f45322a409257b3248e79
   AWSCore: 9a729a3c0050a51ece3547d546c327acdac7838a
   AWSSNS: 45b3a02693808251ed388afcab0e90ec05b53f72
