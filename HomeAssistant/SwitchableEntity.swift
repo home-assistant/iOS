@@ -15,12 +15,6 @@ class SwitchableEntity: Entity {
     
     var IsOn: Bool?
     
-    // MARK: - Requireds - https://github.com/Hearst-DD/ObjectMapper/issues/462
-    required init() { super.init() }
-    required init?(_ map: Map) { super.init() }
-    required init(value: Any, schema: RLMSchema) { super.init(value: value, schema: schema) }
-    required init(realm: RLMRealm, schema: RLMObjectSchema) { super.init(realm: realm, schema: schema) }
-
     override func mapping(_ map: Map) {
         super.mapping(map)
         

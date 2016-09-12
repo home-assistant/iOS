@@ -56,63 +56,51 @@ class Entity: Object, StaticMappable {
     dynamic var NodeID: String? = nil
     var BatteryLevel = RealmOptional<Int>()
     
-    // MARK: - Requireds - https://github.com/Hearst-DD/ObjectMapper/issues/462
-    required init() { super.init() }
-    required init?(_ map: Map) { super.init() }
-    required init(value: Any, schema: RLMSchema) { super.init(value: value, schema: schema) }
-    required init(realm: RLMRealm, schema: RLMObjectSchema) { super.init(realm: realm, schema: schema) }
-    
-    init(id: String) {
-        super.init()
-        self.ID = id
-        self.Domain = EntityIDToDomainTransform().transformFromJSON(self.ID as Any?)!
-    }
-    
     public static func objectForMapping(_ map: Map) -> BaseMappable? {
         if let entityId: String = map["entity_id"].value() {
             let entityType = EntityIDToDomainTransform().transformFromJSON(entityId as Any?)!
             switch entityType {
             case "binary_sensor":
-                return BinarySensor(map)
+                return BinarySensor(value: map)
             case "climate":
-                return Climate(map)
+                return Climate(value: map)
             case "device_tracker":
-                return DeviceTracker(map)
+                return DeviceTracker(value: map)
             case "group":
-                return Group(map)
+                return Group(value: map)
             case "garage_door":
-                return GarageDoor(map)
+                return GarageDoor(value: map)
             case "input_boolean":
-                return InputBoolean(map)
+                return InputBoolean(value: map)
             case "input_slider":
-                return InputSlider(map)
+                return InputSlider(value: map)
             case "input_select":
-                return InputSelect(map)
+                return InputSelect(value: map)
             case "light":
-                return Light(map)
+                return Light(value: map)
             case "lock":
-                return Lock(map)
+                return Lock(value: map)
             case "media_player":
-                return MediaPlayer(map)
+                return MediaPlayer(value: map)
             case "scene":
-                return Scene(map)
+                return Scene(value: map)
             case "script":
-                return Script(map)
+                return Script(value: map)
             case "sensor":
-                return Sensor(map)
+                return Sensor(value: map)
             case "sun":
-                return Sun(map)
+                return Sun(value: map)
             case "switch":
-                return Switch(map)
+                return Switch(value: map)
             case "thermostat":
-                return Thermostat(map)
+                return Thermostat(value: map)
             case "weblink":
-                return Weblink(map)
+                return Weblink(value: map)
             case "zone":
-                return Zone(map)
+                return Zone(value: map)
             default:
                 print("No class found for:", entityType)
-                return Entity(map)
+                return Entity(value: map)
             }
         }
         return nil

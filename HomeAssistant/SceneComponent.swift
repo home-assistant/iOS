@@ -21,7 +21,9 @@ class Scene: Entity {
         EntityIds     <- map["attributes.entity_id"]
         
         EntityIds.forEach { entityId in
-            self.Entities.append(Entity(id: entityId))
+            let returning = Entity()
+            returning.ID = entityId
+            self.Entities.append(returning)
         }
     }
     
