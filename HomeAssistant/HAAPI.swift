@@ -456,7 +456,7 @@ public class HomeAssistantAPI {
     func SetState(entityId: String, state: String) -> Promise<Entity> {
         let queryUrl = baseAPIURL+"states/"+entityId
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl, method: .post, parameters: ["state": state], encoding: .json).validate().responseObject { (response: DataResponse<Entity>) in
+            let _ = self.manager!.request(queryUrl, method: .post, parameters: ["state": state], encoding: JSONEncoding.default).validate().responseObject { (response: DataResponse<Entity>) in
                 switch response.result {
                 case .success:
                     let _ = Murmur(title: response.result.value!.Domain+" state set to "+response.result.value!.State)
@@ -474,7 +474,7 @@ public class HomeAssistantAPI {
     func CreateEvent(eventType: String, eventData: [String:Any]) -> Promise<String> {
         let queryUrl = baseAPIURL+"events/"+eventType
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl, method: .post, parameters: eventData, encoding: .json).validate().responseJSON { response in
+            let _ = self.manager!.request(queryUrl, method: .post, parameters: eventData, encoding: JSONEncoding.default).validate().responseJSON { response in
                 switch response.result {
                 case .success:
                     if let jsonDict = response.result.value as? [String : String] {
@@ -494,7 +494,7 @@ public class HomeAssistantAPI {
 //        let _ = Murmur(title: domain+"/"+service+" called")
         let queryUrl = baseAPIURL+"services/"+domain+"/"+service
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl, method: .post, parameters: serviceData, encoding: .json).validate().responseArray { (response: DataResponse<[ServicesResponse]>) in
+            let _ = self.manager!.request(queryUrl, method: .post, parameters: serviceData, encoding: JSONEncoding.default).validate().responseArray { (response: DataResponse<[ServicesResponse]>) in
                 switch response.result {
                 case .success:
                     fulfill(response.result.value!)
@@ -572,7 +572,7 @@ public class HomeAssistantAPI {
     func identifyDevice() -> Promise<String> {
         let queryUrl = baseAPIURL+"ios/identify"
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl, method: .post, parameters: buildIdentifyDict(), encoding: .json).validate().responseString { response in
+            let _ = self.manager!.request(queryUrl, method: .post, parameters: buildIdentifyDict(), encoding: JSONEncoding.default).validate().responseString { response in
                 switch response.result {
                 case .success:
                     fulfill(response.result.value!)
