@@ -961,7 +961,7 @@
 					B627CB061D83C87B0057173E = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = UTQFCBPQRF;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					B657A8E51CA646EB00121384 = {
 						CreatedOnToolsVersion = 7.3;
@@ -995,7 +995,7 @@
 					B6AAD7A01D827DD40090B220 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = UTQFCBPQRF;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -1500,8 +1500,8 @@
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
@@ -1509,7 +1509,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.NotificationContentExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "bced18ea-ff3a-4125-98d8-8a6c98d2b1fb";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.NotificationContentExtension";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 3.0;
@@ -1530,6 +1531,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.NotificationContentExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "$(sigh_io.robbie.HomeAssistant.NotificationContentExtension_appstore)";
+				PROVISIONING_PROFILE_SPECIFIER = "$(sigh_io.robbie.HomeAssistant.NotificationContentExtension_appstore)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 			};
@@ -1752,7 +1754,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "$(sigh_io.robbie.HomeAssistant_appstore)";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant";
+				PROVISIONING_PROFILE_SPECIFIER = "$(sigh_io.robbie.HomeAssistant_appstore)";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1818,15 +1820,16 @@
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.APNSAttachmentService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "e7819a2d-1165-442c-9f09-f9dcc32534db";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.APNSAttachmentService";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 3.0;
@@ -1846,7 +1849,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.APNSAttachmentService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "$(sigh_io.robbie.HomeAssistant.APNSAttachmentService_appstore)";
+				PROVISIONING_PROFILE_SPECIFIER = "$(sigh_io.robbie.HomeAssistant.APNSAttachmentService_appstore)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 			};
