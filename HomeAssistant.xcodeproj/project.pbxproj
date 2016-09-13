@@ -1530,8 +1530,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.NotificationContentExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "$(sigh_io.robbie.HomeAssistant.NotificationContentExtension_appstore)";
-				PROVISIONING_PROFILE_SPECIFIER = "$(sigh_io.robbie.HomeAssistant.NotificationContentExtension_appstore)";
+				PROVISIONING_PROFILE = "77f2c6c7-29a4-409f-a6aa-e924f5b3a0da";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.NotificationContentExtension";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 			};
@@ -1753,8 +1753,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "$(sigh_io.robbie.HomeAssistant_appstore)";
-				PROVISIONING_PROFILE_SPECIFIER = "$(sigh_io.robbie.HomeAssistant_appstore)";
+				PROVISIONING_PROFILE = "bbd14c00-8d18-4926-a3a1-6e6d1074dc8d";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1849,8 +1849,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.APNSAttachmentService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "$(sigh_io.robbie.HomeAssistant.APNSAttachmentService_appstore)";
-				PROVISIONING_PROFILE_SPECIFIER = "$(sigh_io.robbie.HomeAssistant.APNSAttachmentService_appstore)";
+				PROVISIONING_PROFILE = "e5b2ec90-b4f8-4024-ab5e-717c1a805eae";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.APNSAttachmentService";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 			};
