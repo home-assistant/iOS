@@ -167,9 +167,8 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 let newState = event.NewState! as Entity
                 let oldState = event.OldState! as Entity
                 var subtitleString = "\(newState.FriendlyName!) is now \(newState.State). It was \(oldState.State)"
-                if let newStateSensor = newState as? Sensor {
-                    let oldStateSensor = oldState as! Sensor
-                    subtitleString = "\(newStateSensor.State) \(newStateSensor.UnitOfMeasurement) . It was \(oldState.State) \(oldStateSensor.UnitOfMeasurement)"
+                if let uom = newState.UnitOfMeasurement {
+                    subtitleString = "\(newState.State) \(uom). It was \(oldState.State) \(oldState.UnitOfMeasurement)"
                 }
                 let _ = Murmur(title: subtitleString)
             }

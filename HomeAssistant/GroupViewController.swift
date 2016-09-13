@@ -93,15 +93,8 @@ class GroupViewController: FormViewController {
                         })
                     }.cellUpdate { cell, row in
                         cell.detailTextLabel?.text = entity.State.capitalized
-                        if let sensor = entity as? Sensor {
-                            if let uom = sensor.UnitOfMeasurement {
-                                cell.detailTextLabel?.text = (sensor.State.capitalized + " " + uom)
-                            }
-                        }
-                        if let thermostat = entity as? Thermostat {
-                            if let uom = thermostat.UnitOfMeasurement {
-                                cell.detailTextLabel?.text = (thermostat.State.capitalized + " " + uom)
-                            }
+                        if let uom = entity.UnitOfMeasurement {
+                            cell.detailTextLabel?.text = (entity.State.capitalized + " " + uom)
                         }
                         cell.imageView?.image = entity.EntityIcon
                         if let picture = entity.DownloadedPicture {
@@ -135,8 +128,8 @@ class GroupViewController: FormViewController {
                                 }, completionCallback: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
                             }.cellUpdate { cell, row in
                                 cell.detailTextLabel?.text = entity.CleanedState
-                                if let sensor = entity as? Sensor {
-                                    cell.detailTextLabel?.text = (sensor.State + " " + sensor.UnitOfMeasurement!).replacingOccurrences(of: "_", with: " ").capitalized
+                                if let uom = entity.UnitOfMeasurement {
+                                    cell.detailTextLabel?.text = (entity.State + " " + uom).replacingOccurrences(of: "_", with: " ").capitalized
                                 }
                                 cell.imageView?.image = entity.EntityIcon
                                 if let picture = entity.DownloadedPicture {
@@ -238,8 +231,8 @@ class GroupViewController: FormViewController {
                     } else {
                         if let row : ButtonRow = self.form.rowByTag(newState.ID) {
                             row.value = newState.State
-                            if let newStateSensor = newState as? Sensor {
-                                row.value = newState.State + " " + newStateSensor.UnitOfMeasurement!
+                            if let uom = newState.UnitOfMeasurement {
+                                row.value = newState.State + " " + uom
                             }
                             row.cell.imageView?.image = newState.EntityIcon
                             row.updateCell()
