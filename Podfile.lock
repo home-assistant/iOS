@@ -39,8 +39,8 @@ PODS:
   - Realm/Headers (1.0.2)
   - RealmSwift (1.0.2):
     - Realm (= 1.0.2)
-  - SwiftLocation (1.0.6)
-  - Whisper (3.0.0)
+  - SwiftLocation (1.1.0)
+  - Whisper (3.1.1)
 
 DEPENDENCIES:
   - AcknowList (from `https://github.com/vtourraine/AcknowList.git`, branch `swift-3`)
@@ -62,8 +62,8 @@ DEPENDENCIES:
   - PromiseKit
   - Realm (from `https://github.com/realm/realm-cocoa.git`)
   - RealmSwift (from `https://github.com/realm/realm-cocoa.git`)
-  - SwiftLocation (from `https://github.com/malcommac/SwiftLocation.git`, commit `af2b78f3daf8e78c60537dd02103262676b53c3c`)
-  - Whisper (from `https://github.com/Holmusk/Whisper.git`, branch `swift3`)
+  - SwiftLocation (from `https://github.com/malcommac/SwiftLocation.git`, branch `master`)
+  - Whisper (from `https://github.com/skhavanekar/Whisper.git`, branch `swift3`)
 
 EXTERNAL SOURCES:
   AcknowList:
@@ -97,11 +97,11 @@ EXTERNAL SOURCES:
     :git: https://github.com/realm/realm-cocoa.git
     :submodules: true
   SwiftLocation:
-    :commit: af2b78f3daf8e78c60537dd02103262676b53c3c
+    :branch: master
     :git: https://github.com/malcommac/SwiftLocation.git
   Whisper:
     :branch: swift3
-    :git: https://github.com/Holmusk/Whisper.git
+    :git: https://github.com/skhavanekar/Whisper.git
 
 CHECKOUT OPTIONS:
   AcknowList:
@@ -137,11 +137,11 @@ CHECKOUT OPTIONS:
     :git: https://github.com/realm/realm-cocoa.git
     :submodules: true
   SwiftLocation:
-    :commit: af2b78f3daf8e78c60537dd02103262676b53c3c
+    :commit: 9db2c814782c5db8a8e0c1edea1a4778be4f207f
     :git: https://github.com/malcommac/SwiftLocation.git
   Whisper:
-    :commit: 5b7c8df1fa509dba954dc1468886eac091be225a
-    :git: https://github.com/Holmusk/Whisper.git
+    :commit: db28d497376d15c7f9b393d4056fdeda619a674b
+    :git: https://github.com/skhavanekar/Whisper.git
 
 SPEC CHECKSUMS:
   AcknowList: 06a183d117b7e2bb0c6f5654366d2912dc64a6c4
@@ -163,9 +163,9 @@ SPEC CHECKSUMS:
   PromiseKit: 97edc7fb2fb7d2c68c8e09d1f79b3ab7bcb6b06a
   Realm: 2948cfa3a05b7acc446abc4c124d443df646c8de
   RealmSwift: 4816c8608630a9a00bba6d726bb30b4bab6dd6bf
-  SwiftLocation: 4e68bfd474e3a38ef82bd1d90619bed013706d06
-  Whisper: 42a3ee7c2936f861b23d41bd6cd7dfd22f102405
+  SwiftLocation: f1bf5acb7992dd96c6f773c383f9c0479f07727d
+  Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453
 
-PODFILE CHECKSUM: 3b6df7cd8b66e76d276c908b78d4636dd58ecdfe
+PODFILE CHECKSUM: 7d9b5bc0cb44360562a15cf4a7d39ebcc2b8571a
 
 COCOAPODS: 1.1.0.rc.1

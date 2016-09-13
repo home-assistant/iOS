@@ -23,8 +23,8 @@ target 'HomeAssistant' do
   pod 'PromiseKit'
   pod 'Realm', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
   pod 'RealmSwift', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
-  pod 'SwiftLocation', :git => 'https://github.com/malcommac/SwiftLocation.git', :commit => 'af2b78f3daf8e78c60537dd02103262676b53c3c'
-  pod 'Whisper', :git => 'https://github.com/Holmusk/Whisper.git', :branch => 'swift3'
+  pod 'SwiftLocation', :git => 'https://github.com/malcommac/SwiftLocation.git', :branch => 'master'
+  pod 'Whisper', :git => 'https://github.com/skhavanekar/Whisper.git', :branch => 'swift3'
 end
 
 target 'HomeAssistantTests' do
