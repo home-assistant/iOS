@@ -113,7 +113,9 @@ platform :ios do
     clean_build_artifacts
     clear_derived_data
 
-    match(readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", readonly: true)
     gym(
       workspace: "HomeAssistant.xcworkspace",
       scheme: "HomeAssistant",
