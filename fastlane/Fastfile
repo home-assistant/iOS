@@ -87,11 +87,11 @@ platform :ios do
   lane :testflight do |options|
     load_keys
 
-    #ensure_git_branch(
-    #  branch: "(master|release\\S+|hotfix\\S+)"
-    #)
+    ensure_git_branch(
+      branch: "(master|release\\S+|hotfix\\S+)"
+    )
 
-    # ensure_git_status_clean
+    ensure_git_status_clean
 
     #verify_xcode_version
 
