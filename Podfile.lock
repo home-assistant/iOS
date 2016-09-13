@@ -58,7 +58,7 @@ DEPENDENCIES:
   - IKEventSource (from `https://github.com/robbiet480/EventSource.git`, branch `swift3`)
   - MBProgressHUD
   - ObjectMapper (from `https://github.com/Hearst-DD/ObjectMapper.git`, branch `swift-3`)
-  - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `swift3-ios10-usernotifications`)
+  - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `location-and-notifications-only`)
   - PromiseKit
   - Realm (from `https://github.com/realm/realm-cocoa.git`)
   - RealmSwift (from `https://github.com/realm/realm-cocoa.git`)
@@ -88,7 +88,7 @@ EXTERNAL SOURCES:
     :branch: swift-3
     :git: https://github.com/Hearst-DD/ObjectMapper.git
   PermissionScope:
-    :branch: swift3-ios10-usernotifications
+    :branch: location-and-notifications-only
     :git: https://github.com/robbiet480/PermissionScope.git
   Realm:
     :git: https://github.com/realm/realm-cocoa.git
@@ -126,7 +126,7 @@ CHECKOUT OPTIONS:
     :commit: 0ba8034e626f973fc8449081c0463a0de1940b3f
     :git: https://github.com/Hearst-DD/ObjectMapper.git
   PermissionScope:
-    :commit: 9ecd581723dabc40a5a0b0f5e3c342f71254075e
+    :commit: 6c04fe45ab3c122ec11b690d9d34445763d52baf
     :git: https://github.com/robbiet480/PermissionScope.git
   Realm:
     :commit: 742e530446e7c3b74abdf902b9109ab8f1086753
@@ -166,6 +166,6 @@ SPEC CHECKSUMS:
   SwiftLocation: f1bf5acb7992dd96c6f773c383f9c0479f07727d
   Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453
 
-PODFILE CHECKSUM: 7d9b5bc0cb44360562a15cf4a7d39ebcc2b8571a
+PODFILE CHECKSUM: 63488cc9e63e43d8906c39501f571ed2cfae1be7
 
 COCOAPODS: 1.1.0.rc.1

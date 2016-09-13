@@ -19,7 +19,7 @@ target 'HomeAssistant' do
   pod 'IKEventSource', :git => 'https://github.com/robbiet480/EventSource.git', :branch => 'swift3'
   pod 'MBProgressHUD'
   pod 'ObjectMapper', :git => 'https://github.com/Hearst-DD/ObjectMapper.git', :branch => 'swift-3'
-  pod 'PermissionScope', :git => 'https://github.com/robbiet480/PermissionScope.git', :branch => 'swift3-ios10-usernotifications'
+  pod 'PermissionScope', :git => 'https://github.com/robbiet480/PermissionScope.git', :branch => 'location-and-notifications-only'
   pod 'PromiseKit'
   pod 'Realm', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
   pod 'RealmSwift', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
