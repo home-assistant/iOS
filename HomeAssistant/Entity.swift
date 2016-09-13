@@ -61,46 +61,46 @@ class Entity: Object, StaticMappable {
             let entityType = EntityIDToDomainTransform().transformFromJSON(entityId as Any?)!
             switch entityType {
             case "binary_sensor":
-                return BinarySensor(value: map)
+                return BinarySensor()
             case "climate":
-                return Climate(value: map)
+                return Climate()
             case "device_tracker":
-                return DeviceTracker(value: map)
+                return DeviceTracker()
             case "group":
-                return Group(value: map)
+                return Group()
             case "garage_door":
-                return GarageDoor(value: map)
+                return GarageDoor()
             case "input_boolean":
-                return InputBoolean(value: map)
+                return InputBoolean()
             case "input_slider":
-                return InputSlider(value: map)
+                return InputSlider()
             case "input_select":
-                return InputSelect(value: map)
+                return InputSelect()
             case "light":
-                return Light(value: map)
+                return Light()
             case "lock":
-                return Lock(value: map)
+                return Lock()
             case "media_player":
-                return MediaPlayer(value: map)
+                return MediaPlayer()
             case "scene":
-                return Scene(value: map)
+                return Scene()
             case "script":
-                return Script(value: map)
+                return Script()
             case "sensor":
-                return Sensor(value: map)
+                return Sensor()
             case "sun":
-                return Sun(value: map)
+                return Sun()
             case "switch":
-                return Switch(value: map)
+                return Switch()
             case "thermostat":
-                return Thermostat(value: map)
+                return Thermostat()
             case "weblink":
-                return Weblink(value: map)
+                return Weblink()
             case "zone":
-                return Zone(value: map)
+                return Zone()
             default:
                 print("No class found for:", entityType)
-                return Entity(value: map)
+                return Entity()
             }
         }
         return nil
