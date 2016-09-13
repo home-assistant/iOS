@@ -1,126 +1,171 @@
 PODS:
   - AcknowList (1.0)
-  - Alamofire (3.4.2)
-  - AlamofireImage (2.4.1):
-    - Alamofire (~> 3.3)
-  - AlamofireObjectMapper (3.0.2):
-    - Alamofire (~> 3.2)
+  - Alamofire (4.0.0)
+  - AlamofireImage (3.0.0):
+    - Alamofire (~> 4.0)
+  - AlamofireObjectMapper (4.0.0-beta):
+    - Alamofire (~> 4.0)
     - ObjectMapper (~> 1.0)
   - AWSCognito (2.4.7):
     - AWSCore (= 2.4.7)
   - AWSCore (2.4.7)
   - AWSSNS (2.4.7):
     - AWSCore (= 2.4.7)
-  - Crashlytics (3.8.0):
+  - Crashlytics (3.8.1):
     - Fabric (~> 1.6.3)
-  - DeviceKit (0.3.4)
+  - DeviceKit (1.0.0)
   - Eureka (1.7.0)
   - Fabric (1.6.8)
   - FontAwesomeKit/Core (2.2.3)
   - FontAwesomeKit/MaterialDesignIcons (2.2.3):
     - FontAwesomeKit/Core
-  - HanekeSwift (0.10.1)
-  - IKEventSource (1.1.4)
+  - IKEventSource (1.2)
   - MBProgressHUD (1.0.0)
   - ObjectMapper (1.4.0)
-  - ObjectMapper+Realm (0.1):
-    - ObjectMapper
-    - RealmSwift
-  - OMGHTTPURLRQ (3.2.0):
-    - OMGHTTPURLRQ/RQ (= 3.2.0)
-  - OMGHTTPURLRQ/FormURLEncode (3.2.0)
-  - OMGHTTPURLRQ/RQ (3.2.0):
-    - OMGHTTPURLRQ/FormURLEncode
-    - OMGHTTPURLRQ/UserAgent
-  - OMGHTTPURLRQ/UserAgent (3.2.0)
   - PermissionScope (1.0.2)
-  - PromiseKit (3.5.1):
-    - PromiseKit/Foundation (= 3.5.1)
-    - PromiseKit/QuartzCore (= 3.5.1)
-    - PromiseKit/UIKit (= 3.5.1)
-  - PromiseKit/CorePromise (3.5.1)
-  - PromiseKit/Foundation (3.5.1):
-    - OMGHTTPURLRQ (~> 3.2.0)
+  - PromiseKit (4.0.0):
+    - PromiseKit/Foundation (= 4.0.0)
+    - PromiseKit/QuartzCore (= 4.0.0)
+    - PromiseKit/UIKit (= 4.0.0)
+  - PromiseKit/CorePromise (4.0.0)
+  - PromiseKit/Foundation (4.0.0):
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (3.5.1):
+  - PromiseKit/QuartzCore (4.0.0):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (3.5.1):
+  - PromiseKit/UIKit (4.0.0):
     - PromiseKit/CorePromise
   - Realm (1.0.2):
     - Realm/Headers (= 1.0.2)
   - Realm/Headers (1.0.2)
   - RealmSwift (1.0.2):
     - Realm (= 1.0.2)
-  - SwiftDate (3.0.8)
-  - SwiftLocation (1.0.4)
+  - SwiftLocation (1.1.0)
   - Whisper (3.1.1)
 
 DEPENDENCIES:
-  - AcknowList
-  - Alamofire
-  - AlamofireImage
-  - AlamofireObjectMapper
+  - AcknowList (from `https://github.com/vtourraine/AcknowList.git`, branch `swift-3`)
+  - Alamofire (~> 4.0)
+  - AlamofireImage (~> 3.0)
+  - AlamofireObjectMapper (from `https://github.com/tristanhimmelman/AlamofireObjectMapper.git`, branch `swift-3`)
   - AWSCognito
   - AWSCore
   - AWSSNS
   - Crashlytics
-  - DeviceKit
-  - Eureka
+  - DeviceKit (from `https://github.com/dennisweissmann/DeviceKit.git`, branch `master`)
+  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `Swift3`)
   - Fabric
-  - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`,
-    branch `Material-Design-Icons`)
-  - HanekeSwift
-  - IKEventSource
+  - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
+  - IKEventSource (from `https://github.com/robbiet480/EventSource.git`, branch `swift3`)
   - MBProgressHUD
-  - ObjectMapper (from `https://github.com/Hearst-DD/ObjectMapper.git`)
-  - ObjectMapper+Realm
-  - PermissionScope
+  - ObjectMapper (from `https://github.com/Hearst-DD/ObjectMapper.git`, branch `swift-3`)
+  - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `swift3-ios10-usernotifications`)
   - PromiseKit
-  - RealmSwift
-  - SwiftDate
-  - SwiftLocation
-  - Whisper
+  - Realm (from `https://github.com/realm/realm-cocoa.git`)
+  - RealmSwift (from `https://github.com/realm/realm-cocoa.git`)
+  - SwiftLocation (from `https://github.com/malcommac/SwiftLocation.git`, branch `master`)
+  - Whisper (from `https://github.com/skhavanekar/Whisper.git`, branch `swift3`)
 
 EXTERNAL SOURCES:
+  AcknowList:
+    :branch: swift-3
+    :git: https://github.com/vtourraine/AcknowList.git
+  AlamofireObjectMapper:
+    :branch: swift-3
+    :git: https://github.com/tristanhimmelman/AlamofireObjectMapper.git
+  DeviceKit:
+    :branch: master
+    :git: https://github.com/dennisweissmann/DeviceKit.git
+  Eureka:
+    :branch: Swift3
+    :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
+  IKEventSource:
+    :branch: swift3
+    :git: https://github.com/robbiet480/EventSource.git
   ObjectMapper:
+    :branch: swift-3
     :git: https://github.com/Hearst-DD/ObjectMapper.git
+  PermissionScope:
+    :branch: swift3-ios10-usernotifications
+    :git: https://github.com/robbiet480/PermissionScope.git
+  Realm:
+    :git: https://github.com/realm/realm-cocoa.git
+    :submodules: true
+  RealmSwift:
+    :git: https://github.com/realm/realm-cocoa.git
+    :submodules: true
+  SwiftLocation:
+    :branch: master
+    :git: https://github.com/malcommac/SwiftLocation.git
+  Whisper:
+    :branch: swift3
+    :git: https://github.com/skhavanekar/Whisper.git
 
 CHECKOUT OPTIONS:
+  AcknowList:
+    :commit: 264bbad04801a3625973f2fdeb7a5cf8a75bf654
+    :git: https://github.com/vtourraine/AcknowList.git
+  AlamofireObjectMapper:
+    :commit: c7c7715d97f8b3c133e6e90def047b662b502fc2
+    :git: https://github.com/tristanhimmelman/AlamofireObjectMapper.git
+  DeviceKit:
+    :commit: 0ffd9822471b9e757557254c83496e845ac90a4d
+    :git: https://github.com/dennisweissmann/DeviceKit.git
+  Eureka:
+    :commit: c6230f61f2c718ecdfd270ca163f4766fa47bbe9
+    :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
-    :commit: f71894d5bb06c5e20c902a715da24d2c2acdf6ee
+    :commit: a9f8d5988707e65db922dda047e0395b72eeedf3
     :git: https://github.com/robbiet480/FontAwesomeKit.git
+  IKEventSource:
+    :commit: 888ccedd4af1bccb3847940553598ab80ee5fb9f
+    :git: https://github.com/robbiet480/EventSource.git
   ObjectMapper:
-    :commit: 5a1ccbd3c2dcaf3f6a275d48bbf339674284c847
+    :commit: 0ba8034e626f973fc8449081c0463a0de1940b3f
     :git: https://github.com/Hearst-DD/ObjectMapper.git
+  PermissionScope:
+    :commit: 9ecd581723dabc40a5a0b0f5e3c342f71254075e
+    :git: https://github.com/robbiet480/PermissionScope.git
+  Realm:
+    :commit: 742e530446e7c3b74abdf902b9109ab8f1086753
+    :git: https://github.com/realm/realm-cocoa.git
+    :submodules: true
+  RealmSwift:
+    :commit: 742e530446e7c3b74abdf902b9109ab8f1086753
+    :git: https://github.com/realm/realm-cocoa.git
+    :submodules: true
+  SwiftLocation:
+    :commit: 9db2c814782c5db8a8e0c1edea1a4778be4f207f
+    :git: https://github.com/malcommac/SwiftLocation.git
+  Whisper:
+    :commit: db28d497376d15c7f9b393d4056fdeda619a674b
+    :git: https://github.com/skhavanekar/Whisper.git
 
 SPEC CHECKSUMS:
   AcknowList: 06a183d117b7e2bb0c6f5654366d2912dc64a6c4
-  Alamofire: 6aa33201d20d069e1598891cf928883ff1888c7a
-  AlamofireImage: 3ccf3347d9ea24580dc11fb892770a0be6a29826
-  AlamofireObjectMapper: 70f97cbf45c01c48d26aa07a1a7059a60ed7411d
+  Alamofire: fef59f00388f267e52d9b432aa5d93dc97190f14
+  AlamofireImage: 6594aa1139a67dcd36cde6da79ea4e5b318e60fb
+  AlamofireObjectMapper: 2148f08cae0ee5615a66dc6054aac516d2628e35
   AWSCognito: 6aa404f15d1eb2b4b51f45322a409257b3248e79
   AWSCore: 9a729a3c0050a51ece3547d546c327acdac7838a
   AWSSNS: 45b3a02693808251ed388afcab0e90ec05b53f72
-  Crashlytics: 8601d9c74a4c4d28f3e7f408bf4c0e490c70e8b4
-  DeviceKit: b414b210c225ae19b77a47e64cb04f187c1c4f9a
+  Crashlytics: 4391d8df0b125345e9f209c5db6e7f40a6a8435d
+  DeviceKit: ddead7f3a7c9603ba3a63cb748566428c38dd11f
   Eureka: 2020d9faeef7b7e9adeb9e3d8af779e5931c1897
   Fabric: 5755268d0171435ab167e3d0878a28a777deaf10
   FontAwesomeKit: 7336af53079bde1943da68c20a2d06436e3ef1ca
-  HanekeSwift: 08e47d3d0f2899ec58e5d257beba0de619aca9e8
-  IKEventSource: 7a3b82627c83ce247fed75b1b03f0c32a0759639
+  IKEventSource: a8b2ae0aa469d3dcf3a1d99a102430d46e95e8bd
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   ObjectMapper: a07ad0462c5adf014adc0f89ef04c29b626e855e
-  ObjectMapper+Realm: dbcf666c2081d82dc527b054c574b9f3777df060
-  OMGHTTPURLRQ: 1e54807cb7d5dbb506926e53498e1e9ac5720c79
   PermissionScope: 860828c5516d349b6f49e5491799cfef33c5ccc7
-  PromiseKit: 99ea973444a4bff6c38ffb97fa1bb175e619bcf0
-  Realm: 9d5c46a4d7d27958530a8dfc58f63a99e5c2cba3
-  RealmSwift: 82f3ac5e24530143dddfde2033acc0d308f27d96
-  SwiftDate: 971f8b9394f664f2226b9c3ab64e801a7291c612
-  SwiftLocation: 00682ad3598aa54936f34ec42ed53fceb37c22a4
+  PromiseKit: 97edc7fb2fb7d2c68c8e09d1f79b3ab7bcb6b06a
+  Realm: 2948cfa3a05b7acc446abc4c124d443df646c8de
+  RealmSwift: 4816c8608630a9a00bba6d726bb30b4bab6dd6bf
+  SwiftLocation: f1bf5acb7992dd96c6f773c383f9c0479f07727d
   Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: 7d9b5bc0cb44360562a15cf4a7d39ebcc2b8571a
+
+COCOAPODS: 1.1.0.rc.1

@@ -17,29 +17,29 @@ class Entity: Object, StaticMappable {
     dynamic var ID: String = ""
     dynamic var Domain: String = ""
     dynamic var State: String = ""
-    dynamic var Attributes: [String:AnyObject] {
+    dynamic var Attributes: [String:Any] {
         get {
             guard let dictionaryData = attributesData else {
-                return [String: AnyObject]()
+                return [String: Any]()
             }
             do {
-                let dict = try NSJSONSerialization.JSONObjectWithData(dictionaryData, options: []) as? [String: AnyObject]
+                let dict = try JSONSerialization.jsonObject(with: dictionaryData, options: []) as? [String: Any]
                 return dict!
             } catch {
-                return [String: AnyObject]()
+                return [String: Any]()
             }
         }
         
         set {
             do {
-                let data = try NSJSONSerialization.dataWithJSONObject(newValue, options: [])
+                let data = try JSONSerialization.data(withJSONObject: newValue, options: [])
                 attributesData = data
             } catch {
                 attributesData = nil
             }
         }
     }
-    private dynamic var attributesData: NSData?
+    fileprivate dynamic var attributesData: Data?
     dynamic var FriendlyName: String? = nil
     dynamic var Hidden = false
     dynamic var Icon: String? = nil
@@ -47,8 +47,8 @@ class Entity: Object, StaticMappable {
     dynamic var Picture: String? = nil
     var DownloadedPicture: UIImage?
     var UnitOfMeasurement: String?
-    dynamic var LastChanged: NSDate? = nil
-    dynamic var LastUpdated: NSDate? = nil
+    dynamic var LastChanged: Date? = nil
+    dynamic var LastUpdated: Date? = nil
 //    let Groups = LinkingObjects(fromType: Group.self, property: "Entities")
     
     // Z-Wave properties
@@ -56,69 +56,57 @@ class Entity: Object, StaticMappable {
     dynamic var NodeID: String? = nil
     var BatteryLevel = RealmOptional<Int>()
     
-    // MARK: - Requireds - https://github.com/Hearst-DD/ObjectMapper/issues/462
-    required init() { super.init() }
-    required init?(_ map: Map) { super.init() }
-    required init(value: AnyObject, schema: RLMSchema) { super.init(value: value, schema: schema) }
-    required init(realm: RLMRealm, schema: RLMObjectSchema) { super.init(realm: realm, schema: schema) }
-    
-    init(id: String) {
-        super.init()
-        self.ID = id
-        self.Domain = EntityIDToDomainTransform().transformFromJSON(self.ID)!
-    }
-    
-    class func objectForMapping(map: Map) -> Mappable? {
+    public static func objectForMapping(_ map: Map) -> BaseMappable? {
         if let entityId: String = map["entity_id"].value() {
-            let entityType = EntityIDToDomainTransform().transformFromJSON(entityId)!
+            let entityType = EntityIDToDomainTransform().transformFromJSON(entityId as Any?)!
             switch entityType {
             case "binary_sensor":
-                return BinarySensor(map)
+                return BinarySensor()
             case "climate":
-                return Climate(map)
+                return Climate()
             case "device_tracker":
-                return DeviceTracker(map)
+                return DeviceTracker()
             case "group":
-                return Group(map)
+                return Group()
             case "garage_door":
-                return GarageDoor(map)
+                return GarageDoor()
             case "input_boolean":
-                return InputBoolean(map)
+                return InputBoolean()
             case "input_slider":
-                return InputSlider(map)
+                return InputSlider()
             case "input_select":
-                return InputSelect(map)
+                return InputSelect()
             case "light":
-                return Light(map)
+                return Light()
             case "lock":
-                return Lock(map)
+                return Lock()
             case "media_player":
-                return MediaPlayer(map)
+                return MediaPlayer()
             case "scene":
-                return Scene(map)
+                return Scene()
             case "script":
-                return Script(map)
+                return Script()
             case "sensor":
-                return Sensor(map)
+                return Sensor()
             case "sun":
-                return Sun(map)
+                return Sun()
             case "switch":
-                return Switch(map)
+                return Switch()
             case "thermostat":
-                return Thermostat(map)
+                return Thermostat()
             case "weblink":
-                return Weblink(map)
+                return Weblink()
             case "zone":
-                return Zone(map)
+                return Zone()
             default:
                 print("No class found for:", entityType)
-                return Entity(map)
+                return Entity()
             }
         }
         return nil
     }
 
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         ID                <- map["entity_id"]
         Domain            <- (map["entity_id"], EntityIDToDomainTransform())
         State             <- map["state"]
@@ -138,10 +126,10 @@ class Entity: Object, StaticMappable {
         BatteryLevel      <- map["attributes.battery_level"]
         
         if let pic = self.Picture {
-            HomeAssistantAPI.sharedInstance.getImage(pic).then { image -> Void in
+            HomeAssistantAPI.sharedInstance.getImage(imageUrl: pic).then { image -> Void in
                 self.DownloadedPicture = image
-                }.error { err -> Void in
-                    print("Error when attempting to download image", err)
+            }.catch { err -> Void in
+                print("Error when attempting to download image", err)
             }
         }
     }
@@ -155,15 +143,15 @@ class Entity: Object, StaticMappable {
     }
     
     func turnOn() {
-        HomeAssistantAPI.sharedInstance.turnOnEntity(self)
+        let _ = HomeAssistantAPI.sharedInstance.turnOnEntity(entity: self)
     }
     
     func turnOff() {
-        HomeAssistantAPI.sharedInstance.turnOffEntity(self)
+        let _ = HomeAssistantAPI.sharedInstance.turnOffEntity(entity: self)
     }
     
     func toggle() {
-        HomeAssistantAPI.sharedInstance.toggleEntity(self)
+        let _ = HomeAssistantAPI.sharedInstance.toggleEntity(entity: self)
     }
     
     var ComponentIcon : String {
@@ -284,51 +272,54 @@ class Entity: Object, StaticMappable {
         if let friendly = self.FriendlyName {
             return friendly
         } else {
-            return self.ID.stringByReplacingOccurrencesOfString("\(self.Domain).", withString: "").capitalizedString
+            return self.ID.replacingOccurrences(of: "\(self.Domain).", with: "").replacingOccurrences(of: "_", with: " ").capitalized
         }
     }
     
+    var CleanedState : String {
+        return self.State.replacingOccurrences(of: "_", with: " ").capitalized
+    }
 }
 
-public class StringObject: Object {
-    public dynamic var value: String?
+open class StringObject: Object {
+    open dynamic var value: String?
 }
 
-public class EntityIDToDomainTransform: TransformType {
+open class EntityIDToDomainTransform: TransformType {
     public typealias Object = String
     public typealias JSON = String
     
     public init() {}
     
-    public func transformFromJSON(value: AnyObject?) -> String? {
+    public func transformFromJSON(_ value: Any?) -> String? {
         if let entityId = value as? String {
-            return entityId.componentsSeparatedByString(".")[0]
+            return entityId.components(separatedBy: ".")[0]
         }
         return nil
     }
     
-    public func transformToJSON(value: String?) -> String? {
+    open func transformToJSON(_ value: String?) -> String? {
         return nil
     }
 }
 
-public class HomeAssistantTimestampTransform: DateFormatterTransform {
+open class HomeAssistantTimestampTransform: DateFormatterTransform {
     
     public init() {
-        let formatter = NSDateFormatter()
-        formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let formatter = DateFormatter()
+        formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        if let HATimezone = NSUserDefaults.standardUserDefaults().stringForKey("time_zone") {
-            formatter.timeZone = NSTimeZone(name: HATimezone)!
+        if let HATimezone = UserDefaults.standard.string(forKey: "time_zone") {
+            formatter.timeZone = TimeZone(identifier: HATimezone)!
         } else {
-            formatter.timeZone = NSTimeZone.localTimeZone()
+            formatter.timeZone = TimeZone.autoupdatingCurrent
         }
         
         super.init(dateFormatter: formatter)
     }
 }
 
-public class ComponentBoolTransform: TransformType {
+open class ComponentBoolTransform: TransformType {
     
     public typealias Object = Bool
     public typealias JSON = String
@@ -341,11 +332,11 @@ public class ComponentBoolTransform: TransformType {
         self.falseValue = falseValue
     }
     
-    public func transformFromJSON(value: AnyObject?) -> Bool? {
-        return (String(value!) == self.trueValue)
+    public func transformFromJSON(_ value: Any?) -> Bool? {
+        return ((value! as! String) == self.trueValue)
     }
     
-    public func transformToJSON(value: Bool?) -> String? {
+    open func transformToJSON(_ value: Bool?) -> String? {
         return (value == true) ? self.trueValue : self.falseValue
     }
 }

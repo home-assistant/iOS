@@ -15,7 +15,7 @@ class Switch: SwitchableEntity {
     var TodayMilliwattHours = RealmOptional<Int>()
     var CurrentPowerMilliwattHours = RealmOptional<Int>()
     
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         
         TodayMilliwattHours          <- map["attributes.today_mwh"]

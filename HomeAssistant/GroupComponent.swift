@@ -11,12 +11,12 @@ import ObjectMapper
 import RealmSwift
 
 let isAllGroupTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
-    return Bool((String(value!).rangeOfString("group.all_") != nil))
-    }, toJSON: { (value: Bool?) -> String? in
-        if let value = value {
-            return String(value)
-        }
-        return nil
+    return value!.hasPrefix("group.all_")
+}, toJSON: { (value: Bool?) -> String? in
+    if let value = value {
+        return String(value)
+    }
+    return nil
 })
 
 class Group: Entity {
@@ -28,7 +28,7 @@ class Group: Entity {
     var Entities = List<Entity>()
     dynamic var EntityIds = [String]()
     
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         
         IsAllGroup    <- (map["entity_id"], isAllGroupTransform)
@@ -39,7 +39,9 @@ class Group: Entity {
         EntityIds     <- map["attributes.entity_id"]
         
         EntityIds.forEach { entityId in
-            self.Entities.append(Entity(id: entityId))
+            let returning = Entity()
+            returning.ID = entityId
+            self.Entities.append(returning)
         }
     }
     

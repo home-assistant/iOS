@@ -13,10 +13,10 @@ import RealmSwift
 class Sun: Entity {
     
     var Elevation = RealmOptional<Float>()
-    var NextRising: NSDate? = nil
-    var NextSetting: NSDate? = nil
+    var NextRising: Date? = nil
+    var NextSetting: Date? = nil
     
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         
         Elevation    <- map["attributes.elevation"]

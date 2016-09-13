@@ -17,7 +17,7 @@ class ServicesResponse: Mappable {
         
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         Domain    <- map["domain"]
         Services  <- map["services"]
     }
@@ -31,7 +31,7 @@ class ServiceDefinition: Mappable {
         
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         Description  <- map["description"]
         Fields       <- map["fields"]
     }
@@ -45,7 +45,7 @@ class ServiceField: Mappable {
         
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         Description  <- map["description"]
         Example      <- map["example"]
     }

@@ -15,11 +15,7 @@ class CallServiceEvent: SSEEvent {
     var ServiceCallID: String?
     var ServiceData: [String:AnyObject] = [:]
     
-    required init?(_ map: Map) {
-        super.init(map)
-    }
-    
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         Service       <- map["data.service"]
         Domain        <- map["data.domain"]

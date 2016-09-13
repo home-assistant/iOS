@@ -17,7 +17,7 @@ class EventsResponse: Mappable {
         
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         Event          <- map["event"]
         ListenerCount  <- map["listener_count"]
     }

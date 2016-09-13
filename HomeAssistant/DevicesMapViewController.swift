@@ -8,13 +8,12 @@
 
 import UIKit
 import MapKit
-import SwiftDate
 import RealmSwift
 
 enum MapType: Int {
-    case Standard = 0
-    case Hybrid
-    case Satellite
+    case standard = 0
+    case hybrid
+    case satellite
 }
 
 class DeviceAnnotation: MKPointAnnotation {
@@ -34,26 +33,23 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
         self.title = "Devices & Zones"
         
-        let devices = realm.objects(DeviceTracker.self)
-        let zones = realm.objects(Zone.self)
-        
-        self.navigationController?.toolbarHidden = false
+        self.navigationController?.isToolbarHidden = false
         
         let items = ["Standard", "Hybrid", "Satellite"]
         let typeController = UISegmentedControl(items: items)
         typeController.selectedSegmentIndex = 0
-        typeController.addTarget(self, action: #selector(DevicesMapViewController.switchMapType(_:)), forControlEvents: .ValueChanged)
+        typeController.addTarget(self, action: #selector(DevicesMapViewController.switchMapType(_:)), for: .valueChanged)
         
         let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: uploadIcon, style: .Plain, target: self, action: #selector(DevicesMapViewController.sendCurrentLocation(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: uploadIcon, style: .plain, target: self, action: #selector(DevicesMapViewController.sendCurrentLocation(_:)))
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(DevicesMapViewController.closeMapView(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(DevicesMapViewController.closeMapView(_:)))
         
         // Do any additional setup after loading the view.
         mapView = MKMapView()
         
-        mapView.mapType = .Standard
+        mapView.mapType = .standard
         mapView.frame = view.frame
         mapView.delegate = self
         mapView.showsUserLocation = false
@@ -61,21 +57,19 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         view.addSubview(mapView)
         
         let locateMeButton = MKUserTrackingBarButtonItem(mapView: mapView)
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: self, action: nil)
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         let segmentedControlButtonItem = UIBarButtonItem(customView: typeController)
 //        let bookmarksButton = UIBarButtonItem(barButtonSystemItem: .Bookmarks, target: self, action: nil)
         
         self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
         
-        for zone in zones {
-            if let radius = zone.Radius {
-                let circle = HACircle.init(centerCoordinate: zone.locationCoordinates(), radius: radius)
-                circle.type = "zone"
-                mapView.addOverlay(circle)
-            }
+        for zone in realm.allObjects(ofType: Zone.self) {
+            let circle = HACircle.init(center: zone.locationCoordinates(), radius: CLLocationDistance(zone.Radius))
+            circle.type = "zone"
+            mapView.add(circle)
         }
         
-        for device in devices {
+        for device in realm.allObjects(ofType: DeviceTracker.self) {
             if device.Latitude.value == nil || device.Longitude.value == nil {
                 continue
             }
@@ -83,20 +77,20 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             dropPin.coordinate = device.locationCoordinates()
             dropPin.title = device.Name
             var subtitlePieces : [String] = []
-            if let changedTime = device.LastChanged {
-                subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago")
-            }
+//            if let changedTime = device.LastChanged {
+//                subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago")
+//            }
             if let battery = device.Battery.value {
                 subtitlePieces.append("Battery: "+String(battery)+"%")
             }
-            dropPin.subtitle = subtitlePieces.joinWithSeparator(" / ")
+            dropPin.subtitle = subtitlePieces.joined(separator: " / ")
             dropPin.device = device
             mapView.addAnnotation(dropPin)
             
             if let radius = device.GPSAccuracy.value {
-                let circle = HACircle.init(centerCoordinate: device.locationCoordinates(), radius: radius)
+                let circle = HACircle.init(center: device.locationCoordinates(), radius: radius)
                 circle.type = "device"
-                mapView.addOverlay(circle)
+                mapView.add(circle)
             }
             
         }
@@ -110,7 +104,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             zoomRect = MKMapRectUnion(zoomRect, rect)
         }
 
-        let rect = mapView.overlays.reduce(mapView.overlays.first!.boundingMapRect, combine: {MKMapRectUnion($0, $1.boundingMapRect)})
+        let rect = mapView.overlays.reduce(mapView.overlays.first!.boundingMapRect, {MKMapRectUnion($0, $1.boundingMapRect)})
         
         mapView.setVisibleMapRect(MKMapRectUnion(zoomRect, rect), edgePadding: UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0), animated: true)
         
@@ -121,19 +115,19 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         // Dispose of any resources that can be recreated.
     }
 
-    func switchMapType(sender: UISegmentedControl) {
+    func switchMapType(_ sender: UISegmentedControl) {
         let mapType = MapType(rawValue: sender.selectedSegmentIndex)
         switch (mapType!) {
-        case .Standard:
-            mapView.mapType = MKMapType.Standard
-        case .Hybrid:
-            mapView.mapType = MKMapType.Hybrid
-        case .Satellite:
-            mapView.mapType = MKMapType.Satellite
+        case .standard:
+            mapView.mapType = MKMapType.standard
+        case .hybrid:
+            mapView.mapType = MKMapType.hybrid
+        case .satellite:
+            mapView.mapType = MKMapType.satellite
         }
     }
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? DeviceAnnotation {
             let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: annotation.device?.ID)
             annotationView.animatesDrop = true
@@ -150,17 +144,17 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let overlay = overlay as? HACircle {
             let circle = MKCircleRenderer(overlay: overlay)
             if overlay.type == "zone" {
-                circle.strokeColor = UIColor.redColor()
-                circle.fillColor = UIColor(red: 255, green: 0, blue: 0, alpha: 0.1)
+                circle.strokeColor = UIColor.red
+                circle.fillColor = UIColor.red.withAlphaComponent(0.1)
                 circle.lineWidth = 1
                 circle.lineDashPattern = [2, 5]
             } else if overlay.type == "device" {
-                circle.strokeColor = UIColor.blueColor()
-                circle.fillColor = UIColor(red: 0, green: 0, blue: 255, alpha: 0.1)
+                circle.strokeColor = UIColor.blue
+                circle.fillColor = UIColor.blue.withAlphaComponent(0.1)
                 circle.lineWidth = 1
             }
             return circle
@@ -169,21 +163,20 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    func closeMapView(sender: UIBarButtonItem) {
-        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+    func closeMapView(_ sender: UIBarButtonItem) {
+        self.navigationController?.dismiss(animated: true, completion: nil)
     }
     
-    func sendCurrentLocation(sender: UIBarButtonItem) {
-        HomeAssistantAPI.sharedInstance.sendOneshotLocation("One off location update requested").then { success -> Void in
-            print("Did succeed?", success)
-            let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-        }.error { error in
+    func sendCurrentLocation(_ sender: UIBarButtonItem) {
+        HomeAssistantAPI.sharedInstance.sendOneshotLocation(notifyString: "One off location update requested").then { success -> Void in
+            let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }.catch {error in
             let nserror = error as NSError
-            let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
 }

@@ -19,7 +19,7 @@ class PushCategory: Mappable {
         
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         Name        <- map["name"]
         Identifier  <- map["identifier"]
         Actions     <- map["actions"]
@@ -35,12 +35,14 @@ class PushAction: Mappable {
     var Destructive: Bool?
     var Context: String?
     var Parameters: [String:AnyObject]?
+    var TextInputButtonTitle: String?
+    var TextInputPlaceholder: String?
     
     required init?(_ map: Map){
         
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         Title                  <- map["title"]
         Identifier             <- map["identifier"]
         AuthenticationRequired <- map["authenticationRequired"]
@@ -49,5 +51,7 @@ class PushAction: Mappable {
         Destructive            <- map["destructive"]
         Context                <- map["context"]
         Parameters             <- map["parameters"]
+        TextInputButtonTitle   <- map["textInputButtonTitle"]
+        TextInputPlaceholder   <- map["textInputPlaceholder"]
     }
 }

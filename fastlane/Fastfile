@@ -91,9 +91,9 @@ platform :ios do
       branch: "(master|release\\S+|hotfix\\S+)"
     )
 
-    # ensure_git_status_clean
+    ensure_git_status_clean
 
-    verify_xcode_version
+    #verify_xcode_version
 
     version_number = options[:version_number] || get_version_number
 

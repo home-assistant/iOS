@@ -4,14 +4,29 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>APNSAttachmentService.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 		<key>HomeAssistant.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>NotificationContentExtension.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>24</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>B627CB061D83C87B0057173E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>B657A8E51CA646EB00121384</key>
 		<dict>
 			<key>primary</key>
@@ -23,6 +38,11 @@
 			<true/>
 		</dict>
 		<key>B657A9061CA646EB00121384</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B6AAD7A01D827DD40090B220</key>
 		<dict>
 			<key>primary</key>
 			<true/>

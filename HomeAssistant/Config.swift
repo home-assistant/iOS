@@ -24,7 +24,7 @@ class ConfigResponse: Mappable {
         
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         Components      <- map["components"]
         Version         <- map["version"]
         

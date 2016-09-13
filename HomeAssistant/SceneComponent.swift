@@ -15,13 +15,15 @@ class Scene: Entity {
     var Entities = List<Entity>()
     dynamic var EntityIds = [String]()
     
-    override func mapping(map: Map) {
+    override func mapping(_ map: Map) {
         super.mapping(map)
         
         EntityIds     <- map["attributes.entity_id"]
         
         EntityIds.forEach { entityId in
-            self.Entities.append(Entity(id: entityId))
+            let returning = Entity()
+            returning.ID = entityId
+            self.Entities.append(returning)
         }
     }
     

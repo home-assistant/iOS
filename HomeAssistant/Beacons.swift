@@ -22,7 +22,7 @@ class Beacon: Mappable {
         
     }
     
-    func mapping(map: Map) {
+    func mapping(_ map: Map) {
         Name        <- map["name"]
         Zone        <- map["zone"]
         UUID        <- map["uuid"]

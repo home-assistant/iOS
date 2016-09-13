@@ -18,7 +18,7 @@ class EntityAttributesViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let entity = realm.objectForPrimaryKey(Entity.self, key: entityID)
+        let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityID as AnyObject)
         
         self.title = (entity?.FriendlyName != nil) ? entity?.Name : "Attributes"
         
@@ -26,19 +26,19 @@ class EntityAttributesViewController: FormViewController {
             form +++ Section()
                 <<< TextAreaRow("entity_picture"){
                     $0.disabled = true
-                    $0.cell.textView.scrollEnabled = false
-                    $0.cell.textView.backgroundColor = .clearColor()
-                    $0.cell.backgroundColor = .clearColor()
+                    $0.cell.textView.isScrollEnabled = false
+                    $0.cell.textView.backgroundColor = UIColor.clear
+                    $0.cell.backgroundColor = UIColor.clear
                 }.cellUpdate { cell, row in
-                    HomeAssistantAPI.sharedInstance.getImage(picture).then { image -> Void in
+                    let _ = HomeAssistantAPI.sharedInstance.getImage(imageUrl: picture).then { image -> Void in
                         let attachment = NSTextAttachment()
                         attachment.image = image
-                        attachment.bounds = CGRectMake(0, 0, image.size.width, image.size.height)
+                        attachment.bounds = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
                         let attString = NSAttributedString(attachment: attachment)
                         let result = NSMutableAttributedString(attributedString: attString)
                         
                         let paragraphStyle = NSMutableParagraphStyle()
-                        paragraphStyle.alignment = .Center
+                        paragraphStyle.alignment = .center
                         
                         let attrs:[String:AnyObject] = [NSParagraphStyleAttributeName: paragraphStyle]
                         let range = NSMakeRange(0, result.length)
@@ -58,7 +58,7 @@ class EntityAttributesViewController: FormViewController {
         
         attributes["state"] = entity?.State
         for attribute in attributes {
-            let prettyLabel = attribute.0.stringByReplacingOccurrencesOfString("_", withString: " ").capitalizedString
+            let prettyLabel = attribute.0.replacingOccurrences(of: "_", with: " ").capitalized
             switch attribute.0 {
             case "fan":
                 if let thermostat = entity as? Thermostat {
@@ -146,9 +146,9 @@ class EntityAttributesViewController: FormViewController {
                         $0.value = (entity?.State == "on") ? true : false
                     }.onChange { row -> Void in
                         if (row.value == true) {
-                            HomeAssistantAPI.sharedInstance.turnOn(entity!.ID)
+                            let _ = HomeAssistantAPI.sharedInstance.turnOn(entityId: entity!.ID)
                         } else {
-                            HomeAssistantAPI.sharedInstance.turnOff(entity!.ID)
+                            let _ = HomeAssistantAPI.sharedInstance.turnOff(entityId: entity!.ID)
                         }
                     }
                 } else {
@@ -157,7 +157,7 @@ class EntityAttributesViewController: FormViewController {
             default:
                 form.last! <<< TextRow(attribute.0){
                     $0.title = prettyLabel
-                    $0.value = String(attribute.1).capitalizedString
+                    $0.value = String(describing: attribute.1).capitalized
                     $0.disabled = true
                 }
             }
@@ -165,7 +165,7 @@ class EntityAttributesViewController: FormViewController {
         
         
         // Do any additional setup after loading the view.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EntityAttributesViewController.StateChangedSSEEvent(_:)), name:"sse.state_changed", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(EntityAttributesViewController.StateChangedSSEEvent(_:)), name:NSNotification.Name(rawValue: "sse.state_changed"), object: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -174,13 +174,13 @@ class EntityAttributesViewController: FormViewController {
     }
     
 
-    func StateChangedSSEEvent(notification: NSNotification){
-        if let userInfo = notification.userInfo {
+    func StateChangedSSEEvent(_ notification: NSNotification){
+        if let userInfo = (notification as NSNotification).userInfo {
             if let event = Mapper<StateChangedEvent>().map(userInfo) {
                 if event.EntityID != entityID { return }
-                let entity = realm.objectForPrimaryKey(Entity.self, key: entityID)
+                let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityID as AnyObject)
                 if let newState = event.NewState {
-                    var updateDict : [String:AnyObject] = [:]
+                    var updateDict : [String:Any] = [:]
                     newState.Attributes["state"] = entity?.State
                     for (key, value) in newState.Attributes {
                         switch key {
@@ -213,7 +213,7 @@ class EntityAttributesViewController: FormViewController {
                             }
                             break
                         default:
-                            updateDict[key] = String(value)
+                            updateDict[key] = String(describing: value)
                             break
                         }
                     }

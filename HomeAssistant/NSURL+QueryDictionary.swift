@@ -8,19 +8,19 @@
 //
 
 import Foundation
-extension NSURL
+extension URL
 {
-    @objc var queryDictionary:[String: [String]]? {
+    var queryDictionary:[String: [String]]? {
         get {
             if let query = self.query {
                 var dictionary = [String: [String]]()
                 
-                for keyValueString in query.componentsSeparatedByString("&") {
-                    var parts = keyValueString.componentsSeparatedByString("=")
+                for keyValueString in query.components(separatedBy: "&") {
+                    var parts = keyValueString.components(separatedBy: "=")
                     if parts.count < 2 { continue; }
                     
-                    let key = parts[0].stringByRemovingPercentEncoding!
-                    let value = parts[1].stringByRemovingPercentEncoding!
+                    let key = parts[0].removingPercentEncoding!
+                    let value = parts[1].removingPercentEncoding!
                     
                     var values = dictionary[key] ?? [String]()
                     values.append(value)
@@ -32,5 +32,15 @@ extension NSURL
             
             return nil
         }
+    }
+    
+    var queryItems: [String: String]? {
+        var params = [String: String]()
+        return URLComponents(url: self, resolvingAgainstBaseURL: false)?
+            .queryItems?
+            .reduce([:], { (_, item) -> [String: String] in
+                params[item.name] = item.value
+                return params
+            })
     }
 }

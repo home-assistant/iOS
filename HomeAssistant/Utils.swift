@@ -10,16 +10,16 @@ import Foundation
 import FontAwesomeKit
 import SystemConfiguration.CaptiveNetwork
 
-func getIconForIdentifier(iconIdentifier: String, iconWidth: Double, iconHeight: Double, color: UIColor) -> UIImage {
+func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeight: Double, color: UIColor) -> UIImage {
     let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as NSDictionary
-    let fixedIconIdentifier = iconIdentifier.stringByReplacingOccurrencesOfString(":", withString: "-")
+    let fixedIconIdentifier = iconIdentifier.replacingOccurrences(of: ":", with: "-")
     let iconCode = iconCodes[fixedIconIdentifier] as? String
     let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
-    theIcon.addAttribute(NSForegroundColorAttributeName, value: color)
-    return theIcon.imageWithSize(CGSizeMake(CGFloat(iconWidth), CGFloat(iconHeight)))
+    theIcon?.addAttribute(NSForegroundColorAttributeName, value: color)
+    return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
 }
 
-func colorWithHexString(hexString: String, alpha:CGFloat? = 1.0) -> UIColor {
+func colorWithHexString(_ hexString: String, alpha:CGFloat? = 1.0) -> UIColor {
     
     // Convert hex string to an integer
     let hexint = Int(intFromHexString(hexString))
@@ -33,30 +33,15 @@ func colorWithHexString(hexString: String, alpha:CGFloat? = 1.0) -> UIColor {
     return color
 }
 
-func intFromHexString(hexStr: String) -> UInt32 {
+func intFromHexString(_ hexStr: String) -> UInt32 {
     var hexInt: UInt32 = 0
     // Create scanner
-    let scanner: NSScanner = NSScanner(string: hexStr)
+    let scanner: Scanner = Scanner(string: hexStr)
     // Tell scanner to skip the # character
-    scanner.charactersToBeSkipped = NSCharacterSet(charactersInString: "#")
+    scanner.charactersToBeSkipped = CharacterSet(charactersIn: "#")
     // Scan hex value
-    scanner.scanHexInt(&hexInt)
+    scanner.scanHexInt32(&hexInt)
     return hexInt
-}
-
-func getCurrentWifiSSID() -> String {
-    var currentSSID = "Unknown"
-    let interfaces:CFArray! = CNCopySupportedInterfaces()
-    for i in 0..<CFArrayGetCount(interfaces){
-        let interfaceName: UnsafePointer<Void> = CFArrayGetValueAtIndex(interfaces, i)
-        let rec = unsafeBitCast(interfaceName, AnyObject.self)
-        let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)")
-        if unsafeInterfaceData != nil {
-            let interfaceData = unsafeInterfaceData! as Dictionary!
-            currentSSID = interfaceData["SSID"] as! String
-        }
-    }
-    return currentSSID
 }
 
 // Thanks to http://stackoverflow.com/a/35624018/486182
@@ -64,32 +49,33 @@ func getCurrentWifiSSID() -> String {
 
 func movePushNotificationSounds() {
     
-    let fileManager: NSFileManager = NSFileManager()
+    let fileManager: FileManager = FileManager()
     
-    let libraryPath = try! fileManager.URLForDirectory(.LibraryDirectory, inDomain: NSSearchPathDomainMask.UserDomainMask, appropriateForURL: nil, create: false)
-    let librarySoundsPath = libraryPath.URLByAppendingPathComponent("Sounds")
-    if (!librarySoundsPath.checkResourceIsReachableAndReturnError(nil)) {
+    let libraryPath = try! fileManager.url(for: .libraryDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
+    let librarySoundsPath = libraryPath.appendingPathComponent("Sounds")
+    let librarySoundsURL = librarySoundsPath as URL
+    if try! librarySoundsURL.checkResourceIsReachable() == false {
         print("Creating sounds directory at", librarySoundsPath)
-        try! fileManager.createDirectoryAtURL(librarySoundsPath, withIntermediateDirectories: true, attributes: nil)
+        try! fileManager.createDirectory(at: librarySoundsPath, withIntermediateDirectories: true, attributes: nil)
     }
     
-    let documentsPath = try! fileManager.URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
-    let fileList = try! fileManager.contentsOfDirectoryAtURL(documentsPath, includingPropertiesForKeys: nil, options: NSDirectoryEnumerationOptions())
+    let documentsPath = try! fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+    let fileList = try! fileManager.contentsOfDirectory(at: documentsPath, includingPropertiesForKeys: nil, options: FileManager.DirectoryEnumerationOptions())
     for file in fileList {
-        let finalUrl = librarySoundsPath.URLByAppendingPathComponent(file.lastPathComponent!)
+        let finalUrl = librarySoundsPath.appendingPathComponent(file.lastPathComponent)
         print("Moving", file, "to", finalUrl)
-        if (finalUrl.checkResourceIsReachableAndReturnError(nil)) {
+        if try! (finalUrl as URL).checkResourceIsReachable() == false {
             print("File already existed, removing it first!")
-            try! fileManager.removeItemAtURL(finalUrl)
+            try! fileManager.removeItem(at: finalUrl)
         }
-        try! fileManager.moveItemAtURL(file, toURL: finalUrl)
+        try! fileManager.moveItem(at: file, to: finalUrl)
     }
 }
 
 func getSoundList() -> [String] {
     var result:[String] = []
-    let fileManager = NSFileManager.defaultManager()
-    let enumerator:NSDirectoryEnumerator = fileManager.enumeratorAtPath("/System/Library/Audio/UISounds")!
+    let fileManager = FileManager.default
+    let enumerator:FileManager.DirectoryEnumerator = fileManager.enumerator(atPath: "/System/Library/Audio/UISounds")!
     for url in enumerator.allObjects {
         result.append(url as! String)
     }
@@ -97,45 +83,45 @@ func getSoundList() -> [String] {
 }
 
 // copy sound file to /Library/Sounds directory, it will be auto detect and played when a push notification arrive
-func copyFileToDirectory(fileName:String) {
-    let fileManager = NSFileManager.defaultManager()
+func copyFileToDirectory(_ fileName:String) {
+    let fileManager = FileManager.default
     
-    let libraryDir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.LibraryDirectory, NSSearchPathDomainMask.UserDomainMask, true)
+    let libraryDir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.libraryDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
     let directoryPath = "\(libraryDir.first!)/Sounds"
-    try! fileManager.createDirectoryAtPath(directoryPath, withIntermediateDirectories: true, attributes: nil)
+    try! fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
     
     let systemSoundPath = "/System/Library/Audio/UISounds/New/\(fileName)"
     let notificationSoundPath = "\(directoryPath)/\(fileName)"
     
-    let fileExist = fileManager.fileExistsAtPath(notificationSoundPath)
+    let fileExist = fileManager.fileExists(atPath: notificationSoundPath)
     if (fileExist) {
-        try! fileManager.removeItemAtPath(notificationSoundPath)
+        try! fileManager.removeItem(atPath: notificationSoundPath)
     }
-    try! fileManager.copyItemAtPath(systemSoundPath, toPath: notificationSoundPath)
+    try! fileManager.copyItem(atPath: systemSoundPath, toPath: notificationSoundPath)
 }
 
 func listAllInstalledPushNotificationSounds() -> [String] {
-    let fileManager: NSFileManager = NSFileManager()
+    let fileManager: FileManager = FileManager()
     
-    let libraryPath = try! fileManager.URLForDirectory(.LibraryDirectory, inDomain: NSSearchPathDomainMask.UserDomainMask, appropriateForURL: nil, create: false)
-    let librarySoundsPath = libraryPath.URLByAppendingPathComponent("Sounds")
+    let libraryPath = try! fileManager.url(for: .libraryDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
+    let librarySoundsPath = libraryPath.appendingPathComponent("Sounds")
     
-    let librarySoundsContents = fileManager.enumeratorAtURL(librarySoundsPath, includingPropertiesForKeys: nil, options: NSDirectoryEnumerationOptions(), errorHandler: nil)!
+    let librarySoundsContents = fileManager.enumerator(at: librarySoundsPath, includingPropertiesForKeys: nil, options: FileManager.DirectoryEnumerationOptions(), errorHandler: nil)!
     
     var allSounds = [String]()
     
     for obj in librarySoundsContents.allObjects {
-        let file = obj as! NSURL
-        allSounds.append(file.lastPathComponent!)
+        let file = obj as! URL
+        allSounds.append(file.lastPathComponent)
     }
     return allSounds
 }
 
 extension UIImage{
-    func scaledToSize(size: CGSize) -> UIImage{
+    func scaledToSize(_ size: CGSize) -> UIImage{
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-        self.drawInRect(CGRectMake(0, 0, size.width, size.height))
-        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        self.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return newImage
     }
@@ -144,16 +130,10 @@ extension UIImage{
 extension String {
     
     subscript (i: Int) -> Character {
-        return self[self.startIndex.advancedBy(i)]
+        return self[self.characters.index(self.startIndex, offsetBy: i)]
     }
     
     subscript (i: Int) -> String {
         return String(self[i] as Character)
-    }
-    
-    subscript (r: Range<Int>) -> String {
-        let start = startIndex.advancedBy(r.startIndex)
-        let end = start.advancedBy(r.endIndex - r.startIndex)
-        return self[Range(start ..< end)]
     }
 }
