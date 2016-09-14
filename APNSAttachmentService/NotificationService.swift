@@ -14,7 +14,7 @@ final class NotificationService: UNNotificationServiceExtension {
     private var bestAttemptContent: UNMutableNotificationContent?
     
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void){
-        print("Extension started!")
+        print("APNSAttachmentService started!")
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
         
@@ -26,14 +26,18 @@ final class NotificationService: UNNotificationServiceExtension {
             return failEarly()
         }
         
-        guard let attachmentURL = content.userInfo["attachment-url"] as? String else {
+        guard let attachmentString = content.userInfo["attachment-url"] as? String else {
             return failEarly()
         }
         
-        guard let imageData = NSData(contentsOf:NSURL(string: attachmentURL)! as URL) else { return failEarly() }
-        guard let attachment = UNNotificationAttachment.create(imageFileIdentifier: "image.gif", data: imageData, options: nil) else { return failEarly() }
+        guard let attachmentURL = URL(string: attachmentString) else {
+            return failEarly()
+        }
         
-        content.attachments = [attachment]
+        guard let attachmentData = NSData(contentsOf:attachmentURL) else { return failEarly() }
+        guard let attachment = UNNotificationAttachment.create(fileIdentifier: attachmentURL.lastPathComponent, data: attachmentData, options: nil) else { return failEarly() }
+        content.attachments.append(attachment)
+        
         contentHandler(content.copy() as! UNNotificationContent)
     }
     
@@ -49,18 +53,17 @@ final class NotificationService: UNNotificationServiceExtension {
 
 extension UNNotificationAttachment {
     
-    /// Save the image to disk
-    static func create(imageFileIdentifier: String, data: NSData, options: [NSObject : AnyObject]?) -> UNNotificationAttachment? {
+    /// Save the attachment URL to disk
+    static func create(fileIdentifier: String, data: NSData, options: [NSObject : AnyObject]?) -> UNNotificationAttachment? {
         let fileManager = FileManager.default
         let tmpSubFolderName = ProcessInfo.processInfo.globallyUniqueString
         let tmpSubFolderURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(tmpSubFolderName, isDirectory: true)
         
         do {
             try fileManager.createDirectory(at: tmpSubFolderURL!, withIntermediateDirectories: true, attributes: nil)
-            let fileURL = tmpSubFolderURL?.appendingPathComponent(imageFileIdentifier)
+            let fileURL = tmpSubFolderURL?.appendingPathComponent(fileIdentifier)
             try data.write(to: fileURL!, options: [])
-            let imageAttachment = try UNNotificationAttachment.init(identifier: imageFileIdentifier, url: fileURL!, options: options)
-            return imageAttachment
+            return try UNNotificationAttachment.init(identifier: "", url: fileURL!, options: options)
         } catch let error {
             print("error \(error)")
         }
