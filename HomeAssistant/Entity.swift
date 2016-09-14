@@ -15,7 +15,6 @@ class Entity: Object, StaticMappable {
     let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
     
     dynamic var ID: String = ""
-    dynamic var Domain: String = ""
     dynamic var State: String = ""
     dynamic var Attributes: [String:Any] {
         get {
@@ -56,9 +55,9 @@ class Entity: Object, StaticMappable {
     dynamic var NodeID: String? = nil
     var BatteryLevel = RealmOptional<Int>()
     
-    public static func objectForMapping(_ map: Map) -> BaseMappable? {
+    class func objectForMapping(_ map: Map) -> BaseMappable? {
         if let entityId: String = map["entity_id"].value() {
-            let entityType = EntityIDToDomainTransform().transformFromJSON(entityId as Any?)!
+            let entityType = entityId.components(separatedBy: ".")[0]
             switch entityType {
             case "binary_sensor":
                 return BinarySensor()
@@ -108,7 +107,6 @@ class Entity: Object, StaticMappable {
 
     func mapping(_ map: Map) {
         ID                <- map["entity_id"]
-        Domain            <- (map["entity_id"], EntityIDToDomainTransform())
         State             <- map["state"]
         Attributes        <- map["attributes"]
         FriendlyName      <- map["attributes.friendly_name"]
@@ -279,28 +277,14 @@ class Entity: Object, StaticMappable {
     var CleanedState : String {
         return self.State.replacingOccurrences(of: "_", with: " ").capitalized
     }
+    
+    var Domain : String {
+        return self.ID.components(separatedBy: ".")[0]
+    }
 }
 
 open class StringObject: Object {
     open dynamic var value: String?
-}
-
-open class EntityIDToDomainTransform: TransformType {
-    public typealias Object = String
-    public typealias JSON = String
-    
-    public init() {}
-    
-    public func transformFromJSON(_ value: Any?) -> String? {
-        if let entityId = value as? String {
-            return entityId.components(separatedBy: ".")[0]
-        }
-        return nil
-    }
-    
-    open func transformToJSON(_ value: String?) -> String? {
-        return nil
-    }
 }
 
 open class HomeAssistantTimestampTransform: DateFormatterTransform {

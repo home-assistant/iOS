@@ -16,7 +16,7 @@ import RealmSwift
 import UserNotifications
 
 let realmConfig = Realm.Configuration(
-    schemaVersion: 1,
+    schemaVersion: 2,
     
     migrationBlock: { migration, oldSchemaVersion in
         if (oldSchemaVersion < 1) {
