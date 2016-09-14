@@ -19,8 +19,8 @@ class Light: SwitchableEntity {
     override func mapping(_ map: Map) {
         super.mapping(map)
         
-        Brightness   <- map["attributes.brightness"]
-        ColorTemp    <- map["attributes.color_temp"]
+        Brightness.value   <- map["attributes.brightness"]
+        ColorTemp.value    <- map["attributes.color_temp"]
         RGBColor     <- map["attributes.rgb_color"]
     }
     

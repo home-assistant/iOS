@@ -19,7 +19,7 @@ class Sun: Entity {
     override func mapping(_ map: Map) {
         super.mapping(map)
         
-        Elevation    <- map["attributes.elevation"]
+        Elevation.value    <- map["attributes.elevation"]
         NextRising   <- (map["attributes.next_rising"], HomeAssistantTimestampTransform())
         NextSetting  <- (map["attributes.next_setting"], HomeAssistantTimestampTransform())
     }

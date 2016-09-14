@@ -123,7 +123,7 @@ class Entity: Object, StaticMappable {
         // Z-Wave properties
         NodeID            <- map["attributes.node_id"]
         Location          <- map["attributes.location"]
-        BatteryLevel      <- map["attributes.battery_level"]
+        BatteryLevel.value      <- map["attributes.battery_level"]
         
         if let pic = self.Picture {
             HomeAssistantAPI.sharedInstance.getImage(imageUrl: pic).then { image -> Void in

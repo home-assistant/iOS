@@ -22,10 +22,10 @@ class DeviceTracker: Entity {
     override func mapping(_ map: Map) {
         super.mapping(map)
         
-        Latitude     <- map["attributes.latitude"]
-        Longitude    <- map["attributes.longitude"]
-        Battery      <- map["attributes.battery"]
-        GPSAccuracy  <- map["attributes.gps_accuracy"]
+        Latitude.value     <- map["attributes.latitude"]
+        Longitude.value    <- map["attributes.longitude"]
+        Battery.value      <- map["attributes.battery"]
+        GPSAccuracy.value  <- map["attributes.gps_accuracy"]
         IsHome       <- (map["state"], ComponentBoolTransform(trueValue: "home", falseValue: "not_home"))
     }
     

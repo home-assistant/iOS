@@ -30,13 +30,13 @@ class MediaPlayer: SwitchableEntity {
         
         IsPlaying        <- (map["state"], ComponentBoolTransform(trueValue: "playing", falseValue: "paused"))
         IsIdle           <- (map["state"], ComponentBoolTransform(trueValue: "idle", falseValue: ""))
-        IsVolumeMuted    <- map["attributes.is_volume_muted"]
+        IsVolumeMuted.value    <- map["attributes.is_volume_muted"]
         MediaContentID   <- map["attributes.media_content_id"]
         MediaContentType <- map["attributes.media_content_type"]
-        MediaDuration    <- map["attributes.media_duration"]
+        MediaDuration.value    <- map["attributes.media_duration"]
         MediaTitle       <- map["attributes.media_title"]
         Source           <- map["attributes.source"]
-        VolumeLevel      <- map["attributes.volume_level"]
+        VolumeLevel.value      <- map["attributes.volume_level"]
         SourceList       <- map["attributes.source_list"]
         
         var StoredSourceList: [String]? = nil

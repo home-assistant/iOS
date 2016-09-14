@@ -34,7 +34,7 @@ class Group: Entity {
         IsAllGroup    <- (map["entity_id"], isAllGroupTransform)
         View          <- map["attributes.view"]
         Auto          <- map["attributes.auto"]
-        Order         <- map["attributes.order"]
+        Order.value         <- map["attributes.order"]
         
         EntityIds     <- map["attributes.entity_id"]
         

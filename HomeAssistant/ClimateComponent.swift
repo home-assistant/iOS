@@ -35,17 +35,17 @@ class Climate: Entity {
         
         AuxHeat              <- (map["attributes.aux_heat"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         AwayMode             <- (map["attributes.away_mode"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
-        CurrentHumidity      <- map["attributes.current_humidity"]
-        CurrentTemperature   <- map["attributes.current_temperature"]
+        CurrentHumidity.value      <- map["attributes.current_humidity"]
+        CurrentTemperature.value   <- map["attributes.current_temperature"]
         FanMode              <- map["attributes.fan_mode"]
-        Humidity             <- map["attributes.humidity"]
-        MaximumHumidity      <- map["attributes.max_humidity"]
-        MaximumTemp          <- map["attributes.max_temp"]
-        MinimumHumidity      <- map["attributes.min_humidity"]
-        MinimumTemp          <- map["attributes.min_temp"]
+        Humidity.value             <- map["attributes.humidity"]
+        MaximumHumidity.value      <- map["attributes.max_humidity"]
+        MaximumTemp.value          <- map["attributes.max_temp"]
+        MinimumHumidity.value      <- map["attributes.min_humidity"]
+        MinimumTemp.value          <- map["attributes.min_temp"]
         OperationMode        <- map["attributes.operation_mode"]
         SwingMode            <- (map["attributes.swing_mode"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
-        Temperature          <- map["attributes.temperature"]
+        Temperature.value          <- map["attributes.temperature"]
         
         var FanList: [String]? = nil
         FanList              <- map["attributes.fan_list"]

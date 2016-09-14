@@ -19,9 +19,9 @@ class InputSlider: Entity {
     override func mapping(_ map: Map) {
         super.mapping(map)
         
-        Maximum          <- map["attributes.max"]
-        Minimum          <- map["attributes.min"]
-        Step             <- map["attributes.step"]
+        Maximum.value          <- map["attributes.max"]
+        Minimum.value          <- map["attributes.min"]
+        Step.value             <- map["attributes.step"]
     }
     
     override var ComponentIcon: String {

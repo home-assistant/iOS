@@ -18,8 +18,8 @@ class Switch: SwitchableEntity {
     override func mapping(_ map: Map) {
         super.mapping(map)
         
-        TodayMilliwattHours          <- map["attributes.today_mwh"]
-        CurrentPowerMilliwattHours   <- map["attributes.current_power_mwh"]
+        TodayMilliwattHours.value          <- map["attributes.today_mwh"]
+        CurrentPowerMilliwattHours.value   <- map["attributes.current_power_mwh"]
     }
     
     override var ComponentIcon: String {
