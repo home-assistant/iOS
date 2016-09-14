@@ -740,7 +740,7 @@ public class HomeAssistantAPI {
     func getImage(imageUrl: String) -> Promise<UIImage> {
         var url = imageUrl
         if url.hasPrefix("/local/") || url.hasPrefix("/api/") {
-            url = baseAPIURL+url.replacingOccurrences(of: "/api/", with: "").replacingOccurrences(of: "/local", with: "")
+            url = baseAPIURL+url.replacingOccurrences(of: "/api/", with: "").replacingOccurrences(of: "/local/", with: "")
         }
         return Promise { fulfill, reject in
             let _ = self.manager!.request(url, method: .get).validate().responseImage { response in
