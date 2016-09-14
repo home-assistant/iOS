@@ -23,16 +23,19 @@ PODS:
   - MBProgressHUD (1.0.0)
   - ObjectMapper (1.4.0)
   - PermissionScope (1.0.2)
-  - PromiseKit (4.0.0):
-    - PromiseKit/Foundation (= 4.0.0)
-    - PromiseKit/QuartzCore (= 4.0.0)
-    - PromiseKit/UIKit (= 4.0.0)
-  - PromiseKit/CorePromise (4.0.0)
-  - PromiseKit/Foundation (4.0.0):
+  - PromiseKit (4.0.2):
+    - PromiseKit/Foundation (= 4.0.2)
+    - PromiseKit/QuartzCore (= 4.0.2)
+    - PromiseKit/UIKit (= 4.0.2)
+  - PromiseKit/CorePromise (4.0.2)
+  - PromiseKit/Foundation (4.0.2):
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (4.0.0):
+  - PromiseKit/QuartzCore (4.0.2):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (4.0.0):
+  - PromiseKit/UIKit (4.0.2):
+    - PromiseKit/CorePromise
+    - PromiseKit/UIKit/UIImagePickerController (= 4.0.2)
+  - PromiseKit/UIKit/UIImagePickerController (4.0.2):
     - PromiseKit/CorePromise
   - Realm (1.0.2):
     - Realm/Headers (= 1.0.2)
@@ -59,7 +62,7 @@ DEPENDENCIES:
   - MBProgressHUD
   - ObjectMapper (from `https://github.com/Hearst-DD/ObjectMapper.git`, branch `swift-3`)
   - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `location-and-notifications-only`)
-  - PromiseKit
+  - PromiseKit (from `https://github.com/mxcl/PromiseKit.git`, branch `master`)
   - Realm (from `https://github.com/realm/realm-cocoa.git`)
   - RealmSwift (from `https://github.com/realm/realm-cocoa.git`)
   - SwiftLocation (from `https://github.com/malcommac/SwiftLocation.git`, branch `master`)
@@ -90,6 +93,10 @@ EXTERNAL SOURCES:
   PermissionScope:
     :branch: location-and-notifications-only
     :git: https://github.com/robbiet480/PermissionScope.git
+  PromiseKit:
+    :branch: master
+    :git: https://github.com/mxcl/PromiseKit.git
+    :submodules: true
   Realm:
     :git: https://github.com/realm/realm-cocoa.git
     :submodules: true
@@ -128,6 +135,10 @@ CHECKOUT OPTIONS:
   PermissionScope:
     :commit: 6c04fe45ab3c122ec11b690d9d34445763d52baf
     :git: https://github.com/robbiet480/PermissionScope.git
+  PromiseKit:
+    :commit: c1b1db3b48f9c0af53b3148c30b9e884e9e59271
+    :git: https://github.com/mxcl/PromiseKit.git
+    :submodules: true
   Realm:
     :commit: 742e530446e7c3b74abdf902b9109ab8f1086753
     :git: https://github.com/realm/realm-cocoa.git
@@ -160,12 +171,12 @@ SPEC CHECKSUMS:
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   ObjectMapper: a07ad0462c5adf014adc0f89ef04c29b626e855e
   PermissionScope: 860828c5516d349b6f49e5491799cfef33c5ccc7
-  PromiseKit: 97edc7fb2fb7d2c68c8e09d1f79b3ab7bcb6b06a
+  PromiseKit: d10fa4d7badfb3de7e8f6fa10dddbf908c945f97
   Realm: 2948cfa3a05b7acc446abc4c124d443df646c8de
   RealmSwift: 4816c8608630a9a00bba6d726bb30b4bab6dd6bf
   SwiftLocation: f1bf5acb7992dd96c6f773c383f9c0479f07727d
   Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453
 
-PODFILE CHECKSUM: 63488cc9e63e43d8906c39501f571ed2cfae1be7
+PODFILE CHECKSUM: 6bde87bef0bcbf083ee0a6eedb433a5bd9b6c2aa
 
 COCOAPODS: 1.1.0.rc.1

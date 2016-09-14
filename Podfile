@@ -20,7 +20,7 @@ target 'HomeAssistant' do
   pod 'MBProgressHUD'
   pod 'ObjectMapper', :git => 'https://github.com/Hearst-DD/ObjectMapper.git', :branch => 'swift-3'
   pod 'PermissionScope', :git => 'https://github.com/robbiet480/PermissionScope.git', :branch => 'location-and-notifications-only'
-  pod 'PromiseKit'
+  pod 'PromiseKit', :git => 'https://github.com/mxcl/PromiseKit.git', :branch => 'master', :submodules => true
   pod 'Realm', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
   pod 'RealmSwift', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
   pod 'SwiftLocation', :git => 'https://github.com/malcommac/SwiftLocation.git', :branch => 'master'
