@@ -80,7 +80,7 @@ class GroupViewController: FormViewController {
                                 }
                         }
                     }
-                case "switch", "light", "input_boolean", "binary_sensor", "camera", "sensor", "media_player", "thermostat", "sun", "climate":
+                case "switch", "light", "input_boolean", "binary_sensor", "camera", "sensor", "media_player", "thermostat", "sun", "climate", "automation", "fan":
                     self.form.last! <<< ButtonRow(entity.ID) {
                         $0.title = entity.Name
                         $0.cellStyle = .value1
@@ -100,8 +100,6 @@ class GroupViewController: FormViewController {
                         if let picture = entity.DownloadedPicture {
                             cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                         }
-                    }.onCellSelection { cell, row -> Void in
-                        print("Entity ID", entity.ID)
                     }
                 case "device_tracker":
                     if entity.Attributes["latitude"] != nil && entity.Attributes["longitude"] != nil {

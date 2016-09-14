@@ -23,3 +23,21 @@ class StateChangedEvent: SSEEvent {
         EntityDomain <- (map["data.entity_id"], EntityIDToDomainTransform())
     }
 }
+
+open class EntityIDToDomainTransform: TransformType {
+    public typealias Object = String
+    public typealias JSON = String
+    
+    public init() {}
+    
+    public func transformFromJSON(_ value: Any?) -> String? {
+        if let entityId = value as? String {
+            return entityId.components(separatedBy: ".")[0]
+        }
+        return nil
+    }
+    
+    open func transformToJSON(_ value: String?) -> String? {
+        return nil
+    }
+}

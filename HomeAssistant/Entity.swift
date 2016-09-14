@@ -59,12 +59,16 @@ class Entity: Object, StaticMappable {
         if let entityId: String = map["entity_id"].value() {
             let entityType = entityId.components(separatedBy: ".")[0]
             switch entityType {
+            case "automation":
+                return Automation()
             case "binary_sensor":
                 return BinarySensor()
             case "climate":
                 return Climate()
             case "device_tracker":
                 return DeviceTracker()
+            case "fan":
+                return Fan()
             case "group":
                 return Group()
             case "garage_door":

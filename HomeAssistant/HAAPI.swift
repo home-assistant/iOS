@@ -361,7 +361,9 @@ public class HomeAssistantAPI {
     func storeEntities(entities: [Entity]) {
         for entity in entities {
             try! realm.write {
-                if let mapped = entity as? BinarySensor {
+                if let mapped = entity as? Automation {
+                    realm.createObject(ofType: Automation.self, populatedWith: mapped, update: true)
+                } else if let mapped = entity as? BinarySensor {
                     realm.createObject(ofType: BinarySensor.self, populatedWith: mapped, update: true)
                 } else if let mapped = entity as? Climate {
                     realm.createObject(ofType: Climate.self, populatedWith: mapped, update: true)
@@ -371,6 +373,8 @@ public class HomeAssistantAPI {
                     realm.createObject(ofType: GarageDoor.self, populatedWith: mapped, update: true)
                 } else if let mapped = entity as? Group {
                     realm.createObject(ofType: Group.self, populatedWith: mapped, update: true)
+                } else if let mapped = entity as? Fan {
+                    realm.createObject(ofType: Fan.self, populatedWith: mapped, update: true)
                 } else if let mapped = entity as? InputBoolean {
                     realm.createObject(ofType: InputBoolean.self, populatedWith: mapped, update: true)
                 } else if let mapped = entity as? InputSelect {
