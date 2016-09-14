@@ -10,13 +10,18 @@ import UIKit
 import UserNotifications
 import UserNotificationsUI
 import MapKit
+import MBProgressHUD
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
 
-    @IBOutlet var label: UILabel?
+    var hud: MBProgressHUD? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+        hud.detailsLabel.text = "Loading map..."
+        hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
+        self.hud = hud
         // Do any required interface initialization here.
     }
     
@@ -31,8 +36,10 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     
     func buildMapView(_ notification: UNNotification) {
         let haDict = notification.request.content.userInfo["homeassistant"] as! [String:Any]
-        let latitude = haDict["latitude"] as! CLLocationDegrees
-        let longitude = haDict["longitude"] as! CLLocationDegrees
+        guard let latitudeString = haDict["latitude"] as? String else { return }
+        guard let longitudeString = haDict["longitude"] as? String else { return }
+        let latitude = Double.init(latitudeString)! as CLLocationDegrees
+        let longitude = Double.init(longitudeString)! as CLLocationDegrees
         
         let mapCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         let span = MKCoordinateSpanMake(0.1, 0.1)
@@ -67,6 +74,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             imageView.frame = self.view.frame
             imageView.contentMode = .scaleAspectFit
             self.view.addSubview(imageView)
+            self.hud!.hide(animated: true)
         }
     }
 

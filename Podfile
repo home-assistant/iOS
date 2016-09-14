@@ -34,3 +34,7 @@ end
 target 'HomeAssistantUITests' do
 
 end
+
+target 'NotificationContentExtension' do
+  pod 'MBProgressHUD'
+end
