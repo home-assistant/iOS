@@ -108,7 +108,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let sns = AWSSNS.default()
         let request = AWSSNSCreatePlatformEndpointInput()
         request?.token = deviceTokenString
-        request?.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS_SANDBOX/HomeAssistant"
+        request?.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS/HomeAssistant"
+        request?.platformApplicationArn = Bundle.main.object(forInfoDictionaryKey: "SNS_PLATFORM_ENDPOINT_ARN") as? String
         sns.createPlatformEndpoint(request!).continue({ (task: AWSTask!) -> Any? in
             if task.error != nil {
                 print("Error: \(task.error)")

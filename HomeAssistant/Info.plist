@@ -96,5 +96,7 @@
 			</array>
 		</dict>
 	</array>
+	<key>SNS_PLATFORM_ENDPOINT_ARN</key>
+	<string>${SNS_PLATFORM_ENDPOINT_ARN}</string>
 </dict>
 </plist>

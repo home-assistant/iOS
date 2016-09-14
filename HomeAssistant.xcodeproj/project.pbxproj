@@ -1691,6 +1691,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "ef837074-1718-46f7-8115-472d7873591e";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant";
+				SNS_PLATFORM_ENDPOINT_ARN = "arn:aws:sns:us-west-2:663692594824:app/APNS_SANDBOX/HomeAssistant";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1755,6 +1756,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "bbd14c00-8d18-4926-a3a1-6e6d1074dc8d";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant";
+				SNS_PLATFORM_ENDPOINT_ARN = "arn:aws:sns:us-west-2:663692594824:app/APNS/HomeAssistant";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
