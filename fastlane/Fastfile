@@ -33,7 +33,7 @@ platform :ios do
   def change_log_since_last_tag
     # http://git-scm.com/docs/pretty-formats
     # <short hash> <commit title>
-    return changelog_from_git_commits(pretty: '%h %s')
+    return changelog_from_git_commits(pretty: '- %s (%h)')
   end
 
   def version_string(version_number, build_number)
