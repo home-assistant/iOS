@@ -361,46 +361,49 @@ public class HomeAssistantAPI {
     func storeEntities(entities: [Entity]) {
         for entity in entities {
             try! realm.write {
-                if let mapped = entity as? Automation {
-                    realm.createObject(ofType: Automation.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? BinarySensor {
-                    realm.createObject(ofType: BinarySensor.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Climate {
-                    realm.createObject(ofType: Climate.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? DeviceTracker {
-                    realm.createObject(ofType: DeviceTracker.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? GarageDoor {
-                    realm.createObject(ofType: GarageDoor.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Group {
-                    realm.createObject(ofType: Group.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Fan {
-                    realm.createObject(ofType: Fan.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? InputBoolean {
-                    realm.createObject(ofType: InputBoolean.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? InputSelect {
-                    realm.createObject(ofType: InputSelect.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Light {
-                    realm.createObject(ofType: Light.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Lock {
-                    realm.createObject(ofType: Lock.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? MediaPlayer {
-                    realm.createObject(ofType: MediaPlayer.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Scene {
-                    realm.createObject(ofType: Scene.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Script {
-                    realm.createObject(ofType: Script.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Sensor {
-                    realm.createObject(ofType: Sensor.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Sun {
-                    realm.createObject(ofType: Sun.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Switch {
-                    realm.createObject(ofType: Switch.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Thermostat {
-                    realm.createObject(ofType: Thermostat.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Weblink {
-                    realm.createObject(ofType: Weblink.self, populatedWith: mapped, update: true)
-                } else if let mapped = entity as? Zone {
-                    realm.createObject(ofType: Zone.self, populatedWith: mapped, update: true)
+                switch entity {
+                    case is Automation:
+                        realm.createObject(ofType: Automation.self, populatedWith: entity, update: true)
+                    case is BinarySensor:
+                        realm.createObject(ofType: BinarySensor.self, populatedWith: entity, update: true)
+                    case is Climate:
+                        realm.createObject(ofType: Climate.self, populatedWith: entity, update: true)
+                    case is DeviceTracker:
+                        realm.createObject(ofType: DeviceTracker.self, populatedWith: entity, update: true)
+                    case is GarageDoor:
+                        realm.createObject(ofType: GarageDoor.self, populatedWith: entity, update: true)
+                    case is Group:
+                        realm.createObject(ofType: Group.self, populatedWith: entity, update: true)
+                    case is Fan:
+                        realm.createObject(ofType: Fan.self, populatedWith: entity, update: true)
+                    case is InputBoolean:
+                        realm.createObject(ofType: InputBoolean.self, populatedWith: entity, update: true)
+                    case is InputSelect:
+                        realm.createObject(ofType: InputSelect.self, populatedWith: entity, update: true)
+                    case is Light:
+                        realm.createObject(ofType: Light.self, populatedWith: entity, update: true)
+                    case is Lock:
+                        realm.createObject(ofType: Lock.self, populatedWith: entity, update: true)
+                    case is MediaPlayer:
+                        realm.createObject(ofType: MediaPlayer.self, populatedWith: entity, update: true)
+                    case is Scene:
+                        realm.createObject(ofType: Scene.self, populatedWith: entity, update: true)
+                    case is Script:
+                        realm.createObject(ofType: Script.self, populatedWith: entity, update: true)
+                    case is Sensor:
+                        realm.createObject(ofType: Sensor.self, populatedWith: entity, update: true)
+                    case is Sun:
+                        realm.createObject(ofType: Sun.self, populatedWith: entity, update: true)
+                    case is Switch:
+                        realm.createObject(ofType: Switch.self, populatedWith: entity, update: true)
+                    case is Thermostat:
+                        realm.createObject(ofType: Thermostat.self, populatedWith: entity, update: true)
+                    case is Weblink:
+                        realm.createObject(ofType: Weblink.self, populatedWith: entity, update: true)
+                    case is Zone:
+                        realm.createObject(ofType: Zone.self, populatedWith: entity, update: true)
+                    default:
+                        print("No match!")
                 }
                 realm.createObject(ofType: Entity.self, populatedWith: entity, update: true)
             }
