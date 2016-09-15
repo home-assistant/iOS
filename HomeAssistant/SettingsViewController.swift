@@ -198,39 +198,39 @@ class SettingsViewController: FormViewController {
 //
 //                    }
             }
-        }
-        
-        for zone in realm.allObjects(ofType: Zone.self) {
-            form
-                +++ Section(header: zone.Name, footer: "") {
-                    $0.tag = zone.ID
+            
+            for zone in realm.allObjects(ofType: Zone.self) {
+                form
+                    +++ Section(header: zone.Name, footer: "") {
+                        $0.tag = zone.ID
+                    }
+                    <<< SwitchRow() {
+                        $0.title = "Updates Enabled"
+                        $0.value = zone.trackingEnabled
+                        }.onChange { row in
+                            try! realm.write { zone.trackingEnabled = row.value! }
+                    }
+                    <<< LocationRow() {
+                        $0.title = "Location"
+                        $0.value = zone.location()
+                    }
+                    <<< LabelRow(){
+                        $0.title = "Radius"
+                        $0.value = "\(Int(zone.Radius)) m"
+                    }
+                    <<< SwitchRow() {
+                        $0.title = "Enter Notification"
+                        $0.value = zone.enterNotification
+                        }.onChange { row in
+                            try! realm.write { zone.enterNotification = row.value! }
+                    }
+                    <<< SwitchRow() {
+                        $0.title = "Exit Notification"
+                        $0.value = zone.exitNotification
+                        }.onChange { row in
+                            try! realm.write { zone.exitNotification = row.value! }
                 }
-                <<< SwitchRow() {
-                    $0.title = "Updates Enabled"
-                    $0.value = zone.trackingEnabled
-                }.onChange { row in
-                    try! realm.write { zone.trackingEnabled = row.value! }
-                }
-                <<< LocationRow() {
-                    $0.title = "Location"
-                    $0.value = zone.location()
-                }
-                <<< LabelRow(){
-                    $0.title = "Radius"
-                    $0.value = "\(Int(zone.Radius)) m"
-                }
-                <<< SwitchRow() {
-                    $0.title = "Enter Notification"
-                    $0.value = zone.enterNotification
-                }.onChange { row in
-                    try! realm.write { zone.enterNotification = row.value! }
-                }
-                <<< SwitchRow() {
-                    $0.title = "Exit Notification"
-                    $0.value = zone.exitNotification
-                }.onChange { row in
-                    try! realm.write { zone.exitNotification = row.value! }
-                }
+            }
         }
         
         
