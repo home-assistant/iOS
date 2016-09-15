@@ -49,6 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UNUserNotificationCenter.current().delegate = self
         }
         
+        Crashlytics.sharedInstance().setObjectValue(prefs.integer(forKey: "lastInstalledVersion"), forKey: "lastInstalledVersion")
         let buildNumber = Int(string: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String)
         prefs.set(buildNumber, forKey: "lastInstalledVersion")
         
@@ -106,32 +107,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
         
-        print("Registering with deviceTokenString: \(deviceTokenString)")
+        print("Registering to AWS SNS with deviceTokenString: \(deviceTokenString)")
         
         let sns = AWSSNS.default()
-        let request = AWSSNSCreatePlatformEndpointInput()
-        request?.token = deviceTokenString
-        request?.platformApplicationArn = "arn:aws:sns:us-west-2:663692594824:app/APNS/HomeAssistant"
-        request?.platformApplicationArn = Bundle.main.object(forInfoDictionaryKey: "SNS_PLATFORM_ENDPOINT_ARN") as? String
-        sns.createPlatformEndpoint(request!).continue({ (task: AWSTask!) -> Any? in
+        let request = AWSSNSCreatePlatformEndpointInput()!
+        request.token = deviceTokenString
+        request.platformApplicationArn = Bundle.main.object(forInfoDictionaryKey: "SNS_PLATFORM_ENDPOINT_ARN") as? String
+        let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String
+        request.customUserData = "\(buildNumber),\(prefs.string(forKey: "userEmail"))"
+        sns.createPlatformEndpoint(request).continue({ (task: AWSTask!) -> Any? in
             if task.error != nil {
                 print("Error: \(task.error)")
                 Crashlytics.sharedInstance().recordError(task.error!)
+                return nil
             } else {
                 let createEndpointResponse = task.result!
-                print("endpointArn:", createEndpointResponse.endpointArn!)
+                print("Registered SNS endpoint:", createEndpointResponse.endpointArn!)
                 Crashlytics.sharedInstance().setObjectValue(createEndpointResponse.endpointArn!, forKey: "endpointArn")
                 Crashlytics.sharedInstance().setUserIdentifier(createEndpointResponse.endpointArn!.components(separatedBy: "/").last!)
                 self.prefs.setValue(createEndpointResponse.endpointArn!, forKey: "endpointARN")
                 self.prefs.setValue(deviceTokenString, forKey: "deviceToken")
-                let subrequest = try! AWSSNSSubscribeInput(dictionary: [
-                    "topicArn": "arn:aws:sns:us-west-2:663692594824:HomeAssistantiOSBetaTesters",
-                    "endpoint": createEndpointResponse.endpointArn,
-                    "protocols": "application"
-                ], error: ())
-                sns.subscribe(subrequest).continue ({ (subTask: AWSTask!) -> AnyObject! in
+                let subscribeInput = AWSSNSSubscribeInput()!
+                subscribeInput.protocols = "application"
+                subscribeInput.topicArn = "arn:aws:sns:us-west-2:663692594824:HomeAssistantiOSBetaTesters"
+                subscribeInput.endpoint = createEndpointResponse.endpointArn
+                sns.subscribe(subscribeInput).continue ({ (subTask: AWSTask!) -> AnyObject! in
                     if subTask.error != nil {
-                        print("Error: \(subTask.error)")
+                        print("Error when subscribing endpoint to broadcast topic: \(subTask.error)")
                         Crashlytics.sharedInstance().recordError(subTask.error!)
                     } else {
                         print("Subscribed endpoint to broadcast topic")
