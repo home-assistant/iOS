@@ -318,7 +318,7 @@ class SettingsViewController: FormViewController {
     }
     
     func checkForEmail() {
-        if prefs.bool(forKey: "emailSet") == false || prefs.string(forKey: "userEmail") != "" {
+        if prefs.bool(forKey: "emailSet") == false || prefs.string(forKey: "userEmail") == nil {
             print("This is first launch, let's prompt user for email.")
             let alert = UIAlertController(title: "Welcome", message: "Please enter the email address you used to sign up for the beta program with.", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: emailEntered))
