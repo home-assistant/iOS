@@ -172,24 +172,31 @@ class SettingsViewController: FormViewController {
                         $0.title = "Update push settings"
                     }.onCellSelection {_,_ in
                         HomeAssistantAPI.sharedInstance.setupPush()
+                        let alert = UIAlertController(title: "Settings Import", message: "Push settings imported from Home Assistant.", preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
                     }
                     
                     <<< ButtonRow() {
                         $0.title = "Import sounds from iTunes"
                     }.onCellSelection {_,_ in
-                        movePushNotificationSounds()
+                        let moved = movePushNotificationSounds()
+                        let message = (moved > 0) ? "\(moved) sounds were imported. Please restart your phone to complete the import." : "0 sounds were imported."
+                        let alert = UIAlertController(title: "Sounds Import", message: message, preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
                     }
 
-                    <<< ButtonRow() {
-                        $0.title = "Import system sounds"
-                    }.onCellSelection {_,_ in
-                        let list = getSoundList()
-                        print("system sounds list", list)
-                        for sound in list {
-                            copyFileToDirectory(sound)
-                        }
-
-                    }
+//                    <<< ButtonRow() {
+//                        $0.title = "Import system sounds"
+//                    }.onCellSelection {_,_ in
+//                        let list = getSoundList()
+//                        print("system sounds list", list)
+//                        for sound in list {
+//                            copyFileToDirectory(sound)
+//                        }
+//
+//                    }
             }
         }
         

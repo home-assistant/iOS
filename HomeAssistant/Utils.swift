@@ -48,35 +48,46 @@ func intFromHexString(_ hexStr: String) -> UInt32 {
 // Thanks to http://stackoverflow.com/a/35624018/486182
 // Must reboot device after installing new push sounds (http://stackoverflow.com/questions/34998278/change-push-notification-sound-file-only-works-after-ios-reboot)
 
-func movePushNotificationSounds() {
+func movePushNotificationSounds() -> Int {
     
     let fileManager: FileManager = FileManager()
     
     let libraryPath = try! fileManager.url(for: .libraryDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
     let librarySoundsPath = libraryPath.appendingPathComponent("Sounds")
-    let librarySoundsURL = librarySoundsPath as URL
-    if try! librarySoundsURL.checkResourceIsReachable() == false {
+    
+    do {
         print("Creating sounds directory at", librarySoundsPath)
-        try! fileManager.createDirectory(at: librarySoundsPath, withIntermediateDirectories: true, attributes: nil)
+        try fileManager.createDirectory(at: librarySoundsPath, withIntermediateDirectories: true, attributes: nil)
+    } catch let error as NSError {
+        print("Error creating /Library/Sounds directory", error)
+        return 0
     }
     
     let documentsPath = try! fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
     let fileList = try! fileManager.contentsOfDirectory(at: documentsPath, includingPropertiesForKeys: nil, options: FileManager.DirectoryEnumerationOptions())
+    var movedFiles = 0
     for file in fileList {
+        if file.lastPathComponent.contains("realm") {
+            continue
+        }
         let finalUrl = librarySoundsPath.appendingPathComponent(file.lastPathComponent)
         print("Moving", file, "to", finalUrl)
-        if try! (finalUrl as URL).checkResourceIsReachable() == false {
-            print("File already existed, removing it first!")
-            try! fileManager.removeItem(at: finalUrl)
+        do {
+            print("Checking for existence of file")
+            try fileManager.removeItem(at: finalUrl)
+        } catch let rmError as NSError {
+            print("Error removing existing file", rmError)
         }
         try! fileManager.moveItem(at: file, to: finalUrl)
+        movedFiles = movedFiles+1
     }
+    return movedFiles
 }
 
 func getSoundList() -> [String] {
     var result:[String] = []
     let fileManager = FileManager.default
-    let enumerator:FileManager.DirectoryEnumerator = fileManager.enumerator(atPath: "/System/Library/Audio/UISounds")!
+    let enumerator:FileManager.DirectoryEnumerator = fileManager.enumerator(atPath: "/System/Library/Audio/UISounds/New")!
     for url in enumerator.allObjects {
         result.append(url as! String)
     }
@@ -89,7 +100,13 @@ func copyFileToDirectory(_ fileName:String) {
     
     let libraryDir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.libraryDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
     let directoryPath = "\(libraryDir.first!)/Sounds"
-    try! fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
+    do {
+        print("Creating sounds directory at", directoryPath)
+        try fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
+    } catch let error as NSError {
+        print("Error creating /Library/Sounds directory", error)
+        return
+    }
     
     let systemSoundPath = "/System/Library/Audio/UISounds/New/\(fileName)"
     let notificationSoundPath = "\(directoryPath)/\(fileName)"
