@@ -104,9 +104,11 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             zoomRect = MKMapRectUnion(zoomRect, rect)
         }
 
-        let rect = mapView.overlays.reduce(mapView.overlays.first!.boundingMapRect, {MKMapRectUnion($0, $1.boundingMapRect)})
-        
-        mapView.setVisibleMapRect(MKMapRectUnion(zoomRect, rect), edgePadding: UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0), animated: true)
+        if let firstOverlay = mapView.overlays.first {
+            let rect = mapView.overlays.reduce(firstOverlay.boundingMapRect, {MKMapRectUnion($0, $1.boundingMapRect)})
+            
+            mapView.setVisibleMapRect(MKMapRectUnion(zoomRect, rect), edgePadding: UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0), animated: true)
+        }
         
     }
 
