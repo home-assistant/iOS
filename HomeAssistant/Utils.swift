@@ -11,10 +11,25 @@ import FontAwesomeKit
 import Crashlytics
 
 func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeight: Double, color: UIColor) -> UIImage {
-    CLSLogv("Requesting MaterialDesignIcon %@ %d %d", getVaList([iconIdentifier, iconWidth, iconHeight]))
-    let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as NSDictionary
+    let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as! [String:String]
+    Crashlytics.sharedInstance().setFloatValue(Float(iconWidth), forKey: "iconWidth")
+    Crashlytics.sharedInstance().setFloatValue(Float(iconHeight), forKey: "iconHeight")
+    Crashlytics.sharedInstance().setObjectValue(iconIdentifier, forKey: "iconIdentifier")
+    if iconIdentifier.contains("mdi") == false {
+        print("Invalid icon requested", iconIdentifier)
+        CLSLogv("Invalid icon requested %@", getVaList([iconIdentifier]))
+        let alert = UIAlertController(title: "Invalid icon", message: "There is an invalid icon in your configuration. Please search your configuration files for: \(iconIdentifier) and set it to a valid Material Design Icon. Until then, this icon will be a red exclamation point and this alert will continue to display.", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
+        let iconCode = iconCodes["mdi-exclamation"]
+        let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
+        theIcon?.addAttribute(NSForegroundColorAttributeName, value: colorWithHexString("#ff0000"))
+        return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
+    }
     let fixedIconIdentifier = iconIdentifier.replacingOccurrences(of: ":", with: "-")
-    let iconCode = iconCodes[fixedIconIdentifier] as? String
+    CLSLogv("Requesting MaterialDesignIcon: Identifier: %@, Fixed Identifier: %@, Width: %f, Height: %f", getVaList([iconIdentifier, fixedIconIdentifier, iconWidth, iconHeight]))
+    print("Requesting MaterialDesignIcon Identifier: \(iconIdentifier), Fixed identifier: \(fixedIconIdentifier), Width: \(iconWidth), Height: \(iconHeight)")
+    let iconCode = iconCodes[fixedIconIdentifier]
     let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
     theIcon?.addAttribute(NSForegroundColorAttributeName, value: color)
     return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))

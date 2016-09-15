@@ -83,11 +83,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
             groupView.Order = group.Order.value
             groupView.title = group.Name
             groupView.tabBarItem.title = group.Name
-            let firstEntity = group.Entities.first!
-            var firstEntityIcon = firstEntity.StateIcon()
-            if firstEntity.MobileIcon != nil { firstEntityIcon = firstEntity.MobileIcon! }
-            if firstEntity.Icon != nil { firstEntityIcon = firstEntity.Icon! }
-            let icon = getIconForIdentifier(firstEntityIcon, iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
+            let icon = group.Entities.first!.EntityIcon(width: 30, height: 30, color: tabBarIconColor)
             groupView.tabBarItem = UITabBarItem(title: group.Name, image: icon, tag: index)
             
             if group.Order.value == nil {

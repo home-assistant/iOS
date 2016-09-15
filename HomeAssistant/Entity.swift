@@ -229,6 +229,8 @@ class Entity: Object, StaticMappable {
     }
     
     func StateIcon() -> String {
+        if self.MobileIcon != nil { return self.MobileIcon! }
+        if self.Icon != nil { return self.Icon! }
         switch self {
         case is BinarySensor:
             return (self as! BinarySensor).StateIcon()
@@ -237,9 +239,6 @@ class Entity: Object, StaticMappable {
         case is MediaPlayer:
             return (self as! MediaPlayer).StateIcon()
         default:
-            if self.MobileIcon != nil { return self.MobileIcon! }
-            if self.Icon != nil { return self.Icon! }
-            
             if (self.UnitOfMeasurement == "°C" || self.UnitOfMeasurement == "°F") {
                 return "mdi:thermometer"
             } else if (self.UnitOfMeasurement == "Mice") {
@@ -264,10 +263,11 @@ class Entity: Object, StaticMappable {
     }
     
     var EntityIcon: UIImage {
-        var icon = self.StateIcon()
-        if self.MobileIcon != nil { icon = self.MobileIcon! }
-        if self.Icon != nil { icon = self.Icon! }
-        return getIconForIdentifier(icon, iconWidth: 30, iconHeight: 30, color: EntityColor())
+        return getIconForIdentifier(self.StateIcon(), iconWidth: 30, iconHeight: 30, color: self.EntityColor())
+    }
+    
+    func EntityIcon(width: Double, height: Double, color: UIColor) -> UIImage {
+        return getIconForIdentifier(self.StateIcon(), iconWidth: width, iconHeight: height, color: color)
     }
     
     var Name : String {
