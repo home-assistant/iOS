@@ -403,7 +403,7 @@ public class HomeAssistantAPI {
                     case is Zone:
                         realm.createObject(ofType: Zone.self, populatedWith: entity, update: true)
                     default:
-                        print("No match!")
+                        print("Unable to save \(entity.Domain)!")
                 }
                 realm.createObject(ofType: Entity.self, populatedWith: entity, update: true)
             }
@@ -608,8 +608,8 @@ public class HomeAssistantAPI {
                             let newAction = UIMutableUserNotificationAction()
                             newAction.title = action.Title
                             newAction.identifier = action.Identifier
-                            newAction.isAuthenticationRequired = action.AuthenticationRequired!
-                            newAction.isDestructive = action.Destructive!
+                            newAction.isAuthenticationRequired = action.AuthenticationRequired
+                            newAction.isDestructive = action.Destructive
                             newAction.behavior = (action.Behavior == "default") ? UIUserNotificationActionBehavior.default : UIUserNotificationActionBehavior.textInput
                             newAction.activationMode = (action.ActivationMode == "foreground") ? UIUserNotificationActivationMode.foreground : UIUserNotificationActivationMode.background
                             if let params = action.Parameters {
@@ -647,10 +647,10 @@ public class HomeAssistantAPI {
                         var categoryActions = [UNNotificationAction]()
                         for action in category.Actions! {
                             var actionOptions = UNNotificationActionOptions([])
-                            if action.AuthenticationRequired! {
+                            if action.AuthenticationRequired {
                                 actionOptions.insert(.authenticationRequired)
                             }
-                            if action.Destructive! {
+                            if action.Destructive {
                                 actionOptions.insert(.destructive)
                             }
                             if (action.ActivationMode == "foreground") {
@@ -660,7 +660,7 @@ public class HomeAssistantAPI {
                                 let newAction = UNNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions)
                                 categoryActions.append(newAction)
                             } else if (action.Behavior == "TextInput") {
-                                let newAction = UNTextInputNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions, textInputButtonTitle: action.TextInputButtonTitle!, textInputPlaceholder: action.TextInputPlaceholder!)
+                                let newAction = UNTextInputNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions, textInputButtonTitle: action.TextInputButtonTitle, textInputPlaceholder: action.TextInputPlaceholder)
                                 categoryActions.append(newAction)
                             }
                         }

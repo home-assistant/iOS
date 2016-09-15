@@ -29,14 +29,14 @@ class PushCategory: Mappable {
 class PushAction: Mappable {
     var Title: String?
     var Identifier: String?
-    var AuthenticationRequired: Bool?
-    var Behavior: String?
-    var ActivationMode: String?
-    var Destructive: Bool?
+    var AuthenticationRequired: Bool = false
+    var Behavior: String = "default"
+    var ActivationMode: String = "background"
+    var Destructive: Bool = false
     var Context: String?
     var Parameters: [String:AnyObject]?
-    var TextInputButtonTitle: String?
-    var TextInputPlaceholder: String?
+    var TextInputButtonTitle: String = "Send"
+    var TextInputPlaceholder: String = ""
     
     required init?(_ map: Map){
         
