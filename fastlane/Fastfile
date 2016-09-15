@@ -20,28 +20,14 @@ platform :ios do
     # cocoapods
   end
 
-  desc "Runs all the tests"
-  lane :test do
-    scan
-  end
-
-  desc "Installs FixCode which disables the \"Fix Issue\" button in Xcode"
-  lane :xcode do
-    install_xcode_plugin(
-      url: "https://github.com/fastlane/FixCode/releases/download/0.2.0/FixCode.xcplugin.zip"
-    )
-  end
-
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
   lane :certs do
-    match(type: "development")
-    match(type: "appstore")
-  end
-
-  desc "Creates a new push certificate, ready to be uploaded to SNS"
-  lane :push do
-    pem(generate_p12: true, save_private_key: true)
-    puts "------------------ Please upload the .p12 file to SNS ------------------ ".yellow
+    match(app_identifier: "io.robbie.HomeAssistant", type: "development")
+    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "development")
+    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "development")
+    match(app_identifier: "io.robbie.HomeAssistant", type: "appstore")
+    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "appstore")
+    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "appstore")
   end
 
   def change_log_since_last_tag
@@ -73,18 +59,7 @@ platform :ios do
 
   desc "Submit a new Beta Build to Apple TestFlight"
   desc "This will also make sure the profile is up to date"
-  lane :beta do
-    increment_build_number
-    commit_version_bump
-    match(type: "appstore")
-    gym(scheme: "HomeAssistant", workspace: "HomeAssistant.xcworkspace", output_directory: "./build")
-    pilot
-
-    # sh "your_script.sh"
-    # You can also use other beta testing services here (run `fastlane actions`)
-  end
-
-  lane :testflight do |options|
+  lane :go_testflight do |options|
     load_keys
 
     ensure_git_branch(
@@ -135,7 +110,7 @@ platform :ios do
       api_token: ENV["GITHUB_API_TOKEN"],
       name: complete_version_number,
       tag_name: tag_name("testflight", version_number, build_number),
-      description: change_log_since_last_tag,
+      description: change_log_since_last_tag || "Release commit",
       is_prerelease: false
     )
 
@@ -143,7 +118,7 @@ platform :ios do
   end
 
   desc "Deploy a new version to the App Store"
-  lane :appstore do
+  lane :go_appstore do
     increment_build_number
     commit_version_bump
     match(type: "appstore")
