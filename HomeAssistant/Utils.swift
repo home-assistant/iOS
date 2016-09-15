@@ -8,9 +8,10 @@
 
 import Foundation
 import FontAwesomeKit
-import SystemConfiguration.CaptiveNetwork
+import Crashlytics
 
 func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeight: Double, color: UIColor) -> UIImage {
+    CLSLogv("Requesting MaterialDesignIcon %@ %d %d", getVaList([iconIdentifier, iconWidth, iconHeight]))
     let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as NSDictionary
     let fixedIconIdentifier = iconIdentifier.replacingOccurrences(of: ":", with: "-")
     let iconCode = iconCodes[fixedIconIdentifier] as? String
