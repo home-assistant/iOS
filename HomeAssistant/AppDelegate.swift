@@ -117,6 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             } else {
                 let createEndpointResponse = task.result!
                 print("endpointArn:", createEndpointResponse.endpointArn!)
+                Crashlytics.sharedInstance().setObjectValue(createEndpointResponse.endpointArn!, forKey: "endpointArn")
                 Crashlytics.sharedInstance().setUserIdentifier(createEndpointResponse.endpointArn!.components(separatedBy: "/").last!)
                 self.prefs.setValue(createEndpointResponse.endpointArn!, forKey: "endpointARN")
                 self.prefs.setValue(deviceTokenString, forKey: "deviceToken")
