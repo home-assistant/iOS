@@ -78,11 +78,7 @@ platform :ios do
     build_number = increment_build_number
     complete_version_number = version_string(version_number, build_number)
 
-    commit_version_bump(
-      message: "Version bump to #{complete_version_number}",
-      xcodeproj: "HomeAssistant.xcodeproj"
-    )
-
+    # Needed so that the changelog doesn't include the version bump commit
     change_log = change_log_since_last_tag
 
     clean_build_artifacts
@@ -99,20 +95,33 @@ platform :ios do
       output_directory: "./build"
     )
 
+    notification(subtitle: "Finished Building", message: "Uploading to Testflight", activate: "com.googlecode.iterm2", app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png")
+
     pilot(
       changelog: change_log,
       skip_submission: true,
       distribute_external: false
     )
 
+    notification(subtitle: "Finished Uploading", message: "Upload complete. Committing version bump and pushing to Git", activate: "com.googlecode.iterm2", app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png")
+
+    commit_version_bump(
+      message: "Version bump to #{complete_version_number}",
+      xcodeproj: "HomeAssistant.xcodeproj"
+    )
+
+    push_to_git_remote
+
     set_github_release(
       repository_name: "home-assistant/home-assistant-iOS",
       api_token: ENV["GITHUB_API_TOKEN"],
       name: complete_version_number,
       tag_name: tag_name("testflight", version_number, build_number),
-      description: change_log_since_last_tag || "Release commit",
+      description: change_log || "Release commit",
       is_prerelease: false
     )
+
+    notification(subtitle: "Finished", message: "Build #{complete_version_number} built and uploaded to Testflight", activate: "com.googlecode.iterm2", app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png")
 
     rocket
   end
