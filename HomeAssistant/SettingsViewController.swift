@@ -207,8 +207,8 @@ class SettingsViewController: FormViewController {
                     <<< SwitchRow() {
                         $0.title = "Updates Enabled"
                         $0.value = zone.trackingEnabled
-                        }.onChange { row in
-                            try! realm.write { zone.trackingEnabled = row.value! }
+                    }.onChange { row in
+                        try! realm.write { zone.trackingEnabled = row.value! }
                     }
                     <<< LocationRow() {
                         $0.title = "Location"

@@ -102,17 +102,36 @@ class GroupViewController: FormViewController {
                         }
                     }
                 case "device_tracker":
-                    if entity.Attributes["latitude"] != nil && entity.Attributes["longitude"] != nil {
-                        let latitude = entity.Attributes["latitude"] as! Double
-                        let longitude = entity.Attributes["longitude"] as! Double
-                        self.form.last! <<< LocationRow(entity.ID) {
-                            $0.title = entity.Name
-                            $0.value = CLLocation(latitude: latitude, longitude: longitude)
-                        }.cellUpdate { cell, row in
-                            cell.detailTextLabel?.text = entity.CleanedState
-                            cell.imageView?.image = entity.EntityIcon
-                            if let picture = entity.DownloadedPicture {
-                                cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
+                    if let dtracker = realm.object(ofType: DeviceTracker.self, forPrimaryKey: entity.ID) {
+                        if dtracker.Latitude.value != nil && dtracker.Longitude.value != nil {
+                            self.form.last! <<< LocationRow(entity.ID) {
+                                $0.title = entity.Name
+                                $0.value = dtracker.location()
+                            }.cellUpdate { cell, row in
+                                cell.detailTextLabel?.text = entity.CleanedState
+                                cell.imageView?.image = entity.EntityIcon
+                                if let picture = entity.DownloadedPicture {
+                                    cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
+                                }
+                            }
+                        } else {
+                            self.form.last! <<< ButtonRow(entity.ID) {
+                                $0.title = entity.Name
+                                $0.cellStyle = .value1
+                                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                                    let attributesView = EntityAttributesViewController()
+                                    attributesView.entityID = entity.ID
+                                    return attributesView
+                                }, completionCallback: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
+                                }.cellUpdate { cell, row in
+                                    cell.detailTextLabel?.text = entity.CleanedState
+                                    if let uom = entity.UnitOfMeasurement {
+                                        cell.detailTextLabel?.text = (entity.State + " " + uom).replacingOccurrences(of: "_", with: " ").capitalized
+                                    }
+                                    cell.imageView?.image = entity.EntityIcon
+                                    if let picture = entity.DownloadedPicture {
+                                        cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
+                                    }
                             }
                         }
                     } else {
@@ -123,7 +142,7 @@ class GroupViewController: FormViewController {
                                 let attributesView = EntityAttributesViewController()
                                 attributesView.entityID = entity.ID
                                 return attributesView
-                                }, completionCallback: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
+                            }, completionCallback: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
                             }.cellUpdate { cell, row in
                                 cell.detailTextLabel?.text = entity.CleanedState
                                 if let uom = entity.UnitOfMeasurement {

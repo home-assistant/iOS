@@ -32,6 +32,6 @@ class Zone: Entity {
     }
     
     func location() -> CLLocation {
-        return CLLocation(latitude: CLLocationDegrees(self.Latitude), longitude: CLLocationDegrees(self.Longitude))
+        return CLLocation(coordinate: self.locationCoordinates(), altitude: 0, horizontalAccuracy: self.Radius, verticalAccuracy: -1, timestamp: Date())
     }
 }
