@@ -16,8 +16,8 @@ PODS:
   - DeviceKit (1.0.0)
   - Eureka (1.7.0)
   - Fabric (1.6.8)
-  - FontAwesomeKit/Core (2.2.3)
-  - FontAwesomeKit/MaterialDesignIcons (2.2.3):
+  - FontAwesomeKit/Core (2.2.4)
+  - FontAwesomeKit/MaterialDesignIcons (2.2.4):
     - FontAwesomeKit/Core
   - IKEventSource (1.2)
   - MBProgressHUD (1.0.0)
@@ -124,7 +124,7 @@ CHECKOUT OPTIONS:
     :commit: c6230f61f2c718ecdfd270ca163f4766fa47bbe9
     :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
-    :commit: a9f8d5988707e65db922dda047e0395b72eeedf3
+    :commit: 8032213d13242c6466a048730f0defe98e10c1d6
     :git: https://github.com/robbiet480/FontAwesomeKit.git
   IKEventSource:
     :commit: 888ccedd4af1bccb3847940553598ab80ee5fb9f
@@ -166,7 +166,7 @@ SPEC CHECKSUMS:
   DeviceKit: ddead7f3a7c9603ba3a63cb748566428c38dd11f
   Eureka: 2020d9faeef7b7e9adeb9e3d8af779e5931c1897
   Fabric: 5755268d0171435ab167e3d0878a28a777deaf10
-  FontAwesomeKit: 7336af53079bde1943da68c20a2d06436e3ef1ca
+  FontAwesomeKit: b5c9ddc9504c4a07945b7b4590e7f9ad5a50e073
   IKEventSource: a8b2ae0aa469d3dcf3a1d99a102430d46e95e8bd
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   ObjectMapper: a07ad0462c5adf014adc0f89ef04c29b626e855e
