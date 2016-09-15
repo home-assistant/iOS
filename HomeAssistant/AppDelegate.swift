@@ -49,6 +49,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UNUserNotificationCenter.current().delegate = self
         }
         
+        let buildNumber = Int(string: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String)
+        prefs.set(buildNumber, forKey: "lastInstalledVersion")
+        
         initAPI()
         
         return true

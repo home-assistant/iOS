@@ -26,17 +26,7 @@ class SettingsViewController: FormViewController {
         var hideAbout = false
         var hideLowerSave = false
         
-        if prefs.bool(forKey: "emailSet") == false {
-            print("This is first launch, let's prompt user for email.")
-            let alert = UIAlertController(title: "Welcome", message: "Please enter the email address you used to sign up for the beta program with.", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: emailEntered))
-            alert.addTextField(configurationHandler: {(textField: UITextField!) in
-                textField.placeholder = "myawesomeemail@gmail.com"
-                textField.keyboardType = .emailAddress
-                self.emailInput = textField
-            })
-            self.present(alert, animated: true, completion: nil)
-        }
+        checkForEmail()
         
         if showErrorConnectingMessage {
             let alert = UIAlertController(title: "Connection error", message: "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect.", preferredStyle: UIAlertControllerStyle.alert)
@@ -312,10 +302,33 @@ class SettingsViewController: FormViewController {
     
     @IBOutlet var emailInput: UITextField!
     func emailEntered(_ sender: UIAlertAction) {
-        print("Captured email", emailInput.text)
-        Crashlytics.sharedInstance().setUserEmail(emailInput.text)
-        print("First launch, setting NSUserDefault.")
-        prefs.set(true, forKey: "emailSet")
+        if let email = emailInput.text {
+            if emailInput.text != "" {
+                print("Captured email", email)
+                Crashlytics.sharedInstance().setUserEmail(email)
+                print("First launch, setting NSUserDefault.")
+                prefs.set(true, forKey: "emailSet")
+                prefs.set(email, forKey: "userEmail")
+            } else {
+                checkForEmail()
+            }
+        } else {
+            checkForEmail()
+        }
+    }
+    
+    func checkForEmail() {
+        if prefs.bool(forKey: "emailSet") == false || prefs.string(forKey: "userEmail") != "" {
+            print("This is first launch, let's prompt user for email.")
+            let alert = UIAlertController(title: "Welcome", message: "Please enter the email address you used to sign up for the beta program with.", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: emailEntered))
+            alert.addTextField(configurationHandler: {(textField: UITextField!) in
+                textField.placeholder = "myawesomeemail@gmail.com"
+                textField.keyboardType = .emailAddress
+                self.emailInput = textField
+            })
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     func saveSettingsButton(_ sender: UIButton) {
