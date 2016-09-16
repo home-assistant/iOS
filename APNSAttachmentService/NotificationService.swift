@@ -7,6 +7,7 @@
 //
 
 import UserNotifications
+import MobileCoreServices
 
 final class NotificationService: UNNotificationServiceExtension {
     
@@ -15,6 +16,7 @@ final class NotificationService: UNNotificationServiceExtension {
     
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void){
         print("APNSAttachmentService started!")
+        print("Received userInfo", request.content.userInfo)
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
         
@@ -26,7 +28,11 @@ final class NotificationService: UNNotificationServiceExtension {
             return failEarly()
         }
         
-        guard let attachmentString = content.userInfo["attachment-url"] as? String else {
+        guard let incomingAttachment = content.userInfo["attachment"] as? [String:Any] else {
+            return failEarly()
+        }
+        
+        guard let attachmentString = incomingAttachment["url"] as? String else {
             return failEarly()
         }
         
@@ -34,8 +40,43 @@ final class NotificationService: UNNotificationServiceExtension {
             return failEarly()
         }
         
+        var attachmentOptions:[String:Any] = [:]
+        if let attachmentContentType = incomingAttachment["content-type"] as? String {
+            var contentType:CFString = attachmentContentType as CFString
+            switch attachmentContentType.lowercased() {
+            case "aiff":
+                contentType = kUTTypeAudioInterchangeFileFormat
+            case "avi":
+                contentType = kUTTypeAVIMovie
+            case "gif":
+                contentType = kUTTypeGIF
+            case "jpeg", "jpg":
+                contentType = kUTTypeJPEG
+            case "mp3":
+                contentType = kUTTypeMP3
+            case "mpeg":
+                contentType = kUTTypeMPEG
+            case "mpeg2":
+                contentType = kUTTypeMPEG2Video
+            case "mpeg4":
+                contentType = kUTTypeMPEG4
+            case "mpeg4audio":
+                contentType = kUTTypeMPEG4Audio
+            case "png":
+                contentType = kUTTypePNG
+            case "waveformaudio":
+                contentType = kUTTypeWaveformAudio
+            default:
+                contentType = attachmentContentType as CFString
+            }
+            attachmentOptions[UNNotificationAttachmentOptionsTypeHintKey] = contentType
+        }
+        if let attachmentHideThumbnail = incomingAttachment["hide-thumbnail"] as? Bool {
+            attachmentOptions[UNNotificationAttachmentOptionsThumbnailHiddenKey] = attachmentHideThumbnail
+        }
         guard let attachmentData = NSData(contentsOf:attachmentURL) else { return failEarly() }
-        guard let attachment = UNNotificationAttachment.create(fileIdentifier: attachmentURL.lastPathComponent, data: attachmentData, options: nil) else { return failEarly() }
+        guard let attachment = UNNotificationAttachment.create(fileIdentifier: attachmentURL.lastPathComponent, data: attachmentData, options: attachmentOptions) else { return failEarly() }
+        
         content.attachments.append(attachment)
         
         contentHandler(content.copy() as! UNNotificationContent)
@@ -54,7 +95,7 @@ final class NotificationService: UNNotificationServiceExtension {
 extension UNNotificationAttachment {
     
     /// Save the attachment URL to disk
-    static func create(fileIdentifier: String, data: NSData, options: [NSObject : AnyObject]?) -> UNNotificationAttachment? {
+    static func create(fileIdentifier: String, data: NSData, options: [AnyHashable : Any]?) -> UNNotificationAttachment? {
         let fileManager = FileManager.default
         let tmpSubFolderName = ProcessInfo.processInfo.globallyUniqueString
         let tmpSubFolderURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(tmpSubFolderName, isDirectory: true)
@@ -65,7 +106,7 @@ extension UNNotificationAttachment {
             try data.write(to: fileURL!, options: [])
             return try UNNotificationAttachment.init(identifier: "", url: fileURL!, options: options)
         } catch let error {
-            print("error \(error)")
+            print("Error when saving attachment: \(error)")
         }
         
         return nil
