@@ -165,6 +165,7 @@
 		B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66428111CF7A83200903804 /* PushConfiguration.swift */; };
 		B6767A511D0234E700F2A08B /* SwitchableEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6767A501D0234E700F2A08B /* SwitchableEntity.swift */; };
 		B6880B2B1D7B9E6400CCB899 /* ClimateComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6880B2A1D7B9E6400CCB899 /* ClimateComponent.swift */; };
+		B689EBCB1D8B7C800000AECE /* MjpegStreamingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */; };
 		B6AAD7A41D827DD40090B220 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AAD7A31D827DD40090B220 /* NotificationService.swift */; };
 		B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6DBF7661D89F7D800402A57 /* AutomationComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DBF7651D89F7D800402A57 /* AutomationComponent.swift */; };
@@ -421,6 +422,7 @@
 		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B6880B2A1D7B9E6400CCB899 /* ClimateComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClimateComponent.swift; sourceTree = "<group>"; };
+		B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MjpegStreamingController.swift; sourceTree = "<group>"; };
 		B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeAssistant.entitlements; sourceTree = "<group>"; };
 		B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = APNSAttachmentService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AAD7A31D827DD40090B220 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -707,6 +709,7 @@
 				B627CB0D1D83C87B0057173E /* NotificationViewController.swift */,
 				B627CB0F1D83C87B0057173E /* MainInterface.storyboard */,
 				B627CB121D83C87B0057173E /* Info.plist */,
+				B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */,
 			);
 			path = NotificationContentExtension;
 			sourceTree = "<group>";
@@ -1408,6 +1411,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B689EBCB1D8B7C800000AECE /* MjpegStreamingController.swift in Sources */,
 				B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

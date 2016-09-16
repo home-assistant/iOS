@@ -18,23 +18,26 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        hud.detailsLabel.text = "Loading map..."
-        hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
-        self.hud = hud
         // Do any required interface initialization here.
     }
     
     func didReceive(_ notification: UNNotification) {
+        print("Received a \(notification.request.content.categoryIdentifier) notification type")
+        let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+        hud.detailsLabel.text = "Loading \(notification.request.content.categoryIdentifier)..."
+        hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
+        self.hud = hud
         switch (notification.request.content.categoryIdentifier) {
-            case "mapNotification":
-                buildMapView(notification)
+            case "map":
+                mapHandler(notification)
+            case "camera":
+                cameraHandler(notification)
             default:
-                buildMapView(notification)
+                return
         }
     }
     
-    func buildMapView(_ notification: UNNotification) {
+    func mapHandler(_ notification: UNNotification) {
         let haDict = notification.request.content.userInfo["homeassistant"] as! [String:Any]
         guard let latitudeString = haDict["latitude"] as? String else { return }
         guard let longitudeString = haDict["longitude"] as? String else { return }
@@ -75,7 +78,28 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             imageView.contentMode = .scaleAspectFit
             self.view.addSubview(imageView)
             self.hud!.hide(animated: true)
+            self.preferredContentSize = CGSize(width: 0, height: imageView.frame.maxY)
         }
+    }
+    
+    func cameraHandler(_ notification: UNNotification) {
+        guard let incomingAttachment = notification.request.content.userInfo["attachment"] as? [String:Any] else { return }
+        guard let attachmentString = incomingAttachment["url"] as? String else { return }
+        guard let attachmentURL = URL(string: attachmentString) else { return }
+        
+        let imageView = UIImageView()
+        imageView.frame = self.view.frame
+        imageView.contentMode = .scaleAspectFit
+        
+        // TODO: Need to use the authentication information from HAAPI so that the image will be valid forever instead of 10 minutes
+        let streamingController = MjpegStreamingController(imageView: imageView, contentURL: attachmentURL)
+        streamingController.didFinishLoading = { _ in
+            print("Finished loading")
+            self.hud!.hide(animated: true)
+
+            self.view.addSubview(imageView)
+        }
+        streamingController.play()
     }
 
 }
