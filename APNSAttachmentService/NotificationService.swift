@@ -14,11 +14,22 @@ final class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?
     private var bestAttemptContent: UNMutableNotificationContent?
     
+    private var baseURL: String = ""
+    private var apiPassword: String = ""
+    
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void){
         print("APNSAttachmentService started!")
         print("Received userInfo", request.content.userInfo)
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
+        
+        let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
+        if let url = prefs.string(forKey: "baseURL") {
+            baseURL = url
+        }
+        if let pass = prefs.string(forKey: "apiPassword") {
+            apiPassword = pass
+        }
         
         func failEarly() {
             contentHandler(request.content)
@@ -28,8 +39,23 @@ final class NotificationService: UNNotificationServiceExtension {
             return failEarly()
         }
         
-        guard let incomingAttachment = content.userInfo["attachment"] as? [String:Any] else {
-            return failEarly()
+        var incomingAttachment: [String:Any] = [:]
+        
+        if let iAttachment = content.userInfo["attachment"] as? [String:Any] {
+            incomingAttachment = iAttachment
+        }
+        
+        if content.categoryIdentifier == "camera" && incomingAttachment["url"] == nil {
+            guard let entityId = content.userInfo["entity_id"] as? String else {
+                return failEarly()
+            }
+            incomingAttachment["url"] = "\(baseURL)/api/camera_proxy/\(entityId)?api_password=\(apiPassword)"
+        } else {
+            // Check if we still have an empty dictionary
+            if incomingAttachment.isEmpty {
+                // Attachment wasn't there/not a string:any, and this isn't a camera category, so we should fail
+                return failEarly()
+            }
         }
         
         guard let attachmentString = incomingAttachment["url"] as? String else {

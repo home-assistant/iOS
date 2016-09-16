@@ -16,6 +16,8 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     var hud: MBProgressHUD? = nil
     
+    private var baseURL: String = ""
+    
     let urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default
     
     override func viewDidLoad() {
@@ -23,6 +25,9 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         // Do any required interface initialization here.
         
         let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
+        if let url = prefs.string(forKey: "baseURL") {
+            baseURL = url
+        }
         if let pass = prefs.string(forKey: "apiPassword") {
             urlConfiguration.httpAdditionalHeaders = ["X-HA-Access": pass]
         }
@@ -90,16 +95,14 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     }
     
     func cameraHandler(_ notification: UNNotification) {
-        guard let incomingAttachment = notification.request.content.userInfo["attachment"] as? [String:Any] else { return }
-        guard let attachmentString = incomingAttachment["url"] as? String else { return }
-        guard let attachmentURL = URL(string: attachmentString) else { return }
+        guard let entityId = notification.request.content.userInfo["entity_id"] as? String else { return }
+        guard let cameraProxyURL = URL(string: "\(baseURL)/api/camera_proxy_stream/\(entityId)") else { return }
         
         let imageView = UIImageView()
         imageView.frame = self.view.frame
         imageView.contentMode = .scaleAspectFit
         
-        // TODO: Need to use the authentication information from HAAPI so that the image will be valid forever instead of 10 minutes
-        let streamingController = MjpegStreamingController(imageView: imageView, contentURL: attachmentURL, sessionConfiguration: urlConfiguration)
+        let streamingController = MjpegStreamingController(imageView: imageView, contentURL: cameraProxyURL, sessionConfiguration: urlConfiguration)
         streamingController.didFinishLoading = { _ in
             print("Finished loading")
             self.hud!.hide(animated: true)
