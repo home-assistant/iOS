@@ -54,7 +54,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 //                print("$0.View: \($0.View) !$0.View: \(!$0.View)")
 //                print("ShouldReturn is now", shouldReturn)
 //            }
-            print("")
             // If all entities are a group, return false
             var groupCheck = [String]()
             for entity in $0.Entities {
