@@ -30,9 +30,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    let prefs = UserDefaults.standard
+    let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+        migrateUserDefaultsToAppGroups()
         Realm.Configuration.defaultConfiguration = realmConfig
         print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.path)
         Fabric.with([Crashlytics.self])

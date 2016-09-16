@@ -15,7 +15,7 @@ import Crashlytics
 
 class SettingsViewController: FormViewController {
 
-    let prefs = UserDefaults.standard
+    let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
     
     var showErrorConnectingMessage = false
     

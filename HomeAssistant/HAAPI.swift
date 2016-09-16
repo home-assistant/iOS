@@ -22,7 +22,7 @@ import Crashlytics
 import RealmSwift
 import UserNotifications
 
-let prefs = UserDefaults.standard
+let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
 
 let APIClientSharedInstance = HomeAssistantAPI()
 

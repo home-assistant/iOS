@@ -423,6 +423,8 @@
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B6880B2A1D7B9E6400CCB899 /* ClimateComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClimateComponent.swift; sourceTree = "<group>"; };
 		B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MjpegStreamingController.swift; sourceTree = "<group>"; };
+		B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = APNSAttachmentService.entitlements; sourceTree = "<group>"; };
+		B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationContentExtension.entitlements; sourceTree = "<group>"; };
 		B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeAssistant.entitlements; sourceTree = "<group>"; };
 		B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = APNSAttachmentService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AAD7A31D827DD40090B220 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -706,6 +708,7 @@
 		B627CB0C1D83C87B0057173E /* NotificationContentExtension */ = {
 			isa = PBXGroup;
 			children = (
+				B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */,
 				B627CB0D1D83C87B0057173E /* NotificationViewController.swift */,
 				B627CB0F1D83C87B0057173E /* MainInterface.storyboard */,
 				B627CB121D83C87B0057173E /* Info.plist */,
@@ -799,6 +802,7 @@
 		B6AAD7A21D827DD40090B220 /* APNSAttachmentService */ = {
 			isa = PBXGroup;
 			children = (
+				B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */,
 				B6AAD7A31D827DD40090B220 /* NotificationService.swift */,
 				B6AAD7A51D827DD40090B220 /* Info.plist */,
 			);
@@ -981,12 +985,20 @@
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = UTQFCBPQRF;
 						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					B657A8E51CA646EB00121384 = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
@@ -1015,6 +1027,11 @@
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = UTQFCBPQRF;
 						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -1553,6 +1570,7 @@
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_ENTITLEMENTS = NotificationContentExtension/NotificationContentExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -1562,8 +1580,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.NotificationContentExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "bced18ea-ff3a-4125-98d8-8a6c98d2b1fb";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.NotificationContentExtension";
+				PROVISIONING_PROFILE = "b91e468e-4fc7-42ae-a422-df08fcabc90a";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.NotificationContentExtension 1473993094";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 3.0;
@@ -1576,6 +1594,7 @@
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_ENTITLEMENTS = NotificationContentExtension/NotificationContentExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
@@ -1584,8 +1603,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.NotificationContentExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "77f2c6c7-29a4-409f-a6aa-e924f5b3a0da";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.NotificationContentExtension";
+				PROVISIONING_PROFILE = "b263da23-a03f-4ec3-ab81-4c9be906a39b";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.NotificationContentExtension 1473993208";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 			};
@@ -1743,8 +1762,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ef837074-1718-46f7-8115-472d7873591e";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant";
+				PROVISIONING_PROFILE = "f54e717c-5d4c-47b7-8636-ac383cc504a8";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant 1473993070";
 				SNS_PLATFORM_ENDPOINT_ARN = "arn:aws:sns:us-west-2:663692594824:app/APNS_SANDBOX/HomeAssistant";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
@@ -1808,8 +1827,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "bbd14c00-8d18-4926-a3a1-6e6d1074dc8d";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant";
+				PROVISIONING_PROFILE = "bbef0c3e-93d6-48c3-9e98-ede0cc0b42b0";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant 1473993199";
 				SNS_PLATFORM_ENDPOINT_ARN = "arn:aws:sns:us-west-2:663692594824:app/APNS/HomeAssistant";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
@@ -1876,6 +1895,7 @@
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_ENTITLEMENTS = APNSAttachmentService/APNSAttachmentService.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
@@ -1884,8 +1904,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.APNSAttachmentService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "e7819a2d-1165-442c-9f09-f9dcc32534db";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.APNSAttachmentService";
+				PROVISIONING_PROFILE = "0a523f47-5a1a-4be4-999f-fe5e827d03b7";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.APNSAttachmentService 1473993113";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 3.0;
@@ -1897,6 +1917,7 @@
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_ENTITLEMENTS = APNSAttachmentService/APNSAttachmentService.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
@@ -1905,8 +1926,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.APNSAttachmentService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "e5b2ec90-b4f8-4024-ab5e-717c1a805eae";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.APNSAttachmentService";
+				PROVISIONING_PROFILE = "9b8ee7f8-65fc-4287-9561-a6b4602e80a1";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.APNSAttachmentService 1473993218";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 			};

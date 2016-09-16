@@ -297,7 +297,7 @@ open class HomeAssistantTimestampTransform: DateFormatterTransform {
         let formatter = DateFormatter()
         formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        if let HATimezone = UserDefaults.standard.string(forKey: "time_zone") {
+        if let HATimezone = UserDefaults(suiteName: "group.io.robbie.homeassistant")!.string(forKey: "time_zone") {
             formatter.timeZone = TimeZone(identifier: HATimezone)!
         } else {
             formatter.timeZone = TimeZone.autoupdatingCurrent
