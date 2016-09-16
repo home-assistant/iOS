@@ -28,7 +28,7 @@ func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeigh
     }
     let fixedIconIdentifier = iconIdentifier.replacingOccurrences(of: ":", with: "-")
     CLSLogv("Requesting MaterialDesignIcon: Identifier: %@, Fixed Identifier: %@, Width: %f, Height: %f", getVaList([iconIdentifier, fixedIconIdentifier, iconWidth, iconHeight]))
-    print("Requesting MaterialDesignIcon Identifier: \(iconIdentifier), Fixed identifier: \(fixedIconIdentifier), Width: \(iconWidth), Height: \(iconHeight)")
+    // print("Requesting MaterialDesignIcon Identifier: \(iconIdentifier), Fixed identifier: \(fixedIconIdentifier), Width: \(iconWidth), Height: \(iconHeight)")
     let iconCode = iconCodes[fixedIconIdentifier]
     let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
     theIcon?.addAttribute(NSForegroundColorAttributeName, value: color)
