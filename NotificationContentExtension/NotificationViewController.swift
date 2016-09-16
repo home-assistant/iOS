@@ -16,9 +16,16 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     var hud: MBProgressHUD? = nil
     
+    let urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any required interface initialization here.
+        
+        let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
+        if let pass = prefs.string(forKey: "apiPassword") {
+            urlConfiguration.httpAdditionalHeaders = ["X-HA-Access": pass]
+        }
     }
     
     func didReceive(_ notification: UNNotification) {
@@ -92,7 +99,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         imageView.contentMode = .scaleAspectFit
         
         // TODO: Need to use the authentication information from HAAPI so that the image will be valid forever instead of 10 minutes
-        let streamingController = MjpegStreamingController(imageView: imageView, contentURL: attachmentURL)
+        let streamingController = MjpegStreamingController(imageView: imageView, contentURL: attachmentURL, sessionConfiguration: urlConfiguration)
         streamingController.didFinishLoading = { _ in
             print("Finished loading")
             self.hud!.hide(animated: true)

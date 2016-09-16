@@ -28,14 +28,14 @@ open class MjpegStreamingController: NSObject, URLSessionDataDelegate {
     open var contentURL: URL?
     open var imageView: UIImageView
     
-    public init(imageView: UIImageView) {
+    public init(imageView: UIImageView, sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default) {
         self.imageView = imageView
         super.init()
-        self.session = Foundation.URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
+        self.session = Foundation.URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
     }
     
-    public convenience init(imageView: UIImageView, contentURL: URL) {
-        self.init(imageView: imageView)
+    public convenience init(imageView: UIImageView, contentURL: URL, sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default) {
+        self.init(imageView: imageView, sessionConfiguration: sessionConfiguration)
         self.contentURL = contentURL
     }
     
