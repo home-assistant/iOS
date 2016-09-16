@@ -126,9 +126,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             sns.setEndpointAttributes(updateRequest).continue({ (task: AWSTask!) -> Any? in
                 if task.error != nil {
                     print("Unable to update the endpoint: ", task.error)
+                    CLSLogv("Unable to update SNS endpoint with userData: %@", getVaList([task.error!.localizedDescription]))
+                    Crashlytics.sharedInstance().recordError(task.error!)
                     return nil
                 } else {
                     print("Successfully updated endpoint attributes!")
+                    CLSLogv("Updated SNS endpoint attributes", getVaList([]))
                     self.prefs.set(true, forKey: "snsUserDataSet")
                     return nil
                 }
@@ -147,6 +150,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             } else {
                 let createEndpointResponse = task.result!
                 print("Registered SNS endpoint:", createEndpointResponse.endpointArn!)
+                CLSLogv("Registered SNS endpoint:", getVaList([createEndpointResponse.endpointArn!]))
                 Crashlytics.sharedInstance().setObjectValue(createEndpointResponse.endpointArn!, forKey: "endpointArn")
                 Crashlytics.sharedInstance().setUserIdentifier(createEndpointResponse.endpointArn!.components(separatedBy: "/").last!)
                 self.prefs.setValue(createEndpointResponse.endpointArn!, forKey: "endpointARN")
@@ -161,6 +165,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         Crashlytics.sharedInstance().recordError(subTask.error!)
                     } else {
                         print("Subscribed endpoint to broadcast topic")
+                        CLSLogv("Subscribed endpoint to broadcast topic:", getVaList([]))
                     }
                     
                     return nil

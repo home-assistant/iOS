@@ -99,6 +99,15 @@ public class HomeAssistantAPI {
                 prefs.setValue(config.Version, forKey: "version")
                 
                 Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
+                Crashlytics.sharedInstance().setObjectValue(self.loadedComponents.joined(separator: ","), forKey: "loadedComponents")
+                
+                var permissionsContainer : [String] = []
+                for status in PermissionScope().permissionStatuses([NotificationsPermission().type, LocationAlwaysPermission().type]) {
+                    if status.1 == .authorized {
+                        permissionsContainer.append(status.0.prettyDescription.lowercased())
+                    }
+                }
+                Crashlytics.sharedInstance().setObjectValue(permissionsContainer.joined(separator: ","), forKey: "allowedPermissions")
                 
                 let _ = self.GetStates()
                 
