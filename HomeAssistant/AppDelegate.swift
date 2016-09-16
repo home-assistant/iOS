@@ -109,15 +109,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         print("Registering to AWS SNS with deviceTokenString: \(deviceTokenString)")
         
+        let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String
+        var snsUserData = "\(buildNumber),"
+        if let userEmail = prefs.string(forKey: "userEmail") {
+            snsUserData.append(userEmail)
+        }
+        
         let sns = AWSSNS.default()
+        
+        if self.prefs.string(forKey: "endpointARN")?.isEmpty == false && self.prefs.bool(forKey: "snsUserDataSet") == false {
+            print("Updating AWS SNS endpoint userData")
+            let updateRequest = AWSSNSSetEndpointAttributesInput()!
+            updateRequest.endpointArn = self.prefs.string(forKey: "endpointARN")
+            updateRequest.attributes = ["CustomUserData":snsUserData]
+            sns.setEndpointAttributes(updateRequest).continue({ (task: AWSTask!) -> Any? in
+                if task.error != nil {
+                    print("Unable to update the endpoint: ", task.error)
+                    return nil
+                } else {
+                    print("Successfully updated endpoint attributes!")
+                    self.prefs.set(true, forKey: "snsUserDataSet")
+                    return nil
+                }
+            })
+        }
+        
         let request = AWSSNSCreatePlatformEndpointInput()!
         request.token = deviceTokenString
         request.platformApplicationArn = Bundle.main.object(forInfoDictionaryKey: "SNS_PLATFORM_ENDPOINT_ARN") as? String
-        let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String
-        request.customUserData = "\(buildNumber),\(prefs.string(forKey: "userEmail"))"
+        request.customUserData = snsUserData
         sns.createPlatformEndpoint(request).continue({ (task: AWSTask!) -> Any? in
             if task.error != nil {
-                print("Error: \(task.error)")
+                print("SNS createPlatformEndpoint Error: \(task.error)")
                 Crashlytics.sharedInstance().recordError(task.error!)
                 return nil
             } else {
@@ -220,7 +243,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("UserNotification willPresent!", notification)
         completionHandler([.alert, .badge, .sound])
     }
 }
