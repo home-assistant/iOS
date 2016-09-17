@@ -45,7 +45,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
             })
         }
         
-        let allGroups = realm.allObjects(ofType: Group.self).filter {
+        let allGroups = realm.objects(Group.self).filter {
             var shouldReturn = true
 //            if prefs.bool(forKey: "allowAllGroups") == false {
 //                shouldReturn = (!$0.Auto && !$0.Hidden && $0.View)
@@ -141,7 +141,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 if let groupView = (view as! UINavigationController).viewControllers[0] as? GroupViewController {
                     let update = ["ID": groupView.GroupID, "Order": index] as [String : Any]
                     try! realm.write {
-                        realm.createObject(ofType: Group.self, populatedWith: update as AnyObject, update: true)
+                        realm.create(Group.self, value: update as AnyObject, update: true)
                     }
                     print("\(index): \(groupView.tabBarItem.title!) New: \(index) Old: \(groupView.Order!)")
                 } else {
@@ -158,14 +158,16 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
     
     func StateChangedSSEEvent(_ notification: Notification){
         if let userInfo = (notification as NSNotification).userInfo {
-            if let event = Mapper<StateChangedEvent>().map(userInfo["jsonObject"]) {
-                let newState = event.NewState! as Entity
-                let oldState = event.OldState! as Entity
-                var subtitleString = "\(newState.FriendlyName!) is now \(newState.State). It was \(oldState.State)"
-                if let uom = newState.UnitOfMeasurement {
-                    subtitleString = "\(newState.State) \(uom). It was \(oldState.State) \(oldState.UnitOfMeasurement)"
+            if let jsonObj = userInfo["jsonObject"] as? [String: Any] {
+                if let event = Mapper<StateChangedEvent>().map(JSON: jsonObj) {
+                    let newState = event.NewState! as Entity
+                    let oldState = event.OldState! as Entity
+                    var subtitleString = "\(newState.FriendlyName!) is now \(newState.State). It was \(oldState.State)"
+                    if let uom = newState.UnitOfMeasurement {
+                        subtitleString = "\(newState.State) \(uom). It was \(oldState.State) \(oldState.UnitOfMeasurement)"
+                    }
+                    let _ = Murmur(title: subtitleString)
                 }
-                let _ = Murmur(title: subtitleString)
             }
         }
     }

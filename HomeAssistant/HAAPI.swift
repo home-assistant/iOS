@@ -146,14 +146,18 @@ public class HomeAssistantAPI {
         }
         
         eventSource.onMessage { (id, eventName, data) in
-            if data == "ping" { return }
-            if let event = Mapper<SSEEvent>().map(data) {
-                if let mapped = event as? StateChangedEvent {
-                    if let newState = mapped.NewState {
-                        HomeAssistantAPI.sharedInstance.storeEntities(entities: [newState])
+            if let eventData = data {
+                if eventData == "ping" { return }
+                if let event = Mapper<SSEEvent>().map(JSONString: eventData) {
+                    if let mapped = event as? StateChangedEvent {
+                        if let newState = mapped.NewState {
+                            HomeAssistantAPI.sharedInstance.storeEntities(entities: [newState])
+                        }
                     }
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.\(event.EventType)"), object: nil, userInfo: event.toJSON())
+                } else {
+                    print("Unable to ObjectMap this SSE message", eventName, eventData)
                 }
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.\(event.EventType)"), object: nil, userInfo: event.toJSON())
             } else {
                 print("Unable to ObjectMap this SSE message", eventName, data)
             }
@@ -245,7 +249,7 @@ public class HomeAssistantAPI {
             Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
         }
         
-        for zone in realm.allObjects(ofType: Zone.self) {
+        for zone in realm.objects(Zone.self) {
             if zone.trackingEnabled == false {
                 print("Skipping zone set to not track!")
                 continue
@@ -372,49 +376,49 @@ public class HomeAssistantAPI {
             try! realm.write {
                 switch entity {
                     case is Automation:
-                        realm.createObject(ofType: Automation.self, populatedWith: entity, update: true)
+                        realm.create(Automation.self, value: entity, update: true)
                     case is BinarySensor:
-                        realm.createObject(ofType: BinarySensor.self, populatedWith: entity, update: true)
+                        realm.create(BinarySensor.self, value: entity, update: true)
                     case is Climate:
-                        realm.createObject(ofType: Climate.self, populatedWith: entity, update: true)
+                        realm.create(Climate.self, value: entity, update: true)
                     case is DeviceTracker:
-                        realm.createObject(ofType: DeviceTracker.self, populatedWith: entity, update: true)
+                        realm.create(DeviceTracker.self, value: entity, update: true)
                     case is GarageDoor:
-                        realm.createObject(ofType: GarageDoor.self, populatedWith: entity, update: true)
+                        realm.create(GarageDoor.self, value: entity, update: true)
                     case is Group:
-                        realm.createObject(ofType: Group.self, populatedWith: entity, update: true)
+                        realm.create(Group.self, value: entity, update: true)
                     case is Fan:
-                        realm.createObject(ofType: Fan.self, populatedWith: entity, update: true)
+                        realm.create(Fan.self, value: entity, update: true)
                     case is InputBoolean:
-                        realm.createObject(ofType: InputBoolean.self, populatedWith: entity, update: true)
+                        realm.create(InputBoolean.self, value: entity, update: true)
                     case is InputSelect:
-                        realm.createObject(ofType: InputSelect.self, populatedWith: entity, update: true)
+                        realm.create(InputSelect.self, value: entity, update: true)
                     case is Light:
-                        realm.createObject(ofType: Light.self, populatedWith: entity, update: true)
+                        realm.create(Light.self, value: entity, update: true)
                     case is Lock:
-                        realm.createObject(ofType: Lock.self, populatedWith: entity, update: true)
+                        realm.create(Lock.self, value: entity, update: true)
                     case is MediaPlayer:
-                        realm.createObject(ofType: MediaPlayer.self, populatedWith: entity, update: true)
+                        realm.create(MediaPlayer.self, value: entity, update: true)
                     case is Scene:
-                        realm.createObject(ofType: Scene.self, populatedWith: entity, update: true)
+                        realm.create(Scene.self, value: entity, update: true)
                     case is Script:
-                        realm.createObject(ofType: Script.self, populatedWith: entity, update: true)
+                        realm.create(Script.self, value: entity, update: true)
                     case is Sensor:
-                        realm.createObject(ofType: Sensor.self, populatedWith: entity, update: true)
+                        realm.create(Sensor.self, value: entity, update: true)
                     case is Sun:
-                        realm.createObject(ofType: Sun.self, populatedWith: entity, update: true)
+                        realm.create(Sun.self, value: entity, update: true)
                     case is Switch:
-                        realm.createObject(ofType: Switch.self, populatedWith: entity, update: true)
+                        realm.create(Switch.self, value: entity, update: true)
                     case is Thermostat:
-                        realm.createObject(ofType: Thermostat.self, populatedWith: entity, update: true)
+                        realm.create(Thermostat.self, value: entity, update: true)
                     case is Weblink:
-                        realm.createObject(ofType: Weblink.self, populatedWith: entity, update: true)
+                        realm.create(Weblink.self, value: entity, update: true)
                     case is Zone:
-                        realm.createObject(ofType: Zone.self, populatedWith: entity, update: true)
+                        realm.create(Zone.self, value: entity, update: true)
                     default:
                         print("Unable to save \(entity.Domain)!")
                 }
-                realm.createObject(ofType: Entity.self, populatedWith: entity, update: true)
+                realm.create(Entity.self, value: entity, update: true)
             }
         }
     }

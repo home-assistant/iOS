@@ -1657,6 +1657,7 @@
 				PROVISIONING_PROFILE = "7228afbb-57fc-4e0a-8432-c028de4a87c0";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1701,6 +1702,7 @@
 				PROVISIONING_PROFILE = "$(sigh_io.robbie.HomeAssistant_appstore)";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};

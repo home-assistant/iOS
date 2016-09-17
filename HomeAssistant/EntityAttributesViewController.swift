@@ -176,7 +176,7 @@ class EntityAttributesViewController: FormViewController {
 
     func StateChangedSSEEvent(_ notification: NSNotification){
         if let userInfo = (notification as NSNotification).userInfo {
-            if let event = Mapper<StateChangedEvent>().map(userInfo) {
+            if let event = Mapper<StateChangedEvent>().map(JSON: userInfo as! [String : Any]) {
                 if event.EntityID != entityID { return }
                 let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityID as AnyObject)
                 if let newState = event.NewState {

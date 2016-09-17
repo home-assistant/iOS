@@ -236,7 +236,7 @@ class GroupViewController: FormViewController {
     
     func StateChangedSSEEvent(_ notification: NSNotification){
         if let userInfo = (notification as NSNotification).userInfo {
-            if let event = Mapper<StateChangedEvent>().map(userInfo) {
+            if let event = Mapper<StateChangedEvent>().map(JSON: userInfo as! [String : Any]) {
                 if let newState = event.NewState {
                     if newState.Domain == "lock" || newState.Domain == "garage_door" {
                         if let row : SwitchRow = self.form.rowByTag(newState.ID) {

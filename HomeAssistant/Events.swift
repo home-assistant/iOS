@@ -13,11 +13,11 @@ class EventsResponse: Mappable {
     var Event: String?
     var ListenerCount: Int?
     
-    required init?(_ map: Map){
+    required init?(map: Map){
         
     }
     
-    func mapping(_ map: Map) {
+    func mapping(map: Map) {
         Event          <- map["event"]
         ListenerCount  <- map["listener_count"]
     }

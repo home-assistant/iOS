@@ -15,8 +15,8 @@ class StateChangedEvent: SSEEvent {
     var EntityID: String?
     var EntityDomain: String?
         
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         NewState  <- map["data.new_state"]
         OldState  <- map["data.old_state"]
         EntityID  <- map["data.entity_id"]

@@ -19,8 +19,8 @@ class DeviceTracker: Entity {
     var GPSAccuracy = RealmOptional<Double>() // It's a double for direct use in CLLocationDistance
     dynamic var IsHome: Bool = false
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         Latitude.value     <- map["attributes.latitude"]
         Longitude.value    <- map["attributes.longitude"]

@@ -16,8 +16,8 @@ class InputSlider: Entity {
     var Maximum = RealmOptional<Float>()
     var Step = RealmOptional<Int>()
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         Maximum.value          <- map["attributes.max"]
         Minimum.value          <- map["attributes.min"]

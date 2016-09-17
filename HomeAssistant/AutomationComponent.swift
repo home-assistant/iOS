@@ -13,8 +13,8 @@ class Automation: Entity {
     
     dynamic var LastTriggered: Date? = nil
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         LastTriggered <- (map["attributes.last_triggered"], HomeAssistantTimestampTransform())
     }

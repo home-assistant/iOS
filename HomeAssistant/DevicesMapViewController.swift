@@ -63,13 +63,13 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         
         self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
         
-        for zone in realm.allObjects(ofType: Zone.self) {
+        for zone in realm.objects(Zone.self) {
             let circle = HACircle.init(center: zone.locationCoordinates(), radius: CLLocationDistance(zone.Radius))
             circle.type = "zone"
             mapView.add(circle)
         }
         
-        for device in realm.allObjects(ofType: DeviceTracker.self) {
+        for device in realm.objects(DeviceTracker.self) {
             if device.Latitude.value == nil || device.Longitude.value == nil {
                 continue
             }

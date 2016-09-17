@@ -15,8 +15,8 @@ class SwitchableEntity: Entity {
     
     var IsOn: Bool?
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         IsOn         <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
     }

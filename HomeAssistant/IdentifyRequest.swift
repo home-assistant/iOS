@@ -28,11 +28,11 @@ class IdentifyRequest: Mappable {
     
     init() {}
     
-    required init?(_ map: Map){
+    required init?(map: Map){
         
     }
     
-    func mapping(_ map: Map) {
+    func mapping(map: Map) {
         AppBuildNumber         <- map["app.buildNumber"]
         AppBundleIdentifer     <- map["app.bundleIdentifer"]
         AppVersionNumber       <- map["app.versionNumber"]

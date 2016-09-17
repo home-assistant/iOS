@@ -14,8 +14,8 @@ class InputSelect: Entity {
     
     let Options = List<StringObject>()
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         var Options: [String]? = nil
         Options          <- map["attributes.options"]

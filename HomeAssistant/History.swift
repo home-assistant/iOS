@@ -15,11 +15,11 @@ class HistoryResponse: Mappable {
 //    var Domain: String?
     var Entities: [HistoryGroup]?
 
-    required init?(_ map: Map){
+    required init?(map: Map){
         print("MAP", map)
     }
     
-    func mapping(_ map: Map) {
+    func mapping(map: Map) {
         print("map", map)
         Entities <- map
 //        EntityId <- map["message"]
@@ -32,11 +32,11 @@ class HistoryGroup: Mappable {
     
     var Events: [Entity]?
     
-    required init?(_ map: Map){
+    required init?(map: Map){
                 print("MAP", map)
     }
     
-    func mapping(_ map: Map) {
+    func mapping(map: Map) {
                 print("map", map)
         Events <- map
         //        EntityId <- map["message"]

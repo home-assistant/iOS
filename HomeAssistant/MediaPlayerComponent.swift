@@ -25,8 +25,8 @@ class MediaPlayer: SwitchableEntity {
     let StoredSourceList = List<StringObject>()
     
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         IsPlaying        <- (map["state"], ComponentBoolTransform(trueValue: "playing", falseValue: "paused"))
         IsIdle           <- (map["state"], ComponentBoolTransform(trueValue: "idle", falseValue: ""))

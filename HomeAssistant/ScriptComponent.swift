@@ -13,8 +13,8 @@ class Script: SwitchableEntity {
     
     dynamic var CanCancel: Bool = false
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         CanCancel <- map["attributes.can_cancel"]
     }

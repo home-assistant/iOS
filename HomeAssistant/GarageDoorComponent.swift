@@ -13,8 +13,8 @@ class GarageDoor: Entity {
     
     dynamic var IsOpen: Bool = false
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         IsOpen    <- (map["state"], ComponentBoolTransform(trueValue: "open", falseValue: "closed"))
     }

@@ -12,8 +12,8 @@ import ObjectMapper
 class ServiceExecutedEvent: SSEEvent {
     var ServiceCallID: String?
         
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         ServiceCallID <- map["data.service_call_id"]
     }
 }

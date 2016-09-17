@@ -13,8 +13,8 @@ class Sensor: Entity {
     
     dynamic var SensorClass: String? = nil
 
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         SensorClass       <- map["attributes.sensor_class"]
     }

@@ -28,11 +28,11 @@ class StatusResponse: Mappable {
     var Message: String?
     var IsOK: Bool?
     
-    required init?(_ map: Map){
+    required init?(map: Map){
         
     }
     
-    func mapping(_ map: Map) {
+    func mapping(map: Map) {
         Result  <- map["result"]
         Message <- map["message"]
         IsOK    <- (map["message"], isOKTransform)

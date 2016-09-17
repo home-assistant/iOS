@@ -28,8 +28,8 @@ class Group: Entity {
     var Entities = List<Entity>()
     dynamic var EntityIds = [String]()
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         IsAllGroup    <- (map["entity_id"], isAllGroupTransform)
         View          <- map["attributes.view"]

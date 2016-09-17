@@ -15,11 +15,11 @@ class PushCategory: Mappable {
     
     var Actions: [PushAction]?
     
-    required init?(_ map: Map){
+    required init?(map: Map){
         
     }
     
-    func mapping(_ map: Map) {
+    func mapping(map: Map) {
         Name        <- map["name"]
         Identifier  <- map["identifier"]
         Actions     <- map["actions"]
@@ -38,11 +38,11 @@ class PushAction: Mappable {
     var TextInputButtonTitle: String = "Send"
     var TextInputPlaceholder: String = ""
     
-    required init?(_ map: Map){
+    required init?(map: Map){
         
     }
     
-    func mapping(_ map: Map) {
+    func mapping(map: Map) {
         Title                  <- map["title"]
         Identifier             <- map["identifier"]
         AuthenticationRequired <- map["authenticationRequired"]

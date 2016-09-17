@@ -5,26 +5,26 @@ use_frameworks!
 
 target 'HomeAssistant' do
   pod 'AcknowList', :git => 'https://github.com/vtourraine/AcknowList.git', :branch => 'swift-3'
-  pod 'Alamofire', '~> 4.0'
-  pod 'AlamofireImage', '~> 3.0'
-  pod 'AlamofireObjectMapper', :git => 'https://github.com/tristanhimmelman/AlamofireObjectMapper.git', :branch => 'swift-3'
+  pod 'Alamofire'
+  pod 'AlamofireImage'
+  pod 'AlamofireObjectMapper'
   pod 'AWSCognito'
   pod 'AWSCore'
   pod 'AWSSNS'
   pod 'Crashlytics'
-  pod 'DeviceKit', :git => 'https://github.com/dennisweissmann/DeviceKit.git', :branch => 'master'
+  pod 'DeviceKit'
   pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'Swift3'
   pod 'Fabric'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
   pod 'IKEventSource', :git => 'https://github.com/robbiet480/EventSource.git', :branch => 'swift3'
   pod 'MBProgressHUD'
-  pod 'ObjectMapper', :git => 'https://github.com/Hearst-DD/ObjectMapper.git', :branch => 'swift-3'
+  pod 'ObjectMapper'
   pod 'PermissionScope', :git => 'https://github.com/robbiet480/PermissionScope.git', :branch => 'location-and-notifications-only'
-  pod 'PromiseKit', :git => 'https://github.com/mxcl/PromiseKit.git', :branch => 'master', :submodules => true
-  pod 'Realm', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
-  pod 'RealmSwift', :git => 'https://github.com/realm/realm-cocoa.git', :submodules => true
+  pod 'PromiseKit'
+  pod 'Realm'
+  pod 'RealmSwift'
   pod 'SwiftLocation', :git => 'https://github.com/malcommac/SwiftLocation.git', :branch => 'master'
-  pod 'Whisper', :git => 'https://github.com/skhavanekar/Whisper.git', :branch => 'swift3'
+  pod 'Whisper', :git => 'https://github.com/hyperoslo/Whisper.git', :branch => 'swift-3'
 end
 
 target 'HomeAssistantTests' do
@@ -37,4 +37,12 @@ end
 
 target 'NotificationContentExtension' do
   pod 'MBProgressHUD'
+end
+
+post_install do |installer|
+    installer.pods_project.targets.each do |target|
+        target.build_configurations.each do |config|
+            config.build_settings['SWIFT_VERSION'] = '3.0'
+        end
+    end
 end

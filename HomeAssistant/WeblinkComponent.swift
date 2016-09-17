@@ -13,8 +13,8 @@ class Weblink: Entity {
     
     var URL: String?
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         URL    <- map["attributes.url"]
     }

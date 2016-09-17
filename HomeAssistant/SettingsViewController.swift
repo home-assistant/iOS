@@ -189,7 +189,7 @@ class SettingsViewController: FormViewController {
 //                    }
             }
             
-            for zone in realm.allObjects(ofType: Zone.self) {
+            for zone in realm.objects(Zone.self) {
                 form
                     +++ Section(header: zone.Name, footer: "") {
                         $0.tag = zone.ID

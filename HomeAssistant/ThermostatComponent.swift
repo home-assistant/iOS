@@ -20,8 +20,8 @@ class Thermostat: Entity {
     var TargetTemperatureLow: Int?
     var Temperature: Int?
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         AwayMode              <- (map["attributes.away_mode"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         CurrentTemperature    <- map["attributes.current_temperature"]

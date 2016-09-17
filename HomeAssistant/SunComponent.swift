@@ -16,8 +16,8 @@ class Sun: Entity {
     var NextRising: Date? = nil
     var NextSetting: Date? = nil
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         Elevation.value    <- map["attributes.elevation"]
         NextRising   <- (map["attributes.next_rising"], HomeAssistantTimestampTransform())

@@ -30,8 +30,8 @@ class Climate: Entity {
     dynamic var SwingMode = false
     var Temperature = RealmOptional<Float>()
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         AuxHeat              <- (map["attributes.aux_heat"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         AwayMode             <- (map["attributes.away_mode"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))

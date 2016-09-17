@@ -19,8 +19,8 @@ class Zone: Entity {
     dynamic var enterNotification = true
     dynamic var exitNotification = true
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         Latitude  <- map["attributes.latitude"]
         Longitude <- map["attributes.longitude"]

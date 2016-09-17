@@ -55,7 +55,7 @@ class Entity: Object, StaticMappable {
     dynamic var NodeID: String? = nil
     var BatteryLevel = RealmOptional<Int>()
     
-    class func objectForMapping(_ map: Map) -> BaseMappable? {
+    class func objectForMapping(map: Map) -> BaseMappable? {
         if let entityId: String = map["entity_id"].value() {
             let entityType = entityId.components(separatedBy: ".")[0]
             switch entityType {
@@ -109,7 +109,7 @@ class Entity: Object, StaticMappable {
         return nil
     }
 
-    func mapping(_ map: Map) {
+    func mapping(map: Map) {
         ID                <- map["entity_id"]
         State             <- map["state"]
         Attributes        <- map["attributes"]

@@ -14,8 +14,8 @@ class Fan: Entity {
     dynamic var Oscillating = false
     dynamic var Speed: String? = nil
     
-    override func mapping(_ map: Map) {
-        super.mapping(map)
+    override func mapping(map: Map) {
+        super.mapping(map: map)
         
         Oscillating <- map["attributes.oscillating"]
         Speed       <- map["attributes.speed"]
