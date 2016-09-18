@@ -693,11 +693,9 @@ public class HomeAssistantAPI {
     func setupPush() {
         if self.loadedComponents.contains("ios") {
             CLSLogv("iOS component loaded, attempting identify and setup of push categories %@", getVaList(["this is a silly string!"]))
-            PermissionScope().statusNotifications(completionHandler: { (status) in
-                if status == .authorized {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-            })
+            if PermissionScope().statusNotifications() == .authorized {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
             if #available(iOS 10, *) {
                 self.identifyDevice().then {_ -> Promise<Set<UNNotificationCategory>> in
                     return self.setupUserNotificationPushActions()

@@ -22,7 +22,7 @@ PODS:
   - IKEventSource (1.2)
   - MBProgressHUD (1.0.0)
   - ObjectMapper (2.0.0)
-  - PermissionScope (1.0.2)
+  - PermissionScope (1.0.3)
   - PromiseKit (4.0.1):
     - PromiseKit/Foundation (= 4.0.1)
     - PromiseKit/QuartzCore (= 4.0.1)
@@ -58,7 +58,7 @@ DEPENDENCIES:
   - IKEventSource (from `https://github.com/robbiet480/EventSource.git`, branch `swift3`)
   - MBProgressHUD
   - ObjectMapper
-  - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `location-and-notifications-only`)
+  - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `swift3-ios10-usernotifications`)
   - PromiseKit
   - Realm
   - RealmSwift
@@ -79,7 +79,7 @@ EXTERNAL SOURCES:
     :branch: swift3
     :git: https://github.com/robbiet480/EventSource.git
   PermissionScope:
-    :branch: location-and-notifications-only
+    :branch: swift3-ios10-usernotifications
     :git: https://github.com/robbiet480/PermissionScope.git
   SwiftLocation:
     :branch: master
@@ -102,7 +102,7 @@ CHECKOUT OPTIONS:
     :commit: 888ccedd4af1bccb3847940553598ab80ee5fb9f
     :git: https://github.com/robbiet480/EventSource.git
   PermissionScope:
-    :commit: 6c04fe45ab3c122ec11b690d9d34445763d52baf
+    :commit: 4bd59686bf6b303994badd9e5121a663373415dd
     :git: https://github.com/robbiet480/PermissionScope.git
   SwiftLocation:
     :commit: 9db2c814782c5db8a8e0c1edea1a4778be4f207f
@@ -127,13 +127,13 @@ SPEC CHECKSUMS:
   IKEventSource: a8b2ae0aa469d3dcf3a1d99a102430d46e95e8bd
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   ObjectMapper: aed2570edabbd3c9b26c939e1cabdb6558f933e0
-  PermissionScope: 860828c5516d349b6f49e5491799cfef33c5ccc7
+  PermissionScope: 3ee3e8a4a962b7621400c136a63ae1e16ecf1718
   PromiseKit: ae9e7f97ee758e23f7b9c5e80380a2e78d6338c5
   Realm: ceecf1a4540c4ce9efe196fe73fa9855bce05bd8
   RealmSwift: 838058b2db95b12cb86bd0cf209df642c33fb60a
   SwiftLocation: f1bf5acb7992dd96c6f773c383f9c0479f07727d
   Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453
 
-PODFILE CHECKSUM: c43f953093f6cfb12024658bf50d8e4ec78c01de
+PODFILE CHECKSUM: 65002544e089e152c46145fa8bf36a955ef5db12
 
 COCOAPODS: 1.1.0.rc.1
