@@ -134,14 +134,14 @@ public class HomeAssistantAPI {
         
         eventSource.onOpen {
             print("SSE: Connection Opened")
-            let _ = Murmur(title: "Connected to Home Assistant")
+            self.showMurmur(title: "Connected to Home Assistant")
         }
         
         eventSource.onError { error in
             if let err = error {
                 Crashlytics.sharedInstance().recordError(err)
                 print("SSE: ", err)
-                let _ = Murmur(title: "SSE Error! \(err.localizedDescription)")
+                self.showMurmur(title: "SSE Error! \(err.localizedDescription)")
             }
         }
         
@@ -479,7 +479,7 @@ public class HomeAssistantAPI {
             let _ = self.manager!.request(queryUrl, method: .post, parameters: ["state": state], encoding: JSONEncoding.default).validate().responseObject { (response: DataResponse<Entity>) in
                 switch response.result {
                 case .success:
-                    let _ = Murmur(title: response.result.value!.Domain+" state set to "+response.result.value!.State)
+                    self.showMurmur(title: response.result.value!.Domain+" state set to "+response.result.value!.State)
                     self.storeEntities(entities: [response.result.value!])
                     fulfill(response.result.value!)
                 case .failure(let error):
@@ -498,7 +498,7 @@ public class HomeAssistantAPI {
                 switch response.result {
                 case .success:
                     if let jsonDict = response.result.value as? [String : String] {
-                        let _ = Murmur(title: eventType+" created")
+                        self.showMurmur(title: eventType+" created")
                         fulfill(jsonDict["message"]!)
                     }
                 case .failure(let error):
@@ -511,7 +511,7 @@ public class HomeAssistantAPI {
     }
     
     func CallService(domain: String, service: String, serviceData: [String:Any]) -> Promise<[ServicesResponse]> {
-//        let _ = Murmur(title: domain+"/"+service+" called")
+//        self.showMurmur(title: domain+"/"+service+" called")
         let queryUrl = baseAPIURL+"services/"+domain+"/"+service
         return Promise { fulfill, reject in
             let _ = self.manager!.request(queryUrl, method: .post, parameters: serviceData, encoding: JSONEncoding.default).validate().responseArray { (response: DataResponse<[ServicesResponse]>) in
@@ -528,33 +528,33 @@ public class HomeAssistantAPI {
     }
     
     func turnOn(entityId: String) -> Promise<[ServicesResponse]> {
-        let _ = Murmur(title: entityId+" turned on")
+        self.showMurmur(title: entityId+" turned on")
         return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
     }
     
     func turnOnEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        let _ = Murmur(title: "\(entity.Name) turned on")
+        self.showMurmur(title: "\(entity.Name) turned on")
         return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entity.ID])
     }
     
     func turnOff(entityId: String) -> Promise<[ServicesResponse]> {
-        let _ = Murmur(title: entityId+" turned off")
+        self.showMurmur(title: entityId+" turned off")
         return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entityId])
     }
     
     func turnOffEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        let _ = Murmur(title: "\(entity.Name) turned off")
+        self.showMurmur(title: "\(entity.Name) turned off")
         return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entity.ID])
     }
     
     func toggle(entityId: String) -> Promise<[ServicesResponse]> {
         let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityId)
-        let _ = Murmur(title: "\(entity!.Name) toggled")
+        self.showMurmur(title: "\(entity!.Name) toggled")
         return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
     }
     
     func toggleEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        let _ = Murmur(title: "\(entity.Name) toggled")
+        self.showMurmur(title: "\(entity.Name) toggled")
         return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
     
@@ -783,6 +783,10 @@ public class HomeAssistantAPI {
         return PermissionScope().statusLocationAlways() == .authorized
     }
 
+    func showMurmur(title: String) {
+        show(whistle: Murmur(title: title), action: .show(0.5))
+    }
+    
 }
 
 class BonjourDelegate : NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
