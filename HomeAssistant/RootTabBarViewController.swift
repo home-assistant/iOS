@@ -92,7 +92,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 }
             }
             
-            if HomeAssistantAPI.sharedInstance.locationEnabled() {
+            if HomeAssistantAPI.sharedInstance.locationEnabled {
                 var rightBarItems : [UIBarButtonItem] = []
                 
                 let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)

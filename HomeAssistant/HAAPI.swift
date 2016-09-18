@@ -100,18 +100,11 @@ public class HomeAssistantAPI {
                 
                 Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
                 Crashlytics.sharedInstance().setObjectValue(self.loadedComponents.joined(separator: ","), forKey: "loadedComponents")
-                
-                var permissionsContainer : [String] = []
-                for status in PermissionScope().permissionStatuses([NotificationsPermission().type, LocationAlwaysPermission().type]) {
-                    if status.1 == .authorized {
-                        permissionsContainer.append(status.0.prettyDescription.lowercased())
-                    }
-                }
-                Crashlytics.sharedInstance().setObjectValue(permissionsContainer.joined(separator: ","), forKey: "allowedPermissions")
+                Crashlytics.sharedInstance().setObjectValue(self.enabledPermissions.joined(separator: ","), forKey: "allowedPermissions")
                 
                 let _ = self.GetStates()
                 
-                if self.locationEnabled() {
+                if self.locationEnabled {
                     self.trackLocation()
                 }
                 
@@ -559,29 +552,21 @@ public class HomeAssistantAPI {
     }
     
     func buildIdentifyDict() -> [String:Any] {
-        let device = UIDevice.current
         let deviceKitDevice = Device()
-        
-        var permissionsContainer : [String] = []
-        for status in PermissionScope().permissionStatuses([NotificationsPermission().type, LocationAlwaysPermission().type]) {
-            if status.1 == .authorized {
-                permissionsContainer.append(status.0.prettyDescription.lowercased())
-            }
-        }
         
         let ident = IdentifyRequest()
         ident.AppBuildNumber = Int(string: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String)
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
         ident.AppVersionNumber = Double(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)
         ident.DeviceID = deviceID
-        ident.DeviceLocalizedModel = device.localizedModel
-        ident.DeviceModel = device.model
-        ident.DeviceName = device.name
+        ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
+        ident.DeviceModel = deviceKitDevice.model
+        ident.DeviceName = deviceKitDevice.name
         ident.DevicePermanentID = DeviceUID.uid()
-        ident.DeviceSystemName = device.systemName
-        ident.DeviceSystemVersion = device.systemVersion
+        ident.DeviceSystemName = deviceKitDevice.systemName
+        ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
-        ident.Permissions = permissionsContainer
+        ident.Permissions = self.enabledPermissions
         ident.PushID = endpointARN.components(separatedBy: "/").last!
         ident.PushSounds = listAllInstalledPushNotificationSounds()
         ident.PushToken = deviceToken
@@ -691,30 +676,31 @@ public class HomeAssistantAPI {
     }
     
     func setupPush() {
+        if self.notificationsEnabled {
+            CLSLogv("Notifications authorized, registering for remote notifications", getVaList([]))
+            UIApplication.shared.registerForRemoteNotifications()
+        }
         if self.loadedComponents.contains("ios") {
-            CLSLogv("iOS component loaded, attempting identify and setup of push categories %@", getVaList(["this is a silly string!"]))
-            if PermissionScope().statusNotifications() == .authorized {
-                UIApplication.shared.registerForRemoteNotifications()
-            }
+            CLSLogv("iOS component loaded, attempting identify and setup of push categories", getVaList([]))
             if #available(iOS 10, *) {
                 self.identifyDevice().then {_ -> Promise<Set<UNNotificationCategory>> in
                     return self.setupUserNotificationPushActions()
-                    }.then { categories -> Void in
-                        UNUserNotificationCenter.current().setNotificationCategories(categories)
-                    }.catch {error -> Void in
-                        print("Error when attempting an identify or setup push actions", error)
-                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                }.then { categories -> Void in
+                    UNUserNotificationCenter.current().setNotificationCategories(categories)
+                }.catch {error -> Void in
+                    print("Error when attempting an identify or setup push actions", error)
+                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
                 }
             } else {
                 self.identifyDevice().then {_ -> Promise<Set<UIUserNotificationCategory>> in
                     return self.setupPushActions()
-                    }.then { categories -> Void in
-                        let types:UIUserNotificationType = ([.alert, .badge, .sound])
-                        let settings = UIUserNotificationSettings(types: types, categories: categories)
-                        UIApplication.shared.registerUserNotificationSettings(settings)
-                    }.catch {error -> Void in
-                        print("Error when attempting an identify or setup push actions", error)
-                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                }.then { categories -> Void in
+                    let types:UIUserNotificationType = ([.alert, .badge, .sound])
+                    let settings = UIUserNotificationSettings(types: types, categories: categories)
+                    UIApplication.shared.registerUserNotificationSettings(settings)
+                }.catch {error -> Void in
+                    print("Error when attempting an identify or setup push actions", error)
+                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
                 }
             }
         }
@@ -778,11 +764,25 @@ public class HomeAssistantAPI {
         }
     }
     
-    func locationEnabled() -> Bool {
+    var locationEnabled : Bool {
 //        return PermissionScope().statusLocationAlways() == .authorized && self.loadedComponents.contains("device_tracker")
         return PermissionScope().statusLocationAlways() == .authorized
     }
+    
+    var notificationsEnabled : Bool {
+        return PermissionScope().statusNotifications() == .authorized
+    }
 
+    var enabledPermissions : [String] {
+        var permissionsContainer : [String] = []
+        for status in PermissionScope().permissionStatuses([NotificationsPermission().type, LocationAlwaysPermission().type]) {
+            if status.1 == .authorized {
+                permissionsContainer.append(status.0.prettyDescription.lowercased())
+            }
+        }
+        return permissionsContainer
+    }
+    
     func showMurmur(title: String) {
         show(whistle: Murmur(title: title), action: .show(0.5))
     }
