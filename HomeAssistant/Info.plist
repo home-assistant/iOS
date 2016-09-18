@@ -20,6 +20,17 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>homeassistant</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>41</string>
 	<key>Fabric</key>
@@ -45,10 +56,24 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>To allow PermissionScope and SwiftLocation to work under iOS 10</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>To allow PermissionScope to work under iOS 10</string>
+	<key>NSContactsUsageDescription</key>
+	<string>To allow PermissionScope to work under iOS 10</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>To send location to Home Assistant</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>To send location to Home Assistant</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>To allow PermissionScope to work under iOS 10</string>
+	<key>NSMotionUsageDescription</key>
+	<string>To allow PermissionScope to work under iOS 10</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To allow PromiseKit to work under iOS 10</string>
+	<key>SNS_PLATFORM_ENDPOINT_ARN</key>
+	<string>${SNS_PLATFORM_ENDPOINT_ARN}</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -85,18 +110,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>homeassistant</string>
-			</array>
-		</dict>
-	</array>
-	<key>SNS_PLATFORM_ENDPOINT_ARN</key>
-	<string>${SNS_PLATFORM_ENDPOINT_ARN}</string>
 </dict>
 </plist>
