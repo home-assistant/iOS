@@ -816,6 +816,7 @@
 				B6F02BEC1CB46E810029ABE7 /* HA API Responses */,
 				B6F02BE81CB46AF40029ABE7 /* Entity.swift */,
 				B6767A501D0234E700F2A08B /* SwitchableEntity.swift */,
+				B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -832,7 +833,6 @@
 				B6F02BFB1CB4800C0029ABE7 /* Services.swift */,
 				B66428111CF7A83200903804 /* PushConfiguration.swift */,
 				B6FBE3961D46A4E500EE0E36 /* Beacons.swift */,
-				B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */,
 			);
 			name = "HA API Responses";
 			sourceTree = "<group>";
