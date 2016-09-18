@@ -68,6 +68,8 @@ platform :ios do
 
     ensure_git_status_clean
 
+    git_pull
+
     #verify_xcode_version
 
     version_number = options[:version_number] || get_version_number
