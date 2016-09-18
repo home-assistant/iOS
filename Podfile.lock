@@ -3,6 +3,8 @@ PODS:
   - Alamofire (4.0.0)
   - AlamofireImage (3.0.0):
     - Alamofire (~> 4.0)
+  - AlamofireNetworkActivityIndicator (2.0.0):
+    - Alamofire (~> 4.0)
   - AlamofireObjectMapper (4.0.0):
     - Alamofire (~> 4.0)
     - ObjectMapper (~> 2.0)
@@ -46,6 +48,7 @@ DEPENDENCIES:
   - AcknowList (from `https://github.com/vtourraine/AcknowList.git`, branch `swift-3`)
   - Alamofire
   - AlamofireImage
+  - AlamofireNetworkActivityIndicator
   - AlamofireObjectMapper
   - AWSCognito
   - AWSCore
@@ -115,6 +118,7 @@ SPEC CHECKSUMS:
   AcknowList: 06a183d117b7e2bb0c6f5654366d2912dc64a6c4
   Alamofire: fef59f00388f267e52d9b432aa5d93dc97190f14
   AlamofireImage: 6594aa1139a67dcd36cde6da79ea4e5b318e60fb
+  AlamofireNetworkActivityIndicator: ba9f481748d954318dd99636abff028cd3fcdc07
   AlamofireObjectMapper: 9faa3ce5a240efda1b209009a2d6e1e949227abc
   AWSCognito: 6aa404f15d1eb2b4b51f45322a409257b3248e79
   AWSCore: 9a729a3c0050a51ece3547d546c327acdac7838a
@@ -134,6 +138,6 @@ SPEC CHECKSUMS:
   SwiftLocation: f1bf5acb7992dd96c6f773c383f9c0479f07727d
   Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453
 
-PODFILE CHECKSUM: 65002544e089e152c46145fa8bf36a955ef5db12
+PODFILE CHECKSUM: deb0f101950ca21c01489cb56ab737dbdafb7695
 
 COCOAPODS: 1.1.0.rc.1

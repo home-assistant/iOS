@@ -10,10 +10,10 @@ import UIKit
 import AWSSNS
 import Fabric
 import Crashlytics
-import DeviceKit
 import PromiseKit
 import RealmSwift
 import UserNotifications
+import AlamofireNetworkActivityIndicator
 
 let realmConfig = Realm.Configuration(
     schemaVersion: 2,
@@ -37,6 +37,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Realm.Configuration.defaultConfiguration = realmConfig
         print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.path)
         Fabric.with([Crashlytics.self])
+        
+        NetworkActivityIndicatorManager.shared.isEnabled = true
         
         AWSLogger.default().logLevel = .info
         

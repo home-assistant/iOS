@@ -7,6 +7,7 @@ target 'HomeAssistant' do
   pod 'AcknowList', :git => 'https://github.com/vtourraine/AcknowList.git', :branch => 'swift-3'
   pod 'Alamofire'
   pod 'AlamofireImage'
+  pod 'AlamofireNetworkActivityIndicator'
   pod 'AlamofireObjectMapper'
   pod 'AWSCognito'
   pod 'AWSCore'
