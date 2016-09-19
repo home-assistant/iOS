@@ -24,7 +24,7 @@ target 'HomeAssistant' do
   pod 'PromiseKit'
   pod 'Realm'
   pod 'RealmSwift'
-  pod 'SwiftLocation', :git => 'https://github.com/malcommac/SwiftLocation.git', :branch => 'master'
+  pod 'SwiftLocation'
   pod 'Whisper', :git => 'https://github.com/hyperoslo/Whisper.git', :branch => 'swift-3'
 end
 
