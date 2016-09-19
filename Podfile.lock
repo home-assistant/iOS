@@ -1,5 +1,5 @@
 PODS:
-  - AcknowList (1.0)
+  - AcknowList (1.1)
   - Alamofire (4.0.0)
   - AlamofireImage (3.0.0):
     - Alamofire (~> 4.0)
@@ -45,7 +45,7 @@ PODS:
   - Whisper (3.1.1)
 
 DEPENDENCIES:
-  - AcknowList (from `https://github.com/vtourraine/AcknowList.git`, branch `swift-3`)
+  - AcknowList
   - Alamofire
   - AlamofireImage
   - AlamofireNetworkActivityIndicator
@@ -69,9 +69,6 @@ DEPENDENCIES:
   - Whisper (from `https://github.com/hyperoslo/Whisper.git`, branch `swift-3`)
 
 EXTERNAL SOURCES:
-  AcknowList:
-    :branch: swift-3
-    :git: https://github.com/vtourraine/AcknowList.git
   Eureka:
     :branch: Swift3
     :git: https://github.com/xmartlabs/Eureka.git
@@ -92,9 +89,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/hyperoslo/Whisper.git
 
 CHECKOUT OPTIONS:
-  AcknowList:
-    :commit: 264bbad04801a3625973f2fdeb7a5cf8a75bf654
-    :git: https://github.com/vtourraine/AcknowList.git
   Eureka:
     :commit: c6230f61f2c718ecdfd270ca163f4766fa47bbe9
     :git: https://github.com/xmartlabs/Eureka.git
@@ -115,7 +109,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/hyperoslo/Whisper.git
 
 SPEC CHECKSUMS:
-  AcknowList: 06a183d117b7e2bb0c6f5654366d2912dc64a6c4
+  AcknowList: b3c0bfaec365465991cff3d4315d8ba95186bb82
   Alamofire: fef59f00388f267e52d9b432aa5d93dc97190f14
   AlamofireImage: 6594aa1139a67dcd36cde6da79ea4e5b318e60fb
   AlamofireNetworkActivityIndicator: ba9f481748d954318dd99636abff028cd3fcdc07
@@ -138,6 +132,6 @@ SPEC CHECKSUMS:
   SwiftLocation: f1bf5acb7992dd96c6f773c383f9c0479f07727d
   Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453
 
-PODFILE CHECKSUM: deb0f101950ca21c01489cb56ab737dbdafb7695
+PODFILE CHECKSUM: 88b0bd8d880328b7a7d15e0f041c2192c10e850c
 
 COCOAPODS: 1.1.0.rc.1

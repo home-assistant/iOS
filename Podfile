@@ -4,7 +4,7 @@ platform :ios, '9.0'
 use_frameworks!
 
 target 'HomeAssistant' do
-  pod 'AcknowList', :git => 'https://github.com/vtourraine/AcknowList.git', :branch => 'swift-3'
+  pod 'AcknowList'
   pod 'Alamofire'
   pod 'AlamofireImage'
   pod 'AlamofireNetworkActivityIndicator'
