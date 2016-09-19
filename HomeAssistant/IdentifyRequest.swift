@@ -45,7 +45,7 @@ class IdentifyRequest: Mappable {
         DeviceSystemVersion    <- map["device.systemVersion"]
         DeviceType             <- map["device.type"]
         Permissions            <- map["permissions"]
-        PushID                 <- map["pushID"]
+        PushID                 <- map["pushId"]
         PushSounds             <- map["pushSounds"]
         PushToken              <- map["pushToken"]
     }

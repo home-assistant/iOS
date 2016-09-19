@@ -87,7 +87,7 @@ public class HomeAssistantAPI {
         
     }
     
-    func Connect() -> Promise<Bool> {
+    func Connect() -> Promise<ConfigResponse> {
         return Promise { fulfill, reject in
             GetConfig().then { config -> Void in
                 self.loadedComponents = config.Components!
@@ -112,7 +112,7 @@ public class HomeAssistantAPI {
                 
 //                self.GetHistory()
                 self.startStream()
-                fulfill(true)
+                fulfill(config)
             }.catch {error in
                 print("Error at launch!", error)
                 Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
@@ -770,7 +770,7 @@ public class HomeAssistantAPI {
     }
     
     var notificationsEnabled : Bool {
-        return PermissionScope().statusNotifications() == .authorized
+        return PermissionScope().statusNotifications() == .authorized && prefs.string(forKey: "endpointARN") != nil
     }
 
     var enabledPermissions : [String] {
@@ -785,6 +785,36 @@ public class HomeAssistantAPI {
     
     func showMurmur(title: String) {
         show(whistle: Murmur(title: title), action: .show(0.5))
+    }
+    
+    func CleanBaseURL(baseUrl: URL) -> (hasValidScheme: Bool, cleanedURL: URL) {
+        if (baseUrl.absoluteString.hasPrefix("http://") || baseUrl.absoluteString.hasPrefix("https://")) == false {
+            return (false, baseUrl)
+        }
+        var urlComponents = URLComponents()
+        urlComponents.scheme = baseUrl.scheme
+        urlComponents.host = baseUrl.host
+        urlComponents.port = baseUrl.port
+        if urlComponents.port == nil {
+            urlComponents.port = (baseUrl.scheme == "http") ? 80 : 443
+        }
+        return (true, urlComponents.url!)
+    }
+    
+    func GetDiscoveryInfo(baseUrl: URL) -> Promise<DiscoveryInfoResponse> {
+        let queryUrl = baseUrl.appendingPathComponent("/api/discovery_info")
+        return Promise { fulfill, reject in
+            let _ = Alamofire.request(queryUrl).validate().responseObject { (response: DataResponse<DiscoveryInfoResponse>) -> Void in
+                switch response.result {
+                case .success:
+                    fulfill(response.result.value!)
+                case .failure(let error):
+                    CLSLogv("Error on getDiscoveryInfo() request: %@", getVaList([error.localizedDescription]))
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
+            }
+        }
     }
     
 }
@@ -805,13 +835,8 @@ class BonjourDelegate : NSObject, NetServiceBrowserDelegate, NetServiceDelegate 
     
     func netServiceDidResolveAddress(_ sender: NetService) {
         NSLog("BonjourDelegate.Browser.netServiceDidResolveAddress")
-        let dataDict = NetService.dictionary(fromTXTRecord: sender.txtRecordData()!)
-        let baseUrl = copyStringFromTXTDict(dict: dataDict, which: "base_url")
-        let requiresAPIPassword = (copyStringFromTXTDict(dict: dataDict, which: "requires_api_password") == "true")
-        let useSSL = (baseUrl![4] == "s")
-        let version = copyStringFromTXTDict(dict: dataDict, which: "version")
-        let discoveryInfo : [String:Any] = ["name": sender.name, "baseUrl": baseUrl!, "requires_api_password": requiresAPIPassword, "version": version!, "use_ssl": useSSL]
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.discovered"), object: nil, userInfo: discoveryInfo)
+        let discoveryInfo = DiscoveryInfoFromDict(locationName: sender.name, netServiceDictionary: NetService.dictionary(fromTXTRecord: sender.txtRecordData()!))
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.discovered"), object: nil, userInfo: discoveryInfo.toJSON())
     }
     
     func netServiceBrowser(_ netServiceBrowser: NetServiceBrowser, didRemove netService: NetService, moreComing moreServicesComing: Bool) {
@@ -840,15 +865,19 @@ class BonjourDelegate : NSObject, NetServiceBrowserDelegate, NetServiceDelegate 
 //        NSLog("BonjourDelegate.Browser.netServiceWillPublish:\(sender)");
 //    }
     
-    private func copyStringFromTXTDict(dict: [String : Data], which: String) -> String? {
-        if let data = dict[which] {
-            return String(data: data, encoding: .utf8)
-        } else {
-            return nil
+    private func DiscoveryInfoFromDict(locationName: String, netServiceDictionary: [String : Data]) -> DiscoveryInfoResponse {
+        var outputDict : [String:Any] = [:]
+        for (key, value) in netServiceDictionary {
+            outputDict[key] = String(data: value, encoding: .utf8)
+            if outputDict[key] as? String == "true" || outputDict[key] as? String == "false" {
+                outputDict[key] = Bool(outputDict[key] as! String)
+            }
         }
+        outputDict["location_name"] = locationName
+        return DiscoveryInfoResponse(JSON: outputDict)!
     }
     
-    // Publisher methods
+// Publisher methods
     
 //    func netService(sender: NetService, didNotPublish errorDict: [String : NSNumber]) {
 //        NSLog("BonjourDelegate.Publisher.didNotPublish:\(sender)");

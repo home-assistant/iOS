@@ -141,6 +141,8 @@
 		B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
 		B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
 		B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B624DE171CB8369200F413CE /* DevicesMapViewController.swift */; };
+		B626AAEF1D8F44DC00A0D225 /* DiscoveryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */; };
+		B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */; };
 		B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
 		B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
 		B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B627CB0D1D83C87B0057173E /* NotificationViewController.swift */; };
@@ -391,6 +393,8 @@
 		B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
 		B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
 		B624DE171CB8369200F413CE /* DevicesMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesMapViewController.swift; sourceTree = "<group>"; };
+		B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoveryInfo.swift; sourceTree = "<group>"; };
+		B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsDetailViewController.swift; sourceTree = "<group>"; };
 		B627CB071D83C87B0057173E /* NotificationContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B627CB081D83C87B0057173E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
@@ -763,6 +767,7 @@
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				B6F700491CB34FA600753BAB /* GroupViewController.swift */,
 				B657A8ED1CA646EB00121384 /* SettingsViewController.swift */,
+				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
 				B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */,
 				B657A8EF1CA646EB00121384 /* Main.storyboard */,
 				B657A8F21CA646EB00121384 /* Assets.xcassets */,
@@ -833,6 +838,7 @@
 				B6F02BFB1CB4800C0029ABE7 /* Services.swift */,
 				B66428111CF7A83200903804 /* PushConfiguration.swift */,
 				B6FBE3961D46A4E500EE0E36 /* Beacons.swift */,
+				B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */,
 			);
 			name = "HA API Responses";
 			sourceTree = "<group>";
@@ -1439,6 +1445,7 @@
 			files = (
 				B6F7004A1CB34FA600753BAB /* GroupViewController.swift in Sources */,
 				B6F02BE91CB46AF40029ABE7 /* Entity.swift in Sources */,
+				B626AAEF1D8F44DC00A0D225 /* DiscoveryInfo.swift in Sources */,
 				B6F02C1A1CB489770029ABE7 /* SunComponent.swift in Sources */,
 				B62A67A01D80E933009E46F9 /* IdentifyRequest.swift in Sources */,
 				B6F02C1C1CB489770029ABE7 /* ThermostatComponent.swift in Sources */,
@@ -1451,6 +1458,7 @@
 				B6F02C181CB489770029ABE7 /* ScriptComponent.swift in Sources */,
 				B6F02C161CB489770029ABE7 /* MediaPlayerComponent.swift in Sources */,
 				B6393F8C1CB260E800503916 /* EntityAttributesViewController.swift in Sources */,
+				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				B6F02BEB1CB46D090029ABE7 /* GroupComponent.swift in Sources */,
 				B6F700521CB374F700753BAB /* RootTabBarViewController.swift in Sources */,
 				B64D047A1CB8908B00B945C8 /* StateChanged.swift in Sources */,

@@ -72,6 +72,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 HomeAssistantAPI.sharedInstance.Setup(baseAPIUrl: baseURL, APIPassword: apiPass)
             }.then {_ in 
                 HomeAssistantAPI.sharedInstance.Connect()
+            }.then { _ in
+                print("Connected!")
             }.catch {err -> Void in
                 print("ERROR", err)
                 let settingsView = SettingsViewController()
