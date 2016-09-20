@@ -15,7 +15,9 @@ func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeigh
     Crashlytics.sharedInstance().setFloatValue(Float(iconWidth), forKey: "iconWidth")
     Crashlytics.sharedInstance().setFloatValue(Float(iconHeight), forKey: "iconHeight")
     Crashlytics.sharedInstance().setObjectValue(iconIdentifier, forKey: "iconIdentifier")
-    if iconIdentifier.contains("mdi") == false {
+    let fixedIconIdentifier = iconIdentifier.replacingOccurrences(of: ":", with: "-")
+    let iconCode = iconCodes[fixedIconIdentifier]
+    if iconIdentifier.contains("mdi") == false || iconCode == nil {
         print("Invalid icon requested", iconIdentifier)
         CLSLogv("Invalid icon requested %@", getVaList([iconIdentifier]))
         let alert = UIAlertController(title: "Invalid icon", message: "There is an invalid icon in your configuration. Please search your configuration files for: \(iconIdentifier) and set it to a valid Material Design Icon. Until then, this icon will be a red exclamation point and this alert will continue to display.", preferredStyle: UIAlertControllerStyle.alert)
@@ -26,10 +28,8 @@ func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeigh
         theIcon?.addAttribute(NSForegroundColorAttributeName, value: colorWithHexString("#ff0000"))
         return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
     }
-    let fixedIconIdentifier = iconIdentifier.replacingOccurrences(of: ":", with: "-")
     CLSLogv("Requesting MaterialDesignIcon: Identifier: %@, Fixed Identifier: %@, Width: %f, Height: %f", getVaList([iconIdentifier, fixedIconIdentifier, iconWidth, iconHeight]))
     // print("Requesting MaterialDesignIcon Identifier: \(iconIdentifier), Fixed identifier: \(fixedIconIdentifier), Width: \(iconWidth), Height: \(iconHeight)")
-    let iconCode = iconCodes[fixedIconIdentifier]
     let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
     theIcon?.addAttribute(NSForegroundColorAttributeName, value: color)
     return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
