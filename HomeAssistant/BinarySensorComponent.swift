@@ -28,10 +28,8 @@ class BinarySensor: SwitchableEntity {
         if self.Icon != nil { return self.Icon! }
         
         let activated = (self.IsOn == false)
-        if self.SensorClass == nil && activated {
-            return "mdi:checkbox-marked-circle"
-        }
-        switch (self.SensorClass!) {
+        if let sensorClass = self.SensorClass {
+            switch (sensorClass) {
             case "connectivity":
                 return activated ? "mdi:server-network-off" : "mdi:server-network"
             case "light":
@@ -52,6 +50,13 @@ class BinarySensor: SwitchableEntity {
                 return activated ? "mdi:verified" : "mdi:alert"
             default:
                 return activated ? "mdi:radiobox-blank" : "mdi:checkbox-marked-circle"
+            }
+        } else {
+            if activated {
+                return "mdi:radiobox-blank"
+            } else {
+                return "mdi:checkbox-marked-circle"
+            }
         }
     }
 }
