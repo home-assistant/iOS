@@ -195,7 +195,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 switch command {
                 case "request_location_update":
                     print("Received remote request to provide a location update")
-                    HomeAssistantAPI.sharedInstance.sendOneshotLocation(notifyString: "").then { success -> Void in
+                    HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
                         print("Did successfully send location when requested via APNS?", success)
                         completionHandler(UIBackgroundFetchResult.noData)
                     }.catch {error in

@@ -284,7 +284,7 @@ public class HomeAssistantAPI {
 
     }
     
-    func sendOneshotLocation(notifyString: String) -> Promise<Bool> {
+    func sendOneshotLocation() -> Promise<Bool> {
         return Promise { fulfill, reject in
             let _ = Location.getLocation(withAccuracy: .neighborhood, frequency: .oneShot, timeout: 50, onSuccess: { (location) in
                 self.submitLocation(updateType: .Manual, coordinates: location.coordinate, accuracy: location.horizontalAccuracy, zone: nil)
