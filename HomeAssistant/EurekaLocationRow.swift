@@ -16,7 +16,7 @@ import MapKit
 public final class LocationRow : SelectorRow<PushSelectorCell<CLLocation>, MapViewController>, RowType {
     public required init(tag: String?) {
         super.init(tag: tag)
-        presentationMode = .show(controllerProvider: ControllerProvider.callback { return MapViewController(){ _ in } }, completionCallback: { vc in _ = vc.navigationController?.popViewController(animated: true) })
+        presentationMode = .show(controllerProvider: ControllerProvider.callback { return MapViewController(){ _ in } }, onDismiss: { vc in _ = vc.navigationController?.popViewController(animated: true) })
         
         displayValueFor = {
             guard let location = $0 else { return "" }
@@ -33,7 +33,8 @@ public final class LocationRow : SelectorRow<PushSelectorCell<CLLocation>, MapVi
 public class MapViewController : UIViewController, TypedRowControllerType, MKMapViewDelegate {
     
     public var row: RowOf<CLLocation>!
-    public var completionCallback : ((UIViewController) -> ())?
+    /// A closure to be called when the controller disappears.
+    public var onDismissCallback: ((UIViewController) -> ())?
     
     lazy var mapView : MKMapView = { [unowned self] in
         let v = MKMapView(frame: self.view.bounds)
@@ -51,7 +52,7 @@ public class MapViewController : UIViewController, TypedRowControllerType, MKMap
     
     convenience public init(_ callback: ((UIViewController) -> ())?){
         self.init(nibName: nil, bundle: nil)
-        completionCallback = callback
+        onDismissCallback = callback
     }
     
     public override func viewDidLoad() {

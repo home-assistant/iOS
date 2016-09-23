@@ -67,7 +67,7 @@ class GroupViewController: FormViewController {
                         self.form.last! <<< ButtonRow(entity.ID) {
                             $0.title = entity.Name
                             if url.scheme == "http" || url.scheme == "https" {
-                                $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback { return SFSafariViewController(url: url, entersReaderIfAvailable: false) }, completionCallback: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
+                                $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback { return SFSafariViewController(url: url, entersReaderIfAvailable: false) }, onDismiss: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
                             }
                             }.cellUpdate { cell, row in
                                 cell.imageView?.image = entity.EntityIcon
@@ -88,7 +88,7 @@ class GroupViewController: FormViewController {
                             let attributesView = EntityAttributesViewController()
                             attributesView.entityID = entity.ID
                             return attributesView
-                            }, completionCallback: {
+                            }, onDismiss: {
                                 vc in let _ = vc.navigationController?.popViewController(animated: true)
                         })
                     }.cellUpdate { cell, row in
@@ -122,7 +122,7 @@ class GroupViewController: FormViewController {
                                     let attributesView = EntityAttributesViewController()
                                     attributesView.entityID = entity.ID
                                     return attributesView
-                                }, completionCallback: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
+                                }, onDismiss: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
                                 }.cellUpdate { cell, row in
                                     cell.detailTextLabel?.text = entity.CleanedState
                                     if let uom = entity.UnitOfMeasurement {
@@ -142,7 +142,7 @@ class GroupViewController: FormViewController {
                                 let attributesView = EntityAttributesViewController()
                                 attributesView.entityID = entity.ID
                                 return attributesView
-                            }, completionCallback: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
+                            }, onDismiss: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
                             }.cellUpdate { cell, row in
                                 cell.detailTextLabel?.text = entity.CleanedState
                                 if let uom = entity.UnitOfMeasurement {
@@ -239,14 +239,14 @@ class GroupViewController: FormViewController {
             if let event = Mapper<StateChangedEvent>().map(JSON: userInfo as! [String : Any]) {
                 if let newState = event.NewState {
                     if newState.Domain == "lock" || newState.Domain == "garage_door" {
-                        if let row : SwitchRow = self.form.rowByTag(newState.ID) {
+                        if let row : SwitchRow = self.form.rowBy(tag: newState.ID) {
                             row.value = (newState.State == "on") ? true : false
                             row.cell.imageView?.image = newState.EntityIcon
                             row.updateCell()
                             row.reload()
                         }
                     } else {
-                        if let row : ButtonRow = self.form.rowByTag(newState.ID) {
+                        if let row : ButtonRow = self.form.rowBy(tag: newState.ID) {
                             row.value = newState.State
                             if let uom = newState.UnitOfMeasurement {
                                 row.value = newState.State + " " + uom

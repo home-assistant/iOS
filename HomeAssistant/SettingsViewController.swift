@@ -87,7 +87,7 @@ class SettingsViewController: FormViewController {
                 $0.disabled = Condition(booleanLiteral: self.configured)
             }.onChange { row in
                 if row.value == URL(string: "https://") { return }
-                let apiPasswordRow: PasswordRow = self.form.rowByTag("apiPassword")!
+                let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
                 apiPasswordRow.value = ""
                 if let url = row.value {
                     let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
@@ -99,12 +99,14 @@ class SettingsViewController: FormViewController {
                         self.baseURL = cleanUrl.cleanedURL
                     }
                 }
-            }.onCellHighlight { cell, row in
-                row.value = URL(string: "https://")
-            }.onCellUnHighlight { cell, row in
-                if row.value == URL(string: "https://") {
-                    row.value = nil
-                    cell.update()
+            }.cellUpdate { cell, row in
+                if row.isHighlighted {
+                    row.value = URL(string: "https://")
+                } else {
+                    if row.value == URL(string: "https://") {
+                        row.value = nil
+                        cell.update()
+                    }
                 }
             }
             
@@ -124,10 +126,10 @@ class SettingsViewController: FormViewController {
                 if self.connectStep == 1 {
                     if let url = self.baseURL {
                         HomeAssistantAPI.sharedInstance.GetDiscoveryInfo(baseUrl: url).then { discoveryInfo -> Void in
-                            let urlRow: URLRow = self.form.rowByTag("baseURL")!
+                            let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
                             urlRow.disabled = true
                             urlRow.evaluateDisabled()
-                            let apiPasswordRow: PasswordRow = self.form.rowByTag("apiPassword")!
+                            let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
                             apiPasswordRow.value = ""
                             apiPasswordRow.hidden = Condition(booleanLiteral: !discoveryInfo.RequiresPassword)
                             apiPasswordRow.evaluateHidden()
@@ -181,13 +183,12 @@ class SettingsViewController: FormViewController {
                     $0.value = removeSpecialCharsFromString(text: UIDevice.current.name).replacingOccurrences(of: " ", with: "_").lowercased()
                 }
                 $0.cell.textField.autocapitalizationType = .none
-                }.onCellHighlight { cell, row in
-                    print("Cell highlight")
-                }.onCellUnHighlight { cell, row in
-                    print("Cell unhighlight")
+            }.cellUpdate { cell, row in
+                if row.isHighlighted == false {
                     self.prefs.setValue(row.value, forKey: "deviceId")
                     self.prefs.synchronize()
                 }
+            }
 //            <<< SwitchRow("allowAllGroups") {
 //                $0.title = "Show all groups"
 //                $0.value = prefs.bool(forKey: "allowAllGroups")
@@ -199,7 +200,7 @@ class SettingsViewController: FormViewController {
                     let view = SettingsDetailViewController()
                     view.detailGroup = "display"
                     return view
-                }, completionCallback: { vc in
+                }, onDismiss: { vc in
                     let _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
@@ -223,7 +224,7 @@ class SettingsViewController: FormViewController {
                         }
                         row.hidden = true
                         row.evaluateHidden()
-                        let locationSettingsRow: ButtonRow = self.form.rowByTag("locationSettings")!
+                        let locationSettingsRow: ButtonRow = self.form.rowBy(tag: "locationSettings")!
                         locationSettingsRow.hidden = false
                         locationSettingsRow.evaluateHidden()
                     }
@@ -240,7 +241,7 @@ class SettingsViewController: FormViewController {
                     let view = SettingsDetailViewController()
                     view.detailGroup = "location"
                     return view
-                }, completionCallback: { vc in
+                }, onDismiss: { vc in
                     let _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
@@ -262,7 +263,7 @@ class SettingsViewController: FormViewController {
                         }
                         row.hidden = true
                         row.evaluateHidden()
-                        let notificationSettingsRow: ButtonRow = self.form.rowByTag("notificationSettings")!
+                        let notificationSettingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
                         notificationSettingsRow.hidden = false
                         notificationSettingsRow.evaluateHidden()
                     }
@@ -280,7 +281,7 @@ class SettingsViewController: FormViewController {
                     let view = SettingsDetailViewController()
                     view.detailGroup = "notifications"
                     return view
-                }, completionCallback: { vc in
+                }, onDismiss: { vc in
                     let _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
@@ -309,7 +310,7 @@ class SettingsViewController: FormViewController {
                 $0.title = "Help"
                 $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
                     return SFSafariViewController(url: URL(string: "https://community.home-assistant.io/c/ios")!, entersReaderIfAvailable: false)
-                }, completionCallback: { vc in
+                }, onDismiss: { vc in
                     let _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
@@ -317,7 +318,7 @@ class SettingsViewController: FormViewController {
                 $0.title = "Acknowledgements"
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     return AcknowListViewController()
-                }, completionCallback: { vc in
+                }, onDismiss: { vc in
                     let _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
@@ -408,14 +409,14 @@ class SettingsViewController: FormViewController {
 
     
     func HomeAssistantDiscovered(_ notification: Notification){
-        let discoverySection : Section = self.form.sectionByTag("discoveredInstances")!
+        let discoverySection : Section = self.form.sectionBy(tag: "discoveredInstances")!
         discoverySection.hidden = false
         discoverySection.evaluateHidden()
         if let userInfo = (notification as Notification).userInfo as? [String:Any] {
             let discoveryInfo = DiscoveryInfoResponse(JSON: userInfo)!
             let needsPass = discoveryInfo.RequiresPassword ? " - Requires password" : ""
             let detailTextLabel = "\(discoveryInfo.BaseURL!.host!):\(discoveryInfo.BaseURL!.port!) - \(discoveryInfo.Version) - \(discoveryInfo.BaseURL!.scheme!.uppercased()) \(needsPass)"
-            if self.form.rowByTag(discoveryInfo.LocationName) == nil {
+            if self.form.rowBy(tag: discoveryInfo.LocationName) == nil {
                 discoverySection
                     <<< ButtonRow(discoveryInfo.LocationName) {
                             $0.title = discoveryInfo.LocationName
@@ -424,11 +425,11 @@ class SettingsViewController: FormViewController {
                             cell.textLabel?.textColor = .black
                             cell.detailTextLabel?.text = detailTextLabel
                         }.onCellSelection({ cell, row in
-                            let urlRow: URLRow = self.form.rowByTag("baseURL")!
+                            let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
                             urlRow.value = discoveryInfo.BaseURL
                             urlRow.disabled = true
                             urlRow.evaluateDisabled()
-                            let apiPasswordRow: PasswordRow = self.form.rowByTag("apiPassword")!
+                            let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
                             apiPasswordRow.value = ""
                             apiPasswordRow.hidden = Condition(booleanLiteral: !discoveryInfo.RequiresPassword)
                             apiPasswordRow.evaluateHidden()
@@ -436,7 +437,7 @@ class SettingsViewController: FormViewController {
                         })
                 self.tableView?.reloadData()
             } else {
-                if let readdedRow : ButtonRow = self.form.rowByTag(discoveryInfo.LocationName) {
+                if let readdedRow : ButtonRow = self.form.rowBy(tag: discoveryInfo.LocationName) {
                     readdedRow.hidden = false
                     readdedRow.updateCell()
                     readdedRow.evaluateHidden()
@@ -448,13 +449,13 @@ class SettingsViewController: FormViewController {
     func HomeAssistantUndiscovered(_ notification: Notification){
         if let userInfo = (notification as Notification).userInfo {
             let name = userInfo["name"] as! String
-            if let removingRow : ButtonRow = self.form.rowByTag(name) {
+            if let removingRow : ButtonRow = self.form.rowBy(tag: name) {
                 removingRow.hidden = true
                 removingRow.evaluateHidden()
                 removingRow.updateCell()
             }
         }
-        let discoverySection : Section = self.form.sectionByTag("discoveredInstances")!
+        let discoverySection : Section = self.form.sectionBy(tag: "discoveredInstances")!
         discoverySection.hidden = Condition(booleanLiteral: (discoverySection.count < 1))
         discoverySection.evaluateHidden()
     }
@@ -492,22 +493,22 @@ class SettingsViewController: FormViewController {
     }
     
     func saveSettings() {
-        if let urlRow: URLRow = self.form.rowByTag("baseURL") {
+        if let urlRow: URLRow = self.form.rowBy(tag: "baseURL") {
             if let url = urlRow.value {
                 self.prefs.setValue(url.absoluteString, forKey: "baseURL")
             }
         }
-        if let apiPasswordRow: PasswordRow = self.form.rowByTag("apiPassword") {
+        if let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword") {
             if let password = apiPasswordRow.value {
                 self.prefs.setValue(password, forKey: "apiPassword")
             }
         }
-        if let deviceIdRow: TextRow = self.form.rowByTag("deviceId") {
+        if let deviceIdRow: TextRow = self.form.rowBy(tag: "deviceId") {
             if let deviceId = deviceIdRow.value {
                 self.prefs.setValue(deviceId, forKey: "deviceId")
             }
         }
-        if let allowAllGroupsRow: SwitchRow = self.form.rowByTag("allowAllGroups") {
+        if let allowAllGroupsRow: SwitchRow = self.form.rowBy(tag: "allowAllGroups") {
             if let allowAllGroups = allowAllGroupsRow.value {
                 self.prefs.set(allowAllGroups, forKey: "allowAllGroups")
             }
