@@ -229,6 +229,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
             let _ = HomeAssistantAPI.sharedInstance.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
             break
+        case "send_location": // homeassistant://send_location/
+            let _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
+            break
         default:
             print("Can't route", url.host)
         }
