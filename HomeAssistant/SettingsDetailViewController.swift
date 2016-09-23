@@ -24,6 +24,7 @@ class SettingsDetailViewController: FormViewController {
         
         switch detailGroup {
         case "display":
+            self.title = "Display Settings"
             self.form
                 +++ Section()
                 <<< SwitchRow("allowAllGroups") {
@@ -31,6 +32,7 @@ class SettingsDetailViewController: FormViewController {
                     $0.value = prefs.bool(forKey: "allowAllGroups")
                 }
         case "location":
+            self.title = "Location Settings"
             for zone in realm.objects(Zone.self) {
                 self.form
                     +++ Section(header: zone.Name, footer: "") {
@@ -64,6 +66,7 @@ class SettingsDetailViewController: FormViewController {
                     }
             }
         case "notifications":
+            self.title = "Notification Settings"
             let endpointArn = prefs.string(forKey: "endpointARN")!
             self.form
                 +++ Section()
