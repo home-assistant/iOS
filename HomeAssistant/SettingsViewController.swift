@@ -249,7 +249,6 @@ class SettingsViewController: FormViewController {
             <<< ButtonRow("enableNotifications"){
                 $0.title = "Enable notifications"
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.notificationsEnabled)
-                $0.evaluateHidden()
             }.onCellSelection { cell, row in
                 let pscope = PermissionScope()
                 
@@ -274,8 +273,7 @@ class SettingsViewController: FormViewController {
             
             <<< ButtonRow("notificationSettings") {
                 $0.title = "Notification Settings"
-                $0.hidden = Condition(booleanLiteral: (HomeAssistantAPI.sharedInstance.notificationsEnabled == true))
-                $0.evaluateHidden()
+                $0.hidden = Condition(booleanLiteral: !HomeAssistantAPI.sharedInstance.notificationsEnabled)
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     print("HomeAssistantAPI.sharedInstance.notificationsEnabled", HomeAssistantAPI.sharedInstance.notificationsEnabled)
                     let view = SettingsDetailViewController()

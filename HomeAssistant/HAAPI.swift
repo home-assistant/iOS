@@ -770,7 +770,8 @@ public class HomeAssistantAPI {
     }
     
     var notificationsEnabled : Bool {
-        return PermissionScope().statusNotifications() == .authorized && prefs.string(forKey: "endpointARN") != nil
+//        return PermissionScope().statusNotifications() == .authorized && prefs.string(forKey: "endpointARN") != nil
+        return prefs.string(forKey: "endpointARN") != nil
     }
 
     var enabledPermissions : [String] {
