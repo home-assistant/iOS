@@ -8,12 +8,12 @@ PODS:
   - AlamofireObjectMapper (4.0.0):
     - Alamofire (~> 4.0)
     - ObjectMapper (~> 2.0)
-  - AWSCognito (2.4.7):
-    - AWSCore (= 2.4.7)
-  - AWSCore (2.4.7)
-  - AWSSNS (2.4.7):
-    - AWSCore (= 2.4.7)
-  - Crashlytics (3.8.1):
+  - AWSCognito (2.4.9):
+    - AWSCore (= 2.4.9)
+  - AWSCore (2.4.9)
+  - AWSSNS (2.4.9):
+    - AWSCore (= 2.4.9)
+  - Crashlytics (3.8.2):
     - Fabric (~> 1.6.3)
   - DeviceKit (1.0.0)
   - Eureka (1.7.0)
@@ -87,19 +87,19 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Eureka:
-    :commit: c6230f61f2c718ecdfd270ca163f4766fa47bbe9
+    :commit: 7aa2d1828cbeb141b07b3a83aac65326917aefff
     :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :commit: 8032213d13242c6466a048730f0defe98e10c1d6
     :git: https://github.com/robbiet480/FontAwesomeKit.git
   IKEventSource:
-    :commit: 888ccedd4af1bccb3847940553598ab80ee5fb9f
+    :commit: 70c649333d656a4792c9d76335dd8115ebb0861a
     :git: https://github.com/robbiet480/EventSource.git
   PermissionScope:
     :commit: 4bd59686bf6b303994badd9e5121a663373415dd
     :git: https://github.com/robbiet480/PermissionScope.git
   Whisper:
-    :commit: 27ebbc613c79058e3d10cdf8cb94e820c889bda8
+    :commit: f1c976b2eb896971532f5b1da62f58843de2bc3f
     :git: https://github.com/hyperoslo/Whisper.git
 
 SPEC CHECKSUMS:
@@ -108,10 +108,10 @@ SPEC CHECKSUMS:
   AlamofireImage: 6594aa1139a67dcd36cde6da79ea4e5b318e60fb
   AlamofireNetworkActivityIndicator: ba9f481748d954318dd99636abff028cd3fcdc07
   AlamofireObjectMapper: 9faa3ce5a240efda1b209009a2d6e1e949227abc
-  AWSCognito: 6aa404f15d1eb2b4b51f45322a409257b3248e79
-  AWSCore: 9a729a3c0050a51ece3547d546c327acdac7838a
-  AWSSNS: 45b3a02693808251ed388afcab0e90ec05b53f72
-  Crashlytics: 4391d8df0b125345e9f209c5db6e7f40a6a8435d
+  AWSCognito: 4fa9fefcadae1d8425b01cbde27d564c21e3fd35
+  AWSCore: 175208358b95492e0ebe0337df2ab415300bddac
+  AWSSNS: 85513f30d76556ff43bc0772e65f1a74008a488f
+  Crashlytics: 27acca95a01b042a8294291dd6dff27f8f6af6d7
   DeviceKit: ddead7f3a7c9603ba3a63cb748566428c38dd11f
   Eureka: 2020d9faeef7b7e9adeb9e3d8af779e5931c1897
   Fabric: 5755268d0171435ab167e3d0878a28a777deaf10
