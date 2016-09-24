@@ -23,6 +23,19 @@ class MediaPlayer: SwitchableEntity {
     dynamic var Source: String? = nil
     dynamic var SourceList: [String] = [String]()
     let StoredSourceList = List<StringObject>()
+    dynamic var SupportsPause: Bool = false
+    dynamic var SupportsSeek: Bool = false
+    dynamic var SupportsVolumeSet: Bool = false
+    dynamic var SupportsVolumeMute: Bool = false
+    dynamic var SupportsPreviousTrack: Bool = false
+    dynamic var SupportsNextTrack: Bool = false
+    dynamic var SupportsTurnOn: Bool = false
+    dynamic var SupportsTurnOff: Bool = false
+    dynamic var SupportsPlayMedia: Bool = false
+    dynamic var SupportsVolumeStep: Bool = false
+    dynamic var SupportsSelectSource: Bool = false
+    dynamic var SupportsStop: Bool = false
+    dynamic var SupportsClearPlaylist: Bool = false
     
     
     override func mapping(map: Map) {
@@ -46,10 +59,25 @@ class MediaPlayer: SwitchableEntity {
             value.value = option
             self.StoredSourceList.append(value)
         }
+        
+        let features = MediaPlayerSupportedCommands(rawValue: map["attributes.supported_media_commands"].value()!)
+        self.SupportsPause = features.contains(.Pause)
+        self.SupportsSeek = features.contains(.Seek)
+        self.SupportsVolumeSet = features.contains(.VolumeSet)
+        self.SupportsVolumeMute = features.contains(.VolumeMute)
+        self.SupportsPreviousTrack = features.contains(.PreviousTrack)
+        self.SupportsNextTrack = features.contains(.NextTrack)
+        self.SupportsTurnOn = features.contains(.TurnOn)
+        self.SupportsTurnOff = features.contains(.TurnOff)
+        self.SupportsPlayMedia = features.contains(.PlayMedia)
+        self.SupportsVolumeStep = features.contains(.VolumeStep)
+        self.SupportsSelectSource = features.contains(.SelectSource)
+        self.SupportsStop = features.contains(.Stop)
+        self.SupportsClearPlaylist = features.contains(.ClearPlaylist)
     }
     
     override class func ignoredProperties() -> [String] {
-        return ["SourceList"]
+        return ["SourceList", "SupportsPause", "SupportsSeek", "SupportsVolumeSet", "SupportsVolumeMute", "SupportsPreviousTrack", "SupportsNextTrack", "SupportsTurnOn", "SupportsTurnOff", "SupportsPlayMedia", "SupportsVolumeStep", "SupportsSelectSource", "SupportsStop", "SupportsClearPlaylist"]
     }
     
     func humanReadableMediaDuration() -> String {
@@ -81,4 +109,22 @@ class MediaPlayer: SwitchableEntity {
     override func StateIcon() -> String {
         return (self.State != "off" && self.State != "idle") ? "mdi:cast-connected" : "mdi:cast"
     }
+}
+
+struct MediaPlayerSupportedCommands: OptionSet {
+    let rawValue: Int
+    
+    static let Pause = MediaPlayerSupportedCommands(rawValue: 1)
+    static let Seek = MediaPlayerSupportedCommands(rawValue: 2)
+    static let VolumeSet = MediaPlayerSupportedCommands(rawValue: 4)
+    static let VolumeMute = MediaPlayerSupportedCommands(rawValue: 8)
+    static let PreviousTrack = MediaPlayerSupportedCommands(rawValue: 16)
+    static let NextTrack = MediaPlayerSupportedCommands(rawValue: 32)
+    static let TurnOn = MediaPlayerSupportedCommands(rawValue: 128)
+    static let TurnOff = MediaPlayerSupportedCommands(rawValue: 256)
+    static let PlayMedia = MediaPlayerSupportedCommands(rawValue: 512)
+    static let VolumeStep = MediaPlayerSupportedCommands(rawValue: 1024)
+    static let SelectSource = MediaPlayerSupportedCommands(rawValue: 2048)
+    static let Stop = MediaPlayerSupportedCommands(rawValue: 4096)
+    static let ClearPlaylist = MediaPlayerSupportedCommands(rawValue: 8192)
 }

@@ -15,13 +15,31 @@ class Light: SwitchableEntity {
     var Brightness = RealmOptional<Float>()
     var ColorTemp = RealmOptional<Float>()
     dynamic var RGBColor: [Int]?
+    dynamic var XYColor: [Int]?
+    dynamic var SupportsBrightness: Bool = false
+    dynamic var SupportsColorTemp: Bool = false
+    dynamic var SupportsEffect: Bool = false
+    dynamic var SupportsFlash: Bool = false
+    dynamic var SupportsRGBColor: Bool = false
+    dynamic var SupportsTransition: Bool = false
+    dynamic var SupportsXYColor: Bool = false
     
     override func mapping(map: Map) {
         super.mapping(map: map)
         
         Brightness.value   <- map["attributes.brightness"]
         ColorTemp.value    <- map["attributes.color_temp"]
-        RGBColor     <- map["attributes.rgb_color"]
+        RGBColor           <- map["attributes.rgb_color"]
+        XYColor            <- map["attributes.xy_color"]
+        
+        let features = LightSupportedFeatures(rawValue: map["attributes.supported_features"].value()!)
+        self.SupportsBrightness = features.contains(.Brightness)
+        self.SupportsColorTemp = features.contains(.ColorTemp)
+        self.SupportsEffect = features.contains(.Effect)
+        self.SupportsFlash = features.contains(.Flash)
+        self.SupportsRGBColor = features.contains(.RGBColor)
+        self.SupportsTransition = features.contains(.Transition)
+        self.SupportsXYColor = features.contains(.XYColor)
     }
     
     override func EntityColor() -> UIColor {
@@ -45,6 +63,18 @@ class Light: SwitchableEntity {
     }
 
     override class func ignoredProperties() -> [String] {
-        return ["RGBColor"]
+        return ["SupportsBrightness", "SupportsColorTemp", "SupportsEffect", "SupportsFlash", "SupportsRGBColor", "SupportsTransition", "SupportsXYColor", "RGBColor", "XYColor"]
     }
+}
+
+struct LightSupportedFeatures: OptionSet {
+    let rawValue: Int
+    
+    static let Brightness = LightSupportedFeatures(rawValue: 1)
+    static let ColorTemp = LightSupportedFeatures(rawValue: 2)
+    static let Effect = LightSupportedFeatures(rawValue: 4)
+    static let Flash = LightSupportedFeatures(rawValue: 8)
+    static let RGBColor = LightSupportedFeatures(rawValue: 16)
+    static let Transition = LightSupportedFeatures(rawValue: 32)
+    static let XYColor = LightSupportedFeatures(rawValue: 64)
 }
