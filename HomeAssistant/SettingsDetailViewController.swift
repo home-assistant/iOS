@@ -67,16 +67,23 @@ class SettingsDetailViewController: FormViewController {
             }
         case "notifications":
             self.title = "Notification Settings"
-            let endpointArn = prefs.string(forKey: "endpointARN")!
             self.form
-                +++ Section()
+                +++ Section(header: "Push token", footer: "This is the target to use in your Home Assistant configuration. Tap to copy or share.")
                 <<< TextAreaRow() {
                     $0.placeholder = "EndpointArn"
-                    $0.value = endpointArn.components(separatedBy: "/").last
+                    if let endpointArn = prefs.string(forKey: "endpointARN") {
+                        $0.value = endpointArn.components(separatedBy: "/").last
+                    } else {
+                        $0.value = "Not registered for remote notifications"
+                    }
                     $0.disabled = true
                     $0.textAreaHeight = TextAreaHeight.dynamic(initialTextViewHeight: 40)
+                }.onCellSelection{ cell, row in
+                    let activityViewController = UIActivityViewController(activityItems: [row.value! as String], applicationActivities: nil)
+                    self.present(activityViewController, animated: true, completion: {})
                 }
                 
+                +++ Section(header: "", footer: "Updating push settings will request the latest push actions and categories from Home Assistant.")
                 <<< ButtonRow() {
                     $0.title = "Update push settings"
                 }.onCellSelection {_,_ in
@@ -86,6 +93,7 @@ class SettingsDetailViewController: FormViewController {
                     self.present(alert, animated: true, completion: nil)
                 }
                 
+                +++ Section(header: "", footer: "Custom push notification sounds can be added via iTunes.")
                 <<< ButtonRow() {
                     $0.title = "Import sounds from iTunes"
                 }.onCellSelection {_,_ in
