@@ -30,6 +30,9 @@ class SettingsDetailViewController: FormViewController {
                 <<< SwitchRow("allowAllGroups") {
                     $0.title = "Show all groups"
                     $0.value = prefs.bool(forKey: "allowAllGroups")
+                }.onChange { row in
+                    self.prefs.setValue(row.value, forKey: "allowAllGroups")
+                    self.prefs.synchronize()
                 }
         case "location":
             self.title = "Location Settings"
