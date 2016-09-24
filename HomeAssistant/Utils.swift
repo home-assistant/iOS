@@ -178,6 +178,13 @@ func migrateUserDefaultsToAppGroups() {
     
 }
 
+func checkIfIPIsInternal(ipAddress: String) -> Bool {
+    let pat = "/(^127\\.)|(^192\\.168\\.)|(^10\\.)|(^172\\.1[6-9]\\.)|(^172\\.2[0-9]\\.)|(^172\\.3[0-1]\\.)|(^::1$)|(^[fF][cCdD])/"
+    let regex = try! NSRegularExpression(pattern: pat, options: [])
+    let matches = regex.matches(in: ipAddress, options: [], range: NSRange(location: 0, length: ipAddress.characters.count))
+    return (matches.count > 0)
+}
+
 extension UIImage{
     func scaledToSize(_ size: CGSize) -> UIImage{
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
