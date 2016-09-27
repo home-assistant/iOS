@@ -17,7 +17,7 @@ target 'HomeAssistant' do
   pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'Swift3'
   pod 'Fabric'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
-  pod 'IKEventSource', :git => 'https://github.com/robbiet480/EventSource.git', :branch => 'swift3'
+  pod 'IKEventSource', :git => 'https://github.com/inaka/EventSource.git', :branch => 'master'
   pod 'MBProgressHUD'
   pod 'ObjectMapper'
   pod 'PermissionScope', :git => 'https://github.com/robbiet480/PermissionScope.git', :branch => 'swift3-ios10-usernotifications'

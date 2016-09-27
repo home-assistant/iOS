@@ -21,7 +21,7 @@ PODS:
   - FontAwesomeKit/Core (2.2.4)
   - FontAwesomeKit/MaterialDesignIcons (2.2.4):
     - FontAwesomeKit/Core
-  - IKEventSource (1.2)
+  - IKEventSource (2.0.0)
   - MBProgressHUD (1.0.0)
   - ObjectMapper (2.0.0)
   - PermissionScope (1.0.3)
@@ -58,7 +58,7 @@ DEPENDENCIES:
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `Swift3`)
   - Fabric
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
-  - IKEventSource (from `https://github.com/robbiet480/EventSource.git`, branch `swift3`)
+  - IKEventSource (from `https://github.com/inaka/EventSource.git`, branch `master`)
   - MBProgressHUD
   - ObjectMapper
   - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `swift3-ios10-usernotifications`)
@@ -76,8 +76,8 @@ EXTERNAL SOURCES:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
   IKEventSource:
-    :branch: swift3
-    :git: https://github.com/robbiet480/EventSource.git
+    :branch: master
+    :git: https://github.com/inaka/EventSource.git
   PermissionScope:
     :branch: swift3-ios10-usernotifications
     :git: https://github.com/robbiet480/PermissionScope.git
@@ -93,8 +93,8 @@ CHECKOUT OPTIONS:
     :commit: 8032213d13242c6466a048730f0defe98e10c1d6
     :git: https://github.com/robbiet480/FontAwesomeKit.git
   IKEventSource:
-    :commit: 70c649333d656a4792c9d76335dd8115ebb0861a
-    :git: https://github.com/robbiet480/EventSource.git
+    :commit: 4a4f76db525f534493bef1d5cd0647b1055823af
+    :git: https://github.com/inaka/EventSource.git
   PermissionScope:
     :commit: 4bd59686bf6b303994badd9e5121a663373415dd
     :git: https://github.com/robbiet480/PermissionScope.git
@@ -116,7 +116,7 @@ SPEC CHECKSUMS:
   Eureka: 2020d9faeef7b7e9adeb9e3d8af779e5931c1897
   Fabric: 5755268d0171435ab167e3d0878a28a777deaf10
   FontAwesomeKit: b5c9ddc9504c4a07945b7b4590e7f9ad5a50e073
-  IKEventSource: a8b2ae0aa469d3dcf3a1d99a102430d46e95e8bd
+  IKEventSource: 6526ddd3ecc340375a7d4c658eb47d82b92e7606
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   ObjectMapper: aed2570edabbd3c9b26c939e1cabdb6558f933e0
   PermissionScope: 3ee3e8a4a962b7621400c136a63ae1e16ecf1718
@@ -126,6 +126,6 @@ SPEC CHECKSUMS:
   SwiftLocation: f1bf5acb7992dd96c6f773c383f9c0479f07727d
   Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453
 
-PODFILE CHECKSUM: bfe23a6a5d36f428721ee79beabc946fb2a27a71
+PODFILE CHECKSUM: 94d2d00cf396eaf094d3179119e806101cde0c45
 
 COCOAPODS: 1.1.0.rc.1
