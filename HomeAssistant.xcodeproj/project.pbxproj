@@ -984,7 +984,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Robbie Trencheny";
 				TargetAttributes = {
 					B627CB061D83C87B0057173E = {
@@ -1588,8 +1588,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.NotificationContentExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b91e468e-4fc7-42ae-a422-df08fcabc90a";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.NotificationContentExtension 1473993094";
+				PROVISIONING_PROFILE = "8d3c0ff8-397d-4e24-8a64-16895a558af4";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.NotificationContentExtension 1475202285";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 3.0;
@@ -1720,6 +1720,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6410E5092616A0DD9241A91D /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/HomeAssistant.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
@@ -1772,8 +1773,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "f54e717c-5d4c-47b7-8636-ac383cc504a8";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant 1473993070";
+				PROVISIONING_PROFILE = "050c99c9-d23a-4537-8e4e-9eb293d13d49";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant 1475202231";
 				SNS_PLATFORM_ENDPOINT_ARN = "arn:aws:sns:us-west-2:663692594824:app/APNS_SANDBOX/HomeAssistant";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
@@ -1785,6 +1786,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 366FD7D1C50AFCED407FEBB6 /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/HomeAssistant.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -1914,8 +1916,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.APNSAttachmentService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "0a523f47-5a1a-4be4-999f-fe5e827d03b7";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.APNSAttachmentService 1473993113";
+				PROVISIONING_PROFILE = "12a1d9d2-7a60-4c18-8ec7-bcbd1052c5c8";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.APNSAttachmentService 1475202315";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 3.0;
