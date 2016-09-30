@@ -154,19 +154,19 @@ class GroupViewController: FormViewController {
                                 }
                         }
                     }
-                case "input_select":
-                    self.form.last! <<< PickerInlineRow<String>(entity.ID) {
-                        $0.title = entity.Name
-                        $0.value = entity.State
-                        $0.options = entity.Attributes["options"] as! [String]
-                        }.onChange { row -> Void in
-                            let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "input_select", service: "select_option", serviceData: ["entity_id": entity.ID as AnyObject, "option": row.value! as AnyObject])
-                        }.cellUpdate { cell, row in
-                            cell.imageView?.image = entity.EntityIcon
-                            if let picture = entity.DownloadedPicture {
-                                cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
-                            }
-                    }
+//                case "input_select":
+//                    self.form.last! <<< PickerInlineRow<String>(entity.ID) {
+//                        $0.title = entity.Name
+//                        $0.value = entity.State
+//                        $0.options = entity.Attributes["options"] as! [String]
+//                    }.onChange { row -> Void in
+//                        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "input_select", service: "select_option", serviceData: ["entity_id": entity.ID as AnyObject, "option": row.value! as AnyObject])
+//                    }.cellUpdate { cell, row in
+//                        cell.imageView?.image = entity.EntityIcon
+//                        if let picture = entity.DownloadedPicture {
+//                            cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
+//                        }
+//                    }
                 case "lock":
                     self.form.last! <<< SwitchRow(entity.ID) {
                         $0.title = entity.Name
@@ -217,7 +217,11 @@ class GroupViewController: FormViewController {
 //                        }
                         row.displayValueFor = { (pos: Float?) in
                             print(pos)
-                            return (entity.State.capitalized + " " + entity.UnitOfMeasurement!)
+                            if let uom = entity.UnitOfMeasurement {
+                                return (entity.State.capitalized + " " + uom)
+                            } else {
+                                return entity.State.capitalized
+                            }
                         }
                     }
                 default:
