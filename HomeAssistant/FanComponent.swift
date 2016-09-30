@@ -15,16 +15,22 @@ class Fan: Entity {
     dynamic var Speed: String? = nil
     dynamic var SupportsSetSpeed: Bool = false
     dynamic var SupportsOscillate: Bool = false
+    var SupportedFeatures: Int?
     
     override func mapping(map: Map) {
         super.mapping(map: map)
         
-        Oscillating <- map["attributes.oscillating"]
-        Speed       <- map["attributes.speed"]
+        Oscillating        <- map["attributes.oscillating"]
+        Speed              <- map["attributes.speed"]
         
-        let features = FanSupportedFeatures(rawValue: map["attributes.supported_features"].value()!)
-        self.SupportsSetSpeed = features.contains(.SetSpeed)
-        self.SupportsOscillate = features.contains(.Oscillate)
+        SupportedFeatures  <- map["attributes.supported_features"]
+        
+        
+        if let supported = self.SupportedFeatures {
+            let features = FanSupportedFeatures(rawValue: supported)
+            self.SupportsSetSpeed = features.contains(.SetSpeed)
+            self.SupportsOscillate = features.contains(.Oscillate)
+        }
     }
     
     override var ComponentIcon: String {
@@ -32,7 +38,7 @@ class Fan: Entity {
     }
     
     override class func ignoredProperties() -> [String] {
-        return ["SupportsSetSpeed", "SupportsOscillate"]
+        return ["SupportedFeatures", "SupportsSetSpeed", "SupportsOscillate"]
     }
 }
 

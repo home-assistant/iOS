@@ -36,7 +36,7 @@ class MediaPlayer: SwitchableEntity {
     dynamic var SupportsSelectSource: Bool = false
     dynamic var SupportsStop: Bool = false
     dynamic var SupportsClearPlaylist: Bool = false
-    
+    var SupportedMediaCommands: Int?
     
     override func mapping(map: Map) {
         super.mapping(map: map)
@@ -60,24 +60,29 @@ class MediaPlayer: SwitchableEntity {
             self.StoredSourceList.append(value)
         }
         
-        let features = MediaPlayerSupportedCommands(rawValue: map["attributes.supported_media_commands"].value()!)
-        self.SupportsPause = features.contains(.Pause)
-        self.SupportsSeek = features.contains(.Seek)
-        self.SupportsVolumeSet = features.contains(.VolumeSet)
-        self.SupportsVolumeMute = features.contains(.VolumeMute)
-        self.SupportsPreviousTrack = features.contains(.PreviousTrack)
-        self.SupportsNextTrack = features.contains(.NextTrack)
-        self.SupportsTurnOn = features.contains(.TurnOn)
-        self.SupportsTurnOff = features.contains(.TurnOff)
-        self.SupportsPlayMedia = features.contains(.PlayMedia)
-        self.SupportsVolumeStep = features.contains(.VolumeStep)
-        self.SupportsSelectSource = features.contains(.SelectSource)
-        self.SupportsStop = features.contains(.Stop)
-        self.SupportsClearPlaylist = features.contains(.ClearPlaylist)
+        SupportedMediaCommands  <- map["attributes.supported_media_commands"]
+        
+        
+        if let supported = self.SupportedMediaCommands {
+            let features = MediaPlayerSupportedCommands(rawValue: supported)
+            self.SupportsPause = features.contains(.Pause)
+            self.SupportsSeek = features.contains(.Seek)
+            self.SupportsVolumeSet = features.contains(.VolumeSet)
+            self.SupportsVolumeMute = features.contains(.VolumeMute)
+            self.SupportsPreviousTrack = features.contains(.PreviousTrack)
+            self.SupportsNextTrack = features.contains(.NextTrack)
+            self.SupportsTurnOn = features.contains(.TurnOn)
+            self.SupportsTurnOff = features.contains(.TurnOff)
+            self.SupportsPlayMedia = features.contains(.PlayMedia)
+            self.SupportsVolumeStep = features.contains(.VolumeStep)
+            self.SupportsSelectSource = features.contains(.SelectSource)
+            self.SupportsStop = features.contains(.Stop)
+            self.SupportsClearPlaylist = features.contains(.ClearPlaylist)
+        }
     }
     
     override class func ignoredProperties() -> [String] {
-        return ["SourceList", "SupportsPause", "SupportsSeek", "SupportsVolumeSet", "SupportsVolumeMute", "SupportsPreviousTrack", "SupportsNextTrack", "SupportsTurnOn", "SupportsTurnOff", "SupportsPlayMedia", "SupportsVolumeStep", "SupportsSelectSource", "SupportsStop", "SupportsClearPlaylist"]
+        return ["SupportedMediaCommands", "SourceList", "SupportsPause", "SupportsSeek", "SupportsVolumeSet", "SupportsVolumeMute", "SupportsPreviousTrack", "SupportsNextTrack", "SupportsTurnOn", "SupportsTurnOff", "SupportsPlayMedia", "SupportsVolumeStep", "SupportsSelectSource", "SupportsStop", "SupportsClearPlaylist"]
     }
     
     func humanReadableMediaDuration() -> String {

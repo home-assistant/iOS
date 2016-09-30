@@ -23,6 +23,7 @@ class Light: SwitchableEntity {
     dynamic var SupportsRGBColor: Bool = false
     dynamic var SupportsTransition: Bool = false
     dynamic var SupportsXYColor: Bool = false
+    var SupportedFeatures: Int?
     
     override func mapping(map: Map) {
         super.mapping(map: map)
@@ -31,15 +32,19 @@ class Light: SwitchableEntity {
         ColorTemp.value    <- map["attributes.color_temp"]
         RGBColor           <- map["attributes.rgb_color"]
         XYColor            <- map["attributes.xy_color"]
+        SupportedFeatures  <- map["attributes.supported_features"]
         
-        let features = LightSupportedFeatures(rawValue: map["attributes.supported_features"].value()!)
-        self.SupportsBrightness = features.contains(.Brightness)
-        self.SupportsColorTemp = features.contains(.ColorTemp)
-        self.SupportsEffect = features.contains(.Effect)
-        self.SupportsFlash = features.contains(.Flash)
-        self.SupportsRGBColor = features.contains(.RGBColor)
-        self.SupportsTransition = features.contains(.Transition)
-        self.SupportsXYColor = features.contains(.XYColor)
+        
+        if let supported = self.SupportedFeatures {
+            let features = LightSupportedFeatures(rawValue: supported)
+            self.SupportsBrightness = features.contains(.Brightness)
+            self.SupportsColorTemp = features.contains(.ColorTemp)
+            self.SupportsEffect = features.contains(.Effect)
+            self.SupportsFlash = features.contains(.Flash)
+            self.SupportsRGBColor = features.contains(.RGBColor)
+            self.SupportsTransition = features.contains(.Transition)
+            self.SupportsXYColor = features.contains(.XYColor)
+        }
     }
     
     override func EntityColor() -> UIColor {
@@ -63,7 +68,7 @@ class Light: SwitchableEntity {
     }
 
     override class func ignoredProperties() -> [String] {
-        return ["SupportsBrightness", "SupportsColorTemp", "SupportsEffect", "SupportsFlash", "SupportsRGBColor", "SupportsTransition", "SupportsXYColor", "RGBColor", "XYColor"]
+        return ["SupportedFeatures", "SupportsBrightness", "SupportsColorTemp", "SupportsEffect", "SupportsFlash", "SupportsRGBColor", "SupportsTransition", "SupportsXYColor", "RGBColor", "XYColor"]
     }
 }
 
