@@ -178,6 +178,24 @@ func migrateUserDefaultsToAppGroups() {
     
 }
 
+func logUserDefaults() {
+    
+    let userDefaults = UserDefaults.standard
+    let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant")
+    
+    if let groupDefaults = groupDefaults {
+        for key in groupDefaults.dictionaryRepresentation().keys {
+            print("groupDefaults \(key): \(groupDefaults.dictionaryRepresentation()[key])")
+        }
+    } else {
+        print("Unable to create NSUserDefaults with given app group")
+    }
+    
+    for key in userDefaults.dictionaryRepresentation().keys {
+        print("userDefaults \(key): \(userDefaults.dictionaryRepresentation()[key])")
+    }
+}
+
 func checkIfIPIsInternal(ipAddress: String) -> Bool {
     let pat = "/(^127\\.)|(^192\\.168\\.)|(^10\\.)|(^172\\.1[6-9]\\.)|(^172\\.2[0-9]\\.)|(^172\\.3[0-1]\\.)|(^::1$)|(^[fF][cCdD])/"
     let regex = try! NSRegularExpression(pattern: pat, options: [])

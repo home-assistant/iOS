@@ -25,7 +25,7 @@ class SettingsViewController: FormViewController {
     var baseURL : URL? = nil
     var password : String? = nil
     var configured: Bool = false
-    var connectStep : Int = 1
+    var connectStep : Int = 0 // 0 = pre-configuration, 1 = hostname entry, 2 = password entry
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +40,10 @@ class SettingsViewController: FormViewController {
         }
         
         self.configured = (self.baseURL != nil && self.password != nil)
+        
+        if self.configured == false {
+            connectStep = 1
+        }
         
         checkForEmail()
         
@@ -72,6 +76,11 @@ class SettingsViewController: FormViewController {
             
             NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.HomeAssistantUndiscovered(_:)), name:NSNotification.Name(rawValue: "homeassistant.undiscovered"), object: nil)
         }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.SSEConnectionChange(_:)), name:NSNotification.Name(rawValue: "sse.opened"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.SSEConnectionChange(_:)), name:NSNotification.Name(rawValue: "sse.error"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.Connected(_:)), name:NSNotification.Name(rawValue: "connected"), object: nil)
         
         form
             +++ Section(header: "Discovered Home Assistants", footer: ""){
@@ -114,6 +123,7 @@ class SettingsViewController: FormViewController {
                 $0.title = "Password"
                 $0.value = self.password
                 $0.disabled = Condition(booleanLiteral: self.configured)
+                $0.hidden = Condition(booleanLiteral: self.connectStep == 1)
                 $0.placeholder = "password"
             }.onChange { row in
                 self.password = row.value
@@ -133,6 +143,9 @@ class SettingsViewController: FormViewController {
                             apiPasswordRow.value = ""
                             apiPasswordRow.hidden = Condition(booleanLiteral: !discoveryInfo.RequiresPassword)
                             apiPasswordRow.evaluateHidden()
+                            let discoverySection : Section = self.form.sectionBy(tag: "discoveredInstances")!
+                            discoverySection.hidden = true
+                            discoverySection.evaluateHidden()
                             self.connectStep = 2
                         }.catch { error in
                             print("Hit error when attempting to get discovery information", error)
@@ -148,6 +161,9 @@ class SettingsViewController: FormViewController {
                         HomeAssistantAPI.sharedInstance.Connect()
                     }.then { config -> Void in
                         print("Connected!")
+                        let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
+                        apiPasswordRow.disabled = true
+                        apiPasswordRow.evaluateDisabled()
                         self.connectStep = 1
                         row.hidden = true
                         row.evaluateHidden()
@@ -174,6 +190,36 @@ class SettingsViewController: FormViewController {
                 }
             }
 
+            +++ Section(header: "Status", footer: ""){
+                $0.tag = "status"
+            }
+            <<< LabelRow("locationName") {
+                $0.title = "Name"
+                $0.value = "TwelveTwelve"
+                if let locationName = prefs.string(forKey: "location_name") {
+                    $0.value = locationName
+                }
+            }
+            <<< LabelRow("version") {
+                $0.title = "Version"
+                $0.value = "0.29.0"
+                if let version = prefs.string(forKey: "version") {
+                    $0.value = version
+                }
+            }
+            <<< LabelRow("connectedToSSE") {
+                $0.title = "Connected"
+                $0.value = HomeAssistantAPI.sharedInstance.sseConnected ? "✔️" : "✖️"
+            }
+            <<< LabelRow("iosComponentLoaded") {
+                $0.title = "iOS Component Loaded"
+                $0.value = HomeAssistantAPI.sharedInstance.iosComponentLoaded ? "✔️" : "✖️"
+            }
+            <<< LabelRow("deviceTrackerComponentLoaded") {
+                $0.title = "Device Tracker Component Loaded"
+                $0.value = HomeAssistantAPI.sharedInstance.deviceTrackerComponentLoaded ? "✔️" : "✖️"
+            }
+            
             +++ Section(header: "", footer: "Device ID is the identifier used when sending location updates to Home Assistant, as well as the target to send push notifications to.")
             <<< TextRow("deviceId") {
                 $0.title = "Device ID"
@@ -189,29 +235,22 @@ class SettingsViewController: FormViewController {
                     self.prefs.synchronize()
                 }
             }
-//            <<< SwitchRow("allowAllGroups") {
-//                $0.title = "Show all groups"
-//                $0.value = prefs.bool(forKey: "allowAllGroups")
-//            }
             +++ Section()
-            <<< ButtonRow("displaySettings") {
-                $0.title = "Display Settings"
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    let view = SettingsDetailViewController()
-                    view.detailGroup = "display"
-                    return view
-                }, onDismiss: { vc in
-                    let _ = vc.navigationController?.popViewController(animated: true)
-                })
-            }
+//            <<< ButtonRow("displaySettings") {
+//                $0.title = "Display Settings"
+//                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+//                    let view = SettingsDetailViewController()
+//                    view.detailGroup = "display"
+//                    return view
+//                }, onDismiss: { vc in
+//                    let _ = vc.navigationController?.popViewController(animated: true)
+//                })
+//            }
             
             <<< ButtonRow("enableLocation"){
                 $0.title = "Enable location tracking"
-                $0.hidden = Condition(booleanLiteral: PermissionScope().statusLocationAlways() == .unknown)
-                $0.evaluateHidden()
+                $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.locationEnabled)
             }.onCellSelection { cell, row in
-                print("locationEnabled?", HomeAssistantAPI.sharedInstance.locationEnabled)
-                print("locationEnabled?", (HomeAssistantAPI.sharedInstance.locationEnabled == false))
                 let pscope = PermissionScope()
                 
                 pscope.addPermission(LocationAlwaysPermission(),
@@ -235,8 +274,7 @@ class SettingsViewController: FormViewController {
             
             <<< ButtonRow("locationSettings") {
                 $0.title = "Location Settings"
-                $0.hidden = Condition(booleanLiteral: PermissionScope().statusLocationAlways() == .authorized)
-                $0.evaluateHidden()
+                $0.hidden = Condition(booleanLiteral: !HomeAssistantAPI.sharedInstance.locationEnabled)
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     let view = SettingsDetailViewController()
                     view.detailGroup = "location"
@@ -259,12 +297,12 @@ class SettingsViewController: FormViewController {
                         print("Notifications Permissions finished!", finished, results)
                         if results[0].status == .authorized {
                             HomeAssistantAPI.sharedInstance.setupPush()
+                            row.hidden = true
+                            row.evaluateHidden()
+                            let notificationSettingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
+                            notificationSettingsRow.hidden = false
+                            notificationSettingsRow.evaluateHidden()
                         }
-                        row.hidden = true
-                        row.evaluateHidden()
-                        let notificationSettingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
-                        notificationSettingsRow.hidden = false
-                        notificationSettingsRow.evaluateHidden()
                     }
                 }, cancelled: { (results) -> Void in
                     print("Permissions finished, resetting API!")
@@ -290,7 +328,7 @@ class SettingsViewController: FormViewController {
             }.cellUpdate { cell, _ in
                 cell.textLabel?.textColor = .red
             }.onCellSelection{ cell, row in
-                let alert = UIAlertController(title: "Reset", message: "Your settings will be reset, this device unregistered from push notifications, and removed from your Home Assistant configuration.", preferredStyle: UIAlertControllerStyle.alert)
+                let alert = UIAlertController(title: "Reset", message: "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.", preferredStyle: UIAlertControllerStyle.alert)
                 
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
                     print("Handle Cancel Logic here")
@@ -458,6 +496,24 @@ class SettingsViewController: FormViewController {
         discoverySection.evaluateHidden()
     }
 
+    func SSEConnectionChange(_ notification: Notification){
+        let sseRow: LabelRow = self.form.rowBy(tag: "connectedToSSE")!
+        if notification.name.rawValue == "sse.opened" {
+            sseRow.value = "✔️"
+        } else if notification.name.rawValue == "sse.error" {
+            sseRow.value = "✖️"
+        }
+        sseRow.updateCell()
+    }
+    
+    func Connected(_ notification: Notification){
+        let iosComponentLoadedRow: LabelRow = self.form.rowBy(tag: "iosComponentLoaded")!
+        iosComponentLoadedRow.value = HomeAssistantAPI.sharedInstance.iosComponentLoaded ? "✔️" : "✖️"
+        iosComponentLoadedRow.updateCell()
+        let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(tag: "deviceTrackerComponentLoaded")!
+        deviceTrackerComponentLoadedRow.value = HomeAssistantAPI.sharedInstance.deviceTrackerComponentLoaded ? "✔️" : "✖️"
+        deviceTrackerComponentLoadedRow.updateCell()
+    }
     
     @IBOutlet var emailInput: UITextField!
     func emailEntered(_ sender: UIAlertAction) {

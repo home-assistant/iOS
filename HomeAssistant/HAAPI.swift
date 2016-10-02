@@ -43,6 +43,8 @@ public class HomeAssistantAPI {
     var endpointARN : String = ""
     var deviceToken : String = ""
     
+    var eventSource: EventSource? = nil
+    
     var mostRecentlySentMessage : String = String()
     
     var services = [NetService]()
@@ -102,13 +104,21 @@ public class HomeAssistantAPI {
                 Crashlytics.sharedInstance().setObjectValue(self.loadedComponents.joined(separator: ","), forKey: "loadedComponents")
                 Crashlytics.sharedInstance().setObjectValue(self.enabledPermissions.joined(separator: ","), forKey: "allowedPermissions")
                 
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"), object: nil, userInfo: nil)
+                
                 let _ = self.GetStates()
                 
                 if self.locationEnabled {
                     self.trackLocation()
                 }
                 
-                self.setupPush()
+                if self.loadedComponents.contains("ios") {
+                    CLSLogv("iOS component loaded, attempting identify and setup of push categories", getVaList([]))
+                    _ = self.identifyDevice().then { _ in
+                        return self.setupPush()
+                    }
+                }
+                        
                 
 //                self.GetHistory()
                 self.startStream()
@@ -123,22 +133,24 @@ public class HomeAssistantAPI {
     }
     
     func startStream() {
-        let eventSource: EventSource = EventSource(url: baseAPIURL+"stream", headers: headers)
+        eventSource = EventSource(url: baseAPIURL+"stream", headers: headers)
         
-        eventSource.onOpen {
+        eventSource?.onOpen {
             print("SSE: Connection Opened")
             self.showMurmur(title: "Connected to Home Assistant")
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.opened"), object: nil, userInfo: nil)
         }
         
-        eventSource.onError { error in
+        eventSource?.onError { error in
             if let err = error {
                 Crashlytics.sharedInstance().recordError(err)
                 print("SSE: ", err)
                 self.showMurmur(title: "SSE Error! \(err.localizedDescription)")
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.error"), object: nil, userInfo: ["code": err.code, "description": err.description])
             }
         }
         
-        eventSource.onMessage { (id, eventName, data) in
+        eventSource?.onMessage { (id, eventName, data) in
             if let eventData = data {
                 if eventData == "ping" { return }
                 if let event = Mapper<SSEEvent>().map(JSONString: eventData) {
@@ -643,24 +655,29 @@ public class HomeAssistantAPI {
                     var allCategories = Set<UNNotificationCategory>()
                     for category in response.result.value! {
                         var categoryActions = [UNNotificationAction]()
-                        for action in category.Actions! {
-                            var actionOptions = UNNotificationActionOptions([])
-                            if action.AuthenticationRequired {
-                                actionOptions.insert(.authenticationRequired)
+                        if let actions = category.Actions {
+                            for action in actions {
+                                var actionOptions = UNNotificationActionOptions([])
+                                if action.AuthenticationRequired {
+                                    actionOptions.insert(.authenticationRequired)
+                                }
+                                if action.Destructive {
+                                    actionOptions.insert(.destructive)
+                                }
+                                if (action.ActivationMode == "foreground") {
+                                    actionOptions.insert(.foreground)
+                                }
+                                if (action.Behavior == "default") {
+                                    let newAction = UNNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions)
+                                    categoryActions.append(newAction)
+                                } else if (action.Behavior == "TextInput") {
+                                    let newAction = UNTextInputNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions, textInputButtonTitle: action.TextInputButtonTitle, textInputPlaceholder: action.TextInputPlaceholder)
+                                    categoryActions.append(newAction)
+                                }
                             }
-                            if action.Destructive {
-                                actionOptions.insert(.destructive)
-                            }
-                            if (action.ActivationMode == "foreground") {
-                                actionOptions.insert(.foreground)
-                            }
-                            if (action.Behavior == "default") {
-                                let newAction = UNNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions)
-                                categoryActions.append(newAction)
-                            } else if (action.Behavior == "TextInput") {
-                                let newAction = UNTextInputNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions, textInputButtonTitle: action.TextInputButtonTitle, textInputPlaceholder: action.TextInputPlaceholder)
-                                categoryActions.append(newAction)
-                            }
+                        } else {
+                            print("Category has no actions defined, continuing loop")
+                            continue
                         }
                         let finalCategory = UNNotificationCategory.init(identifier: category.Identifier!, actions: categoryActions, intentIdentifiers: [], options: [.customDismissAction])
                         allCategories.insert(finalCategory)
@@ -676,34 +693,27 @@ public class HomeAssistantAPI {
     }
     
     func setupPush() {
-        if self.notificationsEnabled {
-            CLSLogv("Notifications authorized, registering for remote notifications", getVaList([]))
-            UIApplication.shared.registerForRemoteNotifications()
-        }
         if self.loadedComponents.contains("ios") {
-            CLSLogv("iOS component loaded, attempting identify and setup of push categories", getVaList([]))
+            CLSLogv("iOS component loaded, attempting setup of push categories", getVaList([]))
             if #available(iOS 10, *) {
-                self.identifyDevice().then {_ -> Promise<Set<UNNotificationCategory>> in
-                    return self.setupUserNotificationPushActions()
-                }.then { categories -> Void in
+                self.setupUserNotificationPushActions().then { categories -> Void in
                     UNUserNotificationCenter.current().setNotificationCategories(categories)
                 }.catch {error -> Void in
-                    print("Error when attempting an identify or setup push actions", error)
+                    print("Error when attempting to setup push actions", error)
                     Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
                 }
             } else {
-                self.identifyDevice().then {_ -> Promise<Set<UIUserNotificationCategory>> in
-                    return self.setupPushActions()
-                }.then { categories -> Void in
+                self.setupPushActions().then { categories -> Void in
                     let types:UIUserNotificationType = ([.alert, .badge, .sound])
                     let settings = UIUserNotificationSettings(types: types, categories: categories)
                     UIApplication.shared.registerUserNotificationSettings(settings)
                 }.catch {error -> Void in
-                    print("Error when attempting an identify or setup push actions", error)
+                    print("Error when attempting to setup push actions", error)
                     Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
                 }
             }
         }
+        UIApplication.shared.registerForRemoteNotifications()
     }
     
     func handlePushAction(identifier: String, userInfo: [AnyHashable : Any], userInput: String?) -> Promise<Bool> {
@@ -772,8 +782,26 @@ public class HomeAssistantAPI {
     var notificationsEnabled : Bool {
 //        return PermissionScope().statusNotifications() == .authorized && prefs.string(forKey: "endpointARN") != nil
         return prefs.string(forKey: "endpointARN") != nil
+//        print("PermissionScope().statusNotifications()", PermissionScope().statusNotifications())
+//        return PermissionScope().statusNotifications() == .authorized
     }
-
+    
+    var iosComponentLoaded : Bool {
+        return self.loadedComponents.contains("ios")
+    }
+    
+    var deviceTrackerComponentLoaded : Bool {
+        return self.loadedComponents.contains("device_tracker")
+    }
+    
+    var sseConnected: Bool {
+        if let sse = self.eventSource {
+            return sse.readyState == .open
+        } else {
+            return false
+        }
+    }
+    
     var enabledPermissions : [String] {
         var permissionsContainer : [String] = []
         for status in PermissionScope().permissionStatuses([NotificationsPermission().type, LocationAlwaysPermission().type]) {
@@ -785,7 +813,7 @@ public class HomeAssistantAPI {
     }
     
     func showMurmur(title: String) {
-        show(whistle: Murmur(title: title), action: .show(0.5))
+        show(whistle: Murmur(title: title), action: .show(2.0))
     }
     
     func CleanBaseURL(baseUrl: URL) -> (hasValidScheme: Bool, cleanedURL: URL) {
