@@ -93,7 +93,7 @@ class SettingsViewController: FormViewController {
                 $0.title = "URL"
                 $0.value = self.baseURL
                 $0.placeholder = "https://homeassistant.myhouse.com"
-                $0.disabled = Condition(booleanLiteral: self.configured)
+                $0.disabled = Condition(booleanLiteral: (self.configured && showErrorConnectingMessage == false))
             }.onChange { row in
                 if row.value == URL(string: "https://") { return }
                 let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
@@ -122,7 +122,7 @@ class SettingsViewController: FormViewController {
             <<< PasswordRow("apiPassword") {
                 $0.title = "Password"
                 $0.value = self.password
-                $0.disabled = Condition(booleanLiteral: self.configured)
+                $0.disabled = Condition(booleanLiteral: self.configured && showErrorConnectingMessage == false)
                 $0.hidden = Condition(booleanLiteral: self.connectStep == 1)
                 $0.placeholder = "password"
             }.onChange { row in
@@ -336,6 +336,7 @@ class SettingsViewController: FormViewController {
                 
                 alert.addAction(UIAlertAction(title: "Reset", style: .destructive, handler: { (action: UIAlertAction!) in
                     print("Handle Ok logic here")
+                    self.ResetApp()
                 }))
                 
                 self.present(alert, animated: true, completion: nil)
@@ -587,6 +588,18 @@ class SettingsViewController: FormViewController {
             self.dismiss(animated: true, completion: nil)
             (UIApplication.shared.delegate as! AppDelegate).initAPI()
         })
+    }
+    
+    func ResetApp() {
+        let bundleId = Bundle.main.bundleIdentifier!
+        UserDefaults.standard.removePersistentDomain(forName: bundleId)
+        UserDefaults.standard.synchronize()
+        self.prefs.removePersistentDomain(forName: bundleId)
+        self.prefs.synchronize()
+        
+        HomeAssistantAPI.sharedInstance.removeDevice().then { _ in
+            print("Done with reset!")
+        }
     }
 }
 
