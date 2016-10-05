@@ -586,10 +586,49 @@ public class HomeAssistantAPI {
         return Mapper().toJSON(ident)
     }
     
+    func buildRemovalDict() -> [String:Any] {
+        let deviceKitDevice = Device()
+        
+        let ident = IdentifyRequest()
+        ident.AppBuildNumber = Int(string: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String)
+        ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
+        ident.AppVersionNumber = Double(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)
+        ident.DeviceID = deviceID
+        ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
+        ident.DeviceModel = deviceKitDevice.model
+        ident.DeviceName = deviceKitDevice.name
+        ident.DevicePermanentID = DeviceUID.uid()
+        ident.DeviceSystemName = deviceKitDevice.systemName
+        ident.DeviceSystemVersion = deviceKitDevice.systemVersion
+        ident.DeviceType = deviceKitDevice.description
+        ident.Permissions = self.enabledPermissions
+        ident.PushID = endpointARN.components(separatedBy: "/").last!
+        ident.PushSounds = listAllInstalledPushNotificationSounds()
+        ident.PushToken = deviceToken
+        
+        return Mapper().toJSON(ident)
+    }
+    
     func identifyDevice() -> Promise<String> {
         let queryUrl = baseAPIURL+"ios/identify"
         return Promise { fulfill, reject in
             let _ = self.manager!.request(queryUrl, method: .post, parameters: buildIdentifyDict(), encoding: JSONEncoding.default).validate().responseString { response in
+                switch response.result {
+                case .success:
+                    fulfill(response.result.value!)
+                case .failure(let error):
+                    CLSLogv("Error when attemping to identifyDevice(): %@", getVaList([error.localizedDescription]))
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
+            }
+        }
+    }
+    
+    func removeDevice() -> Promise<String> {
+        let queryUrl = baseAPIURL+"ios/identify"
+        return Promise { fulfill, reject in
+            let _ = self.manager!.request(queryUrl, method: .delete, parameters: buildRemovalDict(), encoding: JSONEncoding.default).validate().responseString { response in
                 switch response.result {
                 case .success:
                     fulfill(response.result.value!)
