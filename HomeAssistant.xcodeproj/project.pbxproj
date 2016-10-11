@@ -148,6 +148,7 @@
 		B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B627CB0D1D83C87B0057173E /* NotificationViewController.swift */; };
 		B627CB111D83C87B0057173E /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B627CB0F1D83C87B0057173E /* MainInterface.storyboard */; };
 		B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B629E8D61DAD8CFA00040A90 /* PushRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */; };
 		B62A67A01D80E933009E46F9 /* IdentifyRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */; };
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
@@ -401,6 +402,7 @@
 		B627CB0D1D83C87B0057173E /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		B627CB101D83C87B0057173E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		B627CB121D83C87B0057173E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrationRequest.swift; sourceTree = "<group>"; };
 		B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyRequest.swift; sourceTree = "<group>"; };
 		B6393F851CB255F200503916 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
 		B6393F871CB2561100503916 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -822,6 +824,7 @@
 				B6F02BE81CB46AF40029ABE7 /* Entity.swift */,
 				B6767A501D0234E700F2A08B /* SwitchableEntity.swift */,
 				B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */,
+				B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1451,6 +1454,7 @@
 				B6F02C1C1CB489770029ABE7 /* ThermostatComponent.swift in Sources */,
 				B64D09AF1D7D561E008EB487 /* InputSlider.swift in Sources */,
 				B6F02C151CB489770029ABE7 /* LockComponent.swift in Sources */,
+				B629E8D61DAD8CFA00040A90 /* PushRegistrationRequest.swift in Sources */,
 				B6767A511D0234E700F2A08B /* SwitchableEntity.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B6F02C131CB489770029ABE7 /* InputSelectComponent.swift in Sources */,
@@ -1729,6 +1733,7 @@
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				INFOPLIST_FILE = HomeAssistant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IS_SANDBOXED = true;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1775,7 +1780,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "050c99c9-d23a-4537-8e4e-9eb293d13d49";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant 1475202231";
-				SNS_PLATFORM_ENDPOINT_ARN = "arn:aws:sns:us-west-2:663692594824:app/APNS_SANDBOX/HomeAssistant";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1795,6 +1799,7 @@
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				INFOPLIST_FILE = HomeAssistant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IS_SANDBOXED = false;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1841,7 +1846,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "bbef0c3e-93d6-48c3-9e98-ede0cc0b42b0";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant 1473993199";
-				SNS_PLATFORM_ENDPOINT_ARN = "arn:aws:sns:us-west-2:663692594824:app/APNS/HomeAssistant";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";

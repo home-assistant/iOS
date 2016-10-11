@@ -40,7 +40,7 @@ public class HomeAssistantAPI {
     var apiPassword : String = ""
     
     var deviceID : String = ""
-    var endpointARN : String = ""
+    var pushID : String = ""
     var deviceToken : String = ""
     
     var eventSource: EventSource? = nil
@@ -77,8 +77,8 @@ public class HomeAssistantAPI {
             deviceID = deviceId
         }
         
-        if let endpointArn = prefs.string(forKey: "endpointARN") {
-            endpointARN = endpointArn
+        if let pushId = prefs.string(forKey: "pushID") {
+            pushID = pushId
         }
         
         if let deviceTok = prefs.string(forKey: "deviceToken") {
@@ -93,10 +93,14 @@ public class HomeAssistantAPI {
         return Promise { fulfill, reject in
             GetConfig().then { config -> Void in
                 self.loadedComponents = config.Components!
+                prefs.setValue(config.ConfigDirectory, forKey: "config_dir")
                 prefs.setValue(config.LocationName, forKey: "location_name")
                 prefs.setValue(config.Latitude, forKey: "latitude")
                 prefs.setValue(config.Longitude, forKey: "longitude")
                 prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
+                prefs.setValue(config.LengthUnit, forKey: "length_unit")
+                prefs.setValue(config.MassUnit, forKey: "mass_unit")
+                prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
                 prefs.setValue(config.Timezone, forKey: "time_zone")
                 prefs.setValue(config.Version, forKey: "version")
                 
@@ -113,12 +117,9 @@ public class HomeAssistantAPI {
                 }
                 
                 if self.loadedComponents.contains("ios") {
-                    CLSLogv("iOS component loaded, attempting identify and setup of push categories", getVaList([]))
-                    _ = self.identifyDevice().then { _ in
-                        return self.setupPush()
-                    }
+                    CLSLogv("iOS component loaded, attempting identify", getVaList([]))
+                    _ = self.identifyDevice()
                 }
-                        
                 
 //                self.GetHistory()
                 self.startStream()
@@ -579,9 +580,48 @@ public class HomeAssistantAPI {
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
         ident.Permissions = self.enabledPermissions
-        ident.PushID = endpointARN.components(separatedBy: "/").last!
+        ident.PushID = pushID
         ident.PushSounds = listAllInstalledPushNotificationSounds()
         ident.PushToken = deviceToken
+        
+        UIDevice.current.isBatteryMonitoringEnabled = true
+        
+        switch UIDevice.current.batteryState {
+        case .unknown:
+            ident.BatteryState = "Unknown"
+        case .charging:
+            ident.BatteryState = "Charging"
+        case .unplugged:
+            ident.BatteryState = "Unplugged"
+        case .full:
+            ident.BatteryState = "Full"
+        }
+        
+        ident.BatteryLevel = Int(UIDevice.current.batteryLevel*100)
+        
+        UIDevice.current.isBatteryMonitoringEnabled = false
+        
+        return Mapper().toJSON(ident)
+    }
+    
+    func buildPushRegistrationDict(deviceToken: String) -> [String:Any] {
+        let deviceKitDevice = Device()
+        
+        let ident = PushRegistrationRequest()
+        ident.AppBuildNumber = Int(string: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String)
+        ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
+        ident.AppVersionNumber = Double(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)
+        ident.DeviceID = deviceID
+        ident.DeviceName = deviceKitDevice.name
+        ident.DevicePermanentID = DeviceUID.uid()
+        ident.DeviceSystemName = deviceKitDevice.systemName
+        ident.DeviceSystemVersion = deviceKitDevice.systemVersion
+        ident.DeviceType = deviceKitDevice.description
+        ident.PushSounds = listAllInstalledPushNotificationSounds()
+        ident.PushToken = deviceToken
+        ident.UserEmail = prefs.string(forKey: "userEmail")!
+        ident.APNSSandbox = ((Bundle.main.object(forInfoDictionaryKey: "IS_SANDBOXED") as! String) == "true")
+        ident.HomeAssistantVersion = prefs.string(forKey: "version")!
         
         return Mapper().toJSON(ident)
     }
@@ -602,7 +642,7 @@ public class HomeAssistantAPI {
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
         ident.Permissions = self.enabledPermissions
-        ident.PushID = endpointARN.components(separatedBy: "/").last!
+        ident.PushID = pushID
         ident.PushSounds = listAllInstalledPushNotificationSounds()
         ident.PushToken = deviceToken
         
@@ -641,38 +681,57 @@ public class HomeAssistantAPI {
         }
     }
     
+    func registerDeviceForPush(deviceToken: String) -> Promise<String> {
+        let queryUrl = "https://mj28d17jwj.execute-api.us-west-2.amazonaws.com/prod/push"
+        return Promise { fulfill, reject in
+            Alamofire.request(queryUrl, method: .post, parameters: buildPushRegistrationDict(deviceToken: deviceToken), encoding: JSONEncoding.default).validate().responseJSON { response in
+                switch response.result {
+                case .success:
+                    let json = response.result.value as! [String:String]
+                    fulfill(json["pushId"]!)
+                case .failure(let error):
+                    CLSLogv("Error when attemping to registerDeviceForPush(): %@", getVaList([error.localizedDescription]))
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
+            }
+        }
+    }
+    
     func setupPushActions() -> Promise<Set<UIUserNotificationCategory>> {
         let queryUrl = baseAPIURL+"ios/push"
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl, method: .get).validate().responseArray { (response: DataResponse<[PushCategory]>) in
+            let _ = self.manager!.request(queryUrl, method: .get).validate().responseObject { (response: DataResponse<PushConfiguration>) in
                 switch response.result {
                 case .success:
+                    let config = response.result.value!
                     var allCategories = Set<UIMutableUserNotificationCategory>()
-                    for category in response.result.value! {
-                        let finalCategory = UIMutableUserNotificationCategory()
-                        finalCategory.identifier = category.Identifier
-                        var defaultCategoryActions = [UIMutableUserNotificationAction]()
-                        var minimalCategoryActions = [UIMutableUserNotificationAction]()
-                        for action in category.Actions! {
-                            let newAction = UIMutableUserNotificationAction()
-                            newAction.title = action.Title
-                            newAction.identifier = action.Identifier
-                            newAction.isAuthenticationRequired = action.AuthenticationRequired
-                            newAction.isDestructive = action.Destructive
-                            newAction.behavior = (action.Behavior == "default") ? UIUserNotificationActionBehavior.default : UIUserNotificationActionBehavior.textInput
-                            newAction.activationMode = (action.ActivationMode == "foreground") ? UIUserNotificationActivationMode.foreground : UIUserNotificationActivationMode.background
-                            if let params = action.Parameters {
-                                newAction.parameters = params
-                            }
-                            if (action.Context == "default") {
-                                defaultCategoryActions.append(newAction)
+                    if let categories = config.Categories {
+                        for category in categories {
+                            let finalCategory = UIMutableUserNotificationCategory()
+                            finalCategory.identifier = category.Identifier
+                            var categoryActions = [UIMutableUserNotificationAction]()
+                            if let actions = category.Actions {
+                                for action in actions {
+                                    let newAction = UIMutableUserNotificationAction()
+                                    newAction.title = action.Title
+                                    newAction.identifier = action.Identifier
+                                    newAction.isAuthenticationRequired = action.AuthenticationRequired
+                                    newAction.isDestructive = action.Destructive
+                                    newAction.behavior = (action.Behavior == "default") ? UIUserNotificationActionBehavior.default : UIUserNotificationActionBehavior.textInput
+                                    newAction.activationMode = (action.ActivationMode == "foreground") ? UIUserNotificationActivationMode.foreground : UIUserNotificationActivationMode.background
+                                    if let textInputButtonTitle = action.TextInputButtonTitle {
+                                        newAction.parameters[UIUserNotificationTextInputActionButtonTitleKey] = textInputButtonTitle
+                                    }
+                                    categoryActions.append(newAction)
+                                }
+                                finalCategory.setActions(categoryActions, for: UIUserNotificationActionContext.default)
+                                allCategories.insert(finalCategory)
                             } else {
-                                minimalCategoryActions.append(newAction)
+                                print("Category has no actions defined, continuing loop")
+                                continue
                             }
                         }
-                        finalCategory.setActions(defaultCategoryActions, for: UIUserNotificationActionContext.default)
-                        finalCategory.setActions(minimalCategoryActions, for: UIUserNotificationActionContext.minimal)
-                        allCategories.insert(finalCategory)
                     }
                     fulfill(allCategories)
                 case .failure(let error):
@@ -688,38 +747,41 @@ public class HomeAssistantAPI {
     func setupUserNotificationPushActions() -> Promise<Set<UNNotificationCategory>> {
         let queryUrl = baseAPIURL+"ios/push"
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl, method: .get).validate().responseArray { (response: DataResponse<[PushCategory]>) in
+            let _ = self.manager!.request(queryUrl, method: .get).validate().responseObject { (response: DataResponse<PushConfiguration>) in
                 switch response.result {
                 case .success:
+                    let config = response.result.value!
                     var allCategories = Set<UNNotificationCategory>()
-                    for category in response.result.value! {
-                        var categoryActions = [UNNotificationAction]()
-                        if let actions = category.Actions {
-                            for action in actions {
-                                var actionOptions = UNNotificationActionOptions([])
-                                if action.AuthenticationRequired {
-                                    actionOptions.insert(.authenticationRequired)
+                    if let categories = config.Categories {
+                        for category in categories {
+                            var categoryActions = [UNNotificationAction]()
+                            if let actions = category.Actions {
+                                for action in actions {
+                                    var actionOptions = UNNotificationActionOptions([])
+                                    if action.AuthenticationRequired {
+                                        actionOptions.insert(.authenticationRequired)
+                                    }
+                                    if action.Destructive {
+                                        actionOptions.insert(.destructive)
+                                    }
+                                    if (action.ActivationMode == "foreground") {
+                                        actionOptions.insert(.foreground)
+                                    }
+                                    if (action.Behavior == "default") {
+                                        let newAction = UNNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions)
+                                        categoryActions.append(newAction)
+                                    } else if (action.Behavior == "TextInput") {
+                                        let newAction = UNTextInputNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions, textInputButtonTitle: action.TextInputButtonTitle!, textInputPlaceholder: action.TextInputPlaceholder!)
+                                        categoryActions.append(newAction)
+                                    }
                                 }
-                                if action.Destructive {
-                                    actionOptions.insert(.destructive)
-                                }
-                                if (action.ActivationMode == "foreground") {
-                                    actionOptions.insert(.foreground)
-                                }
-                                if (action.Behavior == "default") {
-                                    let newAction = UNNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions)
-                                    categoryActions.append(newAction)
-                                } else if (action.Behavior == "TextInput") {
-                                    let newAction = UNTextInputNotificationAction(identifier: action.Identifier!, title: action.Title!, options: actionOptions, textInputButtonTitle: action.TextInputButtonTitle, textInputPlaceholder: action.TextInputPlaceholder)
-                                    categoryActions.append(newAction)
-                                }
+                            } else {
+                                print("Category has no actions defined, continuing loop")
+                                continue
                             }
-                        } else {
-                            print("Category has no actions defined, continuing loop")
-                            continue
+                            let finalCategory = UNNotificationCategory.init(identifier: category.Identifier!, actions: categoryActions, intentIdentifiers: [], options: [.customDismissAction])
+                            allCategories.insert(finalCategory)
                         }
-                        let finalCategory = UNNotificationCategory.init(identifier: category.Identifier!, actions: categoryActions, intentIdentifiers: [], options: [.customDismissAction])
-                        allCategories.insert(finalCategory)
                     }
                     fulfill(allCategories)
                 case .failure(let error):
@@ -732,27 +794,24 @@ public class HomeAssistantAPI {
     }
     
     func setupPush() {
-        if self.loadedComponents.contains("ios") {
-            CLSLogv("iOS component loaded, attempting setup of push categories", getVaList([]))
-            if #available(iOS 10, *) {
-                self.setupUserNotificationPushActions().then { categories -> Void in
-                    UNUserNotificationCenter.current().setNotificationCategories(categories)
-                }.catch {error -> Void in
-                    print("Error when attempting to setup push actions", error)
-                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                }
-            } else {
-                self.setupPushActions().then { categories -> Void in
-                    let types:UIUserNotificationType = ([.alert, .badge, .sound])
-                    let settings = UIUserNotificationSettings(types: types, categories: categories)
-                    UIApplication.shared.registerUserNotificationSettings(settings)
-                }.catch {error -> Void in
-                    print("Error when attempting to setup push actions", error)
-                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                }
+        UIApplication.shared.registerForRemoteNotifications()
+        if #available(iOS 10, *) {
+            self.setupUserNotificationPushActions().then { categories -> Void in
+                UNUserNotificationCenter.current().setNotificationCategories(categories)
+            }.catch {error -> Void in
+                print("Error when attempting to setup push actions", error)
+                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+            }
+        } else {
+            self.setupPushActions().then { categories -> Void in
+                let types:UIUserNotificationType = ([.alert, .badge, .sound])
+                let settings = UIUserNotificationSettings(types: types, categories: categories)
+                UIApplication.shared.registerUserNotificationSettings(settings)
+            }.catch {error -> Void in
+                print("Error when attempting to setup push actions", error)
+                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
             }
         }
-        UIApplication.shared.registerForRemoteNotifications()
     }
     
     func handlePushAction(identifier: String, userInfo: [AnyHashable : Any], userInput: String?) -> Promise<Bool> {
@@ -819,8 +878,8 @@ public class HomeAssistantAPI {
     }
     
     var notificationsEnabled : Bool {
-//        return PermissionScope().statusNotifications() == .authorized && prefs.string(forKey: "endpointARN") != nil
-        return prefs.string(forKey: "endpointARN") != nil
+//        return PermissionScope().statusNotifications() == .authorized && prefs.string(forKey: "pushID") != nil
+        return prefs.string(forKey: "pushID") != nil
 //        print("PermissionScope().statusNotifications()", PermissionScope().statusNotifications())
 //        return PermissionScope().statusNotifications() == .authorized
     }
@@ -831,6 +890,10 @@ public class HomeAssistantAPI {
     
     var deviceTrackerComponentLoaded : Bool {
         return self.loadedComponents.contains("device_tracker")
+    }
+    
+    var iosNotifyPlatformLoaded : Bool {
+        return self.loadedComponents.contains("notify.ios")
     }
     
     var sseConnected: Bool {
@@ -977,8 +1040,9 @@ class Bonjour {
     var nsdel: BonjourDelegate?
     
     init() {
+        let device = Device()
         self.nsb = NetServiceBrowser()
-        self.nsp = NetService(domain: "local", type: "_home-assistant-ios._tcp.", name: "Home Assistant iOS App", port: 65535)
+        self.nsp = NetService(domain: "local", type: "_hass-ios._tcp.", name: device.name, port: 65535)
     }
     
     func buildPublishDict() -> [String: Data] {

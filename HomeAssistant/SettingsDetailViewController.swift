@@ -73,9 +73,9 @@ class SettingsDetailViewController: FormViewController {
             self.form
                 +++ Section(header: "Push token", footer: "This is the target to use in your Home Assistant configuration. Tap to copy or share.")
                 <<< TextAreaRow() {
-                    $0.placeholder = "EndpointArn"
-                    if let endpointArn = prefs.string(forKey: "endpointARN") {
-                        $0.value = endpointArn.components(separatedBy: "/").last
+                    $0.placeholder = "PushID"
+                    if let pushID = prefs.string(forKey: "pushID") {
+                        $0.value = pushID
                     } else {
                         $0.value = "Not registered for remote notifications"
                     }

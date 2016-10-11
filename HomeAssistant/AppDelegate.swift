@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import AWSSNS
 import Fabric
 import Crashlytics
 import PromiseKit
@@ -40,14 +39,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NetworkActivityIndicatorManager.shared.isEnabled = true
         
-        AWSLogger.default().logLevel = .info
-        
-        let credentialsProvider = AWSCognitoCredentialsProvider(regionType:.usEast1, identityPoolId:"us-east-1:2b1692f3-c9d3-4d81-b7e9-83cd084f3a59")
-        
-        let configuration = AWSServiceConfiguration(region:.usWest2, credentialsProvider:credentialsProvider)
-        
-        AWSServiceManager.default().defaultServiceConfiguration = configuration
-
         if #available(iOS 10, *) {
             UNUserNotificationCenter.current().delegate = self
         }
@@ -72,8 +63,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 HomeAssistantAPI.sharedInstance.Setup(baseAPIUrl: baseURL, APIPassword: apiPass)
             }.then {_ in 
                 HomeAssistantAPI.sharedInstance.Connect()
-            }.then { _ in
+            }.then { _ -> Void in
+                if HomeAssistantAPI.sharedInstance.notificationsEnabled {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
                 print("Connected!")
+                return
             }.catch {err -> Void in
                 print("ERROR", err)
                 let settingsView = SettingsViewController()
@@ -112,72 +107,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
         
-        print("Registering to AWS SNS with deviceTokenString: \(deviceTokenString)")
+        self.prefs.setValue(deviceTokenString, forKey: "deviceToken")
         
-        let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String
-        var snsUserData = "\(buildNumber),"
-        if let userEmail = prefs.string(forKey: "userEmail") {
-            snsUserData.append(userEmail)
+        print("Registering push with deviceTokenString: \(deviceTokenString)")
+        
+        _ = HomeAssistantAPI.sharedInstance.registerDeviceForPush(deviceToken: deviceTokenString).then { pushId -> Void in
+            print("Registered for push. PushID:", pushId)
+            CLSLogv("Registered for push:", getVaList([pushId]))
+            Crashlytics.sharedInstance().setUserIdentifier(pushId)
+            self.prefs.setValue(pushId, forKey: "pushID")
         }
         
-        let sns = AWSSNS.default()
-        
-        if self.prefs.string(forKey: "endpointARN")?.isEmpty == false && self.prefs.bool(forKey: "snsUserDataSet") == false {
-            print("Updating AWS SNS endpoint userData")
-            let updateRequest = AWSSNSSetEndpointAttributesInput()!
-            updateRequest.endpointArn = self.prefs.string(forKey: "endpointARN")
-            updateRequest.attributes = ["CustomUserData":snsUserData]
-            sns.setEndpointAttributes(updateRequest).continue({ (task: AWSTask!) -> Any? in
-                if task.error != nil {
-                    print("Unable to update the endpoint: ", task.error)
-                    CLSLogv("Unable to update SNS endpoint with userData: %@", getVaList([task.error!.localizedDescription]))
-                    Crashlytics.sharedInstance().recordError(task.error!)
-                    return nil
-                } else {
-                    print("Successfully updated endpoint attributes!")
-                    CLSLogv("Updated SNS endpoint attributes", getVaList([]))
-                    self.prefs.set(true, forKey: "snsUserDataSet")
-                    return nil
-                }
-            })
-        }
-        
-        let request = AWSSNSCreatePlatformEndpointInput()!
-        request.token = deviceTokenString
-        request.platformApplicationArn = Bundle.main.object(forInfoDictionaryKey: "SNS_PLATFORM_ENDPOINT_ARN") as? String
-        request.customUserData = snsUserData
-        sns.createPlatformEndpoint(request).continue({ (task: AWSTask!) -> Any? in
-            if task.error != nil {
-                print("SNS createPlatformEndpoint Error: \(task.error)")
-                Crashlytics.sharedInstance().recordError(task.error!)
-                return nil
-            } else {
-                let createEndpointResponse = task.result!
-                print("Registered SNS endpoint:", createEndpointResponse.endpointArn!)
-                CLSLogv("Registered SNS endpoint:", getVaList([createEndpointResponse.endpointArn!]))
-                Crashlytics.sharedInstance().setObjectValue(createEndpointResponse.endpointArn!, forKey: "endpointArn")
-                Crashlytics.sharedInstance().setUserIdentifier(createEndpointResponse.endpointArn!.components(separatedBy: "/").last!)
-                self.prefs.setValue(createEndpointResponse.endpointArn!, forKey: "endpointARN")
-                self.prefs.setValue(deviceTokenString, forKey: "deviceToken")
-                let subscribeInput = AWSSNSSubscribeInput()!
-                subscribeInput.protocols = "application"
-                subscribeInput.topicArn = "arn:aws:sns:us-west-2:663692594824:HomeAssistantiOSBetaTesters"
-                subscribeInput.endpoint = createEndpointResponse.endpointArn
-                sns.subscribe(subscribeInput).continue ({ (subTask: AWSTask!) -> AnyObject! in
-                    if subTask.error != nil {
-                        print("Error when subscribing endpoint to broadcast topic: \(subTask.error)")
-                        Crashlytics.sharedInstance().recordError(subTask.error!)
-                    } else {
-                        print("Subscribed endpoint to broadcast topic")
-                        CLSLogv("Subscribed endpoint to broadcast topic:", getVaList([]))
-                    }
-                    
-                    return nil
-                })
-            }
-            
-            return nil
-        })
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Swift.Error) {

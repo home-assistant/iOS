@@ -9,6 +9,18 @@
 import Foundation
 import ObjectMapper
 
+class PushConfiguration: Mappable {
+    var Categories: [PushCategory]?
+    
+    required init?(map: Map){
+        
+    }
+    
+    func mapping(map: Map) {
+        Categories        <- map["categories"]
+    }
+}
+
 class PushCategory: Mappable {
     var Name: String?
     var Identifier: String?
@@ -33,10 +45,8 @@ class PushAction: Mappable {
     var Behavior: String = "default"
     var ActivationMode: String = "background"
     var Destructive: Bool = false
-    var Context: String?
-    var Parameters: [String:AnyObject]?
-    var TextInputButtonTitle: String = "Send"
-    var TextInputPlaceholder: String = ""
+    var TextInputButtonTitle: String?
+    var TextInputPlaceholder: String?
     
     required init?(map: Map){
         
@@ -49,8 +59,6 @@ class PushAction: Mappable {
         Behavior               <- map["behavior"]
         ActivationMode         <- map["activationMode"]
         Destructive            <- map["destructive"]
-        Context                <- map["context"]
-        Parameters             <- map["parameters"]
         TextInputButtonTitle   <- map["textInputButtonTitle"]
         TextInputPlaceholder   <- map["textInputPlaceholder"]
     }

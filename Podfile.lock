@@ -8,11 +8,6 @@ PODS:
   - AlamofireObjectMapper (4.0.0):
     - Alamofire (~> 4.0)
     - ObjectMapper (~> 2.0)
-  - AWSCognito (2.4.9):
-    - AWSCore (= 2.4.9)
-  - AWSCore (2.4.9)
-  - AWSSNS (2.4.9):
-    - AWSCore (= 2.4.9)
   - Crashlytics (3.8.2):
     - Fabric (~> 1.6.3)
   - DeviceKit (1.0.0)
@@ -50,9 +45,6 @@ DEPENDENCIES:
   - AlamofireImage
   - AlamofireNetworkActivityIndicator
   - AlamofireObjectMapper
-  - AWSCognito
-  - AWSCore
-  - AWSSNS
   - Crashlytics
   - DeviceKit
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `Swift3`)
@@ -108,9 +100,6 @@ SPEC CHECKSUMS:
   AlamofireImage: 6594aa1139a67dcd36cde6da79ea4e5b318e60fb
   AlamofireNetworkActivityIndicator: ba9f481748d954318dd99636abff028cd3fcdc07
   AlamofireObjectMapper: 9faa3ce5a240efda1b209009a2d6e1e949227abc
-  AWSCognito: 4fa9fefcadae1d8425b01cbde27d564c21e3fd35
-  AWSCore: 175208358b95492e0ebe0337df2ab415300bddac
-  AWSSNS: 85513f30d76556ff43bc0772e65f1a74008a488f
   Crashlytics: 27acca95a01b042a8294291dd6dff27f8f6af6d7
   DeviceKit: ddead7f3a7c9603ba3a63cb748566428c38dd11f
   Eureka: d014adf16406745e1a78d5790ea37ed130a0a8e5
@@ -126,6 +115,6 @@ SPEC CHECKSUMS:
   SwiftLocation: f1bf5acb7992dd96c6f773c383f9c0479f07727d
   Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453
 
-PODFILE CHECKSUM: 94d2d00cf396eaf094d3179119e806101cde0c45
+PODFILE CHECKSUM: 36c6a091d449e9c7e5f1522059a1a9304585057e
 
 COCOAPODS: 1.1.0.rc.1

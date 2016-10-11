@@ -27,6 +27,14 @@ class SettingsViewController: FormViewController {
     var configured: Bool = false
     var connectStep : Int = 0 // 0 = pre-configuration, 1 = hostname entry, 2 = password entry
 
+    let discovery = Bonjour()
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NSLog("Stopping Home Assistant discovery")
+        self.discovery.stopDiscovery()
+        self.discovery.stopPublish()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -54,22 +62,14 @@ class SettingsViewController: FormViewController {
         }
         
         if self.configured == false {
-            let discovery = Bonjour()
-            
             let queue = DispatchQueue(label: "io.robbie.homeassistant", attributes: []);
             queue.async { () -> Void in
                 NSLog("Attempting to discover Home Assistant instances, also publishing app to Bonjour/mDNS to hopefully have HA load the iOS/ZeroConf components.")
-                discovery.stopDiscovery()
-                discovery.stopPublish()
+                self.discovery.stopDiscovery()
+                self.discovery.stopPublish()
                 
-                discovery.startDiscovery()
-                discovery.startPublish()
-                
-                sleep(60)
-                
-                NSLog("Stopping Home Assistant discovery")
-                discovery.stopDiscovery()
-                discovery.stopPublish()
+                self.discovery.startDiscovery()
+                self.discovery.startPublish()
             }
             
             NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)), name:NSNotification.Name(rawValue: "homeassistant.discovered"), object: nil)
@@ -195,14 +195,14 @@ class SettingsViewController: FormViewController {
             }
             <<< LabelRow("locationName") {
                 $0.title = "Name"
-                $0.value = "TwelveTwelve"
+                $0.value = "My Home Assistant"
                 if let locationName = prefs.string(forKey: "location_name") {
                     $0.value = locationName
                 }
             }
             <<< LabelRow("version") {
                 $0.title = "Version"
-                $0.value = "0.29.0"
+                $0.value = "0.31.0"
                 if let version = prefs.string(forKey: "version") {
                     $0.value = version
                 }
@@ -218,6 +218,12 @@ class SettingsViewController: FormViewController {
             <<< LabelRow("deviceTrackerComponentLoaded") {
                 $0.title = "Device Tracker Component Loaded"
                 $0.value = HomeAssistantAPI.sharedInstance.deviceTrackerComponentLoaded ? "✔️" : "✖️"
+                $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.locationEnabled == false)
+            }
+            <<< LabelRow("notifyPlatformLoaded") {
+                $0.title = "iOS Notify Platform Loaded"
+                $0.value = HomeAssistantAPI.sharedInstance.iosNotifyPlatformLoaded ? "✔️" : "✖️"
+                $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.notificationsEnabled == false)
             }
             
             +++ Section(header: "", footer: "Device ID is the identifier used when sending location updates to Home Assistant, as well as the target to send push notifications to.")
@@ -266,6 +272,9 @@ class SettingsViewController: FormViewController {
                         let locationSettingsRow: ButtonRow = self.form.rowBy(tag: "locationSettings")!
                         locationSettingsRow.hidden = false
                         locationSettingsRow.evaluateHidden()
+                        let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(tag: "deviceTrackerComponentLoaded")!
+                        deviceTrackerComponentLoadedRow.hidden = false
+                        deviceTrackerComponentLoadedRow.evaluateHidden()
                     }
                 }, cancelled: { (results) -> Void in
                     print("Permissions finished, resetting API!")
@@ -302,6 +311,9 @@ class SettingsViewController: FormViewController {
                             let notificationSettingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
                             notificationSettingsRow.hidden = false
                             notificationSettingsRow.evaluateHidden()
+                            let notifyPlatformLoadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
+                            notifyPlatformLoadedRow.hidden = false
+                            notifyPlatformLoadedRow.evaluateHidden()
                         }
                     }
                 }, cancelled: { (results) -> Void in
@@ -359,84 +371,6 @@ class SettingsViewController: FormViewController {
                     let _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
-        
-//        if showErrorConnectingMessage == false {
-//            if let endpointArn = prefs.string(forKey: "endpointARN") {
-//                form
-//                    +++ Section(header: "Push Notifications", footer: "")
-//                    <<< TextAreaRow() {
-//                        $0.placeholder = "EndpointArn"
-//                        $0.value = endpointArn.components(separatedBy: "/").last
-//                        $0.disabled = true
-//                        $0.textAreaHeight = TextAreaHeight.dynamic(initialTextViewHeight: 40)
-//                    }
-//                    
-//                    <<< ButtonRow() {
-//                        $0.title = "Update push settings"
-//                    }.onCellSelection {_,_ in
-//                        HomeAssistantAPI.sharedInstance.setupPush()
-//                        let alert = UIAlertController(title: "Settings Import", message: "Push settings imported from Home Assistant.", preferredStyle: UIAlertControllerStyle.alert)
-//                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-//                        self.present(alert, animated: true, completion: nil)
-//                    }
-//                    
-//                    <<< ButtonRow() {
-//                        $0.title = "Import sounds from iTunes"
-//                    }.onCellSelection {_,_ in
-//                        let moved = movePushNotificationSounds()
-//                        let message = (moved > 0) ? "\(moved) sounds were imported. Please restart your phone to complete the import." : "0 sounds were imported."
-//                        let alert = UIAlertController(title: "Sounds Import", message: message, preferredStyle: UIAlertControllerStyle.alert)
-//                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-//                        self.present(alert, animated: true, completion: nil)
-//                    }
-//
-////                    <<< ButtonRow() {
-////                        $0.title = "Import system sounds"
-////                    }.onCellSelection {_,_ in
-////                        let list = getSoundList()
-////                        print("system sounds list", list)
-////                        for sound in list {
-////                            copyFileToDirectory(sound)
-////                        }
-////
-////                    }
-//            }
-//            
-//            for zone in realm.objects(Zone.self) {
-//                form
-//                    +++ Section(header: zone.Name, footer: "") {
-//                        $0.tag = zone.ID
-//                    }
-//                    <<< SwitchRow() {
-//                        $0.title = "Updates Enabled"
-//                        $0.value = zone.trackingEnabled
-//                    }.onChange { row in
-//                        try! realm.write { zone.trackingEnabled = row.value! }
-//                    }
-//                    <<< LocationRow() {
-//                        $0.title = "Location"
-//                        $0.value = zone.location()
-//                    }
-//                    <<< LabelRow(){
-//                        $0.title = "Radius"
-//                        $0.value = "\(Int(zone.Radius)) m"
-//                    }
-//                    <<< SwitchRow() {
-//                        $0.title = "Enter Notification"
-//                        $0.value = zone.enterNotification
-//                        }.onChange { row in
-//                            try! realm.write { zone.enterNotification = row.value! }
-//                    }
-//                    <<< SwitchRow() {
-//                        $0.title = "Exit Notification"
-//                        $0.value = zone.exitNotification
-//                        }.onChange { row in
-//                            try! realm.write { zone.exitNotification = row.value! }
-//                }
-//            }
-//        }
-//        
-//
     }
 
     override func didReceiveMemoryWarning() {
@@ -514,6 +448,9 @@ class SettingsViewController: FormViewController {
         let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(tag: "deviceTrackerComponentLoaded")!
         deviceTrackerComponentLoadedRow.value = HomeAssistantAPI.sharedInstance.deviceTrackerComponentLoaded ? "✔️" : "✖️"
         deviceTrackerComponentLoadedRow.updateCell()
+        let notifyPlatformLoadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
+        notifyPlatformLoadedRow.value = HomeAssistantAPI.sharedInstance.iosNotifyPlatformLoaded ? "✔️" : "✖️"
+        notifyPlatformLoadedRow.updateCell()
     }
     
     @IBOutlet var emailInput: UITextField!
@@ -597,7 +534,7 @@ class SettingsViewController: FormViewController {
         self.prefs.removePersistentDomain(forName: bundleId)
         self.prefs.synchronize()
         
-        HomeAssistantAPI.sharedInstance.removeDevice().then { _ in
+        _ = HomeAssistantAPI.sharedInstance.removeDevice().then { _ in
             print("Done with reset!")
         }
     }
