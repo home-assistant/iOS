@@ -11,7 +11,7 @@ target 'HomeAssistant' do
   pod 'AlamofireObjectMapper'
   pod 'Crashlytics'
   pod 'DeviceKit'
-  pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'Swift3'
+  pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
   pod 'Fabric'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
   pod 'IKEventSource', :git => 'https://github.com/inaka/EventSource.git', :branch => 'master'
