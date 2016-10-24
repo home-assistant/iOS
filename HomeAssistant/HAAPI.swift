@@ -617,11 +617,13 @@ public class HomeAssistantAPI {
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
+        ident.DeviceTimezone = (NSTimeZone.local as NSTimeZone).name
         ident.PushSounds = listAllInstalledPushNotificationSounds()
         ident.PushToken = deviceToken
         ident.UserEmail = prefs.string(forKey: "userEmail")!
         ident.APNSSandbox = ((Bundle.main.object(forInfoDictionaryKey: "IS_SANDBOXED") as! String) == "true")
         ident.HomeAssistantVersion = prefs.string(forKey: "version")!
+        ident.HomeAssistantTimezone = prefs.string(forKey: "time_zone")!
         
         return Mapper().toJSON(ident)
     }
@@ -682,13 +684,13 @@ public class HomeAssistantAPI {
     }
     
     func registerDeviceForPush(deviceToken: String) -> Promise<String> {
-        let queryUrl = "https://mj28d17jwj.execute-api.us-west-2.amazonaws.com/prod/push"
+        let queryUrl = "https://ios-push.home-assistant.io/registrations"
         return Promise { fulfill, reject in
-            Alamofire.request(queryUrl, method: .post, parameters: buildPushRegistrationDict(deviceToken: deviceToken), encoding: JSONEncoding.default).validate().responseJSON { response in
+            Alamofire.request(queryUrl, method: .post, parameters: buildPushRegistrationDict(deviceToken: deviceToken), encoding: JSONEncoding.default).validate().responseObject { (response: DataResponse<PushRegistrationResponse>) in
                 switch response.result {
                 case .success:
-                    let json = response.result.value as! [String:String]
-                    fulfill(json["pushId"]!)
+                    let json = response.result.value!
+                    fulfill(json.PushId!)
                 case .failure(let error):
                     CLSLogv("Error when attemping to registerDeviceForPush(): %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)

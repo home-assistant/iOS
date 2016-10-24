@@ -39,7 +39,7 @@ class ConfigResponse: Mappable {
         VolumeUnit      <- map["unit_system.volume"]
         
         LocationName    <- map["location_name"]
-        Timezone        <- map["timezone"]
+        Timezone        <- map["time_zone"]
         Latitude        <- map["latitude"]
         Longitude       <- map["longitude"]
     }

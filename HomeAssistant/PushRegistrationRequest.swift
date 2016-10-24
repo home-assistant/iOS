@@ -21,10 +21,12 @@ class PushRegistrationRequest: Mappable {
     var DeviceSystemName: String?
     var DeviceSystemVersion: String?
     var DeviceType: String?
+    var DeviceTimezone: String?
     var PushSounds: [String]?
     var PushToken: String?
     var UserEmail: String?
     var HomeAssistantVersion: String?
+    var HomeAssistantTimezone: String?
     
     var APNSSandbox: Bool = false
     
@@ -44,10 +46,12 @@ class PushRegistrationRequest: Mappable {
         DeviceSystemName       <- map["deviceSystemName"]
         DeviceSystemVersion    <- map["deviceSystemVersion"]
         DeviceType             <- map["deviceType"]
+        DeviceTimezone         <- map["deviceTimezone"]
         PushSounds             <- map["pushSounds"]
         PushToken              <- map["pushToken"]
         UserEmail              <- map["userEmail"]
         APNSSandbox            <- map["apnsSandbox"]
         HomeAssistantVersion   <- map["homeAssistantVersion"]
+        HomeAssistantTimezone  <- map["homeAssistantTimezone"]
     }
 }
