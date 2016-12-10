@@ -1,43 +1,43 @@
 PODS:
-  - AcknowList (1.1)
-  - Alamofire (4.0.1)
-  - AlamofireImage (3.1.0):
-    - Alamofire (~> 4.0)
-  - AlamofireNetworkActivityIndicator (2.0.1):
-    - Alamofire (~> 4.0)
-  - AlamofireObjectMapper (4.0.0):
-    - Alamofire (~> 4.0)
+  - AcknowList (1.2)
+  - Alamofire (4.2.0)
+  - AlamofireImage (3.2.0):
+    - Alamofire (~> 4.1)
+  - AlamofireNetworkActivityIndicator (2.1.0):
+    - Alamofire (~> 4.1)
+  - AlamofireObjectMapper (4.0.1):
+    - Alamofire (~> 4.1)
     - ObjectMapper (~> 2.0)
-  - Crashlytics (3.8.2):
+  - Crashlytics (3.8.3):
     - Fabric (~> 1.6.3)
   - DeviceKit (1.0.0)
   - Eureka (2.0.0-beta.1)
-  - Fabric (1.6.9)
+  - Fabric (1.6.11)
   - FontAwesomeKit/Core (2.2.4)
   - FontAwesomeKit/MaterialDesignIcons (2.2.4):
     - FontAwesomeKit/Core
   - IKEventSource (2.0.0)
   - MBProgressHUD (1.0.0)
-  - ObjectMapper (2.1.0)
+  - ObjectMapper (2.2.1)
   - PermissionScope (1.1.1)
-  - PromiseKit (4.0.3):
-    - PromiseKit/Foundation (= 4.0.3)
-    - PromiseKit/QuartzCore (= 4.0.3)
-    - PromiseKit/UIKit (= 4.0.3)
-  - PromiseKit/CorePromise (4.0.3)
-  - PromiseKit/Foundation (4.0.3):
+  - PromiseKit (4.1.0):
+    - PromiseKit/Foundation (= 4.1.0)
+    - PromiseKit/QuartzCore (= 4.1.0)
+    - PromiseKit/UIKit (= 4.1.0)
+  - PromiseKit/CorePromise (4.1.0)
+  - PromiseKit/Foundation (4.1.0):
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (4.0.3):
+  - PromiseKit/QuartzCore (4.1.0):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (4.0.3):
+  - PromiseKit/UIKit (4.1.0):
     - PromiseKit/CorePromise
-  - Realm (2.0.2):
-    - Realm/Headers (= 2.0.2)
-  - Realm/Headers (2.0.2)
-  - RealmSwift (2.0.2):
-    - Realm (= 2.0.2)
-  - SwiftLocation (1.1.0)
-  - Whisper (3.1.1)
+  - Realm (2.1.1):
+    - Realm/Headers (= 2.1.1)
+  - Realm/Headers (2.1.1)
+  - RealmSwift (2.1.1):
+    - Realm (= 2.1.1)
+  - SwiftLocation (1.1.1)
+  - Whisper (4.0.0)
 
 DEPENDENCIES:
   - AcknowList
@@ -50,7 +50,7 @@ DEPENDENCIES:
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
   - Fabric
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
-  - IKEventSource (from `https://github.com/inaka/EventSource.git`, branch `master`)
+  - IKEventSource
   - MBProgressHUD
   - ObjectMapper
   - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `swift3-ios10-usernotifications`)
@@ -58,7 +58,7 @@ DEPENDENCIES:
   - Realm
   - RealmSwift
   - SwiftLocation
-  - Whisper (from `https://github.com/hyperoslo/Whisper.git`, branch `swift-3`)
+  - Whisper
 
 EXTERNAL SOURCES:
   Eureka:
@@ -67,54 +67,42 @@ EXTERNAL SOURCES:
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
-  IKEventSource:
-    :branch: master
-    :git: https://github.com/inaka/EventSource.git
   PermissionScope:
     :branch: swift3-ios10-usernotifications
     :git: https://github.com/robbiet480/PermissionScope.git
-  Whisper:
-    :branch: swift-3
-    :git: https://github.com/hyperoslo/Whisper.git
 
 CHECKOUT OPTIONS:
   Eureka:
-    :commit: 75831c6efbb03ad31ffbe8fe3a1bd5db8ebf357b
+    :commit: 9f8af8af3d71a2b4428e1cde7105af1a5b4656b4
     :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :commit: 8032213d13242c6466a048730f0defe98e10c1d6
     :git: https://github.com/robbiet480/FontAwesomeKit.git
-  IKEventSource:
-    :commit: a9c044d4bcb52f540595cb26d45fe96f0ce3c90a
-    :git: https://github.com/inaka/EventSource.git
   PermissionScope:
     :commit: 8e64e9940a0a76bd1cb99a1e01f9d54ff467cc58
     :git: https://github.com/robbiet480/PermissionScope.git
-  Whisper:
-    :commit: ba2aee3654e6ae0fa061f82ec2c775907da59ed7
-    :git: https://github.com/hyperoslo/Whisper.git
 
 SPEC CHECKSUMS:
-  AcknowList: b3c0bfaec365465991cff3d4315d8ba95186bb82
-  Alamofire: 7682d43245de14874acd142ec137b144aa1dd335
-  AlamofireImage: bb8c8351c51cb1633bb6be69b6dbbaff37ce65b7
-  AlamofireNetworkActivityIndicator: 3e55069ada3e1ff7703665156429eedcdfea0bc1
-  AlamofireObjectMapper: 9faa3ce5a240efda1b209009a2d6e1e949227abc
-  Crashlytics: 27acca95a01b042a8294291dd6dff27f8f6af6d7
+  AcknowList: 18ccee4d933a153622416cce2d36e6864ec147ea
+  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
+  AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
+  AlamofireNetworkActivityIndicator: 4716f6554bdfb9c7cf13b1e0e3af21163129690a
+  AlamofireObjectMapper: 842d2eed43a4d0593ff0110d54ac86a170c4519c
+  Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
   DeviceKit: ddead7f3a7c9603ba3a63cb748566428c38dd11f
   Eureka: d014adf16406745e1a78d5790ea37ed130a0a8e5
-  Fabric: bc5bec42cef4bcf1ee3ce0e218fc518e4b44dfbb
+  Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
   FontAwesomeKit: b5c9ddc9504c4a07945b7b4590e7f9ad5a50e073
-  IKEventSource: 6526ddd3ecc340375a7d4c658eb47d82b92e7606
+  IKEventSource: 7377db25431c3baed1a09f572468528a77f77d2c
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
-  ObjectMapper: e5e0f8aef8590fc2ddcde7f27eddb255863ee6e9
+  ObjectMapper: 41e43e1a89f8060ef5ea5d04ba852e269a621d68
   PermissionScope: a30c16e015779ba27c97c124e7539e27b5829de2
-  PromiseKit: dfe8fcc6445674fb23378d89990838c1cbdbf05a
-  Realm: 0f5a194af0b7e6158b83db41b4ee1a00be7ddf1a
-  RealmSwift: 0eb5070d851cba7c66e841ca756d83609dc78bc8
-  SwiftLocation: f1bf5acb7992dd96c6f773c383f9c0479f07727d
-  Whisper: 74decae53daf8caff5acf8628e24b92d3f05a453
+  PromiseKit: c98453ff78544c0ad5bb0ea980782e6875f47978
+  Realm: a55959c0b171a5fe5267406d17f314fec3cefaae
+  RealmSwift: 749fd955bf8d6471c21d218b9389a47aaeccfe3f
+  SwiftLocation: aac16955b508c46b82bf07fcceb7e2a3b382b8d5
+  Whisper: '08be92623311f8e53201e62e17f6d7b9599a4714'
 
-PODFILE CHECKSUM: 17e312e2b903b5371ce095424c049b8f47a39a7a
+PODFILE CHECKSUM: 5cc7f69d7e50fdbf54bf61118c3b8019cc186d7a
 
-COCOAPODS: 1.1.0.rc.3
+COCOAPODS: 1.1.1
