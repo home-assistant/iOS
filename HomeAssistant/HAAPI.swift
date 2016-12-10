@@ -162,10 +162,10 @@ public class HomeAssistantAPI {
                     }
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.\(event.EventType)"), object: nil, userInfo: event.toJSON())
                 } else {
-                    print("Unable to ObjectMap this SSE message", eventName, eventData)
+                    print("Unable to ObjectMap this SSE message", eventName!, eventData)
                 }
             } else {
-                print("Unable to ObjectMap this SSE message", eventName, data)
+                print("Unable to ObjectMap this SSE message", eventName!, data as Any)
             }
         }
     }

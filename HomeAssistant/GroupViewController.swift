@@ -216,7 +216,6 @@ class GroupViewController: FormViewController {
 //                            cell.detailTextLabel?.text = (entity.State.capitalized + " " + uom)
 //                        }
                         row.displayValueFor = { (pos: Float?) in
-                            print(pos)
                             if let uom = entity.UnitOfMeasurement {
                                 return (entity.State.capitalized + " " + uom)
                             } else {

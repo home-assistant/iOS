@@ -173,7 +173,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
             break
         default:
-            print("Can't route", url.host)
+            print("Can't route", url.host!)
         }
         return true
     }
