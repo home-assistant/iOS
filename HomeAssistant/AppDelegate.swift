@@ -71,12 +71,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return
             }.catch {err -> Void in
                 print("ERROR", err)
-                let settingsView = SettingsViewController()
-                settingsView.title = "Settings"
-                settingsView.showErrorConnectingMessage = true
-                let navController = UINavigationController(rootViewController: settingsView)
-                self.window?.makeKeyAndVisible()
-                self.window?.rootViewController!.present(navController, animated: true, completion: nil)
+//                let settingsView = SettingsViewController()
+//                settingsView.title = "Settings"
+//                settingsView.showErrorConnectingMessage = true
+//                let navController = UINavigationController(rootViewController: settingsView)
+//                self.window?.makeKeyAndVisible()
+//                self.window?.rootViewController!.present(navController, animated: true, completion: nil)
             }
         }
     }
