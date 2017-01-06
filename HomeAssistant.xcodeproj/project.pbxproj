@@ -444,7 +444,7 @@
 		B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneComponent.swift; sourceTree = "<group>"; };
 		B6E47E981CBB47CC0027F6CA /* DeviceUID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceUID.h; sourceTree = "<group>"; };
 		B6E47E991CBB47EC0027F6CA /* DeviceUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceUID.m; sourceTree = "<group>"; };
-		B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HomeAssistant-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
+		B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HomeAssistant-Bridging-Header.h"; sourceTree = "<group>"; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		B6F02BE81CB46AF40029ABE7 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 		B6F02BEA1CB46D090029ABE7 /* GroupComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupComponent.swift; sourceTree = "<group>"; };
@@ -555,11 +555,11 @@
 		B60614B31D1F116D00249C11 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
-				B60614B41D1F117700249C11 /* MorganFreeman */,
 				B60615531D1F117700249C11 /* Alexa */,
 				B606159A1D1F117700249C11 /* Generic */,
+				B60614B41D1F117700249C11 /* MorganFreeman */,
 			);
-			name = Sounds;
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 		B60614B41D1F117700249C11 /* MorganFreeman */ = {
@@ -716,11 +716,11 @@
 		B627CB0C1D83C87B0057173E /* NotificationContentExtension */ = {
 			isa = PBXGroup;
 			children = (
+				B627CB121D83C87B0057173E /* Info.plist */,
+				B627CB0F1D83C87B0057173E /* MainInterface.storyboard */,
+				B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */,
 				B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */,
 				B627CB0D1D83C87B0057173E /* NotificationViewController.swift */,
-				B627CB0F1D83C87B0057173E /* MainInterface.storyboard */,
-				B627CB121D83C87B0057173E /* Info.plist */,
-				B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */,
 			);
 			path = NotificationContentExtension;
 			sourceTree = "<group>";
@@ -728,25 +728,25 @@
 		B64D047B1CB8915500B945C8 /* SSE */ = {
 			isa = PBXGroup;
 			children = (
-				B64D04791CB8908B00B945C8 /* StateChanged.swift */,
-				B64D047C1CB8916300B945C8 /* Event.swift */,
 				B6E47E871CBA01310027F6CA /* CallService.swift */,
+				B64D047C1CB8916300B945C8 /* Event.swift */,
 				B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */,
+				B64D04791CB8908B00B945C8 /* StateChanged.swift */,
 			);
-			name = SSE;
+			path = SSE;
 			sourceTree = "<group>";
 		};
 		B657A8DD1CA646EB00121384 = {
 			isa = PBXGroup;
 			children = (
+				B6AAD7A21D827DD40090B220 /* APNSAttachmentService */,
+				29278BB24639BA945D3D86B4 /* Frameworks */,
 				B657A8E81CA646EB00121384 /* HomeAssistant */,
 				B657A8FF1CA646EB00121384 /* HomeAssistantTests */,
 				B657A90A1CA646EB00121384 /* HomeAssistantUITests */,
-				B6AAD7A21D827DD40090B220 /* APNSAttachmentService */,
 				B627CB0C1D83C87B0057173E /* NotificationContentExtension */,
-				B657A8E71CA646EB00121384 /* Products */,
-				29278BB24639BA945D3D86B4 /* Frameworks */,
 				AAB60FA4DE371AD957F6907B /* Pods */,
+				B657A8E71CA646EB00121384 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -765,27 +765,27 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
-				B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */,
-				B60614B31D1F116D00249C11 /* Sounds */,
 				B6F02BE71CB4698A0029ABE7 /* Classes */,
+				B60614B31D1F116D00249C11 /* Sounds */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
-				B6F700491CB34FA600753BAB /* GroupViewController.swift */,
-				B657A8ED1CA646EB00121384 /* SettingsViewController.swift */,
-				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
-				B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */,
-				B657A8EF1CA646EB00121384 /* Main.storyboard */,
 				B657A8F21CA646EB00121384 /* Assets.xcassets */,
-				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
-				B657A8F71CA646EB00121384 /* Info.plist */,
-				B657A9191CA647C500121384 /* HAAPI.swift */,
-				B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */,
-				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
-				B6393F851CB255F200503916 /* EurekaLocationRow.swift */,
-				B6F700511CB374F700753BAB /* RootTabBarViewController.swift */,
-				B624DE171CB8369200F413CE /* DevicesMapViewController.swift */,
 				B6E47E981CBB47CC0027F6CA /* DeviceUID.h */,
 				B6E47E991CBB47EC0027F6CA /* DeviceUID.m */,
+				B624DE171CB8369200F413CE /* DevicesMapViewController.swift */,
+				B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */,
+				B6393F851CB255F200503916 /* EurekaLocationRow.swift */,
+				B6F700491CB34FA600753BAB /* GroupViewController.swift */,
+				B657A9191CA647C500121384 /* HAAPI.swift */,
+				B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */,
+				B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */,
+				B657A8F71CA646EB00121384 /* Info.plist */,
+				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
+				B657A8EF1CA646EB00121384 /* Main.storyboard */,
 				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
+				B6F700511CB374F700753BAB /* RootTabBarViewController.swift */,
+				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
+				B657A8ED1CA646EB00121384 /* SettingsViewController.swift */,
+				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 			);
 			path = HomeAssistant;
 			sourceTree = "<group>";
@@ -812,8 +812,8 @@
 			isa = PBXGroup;
 			children = (
 				B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */,
-				B6AAD7A31D827DD40090B220 /* NotificationService.swift */,
 				B6AAD7A51D827DD40090B220 /* Info.plist */,
+				B6AAD7A31D827DD40090B220 /* NotificationService.swift */,
 			);
 			path = APNSAttachmentService;
 			sourceTree = "<group>";
@@ -824,44 +824,44 @@
 				B6F02BFF1CB4880C0029ABE7 /* Components */,
 				B6F02BEC1CB46E810029ABE7 /* HA API Responses */,
 				B6F02BE81CB46AF40029ABE7 /* Entity.swift */,
-				B6767A501D0234E700F2A08B /* SwitchableEntity.swift */,
 				B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */,
 				B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */,
 				B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */,
+				B6767A501D0234E700F2A08B /* SwitchableEntity.swift */,
 			);
-			name = Classes;
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		B6F02BEC1CB46E810029ABE7 /* HA API Responses */ = {
 			isa = PBXGroup;
 			children = (
 				B64D047B1CB8915500B945C8 /* SSE */,
-				B6F02BED1CB46EB10029ABE7 /* Status.swift */,
+				B6FBE3961D46A4E500EE0E36 /* Beacons.swift */,
 				B6F02BEF1CB46EC70029ABE7 /* Bootstrap.swift */,
 				B6F02BF11CB470570029ABE7 /* Config.swift */,
-				B6F02BF51CB4728D0029ABE7 /* History.swift */,
-				B6F02BF91CB47F930029ABE7 /* Events.swift */,
-				B6F02BFB1CB4800C0029ABE7 /* Services.swift */,
-				B66428111CF7A83200903804 /* PushConfiguration.swift */,
-				B6FBE3961D46A4E500EE0E36 /* Beacons.swift */,
 				B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */,
+				B6F02BF91CB47F930029ABE7 /* Events.swift */,
+				B6F02BF51CB4728D0029ABE7 /* History.swift */,
+				B66428111CF7A83200903804 /* PushConfiguration.swift */,
+				B6F02BFB1CB4800C0029ABE7 /* Services.swift */,
+				B6F02BED1CB46EB10029ABE7 /* Status.swift */,
 			);
-			name = "HA API Responses";
+			path = "HA API Responses";
 			sourceTree = "<group>";
 		};
 		B6F02BFF1CB4880C0029ABE7 /* Components */ = {
 			isa = PBXGroup;
 			children = (
 				B6DBF7651D89F7D800402A57 /* AutomationComponent.swift */,
-				B6DBF7671D89F8C100402A57 /* FanComponent.swift */,
 				B6F02C001CB489770029ABE7 /* BinarySensorComponent.swift */,
 				B6880B2A1D7B9E6400CCB899 /* ClimateComponent.swift */,
 				B6F02C011CB489770029ABE7 /* DeviceTrackerComponent.swift */,
+				B6DBF7671D89F8C100402A57 /* FanComponent.swift */,
 				B6F02C021CB489770029ABE7 /* GarageDoorComponent.swift */,
 				B6F02BEA1CB46D090029ABE7 /* GroupComponent.swift */,
 				B6F02C031CB489770029ABE7 /* InputBooleanComponent.swift */,
-				B64D09AE1D7D561E008EB487 /* InputSlider.swift */,
 				B6F02C041CB489770029ABE7 /* InputSelectComponent.swift */,
+				B64D09AE1D7D561E008EB487 /* InputSlider.swift */,
 				B6F02C051CB489770029ABE7 /* LightComponent.swift */,
 				B6F02C061CB489770029ABE7 /* LockComponent.swift */,
 				B6F02C071CB489770029ABE7 /* MediaPlayerComponent.swift */,
@@ -874,7 +874,7 @@
 				B6F02C0E1CB489770029ABE7 /* WeblinkComponent.swift */,
 				B6E47E8D1CBA3EDB0027F6CA /* ZoneComponent.swift */,
 			);
-			name = Components;
+			path = Components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1559,6 +1559,7 @@
 				B627CB101D83C87B0057173E /* Base */,
 			);
 			name = MainInterface.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 		B657A8EF1CA646EB00121384 /* Main.storyboard */ = {
@@ -1567,6 +1568,7 @@
 				B657A8F01CA646EB00121384 /* Base */,
 			);
 			name = Main.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 		B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */ = {
@@ -1575,6 +1577,7 @@
 				B657A8F51CA646EB00121384 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1777,7 +1780,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "050c99c9-d23a-4537-8e4e-9eb293d13d49";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant 1475202231";
-				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant/HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1836,7 +1839,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "bbef0c3e-93d6-48c3-9e98-ede0cc0b42b0";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant 1473993199";
-				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant/HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
