@@ -767,25 +767,16 @@
 			children = (
 				B6F02BE71CB4698A0029ABE7 /* Classes */,
 				B60614B31D1F116D00249C11 /* Sounds */,
+				B679B1FA1E1F3D020071D366 /* Utilities */,
+				B679B1F91E1F3CFB0071D366 /* Views */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				B657A8F21CA646EB00121384 /* Assets.xcassets */,
-				B6E47E981CBB47CC0027F6CA /* DeviceUID.h */,
-				B6E47E991CBB47EC0027F6CA /* DeviceUID.m */,
-				B624DE171CB8369200F413CE /* DevicesMapViewController.swift */,
-				B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */,
-				B6393F851CB255F200503916 /* EurekaLocationRow.swift */,
-				B6F700491CB34FA600753BAB /* GroupViewController.swift */,
 				B657A9191CA647C500121384 /* HAAPI.swift */,
 				B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */,
 				B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */,
 				B657A8F71CA646EB00121384 /* Info.plist */,
 				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
 				B657A8EF1CA646EB00121384 /* Main.storyboard */,
-				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
-				B6F700511CB374F700753BAB /* RootTabBarViewController.swift */,
-				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
-				B657A8ED1CA646EB00121384 /* SettingsViewController.swift */,
-				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 			);
 			path = HomeAssistant;
 			sourceTree = "<group>";
@@ -806,6 +797,31 @@
 				B657A90D1CA646EB00121384 /* Info.plist */,
 			);
 			path = HomeAssistantUITests;
+			sourceTree = "<group>";
+		};
+		B679B1F91E1F3CFB0071D366 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B624DE171CB8369200F413CE /* DevicesMapViewController.swift */,
+				B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */,
+				B6393F851CB255F200503916 /* EurekaLocationRow.swift */,
+				B6F700491CB34FA600753BAB /* GroupViewController.swift */,
+				B6F700511CB374F700753BAB /* RootTabBarViewController.swift */,
+				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
+				B657A8ED1CA646EB00121384 /* SettingsViewController.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B679B1FA1E1F3D020071D366 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				B6E47E981CBB47CC0027F6CA /* DeviceUID.h */,
+				B6E47E991CBB47EC0027F6CA /* DeviceUID.m */,
+				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
+				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		B6AAD7A21D827DD40090B220 /* APNSAttachmentService */ = {
