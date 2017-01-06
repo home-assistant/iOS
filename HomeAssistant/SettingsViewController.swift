@@ -49,10 +49,6 @@ class SettingsViewController: FormViewController {
         
         self.configured = (self.baseURL != nil && self.password != nil)
         
-        if self.configured == false {
-            connectStep = 1
-        }
-        
         checkForEmail()
         
         if showErrorConnectingMessage {
@@ -62,6 +58,7 @@ class SettingsViewController: FormViewController {
         }
         
         if self.configured == false {
+            connectStep = 1
             let queue = DispatchQueue(label: "io.robbie.homeassistant", attributes: []);
             queue.async { () -> Void in
                 NSLog("Attempting to discover Home Assistant instances, also publishing app to Bonjour/mDNS to hopefully have HA load the iOS/ZeroConf components.")
@@ -174,7 +171,23 @@ class SettingsViewController: FormViewController {
                             self.prefs.setValue(password, forKey: "apiPassword")
                         }
                         self.prefs.synchronize()
-                        self.dismiss(animated: true, completion: nil)
+                        self.form.setValues(["locationName": config.LocationName, "version": config.Version])
+                        let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
+                        locationNameRow.updateCell()
+                        let versionRow: LabelRow = self.form.rowBy(tag: "version")!
+                        versionRow.updateCell()
+                        let statusSection: Section = self.form.sectionBy(tag: "status")!
+                        statusSection.hidden = false
+                        statusSection.evaluateHidden()
+                        let detailsSection: Section = self.form.sectionBy(tag: "details")!
+                        detailsSection.hidden = false
+                        detailsSection.evaluateHidden()
+                        let resetSection: Section = self.form.sectionBy(tag: "reset")!
+                        resetSection.hidden = false
+                        resetSection.evaluateHidden()
+                        let alert = UIAlertController(title: "Connected", message: "Please force quit and re-open the app to continue.", preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
                     }.catch { error in
                         print("Connection error!", error)
                         var errorMessage = error.localizedDescription
@@ -192,6 +205,7 @@ class SettingsViewController: FormViewController {
 
             +++ Section(header: "Status", footer: ""){
                 $0.tag = "status"
+                $0.hidden = Condition(booleanLiteral: !self.configured)
             }
             <<< LabelRow("locationName") {
                 $0.title = "Name"
@@ -202,7 +216,7 @@ class SettingsViewController: FormViewController {
             }
             <<< LabelRow("version") {
                 $0.title = "Version"
-                $0.value = "0.31.0"
+                $0.value = "0.35.0"
                 if let version = prefs.string(forKey: "version") {
                     $0.value = version
                 }
@@ -241,7 +255,10 @@ class SettingsViewController: FormViewController {
                     self.prefs.synchronize()
                 }
             }
-            +++ Section()
+            +++ Section(){
+                $0.tag = "details"
+                $0.hidden = Condition(booleanLiteral: !self.configured)
+            }
 //            <<< ButtonRow("displaySettings") {
 //                $0.title = "Display Settings"
 //                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
@@ -334,7 +351,10 @@ class SettingsViewController: FormViewController {
                 })
             }
         
-            +++ Section()
+            +++ Section(){
+                $0.tag = "reset"
+                $0.hidden = Condition(booleanLiteral: !self.configured)
+            }
             <<< ButtonRow("resetApp") {
                 $0.title = "Reset"
             }.cellUpdate { cell, _ in
@@ -358,7 +378,7 @@ class SettingsViewController: FormViewController {
             <<< ButtonRow("helpButton") {
                 $0.title = "Help"
                 $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
-                    return SFSafariViewController(url: URL(string: "https://community.home-assistant.io/c/ios")!, entersReaderIfAvailable: false)
+                    return SFSafariViewController(url: URL(string: "https://home-assistant.io/ecosystem/ios/")!, entersReaderIfAvailable: false)
                 }, onDismiss: { vc in
                     let _ = vc.navigationController?.popViewController(animated: true)
                 })
