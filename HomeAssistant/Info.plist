@@ -47,6 +47,8 @@
 			</dict>
 		</array>
 	</dict>
+	<key>IS_SANDBOXED</key>
+	<string>${IS_SANDBOXED}</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -72,16 +74,12 @@
 	<string>To allow PermissionScope to work under iOS 10</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>To allow PromiseKit to work under iOS 10</string>
-	<key>IS_SANDBOXED</key>
-	<string>${IS_SANDBOXED}</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
 	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
