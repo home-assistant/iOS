@@ -206,22 +206,4 @@ class HomeAssistantLogoView: UIView {
         super.init(coder: aDecoder)
     }
 
-    //    override init(frame: CGRect) {
-    //        super.init(frame: frame)
-    //        let imageView = UIImageView(image: UIImage(named: "Logo"))
-    //        imageView.frame = CGRect(x: 0, y: 0, width: 320, height: 130)
-    //        imageView.autoresizingMask = .flexibleWidth
-    //        self.frame = CGRect(x: 0, y: 0, width: 320, height: 130)
-    //        imageView.contentMode = .scaleAspectFit
-    //        self.addSubview(imageView)
-    //
-    //        let descriptionLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 250, height: 50))
-    //        descriptionLabel.textAlignment = .center
-    //        descriptionLabel.text = "Awaken your home"
-    //        self.addSubview(descriptionLabel)
-    //    }
-    //
-    //    required init?(coder aDecoder: NSCoder) {
-    //        fatalError("init(coder:) has not been implemented")
-    //    }
 }
