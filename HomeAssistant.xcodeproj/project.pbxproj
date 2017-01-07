@@ -819,10 +819,10 @@
 				B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */,
 				B6393F851CB255F200503916 /* EurekaLocationRow.swift */,
 				B6F700491CB34FA600753BAB /* GroupViewController.swift */,
+				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 				B6F700511CB374F700753BAB /* RootTabBarViewController.swift */,
 				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
 				B657A8ED1CA646EB00121384 /* SettingsViewController.swift */,
-				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -830,10 +830,10 @@
 		B679B1FA1E1F3D020071D366 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E47E981CBB47CC0027F6CA /* DeviceUID.h */,
 				B6E47E991CBB47EC0027F6CA /* DeviceUID.m */,
 				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
+				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 			);
 			path = Utilities;
