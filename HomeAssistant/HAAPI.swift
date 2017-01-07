@@ -27,68 +27,68 @@ let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
 let APIClientSharedInstance = HomeAssistantAPI()
 
 public class HomeAssistantAPI {
-    
-    class var sharedInstance:HomeAssistantAPI {
+
+    class var sharedInstance: HomeAssistantAPI {
         get {
-            return APIClientSharedInstance;
+            return APIClientSharedInstance
         }
     }
-    
-    private var manager : Alamofire.SessionManager?
-    
-    var baseAPIURL : String = ""
-    var apiPassword : String = ""
-    
-    var deviceID : String = ""
-    var pushID : String = ""
-    var deviceToken : String = ""
-    
+
+    private var manager: Alamofire.SessionManager?
+
+    var baseAPIURL: String = ""
+    var apiPassword: String = ""
+
+    var deviceID: String = ""
+    var pushID: String = ""
+    var deviceToken: String = ""
+
     var eventSource: EventSource? = nil
-    
-    var mostRecentlySentMessage : String = String()
-    
+
+    var mostRecentlySentMessage: String = String()
+
     var services = [NetService]()
-    
-    var headers = [String:String]()
-    
+
+    var headers = [String: String]()
+
     var loadedComponents = [String]()
-    
+
     let Location = LocationManager()
-    
+
     func Setup(baseAPIUrl: String, APIPassword: String) -> Promise<StatusResponse> {
         self.baseAPIURL = baseAPIUrl+"/api/"
         self.apiPassword = APIPassword
         if apiPassword != "" {
             headers["X-HA-Access"] = apiPassword
         }
-        
-        var defaultHeaders = Alamofire.SessionManager.defaultHTTPHeaders 
+
+        var defaultHeaders = Alamofire.SessionManager.defaultHTTPHeaders
         for (header, value) in headers {
             defaultHeaders[header] = value
         }
-        
+
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = defaultHeaders
         configuration.timeoutIntervalForRequest = 3 // seconds
-        
+
         self.manager = Alamofire.SessionManager(configuration: configuration)
-        
+
         if let deviceId = prefs.string(forKey: "deviceId") {
             deviceID = deviceId
         }
-        
+
         if let pushId = prefs.string(forKey: "pushID") {
             pushID = pushId
         }
-        
+
         if let deviceTok = prefs.string(forKey: "deviceToken") {
             deviceToken = deviceTok
         }
-        
+
         return GetStatus()
-        
+
     }
-    
+
     func Connect() -> Promise<ConfigResponse> {
         return Promise { fulfill, reject in
             GetConfig().then { config -> Void in
@@ -103,24 +103,24 @@ public class HomeAssistantAPI {
                 prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
                 prefs.setValue(config.Timezone, forKey: "time_zone")
                 prefs.setValue(config.Version, forKey: "version")
-                
+
                 Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
                 Crashlytics.sharedInstance().setObjectValue(self.loadedComponents.joined(separator: ","), forKey: "loadedComponents")
                 Crashlytics.sharedInstance().setObjectValue(self.enabledPermissions.joined(separator: ","), forKey: "allowedPermissions")
-                
+
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"), object: nil, userInfo: nil)
-                
+
                 let _ = self.GetStates()
-                
+
                 if self.locationEnabled {
                     self.trackLocation()
                 }
-                
+
                 if self.loadedComponents.contains("ios") {
                     CLSLogv("iOS component loaded, attempting identify", getVaList([]))
                     _ = self.identifyDevice()
                 }
-                
+
 //                self.GetHistory()
                 self.startStream()
                 fulfill(config)
@@ -132,16 +132,16 @@ public class HomeAssistantAPI {
 
         }
     }
-    
+
     func startStream() {
         eventSource = EventSource(url: baseAPIURL+"stream", headers: headers)
-        
+
         eventSource?.onOpen {
             print("SSE: Connection Opened")
             self.showMurmur(title: "Connected to Home Assistant")
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.opened"), object: nil, userInfo: nil)
         }
-        
+
         eventSource?.onError { error in
             if let err = error {
                 Crashlytics.sharedInstance().recordError(err)
@@ -150,8 +150,8 @@ public class HomeAssistantAPI {
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.error"), object: nil, userInfo: ["code": err.code, "description": err.description])
             }
         }
-        
-        eventSource?.onMessage { (id, eventName, data) in
+
+        eventSource?.onMessage { (_, eventName, data) in
             if let eventData = data {
                 if eventData == "ping" { return }
                 if let event = Mapper<SSEEvent>().map(JSONString: eventData) {
@@ -169,10 +169,10 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func submitLocation(updateType: LocationUpdateTypes, coordinates: CLLocationCoordinate2D, accuracy: CLLocationAccuracy, zone: Zone? = nil) {
         UIDevice.current.isBatteryMonitoringEnabled = true
-        
+
         var batteryState = "Unplugged"
         switch UIDevice.current.batteryState {
         case .unknown:
@@ -184,8 +184,8 @@ public class HomeAssistantAPI {
         case .full:
             batteryState = "Full"
         }
-        
-        let locationUpdate : [String:Any] = [
+
+        let locationUpdate: [String:Any] = [
             "battery": Int(UIDevice.current.batteryLevel*100),
             "battery_status": batteryState,
             "gps": [coordinates.latitude, coordinates.longitude],
@@ -193,20 +193,20 @@ public class HomeAssistantAPI {
             "hostname": UIDevice().name,
             "dev_id": deviceID
         ]
-        
+
         self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate as [String : Any]).then {_ in
             print("Device seen!")
         }.catch {err in
             Crashlytics.sharedInstance().recordError(err as NSError)
         }
-        
+
         UIDevice.current.isBatteryMonitoringEnabled = false
-        
+
         let notificationTitle = "Location change"
         var notificationBody = ""
         var notificationIdentifer = ""
         var shouldNotify = false
-        
+
         switch updateType {
             case .RegionEnter:
                 notificationBody = "\(zone!.Name) entered"
@@ -223,14 +223,14 @@ public class HomeAssistantAPI {
             default:
                 notificationBody = ""
         }
-        
+
         if shouldNotify {
             if #available(iOS 10, *) {
                 let content = UNMutableNotificationContent()
                 content.title = notificationTitle
                 content.body = notificationBody
                 content.sound = UNNotificationSound.default()
-                
+
                 UNUserNotificationCenter.current().add(UNNotificationRequest.init(identifier: notificationIdentifer, content: content, trigger: nil))
             } else {
                 let notification = UILocalNotification()
@@ -244,17 +244,17 @@ public class HomeAssistantAPI {
         }
 
     }
-    
+
     func trackLocation() {
         let _ = Location.getLocation(withAccuracy: .neighborhood, frequency: .significant, timeout: 50, onSuccess: { (location) in
             // You will receive at max one event if desidered accuracy can be achieved; this because you have set .OneShot as frequency.
             self.submitLocation(updateType: .Manual, coordinates: location.coordinate, accuracy: location.horizontalAccuracy, zone: nil)
-        }) { (lastValidLocation, error) in
+        }) { (_, error) in
             // something went wrong. request will be cancelled automatically
             print("Something went wrong when trying to get significant location updates! Error was:", error)
             Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
         }
-        
+
         for zone in realm.objects(Zone.self) {
             if zone.trackingEnabled == false {
                 print("Skipping zone set to not track!")
@@ -278,7 +278,7 @@ public class HomeAssistantAPI {
         }
 
 //        let location = Location()
-        
+
 //        self.getBeacons().then { beacons -> Void in
 //            for beacon in beacons {
 //                print("Got beacon from HA", beacon.UUID, beacon.Major, beacon.Minor)
@@ -296,20 +296,20 @@ public class HomeAssistantAPI {
 //        }
 
     }
-    
+
     func sendOneshotLocation() -> Promise<Bool> {
         return Promise { fulfill, reject in
             let _ = Location.getLocation(withAccuracy: .neighborhood, frequency: .oneShot, timeout: 50, onSuccess: { (location) in
                 self.submitLocation(updateType: .Manual, coordinates: location.coordinate, accuracy: location.horizontalAccuracy, zone: nil)
                 fulfill(true)
-            }) { (lastValidLocation, error) in
+            }) { (_, error) in
                 print("Error when trying to get a oneshot location!", error)
                 Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
                 reject(error)
             }
         }
     }
-    
+
     func GetStatus() -> Promise<StatusResponse> {
         let queryUrl = baseAPIURL
         return Promise { fulfill, reject in
@@ -325,7 +325,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func GetConfig() -> Promise<ConfigResponse> {
         let queryUrl = baseAPIURL+"config"
         return Promise { fulfill, reject in
@@ -341,7 +341,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func GetServices() -> Promise<[ServicesResponse]> {
         let queryUrl = baseAPIURL+"services"
         return Promise { fulfill, reject in
@@ -357,7 +357,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
 //    func GetHistory() -> Promise<HistoryResponse> {
 //        let queryUrl = baseAPIURL+"history/period?filter_entity_id=sensor.uberpool_time"
 //        return Promise { fulfill, reject in
@@ -376,7 +376,7 @@ public class HomeAssistantAPI {
 //            }
 //        }
 //    }
-    
+
     func storeEntities(entities: [Entity]) {
         for entity in entities {
             try! realm.write {
@@ -434,7 +434,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func GetStates() -> Promise<[Entity]> {
         let queryUrl = baseAPIURL+"states"
         return Promise { fulfill, reject in
@@ -451,7 +451,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func GetStateForEntityIdMapped(entityId: String) -> Promise<Entity> {
         let queryUrl = baseAPIURL+"states/"+entityId
         return Promise { fulfill, reject in
@@ -468,7 +468,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func GetErrorLog() -> Promise<String> {
         let queryUrl = baseAPIURL+"error_log"
         return Promise { fulfill, reject in
@@ -484,7 +484,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func SetState(entityId: String, state: String) -> Promise<Entity> {
         let queryUrl = baseAPIURL+"states/"+entityId
         return Promise { fulfill, reject in
@@ -502,7 +502,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func CreateEvent(eventType: String, eventData: [String:Any]) -> Promise<String> {
         let queryUrl = baseAPIURL+"events/"+eventType
         return Promise { fulfill, reject in
@@ -521,7 +521,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func CallService(domain: String, service: String, serviceData: [String:Any]) -> Promise<[ServicesResponse]> {
 //        self.showMurmur(title: domain+"/"+service+" called")
         let queryUrl = baseAPIURL+"services/"+domain+"/"+service
@@ -538,41 +538,41 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func turnOn(entityId: String) -> Promise<[ServicesResponse]> {
         self.showMurmur(title: entityId+" turned on")
         return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
     }
-    
+
     func turnOnEntity(entity: Entity) -> Promise<[ServicesResponse]> {
         self.showMurmur(title: "\(entity.Name) turned on")
         return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entity.ID])
     }
-    
+
     func turnOff(entityId: String) -> Promise<[ServicesResponse]> {
         self.showMurmur(title: entityId+" turned off")
         return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entityId])
     }
-    
+
     func turnOffEntity(entity: Entity) -> Promise<[ServicesResponse]> {
         self.showMurmur(title: "\(entity.Name) turned off")
         return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entity.ID])
     }
-    
+
     func toggle(entityId: String) -> Promise<[ServicesResponse]> {
         let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityId)
         self.showMurmur(title: "\(entity!.Name) toggled")
         return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
     }
-    
+
     func toggleEntity(entity: Entity) -> Promise<[ServicesResponse]> {
         self.showMurmur(title: "\(entity.Name) toggled")
         return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
-    
+
     func buildIdentifyDict() -> [String:Any] {
         let deviceKitDevice = Device()
-        
+
         let ident = IdentifyRequest()
         ident.AppBuildNumber = Int(string: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String)
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
@@ -589,9 +589,9 @@ public class HomeAssistantAPI {
         ident.PushID = pushID
         ident.PushSounds = listAllInstalledPushNotificationSounds()
         ident.PushToken = deviceToken
-        
+
         UIDevice.current.isBatteryMonitoringEnabled = true
-        
+
         switch UIDevice.current.batteryState {
         case .unknown:
             ident.BatteryState = "Unknown"
@@ -602,17 +602,17 @@ public class HomeAssistantAPI {
         case .full:
             ident.BatteryState = "Full"
         }
-        
+
         ident.BatteryLevel = Int(UIDevice.current.batteryLevel*100)
-        
+
         UIDevice.current.isBatteryMonitoringEnabled = false
-        
+
         return Mapper().toJSON(ident)
     }
-    
+
     func buildPushRegistrationDict(deviceToken: String) -> [String:Any] {
         let deviceKitDevice = Device()
-        
+
         let ident = PushRegistrationRequest()
         ident.AppBuildNumber = Int(string: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String)
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
@@ -630,13 +630,13 @@ public class HomeAssistantAPI {
         ident.APNSSandbox = ((Bundle.main.object(forInfoDictionaryKey: "IS_SANDBOXED") as! String) == "true")
         ident.HomeAssistantVersion = prefs.string(forKey: "version")!
         ident.HomeAssistantTimezone = prefs.string(forKey: "time_zone")!
-        
+
         return Mapper().toJSON(ident)
     }
-    
+
     func buildRemovalDict() -> [String:Any] {
         let deviceKitDevice = Device()
-        
+
         let ident = IdentifyRequest()
         ident.AppBuildNumber = Int(string: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")! as! String)
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
@@ -653,10 +653,10 @@ public class HomeAssistantAPI {
         ident.PushID = pushID
         ident.PushSounds = listAllInstalledPushNotificationSounds()
         ident.PushToken = deviceToken
-        
+
         return Mapper().toJSON(ident)
     }
-    
+
     func identifyDevice() -> Promise<String> {
         let queryUrl = baseAPIURL+"ios/identify"
         return Promise { fulfill, reject in
@@ -672,7 +672,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func removeDevice() -> Promise<String> {
         let queryUrl = baseAPIURL+"ios/identify"
         return Promise { fulfill, reject in
@@ -688,7 +688,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func registerDeviceForPush(deviceToken: String) -> Promise<String> {
         let queryUrl = "https://ios-push.home-assistant.io/registrations"
         return Promise { fulfill, reject in
@@ -705,7 +705,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func setupPushActions() -> Promise<Set<UIUserNotificationCategory>> {
         let queryUrl = baseAPIURL+"ios/push"
         return Promise { fulfill, reject in
@@ -750,7 +750,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     @available(iOS 10, *)
     func setupUserNotificationPushActions() -> Promise<Set<UNNotificationCategory>> {
         let queryUrl = baseAPIURL+"ios/push"
@@ -800,7 +800,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func setupPush() {
         UIApplication.shared.registerForRemoteNotifications()
         if #available(iOS 10, *) {
@@ -812,7 +812,7 @@ public class HomeAssistantAPI {
             }
         } else {
             self.setupPushActions().then { categories -> Void in
-                let types:UIUserNotificationType = ([.alert, .badge, .sound])
+                let types: UIUserNotificationType = ([.alert, .badge, .sound])
                 let settings = UIUserNotificationSettings(types: types, categories: categories)
                 UIApplication.shared.registerUserNotificationSettings(settings)
             }.catch {error -> Void in
@@ -821,11 +821,11 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func handlePushAction(identifier: String, userInfo: [AnyHashable : Any], userInput: String?) -> Promise<Bool> {
         return Promise { fulfill, reject in
             let device = Device()
-            var eventData : [String:Any] = ["actionName": identifier, "sourceDevicePermanentID": DeviceUID.uid(), "sourceDeviceName": device.name]
+            var eventData: [String:Any] = ["actionName": identifier, "sourceDevicePermanentID": DeviceUID.uid(), "sourceDeviceName": device.name]
             if let dataDict = userInfo["homeassistant"] {
                 eventData["action_data"] = dataDict
             }
@@ -840,7 +840,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func getBeacons() -> Promise<[Beacon]> {
         let queryUrl = baseAPIURL+"ios/beacons"
         return Promise { fulfill, reject in
@@ -856,7 +856,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func getImage(imageUrl: String) -> Promise<UIImage> {
         var url = imageUrl
         if url.hasPrefix("/local/") || url.hasPrefix("/api/") {
@@ -879,31 +879,31 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
-    var locationEnabled : Bool {
+
+    var locationEnabled: Bool {
 //        return PermissionScope().statusLocationAlways() == .authorized && self.loadedComponents.contains("device_tracker")
         return PermissionScope().statusLocationAlways() == .authorized
     }
-    
-    var notificationsEnabled : Bool {
+
+    var notificationsEnabled: Bool {
 //        return PermissionScope().statusNotifications() == .authorized && prefs.string(forKey: "pushID") != nil
         return prefs.string(forKey: "pushID") != nil
 //        print("PermissionScope().statusNotifications()", PermissionScope().statusNotifications())
 //        return PermissionScope().statusNotifications() == .authorized
     }
-    
-    var iosComponentLoaded : Bool {
+
+    var iosComponentLoaded: Bool {
         return self.loadedComponents.contains("ios")
     }
-    
-    var deviceTrackerComponentLoaded : Bool {
+
+    var deviceTrackerComponentLoaded: Bool {
         return self.loadedComponents.contains("device_tracker")
     }
-    
-    var iosNotifyPlatformLoaded : Bool {
+
+    var iosNotifyPlatformLoaded: Bool {
         return self.loadedComponents.contains("notify.ios")
     }
-    
+
     var sseConnected: Bool {
         if let sse = self.eventSource {
             return sse.readyState == .open
@@ -911,9 +911,9 @@ public class HomeAssistantAPI {
             return false
         }
     }
-    
-    var enabledPermissions : [String] {
-        var permissionsContainer : [String] = []
+
+    var enabledPermissions: [String] {
+        var permissionsContainer: [String] = []
         for status in PermissionScope().permissionStatuses([NotificationsPermission().type, LocationAlwaysPermission().type]) {
             if status.1 == .authorized {
                 permissionsContainer.append(status.0.prettyDescription.lowercased())
@@ -921,11 +921,11 @@ public class HomeAssistantAPI {
         }
         return permissionsContainer
     }
-    
+
     func showMurmur(title: String) {
         show(whistle: Murmur(title: title), action: .show(2.0))
     }
-    
+
     func CleanBaseURL(baseUrl: URL) -> (hasValidScheme: Bool, cleanedURL: URL) {
         if (baseUrl.absoluteString.hasPrefix("http://") || baseUrl.absoluteString.hasPrefix("https://")) == false {
             return (false, baseUrl)
@@ -939,7 +939,7 @@ public class HomeAssistantAPI {
         }
         return (true, urlComponents.url!)
     }
-    
+
     func GetDiscoveryInfo(baseUrl: URL) -> Promise<DiscoveryInfoResponse> {
         let queryUrl = baseUrl.appendingPathComponent("/api/discovery_info")
         return Promise { fulfill, reject in
@@ -955,36 +955,36 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
 }
 
-class BonjourDelegate : NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
-    
+class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
+
     var resolving = [NetService]()
-    var resolvingDict = [String:NetService]()
-    
+    var resolvingDict = [String: NetService]()
+
     // Browser methods
-    
+
     func netServiceBrowser(_ netServiceBrowser: NetServiceBrowser, didFind netService: NetService, moreComing moreServicesComing: Bool) {
         NSLog("BonjourDelegate.Browser.didFindService")
         netService.delegate = self
         resolvingDict[netService.name] = netService
         netService.resolve(withTimeout: 0.0)
     }
-    
+
     func netServiceDidResolveAddress(_ sender: NetService) {
         NSLog("BonjourDelegate.Browser.netServiceDidResolveAddress")
         let discoveryInfo = DiscoveryInfoFromDict(locationName: sender.name, netServiceDictionary: NetService.dictionary(fromTXTRecord: sender.txtRecordData()!))
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.discovered"), object: nil, userInfo: discoveryInfo.toJSON())
     }
-    
+
     func netServiceBrowser(_ netServiceBrowser: NetServiceBrowser, didRemove netService: NetService, moreComing moreServicesComing: Bool) {
         NSLog("BonjourDelegate.Browser.didRemoveService")
-        let discoveryInfo : [NSObject:Any] = ["name" as NSObject: netService.name]
+        let discoveryInfo: [NSObject:Any] = ["name" as NSObject: netService.name]
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.undiscovered"), object: nil, userInfo: discoveryInfo)
         resolvingDict.removeValue(forKey: netService.name)
     }
-    
+
 //    func netServiceBrowser(netServiceBrowser: NetServiceBrowser, didFindDomain domainName: String, moreComing moreDomainsComing: Bool) {
 //        NSLog("BonjourDelegate.Browser.netServiceBrowser.didFindDomain")
 //    }
@@ -1003,9 +1003,9 @@ class BonjourDelegate : NSObject, NetServiceBrowserDelegate, NetServiceDelegate 
 //    func netServiceWillPublish(sender: NetService) {
 //        NSLog("BonjourDelegate.Browser.netServiceWillPublish:\(sender)");
 //    }
-    
+
     private func DiscoveryInfoFromDict(locationName: String, netServiceDictionary: [String : Data]) -> DiscoveryInfoResponse {
-        var outputDict : [String:Any] = [:]
+        var outputDict: [String:Any] = [:]
         for (key, value) in netServiceDictionary {
             outputDict[key] = String(data: value, encoding: .utf8)
             if outputDict[key] as? String == "true" || outputDict[key] as? String == "false" {
@@ -1015,9 +1015,9 @@ class BonjourDelegate : NSObject, NetServiceBrowserDelegate, NetServiceDelegate 
         outputDict["location_name"] = locationName
         return DiscoveryInfoResponse(JSON: outputDict)!
     }
-    
+
 // Publisher methods
-    
+
 //    func netService(sender: NetService, didNotPublish errorDict: [String : NSNumber]) {
 //        NSLog("BonjourDelegate.Publisher.didNotPublish:\(sender)");
 //    }
@@ -1039,20 +1039,20 @@ class BonjourDelegate : NSObject, NetServiceBrowserDelegate, NetServiceDelegate 
 //    func netService(sender: NetService, didAcceptConnectionWithInputStream inputStream: NSInputStream, outputStream stream: NSOutputStream) {
 //        NSLog("BonjourDelegate.Publisher.netServiceDidAcceptConnection:\(sender)");
 //    }
-    
+
 }
 
 class Bonjour {
     var nsb: NetServiceBrowser
     var nsp: NetService
     var nsdel: BonjourDelegate?
-    
+
     init() {
         let device = Device()
         self.nsb = NetServiceBrowser()
         self.nsp = NetService(domain: "local", type: "_hass-ios._tcp.", name: device.name, port: 65535)
     }
-    
+
     func buildPublishDict() -> [String: Data] {
         return [
             "permanentID": DeviceUID.uid().data(using: .utf8)!,
@@ -1061,28 +1061,28 @@ class Bonjour {
             "buildNumber": (Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String).data(using: .utf8)!
         ]
     }
-    
+
     func startDiscovery() {
         self.nsdel = BonjourDelegate()
         nsb.delegate = nsdel
         nsb.searchForServices(ofType: "_home-assistant._tcp.", inDomain: "local.")
     }
-    
+
     func stopDiscovery() {
         nsb.stop()
     }
-    
+
     func startPublish() {
 //        self.nsdel = BonjourDelegate()
 //        nsp.delegate = nsdel
         nsp.setTXTRecord(NetService.data(fromTXTRecord: buildPublishDict()))
         nsp.publish()
     }
-    
+
     func stopPublish() {
         nsp.stop()
     }
-    
+
 }
 
 enum LocationUpdateTypes {

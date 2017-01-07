@@ -23,17 +23,17 @@ class DiscoveryInfoResponse: Mappable {
     var Version: String = ""
     var UsesSSL: Bool = false
 
-    required init?(map: Map){
-        
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         BaseURL             <- (map["base_url"], URLTransform())
         BaseURLString       <- map["base_url"]
         LocationName        <- map["location_name"]
         RequiresPassword    <- map["requires_api_password"]
         Version             <- map["version"]
-        
+
         UsesSSL             <- (map["base_url"], usesSSL)
     }
 }

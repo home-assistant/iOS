@@ -27,13 +27,13 @@ class IdentifyRequest: Mappable {
     var PushToken: String?
     var BatteryLevel: Int?
     var BatteryState: String?
-    
+
     init() {}
-    
-    required init?(map: Map){
-        
+
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         AppBuildNumber         <- map["app.buildNumber"]
         AppBundleIdentifer     <- map["app.bundleIdentifer"]

@@ -17,11 +17,11 @@ class Beacon: Mappable {
     var Major: Int?
     var Minor: Int?
     var Radius: Int?
-    
-    required init?(map: Map){
-        
+
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         Name        <- map["name"]
         Zone        <- map["zone"]

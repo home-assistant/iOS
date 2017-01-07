@@ -10,15 +10,15 @@ import Foundation
 import ObjectMapper
 
 class GarageDoor: Entity {
-    
+
     dynamic var IsOpen: Bool = false
-    
+
     override func mapping(map: Map) {
         super.mapping(map: map)
-        
+
         IsOpen    <- (map["state"], ComponentBoolTransform(trueValue: "open", falseValue: "closed"))
     }
-    
+
     override var ComponentIcon: String {
         return "mdi:glassdoor"
     }

@@ -20,22 +20,22 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)), name:NSNotification.Name(rawValue: "sse.state_changed"), object: nil)
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
 
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
 
         self.delegate = self
-        
+
         let tabBarIconColor = colorWithHexString("#44739E", alpha: 1)
-        
-        var tabViewControllers : [UIViewController] = []
-        
+
+        var tabViewControllers: [UIViewController] = []
+
         let firstGroupView = GroupViewController()
         firstGroupView.title = "Loading..."
-        
+
         self.viewControllers = [firstGroupView]
-        
+
         if HomeAssistantAPI.sharedInstance.baseAPIURL == "" {
             DispatchQueue.main.async(execute: {
                 let settingsView = SettingsViewController()
@@ -46,7 +46,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 self.present(navController, animated: true, completion: nil)
             })
         }
-        
+
         let allGroups = realm.objects(Group.self).filter {
             var shouldReturn = true
 //            if prefs.bool(forKey: "allowAllGroups") == false {
@@ -87,58 +87,58 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
             groupView.tabBarItem.title = groupName
             let icon = group.Entities.first!.EntityIcon(width: 30, height: 30, color: tabBarIconColor)
             groupView.tabBarItem = UITabBarItem(title: groupName, image: icon, tag: index)
-            
+
             if group.Order.value == nil {
                 // Save the index now since it should be first time running
                 try! realm.write {
                     group.Order.value = index
                 }
             }
-            
+
             if HomeAssistantAPI.sharedInstance.locationEnabled {
-                var rightBarItems : [UIBarButtonItem] = []
-                
+                var rightBarItems: [UIBarButtonItem] = []
+
                 let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
-                
+
                 rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
-                
+
                 let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
-                
+
                 rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
-                
+
                 groupView.navigationItem.setRightBarButtonItems(rightBarItems, animated: true)
             }
-            
+
             let navController = UINavigationController(rootViewController: groupView)
-            
+
             tabViewControllers.append(navController)
         }
         let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
-        
+
         let settingsView = SettingsViewController()
         settingsView.title = "Settings"
         settingsView.tabBarItem = UITabBarItem(title: "Settings", image: settingsIcon, tag: 1)
         settingsView.hidesBottomBarWhenPushed = true
-        
+
         tabViewControllers.append(UINavigationController(rootViewController: settingsView))
-        
+
         self.viewControllers = tabViewControllers
-        
+
         tabViewControllers.removeLast()
-        
+
         self.customizableViewControllers = tabViewControllers
-        
+
         hud.hide(animated: true)
     }
-    
+
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        return true;
+        return true
     }
-    
+
     func tabBarController(_ tabBarController: UITabBarController, willEndCustomizing viewControllers: [UIViewController], changed: Bool) {
-        
+
     }
-    
+
     func tabBarController(_ tabBarController: UITabBarController, didEndCustomizing viewControllers: [UIViewController], changed: Bool) {
         if (changed) {
             for (index, view) in viewControllers.enumerated() {
@@ -159,8 +159,8 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    func StateChangedSSEEvent(_ notification: Notification){
+
+    func StateChangedSSEEvent(_ notification: Notification) {
         if let userInfo = (notification as NSNotification).userInfo {
             if let jsonObj = userInfo["jsonObject"] as? [String: Any] {
                 if let event = Mapper<StateChangedEvent>().map(JSON: jsonObj) {
@@ -178,13 +178,13 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
     func openMapView(_ sender: UIButton) {
         let devicesMapView = DevicesMapViewController()
-        
+
         let navController = UINavigationController(rootViewController: devicesMapView)
         self.present(navController, animated: true, completion: nil)
     }
-    
+
     func sendCurrentLocation(_ sender: UIButton) {
-        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
+        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
             let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
@@ -195,7 +195,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
             self.present(alert, animated: true, completion: nil)
         }
     }
-    
+
     /*
     // MARK: - Navigation
 

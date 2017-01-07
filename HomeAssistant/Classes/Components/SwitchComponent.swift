@@ -11,17 +11,17 @@ import ObjectMapper
 import RealmSwift
 
 class Switch: SwitchableEntity {
-    
+
     var TodayMilliwattHours = RealmOptional<Int>()
     var CurrentPowerMilliwattHours = RealmOptional<Int>()
-    
+
     override func mapping(map: Map) {
         super.mapping(map: map)
-        
+
         TodayMilliwattHours.value          <- map["attributes.today_mwh"]
         CurrentPowerMilliwattHours.value   <- map["attributes.current_power_mwh"]
     }
-    
+
     override var ComponentIcon: String {
         return "mdi:flash"
     }

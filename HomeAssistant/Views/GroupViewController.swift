@@ -14,23 +14,23 @@ import ObjectMapper
 import RealmSwift
 
 class GroupViewController: FormViewController {
-    
-    var groupsMap = [String:[String]]()
-    
+
+    var groupsMap = [String: [String]]()
+
     var GroupID: String = ""
     var Order: Int?
-    
-    var entities = [String:Entity]()
-    
-    var sendingEntity : Entity?
-    
+
+    var entities = [String: Entity]()
+
+    var sendingEntity: Entity?
+
     override func viewDidLoad() {
-        
+
         super.viewDidLoad()
-        
+
         if GroupID != "" {
             let group = realm.object(ofType: Group.self, forPrimaryKey: GroupID as AnyObject)
-            
+
             self.form
                 +++ Section()
             for entity in group!.Entities {
@@ -54,9 +54,9 @@ class GroupViewController: FormViewController {
                 case "script", "scene":
                     self.form.last! <<< ButtonRow(entity.ID) {
                         $0.title = entity.Name
-                        }.onCellSelection { cell, row -> Void in
+                        }.onCellSelection { _, _ -> Void in
                             let _ = HomeAssistantAPI.sharedInstance.turnOn(entityId: entity.ID)
-                        }.cellUpdate { cell, row in
+                        }.cellUpdate { cell, _ in
                             cell.imageView?.image = entity.EntityIcon
                             if let picture = entity.DownloadedPicture {
                                 cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
@@ -69,12 +69,12 @@ class GroupViewController: FormViewController {
                             if url.scheme == "http" || url.scheme == "https" {
                                 $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback { return SFSafariViewController(url: url, entersReaderIfAvailable: false) }, onDismiss: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
                             }
-                            }.cellUpdate { cell, row in
+                            }.cellUpdate { cell, _ in
                                 cell.imageView?.image = entity.EntityIcon
                                 if let picture = entity.DownloadedPicture {
                                     cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                                 }
-                            }.onCellSelection { cell, row -> Void in
+                            }.onCellSelection { _, _ -> Void in
                                 if url.scheme != "http" && url.scheme != "https" {
                                     UIApplication.shared.openURL(url as URL)
                                 }
@@ -91,7 +91,7 @@ class GroupViewController: FormViewController {
                             }, onDismiss: {
                                 vc in let _ = vc.navigationController?.popViewController(animated: true)
                         })
-                    }.cellUpdate { cell, row in
+                    }.cellUpdate { cell, _ in
                         cell.detailTextLabel?.text = entity.State.capitalized
                         if let uom = entity.UnitOfMeasurement {
                             cell.detailTextLabel?.text = (entity.State.capitalized + " " + uom)
@@ -107,7 +107,7 @@ class GroupViewController: FormViewController {
                             self.form.last! <<< LocationRow(entity.ID) {
                                 $0.title = entity.Name
                                 $0.value = dtracker.location()
-                            }.cellUpdate { cell, row in
+                            }.cellUpdate { cell, _ in
                                 cell.detailTextLabel?.text = entity.CleanedState
                                 cell.imageView?.image = entity.EntityIcon
                                 if let picture = entity.DownloadedPicture {
@@ -123,7 +123,7 @@ class GroupViewController: FormViewController {
                                     attributesView.entityID = entity.ID
                                     return attributesView
                                 }, onDismiss: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
-                                }.cellUpdate { cell, row in
+                                }.cellUpdate { cell, _ in
                                     cell.detailTextLabel?.text = entity.CleanedState
                                     if let uom = entity.UnitOfMeasurement {
                                         cell.detailTextLabel?.text = (entity.State + " " + uom).replacingOccurrences(of: "_", with: " ").capitalized
@@ -143,7 +143,7 @@ class GroupViewController: FormViewController {
                                 attributesView.entityID = entity.ID
                                 return attributesView
                             }, onDismiss: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
-                            }.cellUpdate { cell, row in
+                            }.cellUpdate { cell, _ in
                                 cell.detailTextLabel?.text = entity.CleanedState
                                 if let uom = entity.UnitOfMeasurement {
                                     cell.detailTextLabel?.text = (entity.State + " " + uom).replacingOccurrences(of: "_", with: " ").capitalized
@@ -173,7 +173,7 @@ class GroupViewController: FormViewController {
                         $0.value = (entity.State == "locked") ? true : false
                         }.onChange { row -> Void in
                             let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "lock", service: ((row.value == true) ? "lock" : "unlock"), serviceData: ["entity_id": entity.ID as AnyObject])
-                        }.cellUpdate { cell, row in
+                        }.cellUpdate { cell, _ in
                             cell.imageView?.image = entity.EntityIcon
                             if let picture = entity.DownloadedPicture {
                                 cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
@@ -185,14 +185,14 @@ class GroupViewController: FormViewController {
                         $0.value = (entity.State == "open") ? true : false
                         }.onChange { row -> Void in
                             let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "garage_door", service: ((row.value == true) ? "open" : "close"), serviceData: ["entity_id": entity.ID as AnyObject])
-                        }.cellUpdate { cell, row in
+                        }.cellUpdate { cell, _ in
                             cell.imageView?.image = entity.EntityIcon
                             if let picture = entity.DownloadedPicture {
                                 cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                             }
                     }
                 case "input_slider":
-                    self.form.last! <<< SliderRow(entity.ID){
+                    self.form.last! <<< SliderRow(entity.ID) {
                         $0.title = entity.Name
                         $0.value = Float(entity.State)
                         if let slider = entity as? InputSlider {
@@ -206,16 +206,16 @@ class GroupViewController: FormViewController {
                                 $0.steps = UInt(steps)
                             }
                         }
-                        
+
                     }.onChange { row -> Void in
                         if let slider = entity as? InputSlider {
                             slider.SelectValue(row.value!)
                         }
-                    }.cellUpdate { cell, row in
+                    }.cellUpdate { _, row in
 //                        if let uom = entity.UnitOfMeasurement {
 //                            cell.detailTextLabel?.text = (entity.State.capitalized + " " + uom)
 //                        }
-                        row.displayValueFor = { (pos: Float?) in
+                        row.displayValueFor = { (_) in
                             if let uom = entity.UnitOfMeasurement {
                                 return (entity.State.capitalized + " " + uom)
                             } else {
@@ -228,28 +228,28 @@ class GroupViewController: FormViewController {
                 }
             }
         }
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(GroupViewController.StateChangedSSEEvent(_:)), name:NSNotification.Name(rawValue: "sse.state_changed"), object: nil)
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    func StateChangedSSEEvent(_ notification: NSNotification){
+
+    func StateChangedSSEEvent(_ notification: NSNotification) {
         if let userInfo = (notification as NSNotification).userInfo {
             if let event = Mapper<StateChangedEvent>().map(JSON: userInfo as! [String : Any]) {
                 if let newState = event.NewState {
                     if newState.Domain == "lock" || newState.Domain == "garage_door" {
-                        if let row : SwitchRow = self.form.rowBy(tag: newState.ID) {
+                        if let row: SwitchRow = self.form.rowBy(tag: newState.ID) {
                             row.value = (newState.State == "on") ? true : false
                             row.cell.imageView?.image = newState.EntityIcon
                             row.updateCell()
                             row.reload()
                         }
                     } else {
-                        if let row : ButtonRow = self.form.rowBy(tag: newState.ID) {
+                        if let row: ButtonRow = self.form.rowBy(tag: newState.ID) {
                             row.value = newState.State
                             if let uom = newState.UnitOfMeasurement {
                                 row.value = newState.State + " " + uom
@@ -263,7 +263,7 @@ class GroupViewController: FormViewController {
             }
         }
     }
-    
+
     func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
@@ -272,6 +272,5 @@ class GroupViewController: FormViewController {
             entityAttributesViewController.entityID = sendingEntity!.ID
         }
     }
-    
-    
+
 }

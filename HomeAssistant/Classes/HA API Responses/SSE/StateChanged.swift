@@ -14,7 +14,7 @@ class StateChangedEvent: SSEEvent {
     var OldState: Entity?
     var EntityID: String?
     var EntityDomain: String?
-        
+
     override func mapping(map: Map) {
         super.mapping(map: map)
         NewState  <- map["data.new_state"]
@@ -27,16 +27,16 @@ class StateChangedEvent: SSEEvent {
 open class EntityIDToDomainTransform: TransformType {
     public typealias Object = String
     public typealias JSON = String
-    
+
     public init() {}
-    
+
     public func transformFromJSON(_ value: Any?) -> String? {
         if let entityId = value as? String {
             return entityId.components(separatedBy: ".")[0]
         }
         return nil
     }
-    
+
     open func transformToJSON(_ value: String?) -> String? {
         return nil
     }

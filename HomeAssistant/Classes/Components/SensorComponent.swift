@@ -10,17 +10,17 @@ import Foundation
 import ObjectMapper
 
 class Sensor: Entity {
-    
+
     dynamic var SensorClass: String? = nil
 
     override func mapping(map: Map) {
         super.mapping(map: map)
-        
+
         SensorClass       <- map["attributes.sensor_class"]
     }
-    
+
     override var ComponentIcon: String {
         return "mdi:eye"
     }
-    
+
 }

@@ -41,13 +41,13 @@ private func encodeByAddingPercentEscapes(_ input: String?) -> String {
 
 open class OpenInChromeController {
     open static let sharedInstance = OpenInChromeController()
-    
+
     open func isChromeInstalled() -> Bool {
         let simpleURL = URL(string: googleChromeHTTPScheme)!
         let callbackURL = URL(string: googleChromeCallbackScheme)!
-        return UIApplication.shared.canOpenURL(simpleURL) || UIApplication.shared.canOpenURL(callbackURL);
+        return UIApplication.shared.canOpenURL(simpleURL) || UIApplication.shared.canOpenURL(callbackURL)
     }
-    
+
     open func openInChrome(_ url: URL, callbackURL: URL? = nil, createNewTab: Bool = false) -> Bool {
         let chromeSimpleURL = URL(string: googleChromeHTTPScheme)!
         let chromeCallbackURL = URL(string: googleChromeCallbackScheme)!
@@ -82,6 +82,6 @@ open class OpenInChromeController {
                 return UIApplication.shared.openURL(URL(string: chromeURLString)!)
             }
         }
-        return false;
+        return false
     }
 }

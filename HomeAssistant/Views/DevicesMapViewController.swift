@@ -27,48 +27,48 @@ class HACircle: MKCircle {
 class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
     var mapView: MKMapView!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.title = "Devices & Zones"
-        
+
         self.navigationController?.isToolbarHidden = false
-        
+
         let items = ["Standard", "Hybrid", "Satellite"]
         let typeController = UISegmentedControl(items: items)
         typeController.selectedSegmentIndex = 0
         typeController.addTarget(self, action: #selector(DevicesMapViewController.switchMapType(_:)), for: .valueChanged)
-        
+
         let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
-        
+
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: uploadIcon, style: .plain, target: self, action: #selector(DevicesMapViewController.sendCurrentLocation(_:)))
-        
+
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(DevicesMapViewController.closeMapView(_:)))
-        
+
         // Do any additional setup after loading the view.
         mapView = MKMapView()
-        
+
         mapView.mapType = .standard
         mapView.frame = view.frame
         mapView.delegate = self
         mapView.showsUserLocation = false
         mapView.showsPointsOfInterest = false
         view.addSubview(mapView)
-        
+
         let locateMeButton = MKUserTrackingBarButtonItem(mapView: mapView)
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         let segmentedControlButtonItem = UIBarButtonItem(customView: typeController)
 //        let bookmarksButton = UIBarButtonItem(barButtonSystemItem: .Bookmarks, target: self, action: nil)
-        
+
         self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
-        
+
         for zone in realm.objects(Zone.self) {
             let circle = HACircle.init(center: zone.locationCoordinates(), radius: CLLocationDistance(zone.Radius))
             circle.type = "zone"
             mapView.add(circle)
         }
-        
+
         for device in realm.objects(DeviceTracker.self) {
             if device.Latitude.value == nil || device.Longitude.value == nil {
                 continue
@@ -76,7 +76,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             let dropPin = DeviceAnnotation()
             dropPin.coordinate = device.locationCoordinates()
             dropPin.title = device.Name
-            var subtitlePieces : [String] = []
+            var subtitlePieces: [String] = []
 //            if let changedTime = device.LastChanged {
 //                subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago")
 //            }
@@ -86,30 +86,30 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             dropPin.subtitle = subtitlePieces.joined(separator: " / ")
             dropPin.device = device
             mapView.addAnnotation(dropPin)
-            
+
             if let radius = device.GPSAccuracy.value {
                 let circle = HACircle.init(center: device.locationCoordinates(), radius: radius)
                 circle.type = "device"
                 mapView.add(circle)
             }
-            
+
         }
-        
-        var zoomRect:MKMapRect = MKMapRectNull
+
+        var zoomRect: MKMapRect = MKMapRectNull
         for index in 0..<mapView.annotations.count {
             let annotation = mapView.annotations[index]
-            let aPoint:MKMapPoint = MKMapPointForCoordinate(annotation.coordinate)
-            let rect:MKMapRect = MKMapRectMake(aPoint.x, aPoint.y, 0.1, 0.1)
-            
+            let aPoint: MKMapPoint = MKMapPointForCoordinate(annotation.coordinate)
+            let rect: MKMapRect = MKMapRectMake(aPoint.x, aPoint.y, 0.1, 0.1)
+
             zoomRect = MKMapRectUnion(zoomRect, rect)
         }
 
         if let firstOverlay = mapView.overlays.first {
             let rect = mapView.overlays.reduce(firstOverlay.boundingMapRect, {MKMapRectUnion($0, $1.boundingMapRect)})
-            
+
             mapView.setVisibleMapRect(MKMapRectUnion(zoomRect, rect), edgePadding: UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0), animated: true)
         }
-        
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -128,7 +128,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             mapView.mapType = MKMapType.satellite
         }
     }
-    
+
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? DeviceAnnotation {
             let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: annotation.device?.ID)
@@ -145,7 +145,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             return nil
         }
     }
-    
+
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let overlay = overlay as? HACircle {
             let circle = MKCircleRenderer(overlay: overlay)
@@ -164,13 +164,13 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             return MKOverlayRenderer(overlay: overlay)
         }
     }
-    
+
     func closeMapView(_ sender: UIBarButtonItem) {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
-    
+
     func sendCurrentLocation(_ sender: UIBarButtonItem) {
-        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
+        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
             let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)

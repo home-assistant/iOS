@@ -22,16 +22,15 @@ let isOKTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bo
     return nil
 })
 
-
 class StatusResponse: Mappable {
     var Result: String?
     var Message: String?
     var IsOK: Bool?
-    
-    required init?(map: Map){
-        
+
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         Result  <- map["result"]
         Message <- map["message"]

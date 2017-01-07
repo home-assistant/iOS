@@ -13,9 +13,9 @@ class SSEEvent: StaticMappable {
     var EventType: String = ""
     var TimeFired: Date?
     var Origin: String?
-    
-    init(){}
-    
+
+    init() {}
+
     public static func objectForMapping(map: Map) -> BaseMappable? {
         if let eventType: String = map["event_type"].value() {
             switch eventType {
@@ -32,7 +32,7 @@ class SSEEvent: StaticMappable {
         }
         return nil
     }
-    
+
     func mapping(map: Map) {
         EventType <- map["event_type"]
         TimeFired <- (map["time_fired"], HomeAssistantTimestampTransform())

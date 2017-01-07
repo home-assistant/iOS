@@ -12,12 +12,12 @@ import SafariServices
 import CPDAcknowledgements
 
 class AboutViewController: FormViewController {
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(AboutViewController.closeAboutView(_:)))
-        
+
         form
             +++ Section() {
                 $0.header = HeaderFooterView<HomeAssistantLogoView>(.nibFile(name: "HomeAssistantLogoView", bundle: nil))
@@ -33,7 +33,7 @@ class AboutViewController: FormViewController {
             +++ Section()
             <<< ButtonRow() {
                 $0.title = "Website"
-            }.cellUpdate{ cell, row in
+            }.cellUpdate { cell, _ in
                 cell.textLabel?.textAlignment = .left
                 cell.accessoryType = .disclosureIndicator
                 cell.editingAccessoryType = cell.accessoryType
@@ -41,10 +41,10 @@ class AboutViewController: FormViewController {
             }.onCellSelection({ _ in
                 openURLInBrowser(url: "https://home-assistant.io/")
             })
-            
+
             <<< ButtonRow() {
                 $0.title = "Forums"
-            }.cellUpdate{ cell, row in
+            }.cellUpdate { cell, _ in
                 cell.textLabel?.textAlignment = .left
                 cell.accessoryType = .disclosureIndicator
                 cell.editingAccessoryType = cell.accessoryType
@@ -52,10 +52,10 @@ class AboutViewController: FormViewController {
             }.onCellSelection({ _ in
                 openURLInBrowser(url: "https://community.home-assistant.io/")
             })
-            
+
             <<< ButtonRow() {
                 $0.title = "Chat"
-            }.cellUpdate{ cell, row in
+            }.cellUpdate { cell, _ in
                 cell.textLabel?.textAlignment = .left
                 cell.accessoryType = .disclosureIndicator
                 cell.editingAccessoryType = cell.accessoryType
@@ -63,10 +63,10 @@ class AboutViewController: FormViewController {
             }.onCellSelection({ _ in
                 openURLInBrowser(url: "https://gitter.im/home-assistant/home-assistant")
             })
-            
+
             <<< ButtonRow() {
                 $0.title = "Documentation"
-            }.cellUpdate{ cell, row in
+            }.cellUpdate { cell, _ in
                 cell.textLabel?.textAlignment = .left
                 cell.accessoryType = .disclosureIndicator
                 cell.editingAccessoryType = cell.accessoryType
@@ -74,10 +74,10 @@ class AboutViewController: FormViewController {
             }.onCellSelection({ _ in
                 openURLInBrowser(url: "https://home-assistant.io/ecosystem/ios/")
             })
-            
+
             <<< ButtonRow() {
                 $0.title = "Home Assistant on Twitter"
-            }.cellUpdate{ cell, row in
+            }.cellUpdate { cell, _ in
                 cell.textLabel?.textAlignment = .left
                 cell.accessoryType = .disclosureIndicator
                 cell.editingAccessoryType = cell.accessoryType
@@ -85,10 +85,10 @@ class AboutViewController: FormViewController {
             }.onCellSelection({ _ in
                 self.openInTwitterApp(username: "home_assistant")
             })
-            
+
             <<< ButtonRow() {
                 $0.title = "Home Assistant on Facebook"
-            }.cellUpdate{ cell, row in
+            }.cellUpdate { cell, _ in
                 cell.textLabel?.textAlignment = .left
                 cell.accessoryType = .disclosureIndicator
                 cell.editingAccessoryType = cell.accessoryType
@@ -96,10 +96,10 @@ class AboutViewController: FormViewController {
             }.onCellSelection({ _ in
                 self.openInFacebook(pageId: "292963007723872")
             })
-            
+
             <<< ButtonRow() {
                 $0.title = "GitHub"
-            }.cellUpdate{ cell, row in
+            }.cellUpdate { cell, _ in
                 cell.textLabel?.textAlignment = .left
                 cell.accessoryType = .disclosureIndicator
                 cell.editingAccessoryType = cell.accessoryType
@@ -107,10 +107,10 @@ class AboutViewController: FormViewController {
             }.onCellSelection({ _ in
                 openURLInBrowser(url: "https://github.com/home-assistant/home-assistant-iOS")
             })
-            
+
             <<< ButtonRow() {
                 $0.title = "GitHub Issue Tracker"
-            }.cellUpdate{ cell, row in
+            }.cellUpdate { cell, _ in
                 cell.textLabel?.textAlignment = .left
                 cell.accessoryType = .disclosureIndicator
                 cell.editingAccessoryType = cell.accessoryType
@@ -118,15 +118,14 @@ class AboutViewController: FormViewController {
             }.onCellSelection({ _ in
                 openURLInBrowser(url: "https://github.com/home-assistant/home-assistant-iOS/issues")
             })
-        
+
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
+
     /*
      // MARK: - Navigation
      
@@ -136,7 +135,7 @@ class AboutViewController: FormViewController {
      // Pass the selected object to the new view controller.
      }
      */
-    
+
     func generateAcknowledgements() -> CPDAcknowledgementsViewController {
 //        let robbie = CPDContribution.init(name: "Robbie Trencheny", websiteAddress: "https://twitter.com/robbie", role: "Primary iOS developer")
 //        robbie.avatarAddress = "https://s.gravatar.com/avatar/04178c46aa6f009adba24b3e7ac64f14"
@@ -145,7 +144,7 @@ class AboutViewController: FormViewController {
 //        let contributors = [robbie, paulus]
         return CPDAcknowledgementsViewController.init(style: nil, acknowledgements: nil, contributions: nil)
     }
-    
+
     func openInTwitterApp(username: String) {
         /* Tweetbot app precedence */
         if let tweetbotURL = URL(string: "tweetbot:///user_profile/"+username) {
@@ -158,7 +157,7 @@ class AboutViewController: FormViewController {
                 return
             }
         }
-        
+
         /* Twitter app fallback */
         if let twitterURL = URL(string: "twitter:///user?screen_name="+username) {
             if UIApplication.shared.canOpenURL(twitterURL) {
@@ -170,7 +169,7 @@ class AboutViewController: FormViewController {
                 return
             }
         }
-        
+
         /* Safari fallback */
         if let webURL = URL(string: "https://twitter.com/"+username) {
             if UIApplication.shared.canOpenURL(webURL) {
@@ -183,7 +182,7 @@ class AboutViewController: FormViewController {
             }
         }
     }
-    
+
     func openInFacebook(pageId: String) {
         if let facebookURL = URL(string: "fb://page/"+pageId) {
             if UIApplication.shared.canOpenURL(facebookURL) {
@@ -196,18 +195,18 @@ class AboutViewController: FormViewController {
             }
         }
     }
-    
+
     func closeAboutView(_ sender: UIBarButtonItem) {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
 }
 
 class HomeAssistantLogoView: UIView {
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    
+
 //    override init(frame: CGRect) {
 //        super.init(frame: frame)
 //        let imageView = UIImageView(image: UIImage(named: "Logo"))

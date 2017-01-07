@@ -12,11 +12,11 @@ import ObjectMapper
 class EventsResponse: Mappable {
     var Event: String?
     var ListenerCount: Int?
-    
-    required init?(map: Map){
-        
+
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         Event          <- map["event"]
         ListenerCount  <- map["listener_count"]

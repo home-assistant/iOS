@@ -10,7 +10,7 @@ import Foundation
 import ObjectMapper
 
 class Thermostat: Entity {
-    
+
     var AwayMode: Bool?
     var CurrentTemperature: Int?
     var Fan: Bool?
@@ -19,10 +19,10 @@ class Thermostat: Entity {
     var TargetTemperatureHigh: Int?
     var TargetTemperatureLow: Int?
     var Temperature: Int?
-    
+
     override func mapping(map: Map) {
         super.mapping(map: map)
-        
+
         AwayMode              <- (map["attributes.away_mode"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         CurrentTemperature    <- map["attributes.current_temperature"]
         Fan                   <- (map["attributes.fan"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
@@ -47,7 +47,7 @@ class Thermostat: Entity {
     func setTemperature(_ newTemp: Float) {
         let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "thermostat", service: "set_temperature", serviceData: ["entity_id": self.ID as AnyObject, "temperature": newTemp as AnyObject])
     }
-    
+
     override var ComponentIcon: String {
         return "mdi:nest-thermostat"
     }

@@ -13,7 +13,7 @@ import Realm
 
 class Entity: Object, StaticMappable {
     let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
-    
+
     dynamic var ID: String = ""
     dynamic var State: String = ""
     dynamic var Attributes: [String:Any] {
@@ -28,7 +28,7 @@ class Entity: Object, StaticMappable {
                 return [String: Any]()
             }
         }
-        
+
         set {
             do {
                 let data = try JSONSerialization.data(withJSONObject: newValue, options: [])
@@ -49,12 +49,12 @@ class Entity: Object, StaticMappable {
     dynamic var LastChanged: Date? = nil
     dynamic var LastUpdated: Date? = nil
 //    let Groups = LinkingObjects(fromType: Group.self, property: "Entities")
-    
+
     // Z-Wave properties
     dynamic var Location: String? = nil
     dynamic var NodeID: String? = nil
     var BatteryLevel = RealmOptional<Int>()
-    
+
     class func objectForMapping(map: Map) -> BaseMappable? {
         if let entityId: String = map["entity_id"].value() {
             let entityType = entityId.components(separatedBy: ".")[0]
@@ -121,12 +121,12 @@ class Entity: Object, StaticMappable {
         UnitOfMeasurement <- map["attributes.unit_of_measurement"]
         LastChanged       <- (map["last_changed"], HomeAssistantTimestampTransform())
         LastUpdated       <- (map["last_updated"], HomeAssistantTimestampTransform())
-        
+
         // Z-Wave properties
         NodeID            <- map["attributes.node_id"]
         Location          <- map["attributes.location"]
         BatteryLevel.value      <- map["attributes.battery_level"]
-        
+
         if let pic = self.Picture {
             HomeAssistantAPI.sharedInstance.getImage(imageUrl: pic).then { image -> Void in
                 self.DownloadedPicture = image
@@ -135,28 +135,28 @@ class Entity: Object, StaticMappable {
             }
         }
     }
-    
+
     override class func ignoredProperties() -> [String] {
         return ["Attributes", "DownloadedPicture"]
     }
-    
+
     override static func primaryKey() -> String? {
         return "ID"
     }
-    
+
     func turnOn() {
         let _ = HomeAssistantAPI.sharedInstance.turnOnEntity(entity: self)
     }
-    
+
     func turnOff() {
         let _ = HomeAssistantAPI.sharedInstance.turnOffEntity(entity: self)
     }
-    
+
     func toggle() {
         let _ = HomeAssistantAPI.sharedInstance.toggleEntity(entity: self)
     }
-    
-    var ComponentIcon : String {
+
+    var ComponentIcon: String {
         switch (self.Domain) {
         case "alarm_control_panel":
             return "mdi:bell"
@@ -227,7 +227,7 @@ class Entity: Object, StaticMappable {
             return "mdi:bookmark"
         }
     }
-    
+
     func StateIcon() -> String {
         if self.MobileIcon != nil { return self.MobileIcon! }
         if self.Icon != nil { return self.Icon! }
@@ -261,28 +261,28 @@ class Entity: Object, StaticMappable {
             return colorWithHexString(hexColor, alpha: 1)
         }
     }
-    
+
     var EntityIcon: UIImage {
         return getIconForIdentifier(self.StateIcon(), iconWidth: 30, iconHeight: 30, color: self.EntityColor())
     }
-    
+
     func EntityIcon(width: Double, height: Double, color: UIColor) -> UIImage {
         return getIconForIdentifier(self.StateIcon(), iconWidth: width, iconHeight: height, color: color)
     }
-    
-    var Name : String {
+
+    var Name: String {
         if let friendly = self.FriendlyName {
             return friendly
         } else {
             return self.ID.replacingOccurrences(of: "\(self.Domain).", with: "").replacingOccurrences(of: "_", with: " ").capitalized
         }
     }
-    
-    var CleanedState : String {
+
+    var CleanedState: String {
         return self.State.replacingOccurrences(of: "_", with: " ").capitalized
     }
-    
-    var Domain : String {
+
+    var Domain: String {
         return self.ID.components(separatedBy: ".")[0]
     }
 }
@@ -292,7 +292,7 @@ open class StringObject: Object {
 }
 
 open class HomeAssistantTimestampTransform: DateFormatterTransform {
-    
+
     public init() {
         let formatter = DateFormatter()
         formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
@@ -302,28 +302,28 @@ open class HomeAssistantTimestampTransform: DateFormatterTransform {
         } else {
             formatter.timeZone = TimeZone.autoupdatingCurrent
         }
-        
+
         super.init(dateFormatter: formatter)
     }
 }
 
 open class ComponentBoolTransform: TransformType {
-    
+
     public typealias Object = Bool
     public typealias JSON = String
-    
+
     let trueValue: String
     let falseValue: String
-    
+
     public init(trueValue: String, falseValue: String) {
         self.trueValue = trueValue
         self.falseValue = falseValue
     }
-    
+
     public func transformFromJSON(_ value: Any?) -> Bool? {
         return ((value! as! String) == self.trueValue)
     }
-    
+
     open func transformToJSON(_ value: Bool?) -> String? {
         return (value == true) ? self.trueValue : self.falseValue
     }

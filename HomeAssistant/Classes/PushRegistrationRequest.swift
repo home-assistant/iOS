@@ -27,15 +27,15 @@ class PushRegistrationRequest: Mappable {
     var UserEmail: String?
     var HomeAssistantVersion: String?
     var HomeAssistantTimezone: String?
-    
+
     var APNSSandbox: Bool = false
-    
+
     init() {}
-    
-    required init?(map: Map){
-        
+
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         AppBuildNumber         <- map["appBuildNumber"]
         AppBundleIdentifer     <- map["appBundleIdentifer"]

@@ -11,12 +11,12 @@ import ObjectMapper
 import RealmSwift
 
 class InputSelect: Entity {
-    
+
     let Options = List<StringObject>()
-    
+
     override func mapping(map: Map) {
         super.mapping(map: map)
-        
+
         var Options: [String]? = nil
         Options          <- map["attributes.options"]
         Options?.forEach { option in
@@ -25,7 +25,7 @@ class InputSelect: Entity {
             self.Options.append(value)
         }
     }
-    
+
     override var ComponentIcon: String {
         return "mdi:format-list-bulleted"
     }

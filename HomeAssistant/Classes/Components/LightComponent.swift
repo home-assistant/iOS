@@ -11,7 +11,7 @@ import ObjectMapper
 import RealmSwift
 
 class Light: SwitchableEntity {
-    
+
     var Brightness = RealmOptional<Float>()
     var ColorTemp = RealmOptional<Float>()
     dynamic var RGBColor: [Int]?
@@ -24,17 +24,16 @@ class Light: SwitchableEntity {
     dynamic var SupportsTransition: Bool = false
     dynamic var SupportsXYColor: Bool = false
     var SupportedFeatures: Int?
-    
+
     override func mapping(map: Map) {
         super.mapping(map: map)
-        
+
         Brightness.value   <- map["attributes.brightness"]
         ColorTemp.value    <- map["attributes.color_temp"]
         RGBColor           <- map["attributes.rgb_color"]
         XYColor            <- map["attributes.xy_color"]
         SupportedFeatures  <- map["attributes.supported_features"]
-        
-        
+
         if let supported = self.SupportedFeatures {
             let features = LightSupportedFeatures(rawValue: supported)
             self.SupportsBrightness = features.contains(.Brightness)
@@ -46,7 +45,7 @@ class Light: SwitchableEntity {
             self.SupportsXYColor = features.contains(.XYColor)
         }
     }
-    
+
     override func EntityColor() -> UIColor {
         if self.IsOn! {
             if self.RGBColor != nil {
@@ -62,7 +61,7 @@ class Light: SwitchableEntity {
             return self.DefaultEntityUIColor
         }
     }
-    
+
     override var ComponentIcon: String {
         return "mdi:lightbulb"
     }
@@ -74,7 +73,7 @@ class Light: SwitchableEntity {
 
 struct LightSupportedFeatures: OptionSet {
     let rawValue: Int
-    
+
     static let Brightness = LightSupportedFeatures(rawValue: 1)
     static let ColorTemp = LightSupportedFeatures(rawValue: 2)
     static let Effect = LightSupportedFeatures(rawValue: 4)

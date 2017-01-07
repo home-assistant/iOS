@@ -35,15 +35,15 @@ func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeigh
     return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
 }
 
-func colorWithHexString(_ hexString: String, alpha:CGFloat? = 1.0) -> UIColor {
-    
+func colorWithHexString(_ hexString: String, alpha: CGFloat? = 1.0) -> UIColor {
+
     // Convert hex string to an integer
     let hexint = Int(intFromHexString(hexString))
     let red = CGFloat((hexint & 0xff0000) >> 16) / 255.0
     let green = CGFloat((hexint & 0xff00) >> 8) / 255.0
     let blue = CGFloat((hexint & 0xff) >> 0) / 255.0
     let alpha = alpha!
-    
+
     // Create color object, specifying alpha as well
     let color = UIColor(red: red, green: green, blue: blue, alpha: alpha)
     return color
@@ -64,12 +64,12 @@ func intFromHexString(_ hexStr: String) -> UInt32 {
 // Must reboot device after installing new push sounds (http://stackoverflow.com/questions/34998278/change-push-notification-sound-file-only-works-after-ios-reboot)
 
 func movePushNotificationSounds() -> Int {
-    
+
     let fileManager: FileManager = FileManager()
-    
+
     let libraryPath = try! fileManager.url(for: .libraryDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
     let librarySoundsPath = libraryPath.appendingPathComponent("Sounds")
-    
+
     do {
         print("Creating sounds directory at", librarySoundsPath)
         try fileManager.createDirectory(at: librarySoundsPath, withIntermediateDirectories: true, attributes: nil)
@@ -77,7 +77,7 @@ func movePushNotificationSounds() -> Int {
         print("Error creating /Library/Sounds directory", error)
         return 0
     }
-    
+
     let documentsPath = try! fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
     let fileList = try! fileManager.contentsOfDirectory(at: documentsPath, includingPropertiesForKeys: nil, options: FileManager.DirectoryEnumerationOptions())
     var movedFiles = 0
@@ -100,9 +100,9 @@ func movePushNotificationSounds() -> Int {
 }
 
 func getSoundList() -> [String] {
-    var result:[String] = []
+    var result: [String] = []
     let fileManager = FileManager.default
-    let enumerator:FileManager.DirectoryEnumerator = fileManager.enumerator(atPath: "/System/Library/Audio/UISounds/New")!
+    let enumerator: FileManager.DirectoryEnumerator = fileManager.enumerator(atPath: "/System/Library/Audio/UISounds/New")!
     for url in enumerator.allObjects {
         result.append(url as! String)
     }
@@ -110,9 +110,9 @@ func getSoundList() -> [String] {
 }
 
 // copy sound file to /Library/Sounds directory, it will be auto detect and played when a push notification arrive
-func copyFileToDirectory(_ fileName:String) {
+func copyFileToDirectory(_ fileName: String) {
     let fileManager = FileManager.default
-    
+
     let libraryDir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.libraryDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
     let directoryPath = "\(libraryDir.first!)/Sounds"
     do {
@@ -122,10 +122,10 @@ func copyFileToDirectory(_ fileName:String) {
         print("Error creating /Library/Sounds directory", error)
         return
     }
-    
+
     let systemSoundPath = "/System/Library/Audio/UISounds/New/\(fileName)"
     let notificationSoundPath = "\(directoryPath)/\(fileName)"
-    
+
     let fileExist = fileManager.fileExists(atPath: notificationSoundPath)
     if (fileExist) {
         try! fileManager.removeItem(atPath: notificationSoundPath)
@@ -135,14 +135,14 @@ func copyFileToDirectory(_ fileName:String) {
 
 func listAllInstalledPushNotificationSounds() -> [String] {
     let fileManager: FileManager = FileManager()
-    
+
     let libraryPath = try! fileManager.url(for: .libraryDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
     let librarySoundsPath = libraryPath.appendingPathComponent("Sounds")
-    
+
     let librarySoundsContents = fileManager.enumerator(at: librarySoundsPath, includingPropertiesForKeys: nil, options: FileManager.DirectoryEnumerationOptions(), errorHandler: nil)!
-    
+
     var allSounds = [String]()
-    
+
     for obj in librarySoundsContents.allObjects {
         let file = obj as! URL
         allSounds.append(file.lastPathComponent)
@@ -151,16 +151,16 @@ func listAllInstalledPushNotificationSounds() -> [String] {
 }
 
 func migrateUserDefaultsToAppGroups() {
-    
+
     // User Defaults - Old
     let userDefaults = UserDefaults.standard
-    
+
     // App Groups Default - New
     let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant")
-    
+
     // Key to track if we migrated
     let didMigrateToAppGroups = "DidMigrateToAppGroups"
-    
+
     if let groupDefaults = groupDefaults {
         if !groupDefaults.bool(forKey: didMigrateToAppGroups) {
             for key in userDefaults.dictionaryRepresentation().keys {
@@ -175,14 +175,14 @@ func migrateUserDefaultsToAppGroups() {
     } else {
         print("Unable to create NSUserDefaults with given app group")
     }
-    
+
 }
 
 func logUserDefaults() {
-    
+
     let userDefaults = UserDefaults.standard
     let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant")
-    
+
     if let groupDefaults = groupDefaults {
         for key in groupDefaults.dictionaryRepresentation().keys {
             print("groupDefaults \(key): \(groupDefaults.dictionaryRepresentation()[key])")
@@ -190,7 +190,7 @@ func logUserDefaults() {
     } else {
         print("Unable to create NSUserDefaults with given app group")
     }
-    
+
     for key in userDefaults.dictionaryRepresentation().keys {
         print("userDefaults \(key): \(userDefaults.dictionaryRepresentation()[key])")
     }
@@ -218,27 +218,27 @@ func openURLInBrowser(url: String) {
 }
 
 func removeSpecialCharsFromString(text: String) -> String {
-    let okayChars : Set<Character> =
+    let okayChars: Set<Character> =
         Set("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890".characters)
     return String(text.characters.filter {okayChars.contains($0) })
 }
 
-extension UIImage{
-    func scaledToSize(_ size: CGSize) -> UIImage{
+extension UIImage {
+    func scaledToSize(_ size: CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
         self.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return newImage
     }
 }
 
 extension String {
-    
+
     subscript (i: Int) -> Character {
         return self[self.characters.index(self.startIndex, offsetBy: i)]
     }
-    
+
     subscript (i: Int) -> String {
         return String(self[i] as Character)
     }

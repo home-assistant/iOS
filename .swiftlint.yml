@@ -1,0 +1,5 @@
+excluded:
+  - fastlane
+  - HomeAssistantTests
+  - HomeAssistantUITests
+  - Pods

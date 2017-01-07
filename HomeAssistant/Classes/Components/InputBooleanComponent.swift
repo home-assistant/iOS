@@ -13,7 +13,7 @@ class InputBoolean: SwitchableEntity {
     override func mapping(map: Map) {
         super.mapping(map: map)
     }
-    
+
     override var ComponentIcon: String {
         return "mdi:drawing"
     }

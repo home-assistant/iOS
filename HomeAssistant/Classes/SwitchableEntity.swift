@@ -12,15 +12,15 @@ import Realm
 import RealmSwift
 
 class SwitchableEntity: Entity {
-    
+
     var IsOn: Bool?
-    
+
     override func mapping(map: Map) {
         super.mapping(map: map)
-        
+
         IsOn         <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
     }
-    
+
     override func EntityColor() -> UIColor {
         return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
     }

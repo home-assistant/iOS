@@ -15,15 +15,15 @@ import MBProgressHUD
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
 
     var hud: MBProgressHUD? = nil
-    
+
     private var baseURL: String = ""
-    
+
     let urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any required interface initialization here.
-        
+
         let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
         if let url = prefs.string(forKey: "baseURL") {
             baseURL = url
@@ -32,7 +32,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             urlConfiguration.httpAdditionalHeaders = ["X-HA-Access": pass]
         }
     }
-    
+
     func didReceive(_ notification: UNNotification) {
         print("Received a \(notification.request.content.categoryIdentifier) notification type")
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
@@ -48,17 +48,17 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                 return
         }
     }
-    
+
     func mapHandler(_ notification: UNNotification) {
         let haDict = notification.request.content.userInfo["homeassistant"] as! [String:Any]
         guard let latitudeString = haDict["latitude"] as? String else { return }
         guard let longitudeString = haDict["longitude"] as? String else { return }
         let latitude = Double.init(latitudeString)! as CLLocationDegrees
         let longitude = Double.init(longitudeString)! as CLLocationDegrees
-        
+
         let mapCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         let span = MKCoordinateSpanMake(0.1, 0.1)
-        
+
         let options = MKMapSnapshotOptions()
         options.mapType = .standard
         options.showsPointsOfInterest = false
@@ -66,25 +66,25 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         options.region = MKCoordinateRegion(center: mapCoordinate, span: span)
         options.size = self.view.frame.size
         options.scale = self.view.contentScaleFactor
-        
+
         let snapshotter = MKMapSnapshotter(options: options)
-        snapshotter.start() { snapshot, error in
-            
+        snapshotter.start() { snapshot, _ in
+
             let image = snapshot!.image
-            
+
             let pin = MKPinAnnotationView(annotation: nil, reuseIdentifier: "")
             let pinImage = pin.image
-            
-            UIGraphicsBeginImageContextWithOptions(image.size, true, image.scale);
-            
+
+            UIGraphicsBeginImageContextWithOptions(image.size, true, image.scale)
+
             image.draw(at: CGPoint(x: 0, y: 0))
-            
+
             let homePoint = snapshot?.point(for: mapCoordinate)
             pinImage?.draw(at: homePoint!)
-            
+
             let finalImage = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
-            
+
             let imageView = UIImageView(image: finalImage)
             imageView.frame = self.view.frame
             imageView.contentMode = .scaleAspectFit
@@ -93,15 +93,15 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             self.preferredContentSize = CGSize(width: 0, height: imageView.frame.maxY)
         }
     }
-    
+
     func cameraHandler(_ notification: UNNotification) {
         guard let entityId = notification.request.content.userInfo["entity_id"] as? String else { return }
         guard let cameraProxyURL = URL(string: "\(baseURL)/api/camera_proxy_stream/\(entityId)") else { return }
-        
+
         let imageView = UIImageView()
         imageView.frame = self.view.frame
         imageView.contentMode = .scaleAspectFit
-        
+
         let streamingController = MjpegStreamingController(imageView: imageView, contentURL: cameraProxyURL, sessionConfiguration: urlConfiguration)
         streamingController.didFinishLoading = { _ in
             print("Finished loading")

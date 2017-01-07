@@ -10,15 +10,15 @@ import Foundation
 import ObjectMapper
 
 class Weblink: Entity {
-    
+
     var URL: String?
-    
+
     override func mapping(map: Map) {
         super.mapping(map: map)
-        
+
         URL    <- map["attributes.url"]
     }
-    
+
     override var ComponentIcon: String {
         return "mdi:open-in-new"
     }

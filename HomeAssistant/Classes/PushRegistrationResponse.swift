@@ -32,13 +32,13 @@ class PushRegistrationResponse: Mappable {
     var SNSPlatform: String?
     var SubscriptionARN: String?
     var UserEmail: String?
-    
+
     init() {}
-    
-    required init?(map: Map){
-        
+
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         APNSSandbox              <- map["registration.apnsSandbox"]
         AppBuildNumber           <- map["registration.appBuildNumber"]

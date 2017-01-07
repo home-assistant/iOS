@@ -14,36 +14,36 @@ import RealmSwift
 class EntityAttributesViewController: FormViewController {
 
     var entityID: String = ""
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityID as AnyObject)
-        
+
         self.title = (entity?.FriendlyName != nil) ? entity?.Name : "Attributes"
-        
+
         if let picture = entity!.Picture {
             form +++ Section()
-                <<< TextAreaRow("entity_picture"){
+                <<< TextAreaRow("entity_picture") {
                     $0.disabled = true
                     $0.cell.textView.isScrollEnabled = false
                     $0.cell.textView.backgroundColor = UIColor.clear
                     $0.cell.backgroundColor = UIColor.clear
-                }.cellUpdate { cell, row in
+                }.cellUpdate { cell, _ in
                     let _ = HomeAssistantAPI.sharedInstance.getImage(imageUrl: picture).then { image -> Void in
                         let attachment = NSTextAttachment()
                         attachment.image = image
                         attachment.bounds = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
                         let attString = NSAttributedString(attachment: attachment)
                         let result = NSMutableAttributedString(attributedString: attString)
-                        
+
                         let paragraphStyle = NSMutableParagraphStyle()
                         paragraphStyle.alignment = .center
-                        
-                        let attrs:[String:AnyObject] = [NSParagraphStyleAttributeName: paragraphStyle]
+
+                        let attrs: [String:AnyObject] = [NSParagraphStyleAttributeName: paragraphStyle]
                         let range = NSMakeRange(0, result.length)
                         result.addAttributes(attrs, range: range)
-                        
+
                         cell.textView.textStorage.setAttributedString(result)
                         cell.height = { attachment.bounds.height + 20 }
                         self.tableView?.beginUpdates()
@@ -51,18 +51,18 @@ class EntityAttributesViewController: FormViewController {
                     }
                 }
         }
-        
+
         form +++ Section(header: "Attributes", footer: "")
-        
+
         var attributes = entity!.Attributes
-        
+
         attributes["state"] = entity?.State
         for attribute in attributes {
             let prettyLabel = attribute.0.replacingOccurrences(of: "_", with: " ").capitalized
             switch attribute.0 {
             case "fan":
                 if let thermostat = entity as? Thermostat {
-                    form.last! <<< SwitchRow(attribute.0){
+                    form.last! <<< SwitchRow(attribute.0) {
                         $0.title = prettyLabel
                         $0.value = thermostat.Fan
                     }.onChange { row -> Void in
@@ -76,7 +76,7 @@ class EntityAttributesViewController: FormViewController {
                 break
             case "away_mode":
                 if let thermostat = entity as? Thermostat {
-                    form.last! <<< SwitchRow(attribute.0){
+                    form.last! <<< SwitchRow(attribute.0) {
                         $0.title = prettyLabel
                         $0.value = thermostat.AwayMode
                     }.onChange { row -> Void in
@@ -90,7 +90,7 @@ class EntityAttributesViewController: FormViewController {
                 break
             case "temperature":
                 if let thermostat = entity as? Thermostat {
-                    form.last! <<< SliderRow(attribute.0){
+                    form.last! <<< SliderRow(attribute.0) {
                         $0.title = prettyLabel
                         $0.value = Float(thermostat.Temperature!)
                         $0.maximumValue = 120.0
@@ -102,7 +102,7 @@ class EntityAttributesViewController: FormViewController {
                 break
             case "media_duration":
                 if let mediaPlayer = entity as? MediaPlayer {
-                    form.last! <<< TextRow(attribute.0){
+                    form.last! <<< TextRow(attribute.0) {
                         $0.title = prettyLabel
                         $0.value = mediaPlayer.humanReadableMediaDuration()
                         $0.disabled = true
@@ -111,7 +111,7 @@ class EntityAttributesViewController: FormViewController {
                 break
             case "is_volume_muted":
                 if let mediaPlayer = entity as? MediaPlayer {
-                    form.last! <<< SwitchRow(attribute.0){
+                    form.last! <<< SwitchRow(attribute.0) {
                         $0.title = "Mute"
                         $0.value = mediaPlayer.IsVolumeMuted.value
                     }.onChange { row -> Void in
@@ -126,7 +126,7 @@ class EntityAttributesViewController: FormViewController {
             case "volume_level":
                 if let mediaPlayer = entity as? MediaPlayer {
                     let volume = Float(attribute.1 as! NSNumber)*100
-                    form.last! <<< SliderRow(attribute.0){
+                    form.last! <<< SliderRow(attribute.0) {
                         $0.title = prettyLabel
                         $0.value = volume
                         $0.maximumValue = 100
@@ -155,15 +155,14 @@ class EntityAttributesViewController: FormViewController {
                     fallthrough
                 }
             default:
-                form.last! <<< TextRow(attribute.0){
+                form.last! <<< TextRow(attribute.0) {
                     $0.title = prettyLabel
                     $0.value = String(describing: attribute.1).capitalized
                     $0.disabled = true
                 }
             }
         }
-        
-        
+
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(EntityAttributesViewController.StateChangedSSEEvent(_:)), name:NSNotification.Name(rawValue: "sse.state_changed"), object: nil)
     }
@@ -172,15 +171,14 @@ class EntityAttributesViewController: FormViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 
-    func StateChangedSSEEvent(_ notification: NSNotification){
+    func StateChangedSSEEvent(_ notification: NSNotification) {
         if let userInfo = (notification as NSNotification).userInfo {
             if let event = Mapper<StateChangedEvent>().map(JSON: userInfo as! [String : Any]) {
                 if event.EntityID != entityID { return }
                 let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityID as AnyObject)
                 if let newState = event.NewState {
-                    var updateDict : [String:Any] = [:]
+                    var updateDict: [String:Any] = [:]
                     newState.Attributes["state"] = entity?.State
                     for (key, value) in newState.Attributes {
                         switch key {

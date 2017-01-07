@@ -12,11 +12,11 @@ import ObjectMapper
 class ServicesResponse: Mappable {
     var Domain: String?
     var Services: [String : ServiceDefinition] = [:]
-    
-    required init?(map: Map){
-        
+
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         Domain    <- map["domain"]
         Services  <- map["services"]
@@ -26,11 +26,11 @@ class ServicesResponse: Mappable {
 class ServiceDefinition: Mappable {
     var Description: String?
     var Fields: [String : ServiceField] = [:]
-    
-    required init?(map: Map){
-        
+
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         Description  <- map["description"]
         Fields       <- map["fields"]
@@ -40,11 +40,11 @@ class ServiceDefinition: Mappable {
 class ServiceField: Mappable {
     var Description: String?
     var Example: AnyObject?
-    
-    required init?(map: Map){
-        
+
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         Description  <- map["description"]
         Example      <- map["example"]

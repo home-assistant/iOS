@@ -11,7 +11,7 @@ import ObjectMapper
 import RealmSwift
 
 class MediaPlayer: SwitchableEntity {
-    
+
     dynamic var IsPlaying: Bool = false
     dynamic var IsIdle: Bool = false
     var IsVolumeMuted = RealmOptional<Bool>()
@@ -37,10 +37,10 @@ class MediaPlayer: SwitchableEntity {
     dynamic var SupportsStop: Bool = false
     dynamic var SupportsClearPlaylist: Bool = false
     var SupportedMediaCommands: Int?
-    
+
     override func mapping(map: Map) {
         super.mapping(map: map)
-        
+
         IsPlaying        <- (map["state"], ComponentBoolTransform(trueValue: "playing", falseValue: "paused"))
         IsIdle           <- (map["state"], ComponentBoolTransform(trueValue: "idle", falseValue: ""))
         IsVolumeMuted.value    <- map["attributes.is_volume_muted"]
@@ -51,7 +51,7 @@ class MediaPlayer: SwitchableEntity {
         Source           <- map["attributes.source"]
         VolumeLevel.value      <- map["attributes.volume_level"]
         SourceList       <- map["attributes.source_list"]
-        
+
         var StoredSourceList: [String]? = nil
         StoredSourceList     <- map["attributes.source_list"]
         StoredSourceList?.forEach { option in
@@ -59,10 +59,9 @@ class MediaPlayer: SwitchableEntity {
             value.value = option
             self.StoredSourceList.append(value)
         }
-        
+
         SupportedMediaCommands  <- map["attributes.supported_media_commands"]
-        
-        
+
         if let supported = self.SupportedMediaCommands {
             let features = MediaPlayerSupportedCommands(rawValue: supported)
             self.SupportsPause = features.contains(.Pause)
@@ -80,11 +79,11 @@ class MediaPlayer: SwitchableEntity {
             self.SupportsClearPlaylist = features.contains(.ClearPlaylist)
         }
     }
-    
+
     override class func ignoredProperties() -> [String] {
         return ["SupportedMediaCommands", "SourceList", "SupportsPause", "SupportsSeek", "SupportsVolumeSet", "SupportsVolumeMute", "SupportsPreviousTrack", "SupportsNextTrack", "SupportsTurnOn", "SupportsTurnOff", "SupportsPlayMedia", "SupportsVolumeStep", "SupportsSelectSource", "SupportsStop", "SupportsClearPlaylist"]
     }
-    
+
     func humanReadableMediaDuration() -> String {
         if let durationSeconds = self.MediaDuration.value {
             let hours = durationSeconds / 3600
@@ -95,7 +94,7 @@ class MediaPlayer: SwitchableEntity {
             return "00:00:00"
         }
     }
-    
+
     func muteOn() {
         let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player", service: "volume_mute", serviceData: ["entity_id": self.ID as AnyObject, "is_volume_muted": "on" as AnyObject])
     }
@@ -106,11 +105,11 @@ class MediaPlayer: SwitchableEntity {
         let fixedVolume = newVolume/100
         let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player", service: "volume_set", serviceData: ["entity_id": self.ID as AnyObject, "volume_level": fixedVolume as AnyObject])
     }
-    
+
     override var ComponentIcon: String {
         return "mdi:cast"
     }
-    
+
     override func StateIcon() -> String {
         return (self.State != "off" && self.State != "idle") ? "mdi:cast-connected" : "mdi:cast"
     }
@@ -118,7 +117,7 @@ class MediaPlayer: SwitchableEntity {
 
 struct MediaPlayerSupportedCommands: OptionSet {
     let rawValue: Int
-    
+
     static let Pause = MediaPlayerSupportedCommands(rawValue: 1)
     static let Seek = MediaPlayerSupportedCommands(rawValue: 2)
     static let VolumeSet = MediaPlayerSupportedCommands(rawValue: 4)

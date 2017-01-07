@@ -10,23 +10,23 @@ import Foundation
 import ObjectMapper
 
 class BinarySensor: SwitchableEntity {
-    
+
     dynamic var SensorClass: String? = nil
-    
+
     override func mapping(map: Map) {
         super.mapping(map: map)
-        
+
         SensorClass  <- map["attributes.sensor_class"]
     }
-    
+
     override var ComponentIcon: String {
         return "mdi:radiobox-blank"
     }
-    
+
     override func StateIcon() -> String {
         if self.MobileIcon != nil { return self.MobileIcon! }
         if self.Icon != nil { return self.Icon! }
-        
+
         let activated = (self.IsOn == false)
         if let sensorClass = self.SensorClass {
             switch (sensorClass) {

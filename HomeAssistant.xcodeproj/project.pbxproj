@@ -935,14 +935,15 @@
 			buildConfigurationList = B657A9101CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistant" */;
 			buildPhases = (
 				EE918EC7744FD53B5836AC00 /* [CP] Check Pods Manifest.lock */,
+				B641BC261E20BAF3002CCBC1 /* Swiftlint */,
 				B657A8E21CA646EB00121384 /* Sources */,
 				B657A8E31CA646EB00121384 /* Frameworks */,
 				B657A8E41CA646EB00121384 /* Resources */,
-				B6E8579C1CB1167200F96925 /* ShellScript */,
 				B6E47E861CB9FD350027F6CA /* ShellScript */,
 				D458061599D246B74530F402 /* [CP] Embed Pods Frameworks */,
 				EB3BEB157867EEEFE3AFD2F3 /* [CP] Copy Pods Resources */,
 				B6AAD7AC1D827DD40090B220 /* Embed App Extensions */,
+				B6E8579C1CB1167200F96925 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1335,6 +1336,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		B641BC261E20BAF3002CCBC1 /* Swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Swiftlint;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
 		B6E47E861CB9FD350027F6CA /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

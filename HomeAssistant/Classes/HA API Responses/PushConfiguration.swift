@@ -11,11 +11,11 @@ import ObjectMapper
 
 class PushConfiguration: Mappable {
     var Categories: [PushCategory]?
-    
-    required init?(map: Map){
-        
+
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         Categories        <- map["categories"]
     }
@@ -24,13 +24,13 @@ class PushConfiguration: Mappable {
 class PushCategory: Mappable {
     var Name: String?
     var Identifier: String?
-    
+
     var Actions: [PushAction]?
-    
-    required init?(map: Map){
-        
+
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         Name        <- map["name"]
         Identifier  <- map["identifier"]
@@ -47,11 +47,11 @@ class PushAction: Mappable {
     var Destructive: Bool = false
     var TextInputButtonTitle: String?
     var TextInputPlaceholder: String?
-    
-    required init?(map: Map){
-        
+
+    required init?(map: Map) {
+
     }
-    
+
     func mapping(map: Map) {
         Title                  <- map["title"]
         Identifier             <- map["identifier"]
