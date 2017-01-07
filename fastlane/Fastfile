@@ -22,6 +22,7 @@ platform :ios do
     ENV["MATCH_PASSWORD"] = ENV["HOMEASSISTANT_CERTIFICATE_KEY"]
     ENV["PILOT_APPLE_ID"] = ENV["HOMEASSISTANT_APPLE_ID"]
     ENV["SIGH_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
+    synx
   end
 
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
