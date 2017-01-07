@@ -110,7 +110,6 @@ class Entity: Object, StaticMappable {
         }
         return nil
     }
-    // swiftlint:enable cyclomatic_complexity function_body_length
 
     func mapping(map: Map) {
         ID                <- map["entity_id"]

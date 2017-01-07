@@ -173,7 +173,6 @@ class EntityAttributesViewController: FormViewController {
             name:NSNotification.Name(rawValue: "sse.state_changed"),
             object: nil)
     }
-    // swiftlint:enable cyclomatic_complexity function_body_length
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

@@ -514,7 +514,8 @@ public class HomeAssistantAPI {
                         self.storeEntities(entities: [response.result.value!])
                         fulfill(response.result.value!)
                     case .failure(let error):
-                        CLSLogv("Error on GetStateForEntityIdMapped() request: %@", getVaList([error.localizedDescription]))
+                        CLSLogv("Error on GetStateForEntityIdMapped() request: %@",
+                                getVaList([error.localizedDescription]))
                         Crashlytics.sharedInstance().recordError(error)
                         reject(error)
                     }
@@ -548,7 +549,8 @@ public class HomeAssistantAPI {
                 ).validate().responseObject { (response: DataResponse<Entity>) in
                     switch response.result {
                     case .success:
-                        self.showMurmur(title: response.result.value!.Domain+" state set to "+response.result.value!.State)
+                        let murmurTitle = response.result.value!.Domain+" state set to "+response.result.value!.State
+                        self.showMurmur(title: murmurTitle)
                         self.storeEntities(entities: [response.result.value!])
                         fulfill(response.result.value!)
                     case .failure(let error):
@@ -574,7 +576,8 @@ public class HomeAssistantAPI {
                                                     fulfill(jsonDict["message"]!)
                                                 }
                                             case .failure(let error):
-                                                CLSLogv("Error when attemping to CreateEvent(): %@", getVaList([error.localizedDescription]))
+                                                CLSLogv("Error when attemping to CreateEvent(): %@",
+                                                        getVaList([error.localizedDescription]))
                                                 Crashlytics.sharedInstance().recordError(error)
                                                 reject(error)
                                             }
@@ -760,7 +763,8 @@ public class HomeAssistantAPI {
                                             case .success:
                                                 fulfill(response.result.value!)
                                             case .failure(let error):
-                                                CLSLogv("Error when attemping to identifyDevice(): %@", getVaList([error.localizedDescription]))
+                                                CLSLogv("Error when attemping to identifyDevice(): %@",
+                                                        getVaList([error.localizedDescription]))
                                                 Crashlytics.sharedInstance().recordError(error)
                                                 reject(error)
                                             }
@@ -779,7 +783,8 @@ public class HomeAssistantAPI {
                                             case .success:
                                                 fulfill(response.result.value!)
                                             case .failure(let error):
-                                                CLSLogv("Error when attemping to identifyDevice(): %@", getVaList([error.localizedDescription]))
+                                                CLSLogv("Error when attemping to identifyDevice(): %@",
+                                                        getVaList([error.localizedDescription]))
                                                 Crashlytics.sharedInstance().recordError(error)
                                                 reject(error)
                                             }
@@ -832,9 +837,12 @@ public class HomeAssistantAPI {
                                         newAction.identifier = action.Identifier
                                         newAction.isAuthenticationRequired = action.AuthenticationRequired
                                         newAction.isDestructive = action.Destructive
-                                        let defaultBehavior = UIUserNotificationActionBehavior.default
-                                        let textInputBehavior = UIUserNotificationActionBehavior.textInput
-                                        let behavior = (action.Behavior == "default") ? defaultBehavior : textInputBehavior
+                                        var behavior: UIUserNotificationActionBehavior
+                                        if action.Behavior == "default" {
+                                            behavior = UIUserNotificationActionBehavior.default
+                                        } else {
+                                            behavior = UIUserNotificationActionBehavior.textInput
+                                        }
                                         newAction.behavior = behavior
                                         let foreground = UIUserNotificationActivationMode.foreground
                                         let background = UIUserNotificationActivationMode.background
@@ -846,7 +854,8 @@ public class HomeAssistantAPI {
                                         }
                                         categoryActions.append(newAction)
                                     }
-                                    finalCategory.setActions(categoryActions, for: UIUserNotificationActionContext.default)
+                                    finalCategory.setActions(categoryActions,
+                                                             for: UIUserNotificationActionContext.default)
                                     allCategories.insert(finalCategory)
                                 } else {
                                     print("Category has no actions defined, continuing loop")
@@ -899,12 +908,14 @@ public class HomeAssistantAPI {
                                         } else if action.Behavior == "TextInput" {
                                             if let identifier = action.Identifier,
                                                 let btnTitle = action.TextInputButtonTitle,
-                                                let plcehold = action.TextInputPlaceholder, let title = action.Title {
+                                                let place = action.TextInputPlaceholder, let title = action.Title {
+                                                // swiftlint:disable line_length
                                                 let newAction = UNTextInputNotificationAction(identifier: identifier,
                                                                                               title: title,
                                                                                               options: actionOptions,
                                                                                               textInputButtonTitle:btnTitle,
-                                                                                              textInputPlaceholder:plcehold)
+                                                                                              textInputPlaceholder:place)
+                                                                                              // swiftlint:enable line_length
                                                 categoryActions.append(newAction)
                                             }
                                         }
@@ -983,7 +994,8 @@ public class HomeAssistantAPI {
                                             case .success:
                                                 fulfill(response.result.value!)
                                             case .failure(let error):
-                                                CLSLogv("Error when attemping to getBeacons(): %@", getVaList([error.localizedDescription]))
+                                                CLSLogv("Error when attemping to getBeacons(): %@",
+                                                        getVaList([error.localizedDescription]))
                                                 Crashlytics.sharedInstance().recordError(error)
                                                 reject(error)
                                             }
@@ -1052,7 +1064,8 @@ public class HomeAssistantAPI {
         for status in PermissionScope().permissionStatuses([NotificationsPermission().type,
                                                             LocationAlwaysPermission().type]) {
                                                                 if status.1 == .authorized {
-                                                                    permissionsContainer.append(status.0.prettyDescription.lowercased())
+                                                                    let desc = status.0.prettyDescription.lowercased()
+                                                                    permissionsContainer.append(desc)
                                                                 }
         }
         return permissionsContainer

@@ -36,23 +36,6 @@ class GroupViewController: FormViewController {
                 +++ Section()
             for entity in group!.Entities {
                 switch entity.Domain {
-                    //                    case "switch", "light", "input_boolean":
-                    //                        self.form.last! <<< SwitchRow(entity.ID) {
-                    //                            $0.title = entity.Name
-                    //                            $0.value = (entity.State == "on") ? true : false
-                    //                            }.onChange { row -> Void in
-                    //                                if (row.value == true) {
-                    //                                    HomeAssistantAPI.sharedInstance.turnOn(entity.ID)
-                    //                                } else {
-                    //                                    HomeAssistantAPI.sharedInstance.turnOff(entity.ID)
-                    //                                }
-                    //                            }.cellSetup { cell, row in
-                    //                                cell.imageView?.image = entity.EntityIcon
-                    //                                if let picture = entity.DownloadedPicture {
-                    //                                    cell.imageView?.image = picture.scaledToSize(CGSize(width: 30,
-                    //                                                                                        height: 30))
-                    //                                }
-                //                    }
                 case "script", "scene":
                     self.form.last! <<< ButtonRow(entity.ID) {
                         $0.title = entity.Name
