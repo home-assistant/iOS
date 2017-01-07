@@ -61,22 +61,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             firstly {
                 HomeAssistantAPI.sharedInstance.Setup(baseAPIUrl: baseURL, APIPassword: apiPass)
-            }.then {_ in
-                HomeAssistantAPI.sharedInstance.Connect()
-            }.then { _ -> Void in
-                if HomeAssistantAPI.sharedInstance.notificationsEnabled {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-                print("Connected!")
-                return
-            }.catch {err -> Void in
-                print("ERROR", err)
-//                let settingsView = SettingsViewController()
-//                settingsView.title = "Settings"
-//                settingsView.showErrorConnectingMessage = true
-//                let navController = UINavigationController(rootViewController: settingsView)
-//                self.window?.makeKeyAndVisible()
-//                self.window?.rootViewController!.present(navController, animated: true, completion: nil)
+                }.then {_ in
+                    HomeAssistantAPI.sharedInstance.Connect()
+                }.then { _ -> Void in
+                    if HomeAssistantAPI.sharedInstance.notificationsEnabled {
+                        UIApplication.shared.registerForRemoteNotifications()
+                    }
+                    print("Connected!")
+                    return
+                }.catch {err -> Void in
+                    print("ERROR", err)
+                    //                let settingsView = SettingsViewController()
+                    //                settingsView.title = "Settings"
+                    //                settingsView.showErrorConnectingMessage = true
+                    //                let navController = UINavigationController(rootViewController: settingsView)
+                    //                self.window?.makeKeyAndVisible()
+                    //                self.window?.rootViewController!.present(navController, animated: true, completion: nil)
             }
         }
     }
@@ -138,10 +138,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
                         print("Did successfully send location when requested via APNS?", success)
                         completionHandler(UIBackgroundFetchResult.noData)
-                    }.catch {error in
-                        print("Error when attempting to submit location update")
-                        Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                        completionHandler(UIBackgroundFetchResult.failed)
+                        }.catch {error in
+                            print("Error when attempting to submit location update")
+                            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                            completionHandler(UIBackgroundFetchResult.failed)
                     }
                 default:
                     print("Received unknown command via APNS!", userInfo)
@@ -188,10 +188,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
         HomeAssistantAPI.sharedInstance.handlePushAction(identifier: response.actionIdentifier, userInfo: response.notification.request.content.userInfo, userInput: userText).then { _ in
             completionHandler()
-        }.catch { err -> Void in
-            print("Error: \(err)")
-            Crashlytics.sharedInstance().recordError(err)
-            completionHandler()
+            }.catch { err -> Void in
+                print("Error: \(err)")
+                Crashlytics.sharedInstance().recordError(err)
+                completionHandler()
         }
     }
 

@@ -121,13 +121,13 @@ public class HomeAssistantAPI {
                     _ = self.identifyDevice()
                 }
 
-//                self.GetHistory()
+                //                self.GetHistory()
                 self.startStream()
                 fulfill(config)
-            }.catch {error in
-                print("Error at launch!", error)
-                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                reject(error)
+                }.catch {error in
+                    print("Error at launch!", error)
+                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                    reject(error)
             }
 
         }
@@ -196,8 +196,8 @@ public class HomeAssistantAPI {
 
         self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate as [String : Any]).then {_ in
             print("Device seen!")
-        }.catch {err in
-            Crashlytics.sharedInstance().recordError(err as NSError)
+            }.catch {err in
+                Crashlytics.sharedInstance().recordError(err as NSError)
         }
 
         UIDevice.current.isBatteryMonitoringEnabled = false
@@ -208,20 +208,20 @@ public class HomeAssistantAPI {
         var shouldNotify = false
 
         switch updateType {
-            case .RegionEnter:
-                notificationBody = "\(zone!.Name) entered"
-                notificationIdentifer = "\(zone!.Name)_entered"
-                shouldNotify = zone!.enterNotification
-            case .RegionExit:
-                notificationBody = "\(zone!.Name) exited"
-                notificationIdentifer = "\(zone!.Name)_exited"
-                shouldNotify = zone!.exitNotification
-            case .SignificantLocationUpdate:
-                notificationBody = "Significant location change detected, notifying Home Assistant"
-                notificationIdentifer = "sig_change"
-                shouldNotify = true
-            default:
-                notificationBody = ""
+        case .RegionEnter:
+            notificationBody = "\(zone!.Name) entered"
+            notificationIdentifer = "\(zone!.Name)_entered"
+            shouldNotify = zone!.enterNotification
+        case .RegionExit:
+            notificationBody = "\(zone!.Name) exited"
+            notificationIdentifer = "\(zone!.Name)_exited"
+            shouldNotify = zone!.exitNotification
+        case .SignificantLocationUpdate:
+            notificationBody = "Significant location change detected, notifying Home Assistant"
+            notificationIdentifer = "sig_change"
+            shouldNotify = true
+        default:
+            notificationBody = ""
         }
 
         if shouldNotify {
@@ -277,23 +277,23 @@ public class HomeAssistantAPI {
             }
         }
 
-//        let location = Location()
+        //        let location = Location()
 
-//        self.getBeacons().then { beacons -> Void in
-//            for beacon in beacons {
-//                print("Got beacon from HA", beacon.UUID, beacon.Major, beacon.Minor)
-//                try Beacons.monitorForBeacon(proximityUUID: beacon.UUID!, major: UInt16(beacon.Major!), minor: UInt16(beacon.Minor!), onFound: { beaconsFound in
-//                    // beaconsFound is an array of found beacons ([CLBeacon]) but in this case it contains only one beacon
-//                    print("beaconsFound", beaconsFound)
-//                }) { error in
-//                    // something bad happened
-//                    print("Error happened on beacons", error)
-//                }
-//            }
-//        }.catch {error in
-//            print("Error when getting beacons!", error)
-//            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-//        }
+        //        self.getBeacons().then { beacons -> Void in
+        //            for beacon in beacons {
+        //                print("Got beacon from HA", beacon.UUID, beacon.Major, beacon.Minor)
+        //                try Beacons.monitorForBeacon(proximityUUID: beacon.UUID!, major: UInt16(beacon.Major!), minor: UInt16(beacon.Minor!), onFound: { beaconsFound in
+        //                    // beaconsFound is an array of found beacons ([CLBeacon]) but in this case it contains only one beacon
+        //                    print("beaconsFound", beaconsFound)
+        //                }) { error in
+        //                    // something bad happened
+        //                    print("Error happened on beacons", error)
+        //                }
+        //            }
+        //        }.catch {error in
+        //            print("Error when getting beacons!", error)
+        //            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+        //        }
 
     }
 
@@ -358,77 +358,77 @@ public class HomeAssistantAPI {
         }
     }
 
-//    func GetHistory() -> Promise<HistoryResponse> {
-//        let queryUrl = baseAPIURL+"history/period?filter_entity_id=sensor.uberpool_time"
-//        return Promise { fulfill, reject in
-//            let _ = self.manager!.request(queryUrl, method: .get).validate().responseJSON { response in
-//                switch response.result {
-//                case .success:
-//                    print("GOT HISTORY", queryUrl)
-//                    let mapped = Mapper<HistoryResponse>().map(response.result.value!)
-//                    print("MAPPED", mapped)
-//                    fulfill(mapped!)
-//                case .failure(let error):
-//                    CLSLogv("Error on GetHistory() request: %@", getVaList([error.localizedDescription]))
-//                    Crashlytics.sharedInstance().recordError(error)
-//                    reject(error)
-//                }
-//            }
-//        }
-//    }
+    //    func GetHistory() -> Promise<HistoryResponse> {
+    //        let queryUrl = baseAPIURL+"history/period?filter_entity_id=sensor.uberpool_time"
+    //        return Promise { fulfill, reject in
+    //            let _ = self.manager!.request(queryUrl, method: .get).validate().responseJSON { response in
+    //                switch response.result {
+    //                case .success:
+    //                    print("GOT HISTORY", queryUrl)
+    //                    let mapped = Mapper<HistoryResponse>().map(response.result.value!)
+    //                    print("MAPPED", mapped)
+    //                    fulfill(mapped!)
+    //                case .failure(let error):
+    //                    CLSLogv("Error on GetHistory() request: %@", getVaList([error.localizedDescription]))
+    //                    Crashlytics.sharedInstance().recordError(error)
+    //                    reject(error)
+    //                }
+    //            }
+    //        }
+    //    }
 
     func storeEntities(entities: [Entity]) {
         for entity in entities {
             try! realm.write {
                 switch entity {
-                    case is Automation:
-                        realm.create(Automation.self, value: entity, update: true)
-                    case is BinarySensor:
-                        realm.create(BinarySensor.self, value: entity, update: true)
-                    case is Climate:
-                        realm.create(Climate.self, value: entity, update: true)
-                    case is DeviceTracker:
-                        realm.create(DeviceTracker.self, value: entity, update: true)
-                    case is GarageDoor:
-                        realm.create(GarageDoor.self, value: entity, update: true)
-                    case is Group:
-                        if let currentObject = realm.object(ofType: Group.self, forPrimaryKey: entity.ID as AnyObject) {
-                            let group = entity as! Group
-                            group.Order = currentObject.Order
-                            realm.create(Group.self, value: entity, update: true)
-                        } else {
-                            realm.create(Group.self, value: entity, update: true)
+                case is Automation:
+                    realm.create(Automation.self, value: entity, update: true)
+                case is BinarySensor:
+                    realm.create(BinarySensor.self, value: entity, update: true)
+                case is Climate:
+                    realm.create(Climate.self, value: entity, update: true)
+                case is DeviceTracker:
+                    realm.create(DeviceTracker.self, value: entity, update: true)
+                case is GarageDoor:
+                    realm.create(GarageDoor.self, value: entity, update: true)
+                case is Group:
+                    if let currentObject = realm.object(ofType: Group.self, forPrimaryKey: entity.ID as AnyObject) {
+                        let group = entity as! Group
+                        group.Order = currentObject.Order
+                        realm.create(Group.self, value: entity, update: true)
+                    } else {
+                        realm.create(Group.self, value: entity, update: true)
                     }
-                    case is Fan:
-                        realm.create(Fan.self, value: entity, update: true)
-                    case is InputBoolean:
-                        realm.create(InputBoolean.self, value: entity, update: true)
-                    case is InputSelect:
-                        realm.create(InputSelect.self, value: entity, update: true)
-                    case is Light:
-                        realm.create(Light.self, value: entity, update: true)
-                    case is Lock:
-                        realm.create(Lock.self, value: entity, update: true)
-                    case is MediaPlayer:
-                        realm.create(MediaPlayer.self, value: entity, update: true)
-                    case is Scene:
-                        realm.create(Scene.self, value: entity, update: true)
-                    case is Script:
-                        realm.create(Script.self, value: entity, update: true)
-                    case is Sensor:
-                        realm.create(Sensor.self, value: entity, update: true)
-                    case is Sun:
-                        realm.create(Sun.self, value: entity, update: true)
-                    case is Switch:
-                        realm.create(Switch.self, value: entity, update: true)
-                    case is Thermostat:
-                        realm.create(Thermostat.self, value: entity, update: true)
-                    case is Weblink:
-                        realm.create(Weblink.self, value: entity, update: true)
-                    case is Zone:
-                        realm.create(Zone.self, value: entity, update: true)
-                    default:
-                        print("Unable to save \(entity.Domain)!")
+                case is Fan:
+                    realm.create(Fan.self, value: entity, update: true)
+                case is InputBoolean:
+                    realm.create(InputBoolean.self, value: entity, update: true)
+                case is InputSelect:
+                    realm.create(InputSelect.self, value: entity, update: true)
+                case is Light:
+                    realm.create(Light.self, value: entity, update: true)
+                case is Lock:
+                    realm.create(Lock.self, value: entity, update: true)
+                case is MediaPlayer:
+                    realm.create(MediaPlayer.self, value: entity, update: true)
+                case is Scene:
+                    realm.create(Scene.self, value: entity, update: true)
+                case is Script:
+                    realm.create(Script.self, value: entity, update: true)
+                case is Sensor:
+                    realm.create(Sensor.self, value: entity, update: true)
+                case is Sun:
+                    realm.create(Sun.self, value: entity, update: true)
+                case is Switch:
+                    realm.create(Switch.self, value: entity, update: true)
+                case is Thermostat:
+                    realm.create(Thermostat.self, value: entity, update: true)
+                case is Weblink:
+                    realm.create(Weblink.self, value: entity, update: true)
+                case is Zone:
+                    realm.create(Zone.self, value: entity, update: true)
+                default:
+                    print("Unable to save \(entity.Domain)!")
                 }
                 realm.create(Entity.self, value: entity, update: true)
             }
@@ -523,7 +523,7 @@ public class HomeAssistantAPI {
     }
 
     func CallService(domain: String, service: String, serviceData: [String:Any]) -> Promise<[ServicesResponse]> {
-//        self.showMurmur(title: domain+"/"+service+" called")
+        //        self.showMurmur(title: domain+"/"+service+" called")
         let queryUrl = baseAPIURL+"services/"+domain+"/"+service
         return Promise { fulfill, reject in
             let _ = self.manager!.request(queryUrl, method: .post, parameters: serviceData, encoding: JSONEncoding.default).validate().responseArray { (response: DataResponse<[ServicesResponse]>) in
@@ -806,18 +806,18 @@ public class HomeAssistantAPI {
         if #available(iOS 10, *) {
             self.setupUserNotificationPushActions().then { categories -> Void in
                 UNUserNotificationCenter.current().setNotificationCategories(categories)
-            }.catch {error -> Void in
-                print("Error when attempting to setup push actions", error)
-                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                }.catch {error -> Void in
+                    print("Error when attempting to setup push actions", error)
+                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
             }
         } else {
             self.setupPushActions().then { categories -> Void in
                 let types: UIUserNotificationType = ([.alert, .badge, .sound])
                 let settings = UIUserNotificationSettings(types: types, categories: categories)
                 UIApplication.shared.registerUserNotificationSettings(settings)
-            }.catch {error -> Void in
-                print("Error when attempting to setup push actions", error)
-                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                }.catch {error -> Void in
+                    print("Error when attempting to setup push actions", error)
+                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
             }
         }
     }
@@ -834,9 +834,9 @@ public class HomeAssistantAPI {
             }
             HomeAssistantAPI.sharedInstance.CreateEvent(eventType: "ios.notification_action_fired", eventData: eventData).then { _ in
                 fulfill(true)
-            }.catch {error in
-                Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-                reject(error)
+                }.catch {error in
+                    Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
+                    reject(error)
             }
         }
     }
@@ -881,15 +881,15 @@ public class HomeAssistantAPI {
     }
 
     var locationEnabled: Bool {
-//        return PermissionScope().statusLocationAlways() == .authorized && self.loadedComponents.contains("device_tracker")
+        //        return PermissionScope().statusLocationAlways() == .authorized && self.loadedComponents.contains("device_tracker")
         return PermissionScope().statusLocationAlways() == .authorized
     }
 
     var notificationsEnabled: Bool {
-//        return PermissionScope().statusNotifications() == .authorized && prefs.string(forKey: "pushID") != nil
+        //        return PermissionScope().statusNotifications() == .authorized && prefs.string(forKey: "pushID") != nil
         return prefs.string(forKey: "pushID") != nil
-//        print("PermissionScope().statusNotifications()", PermissionScope().statusNotifications())
-//        return PermissionScope().statusNotifications() == .authorized
+        //        print("PermissionScope().statusNotifications()", PermissionScope().statusNotifications())
+        //        return PermissionScope().statusNotifications() == .authorized
     }
 
     var iosComponentLoaded: Bool {
@@ -985,24 +985,24 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
         resolvingDict.removeValue(forKey: netService.name)
     }
 
-//    func netServiceBrowser(netServiceBrowser: NetServiceBrowser, didFindDomain domainName: String, moreComing moreDomainsComing: Bool) {
-//        NSLog("BonjourDelegate.Browser.netServiceBrowser.didFindDomain")
-//    }
-//    func netServiceBrowser(netServiceBrowser: NetServiceBrowser, didRemoveDomain domainName: String, moreComing moreDomainsComing: Bool) {
-//        NSLog("BonjourDelegate.Browser.netServiceBrowser.didRemoveDomain")
-//    }
-//    func netServiceBrowserWillSearch(netServiceBrowser: NetServiceBrowser){
-//        NSLog("BonjourDelegate.Browser.netServiceBrowserWillSearch")
-//    }
-//    func netServiceBrowser(netServiceBrowser: NetServiceBrowser, didNotSearch errorInfo: [String : NSNumber]) {
-//        NSLog("BonjourDelegate.Browser.netServiceBrowser.didNotSearch")
-//    }
-//    func netServiceBrowserDidStopSearch(netServiceBrowser: NetServiceBrowser) {
-//        NSLog("BonjourDelegate.Browser.netServiceBrowserDidStopSearch")
-//    }
-//    func netServiceWillPublish(sender: NetService) {
-//        NSLog("BonjourDelegate.Browser.netServiceWillPublish:\(sender)");
-//    }
+    //    func netServiceBrowser(netServiceBrowser: NetServiceBrowser, didFindDomain domainName: String, moreComing moreDomainsComing: Bool) {
+    //        NSLog("BonjourDelegate.Browser.netServiceBrowser.didFindDomain")
+    //    }
+    //    func netServiceBrowser(netServiceBrowser: NetServiceBrowser, didRemoveDomain domainName: String, moreComing moreDomainsComing: Bool) {
+    //        NSLog("BonjourDelegate.Browser.netServiceBrowser.didRemoveDomain")
+    //    }
+    //    func netServiceBrowserWillSearch(netServiceBrowser: NetServiceBrowser){
+    //        NSLog("BonjourDelegate.Browser.netServiceBrowserWillSearch")
+    //    }
+    //    func netServiceBrowser(netServiceBrowser: NetServiceBrowser, didNotSearch errorInfo: [String : NSNumber]) {
+    //        NSLog("BonjourDelegate.Browser.netServiceBrowser.didNotSearch")
+    //    }
+    //    func netServiceBrowserDidStopSearch(netServiceBrowser: NetServiceBrowser) {
+    //        NSLog("BonjourDelegate.Browser.netServiceBrowserDidStopSearch")
+    //    }
+    //    func netServiceWillPublish(sender: NetService) {
+    //        NSLog("BonjourDelegate.Browser.netServiceWillPublish:\(sender)");
+    //    }
 
     private func DiscoveryInfoFromDict(locationName: String, netServiceDictionary: [String : Data]) -> DiscoveryInfoResponse {
         var outputDict: [String:Any] = [:]
@@ -1016,29 +1016,29 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
         return DiscoveryInfoResponse(JSON: outputDict)!
     }
 
-// Publisher methods
+    // Publisher methods
 
-//    func netService(sender: NetService, didNotPublish errorDict: [String : NSNumber]) {
-//        NSLog("BonjourDelegate.Publisher.didNotPublish:\(sender)");
-//    }
-//    func netServiceDidPublish(sender: NetService) {
-//        NSLog("BonjourDelegate.Publisher.netServiceDidPublish:\(sender)");
-//    }
-//    func netServiceWillResolve(sender: NetService) {
-//        NSLog("BonjourDelegate.Publisher.netServiceWillResolve:\(sender)");
-//    }
-//    func netService(sender: NetService, didNotResolve errorDict: [String : NSNumber]) {
-//        NSLog("BonjourDelegate.Publisher.netServiceDidNotResolve:\(sender)");
-//    }
-//    func netService(sender: NetService, didUpdateTXTRecordData data: NSData) {
-//        NSLog("BonjourDelegate.Publisher.netServiceDidUpdateTXTRecordData:\(sender)");
-//    }
-//    func netServiceDidStop(sender: NetService) {
-//        NSLog("BonjourDelegate.Publisher.netServiceDidStopService:\(sender)");
-//    }
-//    func netService(sender: NetService, didAcceptConnectionWithInputStream inputStream: NSInputStream, outputStream stream: NSOutputStream) {
-//        NSLog("BonjourDelegate.Publisher.netServiceDidAcceptConnection:\(sender)");
-//    }
+    //    func netService(sender: NetService, didNotPublish errorDict: [String : NSNumber]) {
+    //        NSLog("BonjourDelegate.Publisher.didNotPublish:\(sender)");
+    //    }
+    //    func netServiceDidPublish(sender: NetService) {
+    //        NSLog("BonjourDelegate.Publisher.netServiceDidPublish:\(sender)");
+    //    }
+    //    func netServiceWillResolve(sender: NetService) {
+    //        NSLog("BonjourDelegate.Publisher.netServiceWillResolve:\(sender)");
+    //    }
+    //    func netService(sender: NetService, didNotResolve errorDict: [String : NSNumber]) {
+    //        NSLog("BonjourDelegate.Publisher.netServiceDidNotResolve:\(sender)");
+    //    }
+    //    func netService(sender: NetService, didUpdateTXTRecordData data: NSData) {
+    //        NSLog("BonjourDelegate.Publisher.netServiceDidUpdateTXTRecordData:\(sender)");
+    //    }
+    //    func netServiceDidStop(sender: NetService) {
+    //        NSLog("BonjourDelegate.Publisher.netServiceDidStopService:\(sender)");
+    //    }
+    //    func netService(sender: NetService, didAcceptConnectionWithInputStream inputStream: NSInputStream, outputStream stream: NSOutputStream) {
+    //        NSLog("BonjourDelegate.Publisher.netServiceDidAcceptConnection:\(sender)");
+    //    }
 
 }
 
@@ -1073,8 +1073,8 @@ class Bonjour {
     }
 
     func startPublish() {
-//        self.nsdel = BonjourDelegate()
-//        nsp.delegate = nsdel
+        //        self.nsdel = BonjourDelegate()
+        //        nsp.delegate = nsdel
         nsp.setTXTRecord(NetService.data(fromTXTRecord: buildPublishDict()))
         nsp.publish()
     }

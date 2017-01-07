@@ -48,7 +48,7 @@ class Entity: Object, StaticMappable {
     var UnitOfMeasurement: String?
     dynamic var LastChanged: Date? = nil
     dynamic var LastUpdated: Date? = nil
-//    let Groups = LinkingObjects(fromType: Group.self, property: "Entities")
+    //    let Groups = LinkingObjects(fromType: Group.self, property: "Entities")
 
     // Z-Wave properties
     dynamic var Location: String? = nil
@@ -130,8 +130,8 @@ class Entity: Object, StaticMappable {
         if let pic = self.Picture {
             HomeAssistantAPI.sharedInstance.getImage(imageUrl: pic).then { image -> Void in
                 self.DownloadedPicture = image
-            }.catch { err -> Void in
-                print("Error when attempting to download image", err)
+                }.catch { err -> Void in
+                    print("Error when attempting to download image", err)
             }
         }
     }

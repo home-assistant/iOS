@@ -40,12 +40,12 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
         self.hud = hud
         switch (notification.request.content.categoryIdentifier) {
-            case "map":
-                mapHandler(notification)
-            case "camera":
-                cameraHandler(notification)
-            default:
-                return
+        case "map":
+            mapHandler(notification)
+        case "camera":
+            cameraHandler(notification)
+        default:
+            return
         }
     }
 

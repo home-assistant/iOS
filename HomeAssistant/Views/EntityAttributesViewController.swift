@@ -29,27 +29,27 @@ class EntityAttributesViewController: FormViewController {
                     $0.cell.textView.isScrollEnabled = false
                     $0.cell.textView.backgroundColor = UIColor.clear
                     $0.cell.backgroundColor = UIColor.clear
-                }.cellUpdate { cell, _ in
-                    let _ = HomeAssistantAPI.sharedInstance.getImage(imageUrl: picture).then { image -> Void in
-                        let attachment = NSTextAttachment()
-                        attachment.image = image
-                        attachment.bounds = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-                        let attString = NSAttributedString(attachment: attachment)
-                        let result = NSMutableAttributedString(attributedString: attString)
+                    }.cellUpdate { cell, _ in
+                        let _ = HomeAssistantAPI.sharedInstance.getImage(imageUrl: picture).then { image -> Void in
+                            let attachment = NSTextAttachment()
+                            attachment.image = image
+                            attachment.bounds = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+                            let attString = NSAttributedString(attachment: attachment)
+                            let result = NSMutableAttributedString(attributedString: attString)
 
-                        let paragraphStyle = NSMutableParagraphStyle()
-                        paragraphStyle.alignment = .center
+                            let paragraphStyle = NSMutableParagraphStyle()
+                            paragraphStyle.alignment = .center
 
-                        let attrs: [String:AnyObject] = [NSParagraphStyleAttributeName: paragraphStyle]
-                        let range = NSMakeRange(0, result.length)
-                        result.addAttributes(attrs, range: range)
+                            let attrs: [String:AnyObject] = [NSParagraphStyleAttributeName: paragraphStyle]
+                            let range = NSMakeRange(0, result.length)
+                            result.addAttributes(attrs, range: range)
 
-                        cell.textView.textStorage.setAttributedString(result)
-                        cell.height = { attachment.bounds.height + 20 }
-                        self.tableView?.beginUpdates()
-                        self.tableView?.endUpdates()
-                    }
-                }
+                            cell.textView.textStorage.setAttributedString(result)
+                            cell.height = { attachment.bounds.height + 20 }
+                            self.tableView?.beginUpdates()
+                            self.tableView?.endUpdates()
+                        }
+            }
         }
 
         form +++ Section(header: "Attributes", footer: "")
@@ -65,12 +65,12 @@ class EntityAttributesViewController: FormViewController {
                     form.last! <<< SwitchRow(attribute.0) {
                         $0.title = prettyLabel
                         $0.value = thermostat.Fan
-                    }.onChange { row -> Void in
-                        if (row.value == true) {
-                            thermostat.turnFanOn()
-                        } else {
-                            thermostat.turnFanOff()
-                        }
+                        }.onChange { row -> Void in
+                            if (row.value == true) {
+                                thermostat.turnFanOn()
+                            } else {
+                                thermostat.turnFanOff()
+                            }
                     }
                 }
                 break
@@ -79,12 +79,12 @@ class EntityAttributesViewController: FormViewController {
                     form.last! <<< SwitchRow(attribute.0) {
                         $0.title = prettyLabel
                         $0.value = thermostat.AwayMode
-                    }.onChange { row -> Void in
-                        if (row.value == true) {
-                            thermostat.setAwayModeOn()
-                        } else {
-                            thermostat.setAwayModeOff()
-                        }
+                        }.onChange { row -> Void in
+                            if (row.value == true) {
+                                thermostat.setAwayModeOn()
+                            } else {
+                                thermostat.setAwayModeOff()
+                            }
                     }
                 }
                 break
@@ -95,8 +95,8 @@ class EntityAttributesViewController: FormViewController {
                         $0.value = Float(thermostat.Temperature!)
                         $0.maximumValue = 120.0
                         $0.steps = 120
-                    }.onChange { row -> Void in
-                        thermostat.setTemperature(row.value!)
+                        }.onChange { row -> Void in
+                            thermostat.setTemperature(row.value!)
                     }
                 }
                 break
@@ -114,12 +114,12 @@ class EntityAttributesViewController: FormViewController {
                     form.last! <<< SwitchRow(attribute.0) {
                         $0.title = "Mute"
                         $0.value = mediaPlayer.IsVolumeMuted.value
-                    }.onChange { row -> Void in
-                        if (row.value == true) {
-                            mediaPlayer.muteOn()
-                        } else {
-                            mediaPlayer.muteOff()
-                        }
+                        }.onChange { row -> Void in
+                            if (row.value == true) {
+                                mediaPlayer.muteOn()
+                            } else {
+                                mediaPlayer.muteOff()
+                            }
                     }
                 }
                 break
@@ -131,8 +131,8 @@ class EntityAttributesViewController: FormViewController {
                         $0.value = volume
                         $0.maximumValue = 100
                         $0.steps = 100
-                    }.onChange { row -> Void in
-                        mediaPlayer.setVolume(row.value!)
+                        }.onChange { row -> Void in
+                            mediaPlayer.setVolume(row.value!)
                     }
                 }
                 break
@@ -144,12 +144,12 @@ class EntityAttributesViewController: FormViewController {
                     form.last! <<< SwitchRow(attribute.0) {
                         $0.title = entity?.Name
                         $0.value = (entity?.State == "on") ? true : false
-                    }.onChange { row -> Void in
-                        if (row.value == true) {
-                            let _ = HomeAssistantAPI.sharedInstance.turnOn(entityId: entity!.ID)
-                        } else {
-                            let _ = HomeAssistantAPI.sharedInstance.turnOff(entityId: entity!.ID)
-                        }
+                        }.onChange { row -> Void in
+                            if (row.value == true) {
+                                let _ = HomeAssistantAPI.sharedInstance.turnOn(entityId: entity!.ID)
+                            } else {
+                                let _ = HomeAssistantAPI.sharedInstance.turnOff(entityId: entity!.ID)
+                            }
                     }
                 } else {
                     fallthrough

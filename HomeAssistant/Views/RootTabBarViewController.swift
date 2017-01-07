@@ -49,13 +49,13 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
         let allGroups = realm.objects(Group.self).filter {
             var shouldReturn = true
-//            if prefs.bool(forKey: "allowAllGroups") == false {
-//                shouldReturn = (!$0.Auto && !$0.Hidden && $0.View)
-//                print("$0.Auto: \($0.Auto) !$0.Auto: \(!$0.Auto)")
-//                print("$0.Hidden: \($0.Hidden) !$0.Hidden: \(!$0.Hidden)")
-//                print("$0.View: \($0.View) !$0.View: \(!$0.View)")
-//                print("ShouldReturn is now", shouldReturn)
-//            }
+            //            if prefs.bool(forKey: "allowAllGroups") == false {
+            //                shouldReturn = (!$0.Auto && !$0.Hidden && $0.View)
+            //                print("$0.Auto: \($0.Auto) !$0.Auto: \(!$0.Auto)")
+            //                print("$0.Hidden: \($0.Hidden) !$0.Hidden: \(!$0.Hidden)")
+            //                print("$0.View: \($0.View) !$0.View: \(!$0.View)")
+            //                print("ShouldReturn is now", shouldReturn)
+            //            }
             // If all entities are a group, return false
             var groupCheck = [String]()
             for entity in $0.Entities {
@@ -66,16 +66,16 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 shouldReturn = false
             }
             return shouldReturn
-        }.sorted {
-            if $0.IsAllGroup == true {
-                return false
-            } else {
-                if $0.Order.value != nil && $1.Order.value != nil {
-                    return $0.Order.value! < $1.Order.value!
+            }.sorted {
+                if $0.IsAllGroup == true {
+                    return false
                 } else {
-                    return $0.FriendlyName! < $1.FriendlyName!
+                    if $0.Order.value != nil && $1.Order.value != nil {
+                        return $0.Order.value! < $1.Order.value!
+                    } else {
+                        return $0.FriendlyName! < $1.FriendlyName!
+                    }
                 }
-            }
         }
         for (index, group) in allGroups.enumerated() {
             if group.Entities.count < 1 { continue }
@@ -188,22 +188,22 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
             let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
-        }.catch {error in
-            let nserror = error as NSError
-            let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+            }.catch {error in
+                let nserror = error as NSError
+                let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
         }
     }
 
     /*
-    // MARK: - Navigation
+     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
 
 }

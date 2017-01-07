@@ -93,29 +93,29 @@ class SettingsViewController: FormViewController {
                 $0.value = self.baseURL
                 $0.placeholder = "https://homeassistant.myhouse.com"
                 $0.disabled = Condition(booleanLiteral: (self.configured && showErrorConnectingMessage == false))
-            }.onChange { row in
-                if row.value == URL(string: "https://") { return }
-                let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
-                apiPasswordRow.value = ""
-                if let url = row.value {
-                    let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
-                    if !cleanUrl.hasValidScheme {
-                        let alert = UIAlertController(title: "Invalid URL", message: "The URL must begin with either http:// or https://.", preferredStyle: UIAlertControllerStyle.alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
+                }.onChange { row in
+                    if row.value == URL(string: "https://") { return }
+                    let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
+                    apiPasswordRow.value = ""
+                    if let url = row.value {
+                        let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
+                        if !cleanUrl.hasValidScheme {
+                            let alert = UIAlertController(title: "Invalid URL", message: "The URL must begin with either http:// or https://.", preferredStyle: UIAlertControllerStyle.alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                        } else {
+                            self.baseURL = cleanUrl.cleanedURL
+                        }
+                    }
+                }.cellUpdate { cell, row in
+                    if row.isHighlighted {
+                        row.value = URL(string: "https://")
                     } else {
-                        self.baseURL = cleanUrl.cleanedURL
+                        if row.value == URL(string: "https://") {
+                            row.value = nil
+                            cell.update()
+                        }
                     }
-                }
-            }.cellUpdate { cell, row in
-                if row.isHighlighted {
-                    row.value = URL(string: "https://")
-                } else {
-                    if row.value == URL(string: "https://") {
-                        row.value = nil
-                        cell.update()
-                    }
-                }
             }
 
             <<< PasswordRow("apiPassword") {
@@ -124,85 +124,85 @@ class SettingsViewController: FormViewController {
                 $0.disabled = Condition(booleanLiteral: self.configured && showErrorConnectingMessage == false)
                 $0.hidden = Condition(booleanLiteral: self.connectStep == 1)
                 $0.placeholder = "password"
-            }.onChange { row in
-                self.password = row.value
+                }.onChange { row in
+                    self.password = row.value
             }
 
             <<< ButtonRow("connect") {
                 $0.title = "Connect"
                 $0.hidden = Condition(booleanLiteral: self.configured)
-            }.onCellSelection { _, row in
-                if self.connectStep == 1 {
-                    if let url = self.baseURL {
-                        HomeAssistantAPI.sharedInstance.GetDiscoveryInfo(baseUrl: url).then { discoveryInfo -> Void in
-                            let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
-                            urlRow.disabled = true
-                            urlRow.evaluateDisabled()
-                            let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
-                            apiPasswordRow.value = ""
-                            apiPasswordRow.hidden = Condition(booleanLiteral: !discoveryInfo.RequiresPassword)
-                            apiPasswordRow.evaluateHidden()
-                            let discoverySection: Section = self.form.sectionBy(tag: "discoveredInstances")!
-                            discoverySection.hidden = true
-                            discoverySection.evaluateHidden()
-                            self.connectStep = 2
-                        }.catch { error in
-                            print("Hit error when attempting to get discovery information", error)
-                            let alert = UIAlertController(title: "Error during connection attempt", message: "\(error.localizedDescription)\r\n\r\nPlease try again.", preferredStyle: UIAlertControllerStyle.alert)
-                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                            self.present(alert, animated: true, completion: nil)
-                        }
-                    }
-                } else if self.connectStep == 2 {
-                    firstly {
-                        HomeAssistantAPI.sharedInstance.Setup(baseAPIUrl: self.baseURL!.absoluteString, APIPassword: self.password!)
-                    }.then {_ in
-                        HomeAssistantAPI.sharedInstance.Connect()
-                    }.then { config -> Void in
-                        print("Connected!")
-                        let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
-                        apiPasswordRow.disabled = true
-                        apiPasswordRow.evaluateDisabled()
-                        self.connectStep = 1
-                        row.hidden = true
-                        row.evaluateHidden()
+                }.onCellSelection { _, row in
+                    if self.connectStep == 1 {
                         if let url = self.baseURL {
-                            self.prefs.setValue(url.absoluteString, forKey: "baseURL")
-                        }
-                        if let password = self.password {
-                            self.prefs.setValue(password, forKey: "apiPassword")
-                        }
-                        self.prefs.synchronize()
-                        self.form.setValues(["locationName": config.LocationName, "version": config.Version])
-                        let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
-                        locationNameRow.updateCell()
-                        let versionRow: LabelRow = self.form.rowBy(tag: "version")!
-                        versionRow.updateCell()
-                        let statusSection: Section = self.form.sectionBy(tag: "status")!
-                        statusSection.hidden = false
-                        statusSection.evaluateHidden()
-                        let detailsSection: Section = self.form.sectionBy(tag: "details")!
-                        detailsSection.hidden = false
-                        detailsSection.evaluateHidden()
-                        let resetSection: Section = self.form.sectionBy(tag: "reset")!
-                        resetSection.hidden = false
-                        resetSection.evaluateHidden()
-                        let alert = UIAlertController(title: "Connected", message: "Please force quit and re-open the app to continue.", preferredStyle: UIAlertControllerStyle.alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
-                    }.catch { error in
-                        print("Connection error!", error)
-                        var errorMessage = error.localizedDescription
-                        if let error = error as? AFError {
-                            if error.responseCode == 401 {
-                                errorMessage = "The password was incorrect."
+                            HomeAssistantAPI.sharedInstance.GetDiscoveryInfo(baseUrl: url).then { discoveryInfo -> Void in
+                                let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
+                                urlRow.disabled = true
+                                urlRow.evaluateDisabled()
+                                let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
+                                apiPasswordRow.value = ""
+                                apiPasswordRow.hidden = Condition(booleanLiteral: !discoveryInfo.RequiresPassword)
+                                apiPasswordRow.evaluateHidden()
+                                let discoverySection: Section = self.form.sectionBy(tag: "discoveredInstances")!
+                                discoverySection.hidden = true
+                                discoverySection.evaluateHidden()
+                                self.connectStep = 2
+                                }.catch { error in
+                                    print("Hit error when attempting to get discovery information", error)
+                                    let alert = UIAlertController(title: "Error during connection attempt", message: "\(error.localizedDescription)\r\n\r\nPlease try again.", preferredStyle: UIAlertControllerStyle.alert)
+                                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                                    self.present(alert, animated: true, completion: nil)
                             }
                         }
-                        let alert = UIAlertController(title: "Error during connection with authentication attempt", message: "\(errorMessage)\r\n\r\nPlease try again.", preferredStyle: UIAlertControllerStyle.alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
+                    } else if self.connectStep == 2 {
+                        firstly {
+                            HomeAssistantAPI.sharedInstance.Setup(baseAPIUrl: self.baseURL!.absoluteString, APIPassword: self.password!)
+                            }.then {_ in
+                                HomeAssistantAPI.sharedInstance.Connect()
+                            }.then { config -> Void in
+                                print("Connected!")
+                                let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
+                                apiPasswordRow.disabled = true
+                                apiPasswordRow.evaluateDisabled()
+                                self.connectStep = 1
+                                row.hidden = true
+                                row.evaluateHidden()
+                                if let url = self.baseURL {
+                                    self.prefs.setValue(url.absoluteString, forKey: "baseURL")
+                                }
+                                if let password = self.password {
+                                    self.prefs.setValue(password, forKey: "apiPassword")
+                                }
+                                self.prefs.synchronize()
+                                self.form.setValues(["locationName": config.LocationName, "version": config.Version])
+                                let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
+                                locationNameRow.updateCell()
+                                let versionRow: LabelRow = self.form.rowBy(tag: "version")!
+                                versionRow.updateCell()
+                                let statusSection: Section = self.form.sectionBy(tag: "status")!
+                                statusSection.hidden = false
+                                statusSection.evaluateHidden()
+                                let detailsSection: Section = self.form.sectionBy(tag: "details")!
+                                detailsSection.hidden = false
+                                detailsSection.evaluateHidden()
+                                let resetSection: Section = self.form.sectionBy(tag: "reset")!
+                                resetSection.hidden = false
+                                resetSection.evaluateHidden()
+                                let alert = UIAlertController(title: "Connected", message: "Please force quit and re-open the app to continue.", preferredStyle: UIAlertControllerStyle.alert)
+                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                                self.present(alert, animated: true, completion: nil)
+                            }.catch { error in
+                                print("Connection error!", error)
+                                var errorMessage = error.localizedDescription
+                                if let error = error as? AFError {
+                                    if error.responseCode == 401 {
+                                        errorMessage = "The password was incorrect."
+                                    }
+                                }
+                                let alert = UIAlertController(title: "Error during connection with authentication attempt", message: "\(errorMessage)\r\n\r\nPlease try again.", preferredStyle: UIAlertControllerStyle.alert)
+                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                                self.present(alert, animated: true, completion: nil)
+                        }
                     }
-                }
             }
 
             +++ Section(header: "Status", footer: "") {
@@ -251,53 +251,53 @@ class SettingsViewController: FormViewController {
                     $0.value = removeSpecialCharsFromString(text: UIDevice.current.name).replacingOccurrences(of: " ", with: "_").lowercased()
                 }
                 $0.cell.textField.autocapitalizationType = .none
-            }.cellUpdate { _, row in
-                if row.isHighlighted == false {
-                    self.prefs.setValue(row.value, forKey: "deviceId")
-                    self.prefs.synchronize()
-                }
+                }.cellUpdate { _, row in
+                    if row.isHighlighted == false {
+                        self.prefs.setValue(row.value, forKey: "deviceId")
+                        self.prefs.synchronize()
+                    }
             }
             +++ Section() {
                 $0.tag = "details"
                 $0.hidden = Condition(booleanLiteral: !self.configured)
             }
-//            <<< ButtonRow("displaySettings") {
-//                $0.title = "Display Settings"
-//                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-//                    let view = SettingsDetailViewController()
-//                    view.detailGroup = "display"
-//                    return view
-//                }, onDismiss: { vc in
-//                    let _ = vc.navigationController?.popViewController(animated: true)
-//                })
-//            }
+            //            <<< ButtonRow("displaySettings") {
+            //                $0.title = "Display Settings"
+            //                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+            //                    let view = SettingsDetailViewController()
+            //                    view.detailGroup = "display"
+            //                    return view
+            //                }, onDismiss: { vc in
+            //                    let _ = vc.navigationController?.popViewController(animated: true)
+            //                })
+            //            }
 
             <<< ButtonRow("enableLocation") {
                 $0.title = "Enable location tracking"
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.locationEnabled)
-            }.onCellSelection { _, row in
-                let pscope = PermissionScope()
+                }.onCellSelection { _, row in
+                    let pscope = PermissionScope()
 
-                pscope.addPermission(LocationAlwaysPermission(),
-                                     message: "We use this to inform\r\nHome Assistant of your device location and state.")
-                pscope.show({finished, results in
-                    if finished {
-                        print("Location Permissions finished!", finished, results)
-                        if results[0].status == .authorized {
-                            HomeAssistantAPI.sharedInstance.trackLocation()
+                    pscope.addPermission(LocationAlwaysPermission(),
+                                         message: "We use this to inform\r\nHome Assistant of your device location and state.")
+                    pscope.show({finished, results in
+                        if finished {
+                            print("Location Permissions finished!", finished, results)
+                            if results[0].status == .authorized {
+                                HomeAssistantAPI.sharedInstance.trackLocation()
+                            }
+                            row.hidden = true
+                            row.evaluateHidden()
+                            let locationSettingsRow: ButtonRow = self.form.rowBy(tag: "locationSettings")!
+                            locationSettingsRow.hidden = false
+                            locationSettingsRow.evaluateHidden()
+                            let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(tag: "deviceTrackerComponentLoaded")!
+                            deviceTrackerComponentLoadedRow.hidden = false
+                            deviceTrackerComponentLoadedRow.evaluateHidden()
                         }
-                        row.hidden = true
-                        row.evaluateHidden()
-                        let locationSettingsRow: ButtonRow = self.form.rowBy(tag: "locationSettings")!
-                        locationSettingsRow.hidden = false
-                        locationSettingsRow.evaluateHidden()
-                        let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(tag: "deviceTrackerComponentLoaded")!
-                        deviceTrackerComponentLoadedRow.hidden = false
-                        deviceTrackerComponentLoadedRow.evaluateHidden()
-                    }
-                }, cancelled: { (results) -> Void in
-                    print("Permissions finished, resetting API!")
-                })
+                    }, cancelled: { (results) -> Void in
+                        print("Permissions finished, resetting API!")
+                    })
             }
 
             <<< ButtonRow("locationSettings") {
@@ -307,37 +307,37 @@ class SettingsViewController: FormViewController {
                     let view = SettingsDetailViewController()
                     view.detailGroup = "location"
                     return view
-                }, onDismiss: { vc in
-                    let _ = vc.navigationController?.popViewController(animated: true)
+                    }, onDismiss: { vc in
+                        let _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
 
             <<< ButtonRow("enableNotifications") {
                 $0.title = "Enable notifications"
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.notificationsEnabled)
-            }.onCellSelection { _, row in
-                let pscope = PermissionScope()
+                }.onCellSelection { _, row in
+                    let pscope = PermissionScope()
 
-                pscope.addPermission(NotificationsPermission(),
-                                     message: "We use this to let you\r\nsend notifications to your device.")
-                pscope.show({finished, results in
-                    if finished {
-                        print("Notifications Permissions finished!", finished, results)
-                        if results[0].status == .authorized {
-                            HomeAssistantAPI.sharedInstance.setupPush()
-                            row.hidden = true
-                            row.evaluateHidden()
-                            let notificationSettingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
-                            notificationSettingsRow.hidden = false
-                            notificationSettingsRow.evaluateHidden()
-                            let notifyPlatformLoadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
-                            notifyPlatformLoadedRow.hidden = false
-                            notifyPlatformLoadedRow.evaluateHidden()
+                    pscope.addPermission(NotificationsPermission(),
+                                         message: "We use this to let you\r\nsend notifications to your device.")
+                    pscope.show({finished, results in
+                        if finished {
+                            print("Notifications Permissions finished!", finished, results)
+                            if results[0].status == .authorized {
+                                HomeAssistantAPI.sharedInstance.setupPush()
+                                row.hidden = true
+                                row.evaluateHidden()
+                                let notificationSettingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
+                                notificationSettingsRow.hidden = false
+                                notificationSettingsRow.evaluateHidden()
+                                let notifyPlatformLoadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
+                                notifyPlatformLoadedRow.hidden = false
+                                notifyPlatformLoadedRow.evaluateHidden()
+                            }
                         }
-                    }
-                }, cancelled: { (results) -> Void in
-                    print("Permissions finished, resetting API!")
-                })
+                    }, cancelled: { (results) -> Void in
+                        print("Permissions finished, resetting API!")
+                    })
             }
 
             <<< ButtonRow("notificationSettings") {
@@ -348,8 +348,8 @@ class SettingsViewController: FormViewController {
                     let view = SettingsDetailViewController()
                     view.detailGroup = "notifications"
                     return view
-                }, onDismiss: { vc in
-                    let _ = vc.navigationController?.popViewController(animated: true)
+                    }, onDismiss: { vc in
+                        let _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
 
@@ -359,22 +359,22 @@ class SettingsViewController: FormViewController {
             }
             <<< ButtonRow("resetApp") {
                 $0.title = "Reset"
-            }.cellUpdate { cell, _ in
-                cell.textLabel?.textColor = .red
-            }.onCellSelection { _, _ in
-                let alert = UIAlertController(title: "Reset", message: "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.", preferredStyle: UIAlertControllerStyle.alert)
+                }.cellUpdate { cell, _ in
+                    cell.textLabel?.textColor = .red
+                }.onCellSelection { _, _ in
+                    let alert = UIAlertController(title: "Reset", message: "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.", preferredStyle: UIAlertControllerStyle.alert)
 
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
-                    print("Handle Cancel Logic here")
-                }))
+                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+                        print("Handle Cancel Logic here")
+                    }))
 
-                alert.addAction(UIAlertAction(title: "Reset", style: .destructive, handler: { (_) in
-                    print("Handle Ok logic here")
-                    self.ResetApp()
-                }))
+                    alert.addAction(UIAlertAction(title: "Reset", style: .destructive, handler: { (_) in
+                        print("Handle Ok logic here")
+                        self.ResetApp()
+                    }))
 
-                self.present(alert, animated: true, completion: nil)
-            }
+                    self.present(alert, animated: true, completion: nil)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -393,8 +393,8 @@ class SettingsViewController: FormViewController {
             if self.form.rowBy(tag: discoveryInfo.LocationName) == nil {
                 discoverySection
                     <<< ButtonRow(discoveryInfo.LocationName) {
-                            $0.title = discoveryInfo.LocationName
-                            $0.cellStyle = UITableViewCellStyle.subtitle
+                        $0.title = discoveryInfo.LocationName
+                        $0.cellStyle = UITableViewCellStyle.subtitle
                         }.cellUpdate { cell, _ in
                             cell.textLabel?.textColor = .black
                             cell.detailTextLabel?.text = detailTextLabel
@@ -547,6 +547,6 @@ class SettingsViewController: FormViewController {
 
         let navController = UINavigationController(rootViewController: aboutView)
         self.show(navController, sender: nil)
-//        self.present(navController, animated: true, completion: nil)
+        //        self.present(navController, animated: true, completion: nil)
     }
 }

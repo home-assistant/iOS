@@ -33,91 +33,91 @@ class AboutViewController: FormViewController {
             +++ Section()
             <<< ButtonRow() {
                 $0.title = "Website"
-            }.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .left
-                cell.accessoryType = .disclosureIndicator
-                cell.editingAccessoryType = cell.accessoryType
-                cell.textLabel?.textColor = nil
-            }.onCellSelection({ _ in
-                openURLInBrowser(url: "https://home-assistant.io/")
-            })
+                }.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .left
+                    cell.accessoryType = .disclosureIndicator
+                    cell.editingAccessoryType = cell.accessoryType
+                    cell.textLabel?.textColor = nil
+                }.onCellSelection({ _ in
+                    openURLInBrowser(url: "https://home-assistant.io/")
+                })
 
             <<< ButtonRow() {
                 $0.title = "Forums"
-            }.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .left
-                cell.accessoryType = .disclosureIndicator
-                cell.editingAccessoryType = cell.accessoryType
-                cell.textLabel?.textColor = nil
-            }.onCellSelection({ _ in
-                openURLInBrowser(url: "https://community.home-assistant.io/")
-            })
+                }.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .left
+                    cell.accessoryType = .disclosureIndicator
+                    cell.editingAccessoryType = cell.accessoryType
+                    cell.textLabel?.textColor = nil
+                }.onCellSelection({ _ in
+                    openURLInBrowser(url: "https://community.home-assistant.io/")
+                })
 
             <<< ButtonRow() {
                 $0.title = "Chat"
-            }.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .left
-                cell.accessoryType = .disclosureIndicator
-                cell.editingAccessoryType = cell.accessoryType
-                cell.textLabel?.textColor = nil
-            }.onCellSelection({ _ in
-                openURLInBrowser(url: "https://gitter.im/home-assistant/home-assistant")
-            })
+                }.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .left
+                    cell.accessoryType = .disclosureIndicator
+                    cell.editingAccessoryType = cell.accessoryType
+                    cell.textLabel?.textColor = nil
+                }.onCellSelection({ _ in
+                    openURLInBrowser(url: "https://gitter.im/home-assistant/home-assistant")
+                })
 
             <<< ButtonRow() {
                 $0.title = "Documentation"
-            }.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .left
-                cell.accessoryType = .disclosureIndicator
-                cell.editingAccessoryType = cell.accessoryType
-                cell.textLabel?.textColor = nil
-            }.onCellSelection({ _ in
-                openURLInBrowser(url: "https://home-assistant.io/ecosystem/ios/")
-            })
+                }.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .left
+                    cell.accessoryType = .disclosureIndicator
+                    cell.editingAccessoryType = cell.accessoryType
+                    cell.textLabel?.textColor = nil
+                }.onCellSelection({ _ in
+                    openURLInBrowser(url: "https://home-assistant.io/ecosystem/ios/")
+                })
 
             <<< ButtonRow() {
                 $0.title = "Home Assistant on Twitter"
-            }.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .left
-                cell.accessoryType = .disclosureIndicator
-                cell.editingAccessoryType = cell.accessoryType
-                cell.textLabel?.textColor = nil
-            }.onCellSelection({ _ in
-                self.openInTwitterApp(username: "home_assistant")
-            })
+                }.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .left
+                    cell.accessoryType = .disclosureIndicator
+                    cell.editingAccessoryType = cell.accessoryType
+                    cell.textLabel?.textColor = nil
+                }.onCellSelection({ _ in
+                    self.openInTwitterApp(username: "home_assistant")
+                })
 
             <<< ButtonRow() {
                 $0.title = "Home Assistant on Facebook"
-            }.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .left
-                cell.accessoryType = .disclosureIndicator
-                cell.editingAccessoryType = cell.accessoryType
-                cell.textLabel?.textColor = nil
-            }.onCellSelection({ _ in
-                self.openInFacebook(pageId: "292963007723872")
-            })
+                }.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .left
+                    cell.accessoryType = .disclosureIndicator
+                    cell.editingAccessoryType = cell.accessoryType
+                    cell.textLabel?.textColor = nil
+                }.onCellSelection({ _ in
+                    self.openInFacebook(pageId: "292963007723872")
+                })
 
             <<< ButtonRow() {
                 $0.title = "GitHub"
-            }.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .left
-                cell.accessoryType = .disclosureIndicator
-                cell.editingAccessoryType = cell.accessoryType
-                cell.textLabel?.textColor = nil
-            }.onCellSelection({ _ in
-                openURLInBrowser(url: "https://github.com/home-assistant/home-assistant-iOS")
-            })
+                }.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .left
+                    cell.accessoryType = .disclosureIndicator
+                    cell.editingAccessoryType = cell.accessoryType
+                    cell.textLabel?.textColor = nil
+                }.onCellSelection({ _ in
+                    openURLInBrowser(url: "https://github.com/home-assistant/home-assistant-iOS")
+                })
 
             <<< ButtonRow() {
                 $0.title = "GitHub Issue Tracker"
-            }.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .left
-                cell.accessoryType = .disclosureIndicator
-                cell.editingAccessoryType = cell.accessoryType
-                cell.textLabel?.textColor = nil
-            }.onCellSelection({ _ in
-                openURLInBrowser(url: "https://github.com/home-assistant/home-assistant-iOS/issues")
-            })
+                }.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .left
+                    cell.accessoryType = .disclosureIndicator
+                    cell.editingAccessoryType = cell.accessoryType
+                    cell.textLabel?.textColor = nil
+                }.onCellSelection({ _ in
+                    openURLInBrowser(url: "https://github.com/home-assistant/home-assistant-iOS/issues")
+                })
 
     }
 
@@ -128,7 +128,7 @@ class AboutViewController: FormViewController {
 
     /*
      // MARK: - Navigation
-     
+
      // In a storyboard-based application, you will often want to do a little preparation before navigation
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
      // Get the new view controller using segue.destinationViewController.
@@ -137,11 +137,11 @@ class AboutViewController: FormViewController {
      */
 
     func generateAcknowledgements() -> CPDAcknowledgementsViewController {
-//        let robbie = CPDContribution.init(name: "Robbie Trencheny", websiteAddress: "https://twitter.com/robbie", role: "Primary iOS developer")
-//        robbie.avatarAddress = "https://s.gravatar.com/avatar/04178c46aa6f009adba24b3e7ac64f14"
-//        let paulus = CPDContribution.init(name: "Paulus Schousten", websiteAddress: "https://twitter.com/balloob", role: "Home Assistant creator & BDFL")
-//        paulus.avatarAddress = "https://s.gravatar.com/avatar/dee932f2cb7ad0af8c5791217a085d35"
-//        let contributors = [robbie, paulus]
+        //        let robbie = CPDContribution.init(name: "Robbie Trencheny", websiteAddress: "https://twitter.com/robbie", role: "Primary iOS developer")
+        //        robbie.avatarAddress = "https://s.gravatar.com/avatar/04178c46aa6f009adba24b3e7ac64f14"
+        //        let paulus = CPDContribution.init(name: "Paulus Schousten", websiteAddress: "https://twitter.com/balloob", role: "Home Assistant creator & BDFL")
+        //        paulus.avatarAddress = "https://s.gravatar.com/avatar/dee932f2cb7ad0af8c5791217a085d35"
+        //        let contributors = [robbie, paulus]
         return CPDAcknowledgementsViewController.init(style: nil, acknowledgements: nil, contributions: nil)
     }
 
@@ -207,22 +207,22 @@ class HomeAssistantLogoView: UIView {
         super.init(coder: aDecoder)
     }
 
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//        let imageView = UIImageView(image: UIImage(named: "Logo"))
-//        imageView.frame = CGRect(x: 0, y: 0, width: 320, height: 130)
-//        imageView.autoresizingMask = .flexibleWidth
-//        self.frame = CGRect(x: 0, y: 0, width: 320, height: 130)
-//        imageView.contentMode = .scaleAspectFit
-//        self.addSubview(imageView)
-//        
-//        let descriptionLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 250, height: 50))
-//        descriptionLabel.textAlignment = .center
-//        descriptionLabel.text = "Awaken your home"
-//        self.addSubview(descriptionLabel)
-//    }
-//    
-//    required init?(coder aDecoder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
+    //    override init(frame: CGRect) {
+    //        super.init(frame: frame)
+    //        let imageView = UIImageView(image: UIImage(named: "Logo"))
+    //        imageView.frame = CGRect(x: 0, y: 0, width: 320, height: 130)
+    //        imageView.autoresizingMask = .flexibleWidth
+    //        self.frame = CGRect(x: 0, y: 0, width: 320, height: 130)
+    //        imageView.contentMode = .scaleAspectFit
+    //        self.addSubview(imageView)
+    //
+    //        let descriptionLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 250, height: 50))
+    //        descriptionLabel.textAlignment = .center
+    //        descriptionLabel.text = "Awaken your home"
+    //        self.addSubview(descriptionLabel)
+    //    }
+    //
+    //    required init?(coder aDecoder: NSCoder) {
+    //        fatalError("init(coder:) has not been implemented")
+    //    }
 }

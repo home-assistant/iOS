@@ -30,10 +30,10 @@ class SettingsDetailViewController: FormViewController {
                 <<< SwitchRow("allowAllGroups") {
                     $0.title = "Show all groups"
                     $0.value = prefs.bool(forKey: "allowAllGroups")
-                }.onChange { row in
-                    self.prefs.setValue(row.value, forKey: "allowAllGroups")
-                    self.prefs.synchronize()
-                }
+                    }.onChange { row in
+                        self.prefs.setValue(row.value, forKey: "allowAllGroups")
+                        self.prefs.synchronize()
+            }
         case "location":
             self.title = "Location Settings"
             for zone in realm.objects(Zone.self) {
@@ -44,8 +44,8 @@ class SettingsDetailViewController: FormViewController {
                     <<< SwitchRow() {
                         $0.title = "Updates Enabled"
                         $0.value = zone.trackingEnabled
-                    }.onChange { row in
-                        try! realm.write { zone.trackingEnabled = row.value! }
+                        }.onChange { row in
+                            try! realm.write { zone.trackingEnabled = row.value! }
                     }
                     <<< LocationRow() {
                         $0.title = "Location"
@@ -58,15 +58,15 @@ class SettingsDetailViewController: FormViewController {
                     <<< SwitchRow() {
                         $0.title = "Enter Notification"
                         $0.value = zone.enterNotification
-                    }.onChange { row in
-                        try! realm.write { zone.enterNotification = row.value! }
+                        }.onChange { row in
+                            try! realm.write { zone.enterNotification = row.value! }
                     }
                     <<< SwitchRow() {
                         $0.title = "Exit Notification"
                         $0.value = zone.exitNotification
-                    }.onChange { row in
-                        try! realm.write { zone.exitNotification = row.value! }
-                    }
+                        }.onChange { row in
+                            try! realm.write { zone.exitNotification = row.value! }
+                }
             }
         case "notifications":
             self.title = "Notification Settings"
@@ -81,41 +81,41 @@ class SettingsDetailViewController: FormViewController {
                     }
                     $0.disabled = true
                     $0.textAreaHeight = TextAreaHeight.dynamic(initialTextViewHeight: 40)
-                }.onCellSelection { _, row in
-                    let activityViewController = UIActivityViewController(activityItems: [row.value! as String], applicationActivities: nil)
-                    self.present(activityViewController, animated: true, completion: {})
+                    }.onCellSelection { _, row in
+                        let activityViewController = UIActivityViewController(activityItems: [row.value! as String], applicationActivities: nil)
+                        self.present(activityViewController, animated: true, completion: {})
                 }
 
                 +++ Section(header: "", footer: "Updating push settings will request the latest push actions and categories from Home Assistant.")
                 <<< ButtonRow() {
                     $0.title = "Update push settings"
-                }.onCellSelection {_, _ in
-                    HomeAssistantAPI.sharedInstance.setupPush()
-                    let alert = UIAlertController(title: "Settings Import", message: "Push settings imported from Home Assistant.", preferredStyle: UIAlertControllerStyle.alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
+                    }.onCellSelection {_, _ in
+                        HomeAssistantAPI.sharedInstance.setupPush()
+                        let alert = UIAlertController(title: "Settings Import", message: "Push settings imported from Home Assistant.", preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
                 }
 
                 +++ Section(header: "", footer: "Custom push notification sounds can be added via iTunes.")
                 <<< ButtonRow() {
                     $0.title = "Import sounds from iTunes"
-                }.onCellSelection {_, _ in
-                    let moved = movePushNotificationSounds()
-                    let message = (moved > 0) ? "\(moved) sounds were imported. Please restart your phone to complete the import." : "0 sounds were imported."
-                    let alert = UIAlertController(title: "Sounds Import", message: message, preferredStyle: UIAlertControllerStyle.alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                }
+                    }.onCellSelection {_, _ in
+                        let moved = movePushNotificationSounds()
+                        let message = (moved > 0) ? "\(moved) sounds were imported. Please restart your phone to complete the import." : "0 sounds were imported."
+                        let alert = UIAlertController(title: "Sounds Import", message: message, preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+            }
 
-//                <<< ButtonRow() {
-//                    $0.title = "Import system sounds"
-//                }.onCellSelection {_,_ in
-//                    let list = getSoundList()
-//                    print("system sounds list", list)
-//                    for sound in list {
-//                        copyFileToDirectory(sound)
-//                    }
-//                }
+            //                <<< ButtonRow() {
+            //                    $0.title = "Import system sounds"
+            //                }.onCellSelection {_,_ in
+            //                    let list = getSoundList()
+            //                    print("system sounds list", list)
+            //                    for sound in list {
+            //                        copyFileToDirectory(sound)
+            //                    }
+        //                }
         default:
             print("Something went wrong, no settings detail group named \(detailGroup)")
         }

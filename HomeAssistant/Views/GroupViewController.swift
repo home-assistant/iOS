@@ -91,15 +91,15 @@ class GroupViewController: FormViewController {
                             }, onDismiss: {
                                 vc in let _ = vc.navigationController?.popViewController(animated: true)
                         })
-                    }.cellUpdate { cell, _ in
-                        cell.detailTextLabel?.text = entity.State.capitalized
-                        if let uom = entity.UnitOfMeasurement {
-                            cell.detailTextLabel?.text = (entity.State.capitalized + " " + uom)
-                        }
-                        cell.imageView?.image = entity.EntityIcon
-                        if let picture = entity.DownloadedPicture {
-                            cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
-                        }
+                        }.cellUpdate { cell, _ in
+                            cell.detailTextLabel?.text = entity.State.capitalized
+                            if let uom = entity.UnitOfMeasurement {
+                                cell.detailTextLabel?.text = (entity.State.capitalized + " " + uom)
+                            }
+                            cell.imageView?.image = entity.EntityIcon
+                            if let picture = entity.DownloadedPicture {
+                                cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
+                            }
                     }
                 case "device_tracker":
                     if let dtracker = realm.object(ofType: DeviceTracker.self, forPrimaryKey: entity.ID) {
@@ -107,12 +107,12 @@ class GroupViewController: FormViewController {
                             self.form.last! <<< LocationRow(entity.ID) {
                                 $0.title = entity.Name
                                 $0.value = dtracker.location()
-                            }.cellUpdate { cell, _ in
-                                cell.detailTextLabel?.text = entity.CleanedState
-                                cell.imageView?.image = entity.EntityIcon
-                                if let picture = entity.DownloadedPicture {
-                                    cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
-                                }
+                                }.cellUpdate { cell, _ in
+                                    cell.detailTextLabel?.text = entity.CleanedState
+                                    cell.imageView?.image = entity.EntityIcon
+                                    if let picture = entity.DownloadedPicture {
+                                        cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
+                                    }
                             }
                         } else {
                             self.form.last! <<< ButtonRow(entity.ID) {
@@ -154,19 +154,19 @@ class GroupViewController: FormViewController {
                                 }
                         }
                     }
-//                case "input_select":
-//                    self.form.last! <<< PickerInlineRow<String>(entity.ID) {
-//                        $0.title = entity.Name
-//                        $0.value = entity.State
-//                        $0.options = entity.Attributes["options"] as! [String]
-//                    }.onChange { row -> Void in
-//                        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "input_select", service: "select_option", serviceData: ["entity_id": entity.ID as AnyObject, "option": row.value! as AnyObject])
-//                    }.cellUpdate { cell, row in
-//                        cell.imageView?.image = entity.EntityIcon
-//                        if let picture = entity.DownloadedPicture {
-//                            cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
-//                        }
-//                    }
+                    //                case "input_select":
+                    //                    self.form.last! <<< PickerInlineRow<String>(entity.ID) {
+                    //                        $0.title = entity.Name
+                    //                        $0.value = entity.State
+                    //                        $0.options = entity.Attributes["options"] as! [String]
+                    //                    }.onChange { row -> Void in
+                    //                        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "input_select", service: "select_option", serviceData: ["entity_id": entity.ID as AnyObject, "option": row.value! as AnyObject])
+                    //                    }.cellUpdate { cell, row in
+                    //                        cell.imageView?.image = entity.EntityIcon
+                    //                        if let picture = entity.DownloadedPicture {
+                    //                            cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
+                    //                        }
+                //                    }
                 case "lock":
                     self.form.last! <<< SwitchRow(entity.ID) {
                         $0.title = entity.Name
@@ -207,21 +207,21 @@ class GroupViewController: FormViewController {
                             }
                         }
 
-                    }.onChange { row -> Void in
-                        if let slider = entity as? InputSlider {
-                            slider.SelectValue(row.value!)
-                        }
-                    }.cellUpdate { _, row in
-//                        if let uom = entity.UnitOfMeasurement {
-//                            cell.detailTextLabel?.text = (entity.State.capitalized + " " + uom)
-//                        }
-                        row.displayValueFor = { (_) in
-                            if let uom = entity.UnitOfMeasurement {
-                                return (entity.State.capitalized + " " + uom)
-                            } else {
-                                return entity.State.capitalized
+                        }.onChange { row -> Void in
+                            if let slider = entity as? InputSlider {
+                                slider.SelectValue(row.value!)
                             }
-                        }
+                        }.cellUpdate { _, row in
+                            //                        if let uom = entity.UnitOfMeasurement {
+                            //                            cell.detailTextLabel?.text = (entity.State.capitalized + " " + uom)
+                            //                        }
+                            row.displayValueFor = { (_) in
+                                if let uom = entity.UnitOfMeasurement {
+                                    return (entity.State.capitalized + " " + uom)
+                                } else {
+                                    return entity.State.capitalized
+                                }
+                            }
                     }
                 default:
                     print("There is no row type defined for \(entity.Domain) so we are skipping it")

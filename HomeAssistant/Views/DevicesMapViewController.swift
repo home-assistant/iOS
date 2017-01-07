@@ -59,7 +59,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         let locateMeButton = MKUserTrackingBarButtonItem(mapView: mapView)
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         let segmentedControlButtonItem = UIBarButtonItem(customView: typeController)
-//        let bookmarksButton = UIBarButtonItem(barButtonSystemItem: .Bookmarks, target: self, action: nil)
+        //        let bookmarksButton = UIBarButtonItem(barButtonSystemItem: .Bookmarks, target: self, action: nil)
 
         self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
 
@@ -77,9 +77,9 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             dropPin.coordinate = device.locationCoordinates()
             dropPin.title = device.Name
             var subtitlePieces: [String] = []
-//            if let changedTime = device.LastChanged {
-//                subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago")
-//            }
+            //            if let changedTime = device.LastChanged {
+            //                subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago")
+            //            }
             if let battery = device.Battery.value {
                 subtitlePieces.append("Battery: "+String(battery)+"%")
             }
@@ -139,7 +139,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             } else {
                 annotationView.leftCalloutAccessoryView = UIImageView(image: annotation.device!.EntityIcon)
             }
-//            annotationView.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+            //            annotationView.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
             return annotationView
         } else {
             return nil
@@ -174,11 +174,11 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
-        }.catch {error in
-            let nserror = error as NSError
-            let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+            }.catch {error in
+                let nserror = error as NSError
+                let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
         }
     }
 }

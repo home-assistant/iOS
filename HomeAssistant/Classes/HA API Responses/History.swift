@@ -11,8 +11,8 @@ import ObjectMapper
 
 class HistoryResponse: Mappable {
 
-//    var EntityId: String?
-//    var Domain: String?
+    //    var EntityId: String?
+    //    var Domain: String?
     var Entities: [HistoryGroup]?
 
     required init?(map: Map) {
@@ -22,9 +22,9 @@ class HistoryResponse: Mappable {
     func mapping(map: Map) {
         print("map", map)
         Entities <- map
-//        EntityId <- map["message"]
-//        Domain    <- (map["message"] == "API running.")
-//        Events <- map[
+        //        EntityId <- map["message"]
+        //        Domain    <- (map["message"] == "API running.")
+        //        Events <- map[
     }
 }
 
@@ -33,11 +33,11 @@ class HistoryGroup: Mappable {
     var Events: [Entity]?
 
     required init?(map: Map) {
-                print("MAP", map)
+        print("MAP", map)
     }
 
     func mapping(map: Map) {
-                print("map", map)
+        print("map", map)
         Events <- map
         //        EntityId <- map["message"]
         //        Domain    <- (map["message"] == "API running.")

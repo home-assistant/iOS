@@ -40,7 +40,7 @@ public class MapViewController: UIViewController, TypedRowControllerType, MKMapV
         let v = MKMapView(frame: self.view.bounds)
         v.autoresizingMask = UIViewAutoresizing.flexibleWidth.union(UIViewAutoresizing.flexibleHeight)
         return v
-    }()
+        }()
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
