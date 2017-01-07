@@ -1,9 +1,9 @@
-git_url "https://github.com/home-assistant/ios-certificates"
+git_url ENV["HOMEASSISTANT_CERTIFICATE_GIT"]
 
 type "appstore" # The default type, can be: appstore, adhoc or development
 
 app_identifier "io.robbie.HomeAssistant"
-username "me@robbiet.us" # Your Apple Developer Portal username
+username ENV["HOMEASSISTANT_APPLE_ID"] # Your Apple Developer Portal username
 
 # For all available options run `match --help`
 # Remove the # in the beginning of the line to enable the other options

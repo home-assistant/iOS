@@ -1,7 +1,4 @@
-apple_id "me@robbiet.us"
 app_identifier "io.robbie.HomeAssistant" # The bundle identifier of your app
 
-team_id "UTQFCBPQRF"  # Developer Portal Team ID
-
-# you can even provide different app identifiers, Apple IDs and team names per lane:
-# More information: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Appfile.md
+apple_id ENV["HOMEASSISTANT_APPLE_ID"]
+team_id ENV["HOMEASSISTANT_TEAM_ID"]  # Developer Portal Team ID

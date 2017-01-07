@@ -18,16 +18,38 @@ default_platform :ios
 platform :ios do
   before_all do
     # cocoapods
+    ENV["DELIVER_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
+    ENV["MATCH_PASSWORD"] = ENV["HOMEASSISTANT_CERTIFICATE_KEY"]
+    ENV["PILOT_APPLE_ID"] = ENV["HOMEASSISTANT_APPLE_ID"]
+    ENV["SIGH_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
   end
 
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
   lane :certs do
-    match(app_identifier: "io.robbie.HomeAssistant", type: "development")
-    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "development")
-    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "development")
-    match(app_identifier: "io.robbie.HomeAssistant", type: "appstore")
-    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "appstore")
-    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "appstore")
+    match(
+      app_identifier: "io.robbie.HomeAssistant",
+      type: "development"
+    )
+    match(
+      app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService",
+      type: "development"
+    )
+    match(
+      app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension",
+      type: "development"
+    )
+    match(
+      app_identifier: "io.robbie.HomeAssistant",
+      type: "appstore"
+    )
+    match(
+      app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService",
+      type: "appstore"
+    )
+    match(
+      app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension",
+      type: "appstore"
+    )
   end
 
   def change_log_since_last_tag
@@ -44,15 +66,6 @@ platform :ios do
     "#{build_type}/#{version_number}/#{build_number}"
   end
 
-  def load_keys
-    begin
-      import("keys")
-    rescue => exception
-      UI.error("fastlane/keys file not found. To use this Fastfile, copy fastlane/keys.template into fastlane/keys and fill in the values")
-      raise exception
-    end
-  end
-
   private_lane :verify_xcode_version do
     ensure_xcode_version(version: REQUIRED_XCODE_VERSION)
   end
@@ -60,7 +73,6 @@ platform :ios do
   desc "Submit a new Beta Build to Apple TestFlight"
   desc "This will also make sure the profile is up to date"
   lane :go_testflight do |options|
-    load_keys
 
     ensure_git_branch(
       branch: "(master|release\\S+|hotfix\\S+)"
@@ -70,7 +82,7 @@ platform :ios do
 
     git_pull
 
-    #verify_xcode_version
+    verify_xcode_version
 
     version_number = options[:version_number] || get_version_number
 
@@ -86,9 +98,19 @@ platform :ios do
     clean_build_artifacts
     clear_derived_data
 
-    match(app_identifier: "io.robbie.HomeAssistant", readonly: true)
-    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", readonly: true)
-    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", readonly: true)
+    match(
+      app_identifier: "io.robbie.HomeAssistant",
+      readonly: true
+    )
+    match(
+      app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService",
+      readonly: true
+    )
+    match(
+      app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension",
+      readonly: true
+    )
+
     gym(
       workspace: "HomeAssistant.xcworkspace",
       scheme: "HomeAssistant",
@@ -97,7 +119,12 @@ platform :ios do
       output_directory: "./build"
     )
 
-    notification(subtitle: "Finished Building", message: "Uploading to Testflight", activate: "com.googlecode.iterm2", app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png")
+    notification(
+      subtitle: "Finished Building",
+      message: "Uploading to Testflight",
+      activate: "com.googlecode.iterm2",
+      app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png"
+    )
 
     pilot(
       changelog: change_log,
@@ -105,7 +132,12 @@ platform :ios do
       distribute_external: false
     )
 
-    notification(subtitle: "Finished Uploading", message: "Upload complete. Committing version bump and pushing to Git", activate: "com.googlecode.iterm2", app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png")
+    notification(
+      subtitle: "Finished Uploading",
+      message: "Upload complete. Committing version bump and pushing to Git",
+      activate: "com.googlecode.iterm2",
+      app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png"
+    )
 
     commit_version_bump(
       message: "Version bump to #{complete_version_number}",
@@ -116,14 +148,19 @@ platform :ios do
 
     set_github_release(
       repository_name: "home-assistant/home-assistant-iOS",
-      api_token: ENV["GITHUB_API_TOKEN"],
+      api_token: ENV["HOMEASSISTANT_GITHUB_API_TOKEN"],
       name: complete_version_number,
       tag_name: tag_name("testflight", version_number, build_number),
       description: change_log || "Release commit",
       is_prerelease: false
     )
 
-    notification(subtitle: "Finished", message: "Build #{complete_version_number} built and uploaded to Testflight", activate: "com.googlecode.iterm2", app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png")
+    notification(
+      subtitle: "Finished",
+      message: "Build #{complete_version_number} built and uploaded to Testflight",
+      activate: "com.googlecode.iterm2",
+      app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png"
+    )
 
     rocket
   end
@@ -132,9 +169,15 @@ platform :ios do
   lane :go_appstore do
     increment_build_number
     commit_version_bump
-    match(type: "appstore")
+    match(
+      type: "appstore"
+    )
     # snapshot
-    gym(scheme: "HomeAssistant", workspace: "HomeAssistant.xcworkspace", output_directory: "./build") # Build your app - more options available
+    gym(
+      scheme: "HomeAssistant",
+      workspace: "HomeAssistant.xcworkspace",
+      output_directory: "./build"
+    ) # Build your app - more options available
     deliver(force: true)
     # frameit
   end
