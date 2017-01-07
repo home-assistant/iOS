@@ -11,28 +11,33 @@ import FontAwesomeKit
 import Crashlytics
 
 func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeight: Double, color: UIColor) -> UIImage {
-    let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as! [String:String]
-    Crashlytics.sharedInstance().setFloatValue(Float(iconWidth), forKey: "iconWidth")
-    Crashlytics.sharedInstance().setFloatValue(Float(iconHeight), forKey: "iconHeight")
-    Crashlytics.sharedInstance().setObjectValue(iconIdentifier, forKey: "iconIdentifier")
-    let fixedIconIdentifier = iconIdentifier.replacingOccurrences(of: ":", with: "-")
-    let iconCode = iconCodes[fixedIconIdentifier]
-    if iconIdentifier.contains("mdi") == false || iconCode == nil {
-        print("Invalid icon requested", iconIdentifier)
-        CLSLogv("Invalid icon requested %@", getVaList([iconIdentifier]))
-        let alert = UIAlertController(title: "Invalid icon", message: "There is an invalid icon in your configuration. Please search your configuration files for: \(iconIdentifier) and set it to a valid Material Design Icon. Until then, this icon will be a red exclamation point and this alert will continue to display.", preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-        UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
-        let iconCode = iconCodes["mdi-exclamation"]
+    if let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as? [String:String] {
+        Crashlytics.sharedInstance().setFloatValue(Float(iconWidth), forKey: "iconWidth")
+        Crashlytics.sharedInstance().setFloatValue(Float(iconHeight), forKey: "iconHeight")
+        Crashlytics.sharedInstance().setObjectValue(iconIdentifier, forKey: "iconIdentifier")
+        let fixedIconIdentifier = iconIdentifier.replacingOccurrences(of: ":", with: "-")
+        let iconCode = iconCodes[fixedIconIdentifier]
+        if iconIdentifier.contains("mdi") == false || iconCode == nil {
+            print("Invalid icon requested", iconIdentifier)
+            CLSLogv("Invalid icon requested %@", getVaList([iconIdentifier]))
+            let alert = UIAlertController(title: "Invalid icon",
+                                          // swiftlint:disable:next line_length
+                message: "There is an invalid icon in your configuration. Please search your configuration files for: \(iconIdentifier) and set it to a valid Material Design Icon. Until then, this icon will be a red exclamation point and this alert will continue to display.", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
+            let iconCode = iconCodes["mdi-exclamation"]
+            let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
+            theIcon?.addAttribute(NSForegroundColorAttributeName, value: colorWithHexString("#ff0000"))
+            return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
+        }
+        CLSLogv("Requesting MaterialDesignIcon: Identifier: %@, Fixed Identifier: %@, Width: %f, Height: %f",
+                getVaList([iconIdentifier, fixedIconIdentifier, iconWidth, iconHeight]))
         let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
-        theIcon?.addAttribute(NSForegroundColorAttributeName, value: colorWithHexString("#ff0000"))
+        theIcon?.addAttribute(NSForegroundColorAttributeName, value: color)
         return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
+    } else {
+        return UIImage()
     }
-    CLSLogv("Requesting MaterialDesignIcon: Identifier: %@, Fixed Identifier: %@, Width: %f, Height: %f", getVaList([iconIdentifier, fixedIconIdentifier, iconWidth, iconHeight]))
-    // print("Requesting MaterialDesignIcon Identifier: \(iconIdentifier), Fixed identifier: \(fixedIconIdentifier), Width: \(iconWidth), Height: \(iconHeight)")
-    let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
-    theIcon?.addAttribute(NSForegroundColorAttributeName, value: color)
-    return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
 }
 
 func colorWithHexString(_ hexString: String, alpha: CGFloat? = 1.0) -> UIColor {
@@ -61,13 +66,25 @@ func intFromHexString(_ hexStr: String) -> UInt32 {
 }
 
 // Thanks to http://stackoverflow.com/a/35624018/486182
-// Must reboot device after installing new push sounds (http://stackoverflow.com/questions/34998278/change-push-notification-sound-file-only-works-after-ios-reboot)
+// Must reboot device after installing new push sounds (http://stackoverflow.com/q/34998278/486182)
 
+// swiftlint:disable:next function_body_length
 func movePushNotificationSounds() -> Int {
+    var movedFiles = 0
 
     let fileManager: FileManager = FileManager()
 
-    let libraryPath = try! fileManager.url(for: .libraryDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
+    let libraryPath: URL
+
+    do {
+        libraryPath = try fileManager.url(for: .libraryDirectory,
+                                          in: FileManager.SearchPathDomainMask.userDomainMask,
+                                          appropriateFor: nil, create: false)
+    } catch let error as NSError {
+        print("Error when building URL for library directory", error)
+        return 0
+    }
+
     let librarySoundsPath = libraryPath.appendingPathComponent("Sounds")
 
     do {
@@ -78,9 +95,29 @@ func movePushNotificationSounds() -> Int {
         return 0
     }
 
-    let documentsPath = try! fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-    let fileList = try! fileManager.contentsOfDirectory(at: documentsPath, includingPropertiesForKeys: nil, options: FileManager.DirectoryEnumerationOptions())
-    var movedFiles = 0
+    let documentsPath: URL
+
+    do {
+        documentsPath = try fileManager.url(for: .documentDirectory,
+                                            in: .userDomainMask,
+                                            appropriateFor: nil,
+                                            create: false)
+    } catch let error as NSError {
+        print("Error building documents path URL", error)
+        return 0
+    }
+
+    let fileList: [URL]
+
+    do {
+        fileList = try fileManager.contentsOfDirectory(at: documentsPath,
+                                                       includingPropertiesForKeys: nil,
+                                                       options: FileManager.DirectoryEnumerationOptions())
+    } catch let error as NSError {
+        print("Error getting contents of documents directory", error)
+        return 0
+    }
+
     for file in fileList {
         if file.lastPathComponent.contains("realm") {
             continue
@@ -93,8 +130,12 @@ func movePushNotificationSounds() -> Int {
         } catch let rmError as NSError {
             print("Error removing existing file", rmError)
         }
-        try! fileManager.moveItem(at: file, to: finalUrl)
-        movedFiles = movedFiles+1
+        do {
+            try fileManager.moveItem(at: file, to: finalUrl)
+            movedFiles = movedFiles+1
+        } catch let error as NSError {
+            print("Error when attempting to move files", error)
+        }
     }
     return movedFiles
 }
@@ -102,9 +143,12 @@ func movePushNotificationSounds() -> Int {
 func getSoundList() -> [String] {
     var result: [String] = []
     let fileManager = FileManager.default
-    let enumerator: FileManager.DirectoryEnumerator = fileManager.enumerator(atPath: "/System/Library/Audio/UISounds/New")!
+    let enumerator: FileManager.DirectoryEnumerator = fileManager.enumerator(atPath:
+        "/System/Library/Audio/UISounds/New")!
     for url in enumerator.allObjects {
-        result.append(url as! String)
+        if let urlString = url as? String {
+            result.append(urlString)
+        }
     }
     return result
 }
@@ -113,7 +157,8 @@ func getSoundList() -> [String] {
 func copyFileToDirectory(_ fileName: String) {
     let fileManager = FileManager.default
 
-    let libraryDir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.libraryDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+    let libraryDir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.libraryDirectory,
+                                                         FileManager.SearchPathDomainMask.userDomainMask, true)
     let directoryPath = "\(libraryDir.first!)/Sounds"
     do {
         print("Creating sounds directory at", directoryPath)
@@ -127,25 +172,48 @@ func copyFileToDirectory(_ fileName: String) {
     let notificationSoundPath = "\(directoryPath)/\(fileName)"
 
     let fileExist = fileManager.fileExists(atPath: notificationSoundPath)
-    if (fileExist) {
-        try! fileManager.removeItem(atPath: notificationSoundPath)
+    if fileExist {
+        do {
+            try fileManager.removeItem(atPath: notificationSoundPath)
+        } catch let error as NSError {
+            print("Error when attempting to remove item", error)
+        }
     }
-    try! fileManager.copyItem(atPath: systemSoundPath, toPath: notificationSoundPath)
+    do {
+        try fileManager.copyItem(atPath: systemSoundPath, toPath: notificationSoundPath)
+    } catch let error as NSError {
+        print("Error when attempgint to copy item", error)
+    }
 }
 
 func listAllInstalledPushNotificationSounds() -> [String] {
     let fileManager: FileManager = FileManager()
 
-    let libraryPath = try! fileManager.url(for: .libraryDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
+    let libraryPath: URL
+
+    do {
+        libraryPath = try fileManager.url(for: .libraryDirectory,
+                                          in: FileManager.SearchPathDomainMask.userDomainMask,
+                                          appropriateFor: nil,
+                                          create: false)
+    } catch let error as NSError {
+        print("Error when building URL for library directory", error)
+        return [String]()
+    }
+
     let librarySoundsPath = libraryPath.appendingPathComponent("Sounds")
 
-    let librarySoundsContents = fileManager.enumerator(at: librarySoundsPath, includingPropertiesForKeys: nil, options: FileManager.DirectoryEnumerationOptions(), errorHandler: nil)!
+    let librarySoundsContents = fileManager.enumerator(at: librarySoundsPath,
+                                                       includingPropertiesForKeys: nil,
+                                                       options: FileManager.DirectoryEnumerationOptions(),
+                                                       errorHandler: nil)!
 
     var allSounds = [String]()
 
     for obj in librarySoundsContents.allObjects {
-        let file = obj as! URL
-        allSounds.append(file.lastPathComponent)
+        if let fileUrl = obj as? URL {
+            allSounds.append(fileUrl.lastPathComponent)
+        }
     }
     return allSounds
 }
@@ -178,34 +246,9 @@ func migrateUserDefaultsToAppGroups() {
 
 }
 
-func logUserDefaults() {
-
-    let userDefaults = UserDefaults.standard
-    let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant")
-
-    if let groupDefaults = groupDefaults {
-        for key in groupDefaults.dictionaryRepresentation().keys {
-            print("groupDefaults \(key): \(groupDefaults.dictionaryRepresentation()[key])")
-        }
-    } else {
-        print("Unable to create NSUserDefaults with given app group")
-    }
-
-    for key in userDefaults.dictionaryRepresentation().keys {
-        print("userDefaults \(key): \(userDefaults.dictionaryRepresentation()[key])")
-    }
-}
-
-func checkIfIPIsInternal(ipAddress: String) -> Bool {
-    let pat = "/(^127\\.)|(^192\\.168\\.)|(^10\\.)|(^172\\.1[6-9]\\.)|(^172\\.2[0-9]\\.)|(^172\\.3[0-1]\\.)|(^::1$)|(^[fF][cCdD])/"
-    let regex = try! NSRegularExpression(pattern: pat, options: [])
-    let matches = regex.matches(in: ipAddress, options: [], range: NSRange(location: 0, length: ipAddress.characters.count))
-    return (matches.count > 0)
-}
-
 func openURLInBrowser(url: String) {
     if let urlToOpen = URL(string: url) {
-        if (OpenInChromeController.sharedInstance.isChromeInstalled()) {
+        if OpenInChromeController.sharedInstance.isChromeInstalled() {
             _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen)
         } else {
             if #available(iOS 10, *) {

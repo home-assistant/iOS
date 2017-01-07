@@ -28,10 +28,15 @@ class Zone: Entity {
     }
 
     func locationCoordinates() -> CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: CLLocationDegrees(self.Latitude), longitude: CLLocationDegrees(self.Longitude))
+        return CLLocationCoordinate2D(latitude: CLLocationDegrees(self.Latitude),
+                                      longitude: CLLocationDegrees(self.Longitude))
     }
 
     func location() -> CLLocation {
-        return CLLocation(coordinate: self.locationCoordinates(), altitude: 0, horizontalAccuracy: self.Radius, verticalAccuracy: -1, timestamp: Date())
+        return CLLocation(coordinate: self.locationCoordinates(),
+                          altitude: 0,
+                          horizontalAccuracy: self.Radius,
+                          verticalAccuracy: -1,
+                          timestamp: Date())
     }
 }

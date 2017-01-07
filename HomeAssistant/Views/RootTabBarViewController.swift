@@ -18,9 +18,13 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        NotificationCenter.default.addObserver(self, selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)), name:NSNotification.Name(rawValue: "sse.state_changed"), object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)),
+                                               name:NSNotification.Name(rawValue: "sse.state_changed"),
+                                               object: nil)
     }
 
+    // swiftlint:disable:next function_body_length
     override func viewWillAppear(_ animated: Bool) {
 
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
@@ -90,6 +94,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
             if group.Order.value == nil {
                 // Save the index now since it should be first time running
+                // swiftlint:disable:next force_try
                 try! realm.write {
                     group.Order.value = index
                 }
@@ -98,13 +103,27 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
             if HomeAssistantAPI.sharedInstance.locationEnabled {
                 var rightBarItems: [UIBarButtonItem] = []
 
-                let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
+                let uploadIcon = getIconForIdentifier("mdi:upload",
+                                                      iconWidth: 30,
+                                                      iconHeight: 30,
+                                                      color: tabBarIconColor)
 
-                rightBarItems.append(UIBarButtonItem(image: uploadIcon, style: .plain, target: self, action: #selector(RootTabBarViewController.sendCurrentLocation(_:))))
+                rightBarItems.append(UIBarButtonItem(image: uploadIcon,
+                                                     style: .plain,
+                                                     target: self,
+                                                     action: #selector(RootTabBarViewController.sendCurrentLocation(_:))
+                    )
+                )
 
-                let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
+                let mapIcon = getIconForIdentifier("mdi:map",
+                                                   iconWidth: 30,
+                                                   iconHeight: 30,
+                                                   color: tabBarIconColor)
 
-                rightBarItems.append(UIBarButtonItem(image: mapIcon, style: .plain, target: self, action: #selector(RootTabBarViewController.openMapView(_:))))
+                rightBarItems.append(UIBarButtonItem(image: mapIcon,
+                                                     style: .plain,
+                                                     target: self,
+                                                     action: #selector(RootTabBarViewController.openMapView(_:))))
 
                 groupView.navigationItem.setRightBarButtonItems(rightBarItems, animated: true)
             }
@@ -131,25 +150,31 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         hud.hide(animated: true)
     }
 
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+    func tabBarController(_ tabBarController: UITabBarController,
+                          shouldSelect viewController: UIViewController) -> Bool {
         return true
     }
 
-    func tabBarController(_ tabBarController: UITabBarController, willEndCustomizing viewControllers: [UIViewController], changed: Bool) {
+    func tabBarController(_ tabBarController: UITabBarController,
+                          willEndCustomizing viewControllers: [UIViewController], changed: Bool) {
 
     }
 
-    func tabBarController(_ tabBarController: UITabBarController, didEndCustomizing viewControllers: [UIViewController], changed: Bool) {
-        if (changed) {
+    func tabBarController(_ tabBarController: UITabBarController,
+                          didEndCustomizing viewControllers: [UIViewController], changed: Bool) {
+        if changed {
             for (index, view) in viewControllers.enumerated() {
-                if let groupView = (view as! UINavigationController).viewControllers[0] as? GroupViewController {
-                    let update = ["ID": groupView.GroupID, "Order": index] as [String : Any]
-                    try! realm.write {
-                        realm.create(Group.self, value: update as AnyObject, update: true)
+                if let navController = view as? UINavigationController {
+                    if let groupView = navController.viewControllers[0] as? GroupViewController {
+                        let update = ["ID": groupView.GroupID, "Order": index] as [String : Any]
+                        // swiftlint:disable:next force_try
+                        try! realm.write {
+                            realm.create(Group.self, value: update as AnyObject, update: true)
+                        }
+                        print("\(index): \(groupView.tabBarItem.title!) New: \(index) Old: \(groupView.Order!)")
+                    } else {
+                        print("Couldn't cast to a group, must be settings, skipping!")
                     }
-                    print("\(index): \(groupView.tabBarItem.title!) New: \(index) Old: \(groupView.Order!)")
-                } else {
-                    print("Couldn't cast to a group, must be settings, skipping!")
                 }
             }
         }
@@ -164,11 +189,11 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         if let userInfo = (notification as NSNotification).userInfo {
             if let jsonObj = userInfo["jsonObject"] as? [String: Any] {
                 if let event = Mapper<StateChangedEvent>().map(JSON: jsonObj) {
-                    let newState = event.NewState! as Entity
-                    let oldState = event.OldState! as Entity
-                    var subtitleString = "\(newState.FriendlyName!) is now \(newState.State). It was \(oldState.State)"
-                    if let uom = newState.UnitOfMeasurement {
-                        subtitleString = "\(newState.State) \(uom). It was \(oldState.State) \(oldState.UnitOfMeasurement)"
+                    let new = event.NewState! as Entity
+                    let old = event.OldState! as Entity
+                    var subtitleString = "\(new.FriendlyName!) is now \(new.State). It was \(old.State)"
+                    if let uom = new.UnitOfMeasurement {
+                        subtitleString = "\(new.State) \(uom). It was \(old.State) \(old.UnitOfMeasurement)"
                     }
                     let _ = Murmur(title: subtitleString)
                 }
@@ -185,12 +210,17 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
     func sendCurrentLocation(_ sender: UIButton) {
         HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
-            let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.alert)
+            let alert = UIAlertController(title: "Location updated",
+                                          message: "Successfully sent a one shot location to the server",
+                                          preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
             }.catch {error in
                 let nserror = error as NSError
-                let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.alert)
+                let message = "Failed to send current location to server. The error was \(nserror.localizedDescription)"
+                let alert = UIAlertController(title: "Location failed to update",
+                                              message: message,
+                                              preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
         }

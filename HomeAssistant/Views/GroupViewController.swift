@@ -24,6 +24,7 @@ class GroupViewController: FormViewController {
 
     var sendingEntity: Entity?
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     override func viewDidLoad() {
 
         super.viewDidLoad()
@@ -35,22 +36,23 @@ class GroupViewController: FormViewController {
                 +++ Section()
             for entity in group!.Entities {
                 switch entity.Domain {
-                    //            case "switch", "light", "input_boolean":
-                    //                self.form.last! <<< SwitchRow(entity.ID) {
-                    //                    $0.title = entity.Name
-                    //                    $0.value = (entity.State == "on") ? true : false
-                    //                    }.onChange { row -> Void in
-                    //                        if (row.value == true) {
-                    //                            HomeAssistantAPI.sharedInstance.turnOn(entity.ID)
-                    //                        } else {
-                    //                            HomeAssistantAPI.sharedInstance.turnOff(entity.ID)
-                    //                        }
-                    //                    }.cellSetup { cell, row in
-                    //                        cell.imageView?.image = entity.EntityIcon
-                    //                        if let picture = entity.DownloadedPicture {
-                    //                            cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
-                    //                        }
-                //                }
+                    //                    case "switch", "light", "input_boolean":
+                    //                        self.form.last! <<< SwitchRow(entity.ID) {
+                    //                            $0.title = entity.Name
+                    //                            $0.value = (entity.State == "on") ? true : false
+                    //                            }.onChange { row -> Void in
+                    //                                if (row.value == true) {
+                    //                                    HomeAssistantAPI.sharedInstance.turnOn(entity.ID)
+                    //                                } else {
+                    //                                    HomeAssistantAPI.sharedInstance.turnOff(entity.ID)
+                    //                                }
+                    //                            }.cellSetup { cell, row in
+                    //                                cell.imageView?.image = entity.EntityIcon
+                    //                                if let picture = entity.DownloadedPicture {
+                    //                                    cell.imageView?.image = picture.scaledToSize(CGSize(width: 30,
+                    //                                                                                        height: 30))
+                    //                                }
+                //                    }
                 case "script", "scene":
                     self.form.last! <<< ButtonRow(entity.ID) {
                         $0.title = entity.Name
@@ -67,7 +69,11 @@ class GroupViewController: FormViewController {
                         self.form.last! <<< ButtonRow(entity.ID) {
                             $0.title = entity.Name
                             if url.scheme == "http" || url.scheme == "https" {
-                                $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback { return SFSafariViewController(url: url, entersReaderIfAvailable: false) }, onDismiss: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
+                                $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
+                                    return SFSafariViewController(url: url, entersReaderIfAvailable: false)
+                                    }, onDismiss: { vc in
+                                        let _ = vc.navigationController?.popViewController(animated: true)
+                                })
                             }
                             }.cellUpdate { cell, _ in
                                 cell.imageView?.image = entity.EntityIcon
@@ -80,7 +86,8 @@ class GroupViewController: FormViewController {
                                 }
                         }
                     }
-                case "switch", "light", "input_boolean", "binary_sensor", "camera", "sensor", "media_player", "thermostat", "sun", "climate", "automation", "fan":
+                case "switch", "light", "input_boolean", "binary_sensor", "camera", "sensor", "media_player",
+                     "thermostat", "sun", "climate", "automation", "fan":
                     self.form.last! <<< ButtonRow(entity.ID) {
                         $0.title = entity.Name
                         $0.cellStyle = .value1
@@ -122,11 +129,15 @@ class GroupViewController: FormViewController {
                                     let attributesView = EntityAttributesViewController()
                                     attributesView.entityID = entity.ID
                                     return attributesView
-                                }, onDismiss: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
+                                    }, onDismiss: {
+                                        vc in let _ = vc.navigationController?.popViewController(animated: true)
+                                })
                                 }.cellUpdate { cell, _ in
                                     cell.detailTextLabel?.text = entity.CleanedState
                                     if let uom = entity.UnitOfMeasurement {
-                                        cell.detailTextLabel?.text = (entity.State + " " + uom).replacingOccurrences(of: "_", with: " ").capitalized
+                                        let combinedString = entity.State + " " + uom
+                                        let withReplacements = combinedString.replacingOccurrences(of: "_", with: " ")
+                                        cell.detailTextLabel?.text = withReplacements.capitalized
                                     }
                                     cell.imageView?.image = entity.EntityIcon
                                     if let picture = entity.DownloadedPicture {
@@ -146,7 +157,9 @@ class GroupViewController: FormViewController {
                             }.cellUpdate { cell, _ in
                                 cell.detailTextLabel?.text = entity.CleanedState
                                 if let uom = entity.UnitOfMeasurement {
-                                    cell.detailTextLabel?.text = (entity.State + " " + uom).replacingOccurrences(of: "_", with: " ").capitalized
+                                    let combinedString = entity.State + " " + uom
+                                    let withReplacements = combinedString.replacingOccurrences(of: "_", with: " ")
+                                    cell.detailTextLabel?.text = withReplacements.capitalized
                                 }
                                 cell.imageView?.image = entity.EntityIcon
                                 if let picture = entity.DownloadedPicture {
@@ -160,10 +173,12 @@ class GroupViewController: FormViewController {
                     //                        $0.value = entity.State
                     //                        $0.options = entity.Attributes["options"] as! [String]
                     //                    }.onChange { row -> Void in
+                    // swiftlint:disable:next line_length
                     //                        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "input_select", service: "select_option", serviceData: ["entity_id": entity.ID as AnyObject, "option": row.value! as AnyObject])
                     //                    }.cellUpdate { cell, row in
                     //                        cell.imageView?.image = entity.EntityIcon
                     //                        if let picture = entity.DownloadedPicture {
+                    // swiftlint:disable:next line_length
                     //                            cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                     //                        }
                 //                    }
@@ -172,7 +187,11 @@ class GroupViewController: FormViewController {
                         $0.title = entity.Name
                         $0.value = (entity.State == "locked") ? true : false
                         }.onChange { row -> Void in
-                            let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "lock", service: ((row.value == true) ? "lock" : "unlock"), serviceData: ["entity_id": entity.ID as AnyObject])
+                            let whichService = (row.value == true) ? "lock" : "unlock"
+                            let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "lock", service: whichService,
+                                                                                serviceData: [
+                                                                                    "entity_id": entity.ID as AnyObject
+                                ])
                         }.cellUpdate { cell, _ in
                             cell.imageView?.image = entity.EntityIcon
                             if let picture = entity.DownloadedPicture {
@@ -184,7 +203,12 @@ class GroupViewController: FormViewController {
                         $0.title = entity.Name
                         $0.value = (entity.State == "open") ? true : false
                         }.onChange { row -> Void in
-                            let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "garage_door", service: ((row.value == true) ? "open" : "close"), serviceData: ["entity_id": entity.ID as AnyObject])
+                            let whichService = (row.value == true) ? "open" : "close"
+                            let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "garage_door",
+                                                                                service: whichService,
+                                                                                serviceData: [
+                                                                                    "entity_id": entity.ID as AnyObject
+                                ])
                         }.cellUpdate { cell, _ in
                             cell.imageView?.image = entity.EntityIcon
                             if let picture = entity.DownloadedPicture {
@@ -212,9 +236,6 @@ class GroupViewController: FormViewController {
                                 slider.SelectValue(row.value!)
                             }
                         }.cellUpdate { _, row in
-                            //                        if let uom = entity.UnitOfMeasurement {
-                            //                            cell.detailTextLabel?.text = (entity.State.capitalized + " " + uom)
-                            //                        }
                             row.displayValueFor = { (_) in
                                 if let uom = entity.UnitOfMeasurement {
                                     return (entity.State.capitalized + " " + uom)
@@ -229,9 +250,11 @@ class GroupViewController: FormViewController {
             }
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(GroupViewController.StateChangedSSEEvent(_:)), name:NSNotification.Name(rawValue: "sse.state_changed"), object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(GroupViewController.StateChangedSSEEvent(_:)),
+                                               name:NSNotification.Name(rawValue: "sse.state_changed"),
+                                               object: nil)
     }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -239,24 +262,26 @@ class GroupViewController: FormViewController {
 
     func StateChangedSSEEvent(_ notification: NSNotification) {
         if let userInfo = (notification as NSNotification).userInfo {
-            if let event = Mapper<StateChangedEvent>().map(JSON: userInfo as! [String : Any]) {
-                if let newState = event.NewState {
-                    if newState.Domain == "lock" || newState.Domain == "garage_door" {
-                        if let row: SwitchRow = self.form.rowBy(tag: newState.ID) {
-                            row.value = (newState.State == "on") ? true : false
-                            row.cell.imageView?.image = newState.EntityIcon
-                            row.updateCell()
-                            row.reload()
-                        }
-                    } else {
-                        if let row: ButtonRow = self.form.rowBy(tag: newState.ID) {
-                            row.value = newState.State
-                            if let uom = newState.UnitOfMeasurement {
-                                row.value = newState.State + " " + uom
+            if let userInfoDict = userInfo as? [String : Any] {
+                if let event = Mapper<StateChangedEvent>().map(JSON: userInfoDict) {
+                    if let newState = event.NewState {
+                        if newState.Domain == "lock" || newState.Domain == "garage_door" {
+                            if let row: SwitchRow = self.form.rowBy(tag: newState.ID) {
+                                row.value = (newState.State == "on") ? true : false
+                                row.cell.imageView?.image = newState.EntityIcon
+                                row.updateCell()
+                                row.reload()
                             }
-                            row.cell.imageView?.image = newState.EntityIcon
-                            row.updateCell()
-                            row.reload()
+                        } else {
+                            if let row: ButtonRow = self.form.rowBy(tag: newState.ID) {
+                                row.value = newState.State
+                                if let uom = newState.UnitOfMeasurement {
+                                    row.value = newState.State + " " + uom
+                                }
+                                row.cell.imageView?.image = newState.EntityIcon
+                                row.updateCell()
+                                row.reload()
+                            }
                         }
                     }
                 }
@@ -268,8 +293,9 @@ class GroupViewController: FormViewController {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         if segue.identifier == "ShowEntityAttributes" {
-            let entityAttributesViewController = segue.destination as! EntityAttributesViewController
-            entityAttributesViewController.entityID = sendingEntity!.ID
+            if let destination = segue.destination as? EntityAttributesViewController {
+                destination.entityID = sendingEntity!.ID
+            }
         }
     }
 

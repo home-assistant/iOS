@@ -59,9 +59,12 @@ open class OpenInChromeController {
             }
             let scheme = url.scheme?.lowercased()
             if scheme == "http" || scheme == "https" {
-                var chromeURLString = String(format: "%@//x-callback-url/open/?x-source=%@&url=%@", googleChromeCallbackScheme, encodeByAddingPercentEscapes(appName), encodeByAddingPercentEscapes(url.absoluteString))
+                var chromeURLString = String(format: "%@//x-callback-url/open/?x-source=%@&url=%@",
+                                             googleChromeCallbackScheme, encodeByAddingPercentEscapes(appName),
+                                             encodeByAddingPercentEscapes(url.absoluteString))
                 if callbackURL != nil {
-                    chromeURLString += String(format: "&x-success=%@", encodeByAddingPercentEscapes(callbackURL!.absoluteString))
+                    chromeURLString += String(format: "&x-success=%@",
+                                              encodeByAddingPercentEscapes(callbackURL!.absoluteString))
                 }
                 if createNewTab {
                     chromeURLString += "&create-new-tab"
@@ -78,7 +81,8 @@ open class OpenInChromeController {
             }
             if let chromeScheme = chromeScheme {
                 let absoluteURLString = url.absoluteString
-                let chromeURLString = chromeScheme + absoluteURLString.substring(from: absoluteURLString.range(of: ":")!.lowerBound)
+                let lowerBound = absoluteURLString.range(of: ":")!.lowerBound
+                let chromeURLString = chromeScheme + absoluteURLString.substring(from: lowerBound)
                 return UIApplication.shared.openURL(URL(string: chromeURLString)!)
             }
         }

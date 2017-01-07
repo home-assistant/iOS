@@ -18,6 +18,7 @@ class SettingsDetailViewController: FormViewController {
 
     var detailGroup: String = "display"
 
+    // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -41,38 +42,43 @@ class SettingsDetailViewController: FormViewController {
                     +++ Section(header: zone.Name, footer: "") {
                         $0.tag = zone.ID
                     }
-                    <<< SwitchRow() {
+                    <<< SwitchRow {
                         $0.title = "Updates Enabled"
                         $0.value = zone.trackingEnabled
                         }.onChange { row in
+                            // swiftlint:disable:next force_try
                             try! realm.write { zone.trackingEnabled = row.value! }
                     }
-                    <<< LocationRow() {
+                    <<< LocationRow {
                         $0.title = "Location"
                         $0.value = zone.location()
                     }
-                    <<< LabelRow() {
+                    <<< LabelRow {
                         $0.title = "Radius"
                         $0.value = "\(Int(zone.Radius)) m"
                     }
-                    <<< SwitchRow() {
+                    <<< SwitchRow {
                         $0.title = "Enter Notification"
                         $0.value = zone.enterNotification
                         }.onChange { row in
+                            // swiftlint:disable:next force_try
                             try! realm.write { zone.enterNotification = row.value! }
                     }
-                    <<< SwitchRow() {
+                    <<< SwitchRow {
                         $0.title = "Exit Notification"
                         $0.value = zone.exitNotification
                         }.onChange { row in
+                            // swiftlint:disable:next force_try
                             try! realm.write { zone.exitNotification = row.value! }
                 }
             }
         case "notifications":
             self.title = "Notification Settings"
             self.form
-                +++ Section(header: "Push token", footer: "This is the target to use in your Home Assistant configuration. Tap to copy or share.")
-                <<< TextAreaRow() {
+                +++ Section(header: "Push token",
+                            // swiftlint:disable:next line_length
+                    footer: "This is the target to use in your Home Assistant configuration. Tap to copy or share.")
+                <<< TextAreaRow {
                     $0.placeholder = "PushID"
                     if let pushID = prefs.string(forKey: "pushID") {
                         $0.value = pushID
@@ -82,32 +88,42 @@ class SettingsDetailViewController: FormViewController {
                     $0.disabled = true
                     $0.textAreaHeight = TextAreaHeight.dynamic(initialTextViewHeight: 40)
                     }.onCellSelection { _, row in
-                        let activityViewController = UIActivityViewController(activityItems: [row.value! as String], applicationActivities: nil)
+                        let activityViewController = UIActivityViewController(activityItems: [row.value! as String],
+                                                                              applicationActivities: nil)
                         self.present(activityViewController, animated: true, completion: {})
                 }
 
-                +++ Section(header: "", footer: "Updating push settings will request the latest push actions and categories from Home Assistant.")
-                <<< ButtonRow() {
+                +++ Section(header: "",
+                            // swiftlint:disable:next line_length
+                    footer: "Updating push settings will request the latest push actions and categories from Home Assistant.")
+                <<< ButtonRow {
                     $0.title = "Update push settings"
                     }.onCellSelection {_, _ in
                         HomeAssistantAPI.sharedInstance.setupPush()
-                        let alert = UIAlertController(title: "Settings Import", message: "Push settings imported from Home Assistant.", preferredStyle: UIAlertControllerStyle.alert)
+                        let alert = UIAlertController(title: "Settings Import",
+                                                      message: "Push settings imported from Home Assistant.",
+                                                      preferredStyle: UIAlertControllerStyle.alert)
                         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                         self.present(alert, animated: true, completion: nil)
                 }
 
                 +++ Section(header: "", footer: "Custom push notification sounds can be added via iTunes.")
-                <<< ButtonRow() {
+                <<< ButtonRow {
                     $0.title = "Import sounds from iTunes"
                     }.onCellSelection {_, _ in
                         let moved = movePushNotificationSounds()
-                        let message = (moved > 0) ? "\(moved) sounds were imported. Please restart your phone to complete the import." : "0 sounds were imported."
-                        let alert = UIAlertController(title: "Sounds Import", message: message, preferredStyle: UIAlertControllerStyle.alert)
+                        var message = "0 sounds were imported."
+                        if moved > 0 {
+                            message = "\(moved) sounds were imported. Please restart your phone to complete the import."
+                        }
+                        let alert = UIAlertController(title: "Sounds Import",
+                                                      message: message,
+                                                      preferredStyle: UIAlertControllerStyle.alert)
                         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                         self.present(alert, animated: true, completion: nil)
             }
 
-            //                <<< ButtonRow() {
+            //                <<< ButtonRow {
             //                    $0.title = "Import system sounds"
             //                }.onCellSelection {_,_ in
             //                    let list = getSoundList()

@@ -17,7 +17,10 @@ final class NotificationService: UNNotificationServiceExtension {
     private var baseURL: String = ""
     private var apiPassword: String = ""
 
-    override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
+    // swiftlint:disable cyclomatic_complexity
+    // swiftlint:disable function_body_length
+    override func didReceive(_ request: UNNotificationRequest,
+                             withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         print("APNSAttachmentService started!")
         print("Received userInfo", request.content.userInfo)
         self.contentHandler = contentHandler
@@ -101,16 +104,23 @@ final class NotificationService: UNNotificationServiceExtension {
             attachmentOptions[UNNotificationAttachmentOptionsThumbnailHiddenKey] = attachmentHideThumbnail
         }
         guard let attachmentData = NSData(contentsOf:attachmentURL) else { return failEarly() }
-        guard let attachment = UNNotificationAttachment.create(fileIdentifier: attachmentURL.lastPathComponent, data: attachmentData, options: attachmentOptions) else { return failEarly() }
+        guard let attachment = UNNotificationAttachment.create(fileIdentifier: attachmentURL.lastPathComponent,
+                                                               data: attachmentData,
+                                                               options: attachmentOptions) else {
+                                                                return failEarly()
+        }
 
         content.attachments.append(attachment)
 
-        contentHandler(content.copy() as! UNNotificationContent)
+        if let copiedContent = content.copy() as? UNNotificationContent {
+            contentHandler(copiedContent)
+        }
     }
 
     override func serviceExtensionTimeWillExpire() {
         // Called just before the extension will be terminated by the system.
-        // Use this as an opportunity to deliver your "best attempt" at modified content, otherwise the original push payload will be used.
+        // Use this as an opportunity to deliver your "best attempt" at modified content,
+        // otherwise the original push payload will be used.
         if let contentHandler = contentHandler, let bestAttemptContent =  bestAttemptContent {
             contentHandler(bestAttemptContent)
         }
@@ -121,10 +131,12 @@ final class NotificationService: UNNotificationServiceExtension {
 extension UNNotificationAttachment {
 
     /// Save the attachment URL to disk
-    static func create(fileIdentifier: String, data: NSData, options: [AnyHashable : Any]?) -> UNNotificationAttachment? {
+    static func create(fileIdentifier: String, data: NSData,
+                       options: [AnyHashable : Any]?) -> UNNotificationAttachment? {
         let fileManager = FileManager.default
         let tmpSubFolderName = ProcessInfo.processInfo.globallyUniqueString
-        let tmpSubFolderURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(tmpSubFolderName, isDirectory: true)
+        let tmpSubFolderURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(tmpSubFolderName,
+                                                                                                    isDirectory: true)
 
         do {
             try fileManager.createDirectory(at: tmpSubFolderURL!, withIntermediateDirectories: true, attributes: nil)

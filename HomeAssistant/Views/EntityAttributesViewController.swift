@@ -15,6 +15,7 @@ class EntityAttributesViewController: FormViewController {
 
     var entityID: String = ""
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -41,7 +42,7 @@ class EntityAttributesViewController: FormViewController {
                             paragraphStyle.alignment = .center
 
                             let attrs: [String:AnyObject] = [NSParagraphStyleAttributeName: paragraphStyle]
-                            let range = NSMakeRange(0, result.length)
+                            let range = NSRange(location: 0, length: 12)
                             result.addAttributes(attrs, range: range)
 
                             cell.textView.textStorage.setAttributedString(result)
@@ -66,7 +67,7 @@ class EntityAttributesViewController: FormViewController {
                         $0.title = prettyLabel
                         $0.value = thermostat.Fan
                         }.onChange { row -> Void in
-                            if (row.value == true) {
+                            if row.value! {
                                 thermostat.turnFanOn()
                             } else {
                                 thermostat.turnFanOff()
@@ -80,7 +81,7 @@ class EntityAttributesViewController: FormViewController {
                         $0.title = prettyLabel
                         $0.value = thermostat.AwayMode
                         }.onChange { row -> Void in
-                            if (row.value == true) {
+                            if row.value! {
                                 thermostat.setAwayModeOn()
                             } else {
                                 thermostat.setAwayModeOff()
@@ -115,7 +116,7 @@ class EntityAttributesViewController: FormViewController {
                         $0.title = "Mute"
                         $0.value = mediaPlayer.IsVolumeMuted.value
                         }.onChange { row -> Void in
-                            if (row.value == true) {
+                            if row.value! {
                                 mediaPlayer.muteOn()
                             } else {
                                 mediaPlayer.muteOff()
@@ -125,14 +126,16 @@ class EntityAttributesViewController: FormViewController {
                 break
             case "volume_level":
                 if let mediaPlayer = entity as? MediaPlayer {
-                    let volume = Float(attribute.1 as! NSNumber)*100
-                    form.last! <<< SliderRow(attribute.0) {
-                        $0.title = prettyLabel
-                        $0.value = volume
-                        $0.maximumValue = 100
-                        $0.steps = 100
-                        }.onChange { row -> Void in
-                            mediaPlayer.setVolume(row.value!)
+                    if let volumeNumber = attribute.1 as? NSNumber {
+                        let volume = Float(volumeNumber)*100
+                        form.last! <<< SliderRow(attribute.0) {
+                            $0.title = prettyLabel
+                            $0.value = volume
+                            $0.maximumValue = 100
+                            $0.steps = 100
+                            }.onChange { row -> Void in
+                                mediaPlayer.setVolume(row.value!)
+                        }
                     }
                 }
                 break
@@ -145,7 +148,7 @@ class EntityAttributesViewController: FormViewController {
                         $0.title = entity?.Name
                         $0.value = (entity?.State == "on") ? true : false
                         }.onChange { row -> Void in
-                            if (row.value == true) {
+                            if row.value! {
                                 let _ = HomeAssistantAPI.sharedInstance.turnOn(entityId: entity!.ID)
                             } else {
                                 let _ = HomeAssistantAPI.sharedInstance.turnOff(entityId: entity!.ID)
@@ -164,62 +167,92 @@ class EntityAttributesViewController: FormViewController {
         }
 
         // Do any additional setup after loading the view.
-        NotificationCenter.default.addObserver(self, selector: #selector(EntityAttributesViewController.StateChangedSSEEvent(_:)), name:NSNotification.Name(rawValue: "sse.state_changed"), object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               // swiftlint:disable:next line_length
+            selector: #selector(EntityAttributesViewController.StateChangedSSEEvent(_:)),
+            name:NSNotification.Name(rawValue: "sse.state_changed"),
+            object: nil)
     }
+    // swiftlint:enable cyclomatic_complexity function_body_length
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func StateChangedSSEEvent(_ notification: NSNotification) {
         if let userInfo = (notification as NSNotification).userInfo {
-            if let event = Mapper<StateChangedEvent>().map(JSON: userInfo as! [String : Any]) {
-                if event.EntityID != entityID { return }
-                let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityID as AnyObject)
-                if let newState = event.NewState {
-                    var updateDict: [String:Any] = [:]
-                    newState.Attributes["state"] = entity?.State
-                    for (key, value) in newState.Attributes {
-                        switch key {
-                        case "fan":
-                            updateDict[key] = (entity as! Thermostat).Fan!
-                            break
-                        case "away_mode":
-                            updateDict[key] = (entity as! Thermostat).AwayMode!
-                            break
-                        case "temperature":
-                            updateDict[key] = Float((entity as! Thermostat).Temperature!)
-                            break
-                        case "media_duration":
-                            updateDict[key] = (entity as! MediaPlayer).humanReadableMediaDuration()
-                            break
-                        case "is_volume_muted":
-                            updateDict[key] = (entity as! MediaPlayer).IsVolumeMuted
-                            break
-                        case "volume_level":
-                            updateDict[key] = Float(value as! NSNumber)*100
-                            break
-                        case "entity_picture", "icon", "supported_media_commands", "hidden", "assumed_state":
-                            // Skip these attributes
-                            break
-                        case "state":
-                            if entity?.Domain == "switch" || entity?.Domain == "light" || entity?.Domain == "input_boolean" {
-                                updateDict["state"] = (entity?.State == "on") as Bool
-                            } else {
-                                fallthrough
+            if let userInfoDict = userInfo as? [String : Any] {
+                if let event = Mapper<StateChangedEvent>().map(JSON: userInfoDict) {
+                    if event.EntityID != entityID { return }
+                    let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityID as AnyObject)
+                    if let newState = event.NewState {
+                        var updateDict: [String:Any] = [:]
+                        newState.Attributes["state"] = entity?.State
+                        for (key, value) in newState.Attributes {
+                            switch key {
+                            case "fan":
+                                if let thermostat = entity as? Thermostat {
+                                    if let fan = thermostat.Fan {
+                                        updateDict[key] = fan
+                                    }
+                                }
+                                break
+                            case "away_mode":
+                                if let thermostat = entity as? Thermostat {
+                                    if let awaymode = thermostat.AwayMode {
+                                        updateDict[key] = awaymode
+                                    }
+                                }
+                                break
+                            case "temperature":
+                                if let thermostat = entity as? Thermostat {
+                                    if let temperature = thermostat.Temperature {
+                                        updateDict[key] = Float(temperature)
+                                    }
+                                }
+                                break
+                            case "media_duration":
+                                if let mediaPlayer = entity as? MediaPlayer {
+                                    updateDict[key] = mediaPlayer.humanReadableMediaDuration()
+                                }
+                                break
+                            case "is_volume_muted":
+                                if let mediaPlayer = entity as? MediaPlayer {
+                                    updateDict[key] = mediaPlayer.IsVolumeMuted
+                                }
+                                break
+                            case "volume_level":
+                                if let mediaPlayer = entity as? MediaPlayer {
+                                    if let level = mediaPlayer.VolumeLevel.value {
+                                        updateDict[key] = Float(level) * Float(100.0)
+                                    }
+                                }
+                                break
+                            case "entity_picture", "icon", "supported_media_commands", "hidden", "assumed_state":
+                                // Skip these attributes
+                                break
+                            case "state":
+                                if entity?.Domain == "switch" ||
+                                    entity?.Domain == "light" ||
+                                    entity?.Domain == "input_boolean" {
+                                    updateDict["state"] = (entity?.State == "on") as Bool
+                                } else {
+                                    fallthrough
+                                }
+                                break
+                            default:
+                                updateDict[key] = String(describing: value)
+                                break
                             }
-                            break
-                        default:
-                            updateDict[key] = String(describing: value)
-                            break
                         }
+                        // fatal error: can't unsafeBitCast between types of different sizes
+                        self.form.setValues(updateDict)
                     }
-                    // fatal error: can't unsafeBitCast between types of different sizes
-                    self.form.setValues(updateDict)
                 }
             }
         }
     }
-
+    // swiftlint:enable cyclomatic_complexity
 }

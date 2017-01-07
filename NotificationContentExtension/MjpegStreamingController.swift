@@ -22,19 +22,23 @@ open class MjpegStreamingController: NSObject, URLSessionDataDelegate {
     fileprivate var session: Foundation.URLSession!
     fileprivate var status: Status = .stopped
 
-    open var authenticationHandler: ((URLAuthenticationChallenge) -> (Foundation.URLSession.AuthChallengeDisposition, URLCredential?))?
+    open var authenticationHandler: ((URLAuthenticationChallenge) -> (Foundation.URLSession.AuthChallengeDisposition,
+    URLCredential?))?
     open var didStartLoading: (() -> Void)?
     open var didFinishLoading: (() -> Void)?
     open var contentURL: URL?
     open var imageView: UIImageView
 
-    public init(imageView: UIImageView, sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default) {
+    public init(imageView: UIImageView,
+                sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default) {
         self.imageView = imageView
         super.init()
         self.session = Foundation.URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
     }
 
-    public convenience init(imageView: UIImageView, contentURL: URL, sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default) {
+    public convenience init(imageView: UIImageView,
+                            contentURL: URL,
+                            sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default) {
         self.init(imageView: imageView, sessionConfiguration: sessionConfiguration)
         self.contentURL = contentURL
     }
@@ -72,7 +76,10 @@ open class MjpegStreamingController: NSObject, URLSessionDataDelegate {
 
     // MARK: - NSURLSessionDataDelegate
 
-    open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+    open func urlSession(_ session: URLSession,
+                         dataTask: URLSessionDataTask,
+                         didReceive response: URLResponse,
+                         completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
         if let imageData = receivedData, imageData.length > 0,
             let receivedImage = UIImage(data: imageData as Data) {
             // I'm creating the UIImage before performing didFinishLoading to minimize the interval
@@ -95,7 +102,10 @@ open class MjpegStreamingController: NSObject, URLSessionDataDelegate {
 
     // MARK: - NSURLSessionTaskDelegate
 
-    open func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+    open func urlSession(_ session: URLSession,
+                         task: URLSessionTask,
+                         didReceive challenge: URLAuthenticationChallenge,
+                         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
 
         var credential: URLCredential?
         var disposition: Foundation.URLSession.AuthChallengeDisposition = .performDefaultHandling

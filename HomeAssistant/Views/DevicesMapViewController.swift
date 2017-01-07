@@ -28,6 +28,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
     var mapView: MKMapView!
 
+    // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -38,13 +39,27 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         let items = ["Standard", "Hybrid", "Satellite"]
         let typeController = UISegmentedControl(items: items)
         typeController.selectedSegmentIndex = 0
-        typeController.addTarget(self, action: #selector(DevicesMapViewController.switchMapType(_:)), for: .valueChanged)
+        typeController.addTarget(self,
+                                 action: #selector(DevicesMapViewController.switchMapType(_:)),
+                                 for: .valueChanged)
 
-        let uploadIcon = getIconForIdentifier("mdi:upload", iconWidth: 30, iconHeight: 30, color: colorWithHexString("#44739E", alpha: 1))
+        let uploadIcon = getIconForIdentifier("mdi:upload",
+                                              iconWidth: 30,
+                                              iconHeight: 30,
+                                              color: colorWithHexString("#44739E", alpha: 1))
 
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: uploadIcon, style: .plain, target: self, action: #selector(DevicesMapViewController.sendCurrentLocation(_:)))
+        let leftBarItem = UIBarButtonItem(image: uploadIcon,
+                                          style: .plain,
+                                          target: self,
+                                          action: #selector(DevicesMapViewController.sendCurrentLocation(_:)))
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(DevicesMapViewController.closeMapView(_:)))
+        self.navigationItem.leftBarButtonItem = leftBarItem
+
+        let rightBarItem = UIBarButtonItem(barButtonSystemItem: .done,
+                                           target: self,
+                                           action: #selector(DevicesMapViewController.closeMapView(_:)))
+
+        self.navigationItem.rightBarButtonItem = rightBarItem
 
         // Do any additional setup after loading the view.
         mapView = MKMapView()
@@ -78,7 +93,8 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             dropPin.title = device.Name
             var subtitlePieces: [String] = []
             //            if let changedTime = device.LastChanged {
-            //                subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true, maxUnits: 1)!+" ago")
+            //                subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true,
+            //                                                                                 maxUnits: 1)!+" ago")
             //            }
             if let battery = device.Battery.value {
                 subtitlePieces.append("Battery: "+String(battery)+"%")
@@ -107,7 +123,9 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         if let firstOverlay = mapView.overlays.first {
             let rect = mapView.overlays.reduce(firstOverlay.boundingMapRect, {MKMapRectUnion($0, $1.boundingMapRect)})
 
-            mapView.setVisibleMapRect(MKMapRectUnion(zoomRect, rect), edgePadding: UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0), animated: true)
+            mapView.setVisibleMapRect(MKMapRectUnion(zoomRect, rect),
+                                      edgePadding: UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0),
+                                      animated: true)
         }
 
     }
@@ -119,7 +137,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
     func switchMapType(_ sender: UISegmentedControl) {
         let mapType = MapType(rawValue: sender.selectedSegmentIndex)
-        switch (mapType!) {
+        switch mapType! {
         case .standard:
             mapView.mapType = MKMapType.standard
         case .hybrid:
@@ -171,12 +189,17 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
     func sendCurrentLocation(_ sender: UIBarButtonItem) {
         HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
-            let alert = UIAlertController(title: "Location updated", message: "Successfully sent a one shot location to the server", preferredStyle: UIAlertControllerStyle.alert)
+            let alert = UIAlertController(title: "Location updated",
+                                          message: "Successfully sent a one shot location to the server",
+                                          preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
             }.catch {error in
                 let nserror = error as NSError
-                let alert = UIAlertController(title: "Location failed to update", message: "Failed to send current location to server. The error was \(nserror.localizedDescription)", preferredStyle: UIAlertControllerStyle.alert)
+                let alert = UIAlertController(title: "Location failed to update",
+                                              // swiftlint:disable:next line_length
+                    message: "Failed to send current location to server. The error was \(nserror.localizedDescription)",
+                    preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
         }

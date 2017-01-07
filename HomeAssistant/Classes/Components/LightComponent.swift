@@ -67,7 +67,8 @@ class Light: SwitchableEntity {
     }
 
     override class func ignoredProperties() -> [String] {
-        return ["SupportedFeatures", "SupportsBrightness", "SupportsColorTemp", "SupportsEffect", "SupportsFlash", "SupportsRGBColor", "SupportsTransition", "SupportsXYColor", "RGBColor", "XYColor"]
+        return ["SupportedFeatures", "SupportsBrightness", "SupportsColorTemp", "SupportsEffect", "SupportsFlash",
+                "SupportsRGBColor", "SupportsTransition", "SupportsXYColor", "RGBColor", "XYColor"]
     }
 }
 

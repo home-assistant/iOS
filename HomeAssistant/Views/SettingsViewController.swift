@@ -14,6 +14,8 @@ import Crashlytics
 import SafariServices
 import Alamofire
 
+// swiftlint:disable file_length
+// swiftlint:disable:next type_body_length
 class SettingsViewController: FormViewController {
 
     let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
@@ -33,11 +35,15 @@ class SettingsViewController: FormViewController {
         self.discovery.stopPublish()
     }
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
-        let aboutButton = UIBarButtonItem(title: "About", style: .plain, target: self, action: #selector(SettingsViewController.openAbout(_:)))
+        let aboutButton = UIBarButtonItem(title: "About",
+                                          style: .plain,
+                                          target: self,
+                                          action: #selector(SettingsViewController.openAbout(_:)))
 
         self.navigationItem.setRightBarButton(aboutButton, animated: true)
 
@@ -54,7 +60,9 @@ class SettingsViewController: FormViewController {
         checkForEmail()
 
         if showErrorConnectingMessage {
-            let alert = UIAlertController(title: "Connection error", message: "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect.", preferredStyle: UIAlertControllerStyle.alert)
+            let alert = UIAlertController(title: "Connection error",
+                                          // swiftlint:disable:next line_length
+                message: "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect.", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
@@ -63,6 +71,7 @@ class SettingsViewController: FormViewController {
             connectStep = 1
             let queue = DispatchQueue(label: "io.robbie.homeassistant", attributes: [])
             queue.async { () -> Void in
+                // swiftlint:disable:next line_length
                 NSLog("Attempting to discover Home Assistant instances, also publishing app to Bonjour/mDNS to hopefully have HA load the iOS/ZeroConf components.")
                 self.discovery.stopDiscovery()
                 self.discovery.stopPublish()
@@ -71,15 +80,32 @@ class SettingsViewController: FormViewController {
                 self.discovery.startPublish()
             }
 
-            NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)), name:NSNotification.Name(rawValue: "homeassistant.discovered"), object: nil)
+            NotificationCenter.default.addObserver(self,
+                                                   // swiftlint:disable:next line_length
+                selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)),
+                name:NSNotification.Name(rawValue: "homeassistant.discovered"),
+                object: nil)
 
-            NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.HomeAssistantUndiscovered(_:)), name:NSNotification.Name(rawValue: "homeassistant.undiscovered"), object: nil)
+            NotificationCenter.default.addObserver(self,
+                                                   // swiftlint:disable:next line_length
+                selector: #selector(SettingsViewController.HomeAssistantUndiscovered(_:)),
+                name:NSNotification.Name(rawValue: "homeassistant.undiscovered"),
+                object: nil)
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.SSEConnectionChange(_:)), name:NSNotification.Name(rawValue: "sse.opened"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.SSEConnectionChange(_:)), name:NSNotification.Name(rawValue: "sse.error"), object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(SettingsViewController.SSEConnectionChange(_:)),
+                                               name:NSNotification.Name(rawValue: "sse.opened"),
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(SettingsViewController.SSEConnectionChange(_:)),
+                                               name:NSNotification.Name(rawValue: "sse.error"),
+                                               object: nil)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.Connected(_:)), name:NSNotification.Name(rawValue: "connected"), object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(SettingsViewController.Connected(_:)),
+                                               name:NSNotification.Name(rawValue: "connected"),
+                                               object: nil)
 
         form
             +++ Section(header: "Discovered Home Assistants", footer: "") {
@@ -100,7 +126,10 @@ class SettingsViewController: FormViewController {
                     if let url = row.value {
                         let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
                         if !cleanUrl.hasValidScheme {
-                            let alert = UIAlertController(title: "Invalid URL", message: "The URL must begin with either http:// or https://.", preferredStyle: UIAlertControllerStyle.alert)
+                            let message = "The URL must begin with either http:// or https://."
+                            let alert = UIAlertController(title: "Invalid URL",
+                                                          message: message,
+                                                          preferredStyle: UIAlertControllerStyle.alert)
                             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                             self.present(alert, animated: true, completion: nil)
                         } else {
@@ -134,6 +163,7 @@ class SettingsViewController: FormViewController {
                 }.onCellSelection { _, row in
                     if self.connectStep == 1 {
                         if let url = self.baseURL {
+                            // swiftlint:disable:next line_length
                             HomeAssistantAPI.sharedInstance.GetDiscoveryInfo(baseUrl: url).then { discoveryInfo -> Void in
                                 let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
                                 urlRow.disabled = true
@@ -148,14 +178,19 @@ class SettingsViewController: FormViewController {
                                 self.connectStep = 2
                                 }.catch { error in
                                     print("Hit error when attempting to get discovery information", error)
-                                    let alert = UIAlertController(title: "Error during connection attempt", message: "\(error.localizedDescription)\r\n\r\nPlease try again.", preferredStyle: UIAlertControllerStyle.alert)
-                                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                                    let alert = UIAlertController(title: "Error during connection attempt",
+                                                                  // swiftlint:disable:next line_length
+                                        message: "\(error.localizedDescription)\r\n\r\nPlease try again.",
+                                        preferredStyle: UIAlertControllerStyle.alert)
+                                    alert.addAction(UIAlertAction(title: "OK",
+                                                                  style: UIAlertActionStyle.default, handler: nil))
                                     self.present(alert, animated: true, completion: nil)
                             }
                         }
                     } else if self.connectStep == 2 {
                         firstly {
-                            HomeAssistantAPI.sharedInstance.Setup(baseAPIUrl: self.baseURL!.absoluteString, APIPassword: self.password!)
+                            HomeAssistantAPI.sharedInstance.Setup(baseAPIUrl: self.baseURL!.absoluteString,
+                                                                  APIPassword: self.password!)
                             }.then {_ in
                                 HomeAssistantAPI.sharedInstance.Connect()
                             }.then { config -> Void in
@@ -187,8 +222,12 @@ class SettingsViewController: FormViewController {
                                 let resetSection: Section = self.form.sectionBy(tag: "reset")!
                                 resetSection.hidden = false
                                 resetSection.evaluateHidden()
-                                let alert = UIAlertController(title: "Connected", message: "Please force quit and re-open the app to continue.", preferredStyle: UIAlertControllerStyle.alert)
-                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                                let alert = UIAlertController(title: "Connected",
+                                                              // swiftlint:disable:next line_length
+                                    message: "Please force quit and re-open the app to continue.",
+                                    preferredStyle: UIAlertControllerStyle.alert)
+                                alert.addAction(UIAlertAction(title: "OK",
+                                                              style: UIAlertActionStyle.default, handler: nil))
                                 self.present(alert, animated: true, completion: nil)
                             }.catch { error in
                                 print("Connection error!", error)
@@ -198,8 +237,13 @@ class SettingsViewController: FormViewController {
                                         errorMessage = "The password was incorrect."
                                     }
                                 }
-                                let alert = UIAlertController(title: "Error during connection with authentication attempt", message: "\(errorMessage)\r\n\r\nPlease try again.", preferredStyle: UIAlertControllerStyle.alert)
-                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                                // swiftlint:disable:next line_length
+                                let alert = UIAlertController(title: "Error during connection with authentication attempt",
+                                                              message: "\(errorMessage)\r\n\r\nPlease try again.",
+                                    preferredStyle: UIAlertControllerStyle.alert)
+                                alert.addAction(UIAlertAction(title: "OK",
+                                                              style: UIAlertActionStyle.default,
+                                                              handler: nil))
                                 self.present(alert, animated: true, completion: nil)
                         }
                     }
@@ -242,13 +286,15 @@ class SettingsViewController: FormViewController {
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.notificationsEnabled == false)
             }
 
+            // swiftlint:disable:next line_length
             +++ Section(header: "", footer: "Device ID is the identifier used when sending location updates to Home Assistant, as well as the target to send push notifications to.")
             <<< TextRow("deviceId") {
                 $0.title = "Device ID"
                 if let deviceId = prefs.string(forKey: "deviceId") {
                     $0.value = deviceId
                 } else {
-                    $0.value = removeSpecialCharsFromString(text: UIDevice.current.name).replacingOccurrences(of: " ", with: "_").lowercased()
+                    let cleanedString = removeSpecialCharsFromString(text: UIDevice.current.name)
+                    $0.value = cleanedString.replacingOccurrences(of: " ", with: "_").lowercased()
                 }
                 $0.cell.textField.autocapitalizationType = .none
                 }.cellUpdate { _, row in
@@ -257,7 +303,7 @@ class SettingsViewController: FormViewController {
                         self.prefs.synchronize()
                     }
             }
-            +++ Section() {
+            +++ Section {
                 $0.tag = "details"
                 $0.hidden = Condition(booleanLiteral: !self.configured)
             }
@@ -279,7 +325,8 @@ class SettingsViewController: FormViewController {
                     let pscope = PermissionScope()
 
                     pscope.addPermission(LocationAlwaysPermission(),
-                                         message: "We use this to inform\r\nHome Assistant of your device location and state.")
+                                         // swiftlint:disable:next line_length
+                        message: "We use this to inform\r\nHome Assistant of your device location and state.")
                     pscope.show({finished, results in
                         if finished {
                             print("Location Permissions finished!", finished, results)
@@ -291,7 +338,8 @@ class SettingsViewController: FormViewController {
                             let locationSettingsRow: ButtonRow = self.form.rowBy(tag: "locationSettings")!
                             locationSettingsRow.hidden = false
                             locationSettingsRow.evaluateHidden()
-                            let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(tag: "deviceTrackerComponentLoaded")!
+                            let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(
+                                tag: "deviceTrackerComponentLoaded")!
                             deviceTrackerComponentLoadedRow.hidden = false
                             deviceTrackerComponentLoadedRow.evaluateHidden()
                         }
@@ -344,7 +392,8 @@ class SettingsViewController: FormViewController {
                 $0.title = "Notification Settings"
                 $0.hidden = Condition(booleanLiteral: !HomeAssistantAPI.sharedInstance.notificationsEnabled)
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    print("HomeAssistantAPI.sharedInstance.notificationsEnabled", HomeAssistantAPI.sharedInstance.notificationsEnabled)
+                    print("HomeAssistantAPI.sharedInstance.notificationsEnabled",
+                          HomeAssistantAPI.sharedInstance.notificationsEnabled)
                     let view = SettingsDetailViewController()
                     view.detailGroup = "notifications"
                     return view
@@ -353,7 +402,7 @@ class SettingsViewController: FormViewController {
                 })
             }
 
-            +++ Section() {
+            +++ Section {
                 $0.tag = "reset"
                 $0.hidden = Condition(booleanLiteral: !self.configured)
             }
@@ -362,7 +411,10 @@ class SettingsViewController: FormViewController {
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textColor = .red
                 }.onCellSelection { _, _ in
-                    let alert = UIAlertController(title: "Reset", message: "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.", preferredStyle: UIAlertControllerStyle.alert)
+                    let alert = UIAlertController(title: "Reset",
+                                                  // swiftlint:disable:next line_length
+                        message: "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.",
+                        preferredStyle: UIAlertControllerStyle.alert)
 
                     alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
                         print("Handle Cancel Logic here")
@@ -389,6 +441,7 @@ class SettingsViewController: FormViewController {
         if let userInfo = (notification as Notification).userInfo as? [String:Any] {
             let discoveryInfo = DiscoveryInfoResponse(JSON: userInfo)!
             let needsPass = discoveryInfo.RequiresPassword ? " - Requires password" : ""
+            // swiftlint:disable:next line_length
             let detailTextLabel = "\(discoveryInfo.BaseURL!.host!):\(discoveryInfo.BaseURL!.port!) - \(discoveryInfo.Version) - \(discoveryInfo.BaseURL!.scheme!.uppercased()) \(needsPass)"
             if self.form.rowBy(tag: discoveryInfo.LocationName) == nil {
                 discoverySection
@@ -422,11 +475,12 @@ class SettingsViewController: FormViewController {
 
     func HomeAssistantUndiscovered(_ notification: Notification) {
         if let userInfo = (notification as Notification).userInfo {
-            let name = userInfo["name"] as! String
-            if let removingRow: ButtonRow = self.form.rowBy(tag: name) {
-                removingRow.hidden = true
-                removingRow.evaluateHidden()
-                removingRow.updateCell()
+            if let stringedName = userInfo["name"] as? String {
+                if let removingRow: ButtonRow = self.form.rowBy(tag: stringedName) {
+                    removingRow.hidden = true
+                    removingRow.evaluateHidden()
+                    removingRow.updateCell()
+                }
             }
         }
         let discoverySection: Section = self.form.sectionBy(tag: "discoveredInstances")!
@@ -476,7 +530,10 @@ class SettingsViewController: FormViewController {
     func checkForEmail() {
         if prefs.bool(forKey: "emailSet") == false || prefs.string(forKey: "userEmail") == nil {
             print("This is first launch, let's prompt user for email.")
-            let alert = UIAlertController(title: "Welcome", message: "Please enter the email address you used to sign up for the beta program with.", preferredStyle: UIAlertControllerStyle.alert)
+            let alert = UIAlertController(title: "Welcome",
+                                          // swiftlint:disable:next line_length
+                message: "Please enter the email address you used to sign up for the beta program with.",
+                preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: emailEntered))
             alert.addTextField(configurationHandler: {(textField: UITextField!) in
                 textField.placeholder = "myawesomeemail@gmail.com"
@@ -485,49 +542,6 @@ class SettingsViewController: FormViewController {
             })
             self.present(alert, animated: true, completion: nil)
         }
-    }
-
-    func saveSettings() {
-        if let urlRow: URLRow = self.form.rowBy(tag: "baseURL") {
-            if let url = urlRow.value {
-                self.prefs.setValue(url.absoluteString, forKey: "baseURL")
-            }
-        }
-        if let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword") {
-            if let password = apiPasswordRow.value {
-                self.prefs.setValue(password, forKey: "apiPassword")
-            }
-        }
-        if let deviceIdRow: TextRow = self.form.rowBy(tag: "deviceId") {
-            if let deviceId = deviceIdRow.value {
-                self.prefs.setValue(deviceId, forKey: "deviceId")
-            }
-        }
-        if let allowAllGroupsRow: SwitchRow = self.form.rowBy(tag: "allowAllGroups") {
-            if let allowAllGroups = allowAllGroupsRow.value {
-                self.prefs.set(allowAllGroups, forKey: "allowAllGroups")
-            }
-        }
-
-        self.prefs.synchronize()
-
-        let pscope = PermissionScope()
-
-        pscope.addPermission(LocationAlwaysPermission(),
-                             message: "We use this to inform\r\nHome Assistant of your device presence.")
-        pscope.addPermission(NotificationsPermission(),
-                             message: "We use this to let you\r\nsend notifications to your device.")
-        pscope.show({finished, results in
-            if finished {
-                print("Permissions finished, resetting API!", results)
-                self.dismiss(animated: true, completion: nil)
-                (UIApplication.shared.delegate as! AppDelegate).initAPI()
-            }
-        }, cancelled: { (results) -> Void in
-            print("Permissions finished, resetting API!")
-            self.dismiss(animated: true, completion: nil)
-            (UIApplication.shared.delegate as! AppDelegate).initAPI()
-        })
     }
 
     func ResetApp() {

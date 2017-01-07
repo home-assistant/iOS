@@ -81,7 +81,10 @@ class MediaPlayer: SwitchableEntity {
     }
 
     override class func ignoredProperties() -> [String] {
-        return ["SupportedMediaCommands", "SourceList", "SupportsPause", "SupportsSeek", "SupportsVolumeSet", "SupportsVolumeMute", "SupportsPreviousTrack", "SupportsNextTrack", "SupportsTurnOn", "SupportsTurnOff", "SupportsPlayMedia", "SupportsVolumeStep", "SupportsSelectSource", "SupportsStop", "SupportsClearPlaylist"]
+        return ["SupportedMediaCommands", "SourceList", "SupportsPause", "SupportsSeek",
+                "SupportsVolumeSet", "SupportsVolumeMute", "SupportsPreviousTrack",
+                "SupportsNextTrack", "SupportsTurnOn", "SupportsTurnOff", "SupportsPlayMedia",
+                "SupportsVolumeStep", "SupportsSelectSource", "SupportsStop", "SupportsClearPlaylist"]
     }
 
     func humanReadableMediaDuration() -> String {
@@ -96,14 +99,29 @@ class MediaPlayer: SwitchableEntity {
     }
 
     func muteOn() {
-        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player", service: "volume_mute", serviceData: ["entity_id": self.ID as AnyObject, "is_volume_muted": "on" as AnyObject])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player",
+                                                            service: "volume_mute",
+                                                            serviceData: [
+                                                                "entity_id": self.ID as AnyObject,
+                                                                "is_volume_muted": "on" as AnyObject
+            ])
     }
     func muteOff() {
-        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player", service: "volume_mute", serviceData: ["entity_id": self.ID as AnyObject, "is_volume_muted": "off" as AnyObject])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player",
+                                                            service: "volume_mute",
+                                                            serviceData: [
+                                                                "entity_id": self.ID as AnyObject,
+                                                                "is_volume_muted": "off" as AnyObject
+            ])
     }
     func setVolume(_ newVolume: Float) {
         let fixedVolume = newVolume/100
-        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player", service: "volume_set", serviceData: ["entity_id": self.ID as AnyObject, "volume_level": fixedVolume as AnyObject])
+        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player",
+                                                            service: "volume_set",
+                                                            serviceData: [
+                                                                "entity_id": self.ID as AnyObject,
+                                                                "volume_level": fixedVolume as AnyObject
+            ])
     }
 
     override var ComponentIcon: String {

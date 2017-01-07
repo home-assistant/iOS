@@ -11,6 +11,7 @@ import ObjectMapper
 import RealmSwift
 import Realm
 
+// swiftlint:disable:next type_body_length
 class Entity: Object, StaticMappable {
     let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
 
@@ -55,6 +56,7 @@ class Entity: Object, StaticMappable {
     dynamic var NodeID: String? = nil
     var BatteryLevel = RealmOptional<Int>()
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     class func objectForMapping(map: Map) -> BaseMappable? {
         if let entityId: String = map["entity_id"].value() {
             let entityType = entityId.components(separatedBy: ".")[0]
@@ -108,6 +110,7 @@ class Entity: Object, StaticMappable {
         }
         return nil
     }
+    // swiftlint:enable cyclomatic_complexity function_body_length
 
     func mapping(map: Map) {
         ID                <- map["entity_id"]
@@ -157,7 +160,7 @@ class Entity: Object, StaticMappable {
     }
 
     var ComponentIcon: String {
-        switch (self.Domain) {
+        switch self.Domain {
         case "alarm_control_panel":
             return "mdi:bell"
         case "automation":
@@ -232,16 +235,16 @@ class Entity: Object, StaticMappable {
         if self.MobileIcon != nil { return self.MobileIcon! }
         if self.Icon != nil { return self.Icon! }
         switch self {
-        case is BinarySensor:
-            return (self as! BinarySensor).StateIcon()
-        case is Lock:
-            return (self as! Lock).StateIcon()
-        case is MediaPlayer:
-            return (self as! MediaPlayer).StateIcon()
+        case let binarySensor as BinarySensor:
+            return binarySensor.StateIcon()
+        case let lock as Lock:
+            return lock.StateIcon()
+        case let mediaPlayer as MediaPlayer:
+            return mediaPlayer.StateIcon()
         default:
-            if (self.UnitOfMeasurement == "°C" || self.UnitOfMeasurement == "°F") {
+            if self.UnitOfMeasurement == "°C" || self.UnitOfMeasurement == "°F" {
                 return "mdi:thermometer"
-            } else if (self.UnitOfMeasurement == "Mice") {
+            } else if self.UnitOfMeasurement == "Mice" {
                 return "mdi:mouse-variant"
             }
             return self.ComponentIcon
@@ -250,12 +253,12 @@ class Entity: Object, StaticMappable {
 
     func EntityColor() -> UIColor {
         switch self {
-        case is Light:
-            return (self as! Light).EntityColor()
-        case is Sun:
-            return (self as! Sun).EntityColor()
-        case is SwitchableEntity:
-            return (self as! SwitchableEntity).EntityColor()
+        case let light as Light:
+            return light.EntityColor()
+        case let sun as Sun:
+            return sun.EntityColor()
+        case let switchableEntity as SwitchableEntity:
+            return switchableEntity.EntityColor()
         default:
             let hexColor = self.State == "unavailable" ? "#bdbdbd" : "#44739E"
             return colorWithHexString(hexColor, alpha: 1)
@@ -274,7 +277,9 @@ class Entity: Object, StaticMappable {
         if let friendly = self.FriendlyName {
             return friendly
         } else {
-            return self.ID.replacingOccurrences(of: "\(self.Domain).", with: "").replacingOccurrences(of: "_", with: " ").capitalized
+            return self.ID.replacingOccurrences(of: "\(self.Domain).",
+                with: "").replacingOccurrences(of: "_",
+                                               with: " ").capitalized
         }
     }
 
@@ -321,7 +326,11 @@ open class ComponentBoolTransform: TransformType {
     }
 
     public func transformFromJSON(_ value: Any?) -> Bool? {
-        return ((value! as! String) == self.trueValue)
+        if let valueString = value as? String {
+            return valueString == self.trueValue
+        } else {
+            return false
+        }
     }
 
     open func transformToJSON(_ value: Bool?) -> String? {

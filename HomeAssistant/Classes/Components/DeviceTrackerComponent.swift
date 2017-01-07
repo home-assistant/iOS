@@ -39,7 +39,11 @@ class DeviceTracker: Entity {
 
     func location() -> CLLocation {
         if let accr = self.GPSAccuracy.value {
-            return CLLocation(coordinate: self.locationCoordinates(), altitude: 0, horizontalAccuracy: accr, verticalAccuracy: -1, timestamp: Date())
+            return CLLocation(coordinate: self.locationCoordinates(),
+                              altitude: 0,
+                              horizontalAccuracy: accr,
+                              verticalAccuracy: -1,
+                              timestamp: Date())
         } else {
             if self.Latitude.value != nil && self.Longitude.value != nil {
                 return CLLocation(latitude: self.Latitude.value!, longitude: self.Longitude.value!)

@@ -13,16 +13,20 @@ import CPDAcknowledgements
 
 class AboutViewController: FormViewController {
 
+    // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(AboutViewController.closeAboutView(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
+                                                                 target: self,
+                                                                 action: #selector(AboutViewController.close(_:)))
 
         form
-            +++ Section() {
-                $0.header = HeaderFooterView<HomeAssistantLogoView>(.nibFile(name: "HomeAssistantLogoView", bundle: nil))
+            +++ Section {
+                $0.header = HeaderFooterView<HomeAssistantLogoView>(.nibFile(name: "HomeAssistantLogoView",
+                                                                             bundle: nil))
             }
-            <<< ButtonRow() {
+            <<< ButtonRow {
                 $0.title = "Acknowledgements"
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     return self.generateAcknowledgements()
@@ -31,7 +35,7 @@ class AboutViewController: FormViewController {
                 })
             }
             +++ Section()
-            <<< ButtonRow() {
+            <<< ButtonRow {
                 $0.title = "Website"
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
@@ -42,7 +46,7 @@ class AboutViewController: FormViewController {
                     openURLInBrowser(url: "https://home-assistant.io/")
                 })
 
-            <<< ButtonRow() {
+            <<< ButtonRow {
                 $0.title = "Forums"
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
@@ -53,7 +57,7 @@ class AboutViewController: FormViewController {
                     openURLInBrowser(url: "https://community.home-assistant.io/")
                 })
 
-            <<< ButtonRow() {
+            <<< ButtonRow {
                 $0.title = "Chat"
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
@@ -64,7 +68,7 @@ class AboutViewController: FormViewController {
                     openURLInBrowser(url: "https://gitter.im/home-assistant/home-assistant")
                 })
 
-            <<< ButtonRow() {
+            <<< ButtonRow {
                 $0.title = "Documentation"
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
@@ -75,7 +79,7 @@ class AboutViewController: FormViewController {
                     openURLInBrowser(url: "https://home-assistant.io/ecosystem/ios/")
                 })
 
-            <<< ButtonRow() {
+            <<< ButtonRow {
                 $0.title = "Home Assistant on Twitter"
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
@@ -86,7 +90,7 @@ class AboutViewController: FormViewController {
                     self.openInTwitterApp(username: "home_assistant")
                 })
 
-            <<< ButtonRow() {
+            <<< ButtonRow {
                 $0.title = "Home Assistant on Facebook"
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
@@ -97,7 +101,7 @@ class AboutViewController: FormViewController {
                     self.openInFacebook(pageId: "292963007723872")
                 })
 
-            <<< ButtonRow() {
+            <<< ButtonRow {
                 $0.title = "GitHub"
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
@@ -108,7 +112,7 @@ class AboutViewController: FormViewController {
                     openURLInBrowser(url: "https://github.com/home-assistant/home-assistant-iOS")
                 })
 
-            <<< ButtonRow() {
+            <<< ButtonRow {
                 $0.title = "GitHub Issue Tracker"
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
@@ -137,11 +141,6 @@ class AboutViewController: FormViewController {
      */
 
     func generateAcknowledgements() -> CPDAcknowledgementsViewController {
-        //        let robbie = CPDContribution.init(name: "Robbie Trencheny", websiteAddress: "https://twitter.com/robbie", role: "Primary iOS developer")
-        //        robbie.avatarAddress = "https://s.gravatar.com/avatar/04178c46aa6f009adba24b3e7ac64f14"
-        //        let paulus = CPDContribution.init(name: "Paulus Schousten", websiteAddress: "https://twitter.com/balloob", role: "Home Assistant creator & BDFL")
-        //        paulus.avatarAddress = "https://s.gravatar.com/avatar/dee932f2cb7ad0af8c5791217a085d35"
-        //        let contributors = [robbie, paulus]
         return CPDAcknowledgementsViewController.init(style: nil, acknowledgements: nil, contributions: nil)
     }
 
@@ -196,7 +195,7 @@ class AboutViewController: FormViewController {
         }
     }
 
-    func closeAboutView(_ sender: UIBarButtonItem) {
+    func close(_ sender: UIBarButtonItem) {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
 }

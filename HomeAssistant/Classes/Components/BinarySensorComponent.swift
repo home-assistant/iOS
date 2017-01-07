@@ -23,13 +23,14 @@ class BinarySensor: SwitchableEntity {
         return "mdi:radiobox-blank"
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     override func StateIcon() -> String {
         if self.MobileIcon != nil { return self.MobileIcon! }
         if self.Icon != nil { return self.Icon! }
 
         let activated = (self.IsOn == false)
         if let sensorClass = self.SensorClass {
-            switch (sensorClass) {
+            switch sensorClass {
             case "connectivity":
                 return activated ? "mdi:server-network-off" : "mdi:server-network"
             case "light":
