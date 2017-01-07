@@ -17,6 +17,8 @@ class AboutViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.title = "About"
+
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
                                                                  target: self,
                                                                  action: #selector(AboutViewController.close(_:)))
