@@ -203,6 +203,26 @@ func checkIfIPIsInternal(ipAddress: String) -> Bool {
     return (matches.count > 0)
 }
 
+func openURLInBrowser(url: String) {
+    if let urlToOpen = URL(string: url) {
+        if (OpenInChromeController.sharedInstance.isChromeInstalled()) {
+            _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen)
+        } else {
+            if #available(iOS 10, *) {
+                UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
+            } else {
+                _ = UIApplication.shared.openURL(urlToOpen)
+            }
+        }
+    }
+}
+
+func removeSpecialCharsFromString(text: String) -> String {
+    let okayChars : Set<Character> =
+        Set("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890".characters)
+    return String(text.characters.filter {okayChars.contains($0) })
+}
+
 extension UIImage{
     func scaledToSize(_ size: CGSize) -> UIImage{
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)

@@ -3,12 +3,14 @@ platform :ios, '9.0'
 # Uncomment this line if you're using Swift
 use_frameworks!
 
+plugin 'cocoapods-acknowledgements'
+
 target 'HomeAssistant' do
-  pod 'AcknowList'
   pod 'Alamofire'
   pod 'AlamofireImage'
   pod 'AlamofireNetworkActivityIndicator'
   pod 'AlamofireObjectMapper'
+  pod 'CPDAcknowledgements'
   pod 'Crashlytics'
   pod 'DeviceKit'
   pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'

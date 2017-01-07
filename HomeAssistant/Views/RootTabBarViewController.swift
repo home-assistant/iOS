@@ -40,7 +40,9 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
             DispatchQueue.main.async(execute: {
                 let settingsView = SettingsViewController()
                 settingsView.title = "Settings"
+                settingsView.hidesBottomBarWhenPushed = true
                 let navController = UINavigationController(rootViewController: settingsView)
+                navController.hidesBottomBarWhenPushed = true
                 self.present(navController, animated: true, completion: nil)
             })
         }
@@ -78,12 +80,13 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         for (index, group) in allGroups.enumerated() {
             if group.Entities.count < 1 { continue }
             let groupView = GroupViewController()
-            groupView.GroupID = String(group.ID)
+            groupView.GroupID = group.ID
             groupView.Order = group.Order.value
-            groupView.title = group.Name
-            groupView.tabBarItem.title = group.Name
+            let groupName = group.Auto ? group.Name.capitalized : group.Name
+            groupView.title = groupName
+            groupView.tabBarItem.title = groupName
             let icon = group.Entities.first!.EntityIcon(width: 30, height: 30, color: tabBarIconColor)
-            groupView.tabBarItem = UITabBarItem(title: group.Name, image: icon, tag: index)
+            groupView.tabBarItem = UITabBarItem(title: groupName, image: icon, tag: index)
             
             if group.Order.value == nil {
                 // Save the index now since it should be first time running
@@ -115,6 +118,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         let settingsView = SettingsViewController()
         settingsView.title = "Settings"
         settingsView.tabBarItem = UITabBarItem(title: "Settings", image: settingsIcon, tag: 1)
+        settingsView.hidesBottomBarWhenPushed = true
         
         tabViewControllers.append(UINavigationController(rootViewController: settingsView))
         

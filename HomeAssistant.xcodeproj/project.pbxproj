@@ -7,9 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5487B2333FBD80B7ED0CFD47 /* Pods-NotificationContentExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */; };
 		81F6A23C9F9F3ED89E445E90 /* Pods_NotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 141825DF3D525694F6F38A6C /* Pods_NotificationContentExtension.framework */; };
 		8A8D77622C1E7600D10BE8A4 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 352613F4CF40158FA40BF5D3 /* Pods_HomeAssistant.framework */; };
 		8D653DB21337245B6FF6E3AE /* Pods_HomeAssistantTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50EA5FF6155A1CAA7A186D73 /* Pods_HomeAssistantTests.framework */; };
+		B42EC0201B3E045A771E909C /* Pods-HomeAssistant-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */; };
 		B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */; };
 		B606160A1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615051D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav */; };
 		B606160B1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615061D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav */; };
@@ -154,6 +156,9 @@
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
 		B6393F8C1CB260E800503916 /* EntityAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */; };
+		B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */; };
+		B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */; };
+		B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */; };
 		B64D047A1CB8908B00B945C8 /* StateChanged.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D04791CB8908B00B945C8 /* StateChanged.swift */; };
 		B64D047D1CB8916300B945C8 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D047C1CB8916300B945C8 /* Event.swift */; };
 		B64D09AF1D7D561E008EB487 /* InputSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D09AE1D7D561E008EB487 /* InputSlider.swift */; };
@@ -257,6 +262,7 @@
 /* Begin PBXFileReference section */
 		055E7B0DD053FB7FF5126165 /* Pods-HomeAssistantUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		141825DF3D525694F6F38A6C /* Pods_NotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-HomeAssistant-metadata.plist"; path = "Pods/Pods-HomeAssistant-metadata.plist"; sourceTree = "<group>"; };
 		352613F4CF40158FA40BF5D3 /* Pods_HomeAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		366FD7D1C50AFCED407FEBB6 /* Pods-HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.release.xcconfig"; sourceTree = "<group>"; };
 		50EA5FF6155A1CAA7A186D73 /* Pods_HomeAssistantTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -264,6 +270,7 @@
 		6410E5092616A0DD9241A91D /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
 		86B81352B1184CB193CED943 /* Pods-NotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		923F8D630AC5BA0C36905E8A /* Pods_HomeAssistantUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-NotificationContentExtension-metadata.plist"; path = "Pods/Pods-NotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
 		B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MorganFreemanSounds.csv; sourceTree = "<group>"; };
 		B60615051D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Back-Door-Closed.wav"; sourceTree = "<group>"; };
 		B60615061D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Back-Door-Locked.wav"; sourceTree = "<group>"; };
@@ -409,6 +416,9 @@
 		B6393F851CB255F200503916 /* EurekaLocationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EurekaLocationRow.swift; sourceTree = "<group>"; };
 		B6393F871CB2561100503916 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityAttributesViewController.swift; sourceTree = "<group>"; };
+		B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
+		B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeAssistantLogoView.xib; sourceTree = "<group>"; };
+		B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInChromeController.swift; sourceTree = "<group>"; };
 		B64D04791CB8908B00B945C8 /* StateChanged.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateChanged.swift; sourceTree = "<group>"; };
 		B64D047C1CB8916300B945C8 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		B64D09AE1D7D561E008EB487 /* InputSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputSlider.swift; sourceTree = "<group>"; };
@@ -548,6 +558,8 @@
 				E340A91043F97CDAE845613F /* Pods-HomeAssistantUITests.release.xcconfig */,
 				86B81352B1184CB193CED943 /* Pods-NotificationContentExtension.debug.xcconfig */,
 				BA2CF5D1E68D4F13CA129A6D /* Pods-NotificationContentExtension.release.xcconfig */,
+				34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */,
+				93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -802,6 +814,7 @@
 		B679B1F91E1F3CFB0071D366 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */,
 				B624DE171CB8369200F413CE /* DevicesMapViewController.swift */,
 				B6393F8B1CB260E800503916 /* EntityAttributesViewController.swift */,
 				B6393F851CB255F200503916 /* EurekaLocationRow.swift */,
@@ -809,6 +822,7 @@
 				B6F700511CB374F700753BAB /* RootTabBarViewController.swift */,
 				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
 				B657A8ED1CA646EB00121384 /* SettingsViewController.swift */,
+				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -816,6 +830,7 @@
 		B679B1FA1E1F3D020071D366 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E47E981CBB47CC0027F6CA /* DeviceUID.h */,
 				B6E47E991CBB47EC0027F6CA /* DeviceUID.m */,
 				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
@@ -1091,6 +1106,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B627CB111D83C87B0057173E /* MainInterface.storyboard in Resources */,
+				5487B2333FBD80B7ED0CFD47 /* Pods-NotificationContentExtension-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1210,6 +1226,7 @@
 				B60616B01D1F117800249C11 /* US-EN-Daisy-Front-Door-Open.wav in Resources */,
 				B606162E1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav in Resources */,
 				B60616441D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Light.wav in Resources */,
+				B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */,
 				B60616361D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav in Resources */,
 				B60616511D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-TV.wav in Resources */,
 				B60616151D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav in Resources */,
@@ -1231,6 +1248,7 @@
 				B60616551D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Kitchen.wav in Resources */,
 				B60616871D1F117700249C11 /* US-EN-Alexa-Husband-Is-Arriving.wav in Resources */,
 				B60616501D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav in Resources */,
+				B42EC0201B3E045A771E909C /* Pods-HomeAssistant-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1487,6 +1505,7 @@
 				B64D047A1CB8908B00B945C8 /* StateChanged.swift in Sources */,
 				B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */,
 				B6E47E8E1CBA3EDB0027F6CA /* ZoneComponent.swift in Sources */,
+				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				B6DBF7681D89F8C100402A57 /* FanComponent.swift in Sources */,
 				B6FBE3971D46A4E500EE0E36 /* Beacons.swift in Sources */,
 				B6F02BF21CB470570029ABE7 /* Config.swift in Sources */,
@@ -1515,6 +1534,7 @@
 				B6F02C111CB489770029ABE7 /* GarageDoorComponent.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				B6E47E881CBA01310027F6CA /* CallService.swift in Sources */,
+				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
 				B6880B2B1D7B9E6400CCB899 /* ClimateComponent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

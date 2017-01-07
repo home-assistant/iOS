@@ -9,12 +9,10 @@
 import UIKit
 import Eureka
 import PermissionScope
-import AcknowList
 import PromiseKit
 import Crashlytics
 import SafariServices
 import Alamofire
-import AlamofireObjectMapper
 
 class SettingsViewController: FormViewController {
 
@@ -38,6 +36,10 @@ class SettingsViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        let aboutButton = UIBarButtonItem(title: "About", style: .plain, target: self, action: #selector(SettingsViewController.openAbout(_:)))
+        
+        self.navigationItem.setRightBarButton(aboutButton, animated: true)
         
         if let baseURL = prefs.string(forKey: "baseURL") {
             self.baseURL = URL(string: baseURL)!
@@ -373,24 +375,6 @@ class SettingsViewController: FormViewController {
                 
                 self.present(alert, animated: true, completion: nil)
             }
-            
-            +++ Section()
-            <<< ButtonRow("helpButton") {
-                $0.title = "Help"
-                $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
-                    return SFSafariViewController(url: URL(string: "https://home-assistant.io/ecosystem/ios/")!, entersReaderIfAvailable: false)
-                }, onDismiss: { vc in
-                    let _ = vc.navigationController?.popViewController(animated: true)
-                })
-            }
-            <<< ButtonRow("acknowledgementsButton") {
-                $0.title = "Acknowledgements"
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    return AcknowListViewController()
-                }, onDismiss: { vc in
-                    let _ = vc.navigationController?.popViewController(animated: true)
-                })
-            }
     }
 
     override func didReceiveMemoryWarning() {
@@ -558,10 +542,12 @@ class SettingsViewController: FormViewController {
             print("Done with reset!")
         }
     }
-}
-
-func removeSpecialCharsFromString(text: String) -> String {
-    let okayChars : Set<Character> =
-        Set("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890".characters)
-    return String(text.characters.filter {okayChars.contains($0) })
+    
+    func openAbout(_ sender: UIButton) {
+        let aboutView = AboutViewController()
+        
+        let navController = UINavigationController(rootViewController: aboutView)
+        self.show(navController, sender: nil)
+//        self.present(navController, animated: true, completion: nil)
+    }
 }

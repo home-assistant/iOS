@@ -1,5 +1,4 @@
 PODS:
-  - AcknowList (1.2)
   - Alamofire (4.2.0)
   - AlamofireImage (3.2.0):
     - Alamofire (~> 4.1)
@@ -8,6 +7,7 @@ PODS:
   - AlamofireObjectMapper (4.0.1):
     - Alamofire (~> 4.1)
     - ObjectMapper (~> 2.0)
+  - CPDAcknowledgements (1.0.0)
   - Crashlytics (3.8.3):
     - Fabric (~> 1.6.3)
   - DeviceKit (1.0.0)
@@ -40,11 +40,11 @@ PODS:
   - Whisper (4.0.0)
 
 DEPENDENCIES:
-  - AcknowList
   - Alamofire
   - AlamofireImage
   - AlamofireNetworkActivityIndicator
   - AlamofireObjectMapper
+  - CPDAcknowledgements
   - Crashlytics
   - DeviceKit
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
@@ -83,11 +83,11 @@ CHECKOUT OPTIONS:
     :git: https://github.com/robbiet480/PermissionScope.git
 
 SPEC CHECKSUMS:
-  AcknowList: 18ccee4d933a153622416cce2d36e6864ec147ea
   Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
   AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
   AlamofireNetworkActivityIndicator: 4716f6554bdfb9c7cf13b1e0e3af21163129690a
   AlamofireObjectMapper: 842d2eed43a4d0593ff0110d54ac86a170c4519c
+  CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
   DeviceKit: ddead7f3a7c9603ba3a63cb748566428c38dd11f
   Eureka: d014adf16406745e1a78d5790ea37ed130a0a8e5
@@ -103,6 +103,6 @@ SPEC CHECKSUMS:
   SwiftLocation: aac16955b508c46b82bf07fcceb7e2a3b382b8d5
   Whisper: '08be92623311f8e53201e62e17f6d7b9599a4714'
 
-PODFILE CHECKSUM: 5cc7f69d7e50fdbf54bf61118c3b8019cc186d7a
+PODFILE CHECKSUM: bb43a3a7a464ddc23df65dbda8ef8e9b3a76bcd6
 
 COCOAPODS: 1.2.0.beta.1
