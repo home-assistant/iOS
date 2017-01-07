@@ -392,7 +392,13 @@ public class HomeAssistantAPI {
                     case is GarageDoor:
                         realm.create(GarageDoor.self, value: entity, update: true)
                     case is Group:
-                        realm.create(Group.self, value: entity, update: true)
+                        if let currentObject = realm.object(ofType: Group.self, forPrimaryKey: entity.ID as AnyObject) {
+                            let group = entity as! Group
+                            group.Order = currentObject.Order
+                            realm.create(Group.self, value: entity, update: true)
+                        } else {
+                            realm.create(Group.self, value: entity, update: true)
+                    }
                     case is Fan:
                         realm.create(Fan.self, value: entity, update: true)
                     case is InputBoolean:
