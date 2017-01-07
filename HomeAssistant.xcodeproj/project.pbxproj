@@ -939,11 +939,11 @@
 				B657A8E21CA646EB00121384 /* Sources */,
 				B657A8E31CA646EB00121384 /* Frameworks */,
 				B657A8E41CA646EB00121384 /* Resources */,
-				B6E47E861CB9FD350027F6CA /* ShellScript */,
+				B6E47E861CB9FD350027F6CA /* [CP] Copy Acknowledgements */,
 				D458061599D246B74530F402 /* [CP] Embed Pods Frameworks */,
 				EB3BEB157867EEEFE3AFD2F3 /* [CP] Copy Pods Resources */,
 				B6AAD7AC1D827DD40090B220 /* Embed App Extensions */,
-				B6E8579C1CB1167200F96925 /* ShellScript */,
+				B6E8579C1CB1167200F96925 /* Fabric */,
 			);
 			buildRules = (
 			);
@@ -1351,26 +1351,28 @@
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
-		B6E47E861CB9FD350027F6CA /* ShellScript */ = {
+		B6E47E861CB9FD350027F6CA /* [CP] Copy Acknowledgements */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "[CP] Copy Acknowledgements";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cp \"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-acknowledgements.plist\" \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Pods-acknowledgements.plist\"";
 		};
-		B6E8579C1CB1167200F96925 /* ShellScript */ = {
+		B6E8579C1CB1167200F96925 /* Fabric */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = Fabric;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
