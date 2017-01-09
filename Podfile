@@ -16,6 +16,7 @@ target 'HomeAssistant' do
   pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
   pod 'Fabric'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
+  pod 'KeychainAccess'
   pod 'IKEventSource'
   pod 'MBProgressHUD'
   pod 'ObjectMapper'
@@ -37,7 +38,12 @@ target 'HomeAssistantUITests' do
 
 end
 
+target 'APNSAttachmentService' do
+  pod 'KeychainAccess'
+end
+
 target 'NotificationContentExtension' do
+  pod 'KeychainAccess'
   pod 'MBProgressHUD'
 end
 

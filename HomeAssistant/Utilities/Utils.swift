@@ -9,6 +9,7 @@
 import Foundation
 import FontAwesomeKit
 import Crashlytics
+import KeychainAccess
 
 func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeight: Double, color: UIColor) -> UIImage {
     if let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as? [String:String] {
@@ -244,6 +245,32 @@ func migrateUserDefaultsToAppGroups() {
         print("Unable to create NSUserDefaults with given app group")
     }
 
+}
+
+func migrateSecretsToKeychain() {
+
+    let keychain = Keychain(service: "io.robbie.homeassistant")
+
+    let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant")
+
+    let didMigrateToKeychain = "DidMigrateSecretsToKeychain"
+
+    if let groupDefaults = groupDefaults {
+        if !groupDefaults.bool(forKey: didMigrateToKeychain) {
+            keychain["baseURL"] = groupDefaults.string(forKey: "baseURL")
+            keychain["apiPassword"] = groupDefaults.string(forKey: "apiPassword")
+            groupDefaults.removeObject(forKey: "baseURL")
+            groupDefaults.removeObject(forKey: "apiPassword")
+            groupDefaults.set(true, forKey: didMigrateToKeychain)
+            groupDefaults.synchronize()
+            print("Successfully migrated secrets to keychain")
+        } else {
+            print("No need to migrate secrets")
+        }
+    } else {
+        print("Unable to create NSUserDefaults with given app group")
+    }
+    
 }
 
 func openURLInBrowser(url: String) {

@@ -11,6 +11,7 @@ import UserNotifications
 import UserNotificationsUI
 import MapKit
 import MBProgressHUD
+import KeychainAccess
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
 
@@ -24,11 +25,11 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         super.viewDidLoad()
         // Do any required interface initialization here.
 
-        let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
-        if let url = prefs.string(forKey: "baseURL") {
+        let keychain = Keychain(service: "io.robbie.homeassistant")
+        if let url = keychain["baseURL"] {
             baseURL = url
         }
-        if let pass = prefs.string(forKey: "apiPassword") {
+        if let pass = keychain["apiPassword"] {
             urlConfiguration.httpAdditionalHeaders = ["X-HA-Access": pass]
         }
     }

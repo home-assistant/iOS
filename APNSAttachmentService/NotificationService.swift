@@ -8,14 +8,12 @@
 
 import UserNotifications
 import MobileCoreServices
+import KeychainAccess
 
 final class NotificationService: UNNotificationServiceExtension {
 
     private var contentHandler: ((UNNotificationContent) -> Void)?
     private var bestAttemptContent: UNMutableNotificationContent?
-
-    private var baseURL: String = ""
-    private var apiPassword: String = ""
 
     // swiftlint:disable cyclomatic_complexity
     // swiftlint:disable function_body_length
@@ -26,16 +24,16 @@ final class NotificationService: UNNotificationServiceExtension {
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
 
-        let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
-        if let url = prefs.string(forKey: "baseURL") {
-            baseURL = url
-        }
-        if let pass = prefs.string(forKey: "apiPassword") {
-            apiPassword = pass
-        }
-
         func failEarly() {
             contentHandler(request.content)
+        }
+
+        let keychain = Keychain(service: "io.robbie.homeassistant")
+        guard let baseURL = keychain["baseURL"] else {
+            return failEarly()
+        }
+        guard let apiPassword = keychain["apiPassword"] else {
+            return failEarly()
         }
 
         guard let content = (request.content.mutableCopy() as? UNMutableNotificationContent) else {

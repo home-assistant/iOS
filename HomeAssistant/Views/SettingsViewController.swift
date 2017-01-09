@@ -13,12 +13,14 @@ import PromiseKit
 import Crashlytics
 import SafariServices
 import Alamofire
+import KeychainAccess
 
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 class SettingsViewController: FormViewController {
 
     let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
+    let keychain = Keychain(service: "io.robbie.homeassistant")
 
     var doneButton: Bool = false
 
@@ -56,17 +58,17 @@ class SettingsViewController: FormViewController {
             self.navigationItem.setRightBarButton(aboutButton, animated: true)
         }
 
-        if let baseURL = prefs.string(forKey: "baseURL") {
+        if let baseURL = keychain["baseURL"] {
             self.baseURL = URL(string: baseURL)!
         }
 
-        if let apiPass = prefs.string(forKey: "apiPassword") {
+        if let apiPass = keychain["apiPassword"] {
             self.password = apiPass
         }
 
         self.configured = (self.baseURL != nil && self.password != nil)
 
-//        checkForEmail()
+        checkForEmail()
 
         if showErrorConnectingMessage {
             let errDesc = (showErrorConnectingMessageError?.localizedDescription)!
@@ -199,8 +201,8 @@ class SettingsViewController: FormViewController {
                         }
                     } else if self.connectStep == 2 {
                         firstly {
-                            HomeAssistantAPI.sharedInstance.Setup(baseAPIUrl: self.baseURL!.absoluteString,
-                                                                  APIPassword: self.password!)
+                            HomeAssistantAPI.sharedInstance.Setup(baseURL: self.baseURL!.absoluteString,
+                                                                  password: self.password!)
                             }.then {_ in
                                 HomeAssistantAPI.sharedInstance.Connect()
                             }.then { config -> Void in
@@ -212,12 +214,11 @@ class SettingsViewController: FormViewController {
                                 row.hidden = true
                                 row.evaluateHidden()
                                 if let url = self.baseURL {
-                                    self.prefs.setValue(url.absoluteString, forKey: "baseURL")
+                                    self.keychain["baseURL"] = url.absoluteString
                                 }
                                 if let password = self.password {
-                                    self.prefs.setValue(password, forKey: "apiPassword")
+                                    self.keychain["apiPassword"] = password
                                 }
-                                self.prefs.synchronize()
                                 self.form.setValues(["locationName": config.LocationName, "version": config.Version])
                                 let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
                                 locationNameRow.updateCell()

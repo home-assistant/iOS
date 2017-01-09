@@ -11,6 +11,7 @@ import MBProgressHUD
 import Whisper
 import ObjectMapper
 import PromiseKit
+import KeychainAccess
 
 class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
@@ -31,9 +32,10 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        if let baseURL = prefs.string(forKey: "baseURL"), let apiPass = prefs.string(forKey: "apiPassword") {
+        let keychain = Keychain(service: "io.robbie.homeassistant")
+        if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
             firstly {
-                HomeAssistantAPI.sharedInstance.Setup(baseAPIUrl: baseURL, APIPassword: apiPass)
+                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass)
                 }.then {_ in
                     HomeAssistantAPI.sharedInstance.Connect()
                 }.then { _ -> Void in

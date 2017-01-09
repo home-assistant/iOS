@@ -17,6 +17,7 @@ PODS:
   - FontAwesomeKit/MaterialDesignIcons (2.2.4):
     - FontAwesomeKit/Core
   - IKEventSource (2.0.0)
+  - KeychainAccess (3.0.1)
   - MBProgressHUD (1.0.0)
   - ObjectMapper (2.2.2)
   - PermissionScope (1.1.1)
@@ -53,6 +54,7 @@ DEPENDENCIES:
   - Fabric
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
   - IKEventSource
+  - KeychainAccess
   - MBProgressHUD
   - ObjectMapper
   - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `swift3-ios10-usernotifications`)
@@ -98,6 +100,7 @@ SPEC CHECKSUMS:
   Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
   FontAwesomeKit: b5c9ddc9504c4a07945b7b4590e7f9ad5a50e073
   IKEventSource: 7377db25431c3baed1a09f572468528a77f77d2c
+  KeychainAccess: 017ea25e313a49eda10bb19b0bb0760fb1edfe1a
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   ObjectMapper: 9e385c2295bcc4e16eabbcfc85db801442bba545
   PermissionScope: a30c16e015779ba27c97c124e7539e27b5829de2
@@ -109,6 +112,6 @@ SPEC CHECKSUMS:
   SwiftLocation: aac16955b508c46b82bf07fcceb7e2a3b382b8d5
   Whisper: '08be92623311f8e53201e62e17f6d7b9599a4714'
 
-PODFILE CHECKSUM: c2aea6316adfa9d4aa8c026a0893aaafe651f0ab
+PODFILE CHECKSUM: 918e2fd6112b3455041386d15aceb961cf7d1717
 
 COCOAPODS: 1.1.1
