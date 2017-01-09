@@ -718,9 +718,15 @@ public class HomeAssistantAPI {
         ident.DeviceTimezone = (NSTimeZone.local as NSTimeZone).name
         ident.PushSounds = listAllInstalledPushNotificationSounds()
         ident.PushToken = deviceToken
-        ident.UserEmail = prefs.string(forKey: "userEmail")!
-        ident.HomeAssistantVersion = prefs.string(forKey: "version")!
-        ident.HomeAssistantTimezone = prefs.string(forKey: "time_zone")!
+        if let email = prefs.string(forKey: "userEmail") {
+            ident.UserEmail = email
+        }
+        if let version = prefs.string(forKey: "version") {
+            ident.HomeAssistantVersion = version
+        }
+        if let timeZone = prefs.string(forKey: "time_zone") {
+            ident.HomeAssistantTimezone = timeZone
+        }
 
         return Mapper().toJSON(ident)
     }
