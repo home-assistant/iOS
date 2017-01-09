@@ -10,6 +10,7 @@ import UIKit
 import Eureka
 import ObjectMapper
 import RealmSwift
+import MBProgressHUD
 
 class EntityAttributesViewController: FormViewController {
 
@@ -22,25 +23,39 @@ class EntityAttributesViewController: FormViewController {
         if let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityID as AnyObject) {
             self.title = (entity.FriendlyName != nil) ? entity.Name : "Attributes"
 
-            form +++ Section {
-                $0.tag = "entity_picture"
-            }
-
             if let picture = entity.Picture {
-                let _ = HomeAssistantAPI.sharedInstance.getImage(imageUrl: picture).then { image -> Void in
-                    if let section = self.form.sectionBy(tag: "entity_picture") {
-                        section.header = {
-                            var header = HeaderFooterView<UIView>(.callback({
-                                let imageView = UIImageView(image: image)
-                                imageView.contentMode = .scaleAspectFit
-                                return imageView
-                            }))
-                            header.height = { image.size.height }
-                            return header
-                        }()
-                        section.reload()
-                    }
+                var hud: MBProgressHUD? = nil
+                let entityPictureSection = Section {
+                    $0.tag = "entity_picture"
+                    $0.header = {
+                        var header = HeaderFooterView<UIView>(.callback({
+                            let view = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 200))
+                            hud = MBProgressHUD.showAdded(to: view, animated: true)
+                            hud?.detailsLabel.text = "Loading picture..."
+                            return view
+                        }))
+                        header.height = { 200 }
+                        return header
+                    }()
                 }
+                form +++ entityPictureSection
+                let _ = HomeAssistantAPI.sharedInstance.getImage(imageUrl: picture).then { image -> Void in
+                    hud?.hide(animated: true)
+                    entityPictureSection.header = {
+                        var header = HeaderFooterView<UIView>(.callback({
+                            let imageView = UIImageView(image: image)
+                            imageView.contentMode = .scaleAspectFit
+                            return imageView
+                        }))
+                        header.height = { image.size.height }
+                        return header
+                    }()
+                    entityPictureSection.reload()
+                    }.catch { _ in
+                        hud?.hide(animated: true)
+                        entityPictureSection.hidden = true
+                        entityPictureSection.evaluateHidden()
+                    }
             }
 
             form +++ Section(header: "Attributes", footer: "")
