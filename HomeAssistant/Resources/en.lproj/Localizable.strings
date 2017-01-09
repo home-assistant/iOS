@@ -14,7 +14,9 @@
 "manual_location_update_failed_notification.message" = "Failed to send current location to server. The error was %@";
 
 "settings.connection_error_notification.title" = "Connection Error";
-"settings.connection_error_notification.message" = "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was %@.";
+"settings.connection_error_notification.message" = "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was:\n\n %@";
+"settings.certificate_error_notification.title" = "Self-signed or invalid certificate detected";
+"settings.certificate_error_notification.message" = "A self-signed or invalid SSL certificate has been detected. Certificates of this kind are not supported by Home Assistant for iOS. Please tap the More Info button for further information.";
 "settings.discovery_section.header" = "Discovered Home Assistants";
 "settings.connection_section.header" = "Connection";
 "settings.connection_section.invalid_url_scheme_notification.title" = "Invalid URL";

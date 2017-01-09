@@ -187,16 +187,33 @@ class SettingsViewController: FormViewController {
                                 discoverySection.evaluateHidden()
                                 self.connectStep = 2
                                 }.catch { error in
-                                    print("Hit error when attempting to get discovery information", error)
-                                    let title = L10n.Settings.ConnectionErrorNotification.title
-                                    // swiftlint:disable:next line_length
-                                    let message = L10n.Settings.ConnectionErrorNotification.message(error.localizedDescription)
-                                    let alert = UIAlertController(title: title,
-                                        message: message,
-                                        preferredStyle: UIAlertControllerStyle.alert)
-                                    alert.addAction(UIAlertAction(title: "OK",
-                                                                  style: UIAlertActionStyle.default, handler: nil))
-                                    self.present(alert, animated: true, completion: nil)
+                                    print("Hit error when attempting to get discovery information",
+                                          (error as NSError).code)
+                                    if (error as NSError).code == -1202 {
+                                        let title = L10n.Settings.CertificateErrorNotification.title
+                                        let message = L10n.Settings.CertificateErrorNotification.message
+                                        let alert = UIAlertController(title: title,
+                                                                      message: message,
+                                                                      preferredStyle: UIAlertControllerStyle.alert)
+                                        let sslURL = "https://home-assistant.io/ecosystem/ios/troubleshooting/#ssl"
+                                        alert.addAction(UIAlertAction(title: "More info", style: .default,
+                                                                      handler: { (_) in
+                                                                        openURLInBrowser(url: sslURL)
+                                        }))
+                                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                                        self.present(alert, animated: true, completion: nil)
+                                    } else {
+                                        let title = L10n.Settings.ConnectionErrorNotification.title
+                                        // swiftlint:disable:next line_length
+                                        let desc = error.localizedDescription
+                                        let message = L10n.Settings.ConnectionErrorNotification.message(desc)
+                                        let alert = UIAlertController(title: title,
+                                                                      message: message,
+                                                                      preferredStyle: UIAlertControllerStyle.alert)
+                                        alert.addAction(UIAlertAction(title: "OK",
+                                                                      style: UIAlertActionStyle.default, handler: nil))
+                                        self.present(alert, animated: true, completion: nil)
+                                    }
                             }
                         }
                     } else if self.connectStep == 2 {

@@ -48,8 +48,15 @@ enum L10n {
 
   enum Settings {
 
+    enum CertificateErrorNotification {
+      /// A self-signed or invalid SSL certificate has been detected. Certificates of this kind are not supported by Home Assistant for iOS. Please tap the More Info button for further information.
+      static let message = L10n.tr("settings.certificate_error_notification.message")
+      /// Self-signed or invalid certificate detected
+      static let title = L10n.tr("settings.certificate_error_notification.title")
+    }
+
     enum ConnectionErrorNotification {
-      /// There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was %@.
+      /// There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was:\n\n %@
       static func message(_ p1: String) -> String {
         return L10n.tr("settings.connection_error_notification.message", p1)
       }
