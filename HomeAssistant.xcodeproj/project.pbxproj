@@ -817,8 +817,8 @@
 			isa = PBXGroup;
 			children = (
 				B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */,
-				B699339B1E2338960054453D /* SnapshotHelper.swift */,
 				B657A90D1CA646EB00121384 /* Info.plist */,
+				B699339B1E2338960054453D /* SnapshotHelper.swift */,
 			);
 			path = HomeAssistantUITests;
 			sourceTree = "<group>";
