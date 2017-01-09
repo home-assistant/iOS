@@ -164,7 +164,6 @@
 		B64D09AF1D7D561E008EB487 /* InputSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D09AE1D7D561E008EB487 /* InputSlider.swift */; };
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
 		B657A8EE1CA646EB00121384 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8ED1CA646EB00121384 /* SettingsViewController.swift */; };
-		B657A8F11CA646EB00121384 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8EF1CA646EB00121384 /* Main.storyboard */; };
 		B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F21CA646EB00121384 /* Assets.xcassets */; };
 		B657A8F61CA646EB00121384 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */; };
 		B657A9011CA646EB00121384 /* HomeAssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9001CA646EB00121384 /* HomeAssistantTests.swift */; };
@@ -428,7 +427,6 @@
 		B657A8E61CA646EB00121384 /* HomeAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B657A8ED1CA646EB00121384 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		B657A8F01CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B657A8F21CA646EB00121384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B657A8F51CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B657A8F71CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -851,7 +849,6 @@
 				B657A8F71CA646EB00121384 /* Info.plist */,
 				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
 				B69933931E232AEA0054453D /* Localizable.strings */,
-				B657A8EF1CA646EB00121384 /* Main.storyboard */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1195,7 +1192,6 @@
 				B60616881D1F117700249C11 /* US-EN-Alexa-Mail-Has-Arrived.wav in Resources */,
 				B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */,
 				B60616801D1F117700249C11 /* US-EN-Alexa-Daughter-Is-Arriving.wav in Resources */,
-				B657A8F11CA646EB00121384 /* Main.storyboard in Resources */,
 				B60616421D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Hallway-Lights.wav in Resources */,
 				B60616571D1F117700249C11 /* US-EN-Morgan-Freeman-Wife-Is-Arriving.wav in Resources */,
 				B60616391D1F117700249C11 /* US-EN-Morgan-Freeman-Son-Is-Arriving.wav in Resources */,
@@ -1640,15 +1636,6 @@
 				B627CB101D83C87B0057173E /* Base */,
 			);
 			name = MainInterface.storyboard;
-			path = .;
-			sourceTree = "<group>";
-		};
-		B657A8EF1CA646EB00121384 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B657A8F01CA646EB00121384 /* Base */,
-			);
-			name = Main.storyboard;
 			path = .;
 			sourceTree = "<group>";
 		};

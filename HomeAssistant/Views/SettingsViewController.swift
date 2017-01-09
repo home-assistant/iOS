@@ -1,5 +1,5 @@
 //
-//  SecondViewController.swift
+//  SettingsViewController.swift
 //  HomeAssistant
 //
 //  Created by Robbie Trencheny on 3/25/16.
@@ -20,6 +20,8 @@ class SettingsViewController: FormViewController {
 
     let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
 
+    var doneButton: Bool = false
+
     var showErrorConnectingMessage = false
     var showErrorConnectingMessageError: Error? = nil
 
@@ -36,17 +38,23 @@ class SettingsViewController: FormViewController {
         self.discovery.stopPublish()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        self.title = "Settings"
+    }
+
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
-        let aboutButton = UIBarButtonItem(title: "About",
-                                          style: .plain,
-                                          target: self,
-                                          action: #selector(SettingsViewController.openAbout(_:)))
+        if doneButton == false {
+            let aboutButton = UIBarButtonItem(title: "About",
+                                              style: .plain,
+                                              target: self,
+                                              action: #selector(SettingsViewController.openAbout(_:)))
 
-        self.navigationItem.setRightBarButton(aboutButton, animated: true)
+            self.navigationItem.setRightBarButton(aboutButton, animated: true)
+        }
 
         if let baseURL = prefs.string(forKey: "baseURL") {
             self.baseURL = URL(string: baseURL)!
@@ -58,7 +66,7 @@ class SettingsViewController: FormViewController {
 
         self.configured = (self.baseURL != nil && self.password != nil)
 
-        checkForEmail()
+//        checkForEmail()
 
         if showErrorConnectingMessage {
             let errDesc = (showErrorConnectingMessageError?.localizedDescription)!
@@ -224,12 +232,11 @@ class SettingsViewController: FormViewController {
                                 let resetSection: Section = self.form.sectionBy(tag: "reset")!
                                 resetSection.hidden = false
                                 resetSection.evaluateHidden()
-                                let alert = UIAlertController(title: "Connected",
-                                    message: "Please force quit and re-open the app to continue.",
-                                    preferredStyle: UIAlertControllerStyle.alert)
-                                alert.addAction(UIAlertAction(title: "OK",
-                                                              style: UIAlertActionStyle.default, handler: nil))
-                                self.present(alert, animated: true, completion: nil)
+                                let closeSelector = #selector(SettingsViewController.closeSettings(_:))
+                                let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self,
+                                                                 action: closeSelector)
+
+                                self.navigationItem.setRightBarButton(doneButton, animated: true)
                             }.catch { error in
                                 print("Connection error!", error)
                                 var errorMessage = error.localizedDescription
@@ -559,5 +566,9 @@ class SettingsViewController: FormViewController {
         let navController = UINavigationController(rootViewController: aboutView)
         self.show(navController, sender: nil)
         //        self.present(navController, animated: true, completion: nil)
+    }
+
+    func closeSettings(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
     }
 }

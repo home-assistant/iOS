@@ -48,39 +48,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        initAPI()
+        window = UIWindow.init(frame: UIScreen.main.bounds)
+        window?.backgroundColor = .white
+
+        let tabView = RootTabBarViewController()
+        self.window!.rootViewController = tabView
+        self.window!.makeKeyAndVisible()
 
         return true
-    }
-
-    func initAPI() {
-        if let baseURL = prefs.string(forKey: "baseURL") {
-            print("Base URL is", baseURL)
-            var apiPass = ""
-            if let pass = prefs.string(forKey: "apiPassword") {
-                apiPass = pass
-            }
-            firstly {
-                HomeAssistantAPI.sharedInstance.Setup(baseAPIUrl: baseURL, APIPassword: apiPass)
-                }.then {_ in
-                    HomeAssistantAPI.sharedInstance.Connect()
-                }.then { _ -> Void in
-                    if HomeAssistantAPI.sharedInstance.notificationsEnabled {
-                        UIApplication.shared.registerForRemoteNotifications()
-                    }
-                    print("Connected!")
-                    return
-                }.catch {err -> Void in
-                    print("ERROR", err)
-                    let settingsView = SettingsViewController()
-                    settingsView.title = "Settings"
-                    settingsView.showErrorConnectingMessage = true
-                    settingsView.showErrorConnectingMessageError = err
-                    let navController = UINavigationController(rootViewController: settingsView)
-                    self.window?.makeKeyAndVisible()
-                    self.window?.rootViewController!.present(navController, animated: true, completion: nil)
-            }
-        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {}

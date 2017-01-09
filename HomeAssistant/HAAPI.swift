@@ -56,6 +56,10 @@ public class HomeAssistantAPI {
 
     let Location = LocationManager()
 
+    var Configured: Bool {
+        return self.baseAPIURL != "" && self.apiPassword != ""
+    }
+
     func Setup(baseAPIUrl: String, APIPassword: String) -> Promise<StatusResponse> {
         self.baseAPIURL = baseAPIUrl+"/api/"
         self.apiPassword = APIPassword

@@ -10,9 +10,11 @@ import UIKit
 import MBProgressHUD
 import Whisper
 import ObjectMapper
-import PermissionScope
+import PromiseKit
 
 class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
+
+    let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,32 +26,52 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                                                object: nil)
     }
 
-    // swiftlint:disable:next function_body_length
     override func viewWillAppear(_ animated: Bool) {
+    }
 
+    override func viewDidAppear(_ animated: Bool) {
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+        if let baseURL = prefs.string(forKey: "baseURL"), let apiPass = prefs.string(forKey: "apiPassword") {
+            firstly {
+                HomeAssistantAPI.sharedInstance.Setup(baseAPIUrl: baseURL, APIPassword: apiPass)
+                }.then {_ in
+                    HomeAssistantAPI.sharedInstance.Connect()
+                }.then { _ -> Void in
+                    if HomeAssistantAPI.sharedInstance.notificationsEnabled {
+                        UIApplication.shared.registerForRemoteNotifications()
+                    }
+                    print("Connected!")
+                    hud.hide(animated: true)
+                    self.loadTabs()
+                    return
+                }.catch {err -> Void in
+                    print("ERROR on connect!!!", err)
+                    hud.hide(animated: true)
+                    let settingsView = SettingsViewController()
+                    settingsView.showErrorConnectingMessage = true
+                    settingsView.showErrorConnectingMessageError = err
+                    settingsView.doneButton = true
+                    let navController = UINavigationController(rootViewController: settingsView)
+                    self.present(navController, animated: true, completion: nil)
+            }
+        } else {
+            let settingsView = SettingsViewController()
+            settingsView.doneButton = true
+            let navController = UINavigationController(rootViewController: settingsView)
+            self.present(navController, animated: true, completion: {
+                hud.hide(animated: true)
+            })
+        }
+    }
+
+    // swiftlint:disable:next function_body_length
+    func loadTabs() {
 
         self.delegate = self
 
         let tabBarIconColor = colorWithHexString("#44739E", alpha: 1)
 
         var tabViewControllers: [UIViewController] = []
-
-        let firstGroupView = GroupViewController()
-        firstGroupView.title = "Loading..."
-
-        self.viewControllers = [firstGroupView]
-
-        if HomeAssistantAPI.sharedInstance.baseAPIURL == "" {
-            DispatchQueue.main.async(execute: {
-                let settingsView = SettingsViewController()
-                settingsView.title = "Settings"
-                settingsView.hidesBottomBarWhenPushed = true
-                let navController = UINavigationController(rootViewController: settingsView)
-                navController.hidesBottomBarWhenPushed = true
-                self.present(navController, animated: true, completion: nil)
-            })
-        }
 
         let allGroups = realm.objects(Group.self).filter {
             var shouldReturn = true
@@ -135,19 +157,13 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
 
         let settingsView = SettingsViewController()
-        settingsView.title = "Settings"
         settingsView.tabBarItem = UITabBarItem(title: "Settings", image: settingsIcon, tag: 1)
         settingsView.hidesBottomBarWhenPushed = true
 
         tabViewControllers.append(UINavigationController(rootViewController: settingsView))
-
         self.viewControllers = tabViewControllers
-
         tabViewControllers.removeLast()
-
         self.customizableViewControllers = tabViewControllers
-
-        hud.hide(animated: true)
     }
 
     func tabBarController(_ tabBarController: UITabBarController,
@@ -225,15 +241,4 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 self.present(alert, animated: true, completion: nil)
         }
     }
-
-    /*
-     // MARK: - Navigation
-
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
-
 }
