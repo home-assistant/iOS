@@ -21,6 +21,7 @@ class SettingsViewController: FormViewController {
     let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
 
     var showErrorConnectingMessage = false
+    var showErrorConnectingMessageError: Error? = nil
 
     var baseURL: URL? = nil
     var password: String? = nil
@@ -60,9 +61,10 @@ class SettingsViewController: FormViewController {
         checkForEmail()
 
         if showErrorConnectingMessage {
-            let alert = UIAlertController(title: "Connection error",
-                                          // swiftlint:disable:next line_length
-                message: "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect.", preferredStyle: UIAlertControllerStyle.alert)
+            let errDesc = (showErrorConnectingMessageError?.localizedDescription)!
+            let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
+                                          message: L10n.Settings.ConnectionErrorNotification.message(errDesc),
+                                          preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
@@ -81,13 +83,11 @@ class SettingsViewController: FormViewController {
             }
 
             NotificationCenter.default.addObserver(self,
-                                                   // swiftlint:disable:next line_length
                 selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)),
                 name:NSNotification.Name(rawValue: "homeassistant.discovered"),
                 object: nil)
 
             NotificationCenter.default.addObserver(self,
-                                                   // swiftlint:disable:next line_length
                 selector: #selector(SettingsViewController.HomeAssistantUndiscovered(_:)),
                 name:NSNotification.Name(rawValue: "homeassistant.undiscovered"),
                 object: nil)
@@ -108,12 +108,12 @@ class SettingsViewController: FormViewController {
                                                object: nil)
 
         form
-            +++ Section(header: "Discovered Home Assistants", footer: "") {
+            +++ Section(header: L10n.Settings.DiscoverySection.header, footer: "") {
                 $0.tag = "discoveredInstances"
                 $0.hidden = true
             }
 
-            +++ Section(header: "Connection", footer: "")
+            +++ Section(header: L10n.Settings.ConnectionSection.header, footer: "")
             <<< URLRow("baseURL") {
                 $0.title = "URL"
                 $0.value = self.baseURL
@@ -126,9 +126,9 @@ class SettingsViewController: FormViewController {
                     if let url = row.value {
                         let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
                         if !cleanUrl.hasValidScheme {
-                            let message = "The URL must begin with either http:// or https://."
-                            let alert = UIAlertController(title: "Invalid URL",
-                                                          message: message,
+                            let title = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.title
+                            let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
+                            let alert = UIAlertController(title: title, message: message,
                                                           preferredStyle: UIAlertControllerStyle.alert)
                             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                             self.present(alert, animated: true, completion: nil)
@@ -148,11 +148,11 @@ class SettingsViewController: FormViewController {
             }
 
             <<< PasswordRow("apiPassword") {
-                $0.title = "Password"
+                $0.title = L10n.Settings.ConnectionSection.ApiPasswordRow.title
                 $0.value = self.password
                 $0.disabled = Condition(booleanLiteral: self.configured && showErrorConnectingMessage == false)
                 $0.hidden = Condition(booleanLiteral: self.connectStep == 1)
-                $0.placeholder = "password"
+                $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.placeholder
                 }.onChange { row in
                     self.password = row.value
             }
@@ -178,9 +178,11 @@ class SettingsViewController: FormViewController {
                                 self.connectStep = 2
                                 }.catch { error in
                                     print("Hit error when attempting to get discovery information", error)
-                                    let alert = UIAlertController(title: "Error during connection attempt",
-                                                                  // swiftlint:disable:next line_length
-                                        message: "\(error.localizedDescription)\r\n\r\nPlease try again.",
+                                    let title = L10n.Settings.ConnectionErrorNotification.title
+                                    // swiftlint:disable:next line_length
+                                    let message = L10n.Settings.ConnectionErrorNotification.message(error.localizedDescription)
+                                    let alert = UIAlertController(title: title,
+                                        message: message,
                                         preferredStyle: UIAlertControllerStyle.alert)
                                     alert.addAction(UIAlertAction(title: "OK",
                                                                   style: UIAlertActionStyle.default, handler: nil))
@@ -223,7 +225,6 @@ class SettingsViewController: FormViewController {
                                 resetSection.hidden = false
                                 resetSection.evaluateHidden()
                                 let alert = UIAlertController(title: "Connected",
-                                                              // swiftlint:disable:next line_length
                                     message: "Please force quit and re-open the app to continue.",
                                     preferredStyle: UIAlertControllerStyle.alert)
                                 alert.addAction(UIAlertAction(title: "OK",
@@ -237,9 +238,9 @@ class SettingsViewController: FormViewController {
                                         errorMessage = "The password was incorrect."
                                     }
                                 }
-                                // swiftlint:disable:next line_length
-                                let alert = UIAlertController(title: "Error during connection with authentication attempt",
-                                                              message: "\(errorMessage)\r\n\r\nPlease try again.",
+                                let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
+                                let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
+                                                              message: message,
                                     preferredStyle: UIAlertControllerStyle.alert)
                                 alert.addAction(UIAlertAction(title: "OK",
                                                               style: UIAlertActionStyle.default,
@@ -249,47 +250,46 @@ class SettingsViewController: FormViewController {
                     }
             }
 
-            +++ Section(header: "Status", footer: "") {
+            +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
                 $0.tag = "status"
                 $0.hidden = Condition(booleanLiteral: !self.configured)
             }
             <<< LabelRow("locationName") {
-                $0.title = "Name"
-                $0.value = "My Home Assistant"
+                $0.title = L10n.Settings.StatusSection.LocationNameRow.title
+                $0.value = L10n.Settings.StatusSection.LocationNameRow.placeholder
                 if let locationName = prefs.string(forKey: "location_name") {
                     $0.value = locationName
                 }
             }
             <<< LabelRow("version") {
-                $0.title = "Version"
-                $0.value = "0.35.0"
+                $0.title = L10n.Settings.StatusSection.VersionRow.title
+                $0.value = L10n.Settings.StatusSection.VersionRow.placeholder
                 if let version = prefs.string(forKey: "version") {
                     $0.value = version
                 }
             }
             <<< LabelRow("connectedToSSE") {
-                $0.title = "Connected"
+                $0.title = L10n.Settings.StatusSection.ConnectedToSseRow.title
                 $0.value = HomeAssistantAPI.sharedInstance.sseConnected ? "✔️" : "✖️"
             }
             <<< LabelRow("iosComponentLoaded") {
-                $0.title = "iOS Component Loaded"
+                $0.title = L10n.Settings.StatusSection.IosComponentLoadedRow.title
                 $0.value = HomeAssistantAPI.sharedInstance.iosComponentLoaded ? "✔️" : "✖️"
             }
             <<< LabelRow("deviceTrackerComponentLoaded") {
-                $0.title = "Device Tracker Component Loaded"
+                $0.title = L10n.Settings.StatusSection.DeviceTrackerComponentLoadedRow.title
                 $0.value = HomeAssistantAPI.sharedInstance.deviceTrackerComponentLoaded ? "✔️" : "✖️"
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.locationEnabled == false)
             }
             <<< LabelRow("notifyPlatformLoaded") {
-                $0.title = "iOS Notify Platform Loaded"
+                $0.title = L10n.Settings.StatusSection.NotifyPlatformLoadedRow.title
                 $0.value = HomeAssistantAPI.sharedInstance.iosNotifyPlatformLoaded ? "✔️" : "✖️"
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.notificationsEnabled == false)
             }
 
-            // swiftlint:disable:next line_length
-            +++ Section(header: "", footer: "Device ID is the identifier used when sending location updates to Home Assistant, as well as the target to send push notifications to.")
+            +++ Section(header: "", footer: L10n.Settings.DeviceIdSection.footer)
             <<< TextRow("deviceId") {
-                $0.title = "Device ID"
+                $0.title = L10n.Settings.DeviceIdSection.DeviceIdRow.title
                 if let deviceId = prefs.string(forKey: "deviceId") {
                     $0.value = deviceId
                 } else {
@@ -319,14 +319,13 @@ class SettingsViewController: FormViewController {
             //            }
 
             <<< ButtonRow("enableLocation") {
-                $0.title = "Enable location tracking"
+                $0.title = L10n.Settings.DetailsSection.EnableLocationRow.title
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.locationEnabled)
                 }.onCellSelection { _, row in
                     let pscope = PermissionScope()
 
                     pscope.addPermission(LocationAlwaysPermission(),
-                                         // swiftlint:disable:next line_length
-                        message: "We use this to inform\r\nHome Assistant of your device location and state.")
+                        message: L10n.Permissions.Location.message)
                     pscope.show({finished, results in
                         if finished {
                             print("Location Permissions finished!", finished, results)
@@ -349,7 +348,7 @@ class SettingsViewController: FormViewController {
             }
 
             <<< ButtonRow("locationSettings") {
-                $0.title = "Location Settings"
+                $0.title = L10n.Settings.DetailsSection.LocationSettingsRow.title
                 $0.hidden = Condition(booleanLiteral: !HomeAssistantAPI.sharedInstance.locationEnabled)
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     let view = SettingsDetailViewController()
@@ -361,13 +360,13 @@ class SettingsViewController: FormViewController {
             }
 
             <<< ButtonRow("enableNotifications") {
-                $0.title = "Enable notifications"
+                $0.title = L10n.Settings.DetailsSection.EnableNotificationRow.title
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.notificationsEnabled)
                 }.onCellSelection { _, row in
                     let pscope = PermissionScope()
 
                     pscope.addPermission(NotificationsPermission(),
-                                         message: "We use this to let you\r\nsend notifications to your device.")
+                                         message: L10n.Permissions.Notification.message)
                     pscope.show({finished, results in
                         if finished {
                             print("Notifications Permissions finished!", finished, results)
@@ -389,7 +388,7 @@ class SettingsViewController: FormViewController {
             }
 
             <<< ButtonRow("notificationSettings") {
-                $0.title = "Notification Settings"
+                $0.title = L10n.Settings.DetailsSection.NotificationSettingsRow.title
                 $0.hidden = Condition(booleanLiteral: !HomeAssistantAPI.sharedInstance.notificationsEnabled)
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     print("HomeAssistantAPI.sharedInstance.notificationsEnabled",
@@ -407,13 +406,12 @@ class SettingsViewController: FormViewController {
                 $0.hidden = Condition(booleanLiteral: !self.configured)
             }
             <<< ButtonRow("resetApp") {
-                $0.title = "Reset"
+                $0.title = L10n.Settings.ResetSection.ResetRow.title
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textColor = .red
                 }.onCellSelection { _, _ in
-                    let alert = UIAlertController(title: "Reset",
-                                                  // swiftlint:disable:next line_length
-                        message: "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.",
+                    let alert = UIAlertController(title: L10n.Settings.ResetSection.ResetAlert.title,
+                        message: L10n.Settings.ResetSection.ResetAlert.message,
                         preferredStyle: UIAlertControllerStyle.alert)
 
                     alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
@@ -531,7 +529,6 @@ class SettingsViewController: FormViewController {
         if prefs.bool(forKey: "emailSet") == false || prefs.string(forKey: "userEmail") == nil {
             print("This is first launch, let's prompt user for email.")
             let alert = UIAlertController(title: "Welcome",
-                                          // swiftlint:disable:next line_length
                 message: "Please enter the email address you used to sign up for the beta program with.",
                 preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: emailEntered))

@@ -36,6 +36,8 @@ PODS:
   - Realm/Headers (2.1.2)
   - RealmSwift (2.1.2):
     - Realm (= 2.1.2)
+  - SwiftGen (4.1.0)
+  - SwiftLint (0.15.0)
   - SwiftLocation (1.1.1)
   - Whisper (4.0.0)
 
@@ -57,6 +59,8 @@ DEPENDENCIES:
   - PromiseKit
   - Realm
   - RealmSwift
+  - SwiftGen
+  - SwiftLint
   - SwiftLocation
   - Whisper
 
@@ -100,9 +104,11 @@ SPEC CHECKSUMS:
   PromiseKit: 56baec63efa89210c023260879435a5a6b3bff00
   Realm: efe855f4d977c8ce5a82d3116d9f1ff155a6550c
   RealmSwift: 17d6ee30b6f9df86364408c2197492e33bfea567
+  SwiftGen: d29fd8b7aa52092411d415fb09d0abd3d79ea1a5
+  SwiftLint: d73999f81682ab8114d6408c89f83177b2c197d7
   SwiftLocation: aac16955b508c46b82bf07fcceb7e2a3b382b8d5
   Whisper: '08be92623311f8e53201e62e17f6d7b9599a4714'
 
-PODFILE CHECKSUM: bb43a3a7a464ddc23df65dbda8ef8e9b3a76bcd6
+PODFILE CHECKSUM: c2aea6316adfa9d4aa8c026a0893aaafe651f0ab
 
-COCOAPODS: 1.2.0.beta.1
+COCOAPODS: 1.1.1

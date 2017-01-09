@@ -175,6 +175,8 @@
 		B6767A511D0234E700F2A08B /* SwitchableEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6767A501D0234E700F2A08B /* SwitchableEntity.swift */; };
 		B6880B2B1D7B9E6400CCB899 /* ClimateComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6880B2A1D7B9E6400CCB899 /* ClimateComponent.swift */; };
 		B689EBCB1D8B7C800000AECE /* MjpegStreamingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */; };
+		B69933951E232AEA0054453D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
+		B699339A1E232E060054453D /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69933991E232E060054453D /* Strings.swift */; };
 		B6AAD7A41D827DD40090B220 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AAD7A31D827DD40090B220 /* NotificationService.swift */; };
 		B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6DBF7661D89F7D800402A57 /* AutomationComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DBF7651D89F7D800402A57 /* AutomationComponent.swift */; };
@@ -443,6 +445,8 @@
 		B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MjpegStreamingController.swift; sourceTree = "<group>"; };
 		B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = APNSAttachmentService.entitlements; sourceTree = "<group>"; };
 		B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationContentExtension.entitlements; sourceTree = "<group>"; };
+		B69933941E232AEA0054453D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B69933991E232E060054453D /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeAssistant.entitlements; sourceTree = "<group>"; };
 		B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = APNSAttachmentService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AAD7A31D827DD40090B220 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -778,17 +782,13 @@
 			isa = PBXGroup;
 			children = (
 				B6F02BE71CB4698A0029ABE7 /* Classes */,
+				B69933961E232AF50054453D /* Resources */,
 				B60614B31D1F116D00249C11 /* Sounds */,
 				B679B1FA1E1F3D020071D366 /* Utilities */,
 				B679B1F91E1F3CFB0071D366 /* Views */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
-				B657A8F21CA646EB00121384 /* Assets.xcassets */,
 				B657A9191CA647C500121384 /* HAAPI.swift */,
 				B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */,
-				B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */,
-				B657A8F71CA646EB00121384 /* Info.plist */,
-				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
-				B657A8EF1CA646EB00121384 /* Main.storyboard */,
 			);
 			path = HomeAssistant;
 			sourceTree = "<group>";
@@ -837,6 +837,28 @@
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		B69933961E232AF50054453D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B69933971E232B5F0054453D /* SwiftGen */,
+				B657A8F21CA646EB00121384 /* Assets.xcassets */,
+				B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */,
+				B657A8F71CA646EB00121384 /* Info.plist */,
+				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
+				B69933931E232AEA0054453D /* Localizable.strings */,
+				B657A8EF1CA646EB00121384 /* Main.storyboard */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B69933971E232B5F0054453D /* SwiftGen */ = {
+			isa = PBXGroup;
+			children = (
+				B69933991E232E060054453D /* Strings.swift */,
+			);
+			path = SwiftGen;
 			sourceTree = "<group>";
 		};
 		B6AAD7A21D827DD40090B220 /* APNSAttachmentService */ = {
@@ -1200,6 +1222,7 @@
 				B606162D1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav in Resources */,
 				B60616991D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav in Resources */,
 				B60616411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav in Resources */,
+				B69933951E232AEA0054453D /* Localizable.strings in Resources */,
 				B60616851D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav in Resources */,
 				B606162B1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav in Resources */,
 				B60616371D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav in Resources */,
@@ -1349,7 +1372,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
+			shellScript = "${PODS_ROOT}/SwiftLint/swiftlint";
 		};
 		B6E47E861CB9FD350027F6CA /* [CP] Copy Acknowledgements */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1510,6 +1533,7 @@
 				B6F02C151CB489770029ABE7 /* LockComponent.swift in Sources */,
 				B629E8D61DAD8CFA00040A90 /* PushRegistrationRequest.swift in Sources */,
 				B6767A511D0234E700F2A08B /* SwitchableEntity.swift in Sources */,
+				B699339A1E232E060054453D /* Strings.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B6F02C131CB489770029ABE7 /* InputSelectComponent.swift in Sources */,
 				B6F02BF61CB4728D0029ABE7 /* History.swift in Sources */,
@@ -1630,6 +1654,15 @@
 				B657A8F51CA646EB00121384 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			path = .;
+			sourceTree = "<group>";
+		};
+		B69933931E232AEA0054453D /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B69933941E232AEA0054453D /* en */,
+			);
+			name = Localizable.strings;
 			path = .;
 			sourceTree = "<group>";
 		};
@@ -1785,12 +1818,12 @@
 			baseConfigurationReference = 6410E5092616A0DD9241A91D /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = HomeAssistant/HomeAssistant.entitlements;
+				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				CURRENT_PROJECT_VERSION = 48;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				INFOPLIST_FILE = HomeAssistant/Info.plist;
+				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				IS_SANDBOXED = true;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1844,12 +1877,12 @@
 			baseConfigurationReference = 366FD7D1C50AFCED407FEBB6 /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = HomeAssistant/HomeAssistant.entitlements;
+				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CURRENT_PROJECT_VERSION = 48;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				INFOPLIST_FILE = HomeAssistant/Info.plist;
+				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				IS_SANDBOXED = false;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

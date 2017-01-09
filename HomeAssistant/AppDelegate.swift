@@ -75,6 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     let settingsView = SettingsViewController()
                     settingsView.title = "Settings"
                     settingsView.showErrorConnectingMessage = true
+                    settingsView.showErrorConnectingMessageError = err
                     let navController = UINavigationController(rootViewController: settingsView)
                     self.window?.makeKeyAndVisible()
                     self.window?.rootViewController!.present(navController, animated: true, completion: nil)

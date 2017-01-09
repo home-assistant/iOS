@@ -23,6 +23,8 @@ target 'HomeAssistant' do
   pod 'PromiseKit'
   pod 'Realm'
   pod 'RealmSwift'
+  pod 'SwiftGen'
+  pod 'SwiftLint'
   pod 'SwiftLocation'
   pod 'Whisper'
 end

@@ -1,0 +1,50 @@
+/*
+  Localizable.strings
+  HomeAssistant
+
+  Created by Robert Trencheny on 1/8/17.
+  Copyright © 2017 Robbie Trencheny. All rights reserved.
+*/
+"location_change_notification.title" = "Location change";
+"zone_entered_notification.message" = "%@ entered";
+"significant_location_change_notification.message" = "Significant location change detected, notifying Home Assistant";
+"manual_location_update_notification.title" = "Location updated";
+"manual_location_update_notification.message" = "Successfully sent a one shot location to the server";
+"manual_location_update_failed_notification.title" = "Location failed to update";
+"manual_location_update_failed_notification.message" = "Failed to send current location to server. The error was %@";
+
+"settings.connection_error_notification.title" = "Connection Error";
+"settings.connection_error_notification.message" = "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was %@.";
+"settings.discovery_section.header" = "Discovered Home Assistants";
+"settings.connection_section.header" = "Connection";
+"settings.connection_section.invalid_url_scheme_notification.title" = "Invalid URL";
+"settings.connection_section.invalid_url_scheme_notification.message" = "The URL must begin with either http:// or https://.";
+"settings.connection_section.api_password_row.title" = "Password";
+"settings.connection_section.api_password_row.placeholder" = "password";
+"settings.connection_section.connect_row.title" = "Connect";
+
+"settings.status_section.header" = "Status";
+"settings.status_section.location_name_row.title" = "Name";
+"settings.status_section.location_name_row.placeholder" = "My Home Assistant";
+"settings.status_section.version_row.title" = "Version";
+"settings.status_section.version_row.placeholder" = "0.35.0";
+"settings.status_section.connected_to_sse_row.title" = "Connected";
+"settings.status_section.ios_component_loaded_row.title" = "iOS Component Loaded";
+"settings.status_section.device_tracker_component_loaded_row.title" = "Device Tracker Component Loaded";
+"settings.status_section.notify_platform_loaded_row.title" = "iOS Notify Platform Loaded";
+
+"settings.device_id_section.footer" = "Device ID is the identifier used when sending location updates to Home Assistant, as well as the target to send push notifications to.";
+"settings.device_id_section.device_id_row.title" = "Device ID";
+
+"settings.details_section.enable_location_row.title" = "Enable location tracking";
+"settings.details_section.location_settings_row.title" = "Location Settings";
+
+"settings.details_section.enable_notification_row.title" = "Enable notifications";
+"settings.details_section.notification_settings_row.title" = "Notification Settings";
+
+"settings.reset_section.reset_row.title" = "Reset";
+"settings.reset_section.reset_alert.title" = "Reset";
+"settings.reset_section.reset_alert.message" = "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.";
+
+"permissions.location.message" = "We use this to inform\r\nHome Assistant of your device location and state.";
+"permissions.notification.message" = "We use this to let you\r\nsend notifications to your device.";
