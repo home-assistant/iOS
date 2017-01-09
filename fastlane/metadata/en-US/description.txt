@@ -1,1 +1,21 @@
-Home Assistant for iOS is the official companion app to Home Assistant, an open-source home automation platform running on Python 3.
+Control and monitor your home from anywhere in the world. Home Assistant for iOS lets you control all your devices and provides advanced location and notification engines to allow for complex mobile automations.
+
+Home Assistant is an open-source home automation platform running on Python 3. Supported products include:
+
+- Amazon Echo (Alexa)
+- Arduino
+- Belkin WeMo
+- Dark Sky
+- Ecobee
+- Google Cast
+- IFTTT
+- Kodi/XBMC
+- MQTT
+- Nest
+- Philips Hue
+- Plex
+- Sonos
+- Wink
+- Z-Wave
+
+Home Assistant for iOS requires an iPhone running iOS 9.3 or later and a previously configured Home Assistant running on a server.

@@ -1,1 +1,1 @@
-https://home-assistant.io
+https://home-assistant.io/ecosystem/ios/
