@@ -270,7 +270,6 @@ func migrateSecretsToKeychain() {
     } else {
         print("Unable to create NSUserDefaults with given app group")
     }
-    
 }
 
 func openURLInBrowser(url: String) {
