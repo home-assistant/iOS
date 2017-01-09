@@ -332,16 +332,16 @@ class SettingsViewController: FormViewController {
                 $0.tag = "details"
                 $0.hidden = Condition(booleanLiteral: !self.configured)
             }
-            //            <<< ButtonRow("displaySettings") {
-            //                $0.title = "Display Settings"
-            //                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-            //                    let view = SettingsDetailViewController()
-            //                    view.detailGroup = "display"
-            //                    return view
-            //                }, onDismiss: { vc in
-            //                    let _ = vc.navigationController?.popViewController(animated: true)
-            //                })
-            //            }
+            <<< ButtonRow("generalSettings") {
+                $0.title = "General Settings"
+                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                    let view = SettingsDetailViewController()
+                    view.detailGroup = "general"
+                    return view
+                    }, onDismiss: { vc in
+                        let _ = vc.navigationController?.popViewController(animated: true)
+                })
+            }
 
             <<< ButtonRow("enableLocation") {
                 $0.title = L10n.Settings.DetailsSection.EnableLocationRow.title

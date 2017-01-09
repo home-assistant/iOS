@@ -273,8 +273,8 @@ func migrateSecretsToKeychain() {
 }
 
 func openURLInBrowser(url: String) {
-    if let urlToOpen = URL(string: url) {
-        if OpenInChromeController.sharedInstance.isChromeInstalled() {
+    if let urlToOpen = URL(string: url), let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant") {
+        if OpenInChromeController.sharedInstance.isChromeInstalled() && prefs.bool(forKey: "openInChrome") {
             _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen)
         } else {
             if #available(iOS 10, *) {

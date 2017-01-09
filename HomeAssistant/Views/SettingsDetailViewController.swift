@@ -24,17 +24,24 @@ class SettingsDetailViewController: FormViewController {
         // Do any additional setup after loading the view, typically from a nib.
 
         switch detailGroup {
-        case "display":
-            self.title = "Display Settings"
+        case "general":
+            self.title = "General Settings"
             self.form
                 +++ Section()
-                <<< SwitchRow("allowAllGroups") {
-                    $0.title = "Show all groups"
-                    $0.value = prefs.bool(forKey: "allowAllGroups")
+                <<< SwitchRow("openInChrome") {
+                    $0.title = "Open links in Chrome"
+                    $0.value = prefs.bool(forKey: "openInChrome")
                     }.onChange { row in
-                        self.prefs.setValue(row.value, forKey: "allowAllGroups")
+                        self.prefs.setValue(row.value, forKey: "openInChrome")
                         self.prefs.synchronize()
-            }
+                }
+//                <<< SwitchRow("allowAllGroups") {
+//                    $0.title = "Show all groups"
+//                    $0.value = prefs.bool(forKey: "allowAllGroups")
+//                    }.onChange { row in
+//                        self.prefs.setValue(row.value, forKey: "allowAllGroups")
+//                        self.prefs.synchronize()
+//                }
         case "location":
             self.title = "Location Settings"
             for zone in realm.objects(Zone.self) {

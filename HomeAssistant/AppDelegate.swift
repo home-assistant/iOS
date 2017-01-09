@@ -49,6 +49,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
+        if prefs.object(forKey: "openInChrome") == nil {
+            self.prefs.setValue(true, forKey: "openInChrome")
+            self.prefs.synchronize()
+        }
+
         window = UIWindow.init(frame: UIScreen.main.bounds)
         window?.backgroundColor = .white
 
