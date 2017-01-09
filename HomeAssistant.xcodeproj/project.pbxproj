@@ -177,6 +177,7 @@
 		B689EBCB1D8B7C800000AECE /* MjpegStreamingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */; };
 		B69933951E232AEA0054453D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B699339A1E232E060054453D /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69933991E232E060054453D /* Strings.swift */; };
+		B699339C1E2338960054453D /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B699339B1E2338960054453D /* SnapshotHelper.swift */; };
 		B6AAD7A41D827DD40090B220 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AAD7A31D827DD40090B220 /* NotificationService.swift */; };
 		B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6DBF7661D89F7D800402A57 /* AutomationComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DBF7651D89F7D800402A57 /* AutomationComponent.swift */; };
@@ -447,6 +448,7 @@
 		B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationContentExtension.entitlements; sourceTree = "<group>"; };
 		B69933941E232AEA0054453D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B69933991E232E060054453D /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
+		B699339B1E2338960054453D /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeAssistant.entitlements; sourceTree = "<group>"; };
 		B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = APNSAttachmentService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6AAD7A31D827DD40090B220 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -806,6 +808,7 @@
 			isa = PBXGroup;
 			children = (
 				B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */,
+				B699339B1E2338960054453D /* SnapshotHelper.swift */,
 				B657A90D1CA646EB00121384 /* Info.plist */,
 			);
 			path = HomeAssistantUITests;
@@ -1593,6 +1596,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */,
+				B699339C1E2338960054453D /* SnapshotHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

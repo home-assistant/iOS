@@ -13,24 +13,60 @@ class HomeAssistantUITests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-        
-        // In UI tests it is usually best to stop immediately when a failure occurs.
+        let app = XCUIApplication()
         continueAfterFailure = false
-        // UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.
-        XCUIApplication().launch()
 
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+        // Enable Fastlane snapshots
+        setupSnapshot(app)
+        XCUIApplication().launch()
     }
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
+
     func testExample() {
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        print("TEST EXAMPLE")
+        print("RUN CONFIGURATION")
+        let app = XCUIApplication()
+        let tabBarsQuery = app.tabBars
+        let tablesQuery2 = app.tables
+        let tablesQuery = tablesQuery2
+//        snapshot("0Launch")
+//        app.alerts["Welcome"].collectionViews.textFields["myawesomeemail@gmail.com"].typeText("me@robbiet.us\r")
+//
+//        tablesQuery.textFields["https://homeassistant.myhouse.com"].tap()
+//        tablesQuery2.cells.containing(.staticText, identifier:"URL").children(matching: .textField).element.typeText("privatedemo.home-assistant.io")
+//        let textValue = tablesQuery2.cells.containing(.staticText, identifier:"URL").children(matching: .textField).element.value as! String
+//        XCTAssert(textValue == "https://privatedemo.home-assistant.io")
+//
+//        let connectStaticText = tablesQuery.staticTexts["Connect"]
+//        connectStaticText.tap()
+//        tablesQuery.staticTexts["Password"].tap()
+//        tablesQuery2.cells.containing(.staticText, identifier:"Password").children(matching: .secureTextField).element.typeText("demoprivate")
+//        snapshot("01Connection")
+//        connectStaticText.tap()
+//        app.alerts["Connected"].buttons["OK"].tap()
+        print("INSPECTENTITIES")
+
+        snapshot("2DefaultGroupView")
+
+        tabBarsQuery.buttons["All Switches"].tap()
+
+        tablesQuery.staticTexts["AC"].tap()
+        tablesQuery.switches["AC"].tap()
+        snapshot("3SingleEntity")
+        app.navigationBars["AC"].buttons["All Switches"].tap()
+        snapshot("3SingleEntityOn")
+        app.tabBars.buttons["people"].tap()
+        tabBarsQuery.buttons["All Devices"].tap()
+        app.tables.staticTexts["Anne Therese"].tap()
+        app.navigationBars["45.8601, -119.6936"].buttons["All Devices"].tap()
+        tabBarsQuery.buttons["All Lights"].tap()
+        
+        tablesQuery.staticTexts["Ceiling Lights"].tap()
+        tablesQuery.switches["Ceiling Lights"].tap()
+
     }
-    
 }
