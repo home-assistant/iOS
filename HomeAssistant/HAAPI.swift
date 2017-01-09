@@ -35,36 +35,34 @@ public class HomeAssistantAPI {
         return APIClientSharedInstance
     }
 
-    private var manager: Alamofire.SessionManager?
-
-    var baseAPIURL: String = ""
-    var apiPassword: String = ""
-
     var deviceID: String = ""
     var pushID: String = ""
     var deviceToken: String = ""
 
-    var eventSource: EventSource? = nil
-
-    var mostRecentlySentMessage: String = String()
-
-    var services = [NetService]()
-
-    var headers = [String: String]()
-
     var loadedComponents = [String]()
 
-    let Location = LocationManager()
-
     var Configured: Bool {
-        return self.baseAPIURL != "" && self.apiPassword != ""
+        return self.URLSet && self.PasswordSet
     }
 
-    func Setup(baseAPIUrl: String, APIPassword: String) -> Promise<StatusResponse> {
-        self.baseAPIURL = baseAPIUrl+"/api/"
-        self.apiPassword = APIPassword
-        if apiPassword != "" {
-            headers["X-HA-Access"] = apiPassword
+    var URLSet: Bool = false
+    var PasswordSet: Bool = false
+
+    private var baseAPIURL: String = ""
+    private var apiPassword: String = ""
+
+    private var eventSource: EventSource? = nil
+
+    private var headers = [String: String]()
+
+    private var manager: Alamofire.SessionManager?
+
+    func Setup(baseURL: String, password: String) -> Promise<StatusResponse> {
+        self.baseAPIURL = baseURL+"/api/"
+        self.URLSet = true
+        if password != "" {
+            self.PasswordSet = true
+            headers["X-HA-Access"] = password
         }
 
         var defaultHeaders = Alamofire.SessionManager.defaultHTTPHeaders
@@ -97,7 +95,9 @@ public class HomeAssistantAPI {
     func Connect() -> Promise<ConfigResponse> {
         return Promise { fulfill, reject in
             GetConfig().then { config -> Void in
-                self.loadedComponents = config.Components!
+                if let components = config.Components {
+                    self.loadedComponents = components
+                }
                 prefs.setValue(config.ConfigDirectory, forKey: "config_dir")
                 prefs.setValue(config.LocationName, forKey: "location_name")
                 prefs.setValue(config.Latitude, forKey: "latitude")
@@ -1087,9 +1087,9 @@ public class HomeAssistantAPI {
         urlComponents.scheme = baseUrl.scheme
         urlComponents.host = baseUrl.host
         urlComponents.port = baseUrl.port
-        if urlComponents.port == nil {
-            urlComponents.port = (baseUrl.scheme == "http") ? 80 : 443
-        }
+//        if urlComponents.port == nil {
+//            urlComponents.port = (baseUrl.scheme == "http") ? 80 : 443
+//        }
         return (true, urlComponents.url!)
     }
 
