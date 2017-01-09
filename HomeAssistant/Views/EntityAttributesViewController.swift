@@ -23,33 +23,24 @@ class EntityAttributesViewController: FormViewController {
 
         self.title = (entity?.FriendlyName != nil) ? entity?.Name : "Attributes"
 
+        form +++ Section {
+            $0.tag = "entity_picture"
+        }
+
         if let picture = entity!.Picture {
-            form +++ Section()
-                <<< TextAreaRow("entity_picture") {
-                    $0.disabled = true
-                    $0.cell.textView.isScrollEnabled = false
-                    $0.cell.textView.backgroundColor = UIColor.clear
-                    $0.cell.backgroundColor = UIColor.clear
-                    }.cellUpdate { cell, _ in
-                        let _ = HomeAssistantAPI.sharedInstance.getImage(imageUrl: picture).then { image -> Void in
-                            let attachment = NSTextAttachment()
-                            attachment.image = image
-                            attachment.bounds = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-                            let attString = NSAttributedString(attachment: attachment)
-                            let result = NSMutableAttributedString(attributedString: attString)
-
-                            let paragraphStyle = NSMutableParagraphStyle()
-                            paragraphStyle.alignment = .center
-
-                            let attrs: [String:AnyObject] = [NSParagraphStyleAttributeName: paragraphStyle]
-                            let range = NSRange(location: 0, length: 12)
-                            result.addAttributes(attrs, range: range)
-
-                            cell.textView.textStorage.setAttributedString(result)
-                            cell.height = { attachment.bounds.height + 20 }
-                            self.tableView?.beginUpdates()
-                            self.tableView?.endUpdates()
-                        }
+            let _ = HomeAssistantAPI.sharedInstance.getImage(imageUrl: picture).then { image -> Void in
+                if let section = self.form.sectionBy(tag: "entity_picture") {
+                    section.header = {
+                        var header = HeaderFooterView<UIView>(.callback({
+                            let imageView = UIImageView(image: image)
+                            imageView.contentMode = .scaleAspectFit
+                            return imageView
+                        }))
+                        header.height = { image.size.height }
+                        return header
+                    }()
+                    section.reload()
+                }
             }
         }
 
