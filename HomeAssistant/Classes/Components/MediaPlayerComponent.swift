@@ -10,8 +10,9 @@ import Foundation
 import ObjectMapper
 import RealmSwift
 
-class MediaPlayer: SwitchableEntity {
+class MediaPlayer: Entity {
 
+    dynamic var IsOn: Bool = false
     dynamic var IsPlaying: Bool = false
     dynamic var IsIdle: Bool = false
     var IsVolumeMuted = RealmOptional<Bool>()
@@ -41,6 +42,7 @@ class MediaPlayer: SwitchableEntity {
     override func mapping(map: Map) {
         super.mapping(map: map)
 
+        IsOn             <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         IsPlaying        <- (map["state"], ComponentBoolTransform(trueValue: "playing", falseValue: "paused"))
         IsIdle           <- (map["state"], ComponentBoolTransform(trueValue: "idle", falseValue: ""))
         IsVolumeMuted.value    <- map["attributes.is_volume_muted"]
@@ -130,6 +132,10 @@ class MediaPlayer: SwitchableEntity {
 
     override func StateIcon() -> String {
         return (self.State != "off" && self.State != "idle") ? "mdi:cast-connected" : "mdi:cast"
+    }
+
+     override var EntityColor: UIColor {
+        return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
     }
 }
 

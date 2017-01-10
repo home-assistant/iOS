@@ -71,7 +71,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
         self.delegate = self
 
-        let tabBarIconColor = colorWithHexString("#44739E", alpha: 1)
+        let tabBarIconColor = Entity().DefaultEntityUIColor
 
         var tabViewControllers: [UIViewController] = []
 

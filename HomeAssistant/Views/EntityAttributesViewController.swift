@@ -23,7 +23,20 @@ class EntityAttributesViewController: FormViewController {
         if let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityID as AnyObject) {
             self.title = (entity.FriendlyName != nil) ? entity.Name : "Attributes"
 
-            if let picture = entity.Picture {
+            if let picture = entity.DownloadedPicture {
+                form +++ Section {
+                    $0.tag = "entity_picture"
+                    $0.header = {
+                        var header = HeaderFooterView<UIView>(.callback({
+                            let imageView = UIImageView(image: picture)
+                            imageView.contentMode = .scaleAspectFit
+                            return imageView
+                        }))
+                        header.height = { picture.size.height }
+                        return header
+                    }()
+                }
+            } else if let picture = entity.Picture {
                 var hud: MBProgressHUD? = nil
                 let entityPictureSection = Section {
                     $0.tag = "entity_picture"

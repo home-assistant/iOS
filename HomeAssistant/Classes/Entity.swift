@@ -250,22 +250,34 @@ class Entity: Object, StaticMappable {
         }
     }
 
-    func EntityColor() -> UIColor {
-        switch self {
-        case let light as Light:
-            return light.EntityColor()
-        case let sun as Sun:
-            return sun.EntityColor()
-        case let switchableEntity as SwitchableEntity:
-            return switchableEntity.EntityColor()
-        default:
-            let hexColor = self.State == "unavailable" ? "#bdbdbd" : "#44739E"
-            return colorWithHexString(hexColor, alpha: 1)
+    var EntityColor: UIColor {
+        switch self.Domain {
+            case "binary_sensor", "input_boolean", "media_player", "script", "switch":
+                return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
+            case "light":
+                if self.State == "on" {
+                    if let rgb = self.Attributes["rgb_color"] as? [Float] {
+                        let red = CGFloat(rgb[0]/255.0)
+                        let green = CGFloat(rgb[1]/255.0)
+                        let blue = CGFloat(rgb[2]/255.0)
+                        return UIColor.init(red: red, green: green, blue: blue, alpha: 1)
+                    } else {
+                        return colorWithHexString("#DCC91F", alpha: 1)
+                    }
+                } else {
+                    return self.DefaultEntityUIColor
+                }
+            case "sun":
+                return self.State == "above_horizon" ? colorWithHexString("#DCC91F",
+                                                                          alpha: 1) : self.DefaultEntityUIColor
+            default:
+                let hexColor = self.State == "unavailable" ? "#bdbdbd" : "#44739E"
+                return colorWithHexString(hexColor, alpha: 1)
         }
     }
 
     var EntityIcon: UIImage {
-        return getIconForIdentifier(self.StateIcon(), iconWidth: 30, iconHeight: 30, color: self.EntityColor())
+        return getIconForIdentifier(self.StateIcon(), iconWidth: 30, iconHeight: 30, color: self.EntityColor)
     }
 
     func EntityIcon(width: Double, height: Double, color: UIColor) -> UIImage {

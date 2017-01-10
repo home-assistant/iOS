@@ -9,12 +9,20 @@
 import Foundation
 import ObjectMapper
 
-class InputBoolean: SwitchableEntity {
+class InputBoolean: Entity {
+    dynamic var IsOn: Bool = false
+
     override func mapping(map: Map) {
         super.mapping(map: map)
+
+        IsOn         <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
     }
 
     override var ComponentIcon: String {
         return "mdi:drawing"
+    }
+
+     override var EntityColor: UIColor {
+        return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
     }
 }

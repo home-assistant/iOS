@@ -14,7 +14,7 @@ import RealmSwift
 import UserNotifications
 import AlamofireNetworkActivityIndicator
 
-let realmConfig = Realm.Configuration(schemaVersion: 2, migrationBlock: nil)
+let realmConfig = Realm.Configuration(schemaVersion: 3, migrationBlock: nil)
 
 // swiftlint:disable:next force_try
 let realm = try! Realm(configuration: realmConfig)

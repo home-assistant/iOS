@@ -9,14 +9,16 @@
 import Foundation
 import ObjectMapper
 
-class BinarySensor: SwitchableEntity {
+class BinarySensor: Entity {
 
     dynamic var SensorClass: String? = nil
+    dynamic var IsOn: Bool = false
 
     override func mapping(map: Map) {
         super.mapping(map: map)
 
         SensorClass  <- map["attributes.sensor_class"]
+        IsOn         <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
     }
 
     override var ComponentIcon: String {
@@ -59,5 +61,9 @@ class BinarySensor: SwitchableEntity {
                 return "mdi:checkbox-marked-circle"
             }
         }
+    }
+
+     override var EntityColor: UIColor {
+        return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
     }
 }

@@ -10,12 +10,13 @@ import Foundation
 import ObjectMapper
 import RealmSwift
 
-class Light: SwitchableEntity {
+class Light: Entity {
 
+    dynamic var IsOn: Bool = false
     var Brightness = RealmOptional<Float>()
     var ColorTemp = RealmOptional<Float>()
-    dynamic var RGBColor: [Int]?
-    dynamic var XYColor: [Int]?
+    dynamic var RGBColor: [Float]?
+    dynamic var XYColor: [Float]?
     dynamic var SupportsBrightness: Bool = false
     dynamic var SupportsColorTemp: Bool = false
     dynamic var SupportsEffect: Bool = false
@@ -28,6 +29,7 @@ class Light: SwitchableEntity {
     override func mapping(map: Map) {
         super.mapping(map: map)
 
+        IsOn               <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         Brightness.value   <- map["attributes.brightness"]
         ColorTemp.value    <- map["attributes.color_temp"]
         RGBColor           <- map["attributes.rgb_color"]
@@ -46,13 +48,13 @@ class Light: SwitchableEntity {
         }
     }
 
-    override func EntityColor() -> UIColor {
-        if self.IsOn! {
+     override var EntityColor: UIColor {
+        if self.IsOn {
             if self.RGBColor != nil {
                 let rgb = self.RGBColor
-                let red = CGFloat(rgb![0]/255)
-                let green = CGFloat(rgb![1]/255)
-                let blue = CGFloat(rgb![2]/255)
+                let red = CGFloat(rgb![0]/255.0)
+                let green = CGFloat(rgb![1]/255.0)
+                let blue = CGFloat(rgb![2]/255.0)
                 return UIColor.init(red: red, green: green, blue: blue, alpha: 1)
             } else {
                 return colorWithHexString("#DCC91F", alpha: 1)

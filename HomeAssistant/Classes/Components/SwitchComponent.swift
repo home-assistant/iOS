@@ -10,19 +10,25 @@ import Foundation
 import ObjectMapper
 import RealmSwift
 
-class Switch: SwitchableEntity {
+class Switch: Entity {
 
+    dynamic var IsOn: Bool = false
     var TodayMilliwattHours = RealmOptional<Int>()
     var CurrentPowerMilliwattHours = RealmOptional<Int>()
 
     override func mapping(map: Map) {
         super.mapping(map: map)
 
+        IsOn                               <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         TodayMilliwattHours.value          <- map["attributes.today_mwh"]
         CurrentPowerMilliwattHours.value   <- map["attributes.current_power_mwh"]
     }
 
     override var ComponentIcon: String {
         return "mdi:flash"
+    }
+
+     override var EntityColor: UIColor {
+        return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
     }
 }

@@ -24,7 +24,7 @@ class Sun: Entity {
         NextSetting  <- (map["attributes.next_setting"], HomeAssistantTimestampTransform())
     }
 
-    override func EntityColor() -> UIColor {
+     override var EntityColor: UIColor {
         return self.State == "above_horizon" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
     }
 

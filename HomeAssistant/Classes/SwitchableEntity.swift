@@ -21,7 +21,7 @@ class SwitchableEntity: Entity {
         IsOn         <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
     }
 
-    override func EntityColor() -> UIColor {
+     override var EntityColor: UIColor {
         return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
     }
 }
