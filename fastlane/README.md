@@ -11,18 +11,34 @@ sudo gem install fastlane
 fastlane ios certs
 ```
 Fetches the provisioning profiles so you can build locally and deploy to your device
-### ios go_testflight
+### ios ci
 ```
-fastlane ios go_testflight
+fastlane ios ci
+```
+Runs all the unit tests
+
+Submits a new Beta Build to Fabric
+
+Submits a new Beta Build to Apple TestFlight
+### ios release
+```
+fastlane ios release
+```
+
+### ios itc
+```
+fastlane ios itc
 ```
 Submit a new Beta Build to Apple TestFlight
 
 This will also make sure the profile is up to date
-### ios go_appstore
+### ios fabric
 ```
-fastlane ios go_appstore
+fastlane ios fabric
 ```
-Deploy a new version to the App Store
+Submit a new Beta Build to Fabric
+
+This will also make sure the profile is up to date
 
 ----
 

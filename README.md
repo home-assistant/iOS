@@ -3,6 +3,8 @@ Home Assistant for iOS
 
 [![Swift 3.0](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)](https://developer.apple.com/swift/)
 [![Platform iOS](https://img.shields.io/badge/Platforms-iOS-lightgray.svg?style=flat)](https://developer.apple.com/swift/)
+[![Build Status](https://travis-ci.org/home-assistant/home-assistant-iOS.svg?branch=master)](https://travis-ci.org/home-assistant/home-assistant-iOS)
+[![codebeat badge](https://codebeat.co/badges/c6e6173b-c64f-44be-a692-29b922891db7)](https://codebeat.co/projects/github-com-home-assistant-home-assistant-ios)
 [![GitHub issues](https://img.shields.io/github/issues/home-assistant/home-assistant-iOS.svg?style=flat)](https://github.com/home-assistant/home-assistant-iOS/issues)
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/home-assistant/home-assistant-iOS/blob/master/LICENSE)
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/home_assistant.svg?style=social)](https://twitter.com/home_assistant)
@@ -77,6 +79,10 @@ To keep the Xcode layout mirrored with on-disk layout we're using [Synx](https:/
 - [Synx](https://github.com/venmo/synx): A command-line tool that reorganizes your Xcode project folder to match your Xcode groups
 - [Fastlane](https://github.com/fastlane/fastlane): The easiest way to automate building and releasing your iOS and Android apps
 
+## Continuous Integration
+
+We are using [Travis](https://travis-ci.org/home-assistant/home-assistant-iOS) alongside [Fastlane](https://fastlane.tools/) to perform continuous integration both by unit testing and deploying to [Fabric](https://fabric.io) or [iTunes Connect](https://itunesconnect.apple.com) later on.
+
 ### Environment variables
 
 To make sure Fabric and iTunes can deploy, make sure you have them set to something similar to the following environment variables. **The values are only examples!**.
@@ -104,12 +110,18 @@ To make sure Fabric and iTunes can deploy, make sure you have them set to someth
 
 ### Deployment
 
-Although all the deployment is done through Travis (soon), you can do it manually through [Fastlane](https://github.com/home-assistant/home-assistant-iOS/blob/master/fastlane/README.md):
+Although all the deployment is done through Travis, you can do it manually through [Fastlane](https://github.com/home-assistant/home-assistant-iOS/blob/master/fastlane/README.md):
+
+#### Deployment to Fabric
+
+```bash
+bundle exec fastlane fabric
+```
 
 ### Deployment to iTunes Connect
 
 ```bash
-bundle exec fastlane go_testflight
+bundle exec fastlane itc
 ```
 
 ## Contributing
