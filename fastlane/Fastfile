@@ -72,8 +72,12 @@ platform :ios do
     end
   end
 
-  lane :release do
+  desc "Bump build number"
+  lane :bump do
     update_build_number
+  end
+
+  lane :release do
     fabric_beta
     itunes
   end
@@ -81,14 +85,12 @@ platform :ios do
   desc "Submit a new Beta Build to Apple TestFlight"
   desc "This will also make sure the profile is up to date"
   lane :itc do
-    update_build_number
     itunes
   end
 
   desc "Submit a new Beta Build to Fabric"
   desc "This will also make sure the profile is up to date"
   lane :fabric do
-    update_build_number
     fabric_beta
   end
 
