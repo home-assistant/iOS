@@ -35,7 +35,6 @@ platform :ios do
     # match(app_identifier: "io.robbie.HomeAssistant", type: "development", readonly: true)
     # match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "development", readonly: true)
     # match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "development", readonly: true)
-    match(app_identifier: "*", type: "development", readonly: true)
     match(app_identifier: "io.robbie.HomeAssistant", type: "appstore", readonly: true)
     match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "appstore", readonly: true)
     match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "appstore", readonly: true)
@@ -63,6 +62,17 @@ platform :ios do
   desc "Submits a new Beta Build to Fabric"
   desc "Submits a new Beta Build to Apple TestFlight"
   lane :ci do
+    create_keychain(
+      name: ENV["MATCH_KEYCHAIN_NAME"],
+      password: ENV["MATCH_PASSWORD"],
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      add_to_search_list: true
+    )
+    match(readonly: true)
+
+    sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["MATCH_KEYCHAIN_PASSWORD"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
     if is_ci && ENV['TRAVIS_PULL_REQUEST'] == "false"
       if git_branch == "master"
         itc
