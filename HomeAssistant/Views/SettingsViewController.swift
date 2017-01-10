@@ -247,9 +247,9 @@ class SettingsViewController: FormViewController {
                                 let detailsSection: Section = self.form.sectionBy(tag: "details")!
                                 detailsSection.hidden = false
                                 detailsSection.evaluateHidden()
-                                let resetSection: Section = self.form.sectionBy(tag: "reset")!
-                                resetSection.hidden = false
-                                resetSection.evaluateHidden()
+//                                let resetSection: Section = self.form.sectionBy(tag: "reset")!
+//                                resetSection.hidden = false
+//                                resetSection.evaluateHidden()
                                 let closeSelector = #selector(SettingsViewController.closeSettings(_:))
                                 let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self,
                                                                  action: closeSelector)
