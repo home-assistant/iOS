@@ -28,8 +28,6 @@ platform :ios do
     ENV["PILOT_APPLE_ID"] = ENV["HOMEASSISTANT_APPLE_ID"]
     ENV["SIGH_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
     ENV["FASTLANE_PASSWORD"] = ENV["HOMEASSISTANT_ITUNES_PASSWORD"]
-
-    #cocoapods(repo_update: true)
   end
 
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
@@ -79,6 +77,7 @@ platform :ios do
   end
 
   lane :release do
+    cocoapods(repo_update: true)
     fabric_beta
     itunes
   end
@@ -86,12 +85,14 @@ platform :ios do
   desc "Submit a new Beta Build to Apple TestFlight"
   desc "This will also make sure the profile is up to date"
   lane :itc do
+    cocoapods(repo_update: true)
     itunes
   end
 
   desc "Submit a new Beta Build to Fabric"
   desc "This will also make sure the profile is up to date"
   lane :fabric do
+    cocoapods(repo_update: true)
     fabric_beta
   end
 
