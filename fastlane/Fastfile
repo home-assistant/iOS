@@ -70,7 +70,7 @@ platform :ios do
 
     certs
 
-    sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["MATCH_KEYCHAIN_PASSWORD"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
+    sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["HOMEASSISTANT_CERTIFICATE_KEY"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
     if is_ci && ENV['TRAVIS_PULL_REQUEST'] == "false"
       if git_branch == "master"
         itc
