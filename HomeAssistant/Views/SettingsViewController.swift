@@ -68,7 +68,7 @@ class SettingsViewController: FormViewController {
 
         self.configured = (self.baseURL != nil && self.password != nil)
 
-        checkForEmail()
+//        checkForEmail()
 
         if showErrorConnectingMessage {
             let errDesc = (showErrorConnectingMessageError?.localizedDescription)!
@@ -428,7 +428,8 @@ class SettingsViewController: FormViewController {
 
             +++ Section {
                 $0.tag = "reset"
-                $0.hidden = Condition(booleanLiteral: !self.configured)
+//                $0.hidden = Condition(booleanLiteral: !self.configured)
+                $0.hidden = true
             }
             <<< ButtonRow("resetApp") {
                 $0.title = L10n.Settings.ResetSection.ResetRow.title
