@@ -35,6 +35,7 @@ platform :ios do
     # match(app_identifier: "io.robbie.HomeAssistant", type: "development", readonly: true)
     # match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "development", readonly: true)
     # match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "development", readonly: true)
+    match(app_identifier: "*", type: "development", readonly: true)
     match(app_identifier: "io.robbie.HomeAssistant", type: "appstore", readonly: true)
     match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "appstore", readonly: true)
     match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "appstore", readonly: true)
