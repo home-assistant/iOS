@@ -32,9 +32,9 @@ platform :ios do
 
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
   lane :certs do
-    # match(app_identifier: "io.robbie.HomeAssistant", type: "development", readonly: true)
-    # match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "development", readonly: true)
-    # match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "development", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant", type: "development", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "development", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "development", readonly: true)
     match(app_identifier: "io.robbie.HomeAssistant", type: "appstore", readonly: true)
     match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "appstore", readonly: true)
     match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "appstore", readonly: true)
@@ -70,7 +70,8 @@ platform :ios do
       timeout: 3600,
       add_to_search_list: true
     )
-    match(readonly: true)
+
+    certs
 
     sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["MATCH_KEYCHAIN_PASSWORD"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
     if is_ci && ENV['TRAVIS_PULL_REQUEST'] == "false"
@@ -138,7 +139,7 @@ platform :ios do
     clean_build_artifacts
     clear_derived_data
 
-    certs
+    # certs
 
     gym
 
@@ -176,7 +177,7 @@ platform :ios do
     clean_build_artifacts
     clear_derived_data
 
-    certs
+    # certs
 
     gym
 
