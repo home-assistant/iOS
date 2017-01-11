@@ -333,6 +333,7 @@ class SettingsViewController: FormViewController {
                 $0.hidden = Condition(booleanLiteral: !self.configured)
             }
             <<< ButtonRow("generalSettings") {
+                $0.hidden = Condition(booleanLiteral: OpenInChromeController().isChromeInstalled())
                 $0.title = "General Settings"
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     let view = SettingsDetailViewController()

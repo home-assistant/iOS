@@ -49,7 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        if prefs.object(forKey: "openInChrome") == nil {
+        if prefs.object(forKey: "openInChrome") == nil && OpenInChromeController().isChromeInstalled() {
             self.prefs.setValue(true, forKey: "openInChrome")
             self.prefs.synchronize()
         }
