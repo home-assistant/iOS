@@ -130,7 +130,7 @@ See CONTRIBUTING.md
 
 ## LICENSE
 
-MIT
+Apache-2.0
 
 ## Credits
 
