@@ -25,7 +25,8 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         super.viewDidLoad()
         // Do any required interface initialization here.
 
-        let keychain = Keychain(service: "io.robbie.homeassistant")
+        let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
+        print("\(keychain)")
         if let url = keychain["baseURL"] {
             baseURL = url
         }

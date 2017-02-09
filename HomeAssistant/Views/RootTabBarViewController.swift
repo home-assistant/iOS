@@ -32,7 +32,7 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        let keychain = Keychain(service: "io.robbie.homeassistant")
+        let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
         if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
             firstly {
                 HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass)

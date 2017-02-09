@@ -28,7 +28,7 @@ final class NotificationService: UNNotificationServiceExtension {
             contentHandler(request.content)
         }
 
-        let keychain = Keychain(service: "io.robbie.homeassistant")
+        let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
         guard let baseURL = keychain["baseURL"] else {
             return failEarly()
         }

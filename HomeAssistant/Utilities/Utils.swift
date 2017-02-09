@@ -249,7 +249,7 @@ func migrateUserDefaultsToAppGroups() {
 
 func migrateSecretsToKeychain() {
 
-    let keychain = Keychain(service: "io.robbie.homeassistant")
+    let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.homeassistant")
 
     let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant")
 
