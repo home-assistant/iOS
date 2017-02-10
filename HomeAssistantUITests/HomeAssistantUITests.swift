@@ -30,11 +30,6 @@ class HomeAssistantUITests: XCTestCase {
         
         let app = XCUIApplication()
         snapshot("00Launch")
-        let welcomeAlert = app.alerts["Welcome"]
-        let myawesomeemailGmailComTextField = welcomeAlert.collectionViews.textFields["myawesomeemail@gmail.com"]
-        myawesomeemailGmailComTextField.tap()
-        myawesomeemailGmailComTextField.typeText("me@robbiet.us")
-        welcomeAlert.buttons["OK"].tap()
         
         let tablesQuery2 = app.tables
         let tablesQuery = tablesQuery2
