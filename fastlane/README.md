@@ -20,6 +20,11 @@ Runs all the unit tests
 Submits a new Beta Build to Fabric
 
 Submits a new Beta Build to Apple TestFlight
+### ios bump
+```
+fastlane ios bump
+```
+Bump build number
 ### ios release
 ```
 fastlane ios release
