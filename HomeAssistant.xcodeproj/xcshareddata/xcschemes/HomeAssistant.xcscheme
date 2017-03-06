@@ -38,16 +38,6 @@
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B657A8FB1CA646EB00121384"
-               BuildableName = "HomeAssistantTests.xctest"
-               BlueprintName = "HomeAssistantTests"
-               ReferencedContainer = "container:HomeAssistant.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
