@@ -439,6 +439,8 @@ public class HomeAssistantAPI {
                     realm.create(BinarySensor.self, value: entity, update: true)
                 case is Climate:
                     realm.create(Climate.self, value: entity, update: true)
+                case is Cover:
+                    realm.create(Cover.self, value: entity, update: true)
                 case is DeviceTracker:
                     realm.create(DeviceTracker.self, value: entity, update: true)
                 case is GarageDoor:

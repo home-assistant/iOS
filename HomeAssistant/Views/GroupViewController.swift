@@ -198,6 +198,24 @@ class GroupViewController: FormViewController {
                                 cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                             }
                     }
+                case "cover":
+                    self.form.last! <<< SegmentedRow<String>(entity.ID) {
+                        $0.title = entity.Name
+                        $0.options = ["Open", "Stop", "Close"]
+                        $0.value = (entity.State == "closed") ? "Close" : "Open"
+                        }.onChange { row -> Void in
+                            let whichService = row.value!.lowercased() + "_cover"
+                            let _ = HomeAssistantAPI.sharedInstance.CallService(domain: entity.Domain,
+                                                                                service: whichService,
+                                                                                serviceData: [
+                                                                                    "entity_id": entity.ID as AnyObject
+                                ])
+                        }.cellUpdate { cell, _ in
+                            cell.imageView?.image = entity.EntityIcon
+                            if let picture = entity.DownloadedPicture {
+                                cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
+                            }
+                    }
                 case "input_slider":
                     self.form.last! <<< SliderRow(entity.ID) {
                         $0.title = entity.Name
@@ -248,7 +266,7 @@ class GroupViewController: FormViewController {
             if let userInfoDict = userInfo as? [String : Any] {
                 if let event = Mapper<StateChangedEvent>().map(JSON: userInfoDict) {
                     if let newState = event.NewState {
-                        if newState.Domain == "lock" || newState.Domain == "garage_door" {
+                        if newState.Domain == "lock" || newState.Domain == "garage_door" || newState.Domain == "cover" {
                             if let row: SwitchRow = self.form.rowBy(tag: newState.ID) {
                                 row.value = (newState.State == "on") ? true : false
                                 row.cell.imageView?.image = newState.EntityIcon
