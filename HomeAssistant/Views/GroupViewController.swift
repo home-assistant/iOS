@@ -266,7 +266,7 @@ class GroupViewController: FormViewController {
             if let userInfoDict = userInfo as? [String : Any] {
                 if let event = Mapper<StateChangedEvent>().map(JSON: userInfoDict) {
                     if let newState = event.NewState {
-                        if newState.Domain == "lock" || newState.Domain == "garage_door" || newState.Domain == "cover" {
+                        if newState.Domain == "lock" || newState.Domain == "garage_door" {
                             if let row: SwitchRow = self.form.rowBy(tag: newState.ID) {
                                 row.value = (newState.State == "on") ? true : false
                                 row.cell.imageView?.image = newState.EntityIcon
