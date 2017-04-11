@@ -12,7 +12,7 @@ import ObjectMapper
 class Fan: Entity {
 
     dynamic var Oscillating = false
-    dynamic var Speed: String? = nil
+    dynamic var Speed: String?
     dynamic var SupportsSetSpeed: Bool = false
     dynamic var SupportsOscillate: Bool = false
     var SupportedFeatures: Int?

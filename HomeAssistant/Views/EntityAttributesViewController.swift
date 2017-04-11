@@ -37,7 +37,7 @@ class EntityAttributesViewController: FormViewController {
                     }()
                 }
             } else if let picture = entity.Picture {
-                var hud: MBProgressHUD? = nil
+                var hud: MBProgressHUD?
                 let entityPictureSection = Section {
                     $0.tag = "entity_picture"
                     $0.header = {
@@ -52,7 +52,7 @@ class EntityAttributesViewController: FormViewController {
                     }()
                 }
                 form +++ entityPictureSection
-                let _ = HomeAssistantAPI.sharedInstance.getImage(imageUrl: picture).then { image -> Void in
+                _ = HomeAssistantAPI.sharedInstance.getImage(imageUrl: picture).then { image -> Void in
                     hud?.hide(animated: true)
                     entityPictureSection.header = {
                         var header = HeaderFooterView<UIView>(.callback({
@@ -68,7 +68,7 @@ class EntityAttributesViewController: FormViewController {
                         hud?.hide(animated: true)
                         entityPictureSection.hidden = true
                         entityPictureSection.evaluateHidden()
-                    }
+                }
             }
 
             form +++ Section(header: "Attributes", footer: "")
@@ -167,9 +167,9 @@ class EntityAttributesViewController: FormViewController {
                             $0.value = (entity.State == "on") ? true : false
                             }.onChange { row -> Void in
                                 if row.value! {
-                                    let _ = HomeAssistantAPI.sharedInstance.turnOn(entityId: entity.ID)
+                                    _ = HomeAssistantAPI.sharedInstance.turnOn(entityId: entity.ID)
                                 } else {
-                                    let _ = HomeAssistantAPI.sharedInstance.turnOff(entityId: entity.ID)
+                                    _ = HomeAssistantAPI.sharedInstance.turnOff(entityId: entity.ID)
                                 }
                         }
                     } else {

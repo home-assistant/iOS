@@ -211,9 +211,9 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                     let old = event.OldState! as Entity
                     var subtitleString = "\(new.FriendlyName!) is now \(new.State). It was \(old.State)"
                     if let uom = new.UnitOfMeasurement {
-                        subtitleString = "\(new.State) \(uom). It was \(old.State) \(String(describing: old.UnitOfMeasurement))"
+                        subtitleString = "\(new.State) \(uom). It was \(old.State) \(old.UnitOfMeasurement ?? "")"
                     }
-                    let _ = Murmur(title: subtitleString)
+                    _ = Murmur(title: subtitleString)
                 }
             }
         }

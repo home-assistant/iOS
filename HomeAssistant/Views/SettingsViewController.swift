@@ -25,10 +25,10 @@ class SettingsViewController: FormViewController {
     var doneButton: Bool = false
 
     var showErrorConnectingMessage = false
-    var showErrorConnectingMessageError: Error? = nil
+    var showErrorConnectingMessageError: Error?
 
-    var baseURL: URL? = nil
-    var password: String? = nil
+    var baseURL: URL?
+    var password: String?
     var configured: Bool = false
     var connectStep: Int = 0 // 0 = pre-configuration, 1 = hostname entry, 2 = password entry
 
@@ -68,7 +68,7 @@ class SettingsViewController: FormViewController {
 
         self.configured = (self.baseURL != nil && self.password != nil)
 
-//        checkForEmail()
+        //        checkForEmail()
 
         if showErrorConnectingMessage {
             let errDesc = (showErrorConnectingMessageError?.localizedDescription)!
@@ -93,11 +93,13 @@ class SettingsViewController: FormViewController {
             }
 
             NotificationCenter.default.addObserver(self,
+                                                   // swiftlint:disable:next line_length
                 selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)),
                 name:NSNotification.Name(rawValue: "homeassistant.discovered"),
                 object: nil)
 
             NotificationCenter.default.addObserver(self,
+                                                   // swiftlint:disable:next line_length
                 selector: #selector(SettingsViewController.HomeAssistantUndiscovered(_:)),
                 name:NSNotification.Name(rawValue: "homeassistant.undiscovered"),
                 object: nil)
@@ -247,9 +249,10 @@ class SettingsViewController: FormViewController {
                                 let detailsSection: Section = self.form.sectionBy(tag: "details")!
                                 detailsSection.hidden = false
                                 detailsSection.evaluateHidden()
-//                                let resetSection: Section = self.form.sectionBy(tag: "reset")!
-//                                resetSection.hidden = false
-//                                resetSection.evaluateHidden()
+                                // swiftlint:disable:next line_length
+                                //                                let resetSection: Section = self.form.sectionBy(tag: "reset")!
+                                //                                resetSection.hidden = false
+                                //                                resetSection.evaluateHidden()
                                 let closeSelector = #selector(SettingsViewController.closeSettings(_:))
                                 let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self,
                                                                  action: closeSelector)
@@ -266,7 +269,7 @@ class SettingsViewController: FormViewController {
                                 let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
                                 let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
                                                               message: message,
-                                    preferredStyle: UIAlertControllerStyle.alert)
+                                                              preferredStyle: UIAlertControllerStyle.alert)
                                 alert.addAction(UIAlertAction(title: "OK",
                                                               style: UIAlertActionStyle.default,
                                                               handler: nil))
@@ -340,7 +343,7 @@ class SettingsViewController: FormViewController {
                     view.detailGroup = "general"
                     return view
                     }, onDismiss: { vc in
-                        let _ = vc.navigationController?.popViewController(animated: true)
+                        _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
 
@@ -351,7 +354,7 @@ class SettingsViewController: FormViewController {
                     let pscope = PermissionScope()
 
                     pscope.addPermission(LocationAlwaysPermission(),
-                        message: L10n.Permissions.Location.message)
+                                         message: L10n.Permissions.Location.message)
                     pscope.show({finished, results in
                         if finished {
                             print("Location Permissions finished!", finished, results)
@@ -368,7 +371,7 @@ class SettingsViewController: FormViewController {
                             deviceTrackerComponentLoadedRow.hidden = false
                             deviceTrackerComponentLoadedRow.evaluateHidden()
                         }
-                    }, cancelled: { (results) -> Void in
+                    }, cancelled: { _ -> Void in
                         print("Permissions finished, resetting API!")
                     })
             }
@@ -381,7 +384,7 @@ class SettingsViewController: FormViewController {
                     view.detailGroup = "location"
                     return view
                     }, onDismiss: { vc in
-                        let _ = vc.navigationController?.popViewController(animated: true)
+                        _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
 
@@ -408,7 +411,7 @@ class SettingsViewController: FormViewController {
                                 notifyPlatformLoadedRow.evaluateHidden()
                             }
                         }
-                    }, cancelled: { (results) -> Void in
+                    }, cancelled: { _ -> Void in
                         print("Permissions finished, resetting API!")
                     })
             }
@@ -423,13 +426,13 @@ class SettingsViewController: FormViewController {
                     view.detailGroup = "notifications"
                     return view
                     }, onDismiss: { vc in
-                        let _ = vc.navigationController?.popViewController(animated: true)
+                        _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
 
             +++ Section {
                 $0.tag = "reset"
-//                $0.hidden = Condition(booleanLiteral: !self.configured)
+                //                $0.hidden = Condition(booleanLiteral: !self.configured)
                 $0.hidden = true
             }
             <<< ButtonRow("resetApp") {
@@ -438,8 +441,8 @@ class SettingsViewController: FormViewController {
                     cell.textLabel?.textColor = .red
                 }.onCellSelection { _, _ in
                     let alert = UIAlertController(title: L10n.Settings.ResetSection.ResetAlert.title,
-                        message: L10n.Settings.ResetSection.ResetAlert.message,
-                        preferredStyle: UIAlertControllerStyle.alert)
+                                                  message: L10n.Settings.ResetSection.ResetAlert.message,
+                                                  preferredStyle: UIAlertControllerStyle.alert)
 
                     alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
                         print("Handle Cancel Logic here")
@@ -556,6 +559,7 @@ class SettingsViewController: FormViewController {
         if prefs.bool(forKey: "emailSet") == false || prefs.string(forKey: "userEmail") == nil {
             print("This is first launch, let's prompt user for email.")
             let alert = UIAlertController(title: "Welcome",
+                                          // swiftlint:disable:next line_length
                 message: "Please enter the email address you used to sign up for the beta program with.",
                 preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: emailEntered))

@@ -16,12 +16,12 @@ class MediaPlayer: Entity {
     dynamic var IsPlaying: Bool = false
     dynamic var IsIdle: Bool = false
     var IsVolumeMuted = RealmOptional<Bool>()
-    dynamic var MediaContentID: String? = nil
-    dynamic var MediaContentType: String? = nil
+    dynamic var MediaContentID: String?
+    dynamic var MediaContentType: String?
     var MediaDuration = RealmOptional<Int>()
-    dynamic var MediaTitle: String? = nil
+    dynamic var MediaTitle: String?
     var VolumeLevel = RealmOptional<Float>()
-    dynamic var Source: String? = nil
+    dynamic var Source: String?
     dynamic var SourceList: [String] = [String]()
     let StoredSourceList = List<StringObject>()
     dynamic var SupportsPause: Bool = false
@@ -54,7 +54,7 @@ class MediaPlayer: Entity {
         VolumeLevel.value      <- map["attributes.volume_level"]
         SourceList       <- map["attributes.source_list"]
 
-        var StoredSourceList: [String]? = nil
+        var StoredSourceList: [String]?
         StoredSourceList     <- map["attributes.source_list"]
         StoredSourceList?.forEach { option in
             let value = StringObject()
@@ -101,28 +101,28 @@ class MediaPlayer: Entity {
     }
 
     func muteOn() {
-        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player",
-                                                            service: "volume_mute",
-                                                            serviceData: [
-                                                                "entity_id": self.ID as AnyObject,
-                                                                "is_volume_muted": "on" as AnyObject
+        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player",
+                                                        service: "volume_mute",
+                                                        serviceData: [
+                                                            "entity_id": self.ID as AnyObject,
+                                                            "is_volume_muted": "on" as AnyObject
             ])
     }
     func muteOff() {
-        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player",
-                                                            service: "volume_mute",
-                                                            serviceData: [
-                                                                "entity_id": self.ID as AnyObject,
-                                                                "is_volume_muted": "off" as AnyObject
+        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player",
+                                                        service: "volume_mute",
+                                                        serviceData: [
+                                                            "entity_id": self.ID as AnyObject,
+                                                            "is_volume_muted": "off" as AnyObject
             ])
     }
     func setVolume(_ newVolume: Float) {
         let fixedVolume = newVolume/100
-        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player",
-                                                            service: "volume_set",
-                                                            serviceData: [
-                                                                "entity_id": self.ID as AnyObject,
-                                                                "volume_level": fixedVolume as AnyObject
+        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player",
+                                                        service: "volume_set",
+                                                        serviceData: [
+                                                            "entity_id": self.ID as AnyObject,
+                                                            "volume_level": fixedVolume as AnyObject
             ])
     }
 
@@ -134,7 +134,7 @@ class MediaPlayer: Entity {
         return (self.State != "off" && self.State != "idle") ? "mdi:cast-connected" : "mdi:cast"
     }
 
-     override var EntityColor: UIColor {
+    override var EntityColor: UIColor {
         return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
     }
 }

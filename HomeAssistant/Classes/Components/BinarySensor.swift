@@ -11,7 +11,7 @@ import ObjectMapper
 
 class BinarySensor: Entity {
 
-    dynamic var SensorClass: String? = nil
+    dynamic var SensorClass: String?
     dynamic var IsOn: Bool = false
 
     override func mapping(map: Map) {
@@ -63,7 +63,7 @@ class BinarySensor: Entity {
         }
     }
 
-     override var EntityColor: UIColor {
+    override var EntityColor: UIColor {
         return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
     }
 }

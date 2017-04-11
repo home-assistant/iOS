@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // swiftlint:disable:next line_length
     func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
+                     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         migrateUserDefaultsToAppGroups()
         migrateSecretsToKeychain()
         Realm.Configuration.defaultConfiguration = realmConfig
@@ -129,13 +129,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      forRemoteNotification userInfo: [AnyHashable : Any],
                      withResponseInfo responseInfo: [AnyHashable : Any],
                      completionHandler: @escaping () -> Void) {
-        var userInput: String? = nil
+        var userInput: String?
         if let userText = responseInfo[UIUserNotificationActionResponseTypedTextKey] as? String {
             userInput = userText
         }
-        let _ = HomeAssistantAPI.sharedInstance.handlePushAction(identifier: identifier!,
-                                                                 userInfo: userInfo,
-                                                                 userInput: userInput)
+        _ = HomeAssistantAPI.sharedInstance.handlePushAction(identifier: identifier!,
+                                                             userInfo: userInfo,
+                                                             userInput: userInput)
     }
 
     func application(_ app: UIApplication,
@@ -147,16 +147,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         case "call_service": // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
             let domain = url.pathComponents[1].components(separatedBy: ".")[0]
             let service = url.pathComponents[1].components(separatedBy: ".")[1]
-            let _ = HomeAssistantAPI.sharedInstance.CallService(domain: domain,
-                                                                service: service,
-                                                                serviceData: serviceData)
+            _ = HomeAssistantAPI.sharedInstance.CallService(domain: domain,
+                                                            service: service,
+                                                            serviceData: serviceData)
             break
         case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
-            let _ = HomeAssistantAPI.sharedInstance.CreateEvent(eventType: url.pathComponents[1],
-                                                                eventData: serviceData)
+            _ = HomeAssistantAPI.sharedInstance.CreateEvent(eventType: url.pathComponents[1],
+                                                            eventData: serviceData)
             break
         case "send_location": // homeassistant://send_location/
-            let _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
+            _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
             break
         default:
             print("Can't route", url.host!)
@@ -170,7 +170,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     public func userNotificationCenter(_ center: UNUserNotificationCenter,
                                        didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
-        var userText: String? = nil
+        var userText: String?
         if let textInput = response as? UNTextInputNotificationResponse {
             userText = textInput.userText
         }
@@ -188,7 +188,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     public func userNotificationCenter(_ center: UNUserNotificationCenter,
                                        willPresent notification: UNNotification,
                                        // swiftlint:disable:next line_length
-        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+                                       withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.alert, .badge, .sound])
     }
 }

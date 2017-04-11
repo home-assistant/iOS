@@ -51,7 +51,7 @@ public class HomeAssistantAPI {
     private var baseAPIURL: String = ""
     private var apiPassword: String = ""
 
-    private var eventSource: EventSource? = nil
+    private var eventSource: EventSource?
 
     private var headers = [String: String]()
 
@@ -119,7 +119,7 @@ public class HomeAssistantAPI {
                                                 object: nil,
                                                 userInfo: nil)
 
-                let _ = self.GetStates()
+                _ = self.GetStates()
 
                 if self.locationEnabled {
                     self.trackLocation()
@@ -189,7 +189,7 @@ public class HomeAssistantAPI {
     func submitLocation(updateType: LocationUpdateTypes,
                         coordinates: CLLocationCoordinate2D,
                         accuracy: CLLocationAccuracy,
-                        zone: Zone? = nil) {
+                        zone: Zone?) {
         UIDevice.current.isBatteryMonitoringEnabled = true
 
         var batteryState = "Unplugged"
@@ -268,17 +268,17 @@ public class HomeAssistantAPI {
     }
 
     func trackLocation() {
-        let _ = Location.getLocation(withAccuracy: .neighborhood,
-                                     frequency: .significant,
-                                     timeout: 50,
-                                     onSuccess: { (location) in
-                                        // You will receive at max one event if desidered accuracy can be achieved
-                                        // because you have set .OneShot as frequency.
-                                        self.submitLocation(updateType: .Manual,
-                                                            coordinates: location.coordinate,
-                                                            accuracy: location.horizontalAccuracy,
-                                                            zone: nil)
-        }) { (_, error) in
+        _ = Location.getLocation(accuracy: .neighborhood,
+                                 frequency: .significant,
+                                 timeout: 50,
+                                 success: { (_, location) -> (Void) in
+                                    // You will receive at max one event if desidered accuracy can be achieved
+                                    // because you have set .OneShot as frequency.
+                                    self.submitLocation(updateType: .Manual,
+                                                        coordinates: location.coordinate,
+                                                        accuracy: location.horizontalAccuracy,
+                                                        zone: nil)
+        }) { (_, _, error) -> (Void) in
             // something went wrong. request will be cancelled automatically
             print("Something went wrong when trying to get significant location updates! Error was:", error)
             Crashlytics.sharedInstance().recordError(error)
@@ -290,21 +290,23 @@ public class HomeAssistantAPI {
                 continue
             }
             do {
-                let _ = try Beacons.monitor(geographicRegion: zone.locationCoordinates(),
-                                            radius: CLLocationDistance(zone.Radius),
-                                            onStateDidChange: { newState in
-                                                var updateType = LocationUpdateTypes.RegionEnter
-                                                if newState == RegionState.exited {
-                                                    updateType = LocationUpdateTypes.RegionExit
-                                                }
-                                                self.submitLocation(updateType: updateType,
-                                                                    coordinates: zone.locationCoordinates(),
-                                                                    accuracy: 1,
-                                                                    zone: zone)
-                }) { error in
+                try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius, enter: { _ in
+                    print("Entered in region!")
+                    self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
+                                        coordinates: zone.locationCoordinates(),
+                                        accuracy: 1,
+                                        zone: zone)
+                }, exit: { _ in
+                    print("Exited from the region")
+                    self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
+                                        coordinates: zone.locationCoordinates(),
+                                        accuracy: 1,
+                                        zone: zone)
+                }, error: { req, error in
                     CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
-                }
+                    req.cancel() // abort the request (you can also use `cancelOnError=true` to perform it automatically
+                })
             } catch let error {
                 CLSLogv("Error when setting up zones for tracking: %@", getVaList([error.localizedDescription]))
                 Crashlytics.sharedInstance().recordError(error)
@@ -337,16 +339,15 @@ public class HomeAssistantAPI {
 
     func sendOneshotLocation() -> Promise<Bool> {
         return Promise { fulfill, reject in
-            let _ = Location.getLocation(withAccuracy: .neighborhood,
-                                         frequency: .oneShot,
-                                         timeout: 50,
-                                         onSuccess: { (location) in
-                                            self.submitLocation(updateType: .Manual,
-                                                                coordinates: location.coordinate,
-                                                                accuracy: location.horizontalAccuracy,
-                                                                zone: nil)
-                                            fulfill(true)
-            }) { (_, error) in
+            Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, success: { (_, location) in
+                print("A new update of location is available: \(location)")
+                self.submitLocation(updateType: .Manual,
+                                    coordinates: location.coordinate,
+                                    accuracy: location.horizontalAccuracy,
+                                    zone: nil)
+                fulfill(true)
+            }) { (request, _, error) in
+                request.cancel() // stop continous location monitoring on error
                 print("Error when trying to get a oneshot location!", error)
                 Crashlytics.sharedInstance().recordError(error)
                 reject(error)
@@ -357,17 +358,18 @@ public class HomeAssistantAPI {
     func GetStatus() -> Promise<StatusResponse> {
         let queryUrl = baseAPIURL
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          // swiftlint:disable:next line_length
-                method: .get).validate().responseObject { (response: DataResponse<StatusResponse>) in
-                    switch response.result {
-                    case .success:
-                        fulfill(response.result.value!)
-                    case .failure(let error):
-                        CLSLogv("Error on GetStatus() request: %@", getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                        reject(error)
-                    }
+            _ = self.manager!.request(queryUrl,
+                                      // swiftlint:disable:next line_length
+                                      method: .get).validate().responseObject { (response: DataResponse<StatusResponse>) in
+                                        switch response.result {
+                                        case .success:
+                                            fulfill(response.result.value!)
+                                        case .failure(let error):
+                                            CLSLogv("Error on GetStatus() request: %@",
+                                                    getVaList([error.localizedDescription]))
+                                            Crashlytics.sharedInstance().recordError(error)
+                                            reject(error)
+                                        }
             }
         }
     }
@@ -375,8 +377,8 @@ public class HomeAssistantAPI {
     func GetConfig() -> Promise<ConfigResponse> {
         let queryUrl = baseAPIURL+"config"
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          // swiftlint:disable:next line_length
+            _ = self.manager!.request(queryUrl,
+                                      // swiftlint:disable:next line_length
                 method: .get).validate().responseObject { (response: DataResponse<ConfigResponse>) in
                     switch response.result {
                     case .success:
@@ -393,8 +395,8 @@ public class HomeAssistantAPI {
     func GetServices() -> Promise<[ServicesResponse]> {
         let queryUrl = baseAPIURL+"services"
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          // swiftlint:disable:next line_length
+            _ = self.manager!.request(queryUrl,
+                                      // swiftlint:disable:next line_length
                 method: .get).validate().responseArray { (response: DataResponse<[ServicesResponse]>) in
                     switch response.result {
                     case .success:
@@ -411,7 +413,7 @@ public class HomeAssistantAPI {
     //    func GetHistory() -> Promise<HistoryResponse> {
     //        let queryUrl = baseAPIURL+"history/period?filter_entity_id=sensor.uberpool_time"
     //        return Promise { fulfill, reject in
-    //            let _ = self.manager!.request(queryUrl, method: .get).validate().responseJSON { response in
+    //            _ = self.manager!.request(queryUrl, method: .get).validate().responseJSON { response in
     //                switch response.result {
     //                case .success:
     //                    print("GOT HISTORY", queryUrl)
@@ -491,8 +493,8 @@ public class HomeAssistantAPI {
     func GetStates() -> Promise<[Entity]> {
         let queryUrl = baseAPIURL+"states"
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          // swiftlint:disable:next line_length
+            _ = self.manager!.request(queryUrl,
+                                      // swiftlint:disable:next line_length
                 method: .get).validate().responseArray { (response: DataResponse<[Entity]>) -> Void in
                     switch response.result {
                     case .success:
@@ -510,8 +512,8 @@ public class HomeAssistantAPI {
     func GetStateForEntityIdMapped(entityId: String) -> Promise<Entity> {
         let queryUrl = baseAPIURL+"states/"+entityId
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          // swiftlint:disable:next line_length
+            _ = self.manager!.request(queryUrl,
+                                      // swiftlint:disable:next line_length
                 method: .get).validate().responseObject { (response: DataResponse<Entity>) -> Void in
                     switch response.result {
                     case .success:
@@ -530,7 +532,7 @@ public class HomeAssistantAPI {
     func GetErrorLog() -> Promise<String> {
         let queryUrl = baseAPIURL+"error_log"
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl, method: .get).validate().responseString { response in
+            _ = self.manager!.request(queryUrl, method: .get).validate().responseString { response in
                 switch response.result {
                 case .success:
                     fulfill(response.result.value!)
@@ -546,10 +548,10 @@ public class HomeAssistantAPI {
     func SetState(entityId: String, state: String) -> Promise<Entity> {
         let queryUrl = baseAPIURL+"states/"+entityId
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          method: .post,
-                                          parameters: ["state": state],
-                                          encoding: JSONEncoding.default
+            _ = self.manager!.request(queryUrl,
+                                      method: .post,
+                                      parameters: ["state": state],
+                                      encoding: JSONEncoding.default
                 ).validate().responseObject { (response: DataResponse<Entity>) in
                     switch response.result {
                     case .success:
@@ -569,22 +571,22 @@ public class HomeAssistantAPI {
     func CreateEvent(eventType: String, eventData: [String:Any]) -> Promise<String> {
         let queryUrl = baseAPIURL+"events/"+eventType
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          method: .post,
-                                          parameters: eventData,
-                                          encoding: JSONEncoding.default).validate().responseJSON { response in
-                                            switch response.result {
-                                            case .success:
-                                                if let jsonDict = response.result.value as? [String : String] {
-                                                    self.showMurmur(title: eventType+" created")
-                                                    fulfill(jsonDict["message"]!)
-                                                }
-                                            case .failure(let error):
-                                                CLSLogv("Error when attemping to CreateEvent(): %@",
-                                                        getVaList([error.localizedDescription]))
-                                                Crashlytics.sharedInstance().recordError(error)
-                                                reject(error)
+            _ = self.manager!.request(queryUrl,
+                                      method: .post,
+                                      parameters: eventData,
+                                      encoding: JSONEncoding.default).validate().responseJSON { response in
+                                        switch response.result {
+                                        case .success:
+                                            if let jsonDict = response.result.value as? [String : String] {
+                                                self.showMurmur(title: eventType+" created")
+                                                fulfill(jsonDict["message"]!)
                                             }
+                                        case .failure(let error):
+                                            CLSLogv("Error when attemping to CreateEvent(): %@",
+                                                    getVaList([error.localizedDescription]))
+                                            Crashlytics.sharedInstance().recordError(error)
+                                            reject(error)
+                                        }
             }
         }
     }
@@ -593,10 +595,10 @@ public class HomeAssistantAPI {
         //        self.showMurmur(title: domain+"/"+service+" called")
         let queryUrl = baseAPIURL+"services/"+domain+"/"+service
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          method: .post,
-                                          parameters: serviceData,
-                                          encoding: JSONEncoding.default
+            _ = self.manager!.request(queryUrl,
+                                      method: .post,
+                                      parameters: serviceData,
+                                      encoding: JSONEncoding.default
                 ).validate().responseArray { (response: DataResponse<[ServicesResponse]>) in
                     switch response.result {
                     case .success:
@@ -765,19 +767,19 @@ public class HomeAssistantAPI {
     func identifyDevice() -> Promise<String> {
         let queryUrl = baseAPIURL+"ios/identify"
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          method: .post,
-                                          parameters: buildIdentifyDict(),
-                                          encoding: JSONEncoding.default).validate().responseString { response in
-                                            switch response.result {
-                                            case .success:
-                                                fulfill(response.result.value!)
-                                            case .failure(let error):
-                                                CLSLogv("Error when attemping to identifyDevice(): %@",
-                                                        getVaList([error.localizedDescription]))
-                                                Crashlytics.sharedInstance().recordError(error)
-                                                reject(error)
-                                            }
+            _ = self.manager!.request(queryUrl,
+                                      method: .post,
+                                      parameters: buildIdentifyDict(),
+                                      encoding: JSONEncoding.default).validate().responseString { response in
+                                        switch response.result {
+                                        case .success:
+                                            fulfill(response.result.value!)
+                                        case .failure(let error):
+                                            CLSLogv("Error when attemping to identifyDevice(): %@",
+                                                    getVaList([error.localizedDescription]))
+                                            Crashlytics.sharedInstance().recordError(error)
+                                            reject(error)
+                                        }
             }
         }
     }
@@ -785,19 +787,19 @@ public class HomeAssistantAPI {
     func removeDevice() -> Promise<String> {
         let queryUrl = baseAPIURL+"ios/identify"
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          method: .delete,
-                                          parameters: buildRemovalDict(),
-                                          encoding: JSONEncoding.default).validate().responseString { response in
-                                            switch response.result {
-                                            case .success:
-                                                fulfill(response.result.value!)
-                                            case .failure(let error):
-                                                CLSLogv("Error when attemping to identifyDevice(): %@",
-                                                        getVaList([error.localizedDescription]))
-                                                Crashlytics.sharedInstance().recordError(error)
-                                                reject(error)
-                                            }
+            _ = self.manager!.request(queryUrl,
+                                      method: .delete,
+                                      parameters: buildRemovalDict(),
+                                      encoding: JSONEncoding.default).validate().responseString { response in
+                                        switch response.result {
+                                        case .success:
+                                            fulfill(response.result.value!)
+                                        case .failure(let error):
+                                            CLSLogv("Error when attemping to identifyDevice(): %@",
+                                                    getVaList([error.localizedDescription]))
+                                            Crashlytics.sharedInstance().recordError(error)
+                                            reject(error)
+                                        }
             }
         }
     }
@@ -828,8 +830,8 @@ public class HomeAssistantAPI {
     func setupPushActions() -> Promise<Set<UIUserNotificationCategory>> {
         let queryUrl = baseAPIURL+"ios/push"
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          // swiftlint:disable:next line_length
+            _ = self.manager!.request(queryUrl,
+                                      // swiftlint:disable:next line_length
                 method: .get).validate().responseObject { (response: DataResponse<PushConfiguration>) in
                     switch response.result {
                     case .success:
@@ -888,8 +890,8 @@ public class HomeAssistantAPI {
     func setupUserNotificationPushActions() -> Promise<Set<UNNotificationCategory>> {
         let queryUrl = baseAPIURL+"ios/push"
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          method: .get
+            _ = self.manager!.request(queryUrl,
+                                      method: .get
                 ).validate().responseObject { (response: DataResponse<PushConfiguration>) in
                     switch response.result {
                     case .success:
@@ -925,7 +927,7 @@ public class HomeAssistantAPI {
                                                                                               options: actionOptions,
                                                                                               textInputButtonTitle:btnTitle,
                                                                                               textInputPlaceholder:place)
-                                                                                              // swiftlint:enable line_length
+                                                // swiftlint:enable line_length
                                                 categoryActions.append(newAction)
                                             }
                                         }
@@ -998,17 +1000,17 @@ public class HomeAssistantAPI {
     func getBeacons() -> Promise<[Beacon]> {
         let queryUrl = baseAPIURL+"ios/beacons"
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(queryUrl,
-                                          method: .get).validate().responseArray { (response: DataResponse<[Beacon]>) in
-                                            switch response.result {
-                                            case .success:
-                                                fulfill(response.result.value!)
-                                            case .failure(let error):
-                                                CLSLogv("Error when attemping to getBeacons(): %@",
-                                                        getVaList([error.localizedDescription]))
-                                                Crashlytics.sharedInstance().recordError(error)
-                                                reject(error)
-                                            }
+            _ = self.manager!.request(queryUrl,
+                                      method: .get).validate().responseArray { (response: DataResponse<[Beacon]>) in
+                                        switch response.result {
+                                        case .success:
+                                            fulfill(response.result.value!)
+                                        case .failure(let error):
+                                            CLSLogv("Error when attemping to getBeacons(): %@",
+                                                    getVaList([error.localizedDescription]))
+                                            Crashlytics.sharedInstance().recordError(error)
+                                            reject(error)
+                                        }
             }
         }
     }
@@ -1019,7 +1021,7 @@ public class HomeAssistantAPI {
         url = url.replacingOccurrences(of: "/static/", with: "")
         url = baseAPIURL+url
         return Promise { fulfill, reject in
-            let _ = self.manager!.request(url, method: .get).validate().responseImage { response in
+            _ = self.manager!.request(url, method: .get).validate().responseImage { response in
                 switch response.result {
                 case .success:
                     if let value = response.result.value {
@@ -1070,11 +1072,10 @@ public class HomeAssistantAPI {
     var enabledPermissions: [String] {
         var permissionsContainer: [String] = []
         for status in PermissionScope().permissionStatuses([NotificationsPermission().type,
-                                                            LocationAlwaysPermission().type]) {
-                                                                if status.1 == .authorized {
-                                                                    let desc = status.0.prettyDescription.lowercased()
-                                                                    permissionsContainer.append(desc)
-                                                                }
+                                                            // swiftlint:disable:next line_length
+            LocationAlwaysPermission().type]) where status.1 == .authorized {
+                let desc = status.0.prettyDescription.lowercased()
+                permissionsContainer.append(desc)
         }
         return permissionsContainer
     }
@@ -1091,9 +1092,9 @@ public class HomeAssistantAPI {
         urlComponents.scheme = baseUrl.scheme
         urlComponents.host = baseUrl.host
         urlComponents.port = baseUrl.port
-//        if urlComponents.port == nil {
-//            urlComponents.port = (baseUrl.scheme == "http") ? 80 : 443
-//        }
+        //        if urlComponents.port == nil {
+        //            urlComponents.port = (baseUrl.scheme == "http") ? 80 : 443
+        //        }
         return (true, urlComponents.url!)
     }
 

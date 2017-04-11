@@ -33,7 +33,7 @@ class AboutViewController: FormViewController {
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     return self.generateAcknowledgements()
                     }, onDismiss: { vc in
-                        let _ = vc.navigationController?.popViewController(animated: true)
+                        _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
             +++ Section()

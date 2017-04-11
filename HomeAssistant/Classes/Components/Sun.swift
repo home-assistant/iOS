@@ -13,8 +13,8 @@ import RealmSwift
 class Sun: Entity {
 
     var Elevation = RealmOptional<Float>()
-    var NextRising: Date? = nil
-    var NextSetting: Date? = nil
+    var NextRising: Date?
+    var NextSetting: Date?
 
     override func mapping(map: Map) {
         super.mapping(map: map)
@@ -24,7 +24,7 @@ class Sun: Entity {
         NextSetting  <- (map["attributes.next_setting"], HomeAssistantTimestampTransform())
     }
 
-     override var EntityColor: UIColor {
+    override var EntityColor: UIColor {
         return self.State == "above_horizon" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
     }
 

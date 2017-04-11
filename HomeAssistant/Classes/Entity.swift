@@ -40,20 +40,20 @@ class Entity: Object, StaticMappable {
         }
     }
     fileprivate dynamic var attributesData: Data?
-    dynamic var FriendlyName: String? = nil
+    dynamic var FriendlyName: String?
     dynamic var Hidden = false
-    dynamic var Icon: String? = nil
-    dynamic var MobileIcon: String? = nil
-    dynamic var Picture: String? = nil
+    dynamic var Icon: String?
+    dynamic var MobileIcon: String?
+    dynamic var Picture: String?
     var DownloadedPicture: UIImage?
     var UnitOfMeasurement: String?
-    dynamic var LastChanged: Date? = nil
-    dynamic var LastUpdated: Date? = nil
+    dynamic var LastChanged: Date?
+    dynamic var LastUpdated: Date?
     //    let Groups = LinkingObjects(fromType: Group.self, property: "Entities")
 
     // Z-Wave properties
-    dynamic var Location: String? = nil
-    dynamic var NodeID: String? = nil
+    dynamic var Location: String?
+    dynamic var NodeID: String?
     var BatteryLevel = RealmOptional<Int>()
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
@@ -147,15 +147,15 @@ class Entity: Object, StaticMappable {
     }
 
     func turnOn() {
-        let _ = HomeAssistantAPI.sharedInstance.turnOnEntity(entity: self)
+        _ = HomeAssistantAPI.sharedInstance.turnOnEntity(entity: self)
     }
 
     func turnOff() {
-        let _ = HomeAssistantAPI.sharedInstance.turnOffEntity(entity: self)
+        _ = HomeAssistantAPI.sharedInstance.turnOffEntity(entity: self)
     }
 
     func toggle() {
-        let _ = HomeAssistantAPI.sharedInstance.toggleEntity(entity: self)
+        _ = HomeAssistantAPI.sharedInstance.toggleEntity(entity: self)
     }
 
     var ComponentIcon: String {
@@ -252,27 +252,27 @@ class Entity: Object, StaticMappable {
 
     var EntityColor: UIColor {
         switch self.Domain {
-            case "binary_sensor", "input_boolean", "media_player", "script", "switch":
-                return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
-            case "light":
-                if self.State == "on" {
-                    if let rgb = self.Attributes["rgb_color"] as? [Float] {
-                        let red = CGFloat(rgb[0]/255.0)
-                        let green = CGFloat(rgb[1]/255.0)
-                        let blue = CGFloat(rgb[2]/255.0)
-                        return UIColor.init(red: red, green: green, blue: blue, alpha: 1)
-                    } else {
-                        return colorWithHexString("#DCC91F", alpha: 1)
-                    }
+        case "binary_sensor", "input_boolean", "media_player", "script", "switch":
+            return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
+        case "light":
+            if self.State == "on" {
+                if let rgb = self.Attributes["rgb_color"] as? [Float] {
+                    let red = CGFloat(rgb[0]/255.0)
+                    let green = CGFloat(rgb[1]/255.0)
+                    let blue = CGFloat(rgb[2]/255.0)
+                    return UIColor.init(red: red, green: green, blue: blue, alpha: 1)
                 } else {
-                    return self.DefaultEntityUIColor
+                    return colorWithHexString("#DCC91F", alpha: 1)
                 }
-            case "sun":
-                return self.State == "above_horizon" ? colorWithHexString("#DCC91F",
-                                                                          alpha: 1) : self.DefaultEntityUIColor
-            default:
-                let hexColor = self.State == "unavailable" ? "#bdbdbd" : "#44739E"
-                return colorWithHexString(hexColor, alpha: 1)
+            } else {
+                return self.DefaultEntityUIColor
+            }
+        case "sun":
+            return self.State == "above_horizon" ? colorWithHexString("#DCC91F",
+                                                                      alpha: 1) : self.DefaultEntityUIColor
+        default:
+            let hexColor = self.State == "unavailable" ? "#bdbdbd" : "#44739E"
+            return colorWithHexString(hexColor, alpha: 1)
         }
     }
 

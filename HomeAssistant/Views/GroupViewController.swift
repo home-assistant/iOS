@@ -40,7 +40,7 @@ class GroupViewController: FormViewController {
                     self.form.last! <<< ButtonRow(entity.ID) {
                         $0.title = entity.Name
                         }.onCellSelection { _, _ -> Void in
-                            let _ = HomeAssistantAPI.sharedInstance.turnOn(entityId: entity.ID)
+                            _ = HomeAssistantAPI.sharedInstance.turnOn(entityId: entity.ID)
                         }.cellUpdate { cell, _ in
                             cell.imageView?.image = entity.EntityIcon
                             if let picture = entity.DownloadedPicture {
@@ -55,7 +55,7 @@ class GroupViewController: FormViewController {
                                 $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
                                     return SFSafariViewController(url: url, entersReaderIfAvailable: false)
                                     }, onDismiss: { vc in
-                                        let _ = vc.navigationController?.popViewController(animated: true)
+                                        _ = vc.navigationController?.popViewController(animated: true)
                                 })
                             }
                             }.cellUpdate { cell, _ in
@@ -79,7 +79,7 @@ class GroupViewController: FormViewController {
                             attributesView.entityID = entity.ID
                             return attributesView
                             }, onDismiss: {
-                                vc in let _ = vc.navigationController?.popViewController(animated: true)
+                                vc in _ = vc.navigationController?.popViewController(animated: true)
                         })
                         }.cellUpdate { cell, _ in
                             cell.detailTextLabel?.text = entity.State.capitalized
@@ -113,7 +113,7 @@ class GroupViewController: FormViewController {
                                     attributesView.entityID = entity.ID
                                     return attributesView
                                     }, onDismiss: {
-                                        vc in let _ = vc.navigationController?.popViewController(animated: true)
+                                        vc in _ = vc.navigationController?.popViewController(animated: true)
                                 })
                                 }.cellUpdate { cell, _ in
                                     cell.detailTextLabel?.text = entity.CleanedState
@@ -136,7 +136,7 @@ class GroupViewController: FormViewController {
                                 let attributesView = EntityAttributesViewController()
                                 attributesView.entityID = entity.ID
                                 return attributesView
-                            }, onDismiss: { vc in let _ = vc.navigationController?.popViewController(animated: true) })
+                            }, onDismiss: { vc in _ = vc.navigationController?.popViewController(animated: true) })
                             }.cellUpdate { cell, _ in
                                 cell.detailTextLabel?.text = entity.CleanedState
                                 if let uom = entity.UnitOfMeasurement {
@@ -157,7 +157,7 @@ class GroupViewController: FormViewController {
                     //                        $0.options = entity.Attributes["options"] as! [String]
                     //                    }.onChange { row -> Void in
                     // swiftlint:disable:next line_length
-                    //                        let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "input_select", service: "select_option", serviceData: ["entity_id": entity.ID as AnyObject, "option": row.value! as AnyObject])
+                    //                        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "input_select", service: "select_option", serviceData: ["entity_id": entity.ID as AnyObject, "option": row.value! as AnyObject])
                     //                    }.cellUpdate { cell, row in
                     //                        cell.imageView?.image = entity.EntityIcon
                     //                        if let picture = entity.DownloadedPicture {
@@ -171,9 +171,9 @@ class GroupViewController: FormViewController {
                         $0.value = (entity.State == "locked") ? true : false
                         }.onChange { row -> Void in
                             let whichService = (row.value == true) ? "lock" : "unlock"
-                            let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "lock", service: whichService,
-                                                                                serviceData: [
-                                                                                    "entity_id": entity.ID as AnyObject
+                            _ = HomeAssistantAPI.sharedInstance.CallService(domain: "lock", service: whichService,
+                                                                            serviceData: [
+                                                                                "entity_id": entity.ID as AnyObject
                                 ])
                         }.cellUpdate { cell, _ in
                             cell.imageView?.image = entity.EntityIcon
@@ -187,10 +187,10 @@ class GroupViewController: FormViewController {
                         $0.value = (entity.State == "open") ? true : false
                         }.onChange { row -> Void in
                             let whichService = (row.value == true) ? "open" : "close"
-                            let _ = HomeAssistantAPI.sharedInstance.CallService(domain: "garage_door",
-                                                                                service: whichService,
-                                                                                serviceData: [
-                                                                                    "entity_id": entity.ID as AnyObject
+                            _ = HomeAssistantAPI.sharedInstance.CallService(domain: "garage_door",
+                                                                            service: whichService,
+                                                                            serviceData: [
+                                                                                "entity_id": entity.ID as AnyObject
                                 ])
                         }.cellUpdate { cell, _ in
                             cell.imageView?.image = entity.EntityIcon

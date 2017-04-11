@@ -25,7 +25,7 @@ class Script: Entity {
         return "mdi:file-document"
     }
 
-     override var EntityColor: UIColor {
+    override var EntityColor: UIColor {
         return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
     }
 }

@@ -17,7 +17,7 @@ class InputSelect: Entity {
     override func mapping(map: Map) {
         super.mapping(map: map)
 
-        var Options: [String]? = nil
+        var Options: [String]?
         Options          <- map["attributes.options"]
         Options?.forEach { option in
             let value = StringObject()

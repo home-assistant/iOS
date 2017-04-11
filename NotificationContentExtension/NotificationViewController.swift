@@ -15,7 +15,7 @@ import KeychainAccess
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
 
-    var hud: MBProgressHUD? = nil
+    var hud: MBProgressHUD?
 
     private var baseURL: String = ""
 

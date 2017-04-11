@@ -48,7 +48,7 @@ class Light: Entity {
         }
     }
 
-     override var EntityColor: UIColor {
+    override var EntityColor: UIColor {
         if self.IsOn {
             if self.RGBColor != nil {
                 let rgb = self.RGBColor

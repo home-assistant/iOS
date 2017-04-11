@@ -133,7 +133,7 @@ func movePushNotificationSounds() -> Int {
         }
         do {
             try fileManager.moveItem(at: file, to: finalUrl)
-            movedFiles = movedFiles++
+            movedFiles += 1
         } catch let error as NSError {
             print("Error when attempting to move files", error)
         }
@@ -275,7 +275,7 @@ func migrateSecretsToKeychain() {
 func openURLInBrowser(url: String) {
     if let urlToOpen = URL(string: url), let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant") {
         if OpenInChromeController.sharedInstance.isChromeInstalled() && prefs.bool(forKey: "openInChrome") {
-            _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen)
+            _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
         } else {
             if #available(iOS 10, *) {
                 UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
