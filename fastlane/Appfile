@@ -2,3 +2,4 @@ app_identifier "io.robbie.HomeAssistant" # The bundle identifier of your app
 
 apple_id ENV["HOMEASSISTANT_APPLE_ID"]
 team_id ENV["HOMEASSISTANT_TEAM_ID"]  # Developer Portal Team ID
+itc_team_id ENV["HOMEASSISTANT_ITUNES_TEAM_ID"] # iTunes Connect Team ID, different from developer portal ID
