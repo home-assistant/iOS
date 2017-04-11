@@ -28,7 +28,7 @@ class SettingsViewController: FormViewController {
     var showErrorConnectingMessageError: Error?
 
     var baseURL: URL?
-    var password: String?
+    var password: String = ""
 
     let discovery = Bonjour()
 
@@ -153,7 +153,7 @@ class SettingsViewController: FormViewController {
                 $0.value = self.password
                 $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.placeholder
                 }.onChange { row in
-                    self.password = row.value
+                    self.password = row.value!
             }
 
             <<< ButtonRow("connect") {
@@ -161,7 +161,7 @@ class SettingsViewController: FormViewController {
                 }.onCellSelection { _, row in
                     firstly {
                         HomeAssistantAPI.sharedInstance.Setup(baseURL: self.baseURL!.absoluteString,
-                                                              password: self.password!)
+                                                              password: self.password)
                         }.then {_ in
                             HomeAssistantAPI.sharedInstance.Connect()
                         }.then { config -> Void in
@@ -171,8 +171,8 @@ class SettingsViewController: FormViewController {
                             if let url = self.baseURL {
                                 self.keychain["baseURL"] = url.absoluteString
                             }
-                            if let password = self.password {
-                                self.keychain["apiPassword"] = password
+                            if self.password != "" {
+                                self.keychain["apiPassword"] = self.password
                             }
                             self.form.setValues(["locationName": config.LocationName, "version": config.Version])
                             let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
