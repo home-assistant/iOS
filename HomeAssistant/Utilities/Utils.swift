@@ -133,7 +133,7 @@ func movePushNotificationSounds() -> Int {
         }
         do {
             try fileManager.moveItem(at: file, to: finalUrl)
-            movedFiles = movedFiles+1
+            movedFiles = movedFiles++
         } catch let error as NSError {
             print("Error when attempting to move files", error)
         }

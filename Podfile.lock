@@ -1,45 +1,45 @@
 PODS:
-  - Alamofire (4.2.0)
+  - Alamofire (4.4.0)
   - AlamofireImage (3.2.0):
     - Alamofire (~> 4.1)
   - AlamofireNetworkActivityIndicator (2.1.0):
     - Alamofire (~> 4.1)
-  - AlamofireObjectMapper (4.0.1):
+  - AlamofireObjectMapper (4.1.0):
     - Alamofire (~> 4.1)
     - ObjectMapper (~> 2.0)
   - CPDAcknowledgements (1.0.0)
-  - Crashlytics (3.8.3):
+  - Crashlytics (3.8.4):
     - Fabric (~> 1.6.3)
-  - DeviceKit (1.0.0)
-  - Eureka (2.0.0-beta.1)
+  - DeviceKit (1.0.1)
+  - Eureka (3.0.0)
   - Fabric (1.6.11)
   - FontAwesomeKit/Core (2.2.4)
   - FontAwesomeKit/MaterialDesignIcons (2.2.4):
     - FontAwesomeKit/Core
   - IKEventSource (2.0.0)
-  - KeychainAccess (3.0.1)
+  - KeychainAccess (3.0.2)
   - MBProgressHUD (1.0.0)
-  - ObjectMapper (2.2.2)
+  - ObjectMapper (2.2.5)
   - PermissionScope (1.1.1)
-  - PromiseKit (4.1.3):
-    - PromiseKit/Foundation (= 4.1.3)
-    - PromiseKit/QuartzCore (= 4.1.3)
-    - PromiseKit/UIKit (= 4.1.3)
-  - PromiseKit/CorePromise (4.1.3)
-  - PromiseKit/Foundation (4.1.3):
+  - PromiseKit (4.1.7):
+    - PromiseKit/Foundation (= 4.1.7)
+    - PromiseKit/QuartzCore (= 4.1.7)
+    - PromiseKit/UIKit (= 4.1.7)
+  - PromiseKit/CorePromise (4.1.7)
+  - PromiseKit/Foundation (4.1.7):
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (4.1.3):
+  - PromiseKit/QuartzCore (4.1.7):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (4.1.3):
+  - PromiseKit/UIKit (4.1.7):
     - PromiseKit/CorePromise
-  - Realm (2.1.2):
-    - Realm/Headers (= 2.1.2)
-  - Realm/Headers (2.1.2)
-  - RealmSwift (2.1.2):
-    - Realm (= 2.1.2)
-  - SwiftGen (4.1.0)
-  - SwiftLint (0.15.0)
-  - SwiftLocation (1.1.1)
+  - Realm (2.5.1):
+    - Realm/Headers (= 2.5.1)
+  - Realm/Headers (2.5.1)
+  - RealmSwift (2.5.1):
+    - Realm (= 2.5.1)
+  - SwiftGen (4.2.0)
+  - SwiftLint (0.18.1)
+  - SwiftLocation (2.0.2)
   - Whisper (4.0.0)
 
 DEPENDENCIES:
@@ -79,7 +79,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Eureka:
-    :commit: 51b5b33d77d0ef801d72251d223e5c1335330945
+    :commit: 6d90f858baa8d91d62f470b6c779a5ec1b328249
     :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :commit: 8032213d13242c6466a048730f0defe98e10c1d6
@@ -89,27 +89,27 @@ CHECKOUT OPTIONS:
     :git: https://github.com/robbiet480/PermissionScope.git
 
 SPEC CHECKSUMS:
-  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
+  Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
   AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
   AlamofireNetworkActivityIndicator: 4716f6554bdfb9c7cf13b1e0e3af21163129690a
-  AlamofireObjectMapper: 842d2eed43a4d0593ff0110d54ac86a170c4519c
+  AlamofireObjectMapper: 435adc82f5b367679bd9e71c4974a54efd0b2521
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
-  Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
-  DeviceKit: ddead7f3a7c9603ba3a63cb748566428c38dd11f
-  Eureka: d014adf16406745e1a78d5790ea37ed130a0a8e5
+  Crashlytics: 79e236942ca1e7fc641df1feb9a275360a78ab6a
+  DeviceKit: 461e525867e48e725f41699c1cab3100df1258ff
+  Eureka: 5b9418d7bfdc21ca977d69d124a6409f3e9af2c7
   Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
   FontAwesomeKit: b5c9ddc9504c4a07945b7b4590e7f9ad5a50e073
   IKEventSource: 7377db25431c3baed1a09f572468528a77f77d2c
-  KeychainAccess: 017ea25e313a49eda10bb19b0bb0760fb1edfe1a
+  KeychainAccess: a986406022dfc7c634c691ad3bec670cc6a32002
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
-  ObjectMapper: 9e385c2295bcc4e16eabbcfc85db801442bba545
+  ObjectMapper: fb30f71e08470d1e5a20b199fafe1246281db898
   PermissionScope: a30c16e015779ba27c97c124e7539e27b5829de2
-  PromiseKit: 56baec63efa89210c023260879435a5a6b3bff00
-  Realm: efe855f4d977c8ce5a82d3116d9f1ff155a6550c
-  RealmSwift: 17d6ee30b6f9df86364408c2197492e33bfea567
-  SwiftGen: d29fd8b7aa52092411d415fb09d0abd3d79ea1a5
-  SwiftLint: d73999f81682ab8114d6408c89f83177b2c197d7
-  SwiftLocation: aac16955b508c46b82bf07fcceb7e2a3b382b8d5
+  PromiseKit: 779f2e41faf62d854e7593026ddbcb0bb5c5002d
+  Realm: 32f86104d37c8521f864d4274050b38ba6190733
+  RealmSwift: f719e7511c902b8908593e8f143f59e47931bdb6
+  SwiftGen: b6bfed151243348e4603b91bf5bc4eb2486c9d5b
+  SwiftLint: b467d08f5b25dc3b3cfed243d8e1b74b91714c67
+  SwiftLocation: 887fa007f6f0567dfd00543c3fb356c4c793c2a6
   Whisper: '08be92623311f8e53201e62e17f6d7b9599a4714'
 
 PODFILE CHECKSUM: 918e2fd6112b3455041386d15aceb961cf7d1717
