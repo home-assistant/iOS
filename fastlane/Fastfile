@@ -107,6 +107,8 @@ platform :ios do
   end
 
   private_lane :update_build_number do
+    git_pull(only_tags: true)
+
     increment_version_number(version_number: get_version_number)
     increment_build_number
 
