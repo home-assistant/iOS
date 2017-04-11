@@ -1,5 +1,5 @@
 disabled_rules:
-  - variable_name
+  - identifier_name
 excluded:
   - fastlane
   - HomeAssistantTests
