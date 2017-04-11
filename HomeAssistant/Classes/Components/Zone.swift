@@ -15,16 +15,17 @@ class Zone: Entity {
     dynamic var Latitude: Double = 0.0
     dynamic var Longitude: Double = 0.0
     dynamic var Radius: Double = 0.0
-    dynamic var trackingEnabled = true
+    dynamic var TrackingEnabled = false
     dynamic var enterNotification = true
     dynamic var exitNotification = true
 
     override func mapping(map: Map) {
         super.mapping(map: map)
 
-        Latitude  <- map["attributes.latitude"]
-        Longitude <- map["attributes.longitude"]
-        Radius    <- map["attributes.radius"]
+        Latitude           <- map["attributes.latitude"]
+        Longitude          <- map["attributes.longitude"]
+        Radius             <- map["attributes.radius"]
+        TrackingEnabled    <- map["attributes.track_ios"]
     }
 
     func locationCoordinates() -> CLLocationCoordinate2D {

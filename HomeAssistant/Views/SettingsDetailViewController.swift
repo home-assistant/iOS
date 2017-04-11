@@ -44,41 +44,33 @@ class SettingsDetailViewController: FormViewController {
         //                }
         case "location":
             self.title = "Location Settings"
-            for zone in realm.objects(Zone.self) {
-                self.form
-                    +++ Section(header: zone.Name, footer: "") {
-                        $0.tag = zone.ID
+            if let zoneEntities: [Zone] = HomeAssistantAPI.sharedInstance.cachedEntities!.filter({ (entity) -> Bool in
+                return entity.Domain == "zone"
+            }) as? [Zone] {
+                for zone in zoneEntities {
+                    self.form
+                        +++ Section(header: zone.Name, footer: "") {
+                            $0.tag = zone.ID
+                        }
+                        <<< SwitchRow {
+                            $0.title = "Enter/exit tracked"
+                            $0.value = zone.TrackingEnabled
+                            $0.disabled = Condition(booleanLiteral: true)
+                        }
+                        <<< LocationRow {
+                            $0.title = "Location"
+                            $0.value = zone.location()
+                        }
+                        <<< LabelRow {
+                            $0.title = "Radius"
+                            $0.value = "\(Int(zone.Radius)) m"
                     }
-                    <<< SwitchRow {
-                        $0.title = "Updates Enabled"
-                        $0.value = zone.trackingEnabled
-                        }.onChange { row in
-                            // swiftlint:disable:next force_try
-                            try! realm.write { zone.trackingEnabled = row.value! }
-                    }
-                    <<< LocationRow {
-                        $0.title = "Location"
-                        $0.value = zone.location()
-                    }
-                    <<< LabelRow {
-                        $0.title = "Radius"
-                        $0.value = "\(Int(zone.Radius)) m"
-                    }
-                    <<< SwitchRow {
-                        $0.title = "Enter Notification"
-                        $0.value = zone.enterNotification
-                        }.onChange { row in
-                            // swiftlint:disable:next force_try
-                            try! realm.write { zone.enterNotification = row.value! }
-                    }
-                    <<< SwitchRow {
-                        $0.title = "Exit Notification"
-                        $0.value = zone.exitNotification
-                        }.onChange { row in
-                            // swiftlint:disable:next force_try
-                            try! realm.write { zone.exitNotification = row.value! }
                 }
             }
+            self.form
+                +++ Section(header: "",
+                            footer: "To enable location tracking add track_ios: true to each zone")
+
         case "notifications":
             self.title = "Notification Settings"
             self.form

@@ -48,8 +48,9 @@ public class HomeAssistantAPI {
     var URLSet: Bool = false
     var PasswordSet: Bool = false
 
-    private var baseAPIURL: String = ""
-    private var apiPassword: String = ""
+    var baseURL: String = ""
+    var baseAPIURL: String = ""
+    var apiPassword: String = ""
 
     private var eventSource: EventSource?
 
@@ -57,7 +58,10 @@ public class HomeAssistantAPI {
 
     private var manager: Alamofire.SessionManager?
 
+    var cachedEntities: [Entity]?
+
     func Setup(baseURL: String, password: String) -> Promise<StatusResponse> {
+        self.baseURL = baseURL
         self.baseAPIURL = baseURL+"/api/"
         self.URLSet = true
         if password != "" {
@@ -119,20 +123,20 @@ public class HomeAssistantAPI {
                                                 object: nil,
                                                 userInfo: nil)
 
-                _ = self.GetStates()
+                _ = self.GetStates().then(execute: { _ -> Void in
+                    if self.locationEnabled {
+                        self.trackLocation()
+                    }
 
-                if self.locationEnabled {
-                    self.trackLocation()
-                }
+                    if self.loadedComponents.contains("ios") {
+                        CLSLogv("iOS component loaded, attempting identify", getVaList([]))
+                        _ = self.identifyDevice()
+                    }
 
-                if self.loadedComponents.contains("ios") {
-                    CLSLogv("iOS component loaded, attempting identify", getVaList([]))
-                    _ = self.identifyDevice()
-                }
-
-                //                self.GetHistory()
-                self.startStream()
-                fulfill(config)
+                    //                self.GetHistory()
+                    //                self.startStream()
+                    fulfill(config)
+                })
                 }.catch {error in
                     print("Error at launch!", error)
                     Crashlytics.sharedInstance().recordError(error)
@@ -169,10 +173,10 @@ public class HomeAssistantAPI {
             if let eventData = data {
                 if eventData == "ping" { return }
                 if let event = Mapper<SSEEvent>().map(JSONString: eventData) {
-                    if let mapped = event as? StateChangedEvent {
-                        if let newState = mapped.NewState {
-                            HomeAssistantAPI.sharedInstance.storeEntities(entities: [newState])
-                        }
+                    if event is StateChangedEvent {
+//                        if let newState = mapped.NewState {
+//                            HomeAssistantAPI.sharedInstance.storeEntities(entities: [newState])
+//                        }
                     }
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.\(event.EventType)"),
                                                     object: nil, userInfo: event.toJSON())
@@ -272,8 +276,6 @@ public class HomeAssistantAPI {
                                  frequency: .significant,
                                  timeout: 50,
                                  success: { (_, location) -> (Void) in
-                                    // You will receive at max one event if desidered accuracy can be achieved
-                                    // because you have set .OneShot as frequency.
                                     self.submitLocation(updateType: .Manual,
                                                         coordinates: location.coordinate,
                                                         accuracy: location.horizontalAccuracy,
@@ -284,32 +286,37 @@ public class HomeAssistantAPI {
             Crashlytics.sharedInstance().recordError(error)
         }
 
-        for zone in realm.objects(Zone.self) {
-            if zone.trackingEnabled == false {
-                print("Skipping zone set to not track!")
-                continue
-            }
-            do {
-                try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius, enter: { _ in
-                    print("Entered in region!")
-                    self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
-                                        coordinates: zone.locationCoordinates(),
-                                        accuracy: 1,
-                                        zone: zone)
-                }, exit: { _ in
-                    print("Exited from the region")
-                    self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
-                                        coordinates: zone.locationCoordinates(),
-                                        accuracy: 1,
-                                        zone: zone)
-                }, error: { req, error in
-                    CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
+        if let zoneEntities: [Zone] = HomeAssistantAPI.sharedInstance.cachedEntities!.filter({ (entity) -> Bool in
+            return entity.Domain == "zone"
+            // swiftlint:disable:next force_cast
+        }) as? [Zone] {
+            for zone in zoneEntities {
+                if zone.TrackingEnabled == false {
+                    print("Skipping zone set to not track!")
+                    continue
+                }
+                do {
+                    try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius, enter: { _ in
+                        print("Entered in region!")
+                        self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
+                                            coordinates: zone.locationCoordinates(),
+                                            accuracy: 1,
+                                            zone: zone)
+                    }, exit: { _ in
+                        print("Exited from the region")
+                        self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
+                                            coordinates: zone.locationCoordinates(),
+                                            accuracy: 1,
+                                            zone: zone)
+                    }, error: { req, error in
+                        CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
+                        Crashlytics.sharedInstance().recordError(error)
+                        req.cancel()
+                    })
+                } catch let error {
+                    CLSLogv("Error when setting up zones for tracking: %@", getVaList([error.localizedDescription]))
                     Crashlytics.sharedInstance().recordError(error)
-                    req.cancel() // abort the request (you can also use `cancelOnError=true` to perform it automatically
-                })
-            } catch let error {
-                CLSLogv("Error when setting up zones for tracking: %@", getVaList([error.localizedDescription]))
-                Crashlytics.sharedInstance().recordError(error)
+                }
             }
         }
 
@@ -498,7 +505,8 @@ public class HomeAssistantAPI {
                 method: .get).validate().responseArray { (response: DataResponse<[Entity]>) -> Void in
                     switch response.result {
                     case .success:
-                        self.storeEntities(entities: response.result.value!)
+//                        self.storeEntities(entities: response.result.value!)
+                        self.cachedEntities = response.result.value!
                         fulfill(response.result.value!)
                     case .failure(let error):
                         CLSLogv("Error on GetStates() request: %@", getVaList([error.localizedDescription]))
@@ -517,7 +525,7 @@ public class HomeAssistantAPI {
                 method: .get).validate().responseObject { (response: DataResponse<Entity>) -> Void in
                     switch response.result {
                     case .success:
-                        self.storeEntities(entities: [response.result.value!])
+//                        self.storeEntities(entities: [response.result.value!])
                         fulfill(response.result.value!)
                     case .failure(let error):
                         CLSLogv("Error on GetStateForEntityIdMapped() request: %@",
@@ -557,7 +565,7 @@ public class HomeAssistantAPI {
                     case .success:
                         let murmurTitle = response.result.value!.Domain+" state set to "+response.result.value!.State
                         self.showMurmur(title: murmurTitle)
-                        self.storeEntities(entities: [response.result.value!])
+//                        self.storeEntities(entities: [response.result.value!])
                         fulfill(response.result.value!)
                     case .failure(let error):
                         CLSLogv("Error when attemping to SetState(): %@", getVaList([error.localizedDescription]))

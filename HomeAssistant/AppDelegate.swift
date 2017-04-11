@@ -49,7 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        if prefs.object(forKey: "openInChrome") == nil && OpenInChromeController().isChromeInstalled() {
+        // swiftlint:disable:next line_length
+        if (prefs.object(forKey: "openInChrome") == nil && OpenInChromeController().isChromeInstalled()) || OpenInChromeController().isChromeInstalled() {
             self.prefs.setValue(true, forKey: "openInChrome")
             self.prefs.synchronize()
         }
@@ -57,8 +58,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow.init(frame: UIScreen.main.bounds)
         window?.backgroundColor = .white
 
-        let tabView = RootTabBarViewController()
-        self.window!.rootViewController = tabView
+//        let tabView = RootTabBarViewController()
+        let webView = WebViewController()
+
+        let navController = UINavigationController(rootViewController: webView)
+
+        navController.setToolbarHidden(false, animated: false)
+        navController.setNavigationBarHidden(true, animated: false)
+
+        self.window!.rootViewController = navController
         self.window!.makeKeyAndVisible()
 
         return true
@@ -163,6 +171,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         return true
     }
+
 }
 
 @available(iOS 10, *)

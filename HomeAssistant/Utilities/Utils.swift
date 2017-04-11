@@ -272,8 +272,12 @@ func migrateSecretsToKeychain() {
     }
 }
 
-func openURLInBrowser(url: String) {
-    if let urlToOpen = URL(string: url), let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant") {
+func openURLStringInBrowser(url: String) {
+    openURLInBrowser(urlToOpen: URL(string: url)!)
+}
+
+func openURLInBrowser(urlToOpen: URL) {
+    if let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant") {
         if OpenInChromeController.sharedInstance.isChromeInstalled() && prefs.bool(forKey: "openInChrome") {
             _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
         } else {
@@ -285,6 +289,7 @@ func openURLInBrowser(url: String) {
         }
     }
 }
+
 
 func removeSpecialCharsFromString(text: String) -> String {
     let okayChars: Set<Character> =

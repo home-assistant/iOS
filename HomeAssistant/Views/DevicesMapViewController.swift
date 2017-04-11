@@ -8,7 +8,6 @@
 
 import UIKit
 import MapKit
-import RealmSwift
 
 enum MapType: Int {
     case standard = 0
@@ -78,37 +77,45 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
         self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
 
-        for zone in realm.objects(Zone.self) {
-            let circle = HACircle.init(center: zone.locationCoordinates(), radius: CLLocationDistance(zone.Radius))
-            circle.type = "zone"
-            mapView.add(circle)
-        }
-
-        for device in realm.objects(DeviceTracker.self) {
-            if device.Latitude.value == nil || device.Longitude.value == nil {
-                continue
-            }
-            let dropPin = DeviceAnnotation()
-            dropPin.coordinate = device.locationCoordinates()
-            dropPin.title = device.Name
-            var subtitlePieces: [String] = []
-            //            if let changedTime = device.LastChanged {
-            //                subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true,
-            //                                                                                 maxUnits: 1)!+" ago")
-            //            }
-            if let battery = device.Battery.value {
-                subtitlePieces.append("Battery: "+String(battery)+"%")
-            }
-            dropPin.subtitle = subtitlePieces.joined(separator: " / ")
-            dropPin.device = device
-            mapView.addAnnotation(dropPin)
-
-            if let radius = device.GPSAccuracy.value {
-                let circle = HACircle.init(center: device.locationCoordinates(), radius: radius)
-                circle.type = "device"
+        if let zoneEntities: [Zone] = HomeAssistantAPI.sharedInstance.cachedEntities!.filter({ (entity) -> Bool in
+            return entity.Domain == "zone"
+        }) as? [Zone] {
+            for zone in zoneEntities {
+                let circle = HACircle.init(center: zone.locationCoordinates(), radius: CLLocationDistance(zone.Radius))
+                circle.type = "zone"
                 mapView.add(circle)
             }
+        }
 
+        // swiftlint:disable:next line_length
+        if let deviceEntities: [DeviceTracker] = HomeAssistantAPI.sharedInstance.cachedEntities!.filter({ (entity) -> Bool in
+            return entity.Domain == "device_tracker"
+        }) as? [DeviceTracker] {
+            for device in deviceEntities {
+                if device.Latitude.value == nil || device.Longitude.value == nil {
+                    continue
+                }
+                let dropPin = DeviceAnnotation()
+                dropPin.coordinate = device.locationCoordinates()
+                dropPin.title = device.Name
+                var subtitlePieces: [String] = []
+                //            if let changedTime = device.LastChanged {
+                //                subtitlePieces.append("Last seen: "+changedTime.toRelativeString(abbreviated: true,
+                //                                                                                 maxUnits: 1)!+" ago")
+                //            }
+                if let battery = device.Battery.value {
+                    subtitlePieces.append("Battery: "+String(battery)+"%")
+                }
+                dropPin.subtitle = subtitlePieces.joined(separator: " / ")
+                dropPin.device = device
+                mapView.addAnnotation(dropPin)
+
+                if let radius = device.GPSAccuracy.value {
+                    let circle = HACircle.init(center: device.locationCoordinates(), radius: radius)
+                    circle.type = "device"
+                    mapView.add(circle)
+                }
+            }
         }
 
         var zoomRect: MKMapRect = MKMapRectNull

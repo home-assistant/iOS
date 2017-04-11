@@ -29,8 +29,6 @@ class SettingsViewController: FormViewController {
 
     var baseURL: URL?
     var password: String?
-    var configured: Bool = false
-    var connectStep: Int = 0 // 0 = pre-configuration, 1 = hostname entry, 2 = password entry
 
     let discovery = Bonjour()
 
@@ -49,13 +47,19 @@ class SettingsViewController: FormViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
-        if doneButton == false {
-            let aboutButton = UIBarButtonItem(title: "About",
-                                              style: .plain,
-                                              target: self,
-                                              action: #selector(SettingsViewController.openAbout(_:)))
+        let aboutButton = UIBarButtonItem(title: "About",
+                                          style: .plain,
+                                          target: self,
+                                          action: #selector(SettingsViewController.openAbout(_:)))
 
-            self.navigationItem.setRightBarButton(aboutButton, animated: true)
+        self.navigationItem.setLeftBarButton(aboutButton, animated: true)
+
+        if doneButton {
+            let closeSelector = #selector(SettingsViewController.closeSettings(_:))
+            let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self,
+                                             action: closeSelector)
+
+            self.navigationItem.setRightBarButton(doneButton, animated: true)
         }
 
         if let baseURL = keychain["baseURL"] {
@@ -65,8 +69,6 @@ class SettingsViewController: FormViewController {
         if let apiPass = keychain["apiPassword"] {
             self.password = apiPass
         }
-
-        self.configured = (self.baseURL != nil && self.password != nil)
 
         //        checkForEmail()
 
@@ -79,31 +81,28 @@ class SettingsViewController: FormViewController {
             self.present(alert, animated: true, completion: nil)
         }
 
-        if self.configured == false {
-            connectStep = 1
-            let queue = DispatchQueue(label: "io.robbie.homeassistant", attributes: [])
-            queue.async { () -> Void in
-                // swiftlint:disable:next line_length
-                NSLog("Attempting to discover Home Assistant instances, also publishing app to Bonjour/mDNS to hopefully have HA load the iOS/ZeroConf components.")
-                self.discovery.stopDiscovery()
-                self.discovery.stopPublish()
+        let queue = DispatchQueue(label: "io.robbie.homeassistant", attributes: [])
+        queue.async { () -> Void in
+            // swiftlint:disable:next line_length
+            NSLog("Attempting to discover Home Assistant instances, also publishing app to Bonjour/mDNS to hopefully have HA load the iOS/ZeroConf components.")
+            self.discovery.stopDiscovery()
+            self.discovery.stopPublish()
 
-                self.discovery.startDiscovery()
-                self.discovery.startPublish()
-            }
-
-            NotificationCenter.default.addObserver(self,
-                                                   // swiftlint:disable:next line_length
-                selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)),
-                name:NSNotification.Name(rawValue: "homeassistant.discovered"),
-                object: nil)
-
-            NotificationCenter.default.addObserver(self,
-                                                   // swiftlint:disable:next line_length
-                selector: #selector(SettingsViewController.HomeAssistantUndiscovered(_:)),
-                name:NSNotification.Name(rawValue: "homeassistant.undiscovered"),
-                object: nil)
+            self.discovery.startDiscovery()
+            self.discovery.startPublish()
         }
+
+        NotificationCenter.default.addObserver(self,
+                                               // swiftlint:disable:next line_length
+            selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)),
+            name:NSNotification.Name(rawValue: "homeassistant.discovered"),
+            object: nil)
+
+        NotificationCenter.default.addObserver(self,
+                                               // swiftlint:disable:next line_length
+            selector: #selector(SettingsViewController.HomeAssistantUndiscovered(_:)),
+            name:NSNotification.Name(rawValue: "homeassistant.undiscovered"),
+            object: nil)
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(SettingsViewController.SSEConnectionChange(_:)),
@@ -130,11 +129,9 @@ class SettingsViewController: FormViewController {
                 $0.title = "URL"
                 $0.value = self.baseURL
                 $0.placeholder = "https://homeassistant.myhouse.com"
-                $0.disabled = Condition(booleanLiteral: (self.configured && showErrorConnectingMessage == false))
-                }.onChange { row in
-                    if row.value == URL(string: "https://") { return }
-                    let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
-                    apiPasswordRow.value = ""
+            }.onCellHighlightChanged({ (cell, row) in
+                print("onCellHighlightChanged", row.isHighlighted, cell.isHighlighted)
+                if row.isHighlighted == false {
                     if let url = row.value {
                         let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
                         if !cleanUrl.hasValidScheme {
@@ -148,139 +145,76 @@ class SettingsViewController: FormViewController {
                             self.baseURL = cleanUrl.cleanedURL
                         }
                     }
-                }.cellUpdate { cell, row in
-                    if row.isHighlighted {
-                        row.value = URL(string: "https://")
-                    } else {
-                        if row.value == URL(string: "https://") {
-                            row.value = nil
-                            cell.update()
-                        }
-                    }
-            }
+                }
+            })
 
             <<< PasswordRow("apiPassword") {
                 $0.title = L10n.Settings.ConnectionSection.ApiPasswordRow.title
                 $0.value = self.password
-                $0.disabled = Condition(booleanLiteral: self.configured && showErrorConnectingMessage == false)
-                $0.hidden = Condition(booleanLiteral: self.connectStep == 1)
                 $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.placeholder
                 }.onChange { row in
                     self.password = row.value
             }
 
             <<< ButtonRow("connect") {
-                $0.title = "Connect"
-                $0.hidden = Condition(booleanLiteral: self.configured)
+                $0.title = "Save"
                 }.onCellSelection { _, row in
-                    if self.connectStep == 1 {
-                        if let url = self.baseURL {
-                            // swiftlint:disable:next line_length
-                            HomeAssistantAPI.sharedInstance.GetDiscoveryInfo(baseUrl: url).then { discoveryInfo -> Void in
-                                let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
-                                urlRow.disabled = true
-                                urlRow.evaluateDisabled()
-                                let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
-                                apiPasswordRow.value = ""
-                                apiPasswordRow.hidden = Condition(booleanLiteral: !discoveryInfo.RequiresPassword)
-                                apiPasswordRow.evaluateHidden()
-                                let discoverySection: Section = self.form.sectionBy(tag: "discoveredInstances")!
-                                discoverySection.hidden = true
-                                discoverySection.evaluateHidden()
-                                self.connectStep = 2
-                                }.catch { error in
-                                    print("Hit error when attempting to get discovery information",
-                                          (error as NSError).code)
-                                    if (error as NSError).code == -1202 {
-                                        let title = L10n.Settings.CertificateErrorNotification.title
-                                        let message = L10n.Settings.CertificateErrorNotification.message
-                                        let alert = UIAlertController(title: title,
-                                                                      message: message,
-                                                                      preferredStyle: UIAlertControllerStyle.alert)
-                                        let sslURL = "https://home-assistant.io/ecosystem/ios/troubleshooting/#ssl"
-                                        alert.addAction(UIAlertAction(title: "More info", style: .default,
-                                                                      handler: { (_) in
-                                                                        openURLInBrowser(url: sslURL)
-                                        }))
-                                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                                        self.present(alert, animated: true, completion: nil)
-                                    } else {
-                                        let title = L10n.Settings.ConnectionErrorNotification.title
-                                        // swiftlint:disable:next line_length
-                                        let desc = error.localizedDescription
-                                        let message = L10n.Settings.ConnectionErrorNotification.message(desc)
-                                        let alert = UIAlertController(title: title,
-                                                                      message: message,
-                                                                      preferredStyle: UIAlertControllerStyle.alert)
-                                        alert.addAction(UIAlertAction(title: "OK",
-                                                                      style: UIAlertActionStyle.default, handler: nil))
-                                        self.present(alert, animated: true, completion: nil)
-                                    }
+                    firstly {
+                        HomeAssistantAPI.sharedInstance.Setup(baseURL: self.baseURL!.absoluteString,
+                                                              password: self.password!)
+                        }.then {_ in
+                            HomeAssistantAPI.sharedInstance.Connect()
+                        }.then { config -> Void in
+                            print("Connected!")
+                            row.hidden = true
+                            row.evaluateHidden()
+                            if let url = self.baseURL {
+                                self.keychain["baseURL"] = url.absoluteString
                             }
-                        }
-                    } else if self.connectStep == 2 {
-                        firstly {
-                            HomeAssistantAPI.sharedInstance.Setup(baseURL: self.baseURL!.absoluteString,
-                                                                  password: self.password!)
-                            }.then {_ in
-                                HomeAssistantAPI.sharedInstance.Connect()
-                            }.then { config -> Void in
-                                print("Connected!")
-                                let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
-                                apiPasswordRow.disabled = true
-                                apiPasswordRow.evaluateDisabled()
-                                self.connectStep = 1
-                                row.hidden = true
-                                row.evaluateHidden()
-                                if let url = self.baseURL {
-                                    self.keychain["baseURL"] = url.absoluteString
-                                }
-                                if let password = self.password {
-                                    self.keychain["apiPassword"] = password
-                                }
-                                self.form.setValues(["locationName": config.LocationName, "version": config.Version])
-                                let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
-                                locationNameRow.updateCell()
-                                let versionRow: LabelRow = self.form.rowBy(tag: "version")!
-                                versionRow.updateCell()
-                                let statusSection: Section = self.form.sectionBy(tag: "status")!
-                                statusSection.hidden = false
-                                statusSection.evaluateHidden()
-                                let detailsSection: Section = self.form.sectionBy(tag: "details")!
-                                detailsSection.hidden = false
-                                detailsSection.evaluateHidden()
-                                // swiftlint:disable:next line_length
-                                //                                let resetSection: Section = self.form.sectionBy(tag: "reset")!
-                                //                                resetSection.hidden = false
-                                //                                resetSection.evaluateHidden()
-                                let closeSelector = #selector(SettingsViewController.closeSettings(_:))
-                                let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self,
-                                                                 action: closeSelector)
+                            if let password = self.password {
+                                self.keychain["apiPassword"] = password
+                            }
+                            self.form.setValues(["locationName": config.LocationName, "version": config.Version])
+                            let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
+                            locationNameRow.updateCell()
+                            let versionRow: LabelRow = self.form.rowBy(tag: "version")!
+                            versionRow.updateCell()
+                            let statusSection: Section = self.form.sectionBy(tag: "status")!
+                            statusSection.hidden = false
+                            statusSection.evaluateHidden()
+                            let detailsSection: Section = self.form.sectionBy(tag: "details")!
+                            detailsSection.hidden = false
+                            detailsSection.evaluateHidden()
+                            // swiftlint:disable:next line_length
+                            //                                let resetSection: Section = self.form.sectionBy(tag: "reset")!
+                            //                                resetSection.hidden = false
+                            //                                resetSection.evaluateHidden()
+                            let closeSelector = #selector(SettingsViewController.closeSettings(_:))
+                            let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self,
+                                                             action: closeSelector)
 
-                                self.navigationItem.setRightBarButton(doneButton, animated: true)
-                            }.catch { error in
-                                print("Connection error!", error)
-                                var errorMessage = error.localizedDescription
-                                if let error = error as? AFError {
-                                    if error.responseCode == 401 {
-                                        errorMessage = "The password was incorrect."
-                                    }
+                            self.navigationItem.setRightBarButton(doneButton, animated: true)
+                        }.catch { error in
+                            print("Connection error!", error)
+                            var errorMessage = error.localizedDescription
+                            if let error = error as? AFError {
+                                if error.responseCode == 401 {
+                                    errorMessage = "The password was incorrect."
                                 }
-                                let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
-                                let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
-                                                              message: message,
-                                                              preferredStyle: UIAlertControllerStyle.alert)
-                                alert.addAction(UIAlertAction(title: "OK",
-                                                              style: UIAlertActionStyle.default,
-                                                              handler: nil))
-                                self.present(alert, animated: true, completion: nil)
-                        }
+                            }
+                            let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
+                            let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
+                                                          message: message,
+                                                          preferredStyle: UIAlertControllerStyle.alert)
+                            alert.addAction(UIAlertAction(title: "OK",
+                                                          style: UIAlertActionStyle.default,
+                                                          handler: nil))
+                            self.present(alert, animated: true, completion: nil)
                     }
-            }
+                }
 
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
                 $0.tag = "status"
-                $0.hidden = Condition(booleanLiteral: !self.configured)
             }
             <<< LabelRow("locationName") {
                 $0.title = L10n.Settings.StatusSection.LocationNameRow.title
@@ -296,10 +230,10 @@ class SettingsViewController: FormViewController {
                     $0.value = version
                 }
             }
-            <<< LabelRow("connectedToSSE") {
-                $0.title = L10n.Settings.StatusSection.ConnectedToSseRow.title
-                $0.value = HomeAssistantAPI.sharedInstance.sseConnected ? "✔️" : "✖️"
-            }
+//            <<< LabelRow("connectedToSSE") {
+//                $0.title = L10n.Settings.StatusSection.ConnectedToSseRow.title
+//                $0.value = HomeAssistantAPI.sharedInstance.sseConnected ? "✔️" : "✖️"
+//            }
             <<< LabelRow("iosComponentLoaded") {
                 $0.title = L10n.Settings.StatusSection.IosComponentLoadedRow.title
                 $0.value = HomeAssistantAPI.sharedInstance.iosComponentLoaded ? "✔️" : "✖️"
@@ -333,7 +267,6 @@ class SettingsViewController: FormViewController {
             }
             +++ Section {
                 $0.tag = "details"
-                $0.hidden = Condition(booleanLiteral: !self.configured)
             }
             <<< ButtonRow("generalSettings") {
                 $0.hidden = Condition(booleanLiteral: OpenInChromeController().isChromeInstalled())
@@ -488,7 +421,6 @@ class SettingsViewController: FormViewController {
                             apiPasswordRow.value = ""
                             apiPasswordRow.hidden = Condition(booleanLiteral: !discoveryInfo.RequiresPassword)
                             apiPasswordRow.evaluateHidden()
-                            self.connectStep = 2
                         })
                 self.tableView?.reloadData()
             } else {
