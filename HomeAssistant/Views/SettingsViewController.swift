@@ -413,6 +413,7 @@ class SettingsViewController: FormViewController {
                             cell.textLabel?.textColor = .black
                             cell.detailTextLabel?.text = detailTextLabel
                         }.onCellSelection({ _, _ in
+                            self.baseURL = discoveryInfo.BaseURL
                             let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
                             urlRow.value = discoveryInfo.BaseURL
                             urlRow.disabled = true
