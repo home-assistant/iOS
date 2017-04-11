@@ -26,50 +26,6 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        var toolbarItems: [UIBarButtonItem] = []
-
-        let tabBarIconColor = Entity().DefaultEntityUIColor
-
-        let uploadIcon = getIconForIdentifier("mdi:upload",
-                                              iconWidth: 30,
-                                              iconHeight: 30,
-                                              color: tabBarIconColor)
-
-        toolbarItems.append(UIBarButtonItem(image: uploadIcon,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(sendCurrentLocation(_:))
-            )
-        )
-
-        let mapIcon = getIconForIdentifier("mdi:map",
-                                           iconWidth: 30,
-                                           iconHeight: 30,
-                                           color: tabBarIconColor)
-
-        toolbarItems.append(UIBarButtonItem(image: mapIcon,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(openMapView(_:))))
-
-        toolbarItems.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
-
-        let refreshIcon = getIconForIdentifier("mdi:reload", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
-
-        toolbarItems.append(UIBarButtonItem(image: refreshIcon,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(refreshWebView(_:))))
-
-        let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
-
-        toolbarItems.append(UIBarButtonItem(image: settingsIcon,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(openSettingsView(_:))))
-
-        self.setToolbarItems(toolbarItems, animated: false)
-
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
         let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
         if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
@@ -125,6 +81,53 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     */
 
     override func viewDidAppear(_ animated: Bool) {
+        var toolbarItems: [UIBarButtonItem] = []
+
+        let tabBarIconColor = Entity().DefaultEntityUIColor
+
+        if HomeAssistantAPI.sharedInstance.locationEnabled {
+
+            let uploadIcon = getIconForIdentifier("mdi:upload",
+                                                  iconWidth: 30,
+                                                  iconHeight: 30,
+                                                  color: tabBarIconColor)
+
+            toolbarItems.append(UIBarButtonItem(image: uploadIcon,
+                                                style: .plain,
+                                                target: self,
+                                                action: #selector(sendCurrentLocation(_:))
+                )
+            )
+
+            let mapIcon = getIconForIdentifier("mdi:map",
+                                               iconWidth: 30,
+                                               iconHeight: 30,
+                                               color: tabBarIconColor)
+
+            toolbarItems.append(UIBarButtonItem(image: mapIcon,
+                                                style: .plain,
+                                                target: self,
+                                                action: #selector(openMapView(_:))))
+        }
+
+        toolbarItems.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
+
+        let refreshIcon = getIconForIdentifier("mdi:reload", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
+
+        toolbarItems.append(UIBarButtonItem(image: refreshIcon,
+                                            style: .plain,
+                                            target: self,
+                                            action: #selector(refreshWebView(_:))))
+
+        let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
+
+        toolbarItems.append(UIBarButtonItem(image: settingsIcon,
+                                            style: .plain,
+                                            target: self,
+                                            action: #selector(openSettingsView(_:))))
+
+        self.setToolbarItems(toolbarItems, animated: false)
+
         if HomeAssistantAPI.sharedInstance.URLSet {
             let myURL = URL(string: HomeAssistantAPI.sharedInstance.baseURL)
             let myRequest = URLRequest(url: myURL!)
