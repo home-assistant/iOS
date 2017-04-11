@@ -290,7 +290,6 @@ func openURLInBrowser(urlToOpen: URL) {
     }
 }
 
-
 func removeSpecialCharsFromString(text: String) -> String {
     let okayChars: Set<Character> =
         Set("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890".characters)
