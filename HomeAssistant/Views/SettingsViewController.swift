@@ -402,8 +402,12 @@ class SettingsViewController: FormViewController {
         if let userInfo = (notification as Notification).userInfo as? [String:Any] {
             let discoveryInfo = DiscoveryInfoResponse(JSON: userInfo)!
             let needsPass = discoveryInfo.RequiresPassword ? " - Requires password" : ""
+            var url = "\(discoveryInfo.BaseURL!.host!)"
+            if let port = discoveryInfo.BaseURL!.port {
+                url = "\(discoveryInfo.BaseURL!.host!):\(port)"
+            }
             // swiftlint:disable:next line_length
-            let detailTextLabel = "\(discoveryInfo.BaseURL!.host!):\(discoveryInfo.BaseURL!.port!) - \(discoveryInfo.Version) - \(discoveryInfo.BaseURL!.scheme!.uppercased()) \(needsPass)"
+            let detailTextLabel = "\(url) - \(discoveryInfo.Version) - \(discoveryInfo.BaseURL!.scheme!.uppercased()) \(needsPass)"
             if self.form.rowBy(tag: discoveryInfo.LocationName) == nil {
                 discoverySection
                     <<< ButtonRow(discoveryInfo.LocationName) {
