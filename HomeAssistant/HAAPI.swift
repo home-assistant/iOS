@@ -286,40 +286,42 @@ public class HomeAssistantAPI {
             Crashlytics.sharedInstance().recordError(error)
         }
 
-        if let zoneEntities: [Zone] = HomeAssistantAPI.sharedInstance.cachedEntities!.filter({ (entity) -> Bool in
-            return entity.Domain == "zone"
-            // swiftlint:disable:next force_cast
-        }) as? [Zone] {
-            for zone in zoneEntities {
-                if zone.TrackingEnabled == false {
-                    print("Skipping zone set to not track!")
-                    continue
-                }
-                do {
-                    try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius, enter: { _ in
-                        print("Entered in region!")
-                        self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
-                                            coordinates: zone.locationCoordinates(),
-                                            accuracy: 1,
-                                            zone: zone)
-                    }, exit: { _ in
-                        print("Exited from the region")
-                        self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
-                                            coordinates: zone.locationCoordinates(),
-                                            accuracy: 1,
-                                            zone: zone)
-                    }, error: { req, error in
-                        CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
+        if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
+            if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
+                return entity.Domain == "zone"
+                // swiftlint:disable:next force_cast
+            }) as? [Zone] {
+                for zone in zoneEntities {
+                    if zone.TrackingEnabled == false {
+                        print("Skipping zone set to not track!")
+                        continue
+                    }
+                    do {
+                        try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius, enter: { _ in
+                            print("Entered in region!")
+                            self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
+                                                coordinates: zone.locationCoordinates(),
+                                                accuracy: 1,
+                                                zone: zone)
+                        }, exit: { _ in
+                            print("Exited from the region")
+                            self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
+                                                coordinates: zone.locationCoordinates(),
+                                                accuracy: 1,
+                                                zone: zone)
+                        }, error: { req, error in
+                            CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            req.cancel()
+                        })
+                    } catch let error {
+                        CLSLogv("Error when setting up zones for tracking: %@", getVaList([error.localizedDescription]))
                         Crashlytics.sharedInstance().recordError(error)
-                        req.cancel()
-                    })
-                } catch let error {
-                    CLSLogv("Error when setting up zones for tracking: %@", getVaList([error.localizedDescription]))
-                    Crashlytics.sharedInstance().recordError(error)
+                    }
                 }
             }
-        }
 
+        }
         //        let location = Location()
         //
         //        self.getBeacons().then { beacons -> Void in

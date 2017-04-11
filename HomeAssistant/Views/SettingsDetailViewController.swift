@@ -44,32 +44,36 @@ class SettingsDetailViewController: FormViewController {
         //                }
         case "location":
             self.title = "Location Settings"
-            if let zoneEntities: [Zone] = HomeAssistantAPI.sharedInstance.cachedEntities!.filter({ (entity) -> Bool in
-                return entity.Domain == "zone"
-            }) as? [Zone] {
-                for zone in zoneEntities {
-                    self.form
-                        +++ Section(header: zone.Name, footer: "") {
-                            $0.tag = zone.ID
+            if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
+                if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
+                    return entity.Domain == "zone"
+                }) as? [Zone] {
+                    for zone in zoneEntities {
+                        self.form
+                            +++ Section(header: zone.Name, footer: "") {
+                                $0.tag = zone.ID
+                            }
+                            <<< SwitchRow {
+                                $0.title = "Enter/exit tracked"
+                                $0.value = zone.TrackingEnabled
+                                $0.disabled = Condition(booleanLiteral: true)
+                            }
+                            <<< LocationRow {
+                                $0.title = "Location"
+                                $0.value = zone.location()
+                            }
+                            <<< LabelRow {
+                                $0.title = "Radius"
+                                $0.value = "\(Int(zone.Radius)) m"
                         }
-                        <<< SwitchRow {
-                            $0.title = "Enter/exit tracked"
-                            $0.value = zone.TrackingEnabled
-                            $0.disabled = Condition(booleanLiteral: true)
-                        }
-                        <<< LocationRow {
-                            $0.title = "Location"
-                            $0.value = zone.location()
-                        }
-                        <<< LabelRow {
-                            $0.title = "Radius"
-                            $0.value = "\(Int(zone.Radius)) m"
+                    }
+                    if zoneEntities.count > 0 {
+                        self.form
+                            +++ Section(header: "",
+                                        footer: "To enable location tracking add track_ios: true to each zone")
                     }
                 }
             }
-            self.form
-                +++ Section(header: "",
-                            footer: "To enable location tracking add track_ios: true to each zone")
 
         case "notifications":
             self.title = "Notification Settings"
