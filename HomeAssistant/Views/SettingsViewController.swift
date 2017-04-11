@@ -153,7 +153,9 @@ class SettingsViewController: FormViewController {
                 $0.value = self.password
                 $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.placeholder
                 }.onChange { row in
-                    self.password = row.value!
+                    if let val = row.value {
+                        self.password = val
+                    }
             }
 
             <<< ButtonRow("connect") {
@@ -295,14 +297,17 @@ class SettingsViewController: FormViewController {
                                 HomeAssistantAPI.sharedInstance.trackLocation()
                             }
                             row.hidden = true
+                            row.updateCell()
                             row.evaluateHidden()
                             let locationSettingsRow: ButtonRow = self.form.rowBy(tag: "locationSettings")!
                             locationSettingsRow.hidden = false
+                            locationSettingsRow.updateCell()
                             locationSettingsRow.evaluateHidden()
                             let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(
                                 tag: "deviceTrackerComponentLoaded")!
                             deviceTrackerComponentLoadedRow.hidden = false
                             deviceTrackerComponentLoadedRow.evaluateHidden()
+                            deviceTrackerComponentLoadedRow.updateCell()
                         }
                     }, cancelled: { _ -> Void in
                         print("Permissions finished, resetting API!")
@@ -420,8 +425,7 @@ class SettingsViewController: FormViewController {
                             self.baseURL = discoveryInfo.BaseURL
                             let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
                             urlRow.value = discoveryInfo.BaseURL
-                            urlRow.disabled = true
-                            urlRow.evaluateDisabled()
+                            urlRow.updateCell()
                             let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
                             apiPasswordRow.value = ""
                             apiPasswordRow.hidden = Condition(booleanLiteral: !discoveryInfo.RequiresPassword)
