@@ -28,6 +28,7 @@ platform :ios do
     ENV["PILOT_APPLE_ID"] = ENV["HOMEASSISTANT_APPLE_ID"]
     ENV["SIGH_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
     ENV["FASTLANE_PASSWORD"] = ENV["HOMEASSISTANT_ITUNES_PASSWORD"]
+    ENV["FASTLANE_TEAM_ID"] = ENV["HOMEASSISTANT_TEAM_ID"]
   end
 
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
@@ -38,6 +39,12 @@ platform :ios do
     match(keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"], app_identifier: "io.robbie.HomeAssistant", type: "appstore", readonly: true)
     match(keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"], app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "appstore", readonly: true)
     match(keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"], app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "appstore", readonly: true)
+  end
+
+  desc "Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password."
+  lane :push_certs do
+    pem(output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password", save_private_key: false)
+    pem(output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password", save_private_key: false, development: true)
   end
 
   def change_log_since_last_tag
