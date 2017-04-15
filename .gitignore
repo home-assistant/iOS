@@ -63,3 +63,5 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/keys
 env.sh
+
+push_certs/*
