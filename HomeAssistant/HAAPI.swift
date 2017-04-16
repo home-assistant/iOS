@@ -824,8 +824,28 @@ public class HomeAssistantAPI {
                 ).validate().responseObject {(response: DataResponse<PushRegistrationResponse>) in
                     switch response.result {
                     case .success:
-                        let json = response.result.value!
-                        fulfill(json.PushId!)
+                        if let json = response.result.value {
+                            if let pushID = json.PushId {
+                                fulfill(pushID)
+                                return
+                            } else {
+                                let retErr = NSError(domain: "io.robbie.HomeAssistant",
+                                                     code: 404,
+                                                     userInfo: ["message": "pushID was nil!"])
+                                CLSLogv("Error when attemping to registerDeviceForPush(), pushID was nil!: %@",
+                                        getVaList([retErr.localizedDescription]))
+                                Crashlytics.sharedInstance().recordError(retErr)
+                                reject(retErr)
+                            }
+                        } else {
+                            let retErr = NSError(domain: "io.robbie.HomeAssistant",
+                                                 code: 404,
+                                                 userInfo: ["message": "json was nil!"])
+                            CLSLogv("Error when attemping to registerDeviceForPush(), json was nil!: %@",
+                                    getVaList([retErr.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(retErr)
+                            reject(retErr)
+                        }
                     case .failure(let error):
                         CLSLogv("Error when attemping to registerDeviceForPush(): %@",
                                 getVaList([error.localizedDescription]))

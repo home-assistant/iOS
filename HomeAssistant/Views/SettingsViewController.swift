@@ -196,6 +196,7 @@ class SettingsViewController: FormViewController {
                                                              action: closeSelector)
 
                             self.navigationItem.setRightBarButton(doneButton, animated: true)
+                            self.tableView.reloadData()
                         }.catch { error in
                             print("Connection error!", error)
                             var errorMessage = error.localizedDescription
@@ -308,6 +309,7 @@ class SettingsViewController: FormViewController {
                             deviceTrackerComponentLoadedRow.hidden = false
                             deviceTrackerComponentLoadedRow.evaluateHidden()
                             deviceTrackerComponentLoadedRow.updateCell()
+                            self.tableView.reloadData()
                         }
                     }, cancelled: { _ -> Void in
                         print("Permissions finished, resetting API!")
@@ -347,6 +349,7 @@ class SettingsViewController: FormViewController {
                                 let notifyPlatformLoadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
                                 notifyPlatformLoadedRow.hidden = false
                                 notifyPlatformLoadedRow.evaluateHidden()
+                                self.tableView.reloadData()
                             }
                         }
                     }, cancelled: { _ -> Void in
@@ -440,6 +443,7 @@ class SettingsViewController: FormViewController {
                 }
             }
         }
+        self.tableView.reloadData()
     }
 
     func HomeAssistantUndiscovered(_ notification: Notification) {
@@ -455,6 +459,7 @@ class SettingsViewController: FormViewController {
         let discoverySection: Section = self.form.sectionBy(tag: "discoveredInstances")!
         discoverySection.hidden = Condition(booleanLiteral: (discoverySection.count < 1))
         discoverySection.evaluateHidden()
+        self.tableView.reloadData()
     }
 
     func SSEConnectionChange(_ notification: Notification) {
