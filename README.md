@@ -107,7 +107,6 @@ To make sure Fabric and iTunes can deploy, make sure you have them set to someth
 - `HOMEASSISTANT_TEAM_ID`: Team ID from [iTunes Membership](https://developer.apple.com/account/#/membership)
 - `HOMEASSISTANT_ITUNES_TEAM_ID`: Team ID from [iTunes Connect](https://itunesconnect.apple.com/). (`$ pilot list` to check the number)
 - `HOMEASSISTANT_APPLE_ID`: Your Apple ID (e.g. john@apple.com)
-- `HOMEASSISTANT_ITUNES_PASSWORD`: The password for your Apple ID
 
 ### Deployment
 
