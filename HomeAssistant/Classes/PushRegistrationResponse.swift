@@ -13,7 +13,7 @@ class PushRegistrationResponse: Mappable {
     var APNSSandbox: Bool?
     var AppBuildNumber: Int?
     var AppBundleIdentifer: String?
-    var AppVersionNumber: Int?
+    var AppVersionNumber: String?
     var DeviceId: String?
     var DeviceName: String?
     var DevicePermanentID: String?

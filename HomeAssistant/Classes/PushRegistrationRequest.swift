@@ -12,7 +12,7 @@ import ObjectMapper
 class PushRegistrationRequest: Mappable {
     var AppBuildNumber: Int?
     var AppBundleIdentifer: String?
-    var AppVersionNumber: Double?
+    var AppVersionNumber: String?
     var DeviceID: String?
     var DeviceLocalizedModel: String?
     var DeviceModel: String?

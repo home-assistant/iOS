@@ -664,7 +664,7 @@ public class HomeAssistantAPI {
         }
         if let versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") {
             if let stringedVersionNumber = versionNumber as? String {
-                ident.AppVersionNumber = Double(stringedVersionNumber)
+                ident.AppVersionNumber = stringedVersionNumber
             }
         }
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
@@ -715,7 +715,7 @@ public class HomeAssistantAPI {
         }
         if let versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") {
             if let stringedVersionNumber = versionNumber as? String {
-                ident.AppVersionNumber = Double(stringedVersionNumber)
+                ident.AppVersionNumber = stringedVersionNumber
             }
         }
         if let isSandboxed = Bundle.main.object(forInfoDictionaryKey: "IS_SANDBOXED") {
@@ -757,7 +757,7 @@ public class HomeAssistantAPI {
         }
         if let versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") {
             if let stringedVersionNumber = versionNumber as? String {
-                ident.AppVersionNumber = Double(stringedVersionNumber)
+                ident.AppVersionNumber = stringedVersionNumber
             }
         }
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
