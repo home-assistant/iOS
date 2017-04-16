@@ -17,14 +17,14 @@
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.0.1</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>CFBundleVersion</key>
-	<string>54</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
