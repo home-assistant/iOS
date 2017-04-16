@@ -15,9 +15,18 @@ import PromiseKit
 class WebViewController: UIViewController, WKNavigationDelegate {
 
     var webView: WKWebView!
+    let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
 
     override func loadView() {
-        webView = WKWebView()
+        let config = WKWebViewConfiguration()
+        if let apiPass = keychain["apiPassword"] {
+            let scriptStr = "window.hassConnection = createHassConnection(\(apiPass));"
+            let script = WKUserScript(source: scriptStr, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+            let userContentController = WKUserContentController()
+            userContentController.addUserScript(script)
+            config.userContentController = userContentController
+        }
+        webView = WKWebView(frame: UIScreen.main.bounds, configuration: config)
         webView.navigationDelegate = self
         view = webView
     }
@@ -27,7 +36,6 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         super.viewDidLoad()
 
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
         if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
             firstly {
                 HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
