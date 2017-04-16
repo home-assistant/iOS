@@ -698,7 +698,7 @@ public class HomeAssistantAPI {
         if ident.BatteryLevel == -100 { // simulator fix
             ident.BatteryLevel = 100
         }
-        
+
         UIDevice.current.isBatteryMonitoringEnabled = false
 
         return Mapper().toJSON(ident)

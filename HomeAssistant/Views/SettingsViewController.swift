@@ -137,7 +137,7 @@ class SettingsViewController: FormViewController {
                 $0.title = "URL"
                 $0.value = self.baseURL
                 $0.placeholder = "https://homeassistant.myhouse.com"
-            }.onCellHighlightChanged({ (cell, row) in
+            }.onCellHighlightChanged({ (_, row) in
                 if row.isHighlighted == false {
                     if let url = row.value {
                         let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
