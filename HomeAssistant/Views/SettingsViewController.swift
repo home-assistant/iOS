@@ -29,6 +29,9 @@ class SettingsViewController: FormViewController {
 
     var baseURL: URL?
     var password: String = ""
+    var deviceID: String?
+
+    var configured = false
 
     let discovery = Bonjour()
 
@@ -64,10 +67,15 @@ class SettingsViewController: FormViewController {
 
         if let baseURL = keychain["baseURL"] {
             self.baseURL = URL(string: baseURL)!
+            self.configured = true
         }
 
         if let apiPass = keychain["apiPassword"] {
             self.password = apiPass
+        }
+
+        if let deviceID = keychain["deviceID"] {
+            self.deviceID = deviceID
         }
 
         //        checkForEmail()
@@ -130,7 +138,6 @@ class SettingsViewController: FormViewController {
                 $0.value = self.baseURL
                 $0.placeholder = "https://homeassistant.myhouse.com"
             }.onCellHighlightChanged({ (cell, row) in
-                print("onCellHighlightChanged", row.isHighlighted, cell.isHighlighted)
                 if row.isHighlighted == false {
                     if let url = row.value {
                         let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
@@ -160,16 +167,14 @@ class SettingsViewController: FormViewController {
 
             <<< ButtonRow("connect") {
                 $0.title = "Save"
-                }.onCellSelection { _, row in
+                }.onCellSelection { _, _ in
                     firstly {
                         HomeAssistantAPI.sharedInstance.Setup(baseURL: self.baseURL!.absoluteString,
-                                                              password: self.password)
+                                                              password: self.password, deviceID: self.deviceID)
                         }.then {_ in
                             HomeAssistantAPI.sharedInstance.Connect()
                         }.then { config -> Void in
                             print("Connected!")
-                            row.hidden = true
-                            row.evaluateHidden()
                             if let url = self.baseURL {
                                 self.keychain["baseURL"] = url.absoluteString
                             }
@@ -218,6 +223,7 @@ class SettingsViewController: FormViewController {
 
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
                 $0.tag = "status"
+                $0.hidden = Condition(booleanLiteral: !self.configured)
             }
             <<< LabelRow("locationName") {
                 $0.title = L10n.Settings.StatusSection.LocationNameRow.title
@@ -255,21 +261,24 @@ class SettingsViewController: FormViewController {
             +++ Section(header: "", footer: L10n.Settings.DeviceIdSection.footer)
             <<< TextRow("deviceId") {
                 $0.title = L10n.Settings.DeviceIdSection.DeviceIdRow.title
-                if let deviceId = prefs.string(forKey: "deviceId") {
-                    $0.value = deviceId
+                if let deviceID = self.deviceID {
+                    $0.value = deviceID
                 } else {
-                    let cleanedString = removeSpecialCharsFromString(text: UIDevice.current.name)
-                    $0.value = cleanedString.replacingOccurrences(of: " ", with: "_").lowercased()
+                    $0.value = HomeAssistantAPI.sharedInstance.deviceID
                 }
                 $0.cell.textField.autocapitalizationType = .none
                 }.cellUpdate { _, row in
                     if row.isHighlighted == false {
-                        self.prefs.setValue(row.value, forKey: "deviceId")
-                        self.prefs.synchronize()
+                        if let deviceId = row.value {
+                            HomeAssistantAPI.sharedInstance.deviceID = deviceId
+                            self.deviceID = deviceId
+                            self.keychain["deviceID"] = deviceId
+                        }
                     }
             }
             +++ Section {
                 $0.tag = "details"
+                $0.hidden = Condition(booleanLiteral: !self.configured)
             }
             <<< ButtonRow("generalSettings") {
                 $0.hidden = Condition(booleanLiteral: OpenInChromeController().isChromeInstalled())
@@ -519,6 +528,8 @@ class SettingsViewController: FormViewController {
     }
 
     func ResetApp() {
+        print("Resetting app!")
+        resetStores()
         let bundleId = Bundle.main.bundleIdentifier!
         UserDefaults.standard.removePersistentDomain(forName: bundleId)
         UserDefaults.standard.synchronize()

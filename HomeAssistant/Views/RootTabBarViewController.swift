@@ -35,7 +35,8 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
         if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
             firstly {
-                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass)
+                // swiftlint:disable:next line_length
+                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass, deviceID: keychain["deviceID"])
                 }.then {_ in
                     HomeAssistantAPI.sharedInstance.Connect()
                 }.then { _ -> Void in

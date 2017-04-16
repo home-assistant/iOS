@@ -35,7 +35,8 @@ public class HomeAssistantAPI {
         return APIClientSharedInstance
     }
 
-    var deviceID: String = ""
+    // swiftlint:disable:next line_length
+    var deviceID: String = removeSpecialCharsFromString(text: UIDevice.current.name).replacingOccurrences(of: " ", with: "_").lowercased()
     var pushID: String = ""
     var deviceToken: String = ""
 
@@ -60,9 +61,12 @@ public class HomeAssistantAPI {
 
     var cachedEntities: [Entity]?
 
-    func Setup(baseURL: String, password: String) -> Promise<StatusResponse> {
+    func Setup(baseURL: String, password: String, deviceID: String?) -> Promise<StatusResponse> {
         self.baseURL = baseURL
         self.baseAPIURL = baseURL+"/api/"
+        if let dID = deviceID {
+            self.deviceID = dID
+        }
         self.URLSet = true
         if password != "" {
             self.PasswordSet = true
@@ -79,10 +83,6 @@ public class HomeAssistantAPI {
         configuration.timeoutIntervalForRequest = 3 // seconds
 
         self.manager = Alamofire.SessionManager(configuration: configuration)
-
-        if let deviceId = prefs.string(forKey: "deviceId") {
-            deviceID = deviceId
-        }
 
         if let pushId = prefs.string(forKey: "pushID") {
             pushID = pushId
@@ -695,7 +695,10 @@ public class HomeAssistantAPI {
         }
 
         ident.BatteryLevel = Int(UIDevice.current.batteryLevel*100)
-
+        if ident.BatteryLevel == -100 { // simulator fix
+            ident.BatteryLevel = 100
+        }
+        
         UIDevice.current.isBatteryMonitoringEnabled = false
 
         return Mapper().toJSON(ident)
@@ -1197,6 +1200,11 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
             }
         }
         outputDict["location_name"] = locationName
+        if let baseURL = outputDict["base_url"] as? String {
+            if baseURL.hasSuffix("/") {
+                outputDict["base_url"] = baseURL.substring(to: baseURL.index(before: baseURL.endIndex))
+            }
+        }
         return DiscoveryInfoResponse(JSON: outputDict)!
     }
 

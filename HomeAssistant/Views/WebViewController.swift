@@ -30,7 +30,8 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
         if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
             firstly {
-                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass)
+                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
+                                                      deviceID: keychain["deviceID"])
                 }.then {_ in
                     HomeAssistantAPI.sharedInstance.Connect()
                 }.then { _ -> Void in

@@ -31,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         migrateUserDefaultsToAppGroups()
         migrateSecretsToKeychain()
+        migrateDeviceIDToKeychain()
         Realm.Configuration.defaultConfiguration = realmConfig
         print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.path)
         Fabric.with([Crashlytics.self])
@@ -90,11 +91,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         print("Registering push with tokenString: \(tokenString)")
 
+        HomeAssistantAPI.sharedInstance.deviceToken = tokenString
+
         _ = HomeAssistantAPI.sharedInstance.registerDeviceForPush(deviceToken: tokenString).then { pushId -> Void in
             print("Registered for push. PushID:", pushId)
             CLSLogv("Registered for push:", getVaList([pushId]))
             Crashlytics.sharedInstance().setUserIdentifier(pushId)
             self.prefs.setValue(pushId, forKey: "pushID")
+            HomeAssistantAPI.sharedInstance.pushID = pushId
+            _ = HomeAssistantAPI.sharedInstance.identifyDevice()
         }
 
     }

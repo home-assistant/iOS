@@ -272,6 +272,45 @@ func migrateSecretsToKeychain() {
     }
 }
 
+func migrateDeviceIDToKeychain() {
+
+    let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.homeassistant")
+
+    let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant")
+
+    let didMigrateToKeychain = "DidMigrateDeviceIDToKeychain"
+
+    if let groupDefaults = groupDefaults {
+        if !groupDefaults.bool(forKey: didMigrateToKeychain) {
+            keychain["deviceID"] = groupDefaults.string(forKey: "deviceId")
+            groupDefaults.removeObject(forKey: "deviceId")
+            groupDefaults.set(true, forKey: didMigrateToKeychain)
+            groupDefaults.synchronize()
+            print("Successfully migrated device ID to keychain")
+        } else {
+            print("No need to migrate device ID")
+        }
+    } else {
+        print("Unable to create NSUserDefaults with given app group")
+    }
+}
+
+func resetStores() {
+    do {
+        try Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.homeassistant").removeAll()
+    } catch {
+        print("Error when trying to delete everything from Keychain!")
+    }
+
+    if let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant") {
+        print("Keys in suite", groupDefaults.dictionaryRepresentation().keys)
+        for key in groupDefaults.dictionaryRepresentation().keys {
+            groupDefaults.removeObject(forKey: key)
+        }
+        groupDefaults.synchronize()
+    }
+}
+
 func openURLStringInBrowser(url: String) {
     openURLInBrowser(urlToOpen: URL(string: url)!)
 }
