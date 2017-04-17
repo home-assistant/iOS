@@ -614,7 +614,14 @@ public class HomeAssistantAPI {
                 ).validate().responseArray { (response: DataResponse<[ServicesResponse]>) in
                     switch response.result {
                     case .success:
-                        fulfill(response.result.value!)
+                        if let resVal = response.result.value {
+                            fulfill(resVal)
+                        } else {
+                            CLSLogv("CallService response.result.value could not unwrap! %@",
+                                    // swiftlint:disable:next force_cast
+                                    getVaList([response.result as! CVarArg]))
+                            fulfill([ServicesResponse]())
+                        }
                     case .failure(let error):
                         CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
                         Crashlytics.sharedInstance().recordError(error)
@@ -928,55 +935,61 @@ public class HomeAssistantAPI {
                 ).validate().responseObject { (response: DataResponse<PushConfiguration>) in
                     switch response.result {
                     case .success:
-                        let config = response.result.value!
-                        var allCategories = Set<UNNotificationCategory>()
-                        if let categories = config.Categories {
-                            for category in categories {
-                                var categoryActions = [UNNotificationAction]()
-                                if let actions = category.Actions {
-                                    for action in actions {
-                                        var actionOptions = UNNotificationActionOptions([])
-                                        if action.AuthenticationRequired {
-                                            actionOptions.insert(.authenticationRequired)
-                                        }
-                                        if action.Destructive {
-                                            actionOptions.insert(.destructive)
-                                        }
-                                        if action.ActivationMode == "foreground" {
-                                            actionOptions.insert(.foreground)
-                                        }
-                                        if action.Behavior == "default" {
-                                            let newAction = UNNotificationAction(identifier: action.Identifier!,
-                                                                                 title: action.Title!,
-                                                                                 options: actionOptions)
-                                            categoryActions.append(newAction)
-                                        } else if action.Behavior == "TextInput" {
-                                            if let identifier = action.Identifier,
-                                                let btnTitle = action.TextInputButtonTitle,
-                                                let place = action.TextInputPlaceholder, let title = action.Title {
-                                                // swiftlint:disable line_length
-                                                let newAction = UNTextInputNotificationAction(identifier: identifier,
-                                                                                              title: title,
-                                                                                              options: actionOptions,
-                                                                                              textInputButtonTitle:btnTitle,
-                                                                                              textInputPlaceholder:place)
-                                                // swiftlint:enable line_length
+                        if let config = response.result.value {
+                            var allCategories = Set<UNNotificationCategory>()
+                            if let categories = config.Categories {
+                                for category in categories {
+                                    var categoryActions = [UNNotificationAction]()
+                                    if let actions = category.Actions {
+                                        for action in actions {
+                                            var actionOptions = UNNotificationActionOptions([])
+                                            if action.AuthenticationRequired {
+                                                actionOptions.insert(.authenticationRequired)
+                                            }
+                                            if action.Destructive {
+                                                actionOptions.insert(.destructive)
+                                            }
+                                            if action.ActivationMode == "foreground" {
+                                                actionOptions.insert(.foreground)
+                                            }
+                                            if action.Behavior == "default" {
+                                                let newAction = UNNotificationAction(identifier: action.Identifier!,
+                                                                                     title: action.Title!,
+                                                                                     options: actionOptions)
                                                 categoryActions.append(newAction)
+                                            } else if action.Behavior == "TextInput" {
+                                                if let identifier = action.Identifier,
+                                                    let btnTitle = action.TextInputButtonTitle,
+                                                    let place = action.TextInputPlaceholder, let title = action.Title {
+                                                    // swiftlint:disable line_length
+                                                    let newAction = UNTextInputNotificationAction(identifier: identifier,
+                                                                                                  title: title,
+                                                                                                  options: actionOptions,
+                                                                                                  textInputButtonTitle:btnTitle,
+                                                                                                  textInputPlaceholder:place)
+                                                    // swiftlint:enable line_length
+                                                    categoryActions.append(newAction)
+                                                }
                                             }
                                         }
+                                    } else {
+                                        print("Category has no actions defined, continuing loop")
+                                        continue
                                     }
-                                } else {
-                                    print("Category has no actions defined, continuing loop")
-                                    continue
+                                    let finalCategory = UNNotificationCategory.init(identifier: category.Identifier!,
+                                                                                    actions: categoryActions,
+                                                                                    intentIdentifiers: [],
+                                                                                    options: [.customDismissAction])
+                                    allCategories.insert(finalCategory)
                                 }
-                                let finalCategory = UNNotificationCategory.init(identifier: category.Identifier!,
-                                                                                actions: categoryActions,
-                                                                                intentIdentifiers: [],
-                                                                                options: [.customDismissAction])
-                                allCategories.insert(finalCategory)
                             }
+                            fulfill(allCategories)
+                        } else {
+                            CLSLogv("setupUserNotificationPushActions response.result.value could not unwrap! %@",
+                                    // swiftlint:disable:next force_cast
+                                getVaList([response.result as! CVarArg]))
+                            fulfill(Set<UNNotificationCategory>())
                         }
-                        fulfill(allCategories)
                     case .failure(let error):
                         CLSLogv("Error on setupUserNotificationPushActions() request: %@",
                                 getVaList([error.localizedDescription]))
