@@ -168,56 +168,63 @@ class SettingsViewController: FormViewController {
             <<< ButtonRow("connect") {
                 $0.title = "Save"
                 }.onCellSelection { _, _ in
-                    firstly {
-                        HomeAssistantAPI.sharedInstance.Setup(baseURL: self.baseURL!.absoluteString,
-                                                              password: self.password, deviceID: self.deviceID)
-                        }.then {_ in
-                            HomeAssistantAPI.sharedInstance.Connect()
-                        }.then { config -> Void in
-                            print("Connected!")
-                            if let url = self.baseURL {
-                                self.keychain["baseURL"] = url.absoluteString
-                            }
-                            if self.password != "" {
-                                self.keychain["apiPassword"] = self.password
-                            }
-                            self.form.setValues(["locationName": config.LocationName, "version": config.Version])
-                            let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
-                            locationNameRow.updateCell()
-                            let versionRow: LabelRow = self.form.rowBy(tag: "version")!
-                            versionRow.updateCell()
-                            let statusSection: Section = self.form.sectionBy(tag: "status")!
-                            statusSection.hidden = false
-                            statusSection.evaluateHidden()
-                            let detailsSection: Section = self.form.sectionBy(tag: "details")!
-                            detailsSection.hidden = false
-                            detailsSection.evaluateHidden()
-                            // swiftlint:disable:next line_length
-                            //                                let resetSection: Section = self.form.sectionBy(tag: "reset")!
-                            //                                resetSection.hidden = false
-                            //                                resetSection.evaluateHidden()
-                            let closeSelector = #selector(SettingsViewController.closeSettings(_:))
-                            let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self,
-                                                             action: closeSelector)
-
-                            self.navigationItem.setRightBarButton(doneButton, animated: true)
-                            self.tableView.reloadData()
-                        }.catch { error in
-                            print("Connection error!", error)
-                            var errorMessage = error.localizedDescription
-                            if let error = error as? AFError {
-                                if error.responseCode == 401 {
-                                    errorMessage = "The password was incorrect."
+                    if let baseUrl = self.baseURL {
+                        firstly {
+                            HomeAssistantAPI.sharedInstance.Setup(baseURL: baseUrl.absoluteString,
+                                                                  password: self.password, deviceID: self.deviceID)
+                            }.then {_ in
+                                HomeAssistantAPI.sharedInstance.Connect()
+                            }.then { config -> Void in
+                                print("Connected!")
+                                if let url = self.baseURL {
+                                    self.keychain["baseURL"] = url.absoluteString
                                 }
-                            }
-                            let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
-                            let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
-                                                          message: message,
-                                                          preferredStyle: UIAlertControllerStyle.alert)
-                            alert.addAction(UIAlertAction(title: "OK",
-                                                          style: UIAlertActionStyle.default,
-                                                          handler: nil))
-                            self.present(alert, animated: true, completion: nil)
+                                if self.password != "" {
+                                    self.keychain["apiPassword"] = self.password
+                                }
+                                self.form.setValues(["locationName": config.LocationName, "version": config.Version])
+                                let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
+                                locationNameRow.updateCell()
+                                let versionRow: LabelRow = self.form.rowBy(tag: "version")!
+                                versionRow.updateCell()
+                                let statusSection: Section = self.form.sectionBy(tag: "status")!
+                                statusSection.hidden = false
+                                statusSection.evaluateHidden()
+                                let detailsSection: Section = self.form.sectionBy(tag: "details")!
+                                detailsSection.hidden = false
+                                detailsSection.evaluateHidden()
+                                let closeSelector = #selector(SettingsViewController.closeSettings(_:))
+                                let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self,
+                                                                 action: closeSelector)
+
+                                self.navigationItem.setRightBarButton(doneButton, animated: true)
+                                self.tableView.reloadData()
+                            }.catch { error in
+                                print("Connection error!", error)
+                                var errorMessage = error.localizedDescription
+                                if let error = error as? AFError {
+                                    if error.responseCode == 401 {
+                                        errorMessage = "The password was incorrect."
+                                    }
+                                }
+                                let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
+                                let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
+                                                              message: message,
+                                                              preferredStyle: UIAlertControllerStyle.alert)
+                                alert.addAction(UIAlertAction(title: "OK",
+                                                              style: UIAlertActionStyle.default,
+                                                              handler: nil))
+                                self.present(alert, animated: true, completion: nil)
+                        }
+                    } else {
+                        let errMsg = "Looks like your URL is invalid. Please check the format and try again."
+                        let alert = UIAlertController(title: "Error unwrapping URL",
+                                                      message: errMsg,
+                                                      preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "OK",
+                                                      style: UIAlertActionStyle.default,
+                                                      handler: nil))
+                        self.present(alert, animated: true, completion: nil)
                     }
                 }
 
