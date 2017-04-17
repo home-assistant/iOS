@@ -24,7 +24,6 @@ class IdentifyRequest: Mappable {
     var Permissions: [String]?
     var PushID: String?
     var PushSounds: [String]?
-    var PushToken: String?
     var BatteryLevel: Int?
     var BatteryState: String?
 
@@ -49,7 +48,6 @@ class IdentifyRequest: Mappable {
         Permissions            <- map["permissions"]
         PushID                 <- map["pushId"]
         PushSounds             <- map["pushSounds"]
-        PushToken              <- map["pushToken"]
         BatteryLevel           <- map["battery.level"]
         BatteryState           <- map["battery.state"]
     }

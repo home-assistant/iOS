@@ -681,7 +681,6 @@ public class HomeAssistantAPI {
         ident.Permissions = self.enabledPermissions
         ident.PushID = pushID
         ident.PushSounds = listAllInstalledPushNotificationSounds()
-        ident.PushToken = deviceToken
 
         UIDevice.current.isBatteryMonitoringEnabled = true
 
@@ -774,7 +773,6 @@ public class HomeAssistantAPI {
         ident.Permissions = self.enabledPermissions
         ident.PushID = pushID
         ident.PushSounds = listAllInstalledPushNotificationSounds()
-        ident.PushToken = deviceToken
 
         return Mapper().toJSON(ident)
     }
@@ -1107,7 +1105,6 @@ public class HomeAssistantAPI {
     var enabledPermissions: [String] {
         var permissionsContainer: [String] = []
         for status in PermissionScope().permissionStatuses([NotificationsPermission().type,
-                                                            // swiftlint:disable:next line_length
             LocationAlwaysPermission().type]) where status.1 == .authorized {
                 let desc = status.0.prettyDescription.lowercased()
                 permissionsContainer.append(desc)

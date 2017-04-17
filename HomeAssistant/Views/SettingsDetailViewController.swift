@@ -78,11 +78,11 @@ class SettingsDetailViewController: FormViewController {
         case "notifications":
             self.title = "Notification Settings"
             self.form
-                +++ Section(header: "Push token",
+                +++ Section(header: "Push ID",
                             // swiftlint:disable:next line_length
                     footer: "This is the target to use in your Home Assistant configuration. Tap to copy or share.")
                 <<< TextAreaRow {
-                    $0.placeholder = "PushID"
+                    $0.placeholder = "Push Token"
                     if let pushID = prefs.string(forKey: "pushID") {
                         $0.value = pushID
                     } else {
