@@ -238,15 +238,15 @@ public class HomeAssistantAPI {
         case .RegionEnter:
             notificationBody = "\(zone!.Name) entered"
             notificationIdentifer = "\(zone!.Name)_entered"
-            shouldNotify = zone!.enterNotification
+            shouldNotify = prefs.bool(forKey: "enterNotifications")
         case .RegionExit:
             notificationBody = "\(zone!.Name) exited"
             notificationIdentifer = "\(zone!.Name)_exited"
-            shouldNotify = zone!.exitNotification
+            shouldNotify = prefs.bool(forKey: "exitNotifications")
         case .SignificantLocationUpdate:
             notificationBody = "Significant location change detected, notifying Home Assistant"
             notificationIdentifer = "sig_change"
-            shouldNotify = true
+            shouldNotify = prefs.bool(forKey: "significantLocationChangeNotifications")
         default:
             notificationBody = ""
         }

@@ -44,6 +44,32 @@ class SettingsDetailViewController: FormViewController {
         //                }
         case "location":
             self.title = "Location Settings"
+            self.form
+                +++ Section(header: "Notifications", footer: "")
+                <<< SwitchRow {
+                    $0.title = "Enter Zone Notifications"
+                    $0.value = prefs.bool(forKey: "enterNotifications")
+                }.onChange({ (row) in
+                    if let val = row.value {
+                        self.prefs.set(val, forKey: "enterNotifications")
+                    }
+                })
+                <<< SwitchRow {
+                    $0.title = "Exit Zone Notifications"
+                    $0.value = prefs.bool(forKey: "exitNotifications")
+                }.onChange({ (row) in
+                    if let val = row.value {
+                        self.prefs.set(val, forKey: "exitNotifications")
+                    }
+                })
+                <<< SwitchRow {
+                    $0.title = "Location Change Notifications"
+                    $0.value = prefs.bool(forKey: "significantLocationChangeNotifications")
+                }.onChange({ (row) in
+                    if let val = row.value {
+                        self.prefs.set(val, forKey: "significantLocationChangeNotifications")
+                    }
+                })
             if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
                 if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
                     return entity.Domain == "zone"
