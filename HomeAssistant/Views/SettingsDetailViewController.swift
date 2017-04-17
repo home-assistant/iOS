@@ -96,7 +96,8 @@ class SettingsDetailViewController: FormViewController {
                     if zoneEntities.count > 0 {
                         self.form
                             +++ Section(header: "",
-                                        footer: "To enable location tracking add track_ios: true to each zone")
+                                        // swiftlint:disable:next line_length
+                                        footer: "To disable location tracking add track_ios: false to each zones settings or under customize.")
                     }
                 }
             }

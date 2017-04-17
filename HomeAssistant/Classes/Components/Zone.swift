@@ -15,7 +15,7 @@ class Zone: Entity {
     dynamic var Latitude: Double = 0.0
     dynamic var Longitude: Double = 0.0
     dynamic var Radius: Double = 0.0
-    dynamic var TrackingEnabled = false
+    dynamic var TrackingEnabled = true
     dynamic var enterNotification = true
     dynamic var exitNotification = true
 
