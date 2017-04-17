@@ -217,6 +217,8 @@ public class HomeAssistantAPI {
             "dev_id": deviceID
         ]
 
+        _ = self.identifyDevice()
+
         self.CallService(domain: "device_tracker",
                          service: "see",
                          serviceData: locationUpdate as [String : Any]).then {_ in
