@@ -59,8 +59,12 @@ final class NotificationService: UNNotificationServiceExtension {
             }
         }
 
-        guard let attachmentString = incomingAttachment["url"] as? String else {
+        guard var attachmentString = incomingAttachment["url"] as? String else {
             return failEarly()
+        }
+
+        if attachmentString.hasPrefix("/api/") { // prepend base URL
+            attachmentString = baseURL + attachmentString
         }
 
         guard let attachmentURL = URL(string: attachmentString) else {
