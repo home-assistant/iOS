@@ -20,7 +20,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     override func loadView() {
         let config = WKWebViewConfiguration()
         if let apiPass = keychain["apiPassword"] {
-            let scriptStr = "window.hassConnection = createHassConnection(\(apiPass));"
+            let scriptStr = "window.hassConnection = createHassConnection(\"\(apiPass)\");"
             let script = WKUserScript(source: scriptStr, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
             let userContentController = WKUserContentController()
             userContentController.addUserScript(script)
