@@ -7,7 +7,7 @@
 */
 "location_change_notification.title" = "Ortswechsel";
 "zone_entered_notification.message" = "%@ betreten";
-"significant_location_change_notification.message" = "Erhebliche Änderungen der Position bemwerkt, benachrichtige Home Assistant";
+"significant_location_change_notification.message" = "Erhebliche Änderungen der Position bemerkt, benachrichtige Home Assistant";
 "manual_location_update_notification.title" = "Position aktualisiert";
 "manual_location_update_notification.message" = "Position erfolgreich an den Server übermittelt";
 "manual_location_update_failed_notification.title" = "Position konnte nicht aktualisiert werden";
