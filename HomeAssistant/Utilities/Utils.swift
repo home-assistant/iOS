@@ -296,14 +296,14 @@ func migrateDeviceIDToKeychain() {
 }
 
 func resetStores() {
+    let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
     do {
-        try Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.homeassistant").removeAll()
+        try keychain.removeAll()
     } catch {
         print("Error when trying to delete everything from Keychain!")
     }
 
     if let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant") {
-        print("Keys in suite", groupDefaults.dictionaryRepresentation().keys)
         for key in groupDefaults.dictionaryRepresentation().keys {
             groupDefaults.removeObject(forKey: key)
         }

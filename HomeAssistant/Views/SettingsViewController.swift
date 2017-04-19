@@ -389,24 +389,22 @@ class SettingsViewController: FormViewController {
 
             +++ Section {
                 $0.tag = "reset"
-                //                $0.hidden = Condition(booleanLiteral: !self.configured)
-                $0.hidden = true
+                $0.hidden = Condition(booleanLiteral: !self.configured)
             }
             <<< ButtonRow("resetApp") {
                 $0.title = L10n.Settings.ResetSection.ResetRow.title
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textColor = .red
-                }.onCellSelection { _, _ in
+                }.onCellSelection { _, row in
                     let alert = UIAlertController(title: L10n.Settings.ResetSection.ResetAlert.title,
                                                   message: L10n.Settings.ResetSection.ResetAlert.message,
                                                   preferredStyle: UIAlertControllerStyle.alert)
 
-                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
-                        print("Handle Cancel Logic here")
-                    }))
+                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 
                     alert.addAction(UIAlertAction(title: "Reset", style: .destructive, handler: { (_) in
-                        print("Handle Ok logic here")
+                        row.hidden = true
+                        row.evaluateHidden()
                         self.ResetApp()
                     }))
 
@@ -542,10 +540,19 @@ class SettingsViewController: FormViewController {
         UserDefaults.standard.synchronize()
         self.prefs.removePersistentDomain(forName: bundleId)
         self.prefs.synchronize()
-
-        _ = HomeAssistantAPI.sharedInstance.removeDevice().then { _ in
-            print("Done with reset!")
-        }
+        let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
+        urlRow.value = nil
+        urlRow.updateCell()
+        let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
+        apiPasswordRow.value = ""
+        apiPasswordRow.updateCell()
+        let statusSection: Section = self.form.sectionBy(tag: "status")!
+        statusSection.hidden = true
+        statusSection.evaluateHidden()
+        let detailsSection: Section = self.form.sectionBy(tag: "details")!
+        detailsSection.hidden = true
+        detailsSection.evaluateHidden()
+        self.tableView.reloadData()
     }
 
     func openAbout(_ sender: UIButton) {
