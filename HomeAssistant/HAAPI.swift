@@ -217,14 +217,15 @@ public class HomeAssistantAPI {
             "dev_id": deviceID
         ]
 
-        _ = self.identifyDevice()
-
-        self.CallService(domain: "device_tracker",
-                         service: "see",
-                         serviceData: locationUpdate as [String : Any]).then {_ in
-                            print("Device seen!")
-            }.catch {err in
-                Crashlytics.sharedInstance().recordError(err as NSError)
+        firstly {
+            self.identifyDevice()
+        }.then {_ in 
+            self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate)
+        }.then { _ in
+            print("Device seen!")
+        }.catch { err in
+            print("Error when updating location!", err)
+            Crashlytics.sharedInstance().recordError(err as NSError)
         }
 
         UIDevice.current.isBatteryMonitoringEnabled = false
@@ -244,7 +245,7 @@ public class HomeAssistantAPI {
             notificationIdentifer = "\(zone!.Name)_exited"
             shouldNotify = prefs.bool(forKey: "exitNotifications")
         case .SignificantLocationUpdate:
-            notificationBody = "Significant location change detected, notifying Home Assistant"
+            notificationBody = "Significant location change detected"
             notificationIdentifer = "sig_change"
             shouldNotify = prefs.bool(forKey: "significantLocationChangeNotifications")
         default:
@@ -350,18 +351,21 @@ public class HomeAssistantAPI {
 
     func sendOneshotLocation() -> Promise<Bool> {
         return Promise { fulfill, reject in
-            Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, success: { (_, location) in
+            Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, timeout: 25, success: { (_, location) in
                 print("A new update of location is available: \(location)")
                 self.submitLocation(updateType: .Manual,
                                     coordinates: location.coordinate,
                                     accuracy: location.horizontalAccuracy,
                                     zone: nil)
                 fulfill(true)
-            }) { (request, _, error) in
-                request.cancel() // stop continous location monitoring on error
-                print("Error when trying to get a oneshot location!", error)
-                Crashlytics.sharedInstance().recordError(error)
-                reject(error)
+            }) { (_, _, error) in
+                if error == LocationError.timeout {
+                    fulfill(false)
+                } else {
+                    print("Error when trying to get a oneshot location!", error)
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
             }
         }
     }

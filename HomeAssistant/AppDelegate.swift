@@ -36,6 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.path)
         Fabric.with([Crashlytics.self])
 
+        UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+
         NetworkActivityIndicatorManager.shared.isEnabled = true
 
         if #available(iOS 10, *) {
@@ -123,18 +125,44 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         print("Received remote request to provide a location update")
                         HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
                             print("Did successfully send location when requested via APNS?", success)
-                            completionHandler(UIBackgroundFetchResult.noData)
-                            }.catch {error in
-                                print("Error when attempting to submit location update")
-                                Crashlytics.sharedInstance().recordError(error)
+                            if success == true {
+                                completionHandler(UIBackgroundFetchResult.newData)
+                            } else {
                                 completionHandler(UIBackgroundFetchResult.failed)
+                            }
+                        }.catch {error in
+                            print("Error when attempting to submit location update")
+                            Crashlytics.sharedInstance().recordError(error)
+                            completionHandler(UIBackgroundFetchResult.failed)
                         }
                     default:
                         print("Received unknown command via APNS!", userInfo)
                         completionHandler(UIBackgroundFetchResult.noData)
                     }
+                } else {
+                    completionHandler(UIBackgroundFetchResult.failed)
                 }
+            } else {
+                completionHandler(UIBackgroundFetchResult.failed)
             }
+        } else {
+            completionHandler(UIBackgroundFetchResult.failed)
+        }
+    }
+
+    func application(_ application: UIApplication,
+                     performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        print("Background fetch activated!")
+        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
+            if success == true {
+                completionHandler(UIBackgroundFetchResult.newData)
+            } else {
+                completionHandler(UIBackgroundFetchResult.failed)
+            }
+        }.catch {error in
+            print("Error when attempting to submit location update")
+            Crashlytics.sharedInstance().recordError(error)
+            completionHandler(UIBackgroundFetchResult.failed)
         }
     }
 
