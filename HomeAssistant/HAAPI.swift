@@ -219,7 +219,7 @@ public class HomeAssistantAPI {
 
         firstly {
             self.identifyDevice()
-        }.then {_ in 
+        }.then {_ in
             self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate)
         }.then { _ in
             print("Device seen!")
