@@ -49,6 +49,13 @@ platform :ios do
     pem(development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password", save_private_key: false)
   end
 
+  desc "Generate proper icons for all build trains"
+  lane :icons do
+    appicon(appicon_path: 'HomeAssistant/Resources/Assets.xcassets', appicon_image_file: 'icons/dev.png', appicon_name: 'AppIcon.dev.appiconset', appicon_devices: [:ipad, :iphone])
+    appicon(appicon_path: 'HomeAssistant/Resources/Assets.xcassets', appicon_image_file: 'icons/beta.png', appicon_name: 'AppIcon.beta.appiconset', appicon_devices: [:ipad, :iphone])
+    # appicon(appicon_path: 'HomeAssistant/Resources/Assets.xcassets', appicon_image_file: 'icons/release.png', appicon_devices: [:ipad, :iphone])
+  end
+
   def change_log_since_last_tag
     # http://git-scm.com/docs/pretty-formats
     # <short hash> <commit title>
@@ -226,10 +233,3 @@ platform :ios do
   error do |lane, exception|
   end
 end
-
-
-# More information about multiple platforms in fastlane: https://github.com/fastlane/fastlane/blob/master/docs/Platforms.md
-# All available actions: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Actions.md
-
-# fastlane reports which actions are used
-# No personal data is recorded. Learn more at https://github.com/fastlane/enhancer

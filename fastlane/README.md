@@ -40,6 +40,11 @@ Fetches the provisioning profiles so you can build locally and deploy to your de
 fastlane ios push_certs
 ```
 Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password.
+### ios icons
+```
+fastlane ios icons
+```
+Generate proper icons for all build trains
 ### ios ci
 ```
 fastlane ios ci
