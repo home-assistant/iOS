@@ -432,7 +432,7 @@
 		B64D04791CB8908B00B945C8 /* StateChanged.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateChanged.swift; sourceTree = "<group>"; };
 		B64D047C1CB8916300B945C8 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		B64D09AE1D7D561E008EB487 /* InputSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputSlider.swift; sourceTree = "<group>"; };
-		B657A8E61CA646EB00121384 /* HomeAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B657A8E61CA646EB00121384 /* HASS Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HASS Dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B657A8ED1CA646EB00121384 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B657A8F21CA646EB00121384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -782,7 +782,7 @@
 		B657A8E71CA646EB00121384 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B657A8E61CA646EB00121384 /* HomeAssistant.app */,
+				B657A8E61CA646EB00121384 /* HASS Dev.app */,
 				B657A8FC1CA646EB00121384 /* HomeAssistantTests.xctest */,
 				B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */,
 				B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */,
@@ -989,7 +989,7 @@
 			);
 			name = HomeAssistant;
 			productName = HomeAssistant;
-			productReference = B657A8E61CA646EB00121384 /* HomeAssistant.app */;
+			productReference = B657A8E61CA646EB00121384 /* HASS Dev.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B657A8FB1CA646EB00121384 /* HomeAssistantTests */ = {
@@ -1731,10 +1731,10 @@
 				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.NotificationContentExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.NotificationContentExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "8d3c0ff8-397d-4e24-8a64-16895a558af4";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.NotificationContentExtension 1475202285";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.NotificationContentExtension";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 3.0;
@@ -1754,7 +1754,7 @@
 				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.NotificationContentExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.NotificationContentExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "b263da23-a03f-4ec3-ab81-4c9be906a39b";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.NotificationContentExtension 1473993208";
@@ -1768,6 +1768,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_ID_PREFIX = .dev;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1821,6 +1822,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_ID_PREFIX = "";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1867,7 +1869,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6410E5092616A0DD9241A91D /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
@@ -1911,10 +1913,10 @@
 					"\"Whisper\"",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "050c99c9-d23a-4537-8e4e-9eb293d13d49";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant 1475202231";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}";
+				PRODUCT_NAME = "HASS Dev";
+				PROVISIONING_PROFILE = "ca452ed5-e256-43f2-9011-db35e818de3d";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant/HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1925,7 +1927,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 366FD7D1C50AFCED407FEBB6 /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
@@ -1969,8 +1971,8 @@
 					"\"Whisper\"",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie${BUNDLE_ID_PREFIX}.HomeAssistant";
+				PRODUCT_NAME = HomeAssistant;
 				PROVISIONING_PROFILE = "bbef0c3e-93d6-48c3-9e98-ede0cc0b42b0";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant 1473993199";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant/HomeAssistant-Bridging-Header.h";
@@ -2046,10 +2048,10 @@
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.APNSAttachmentService;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.APNSAttachmentService";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "12a1d9d2-7a60-4c18-8ec7-bcbd1052c5c8";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.APNSAttachmentService 1475202315";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.APNSAttachmentService";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 3.0;
@@ -2069,7 +2071,7 @@
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.APNSAttachmentService;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.APNSAttachmentService";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "9b8ee7f8-65fc-4287-9561-a6b4602e80a1";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.APNSAttachmentService 1473993218";
