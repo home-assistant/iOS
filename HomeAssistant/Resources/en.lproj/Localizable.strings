@@ -81,7 +81,7 @@
 "settings_details.notifications.update_section.updated_alert.message" = "Push settings imported from Home Assistant.";
 
 "settings_details.notifications.sounds_section.footer" = "Custom push notification sounds can be added via iTunes.";
-"settings_details.notifications.sounds_section.button.title" = "Update push settings";
+"settings_details.notifications.sounds_section.button.title" = "Import Sounds";
 "settings_details.notifications.sounds_section.imported_alert.title" = "Sounds Imported";
 "settings_details.notifications.sounds_section.imported_alert.message" = "%d sounds were imported. Please restart your phone to complete the import.";
 
