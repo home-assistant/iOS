@@ -134,7 +134,7 @@ class SettingsViewController: FormViewController {
 
             +++ Section(header: L10n.Settings.ConnectionSection.header, footer: "")
             <<< URLRow("baseURL") {
-                $0.title = "URL"
+                $0.title = L10n.Settings.ConnectionSection.BaseUrl.title
                 $0.value = self.baseURL
                 $0.placeholder = "https://homeassistant.myhouse.com"
             }.onCellHighlightChanged({ (_, row) in
@@ -204,7 +204,7 @@ class SettingsViewController: FormViewController {
                                 var errorMessage = error.localizedDescription
                                 if let error = error as? AFError {
                                     if error.responseCode == 401 {
-                                        errorMessage = "The password was incorrect."
+                                        errorMessage = L10n.Settings.ConnectionError.Forbidden.message
                                     }
                                 }
                                 let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
@@ -217,8 +217,8 @@ class SettingsViewController: FormViewController {
                                 self.present(alert, animated: true, completion: nil)
                         }
                     } else {
-                        let errMsg = "Looks like your URL is invalid. Please check the format and try again."
-                        let alert = UIAlertController(title: "Error unwrapping URL",
+                        let errMsg = L10n.Settings.ConnectionError.InvalidUrl.message
+                        let alert = UIAlertController(title: L10n.Settings.ConnectionError.InvalidUrl.title,
                                                       message: errMsg,
                                                       preferredStyle: UIAlertControllerStyle.alert)
                         alert.addAction(UIAlertAction(title: "OK",
@@ -289,7 +289,7 @@ class SettingsViewController: FormViewController {
             }
             <<< ButtonRow("generalSettings") {
                 $0.hidden = Condition(booleanLiteral: OpenInChromeController().isChromeInstalled())
-                $0.title = "General Settings"
+                $0.title = L10n.Settings.GeneralSettingsButton.title
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     let view = SettingsDetailViewController()
                     view.detailGroup = "general"
@@ -425,7 +425,7 @@ class SettingsViewController: FormViewController {
         discoverySection.evaluateHidden()
         if let userInfo = (notification as Notification).userInfo as? [String:Any] {
             let discoveryInfo = DiscoveryInfoResponse(JSON: userInfo)!
-            let needsPass = discoveryInfo.RequiresPassword ? " - Requires password" : ""
+            let needsPass = discoveryInfo.RequiresPassword ? " - "+L10n.Settings.DiscoverySection.requiresPassword : ""
             var url = "\(discoveryInfo.BaseURL!.host!)"
             if let port = discoveryInfo.BaseURL!.port {
                 url = "\(discoveryInfo.BaseURL!.host!):\(port)"

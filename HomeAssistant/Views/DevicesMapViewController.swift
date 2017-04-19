@@ -31,12 +31,13 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = "Devices & Zones"
+        self.title = L10n.DevicesMap.title
 
         self.navigationController?.isToolbarHidden = false
 
-        let items = ["Standard", "Hybrid", "Satellite"]
-        let typeController = UISegmentedControl(items: items)
+        let typeController = UISegmentedControl(items: [L10n.DevicesMap.MapTypes.standard,
+                                                        L10n.DevicesMap.MapTypes.hybrid,
+                                                        L10n.DevicesMap.MapTypes.satellite])
         typeController.selectedSegmentIndex = 0
         typeController.addTarget(self,
                                  action: #selector(DevicesMapViewController.switchMapType(_:)),
@@ -101,7 +102,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
                     dropPin.title = device.Name
                     var subtitlePieces: [String] = []
                     if let battery = device.Battery.value {
-                        subtitlePieces.append("Battery: "+String(battery)+"%")
+                        subtitlePieces.append(L10n.DevicesMap.batteryLabel+": "+String(battery)+"%")
                     }
                     dropPin.subtitle = subtitlePieces.joined(separator: " / ")
                     dropPin.device = device
@@ -194,18 +195,19 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
     func sendCurrentLocation(_ sender: UIBarButtonItem) {
         HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
-            let alert = UIAlertController(title: "Location updated",
-                                          message: "Successfully sent a one shot location to the server",
+            let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
+                                          message: L10n.ManualLocationUpdateNotification.message,
                                           preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
             }.catch {error in
                 let nserror = error as NSError
-                let alert = UIAlertController(title: "Location failed to update",
+                let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title
+                    ,
                                               // swiftlint:disable:next line_length
-                    message: "Failed to send current location to server. The error was \(nserror.localizedDescription)",
+                    message: L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription),
                     preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
         }
     }

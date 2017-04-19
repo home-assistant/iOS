@@ -176,18 +176,18 @@ class WebViewController: UIViewController, WKNavigationDelegate {
 
     func sendCurrentLocation(_ sender: UIButton) {
         HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
-            let alert = UIAlertController(title: "Location updated",
-                                          message: "Successfully sent a one shot location to the server",
+            let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
+                                          message: L10n.ManualLocationUpdateNotification.message,
                                           preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
             }.catch {error in
                 let nserror = error as NSError
-                let message = "Failed to send current location to server. The error was \(nserror.localizedDescription)"
-                let alert = UIAlertController(title: "Location failed to update",
+                let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
+                let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
                                               message: message,
                                               preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
         }
     }

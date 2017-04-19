@@ -18,18 +18,18 @@ class SettingsDetailViewController: FormViewController {
 
     var detailGroup: String = "display"
 
-    // swiftlint:disable:next function_body_length
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
         switch detailGroup {
         case "general":
-            self.title = "General Settings"
+            self.title = L10n.SettingsDetails.General.title
             self.form
                 +++ Section()
                 <<< SwitchRow("openInChrome") {
-                    $0.title = "Open links in Chrome"
+                    $0.title = L10n.SettingsDetails.General.Chrome.title
                     $0.value = prefs.bool(forKey: "openInChrome")
                     }.onChange { row in
                         self.prefs.setValue(row.value, forKey: "openInChrome")
@@ -43,11 +43,11 @@ class SettingsDetailViewController: FormViewController {
             //                        self.prefs.synchronize()
         //                }
         case "location":
-            self.title = "Location Settings"
+            self.title = L10n.SettingsDetails.Location.title
             self.form
-                +++ Section(header: "Notifications", footer: "")
+                +++ Section(header: L10n.SettingsDetails.Location.Notifications.header, footer: "")
                 <<< SwitchRow {
-                    $0.title = "Enter Zone Notifications"
+                    $0.title = L10n.SettingsDetails.Location.Notifications.Enter.title
                     $0.value = prefs.bool(forKey: "enterNotifications")
                 }.onChange({ (row) in
                     if let val = row.value {
@@ -55,7 +55,7 @@ class SettingsDetailViewController: FormViewController {
                     }
                 })
                 <<< SwitchRow {
-                    $0.title = "Exit Zone Notifications"
+                    $0.title = L10n.SettingsDetails.Location.Notifications.Exit.title
                     $0.value = prefs.bool(forKey: "exitNotifications")
                 }.onChange({ (row) in
                     if let val = row.value {
@@ -63,7 +63,7 @@ class SettingsDetailViewController: FormViewController {
                     }
                 })
                 <<< SwitchRow {
-                    $0.title = "Location Change Notifications"
+                    $0.title = L10n.SettingsDetails.Location.Notifications.LocationChange.title
                     $0.value = prefs.bool(forKey: "significantLocationChangeNotifications")
                 }.onChange({ (row) in
                     if let val = row.value {
@@ -80,16 +80,16 @@ class SettingsDetailViewController: FormViewController {
                                 $0.tag = zone.ID
                             }
                             <<< SwitchRow {
-                                $0.title = "Enter/exit tracked"
+                                $0.title = L10n.SettingsDetails.Location.Zones.EnterExitTracked.title
                                 $0.value = zone.TrackingEnabled
                                 $0.disabled = Condition(booleanLiteral: true)
                             }
                             <<< LocationRow {
-                                $0.title = "Location"
+                                $0.title = L10n.SettingsDetails.Location.Zones.Location.title
                                 $0.value = zone.location()
                             }
                             <<< LabelRow {
-                                $0.title = "Radius"
+                                $0.title = L10n.SettingsDetails.Location.Zones.Radius.title
                                 $0.value = "\(Int(zone.Radius)) m"
                         }
                     }
@@ -97,7 +97,7 @@ class SettingsDetailViewController: FormViewController {
                         self.form
                             +++ Section(header: "",
                                         // swiftlint:disable:next line_length
-                                        footer: "To disable location tracking add track_ios: false to each zones settings or under customize.")
+                                        footer: L10n.SettingsDetails.Location.Zones.footer)
                     }
                 }
             }
@@ -105,15 +105,15 @@ class SettingsDetailViewController: FormViewController {
         case "notifications":
             self.title = "Notification Settings"
             self.form
-                +++ Section(header: "Push ID",
+                +++ Section(header: L10n.SettingsDetails.Notifications.PushIdSection.header,
                             // swiftlint:disable:next line_length
-                    footer: "This is the target to use in your Home Assistant configuration. Tap to copy or share.")
+                    footer: L10n.SettingsDetails.Notifications.PushIdSection.footer)
                 <<< TextAreaRow {
-                    $0.placeholder = "Push Token"
+                    $0.placeholder = L10n.SettingsDetails.Notifications.PushIdSection.placeholder
                     if let pushID = prefs.string(forKey: "pushID") {
                         $0.value = pushID
                     } else {
-                        $0.value = "Not registered for remote notifications"
+                        $0.value = L10n.SettingsDetails.Notifications.PushIdSection.notRegistered
                     }
                     $0.disabled = true
                     $0.textAreaHeight = TextAreaHeight.dynamic(initialTextViewHeight: 40)
@@ -125,31 +125,33 @@ class SettingsDetailViewController: FormViewController {
 
                 +++ Section(header: "",
                             // swiftlint:disable:next line_length
-                    footer: "Updating push settings will request the latest push actions and categories from Home Assistant.")
+                    footer: L10n.SettingsDetails.Notifications.UpdateSection.footer)
                 <<< ButtonRow {
-                    $0.title = "Update push settings"
+                    $0.title = L10n.SettingsDetails.Notifications.UpdateSection.Button.title
                     }.onCellSelection {_, _ in
                         HomeAssistantAPI.sharedInstance.setupPush()
-                        let alert = UIAlertController(title: "Settings Import",
-                                                      message: "Push settings imported from Home Assistant.",
+                        // swiftlint:disable:next line_length
+                        let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.title,
+                                                      // swiftlint:disable:next line_length
+                                                      message: L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.message,
                                                       preferredStyle: UIAlertControllerStyle.alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                        alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                                      handler: nil))
                         self.present(alert, animated: true, completion: nil)
                 }
 
-                +++ Section(header: "", footer: "Custom push notification sounds can be added via iTunes.")
+                +++ Section(header: "", footer: L10n.SettingsDetails.Notifications.SoundsSection.footer)
                 <<< ButtonRow {
-                    $0.title = "Import sounds from iTunes"
+                    $0.title = L10n.SettingsDetails.Notifications.SoundsSection.Button.title
                     }.onCellSelection {_, _ in
                         let moved = movePushNotificationSounds()
-                        var message = "0 sounds were imported."
-                        if moved > 0 {
-                            message = "\(moved) sounds were imported. Please restart your phone to complete the import."
-                        }
-                        let alert = UIAlertController(title: "Sounds Import",
-                                                      message: message,
+                        // swiftlint:disable:next line_length
+                        let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.SoundsSection.ImportedAlert.title,
+                                                      // swiftlint:disable:next line_length
+                                                      message: L10n.SettingsDetails.Notifications.SoundsSection.ImportedAlert.message(moved),
                                                       preferredStyle: UIAlertControllerStyle.alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                        alert.addAction(UIAlertAction(title: L10n.okLabel,
+                                                      style: UIAlertActionStyle.default, handler: nil))
                         self.present(alert, animated: true, completion: nil)
             }
 

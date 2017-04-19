@@ -18,18 +18,23 @@
 "settings.certificate_error_notification.title" = "Self-signed or invalid certificate detected";
 "settings.certificate_error_notification.message" = "A self-signed or invalid SSL certificate has been detected. Certificates of this kind are not supported by Home Assistant for iOS. Please tap the More Info button for further information.";
 "settings.discovery_section.header" = "Discovered Home Assistants";
+"settings.discovery_section.requiresPassword" = "Requires password";
 "settings.connection_section.header" = "Connection";
 "settings.connection_section.invalid_url_scheme_notification.title" = "Invalid URL";
 "settings.connection_section.invalid_url_scheme_notification.message" = "The URL must begin with either http:// or https://.";
 "settings.connection_section.api_password_row.title" = "Password";
 "settings.connection_section.api_password_row.placeholder" = "password";
 "settings.connection_section.connect_row.title" = "Connect";
+"settings.connection_section.base_url.title" = "URL";
+"settings.connection_error.forbidden.message" = "The password was incorrect.";
+"settings.connection_error.invalid_url.title" = "Error unwrapping URL";
+"settings.connection_error.invalid_url.message" = "Looks like your URL is invalid. Please check the format and try again.";
 
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.title" = "Name";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";
 "settings.status_section.version_row.title" = "Version";
-"settings.status_section.version_row.placeholder" = "0.35.0";
+"settings.status_section.version_row.placeholder" = "0.42.0";
 "settings.status_section.connected_to_sse_row.title" = "Connected";
 "settings.status_section.ios_component_loaded_row.title" = "iOS Component Loaded";
 "settings.status_section.device_tracker_component_loaded_row.title" = "Device Tracker Component Loaded";
@@ -37,6 +42,8 @@
 
 "settings.device_id_section.footer" = "Device ID is the identifier used when sending location updates to Home Assistant, as well as the target to send push notifications to.";
 "settings.device_id_section.device_id_row.title" = "Device ID";
+
+"settings.general_settings_button.title" = "General Settings";
 
 "settings.details_section.enable_location_row.title" = "Enable location tracking";
 "settings.details_section.location_settings_row.title" = "Location Settings";
@@ -48,5 +55,57 @@
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_alert.message" = "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.";
 
+
+"settings_details.general.title" = "General Settings";
+"settings_details.general.chrome.title" = "Open links in Chrome";
+
+"settings_details.location.title" = "Location Settings";
+"settings_details.location.notifications.header" = "Notifications";
+"settings_details.location.notifications.enter.title" = "Enter Zone Notifications";
+"settings_details.location.notifications.exit.title" = "Exit Zone Notifications";
+"settings_details.location.notifications.location_change.title" = "Location Change Zone Notifications";
+"settings_details.location.zones.enter_exit_tracked.title" = "Enter/exit tracked";
+"settings_details.location.zones.location.title" = "Location";
+"settings_details.location.zones.radius.title" = "Radius";
+"settings_details.location.zones.footer" = "To disable location tracking add track_ios: false to each zones settings or under customize.";
+
+"settings_details.notifications.title" = "Notification Settings";
+"settings_details.notifications.push_id_section.header" = "Push ID";
+"settings_details.notifications.push_id_section.footer" = "This is the target to use in your Home Assistant configuration. Tap to copy or share.";
+"settings_details.notifications.push_id_section.placeholder" = "Push ID";
+"settings_details.notifications.push_id_section.not_registered" = "Not registered for remote notifications";
+
+"settings_details.notifications.update_section.footer" = "Updating push settings will request the latest push actions and categories from Home Assistant.";
+"settings_details.notifications.update_section.button.title" = "Update push settings";
+"settings_details.notifications.update_section.updated_alert.title" = "Settings Imported";
+"settings_details.notifications.update_section.updated_alert.message" = "Push settings imported from Home Assistant.";
+
+"settings_details.notifications.sounds_section.footer" = "Custom push notification sounds can be added via iTunes.";
+"settings_details.notifications.sounds_section.button.title" = "Update push settings";
+"settings_details.notifications.sounds_section.imported_alert.title" = "Sounds Imported";
+"settings_details.notifications.sounds_section.imported_alert.message" = "%d sounds were imported. Please restart your phone to complete the import.";
+
+
 "permissions.location.message" = "We use this to inform\r\nHome Assistant of your device location and state.";
 "permissions.notification.message" = "We use this to let you\r\nsend notifications to your device.";
+
+"devices_map.title" = "Devices & Zones";
+"devices_map.map_types.standard" = "Standard";
+"devices_map.map_types.hybrid" = "Hybrid";
+"devices_map.map_types.satellite" = "Satellite";
+"devices_map.battery_label" = "Battery";
+
+"ok_label" = "OK";
+
+"about.title" = "About";
+"about.logo.app_title" = "Home Assistant for iOS";
+"about.logo.tagline" = "Awaken Your Home";
+"about.acknowledgements.title" = "Acknowledgements";
+"about.website.title" = "Website";
+"about.forums.title" = "Forums";
+"about.chat.title" = "Chat";
+"about.documentation.title" = "Documentation";
+"about.home_assistant_on_twitter.title" = "Home Assistant on Twitter";
+"about.home_assistant_on_facebook.title" = "Home Assistant on Facebook";
+"about.github.title" = "GitHub";
+"about.github_issue_tracker.title" = "GitHub Issue Tracker";
