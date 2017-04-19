@@ -12,7 +12,7 @@ import MBProgressHUD
 import KeychainAccess
 import PromiseKit
 
-class WebViewController: UIViewController, WKNavigationDelegate {
+class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     var webView: WKWebView!
     let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
@@ -28,6 +28,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         }
         webView = WKWebView(frame: UIScreen.main.bounds, configuration: config)
         webView.navigationDelegate = self
+        webView.uiDelegate = self
         view = webView
     }
 
@@ -144,9 +145,9 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         }
     }
 
-    func webView(webView: WKWebView,
-                 createWebViewWithConfiguration configuration: WKWebViewConfiguration,
-                 forNavigationAction navigationAction: WKNavigationAction,
+    func webView(_ webView: WKWebView,
+                 createWebViewWith configuration: WKWebViewConfiguration,
+                 for navigationAction: WKNavigationAction,
                  windowFeatures: WKWindowFeatures) -> WKWebView? {
         if navigationAction.targetFrame == nil {
             openURLInBrowser(urlToOpen: navigationAction.request.url!)
