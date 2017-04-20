@@ -23,8 +23,8 @@ class IdentifyRequest: Mappable {
     var DeviceType: String?
     var Permissions: [String]?
     var PushID: String?
+    var PushToken: String = "This space intentionally left blank"
     var PushSounds: [String]?
-    var PushToken: String?
     var BatteryLevel: Int?
     var BatteryState: String?
 
@@ -48,8 +48,8 @@ class IdentifyRequest: Mappable {
         DeviceType             <- map["device.type"]
         Permissions            <- map["permissions"]
         PushID                 <- map["pushId"]
-        PushSounds             <- map["pushSounds"]
         PushToken              <- map["pushToken"]
+        PushSounds             <- map["pushSounds"]
         BatteryLevel           <- map["battery.level"]
         BatteryState           <- map["battery.state"]
     }

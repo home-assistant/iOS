@@ -1,1 +1,14 @@
+Thanks for all the great feedback thus far, please keep it coming! Feel free to leave a review with your thoughts about the app so far too :).
 
+New features and improvements:
+- Enable zone tracking by default (no more track_ios required!)
+- Allow enable/disable of location-related notifications (check the Location Settings screen)
+- Rename push token to push ID and remove from identify payload to cut down confusion
+- Prepend base URL if attachment URL begins with /api/ (No need to prepend your base URL to notification attachments)
+- Whenever we update location let's identify too so battery gets updated (battery stats should update much more frequently)
+
+Bug fixes:
+- Remove some force unwraps which may have been causing crashing bugs around notification and location setup
+- Don't force unwrap base URL in connect step (was also possibly causing crashes around notification/location)
+- Quote the password in the userscript (Should fix auto login problems)
+- Make app version number a string instead of an int since semver can't be coerced to an int like 1.0 could (This is the long term version of the fix implemented in 0.42.4)

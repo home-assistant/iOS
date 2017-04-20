@@ -129,13 +129,13 @@ class Entity: Object, StaticMappable {
         Location          <- map["attributes.location"]
         BatteryLevel.value      <- map["attributes.battery_level"]
 
-        if let pic = self.Picture {
-            HomeAssistantAPI.sharedInstance.getImage(imageUrl: pic).then { image -> Void in
-                self.DownloadedPicture = image
-                }.catch { err -> Void in
-                    print("Error when attempting to download image", err)
-            }
-        }
+//        if let pic = self.Picture {
+//            HomeAssistantAPI.sharedInstance.getImage(imageUrl: pic).then { image -> Void in
+//                self.DownloadedPicture = image
+//                }.catch { err -> Void in
+//                    print("Error when attempting to download image", err)
+//            }
+//        }
     }
 
     override class func ignoredProperties() -> [String] {

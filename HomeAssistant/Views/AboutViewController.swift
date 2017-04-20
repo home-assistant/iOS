@@ -25,11 +25,16 @@ class AboutViewController: FormViewController {
 
         form
             +++ Section {
-                $0.header = HeaderFooterView<HomeAssistantLogoView>(.nibFile(name: "HomeAssistantLogoView",
-                                                                             bundle: nil))
+                var logoHeader = HeaderFooterView<HomeAssistantLogoView>(.nibFile(name: "HomeAssistantLogoView",
+                                                                                  bundle: nil))
+                logoHeader.onSetupView = { view, _ in
+                    view.AppTitle.text = L10n.About.Logo.appTitle
+                    view.Tagline.text = L10n.About.Logo.tagline
+                }
+                $0.header = logoHeader
             }
             <<< ButtonRow {
-                $0.title = "Acknowledgements"
+                $0.title = L10n.About.Acknowledgements.title
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     return self.generateAcknowledgements()
                     }, onDismiss: { vc in
@@ -38,7 +43,7 @@ class AboutViewController: FormViewController {
             }
             +++ Section()
             <<< ButtonRow {
-                $0.title = "Website"
+                $0.title = L10n.About.Website.title
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
@@ -49,7 +54,7 @@ class AboutViewController: FormViewController {
                 })
 
             <<< ButtonRow {
-                $0.title = "Forums"
+                $0.title = L10n.About.Forums.title
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
@@ -60,7 +65,7 @@ class AboutViewController: FormViewController {
                 })
 
             <<< ButtonRow {
-                $0.title = "Chat"
+                $0.title = L10n.About.Chat.title
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
@@ -71,7 +76,7 @@ class AboutViewController: FormViewController {
                 })
 
             <<< ButtonRow {
-                $0.title = "Documentation"
+                $0.title = L10n.About.Documentation.title
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
@@ -82,7 +87,7 @@ class AboutViewController: FormViewController {
                 })
 
             <<< ButtonRow {
-                $0.title = "Home Assistant on Twitter"
+                $0.title = L10n.About.HomeAssistantOnTwitter.title
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
@@ -93,7 +98,7 @@ class AboutViewController: FormViewController {
                 })
 
             <<< ButtonRow {
-                $0.title = "Home Assistant on Facebook"
+                $0.title = L10n.About.HomeAssistantOnFacebook.title
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
@@ -104,7 +109,7 @@ class AboutViewController: FormViewController {
                 })
 
             <<< ButtonRow {
-                $0.title = "GitHub"
+                $0.title = L10n.About.Github.title
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
@@ -115,7 +120,7 @@ class AboutViewController: FormViewController {
                 })
 
             <<< ButtonRow {
-                $0.title = "GitHub Issue Tracker"
+                $0.title = L10n.About.GithubIssueTracker.title
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
@@ -204,8 +209,9 @@ class AboutViewController: FormViewController {
 
 class HomeAssistantLogoView: UIView {
 
+    @IBOutlet weak var AppTitle: UILabel!
+    @IBOutlet weak var Tagline: UILabel!
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-
 }

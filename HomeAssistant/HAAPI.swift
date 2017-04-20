@@ -217,14 +217,15 @@ public class HomeAssistantAPI {
             "dev_id": deviceID
         ]
 
-        _ = self.identifyDevice()
-
-        self.CallService(domain: "device_tracker",
-                         service: "see",
-                         serviceData: locationUpdate as [String : Any]).then {_ in
-                            print("Device seen!")
-            }.catch {err in
-                Crashlytics.sharedInstance().recordError(err as NSError)
+        firstly {
+            self.identifyDevice()
+        }.then {_ in
+            self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate)
+        }.then { _ in
+            print("Device seen!")
+        }.catch { err in
+            print("Error when updating location!", err)
+            Crashlytics.sharedInstance().recordError(err as NSError)
         }
 
         UIDevice.current.isBatteryMonitoringEnabled = false
@@ -238,15 +239,15 @@ public class HomeAssistantAPI {
         case .RegionEnter:
             notificationBody = "\(zone!.Name) entered"
             notificationIdentifer = "\(zone!.Name)_entered"
-            shouldNotify = zone!.enterNotification
+            shouldNotify = prefs.bool(forKey: "enterNotifications")
         case .RegionExit:
             notificationBody = "\(zone!.Name) exited"
             notificationIdentifer = "\(zone!.Name)_exited"
-            shouldNotify = zone!.exitNotification
+            shouldNotify = prefs.bool(forKey: "exitNotifications")
         case .SignificantLocationUpdate:
-            notificationBody = "Significant location change detected, notifying Home Assistant"
+            notificationBody = "Significant location change detected"
             notificationIdentifer = "sig_change"
-            shouldNotify = true
+            shouldNotify = prefs.bool(forKey: "significantLocationChangeNotifications")
         default:
             notificationBody = ""
         }
@@ -350,18 +351,21 @@ public class HomeAssistantAPI {
 
     func sendOneshotLocation() -> Promise<Bool> {
         return Promise { fulfill, reject in
-            Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, success: { (_, location) in
+            Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, timeout: 25, success: { (_, location) in
                 print("A new update of location is available: \(location)")
-                self.submitLocation(updateType: .Manual,
+                self.submitLocation(updateType: .SignificantLocationUpdate,
                                     coordinates: location.coordinate,
                                     accuracy: location.horizontalAccuracy,
                                     zone: nil)
                 fulfill(true)
-            }) { (request, _, error) in
-                request.cancel() // stop continous location monitoring on error
-                print("Error when trying to get a oneshot location!", error)
-                Crashlytics.sharedInstance().recordError(error)
-                reject(error)
+            }) { (_, _, error) in
+                if error == LocationError.timeout {
+                    fulfill(false)
+                } else {
+                    print("Error when trying to get a oneshot location!", error)
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
             }
         }
     }
@@ -614,7 +618,14 @@ public class HomeAssistantAPI {
                 ).validate().responseArray { (response: DataResponse<[ServicesResponse]>) in
                     switch response.result {
                     case .success:
-                        fulfill(response.result.value!)
+                        if let resVal = response.result.value {
+                            fulfill(resVal)
+                        } else {
+                            CLSLogv("CallService response.result.value could not unwrap! %@",
+                                    // swiftlint:disable:next force_cast
+                                    getVaList([response.result as! CVarArg]))
+                            fulfill([ServicesResponse]())
+                        }
                     case .failure(let error):
                         CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
                         Crashlytics.sharedInstance().recordError(error)
@@ -681,7 +692,6 @@ public class HomeAssistantAPI {
         ident.Permissions = self.enabledPermissions
         ident.PushID = pushID
         ident.PushSounds = listAllInstalledPushNotificationSounds()
-        ident.PushToken = deviceToken
 
         UIDevice.current.isBatteryMonitoringEnabled = true
 
@@ -774,7 +784,6 @@ public class HomeAssistantAPI {
         ident.Permissions = self.enabledPermissions
         ident.PushID = pushID
         ident.PushSounds = listAllInstalledPushNotificationSounds()
-        ident.PushToken = deviceToken
 
         return Mapper().toJSON(ident)
     }
@@ -819,7 +828,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    func registerDeviceForPush(deviceToken: String) -> Promise<String> {
+    func registerDeviceForPush(deviceToken: String) -> Promise<PushRegistrationResponse> {
         let queryUrl = "https://ios-push.home-assistant.io/registrations"
         return Promise { fulfill, reject in
             Alamofire.request(queryUrl,
@@ -830,18 +839,7 @@ public class HomeAssistantAPI {
                     switch response.result {
                     case .success:
                         if let json = response.result.value {
-                            if let pushID = json.PushId {
-                                fulfill(pushID)
-                                return
-                            } else {
-                                let retErr = NSError(domain: "io.robbie.HomeAssistant",
-                                                     code: 404,
-                                                     userInfo: ["message": "pushID was nil!"])
-                                CLSLogv("Error when attemping to registerDeviceForPush(), pushID was nil!: %@",
-                                        getVaList([retErr.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(retErr)
-                                reject(retErr)
-                            }
+                            fulfill(json)
                         } else {
                             let retErr = NSError(domain: "io.robbie.HomeAssistant",
                                                  code: 404,
@@ -930,55 +928,61 @@ public class HomeAssistantAPI {
                 ).validate().responseObject { (response: DataResponse<PushConfiguration>) in
                     switch response.result {
                     case .success:
-                        let config = response.result.value!
-                        var allCategories = Set<UNNotificationCategory>()
-                        if let categories = config.Categories {
-                            for category in categories {
-                                var categoryActions = [UNNotificationAction]()
-                                if let actions = category.Actions {
-                                    for action in actions {
-                                        var actionOptions = UNNotificationActionOptions([])
-                                        if action.AuthenticationRequired {
-                                            actionOptions.insert(.authenticationRequired)
-                                        }
-                                        if action.Destructive {
-                                            actionOptions.insert(.destructive)
-                                        }
-                                        if action.ActivationMode == "foreground" {
-                                            actionOptions.insert(.foreground)
-                                        }
-                                        if action.Behavior == "default" {
-                                            let newAction = UNNotificationAction(identifier: action.Identifier!,
-                                                                                 title: action.Title!,
-                                                                                 options: actionOptions)
-                                            categoryActions.append(newAction)
-                                        } else if action.Behavior == "TextInput" {
-                                            if let identifier = action.Identifier,
-                                                let btnTitle = action.TextInputButtonTitle,
-                                                let place = action.TextInputPlaceholder, let title = action.Title {
-                                                // swiftlint:disable line_length
-                                                let newAction = UNTextInputNotificationAction(identifier: identifier,
-                                                                                              title: title,
-                                                                                              options: actionOptions,
-                                                                                              textInputButtonTitle:btnTitle,
-                                                                                              textInputPlaceholder:place)
-                                                // swiftlint:enable line_length
+                        if let config = response.result.value {
+                            var allCategories = Set<UNNotificationCategory>()
+                            if let categories = config.Categories {
+                                for category in categories {
+                                    var categoryActions = [UNNotificationAction]()
+                                    if let actions = category.Actions {
+                                        for action in actions {
+                                            var actionOptions = UNNotificationActionOptions([])
+                                            if action.AuthenticationRequired {
+                                                actionOptions.insert(.authenticationRequired)
+                                            }
+                                            if action.Destructive {
+                                                actionOptions.insert(.destructive)
+                                            }
+                                            if action.ActivationMode == "foreground" {
+                                                actionOptions.insert(.foreground)
+                                            }
+                                            if action.Behavior == "default" {
+                                                let newAction = UNNotificationAction(identifier: action.Identifier!,
+                                                                                     title: action.Title!,
+                                                                                     options: actionOptions)
                                                 categoryActions.append(newAction)
+                                            } else if action.Behavior == "TextInput" {
+                                                if let identifier = action.Identifier,
+                                                    let btnTitle = action.TextInputButtonTitle,
+                                                    let place = action.TextInputPlaceholder, let title = action.Title {
+                                                    // swiftlint:disable line_length
+                                                    let newAction = UNTextInputNotificationAction(identifier: identifier,
+                                                                                                  title: title,
+                                                                                                  options: actionOptions,
+                                                                                                  textInputButtonTitle:btnTitle,
+                                                                                                  textInputPlaceholder:place)
+                                                    // swiftlint:enable line_length
+                                                    categoryActions.append(newAction)
+                                                }
                                             }
                                         }
+                                    } else {
+                                        print("Category has no actions defined, continuing loop")
+                                        continue
                                     }
-                                } else {
-                                    print("Category has no actions defined, continuing loop")
-                                    continue
+                                    let finalCategory = UNNotificationCategory.init(identifier: category.Identifier!,
+                                                                                    actions: categoryActions,
+                                                                                    intentIdentifiers: [],
+                                                                                    options: [.customDismissAction])
+                                    allCategories.insert(finalCategory)
                                 }
-                                let finalCategory = UNNotificationCategory.init(identifier: category.Identifier!,
-                                                                                actions: categoryActions,
-                                                                                intentIdentifiers: [],
-                                                                                options: [.customDismissAction])
-                                allCategories.insert(finalCategory)
                             }
+                            fulfill(allCategories)
+                        } else {
+                            CLSLogv("setupUserNotificationPushActions response.result.value could not unwrap! %@",
+                                    // swiftlint:disable:next force_cast
+                                getVaList([response.result as! CVarArg]))
+                            fulfill(Set<UNNotificationCategory>())
                         }
-                        fulfill(allCategories)
                     case .failure(let error):
                         CLSLogv("Error on setupUserNotificationPushActions() request: %@",
                                 getVaList([error.localizedDescription]))
@@ -1107,7 +1111,6 @@ public class HomeAssistantAPI {
     var enabledPermissions: [String] {
         var permissionsContainer: [String] = []
         for status in PermissionScope().permissionStatuses([NotificationsPermission().type,
-                                                            // swiftlint:disable:next line_length
             LocationAlwaysPermission().type]) where status.1 == .authorized {
                 let desc = status.0.prettyDescription.lowercased()
                 permissionsContainer.append(desc)

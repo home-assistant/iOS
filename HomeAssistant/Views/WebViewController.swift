@@ -12,7 +12,7 @@ import MBProgressHUD
 import KeychainAccess
 import PromiseKit
 
-class WebViewController: UIViewController, WKNavigationDelegate {
+class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     var webView: WKWebView!
     let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
@@ -20,7 +20,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     override func loadView() {
         let config = WKWebViewConfiguration()
         if let apiPass = keychain["apiPassword"] {
-            let scriptStr = "window.hassConnection = createHassConnection(\(apiPass));"
+            let scriptStr = "window.hassConnection = createHassConnection(\"\(apiPass)\");"
             let script = WKUserScript(source: scriptStr, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
             let userContentController = WKUserContentController()
             userContentController.addUserScript(script)
@@ -28,6 +28,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         }
         webView = WKWebView(frame: UIScreen.main.bounds, configuration: config)
         webView.navigationDelegate = self
+        webView.uiDelegate = self
         view = webView
     }
 
@@ -144,9 +145,9 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         }
     }
 
-    func webView(webView: WKWebView,
-                 createWebViewWithConfiguration configuration: WKWebViewConfiguration,
-                 forNavigationAction navigationAction: WKNavigationAction,
+    func webView(_ webView: WKWebView,
+                 createWebViewWith configuration: WKWebViewConfiguration,
+                 for navigationAction: WKNavigationAction,
                  windowFeatures: WKWindowFeatures) -> WKWebView? {
         if navigationAction.targetFrame == nil {
             openURLInBrowser(urlToOpen: navigationAction.request.url!)
@@ -176,18 +177,18 @@ class WebViewController: UIViewController, WKNavigationDelegate {
 
     func sendCurrentLocation(_ sender: UIButton) {
         HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
-            let alert = UIAlertController(title: "Location updated",
-                                          message: "Successfully sent a one shot location to the server",
+            let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
+                                          message: L10n.ManualLocationUpdateNotification.message,
                                           preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
             }.catch {error in
                 let nserror = error as NSError
-                let message = "Failed to send current location to server. The error was \(nserror.localizedDescription)"
-                let alert = UIAlertController(title: "Location failed to update",
+                let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
+                let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
                                               message: message,
                                               preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
         }
     }

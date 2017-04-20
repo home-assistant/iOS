@@ -36,6 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.path)
         Fabric.with([Crashlytics.self])
 
+        UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+
         NetworkActivityIndicatorManager.shared.isEnabled = true
 
         if #available(iOS 10, *) {
@@ -93,13 +95,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         HomeAssistantAPI.sharedInstance.deviceToken = tokenString
 
-        _ = HomeAssistantAPI.sharedInstance.registerDeviceForPush(deviceToken: tokenString).then { pushId -> Void in
-            print("Registered for push. PushID:", pushId)
-            CLSLogv("Registered for push:", getVaList([pushId]))
-            Crashlytics.sharedInstance().setUserIdentifier(pushId)
-            self.prefs.setValue(pushId, forKey: "pushID")
-            HomeAssistantAPI.sharedInstance.pushID = pushId
-            _ = HomeAssistantAPI.sharedInstance.identifyDevice()
+        _ = HomeAssistantAPI.sharedInstance.registerDeviceForPush(deviceToken: tokenString).then { resp -> Void in
+            if let pushId = resp.PushId {
+                print("Registered for push. Platform: \(resp.SNSPlatform ?? "MISSING"), PushID: \(pushId)")
+                CLSLogv("Registered for push:", getVaList([pushId]))
+                Crashlytics.sharedInstance().setUserIdentifier(pushId)
+                self.prefs.setValue(pushId, forKey: "pushID")
+                HomeAssistantAPI.sharedInstance.pushID = pushId
+                _ = HomeAssistantAPI.sharedInstance.identifyDevice()
+            }
         }
 
     }
@@ -123,18 +127,44 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         print("Received remote request to provide a location update")
                         HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
                             print("Did successfully send location when requested via APNS?", success)
-                            completionHandler(UIBackgroundFetchResult.noData)
-                            }.catch {error in
-                                print("Error when attempting to submit location update")
-                                Crashlytics.sharedInstance().recordError(error)
+                            if success == true {
+                                completionHandler(UIBackgroundFetchResult.newData)
+                            } else {
                                 completionHandler(UIBackgroundFetchResult.failed)
+                            }
+                        }.catch {error in
+                            print("Error when attempting to submit location update")
+                            Crashlytics.sharedInstance().recordError(error)
+                            completionHandler(UIBackgroundFetchResult.failed)
                         }
                     default:
                         print("Received unknown command via APNS!", userInfo)
                         completionHandler(UIBackgroundFetchResult.noData)
                     }
+                } else {
+                    completionHandler(UIBackgroundFetchResult.failed)
                 }
+            } else {
+                completionHandler(UIBackgroundFetchResult.failed)
             }
+        } else {
+            completionHandler(UIBackgroundFetchResult.failed)
+        }
+    }
+
+    func application(_ application: UIApplication,
+                     performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        print("Background fetch activated!")
+        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
+            if success == true {
+                completionHandler(UIBackgroundFetchResult.newData)
+            } else {
+                completionHandler(UIBackgroundFetchResult.failed)
+            }
+        }.catch {error in
+            print("Error when attempting to submit location update")
+            Crashlytics.sharedInstance().recordError(error)
+            completionHandler(UIBackgroundFetchResult.failed)
         }
     }
 
@@ -203,6 +233,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                        willPresent notification: UNNotification,
                                        // swiftlint:disable:next line_length
                                        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("Received notification!")
         completionHandler([.alert, .badge, .sound])
     }
 }
