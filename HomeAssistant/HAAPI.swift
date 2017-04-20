@@ -828,7 +828,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    func registerDeviceForPush(deviceToken: String) -> Promise<String> {
+    func registerDeviceForPush(deviceToken: String) -> Promise<PushRegistrationResponse> {
         let queryUrl = "https://ios-push.home-assistant.io/registrations"
         return Promise { fulfill, reject in
             Alamofire.request(queryUrl,
@@ -839,18 +839,7 @@ public class HomeAssistantAPI {
                     switch response.result {
                     case .success:
                         if let json = response.result.value {
-                            if let pushID = json.PushId {
-                                fulfill(pushID)
-                                return
-                            } else {
-                                let retErr = NSError(domain: "io.robbie.HomeAssistant",
-                                                     code: 404,
-                                                     userInfo: ["message": "pushID was nil!"])
-                                CLSLogv("Error when attemping to registerDeviceForPush(), pushID was nil!: %@",
-                                        getVaList([retErr.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(retErr)
-                                reject(retErr)
-                            }
+                            fulfill(json)
                         } else {
                             let retErr = NSError(domain: "io.robbie.HomeAssistant",
                                                  code: 404,

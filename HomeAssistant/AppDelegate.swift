@@ -95,13 +95,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         HomeAssistantAPI.sharedInstance.deviceToken = tokenString
 
-        _ = HomeAssistantAPI.sharedInstance.registerDeviceForPush(deviceToken: tokenString).then { pushId -> Void in
-            print("Registered for push. PushID:", pushId)
-            CLSLogv("Registered for push:", getVaList([pushId]))
-            Crashlytics.sharedInstance().setUserIdentifier(pushId)
-            self.prefs.setValue(pushId, forKey: "pushID")
-            HomeAssistantAPI.sharedInstance.pushID = pushId
-            _ = HomeAssistantAPI.sharedInstance.identifyDevice()
+        _ = HomeAssistantAPI.sharedInstance.registerDeviceForPush(deviceToken: tokenString).then { resp -> Void in
+            if let pushId = resp.PushId {
+                print("Registered for push. Platform: \(resp.SNSPlatform ?? "MISSING"), PushID: \(pushId)")
+                CLSLogv("Registered for push:", getVaList([pushId]))
+                Crashlytics.sharedInstance().setUserIdentifier(pushId)
+                self.prefs.setValue(pushId, forKey: "pushID")
+                HomeAssistantAPI.sharedInstance.pushID = pushId
+                _ = HomeAssistantAPI.sharedInstance.identifyDevice()
+            }
         }
 
     }
@@ -231,6 +233,38 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                        willPresent notification: UNNotification,
                                        // swiftlint:disable:next line_length
                                        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("Received notification!")
+        if let userInfoDict = notification.request.content.userInfo as? [String:Any] {
+            if let hadict = userInfoDict["homeassistant"] as? [String:String] {
+                if let command = hadict["command"] {
+                    switch command {
+                    case "request_location_update":
+                        print("Received remote request to provide a location update")
+                        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
+                            print("Did successfully send location when requested via APNS?", success)
+                            if success == true {
+                                completionHandler(UIBackgroundFetchResult.newData)
+                            } else {
+                                completionHandler(UIBackgroundFetchResult.failed)
+                            }
+                        }.catch {error in
+                            print("Error when attempting to submit location update")
+                            Crashlytics.sharedInstance().recordError(error)
+                            completionHandler(UIBackgroundFetchResult.failed)
+                        }
+                    default:
+                        print("Received unknown command via APNS!", userInfo)
+                        completionHandler(UIBackgroundFetchResult.noData)
+                    }
+                } else {
+                    completionHandler(UIBackgroundFetchResult.failed)
+                }
+            } else {
+                completionHandler(UIBackgroundFetchResult.failed)
+            }
+        } else {
+            completionHandler(UIBackgroundFetchResult.failed)
+        }
         completionHandler([.alert, .badge, .sound])
     }
 }
