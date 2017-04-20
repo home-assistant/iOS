@@ -234,37 +234,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                        // swiftlint:disable:next line_length
                                        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         print("Received notification!")
-        if let userInfoDict = notification.request.content.userInfo as? [String:Any] {
-            if let hadict = userInfoDict["homeassistant"] as? [String:String] {
-                if let command = hadict["command"] {
-                    switch command {
-                    case "request_location_update":
-                        print("Received remote request to provide a location update")
-                        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
-                            print("Did successfully send location when requested via APNS?", success)
-                            if success == true {
-                                completionHandler(UIBackgroundFetchResult.newData)
-                            } else {
-                                completionHandler(UIBackgroundFetchResult.failed)
-                            }
-                        }.catch {error in
-                            print("Error when attempting to submit location update")
-                            Crashlytics.sharedInstance().recordError(error)
-                            completionHandler(UIBackgroundFetchResult.failed)
-                        }
-                    default:
-                        print("Received unknown command via APNS!", userInfo)
-                        completionHandler(UIBackgroundFetchResult.noData)
-                    }
-                } else {
-                    completionHandler(UIBackgroundFetchResult.failed)
-                }
-            } else {
-                completionHandler(UIBackgroundFetchResult.failed)
-            }
-        } else {
-            completionHandler(UIBackgroundFetchResult.failed)
-        }
         completionHandler([.alert, .badge, .sound])
     }
 }
