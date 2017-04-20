@@ -353,7 +353,7 @@ public class HomeAssistantAPI {
         return Promise { fulfill, reject in
             Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, timeout: 25, success: { (_, location) in
                 print("A new update of location is available: \(location)")
-                self.submitLocation(updateType: .Manual,
+                self.submitLocation(updateType: .SignificantLocationUpdate,
                                     coordinates: location.coordinate,
                                     accuracy: location.horizontalAccuracy,
                                     zone: nil)
