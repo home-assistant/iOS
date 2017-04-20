@@ -15,8 +15,6 @@ import KeychainAccess
 
 class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
-    let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -32,30 +30,25 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
         if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-            firstly {
-                // swiftlint:disable:next line_length
-                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass, deviceID: keychain["deviceID"])
-                }.then {_ in
-                    HomeAssistantAPI.sharedInstance.Connect()
-                }.then { _ -> Void in
-                    if HomeAssistantAPI.sharedInstance.notificationsEnabled {
-                        UIApplication.shared.registerForRemoteNotifications()
-                    }
-                    print("Connected!")
-                    hud.hide(animated: true)
-                    self.loadTabs()
-                    return
-                }.catch {err -> Void in
-                    print("ERROR on connect!!!", err)
-                    hud.hide(animated: true)
-                    let settingsView = SettingsViewController()
-                    settingsView.showErrorConnectingMessage = true
-                    settingsView.showErrorConnectingMessageError = err
-                    settingsView.doneButton = true
-                    let navController = UINavigationController(rootViewController: settingsView)
-                    self.present(navController, animated: true, completion: nil)
+            HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass, deviceID: keychain["deviceID"])
+            HomeAssistantAPI.sharedInstance.Connect().then { _ -> Void in
+                if HomeAssistantAPI.sharedInstance.notificationsEnabled {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+                print("Connected!")
+                hud.hide(animated: true)
+                self.loadTabs()
+                return
+            }.catch {err -> Void in
+                print("ERROR on connect!!!", err)
+                hud.hide(animated: true)
+                let settingsView = SettingsViewController()
+                settingsView.showErrorConnectingMessage = true
+                settingsView.showErrorConnectingMessageError = err
+                settingsView.doneButton = true
+                let navController = UINavigationController(rootViewController: settingsView)
+                self.present(navController, animated: true, completion: nil)
             }
         } else {
             let settingsView = SettingsViewController()

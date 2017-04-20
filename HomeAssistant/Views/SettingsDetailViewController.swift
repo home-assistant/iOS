@@ -14,8 +14,6 @@ import Crashlytics
 
 class SettingsDetailViewController: FormViewController {
 
-    let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
-
     var detailGroup: String = "display"
 
     // swiftlint:disable:next function_body_length cyclomatic_complexity
@@ -32,15 +30,15 @@ class SettingsDetailViewController: FormViewController {
                     $0.title = L10n.SettingsDetails.General.Chrome.title
                     $0.value = prefs.bool(forKey: "openInChrome")
                     }.onChange { row in
-                        self.prefs.setValue(row.value, forKey: "openInChrome")
-                        self.prefs.synchronize()
+                        prefs.setValue(row.value, forKey: "openInChrome")
+                        prefs.synchronize()
             }
             //                <<< SwitchRow("allowAllGroups") {
             //                    $0.title = "Show all groups"
             //                    $0.value = prefs.bool(forKey: "allowAllGroups")
             //                    }.onChange { row in
-            //                        self.prefs.setValue(row.value, forKey: "allowAllGroups")
-            //                        self.prefs.synchronize()
+            //                        prefs.setValue(row.value, forKey: "allowAllGroups")
+            //                        prefs.synchronize()
         //                }
         case "location":
             self.title = L10n.SettingsDetails.Location.title
@@ -51,7 +49,7 @@ class SettingsDetailViewController: FormViewController {
                     $0.value = prefs.bool(forKey: "enterNotifications")
                 }.onChange({ (row) in
                     if let val = row.value {
-                        self.prefs.set(val, forKey: "enterNotifications")
+                        prefs.set(val, forKey: "enterNotifications")
                     }
                 })
                 <<< SwitchRow {
@@ -59,7 +57,7 @@ class SettingsDetailViewController: FormViewController {
                     $0.value = prefs.bool(forKey: "exitNotifications")
                 }.onChange({ (row) in
                     if let val = row.value {
-                        self.prefs.set(val, forKey: "exitNotifications")
+                        prefs.set(val, forKey: "exitNotifications")
                     }
                 })
                 <<< SwitchRow {
@@ -67,7 +65,7 @@ class SettingsDetailViewController: FormViewController {
                     $0.value = prefs.bool(forKey: "significantLocationChangeNotifications")
                 }.onChange({ (row) in
                     if let val = row.value {
-                        self.prefs.set(val, forKey: "significantLocationChangeNotifications")
+                        prefs.set(val, forKey: "significantLocationChangeNotifications")
                     }
                 })
             if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {

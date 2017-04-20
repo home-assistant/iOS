@@ -249,8 +249,6 @@ func migrateUserDefaultsToAppGroups() {
 
 func migrateSecretsToKeychain() {
 
-    let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.homeassistant")
-
     let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant")
 
     let didMigrateToKeychain = "DidMigrateSecretsToKeychain"
@@ -274,8 +272,6 @@ func migrateSecretsToKeychain() {
 
 func migrateDeviceIDToKeychain() {
 
-    let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.homeassistant")
-
     let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant")
 
     let didMigrateToKeychain = "DidMigrateDeviceIDToKeychain"
@@ -296,7 +292,6 @@ func migrateDeviceIDToKeychain() {
 }
 
 func resetStores() {
-    let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
     do {
         try keychain.removeAll()
     } catch {
@@ -316,15 +311,13 @@ func openURLStringInBrowser(url: String) {
 }
 
 func openURLInBrowser(urlToOpen: URL) {
-    if let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant") {
-        if OpenInChromeController.sharedInstance.isChromeInstalled() && prefs.bool(forKey: "openInChrome") {
-            _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
+    if OpenInChromeController.sharedInstance.isChromeInstalled() && prefs.bool(forKey: "openInChrome") {
+        _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
+    } else {
+        if #available(iOS 10, *) {
+            UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
         } else {
-            if #available(iOS 10, *) {
-                UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
-            } else {
-                _ = UIApplication.shared.openURL(urlToOpen)
-            }
+            _ = UIApplication.shared.openURL(urlToOpen)
         }
     }
 }

@@ -22,8 +22,6 @@ import Crashlytics
 import RealmSwift
 import UserNotifications
 
-let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
-
 let APIClientSharedInstance = HomeAssistantAPI()
 
 // swiftlint:disable file_length
@@ -61,7 +59,7 @@ public class HomeAssistantAPI {
 
     var cachedEntities: [Entity]?
 
-    func Setup(baseURL: String, password: String, deviceID: String?) -> Promise<StatusResponse> {
+    func Setup(baseURL: String, password: String, deviceID: String?) {
         self.baseURL = baseURL
         self.baseAPIURL = baseURL+"/api/"
         if let dID = deviceID {
@@ -92,7 +90,7 @@ public class HomeAssistantAPI {
             deviceToken = deviceTok
         }
 
-        return GetStatus()
+        return
 
     }
 
