@@ -207,7 +207,7 @@ platform :ios do
 
     # certs
 
-    gym
+    gym(scheme: "Release")
 
     notification(
       subtitle: "Finished Building",
