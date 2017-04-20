@@ -8,7 +8,6 @@
 
 import UIKit
 import MBProgressHUD
-import Whisper
 import ObjectMapper
 import PromiseKit
 import KeychainAccess

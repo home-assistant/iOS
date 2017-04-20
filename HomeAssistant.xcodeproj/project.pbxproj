@@ -1892,8 +1892,6 @@
 					"-framework",
 					"\"FontAwesomeKit\"",
 					"-framework",
-					"\"IKEventSource\"",
-					"-framework",
 					"\"MBProgressHUD\"",
 					"-framework",
 					"\"PermissionScope\"",
@@ -1907,8 +1905,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"UIKit\"",
-					"-framework",
-					"\"Whisper\"",
 					"$(inherited)",
 				);
 				PRODUCT_NAME = "Home Assistant";
@@ -1947,8 +1943,6 @@
 					"-framework",
 					"\"FontAwesomeKit\"",
 					"-framework",
-					"\"IKEventSource\"",
-					"-framework",
 					"\"MBProgressHUD\"",
 					"-framework",
 					"\"PermissionScope\"",
@@ -1962,8 +1956,6 @@
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"UIKit\"",
-					"-framework",
-					"\"Whisper\"",
 					"$(inherited)",
 				);
 				PRODUCT_NAME = "Home Assistant";

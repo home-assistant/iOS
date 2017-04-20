@@ -39,7 +39,6 @@ PODS:
   - SwiftGen (4.2.0)
   - SwiftLint (0.18.1)
   - SwiftLocation (2.0.2)
-  - Whisper (4.0.0)
 
 DEPENDENCIES:
   - Alamofire
@@ -62,7 +61,6 @@ DEPENDENCIES:
   - SwiftGen
   - SwiftLint
   - SwiftLocation
-  - Whisper
 
 EXTERNAL SOURCES:
   Eureka:
@@ -107,8 +105,7 @@ SPEC CHECKSUMS:
   SwiftGen: b6bfed151243348e4603b91bf5bc4eb2486c9d5b
   SwiftLint: b467d08f5b25dc3b3cfed243d8e1b74b91714c67
   SwiftLocation: 887fa007f6f0567dfd00543c3fb356c4c793c2a6
-  Whisper: '08be92623311f8e53201e62e17f6d7b9599a4714'
 
-PODFILE CHECKSUM: 1572bd7fee76509307d6692840d51060e9fee211
+PODFILE CHECKSUM: 802ce6474e24ddee98515d607095c9b380f9bc58
 
 COCOAPODS: 1.1.1

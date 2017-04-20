@@ -12,7 +12,6 @@ import AlamofireImage
 import PromiseKit
 import SwiftLocation
 import CoreLocation
-import Whisper
 import AlamofireObjectMapper
 import ObjectMapper
 import DeviceKit
@@ -522,8 +521,6 @@ public class HomeAssistantAPI {
                 ).validate().responseObject { (response: DataResponse<Entity>) in
                     switch response.result {
                     case .success:
-                        let murmurTitle = response.result.value!.Domain+" state set to "+response.result.value!.State
-                        self.showMurmur(title: murmurTitle)
 //                        self.storeEntities(entities: [response.result.value!])
                         fulfill(response.result.value!)
                     case .failure(let error):
@@ -545,7 +542,6 @@ public class HomeAssistantAPI {
                                         switch response.result {
                                         case .success:
                                             if let jsonDict = response.result.value as? [String : String] {
-                                                self.showMurmur(title: eventType+" created")
                                                 fulfill(jsonDict["message"]!)
                                             }
                                         case .failure(let error):
@@ -559,7 +555,6 @@ public class HomeAssistantAPI {
     }
 
     func CallService(domain: String, service: String, serviceData: [String:Any]) -> Promise<[ServicesResponse]> {
-        //        self.showMurmur(title: domain+"/"+service+" called")
         let queryUrl = baseAPIURL+"services/"+domain+"/"+service
         return Promise { fulfill, reject in
             _ = self.manager!.request(queryUrl,
@@ -587,33 +582,26 @@ public class HomeAssistantAPI {
     }
 
     func turnOn(entityId: String) -> Promise<[ServicesResponse]> {
-        self.showMurmur(title: entityId+" turned on")
         return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
     }
 
     func turnOnEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        self.showMurmur(title: "\(entity.Name) turned on")
         return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entity.ID])
     }
 
     func turnOff(entityId: String) -> Promise<[ServicesResponse]> {
-        self.showMurmur(title: entityId+" turned off")
         return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entityId])
     }
 
     func turnOffEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        self.showMurmur(title: "\(entity.Name) turned off")
         return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entity.ID])
     }
 
     func toggle(entityId: String) -> Promise<[ServicesResponse]> {
-        let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityId)
-        self.showMurmur(title: "\(entity!.Name) toggled")
         return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
     }
 
     func toggleEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        self.showMurmur(title: "\(entity.Name) toggled")
         return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
 
@@ -1059,10 +1047,6 @@ public class HomeAssistantAPI {
                 permissionsContainer.append(desc)
         }
         return permissionsContainer
-    }
-
-    func showMurmur(title: String) {
-        show(whistle: Murmur(title: title), action: .show(2.0))
     }
 
     func CleanBaseURL(baseUrl: URL) -> (hasValidScheme: Bool, cleanedURL: URL) {

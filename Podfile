@@ -26,7 +26,6 @@ target 'HomeAssistant' do
   pod 'SwiftGen'
   pod 'SwiftLint'
   pod 'SwiftLocation'
-  pod 'Whisper'
 end
 
 target 'HomeAssistantTests' do
