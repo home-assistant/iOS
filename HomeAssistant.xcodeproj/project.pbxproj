@@ -432,7 +432,7 @@
 		B64D04791CB8908B00B945C8 /* StateChanged.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateChanged.swift; sourceTree = "<group>"; };
 		B64D047C1CB8916300B945C8 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		B64D09AE1D7D561E008EB487 /* InputSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputSlider.swift; sourceTree = "<group>"; };
-		B657A8E61CA646EB00121384 /* HomeAssistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeAssistant.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B657A8E61CA646EB00121384 /* Home Assistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B657A8ED1CA646EB00121384 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		B657A8F21CA646EB00121384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -782,7 +782,7 @@
 		B657A8E71CA646EB00121384 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B657A8E61CA646EB00121384 /* HomeAssistant.app */,
+				B657A8E61CA646EB00121384 /* Home Assistant.app */,
 				B657A8FC1CA646EB00121384 /* HomeAssistantTests.xctest */,
 				B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */,
 				B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */,
@@ -989,7 +989,7 @@
 			);
 			name = HomeAssistant;
 			productName = HomeAssistant;
-			productReference = B657A8E61CA646EB00121384 /* HomeAssistant.app */;
+			productReference = B657A8E61CA646EB00121384 /* Home Assistant.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B657A8FB1CA646EB00121384 /* HomeAssistantTests */ = {
@@ -1911,7 +1911,7 @@
 					"\"Whisper\"",
 					"$(inherited)",
 				);
-				PRODUCT_NAME = HomeAssistant;
+				PRODUCT_NAME = "Home Assistant";
 				PROVISIONING_PROFILE = "0e23e0e0-51be-4afd-8f10-d4659e3af88e";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant/HomeAssistant-Bridging-Header.h";
@@ -1966,7 +1966,7 @@
 					"\"Whisper\"",
 					"$(inherited)",
 				);
-				PRODUCT_NAME = HomeAssistant;
+				PRODUCT_NAME = "Home Assistant";
 				PROVISIONING_PROFILE = "3875637c-d045-4a07-879a-cf393f6a9f3e";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant/HomeAssistant-Bridging-Header.h";
