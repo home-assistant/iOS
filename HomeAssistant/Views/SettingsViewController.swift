@@ -110,15 +110,6 @@ class SettingsViewController: FormViewController {
             object: nil)
 
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(SettingsViewController.SSEConnectionChange(_:)),
-                                               name:NSNotification.Name(rawValue: "sse.opened"),
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(SettingsViewController.SSEConnectionChange(_:)),
-                                               name:NSNotification.Name(rawValue: "sse.error"),
-                                               object: nil)
-
-        NotificationCenter.default.addObserver(self,
                                                selector: #selector(SettingsViewController.Connected(_:)),
                                                name:NSNotification.Name(rawValue: "connected"),
                                                object: nil)
@@ -241,10 +232,6 @@ class SettingsViewController: FormViewController {
                     $0.value = version
                 }
             }
-//            <<< LabelRow("connectedToSSE") {
-//                $0.title = L10n.Settings.StatusSection.ConnectedToSseRow.title
-//                $0.value = HomeAssistantAPI.sharedInstance.sseConnected ? "✔️" : "✖️"
-//            }
             <<< LabelRow("iosComponentLoaded") {
                 $0.title = L10n.Settings.StatusSection.IosComponentLoadedRow.title
                 $0.value = HomeAssistantAPI.sharedInstance.iosComponentLoaded ? "✔️" : "✖️"
@@ -469,16 +456,6 @@ class SettingsViewController: FormViewController {
         discoverySection.hidden = Condition(booleanLiteral: (discoverySection.count < 1))
         discoverySection.evaluateHidden()
         self.tableView.reloadData()
-    }
-
-    func SSEConnectionChange(_ notification: Notification) {
-        let sseRow: LabelRow = self.form.rowBy(tag: "connectedToSSE")!
-        if notification.name.rawValue == "sse.opened" {
-            sseRow.value = "✔️"
-        } else if notification.name.rawValue == "sse.error" {
-            sseRow.value = "✖️"
-        }
-        sseRow.updateCell()
     }
 
     func Connected(_ notification: Notification) {

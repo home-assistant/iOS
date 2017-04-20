@@ -19,10 +19,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)),
-                                               name:NSNotification.Name(rawValue: "sse.state_changed"),
-                                               object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -195,22 +191,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-
-    func StateChangedSSEEvent(_ notification: Notification) {
-        if let userInfo = (notification as NSNotification).userInfo {
-            if let jsonObj = userInfo["jsonObject"] as? [String: Any] {
-                if let event = Mapper<StateChangedEvent>().map(JSON: jsonObj) {
-                    let new = event.NewState! as Entity
-                    let old = event.OldState! as Entity
-                    var subtitleString = "\(new.FriendlyName!) is now \(new.State). It was \(old.State)"
-                    if let uom = new.UnitOfMeasurement {
-                        subtitleString = "\(new.State) \(uom). It was \(old.State) \(old.UnitOfMeasurement ?? "")"
-                    }
-                    _ = Murmur(title: subtitleString)
-                }
-            }
-        }
     }
 
     func openMapView(_ sender: UIButton) {

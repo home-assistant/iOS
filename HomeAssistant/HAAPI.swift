@@ -10,7 +10,6 @@ import Foundation
 import Alamofire
 import AlamofireImage
 import PromiseKit
-import IKEventSource
 import SwiftLocation
 import CoreLocation
 import Whisper
@@ -50,8 +49,6 @@ public class HomeAssistantAPI {
     var baseURL: String = ""
     var baseAPIURL: String = ""
     var apiPassword: String = ""
-
-    private var eventSource: EventSource?
 
     private var headers = [String: String]()
 
@@ -132,7 +129,6 @@ public class HomeAssistantAPI {
                     }
 
                     //                self.GetHistory()
-                    //                self.startStream()
                     fulfill(config)
                 })
                 }.catch {error in
@@ -141,49 +137,6 @@ public class HomeAssistantAPI {
                     reject(error)
             }
 
-        }
-    }
-
-    func startStream() {
-        eventSource = EventSource(url: baseAPIURL+"stream", headers: headers)
-
-        eventSource?.onOpen {
-            print("SSE: Connection Opened")
-            self.showMurmur(title: "Connected to Home Assistant")
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.opened"),
-                                            object: nil, userInfo: nil)
-        }
-
-        eventSource?.onError { error in
-            if let err = error {
-                Crashlytics.sharedInstance().recordError(err)
-                print("SSE: ", err)
-                self.showMurmur(title: "SSE Error! \(err.localizedDescription)")
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.error"),
-                                                object: nil, userInfo: [
-                                                    "code": err.code,
-                                                    "description": err.description
-                    ])
-            }
-        }
-
-        eventSource?.onMessage { (_, eventName, data) in
-            if let eventData = data {
-                if eventData == "ping" { return }
-                if let event = Mapper<SSEEvent>().map(JSONString: eventData) {
-                    if event is StateChangedEvent {
-//                        if let newState = mapped.NewState {
-//                            HomeAssistantAPI.sharedInstance.storeEntities(entities: [newState])
-//                        }
-                    }
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.\(event.EventType)"),
-                                                    object: nil, userInfo: event.toJSON())
-                } else {
-                    print("Unable to ObjectMap this SSE message", eventName!, eventData)
-                }
-            } else {
-                print("Unable to ObjectMap this SSE message", eventName!, data as Any)
-            }
         }
     }
 
@@ -1096,14 +1049,6 @@ public class HomeAssistantAPI {
 
     var iosNotifyPlatformLoaded: Bool {
         return self.loadedComponents.contains("notify.ios")
-    }
-
-    var sseConnected: Bool {
-        if let sse = self.eventSource {
-            return sse.readyState == .open
-        } else {
-            return false
-        }
     }
 
     var enabledPermissions: [String] {
