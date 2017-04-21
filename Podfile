@@ -45,7 +45,7 @@ target 'MapNotificationContentExtension' do
 end
 
 
-target 'CameraNotificationContentExtension' do
+target 'NotificationContentExtension' do
   pod 'KeychainAccess'
   pod 'MBProgressHUD'
 end
