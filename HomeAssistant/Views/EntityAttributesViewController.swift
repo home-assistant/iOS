@@ -186,92 +186,10 @@ class EntityAttributesViewController: FormViewController {
         }
 
         // Do any additional setup after loading the view.
-        NotificationCenter.default.addObserver(self,
-                                               // swiftlint:disable:next line_length
-            selector: #selector(EntityAttributesViewController.StateChangedSSEEvent(_:)),
-            name:NSNotification.Name(rawValue: "sse.state_changed"),
-            object: nil)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
-    func StateChangedSSEEvent(_ notification: NSNotification) {
-        if let userInfo = (notification as NSNotification).userInfo {
-            if let userInfoDict = userInfo as? [String : Any] {
-                if let event = Mapper<StateChangedEvent>().map(JSON: userInfoDict) {
-                    if event.EntityID != entityID { return }
-                    if let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityID as AnyObject) {
-                        if let newState = event.NewState {
-                            var updateDict: [String:Any] = [:]
-                            newState.Attributes["state"] = entity.State
-                            for (key, value) in newState.Attributes {
-                                switch key {
-                                case "fan":
-                                    if let thermostat = entity as? Thermostat {
-                                        if let fan = thermostat.Fan {
-                                            updateDict[key] = fan
-                                        }
-                                    }
-                                    break
-                                case "away_mode":
-                                    if let thermostat = entity as? Thermostat {
-                                        if let awaymode = thermostat.AwayMode {
-                                            updateDict[key] = awaymode
-                                        }
-                                    }
-                                    break
-                                case "temperature":
-                                    if let thermostat = entity as? Thermostat {
-                                        if let temperature = thermostat.Temperature {
-                                            updateDict[key] = Float(temperature)
-                                        }
-                                    }
-                                    break
-                                case "media_duration":
-                                    if let mediaPlayer = entity as? MediaPlayer {
-                                        updateDict[key] = mediaPlayer.humanReadableMediaDuration()
-                                    }
-                                    break
-                                case "is_volume_muted":
-                                    if let mediaPlayer = entity as? MediaPlayer {
-                                        updateDict[key] = mediaPlayer.IsVolumeMuted
-                                    }
-                                    break
-                                case "volume_level":
-                                    if let mediaPlayer = entity as? MediaPlayer {
-                                        if let level = mediaPlayer.VolumeLevel.value {
-                                            updateDict[key] = Float(level) * Float(100.0)
-                                        }
-                                    }
-                                    break
-                                case "entity_picture", "icon", "supported_media_commands", "hidden", "assumed_state":
-                                    // Skip these attributes
-                                    break
-                                case "state":
-                                    if entity.Domain == "switch" ||
-                                        entity.Domain == "light" ||
-                                        entity.Domain == "input_boolean" {
-                                        updateDict["state"] = (entity.State == "on") as Bool
-                                    } else {
-                                        fallthrough
-                                    }
-                                    break
-                                default:
-                                    updateDict[key] = String(describing: value)
-                                    break
-                                }
-                            }
-                            // fatal error: can't unsafeBitCast between types of different sizes
-                            self.form.setValues(updateDict)
-                        }
-                    }
-                }
-            }
-        }
-    }
-    // swiftlint:enable cyclomatic_complexity
 }

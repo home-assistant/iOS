@@ -8,23 +8,16 @@
 
 import UIKit
 import MBProgressHUD
-import Whisper
 import ObjectMapper
 import PromiseKit
 import KeychainAccess
 
 class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
-    let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(RootTabBarViewController.StateChangedSSEEvent(_:)),
-                                               name:NSNotification.Name(rawValue: "sse.state_changed"),
-                                               object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -32,30 +25,25 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
         if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-            firstly {
-                // swiftlint:disable:next line_length
-                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass, deviceID: keychain["deviceID"])
-                }.then {_ in
-                    HomeAssistantAPI.sharedInstance.Connect()
-                }.then { _ -> Void in
-                    if HomeAssistantAPI.sharedInstance.notificationsEnabled {
-                        UIApplication.shared.registerForRemoteNotifications()
-                    }
-                    print("Connected!")
-                    hud.hide(animated: true)
-                    self.loadTabs()
-                    return
-                }.catch {err -> Void in
-                    print("ERROR on connect!!!", err)
-                    hud.hide(animated: true)
-                    let settingsView = SettingsViewController()
-                    settingsView.showErrorConnectingMessage = true
-                    settingsView.showErrorConnectingMessageError = err
-                    settingsView.doneButton = true
-                    let navController = UINavigationController(rootViewController: settingsView)
-                    self.present(navController, animated: true, completion: nil)
+            HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass, deviceID: keychain["deviceID"])
+            HomeAssistantAPI.sharedInstance.Connect().then { _ -> Void in
+                if HomeAssistantAPI.sharedInstance.notificationsEnabled {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+                print("Connected!")
+                hud.hide(animated: true)
+                self.loadTabs()
+                return
+            }.catch {err -> Void in
+                print("ERROR on connect!!!", err)
+                hud.hide(animated: true)
+                let settingsView = SettingsViewController()
+                settingsView.showErrorConnectingMessage = true
+                settingsView.showErrorConnectingMessageError = err
+                settingsView.doneButton = true
+                let navController = UINavigationController(rootViewController: settingsView)
+                self.present(navController, animated: true, completion: nil)
             }
         } else {
             let settingsView = SettingsViewController()
@@ -202,22 +190,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-
-    func StateChangedSSEEvent(_ notification: Notification) {
-        if let userInfo = (notification as NSNotification).userInfo {
-            if let jsonObj = userInfo["jsonObject"] as? [String: Any] {
-                if let event = Mapper<StateChangedEvent>().map(JSON: jsonObj) {
-                    let new = event.NewState! as Entity
-                    let old = event.OldState! as Entity
-                    var subtitleString = "\(new.FriendlyName!) is now \(new.State). It was \(old.State)"
-                    if let uom = new.UnitOfMeasurement {
-                        subtitleString = "\(new.State) \(uom). It was \(old.State) \(old.UnitOfMeasurement ?? "")"
-                    }
-                    _ = Murmur(title: subtitleString)
-                }
-            }
-        }
     }
 
     func openMapView(_ sender: UIButton) {

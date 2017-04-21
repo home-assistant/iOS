@@ -17,7 +17,6 @@ target 'HomeAssistant' do
   pod 'Fabric'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
   pod 'KeychainAccess'
-  pod 'IKEventSource'
   pod 'MBProgressHUD'
   pod 'ObjectMapper'
   pod 'PermissionScope', :git => 'https://github.com/robbiet480/PermissionScope.git', :branch => 'swift3-ios10-usernotifications'
@@ -27,7 +26,6 @@ target 'HomeAssistant' do
   pod 'SwiftGen'
   pod 'SwiftLint'
   pod 'SwiftLocation'
-  pod 'Whisper'
 end
 
 target 'HomeAssistantTests' do
@@ -41,6 +39,11 @@ end
 target 'APNSAttachmentService' do
   pod 'KeychainAccess'
 end
+
+target 'MapNotificationContentExtension' do
+    pod 'MBProgressHUD'
+end
+
 
 target 'NotificationContentExtension' do
   pod 'KeychainAccess'

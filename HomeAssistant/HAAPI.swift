@@ -10,10 +10,8 @@ import Foundation
 import Alamofire
 import AlamofireImage
 import PromiseKit
-import IKEventSource
 import SwiftLocation
 import CoreLocation
-import Whisper
 import AlamofireObjectMapper
 import ObjectMapper
 import DeviceKit
@@ -21,8 +19,6 @@ import PermissionScope
 import Crashlytics
 import RealmSwift
 import UserNotifications
-
-let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
 
 let APIClientSharedInstance = HomeAssistantAPI()
 
@@ -53,15 +49,15 @@ public class HomeAssistantAPI {
     var baseAPIURL: String = ""
     var apiPassword: String = ""
 
-    private var eventSource: EventSource?
-
     private var headers = [String: String]()
 
     private var manager: Alamofire.SessionManager?
 
+    let beaconManager = BeaconManager()
+
     var cachedEntities: [Entity]?
 
-    func Setup(baseURL: String, password: String, deviceID: String?) -> Promise<StatusResponse> {
+    func Setup(baseURL: String, password: String, deviceID: String?) {
         self.baseURL = baseURL
         self.baseAPIURL = baseURL+"/api/"
         if let dID = deviceID {
@@ -92,7 +88,7 @@ public class HomeAssistantAPI {
             deviceToken = deviceTok
         }
 
-        return GetStatus()
+        return
 
     }
 
@@ -125,7 +121,7 @@ public class HomeAssistantAPI {
 
                 _ = self.GetStates().then(execute: { _ -> Void in
                     if self.locationEnabled {
-                        self.trackLocation()
+                        self.setupZones()
                     }
 
                     if self.loadedComponents.contains("ios") {
@@ -134,7 +130,6 @@ public class HomeAssistantAPI {
                     }
 
                     //                self.GetHistory()
-                    //                self.startStream()
                     fulfill(config)
                 })
                 }.catch {error in
@@ -146,50 +141,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    func startStream() {
-        eventSource = EventSource(url: baseAPIURL+"stream", headers: headers)
-
-        eventSource?.onOpen {
-            print("SSE: Connection Opened")
-            self.showMurmur(title: "Connected to Home Assistant")
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.opened"),
-                                            object: nil, userInfo: nil)
-        }
-
-        eventSource?.onError { error in
-            if let err = error {
-                Crashlytics.sharedInstance().recordError(err)
-                print("SSE: ", err)
-                self.showMurmur(title: "SSE Error! \(err.localizedDescription)")
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.error"),
-                                                object: nil, userInfo: [
-                                                    "code": err.code,
-                                                    "description": err.description
-                    ])
-            }
-        }
-
-        eventSource?.onMessage { (_, eventName, data) in
-            if let eventData = data {
-                if eventData == "ping" { return }
-                if let event = Mapper<SSEEvent>().map(JSONString: eventData) {
-                    if event is StateChangedEvent {
-//                        if let newState = mapped.NewState {
-//                            HomeAssistantAPI.sharedInstance.storeEntities(entities: [newState])
-//                        }
-                    }
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sse.\(event.EventType)"),
-                                                    object: nil, userInfo: event.toJSON())
-                } else {
-                    print("Unable to ObjectMap this SSE message", eventName!, eventData)
-                }
-            } else {
-                print("Unable to ObjectMap this SSE message", eventName!, data as Any)
-            }
-        }
-    }
-
-    // swiftlint:disable:next function_body_length
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     func submitLocation(updateType: LocationUpdateTypes,
                         coordinates: CLLocationCoordinate2D,
                         accuracy: CLLocationAccuracy,
@@ -236,6 +188,14 @@ public class HomeAssistantAPI {
         var shouldNotify = false
 
         switch updateType {
+        case .BeaconRegionEnter:
+            notificationBody = "\(zone!.Name) entered via iBeacon"
+            notificationIdentifer = "\(zone!.Name)_beacon_entered"
+            shouldNotify = prefs.bool(forKey: "beaconEnterNotifications")
+        case .BeaconRegionExit:
+            notificationBody = "\(zone!.Name) exited via iBeacon"
+            notificationIdentifer = "\(zone!.Name)_beacon_exited"
+            shouldNotify = prefs.bool(forKey: "beaconExitNotifications")
         case .RegionEnter:
             notificationBody = "\(zone!.Name) entered"
             notificationIdentifer = "\(zone!.Name)_entered"
@@ -248,6 +208,10 @@ public class HomeAssistantAPI {
             notificationBody = "Significant location change detected"
             notificationIdentifer = "sig_change"
             shouldNotify = prefs.bool(forKey: "significantLocationChangeNotifications")
+        case .BackgroundFetch:
+            notificationBody = "Current location delivery triggered via background fetch"
+            notificationIdentifer = "background_fetch"
+            shouldNotify = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
         default:
             notificationBody = ""
         }
@@ -274,21 +238,7 @@ public class HomeAssistantAPI {
 
     }
 
-    func trackLocation() {
-        _ = Location.getLocation(accuracy: .neighborhood,
-                                 frequency: .significant,
-                                 timeout: 50,
-                                 success: { (_, location) -> (Void) in
-                                    self.submitLocation(updateType: .Manual,
-                                                        coordinates: location.coordinate,
-                                                        accuracy: location.horizontalAccuracy,
-                                                        zone: nil)
-        }) { (_, _, error) -> (Void) in
-            // something went wrong. request will be cancelled automatically
-            print("Something went wrong when trying to get significant location updates! Error was:", error)
-            Crashlytics.sharedInstance().recordError(error)
-        }
-
+    func setupZones() {
         if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
             if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
                 return entity.Domain == "zone"
@@ -299,53 +249,38 @@ public class HomeAssistantAPI {
                         print("Skipping zone set to not track!")
                         continue
                     }
-                    do {
-                        try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius, enter: { _ in
-                            print("Entered in region!")
-                            self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
-                                                coordinates: zone.locationCoordinates(),
-                                                accuracy: 1,
-                                                zone: zone)
-                        }, exit: { _ in
-                            print("Exited from the region")
-                            self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
-                                                coordinates: zone.locationCoordinates(),
-                                                accuracy: 1,
-                                                zone: zone)
-                        }, error: { req, error in
-                            CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
+                    if zone.UUID != nil {
+                        beaconManager.startScanning(zone: zone)
+                    } else {
+                        do {
+                            try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius,
+                                                 enter: { _ in
+                                print("Entered in region!")
+                                self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
+                                                    coordinates: zone.locationCoordinates(),
+                                                    accuracy: 1,
+                                                    zone: zone)
+                            }, exit: { _ in
+                                print("Exited from the region")
+                                self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
+                                                    coordinates: zone.locationCoordinates(),
+                                                    accuracy: 1,
+                                                    zone: zone)
+                            }, error: { req, error in
+                                CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
+                                Crashlytics.sharedInstance().recordError(error)
+                                req.cancel()
+                            })
+                        } catch let error {
+                            CLSLogv("Error when setting up zones for tracking: %@",
+                                    getVaList([error.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(error)
-                            req.cancel()
-                        })
-                    } catch let error {
-                        CLSLogv("Error when setting up zones for tracking: %@", getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
+                        }
                     }
                 }
             }
 
         }
-        //        let location = Location()
-        //
-        //        self.getBeacons().then { beacons -> Void in
-        //            for beacon in beacons {
-        //                print("Got beacon from HA", beacon.UUID, beacon.Major, beacon.Minor)
-        //                try Beacons.monitorForBeacon(proximityUUID: beacon.UUID!,
-        //                                             major: UInt16(beacon.Major!),
-        //                                             minor: UInt16(beacon.Minor!),
-        //                                             onFound: { beaconsFound in
-        //                    // beaconsFound is an array of found beacons ([CLBeacon]) but
-        //                    // in this case it contains only one beacon
-        //                    print("beaconsFound", beaconsFound)
-        //                }) { error in
-        //                    // something bad happened
-        //                    print("Error happened on beacons", error)
-        //                }
-        //            }
-        //        }.catch {error in
-        //            print("Error when getting beacons!", error)
-        //            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-        //        }
 
     }
 
@@ -353,7 +288,32 @@ public class HomeAssistantAPI {
         return Promise { fulfill, reject in
             Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, timeout: 25, success: { (_, location) in
                 print("A new update of location is available: \(location)")
-                self.submitLocation(updateType: .SignificantLocationUpdate,
+                self.submitLocation(updateType: .Manual,
+                                    coordinates: location.coordinate,
+                                    accuracy: location.horizontalAccuracy,
+                                    zone: nil)
+                fulfill(true)
+            }) { (_, _, error) in
+                if error == LocationError.timeout {
+                    fulfill(false)
+                } else {
+                    print("Error when trying to get a oneshot location!", error)
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
+            }
+        }
+    }
+
+    func getAndSendLocation(trigger: LocationUpdateTypes?) -> Promise<Bool> {
+        var updateTrigger: LocationUpdateTypes = .Manual
+        if let trigger = trigger {
+            updateTrigger = trigger
+        }
+        return Promise { fulfill, reject in
+            Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, timeout: 25, success: { (_, location) in
+                print("A new update of location is available: \(location) via \(updateTrigger) trigger")
+                self.submitLocation(updateType: updateTrigger,
                                     coordinates: location.coordinate,
                                     accuracy: location.horizontalAccuracy,
                                     zone: nil)
@@ -571,8 +531,6 @@ public class HomeAssistantAPI {
                 ).validate().responseObject { (response: DataResponse<Entity>) in
                     switch response.result {
                     case .success:
-                        let murmurTitle = response.result.value!.Domain+" state set to "+response.result.value!.State
-                        self.showMurmur(title: murmurTitle)
 //                        self.storeEntities(entities: [response.result.value!])
                         fulfill(response.result.value!)
                     case .failure(let error):
@@ -594,7 +552,6 @@ public class HomeAssistantAPI {
                                         switch response.result {
                                         case .success:
                                             if let jsonDict = response.result.value as? [String : String] {
-                                                self.showMurmur(title: eventType+" created")
                                                 fulfill(jsonDict["message"]!)
                                             }
                                         case .failure(let error):
@@ -608,7 +565,6 @@ public class HomeAssistantAPI {
     }
 
     func CallService(domain: String, service: String, serviceData: [String:Any]) -> Promise<[ServicesResponse]> {
-        //        self.showMurmur(title: domain+"/"+service+" called")
         let queryUrl = baseAPIURL+"services/"+domain+"/"+service
         return Promise { fulfill, reject in
             _ = self.manager!.request(queryUrl,
@@ -636,33 +592,26 @@ public class HomeAssistantAPI {
     }
 
     func turnOn(entityId: String) -> Promise<[ServicesResponse]> {
-        self.showMurmur(title: entityId+" turned on")
         return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
     }
 
     func turnOnEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        self.showMurmur(title: "\(entity.Name) turned on")
         return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entity.ID])
     }
 
     func turnOff(entityId: String) -> Promise<[ServicesResponse]> {
-        self.showMurmur(title: entityId+" turned off")
         return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entityId])
     }
 
     func turnOffEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        self.showMurmur(title: "\(entity.Name) turned off")
         return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entity.ID])
     }
 
     func toggle(entityId: String) -> Promise<[ServicesResponse]> {
-        let entity = realm.object(ofType: Entity.self, forPrimaryKey: entityId)
-        self.showMurmur(title: "\(entity!.Name) toggled")
         return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
     }
 
     func toggleEntity(entity: Entity) -> Promise<[ServicesResponse]> {
-        self.showMurmur(title: "\(entity.Name) toggled")
         return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
 
@@ -1036,24 +985,6 @@ public class HomeAssistantAPI {
         }
     }
 
-    func getBeacons() -> Promise<[Beacon]> {
-        let queryUrl = baseAPIURL+"ios/beacons"
-        return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      method: .get).validate().responseArray { (response: DataResponse<[Beacon]>) in
-                                        switch response.result {
-                                        case .success:
-                                            fulfill(response.result.value!)
-                                        case .failure(let error):
-                                            CLSLogv("Error when attemping to getBeacons(): %@",
-                                                    getVaList([error.localizedDescription]))
-                                            Crashlytics.sharedInstance().recordError(error)
-                                            reject(error)
-                                        }
-            }
-        }
-    }
-
     func getImage(imageUrl: String) -> Promise<UIImage> {
         var url = imageUrl.replacingOccurrences(of: "/api/", with: "")
         url = url.replacingOccurrences(of: "/local/", with: "")
@@ -1100,14 +1031,6 @@ public class HomeAssistantAPI {
         return self.loadedComponents.contains("notify.ios")
     }
 
-    var sseConnected: Bool {
-        if let sse = self.eventSource {
-            return sse.readyState == .open
-        } else {
-            return false
-        }
-    }
-
     var enabledPermissions: [String] {
         var permissionsContainer: [String] = []
         for status in PermissionScope().permissionStatuses([NotificationsPermission().type,
@@ -1116,10 +1039,6 @@ public class HomeAssistantAPI {
                 permissionsContainer.append(desc)
         }
         return permissionsContainer
-    }
-
-    func showMurmur(title: String) {
-        show(whistle: Murmur(title: title), action: .show(2.0))
     }
 
     func CleanBaseURL(baseUrl: URL) -> (hasValidScheme: Bool, cleanedURL: URL) {
@@ -1276,6 +1195,48 @@ class Bonjour {
 
 }
 
+class BeaconManager: NSObject, CLLocationManagerDelegate {
+
+    var locationManager: CLLocationManager!
+
+    var zones: [String: Zone] = [String: Zone]()
+
+    override init() {
+        super.init()
+
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+    }
+
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        print("Entered region", region.identifier)
+        let zone = zones[region.identifier]!
+        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
+                                                       coordinates: zone.locationCoordinates(),
+                                                       accuracy: 1,
+                                                       zone: zone)
+    }
+
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        print("Exited region", region.identifier)
+        let zone = zones[region.identifier]!
+        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
+                                                       coordinates: zone.locationCoordinates(),
+                                                       accuracy: 1,
+                                                       zone: zone)
+    }
+
+    func startScanning(zone: Zone) {
+        print("Begin scanning iBeacons for zone", zone.ID)
+        let beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: zone.UUID!)!,
+                                          major: CLBeaconMajorValue(zone.Major!),
+                                          minor: CLBeaconMinorValue(zone.Minor!), identifier: zone.ID)
+        zones[zone.ID] = zone
+        locationManager.startMonitoring(for: beaconRegion)
+    }
+
+}
+
 enum LocationUpdateTypes {
     case RegionEnter
     case RegionExit
@@ -1283,4 +1244,5 @@ enum LocationUpdateTypes {
     case BeaconRegionExit
     case Manual
     case SignificantLocationUpdate
+    case BackgroundFetch
 }

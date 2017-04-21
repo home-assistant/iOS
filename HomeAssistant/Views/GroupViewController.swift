@@ -233,43 +233,10 @@ class GroupViewController: FormViewController {
             }
         }
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(GroupViewController.StateChangedSSEEvent(_:)),
-                                               name:NSNotification.Name(rawValue: "sse.state_changed"),
-                                               object: nil)
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-
-    func StateChangedSSEEvent(_ notification: NSNotification) {
-        if let userInfo = (notification as NSNotification).userInfo {
-            if let userInfoDict = userInfo as? [String : Any] {
-                if let event = Mapper<StateChangedEvent>().map(JSON: userInfoDict) {
-                    if let newState = event.NewState {
-                        if newState.Domain == "lock" || newState.Domain == "garage_door" {
-                            if let row: SwitchRow = self.form.rowBy(tag: newState.ID) {
-                                row.value = (newState.State == "on") ? true : false
-                                row.cell.imageView?.image = newState.EntityIcon
-                                row.updateCell()
-                                row.reload()
-                            }
-                        } else {
-                            if let row: ButtonRow = self.form.rowBy(tag: newState.ID) {
-                                row.value = newState.State
-                                if let uom = newState.UnitOfMeasurement {
-                                    row.value = newState.State + " " + uom
-                                }
-                                row.cell.imageView?.image = newState.EntityIcon
-                                row.updateCell()
-                                row.reload()
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
     func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {

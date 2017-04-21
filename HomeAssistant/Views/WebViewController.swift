@@ -15,9 +15,23 @@ import PromiseKit
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     var webView: WKWebView!
-    let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
 
-    override func loadView() {
+    // swiftlint:disable:next function_body_length
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let screenSize: CGRect = UIScreen.main.bounds
+        let myView = UIView(frame: CGRect(x: 0, y: 10,
+                                          width: screenSize.width,
+                                          height: screenSize.height-self.navigationController!.toolbar.frame.height))
+
+        let statusBarView: UIView = UIView(frame: CGRect(x: 0.0, y: 0.0,
+                                                         width: UIScreen.main.bounds.width, height: 20.0))
+        statusBarView.backgroundColor = UIColor(red:0.01, green:0.66, blue:0.96, alpha:1.0)
+        view.addSubview(statusBarView)
+
+        self.view.addSubview(myView)
+
         let config = WKWebViewConfiguration()
         if let apiPass = keychain["apiPassword"] {
             let scriptStr = "window.hassConnection = createHassConnection(\"\(apiPass)\");"
@@ -26,42 +40,36 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             userContentController.addUserScript(script)
             config.userContentController = userContentController
         }
-        webView = WKWebView(frame: UIScreen.main.bounds, configuration: config)
+
+        webView = WKWebView(frame: myView.frame, configuration: config)
         webView.navigationDelegate = self
         webView.uiDelegate = self
-        view = webView
-    }
 
-    // swiftlint:disable:next function_body_length
-    override func viewDidLoad() {
-        super.viewDidLoad()
+        myView.addSubview(webView)
 
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
         if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-            firstly {
-                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
-                                                      deviceID: keychain["deviceID"])
-                }.then {_ in
-                    HomeAssistantAPI.sharedInstance.Connect()
-                }.then { _ -> Void in
-                    if HomeAssistantAPI.sharedInstance.notificationsEnabled {
-                        UIApplication.shared.registerForRemoteNotifications()
-                    }
-                    print("Connected!")
-                    hud.hide(animated: true)
-                    let myURL = URL(string: HomeAssistantAPI.sharedInstance.baseURL)
-                    let myRequest = URLRequest(url: myURL!)
-                    self.webView.load(myRequest)
-                    return
-                }.catch {err -> Void in
-                    print("ERROR on connect!!!", err)
-                    hud.hide(animated: true)
-                    let settingsView = SettingsViewController()
-                    settingsView.showErrorConnectingMessage = true
-                    settingsView.showErrorConnectingMessageError = err
-                    settingsView.doneButton = true
-                    let navController = UINavigationController(rootViewController: settingsView)
-                    self.present(navController, animated: true, completion: nil)
+            HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
+                                                  deviceID: keychain["deviceID"])
+            HomeAssistantAPI.sharedInstance.Connect().then { _ -> Void in
+                if HomeAssistantAPI.sharedInstance.notificationsEnabled {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+                print("Connected!")
+                hud.hide(animated: true)
+                let myURL = URL(string: HomeAssistantAPI.sharedInstance.baseURL)
+                let myRequest = URLRequest(url: myURL!)
+                self.webView.load(myRequest)
+                return
+            }.catch {err -> Void in
+                print("ERROR on connect!!!", err)
+                hud.hide(animated: true)
+                let settingsView = SettingsViewController()
+                settingsView.showErrorConnectingMessage = true
+                settingsView.showErrorConnectingMessageError = err
+                settingsView.doneButton = true
+                let navController = UINavigationController(rootViewController: settingsView)
+                self.present(navController, animated: true, completion: nil)
             }
         } else {
             let settingsView = SettingsViewController()
@@ -93,7 +101,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     override func viewDidAppear(_ animated: Bool) {
         var toolbarItems: [UIBarButtonItem] = []
 
-        let tabBarIconColor = Entity().DefaultEntityUIColor
+        let tabBarIconColor = UIColor(red:0.01, green:0.66, blue:0.96, alpha:1.0)
 
         if HomeAssistantAPI.sharedInstance.locationEnabled {
 
@@ -137,6 +145,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                                             action: #selector(openSettingsView(_:))))
 
         self.setToolbarItems(toolbarItems, animated: false)
+        self.navigationController?.toolbar.tintColor = tabBarIconColor
 
         if HomeAssistantAPI.sharedInstance.URLSet {
             let myURL = URL(string: HomeAssistantAPI.sharedInstance.baseURL)
@@ -176,7 +185,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     }
 
     func sendCurrentLocation(_ sender: UIButton) {
-        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
+        HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual).then { _ -> Void in
             let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
                                           message: L10n.ManualLocationUpdateNotification.message,
                                           preferredStyle: UIAlertControllerStyle.alert)

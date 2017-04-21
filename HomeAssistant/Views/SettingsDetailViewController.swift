@@ -14,8 +14,6 @@ import Crashlytics
 
 class SettingsDetailViewController: FormViewController {
 
-    let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
-
     var detailGroup: String = "display"
 
     // swiftlint:disable:next function_body_length cyclomatic_complexity
@@ -32,15 +30,15 @@ class SettingsDetailViewController: FormViewController {
                     $0.title = L10n.SettingsDetails.General.Chrome.title
                     $0.value = prefs.bool(forKey: "openInChrome")
                     }.onChange { row in
-                        self.prefs.setValue(row.value, forKey: "openInChrome")
-                        self.prefs.synchronize()
+                        prefs.setValue(row.value, forKey: "openInChrome")
+                        prefs.synchronize()
             }
             //                <<< SwitchRow("allowAllGroups") {
             //                    $0.title = "Show all groups"
             //                    $0.value = prefs.bool(forKey: "allowAllGroups")
             //                    }.onChange { row in
-            //                        self.prefs.setValue(row.value, forKey: "allowAllGroups")
-            //                        self.prefs.synchronize()
+            //                        prefs.setValue(row.value, forKey: "allowAllGroups")
+            //                        prefs.synchronize()
         //                }
         case "location":
             self.title = L10n.SettingsDetails.Location.title
@@ -51,7 +49,7 @@ class SettingsDetailViewController: FormViewController {
                     $0.value = prefs.bool(forKey: "enterNotifications")
                 }.onChange({ (row) in
                     if let val = row.value {
-                        self.prefs.set(val, forKey: "enterNotifications")
+                        prefs.set(val, forKey: "enterNotifications")
                     }
                 })
                 <<< SwitchRow {
@@ -59,7 +57,23 @@ class SettingsDetailViewController: FormViewController {
                     $0.value = prefs.bool(forKey: "exitNotifications")
                 }.onChange({ (row) in
                     if let val = row.value {
-                        self.prefs.set(val, forKey: "exitNotifications")
+                        prefs.set(val, forKey: "exitNotifications")
+                    }
+                })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.BeaconEnter.title
+                    $0.value = prefs.bool(forKey: "beaconEnterNotifications")
+                }.onChange({ (row) in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "beaconEnterNotifications")
+                    }
+                })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.BeaconExit.title
+                    $0.value = prefs.bool(forKey: "beaconExitNotifications")
+                }.onChange({ (row) in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "beaconExitNotifications")
                     }
                 })
                 <<< SwitchRow {
@@ -67,7 +81,15 @@ class SettingsDetailViewController: FormViewController {
                     $0.value = prefs.bool(forKey: "significantLocationChangeNotifications")
                 }.onChange({ (row) in
                     if let val = row.value {
-                        self.prefs.set(val, forKey: "significantLocationChangeNotifications")
+                        prefs.set(val, forKey: "significantLocationChangeNotifications")
+                    }
+                })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.BackgroundFetch.title
+                    $0.value = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
+                }.onChange({ (row) in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "backgroundFetchLocationChangeNotifications")
                     }
                 })
             if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
@@ -91,7 +113,22 @@ class SettingsDetailViewController: FormViewController {
                             <<< LabelRow {
                                 $0.title = L10n.SettingsDetails.Location.Zones.Radius.title
                                 $0.value = "\(Int(zone.Radius)) m"
-                        }
+                            }
+                            <<< LabelRow {
+                                $0.title = L10n.SettingsDetails.Location.Zones.BeaconUuid.title
+                                $0.value = zone.UUID
+                                $0.hidden = Condition(booleanLiteral: (zone.UUID == nil))
+                            }
+                            <<< LabelRow {
+                                $0.title = L10n.SettingsDetails.Location.Zones.BeaconMajor.title
+                                $0.value = String(describing: zone.Major)
+                                $0.hidden = Condition(booleanLiteral: (zone.Major == nil))
+                            }
+                            <<< LabelRow {
+                                $0.title = L10n.SettingsDetails.Location.Zones.BeaconMinor.title
+                                $0.value = String(describing: zone.Minor)
+                                $0.hidden = Condition(booleanLiteral: (zone.Minor == nil))
+                            }
                     }
                     if zoneEntities.count > 0 {
                         self.form

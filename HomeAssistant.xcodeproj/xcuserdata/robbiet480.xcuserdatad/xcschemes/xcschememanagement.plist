@@ -28,6 +28,11 @@
 			<key>orderHint</key>
 			<integer>5</integer>
 		</dict>
+		<key>MapNotificationContentExtension.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>27</integer>
+		</dict>
 		<key>NotificationContentExtension.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -57,6 +62,11 @@
 			<true/>
 		</dict>
 		<key>B657A9061CA646EB00121384</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B678DB231EA991E30045312F</key>
 		<dict>
 			<key>primary</key>
 			<true/>

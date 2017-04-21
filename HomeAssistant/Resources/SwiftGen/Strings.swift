@@ -276,7 +276,7 @@ enum L10n {
       }
 
       enum VersionRow {
-        /// 0.35.0
+        /// 0.42.0
         static let placeholder = L10n.tr("settings.status_section.version_row.placeholder")
         /// Version
         static let title = L10n.tr("settings.status_section.version_row.title")
@@ -304,6 +304,21 @@ enum L10n {
         /// Notifications
         static let header = L10n.tr("settings_details.location.notifications.header")
 
+        enum BackgroundFetch {
+          /// Background Fetch Notifications
+          static let title = L10n.tr("settings_details.location.notifications.background_fetch.title")
+        }
+
+        enum BeaconEnter {
+          /// Enter Zone via iBeacon Notifications
+          static let title = L10n.tr("settings_details.location.notifications.beacon_enter.title")
+        }
+
+        enum BeaconExit {
+          /// Exit Zone via iBeacon Notifications
+          static let title = L10n.tr("settings_details.location.notifications.beacon_exit.title")
+        }
+
         enum Enter {
           /// Enter Zone Notifications
           static let title = L10n.tr("settings_details.location.notifications.enter.title")
@@ -315,7 +330,7 @@ enum L10n {
         }
 
         enum LocationChange {
-          /// Location Change Zone Notifications
+          /// Significant Location Change Notifications
           static let title = L10n.tr("settings_details.location.notifications.location_change.title")
         }
       }
@@ -323,6 +338,21 @@ enum L10n {
       enum Zones {
         /// To disable location tracking add track_ios: false to each zones settings or under customize.
         static let footer = L10n.tr("settings_details.location.zones.footer")
+
+        enum BeaconMajor {
+          /// iBeacon Major
+          static let title = L10n.tr("settings_details.location.zones.beacon_major.title")
+        }
+
+        enum BeaconMinor {
+          /// iBeacon Minor
+          static let title = L10n.tr("settings_details.location.zones.beacon_minor.title")
+        }
+
+        enum BeaconUuid {
+          /// iBeacon UUID
+          static let title = L10n.tr("settings_details.location.zones.beacon_uuid.title")
+        }
 
         enum EnterExitTracked {
           /// Enter/exit tracked
@@ -361,7 +391,7 @@ enum L10n {
         static let footer = L10n.tr("settings_details.notifications.sounds_section.footer")
 
         enum Button {
-          /// Update push settings
+          /// Import Sounds
           static let title = L10n.tr("settings_details.notifications.sounds_section.button.title")
         }
 
