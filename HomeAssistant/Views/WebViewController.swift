@@ -21,9 +21,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         super.viewDidLoad()
 
         let screenSize: CGRect = UIScreen.main.bounds
-        let myView = UIView(frame: CGRect(x: 0, y: 0,
+        let myView = UIView(frame: CGRect(x: 0, y: 10,
                                           width: screenSize.width,
                                           height: screenSize.height-self.navigationController!.toolbar.frame.height))
+
+        var statusBarView: UIView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width, height: 20.0))
+        statusBarView.backgroundColor = UIColor(red:0.01, green:0.66, blue:0.96, alpha:1.0)
+        view.addSubview(statusBarView)
+
         self.view.addSubview(myView)
 
         let config = WKWebViewConfiguration()
