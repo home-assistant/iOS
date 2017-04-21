@@ -150,7 +150,7 @@
 		B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
 		B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
 		B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B627CB0D1D83C87B0057173E /* NotificationViewController.swift */; };
-		B627CB151D83C87B0057173E /* CameraNotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* CameraNotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B629E8D61DAD8CFA00040A90 /* PushRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */; };
 		B62A67A01D80E933009E46F9 /* IdentifyRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */; };
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
@@ -271,7 +271,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */,
-				B627CB151D83C87B0057173E /* CameraNotificationContentExtension.appex in Embed App Extensions */,
+				B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */,
 				B678DB301EA991E40045312F /* MapNotificationContentExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -293,6 +293,7 @@
 		6176DB9F5F90397A15B2D929 /* Pods-HomeAssistantTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.release.xcconfig"; sourceTree = "<group>"; };
 		6410E5092616A0DD9241A91D /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
 		76DAC3D4A57C268C960DC06F /* Pods-APNSAttachmentService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.debug.xcconfig"; sourceTree = "<group>"; };
+		77785AB56F3F68EFC8093F7A /* Pods_CameraNotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CameraNotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		86B81352B1184CB193CED943 /* Pods-NotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		923F8D630AC5BA0C36905E8A /* Pods_HomeAssistantUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-NotificationContentExtension-metadata.plist"; path = "Pods/Pods-NotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
@@ -430,7 +431,7 @@
 		B624DE171CB8369200F413CE /* DevicesMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesMapViewController.swift; sourceTree = "<group>"; };
 		B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoveryInfo.swift; sourceTree = "<group>"; };
 		B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsDetailViewController.swift; sourceTree = "<group>"; };
-		B627CB071D83C87B0057173E /* CameraNotificationContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CameraNotificationContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B627CB071D83C87B0057173E /* NotificationContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B627CB081D83C87B0057173E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
 		B627CB0D1D83C87B0057173E /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
@@ -516,12 +517,15 @@
 		B6F700511CB374F700753BAB /* RootTabBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootTabBarViewController.swift; sourceTree = "<group>"; };
 		B6FBE3961D46A4E500EE0E36 /* Beacons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Beacons.swift; sourceTree = "<group>"; };
 		BA2CF5D1E68D4F13CA129A6D /* Pods-NotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
+		C3E6C7257826B1DF42672147 /* Pods-CameraNotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CameraNotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-CameraNotificationContentExtension/Pods-CameraNotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
 		CEE386F8C44D8A0DAE247050 /* Pods-HomeAssistantTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.debug.xcconfig"; sourceTree = "<group>"; };
+		D37A1120178E5C484C71A589 /* Pods-CameraNotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-CameraNotificationContentExtension-metadata.plist"; path = "Pods/Pods-CameraNotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
 		D40EA2625B9413852756757B /* Pods_MapNotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MapNotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-MapNotificationContentExtension-metadata.plist"; path = "Pods/Pods-MapNotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
 		E340A91043F97CDAE845613F /* Pods-HomeAssistantUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.release.xcconfig"; sourceTree = "<group>"; };
 		F6D1BAC21EA4CAD300628E8C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA8D40F800F5CEB4406229A3 /* Pods-MapNotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MapNotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MapNotificationContentExtension/Pods-MapNotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		FF2CD2B00405400F05681BD0 /* Pods-CameraNotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CameraNotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CameraNotificationContentExtension/Pods-CameraNotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -593,6 +597,7 @@
 				141825DF3D525694F6F38A6C /* Pods_NotificationContentExtension.framework */,
 				5F9E760F9E79B22B21B67B57 /* Pods_APNSAttachmentService.framework */,
 				D40EA2625B9413852756757B /* Pods_MapNotificationContentExtension.framework */,
+				77785AB56F3F68EFC8093F7A /* Pods_CameraNotificationContentExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -616,6 +621,9 @@
 				FA8D40F800F5CEB4406229A3 /* Pods-MapNotificationContentExtension.debug.xcconfig */,
 				04217702736D1AE18424676B /* Pods-MapNotificationContentExtension.release.xcconfig */,
 				DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */,
+				FF2CD2B00405400F05681BD0 /* Pods-CameraNotificationContentExtension.debug.xcconfig */,
+				C3E6C7257826B1DF42672147 /* Pods-CameraNotificationContentExtension.release.xcconfig */,
+				D37A1120178E5C484C71A589 /* Pods-CameraNotificationContentExtension-metadata.plist */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -781,7 +789,7 @@
 			path = Generic;
 			sourceTree = "<group>";
 		};
-		B627CB0C1D83C87B0057173E /* CameraNotificationContentExtension */ = {
+		B627CB0C1D83C87B0057173E /* NotificationContentExtension */ = {
 			isa = PBXGroup;
 			children = (
 				B678DB351EA9999C0045312F /* MainInterface.storyboard */,
@@ -790,7 +798,6 @@
 				B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */,
 				B627CB0D1D83C87B0057173E /* NotificationViewController.swift */,
 			);
-			name = CameraNotificationContentExtension;
 			path = NotificationContentExtension;
 			sourceTree = "<group>";
 		};
@@ -814,7 +821,7 @@
 				B657A8FF1CA646EB00121384 /* HomeAssistantTests */,
 				B657A90A1CA646EB00121384 /* HomeAssistantUITests */,
 				B678DB271EA991E40045312F /* MapNotificationContentExtension */,
-				B627CB0C1D83C87B0057173E /* CameraNotificationContentExtension */,
+				B627CB0C1D83C87B0057173E /* NotificationContentExtension */,
 				AAB60FA4DE371AD957F6907B /* Pods */,
 				B657A8E71CA646EB00121384 /* Products */,
 			);
@@ -827,7 +834,7 @@
 				B657A8FC1CA646EB00121384 /* HomeAssistantTests.xctest */,
 				B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */,
 				B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */,
-				B627CB071D83C87B0057173E /* CameraNotificationContentExtension.appex */,
+				B627CB071D83C87B0057173E /* NotificationContentExtension.appex */,
 				B678DB241EA991E30045312F /* MapNotificationContentExtension.appex */,
 			);
 			name = Products;
@@ -1000,9 +1007,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B627CB061D83C87B0057173E /* CameraNotificationContentExtension */ = {
+		B627CB061D83C87B0057173E /* NotificationContentExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "CameraNotificationContentExtension" */;
+			buildConfigurationList = B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "NotificationContentExtension" */;
 			buildPhases = (
 				3A6AA6CAB1A0AAE9B3A4CA83 /* [CP] Check Pods Manifest.lock */,
 				B627CB031D83C87B0057173E /* Sources */,
@@ -1014,9 +1021,9 @@
 			);
 			dependencies = (
 			);
-			name = CameraNotificationContentExtension;
+			name = NotificationContentExtension;
 			productName = NotificationContentExtension;
-			productReference = B627CB071D83C87B0057173E /* CameraNotificationContentExtension.appex */;
+			productReference = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B657A8E51CA646EB00121384 /* HomeAssistant */ = {
@@ -1229,7 +1236,7 @@
 				B657A8FB1CA646EB00121384 /* HomeAssistantTests */,
 				B657A9061CA646EB00121384 /* HomeAssistantUITests */,
 				B6AAD7A01D827DD40090B220 /* APNSAttachmentService */,
-				B627CB061D83C87B0057173E /* CameraNotificationContentExtension */,
+				B627CB061D83C87B0057173E /* NotificationContentExtension */,
 				B678DB231EA991E30045312F /* MapNotificationContentExtension */,
 			);
 		};
@@ -1800,7 +1807,7 @@
 /* Begin PBXTargetDependency section */
 		B627CB141D83C87B0057173E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B627CB061D83C87B0057173E /* CameraNotificationContentExtension */;
+			target = B627CB061D83C87B0057173E /* NotificationContentExtension */;
 			targetProxy = B627CB131D83C87B0057173E /* PBXContainerItemProxy */;
 		};
 		B657A8FE1CA646EB00121384 /* PBXTargetDependency */ = {
@@ -2008,7 +2015,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6410E5092616A0DD9241A91D /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
@@ -2060,7 +2066,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 366FD7D1C50AFCED407FEBB6 /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
@@ -2192,14 +2197,15 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CODE_SIGN_ENTITLEMENTS = MapNotificationContentExtension/MapNotificationContentExtension.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				INFOPLIST_FILE = MapNotificationContentExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.MapNotificationContentExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "92f53f1e-23d3-48c4-ad03-f6e8753dff00";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.MapNotificationContentExtension";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 			};
@@ -2249,7 +2255,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "CameraNotificationContentExtension" */ = {
+		B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "NotificationContentExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B627CB161D83C87B0057173E /* Debug */,
