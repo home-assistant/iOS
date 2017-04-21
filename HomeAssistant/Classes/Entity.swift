@@ -67,6 +67,8 @@ class Entity: Object, StaticMappable {
                 return BinarySensor()
             case "climate":
                 return Climate()
+            case "cover":
+                return Cover()
             case "device_tracker":
                 return DeviceTracker()
             case "fan":

@@ -219,6 +219,7 @@
 		B6F7004A1CB34FA600753BAB /* GroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F700491CB34FA600753BAB /* GroupViewController.swift */; };
 		B6F700521CB374F700753BAB /* RootTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F700511CB374F700753BAB /* RootTabBarViewController.swift */; };
 		B6FBE3971D46A4E500EE0E36 /* Beacons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FBE3961D46A4E500EE0E36 /* Beacons.swift */; };
+		BE3067341E6CF6D400D18913 /* Cover.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3067331E6CF6D400D18913 /* Cover.swift */; };
 		CE969D82133AF9F6FC377A1C /* Pods_APNSAttachmentService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F9E760F9E79B22B21B67B57 /* Pods_APNSAttachmentService.framework */; };
 		D0C7C77FC4DE40454D0F3B52 /* Pods_MapNotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40EA2625B9413852756757B /* Pods_MapNotificationContentExtension.framework */; };
 		DE00A0A32956903FEB4C59D3 /* Pods-MapNotificationContentExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */; };
@@ -516,6 +517,7 @@
 		B6F700511CB374F700753BAB /* RootTabBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootTabBarViewController.swift; sourceTree = "<group>"; };
 		B6FBE3961D46A4E500EE0E36 /* Beacons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Beacons.swift; sourceTree = "<group>"; };
 		BA2CF5D1E68D4F13CA129A6D /* Pods-NotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
+		BE3067331E6CF6D400D18913 /* Cover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cover.swift; sourceTree = "<group>"; };
 		CEE386F8C44D8A0DAE247050 /* Pods-HomeAssistantTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D40EA2625B9413852756757B /* Pods_MapNotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MapNotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-MapNotificationContentExtension-metadata.plist"; path = "Pods/Pods-MapNotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
@@ -974,6 +976,7 @@
 				B6DBF7651D89F7D800402A57 /* Automation.swift */,
 				B6F02C001CB489770029ABE7 /* BinarySensor.swift */,
 				B6880B2A1D7B9E6400CCB899 /* Climate.swift */,
+				BE3067331E6CF6D400D18913 /* Cover.swift */,
 				B6F02C011CB489770029ABE7 /* DeviceTracker.swift */,
 				B6DBF7671D89F8C100402A57 /* Fan.swift */,
 				B6F02C021CB489770029ABE7 /* GarageDoor.swift */,
@@ -1756,6 +1759,7 @@
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				B6E47E881CBA01310027F6CA /* CallService.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
+				BE3067341E6CF6D400D18913 /* Cover.swift in Sources */,
 				B6880B2B1D7B9E6400CCB899 /* Climate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

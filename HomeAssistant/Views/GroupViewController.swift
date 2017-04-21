@@ -198,6 +198,24 @@ class GroupViewController: FormViewController {
                                 cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
                             }
                     }
+                case "cover":
+                    self.form.last! <<< SegmentedRow<String>(entity.ID) {
+                        $0.title = entity.Name
+                        $0.options = ["Open", "Stop", "Close"]
+                        $0.value = (entity.State == "closed") ? "Close" : "Open"
+                        }.onChange { row -> Void in
+                            let whichService = row.value!.lowercased() + "_cover"
+                            let _ = HomeAssistantAPI.sharedInstance.CallService(domain: entity.Domain,
+                                                                                service: whichService,
+                                                                                serviceData: [
+                                                                                    "entity_id": entity.ID as AnyObject
+                                ])
+                        }.cellUpdate { cell, _ in
+                            cell.imageView?.image = entity.EntityIcon
+                            if let picture = entity.DownloadedPicture {
+                                cell.imageView?.image = picture.scaledToSize(CGSize(width: 30, height: 30))
+                            }
+                    }
                 case "input_slider":
                     self.form.last! <<< SliderRow(entity.ID) {
                         $0.title = entity.Name
