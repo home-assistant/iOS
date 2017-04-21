@@ -171,16 +171,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                       deviceID: keychain["deviceID"])
             }
         }
-        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
-            if success == true {
+        if HomeAssistantAPI.sharedInstance.locationEnabled {
+            HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
+                if success == true {
+                    completionHandler(UIBackgroundFetchResult.newData)
+                } else {
+                    completionHandler(UIBackgroundFetchResult.failed)
+                }
+                }.catch {error in
+                    print("Error when attempting to submit location update during background fetch")
+                    Crashlytics.sharedInstance().recordError(error)
+                    completionHandler(UIBackgroundFetchResult.failed)
+            }
+        } else {
+            HomeAssistantAPI.sharedInstance.identifyDevice().then { _ -> Void in
                 completionHandler(UIBackgroundFetchResult.newData)
-            } else {
+            }.catch {error in
+                print("Error when attempting to identify device during background fetch")
+                Crashlytics.sharedInstance().recordError(error)
                 completionHandler(UIBackgroundFetchResult.failed)
             }
-        }.catch {error in
-            print("Error when attempting to submit location update")
-            Crashlytics.sharedInstance().recordError(error)
-            completionHandler(UIBackgroundFetchResult.failed)
         }
     }
 
