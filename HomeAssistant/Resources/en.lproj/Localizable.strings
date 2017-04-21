@@ -65,7 +65,8 @@
 "settings_details.location.notifications.exit.title" = "Exit Zone Notifications";
 "settings_details.location.notifications.beacon_enter.title" = "Enter Zone via iBeacon Notifications";
 "settings_details.location.notifications.beacon_exit.title" = "Exit Zone via iBeacon Notifications";
-"settings_details.location.notifications.location_change.title" = "Location Change Zone Notifications";
+"settings_details.location.notifications.location_change.title" = "Significant Location Change Notifications";
+"settings_details.location.notifications.background_fetch.title" = "Background Fetch Notifications";
 "settings_details.location.zones.enter_exit_tracked.title" = "Enter/exit tracked";
 "settings_details.location.zones.location.title" = "Location";
 "settings_details.location.zones.radius.title" = "Radius";

@@ -304,6 +304,11 @@ enum L10n {
         /// Notifications
         static let header = L10n.tr("settings_details.location.notifications.header")
 
+        enum BackgroundFetch {
+          /// Background Fetch Notifications
+          static let title = L10n.tr("settings_details.location.notifications.background_fetch.title")
+        }
+
         enum BeaconEnter {
           /// Enter Zone via iBeacon Notifications
           static let title = L10n.tr("settings_details.location.notifications.beacon_enter.title")
@@ -325,7 +330,7 @@ enum L10n {
         }
 
         enum LocationChange {
-          /// Location Change Zone Notifications
+          /// Significant Location Change Notifications
           static let title = L10n.tr("settings_details.location.notifications.location_change.title")
         }
       }

@@ -176,7 +176,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         if HomeAssistantAPI.sharedInstance.locationEnabled {
-            HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
+            HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .BackgroundFetch).then { success -> Void in
                 if success == true {
                     completionHandler(UIBackgroundFetchResult.newData)
                 } else {

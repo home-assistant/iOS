@@ -208,6 +208,10 @@ public class HomeAssistantAPI {
             notificationBody = "Significant location change detected"
             notificationIdentifer = "sig_change"
             shouldNotify = prefs.bool(forKey: "significantLocationChangeNotifications")
+        case .BackgroundFetch:
+            notificationBody = "Current location delivery triggered via background fetch"
+            notificationIdentifer = "background_fetch"
+            shouldNotify = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
         default:
             notificationBody = ""
         }
@@ -284,7 +288,32 @@ public class HomeAssistantAPI {
         return Promise { fulfill, reject in
             Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, timeout: 25, success: { (_, location) in
                 print("A new update of location is available: \(location)")
-                self.submitLocation(updateType: .SignificantLocationUpdate,
+                self.submitLocation(updateType: .Manual,
+                                    coordinates: location.coordinate,
+                                    accuracy: location.horizontalAccuracy,
+                                    zone: nil)
+                fulfill(true)
+            }) { (_, _, error) in
+                if error == LocationError.timeout {
+                    fulfill(false)
+                } else {
+                    print("Error when trying to get a oneshot location!", error)
+                    Crashlytics.sharedInstance().recordError(error)
+                    reject(error)
+                }
+            }
+        }
+    }
+
+    func getAndSendLocation(trigger: LocationUpdateTypes?) -> Promise<Bool> {
+        var updateTrigger: LocationUpdateTypes = .Manual
+        if let trigger = trigger {
+            updateTrigger = trigger
+        }
+        return Promise { fulfill, reject in
+            Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, timeout: 25, success: { (_, location) in
+                print("A new update of location is available: \(location) via \(updateTrigger) trigger")
+                self.submitLocation(updateType: updateTrigger,
                                     coordinates: location.coordinate,
                                     accuracy: location.horizontalAccuracy,
                                     zone: nil)
@@ -1215,4 +1244,5 @@ enum LocationUpdateTypes {
     case BeaconRegionExit
     case Manual
     case SignificantLocationUpdate
+    case BackgroundFetch
 }
