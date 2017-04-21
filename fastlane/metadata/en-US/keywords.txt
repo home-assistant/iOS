@@ -1,1 +1,1 @@
-home automation,open source,alexa,homekit,hue,wemo,smartthings,wink,lutron,insteon,homeseer,openhab
+home automation,open source,alexa,hue,wemo,smarthome,internet of things,push notifications,location
