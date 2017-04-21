@@ -53,6 +53,8 @@ public class HomeAssistantAPI {
 
     private var manager: Alamofire.SessionManager?
 
+    let beaconManager = BeaconManager()
+
     var cachedEntities: [Entity]?
 
     func Setup(baseURL: String, password: String, deviceID: String?) {
@@ -139,7 +141,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    // swiftlint:disable:next function_body_length
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     func submitLocation(updateType: LocationUpdateTypes,
                         coordinates: CLLocationCoordinate2D,
                         accuracy: CLLocationAccuracy,
@@ -186,6 +188,14 @@ public class HomeAssistantAPI {
         var shouldNotify = false
 
         switch updateType {
+        case .BeaconRegionEnter:
+            notificationBody = "\(zone!.Name) entered via iBeacon"
+            notificationIdentifer = "\(zone!.Name)_beacon_entered"
+            shouldNotify = prefs.bool(forKey: "beaconEnterNotifications")
+        case .BeaconRegionExit:
+            notificationBody = "\(zone!.Name) exited via iBeacon"
+            notificationIdentifer = "\(zone!.Name)_beacon_exited"
+            shouldNotify = prefs.bool(forKey: "beaconExitNotifications")
         case .RegionEnter:
             notificationBody = "\(zone!.Name) entered"
             notificationIdentifer = "\(zone!.Name)_entered"
@@ -235,53 +245,38 @@ public class HomeAssistantAPI {
                         print("Skipping zone set to not track!")
                         continue
                     }
-                    do {
-                        try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius, enter: { _ in
-                            print("Entered in region!")
-                            self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
-                                                coordinates: zone.locationCoordinates(),
-                                                accuracy: 1,
-                                                zone: zone)
-                        }, exit: { _ in
-                            print("Exited from the region")
-                            self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
-                                                coordinates: zone.locationCoordinates(),
-                                                accuracy: 1,
-                                                zone: zone)
-                        }, error: { req, error in
-                            CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
+                    if zone.UUID != nil {
+                        beaconManager.startScanning(zone: zone)
+                    } else {
+                        do {
+                            try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius,
+                                                 enter: { _ in
+                                print("Entered in region!")
+                                self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
+                                                    coordinates: zone.locationCoordinates(),
+                                                    accuracy: 1,
+                                                    zone: zone)
+                            }, exit: { _ in
+                                print("Exited from the region")
+                                self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
+                                                    coordinates: zone.locationCoordinates(),
+                                                    accuracy: 1,
+                                                    zone: zone)
+                            }, error: { req, error in
+                                CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
+                                Crashlytics.sharedInstance().recordError(error)
+                                req.cancel()
+                            })
+                        } catch let error {
+                            CLSLogv("Error when setting up zones for tracking: %@",
+                                    getVaList([error.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(error)
-                            req.cancel()
-                        })
-                    } catch let error {
-                        CLSLogv("Error when setting up zones for tracking: %@", getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
+                        }
                     }
                 }
             }
 
         }
-        //        let location = Location()
-        //
-        //        self.getBeacons().then { beacons -> Void in
-        //            for beacon in beacons {
-        //                print("Got beacon from HA", beacon.UUID, beacon.Major, beacon.Minor)
-        //                try Beacons.monitorForBeacon(proximityUUID: beacon.UUID!,
-        //                                             major: UInt16(beacon.Major!),
-        //                                             minor: UInt16(beacon.Minor!),
-        //                                             onFound: { beaconsFound in
-        //                    // beaconsFound is an array of found beacons ([CLBeacon]) but
-        //                    // in this case it contains only one beacon
-        //                    print("beaconsFound", beaconsFound)
-        //                }) { error in
-        //                    // something bad happened
-        //                    print("Error happened on beacons", error)
-        //                }
-        //            }
-        //        }.catch {error in
-        //            print("Error when getting beacons!", error)
-        //            Crashlytics.sharedInstance().recordError((error as Any) as! NSError)
-        //        }
 
     }
 
@@ -961,24 +956,6 @@ public class HomeAssistantAPI {
         }
     }
 
-    func getBeacons() -> Promise<[Beacon]> {
-        let queryUrl = baseAPIURL+"ios/beacons"
-        return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      method: .get).validate().responseArray { (response: DataResponse<[Beacon]>) in
-                                        switch response.result {
-                                        case .success:
-                                            fulfill(response.result.value!)
-                                        case .failure(let error):
-                                            CLSLogv("Error when attemping to getBeacons(): %@",
-                                                    getVaList([error.localizedDescription]))
-                                            Crashlytics.sharedInstance().recordError(error)
-                                            reject(error)
-                                        }
-            }
-        }
-    }
-
     func getImage(imageUrl: String) -> Promise<UIImage> {
         var url = imageUrl.replacingOccurrences(of: "/api/", with: "")
         url = url.replacingOccurrences(of: "/local/", with: "")
@@ -1185,6 +1162,48 @@ class Bonjour {
 
     func stopPublish() {
         nsp.stop()
+    }
+
+}
+
+class BeaconManager: NSObject, CLLocationManagerDelegate {
+
+    var locationManager: CLLocationManager!
+
+    var zones: [String: Zone] = [String: Zone]()
+
+    override init() {
+        super.init()
+
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+    }
+
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        print("Entered region", region.identifier)
+        let zone = zones[region.identifier]!
+        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
+                                                       coordinates: zone.locationCoordinates(),
+                                                       accuracy: 1,
+                                                       zone: zone)
+    }
+
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        print("Exited region", region.identifier)
+        let zone = zones[region.identifier]!
+        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
+                                                       coordinates: zone.locationCoordinates(),
+                                                       accuracy: 1,
+                                                       zone: zone)
+    }
+
+    func startScanning(zone: Zone) {
+        print("Begin scanning iBeacons for zone", zone.ID)
+        let beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: zone.UUID!)!,
+                                          major: CLBeaconMajorValue(zone.Major!),
+                                          minor: CLBeaconMinorValue(zone.Minor!), identifier: zone.ID)
+        zones[zone.ID] = zone
+        locationManager.startMonitoring(for: beaconRegion)
     }
 
 }

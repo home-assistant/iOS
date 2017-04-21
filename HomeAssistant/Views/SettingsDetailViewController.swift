@@ -61,6 +61,22 @@ class SettingsDetailViewController: FormViewController {
                     }
                 })
                 <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.BeaconEnter.title
+                    $0.value = prefs.bool(forKey: "beaconEnterNotifications")
+                }.onChange({ (row) in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "beaconEnterNotifications")
+                    }
+                })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.BeaconExit.title
+                    $0.value = prefs.bool(forKey: "beaconExitNotifications")
+                }.onChange({ (row) in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "beaconExitNotifications")
+                    }
+                })
+                <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Location.Notifications.LocationChange.title
                     $0.value = prefs.bool(forKey: "significantLocationChangeNotifications")
                 }.onChange({ (row) in
@@ -89,7 +105,22 @@ class SettingsDetailViewController: FormViewController {
                             <<< LabelRow {
                                 $0.title = L10n.SettingsDetails.Location.Zones.Radius.title
                                 $0.value = "\(Int(zone.Radius)) m"
-                        }
+                            }
+                            <<< LabelRow {
+                                $0.title = L10n.SettingsDetails.Location.Zones.BeaconUuid.title
+                                $0.value = zone.UUID
+                                $0.hidden = Condition(booleanLiteral: (zone.UUID == nil))
+                            }
+                            <<< LabelRow {
+                                $0.title = L10n.SettingsDetails.Location.Zones.BeaconMajor.title
+                                $0.value = String(describing: zone.Major)
+                                $0.hidden = Condition(booleanLiteral: (zone.Major == nil))
+                            }
+                            <<< LabelRow {
+                                $0.title = L10n.SettingsDetails.Location.Zones.BeaconMinor.title
+                                $0.value = String(describing: zone.Minor)
+                                $0.hidden = Condition(booleanLiteral: (zone.Minor == nil))
+                            }
                     }
                     if zoneEntities.count > 0 {
                         self.form

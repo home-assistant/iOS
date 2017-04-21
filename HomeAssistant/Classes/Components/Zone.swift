@@ -19,6 +19,11 @@ class Zone: Entity {
     dynamic var enterNotification = true
     dynamic var exitNotification = true
 
+    // Beacons
+    dynamic var UUID: String?
+    var Major: Int?
+    var Minor: Int?
+
     override func mapping(map: Map) {
         super.mapping(map: map)
 
@@ -26,6 +31,9 @@ class Zone: Entity {
         Longitude          <- map["attributes.longitude"]
         Radius             <- map["attributes.radius"]
         TrackingEnabled    <- map["attributes.track_ios"]
+        UUID               <- map["attributes.beacon.uuid"]
+        Major              <- map["attributes.beacon.major"]
+        Minor              <- map["attributes.beacon.minor"]
     }
 
     func locationCoordinates() -> CLLocationCoordinate2D {
