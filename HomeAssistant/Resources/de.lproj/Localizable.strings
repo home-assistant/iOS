@@ -2,8 +2,8 @@
   Localizable.strings
   HomeAssistant
 
-  Created by Robert Trencheny on 1/8/17.
-  Copyright © 2017 Robbie Trencheny. All rights reserved.
+  Created by Tim Wilbrink on 4/17/17.
+  Copyright © 2017 Tim Wilbrink. All rights reserved.
 */
 "location_change_notification.title" = "Ortswechsel";
 "zone_entered_notification.message" = "%@ betreten";
@@ -18,12 +18,17 @@
 "settings.certificate_error_notification.title" = "Selbstsigniertes oder ungültiges Zertifikat entdeckt";
 "settings.certificate_error_notification.message" = "Ein  selbstsigniertes oder ungültiges SSL Zertifikat wurde entdeckt. Solche Zertifikate werden von Home Assistant für iOS nicht unterstützt. Klicke auf den Mehr Info button für weitergehende Informationen.";
 "settings.discovery_section.header" = "Home Assistant entdeckt";
+"settings.discovery_section.requiresPassword" = "Passwort benötigt";
 "settings.connection_section.header" = "Verbindung";
 "settings.connection_section.invalid_url_scheme_notification.title" = "Ungültige URL";
 "settings.connection_section.invalid_url_scheme_notification.message" = "Die URL muss entweder mit http:// oder https:// beginnen.";
 "settings.connection_section.api_password_row.title" = "Passwort";
 "settings.connection_section.api_password_row.placeholder" = "Passwort";
 "settings.connection_section.connect_row.title" = "verbinden";
+"settings.connection_section.base_url.title" = "URL";
+"settings.connection_error.forbidden.message" = "Das eingegeben Passwort ist falsch.";
+"settings.connection_error.invalid_url.title" = "Fehler beim lesen der URL";
+"settings.connection_error.invalid_url.message" = "Es scheint, als ob die URL ungültig ist. Prüfe bitte das Format und versuche es erneut.";
 
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.title" = "Name";
@@ -31,12 +36,14 @@
 "settings.status_section.version_row.title" = "Version";
 "settings.status_section.version_row.placeholder" = "0.35.0";
 "settings.status_section.connected_to_sse_row.title" = "verbunden";
-"settings.status_section.ios_component_loaded_row.title" = "iOS Component geladen";
-"settings.status_section.device_tracker_component_loaded_row.title" = "Device Tracker Component geladen";
+"settings.status_section.ios_component_loaded_row.title" = "iOS Komponente geladen";
+"settings.status_section.device_tracker_component_loaded_row.title" = "Geräte Tracker Komponente geladen";
 "settings.status_section.notify_platform_loaded_row.title" = "iOS Benachrichtigungs Plattform geladen";
 
 "settings.device_id_section.footer" = "Die Geräte ID ist der Bezeichner, der bei der Aktualisierung der Position an Home Assistant gesendet wird und wird auch als Ziel für die Pushbenachrichtigungen genutzt.";
 "settings.device_id_section.device_id_row.title" = "Geräte ID";
+
+"settings.general_settings_button.title" = "Allgemeine Einstellungen";
 
 "settings.details_section.enable_location_row.title" = "Positionsverfolgung einschalten";
 "settings.details_section.location_settings_row.title" = "Einstellungen für die Position";
@@ -48,5 +55,63 @@
 "settings.reset_section.reset_alert.title" = "zurücksetzen";
 "settings.reset_section.reset_alert.message" = "Die Einstellungen werden zurückgesetzt und es werden sowohl die Benachrichtigungen nicht mehr abonniert als auch die Konfiguration aus Home Assistant entfernt.";
 
+
+"settings_details.general.title" = "Allgemeine Einstellungen";
+"settings_details.general.chrome.title" = "Links in Chrome öffnen";
+
+"settings_details.location.title" = "Einstellungen für die Position";
+"settings_details.location.notifications.header" = "Benachrichtigungen";
+"settings_details.location.notifications.enter.title" = "Benachrichtigungen beim Betreten einer Zone";
+"settings_details.location.notifications.exit.title" = "Benachrichtigungen beim Verlassen einer Zone";
+"settings_details.location.notifications.beacon_enter.title" = "Betreten der Zone iBeacon Benachrichtigung";
+"settings_details.location.notifications.beacon_exit.title" = "Verlassen der Zone iBeacon Benachrichtigung";
+"settings_details.location.notifications.location_change.title" = "Benachrichtigungen beim Wechseln einer Zone";
+"settings_details.location.zones.enter_exit_tracked.title" = "Betreten/verlassen erfassen";
+"settings_details.location.zones.location.title" = "Position";
+"settings_details.location.zones.radius.title" = "Radius";
+"settings_details.location.zones.footer" = "Um die Positionsverfolgung zu deaktivierten muss zur entsprechenden Zone ein 'track_ios: false' oder bei customize hinzugefügt werden.";
+"settings_details.location.zones.beacon_uuid.title" = "iBeacon UUID";
+"settings_details.location.zones.beacon_major.title" = "iBeacon Major";
+"settings_details.location.zones.beacon_minor.title" = "iBeacon Minor";
+"settings_details.location.zones.footer" = "Um die Positionsverfolgung zu deaktivieren muss zur entsprechenden Zone ein 'track_ios: false' oder bei customize hinzugefügt werden.";
+
+"settings_details.notifications.title" = "Einstellungen für Benachrichtigungen";
+"settings_details.notifications.push_id_section.header" = "Push ID";
+"settings_details.notifications.push_id_section.footer" = "Das ist das Ziel zur Verwendung in der Home Assistant Konfiguration. Antippen zum Kopieren oder Teilen.";
+"settings_details.notifications.push_id_section.placeholder" = "Push ID";
+"settings_details.notifications.push_id_section.not_registered" = "Nicht für Benachrichtigungen registriert";
+
+"settings_details.notifications.update_section.footer" = "Das Aktualisieren der Benachrichtigungseinstellungen fragt die aktuellsten Benachrichtigungsaktionen und Kategorien von Home Assistant ab.";
+"settings_details.notifications.update_section.button.title" = "Benachrichtigungseinstellungen Aktualisieren";
+"settings_details.notifications.update_section.updated_alert.title" = "Einstellungen importiert";
+"settings_details.notifications.update_section.updated_alert.message" = "Benachrichtigungseinstellungen von Home Assistant importiert.";
+
+"settings_details.notifications.sounds_section.footer" = "Eigene Benachrichtigungstöne können via iTunes hinzugefügt werden.";
+"settings_details.notifications.sounds_section.button.title" = "Töne importieren";
+"settings_details.notifications.sounds_section.imported_alert.title" = "Töne importieren";
+"settings_details.notifications.sounds_section.imported_alert.message" = "%d Töne wurde importiert. Bitte starte das Telefon neu um den Import abzuschließen.";
+
 "permissions.location.message" = "Die Informationen werden genutzt um \r\nHome Assistant über die aktuelle Position \r\nund den Gerätestatus zu informieren.";
-"permissions.notification.message" = "Damit werden die Benachrchtigungen \r\nan dieses Gerät gesendet.";
+"permissions.notification.message" = "Damit werden die Benachrichtigungen \r\nan dieses Gerät gesendet.";
+
+
+"devices_map.title" = "Geräte & Zonen";
+"devices_map.map_types.standard" = "Standard";
+"devices_map.map_types.hybrid" = "Hybrid";
+"devices_map.map_types.satellite" = "Satellit";
+"devices_map.battery_label" = "Batterie";
+
+"ok_label" = "OK";
+
+"about.title" = "Über";
+"about.logo.app_title" = "Home Assistant für iOS";
+"about.logo.tagline" = "Awaken Your Home";
+"about.acknowledgements.title" = "Danksagungen";
+"about.website.title" = "Webseite";
+"about.forums.title" = "Forum";
+"about.chat.title" = "Chat";
+"about.documentation.title" = "Dokumentation";
+"about.home_assistant_on_twitter.title" = "Home Assistant auf Twitter";
+"about.home_assistant_on_facebook.title" = "Home Assistant auf Facebook";
+"about.github.title" = "GitHub";
+"about.github_issue_tracker.title" = "GitHub Issue Tracker";
