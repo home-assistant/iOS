@@ -89,7 +89,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     override func viewDidAppear(_ animated: Bool) {
         var toolbarItems: [UIBarButtonItem] = []
 
-        let tabBarIconColor = Entity().DefaultEntityUIColor
+        let tabBarIconColor = UIColor(red:0.01, green:0.66, blue:0.96, alpha:1.0)
 
         if HomeAssistantAPI.sharedInstance.locationEnabled {
 
@@ -133,6 +133,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                                             action: #selector(openSettingsView(_:))))
 
         self.setToolbarItems(toolbarItems, animated: false)
+        self.navigationController?.toolbar.tintColor = tabBarIconColor
 
         if HomeAssistantAPI.sharedInstance.URLSet {
             let myURL = URL(string: HomeAssistantAPI.sharedInstance.baseURL)
