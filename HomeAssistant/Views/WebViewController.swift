@@ -16,7 +16,16 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     var webView: WKWebView!
 
-    override func loadView() {
+    // swiftlint:disable:next function_body_length
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let screenSize: CGRect = UIScreen.main.bounds
+        let myView = UIView(frame: CGRect(x: 0, y: 0,
+                                          width: screenSize.width,
+                                          height: screenSize.height-self.navigationController!.toolbar.frame.height))
+        self.view.addSubview(myView)
+
         let config = WKWebViewConfiguration()
         if let apiPass = keychain["apiPassword"] {
             let scriptStr = "window.hassConnection = createHassConnection(\"\(apiPass)\");"
@@ -25,15 +34,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             userContentController.addUserScript(script)
             config.userContentController = userContentController
         }
-        webView = WKWebView(frame: UIScreen.main.bounds, configuration: config)
+
+        webView = WKWebView(frame: myView.frame, configuration: config)
         webView.navigationDelegate = self
         webView.uiDelegate = self
-        view = webView
-    }
 
-    // swiftlint:disable:next function_body_length
-    override func viewDidLoad() {
-        super.viewDidLoad()
+        myView.addSubview(webView)
 
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
         if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
