@@ -40,6 +40,11 @@ target 'APNSAttachmentService' do
   pod 'KeychainAccess'
 end
 
+target 'MapNotificationContentExtension' do
+    pod 'MBProgressHUD'
+end
+
+
 target 'NotificationContentExtension' do
   pod 'KeychainAccess'
   pod 'MBProgressHUD'

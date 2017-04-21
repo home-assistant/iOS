@@ -150,8 +150,7 @@
 		B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
 		B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
 		B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B627CB0D1D83C87B0057173E /* NotificationViewController.swift */; };
-		B627CB111D83C87B0057173E /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B627CB0F1D83C87B0057173E /* MainInterface.storyboard */; };
-		B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B627CB151D83C87B0057173E /* CameraNotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* CameraNotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B629E8D61DAD8CFA00040A90 /* PushRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */; };
 		B62A67A01D80E933009E46F9 /* IdentifyRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */; };
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
@@ -174,6 +173,12 @@
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66428111CF7A83200903804 /* PushConfiguration.swift */; };
 		B6767A511D0234E700F2A08B /* SwitchableEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6767A501D0234E700F2A08B /* SwitchableEntity.swift */; };
+		B678DB251EA991E40045312F /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
+		B678DB261EA991E40045312F /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
+		B678DB291EA991E40045312F /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B678DB281EA991E40045312F /* NotificationViewController.swift */; };
+		B678DB301EA991E40045312F /* MapNotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B678DB241EA991E30045312F /* MapNotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
+		B678DB391EA999AC0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB381EA999AC0045312F /* MainInterface.storyboard */; };
 		B6880B2B1D7B9E6400CCB899 /* Climate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6880B2A1D7B9E6400CCB899 /* Climate.swift */; };
 		B689EBCB1D8B7C800000AECE /* MjpegStreamingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */; };
 		B69933951E232AEA0054453D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
@@ -215,6 +220,8 @@
 		B6F700521CB374F700753BAB /* RootTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F700511CB374F700753BAB /* RootTabBarViewController.swift */; };
 		B6FBE3971D46A4E500EE0E36 /* Beacons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FBE3961D46A4E500EE0E36 /* Beacons.swift */; };
 		CE969D82133AF9F6FC377A1C /* Pods_APNSAttachmentService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F9E760F9E79B22B21B67B57 /* Pods_APNSAttachmentService.framework */; };
+		D0C7C77FC4DE40454D0F3B52 /* Pods_MapNotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40EA2625B9413852756757B /* Pods_MapNotificationContentExtension.framework */; };
+		DE00A0A32956903FEB4C59D3 /* Pods-MapNotificationContentExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */; };
 		F88F0593CC7882D233B611E3 /* Pods_HomeAssistantUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 923F8D630AC5BA0C36905E8A /* Pods_HomeAssistantUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -240,6 +247,13 @@
 			remoteGlobalIDString = B657A8E51CA646EB00121384;
 			remoteInfo = HomeAssistant;
 		};
+		B678DB2E1EA991E40045312F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B678DB231EA991E30045312F;
+			remoteInfo = MapNotificationContentExtension;
+		};
 		B6AAD7A61D827DD40090B220 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
@@ -257,7 +271,8 @@
 			dstSubfolderSpec = 13;
 			files = (
 				B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */,
-				B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */,
+				B627CB151D83C87B0057173E /* CameraNotificationContentExtension.appex in Embed App Extensions */,
+				B678DB301EA991E40045312F /* MapNotificationContentExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -265,6 +280,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		04217702736D1AE18424676B /* Pods-MapNotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MapNotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-MapNotificationContentExtension/Pods-MapNotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
 		055E7B0DD053FB7FF5126165 /* Pods-HomeAssistantUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		141825DF3D525694F6F38A6C /* Pods_NotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-HomeAssistant-metadata.plist"; path = "Pods/Pods-HomeAssistant-metadata.plist"; sourceTree = "<group>"; };
@@ -414,11 +430,10 @@
 		B624DE171CB8369200F413CE /* DevicesMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesMapViewController.swift; sourceTree = "<group>"; };
 		B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoveryInfo.swift; sourceTree = "<group>"; };
 		B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsDetailViewController.swift; sourceTree = "<group>"; };
-		B627CB071D83C87B0057173E /* NotificationContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B627CB071D83C87B0057173E /* CameraNotificationContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CameraNotificationContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B627CB081D83C87B0057173E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
 		B627CB0D1D83C87B0057173E /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
-		B627CB101D83C87B0057173E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		B627CB121D83C87B0057173E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrationRequest.swift; sourceTree = "<group>"; };
 		B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyRequest.swift; sourceTree = "<group>"; };
@@ -448,6 +463,12 @@
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
 		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
+		B678DB241EA991E30045312F /* MapNotificationContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MapNotificationContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B678DB281EA991E40045312F /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
+		B678DB2D1EA991E40045312F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B678DB341EA992A90045312F /* MapNotificationContentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MapNotificationContentExtension.entitlements; sourceTree = "<group>"; };
+		B678DB361EA9999C0045312F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		B678DB381EA999AC0045312F /* MainInterface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		B6880B2A1D7B9E6400CCB899 /* Climate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Climate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MjpegStreamingController.swift; sourceTree = "<group>"; };
 		B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = APNSAttachmentService.entitlements; sourceTree = "<group>"; };
@@ -496,7 +517,10 @@
 		B6FBE3961D46A4E500EE0E36 /* Beacons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Beacons.swift; sourceTree = "<group>"; };
 		BA2CF5D1E68D4F13CA129A6D /* Pods-NotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
 		CEE386F8C44D8A0DAE247050 /* Pods-HomeAssistantTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.debug.xcconfig"; sourceTree = "<group>"; };
+		D40EA2625B9413852756757B /* Pods_MapNotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MapNotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-MapNotificationContentExtension-metadata.plist"; path = "Pods/Pods-MapNotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
 		E340A91043F97CDAE845613F /* Pods-HomeAssistantUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.release.xcconfig"; sourceTree = "<group>"; };
+		FA8D40F800F5CEB4406229A3 /* Pods-MapNotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MapNotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MapNotificationContentExtension/Pods-MapNotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -535,6 +559,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B678DB211EA991E30045312F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B678DB261EA991E40045312F /* UserNotificationsUI.framework in Frameworks */,
+				B678DB251EA991E40045312F /* UserNotifications.framework in Frameworks */,
+				D0C7C77FC4DE40454D0F3B52 /* Pods_MapNotificationContentExtension.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B6AAD79E1D827DD40090B220 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -557,6 +591,7 @@
 				B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */,
 				141825DF3D525694F6F38A6C /* Pods_NotificationContentExtension.framework */,
 				5F9E760F9E79B22B21B67B57 /* Pods_APNSAttachmentService.framework */,
+				D40EA2625B9413852756757B /* Pods_MapNotificationContentExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -577,6 +612,9 @@
 				76DAC3D4A57C268C960DC06F /* Pods-APNSAttachmentService.debug.xcconfig */,
 				59FBFE4425DE1869FC57C7AC /* Pods-APNSAttachmentService.release.xcconfig */,
 				3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */,
+				FA8D40F800F5CEB4406229A3 /* Pods-MapNotificationContentExtension.debug.xcconfig */,
+				04217702736D1AE18424676B /* Pods-MapNotificationContentExtension.release.xcconfig */,
+				DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -742,15 +780,16 @@
 			path = Generic;
 			sourceTree = "<group>";
 		};
-		B627CB0C1D83C87B0057173E /* NotificationContentExtension */ = {
+		B627CB0C1D83C87B0057173E /* CameraNotificationContentExtension */ = {
 			isa = PBXGroup;
 			children = (
+				B678DB351EA9999C0045312F /* MainInterface.storyboard */,
 				B627CB121D83C87B0057173E /* Info.plist */,
-				B627CB0F1D83C87B0057173E /* MainInterface.storyboard */,
 				B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */,
 				B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */,
 				B627CB0D1D83C87B0057173E /* NotificationViewController.swift */,
 			);
+			name = CameraNotificationContentExtension;
 			path = NotificationContentExtension;
 			sourceTree = "<group>";
 		};
@@ -773,7 +812,8 @@
 				B657A8E81CA646EB00121384 /* HomeAssistant */,
 				B657A8FF1CA646EB00121384 /* HomeAssistantTests */,
 				B657A90A1CA646EB00121384 /* HomeAssistantUITests */,
-				B627CB0C1D83C87B0057173E /* NotificationContentExtension */,
+				B678DB271EA991E40045312F /* MapNotificationContentExtension */,
+				B627CB0C1D83C87B0057173E /* CameraNotificationContentExtension */,
 				AAB60FA4DE371AD957F6907B /* Pods */,
 				B657A8E71CA646EB00121384 /* Products */,
 			);
@@ -786,7 +826,8 @@
 				B657A8FC1CA646EB00121384 /* HomeAssistantTests.xctest */,
 				B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */,
 				B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */,
-				B627CB071D83C87B0057173E /* NotificationContentExtension.appex */,
+				B627CB071D83C87B0057173E /* CameraNotificationContentExtension.appex */,
+				B678DB241EA991E30045312F /* MapNotificationContentExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -823,6 +864,17 @@
 				B699339B1E2338960054453D /* SnapshotHelper.swift */,
 			);
 			path = HomeAssistantUITests;
+			sourceTree = "<group>";
+		};
+		B678DB271EA991E40045312F /* MapNotificationContentExtension */ = {
+			isa = PBXGroup;
+			children = (
+				B678DB381EA999AC0045312F /* MainInterface.storyboard */,
+				B678DB341EA992A90045312F /* MapNotificationContentExtension.entitlements */,
+				B678DB281EA991E40045312F /* NotificationViewController.swift */,
+				B678DB2D1EA991E40045312F /* Info.plist */,
+			);
+			path = MapNotificationContentExtension;
 			sourceTree = "<group>";
 		};
 		B679B1F91E1F3CFB0071D366 /* Views */ = {
@@ -947,9 +999,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B627CB061D83C87B0057173E /* NotificationContentExtension */ = {
+		B627CB061D83C87B0057173E /* CameraNotificationContentExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "NotificationContentExtension" */;
+			buildConfigurationList = B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "CameraNotificationContentExtension" */;
 			buildPhases = (
 				3A6AA6CAB1A0AAE9B3A4CA83 /* [CP] Check Pods Manifest.lock */,
 				B627CB031D83C87B0057173E /* Sources */,
@@ -961,9 +1013,9 @@
 			);
 			dependencies = (
 			);
-			name = NotificationContentExtension;
+			name = CameraNotificationContentExtension;
 			productName = NotificationContentExtension;
-			productReference = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */;
+			productReference = B627CB071D83C87B0057173E /* CameraNotificationContentExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B657A8E51CA646EB00121384 /* HomeAssistant */ = {
@@ -986,6 +1038,7 @@
 			dependencies = (
 				B6AAD7A71D827DD40090B220 /* PBXTargetDependency */,
 				B627CB141D83C87B0057173E /* PBXTargetDependency */,
+				B678DB2F1EA991E40045312F /* PBXTargetDependency */,
 			);
 			name = HomeAssistant;
 			productName = HomeAssistant;
@@ -1034,6 +1087,25 @@
 			productReference = B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		B678DB231EA991E30045312F /* MapNotificationContentExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B678DB311EA991E40045312F /* Build configuration list for PBXNativeTarget "MapNotificationContentExtension" */;
+			buildPhases = (
+				B4C5FFA905628382C93E2D91 /* [CP] Check Pods Manifest.lock */,
+				B678DB201EA991E30045312F /* Sources */,
+				B678DB211EA991E30045312F /* Frameworks */,
+				B678DB221EA991E30045312F /* Resources */,
+				9ABB1A3B50054494D373ECCD /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MapNotificationContentExtension;
+			productName = MapNotificationContentExtension;
+			productReference = B678DB241EA991E30045312F /* MapNotificationContentExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		B6AAD7A01D827DD40090B220 /* APNSAttachmentService */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B6AAD7A91D827DD40090B220 /* Build configuration list for PBXNativeTarget "APNSAttachmentService" */;
@@ -1059,7 +1131,7 @@
 		B657A8DE1CA646EB00121384 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0800;
+				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "Robbie Trencheny";
 				TargetAttributes = {
@@ -1113,6 +1185,16 @@
 						LastSwiftMigration = 0800;
 						TestTargetID = B657A8E51CA646EB00121384;
 					};
+					B678DB231EA991E30045312F = {
+						CreatedOnToolsVersion = 8.3.1;
+						DevelopmentTeam = UTQFCBPQRF;
+						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
+					};
 					B6AAD7A01D827DD40090B220 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = UTQFCBPQRF;
@@ -1145,7 +1227,8 @@
 				B657A8FB1CA646EB00121384 /* HomeAssistantTests */,
 				B657A9061CA646EB00121384 /* HomeAssistantUITests */,
 				B6AAD7A01D827DD40090B220 /* APNSAttachmentService */,
-				B627CB061D83C87B0057173E /* NotificationContentExtension */,
+				B627CB061D83C87B0057173E /* CameraNotificationContentExtension */,
+				B678DB231EA991E30045312F /* MapNotificationContentExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -1155,8 +1238,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B627CB111D83C87B0057173E /* MainInterface.storyboard in Resources */,
 				5487B2333FBD80B7ED0CFD47 /* Pods-NotificationContentExtension-metadata.plist in Resources */,
+				B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1316,6 +1399,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B678DB221EA991E30045312F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DE00A0A32956903FEB4C59D3 /* Pods-MapNotificationContentExtension-metadata.plist in Resources */,
+				B678DB391EA999AC0045312F /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B6AAD79F1D827DD40090B220 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1400,6 +1492,36 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9ABB1A3B50054494D373ECCD /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MapNotificationContentExtension/Pods-MapNotificationContentExtension-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B4C5FFA905628382C93E2D91 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		B641BC261E20BAF3002CCBC1 /* Swiftlint */ = {
@@ -1655,6 +1777,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B678DB201EA991E30045312F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B678DB291EA991E40045312F /* NotificationViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B6AAD79D1D827DD40090B220 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1668,7 +1798,7 @@
 /* Begin PBXTargetDependency section */
 		B627CB141D83C87B0057173E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B627CB061D83C87B0057173E /* NotificationContentExtension */;
+			target = B627CB061D83C87B0057173E /* CameraNotificationContentExtension */;
 			targetProxy = B627CB131D83C87B0057173E /* PBXContainerItemProxy */;
 		};
 		B657A8FE1CA646EB00121384 /* PBXTargetDependency */ = {
@@ -1681,6 +1811,11 @@
 			target = B657A8E51CA646EB00121384 /* HomeAssistant */;
 			targetProxy = B657A9081CA646EB00121384 /* PBXContainerItemProxy */;
 		};
+		B678DB2F1EA991E40045312F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B678DB231EA991E30045312F /* MapNotificationContentExtension */;
+			targetProxy = B678DB2E1EA991E40045312F /* PBXContainerItemProxy */;
+		};
 		B6AAD7A71D827DD40090B220 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B6AAD7A01D827DD40090B220 /* APNSAttachmentService */;
@@ -1689,15 +1824,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		B627CB0F1D83C87B0057173E /* MainInterface.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B627CB101D83C87B0057173E /* Base */,
-			);
-			name = MainInterface.storyboard;
-			path = .;
-			sourceTree = "<group>";
-		};
 		B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1705,6 +1831,14 @@
 			);
 			name = LaunchScreen.storyboard;
 			path = .;
+			sourceTree = "<group>";
+		};
+		B678DB351EA9999C0045312F /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B678DB361EA9999C0045312F /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 		B69933931E232AEA0054453D /* Localizable.strings */ = {
@@ -1869,6 +2003,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6410E5092616A0DD9241A91D /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
@@ -1920,6 +2055,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 366FD7D1C50AFCED407FEBB6 /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
@@ -2021,6 +2157,49 @@
 			};
 			name = Release;
 		};
+		B678DB321EA991E40045312F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FA8D40F800F5CEB4406229A3 /* Pods-MapNotificationContentExtension.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_ENTITLEMENTS = MapNotificationContentExtension/MapNotificationContentExtension.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				INFOPLIST_FILE = MapNotificationContentExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.MapNotificationContentExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "6a71f7b7-c2b5-41ab-800f-5c9b31c163f6";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.MapNotificationContentExtension";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		B678DB331EA991E40045312F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04217702736D1AE18424676B /* Pods-MapNotificationContentExtension.release.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_ENTITLEMENTS = MapNotificationContentExtension/MapNotificationContentExtension.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = MapNotificationContentExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.MapNotificationContentExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
 		B6AAD7AA1D827DD40090B220 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 76DAC3D4A57C268C960DC06F /* Pods-APNSAttachmentService.debug.xcconfig */;
@@ -2065,7 +2244,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "NotificationContentExtension" */ = {
+		B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "CameraNotificationContentExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B627CB161D83C87B0057173E /* Debug */,
@@ -2106,6 +2285,15 @@
 			buildConfigurations = (
 				B657A9171CA646EB00121384 /* Debug */,
 				B657A9181CA646EB00121384 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B678DB311EA991E40045312F /* Build configuration list for PBXNativeTarget "MapNotificationContentExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B678DB321EA991E40045312F /* Debug */,
+				B678DB331EA991E40045312F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
