@@ -14,6 +14,7 @@ import RealmSwift
 import UserNotifications
 import AlamofireNetworkActivityIndicator
 import KeychainAccess
+import SwiftLocation
 
 let realmConfig = Realm.Configuration(schemaVersion: 3, migrationBlock: nil)
 
@@ -60,6 +61,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             prefs.setValue(true, forKey: "openInChrome")
             prefs.synchronize()
         }
+
+        registerForSignificantLocationUpdates()
 
         window = UIWindow.init(frame: UIScreen.main.bounds)
         window?.backgroundColor = .white
@@ -164,7 +167,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        print("Background fetch activated!")
+        let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short)
+        print("Background fetch activated at \(timestamp)!")
         if HomeAssistantAPI.sharedInstance.Configured == false {
             if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
                 HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
@@ -243,6 +247,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("Can't route", url.host!)
         }
         return true
+    }
+
+    func registerForSignificantLocationUpdates() {
+        if HomeAssistantAPI.sharedInstance.locationEnabled {
+            Location.getLocation(accuracy: .neighborhood, frequency: .significant, timeout: nil,
+                                 success: { (_, location) -> (Void) in
+
+                                if HomeAssistantAPI.sharedInstance.Configured == false {
+                                    if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
+                                        HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
+                                                                              deviceID: keychain["deviceID"])
+                                    }
+                                }
+
+                                HomeAssistantAPI.sharedInstance.submitLocation(updateType: .SignificantLocationUpdate,
+                                                                               coordinates: location.coordinate,
+                                                                               accuracy: location.horizontalAccuracy,
+                                                                               zone: nil)
+            }) { (_, _, error) -> (Void) in
+                // something went wrong. request will be cancelled automatically
+                NSLog("Something went wrong when trying to get significant location updates! Error was: @%",
+                      error.localizedDescription)
+                Crashlytics.sharedInstance().recordError(error)
+            }
+        }
     }
 
 }

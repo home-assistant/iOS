@@ -119,7 +119,7 @@ public class HomeAssistantAPI {
 
                 _ = self.GetStates().then(execute: { _ -> Void in
                     if self.locationEnabled {
-                        self.trackLocation()
+                        self.setupZones()
                     }
 
                     if self.loadedComponents.contains("ios") {
@@ -224,21 +224,7 @@ public class HomeAssistantAPI {
 
     }
 
-    func trackLocation() {
-        _ = Location.getLocation(accuracy: .neighborhood,
-                                 frequency: .significant,
-                                 timeout: 50,
-                                 success: { (_, location) -> (Void) in
-                                    self.submitLocation(updateType: .Manual,
-                                                        coordinates: location.coordinate,
-                                                        accuracy: location.horizontalAccuracy,
-                                                        zone: nil)
-        }) { (_, _, error) -> (Void) in
-            // something went wrong. request will be cancelled automatically
-            print("Something went wrong when trying to get significant location updates! Error was:", error)
-            Crashlytics.sharedInstance().recordError(error)
-        }
-
+    func setupZones() {
         if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
             if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
                 return entity.Domain == "zone"

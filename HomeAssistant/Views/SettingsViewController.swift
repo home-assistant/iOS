@@ -293,7 +293,8 @@ class SettingsViewController: FormViewController {
                         if finished {
                             print("Location Permissions finished!", finished, results)
                             if results[0].status == .authorized {
-                                HomeAssistantAPI.sharedInstance.trackLocation()
+                                HomeAssistantAPI.sharedInstance.setupZones()
+                                _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
                             }
                             row.hidden = true
                             row.updateCell()
