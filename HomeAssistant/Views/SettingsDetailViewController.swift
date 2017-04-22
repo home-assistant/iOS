@@ -121,12 +121,20 @@ class SettingsDetailViewController: FormViewController {
                             }
                             <<< LabelRow {
                                 $0.title = L10n.SettingsDetails.Location.Zones.BeaconMajor.title
-                                $0.value = String(describing: zone.Major)
+                                if let major = zone.Major {
+                                    $0.value = String(describing: major)
+                                } else {
+                                    $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
+                                }
                                 $0.hidden = Condition(booleanLiteral: (zone.Major == nil))
                             }
                             <<< LabelRow {
                                 $0.title = L10n.SettingsDetails.Location.Zones.BeaconMinor.title
-                                $0.value = String(describing: zone.Minor)
+                                if let minor = zone.Minor {
+                                    $0.value = String(describing: minor)
+                                } else {
+                                    $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
+                                }
                                 $0.hidden = Condition(booleanLiteral: (zone.Minor == nil))
                             }
                     }

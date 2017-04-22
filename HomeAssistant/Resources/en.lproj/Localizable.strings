@@ -70,6 +70,7 @@
 "settings_details.location.zones.enter_exit_tracked.title" = "Enter/exit tracked";
 "settings_details.location.zones.location.title" = "Location";
 "settings_details.location.zones.radius.title" = "Radius";
+"settings_details.location.zones.beacon.prop_not_set.value" = "Not set";
 "settings_details.location.zones.beacon_uuid.title" = "iBeacon UUID";
 "settings_details.location.zones.beacon_major.title" = "iBeacon Major";
 "settings_details.location.zones.beacon_minor.title" = "iBeacon Minor";

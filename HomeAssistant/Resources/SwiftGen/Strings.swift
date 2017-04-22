@@ -339,6 +339,14 @@ enum L10n {
         /// To disable location tracking add track_ios: false to each zones settings or under customize.
         static let footer = L10n.tr("settings_details.location.zones.footer")
 
+        enum Beacon {
+
+          enum PropNotSet {
+            /// Not set
+            static let value = L10n.tr("settings_details.location.zones.beacon.prop_not_set.value")
+          }
+        }
+
         enum BeaconMajor {
           /// iBeacon Major
           static let title = L10n.tr("settings_details.location.zones.beacon_major.title")
