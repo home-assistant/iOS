@@ -160,21 +160,19 @@ class SettingsDetailViewController: FormViewController {
                         self.present(activityViewController, animated: true, completion: {})
                 }
 
-                +++ Section(header: "",
-                            // swiftlint:disable:next line_length
-                    footer: L10n.SettingsDetails.Notifications.UpdateSection.footer)
+                +++ Section(header: "", footer: L10n.SettingsDetails.Notifications.UpdateSection.footer)
                 <<< ButtonRow {
                     $0.title = L10n.SettingsDetails.Notifications.UpdateSection.Button.title
-                    }.onCellSelection {_, _ in
-                        HomeAssistantAPI.sharedInstance.setupPush()
-                        // swiftlint:disable:next line_length
-                        let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.title,
-                                                      // swiftlint:disable:next line_length
-                                                      message: L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.message,
-                                                      preferredStyle: UIAlertControllerStyle.alert)
-                        alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
-                                                      handler: nil))
-                        self.present(alert, animated: true, completion: nil)
+                }.onCellSelection {_, _ in
+                    HomeAssistantAPI.sharedInstance.setupPush()
+                    // swiftlint:disable:next line_length
+                    let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.title,
+                                                  // swiftlint:disable:next line_length
+                                                  message: L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.message,
+                                                  preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                                  handler: nil))
+                    self.present(alert, animated: true, completion: nil)
                 }
 
                 +++ Section(header: "", footer: L10n.SettingsDetails.Notifications.SoundsSection.footer)
@@ -190,7 +188,22 @@ class SettingsDetailViewController: FormViewController {
                         alert.addAction(UIAlertAction(title: L10n.okLabel,
                                                       style: UIAlertActionStyle.default, handler: nil))
                         self.present(alert, animated: true, completion: nil)
-            }
+                }
+
+                +++ Section(header: "", footer: "")
+                <<< ButtonRow {
+                    $0.title = L10n.SettingsDetails.Notifications.BadgeSection.Button.title
+                }.onCellSelection {_, _ in
+                    UIApplication.shared.applicationIconBadgeNumber = 0
+                    // swiftlint:disable:next line_length
+                    let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.title,
+                                                  // swiftlint:disable:next line_length
+                        message: L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.message,
+                        preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: L10n.okLabel,
+                                                  style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
 
             //                <<< ButtonRow {
             //                    $0.title = "Import system sounds"
