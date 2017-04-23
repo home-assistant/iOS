@@ -202,4 +202,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         }
     }
 
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
 }
