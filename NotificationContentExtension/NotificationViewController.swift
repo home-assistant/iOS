@@ -36,19 +36,38 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     func didReceive(_ notification: UNNotification) {
         print("Received a \(notification.request.content.categoryIdentifier) notification type")
+
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
         hud.detailsLabel.text = "Loading \(notification.request.content.categoryIdentifier)..."
         hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
         self.hud = hud
 
-        guard let entityId = notification.request.content.userInfo["entity_id"] as? String else { return }
-        guard let cameraProxyURL = URL(string: "\(baseURL)/api/camera_proxy_stream/\(entityId)") else { return }
+        guard let entityId = notification.request.content.userInfo["entity_id"] as? String else {
+            self.showErrorLabel(message: "No entity_id found in payload!")
+            return
+        }
+        guard let cameraProxyURL = URL(string: "\(baseURL)/api/camera_proxy_stream/\(entityId)") else {
+            self.showErrorLabel(message: "Could not form a valid URL!")
+            return
+        }
 
         let imageView = UIImageView()
         imageView.frame = self.view.frame
 
         streamingController = MjpegStreamingController(imageView: imageView, contentURL: cameraProxyURL,
                                                        sessionConfiguration: urlConfiguration)
+        streamingController?.gotNon200Status = { code in
+            var labelText = "Unknown error!"
+            switch code {
+            case 401:
+                labelText = "Authentication failed!"
+            case 404:
+                labelText = "Entity '\(entityId)' not found!"
+            default:
+                labelText = "Got non-200 status code (\(code))"
+            }
+            self.showErrorLabel(message: labelText)
+        }
         streamingController?.didFinishLoading = { _ in
             print("Finished loading")
             self.hud!.hide(animated: true)
@@ -78,6 +97,17 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     public func mediaPause() {
         streamingController?.stop()
+    }
+
+    func showErrorLabel(message: String) {
+        self.extensionContext?.mediaPlayingStarted()
+        self.hud?.hide(animated: true)
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 21))
+        label.center.y = self.view.center.y
+        label.textAlignment = .center
+        label.textColor = .red
+        label.text = message
+        self.view.addSubview(label)
     }
 
 }
