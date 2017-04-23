@@ -1013,10 +1013,7 @@ public class HomeAssistantAPI {
     }
 
     var notificationsEnabled: Bool {
-        //        return PermissionScope().statusNotifications() == .authorized && prefs.string(forKey: "pushID") != nil
-        return prefs.string(forKey: "pushID") != nil
-        //        print("PermissionScope().statusNotifications()", PermissionScope().statusNotifications())
-        //        return PermissionScope().statusNotifications() == .authorized
+        return prefs.bool(forKey: "notificationsEnabled")
     }
 
     var iosComponentLoaded: Bool {

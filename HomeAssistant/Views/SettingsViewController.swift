@@ -339,6 +339,8 @@ class SettingsViewController: FormViewController {
                         if finished {
                             print("Notifications Permissions finished!", finished, results)
                             if results[0].status == .authorized {
+                                prefs.setValue(true, forKey: "notificationsEnabled")
+                                prefs.synchronize()
                                 HomeAssistantAPI.sharedInstance.setupPush()
                                 row.hidden = true
                                 row.evaluateHidden()
@@ -349,6 +351,9 @@ class SettingsViewController: FormViewController {
                                 notifyPlatformLoadedRow.hidden = false
                                 notifyPlatformLoadedRow.evaluateHidden()
                                 self.tableView.reloadData()
+                            } else {
+                                prefs.setValue(false, forKey: "notificationsEnabled")
+                                prefs.synchronize()
                             }
                         }
                     }, cancelled: { _ -> Void in
@@ -360,8 +365,6 @@ class SettingsViewController: FormViewController {
                 $0.title = L10n.Settings.DetailsSection.NotificationSettingsRow.title
                 $0.hidden = Condition(booleanLiteral: !HomeAssistantAPI.sharedInstance.notificationsEnabled)
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    print("HomeAssistantAPI.sharedInstance.notificationsEnabled",
-                          HomeAssistantAPI.sharedInstance.notificationsEnabled)
                     let view = SettingsDetailViewController()
                     view.detailGroup = "notifications"
                     return view

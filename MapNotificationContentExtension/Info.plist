@@ -22,8 +22,6 @@
 	<string>3</string>
 	<key>NSExtension</key>
 	<dict>
-		<key>NSExtensionMainStoryboard</key>
-		<string>MainInterface</string>
 		<key>NSExtensionAttributes</key>
 		<dict>
 			<key>UNNotificationExtensionCategory</key>
@@ -31,6 +29,8 @@
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
 			<real>1</real>
 		</dict>
+		<key>NSExtensionMainStoryboard</key>
+		<string>MainInterface</string>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.usernotifications.content-extension</string>
 	</dict>

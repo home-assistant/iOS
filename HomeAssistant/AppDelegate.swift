@@ -306,6 +306,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                        // swiftlint:disable:next line_length
                                        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         print("Received notification!")
-        completionHandler([.alert, .badge, .sound])
+        return completionHandler([.alert, .badge, .sound])
     }
 }
