@@ -30,7 +30,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    // swiftlint:disable:next line_length
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         Realm.Configuration.defaultConfiguration = realmConfig
@@ -39,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if HomeAssistantAPI.sharedInstance.Configured == false {
             if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
+                HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
                                                       deviceID: keychain["deviceID"])
             }
         }
@@ -106,16 +105,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         print("Registering push with tokenString: \(tokenString)")
 
-        HomeAssistantAPI.sharedInstance.deviceToken = tokenString
-
-        _ = HomeAssistantAPI.sharedInstance.registerDeviceForPush(deviceToken: tokenString).then { resp -> Void in
+        _ = HomeAssistantAPI.sharedInstance.RegisterDeviceForPush(deviceToken: tokenString).then { resp -> Void in
             if let pushId = resp.PushId {
                 print("Registered for push. Platform: \(resp.SNSPlatform ?? "MISSING"), PushID: \(pushId)")
                 CLSLogv("Registered for push:", getVaList([pushId]))
                 Crashlytics.sharedInstance().setUserIdentifier(pushId)
                 prefs.setValue(pushId, forKey: "pushID")
                 HomeAssistantAPI.sharedInstance.pushID = pushId
-                _ = HomeAssistantAPI.sharedInstance.identifyDevice()
+                _ = HomeAssistantAPI.sharedInstance.IdentifyDevice()
             }
         }
 
@@ -134,7 +131,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if HomeAssistantAPI.sharedInstance.Configured == false {
             if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
+                HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
                                                       deviceID: keychain["deviceID"])
             }
         }
@@ -178,7 +175,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Background fetch activated at \(timestamp)!")
         if HomeAssistantAPI.sharedInstance.Configured == false {
             if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
+                HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
                                                       deviceID: keychain["deviceID"])
             }
         }
@@ -195,7 +192,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     completionHandler(UIBackgroundFetchResult.failed)
             }
         } else {
-            HomeAssistantAPI.sharedInstance.identifyDevice().then { _ -> Void in
+            HomeAssistantAPI.sharedInstance.IdentifyDevice().then { _ -> Void in
                 completionHandler(UIBackgroundFetchResult.newData)
             }.catch {error in
                 print("Error when attempting to identify device during background fetch")
@@ -211,7 +208,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      completionHandler: @escaping () -> Void) {
         if HomeAssistantAPI.sharedInstance.Configured == false {
             if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
+                HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
                                                       deviceID: keychain["deviceID"])
             }
         }
@@ -229,7 +226,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         if HomeAssistantAPI.sharedInstance.Configured == false {
             if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
+                HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
                                                       deviceID: keychain["deviceID"])
             }
         }
@@ -263,7 +260,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
                                 if HomeAssistantAPI.sharedInstance.Configured == false {
                                     if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                                        HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
+                                        HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
                                                                               deviceID: keychain["deviceID"])
                                     }
                                 }
@@ -285,7 +282,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if HomeAssistantAPI.sharedInstance.locationEnabled {
             if HomeAssistantAPI.sharedInstance.Configured == false {
                 if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                    HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
+                    HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
                                                           deviceID: keychain["deviceID"])
                 }
             }
@@ -303,7 +300,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
         if HomeAssistantAPI.sharedInstance.Configured == false {
             if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
+                HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
                                                       deviceID: keychain["deviceID"])
             }
         }

@@ -48,19 +48,27 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         myView.addSubview(webView)
 
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-            HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
-                                                  deviceID: keychain["deviceID"])
-            HomeAssistantAPI.sharedInstance.Connect().then { _ -> Void in
-                if HomeAssistantAPI.sharedInstance.notificationsEnabled {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-                print("Connected!")
+        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+                                              deviceID: keychain["deviceID"])
+        if HomeAssistantAPI.sharedInstance.Configured == false {
+            let settingsView = SettingsViewController()
+            settingsView.doneButton = true
+            let navController = UINavigationController(rootViewController: settingsView)
+            self.present(navController, animated: true, completion: {
                 hud.hide(animated: true)
-                let myURL = URL(string: HomeAssistantAPI.sharedInstance.baseURL)
-                let myRequest = URLRequest(url: myURL!)
+            })
+        }
+        HomeAssistantAPI.sharedInstance.Connect().then { _ -> Void in
+            if HomeAssistantAPI.sharedInstance.notificationsEnabled {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+            print("Connected!")
+            hud.hide(animated: true)
+            if let baseURL = HomeAssistantAPI.sharedInstance.baseURL {
+                let myRequest = URLRequest(url: baseURL)
                 self.webView.load(myRequest)
-                return
+            }
+            return
             }.catch {err -> Void in
                 print("ERROR on connect!!!", err)
                 hud.hide(animated: true)
@@ -70,14 +78,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                 settingsView.doneButton = true
                 let navController = UINavigationController(rootViewController: settingsView)
                 self.present(navController, animated: true, completion: nil)
-            }
-        } else {
-            let settingsView = SettingsViewController()
-            settingsView.doneButton = true
-            let navController = UINavigationController(rootViewController: settingsView)
-            self.present(navController, animated: true, completion: {
-                hud.hide(animated: true)
-            })
         }
 
         // Do any additional setup after loading the view.
@@ -147,10 +147,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         self.setToolbarItems(toolbarItems, animated: false)
         self.navigationController?.toolbar.tintColor = tabBarIconColor
 
-        if HomeAssistantAPI.sharedInstance.URLSet {
-            let myURL = URL(string: HomeAssistantAPI.sharedInstance.baseURL)
-            let myRequest = URLRequest(url: myURL!)
-            self.webView.load(myRequest)
+        if HomeAssistantAPI.sharedInstance.Configured {
+            if let baseURL = HomeAssistantAPI.sharedInstance.baseURL {
+                let myRequest = URLRequest(url: baseURL)
+                self.webView.load(myRequest)
+            }
         }
     }
 

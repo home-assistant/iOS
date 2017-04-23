@@ -157,7 +157,7 @@ class SettingsViewController: FormViewController {
                 $0.title = "Save"
                 }.onCellSelection { _, _ in
                     if let baseUrl = self.baseURL {
-                        HomeAssistantAPI.sharedInstance.Setup(baseURL: baseUrl.absoluteString,
+                        HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseUrl.absoluteString,
                                                               password: self.password, deviceID: self.deviceID)
                         HomeAssistantAPI.sharedInstance.Connect().then { config -> Void in
                             print("Connected!")

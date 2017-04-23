@@ -26,7 +26,8 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
     override func viewDidAppear(_ animated: Bool) {
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
         if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-            HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass, deviceID: keychain["deviceID"])
+            HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
+                                                  deviceID: keychain["deviceID"])
             HomeAssistantAPI.sharedInstance.Connect().then { _ -> Void in
                 if HomeAssistantAPI.sharedInstance.notificationsEnabled {
                     UIApplication.shared.registerForRemoteNotifications()
