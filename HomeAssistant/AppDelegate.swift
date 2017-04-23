@@ -56,8 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        // swiftlint:disable:next line_length
-        if (prefs.object(forKey: "openInChrome") == nil && OpenInChromeController().isChromeInstalled()) {
+        if prefs.object(forKey: "openInChrome") == nil && OpenInChromeController().isChromeInstalled() {
             prefs.setValue(true, forKey: "openInChrome")
             prefs.synchronize()
         }
