@@ -1313,6 +1313,20 @@ class BeaconManager: NSObject, CLLocationManagerDelegate {
 
     func resumeScanning() {
         print("Resuming scanning of \(locationManager.monitoredRegions.count) regions!")
+        HomeAssistantAPI.sharedInstance.GetStates().then { (entities) -> Void in
+            if let zoneEntities: [Zone] = entities.filter({ (entity) -> Bool in
+                return entity.Domain == "zone"
+            }) as? [Zone] {
+                for zone in zoneEntities {
+                    if zone.TrackingEnabled == false {
+                        continue
+                    }
+                    self.zones[zone.ID] = zone
+                }
+            }
+        }.catch { error in
+            print("Unable to resume scanning because GetStates call failed!")
+        }
     }
 
 }
