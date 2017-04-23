@@ -1207,29 +1207,43 @@ class BeaconManager: NSObject, CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         print("Entered region", region.identifier)
-        let zone = zones[region.identifier]!
-        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
-                                                       coordinates: zone.locationCoordinates(),
-                                                       accuracy: 1,
-                                                       zone: zone)
+        if let zone = zones[region.identifier] {
+            HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
+                                                           coordinates: zone.locationCoordinates(),
+                                                           accuracy: 1,
+                                                           zone: zone)
+        }
     }
 
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         print("Exited region", region.identifier)
-        let zone = zones[region.identifier]!
-        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
-                                                       coordinates: zone.locationCoordinates(),
-                                                       accuracy: 1,
-                                                       zone: zone)
+        if let zone = zones[region.identifier] {
+            HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
+                                                           coordinates: zone.locationCoordinates(),
+                                                           accuracy: 1,
+                                                           zone: zone)
+        }
     }
 
     func startScanning(zone: Zone) {
         print("Begin scanning iBeacons for zone", zone.ID)
-        let beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: zone.UUID!)!,
-                                          major: CLBeaconMajorValue(zone.Major!),
-                                          minor: CLBeaconMinorValue(zone.Minor!), identifier: zone.ID)
-        zones[zone.ID] = zone
-        locationManager.startMonitoring(for: beaconRegion)
+        var beaconRegion: CLBeaconRegion? = nil
+        if let uuid = zone.UUID, let major = zone.Major, let minor = zone.Minor {
+            beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: uuid)!,
+                                          major: CLBeaconMajorValue(major),
+                                          minor: CLBeaconMinorValue(minor), identifier: zone.ID)
+        } else if let uuid = zone.UUID, let major = zone.Major {
+            beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: uuid)!,
+                                          major: CLBeaconMajorValue(major),
+                                          identifier: zone.ID)
+        } else if let uuid = zone.UUID {
+            beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: uuid)!, identifier: zone.ID)
+        }
+        if let beaconRegion = beaconRegion {
+            beaconRegion.notifyEntryStateOnDisplay = true
+            zones[zone.ID] = zone
+            locationManager.startMonitoring(for: beaconRegion)
+        }
     }
 
 }
