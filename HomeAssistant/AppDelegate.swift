@@ -33,9 +33,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // swiftlint:disable:next line_length
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        migrateUserDefaultsToAppGroups()
-        migrateSecretsToKeychain()
-        migrateDeviceIDToKeychain()
         Realm.Configuration.defaultConfiguration = realmConfig
         print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.path)
         Fabric.with([Crashlytics.self])
