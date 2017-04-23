@@ -37,6 +37,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.path)
         Fabric.with([Crashlytics.self])
 
+        if HomeAssistantAPI.sharedInstance.Configured == false {
+            if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
+                HomeAssistantAPI.sharedInstance.Setup(baseURL: baseURL, password: apiPass,
+                                                      deviceID: keychain["deviceID"])
+            }
+        }
+
         if launchOptions?[UIApplicationLaunchOptionsKey.location] != nil {
             resumeRegionMonitoring()
         }
