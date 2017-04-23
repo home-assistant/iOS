@@ -249,33 +249,32 @@ public class HomeAssistantAPI {
                         print("Skipping zone set to not track!")
                         continue
                     }
-                    if zone.UUID != nil {
+                    if zone.UUID != nil && CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self) {
                         beaconManager.startScanning(zone: zone)
-                    } else {
-                        do {
-                            try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius,
-                                                 enter: { _ in
-                                print("Entered in region!")
-                                self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
-                                                    coordinates: zone.locationCoordinates(),
-                                                    accuracy: 1,
-                                                    zone: zone)
-                            }, exit: { _ in
-                                print("Exited from the region")
-                                self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
-                                                    coordinates: zone.locationCoordinates(),
-                                                    accuracy: 1,
-                                                    zone: zone)
-                            }, error: { req, error in
-                                CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(error)
-                                req.cancel()
-                            })
-                        } catch let error {
-                            CLSLogv("Error when setting up zones for tracking: %@",
-                                    getVaList([error.localizedDescription]))
+                    }
+                    do {
+                        try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius,
+                                             enter: { _ in
+                                                print("Entered in region!")
+                                                self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
+                                                                    coordinates: zone.locationCoordinates(),
+                                                                    accuracy: 1,
+                                                                    zone: zone)
+                        }, exit: { _ in
+                            print("Exited from the region")
+                            self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
+                                                coordinates: zone.locationCoordinates(),
+                                                accuracy: 1,
+                                                zone: zone)
+                        }, error: { req, error in
+                            CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(error)
-                        }
+                            req.cancel()
+                        })
+                    } catch let error {
+                        CLSLogv("Error when setting up zones for tracking: %@",
+                                getVaList([error.localizedDescription]))
+                        Crashlytics.sharedInstance().recordError(error)
                     }
                 }
             }
