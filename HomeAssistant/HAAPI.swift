@@ -1245,6 +1245,10 @@ class BeaconManager: NSObject, CLLocationManagerDelegate {
         }
     }
 
+    func resumeScanning() {
+        print("Resuming scanning of \(locationManager.monitoredRegions.count) regions!")
+    }
+
 }
 
 enum LocationUpdateTypes {
