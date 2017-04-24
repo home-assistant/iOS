@@ -34,56 +34,68 @@ import UIKit
 private let googleChromeHTTPScheme: String = "googlechrome:"
 private let googleChromeHTTPSScheme: String = "googlechromes:"
 private let googleChromeCallbackScheme: String = "googlechrome-x-callback:"
+private let characterSet: CharacterSet = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[]")
 
 private func encodeByAddingPercentEscapes(_ input: String?) -> String {
-    return input!.addingPercentEncoding(withAllowedCharacters: CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[]"))!
+    if let input = input {
+        if let percentEncoded = input.addingPercentEncoding(withAllowedCharacters: characterSet) {
+            return percentEncoded
+        }
+    }
+    return ""
 }
 
 open class OpenInChromeController {
     open static let sharedInstance = OpenInChromeController()
 
     open func isChromeInstalled() -> Bool {
-        let simpleURL = URL(string: googleChromeHTTPScheme)!
-        let callbackURL = URL(string: googleChromeCallbackScheme)!
-        return UIApplication.shared.canOpenURL(simpleURL) || UIApplication.shared.canOpenURL(callbackURL)
+        if let simpleURL = URL(string: googleChromeHTTPScheme),
+            let callbackURL = URL(string: googleChromeCallbackScheme) {
+            return UIApplication.shared.canOpenURL(simpleURL) || UIApplication.shared.canOpenURL(callbackURL)
+        }
+        return false
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     open func openInChrome(_ url: URL, callbackURL: URL?, createNewTab: Bool = false) -> Bool {
-        let chromeSimpleURL = URL(string: googleChromeHTTPScheme)!
-        let chromeCallbackURL = URL(string: googleChromeCallbackScheme)!
-        if UIApplication.shared.canOpenURL(chromeCallbackURL) {
-            var appName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
-            // CFBundleDisplayName is an optional key, so we will use CFBundleName if it does not exist
-            if appName == nil {
-                appName = Bundle.main.infoDictionary?["CFBundleName"] as? String
-            }
-            let scheme = url.scheme?.lowercased()
-            if scheme == "http" || scheme == "https" {
-                var chromeURLString = String(format: "%@//x-callback-url/open/?x-source=%@&url=%@",
-                                             googleChromeCallbackScheme, encodeByAddingPercentEscapes(appName),
-                                             encodeByAddingPercentEscapes(url.absoluteString))
-                if callbackURL != nil {
-                    chromeURLString += String(format: "&x-success=%@",
-                                              encodeByAddingPercentEscapes(callbackURL!.absoluteString))
+        if let chromeSimpleURL = URL(string: googleChromeHTTPScheme),
+            let chromeCallbackURL = URL(string: googleChromeCallbackScheme) {
+            if UIApplication.shared.canOpenURL(chromeCallbackURL) {
+                var appName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
+                // CFBundleDisplayName is an optional key, so we will use CFBundleName if it does not exist
+                if appName == nil {
+                    appName = Bundle.main.infoDictionary?["CFBundleName"] as? String
                 }
-                if createNewTab {
-                    chromeURLString += "&create-new-tab"
+                let scheme = url.scheme?.lowercased()
+                if scheme == "http" || scheme == "https" {
+                    var chromeURLString = String(format: "%@//x-callback-url/open/?x-source=%@&url=%@",
+                                                 googleChromeCallbackScheme, encodeByAddingPercentEscapes(appName),
+                                                 encodeByAddingPercentEscapes(url.absoluteString))
+                    if callbackURL != nil {
+                        chromeURLString += String(format: "&x-success=%@",
+                                                  encodeByAddingPercentEscapes(callbackURL!.absoluteString))
+                    }
+                    if createNewTab {
+                        chromeURLString += "&create-new-tab"
+                    }
+                    if let chromeURL = URL(string: chromeURLString) {
+                        return UIApplication.shared.openURL(chromeURL)
+                    }
                 }
-                return UIApplication.shared.openURL(URL(string: chromeURLString)!)
-            }
-        } else if UIApplication.shared.canOpenURL(chromeSimpleURL) {
-            let scheme = url.scheme?.lowercased()
-            var chromeScheme: String?
-            if scheme == "http" {
-                chromeScheme = googleChromeHTTPScheme
-            } else if scheme == "https" {
-                chromeScheme = googleChromeHTTPSScheme
-            }
-            if let chromeScheme = chromeScheme {
-                let absoluteURLString = url.absoluteString
-                let lowerBound = absoluteURLString.range(of: ":")!.lowerBound
-                let chromeURLString = chromeScheme + absoluteURLString.substring(from: lowerBound)
-                return UIApplication.shared.openURL(URL(string: chromeURLString)!)
+            } else if UIApplication.shared.canOpenURL(chromeSimpleURL) {
+                let scheme = url.scheme?.lowercased()
+                var chromeScheme: String?
+                if scheme == "http" {
+                    chromeScheme = googleChromeHTTPScheme
+                } else if scheme == "https" {
+                    chromeScheme = googleChromeHTTPSScheme
+                }
+                if let chromeScheme = chromeScheme {
+                    let absoluteURLString = url.absoluteString
+                    let lowerBound = absoluteURLString.range(of: ":")!.lowerBound
+                    let chromeURLString = chromeScheme + absoluteURLString.substring(from: lowerBound)
+                    return UIApplication.shared.openURL(URL(string: chromeURLString)!)
+                }
             }
         }
         return false
