@@ -8,7 +8,6 @@
 
 import UIKit
 import WebKit
-import MBProgressHUD
 import KeychainAccess
 import PromiseKit
 
@@ -49,7 +48,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         self.viewContainer!.addSubview(webView)
 
-        let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
         if HomeAssistantAPI.sharedInstance.Configured {
@@ -58,7 +56,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                     UIApplication.shared.registerForRemoteNotifications()
                 }
                 print("Connected!")
-                hud.hide(animated: true)
                 if let baseURL = HomeAssistantAPI.sharedInstance.baseURL {
                     let myRequest = URLRequest(url: baseURL)
                     self.webView.load(myRequest)
@@ -66,7 +63,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                 return
             }.catch {err -> Void in
                 print("Error on connect!!!", err)
-                hud.hide(animated: true)
                 let settingsView = SettingsViewController()
                 settingsView.showErrorConnectingMessage = true
                 settingsView.showErrorConnectingMessageError = err
@@ -80,9 +76,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             settingsView.doneButton = true
             settingsView.delegate = self
             let navController = UINavigationController(rootViewController: settingsView)
-            self.present(navController, animated: true, completion: {
-                hud.hide(animated: true)
-            })
+            self.present(navController, animated: true, completion: nil)
         }
         // Do any additional setup after loading the view.
     }
