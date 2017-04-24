@@ -90,12 +90,13 @@ public class HomeAssistantAPI {
     }
 
     func Setup(baseURLString: String?, password: String?, deviceID: String?) {
-        if self.Configured == true {
-            print("HAAPI already configured, returning from Setup")
-            return
-        }
         if let baseURLString = baseURLString {
             if let baseURL = URL(string: baseURLString) {
+                if self.Configured && self.baseURL == baseURL && self.apiPassword == password &&
+                    self.deviceID == deviceID {
+                    print("HAAPI already configured, returning from Setup")
+                    return
+                }
                 self.baseURL = baseURL
                 self.baseAPIURL = self.baseURL?.appendingPathComponent("api")
             }
