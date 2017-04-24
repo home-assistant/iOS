@@ -13,6 +13,8 @@
 "manual_location_update_failed_notification.title" = "Location failed to update";
 "manual_location_update_failed_notification.message" = "Failed to send current location to server. The error was %@";
 
+"settings.navigation_bar.title" = "Settings";
+"settings.navigation_bar.about_button.title" = "About";
 "settings.connection_error_notification.title" = "Connection Error";
 "settings.connection_error_notification.message" = "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was:\n\n %@";
 "settings.certificate_error_notification.title" = "Self-signed or invalid certificate detected";
@@ -26,6 +28,7 @@
 "settings.connection_section.api_password_row.placeholder" = "password";
 "settings.connection_section.connect_row.title" = "Connect";
 "settings.connection_section.base_url.title" = "URL";
+"settings.connection_section.save_button.title"  ="Save";
 "settings.connection_error.forbidden.message" = "The password was incorrect.";
 "settings.connection_error.invalid_url.title" = "Error unwrapping URL";
 "settings.connection_error.invalid_url.message" = "Looks like your URL is invalid. Please check the format and try again.";

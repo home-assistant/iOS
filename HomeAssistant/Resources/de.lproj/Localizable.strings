@@ -13,6 +13,8 @@
 "manual_location_update_failed_notification.title" = "Position konnte nicht aktualisiert werden";
 "manual_location_update_failed_notification.message" = "Konnte die Position nicht an den Server übertragen. Fehler %@";
 
+"settings.navigation_bar.title" = "Einstellungen";
+"settings.navigation_bar.about_button.title" = "Über";
 "settings.connection_error_notification.title" = "Verbindungsfehler";
 "settings.connection_error_notification.message" = "Es ist ein Fehler bei der Verbindung zu Home Assistant aufgetreten. Bitte überprüfe die Einstellungen und speichere sie um erneut zu verbinden. Fehler:\n\n %@";
 "settings.certificate_error_notification.title" = "Selbstsigniertes oder ungültiges Zertifikat entdeckt";
@@ -26,6 +28,7 @@
 "settings.connection_section.api_password_row.placeholder" = "Passwort";
 "settings.connection_section.connect_row.title" = "verbinden";
 "settings.connection_section.base_url.title" = "URL";
+"settings.connection_section.save_button.title"  ="Sichern";
 "settings.connection_error.forbidden.message" = "Das eingegeben Passwort ist falsch.";
 "settings.connection_error.invalid_url.title" = "Fehler beim lesen der URL";
 "settings.connection_error.invalid_url.message" = "Es scheint, als ob die URL ungültig ist. Prüfe bitte das Format und versuche es erneut.";

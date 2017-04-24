@@ -124,6 +124,14 @@ enum L10n {
 
   enum Settings {
 
+    enum NavigationBar {
+
+        static let title = L10n.tr("settings.navigation_bar.title")
+
+        enum AboutButton {
+            static let title = L10n.tr("settings.navigation_bar.about_button.title")
+        }
+    }
     enum CertificateErrorNotification {
       /// A self-signed or invalid SSL certificate has been detected. Certificates of this kind are not supported by Home Assistant for iOS. Please tap the More Info button for further information.
       static let message = L10n.tr("settings.certificate_error_notification.message")
@@ -181,6 +189,10 @@ enum L10n {
         static let message = L10n.tr("settings.connection_section.invalid_url_scheme_notification.message")
         /// Invalid URL
         static let title = L10n.tr("settings.connection_section.invalid_url_scheme_notification.title")
+      }
+
+      enum SaveButton {
+        static let title = L10n.tr("settings.connection_section.save_button.title")
       }
     }
 
