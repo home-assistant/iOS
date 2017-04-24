@@ -12,25 +12,26 @@ import MBProgressHUD
 import KeychainAccess
 import PromiseKit
 
-class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
+class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, ConnectionInfoChangedDelegate {
 
     var webView: WKWebView!
+    var viewContainer: UIView?
 
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
 
         let screenSize: CGRect = UIScreen.main.bounds
-        let myView = UIView(frame: CGRect(x: 0, y: 10,
-                                          width: screenSize.width,
-                                          height: screenSize.height-self.navigationController!.toolbar.frame.height))
+        viewContainer = UIView(frame: CGRect(x: 0, y: 10,
+                                             width: screenSize.width,
+                                             height: screenSize.height-self.navigationController!.toolbar.frame.height))
 
         let statusBarView: UIView = UIView(frame: CGRect(x: 0.0, y: 0.0,
                                                          width: UIScreen.main.bounds.width, height: 20.0))
         statusBarView.backgroundColor = UIColor(red:0.01, green:0.66, blue:0.96, alpha:1.0)
         view.addSubview(statusBarView)
 
-        self.view.addSubview(myView)
+        self.view.addSubview(self.viewContainer!)
 
         let config = WKWebViewConfiguration()
         if let apiPass = keychain["apiPassword"] {
@@ -41,11 +42,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             config.userContentController = userContentController
         }
 
-        webView = WKWebView(frame: myView.frame, configuration: config)
+        webView = WKWebView(frame: self.viewContainer!.frame, configuration: config)
         webView.navigationDelegate = self
         webView.uiDelegate = self
+        webView.tag = 100
 
-        myView.addSubview(webView)
+        self.viewContainer!.addSubview(webView)
 
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
@@ -69,12 +71,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                 settingsView.showErrorConnectingMessage = true
                 settingsView.showErrorConnectingMessageError = err
                 settingsView.doneButton = true
+                settingsView.delegate = self
                 let navController = UINavigationController(rootViewController: settingsView)
                 self.present(navController, animated: true, completion: nil)
             }
         } else {
             let settingsView = SettingsViewController()
             settingsView.doneButton = true
+            settingsView.delegate = self
             let navController = UINavigationController(rootViewController: settingsView)
             self.present(navController, animated: true, completion: {
                 hud.hide(animated: true)
@@ -173,6 +177,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         let settingsView = SettingsViewController()
         settingsView.doneButton = true
         settingsView.hidesBottomBarWhenPushed = true
+        settingsView.delegate = self
 
         let navController = UINavigationController(rootViewController: settingsView)
         self.present(navController, animated: true, completion: nil)
@@ -200,6 +205,28 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                                               preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
+        }
+    }
+
+    func userReconnected() {
+        print("User reconnected! Reset the web view!")
+        let config = WKWebViewConfiguration()
+        if let apiPass = keychain["apiPassword"] {
+            let scriptStr = "window.hassConnection = createHassConnection(\"\(apiPass)\");"
+            let script = WKUserScript(source: scriptStr, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+            let userContentController = WKUserContentController()
+            userContentController.addUserScript(script)
+            config.userContentController = userContentController
+        }
+
+        self.webView = WKWebView(frame: self.webView.frame, configuration: config)
+        self.webView.navigationDelegate = self
+        self.webView.uiDelegate = self
+        self.webView.tag = 100
+
+        if let existingWebView = self.viewContainer!.viewWithTag(100) {
+            existingWebView.removeFromSuperview()
+            self.viewContainer!.addSubview(self.webView)
         }
     }
 

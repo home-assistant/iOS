@@ -19,6 +19,8 @@ import KeychainAccess
 // swiftlint:disable:next type_body_length
 class SettingsViewController: FormViewController {
 
+    weak var delegate: ConnectionInfoChangedDelegate? = nil
+
     var doneButton: Bool = false
 
     var showErrorConnectingMessage = false
@@ -185,23 +187,24 @@ class SettingsViewController: FormViewController {
 
                                 self.navigationItem.setRightBarButton(doneButton, animated: true)
                                 self.tableView.reloadData()
-                                }.catch { error in
-                                    print("Connection error!", error)
-                                    var errorMessage = error.localizedDescription
-                                    if let error = error as? AFError {
-                                        if error.responseCode == 401 {
-                                            errorMessage = L10n.Settings.ConnectionError.Forbidden.message
-                                        }
+                                self.delegate?.userReconnected()
+                            }.catch { error in
+                                print("Connection error!", error)
+                                var errorMessage = error.localizedDescription
+                                if let error = error as? AFError {
+                                    if error.responseCode == 401 {
+                                        errorMessage = L10n.Settings.ConnectionError.Forbidden.message
                                     }
-                                    let title = L10n.Settings.ConnectionErrorNotification.title
-                                    let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
-                                    let alert = UIAlertController(title: title,
-                                                                  message: message,
-                                                                  preferredStyle: UIAlertControllerStyle.alert)
-                                    alert.addAction(UIAlertAction(title: "OK",
-                                                                  style: UIAlertActionStyle.default,
-                                                                  handler: nil))
-                                    self.present(alert, animated: true, completion: nil)
+                                }
+                                let title = L10n.Settings.ConnectionErrorNotification.title
+                                let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
+                                let alert = UIAlertController(title: title,
+                                                              message: message,
+                                                              preferredStyle: UIAlertControllerStyle.alert)
+                                alert.addAction(UIAlertAction(title: "OK",
+                                                              style: UIAlertActionStyle.default,
+                                                              handler: nil))
+                                self.present(alert, animated: true, completion: nil)
                             }
 
                         } else {
@@ -554,4 +557,8 @@ class SettingsViewController: FormViewController {
     func closeSettings(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
     }
+}
+
+protocol ConnectionInfoChangedDelegate: class {
+    func userReconnected()
 }
