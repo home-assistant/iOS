@@ -59,7 +59,7 @@ public class HomeAssistantAPI {
     }
 
     var locationEnabled: Bool {
-        return PermissionScope().statusLocationAlways() == .authorized
+        return prefs.bool(forKey: "locationEnabled")
     }
 
     var notificationsEnabled: Bool {
@@ -80,10 +80,11 @@ public class HomeAssistantAPI {
 
     var enabledPermissions: [String] {
         var permissionsContainer: [String] = []
-        let permissions = [NotificationsPermission().type, LocationAlwaysPermission().type]
-        for status in PermissionScope().permissionStatuses(permissions) where status.1 == .authorized {
-            let desc = status.0.prettyDescription.lowercased()
-            permissionsContainer.append(desc)
+        if self.notificationsEnabled {
+            permissionsContainer.append("notifications")
+        }
+        if self.locationEnabled {
+            permissionsContainer.append("location")
         }
         return permissionsContainer
     }
@@ -632,7 +633,7 @@ public class HomeAssistantAPI {
     func CallService(domain: String, service: String, serviceData: [String:Any]) -> Promise<[ServicesResponse]> {
         return Promise { fulfill, reject in
             if let manager = self.manager,
-                let queryUrl = baseAPIURL?.appendingPathComponent("events/\(domain)/\(service)") {
+                let queryUrl = baseAPIURL?.appendingPathComponent("services/\(domain)/\(service)") {
                 _ = manager.request(queryUrl, method: .post,
                                           parameters: serviceData, encoding: JSONEncoding.default)
                     .validate()

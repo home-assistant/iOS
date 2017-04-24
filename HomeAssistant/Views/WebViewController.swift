@@ -50,27 +50,20 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
-        if HomeAssistantAPI.sharedInstance.Configured == false {
-            let settingsView = SettingsViewController()
-            settingsView.doneButton = true
-            let navController = UINavigationController(rootViewController: settingsView)
-            self.present(navController, animated: true, completion: {
+        if HomeAssistantAPI.sharedInstance.Configured {
+            HomeAssistantAPI.sharedInstance.Connect().then { _ -> Void in
+                if HomeAssistantAPI.sharedInstance.notificationsEnabled {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+                print("Connected!")
                 hud.hide(animated: true)
-            })
-        }
-        HomeAssistantAPI.sharedInstance.Connect().then { _ -> Void in
-            if HomeAssistantAPI.sharedInstance.notificationsEnabled {
-                UIApplication.shared.registerForRemoteNotifications()
-            }
-            print("Connected!")
-            hud.hide(animated: true)
-            if let baseURL = HomeAssistantAPI.sharedInstance.baseURL {
-                let myRequest = URLRequest(url: baseURL)
-                self.webView.load(myRequest)
-            }
-            return
+                if let baseURL = HomeAssistantAPI.sharedInstance.baseURL {
+                    let myRequest = URLRequest(url: baseURL)
+                    self.webView.load(myRequest)
+                }
+                return
             }.catch {err -> Void in
-                print("ERROR on connect!!!", err)
+                print("Error on connect!!!", err)
                 hud.hide(animated: true)
                 let settingsView = SettingsViewController()
                 settingsView.showErrorConnectingMessage = true
@@ -78,8 +71,15 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                 settingsView.doneButton = true
                 let navController = UINavigationController(rootViewController: settingsView)
                 self.present(navController, animated: true, completion: nil)
+            }
+        } else {
+            let settingsView = SettingsViewController()
+            settingsView.doneButton = true
+            let navController = UINavigationController(rootViewController: settingsView)
+            self.present(navController, animated: true, completion: {
+                hud.hide(animated: true)
+            })
         }
-
         // Do any additional setup after loading the view.
     }
 

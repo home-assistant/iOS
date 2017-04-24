@@ -25,7 +25,7 @@ class SettingsViewController: FormViewController {
     var showErrorConnectingMessageError: Error?
 
     var baseURL: URL?
-    var password: String = ""
+    var password: String?
     var deviceID: String?
 
     var configured = false
@@ -62,18 +62,16 @@ class SettingsViewController: FormViewController {
             self.navigationItem.setRightBarButton(doneButton, animated: true)
         }
 
-        if let baseURL = keychain["baseURL"] {
-            self.baseURL = URL(string: baseURL)!
-            self.configured = true
+        if let baseURLString = keychain["baseURL"] {
+            if let baseURL = URL(string: baseURLString) {
+                self.baseURL = baseURL
+                self.configured = true
+            }
         }
 
-        if let apiPass = keychain["apiPassword"] {
-            self.password = apiPass
-        }
+        self.password = keychain["apiPassword"]
 
-        if let deviceID = keychain["deviceID"] {
-            self.deviceID = deviceID
-        }
+        self.deviceID = keychain["deviceID"]
 
         //        checkForEmail()
 
@@ -144,17 +142,15 @@ class SettingsViewController: FormViewController {
             })
 
             <<< PasswordRow("apiPassword") {
-                $0.title = L10n.Settings.ConnectionSection.ApiPasswordRow.title
-                $0.value = self.password
-                $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.placeholder
+                    $0.title = L10n.Settings.ConnectionSection.ApiPasswordRow.title
+                    $0.value = self.password
+                    $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.placeholder
                 }.onChange { row in
-                    if let val = row.value {
-                        self.password = val
-                    }
-            }
+                    self.password = row.value
+                }
 
             <<< ButtonRow("connect") {
-                $0.title = "Save"
+                    $0.title = "Save"
                 }.onCellSelection { _, _ in
                     if let baseUrl = self.baseURL {
                         HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseUrl.absoluteString,
@@ -164,8 +160,8 @@ class SettingsViewController: FormViewController {
                             if let url = self.baseURL {
                                 keychain["baseURL"] = url.absoluteString
                             }
-                            if self.password != "" {
-                                keychain["apiPassword"] = self.password
+                            if let password = self.password {
+                                keychain["apiPassword"] = password
                             }
                             self.form.setValues(["locationName": config.LocationName, "version": config.Version])
                             let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
@@ -284,18 +280,17 @@ class SettingsViewController: FormViewController {
             <<< ButtonRow("enableLocation") {
                 $0.title = L10n.Settings.DetailsSection.EnableLocationRow.title
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.locationEnabled)
-                }.onCellSelection { _, row in
-                    let pscope = PermissionScope()
+            }.onCellSelection { _, row in
+                let pscope = PermissionScope()
 
-                    pscope.addPermission(LocationAlwaysPermission(),
-                                         message: L10n.Permissions.Location.message)
-                    pscope.show({finished, results in
-                        if finished {
-                            print("Location Permissions finished!", finished, results)
-                            if results[0].status == .authorized {
-                                HomeAssistantAPI.sharedInstance.setupZones()
-                                _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
-                            }
+                pscope.addPermission(LocationAlwaysPermission(),
+                                     message: L10n.Permissions.Location.message)
+                pscope.show({finished, results in
+                    if finished {
+                        print("Location Permissions finished!", finished, results)
+                        if results[0].status == .authorized {
+                            prefs.setValue(true, forKey: "locationEnabled")
+                            prefs.synchronize()
                             row.hidden = true
                             row.updateCell()
                             row.evaluateHidden()
@@ -309,10 +304,13 @@ class SettingsViewController: FormViewController {
                             deviceTrackerComponentLoadedRow.evaluateHidden()
                             deviceTrackerComponentLoadedRow.updateCell()
                             self.tableView.reloadData()
+                            HomeAssistantAPI.sharedInstance.setupZones()
+                            _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
                         }
-                    }, cancelled: { _ -> Void in
-                        print("Permissions finished, resetting API!")
-                    })
+                    }
+                }, cancelled: { _ -> Void in
+                    print("Permissions finished, resetting API!")
+                })
             }
 
             <<< ButtonRow("locationSettings") {
@@ -419,8 +417,8 @@ class SettingsViewController: FormViewController {
             if self.form.rowBy(tag: discoveryInfo.LocationName) == nil {
                 discoverySection
                     <<< ButtonRow(discoveryInfo.LocationName) {
-                        $0.title = discoveryInfo.LocationName
-                        $0.cellStyle = UITableViewCellStyle.subtitle
+                            $0.title = discoveryInfo.LocationName
+                            $0.cellStyle = UITableViewCellStyle.subtitle
                         }.cellUpdate { cell, _ in
                             cell.textLabel?.textColor = .black
                             cell.detailTextLabel?.text = detailTextLabel
@@ -433,6 +431,7 @@ class SettingsViewController: FormViewController {
                             apiPasswordRow.value = ""
                             apiPasswordRow.hidden = Condition(booleanLiteral: !discoveryInfo.RequiresPassword)
                             apiPasswordRow.evaluateHidden()
+                            self.tableView?.reloadData()
                         })
                 self.tableView?.reloadData()
             } else {
@@ -440,6 +439,7 @@ class SettingsViewController: FormViewController {
                     readdedRow.hidden = false
                     readdedRow.updateCell()
                     readdedRow.evaluateHidden()
+                    self.tableView?.reloadData()
                 }
             }
         }
