@@ -19,7 +19,7 @@ import KeychainAccess
 // swiftlint:disable:next type_body_length
 class SettingsViewController: FormViewController {
 
-    weak var delegate: ConnectionInfoChangedDelegate? = nil
+    weak var delegate: ConnectionInfoChangedDelegate?
 
     var doneButton: Bool = false
 
