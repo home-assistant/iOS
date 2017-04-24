@@ -66,10 +66,11 @@
 "settings_details.location.notifications.beacon_enter.title" = "Betreten der Zone iBeacon Benachrichtigung";
 "settings_details.location.notifications.beacon_exit.title" = "Verlassen der Zone iBeacon Benachrichtigung";
 "settings_details.location.notifications.location_change.title" = "Benachrichtigungen beim Wechseln einer Zone";
+"settings_details.location.notifications.background_fetch.title" = "Benachrichtigung im Hintergrund aktualisieren";
 "settings_details.location.zones.enter_exit_tracked.title" = "Betreten/verlassen erfassen";
 "settings_details.location.zones.location.title" = "Position";
 "settings_details.location.zones.radius.title" = "Radius";
-"settings_details.location.zones.footer" = "Um die Positionsverfolgung zu deaktivierten muss zur entsprechenden Zone ein 'track_ios: false' oder bei customize hinzugefügt werden.";
+"settings_details.location.zones.beacon.prop_not_set.value" = "Not set";
 "settings_details.location.zones.beacon_uuid.title" = "iBeacon UUID";
 "settings_details.location.zones.beacon_major.title" = "iBeacon Major";
 "settings_details.location.zones.beacon_minor.title" = "iBeacon Minor";
@@ -91,9 +92,14 @@
 "settings_details.notifications.sounds_section.imported_alert.title" = "Töne importieren";
 "settings_details.notifications.sounds_section.imported_alert.message" = "%d Töne wurde importiert. Bitte starte das Telefon neu um den Import abzuschließen.";
 
+"settings_details.notifications.badge_section.button.title" = "Badge auf 0 zurücksetzen";
+"settings_details.notifications.badge_section.reset_alert.title" = "Badge zurücksetzen";
+"settings_details.notifications.badge_section.reset_alert.message" = "Das Badge wurde auf 0 zurückgesetzt.";
+
+
+
 "permissions.location.message" = "Die Informationen werden genutzt um \r\nHome Assistant über die aktuelle Position \r\nund den Gerätestatus zu informieren.";
 "permissions.notification.message" = "Damit werden die Benachrichtigungen \r\nan dieses Gerät gesendet.";
-
 
 "devices_map.title" = "Geräte & Zonen";
 "devices_map.map_types.standard" = "Standard";
