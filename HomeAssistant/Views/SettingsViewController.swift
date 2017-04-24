@@ -19,13 +19,15 @@ import KeychainAccess
 // swiftlint:disable:next type_body_length
 class SettingsViewController: FormViewController {
 
+    weak var delegate: ConnectionInfoChangedDelegate?
+
     var doneButton: Bool = false
 
     var showErrorConnectingMessage = false
     var showErrorConnectingMessageError: Error?
 
     var baseURL: URL?
-    var password: String = ""
+    var password: String?
     var deviceID: String?
 
     var configured = false
@@ -62,18 +64,16 @@ class SettingsViewController: FormViewController {
             self.navigationItem.setRightBarButton(doneButton, animated: true)
         }
 
-        if let baseURL = keychain["baseURL"] {
-            self.baseURL = URL(string: baseURL)!
-            self.configured = true
+        if let baseURLString = keychain["baseURL"] {
+            if let baseURL = URL(string: baseURLString) {
+                self.baseURL = baseURL
+                self.configured = true
+            }
         }
 
-        if let apiPass = keychain["apiPassword"] {
-            self.password = apiPass
-        }
+        self.password = keychain["apiPassword"]
 
-        if let deviceID = keychain["deviceID"] {
-            self.deviceID = deviceID
-        }
+        self.deviceID = keychain["deviceID"]
 
         //        checkForEmail()
 
@@ -144,73 +144,79 @@ class SettingsViewController: FormViewController {
             })
 
             <<< PasswordRow("apiPassword") {
-                $0.title = L10n.Settings.ConnectionSection.ApiPasswordRow.title
-                $0.value = self.password
-                $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.placeholder
+                    $0.title = L10n.Settings.ConnectionSection.ApiPasswordRow.title
+                    $0.value = self.password
+                    $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.placeholder
                 }.onChange { row in
-                    if let val = row.value {
-                        self.password = val
+                    self.password = row.value
+                }.cellUpdate { cell, row in
+                    if !row.isValid {
+                        cell.titleLabel?.textColor = .red
                     }
-            }
+                }
 
             <<< ButtonRow("connect") {
-                $0.title = "Save"
+                    $0.title = "Save"
                 }.onCellSelection { _, _ in
-                    if let baseUrl = self.baseURL {
-                        HomeAssistantAPI.sharedInstance.Setup(baseURL: baseUrl.absoluteString,
-                                                              password: self.password, deviceID: self.deviceID)
-                        HomeAssistantAPI.sharedInstance.Connect().then { config -> Void in
-                            print("Connected!")
-                            if let url = self.baseURL {
-                                keychain["baseURL"] = url.absoluteString
-                            }
-                            if self.password != "" {
-                                keychain["apiPassword"] = self.password
-                            }
-                            self.form.setValues(["locationName": config.LocationName, "version": config.Version])
-                            let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
-                            locationNameRow.updateCell()
-                            let versionRow: LabelRow = self.form.rowBy(tag: "version")!
-                            versionRow.updateCell()
-                            let statusSection: Section = self.form.sectionBy(tag: "status")!
-                            statusSection.hidden = false
-                            statusSection.evaluateHidden()
-                            let detailsSection: Section = self.form.sectionBy(tag: "details")!
-                            detailsSection.hidden = false
-                            detailsSection.evaluateHidden()
-                            let closeSelector = #selector(SettingsViewController.closeSettings(_:))
-                            let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self,
-                                                             action: closeSelector)
-
-                            self.navigationItem.setRightBarButton(doneButton, animated: true)
-                            self.tableView.reloadData()
-                        }.catch { error in
-                            print("Connection error!", error)
-                            var errorMessage = error.localizedDescription
-                            if let error = error as? AFError {
-                                if error.responseCode == 401 {
-                                    errorMessage = L10n.Settings.ConnectionError.Forbidden.message
+                    if self.form.validate().count == 0 {
+                        if let baseUrl = self.baseURL {
+                            HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseUrl.absoluteString,
+                                                                  password: self.password, deviceID: self.deviceID)
+                            HomeAssistantAPI.sharedInstance.Connect().then { config -> Void in
+                                print("Connected!")
+                                if let url = self.baseURL {
+                                    keychain["baseURL"] = url.absoluteString
                                 }
+                                if let password = self.password {
+                                    keychain["apiPassword"] = password
+                                }
+                                self.form.setValues(["locationName": config.LocationName, "version": config.Version])
+                                let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
+                                locationNameRow.updateCell()
+                                let versionRow: LabelRow = self.form.rowBy(tag: "version")!
+                                versionRow.updateCell()
+                                let statusSection: Section = self.form.sectionBy(tag: "status")!
+                                statusSection.hidden = false
+                                statusSection.evaluateHidden()
+                                let detailsSection: Section = self.form.sectionBy(tag: "details")!
+                                detailsSection.hidden = false
+                                detailsSection.evaluateHidden()
+                                let closeSelector = #selector(SettingsViewController.closeSettings(_:))
+                                let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self,
+                                                                 action: closeSelector)
+
+                                self.navigationItem.setRightBarButton(doneButton, animated: true)
+                                self.tableView.reloadData()
+                                self.delegate?.userReconnected()
+                            }.catch { error in
+                                print("Connection error!", error)
+                                var errorMessage = error.localizedDescription
+                                if let error = error as? AFError {
+                                    if error.responseCode == 401 {
+                                        errorMessage = L10n.Settings.ConnectionError.Forbidden.message
+                                    }
+                                }
+                                let title = L10n.Settings.ConnectionErrorNotification.title
+                                let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
+                                let alert = UIAlertController(title: title,
+                                                              message: message,
+                                                              preferredStyle: UIAlertControllerStyle.alert)
+                                alert.addAction(UIAlertAction(title: "OK",
+                                                              style: UIAlertActionStyle.default,
+                                                              handler: nil))
+                                self.present(alert, animated: true, completion: nil)
                             }
-                            let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
-                            let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
-                                                          message: message,
+
+                        } else {
+                            let errMsg = L10n.Settings.ConnectionError.InvalidUrl.message
+                            let alert = UIAlertController(title: L10n.Settings.ConnectionError.InvalidUrl.title,
+                                                          message: errMsg,
                                                           preferredStyle: UIAlertControllerStyle.alert)
                             alert.addAction(UIAlertAction(title: "OK",
                                                           style: UIAlertActionStyle.default,
                                                           handler: nil))
                             self.present(alert, animated: true, completion: nil)
                         }
-
-                    } else {
-                        let errMsg = L10n.Settings.ConnectionError.InvalidUrl.message
-                        let alert = UIAlertController(title: L10n.Settings.ConnectionError.InvalidUrl.title,
-                                                      message: errMsg,
-                                                      preferredStyle: UIAlertControllerStyle.alert)
-                        alert.addAction(UIAlertAction(title: "OK",
-                                                      style: UIAlertActionStyle.default,
-                                                      handler: nil))
-                        self.present(alert, animated: true, completion: nil)
                     }
                 }
 
@@ -284,18 +290,17 @@ class SettingsViewController: FormViewController {
             <<< ButtonRow("enableLocation") {
                 $0.title = L10n.Settings.DetailsSection.EnableLocationRow.title
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.locationEnabled)
-                }.onCellSelection { _, row in
-                    let pscope = PermissionScope()
+            }.onCellSelection { _, row in
+                let pscope = PermissionScope()
 
-                    pscope.addPermission(LocationAlwaysPermission(),
-                                         message: L10n.Permissions.Location.message)
-                    pscope.show({finished, results in
-                        if finished {
-                            print("Location Permissions finished!", finished, results)
-                            if results[0].status == .authorized {
-                                HomeAssistantAPI.sharedInstance.setupZones()
-                                _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
-                            }
+                pscope.addPermission(LocationAlwaysPermission(),
+                                     message: L10n.Permissions.Location.message)
+                pscope.show({finished, results in
+                    if finished {
+                        print("Location Permissions finished!", finished, results)
+                        if results[0].status == .authorized {
+                            prefs.setValue(true, forKey: "locationEnabled")
+                            prefs.synchronize()
                             row.hidden = true
                             row.updateCell()
                             row.evaluateHidden()
@@ -309,10 +314,13 @@ class SettingsViewController: FormViewController {
                             deviceTrackerComponentLoadedRow.evaluateHidden()
                             deviceTrackerComponentLoadedRow.updateCell()
                             self.tableView.reloadData()
+                            HomeAssistantAPI.sharedInstance.setupZones()
+                            _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
                         }
-                    }, cancelled: { _ -> Void in
-                        print("Permissions finished, resetting API!")
-                    })
+                    }
+                }, cancelled: { _ -> Void in
+                    print("Permissions finished, resetting API!")
+                })
             }
 
             <<< ButtonRow("locationSettings") {
@@ -339,6 +347,8 @@ class SettingsViewController: FormViewController {
                         if finished {
                             print("Notifications Permissions finished!", finished, results)
                             if results[0].status == .authorized {
+                                prefs.setValue(true, forKey: "notificationsEnabled")
+                                prefs.synchronize()
                                 HomeAssistantAPI.sharedInstance.setupPush()
                                 row.hidden = true
                                 row.evaluateHidden()
@@ -349,6 +359,9 @@ class SettingsViewController: FormViewController {
                                 notifyPlatformLoadedRow.hidden = false
                                 notifyPlatformLoadedRow.evaluateHidden()
                                 self.tableView.reloadData()
+                            } else {
+                                prefs.setValue(false, forKey: "notificationsEnabled")
+                                prefs.synchronize()
                             }
                         }
                     }, cancelled: { _ -> Void in
@@ -360,8 +373,6 @@ class SettingsViewController: FormViewController {
                 $0.title = L10n.Settings.DetailsSection.NotificationSettingsRow.title
                 $0.hidden = Condition(booleanLiteral: !HomeAssistantAPI.sharedInstance.notificationsEnabled)
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    print("HomeAssistantAPI.sharedInstance.notificationsEnabled",
-                          HomeAssistantAPI.sharedInstance.notificationsEnabled)
                     let view = SettingsDetailViewController()
                     view.detailGroup = "notifications"
                     return view
@@ -416,8 +427,8 @@ class SettingsViewController: FormViewController {
             if self.form.rowBy(tag: discoveryInfo.LocationName) == nil {
                 discoverySection
                     <<< ButtonRow(discoveryInfo.LocationName) {
-                        $0.title = discoveryInfo.LocationName
-                        $0.cellStyle = UITableViewCellStyle.subtitle
+                            $0.title = discoveryInfo.LocationName
+                            $0.cellStyle = UITableViewCellStyle.subtitle
                         }.cellUpdate { cell, _ in
                             cell.textLabel?.textColor = .black
                             cell.detailTextLabel?.text = detailTextLabel
@@ -430,6 +441,12 @@ class SettingsViewController: FormViewController {
                             apiPasswordRow.value = ""
                             apiPasswordRow.hidden = Condition(booleanLiteral: !discoveryInfo.RequiresPassword)
                             apiPasswordRow.evaluateHidden()
+                            if discoveryInfo.RequiresPassword {
+                                apiPasswordRow.add(rule: RuleRequired())
+                            } else {
+                                apiPasswordRow.removeAllRules()
+                            }
+                            self.tableView?.reloadData()
                         })
                 self.tableView?.reloadData()
             } else {
@@ -437,6 +454,7 @@ class SettingsViewController: FormViewController {
                     readdedRow.hidden = false
                     readdedRow.updateCell()
                     readdedRow.evaluateHidden()
+                    self.tableView?.reloadData()
                 }
             }
         }
@@ -539,4 +557,8 @@ class SettingsViewController: FormViewController {
     func closeSettings(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
     }
+}
+
+protocol ConnectionInfoChangedDelegate: class {
+    func userReconnected()
 }

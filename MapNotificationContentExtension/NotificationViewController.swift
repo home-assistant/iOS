@@ -30,9 +30,18 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         hud.detailsLabel.text = "Loading \(notification.request.content.categoryIdentifier)..."
         hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
         self.hud = hud
-        guard let haDict = notification.request.content.userInfo["homeassistant"] as? [String:Any] else { return }
-        guard let latitudeString = haDict["latitude"] as? String else { return }
-        guard let longitudeString = haDict["longitude"] as? String else { return }
+        guard let haDict = notification.request.content.userInfo["homeassistant"] as? [String:Any] else {
+            self.showErrorLabel(message: "Payload didn't contain a homeassistant dictionary!")
+            return
+        }
+        guard let latitudeString = haDict["latitude"] as? String else {
+            self.showErrorLabel(message: "Latitude wasn't found or couldn't be casted to string!")
+            return
+        }
+        guard let longitudeString = haDict["longitude"] as? String else {
+            self.showErrorLabel(message: "Longitude wasn't found or couldn't be casted to string!")
+            return
+        }
         let latitude = Double.init(latitudeString)! as CLLocationDegrees
         let longitude = Double.init(longitudeString)! as CLLocationDegrees
         let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -119,6 +128,18 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         polylineRenderer.lineWidth = 1
         polylineRenderer.lineDashPattern = [2, 5]
         return polylineRenderer
+    }
+
+    func showErrorLabel(message: String) {
+        self.hud?.hide(animated: true)
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 60))
+        label.center.y = self.view.center.y
+        label.textAlignment = .center
+        label.textColor = .red
+        label.text = message
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
+        self.view.addSubview(label)
     }
 
 }

@@ -31,25 +31,22 @@ public class HomeAssistantAPI {
         return APIClientSharedInstance
     }
 
-    // swiftlint:disable:next line_length
-    var deviceID: String = removeSpecialCharsFromString(text: UIDevice.current.name).replacingOccurrences(of: " ", with: "_").lowercased()
-    var pushID: String = ""
-    var deviceToken: String = ""
+    enum APIError: Error {
+        case managerNotAvailable
+        case invalidResponse
+        case cantBuildURL
+    }
+
+    var deviceID: String = removeSpecialCharsFromString(text: UIDevice.current.name)
+                            .replacingOccurrences(of: " ", with: "_")
+                            .lowercased()
+    var pushID: String?
 
     var loadedComponents = [String]()
 
-    var Configured: Bool {
-        return self.URLSet && self.PasswordSet
-    }
-
-    var URLSet: Bool = false
-    var PasswordSet: Bool = false
-
-    var baseURL: String = ""
-    var baseAPIURL: String = ""
-    var apiPassword: String = ""
-
-    private var headers = [String: String]()
+    var baseURL: URL?
+    var baseAPIURL: URL?
+    var apiPassword: String?
 
     private var manager: Alamofire.SessionManager?
 
@@ -57,17 +54,62 @@ public class HomeAssistantAPI {
 
     var cachedEntities: [Entity]?
 
-    func Setup(baseURL: String, password: String, deviceID: String?) {
-        self.baseURL = baseURL
-        self.baseAPIURL = baseURL+"/api/"
-        if let dID = deviceID {
-            self.deviceID = dID
+    var Configured: Bool {
+        return self.baseURL != nil
+    }
+
+    var locationEnabled: Bool {
+        return prefs.bool(forKey: "locationEnabled")
+    }
+
+    var notificationsEnabled: Bool {
+        return prefs.bool(forKey: "notificationsEnabled")
+    }
+
+    var iosComponentLoaded: Bool {
+        return self.loadedComponents.contains("ios")
+    }
+
+    var deviceTrackerComponentLoaded: Bool {
+        return self.loadedComponents.contains("device_tracker")
+    }
+
+    var iosNotifyPlatformLoaded: Bool {
+        return self.loadedComponents.contains("notify.ios")
+    }
+
+    var enabledPermissions: [String] {
+        var permissionsContainer: [String] = []
+        if self.notificationsEnabled {
+            permissionsContainer.append("notifications")
         }
-        self.URLSet = true
-        if password != "" {
-            self.PasswordSet = true
+        if self.locationEnabled {
+            permissionsContainer.append("location")
+        }
+        return permissionsContainer
+    }
+
+    func Setup(baseURLString: String?, password: String?, deviceID: String?) {
+        if let baseURLString = baseURLString {
+            if let baseURL = URL(string: baseURLString) {
+                if self.Configured && self.baseURL == baseURL && self.apiPassword == password &&
+                    self.deviceID == deviceID {
+                    print("HAAPI already configured, returning from Setup")
+                    return
+                }
+                self.baseURL = baseURL
+                self.baseAPIURL = self.baseURL?.appendingPathComponent("api")
+            }
+        }
+        var headers = [String: String]()
+        if let password = password {
             headers["X-HA-Access"] = password
         }
+        if let deviceID = deviceID {
+            self.deviceID = deviceID
+        }
+
+        pushID = prefs.string(forKey: "pushID")
 
         var defaultHeaders = Alamofire.SessionManager.defaultHTTPHeaders
         for (header, value) in headers {
@@ -79,14 +121,6 @@ public class HomeAssistantAPI {
         configuration.timeoutIntervalForRequest = 3 // seconds
 
         self.manager = Alamofire.SessionManager(configuration: configuration)
-
-        if let pushId = prefs.string(forKey: "pushID") {
-            pushID = pushId
-        }
-
-        if let deviceTok = prefs.string(forKey: "deviceToken") {
-            deviceToken = deviceTok
-        }
 
         return
 
@@ -126,7 +160,7 @@ public class HomeAssistantAPI {
 
                     if self.loadedComponents.contains("ios") {
                         CLSLogv("iOS component loaded, attempting identify", getVaList([]))
-                        _ = self.identifyDevice()
+                        _ = self.IdentifyDevice()
                     }
 
                     //                self.GetHistory()
@@ -170,7 +204,7 @@ public class HomeAssistantAPI {
         ]
 
         firstly {
-            self.identifyDevice()
+            self.IdentifyDevice()
         }.then {_ in
             self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate)
         }.then { _ in
@@ -242,40 +276,39 @@ public class HomeAssistantAPI {
         if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
             if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
                 return entity.Domain == "zone"
-                // swiftlint:disable:next force_cast
             }) as? [Zone] {
+                Crashlytics.sharedInstance().setObjectValue(zoneEntities.count, forKey: "numberOfZones")
                 for zone in zoneEntities {
                     if zone.TrackingEnabled == false {
                         print("Skipping zone set to not track!")
                         continue
                     }
-                    if zone.UUID != nil {
+                    if zone.UUID != nil && CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self) {
                         beaconManager.startScanning(zone: zone)
-                    } else {
-                        do {
-                            try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius,
-                                                 enter: { _ in
-                                print("Entered in region!")
-                                self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
-                                                    coordinates: zone.locationCoordinates(),
-                                                    accuracy: 1,
-                                                    zone: zone)
-                            }, exit: { _ in
-                                print("Exited from the region")
-                                self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
-                                                    coordinates: zone.locationCoordinates(),
-                                                    accuracy: 1,
-                                                    zone: zone)
-                            }, error: { req, error in
-                                CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(error)
-                                req.cancel()
-                            })
-                        } catch let error {
-                            CLSLogv("Error when setting up zones for tracking: %@",
-                                    getVaList([error.localizedDescription]))
+                    }
+                    do {
+                        try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius,
+                                             enter: { _ in
+                                                print("Entered in region!")
+                                                self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
+                                                                    coordinates: zone.locationCoordinates(),
+                                                                    accuracy: 1,
+                                                                    zone: zone)
+                        }, exit: { _ in
+                            print("Exited from the region")
+                            self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
+                                                coordinates: zone.locationCoordinates(),
+                                                accuracy: 1,
+                                                zone: zone)
+                        }, error: { req, error in
+                            CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(error)
-                        }
+                            req.cancel()
+                        })
+                    } catch let error {
+                        CLSLogv("Error when setting up zones for tracking: %@",
+                                getVaList([error.localizedDescription]))
+                        Crashlytics.sharedInstance().recordError(error)
                     }
                 }
             }
@@ -331,78 +364,80 @@ public class HomeAssistantAPI {
     }
 
     func GetStatus() -> Promise<StatusResponse> {
-        let queryUrl = baseAPIURL
         return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      // swiftlint:disable:next line_length
-                                      method: .get).validate().responseObject { (response: DataResponse<StatusResponse>) in
-                                        switch response.result {
-                                        case .success:
-                                            fulfill(response.result.value!)
-                                        case .failure(let error):
-                                            CLSLogv("Error on GetStatus() request: %@",
-                                                    getVaList([error.localizedDescription]))
-                                            Crashlytics.sharedInstance().recordError(error)
-                                            reject(error)
-                                        }
+            if let manager = self.manager, let queryUrl = baseAPIURL {
+                _ = manager.request(queryUrl, method: .get)
+                           .validate()
+                           .responseObject { (response: DataResponse<StatusResponse>) in
+                            switch response.result {
+                                case .success:
+                                    if let resVal = response.result.value {
+                                        fulfill(resVal)
+                                    } else {
+                                        reject(APIError.invalidResponse)
+                                    }
+                                case .failure(let error):
+                                    CLSLogv("Error on GetStatus() request: %@",
+                                            getVaList([error.localizedDescription]))
+                                    Crashlytics.sharedInstance().recordError(error)
+                                    reject(error)
+                                }
+                            }
+            } else {
+                reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func GetConfig() -> Promise<ConfigResponse> {
-        let queryUrl = baseAPIURL+"config"
         return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      // swiftlint:disable:next line_length
-                method: .get).validate().responseObject { (response: DataResponse<ConfigResponse>) in
-                    switch response.result {
-                    case .success:
-                        fulfill(response.result.value!)
-                    case .failure(let error):
-                        CLSLogv("Error on GetConfig() request: %@", getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                        reject(error)
-                    }
+            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("config") {
+                _ = manager.request(queryUrl, method: .get)
+                           .validate()
+                           .responseObject { (response: DataResponse<ConfigResponse>) in
+                            switch response.result {
+                            case .success:
+                                if let resVal = response.result.value {
+                                    fulfill(resVal)
+                                } else {
+                                    reject(APIError.invalidResponse)
+                                }
+                            case .failure(let error):
+                                CLSLogv("Error on GetConfig() request: %@", getVaList([error.localizedDescription]))
+                                Crashlytics.sharedInstance().recordError(error)
+                                reject(error)
+                            }
+                }
+            } else {
+                reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func GetServices() -> Promise<[ServicesResponse]> {
-        let queryUrl = baseAPIURL+"services"
         return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      // swiftlint:disable:next line_length
-                method: .get).validate().responseArray { (response: DataResponse<[ServicesResponse]>) in
-                    switch response.result {
-                    case .success:
-                        fulfill(response.result.value!)
-                    case .failure(let error):
-                        CLSLogv("Error on GetServices() request: %@", getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                        reject(error)
-                    }
+            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("services") {
+                _ = manager.request(queryUrl, method: .get)
+                    .validate()
+                    .responseArray { (response: DataResponse<[ServicesResponse]>) in
+                        switch response.result {
+                        case .success:
+                            if let resVal = response.result.value {
+                                fulfill(resVal)
+                            } else {
+                                reject(APIError.invalidResponse)
+                            }
+                        case .failure(let error):
+                            CLSLogv("Error on GetServices() request: %@", getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            reject(error)
+                        }
+                }
+            } else {
+                reject(APIError.managerNotAvailable)
             }
         }
     }
-
-    //    func GetHistory() -> Promise<HistoryResponse> {
-    //        let queryUrl = baseAPIURL+"history/period?filter_entity_id=sensor.uberpool_time"
-    //        return Promise { fulfill, reject in
-    //            _ = self.manager!.request(queryUrl, method: .get).validate().responseJSON { response in
-    //                switch response.result {
-    //                case .success:
-    //                    print("GOT HISTORY", queryUrl)
-    //                    let mapped = Mapper<HistoryResponse>().map(response.result.value!)
-    //                    print("MAPPED", mapped)
-    //                    fulfill(mapped!)
-    //                case .failure(let error):
-    //                    CLSLogv("Error on GetHistory() request: %@", getVaList([error.localizedDescription]))
-    //                    Crashlytics.sharedInstance().recordError(error)
-    //                    reject(error)
-    //                }
-    //            }
-    //        }
-    //    }
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     func storeEntities(entities: [Entity]) {
@@ -466,37 +501,264 @@ public class HomeAssistantAPI {
     }
 
     func GetStates() -> Promise<[Entity]> {
-        let queryUrl = baseAPIURL+"states"
         return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      // swiftlint:disable:next line_length
-                method: .get).validate().responseArray { (response: DataResponse<[Entity]>) -> Void in
-                    switch response.result {
-                    case .success:
-//                        self.storeEntities(entities: response.result.value!)
-                        self.cachedEntities = response.result.value!
-                        fulfill(response.result.value!)
-                    case .failure(let error):
-                        CLSLogv("Error on GetStates() request: %@", getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                        reject(error)
-                    }
+            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("states") {
+                _ = manager.request(queryUrl, method: .get)
+                    .validate()
+                    .responseArray { (response: DataResponse<[Entity]>) in
+                        switch response.result {
+                        case .success:
+                            //                        self.storeEntities(entities: response.result.value!)
+                            self.cachedEntities = response.result.value!
+                            if let resVal = response.result.value {
+                                fulfill(resVal)
+                            } else {
+                                reject(APIError.invalidResponse)
+                            }
+                        case .failure(let error):
+                            CLSLogv("Error on GetStates() request: %@", getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            reject(error)
+                        }
+                }
+            } else {
+                reject(APIError.managerNotAvailable)
             }
         }
     }
 
-    func GetStateForEntityIdMapped(entityId: String) -> Promise<Entity> {
-        let queryUrl = baseAPIURL+"states/"+entityId
+    func GetEntityState(entityId: String) -> Promise<Entity> {
         return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      // swiftlint:disable:next line_length
-                method: .get).validate().responseObject { (response: DataResponse<Entity>) -> Void in
+            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("states/\(entityId)") {
+                _ = manager.request(queryUrl, method: .get)
+                    .validate()
+                    .responseObject { (response: DataResponse<Entity>) in
+                        switch response.result {
+                        case .success:
+                            //                        self.storeEntities(entities: [response.result.value!])
+                            if let resVal = response.result.value {
+                                fulfill(resVal)
+                            } else {
+                                reject(APIError.invalidResponse)
+                            }
+                        case .failure(let error):
+                            CLSLogv("Error on GetEntityState() request: %@", getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            reject(error)
+                        }
+                }
+            } else {
+                reject(APIError.managerNotAvailable)
+            }
+        }
+    }
+
+    func GetErrorLog() -> Promise<String> {
+        return Promise { fulfill, reject in
+            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("error_log") {
+                _ = manager.request(queryUrl, method: .get)
+                    .validate()
+                    .responseString { response in
+                        switch response.result {
+                        case .success:
+                            if let resVal = response.result.value {
+                                fulfill(resVal)
+                            } else {
+                                reject(APIError.invalidResponse)
+                            }
+                        case .failure(let error):
+                            CLSLogv("Error on GetErrorLog() request: %@", getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            reject(error)
+                        }
+                }
+            } else {
+                reject(APIError.managerNotAvailable)
+            }
+        }
+    }
+
+    func SetState(entityId: String, state: String) -> Promise<Entity> {
+        return Promise { fulfill, reject in
+            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("states/\(entityId)") {
+                _ = manager.request(queryUrl, method: .post,
+                                          parameters: ["state": state], encoding: JSONEncoding.default)
+                                 .validate()
+                                 .responseObject { (response: DataResponse<Entity>) in
+                                    switch response.result {
+                                        case .success:
+                                            // self.storeEntities(entities: [response.result.value!])
+                                            if let resVal = response.result.value {
+                                                fulfill(resVal)
+                                            } else {
+                                                reject(APIError.invalidResponse)
+                                            }
+                                        case .failure(let error):
+                                            CLSLogv("Error when attemping to SetState(): %@",
+                                                    getVaList([error.localizedDescription]))
+                                            Crashlytics.sharedInstance().recordError(error)
+                                            reject(error)
+                                        }
+                                  }
+            } else {
+                reject(APIError.managerNotAvailable)
+            }
+        }
+    }
+
+    func CreateEvent(eventType: String, eventData: [String:Any]) -> Promise<String> {
+        return Promise { fulfill, reject in
+            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("events/\(eventType)") {
+                _ = manager.request(queryUrl, method: .post,
+                                          parameters: eventData, encoding: JSONEncoding.default)
+                    .validate()
+                    .responseJSON { response in
+                        switch response.result {
+                        case .success:
+                            if let jsonDict = response.result.value as? [String : String] {
+                                fulfill(jsonDict["message"]!)
+                            }
+                        case .failure(let error):
+                            CLSLogv("Error when attemping to CreateEvent(): %@",
+                                    getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            reject(error)
+                        }
+                }
+            } else {
+                reject(APIError.managerNotAvailable)
+            }
+        }
+    }
+
+    func CallService(domain: String, service: String, serviceData: [String:Any]) -> Promise<[ServicesResponse]> {
+        return Promise { fulfill, reject in
+            if let manager = self.manager,
+                let queryUrl = baseAPIURL?.appendingPathComponent("services/\(domain)/\(service)") {
+                _ = manager.request(queryUrl, method: .post,
+                                          parameters: serviceData, encoding: JSONEncoding.default)
+                    .validate()
+                    .responseArray { (response: DataResponse<[ServicesResponse]>) in
+                        switch response.result {
+                        case .success:
+                            if let resVal = response.result.value {
+                                fulfill(resVal)
+                            } else {
+                                reject(APIError.invalidResponse)
+                            }
+                        case .failure(let error):
+                            CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            reject(error)
+                        }
+                }
+            } else {
+                reject(APIError.managerNotAvailable)
+            }
+        }
+    }
+
+    func GetDiscoveryInfo(baseUrl: URL) -> Promise<DiscoveryInfoResponse> {
+        return Promise { fulfill, reject in
+            _ = Alamofire.request(baseUrl.appendingPathComponent("/api/discovery_info"))
+                         .validate()
+                         .responseObject { (response: DataResponse<DiscoveryInfoResponse>) -> Void in
+                            switch response.result {
+                                case .success:
+                                    if let resVal = response.result.value {
+                                        fulfill(resVal)
+                                    } else {
+                                        reject(APIError.invalidResponse)
+                                    }
+                                case .failure(let error):
+                                    CLSLogv("Error on getDiscoveryInfo() request: %@",
+                                            getVaList([error.localizedDescription]))
+                                    Crashlytics.sharedInstance().recordError(error)
+                                    reject(error)
+                                }
+                        }
+        }
+    }
+
+    func IdentifyDevice() -> Promise<String> {
+        return Promise { fulfill, reject in
+            if let manager = self.manager,
+                let queryUrl = baseAPIURL?.appendingPathComponent("ios/identify") {
+                _ = manager.request(queryUrl, method: .post,
+                                    parameters: buildIdentifyDict(), encoding: JSONEncoding.default)
+                           .validate()
+                           .responseString { response in
+                            switch response.result {
+                            case .success:
+                                if let resVal = response.result.value {
+                                    fulfill(resVal)
+                                } else {
+                                    reject(APIError.invalidResponse)
+                                }
+                            case .failure(let error):
+                                CLSLogv("Error when attemping to IdentifyDevice(): %@",
+                                        getVaList([error.localizedDescription]))
+                                Crashlytics.sharedInstance().recordError(error)
+                                reject(error)
+                            }
+                }
+            } else {
+                reject(APIError.managerNotAvailable)
+            }
+        }
+    }
+
+    func RemoveDevice() -> Promise<String> {
+        return Promise { fulfill, reject in
+            if let manager = self.manager,
+                let queryUrl = baseAPIURL?.appendingPathComponent("ios/identify") {
+                _ = manager.request(queryUrl, method: .delete,
+                                    parameters: buildRemovalDict(), encoding: JSONEncoding.default)
+                    .validate()
+                    .responseString { response in
+                        switch response.result {
+                        case .success:
+                            if let resVal = response.result.value {
+                                fulfill(resVal)
+                            } else {
+                                reject(APIError.invalidResponse)
+                            }
+                        case .failure(let error):
+                            CLSLogv("Error when attemping to RemoveDevice(): %@",
+                                    getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            reject(error)
+                        }
+                }
+            } else {
+                reject(APIError.managerNotAvailable)
+            }
+        }
+    }
+
+    func RegisterDeviceForPush(deviceToken: String) -> Promise<PushRegistrationResponse> {
+        let queryUrl = "https://ios-push.home-assistant.io/registrations"
+        return Promise { fulfill, reject in
+            Alamofire.request(queryUrl,
+                              method: .post,
+                              parameters: buildPushRegistrationDict(deviceToken: deviceToken),
+                              encoding: JSONEncoding.default
+                ).validate().responseObject {(response: DataResponse<PushRegistrationResponse>) in
                     switch response.result {
                     case .success:
-//                        self.storeEntities(entities: [response.result.value!])
-                        fulfill(response.result.value!)
+                        if let json = response.result.value {
+                            fulfill(json)
+                        } else {
+                            let retErr = NSError(domain: "io.robbie.HomeAssistant",
+                                                 code: 404,
+                                                 userInfo: ["message": "json was nil!"])
+                            CLSLogv("Error when attemping to registerDeviceForPush(), json was nil!: %@",
+                                    getVaList([retErr.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(retErr)
+                            reject(retErr)
+                        }
                     case .failure(let error):
-                        CLSLogv("Error on GetStateForEntityIdMapped() request: %@",
+                        CLSLogv("Error when attemping to registerDeviceForPush(): %@",
                                 getVaList([error.localizedDescription]))
                         Crashlytics.sharedInstance().recordError(error)
                         reject(error)
@@ -505,88 +767,72 @@ public class HomeAssistantAPI {
         }
     }
 
-    func GetErrorLog() -> Promise<String> {
-        let queryUrl = baseAPIURL+"error_log"
+    func GetPushSettings() -> Promise<PushConfiguration> {
         return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl, method: .get).validate().responseString { response in
-                switch response.result {
-                case .success:
-                    fulfill(response.result.value!)
-                case .failure(let error):
-                    CLSLogv("Error on GetErrorLog() request: %@", getVaList([error.localizedDescription]))
-                    Crashlytics.sharedInstance().recordError(error)
-                    reject(error)
+            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("ios/push") {
+                _ = manager.request(queryUrl, method: .get)
+                    .validate()
+                    .responseObject { (response: DataResponse<PushConfiguration>) in
+                        switch response.result {
+                        case .success:
+                            if let resVal = response.result.value {
+                                fulfill(resVal)
+                            } else {
+                                reject(APIError.invalidResponse)
+                            }
+                        case .failure(let error):
+                            CLSLogv("Error on GetPushSettings() request: %@",
+                                    getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            reject(error)
+                        }
+                }
+            } else {
+                reject(APIError.managerNotAvailable)
+            }
+        }
+    }
+
+    func getImage(imageUrl: String) -> Promise<UIImage> {
+        return Promise { fulfill, reject in
+            var finalUrl: URL?
+            if imageUrl.hasPrefix("/api") || imageUrl.hasPrefix("/local") || imageUrl.hasPrefix("/static") {
+                // A local URL, need to prepend the base URL only
+                if let url = baseURL?.appendingPathComponent(imageUrl) {
+                    finalUrl = url
+                } else {
+                    reject(APIError.cantBuildURL)
+                }
+            } else {
+                // Non-local URL, just attempt to use as is
+                if let url = URL(string: imageUrl) {
+                    finalUrl = url
+                } else {
+                    reject(APIError.cantBuildURL)
                 }
             }
-        }
-    }
 
-    func SetState(entityId: String, state: String) -> Promise<Entity> {
-        let queryUrl = baseAPIURL+"states/"+entityId
-        return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      method: .post,
-                                      parameters: ["state": state],
-                                      encoding: JSONEncoding.default
-                ).validate().responseObject { (response: DataResponse<Entity>) in
-                    switch response.result {
-                    case .success:
-//                        self.storeEntities(entities: [response.result.value!])
-                        fulfill(response.result.value!)
-                    case .failure(let error):
-                        CLSLogv("Error when attemping to SetState(): %@", getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                        reject(error)
-                    }
-            }
-        }
-    }
-
-    func CreateEvent(eventType: String, eventData: [String:Any]) -> Promise<String> {
-        let queryUrl = baseAPIURL+"events/"+eventType
-        return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      method: .post,
-                                      parameters: eventData,
-                                      encoding: JSONEncoding.default).validate().responseJSON { response in
-                                        switch response.result {
-                                        case .success:
-                                            if let jsonDict = response.result.value as? [String : String] {
-                                                fulfill(jsonDict["message"]!)
-                                            }
-                                        case .failure(let error):
-                                            CLSLogv("Error when attemping to CreateEvent(): %@",
-                                                    getVaList([error.localizedDescription]))
-                                            Crashlytics.sharedInstance().recordError(error)
-                                            reject(error)
-                                        }
-            }
-        }
-    }
-
-    func CallService(domain: String, service: String, serviceData: [String:Any]) -> Promise<[ServicesResponse]> {
-        let queryUrl = baseAPIURL+"services/"+domain+"/"+service
-        return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      method: .post,
-                                      parameters: serviceData,
-                                      encoding: JSONEncoding.default
-                ).validate().responseArray { (response: DataResponse<[ServicesResponse]>) in
-                    switch response.result {
-                    case .success:
-                        if let resVal = response.result.value {
-                            fulfill(resVal)
-                        } else {
-                            CLSLogv("CallService response.result.value could not unwrap! %@",
-                                    // swiftlint:disable:next force_cast
-                                    getVaList([response.result as! CVarArg]))
-                            fulfill([ServicesResponse]())
-                        }
-                    case .failure(let error):
-                        CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                        reject(error)
-                    }
+            if let manager = self.manager, let url = finalUrl {
+                _ = manager.request(url, method: .get)
+                           .validate()
+                           .responseImage { response in
+                            switch response.result {
+                                case .success:
+                                    if let value = response.result.value {
+                                        fulfill(value)
+                                    } else {
+                                        print("Response was not an image!", response)
+                                        reject(APIError.invalidResponse)
+                                    }
+                                case .failure(let error):
+                                    CLSLogv("Error on getImage() request to %@: %@",
+                                            getVaList([url as CVarArg, error.localizedDescription]))
+                                    Crashlytics.sharedInstance().recordError(error)
+                                    reject(error)
+                                }
+                            }
+            } else {
+                reject(APIError.managerNotAvailable)
             }
         }
     }
@@ -737,208 +983,104 @@ public class HomeAssistantAPI {
         return Mapper().toJSON(ident)
     }
 
-    func identifyDevice() -> Promise<String> {
-        let queryUrl = baseAPIURL+"ios/identify"
-        return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      method: .post,
-                                      parameters: buildIdentifyDict(),
-                                      encoding: JSONEncoding.default).validate().responseString { response in
-                                        switch response.result {
-                                        case .success:
-                                            fulfill(response.result.value!)
-                                        case .failure(let error):
-                                            CLSLogv("Error when attemping to identifyDevice(): %@",
-                                                    getVaList([error.localizedDescription]))
-                                            Crashlytics.sharedInstance().recordError(error)
-                                            reject(error)
-                                        }
-            }
-        }
-    }
-
-    func removeDevice() -> Promise<String> {
-        let queryUrl = baseAPIURL+"ios/identify"
-        return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      method: .delete,
-                                      parameters: buildRemovalDict(),
-                                      encoding: JSONEncoding.default).validate().responseString { response in
-                                        switch response.result {
-                                        case .success:
-                                            fulfill(response.result.value!)
-                                        case .failure(let error):
-                                            CLSLogv("Error when attemping to identifyDevice(): %@",
-                                                    getVaList([error.localizedDescription]))
-                                            Crashlytics.sharedInstance().recordError(error)
-                                            reject(error)
-                                        }
-            }
-        }
-    }
-
-    func registerDeviceForPush(deviceToken: String) -> Promise<PushRegistrationResponse> {
-        let queryUrl = "https://ios-push.home-assistant.io/registrations"
-        return Promise { fulfill, reject in
-            Alamofire.request(queryUrl,
-                              method: .post,
-                              parameters: buildPushRegistrationDict(deviceToken: deviceToken),
-                              encoding: JSONEncoding.default
-                ).validate().responseObject {(response: DataResponse<PushRegistrationResponse>) in
-                    switch response.result {
-                    case .success:
-                        if let json = response.result.value {
-                            fulfill(json)
-                        } else {
-                            let retErr = NSError(domain: "io.robbie.HomeAssistant",
-                                                 code: 404,
-                                                 userInfo: ["message": "json was nil!"])
-                            CLSLogv("Error when attemping to registerDeviceForPush(), json was nil!: %@",
-                                    getVaList([retErr.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(retErr)
-                            reject(retErr)
-                        }
-                    case .failure(let error):
-                        CLSLogv("Error when attemping to registerDeviceForPush(): %@",
-                                getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                        reject(error)
-                    }
-            }
-        }
-    }
-
-    // swiftlint:disable:next function_body_length
     func setupPushActions() -> Promise<Set<UIUserNotificationCategory>> {
-        let queryUrl = baseAPIURL+"ios/push"
         return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      // swiftlint:disable:next line_length
-                method: .get).validate().responseObject { (response: DataResponse<PushConfiguration>) in
-                    switch response.result {
-                    case .success:
-                        let config = response.result.value!
-                        var allCategories = Set<UIMutableUserNotificationCategory>()
-                        if let categories = config.Categories {
-                            for category in categories {
-                                let finalCategory = UIMutableUserNotificationCategory()
-                                finalCategory.identifier = category.Identifier
-                                var categoryActions = [UIMutableUserNotificationAction]()
-                                if let actions = category.Actions {
-                                    for action in actions {
-                                        let newAction = UIMutableUserNotificationAction()
-                                        newAction.title = action.Title
-                                        newAction.identifier = action.Identifier
-                                        newAction.isAuthenticationRequired = action.AuthenticationRequired
-                                        newAction.isDestructive = action.Destructive
-                                        var behavior: UIUserNotificationActionBehavior
-                                        if action.Behavior == "default" {
-                                            behavior = UIUserNotificationActionBehavior.default
-                                        } else {
-                                            behavior = UIUserNotificationActionBehavior.textInput
-                                        }
-                                        newAction.behavior = behavior
-                                        let foreground = UIUserNotificationActivationMode.foreground
-                                        let background = UIUserNotificationActivationMode.background
-                                        let mode = (action.ActivationMode == "foreground") ? foreground : background
-                                        newAction.activationMode = mode
-                                        if let textInputButtonTitle = action.TextInputButtonTitle {
-                                            let titleKey = UIUserNotificationTextInputActionButtonTitleKey
-                                            newAction.parameters[titleKey] = textInputButtonTitle
-                                        }
-                                        categoryActions.append(newAction)
-                                    }
-                                    finalCategory.setActions(categoryActions,
-                                                             for: UIUserNotificationActionContext.default)
-                                    allCategories.insert(finalCategory)
+            self.GetPushSettings().then { pushSettings -> Void in
+                var allCategories = Set<UIMutableUserNotificationCategory>()
+                if let categories = pushSettings.Categories {
+                    for category in categories {
+                        let finalCategory = UIMutableUserNotificationCategory()
+                        finalCategory.identifier = category.Identifier
+                        var categoryActions = [UIMutableUserNotificationAction]()
+                        if let actions = category.Actions {
+                            for action in actions {
+                                let newAction = UIMutableUserNotificationAction()
+                                newAction.title = action.Title
+                                newAction.identifier = action.Identifier
+                                newAction.isAuthenticationRequired = action.AuthenticationRequired
+                                newAction.isDestructive = action.Destructive
+                                var behavior: UIUserNotificationActionBehavior
+                                if action.Behavior == "default" {
+                                    behavior = UIUserNotificationActionBehavior.default
                                 } else {
-                                    print("Category has no actions defined, continuing loop")
-                                    continue
+                                    behavior = UIUserNotificationActionBehavior.textInput
                                 }
+                                newAction.behavior = behavior
+                                let foreground = UIUserNotificationActivationMode.foreground
+                                let background = UIUserNotificationActivationMode.background
+                                let mode = (action.ActivationMode == "foreground") ? foreground : background
+                                newAction.activationMode = mode
+                                if let textInputButtonTitle = action.TextInputButtonTitle {
+                                    let titleKey = UIUserNotificationTextInputActionButtonTitleKey
+                                    newAction.parameters[titleKey] = textInputButtonTitle
+                                }
+                                categoryActions.append(newAction)
                             }
+                            finalCategory.setActions(categoryActions,
+                                                     for: UIUserNotificationActionContext.default)
+                            allCategories.insert(finalCategory)
+                        } else {
+                            print("Category has no actions defined, continuing loop")
+                            continue
                         }
-                        fulfill(allCategories)
-                    case .failure(let error):
-                        CLSLogv("Error on setupPushActions() request: %@", getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                        reject(error)
                     }
-            }
+                }
+                fulfill(allCategories)
+            }.catch(execute: { (error) in
+                CLSLogv("Error on setupPushActions() request: %@", getVaList([error.localizedDescription]))
+                Crashlytics.sharedInstance().recordError(error)
+                reject(error)
+            })
         }
     }
 
     @available(iOS 10, *)
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func setupUserNotificationPushActions() -> Promise<Set<UNNotificationCategory>> {
-        let queryUrl = baseAPIURL+"ios/push"
         return Promise { fulfill, reject in
-            _ = self.manager!.request(queryUrl,
-                                      method: .get
-                ).validate().responseObject { (response: DataResponse<PushConfiguration>) in
-                    switch response.result {
-                    case .success:
-                        if let config = response.result.value {
-                            var allCategories = Set<UNNotificationCategory>()
-                            if let categories = config.Categories {
-                                for category in categories {
-                                    var categoryActions = [UNNotificationAction]()
-                                    if let actions = category.Actions {
-                                        for action in actions {
-                                            var actionOptions = UNNotificationActionOptions([])
-                                            if action.AuthenticationRequired {
-                                                actionOptions.insert(.authenticationRequired)
-                                            }
-                                            if action.Destructive {
-                                                actionOptions.insert(.destructive)
-                                            }
-                                            if action.ActivationMode == "foreground" {
-                                                actionOptions.insert(.foreground)
-                                            }
-                                            if action.Behavior == "default" {
-                                                let newAction = UNNotificationAction(identifier: action.Identifier!,
-                                                                                     title: action.Title!,
-                                                                                     options: actionOptions)
-                                                categoryActions.append(newAction)
-                                            } else if action.Behavior == "TextInput" {
-                                                if let identifier = action.Identifier,
-                                                    let btnTitle = action.TextInputButtonTitle,
-                                                    let place = action.TextInputPlaceholder, let title = action.Title {
-                                                    // swiftlint:disable line_length
-                                                    let newAction = UNTextInputNotificationAction(identifier: identifier,
-                                                                                                  title: title,
-                                                                                                  options: actionOptions,
-                                                                                                  textInputButtonTitle:btnTitle,
-                                                                                                  textInputPlaceholder:place)
-                                                    // swiftlint:enable line_length
-                                                    categoryActions.append(newAction)
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        print("Category has no actions defined, continuing loop")
-                                        continue
+            self.GetPushSettings().then { pushSettings -> Void in
+                var allCategories = Set<UNNotificationCategory>()
+                if let categories = pushSettings.Categories {
+                    for category in categories {
+                        var categoryActions = [UNNotificationAction]()
+                        if let actions = category.Actions {
+                            for action in actions {
+                                var actionOptions = UNNotificationActionOptions([])
+                                if action.AuthenticationRequired { actionOptions.insert(.authenticationRequired) }
+                                if action.Destructive { actionOptions.insert(.destructive) }
+                                if action.ActivationMode == "foreground" { actionOptions.insert(.foreground) }
+                                if action.Behavior == "default" {
+                                    let newAction = UNNotificationAction(identifier: action.Identifier!,
+                                                                         title: action.Title!, options: actionOptions)
+                                    categoryActions.append(newAction)
+                                } else if action.Behavior == "TextInput" {
+                                    if let identifier = action.Identifier, let btnTitle = action.TextInputButtonTitle,
+                                        let place = action.TextInputPlaceholder, let title = action.Title {
+                                        let newAction = UNTextInputNotificationAction(identifier: identifier,
+                                                                                      title: title,
+                                                                                      options: actionOptions,
+                                                                                      textInputButtonTitle:btnTitle,
+                                                                                      textInputPlaceholder:place)
+                                        categoryActions.append(newAction)
                                     }
-                                    let finalCategory = UNNotificationCategory.init(identifier: category.Identifier!,
-                                                                                    actions: categoryActions,
-                                                                                    intentIdentifiers: [],
-                                                                                    options: [.customDismissAction])
-                                    allCategories.insert(finalCategory)
                                 }
                             }
-                            fulfill(allCategories)
                         } else {
-                            CLSLogv("setupUserNotificationPushActions response.result.value could not unwrap! %@",
-                                    // swiftlint:disable:next force_cast
-                                getVaList([response.result as! CVarArg]))
-                            fulfill(Set<UNNotificationCategory>())
+                            continue
                         }
-                    case .failure(let error):
-                        CLSLogv("Error on setupUserNotificationPushActions() request: %@",
-                                getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                        reject(error)
+                        let finalCategory = UNNotificationCategory.init(identifier: category.Identifier!,
+                                                                        actions: categoryActions,
+                                                                        intentIdentifiers: [],
+                                                                        options: [.customDismissAction])
+                        allCategories.insert(finalCategory)
                     }
-            }
+                }
+                fulfill(allCategories)
+            }.catch(execute: { (error) in
+                CLSLogv("Error on setupUserNotificationPushActions() request: %@",
+                        getVaList([error.localizedDescription]))
+                Crashlytics.sharedInstance().recordError(error)
+                reject(error)
+            })
         }
     }
 
@@ -985,62 +1127,6 @@ public class HomeAssistantAPI {
         }
     }
 
-    func getImage(imageUrl: String) -> Promise<UIImage> {
-        var url = imageUrl.replacingOccurrences(of: "/api/", with: "")
-        url = url.replacingOccurrences(of: "/local/", with: "")
-        url = url.replacingOccurrences(of: "/static/", with: "")
-        url = baseAPIURL+url
-        return Promise { fulfill, reject in
-            _ = self.manager!.request(url, method: .get).validate().responseImage { response in
-                switch response.result {
-                case .success:
-                    if let value = response.result.value {
-                        fulfill(value)
-                    } else {
-                        print("Response was not an image!", response)
-                    }
-                case .failure(let error):
-                    CLSLogv("Error on getImage() request to %@: %@", getVaList([url, error.localizedDescription]))
-                    Crashlytics.sharedInstance().recordError(error)
-                    reject(error)
-                }
-            }
-        }
-    }
-
-    var locationEnabled: Bool {
-        return PermissionScope().statusLocationAlways() == .authorized
-    }
-
-    var notificationsEnabled: Bool {
-        //        return PermissionScope().statusNotifications() == .authorized && prefs.string(forKey: "pushID") != nil
-        return prefs.string(forKey: "pushID") != nil
-        //        print("PermissionScope().statusNotifications()", PermissionScope().statusNotifications())
-        //        return PermissionScope().statusNotifications() == .authorized
-    }
-
-    var iosComponentLoaded: Bool {
-        return self.loadedComponents.contains("ios")
-    }
-
-    var deviceTrackerComponentLoaded: Bool {
-        return self.loadedComponents.contains("device_tracker")
-    }
-
-    var iosNotifyPlatformLoaded: Bool {
-        return self.loadedComponents.contains("notify.ios")
-    }
-
-    var enabledPermissions: [String] {
-        var permissionsContainer: [String] = []
-        for status in PermissionScope().permissionStatuses([NotificationsPermission().type,
-            LocationAlwaysPermission().type]) where status.1 == .authorized {
-                let desc = status.0.prettyDescription.lowercased()
-                permissionsContainer.append(desc)
-        }
-        return permissionsContainer
-    }
-
     func CleanBaseURL(baseUrl: URL) -> (hasValidScheme: Bool, cleanedURL: URL) {
         if (baseUrl.absoluteString.hasPrefix("http://") || baseUrl.absoluteString.hasPrefix("https://")) == false {
             return (false, baseUrl)
@@ -1053,23 +1139,6 @@ public class HomeAssistantAPI {
         //            urlComponents.port = (baseUrl.scheme == "http") ? 80 : 443
         //        }
         return (true, urlComponents.url!)
-    }
-
-    func GetDiscoveryInfo(baseUrl: URL) -> Promise<DiscoveryInfoResponse> {
-        let queryUrl = baseUrl.appendingPathComponent("/api/discovery_info")
-        return Promise { fulfill, reject in
-            // swiftlint:disable:next line_length
-            _ = Alamofire.request(queryUrl).validate().responseObject { (response: DataResponse<DiscoveryInfoResponse>) -> Void in
-                switch response.result {
-                case .success:
-                    fulfill(response.result.value!)
-                case .failure(let error):
-                    CLSLogv("Error on getDiscoveryInfo() request: %@", getVaList([error.localizedDescription]))
-                    Crashlytics.sharedInstance().recordError(error)
-                    reject(error)
-                }
-            }
-        }
     }
 
 }
@@ -1210,29 +1279,63 @@ class BeaconManager: NSObject, CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         print("Entered region", region.identifier)
-        let zone = zones[region.identifier]!
-        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
-                                                       coordinates: zone.locationCoordinates(),
-                                                       accuracy: 1,
-                                                       zone: zone)
+        if let zone = zones[region.identifier] {
+            HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
+                                                           coordinates: zone.locationCoordinates(),
+                                                           accuracy: 1,
+                                                           zone: zone)
+        }
     }
 
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         print("Exited region", region.identifier)
-        let zone = zones[region.identifier]!
-        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
-                                                       coordinates: zone.locationCoordinates(),
-                                                       accuracy: 1,
-                                                       zone: zone)
+        if let zone = zones[region.identifier] {
+            HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
+                                                           coordinates: zone.locationCoordinates(),
+                                                           accuracy: 1,
+                                                           zone: zone)
+        }
     }
 
     func startScanning(zone: Zone) {
         print("Begin scanning iBeacons for zone", zone.ID)
-        let beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: zone.UUID!)!,
-                                          major: CLBeaconMajorValue(zone.Major!),
-                                          minor: CLBeaconMinorValue(zone.Minor!), identifier: zone.ID)
-        zones[zone.ID] = zone
-        locationManager.startMonitoring(for: beaconRegion)
+        var beaconRegion: CLBeaconRegion? = nil
+        if let uuid = zone.UUID, let major = zone.Major, let minor = zone.Minor {
+            beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: uuid)!,
+                                          major: CLBeaconMajorValue(major),
+                                          minor: CLBeaconMinorValue(minor), identifier: zone.ID)
+        } else if let uuid = zone.UUID, let major = zone.Major {
+            beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: uuid)!,
+                                          major: CLBeaconMajorValue(major),
+                                          identifier: zone.ID)
+        } else if let uuid = zone.UUID {
+            beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: uuid)!, identifier: zone.ID)
+        }
+        if let beaconRegion = beaconRegion {
+            beaconRegion.notifyEntryStateOnDisplay = true
+            zones[zone.ID] = zone
+            locationManager.startMonitoring(for: beaconRegion)
+        }
+    }
+
+    func resumeScanning() {
+        print("Resuming scanning of \(locationManager.monitoredRegions.count) regions!")
+        HomeAssistantAPI.sharedInstance.GetStates().then { (entities) -> Void in
+            if let zoneEntities: [Zone] = entities.filter({ (entity) -> Bool in
+                return entity.Domain == "zone"
+            }) as? [Zone] {
+                for zone in zoneEntities {
+                    if zone.TrackingEnabled == false {
+                        continue
+                    }
+                    self.zones[zone.ID] = zone
+                }
+            }
+        }.catch { error in
+            CLSLogv("Unable to resume scanning because GetStates call failed: %@!",
+                    getVaList([error.localizedDescription]))
+            Crashlytics.sharedInstance().recordError(error)
+        }
     }
 
 }

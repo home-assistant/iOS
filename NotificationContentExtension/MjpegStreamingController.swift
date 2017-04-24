@@ -26,6 +26,7 @@ open class MjpegStreamingController: NSObject, URLSessionDataDelegate {
     URLCredential?))?
     open var didStartLoading: (() -> Void)?
     open var didFinishLoading: (() -> Void)?
+    open var gotNon200Status: ((Int) -> Void)?
     open var contentURL: URL?
     open var imageView: UIImageView
 
@@ -80,6 +81,11 @@ open class MjpegStreamingController: NSObject, URLSessionDataDelegate {
                          dataTask: URLSessionDataTask,
                          didReceive response: URLResponse,
                          completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+        if let httpResponse = response as? HTTPURLResponse {
+            if httpResponse.statusCode != 200 {
+                DispatchQueue.main.async { self.gotNon200Status?(httpResponse.statusCode) }
+            }
+        }
         if let imageData = receivedData, imageData.length > 0,
             let receivedImage = UIImage(data: imageData as Data) {
             // I'm creating the UIImage before performing didFinishLoading to minimize the interval

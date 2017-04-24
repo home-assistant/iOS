@@ -339,6 +339,14 @@ enum L10n {
         /// To disable location tracking add track_ios: false to each zones settings or under customize.
         static let footer = L10n.tr("settings_details.location.zones.footer")
 
+        enum Beacon {
+
+          enum PropNotSet {
+            /// Not set
+            static let value = L10n.tr("settings_details.location.zones.beacon.prop_not_set.value")
+          }
+        }
+
         enum BeaconMajor {
           /// iBeacon Major
           static let title = L10n.tr("settings_details.location.zones.beacon_major.title")
@@ -374,6 +382,21 @@ enum L10n {
     enum Notifications {
       /// Notification Settings
       static let title = L10n.tr("settings_details.notifications.title")
+
+      enum BadgeSection {
+
+        enum Button {
+          /// Reset badge to 0
+          static let title = L10n.tr("settings_details.notifications.badge_section.button.title")
+        }
+
+        enum ResetAlert {
+          /// The badge has been reset to 0.
+          static let message = L10n.tr("settings_details.notifications.badge_section.reset_alert.message")
+          /// Badge reset
+          static let title = L10n.tr("settings_details.notifications.badge_section.reset_alert.title")
+        }
+      }
 
       enum PushIdSection {
         /// This is the target to use in your Home Assistant configuration. Tap to copy or share.

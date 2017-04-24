@@ -70,6 +70,7 @@
 "settings_details.location.zones.enter_exit_tracked.title" = "Enter/exit tracked";
 "settings_details.location.zones.location.title" = "Location";
 "settings_details.location.zones.radius.title" = "Radius";
+"settings_details.location.zones.beacon.prop_not_set.value" = "Not set";
 "settings_details.location.zones.beacon_uuid.title" = "iBeacon UUID";
 "settings_details.location.zones.beacon_major.title" = "iBeacon Major";
 "settings_details.location.zones.beacon_minor.title" = "iBeacon Minor";
@@ -90,6 +91,11 @@
 "settings_details.notifications.sounds_section.button.title" = "Import Sounds";
 "settings_details.notifications.sounds_section.imported_alert.title" = "Sounds Imported";
 "settings_details.notifications.sounds_section.imported_alert.message" = "%d sounds were imported. Please restart your phone to complete the import.";
+
+"settings_details.notifications.badge_section.button.title" = "Reset badge to 0";
+"settings_details.notifications.badge_section.reset_alert.title" = "Badge reset";
+"settings_details.notifications.badge_section.reset_alert.message" = "The badge has been reset to 0.";
+
 
 
 "permissions.location.message" = "We use this to inform\r\nHome Assistant of your device location and state.";
