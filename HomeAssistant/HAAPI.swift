@@ -275,6 +275,7 @@ public class HomeAssistantAPI {
             if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
                 return entity.Domain == "zone"
             }) as? [Zone] {
+                Crashlytics.sharedInstance().setObjectValue(zoneEntities.count, forKey: "numberOfZones")
                 for zone in zoneEntities {
                     if zone.TrackingEnabled == false {
                         print("Skipping zone set to not track!")
