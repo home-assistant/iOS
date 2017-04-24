@@ -25,9 +25,16 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-            HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
-                                                  deviceID: keychain["deviceID"])
+        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+                                              deviceID: keychain["deviceID"])
+        if HomeAssistantAPI.sharedInstance.Configured == false {
+            let settingsView = SettingsViewController()
+            settingsView.doneButton = true
+            let navController = UINavigationController(rootViewController: settingsView)
+            self.present(navController, animated: true, completion: {
+                hud.hide(animated: true)
+            })
+        } else {
             HomeAssistantAPI.sharedInstance.Connect().then { _ -> Void in
                 if HomeAssistantAPI.sharedInstance.notificationsEnabled {
                     UIApplication.shared.registerForRemoteNotifications()
@@ -46,13 +53,6 @@ class RootTabBarViewController: UITabBarController, UITabBarControllerDelegate {
                 let navController = UINavigationController(rootViewController: settingsView)
                 self.present(navController, animated: true, completion: nil)
             }
-        } else {
-            let settingsView = SettingsViewController()
-            settingsView.doneButton = true
-            let navController = UINavigationController(rootViewController: settingsView)
-            self.present(navController, animated: true, completion: {
-                hud.hide(animated: true)
-            })
         }
     }
 

@@ -36,12 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.path)
         Fabric.with([Crashlytics.self])
 
-        if HomeAssistantAPI.sharedInstance.Configured == false {
-            if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
-                                                      deviceID: keychain["deviceID"])
-            }
-        }
+        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+                                              deviceID: keychain["deviceID"])
 
         if launchOptions?[UIApplicationLaunchOptionsKey.location] != nil {
             resumeRegionMonitoring()
@@ -129,12 +125,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("Received remote notification in completion handler!")
 
-        if HomeAssistantAPI.sharedInstance.Configured == false {
-            if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
-                                                      deviceID: keychain["deviceID"])
-            }
-        }
+        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+                                              deviceID: keychain["deviceID"])
 
         if let userInfoDict = userInfo as? [String:Any] {
             if let hadict = userInfoDict["homeassistant"] as? [String:String] {
@@ -173,12 +165,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short)
         print("Background fetch activated at \(timestamp)!")
-        if HomeAssistantAPI.sharedInstance.Configured == false {
-            if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
-                                                      deviceID: keychain["deviceID"])
-            }
-        }
+        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+                                              deviceID: keychain["deviceID"])
         if HomeAssistantAPI.sharedInstance.locationEnabled {
             HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .BackgroundFetch).then { success -> Void in
                 if success == true {
@@ -206,12 +194,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      forRemoteNotification userInfo: [AnyHashable : Any],
                      withResponseInfo responseInfo: [AnyHashable : Any],
                      completionHandler: @escaping () -> Void) {
-        if HomeAssistantAPI.sharedInstance.Configured == false {
-            if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
-                                                      deviceID: keychain["deviceID"])
-            }
-        }
+        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+                                              deviceID: keychain["deviceID"])
         var userInput: String?
         if let userText = responseInfo[UIUserNotificationActionResponseTypedTextKey] as? String {
             userInput = userText
@@ -224,12 +208,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ app: UIApplication,
                      open url: URL,
                      options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        if HomeAssistantAPI.sharedInstance.Configured == false {
-            if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
-                                                      deviceID: keychain["deviceID"])
-            }
-        }
+        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+                                              deviceID: keychain["deviceID"])
         var serviceData: [String:String] = url.queryItems!
         serviceData["sourceApplication"] = options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String
         switch url.host! {
@@ -258,12 +238,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Location.getLocation(accuracy: .neighborhood, frequency: .significant, timeout: nil,
                                  success: { (_, location) -> (Void) in
 
-                                if HomeAssistantAPI.sharedInstance.Configured == false {
-                                    if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                                        HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
-                                                                              deviceID: keychain["deviceID"])
-                                    }
-                                }
+                                HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
+                                                                      password: keychain["apiPassword"],
+                                                                      deviceID: keychain["deviceID"])
 
                                 HomeAssistantAPI.sharedInstance.submitLocation(updateType: .SignificantLocationUpdate,
                                                                                coordinates: location.coordinate,
@@ -280,12 +257,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func resumeRegionMonitoring() {
         if HomeAssistantAPI.sharedInstance.locationEnabled {
-            if HomeAssistantAPI.sharedInstance.Configured == false {
-                if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                    HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
-                                                          deviceID: keychain["deviceID"])
-                }
-            }
+            HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+                                                  deviceID: keychain["deviceID"])
 
             HomeAssistantAPI.sharedInstance.beaconManager.resumeScanning()
         }
@@ -298,12 +271,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     public func userNotificationCenter(_ center: UNUserNotificationCenter,
                                        didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
-        if HomeAssistantAPI.sharedInstance.Configured == false {
-            if let baseURL = keychain["baseURL"], let apiPass = keychain["apiPassword"] {
-                HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseURL, password: apiPass,
-                                                      deviceID: keychain["deviceID"])
-            }
-        }
+        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+                                              deviceID: keychain["deviceID"])
         var userText: String?
         if let textInput = response as? UNTextInputNotificationResponse {
             userText = textInput.userText
