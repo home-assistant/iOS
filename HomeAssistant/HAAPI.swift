@@ -1329,7 +1329,9 @@ class BeaconManager: NSObject, CLLocationManagerDelegate {
                 }
             }
         }.catch { error in
-            print("Unable to resume scanning because GetStates call failed!")
+            CLSLogv("Unable to resume scanning because GetStates call failed: %@!",
+                    getVaList([error.localizedDescription]))
+            Crashlytics.sharedInstance().recordError(error)
         }
     }
 
