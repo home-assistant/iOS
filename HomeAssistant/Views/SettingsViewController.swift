@@ -41,7 +41,7 @@ class SettingsViewController: FormViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        self.title = "Settings"
+        self.title = L10n.Settings.NavigationBar.title
     }
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
@@ -49,7 +49,7 @@ class SettingsViewController: FormViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
-        let aboutButton = UIBarButtonItem(title: "About",
+        let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
                                           style: .plain,
                                           target: self,
                                           action: #selector(SettingsViewController.openAbout(_:)))
@@ -58,7 +58,7 @@ class SettingsViewController: FormViewController {
 
         if doneButton {
             let closeSelector = #selector(SettingsViewController.closeSettings(_:))
-            let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self,
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
                                              action: closeSelector)
 
             self.navigationItem.setRightBarButton(doneButton, animated: true)
@@ -156,7 +156,7 @@ class SettingsViewController: FormViewController {
                 }
 
             <<< ButtonRow("connect") {
-                    $0.title = "Save"
+                    $0.title = L10n.Settings.ConnectionSection.SaveButton.title
                 }.onCellSelection { _, _ in
                     if self.form.validate().count == 0 {
                         if let baseUrl = self.baseURL {
