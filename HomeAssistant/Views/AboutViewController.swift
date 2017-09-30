@@ -72,7 +72,7 @@ class AboutViewController: FormViewController {
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
                 }.onCellSelection({ _ in
-                    openURLStringInBrowser(url: "https://gitter.im/home-assistant/home-assistant")
+                    openURLStringInBrowser(url: "https://discord.gg/c5DvZ4e")
                 })
 
             <<< ButtonRow {
