@@ -11,7 +11,7 @@ PODS:
   - Crashlytics (3.8.4):
     - Fabric (~> 1.6.3)
   - DeviceKit (1.0.1)
-  - Eureka (3.0.0)
+  - Eureka (4.0.1)
   - Fabric (1.6.11)
   - FontAwesomeKit/Core (2.2.4)
   - FontAwesomeKit/MaterialDesignIcons (2.2.4):
@@ -48,7 +48,7 @@ DEPENDENCIES:
   - CPDAcknowledgements
   - Crashlytics
   - DeviceKit
-  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
+  - Eureka
   - Fabric
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
   - KeychainAccess
@@ -63,9 +63,6 @@ DEPENDENCIES:
   - SwiftLocation
 
 EXTERNAL SOURCES:
-  Eureka:
-    :branch: master
-    :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
@@ -74,9 +71,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/robbiet480/PermissionScope.git
 
 CHECKOUT OPTIONS:
-  Eureka:
-    :commit: 6d90f858baa8d91d62f470b6c779a5ec1b328249
-    :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :commit: 8032213d13242c6466a048730f0defe98e10c1d6
     :git: https://github.com/robbiet480/FontAwesomeKit.git
@@ -92,7 +86,7 @@ SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   Crashlytics: 79e236942ca1e7fc641df1feb9a275360a78ab6a
   DeviceKit: 461e525867e48e725f41699c1cab3100df1258ff
-  Eureka: 5b9418d7bfdc21ca977d69d124a6409f3e9af2c7
+  Eureka: c8bd5cc07143b6f66268c208d28a246c99b41955
   Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
   FontAwesomeKit: b5c9ddc9504c4a07945b7b4590e7f9ad5a50e073
   KeychainAccess: a986406022dfc7c634c691ad3bec670cc6a32002
@@ -106,6 +100,6 @@ SPEC CHECKSUMS:
   SwiftLint: b467d08f5b25dc3b3cfed243d8e1b74b91714c67
   SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
 
-PODFILE CHECKSUM: 5dcc5db2e307713122bed4ab4cd3b02ecb106b2a
+PODFILE CHECKSUM: 334384dede0745ff570f0dabfd9aa8504cd3914c
 
 COCOAPODS: 1.1.1

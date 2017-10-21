@@ -13,7 +13,7 @@ target 'HomeAssistant' do
   pod 'CPDAcknowledgements'
   pod 'Crashlytics'
   pod 'DeviceKit'
-  pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
+  pod 'Eureka'
   pod 'Fabric'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
   pod 'KeychainAccess'
@@ -51,9 +51,14 @@ target 'NotificationContentExtension' do
 end
 
 post_install do |installer|
+    swift4Targets = ['Eureka']
     installer.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
-            config.build_settings['SWIFT_VERSION'] = '3.0'
+            if swift4Targets.include? target.name
+                config.build_settings['SWIFT_VERSION'] = '4.0'
+            else
+                config.build_settings['SWIFT_VERSION'] = '3.0'
+            end
         end
     end
 end
