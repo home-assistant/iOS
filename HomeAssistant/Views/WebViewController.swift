@@ -33,18 +33,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.view.addSubview(self.viewContainer!)
 
         let config = WKWebViewConfiguration()
-        if let apiPass = keychain["apiPassword"] {
-            let scriptStr = "window.hassConnection = createHassConnection(\"\(apiPass)\");"
-            let script = WKUserScript(source: scriptStr, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-            let userContentController = WKUserContentController()
-            userContentController.addUserScript(script)
-            config.userContentController = userContentController
-        }
+        let userContentController = WKUserContentController()
+        config.userContentController = userContentController
 
         webView = WKWebView(frame: self.viewContainer!.frame, configuration: config)
         webView.navigationDelegate = self
         webView.uiDelegate = self
-        webView.tag = 100
+        self.updateWebViewSettings()
 
         self.viewContainer!.addSubview(webView)
 
@@ -204,23 +199,15 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     func userReconnected() {
         print("User reconnected! Reset the web view!")
-        let config = WKWebViewConfiguration()
+        updateWebViewSettings()
+    }
+
+    func updateWebViewSettings() {
+        self.webView.configuration.userContentController.removeAllUserScripts()
         if let apiPass = keychain["apiPassword"] {
             let scriptStr = "window.hassConnection = createHassConnection(\"\(apiPass)\");"
             let script = WKUserScript(source: scriptStr, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-            let userContentController = WKUserContentController()
-            userContentController.addUserScript(script)
-            config.userContentController = userContentController
-        }
-
-        self.webView = WKWebView(frame: self.webView.frame, configuration: config)
-        self.webView.navigationDelegate = self
-        self.webView.uiDelegate = self
-        self.webView.tag = 100
-
-        if let existingWebView = self.viewContainer!.viewWithTag(100) {
-            existingWebView.removeFromSuperview()
-            self.viewContainer!.addSubview(self.webView)
+            self.webView.configuration.userContentController.addUserScript(script)
         }
     }
 
