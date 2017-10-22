@@ -14,34 +14,26 @@ import PromiseKit
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, ConnectionInfoChangedDelegate {
 
     var webView: WKWebView!
-    var viewContainer: UIView?
 
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let screenSize: CGRect = UIScreen.main.bounds
-        viewContainer = UIView(frame: CGRect(x: 0, y: 10,
-                                             width: screenSize.width,
-                                             height: screenSize.height-self.navigationController!.toolbar.frame.height))
-
         let statusBarView: UIView = UIView(frame: CGRect(x: 0.0, y: 0.0,
                                                          width: UIScreen.main.bounds.width, height: 20.0))
         statusBarView.backgroundColor = UIColor(red:0.01, green:0.66, blue:0.96, alpha:1.0)
-        view.addSubview(statusBarView)
-
-        self.view.addSubview(self.viewContainer!)
 
         let config = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
         config.userContentController = userContentController
 
-        webView = WKWebView(frame: self.viewContainer!.frame, configuration: config)
+        webView = WKWebView(frame: self.view!.frame, configuration: config)
         webView.navigationDelegate = self
         webView.uiDelegate = self
         self.updateWebViewSettings()
 
-        self.viewContainer!.addSubview(webView)
+        self.view!.addSubview(webView)
+        view.addSubview(statusBarView)
 
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
