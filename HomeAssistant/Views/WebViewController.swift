@@ -79,6 +79,15 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         // Do any additional setup after loading the view.
     }
 
+    // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to:size, with:coordinator)
+        coordinator.animate(alongsideTransition: { _ in
+            self.webView?.setNeedsLayout()
+            self.webView?.layoutIfNeeded()
+        }, completion:nil)
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
