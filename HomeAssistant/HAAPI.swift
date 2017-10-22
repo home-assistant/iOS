@@ -118,7 +118,7 @@ public class HomeAssistantAPI {
 
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = defaultHeaders
-        configuration.timeoutIntervalForRequest = 3 // seconds
+        configuration.timeoutIntervalForRequest = 10 // seconds
 
         self.manager = Alamofire.SessionManager(configuration: configuration)
 
