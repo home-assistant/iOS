@@ -38,7 +38,7 @@ PODS:
     - Realm (= 2.5.1)
   - SwiftGen (4.2.0)
   - SwiftLint (0.18.1)
-  - SwiftLocation (2.0.2)
+  - SwiftLocation (2.0.7)
 
 DEPENDENCIES:
   - Alamofire
@@ -104,7 +104,7 @@ SPEC CHECKSUMS:
   RealmSwift: f719e7511c902b8908593e8f143f59e47931bdb6
   SwiftGen: b6bfed151243348e4603b91bf5bc4eb2486c9d5b
   SwiftLint: b467d08f5b25dc3b3cfed243d8e1b74b91714c67
-  SwiftLocation: 887fa007f6f0567dfd00543c3fb356c4c793c2a6
+  SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
 
 PODFILE CHECKSUM: 5dcc5db2e307713122bed4ab4cd3b02ecb106b2a
 
