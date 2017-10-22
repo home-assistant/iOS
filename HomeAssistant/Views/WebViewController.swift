@@ -24,6 +24,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                                                          width: UIScreen.main.bounds.width,
                                                          height: statusBarHeight))
         statusBarView.backgroundColor = UIColor(red:0.01, green:0.66, blue:0.96, alpha:1.0)
+        view.addSubview(statusBarView)
 
         let config = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
@@ -33,9 +34,17 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         webView.navigationDelegate = self
         webView.uiDelegate = self
         self.updateWebViewSettings()
-
         self.view!.addSubview(webView)
-        view.addSubview(statusBarView)
+
+        webView.translatesAutoresizingMaskIntoConstraints = false
+
+        webView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        webView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        let margins = self.view.layoutMarginsGuide
+        webView.topAnchor.constraint(equalTo: margins.topAnchor).isActive = true
+        webView.bottomAnchor.constraint(equalTo: margins.bottomAnchor).isActive = true
+
+        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
