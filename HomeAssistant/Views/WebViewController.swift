@@ -18,13 +18,17 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        let statusBarHeight = UIApplication.shared.statusBarFrame.height
-        let statusBarView: UIView = UIView(frame: CGRect(x: 0.0, y: 0.0,
-                                                         width: UIScreen.main.bounds.width,
-                                                         height: statusBarHeight))
+        let margins = self.view.layoutMarginsGuide
+        let statusBarView: UIView = UIView(frame: .zero)
         statusBarView.backgroundColor = UIColor(red:0.01, green:0.66, blue:0.96, alpha:1.0)
         view.addSubview(statusBarView)
+
+        statusBarView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        statusBarView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        statusBarView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        statusBarView.bottomAnchor.constraint(equalTo: margins.topAnchor).isActive = true
+
+        statusBarView.translatesAutoresizingMaskIntoConstraints = false
 
         let config = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
@@ -40,7 +44,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         webView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         webView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        let margins = self.view.layoutMarginsGuide
         webView.topAnchor.constraint(equalTo: margins.topAnchor).isActive = true
         webView.bottomAnchor.constraint(equalTo: margins.bottomAnchor).isActive = true
 
