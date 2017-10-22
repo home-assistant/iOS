@@ -31,11 +31,11 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (4.1.7):
     - PromiseKit/CorePromise
-  - Realm (2.5.1):
-    - Realm/Headers (= 2.5.1)
-  - Realm/Headers (2.5.1)
-  - RealmSwift (2.5.1):
-    - Realm (= 2.5.1)
+  - Realm (2.8.3):
+    - Realm/Headers (= 2.8.3)
+  - Realm/Headers (2.8.3)
+  - RealmSwift (2.8.3):
+    - Realm (= 2.8.3)
   - SwiftGen (4.2.0)
   - SwiftLint (0.18.1)
   - SwiftLocation (2.0.7)
@@ -100,8 +100,8 @@ SPEC CHECKSUMS:
   ObjectMapper: fb30f71e08470d1e5a20b199fafe1246281db898
   PermissionScope: a30c16e015779ba27c97c124e7539e27b5829de2
   PromiseKit: 779f2e41faf62d854e7593026ddbcb0bb5c5002d
-  Realm: 32f86104d37c8521f864d4274050b38ba6190733
-  RealmSwift: f719e7511c902b8908593e8f143f59e47931bdb6
+  Realm: 3601ef091c8c499a31101d8563b991e75546cdce
+  RealmSwift: 8183818515471b01a99abdd2970f8e4fd52b6f4a
   SwiftGen: b6bfed151243348e4603b91bf5bc4eb2486c9d5b
   SwiftLint: b467d08f5b25dc3b3cfed243d8e1b74b91714c67
   SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
