@@ -19,8 +19,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let statusBarHeight = UIApplication.shared.statusBarFrame.height
         let statusBarView: UIView = UIView(frame: CGRect(x: 0.0, y: 0.0,
-                                                         width: UIScreen.main.bounds.width, height: 20.0))
+                                                         width: UIScreen.main.bounds.width,
+                                                         height: statusBarHeight))
         statusBarView.backgroundColor = UIColor(red:0.01, green:0.66, blue:0.96, alpha:1.0)
 
         let config = WKWebViewConfiguration()
