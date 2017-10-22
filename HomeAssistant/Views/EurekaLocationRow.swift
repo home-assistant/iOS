@@ -13,16 +13,9 @@ import MapKit
 
 // MARK: LocationRow
 
-public final class LocationRow: SelectorRow<PushSelectorCell<CLLocation>, MapViewController>, RowType {
+public final class LocationRow: Row<PushSelectorCell<CLLocation>>, RowType {
     public required init(tag: String?) {
         super.init(tag: tag)
-        presentationMode = .show(controllerProvider: ControllerProvider.callback {
-            return MapViewController { _ in
-            }
-            }, onDismiss: {
-                vc in _ = vc.navigationController?.popViewController(animated: true)
-        })
-
         displayValueFor = {
             guard let location = $0 else { return "" }
             let fmt = NumberFormatter()
@@ -31,6 +24,18 @@ public final class LocationRow: SelectorRow<PushSelectorCell<CLLocation>, MapVie
             let latitude = fmt.string(from: NSNumber(value: location.coordinate.latitude))!
             let longitude = fmt.string(from: NSNumber(value: location.coordinate.longitude))!
             return  "\(latitude), \(longitude)"
+        }
+    }
+
+    override public func customDidSelect() {
+        super.customDidSelect()
+        guard !isDisabled else { return }
+
+        let vc = MapViewController { _ in }
+        vc.row = self
+        cell.formViewController()?.navigationController?.pushViewController(vc, animated: true)
+        vc.onDismissCallback = { _ in
+            vc.navigationController?.popViewController(animated: true)
         }
     }
 }
