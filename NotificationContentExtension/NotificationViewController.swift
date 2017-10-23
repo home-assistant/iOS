@@ -68,7 +68,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             }
             self.showErrorLabel(message: labelText)
         }
-        streamingController?.didFinishLoading = { _ in
+        streamingController?.didFinishLoading = {
             print("Finished loading")
             self.hud!.hide(animated: true)
 

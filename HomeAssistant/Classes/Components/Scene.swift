@@ -12,7 +12,7 @@ import ObjectMapper
 class Scene: Entity {
 
     var Entities = [Entity]()
-    dynamic var EntityIds = [String]()
+    @objc dynamic var EntityIds = [String]()
 
     override func mapping(map: Map) {
         super.mapping(map: map)

@@ -1079,7 +1079,7 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
         outputDict["location_name"] = locationName
         if let baseURL = outputDict["base_url"] as? String {
             if baseURL.hasSuffix("/") {
-                outputDict["base_url"] = baseURL.substring(to: baseURL.index(before: baseURL.endIndex))
+                outputDict["base_url"] = baseURL[..<baseURL.index(before: baseURL.endIndex)]
             }
         }
         return DiscoveryInfoResponse(JSON: outputDict)!

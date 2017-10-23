@@ -11,7 +11,7 @@ import ObjectMapper
 
 class Lock: Entity {
 
-    dynamic var IsLocked: Bool = false
+    @objc dynamic var IsLocked: Bool = false
 
     override func mapping(map: Map) {
         super.mapping(map: map)

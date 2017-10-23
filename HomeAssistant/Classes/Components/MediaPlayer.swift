@@ -11,31 +11,31 @@ import ObjectMapper
 
 class MediaPlayer: Entity {
 
-    dynamic var IsOn: Bool = false
-    dynamic var IsPlaying: Bool = false
-    dynamic var IsIdle: Bool = false
-    dynamic var IsVolumeMuted: Bool = false
-    dynamic var MediaContentID: String?
-    dynamic var MediaContentType: String?
+    @objc dynamic var IsOn: Bool = false
+    @objc dynamic var IsPlaying: Bool = false
+    @objc dynamic var IsIdle: Bool = false
+    @objc dynamic var IsVolumeMuted: Bool = false
+    @objc dynamic var MediaContentID: String?
+    @objc dynamic var MediaContentType: String?
     var MediaDuration: Int?
-    dynamic var MediaTitle: String?
+    @objc dynamic var MediaTitle: String?
     var VolumeLevel: Float?
-    dynamic var Source: String?
-    dynamic var SourceList: [String] = [String]()
+    @objc dynamic var Source: String?
+    @objc dynamic var SourceList: [String] = [String]()
     var StoredSourceList = [String]()
-    dynamic var SupportsPause: Bool = false
-    dynamic var SupportsSeek: Bool = false
-    dynamic var SupportsVolumeSet: Bool = false
-    dynamic var SupportsVolumeMute: Bool = false
-    dynamic var SupportsPreviousTrack: Bool = false
-    dynamic var SupportsNextTrack: Bool = false
-    dynamic var SupportsTurnOn: Bool = false
-    dynamic var SupportsTurnOff: Bool = false
-    dynamic var SupportsPlayMedia: Bool = false
-    dynamic var SupportsVolumeStep: Bool = false
-    dynamic var SupportsSelectSource: Bool = false
-    dynamic var SupportsStop: Bool = false
-    dynamic var SupportsClearPlaylist: Bool = false
+    @objc dynamic var SupportsPause: Bool = false
+    @objc dynamic var SupportsSeek: Bool = false
+    @objc dynamic var SupportsVolumeSet: Bool = false
+    @objc dynamic var SupportsVolumeMute: Bool = false
+    @objc dynamic var SupportsPreviousTrack: Bool = false
+    @objc dynamic var SupportsNextTrack: Bool = false
+    @objc dynamic var SupportsTurnOn: Bool = false
+    @objc dynamic var SupportsTurnOff: Bool = false
+    @objc dynamic var SupportsPlayMedia: Bool = false
+    @objc dynamic var SupportsVolumeStep: Bool = false
+    @objc dynamic var SupportsSelectSource: Bool = false
+    @objc dynamic var SupportsStop: Bool = false
+    @objc dynamic var SupportsClearPlaylist: Bool = false
     var SupportedMediaCommands: Int?
 
     override func mapping(map: Map) {

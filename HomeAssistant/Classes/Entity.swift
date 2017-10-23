@@ -13,9 +13,9 @@ import ObjectMapper
 class Entity: StaticMappable {
     let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
 
-    dynamic var ID: String = ""
-    dynamic var State: String = ""
-    dynamic var Attributes: [String: Any] {
+    @objc dynamic var ID: String = ""
+    @objc dynamic var State: String = ""
+    @objc dynamic var Attributes: [String: Any] {
         get {
             guard let dictionaryData = attributesData else {
                 return [String: Any]()
@@ -37,21 +37,21 @@ class Entity: StaticMappable {
             }
         }
     }
-    fileprivate dynamic var attributesData: Data?
-    dynamic var FriendlyName: String?
-    dynamic var Hidden = false
-    dynamic var Icon: String?
-    dynamic var MobileIcon: String?
-    dynamic var Picture: String?
+    @objc fileprivate dynamic var attributesData: Data?
+    @objc dynamic var FriendlyName: String?
+    @objc dynamic var Hidden = false
+    @objc dynamic var Icon: String?
+    @objc dynamic var MobileIcon: String?
+    @objc dynamic var Picture: String?
     var DownloadedPicture: UIImage?
     var UnitOfMeasurement: String?
-    dynamic var LastChanged: Date?
-    dynamic var LastUpdated: Date?
+    @objc dynamic var LastChanged: Date?
+    @objc dynamic var LastUpdated: Date?
     //    let Groups = LinkingObjects(fromType: Group.self, property: "Entities")
 
     // Z-Wave properties
-    dynamic var Location: String?
-    dynamic var NodeID: String?
+    @objc dynamic var Location: String?
+    @objc dynamic var NodeID: String?
     var BatteryLevel: Int?
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length

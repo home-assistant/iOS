@@ -20,12 +20,12 @@ let isAllGroupTransform = TransformOf<Bool, String>(fromJSON: { (value: String?)
 
 class Group: Entity {
 
-    dynamic var IsAllGroup: Bool = false
-    dynamic var View: Bool = false
-    dynamic var Auto: Bool = false
+    @objc dynamic var IsAllGroup: Bool = false
+    @objc dynamic var View: Bool = false
+    @objc dynamic var Auto: Bool = false
     var Order: Int?
     var Entities: [String]?
-    dynamic var EntityIds = [String]()
+    @objc dynamic var EntityIds = [String]()
 
     override func mapping(map: Map) {
         super.mapping(map: map)

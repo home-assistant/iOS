@@ -46,7 +46,7 @@ DEPENDENCIES:
   - KeychainAccess
   - MBProgressHUD
   - ObjectMapper
-  - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `swift3-ios10-usernotifications`)
+  - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `swift4`)
   - PromiseKit
   - SwiftGen
   - SwiftLint
@@ -57,7 +57,7 @@ EXTERNAL SOURCES:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
   PermissionScope:
-    :branch: swift3-ios10-usernotifications
+    :branch: swift4
     :git: https://github.com/robbiet480/PermissionScope.git
 
 CHECKOUT OPTIONS:
@@ -65,7 +65,7 @@ CHECKOUT OPTIONS:
     :commit: 8032213d13242c6466a048730f0defe98e10c1d6
     :git: https://github.com/robbiet480/FontAwesomeKit.git
   PermissionScope:
-    :commit: 8e64e9940a0a76bd1cb99a1e01f9d54ff467cc58
+    :commit: b67d1176263ed9e36fca17407c999b8a22fe363d
     :git: https://github.com/robbiet480/PermissionScope.git
 
 SPEC CHECKSUMS:
@@ -87,6 +87,6 @@ SPEC CHECKSUMS:
   SwiftLint: 1b670ce79284c76520f84060e87d645078fd32fa
   SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
 
-PODFILE CHECKSUM: 5dbfd15195285085782cb9a2c8cafabb2abe461e
+PODFILE CHECKSUM: d2c020fd830ae47652f7d9b83004f81475f6042c
 
 COCOAPODS: 1.1.1

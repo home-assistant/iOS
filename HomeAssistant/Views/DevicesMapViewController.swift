@@ -141,7 +141,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         // Dispose of any resources that can be recreated.
     }
 
-    func switchMapType(_ sender: UISegmentedControl) {
+    @objc func switchMapType(_ sender: UISegmentedControl) {
         let mapType = MapType(rawValue: sender.selectedSegmentIndex)
         switch mapType! {
         case .standard:
@@ -189,11 +189,11 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         }
     }
 
-    func closeMapView(_ sender: UIBarButtonItem) {
+    @objc func closeMapView(_ sender: UIBarButtonItem) {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
 
-    func sendCurrentLocation(_ sender: UIBarButtonItem) {
+    @objc func sendCurrentLocation(_ sender: UIBarButtonItem) {
         HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
             let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
                                           message: L10n.ManualLocationUpdateNotification.message,

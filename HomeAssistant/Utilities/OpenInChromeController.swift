@@ -93,7 +93,7 @@ open class OpenInChromeController {
                 if let chromeScheme = chromeScheme {
                     let absoluteURLString = url.absoluteString
                     let lowerBound = absoluteURLString.range(of: ":")!.lowerBound
-                    let chromeURLString = chromeScheme + absoluteURLString.substring(from: lowerBound)
+                    let chromeURLString = chromeScheme + absoluteURLString.suffix(from: lowerBound)
                     return UIApplication.shared.openURL(URL(string: chromeURLString)!)
                 }
             }

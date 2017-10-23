@@ -212,7 +212,7 @@ class SettingsDetailViewController: FormViewController {
 
             //                <<< ButtonRow {
             //                    $0.title = "Import system sounds"
-            //                }.onCellSelection {_,_ in
+            //                }.onCellSelection {_, _ in
             //                    let list = getSoundList()
             //                    print("system sounds list", list)
             //                    for sound in list {

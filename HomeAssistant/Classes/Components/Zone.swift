@@ -12,15 +12,15 @@ import CoreLocation
 
 class Zone: Entity {
 
-    dynamic var Latitude: Double = 0.0
-    dynamic var Longitude: Double = 0.0
-    dynamic var Radius: Double = 0.0
-    dynamic var TrackingEnabled = true
-    dynamic var enterNotification = true
-    dynamic var exitNotification = true
+    @objc dynamic var Latitude: Double = 0.0
+    @objc dynamic var Longitude: Double = 0.0
+    @objc dynamic var Radius: Double = 0.0
+    @objc dynamic var TrackingEnabled = true
+    @objc dynamic var enterNotification = true
+    @objc dynamic var exitNotification = true
 
     // Beacons
-    dynamic var UUID: String?
+    @objc dynamic var UUID: String?
     var Major: Int?
     var Minor: Int?
 

@@ -173,11 +173,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         return nil
     }
 
-    func refreshWebView(_ sender: UIButton) {
+    @objc func refreshWebView(_ sender: UIButton) {
         self.webView.reload()
     }
 
-    func openSettingsView(_ sender: UIButton) {
+    @objc func openSettingsView(_ sender: UIButton) {
         let settingsView = SettingsViewController()
         settingsView.doneButton = true
         settingsView.hidesBottomBarWhenPushed = true
@@ -187,14 +187,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.present(navController, animated: true, completion: nil)
     }
 
-    func openMapView(_ sender: UIButton) {
+    @objc func openMapView(_ sender: UIButton) {
         let devicesMapView = DevicesMapViewController()
 
         let navController = UINavigationController(rootViewController: devicesMapView)
         self.present(navController, animated: true, completion: nil)
     }
 
-    func sendCurrentLocation(_ sender: UIButton) {
+    @objc func sendCurrentLocation(_ sender: UIButton) {
         HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual).then { _ -> Void in
             let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
                                           message: L10n.ManualLocationUpdateNotification.message,

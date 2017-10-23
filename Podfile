@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '10.0'
+platform :ios, '9.0'
 # Uncomment this line if you're using Swift
 use_frameworks!
 
@@ -18,7 +18,7 @@ target 'HomeAssistant' do
   pod 'KeychainAccess'
   pod 'MBProgressHUD'
   pod 'ObjectMapper'
-  pod 'PermissionScope', :git => 'https://github.com/robbiet480/PermissionScope.git', :branch => 'swift3-ios10-usernotifications'
+  pod 'PermissionScope', :git => 'https://github.com/robbiet480/PermissionScope.git', :branch => 'swift4'
   pod 'PromiseKit'
   pod 'SwiftGen'
   pod 'SwiftLint'
@@ -45,17 +45,4 @@ end
 target 'NotificationContentExtension' do
   pod 'KeychainAccess'
   pod 'MBProgressHUD'
-end
-
-post_install do |installer|
-    swift4Targets = ['Eureka']
-    installer.pods_project.targets.each do |target|
-        target.build_configurations.each do |config|
-            if swift4Targets.include? target.name
-                config.build_settings['SWIFT_VERSION'] = '4.0'
-            else
-                config.build_settings['SWIFT_VERSION'] = '3.0'
-            end
-        end
-    end
 end

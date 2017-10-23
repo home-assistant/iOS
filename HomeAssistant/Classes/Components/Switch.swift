@@ -11,7 +11,7 @@ import ObjectMapper
 
 class Switch: Entity {
 
-    dynamic var IsOn: Bool = false
+    @objc dynamic var IsOn: Bool = false
     var TodayMilliwattHours: Int?
     var CurrentPowerMilliwattHours: Int?
 

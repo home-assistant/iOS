@@ -11,18 +11,18 @@ import ObjectMapper
 
 class Light: Entity {
 
-    dynamic var IsOn: Bool = false
+    @objc dynamic var IsOn: Bool = false
     var Brightness: Float?
     var ColorTemp: Float?
-    dynamic var RGBColor: [Float]?
-    dynamic var XYColor: [Float]?
-    dynamic var SupportsBrightness: Bool = false
-    dynamic var SupportsColorTemp: Bool = false
-    dynamic var SupportsEffect: Bool = false
-    dynamic var SupportsFlash: Bool = false
-    dynamic var SupportsRGBColor: Bool = false
-    dynamic var SupportsTransition: Bool = false
-    dynamic var SupportsXYColor: Bool = false
+    @objc dynamic var RGBColor: [Float]?
+    @objc dynamic var XYColor: [Float]?
+    @objc dynamic var SupportsBrightness: Bool = false
+    @objc dynamic var SupportsColorTemp: Bool = false
+    @objc dynamic var SupportsEffect: Bool = false
+    @objc dynamic var SupportsFlash: Bool = false
+    @objc dynamic var SupportsRGBColor: Bool = false
+    @objc dynamic var SupportsTransition: Bool = false
+    @objc dynamic var SupportsXYColor: Bool = false
     var SupportedFeatures: Int?
 
     override func mapping(map: Map) {

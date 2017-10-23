@@ -49,7 +49,7 @@ class AboutViewController: FormViewController {
                     cell.accessoryType = .disclosureIndicator
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
-                }.onCellSelection({ _ in
+                }.onCellSelection({ _, _  in
                     openURLStringInBrowser(url: "https://home-assistant.io/")
                 })
 
@@ -60,7 +60,7 @@ class AboutViewController: FormViewController {
                     cell.accessoryType = .disclosureIndicator
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
-                }.onCellSelection({ _ in
+                }.onCellSelection({ _, _  in
                     openURLStringInBrowser(url: "https://community.home-assistant.io/")
                 })
 
@@ -71,7 +71,7 @@ class AboutViewController: FormViewController {
                     cell.accessoryType = .disclosureIndicator
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
-                }.onCellSelection({ _ in
+                }.onCellSelection({ _, _  in
                     openURLStringInBrowser(url: "https://discord.gg/c5DvZ4e")
                 })
 
@@ -82,7 +82,7 @@ class AboutViewController: FormViewController {
                     cell.accessoryType = .disclosureIndicator
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
-                }.onCellSelection({ _ in
+                }.onCellSelection({ _, _  in
                     openURLStringInBrowser(url: "https://home-assistant.io/docs/ecosystem/ios/")
                 })
 
@@ -93,7 +93,7 @@ class AboutViewController: FormViewController {
                     cell.accessoryType = .disclosureIndicator
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
-                }.onCellSelection({ _ in
+                }.onCellSelection({ _, _  in
                     self.openInTwitterApp(username: "home_assistant")
                 })
 
@@ -104,7 +104,7 @@ class AboutViewController: FormViewController {
                     cell.accessoryType = .disclosureIndicator
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
-                }.onCellSelection({ _ in
+                }.onCellSelection({ _, _  in
                     self.openInFacebook(pageId: "292963007723872")
                 })
 
@@ -115,7 +115,7 @@ class AboutViewController: FormViewController {
                     cell.accessoryType = .disclosureIndicator
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
-                }.onCellSelection({ _ in
+                }.onCellSelection({ _, _  in
                     openURLStringInBrowser(url: "https://github.com/home-assistant/home-assistant-iOS")
                 })
 
@@ -126,7 +126,7 @@ class AboutViewController: FormViewController {
                     cell.accessoryType = .disclosureIndicator
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
-                }.onCellSelection({ _ in
+                }.onCellSelection({ _, _ in
                     openURLStringInBrowser(url: "https://github.com/home-assistant/home-assistant-iOS/issues")
                 })
 
@@ -202,7 +202,7 @@ class AboutViewController: FormViewController {
         }
     }
 
-    func close(_ sender: UIBarButtonItem) {
+    @objc func close(_ sender: UIBarButtonItem) {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
 }

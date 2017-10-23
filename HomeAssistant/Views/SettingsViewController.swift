@@ -409,7 +409,7 @@ class SettingsViewController: FormViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    func HomeAssistantDiscovered(_ notification: Notification) {
+    @objc func HomeAssistantDiscovered(_ notification: Notification) {
         let discoverySection: Section = self.form.sectionBy(tag: "discoveredInstances")!
         discoverySection.hidden = false
         discoverySection.evaluateHidden()
@@ -459,7 +459,7 @@ class SettingsViewController: FormViewController {
         self.tableView.reloadData()
     }
 
-    func HomeAssistantUndiscovered(_ notification: Notification) {
+    @objc func HomeAssistantUndiscovered(_ notification: Notification) {
         if let userInfo = (notification as Notification).userInfo {
             if let stringedName = userInfo["name"] as? String {
                 if let removingRow: ButtonRow = self.form.rowBy(tag: stringedName) {
@@ -475,7 +475,7 @@ class SettingsViewController: FormViewController {
         self.tableView.reloadData()
     }
 
-    func Connected(_ notification: Notification) {
+    @objc func Connected(_ notification: Notification) {
         let iosComponentLoadedRow: LabelRow = self.form.rowBy(tag: "iosComponentLoaded")!
         iosComponentLoadedRow.value = HomeAssistantAPI.sharedInstance.iosComponentLoaded ? "✔️" : "✖️"
         iosComponentLoadedRow.updateCell()
@@ -543,7 +543,7 @@ class SettingsViewController: FormViewController {
         self.tableView.reloadData()
     }
 
-    func openAbout(_ sender: UIButton) {
+    @objc func openAbout(_ sender: UIButton) {
         let aboutView = AboutViewController()
 
         let navController = UINavigationController(rootViewController: aboutView)
@@ -551,7 +551,7 @@ class SettingsViewController: FormViewController {
         //        self.present(navController, animated: true, completion: nil)
     }
 
-    func closeSettings(_ sender: UIButton) {
+    @objc func closeSettings(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
     }
 }

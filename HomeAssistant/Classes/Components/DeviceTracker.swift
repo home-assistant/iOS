@@ -16,7 +16,7 @@ class DeviceTracker: Entity {
     var Longitude: Double?
     var Battery: Int?
     var GPSAccuracy: Double? // It's a double for direct use in CLLocationDistance
-    dynamic var IsHome: Bool = false
+    @objc dynamic var IsHome: Bool = false
 
     override func mapping(map: Map) {
         super.mapping(map: map)
