@@ -25,7 +25,7 @@
 import UIKit
 
 public extension UIColor {
-    
+
     /**
      Creates an immuatble UIColor instance specified by a hex string, CSS color name, or nil.
      - parameter hexString: A case insensitive String? representing a hex or CSS value e.g.
@@ -35,7 +35,8 @@ public extension UIColor {
      - **"00FFFF"**
      - **"#00FFFF"**
      - **"00FFFF77"**
-     - **"Orange", "Azure", "Tomato"** Modern browsers support 140 color names (<http://www.w3schools.com/cssref/css_colornames.asp>)
+     - **"Orange", "Azure", "Tomato"** Modern browsers support 140 color names
+       (<http://www.w3schools.com/cssref/css_colornames.asp>)
      - **"Clear"** [UIColor clearColor]
      - **"Transparent"** [UIColor clearColor]
      - **nil** [UIColor clearColor]
@@ -45,9 +46,10 @@ public extension UIColor {
         let normalizedHexString: String = UIColor.normalize(hex)
         var c: CUnsignedInt = 0
         Scanner(string: normalizedHexString).scanHexInt32(&c)
-        self.init(red:UIColorMasks.redValue(c), green:UIColorMasks.greenValue(c), blue:UIColorMasks.blueValue(c), alpha:UIColorMasks.alphaValue(c))
+        self.init(red: UIColorMasks.redValue(c), green: UIColorMasks.greenValue(c), blue: UIColorMasks.blueValue(c),
+                  alpha: UIColorMasks.alphaValue(c))
     }
-    
+
     /**
      Returns a hex equivalent of this UIColor.
      - Parameter includeAlpha:   Optional parameter to include the alpha hex.
@@ -67,30 +69,30 @@ public extension UIColor {
         }
         return color
     }
-    
+
     fileprivate enum UIColorMasks: CUnsignedInt {
         case redMask    = 0xff000000
         case greenMask  = 0x00ff0000
         case blueMask   = 0x0000ff00
         case alphaMask  = 0x000000ff
-        
+
         static func redValue(_ value: CUnsignedInt) -> CGFloat {
             return CGFloat((value & redMask.rawValue) >> 24) / 255.0
         }
-        
+
         static func greenValue(_ value: CUnsignedInt) -> CGFloat {
             return CGFloat((value & greenMask.rawValue) >> 16) / 255.0
         }
-        
+
         static func blueValue(_ value: CUnsignedInt) -> CGFloat {
             return CGFloat((value & blueMask.rawValue) >> 8) / 255.0
         }
-        
+
         static func alphaValue(_ value: CUnsignedInt) -> CGFloat {
             return CGFloat(value & alphaMask.rawValue) / 255.0
         }
     }
-    
+
     fileprivate static func normalize(_ hex: String?) -> String {
         guard var hexString = hex else {
             return "00000000"
@@ -110,7 +112,7 @@ public extension UIColor {
         }
         return hexString
     }
-    
+
     /**
      All modern browsers support the following 140 color names (see http://www.w3schools.com/cssref/css_colornames.asp)
      */
@@ -121,7 +123,7 @@ public extension UIColor {
         }
         return cssName
     }
-    
+
     fileprivate static let cssToHexDictionairy: [String: String] = [
         "CLEAR": "00000000",
         "TRANSPARENT": "00000000",

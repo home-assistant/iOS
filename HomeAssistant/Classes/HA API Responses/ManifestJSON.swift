@@ -14,18 +14,15 @@ class ManifestJSONIcon: Mappable {
     var Sizes: String?
     var Source: String?
     var IconType: String?
-    
-    required init?(map: Map) {
-        
-    }
-    
+
+    required init?(map: Map) { }
+
     func mapping(map: Map) {
         Sizes      <- map["sizes"]
         Source     <- map["src"]
         IconType       <- map["type"]
     }
 }
-
 
 class ManifestJSON: Mappable {
     var BackgroundColor: String?

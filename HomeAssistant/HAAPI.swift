@@ -156,7 +156,7 @@ public class HomeAssistantAPI {
                         prefs.setValue(themeColor, forKey: "themeColor")
                     }
                 })
-                
+
                 _ = self.GetStates().then(execute: { _ -> Void in
                     if self.locationEnabled {
                         self.setupZones()
@@ -385,7 +385,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     func GetStatus() -> Promise<StatusResponse> {
         return Promise { fulfill, reject in
             if let manager = self.manager, let queryUrl = baseAPIURL {
