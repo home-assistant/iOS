@@ -8,20 +8,19 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
 
 class Switch: Entity {
 
-    dynamic var IsOn: Bool = false
-    var TodayMilliwattHours = RealmOptional<Int>()
-    var CurrentPowerMilliwattHours = RealmOptional<Int>()
+    @objc dynamic var IsOn: Bool = false
+    var TodayMilliwattHours: Int?
+    var CurrentPowerMilliwattHours: Int?
 
     override func mapping(map: Map) {
         super.mapping(map: map)
 
         IsOn                               <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
-        TodayMilliwattHours.value          <- map["attributes.today_mwh"]
-        CurrentPowerMilliwattHours.value   <- map["attributes.current_power_mwh"]
+        TodayMilliwattHours          <- map["attributes.today_mwh"]
+        CurrentPowerMilliwattHours   <- map["attributes.current_power_mwh"]
     }
 
     override var ComponentIcon: String {

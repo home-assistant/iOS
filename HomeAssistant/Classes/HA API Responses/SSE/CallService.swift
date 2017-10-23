@@ -13,7 +13,7 @@ class CallServiceEvent: SSEEvent {
     var Service: String?
     var Domain: String?
     var ServiceCallID: String?
-    var ServiceData: [String:AnyObject] = [:]
+    var ServiceData: [String: AnyObject] = [:]
 
     override func mapping(map: Map) {
         super.mapping(map: map)

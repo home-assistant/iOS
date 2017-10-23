@@ -10,7 +10,7 @@ import Foundation
 import ObjectMapper
 
 class InputBoolean: Entity {
-    dynamic var IsOn: Bool = false
+    @objc dynamic var IsOn: Bool = false
 
     override func mapping(map: Map) {
         super.mapping(map: map)

@@ -8,20 +8,19 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
 
 class InputSlider: Entity {
 
-    var Minimum = RealmOptional<Float>()
-    var Maximum = RealmOptional<Float>()
-    var Step = RealmOptional<Int>()
+    var Minimum: Float?
+    var Maximum: Float?
+    var Step: Int?
 
     override func mapping(map: Map) {
         super.mapping(map: map)
 
-        Maximum.value          <- map["attributes.max"]
-        Minimum.value          <- map["attributes.min"]
-        Step.value             <- map["attributes.step"]
+        Maximum          <- map["attributes.max"]
+        Minimum          <- map["attributes.min"]
+        Step             <- map["attributes.step"]
     }
 
     override var ComponentIcon: String {

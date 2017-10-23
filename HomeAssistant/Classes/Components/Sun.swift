@@ -8,18 +8,17 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
 
 class Sun: Entity {
 
-    var Elevation = RealmOptional<Float>()
+    var Elevation: Float?
     var NextRising: Date?
     var NextSetting: Date?
 
     override func mapping(map: Map) {
         super.mapping(map: map)
 
-        Elevation.value    <- map["attributes.elevation"]
+        Elevation    <- map["attributes.elevation"]
         NextRising   <- (map["attributes.next_rising"], HomeAssistantTimestampTransform())
         NextSetting  <- (map["attributes.next_setting"], HomeAssistantTimestampTransform())
     }

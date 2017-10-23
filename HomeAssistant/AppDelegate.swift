@@ -10,16 +10,10 @@ import UIKit
 import Fabric
 import Crashlytics
 import PromiseKit
-import RealmSwift
 import UserNotifications
 import AlamofireNetworkActivityIndicator
 import KeychainAccess
 import SwiftLocation
-
-let realmConfig = Realm.Configuration(schemaVersion: 3, migrationBlock: nil)
-
-// swiftlint:disable:next force_try
-let realm = try! Realm(configuration: realmConfig)
 
 let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
 
@@ -32,8 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        Realm.Configuration.defaultConfiguration = realmConfig
-        print("Realm file path", Realm.Configuration.defaultConfiguration.fileURL!.path)
         Fabric.with([Crashlytics.self])
 
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
@@ -120,15 +112,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication,
-                     didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("Received remote notification in completion handler!")
 
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
 
-        if let userInfoDict = userInfo as? [String:Any] {
-            if let hadict = userInfoDict["homeassistant"] as? [String:String] {
+        if let userInfoDict = userInfo as? [String: Any] {
+            if let hadict = userInfoDict["homeassistant"] as? [String: String] {
                 if let command = hadict["command"] {
                     switch command {
                     case "request_location_update":
@@ -190,8 +182,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?,
-                     forRemoteNotification userInfo: [AnyHashable : Any],
-                     withResponseInfo responseInfo: [AnyHashable : Any],
+                     forRemoteNotification userInfo: [AnyHashable: Any],
+                     withResponseInfo responseInfo: [AnyHashable: Any],
                      completionHandler: @escaping () -> Void) {
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
@@ -206,10 +198,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ app: UIApplication,
                      open url: URL,
-                     options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+                     options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
-        var serviceData: [String:String] = url.queryItems!
+        var serviceData: [String: String] = url.queryItems!
         serviceData["sourceApplication"] = options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String
         switch url.host! {
         case "call_service": // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
@@ -218,14 +210,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = HomeAssistantAPI.sharedInstance.CallService(domain: domain,
                                                             service: service,
                                                             serviceData: serviceData)
-            break
         case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
             _ = HomeAssistantAPI.sharedInstance.CreateEvent(eventType: url.pathComponents[1],
                                                             eventData: serviceData)
-            break
         case "send_location": // homeassistant://send_location/
             _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
-            break
         default:
             print("Can't route", url.host!)
         }
@@ -235,7 +224,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func registerForSignificantLocationUpdates() {
         if HomeAssistantAPI.sharedInstance.locationEnabled {
             Location.getLocation(accuracy: .neighborhood, frequency: .significant, timeout: nil,
-                                 success: { (_, location) -> (Void) in
+                                 success: { (_, location) -> Void in
 
                                 HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
                                                                       password: keychain["apiPassword"],
@@ -245,7 +234,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                                                coordinates: location.coordinate,
                                                                                accuracy: location.horizontalAccuracy,
                                                                                zone: nil)
-            }) { (_, _, error) -> (Void) in
+            }) { (_, _, error) -> Void in
                 // something went wrong. request will be cancelled automatically
                 NSLog("Something went wrong when trying to get significant location updates! Error was: @%",
                       error.localizedDescription)

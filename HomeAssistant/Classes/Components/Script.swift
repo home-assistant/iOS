@@ -11,8 +11,8 @@ import ObjectMapper
 
 class Script: Entity {
 
-    dynamic var IsOn: Bool = false
-    dynamic var CanCancel: Bool = false
+    @objc dynamic var IsOn: Bool = false
+    @objc dynamic var CanCancel: Bool = false
 
     override func mapping(map: Map) {
         super.mapping(map: map)

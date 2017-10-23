@@ -94,21 +94,21 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
                 return entity.Domain == "device_tracker"
             }) as? [DeviceTracker] {
                 for device in deviceEntities {
-                    if device.Latitude.value == nil || device.Longitude.value == nil {
+                    if device.Latitude == nil || device.Longitude == nil {
                         continue
                     }
                     let dropPin = DeviceAnnotation()
                     dropPin.coordinate = device.locationCoordinates()
                     dropPin.title = device.Name
                     var subtitlePieces: [String] = []
-                    if let battery = device.Battery.value {
+                    if let battery = device.Battery {
                         subtitlePieces.append(L10n.DevicesMap.batteryLabel+": "+String(battery)+"%")
                     }
                     dropPin.subtitle = subtitlePieces.joined(separator: " / ")
                     dropPin.device = device
                     mapView.addAnnotation(dropPin)
 
-                    if let radius = device.GPSAccuracy.value {
+                    if let radius = device.GPSAccuracy {
                         let circle = HACircle.init(center: device.locationCoordinates(), radius: radius)
                         circle.type = "device"
                         mapView.add(circle)
@@ -141,7 +141,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         // Dispose of any resources that can be recreated.
     }
 
-    func switchMapType(_ sender: UISegmentedControl) {
+    @objc func switchMapType(_ sender: UISegmentedControl) {
         let mapType = MapType(rawValue: sender.selectedSegmentIndex)
         switch mapType! {
         case .standard:
@@ -189,11 +189,11 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         }
     }
 
-    func closeMapView(_ sender: UIBarButtonItem) {
+    @objc func closeMapView(_ sender: UIBarButtonItem) {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
 
-    func sendCurrentLocation(_ sender: UIBarButtonItem) {
+    @objc func sendCurrentLocation(_ sender: UIBarButtonItem) {
         HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
             let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
                                           message: L10n.ManualLocationUpdateNotification.message,
@@ -202,9 +202,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             self.present(alert, animated: true, completion: nil)
             }.catch {error in
                 let nserror = error as NSError
-                let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title
-                    ,
-                                              // swiftlint:disable:next line_length
+                let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
                     message: L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription),
                     preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))

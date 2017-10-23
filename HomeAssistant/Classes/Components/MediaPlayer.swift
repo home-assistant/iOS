@@ -8,35 +8,34 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
 
 class MediaPlayer: Entity {
 
-    dynamic var IsOn: Bool = false
-    dynamic var IsPlaying: Bool = false
-    dynamic var IsIdle: Bool = false
-    var IsVolumeMuted = RealmOptional<Bool>()
-    dynamic var MediaContentID: String?
-    dynamic var MediaContentType: String?
-    var MediaDuration = RealmOptional<Int>()
-    dynamic var MediaTitle: String?
-    var VolumeLevel = RealmOptional<Float>()
-    dynamic var Source: String?
-    dynamic var SourceList: [String] = [String]()
-    let StoredSourceList = List<StringObject>()
-    dynamic var SupportsPause: Bool = false
-    dynamic var SupportsSeek: Bool = false
-    dynamic var SupportsVolumeSet: Bool = false
-    dynamic var SupportsVolumeMute: Bool = false
-    dynamic var SupportsPreviousTrack: Bool = false
-    dynamic var SupportsNextTrack: Bool = false
-    dynamic var SupportsTurnOn: Bool = false
-    dynamic var SupportsTurnOff: Bool = false
-    dynamic var SupportsPlayMedia: Bool = false
-    dynamic var SupportsVolumeStep: Bool = false
-    dynamic var SupportsSelectSource: Bool = false
-    dynamic var SupportsStop: Bool = false
-    dynamic var SupportsClearPlaylist: Bool = false
+    @objc dynamic var IsOn: Bool = false
+    @objc dynamic var IsPlaying: Bool = false
+    @objc dynamic var IsIdle: Bool = false
+    @objc dynamic var IsVolumeMuted: Bool = false
+    @objc dynamic var MediaContentID: String?
+    @objc dynamic var MediaContentType: String?
+    var MediaDuration: Int?
+    @objc dynamic var MediaTitle: String?
+    var VolumeLevel: Float?
+    @objc dynamic var Source: String?
+    @objc dynamic var SourceList: [String] = [String]()
+    var StoredSourceList = [String]()
+    @objc dynamic var SupportsPause: Bool = false
+    @objc dynamic var SupportsSeek: Bool = false
+    @objc dynamic var SupportsVolumeSet: Bool = false
+    @objc dynamic var SupportsVolumeMute: Bool = false
+    @objc dynamic var SupportsPreviousTrack: Bool = false
+    @objc dynamic var SupportsNextTrack: Bool = false
+    @objc dynamic var SupportsTurnOn: Bool = false
+    @objc dynamic var SupportsTurnOff: Bool = false
+    @objc dynamic var SupportsPlayMedia: Bool = false
+    @objc dynamic var SupportsVolumeStep: Bool = false
+    @objc dynamic var SupportsSelectSource: Bool = false
+    @objc dynamic var SupportsStop: Bool = false
+    @objc dynamic var SupportsClearPlaylist: Bool = false
     var SupportedMediaCommands: Int?
 
     override func mapping(map: Map) {
@@ -45,22 +44,16 @@ class MediaPlayer: Entity {
         IsOn             <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         IsPlaying        <- (map["state"], ComponentBoolTransform(trueValue: "playing", falseValue: "paused"))
         IsIdle           <- (map["state"], ComponentBoolTransform(trueValue: "idle", falseValue: ""))
-        IsVolumeMuted.value    <- map["attributes.is_volume_muted"]
+        IsVolumeMuted    <- map["attributes.is_volume_muted"]
         MediaContentID   <- map["attributes.media_content_id"]
         MediaContentType <- map["attributes.media_content_type"]
-        MediaDuration.value    <- map["attributes.media_duration"]
+        MediaDuration    <- map["attributes.media_duration"]
         MediaTitle       <- map["attributes.media_title"]
         Source           <- map["attributes.source"]
-        VolumeLevel.value      <- map["attributes.volume_level"]
+        VolumeLevel      <- map["attributes.volume_level"]
         SourceList       <- map["attributes.source_list"]
 
-        var StoredSourceList: [String]?
         StoredSourceList     <- map["attributes.source_list"]
-        StoredSourceList?.forEach { option in
-            let value = StringObject()
-            value.value = option
-            self.StoredSourceList.append(value)
-        }
 
         SupportedMediaCommands  <- map["attributes.supported_media_commands"]
 
@@ -82,15 +75,8 @@ class MediaPlayer: Entity {
         }
     }
 
-    override class func ignoredProperties() -> [String] {
-        return ["SupportedMediaCommands", "SourceList", "SupportsPause", "SupportsSeek",
-                "SupportsVolumeSet", "SupportsVolumeMute", "SupportsPreviousTrack",
-                "SupportsNextTrack", "SupportsTurnOn", "SupportsTurnOff", "SupportsPlayMedia",
-                "SupportsVolumeStep", "SupportsSelectSource", "SupportsStop", "SupportsClearPlaylist"]
-    }
-
     func humanReadableMediaDuration() -> String {
-        if let durationSeconds = self.MediaDuration.value {
+        if let durationSeconds = self.MediaDuration {
             let hours = durationSeconds / 3600
             let minutes = (durationSeconds % 3600) / 60
             let seconds = (durationSeconds % 3600) % 60

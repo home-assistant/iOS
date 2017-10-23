@@ -8,22 +8,15 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
 
 class InputSelect: Entity {
 
-    let Options = List<StringObject>()
+    var Options = [String]()
 
     override func mapping(map: Map) {
         super.mapping(map: map)
 
-        var Options: [String]?
         Options          <- map["attributes.options"]
-        Options?.forEach { option in
-            let value = StringObject()
-            value.value = option
-            self.Options.append(value)
-        }
     }
 
     override var ComponentIcon: String {

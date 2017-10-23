@@ -140,9 +140,7 @@ class SettingsDetailViewController: FormViewController {
                     }
                     if zoneEntities.count > 0 {
                         self.form
-                            +++ Section(header: "",
-                                        // swiftlint:disable:next line_length
-                                        footer: L10n.SettingsDetails.Location.Zones.footer)
+                            +++ Section(header: "", footer: L10n.SettingsDetails.Location.Zones.footer)
                     }
                 }
             }
@@ -151,8 +149,7 @@ class SettingsDetailViewController: FormViewController {
             self.title = "Notification Settings"
             self.form
                 +++ Section(header: L10n.SettingsDetails.Notifications.PushIdSection.header,
-                            // swiftlint:disable:next line_length
-                    footer: L10n.SettingsDetails.Notifications.PushIdSection.footer)
+                            footer: L10n.SettingsDetails.Notifications.PushIdSection.footer)
                 <<< TextAreaRow {
                     $0.placeholder = L10n.SettingsDetails.Notifications.PushIdSection.placeholder
                     if let pushID = prefs.string(forKey: "pushID") {
@@ -206,8 +203,8 @@ class SettingsDetailViewController: FormViewController {
                     // swiftlint:disable:next line_length
                     let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.title,
                                                   // swiftlint:disable:next line_length
-                        message: L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.message,
-                        preferredStyle: UIAlertControllerStyle.alert)
+                                                  message: L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.message,
+                                                  preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: L10n.okLabel,
                                                   style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
@@ -215,7 +212,7 @@ class SettingsDetailViewController: FormViewController {
 
             //                <<< ButtonRow {
             //                    $0.title = "Import system sounds"
-            //                }.onCellSelection {_,_ in
+            //                }.onCellSelection {_, _ in
             //                    let list = getSoundList()
             //                    print("system sounds list", list)
             //                    for sound in list {

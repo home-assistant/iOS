@@ -8,30 +8,29 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
 
 class Light: Entity {
 
-    dynamic var IsOn: Bool = false
-    var Brightness = RealmOptional<Float>()
-    var ColorTemp = RealmOptional<Float>()
-    dynamic var RGBColor: [Float]?
-    dynamic var XYColor: [Float]?
-    dynamic var SupportsBrightness: Bool = false
-    dynamic var SupportsColorTemp: Bool = false
-    dynamic var SupportsEffect: Bool = false
-    dynamic var SupportsFlash: Bool = false
-    dynamic var SupportsRGBColor: Bool = false
-    dynamic var SupportsTransition: Bool = false
-    dynamic var SupportsXYColor: Bool = false
+    @objc dynamic var IsOn: Bool = false
+    var Brightness: Float?
+    var ColorTemp: Float?
+    @objc dynamic var RGBColor: [Float]?
+    @objc dynamic var XYColor: [Float]?
+    @objc dynamic var SupportsBrightness: Bool = false
+    @objc dynamic var SupportsColorTemp: Bool = false
+    @objc dynamic var SupportsEffect: Bool = false
+    @objc dynamic var SupportsFlash: Bool = false
+    @objc dynamic var SupportsRGBColor: Bool = false
+    @objc dynamic var SupportsTransition: Bool = false
+    @objc dynamic var SupportsXYColor: Bool = false
     var SupportedFeatures: Int?
 
     override func mapping(map: Map) {
         super.mapping(map: map)
 
         IsOn               <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
-        Brightness.value   <- map["attributes.brightness"]
-        ColorTemp.value    <- map["attributes.color_temp"]
+        Brightness   <- map["attributes.brightness"]
+        ColorTemp    <- map["attributes.color_temp"]
         RGBColor           <- map["attributes.rgb_color"]
         XYColor            <- map["attributes.xy_color"]
         SupportedFeatures  <- map["attributes.supported_features"]
@@ -68,10 +67,6 @@ class Light: Entity {
         return "mdi:lightbulb"
     }
 
-    override class func ignoredProperties() -> [String] {
-        return ["SupportedFeatures", "SupportsBrightness", "SupportsColorTemp", "SupportsEffect", "SupportsFlash",
-                "SupportsRGBColor", "SupportsTransition", "SupportsXYColor", "RGBColor", "XYColor"]
-    }
 }
 
 struct LightSupportedFeatures: OptionSet {
