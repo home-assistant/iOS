@@ -8,45 +8,44 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
 import CoreLocation
 
 class DeviceTracker: Entity {
 
-    var Latitude = RealmOptional<Double>()
-    var Longitude = RealmOptional<Double>()
-    var Battery = RealmOptional<Int>()
-    var GPSAccuracy = RealmOptional<Double>() // It's a double for direct use in CLLocationDistance
+    var Latitude: Double?
+    var Longitude: Double?
+    var Battery: Int?
+    var GPSAccuracy: Double? // It's a double for direct use in CLLocationDistance
     dynamic var IsHome: Bool = false
 
     override func mapping(map: Map) {
         super.mapping(map: map)
 
-        Latitude.value     <- map["attributes.latitude"]
-        Longitude.value    <- map["attributes.longitude"]
-        Battery.value      <- map["attributes.battery"]
-        GPSAccuracy.value  <- map["attributes.gps_accuracy"]
+        Latitude     <- map["attributes.latitude"]
+        Longitude    <- map["attributes.longitude"]
+        Battery      <- map["attributes.battery"]
+        GPSAccuracy  <- map["attributes.gps_accuracy"]
         IsHome       <- (map["state"], ComponentBoolTransform(trueValue: "home", falseValue: "not_home"))
     }
 
     func locationCoordinates() -> CLLocationCoordinate2D {
-        if self.Latitude.value != nil && self.Longitude.value != nil {
-            return CLLocationCoordinate2D(latitude: self.Latitude.value!, longitude: self.Longitude.value!)
+        if self.Latitude != nil && self.Longitude != nil {
+            return CLLocationCoordinate2D(latitude: self.Latitude!, longitude: self.Longitude!)
         } else {
             return CLLocationCoordinate2D()
         }
     }
 
     func location() -> CLLocation {
-        if let accr = self.GPSAccuracy.value {
+        if let accr = self.GPSAccuracy {
             return CLLocation(coordinate: self.locationCoordinates(),
                               altitude: 0,
                               horizontalAccuracy: accr,
                               verticalAccuracy: -1,
                               timestamp: Date())
         } else {
-            if self.Latitude.value != nil && self.Longitude.value != nil {
-                return CLLocation(latitude: self.Latitude.value!, longitude: self.Longitude.value!)
+            if self.Latitude != nil && self.Longitude != nil {
+                return CLLocation(latitude: self.Latitude!, longitude: self.Longitude!)
             } else {
                 return CLLocation()
             }

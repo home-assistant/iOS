@@ -31,11 +31,6 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (4.4.3):
     - PromiseKit/CorePromise
-  - Realm (3.0.0):
-    - Realm/Headers (= 3.0.0)
-  - Realm/Headers (3.0.0)
-  - RealmSwift (3.0.0):
-    - Realm (= 3.0.0)
   - SwiftGen (5.2.0)
   - SwiftLint (0.23.1)
   - SwiftLocation (2.0.7)
@@ -56,8 +51,6 @@ DEPENDENCIES:
   - ObjectMapper
   - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `swift3-ios10-usernotifications`)
   - PromiseKit
-  - Realm
-  - RealmSwift
   - SwiftGen
   - SwiftLint
   - SwiftLocation
@@ -94,12 +87,10 @@ SPEC CHECKSUMS:
   ObjectMapper: 92230db59bf8f341a5c3a3cf0b9fbdde3cf0d87f
   PermissionScope: a30c16e015779ba27c97c124e7539e27b5829de2
   PromiseKit: fbb52a0d154402c57eeb6eccd36dd7724fcf6117
-  Realm: dec0de73be8c57506e39db72694d513c189493b3
-  RealmSwift: 44a7090b16d1b22a406c6bf129bdd602db1bbecc
   SwiftGen: d75f6c3a1ecfed4a5ae372e477d452297efdb718
   SwiftLint: 1b670ce79284c76520f84060e87d645078fd32fa
   SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
 
-PODFILE CHECKSUM: 370d44071a9cffc4c4bc2da517dc954a685d8694
+PODFILE CHECKSUM: 6be9eb1576fc72e96c08ce92be113304280aeb2c
 
 COCOAPODS: 1.1.1

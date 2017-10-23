@@ -17,7 +17,6 @@ import ObjectMapper
 import DeviceKit
 import PermissionScope
 import Crashlytics
-import RealmSwift
 import UserNotifications
 
 let APIClientSharedInstance = HomeAssistantAPI()
@@ -194,12 +193,14 @@ public class HomeAssistantAPI {
             batteryState = "Full"
         }
 
-        let locationUpdate: [String:Any] = [
+        let hostname = UIDevice().name
+
+        let locationUpdate: [String: Any] = [
             "battery": Int(UIDevice.current.batteryLevel*100),
             "battery_status": batteryState,
             "gps": [coordinates.latitude, coordinates.longitude],
             "gps_accuracy": accuracy,
-            "hostname": UIDevice().name,
+            "hostname": hostname,
             "dev_id": deviceID
         ]
 
@@ -327,13 +328,9 @@ public class HomeAssistantAPI {
                                     zone: nil)
                 fulfill(true)
             }) { (_, _, error) in
-                if error == LocationError.timeout {
-                    fulfill(false)
-                } else {
-                    print("Error when trying to get a oneshot location!", error)
-                    Crashlytics.sharedInstance().recordError(error)
-                    reject(error)
-                }
+                print("Error when trying to get a oneshot location!", error)
+                Crashlytics.sharedInstance().recordError(error)
+                reject(error)
             }
         }
     }
@@ -352,13 +349,9 @@ public class HomeAssistantAPI {
                                     zone: nil)
                 fulfill(true)
             }) { (_, _, error) in
-                if error == LocationError.timeout {
-                    fulfill(false)
-                } else {
-                    print("Error when trying to get a oneshot location!", error)
-                    Crashlytics.sharedInstance().recordError(error)
-                    reject(error)
-                }
+                print("Error when trying to get a oneshot location!", error)
+                Crashlytics.sharedInstance().recordError(error)
+                reject(error)
             }
         }
     }
@@ -369,7 +362,7 @@ public class HomeAssistantAPI {
                 _ = manager.request(queryUrl, method: .get)
                            .validate()
                            .responseObject { (response: DataResponse<StatusResponse>) in
-                            switch response.result {
+                                switch response.result {
                                 case .success:
                                     if let resVal = response.result.value {
                                         fulfill(resVal)
@@ -439,67 +432,6 @@ public class HomeAssistantAPI {
         }
     }
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
-    func storeEntities(entities: [Entity]) {
-        for entity in entities {
-            // swiftlint:disable:next force_try
-            try! realm.write {
-                switch entity {
-                case is Automation:
-                    realm.create(Automation.self, value: entity, update: true)
-                case is BinarySensor:
-                    realm.create(BinarySensor.self, value: entity, update: true)
-                case is Climate:
-                    realm.create(Climate.self, value: entity, update: true)
-                case is DeviceTracker:
-                    realm.create(DeviceTracker.self, value: entity, update: true)
-                case is GarageDoor:
-                    realm.create(GarageDoor.self, value: entity, update: true)
-                case is Group:
-                    if let currentObject = realm.object(ofType: Group.self, forPrimaryKey: entity.ID as AnyObject) {
-                        if let group = entity as? Group {
-                            group.Order = currentObject.Order
-                            realm.create(Group.self, value: entity, update: true)
-                        }
-                    } else {
-                        realm.create(Group.self, value: entity, update: true)
-                    }
-                case is Fan:
-                    realm.create(Fan.self, value: entity, update: true)
-                case is InputBoolean:
-                    realm.create(InputBoolean.self, value: entity, update: true)
-                case is InputSelect:
-                    realm.create(InputSelect.self, value: entity, update: true)
-                case is Light:
-                    realm.create(Light.self, value: entity, update: true)
-                case is Lock:
-                    realm.create(Lock.self, value: entity, update: true)
-                case is MediaPlayer:
-                    realm.create(MediaPlayer.self, value: entity, update: true)
-                case is Scene:
-                    realm.create(Scene.self, value: entity, update: true)
-                case is Script:
-                    realm.create(Script.self, value: entity, update: true)
-                case is Sensor:
-                    realm.create(Sensor.self, value: entity, update: true)
-                case is Sun:
-                    realm.create(Sun.self, value: entity, update: true)
-                case is Switch:
-                    realm.create(Switch.self, value: entity, update: true)
-                case is Thermostat:
-                    realm.create(Thermostat.self, value: entity, update: true)
-                case is Weblink:
-                    realm.create(Weblink.self, value: entity, update: true)
-                case is Zone:
-                    realm.create(Zone.self, value: entity, update: true)
-                default:
-                    print("Unable to save \(entity.Domain)!")
-                }
-                realm.create(Entity.self, value: entity, update: true)
-            }
-        }
-    }
-
     func GetStates() -> Promise<[Entity]> {
         return Promise { fulfill, reject in
             if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("states") {
@@ -508,7 +440,6 @@ public class HomeAssistantAPI {
                     .responseArray { (response: DataResponse<[Entity]>) in
                         switch response.result {
                         case .success:
-                            //                        self.storeEntities(entities: response.result.value!)
                             self.cachedEntities = response.result.value!
                             if let resVal = response.result.value {
                                 fulfill(resVal)
@@ -535,7 +466,6 @@ public class HomeAssistantAPI {
                     .responseObject { (response: DataResponse<Entity>) in
                         switch response.result {
                         case .success:
-                            //                        self.storeEntities(entities: [response.result.value!])
                             if let resVal = response.result.value {
                                 fulfill(resVal)
                             } else {
@@ -586,19 +516,18 @@ public class HomeAssistantAPI {
                                  .validate()
                                  .responseObject { (response: DataResponse<Entity>) in
                                     switch response.result {
-                                        case .success:
-                                            // self.storeEntities(entities: [response.result.value!])
-                                            if let resVal = response.result.value {
-                                                fulfill(resVal)
-                                            } else {
-                                                reject(APIError.invalidResponse)
-                                            }
-                                        case .failure(let error):
-                                            CLSLogv("Error when attemping to SetState(): %@",
-                                                    getVaList([error.localizedDescription]))
-                                            Crashlytics.sharedInstance().recordError(error)
-                                            reject(error)
+                                    case .success:
+                                        if let resVal = response.result.value {
+                                            fulfill(resVal)
+                                        } else {
+                                            reject(APIError.invalidResponse)
                                         }
+                                    case .failure(let error):
+                                        CLSLogv("Error when attemping to SetState(): %@",
+                                                getVaList([error.localizedDescription]))
+                                        Crashlytics.sharedInstance().recordError(error)
+                                        reject(error)
+                                    }
                                   }
             } else {
                 reject(APIError.managerNotAvailable)
@@ -606,7 +535,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    func CreateEvent(eventType: String, eventData: [String:Any]) -> Promise<String> {
+    func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<String> {
         return Promise { fulfill, reject in
             if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("events/\(eventType)") {
                 _ = manager.request(queryUrl, method: .post,
@@ -615,7 +544,7 @@ public class HomeAssistantAPI {
                     .responseJSON { response in
                         switch response.result {
                         case .success:
-                            if let jsonDict = response.result.value as? [String : String] {
+                            if let jsonDict = response.result.value as? [String: String] {
                                 fulfill(jsonDict["message"]!)
                             }
                         case .failure(let error):
@@ -631,7 +560,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    func CallService(domain: String, service: String, serviceData: [String:Any]) -> Promise<[ServicesResponse]> {
+    func CallService(domain: String, service: String, serviceData: [String: Any]) -> Promise<[ServicesResponse]> {
         return Promise { fulfill, reject in
             if let manager = self.manager,
                 let queryUrl = baseAPIURL?.appendingPathComponent("services/\(domain)/\(service)") {
@@ -664,18 +593,18 @@ public class HomeAssistantAPI {
                          .validate()
                          .responseObject { (response: DataResponse<DiscoveryInfoResponse>) -> Void in
                             switch response.result {
-                                case .success:
-                                    if let resVal = response.result.value {
-                                        fulfill(resVal)
-                                    } else {
-                                        reject(APIError.invalidResponse)
-                                    }
-                                case .failure(let error):
-                                    CLSLogv("Error on getDiscoveryInfo() request: %@",
-                                            getVaList([error.localizedDescription]))
-                                    Crashlytics.sharedInstance().recordError(error)
-                                    reject(error)
+                            case .success:
+                                if let resVal = response.result.value {
+                                    fulfill(resVal)
+                                } else {
+                                    reject(APIError.invalidResponse)
                                 }
+                            case .failure(let error):
+                                CLSLogv("Error on getDiscoveryInfo() request: %@",
+                                        getVaList([error.localizedDescription]))
+                                Crashlytics.sharedInstance().recordError(error)
+                                reject(error)
+                            }
                         }
         }
     }
@@ -817,19 +746,19 @@ public class HomeAssistantAPI {
                            .validate()
                            .responseImage { response in
                             switch response.result {
-                                case .success:
-                                    if let value = response.result.value {
-                                        fulfill(value)
-                                    } else {
-                                        print("Response was not an image!", response)
-                                        reject(APIError.invalidResponse)
-                                    }
-                                case .failure(let error):
-                                    CLSLogv("Error on getImage() request to %@: %@",
-                                            getVaList([url as CVarArg, error.localizedDescription]))
-                                    Crashlytics.sharedInstance().recordError(error)
-                                    reject(error)
+                            case .success:
+                                if let value = response.result.value {
+                                    fulfill(value)
+                                } else {
+                                    print("Response was not an image!", response)
+                                    reject(APIError.invalidResponse)
                                 }
+                            case .failure(let error):
+                                CLSLogv("Error on getImage() request to %@: %@",
+                                        getVaList([url as CVarArg, error.localizedDescription]))
+                                Crashlytics.sharedInstance().recordError(error)
+                                reject(error)
+                            }
                             }
             } else {
                 reject(APIError.managerNotAvailable)
@@ -861,7 +790,7 @@ public class HomeAssistantAPI {
         return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
 
-    func buildIdentifyDict() -> [String:Any] {
+    func buildIdentifyDict() -> [String: Any] {
         let deviceKitDevice = Device()
 
         let ident = IdentifyRequest()
@@ -911,7 +840,7 @@ public class HomeAssistantAPI {
         return Mapper().toJSON(ident)
     }
 
-    func buildPushRegistrationDict(deviceToken: String) -> [String:Any] {
+    func buildPushRegistrationDict(deviceToken: String) -> [String: Any] {
         let deviceKitDevice = Device()
 
         let ident = PushRegistrationRequest()
@@ -953,7 +882,7 @@ public class HomeAssistantAPI {
         return Mapper().toJSON(ident)
     }
 
-    func buildRemovalDict() -> [String:Any] {
+    func buildRemovalDict() -> [String: Any] {
         let deviceKitDevice = Device()
 
         let ident = IdentifyRequest()
@@ -1058,8 +987,8 @@ public class HomeAssistantAPI {
                                         let newAction = UNTextInputNotificationAction(identifier: identifier,
                                                                                       title: title,
                                                                                       options: actionOptions,
-                                                                                      textInputButtonTitle:btnTitle,
-                                                                                      textInputPlaceholder:place)
+                                                                                      textInputButtonTitle: btnTitle,
+                                                                                      textInputPlaceholder: place)
                                         categoryActions.append(newAction)
                                     }
                                 }
@@ -1105,10 +1034,10 @@ public class HomeAssistantAPI {
         }
     }
 
-    func handlePushAction(identifier: String, userInfo: [AnyHashable : Any], userInput: String?) -> Promise<Bool> {
+    func handlePushAction(identifier: String, userInfo: [AnyHashable: Any], userInput: String?) -> Promise<Bool> {
         return Promise { fulfill, reject in
             let device = Device()
-            var eventData: [String:Any] = ["actionName": identifier,
+            var eventData: [String: Any] = ["actionName": identifier,
                                            "sourceDevicePermanentID": DeviceUID.uid(),
                                            "sourceDeviceName": device.name]
             if let dataDict = userInfo["homeassistant"] {
@@ -1174,7 +1103,7 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
                            didRemove netService: NetService,
                            moreComing moreServicesComing: Bool) {
         NSLog("BonjourDelegate.Browser.didRemoveService")
-        let discoveryInfo: [NSObject:Any] = ["name" as NSObject: netService.name]
+        let discoveryInfo: [NSObject: Any] = ["name" as NSObject: netService.name]
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.undiscovered"),
                                         object: nil,
                                         userInfo: discoveryInfo)
@@ -1182,8 +1111,8 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
     }
 
     private func DiscoveryInfoFromDict(locationName: String,
-                                       netServiceDictionary: [String : Data]) -> DiscoveryInfoResponse {
-        var outputDict: [String:Any] = [:]
+                                       netServiceDictionary: [String: Data]) -> DiscoveryInfoResponse {
+        var outputDict: [String: Any] = [:]
         for (key, value) in netServiceDictionary {
             outputDict[key] = String(data: value, encoding: .utf8)
             if outputDict[key] as? String == "true" || outputDict[key] as? String == "false" {
@@ -1215,7 +1144,7 @@ class Bonjour {
     }
 
     func buildPublishDict() -> [String: Data] {
-        var publishDict: [String:Data] = [:]
+        var publishDict: [String: Data] = [:]
         if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") {
             if let stringedBundleVersion = bundleVersion as? String {
                 if let data = stringedBundleVersion.data(using: .utf8) {

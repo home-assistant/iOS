@@ -8,27 +8,25 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
-import Realm
 
 class Climate: Entity {
 
-    dynamic var AuxHeat = false
-    dynamic var AwayMode = false
-    var CurrentHumidity = RealmOptional<Int>()
-    var CurrentTemperature = RealmOptional<Float>()
-    let FanList = List<StringObject>()
-    dynamic var FanMode: String?
-    var Humidity = RealmOptional<Int>()
-    var MaximumHumidity = RealmOptional<Int>()
-    var MaximumTemp = RealmOptional<Float>()
-    var MinimumHumidity = RealmOptional<Int>()
-    var MinimumTemp = RealmOptional<Float>()
-    let OperationList = List<StringObject>()
-    dynamic var OperationMode: String?
-    let SwingList = List<StringObject>()
-    dynamic var SwingMode = false
-    var Temperature = RealmOptional<Float>()
+    var AuxHeat = false
+    var AwayMode = false
+    var CurrentHumidity: Int?
+    var CurrentTemperature: Float?
+    var FanList: [String]?
+    var FanMode: String?
+    var Humidity: Int?
+    var MaximumHumidity: Int?
+    var MaximumTemp: Float?
+    var MinimumHumidity: Int?
+    var MinimumTemp: Float?
+    var OperationList: [String]?
+    var OperationMode: String?
+    var SwingList: [String]?
+    var SwingMode = false
+    var Temperature: Float?
 
     override func mapping(map: Map) {
         super.mapping(map: map)
@@ -37,42 +35,24 @@ class Climate: Entity {
                                        ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         AwayMode                   <- (map["attributes.away_mode"],
                                        ComponentBoolTransform(trueValue: "on", falseValue: "off"))
-        CurrentHumidity.value      <- map["attributes.current_humidity"]
-        CurrentTemperature.value   <- map["attributes.current_temperature"]
+        CurrentHumidity      <- map["attributes.current_humidity"]
+        CurrentTemperature   <- map["attributes.current_temperature"]
         FanMode                    <- map["attributes.fan_mode"]
-        Humidity.value             <- map["attributes.humidity"]
-        MaximumHumidity.value      <- map["attributes.max_humidity"]
-        MaximumTemp.value          <- map["attributes.max_temp"]
-        MinimumHumidity.value      <- map["attributes.min_humidity"]
-        MinimumTemp.value          <- map["attributes.min_temp"]
+        Humidity             <- map["attributes.humidity"]
+        MaximumHumidity      <- map["attributes.max_humidity"]
+        MaximumTemp          <- map["attributes.max_temp"]
+        MinimumHumidity      <- map["attributes.min_humidity"]
+        MinimumTemp          <- map["attributes.min_temp"]
         OperationMode              <- map["attributes.operation_mode"]
         SwingMode                  <- (map["attributes.swing_mode"],
                                        ComponentBoolTransform(trueValue: "on", falseValue: "off"))
-        Temperature.value          <- map["attributes.temperature"]
+        Temperature          <- map["attributes.temperature"]
 
-        var FanList: [String]?
         FanList              <- map["attributes.fan_list"]
-        FanList?.forEach { option in
-            let value = StringObject()
-            value.value = option
-            self.FanList.append(value)
-        }
 
-        var OperationList: [String]?
         OperationList        <- map["attributes.operation_list"]
-        OperationList?.forEach { option in
-            let value = StringObject()
-            value.value = option
-            self.OperationList.append(value)
-        }
 
-        var SwingList: [String]?
         SwingList            <- map["attributes.swing_list"]
-        SwingList?.forEach { option in
-            let value = StringObject()
-            value.value = option
-            self.SwingList.append(value)
-        }
     }
 
     func TurnFanOn() {

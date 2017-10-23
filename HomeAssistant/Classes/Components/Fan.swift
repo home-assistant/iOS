@@ -35,10 +35,6 @@ class Fan: Entity {
     override var ComponentIcon: String {
         return "mdi:fan"
     }
-
-    override class func ignoredProperties() -> [String] {
-        return ["SupportedFeatures", "SupportsSetSpeed", "SupportsOscillate"]
-    }
 }
 
 struct FanSupportedFeatures: OptionSet {

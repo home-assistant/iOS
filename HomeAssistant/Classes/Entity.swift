@@ -8,16 +8,14 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
-import Realm
 
 // swiftlint:disable:next type_body_length
-class Entity: Object, StaticMappable {
+class Entity: StaticMappable {
     let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
 
     dynamic var ID: String = ""
     dynamic var State: String = ""
-    dynamic var Attributes: [String:Any] {
+    dynamic var Attributes: [String: Any] {
         get {
             guard let dictionaryData = attributesData else {
                 return [String: Any]()
@@ -54,7 +52,7 @@ class Entity: Object, StaticMappable {
     // Z-Wave properties
     dynamic var Location: String?
     dynamic var NodeID: String?
-    var BatteryLevel = RealmOptional<Int>()
+    var BatteryLevel: Int?
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     class func objectForMapping(map: Map) -> BaseMappable? {
@@ -127,7 +125,7 @@ class Entity: Object, StaticMappable {
         // Z-Wave properties
         NodeID            <- map["attributes.node_id"]
         Location          <- map["attributes.location"]
-        BatteryLevel.value      <- map["attributes.battery_level"]
+        BatteryLevel      <- map["attributes.battery_level"]
 
 //        if let pic = self.Picture {
 //            HomeAssistantAPI.sharedInstance.getImage(imageUrl: pic).then { image -> Void in
@@ -136,14 +134,6 @@ class Entity: Object, StaticMappable {
 //                    print("Error when attempting to download image", err)
 //            }
 //        }
-    }
-
-    override class func ignoredProperties() -> [String] {
-        return ["Attributes", "DownloadedPicture"]
-    }
-
-    override static func primaryKey() -> String? {
-        return "ID"
     }
 
     func turnOn() {
@@ -301,10 +291,6 @@ class Entity: Object, StaticMappable {
     var Domain: String {
         return self.ID.components(separatedBy: ".")[0]
     }
-}
-
-open class StringObject: Object {
-    open dynamic var value: String?
 }
 
 open class HomeAssistantTimestampTransform: DateFormatterTransform {

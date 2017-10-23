@@ -12,7 +12,7 @@ import Crashlytics
 import KeychainAccess
 
 func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeight: Double, color: UIColor) -> UIImage {
-    if let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as? [String:String] {
+    if let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as? [String: String] {
         Crashlytics.sharedInstance().setFloatValue(Float(iconWidth), forKey: "iconWidth")
         Crashlytics.sharedInstance().setFloatValue(Float(iconHeight), forKey: "iconHeight")
         Crashlytics.sharedInstance().setObjectValue(iconIdentifier, forKey: "iconIdentifier")
@@ -120,9 +120,6 @@ func movePushNotificationSounds() -> Int {
     }
 
     for file in fileList {
-        if file.lastPathComponent.contains("realm") {
-            continue
-        }
         let finalUrl = librarySoundsPath.appendingPathComponent(file.lastPathComponent)
         print("Moving", file, "to", finalUrl)
         do {

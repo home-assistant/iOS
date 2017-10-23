@@ -20,7 +20,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         super.viewDidLoad()
         let margins = self.view.layoutMarginsGuide
         let statusBarView: UIView = UIView(frame: .zero)
-        statusBarView.backgroundColor = UIColor(red:0.01, green:0.66, blue:0.96, alpha:1.0)
+        statusBarView.backgroundColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
         view.addSubview(statusBarView)
 
         statusBarView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
@@ -84,11 +84,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to:size, with:coordinator)
+        super.viewWillTransition(to: size, with: coordinator)
         coordinator.animate(alongsideTransition: { _ in
             self.webView?.setNeedsLayout()
             self.webView?.layoutIfNeeded()
-        }, completion:nil)
+        }, completion: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -109,7 +109,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     override func viewDidAppear(_ animated: Bool) {
         var toolbarItems: [UIBarButtonItem] = []
 
-        let tabBarIconColor = UIColor(red:0.01, green:0.66, blue:0.96, alpha:1.0)
+        let tabBarIconColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
 
         if HomeAssistantAPI.sharedInstance.locationEnabled {
 

@@ -8,22 +8,21 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
 
 class MediaPlayer: Entity {
 
     dynamic var IsOn: Bool = false
     dynamic var IsPlaying: Bool = false
     dynamic var IsIdle: Bool = false
-    var IsVolumeMuted = RealmOptional<Bool>()
+    dynamic var IsVolumeMuted: Bool = false
     dynamic var MediaContentID: String?
     dynamic var MediaContentType: String?
-    var MediaDuration = RealmOptional<Int>()
+    var MediaDuration: Int?
     dynamic var MediaTitle: String?
-    var VolumeLevel = RealmOptional<Float>()
+    var VolumeLevel: Float?
     dynamic var Source: String?
     dynamic var SourceList: [String] = [String]()
-    let StoredSourceList = List<StringObject>()
+    var StoredSourceList = [String]()
     dynamic var SupportsPause: Bool = false
     dynamic var SupportsSeek: Bool = false
     dynamic var SupportsVolumeSet: Bool = false
@@ -45,22 +44,16 @@ class MediaPlayer: Entity {
         IsOn             <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
         IsPlaying        <- (map["state"], ComponentBoolTransform(trueValue: "playing", falseValue: "paused"))
         IsIdle           <- (map["state"], ComponentBoolTransform(trueValue: "idle", falseValue: ""))
-        IsVolumeMuted.value    <- map["attributes.is_volume_muted"]
+        IsVolumeMuted    <- map["attributes.is_volume_muted"]
         MediaContentID   <- map["attributes.media_content_id"]
         MediaContentType <- map["attributes.media_content_type"]
-        MediaDuration.value    <- map["attributes.media_duration"]
+        MediaDuration    <- map["attributes.media_duration"]
         MediaTitle       <- map["attributes.media_title"]
         Source           <- map["attributes.source"]
-        VolumeLevel.value      <- map["attributes.volume_level"]
+        VolumeLevel      <- map["attributes.volume_level"]
         SourceList       <- map["attributes.source_list"]
 
-        var StoredSourceList: [String]?
         StoredSourceList     <- map["attributes.source_list"]
-        StoredSourceList?.forEach { option in
-            let value = StringObject()
-            value.value = option
-            self.StoredSourceList.append(value)
-        }
 
         SupportedMediaCommands  <- map["attributes.supported_media_commands"]
 
@@ -82,15 +75,8 @@ class MediaPlayer: Entity {
         }
     }
 
-    override class func ignoredProperties() -> [String] {
-        return ["SupportedMediaCommands", "SourceList", "SupportsPause", "SupportsSeek",
-                "SupportsVolumeSet", "SupportsVolumeMute", "SupportsPreviousTrack",
-                "SupportsNextTrack", "SupportsTurnOn", "SupportsTurnOff", "SupportsPlayMedia",
-                "SupportsVolumeStep", "SupportsSelectSource", "SupportsStop", "SupportsClearPlaylist"]
-    }
-
     func humanReadableMediaDuration() -> String {
-        if let durationSeconds = self.MediaDuration.value {
+        if let durationSeconds = self.MediaDuration {
             let hours = durationSeconds / 3600
             let minutes = (durationSeconds % 3600) / 60
             let seconds = (durationSeconds % 3600) % 60

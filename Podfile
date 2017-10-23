@@ -21,8 +21,6 @@ target 'HomeAssistant' do
   pod 'ObjectMapper'
   pod 'PermissionScope', :git => 'https://github.com/robbiet480/PermissionScope.git', :branch => 'swift3-ios10-usernotifications'
   pod 'PromiseKit'
-  pod 'Realm'
-  pod 'RealmSwift'
   pod 'SwiftGen'
   pod 'SwiftLint'
   pod 'SwiftLocation'

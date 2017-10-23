@@ -8,13 +8,12 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
 
 class Light: Entity {
 
     dynamic var IsOn: Bool = false
-    var Brightness = RealmOptional<Float>()
-    var ColorTemp = RealmOptional<Float>()
+    var Brightness: Float?
+    var ColorTemp: Float?
     dynamic var RGBColor: [Float]?
     dynamic var XYColor: [Float]?
     dynamic var SupportsBrightness: Bool = false
@@ -30,8 +29,8 @@ class Light: Entity {
         super.mapping(map: map)
 
         IsOn               <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
-        Brightness.value   <- map["attributes.brightness"]
-        ColorTemp.value    <- map["attributes.color_temp"]
+        Brightness   <- map["attributes.brightness"]
+        ColorTemp    <- map["attributes.color_temp"]
         RGBColor           <- map["attributes.rgb_color"]
         XYColor            <- map["attributes.xy_color"]
         SupportedFeatures  <- map["attributes.supported_features"]
@@ -68,10 +67,6 @@ class Light: Entity {
         return "mdi:lightbulb"
     }
 
-    override class func ignoredProperties() -> [String] {
-        return ["SupportedFeatures", "SupportsBrightness", "SupportsColorTemp", "SupportsEffect", "SupportsFlash",
-                "SupportsRGBColor", "SupportsTransition", "SupportsXYColor", "RGBColor", "XYColor"]
-    }
 }
 
 struct LightSupportedFeatures: OptionSet {

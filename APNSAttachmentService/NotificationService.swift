@@ -40,9 +40,9 @@ final class NotificationService: UNNotificationServiceExtension {
             return failEarly()
         }
 
-        var incomingAttachment: [String:Any] = [:]
+        var incomingAttachment: [String: Any] = [:]
 
-        if let iAttachment = content.userInfo["attachment"] as? [String:Any] {
+        if let iAttachment = content.userInfo["attachment"] as? [String: Any] {
             incomingAttachment = iAttachment
         }
 
@@ -71,7 +71,7 @@ final class NotificationService: UNNotificationServiceExtension {
             return failEarly()
         }
 
-        var attachmentOptions: [String:Any] = [:]
+        var attachmentOptions: [String: Any] = [:]
         if let attachmentContentType = incomingAttachment["content-type"] as? String {
             var contentType: CFString = attachmentContentType as CFString
             switch attachmentContentType.lowercased() {
@@ -105,7 +105,7 @@ final class NotificationService: UNNotificationServiceExtension {
         if let attachmentHideThumbnail = incomingAttachment["hide-thumbnail"] as? Bool {
             attachmentOptions[UNNotificationAttachmentOptionsThumbnailHiddenKey] = attachmentHideThumbnail
         }
-        guard let attachmentData = NSData(contentsOf:attachmentURL) else { return failEarly() }
+        guard let attachmentData = NSData(contentsOf: attachmentURL) else { return failEarly() }
         guard let attachment = UNNotificationAttachment.create(fileIdentifier: attachmentURL.lastPathComponent,
                                                                data: attachmentData,
                                                                options: attachmentOptions) else {
@@ -134,7 +134,7 @@ extension UNNotificationAttachment {
 
     /// Save the attachment URL to disk
     static func create(fileIdentifier: String, data: NSData,
-                       options: [AnyHashable : Any]?) -> UNNotificationAttachment? {
+                       options: [AnyHashable: Any]?) -> UNNotificationAttachment? {
         let fileManager = FileManager.default
         let tmpSubFolderName = ProcessInfo.processInfo.globallyUniqueString
         let tmpSubFolderURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(tmpSubFolderName,

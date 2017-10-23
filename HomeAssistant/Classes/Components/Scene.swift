@@ -8,11 +8,10 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
 
 class Scene: Entity {
 
-    var Entities = List<Entity>()
+    var Entities = [Entity]()
     dynamic var EntityIds = [String]()
 
     override func mapping(map: Map) {
@@ -31,7 +30,4 @@ class Scene: Entity {
         return "mdi:google-pages"
     }
 
-    override class func ignoredProperties() -> [String] {
-        return ["EntityIds"]
-    }
 }
