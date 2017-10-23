@@ -90,7 +90,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }, completion:nil)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         var toolbarItems: [UIBarButtonItem] = []
 
         let tabBarIconColor = UIColor(red:0.01, green:0.66, blue:0.96, alpha:1.0)
