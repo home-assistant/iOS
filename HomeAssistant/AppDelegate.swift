@@ -61,7 +61,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow.init(frame: UIScreen.main.bounds)
         window?.backgroundColor = .white
 
-//        let tabView = RootTabBarViewController()
         let webView = WebViewController()
 
         let navController = UINavigationController(rootViewController: webView)

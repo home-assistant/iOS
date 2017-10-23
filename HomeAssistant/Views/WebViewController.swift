@@ -79,7 +79,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             let navController = UINavigationController(rootViewController: settingsView)
             self.present(navController, animated: true, completion: nil)
         }
-        // Do any additional setup after loading the view.
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -91,22 +90,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }, completion: nil)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         var toolbarItems: [UIBarButtonItem] = []
 
         let tabBarIconColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
