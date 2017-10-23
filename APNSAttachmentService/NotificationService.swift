@@ -51,6 +51,9 @@ final class NotificationService: UNNotificationServiceExtension {
                 return failEarly()
             }
             incomingAttachment["url"] = "\(baseURL)/api/camera_proxy/\(entityId)?api_password=\(apiPassword)"
+            if incomingAttachment["content-type"] == nil {
+                incomingAttachment["content-type"] = "jpeg"
+            }
         } else {
             // Check if we still have an empty dictionary
             if incomingAttachment.isEmpty {
