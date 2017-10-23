@@ -98,20 +98,18 @@ class SettingsViewController: FormViewController {
         }
 
         NotificationCenter.default.addObserver(self,
-                                               // swiftlint:disable:next line_length
             selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)),
-            name:NSNotification.Name(rawValue: "homeassistant.discovered"),
+            name: NSNotification.Name(rawValue: "homeassistant.discovered"),
             object: nil)
 
         NotificationCenter.default.addObserver(self,
-                                               // swiftlint:disable:next line_length
             selector: #selector(SettingsViewController.HomeAssistantUndiscovered(_:)),
-            name:NSNotification.Name(rawValue: "homeassistant.undiscovered"),
+            name: NSNotification.Name(rawValue: "homeassistant.undiscovered"),
             object: nil)
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(SettingsViewController.Connected(_:)),
-                                               name:NSNotification.Name(rawValue: "connected"),
+                                               name: NSNotification.Name(rawValue: "connected"),
                                                object: nil)
 
         form
@@ -411,11 +409,11 @@ class SettingsViewController: FormViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    func HomeAssistantDiscovered(_ notification: Notification) {
+    @objc func HomeAssistantDiscovered(_ notification: Notification) {
         let discoverySection: Section = self.form.sectionBy(tag: "discoveredInstances")!
         discoverySection.hidden = false
         discoverySection.evaluateHidden()
-        if let userInfo = (notification as Notification).userInfo as? [String:Any] {
+        if let userInfo = (notification as Notification).userInfo as? [String: Any] {
             let discoveryInfo = DiscoveryInfoResponse(JSON: userInfo)!
             let needsPass = discoveryInfo.RequiresPassword ? " - "+L10n.Settings.DiscoverySection.requiresPassword : ""
             var url = "\(discoveryInfo.BaseURL!.host!)"
@@ -461,7 +459,7 @@ class SettingsViewController: FormViewController {
         self.tableView.reloadData()
     }
 
-    func HomeAssistantUndiscovered(_ notification: Notification) {
+    @objc func HomeAssistantUndiscovered(_ notification: Notification) {
         if let userInfo = (notification as Notification).userInfo {
             if let stringedName = userInfo["name"] as? String {
                 if let removingRow: ButtonRow = self.form.rowBy(tag: stringedName) {
@@ -477,7 +475,7 @@ class SettingsViewController: FormViewController {
         self.tableView.reloadData()
     }
 
-    func Connected(_ notification: Notification) {
+    @objc func Connected(_ notification: Notification) {
         let iosComponentLoadedRow: LabelRow = self.form.rowBy(tag: "iosComponentLoaded")!
         iosComponentLoadedRow.value = HomeAssistantAPI.sharedInstance.iosComponentLoaded ? "✔️" : "✖️"
         iosComponentLoadedRow.updateCell()
@@ -510,7 +508,6 @@ class SettingsViewController: FormViewController {
         if prefs.bool(forKey: "emailSet") == false || prefs.string(forKey: "userEmail") == nil {
             print("This is first launch, let's prompt user for email.")
             let alert = UIAlertController(title: "Welcome",
-                                          // swiftlint:disable:next line_length
                 message: "Please enter the email address you used to sign up for the beta program with.",
                 preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: emailEntered))
@@ -546,7 +543,7 @@ class SettingsViewController: FormViewController {
         self.tableView.reloadData()
     }
 
-    func openAbout(_ sender: UIButton) {
+    @objc func openAbout(_ sender: UIButton) {
         let aboutView = AboutViewController()
 
         let navController = UINavigationController(rootViewController: aboutView)
@@ -554,7 +551,7 @@ class SettingsViewController: FormViewController {
         //        self.present(navController, animated: true, completion: nil)
     }
 
-    func closeSettings(_ sender: UIButton) {
+    @objc func closeSettings(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
     }
 }

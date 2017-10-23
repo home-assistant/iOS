@@ -11,8 +11,8 @@ import ObjectMapper
 
 class BinarySensor: Entity {
 
-    dynamic var SensorClass: String?
-    dynamic var IsOn: Bool = false
+    @objc dynamic var SensorClass: String?
+    @objc dynamic var IsOn: Bool = false
 
     override func mapping(map: Map) {
         super.mapping(map: map)

@@ -5,11 +5,9 @@ import Foundation
 // swiftlint:disable file_length
 // swiftlint:disable line_length
 
-// swiftlint:disable type_body_length
 // swiftlint:disable nesting
 // swiftlint:disable variable_name
 // swiftlint:disable valid_docs
-// swiftlint:disable type_name
 
 enum L10n {
   /// OK

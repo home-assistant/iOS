@@ -11,7 +11,7 @@ import ObjectMapper
 
 class Sensor: Entity {
 
-    dynamic var SensorClass: String?
+    @objc dynamic var SensorClass: String?
 
     override func mapping(map: Map) {
         super.mapping(map: map)

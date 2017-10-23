@@ -45,7 +45,6 @@ To keep the Xcode layout mirrored with on-disk layout we're using [Synx](https:/
 ### Model
 
 - [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper): Simple JSON Object mapping written in Swift
-- [Realm](https://github.com/realm/realm-cocoa): Realm is a mobile database: a replacement for Core Data & SQLite
 
 ### Networking
 

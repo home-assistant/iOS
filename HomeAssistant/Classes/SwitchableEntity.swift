@@ -8,8 +8,6 @@
 
 import Foundation
 import ObjectMapper
-import Realm
-import RealmSwift
 
 class SwitchableEntity: Entity {
 

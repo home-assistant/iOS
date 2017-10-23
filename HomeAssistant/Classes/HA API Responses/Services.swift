@@ -11,7 +11,7 @@ import ObjectMapper
 
 class ServicesResponse: Mappable {
     var Domain: String?
-    var Services: [String : ServiceDefinition] = [:]
+    var Services: [String: ServiceDefinition] = [:]
 
     required init?(map: Map) {
 
@@ -25,7 +25,7 @@ class ServicesResponse: Mappable {
 
 class ServiceDefinition: Mappable {
     var Description: String?
-    var Fields: [String : ServiceField] = [:]
+    var Fields: [String: ServiceField] = [:]
 
     required init?(map: Map) {
 

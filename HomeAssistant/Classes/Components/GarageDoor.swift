@@ -11,7 +11,7 @@ import ObjectMapper
 
 class GarageDoor: Entity {
 
-    dynamic var IsOpen: Bool = false
+    @objc dynamic var IsOpen: Bool = false
 
     override func mapping(map: Map) {
         super.mapping(map: map)

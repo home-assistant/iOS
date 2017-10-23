@@ -30,7 +30,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         hud.detailsLabel.text = "Loading \(notification.request.content.categoryIdentifier)..."
         hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
         self.hud = hud
-        guard let haDict = notification.request.content.userInfo["homeassistant"] as? [String:Any] else {
+        guard let haDict = notification.request.content.userInfo["homeassistant"] as? [String: Any] else {
             self.showErrorLabel(message: "Payload didn't contain a homeassistant dictionary!")
             return
         }

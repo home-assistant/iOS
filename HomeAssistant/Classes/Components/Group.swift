@@ -8,7 +8,6 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
 
 let isAllGroupTransform = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
     return value!.hasPrefix("group.all_")
@@ -21,12 +20,12 @@ let isAllGroupTransform = TransformOf<Bool, String>(fromJSON: { (value: String?)
 
 class Group: Entity {
 
-    dynamic var IsAllGroup: Bool = false
-    dynamic var View: Bool = false
-    dynamic var Auto: Bool = false
-    var Order = RealmOptional<Int>()
-    var Entities = List<Entity>()
-    dynamic var EntityIds = [String]()
+    @objc dynamic var IsAllGroup: Bool = false
+    @objc dynamic var View: Bool = false
+    @objc dynamic var Auto: Bool = false
+    var Order: Int?
+    var Entities: [String]?
+    @objc dynamic var EntityIds = [String]()
 
     override func mapping(map: Map) {
         super.mapping(map: map)
@@ -34,22 +33,12 @@ class Group: Entity {
         IsAllGroup    <- (map["entity_id"], isAllGroupTransform)
         View          <- map["attributes.view"]
         Auto          <- map["attributes.auto"]
-        Order.value   <- map["attributes.order"]
+        Order         <- map["attributes.order"]
 
         EntityIds     <- map["attributes.entity_id"]
-
-        EntityIds.forEach { entityId in
-            let returning = Entity()
-            returning.ID = entityId
-            self.Entities.append(returning)
-        }
     }
 
     override var ComponentIcon: String {
         return "mdi:google-circles-communities"
-    }
-
-    override class func ignoredProperties() -> [String] {
-        return ["EntityIds"]
     }
 }

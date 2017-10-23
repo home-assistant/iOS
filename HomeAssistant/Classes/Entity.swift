@@ -8,16 +8,14 @@
 
 import Foundation
 import ObjectMapper
-import RealmSwift
-import Realm
 
 // swiftlint:disable:next type_body_length
-class Entity: Object, StaticMappable {
+class Entity: StaticMappable {
     let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
 
-    dynamic var ID: String = ""
-    dynamic var State: String = ""
-    dynamic var Attributes: [String:Any] {
+    @objc dynamic var ID: String = ""
+    @objc dynamic var State: String = ""
+    @objc dynamic var Attributes: [String: Any] {
         get {
             guard let dictionaryData = attributesData else {
                 return [String: Any]()
@@ -39,22 +37,22 @@ class Entity: Object, StaticMappable {
             }
         }
     }
-    fileprivate dynamic var attributesData: Data?
-    dynamic var FriendlyName: String?
-    dynamic var Hidden = false
-    dynamic var Icon: String?
-    dynamic var MobileIcon: String?
-    dynamic var Picture: String?
+    @objc fileprivate dynamic var attributesData: Data?
+    @objc dynamic var FriendlyName: String?
+    @objc dynamic var Hidden = false
+    @objc dynamic var Icon: String?
+    @objc dynamic var MobileIcon: String?
+    @objc dynamic var Picture: String?
     var DownloadedPicture: UIImage?
     var UnitOfMeasurement: String?
-    dynamic var LastChanged: Date?
-    dynamic var LastUpdated: Date?
+    @objc dynamic var LastChanged: Date?
+    @objc dynamic var LastUpdated: Date?
     //    let Groups = LinkingObjects(fromType: Group.self, property: "Entities")
 
     // Z-Wave properties
-    dynamic var Location: String?
-    dynamic var NodeID: String?
-    var BatteryLevel = RealmOptional<Int>()
+    @objc dynamic var Location: String?
+    @objc dynamic var NodeID: String?
+    var BatteryLevel: Int?
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     class func objectForMapping(map: Map) -> BaseMappable? {
@@ -127,23 +125,8 @@ class Entity: Object, StaticMappable {
         // Z-Wave properties
         NodeID            <- map["attributes.node_id"]
         Location          <- map["attributes.location"]
-        BatteryLevel.value      <- map["attributes.battery_level"]
+        BatteryLevel      <- map["attributes.battery_level"]
 
-//        if let pic = self.Picture {
-//            HomeAssistantAPI.sharedInstance.getImage(imageUrl: pic).then { image -> Void in
-//                self.DownloadedPicture = image
-//                }.catch { err -> Void in
-//                    print("Error when attempting to download image", err)
-//            }
-//        }
-    }
-
-    override class func ignoredProperties() -> [String] {
-        return ["Attributes", "DownloadedPicture"]
-    }
-
-    override static func primaryKey() -> String? {
-        return "ID"
     }
 
     func turnOn() {
@@ -301,10 +284,6 @@ class Entity: Object, StaticMappable {
     var Domain: String {
         return self.ID.components(separatedBy: ".")[0]
     }
-}
-
-open class StringObject: Object {
-    open dynamic var value: String?
 }
 
 open class HomeAssistantTimestampTransform: DateFormatterTransform {

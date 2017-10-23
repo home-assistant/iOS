@@ -12,7 +12,7 @@ import Crashlytics
 import KeychainAccess
 
 func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeight: Double, color: UIColor) -> UIImage {
-    if let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as? [String:String] {
+    if let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as? [String: String] {
         Crashlytics.sharedInstance().setFloatValue(Float(iconWidth), forKey: "iconWidth")
         Crashlytics.sharedInstance().setFloatValue(Float(iconHeight), forKey: "iconHeight")
         Crashlytics.sharedInstance().setObjectValue(iconIdentifier, forKey: "iconIdentifier")
@@ -28,13 +28,13 @@ func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeigh
             UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
             let iconCode = iconCodes["mdi-exclamation"]
             let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
-            theIcon?.addAttribute(NSForegroundColorAttributeName, value: colorWithHexString("#ff0000"))
+            theIcon?.addAttribute(NSAttributedStringKey.foregroundColor.rawValue, value: colorWithHexString("#ff0000"))
             return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
         }
         CLSLogv("Requesting MaterialDesignIcon: Identifier: %@, Fixed Identifier: %@, Width: %f, Height: %f",
                 getVaList([iconIdentifier, fixedIconIdentifier, iconWidth, iconHeight]))
         let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
-        theIcon?.addAttribute(NSForegroundColorAttributeName, value: color)
+        theIcon?.addAttribute(NSAttributedStringKey.foregroundColor.rawValue, value: color)
         return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
     } else {
         return UIImage()
@@ -120,9 +120,6 @@ func movePushNotificationSounds() -> Int {
     }
 
     for file in fileList {
-        if file.lastPathComponent.contains("realm") {
-            continue
-        }
         let finalUrl = librarySoundsPath.appendingPathComponent(file.lastPathComponent)
         print("Moving", file, "to", finalUrl)
         do {
