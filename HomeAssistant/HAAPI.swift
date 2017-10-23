@@ -151,6 +151,12 @@ public class HomeAssistantAPI {
                                                 object: nil,
                                                 userInfo: nil)
 
+                _ = self.GetManifestJSON().then(execute: { manifest -> Void in
+                    if let themeColor = manifest.ThemeColor {
+                        prefs.setValue(themeColor, forKey: "themeColor")
+                    }
+                })
+                
                 _ = self.GetStates().then(execute: { _ -> Void in
                     if self.locationEnabled {
                         self.setupZones()
@@ -164,10 +170,10 @@ public class HomeAssistantAPI {
                     //                self.GetHistory()
                     fulfill(config)
                 })
-                }.catch {error in
-                    print("Error at launch!", error)
-                    Crashlytics.sharedInstance().recordError(error)
-                    reject(error)
+            }.catch {error in
+                print("Error at launch!", error)
+                Crashlytics.sharedInstance().recordError(error)
+                reject(error)
             }
 
         }
@@ -355,6 +361,31 @@ public class HomeAssistantAPI {
         }
     }
 
+    func GetManifestJSON() -> Promise<ManifestJSON> {
+        return Promise { fulfill, reject in
+            if let manager = self.manager, let queryUrl = baseURL?.appendingPathComponent("manifest.json") {
+                _ = manager.request(queryUrl, method: .get)
+                    .validate()
+                    .responseObject { (response: DataResponse<ManifestJSON>) in
+                        switch response.result {
+                        case .success:
+                            if let resVal = response.result.value {
+                                fulfill(resVal)
+                            } else {
+                                reject(APIError.invalidResponse)
+                            }
+                        case .failure(let error):
+                            CLSLogv("Error on GetManifestJSON() request: %@", getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            reject(error)
+                        }
+                }
+            } else {
+                reject(APIError.managerNotAvailable)
+            }
+        }
+    }
+    
     func GetStatus() -> Promise<StatusResponse> {
         return Promise { fulfill, reject in
             if let manager = self.manager, let queryUrl = baseAPIURL {

@@ -20,7 +20,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         super.viewDidLoad()
         let margins = self.view.layoutMarginsGuide
         let statusBarView: UIView = UIView(frame: .zero)
-        statusBarView.backgroundColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
+        statusBarView.tag = 111
+        if let themeColor = prefs.string(forKey: "themeColor") {
+            statusBarView.backgroundColor = UIColor.init(hex: themeColor)
+        } else {
+            statusBarView.backgroundColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
+        }
         view.addSubview(statusBarView)
 
         statusBarView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
@@ -94,13 +99,19 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         super.viewWillAppear(animated)
         var toolbarItems: [UIBarButtonItem] = []
 
-        let tabBarIconColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
+        var tabBarIconColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
+
+        if let themeColor = prefs.string(forKey: "themeColor") {
+            tabBarIconColor = UIColor.init(hex: themeColor)
+            if let statusBarView = self.view.viewWithTag(111) {
+                statusBarView.backgroundColor = UIColor.init(hex: themeColor)
+            }
+        }
 
         if HomeAssistantAPI.sharedInstance.locationEnabled {
 
             let uploadIcon = getIconForIdentifier("mdi:upload",
-                                                  iconWidth: 30,
-                                                  iconHeight: 30,
+                                                  iconWidth: 30, iconHeight: 30,
                                                   color: tabBarIconColor)
 
             toolbarItems.append(UIBarButtonItem(image: uploadIcon,
@@ -110,10 +121,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                 )
             )
 
-            let mapIcon = getIconForIdentifier("mdi:map",
-                                               iconWidth: 30,
-                                               iconHeight: 30,
-                                               color: tabBarIconColor)
+            let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
 
             toolbarItems.append(UIBarButtonItem(image: mapIcon,
                                                 style: .plain,
