@@ -171,6 +171,7 @@
 		B657A91A1CA647C500121384 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66428111CF7A83200903804 /* PushConfiguration.swift */; };
+		B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */; };
 		B6767A511D0234E700F2A08B /* SwitchableEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6767A501D0234E700F2A08B /* SwitchableEntity.swift */; };
 		B678DB251EA991E40045312F /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
 		B678DB261EA991E40045312F /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
@@ -180,6 +181,7 @@
 		B678DB391EA999AC0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB381EA999AC0045312F /* MainInterface.storyboard */; };
 		B6880B2B1D7B9E6400CCB899 /* Climate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6880B2A1D7B9E6400CCB899 /* Climate.swift */; };
 		B689EBCB1D8B7C800000AECE /* MjpegStreamingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */; };
+		B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
 		B69933951E232AEA0054453D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B699339A1E232E060054453D /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69933991E232E060054453D /* Strings.swift */; };
 		B699339C1E2338960054453D /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B699339B1E2338960054453D /* SnapshotHelper.swift */; };
@@ -459,6 +461,7 @@
 		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HAAPI.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
 		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
+		B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestJSON.swift; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B678DB241EA991E30045312F /* MapNotificationContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MapNotificationContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B678DB281EA991E40045312F /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
@@ -470,6 +473,7 @@
 		B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MjpegStreamingController.swift; sourceTree = "<group>"; };
 		B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = APNSAttachmentService.entitlements; sourceTree = "<group>"; };
 		B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationContentExtension.entitlements; sourceTree = "<group>"; };
+		B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSS3+Hex.swift"; sourceTree = "<group>"; };
 		B69933941E232AEA0054453D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B69933991E232E060054453D /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		B699339B1E2338960054453D /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
@@ -901,6 +905,7 @@
 				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
+				B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -963,6 +968,7 @@
 				B66428111CF7A83200903804 /* PushConfiguration.swift */,
 				B6F02BFB1CB4800C0029ABE7 /* Services.swift */,
 				B6F02BED1CB46EB10029ABE7 /* Status.swift */,
+				B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */,
 			);
 			path = "HA API Responses";
 			sourceTree = "<group>";
@@ -1708,6 +1714,7 @@
 				B62A67A01D80E933009E46F9 /* IdentifyRequest.swift in Sources */,
 				B6F02C1C1CB489770029ABE7 /* Thermostat.swift in Sources */,
 				B64D09AF1D7D561E008EB487 /* InputSlider.swift in Sources */,
+				B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */,
 				B6F02C151CB489770029ABE7 /* Lock.swift in Sources */,
 				B629E8D61DAD8CFA00040A90 /* PushRegistrationRequest.swift in Sources */,
 				B6767A511D0234E700F2A08B /* SwitchableEntity.swift in Sources */,
@@ -1734,6 +1741,7 @@
 				B6F02BFA1CB47F930029ABE7 /* Events.swift in Sources */,
 				B6F02C0F1CB489770029ABE7 /* BinarySensor.swift in Sources */,
 				B60EAE9B1DBC347C0062C97C /* PushRegistrationResponse.swift in Sources */,
+				B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */,
 				B6E47E9A1CBB47EC0027F6CA /* DeviceUID.m in Sources */,
 				B6F02C121CB489770029ABE7 /* InputBoolean.swift in Sources */,
 				B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */,
