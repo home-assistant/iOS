@@ -7,7 +7,6 @@ plugin 'cocoapods-acknowledgements'
 
 target 'HomeAssistant' do
   pod 'Alamofire'
-  pod 'AlamofireImage'
   pod 'AlamofireNetworkActivityIndicator'
   pod 'AlamofireObjectMapper'
   pod 'CPDAcknowledgements'

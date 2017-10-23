@@ -1,7 +1,5 @@
 PODS:
   - Alamofire (4.5.1)
-  - AlamofireImage (3.3.0):
-    - Alamofire (~> 4.5)
   - AlamofireNetworkActivityIndicator (2.2.0):
     - Alamofire (~> 4.5)
   - AlamofireObjectMapper (5.0.0):
@@ -37,7 +35,6 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
-  - AlamofireImage
   - AlamofireNetworkActivityIndicator
   - AlamofireObjectMapper
   - CPDAcknowledgements
@@ -73,7 +70,6 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
-  AlamofireImage: 2e784dc5d00f04903a52c1d169181469c805c3df
   AlamofireNetworkActivityIndicator: 81e1630e7cfed22a4e4e82a174c59e651dc4f8ca
   AlamofireObjectMapper: 5fafc816351cbbc0d486611aaeba7461c0cbad49
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
@@ -91,6 +87,6 @@ SPEC CHECKSUMS:
   SwiftLint: 1b670ce79284c76520f84060e87d645078fd32fa
   SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
 
-PODFILE CHECKSUM: 6be9eb1576fc72e96c08ce92be113304280aeb2c
+PODFILE CHECKSUM: 5dbfd15195285085782cb9a2c8cafabb2abe461e
 
 COCOAPODS: 1.1.1

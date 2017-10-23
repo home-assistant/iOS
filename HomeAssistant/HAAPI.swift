@@ -8,7 +8,6 @@
 
 import Foundation
 import Alamofire
-import AlamofireImage
 import PromiseKit
 import SwiftLocation
 import CoreLocation
@@ -716,50 +715,6 @@ public class HomeAssistantAPI {
                             reject(error)
                         }
                 }
-            } else {
-                reject(APIError.managerNotAvailable)
-            }
-        }
-    }
-
-    func getImage(imageUrl: String) -> Promise<UIImage> {
-        return Promise { fulfill, reject in
-            var finalUrl: URL?
-            if imageUrl.hasPrefix("/api") || imageUrl.hasPrefix("/local") || imageUrl.hasPrefix("/static") {
-                // A local URL, need to prepend the base URL only
-                if let url = baseURL?.appendingPathComponent(imageUrl) {
-                    finalUrl = url
-                } else {
-                    reject(APIError.cantBuildURL)
-                }
-            } else {
-                // Non-local URL, just attempt to use as is
-                if let url = URL(string: imageUrl) {
-                    finalUrl = url
-                } else {
-                    reject(APIError.cantBuildURL)
-                }
-            }
-
-            if let manager = self.manager, let url = finalUrl {
-                _ = manager.request(url, method: .get)
-                           .validate()
-                           .responseImage { response in
-                            switch response.result {
-                            case .success:
-                                if let value = response.result.value {
-                                    fulfill(value)
-                                } else {
-                                    print("Response was not an image!", response)
-                                    reject(APIError.invalidResponse)
-                                }
-                            case .failure(let error):
-                                CLSLogv("Error on getImage() request to %@: %@",
-                                        getVaList([url as CVarArg, error.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(error)
-                                reject(error)
-                            }
-                            }
             } else {
                 reject(APIError.managerNotAvailable)
             }

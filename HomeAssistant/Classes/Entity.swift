@@ -127,13 +127,6 @@ class Entity: StaticMappable {
         Location          <- map["attributes.location"]
         BatteryLevel      <- map["attributes.battery_level"]
 
-//        if let pic = self.Picture {
-//            HomeAssistantAPI.sharedInstance.getImage(imageUrl: pic).then { image -> Void in
-//                self.DownloadedPicture = image
-//                }.catch { err -> Void in
-//                    print("Error when attempting to download image", err)
-//            }
-//        }
     }
 
     func turnOn() {
