@@ -1,43 +1,43 @@
 PODS:
-  - Alamofire (4.4.0)
-  - AlamofireImage (3.2.0):
+  - Alamofire (4.5.1)
+  - AlamofireImage (3.3.0):
+    - Alamofire (~> 4.5)
+  - AlamofireNetworkActivityIndicator (2.2.0):
+    - Alamofire (~> 4.5)
+  - AlamofireObjectMapper (5.0.0):
     - Alamofire (~> 4.1)
-  - AlamofireNetworkActivityIndicator (2.1.0):
-    - Alamofire (~> 4.1)
-  - AlamofireObjectMapper (4.1.0):
-    - Alamofire (~> 4.1)
-    - ObjectMapper (~> 2.0)
+    - ObjectMapper (~> 3.0)
   - CPDAcknowledgements (1.0.0)
-  - Crashlytics (3.8.4):
-    - Fabric (~> 1.6.3)
-  - DeviceKit (1.0.1)
+  - Crashlytics (3.9.0):
+    - Fabric (~> 1.7.0)
+  - DeviceKit (1.4.0)
   - Eureka (4.0.1)
-  - Fabric (1.6.11)
+  - Fabric (1.7.0)
   - FontAwesomeKit/Core (2.2.4)
   - FontAwesomeKit/MaterialDesignIcons (2.2.4):
     - FontAwesomeKit/Core
-  - KeychainAccess (3.0.2)
+  - KeychainAccess (3.1.0)
   - MBProgressHUD (1.0.0)
-  - ObjectMapper (2.2.5)
+  - ObjectMapper (3.0.0)
   - PermissionScope (1.1.1)
-  - PromiseKit (4.1.7):
-    - PromiseKit/Foundation (= 4.1.7)
-    - PromiseKit/QuartzCore (= 4.1.7)
-    - PromiseKit/UIKit (= 4.1.7)
-  - PromiseKit/CorePromise (4.1.7)
-  - PromiseKit/Foundation (4.1.7):
+  - PromiseKit (4.4.3):
+    - PromiseKit/Foundation (= 4.4.3)
+    - PromiseKit/QuartzCore (= 4.4.3)
+    - PromiseKit/UIKit (= 4.4.3)
+  - PromiseKit/CorePromise (4.4.3)
+  - PromiseKit/Foundation (4.4.3):
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (4.1.7):
+  - PromiseKit/QuartzCore (4.4.3):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (4.1.7):
+  - PromiseKit/UIKit (4.4.3):
     - PromiseKit/CorePromise
-  - Realm (2.8.3):
-    - Realm/Headers (= 2.8.3)
-  - Realm/Headers (2.8.3)
-  - RealmSwift (2.8.3):
-    - Realm (= 2.8.3)
-  - SwiftGen (4.2.0)
-  - SwiftLint (0.18.1)
+  - Realm (3.0.0):
+    - Realm/Headers (= 3.0.0)
+  - Realm/Headers (3.0.0)
+  - RealmSwift (3.0.0):
+    - Realm (= 3.0.0)
+  - SwiftGen (5.2.0)
+  - SwiftLint (0.23.1)
   - SwiftLocation (2.0.7)
 
 DEPENDENCIES:
@@ -79,27 +79,27 @@ CHECKOUT OPTIONS:
     :git: https://github.com/robbiet480/PermissionScope.git
 
 SPEC CHECKSUMS:
-  Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
-  AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
-  AlamofireNetworkActivityIndicator: 4716f6554bdfb9c7cf13b1e0e3af21163129690a
-  AlamofireObjectMapper: 435adc82f5b367679bd9e71c4974a54efd0b2521
+  Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
+  AlamofireImage: 2e784dc5d00f04903a52c1d169181469c805c3df
+  AlamofireNetworkActivityIndicator: 81e1630e7cfed22a4e4e82a174c59e651dc4f8ca
+  AlamofireObjectMapper: 5fafc816351cbbc0d486611aaeba7461c0cbad49
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
-  Crashlytics: 79e236942ca1e7fc641df1feb9a275360a78ab6a
-  DeviceKit: 461e525867e48e725f41699c1cab3100df1258ff
+  Crashlytics: 64aad5dd97249dd3ff94b979fea140144590cdd3
+  DeviceKit: fa74d97499660e88081718b16688e19217595dba
   Eureka: c8bd5cc07143b6f66268c208d28a246c99b41955
-  Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
+  Fabric: e6be012366472553807dada21243c5ab8d904151
   FontAwesomeKit: b5c9ddc9504c4a07945b7b4590e7f9ad5a50e073
-  KeychainAccess: a986406022dfc7c634c691ad3bec670cc6a32002
+  KeychainAccess: 94c5540b32eabf7bc32bfb976a268e8ea05fd6da
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
-  ObjectMapper: fb30f71e08470d1e5a20b199fafe1246281db898
+  ObjectMapper: 92230db59bf8f341a5c3a3cf0b9fbdde3cf0d87f
   PermissionScope: a30c16e015779ba27c97c124e7539e27b5829de2
-  PromiseKit: 779f2e41faf62d854e7593026ddbcb0bb5c5002d
-  Realm: 3601ef091c8c499a31101d8563b991e75546cdce
-  RealmSwift: 8183818515471b01a99abdd2970f8e4fd52b6f4a
-  SwiftGen: b6bfed151243348e4603b91bf5bc4eb2486c9d5b
-  SwiftLint: b467d08f5b25dc3b3cfed243d8e1b74b91714c67
+  PromiseKit: fbb52a0d154402c57eeb6eccd36dd7724fcf6117
+  Realm: dec0de73be8c57506e39db72694d513c189493b3
+  RealmSwift: 44a7090b16d1b22a406c6bf129bdd602db1bbecc
+  SwiftGen: d75f6c3a1ecfed4a5ae372e477d452297efdb718
+  SwiftLint: 1b670ce79284c76520f84060e87d645078fd32fa
   SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
 
-PODFILE CHECKSUM: 334384dede0745ff570f0dabfd9aa8504cd3914c
+PODFILE CHECKSUM: 370d44071a9cffc4c4bc2da517dc954a685d8694
 
 COCOAPODS: 1.1.1
