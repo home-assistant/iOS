@@ -553,31 +553,6 @@ public class HomeAssistantAPI {
         }
     }
 
-    func GetErrorLog() -> Promise<String> {
-        return Promise { fulfill, reject in
-            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("error_log") {
-                _ = manager.request(queryUrl, method: .get)
-                    .validate()
-                    .responseString { response in
-                        switch response.result {
-                        case .success:
-                            if let resVal = response.result.value {
-                                fulfill(resVal)
-                            } else {
-                                reject(APIError.invalidResponse)
-                            }
-                        case .failure(let error):
-                            CLSLogv("Error on GetErrorLog() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
-                            reject(error)
-                        }
-                }
-            } else {
-                reject(APIError.managerNotAvailable)
-            }
-        }
-    }
-
     func SetState(entityId: String, state: String) -> Promise<Entity> {
         return Promise { fulfill, reject in
             if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("states/\(entityId)") {
