@@ -15,7 +15,7 @@ import AlamofireNetworkActivityIndicator
 import KeychainAccess
 import SwiftLocation
 
-let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
+let keychain = Keychain(service: "io.robbie.homeassistant")
 
 let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
 
