@@ -29,6 +29,9 @@ class AboutViewController: FormViewController {
                                                                                   bundle: nil))
                 logoHeader.onSetupView = { view, _ in
                     view.AppTitle.text = L10n.About.Logo.appTitle
+                    if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                        view.Version.text = version
+                    }
                     view.Tagline.text = L10n.About.Logo.tagline
                 }
                 $0.header = logoHeader
@@ -200,6 +203,7 @@ class HomeAssistantLogoView: UIView {
 
     @IBOutlet weak var AppTitle: UILabel!
     @IBOutlet weak var Tagline: UILabel!
+    @IBOutlet weak var Version: UILabel!
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }

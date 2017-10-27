@@ -28,7 +28,7 @@ final class NotificationService: UNNotificationServiceExtension {
             contentHandler(request.content)
         }
 
-        let keychain = Keychain(service: "io.robbie.homeassistant", accessGroup: "UTQFCBPQRF.io.robbie.HomeAssistant")
+        let keychain = Keychain(service: "io.robbie.homeassistant")
         guard let baseURL = keychain["baseURL"] else {
             return failEarly()
         }
@@ -51,6 +51,9 @@ final class NotificationService: UNNotificationServiceExtension {
                 return failEarly()
             }
             incomingAttachment["url"] = "\(baseURL)/api/camera_proxy/\(entityId)?api_password=\(apiPassword)"
+            if incomingAttachment["content-type"] == nil {
+                incomingAttachment["content-type"] = "jpeg"
+            }
         } else {
             // Check if we still have an empty dictionary
             if incomingAttachment.isEmpty {
