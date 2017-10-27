@@ -18,7 +18,6 @@ target 'HomeAssistant' do
   pod 'KeychainAccess'
   pod 'MBProgressHUD'
   pod 'ObjectMapper'
-  pod 'PermissionScope', :git => 'https://github.com/robbiet480/PermissionScope.git', :branch => 'swift4'
   pod 'PromiseKit'
   pod 'SwiftGen'
   pod 'SwiftLint'

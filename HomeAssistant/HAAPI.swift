@@ -14,7 +14,6 @@ import CoreLocation
 import AlamofireObjectMapper
 import ObjectMapper
 import DeviceKit
-import PermissionScope
 import Crashlytics
 import UserNotifications
 
@@ -975,7 +974,9 @@ public class HomeAssistantAPI {
     }
 
     func setupPush() {
-        UIApplication.shared.registerForRemoteNotifications()
+        DispatchQueue.main.async(execute: {
+            UIApplication.shared.registerForRemoteNotifications()
+        })
         if #available(iOS 10, *) {
             self.setupUserNotificationPushActions().then { categories -> Void in
                 UNUserNotificationCenter.current().setNotificationCategories(categories)
@@ -1228,6 +1229,12 @@ class BeaconManager: NSObject, CLLocationManagerDelegate {
         }
     }
 
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedAlways {
+            prefs.setValue(true, forKey: "locationEnabled")
+            prefs.synchronize()
+        }
+    }
 }
 
 enum LocationUpdateTypes {
