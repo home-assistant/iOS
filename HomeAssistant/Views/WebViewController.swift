@@ -18,7 +18,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
-        let margins = self.view.layoutMarginsGuide
         let statusBarView: UIView = UIView(frame: .zero)
         statusBarView.tag = 111
         if let themeColor = prefs.string(forKey: "themeColor") {
@@ -31,7 +30,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         statusBarView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         statusBarView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         statusBarView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        statusBarView.bottomAnchor.constraint(equalTo: margins.topAnchor).isActive = true
+        statusBarView.bottomAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
 
         statusBarView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -49,8 +48,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         webView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         webView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        webView.topAnchor.constraint(equalTo: margins.topAnchor).isActive = true
-        webView.bottomAnchor.constraint(equalTo: margins.bottomAnchor).isActive = true
+        webView.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
+        webView.bottomAnchor.constraint(equalTo: self.bottomLayoutGuide.topAnchor).isActive = true
 
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
