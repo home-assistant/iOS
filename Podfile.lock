@@ -17,7 +17,6 @@ PODS:
   - KeychainAccess (3.1.0)
   - MBProgressHUD (1.0.0)
   - ObjectMapper (3.0.0)
-  - PermissionScope (1.1.1)
   - PromiseKit (4.4.3):
     - PromiseKit/Foundation (= 4.4.3)
     - PromiseKit/QuartzCore (= 4.4.3)
@@ -46,7 +45,6 @@ DEPENDENCIES:
   - KeychainAccess
   - MBProgressHUD
   - ObjectMapper
-  - PermissionScope (from `https://github.com/robbiet480/PermissionScope.git`, branch `swift4`)
   - PromiseKit
   - SwiftGen
   - SwiftLint
@@ -56,17 +54,11 @@ EXTERNAL SOURCES:
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
-  PermissionScope:
-    :branch: swift4
-    :git: https://github.com/robbiet480/PermissionScope.git
 
 CHECKOUT OPTIONS:
   FontAwesomeKit:
     :commit: 8032213d13242c6466a048730f0defe98e10c1d6
     :git: https://github.com/robbiet480/FontAwesomeKit.git
-  PermissionScope:
-    :commit: b67d1176263ed9e36fca17407c999b8a22fe363d
-    :git: https://github.com/robbiet480/PermissionScope.git
 
 SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
@@ -81,12 +73,11 @@ SPEC CHECKSUMS:
   KeychainAccess: 94c5540b32eabf7bc32bfb976a268e8ea05fd6da
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   ObjectMapper: 92230db59bf8f341a5c3a3cf0b9fbdde3cf0d87f
-  PermissionScope: a30c16e015779ba27c97c124e7539e27b5829de2
   PromiseKit: fbb52a0d154402c57eeb6eccd36dd7724fcf6117
   SwiftGen: d75f6c3a1ecfed4a5ae372e477d452297efdb718
   SwiftLint: 1b670ce79284c76520f84060e87d645078fd32fa
   SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
 
-PODFILE CHECKSUM: d2c020fd830ae47652f7d9b83004f81475f6042c
+PODFILE CHECKSUM: baf8a1d097cf935771afb34b78a717f3bec5193f
 
 COCOAPODS: 1.1.1
