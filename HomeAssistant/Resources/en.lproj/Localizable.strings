@@ -24,6 +24,8 @@
 "settings.connection_section.header" = "Connection";
 "settings.connection_section.invalid_url_scheme_notification.title" = "Invalid URL";
 "settings.connection_section.invalid_url_scheme_notification.message" = "The URL must begin with either http:// or https://.";
+"settings.connection_section.error_enabling_notifications.title" = "Error enabling notifications";
+"settings.connection_section.error_enabling_notifications.message" = "There was an error enabling notifications. Please try again.";
 "settings.connection_section.api_password_row.title" = "Password";
 "settings.connection_section.api_password_row.placeholder" = "password";
 "settings.connection_section.connect_row.title" = "Connect";

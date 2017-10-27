@@ -24,6 +24,8 @@
 "settings.connection_section.header" = "Verbindung";
 "settings.connection_section.invalid_url_scheme_notification.title" = "Ungültige URL";
 "settings.connection_section.invalid_url_scheme_notification.message" = "Die URL muss entweder mit http:// oder https:// beginnen.";
+"settings.connection_section.error_enabling_notifications.title" = "Fehler beim Aktivieren von Benachrichtigungen";
+"settings.connection_section.error_enabling_notifications.message" = "Beim Aktivieren von Benachrichtigungen ist ein Fehler aufgetreten. Bitte versuche es erneut.";
 "settings.connection_section.api_password_row.title" = "Passwort";
 "settings.connection_section.api_password_row.placeholder" = "Passwort";
 "settings.connection_section.connect_row.title" = "verbinden";

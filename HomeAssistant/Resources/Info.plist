@@ -67,22 +67,14 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>To allow PermissionScope and SwiftLocation to work under iOS 10</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>To allow PermissionScope to work under iOS 10</string>
-	<key>NSContactsUsageDescription</key>
-	<string>To allow PermissionScope to work under iOS 10</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>To send location to Home Assistant</string>
+	<string>To send location to Home Assistant.
+We always need access for things like geofences, iBeacons and accurate reporting.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>To send location to Home Assistant</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>To allow PermissionScope to work under iOS 10</string>
-	<key>NSMotionUsageDescription</key>
-	<string>To allow PermissionScope to work under iOS 10</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To allow PromiseKit to work under iOS 10</string>
+	<string>To send location to Home Assistant.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>To send location to Home Assistant.
+We always need access for things like geofences, iBeacons and accurate reporting.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

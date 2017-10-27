@@ -8,7 +8,6 @@
 
 import UIKit
 import Eureka
-import PermissionScope
 import PromiseKit
 import Crashlytics
 

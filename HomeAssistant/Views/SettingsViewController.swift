@@ -8,16 +8,17 @@
 
 import UIKit
 import Eureka
-import PermissionScope
 import PromiseKit
 import Crashlytics
 import SafariServices
 import Alamofire
 import KeychainAccess
+import CoreLocation
+import UserNotifications
 
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
-class SettingsViewController: FormViewController {
+class SettingsViewController: FormViewController, CLLocationManagerDelegate {
 
     weak var delegate: ConnectionInfoChangedDelegate?
 
@@ -34,6 +35,8 @@ class SettingsViewController: FormViewController {
 
     let discovery = Bonjour()
 
+    var locationManager: CLLocationManager = CLLocationManager()
+
     override func viewWillDisappear(_ animated: Bool) {
         NSLog("Stopping Home Assistant discovery")
         self.discovery.stopDiscovery()
@@ -48,6 +51,8 @@ class SettingsViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+
+        self.locationManager.delegate = self
 
         let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
                                           style: .plain,
@@ -288,37 +293,8 @@ class SettingsViewController: FormViewController {
             <<< ButtonRow("enableLocation") {
                 $0.title = L10n.Settings.DetailsSection.EnableLocationRow.title
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.locationEnabled)
-            }.onCellSelection { _, row in
-                let pscope = PermissionScope()
-
-                pscope.addPermission(LocationAlwaysPermission(),
-                                     message: L10n.Permissions.Location.message)
-                pscope.show({finished, results in
-                    if finished {
-                        print("Location Permissions finished!", finished, results)
-                        if results[0].status == .authorized {
-                            prefs.setValue(true, forKey: "locationEnabled")
-                            prefs.synchronize()
-                            row.hidden = true
-                            row.updateCell()
-                            row.evaluateHidden()
-                            let locationSettingsRow: ButtonRow = self.form.rowBy(tag: "locationSettings")!
-                            locationSettingsRow.hidden = false
-                            locationSettingsRow.updateCell()
-                            locationSettingsRow.evaluateHidden()
-                            let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(
-                                tag: "deviceTrackerComponentLoaded")!
-                            deviceTrackerComponentLoadedRow.hidden = false
-                            deviceTrackerComponentLoadedRow.evaluateHidden()
-                            deviceTrackerComponentLoadedRow.updateCell()
-                            self.tableView.reloadData()
-                            HomeAssistantAPI.sharedInstance.setupZones()
-                            _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
-                        }
-                    }
-                }, cancelled: { _ -> Void in
-                    print("Permissions finished, resetting API!")
-                })
+            }.onCellSelection { _, _ in
+                self.locationManager.requestAlwaysAuthorization()
             }
 
             <<< ButtonRow("locationSettings") {
@@ -337,34 +313,44 @@ class SettingsViewController: FormViewController {
                 $0.title = L10n.Settings.DetailsSection.EnableNotificationRow.title
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.notificationsEnabled)
                 }.onCellSelection { _, row in
-                    let pscope = PermissionScope()
-
-                    pscope.addPermission(NotificationsPermission(),
-                                         message: L10n.Permissions.Notification.message)
-                    pscope.show({finished, results in
-                        if finished {
-                            print("Notifications Permissions finished!", finished, results)
-                            if results[0].status == .authorized {
-                                prefs.setValue(true, forKey: "notificationsEnabled")
-                                prefs.synchronize()
-                                HomeAssistantAPI.sharedInstance.setupPush()
-                                row.hidden = true
-                                row.evaluateHidden()
-                                let notificationSettingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
-                                notificationSettingsRow.hidden = false
-                                notificationSettingsRow.evaluateHidden()
-                                let notifyPlatformLoadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
-                                notifyPlatformLoadedRow.hidden = false
-                                notifyPlatformLoadedRow.evaluateHidden()
-                                self.tableView.reloadData()
+                    if #available(iOS 10, *) {
+                        let center = UNUserNotificationCenter.current()
+                        center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+                            if error != nil {
+                                let alert = UIAlertController(title: L10n.Settings.ConnectionSection.ErrorEnablingNotifications.title,
+                                                              message: L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message,
+                                                              preferredStyle: UIAlertControllerStyle.alert)
+                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default,
+                                                              handler: nil))
+                                self.present(alert, animated: true, completion: nil)
                             } else {
-                                prefs.setValue(false, forKey: "notificationsEnabled")
+                                print("Notifications Permissions finished!", granted)
+                                prefs.setValue(granted, forKey: "notificationsEnabled")
                                 prefs.synchronize()
+                                if granted {
+                                    HomeAssistantAPI.sharedInstance.setupPush()
+                                    DispatchQueue.main.async(execute: {
+                                        row.hidden = true
+                                        row.updateCell()
+                                        row.evaluateHidden()
+                                        let notificationSettingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
+                                        notificationSettingsRow.hidden = false
+                                        notificationSettingsRow.evaluateHidden()
+                                        let notifyPlatformLoadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
+                                        notifyPlatformLoadedRow.hidden = false
+                                        notifyPlatformLoadedRow.evaluateHidden()
+                                        self.tableView.reloadData()
+                                    })
+                                }
                             }
                         }
-                    }, cancelled: { _ -> Void in
-                        print("Permissions finished, resetting API!")
-                    })
+                    } else {
+                        DispatchQueue.main.async(execute: {
+                            let setting = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+                            UIApplication.shared.registerUserNotificationSettings(setting)
+                            UIApplication.shared.registerForRemoteNotifications()
+                        })
+                    }
             }
 
             <<< ButtonRow("notificationSettings") {
@@ -553,6 +539,29 @@ class SettingsViewController: FormViewController {
 
     @objc func closeSettings(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedAlways {
+            prefs.setValue(true, forKey: "locationEnabled")
+            prefs.synchronize()
+            let enableLocationRow: ButtonRow = self.form.rowBy(tag: "enableLocation")!
+            enableLocationRow.hidden = true
+            enableLocationRow.updateCell()
+            enableLocationRow.evaluateHidden()
+            let locationSettingsRow: ButtonRow = self.form.rowBy(tag: "locationSettings")!
+            locationSettingsRow.hidden = false
+            locationSettingsRow.updateCell()
+            locationSettingsRow.evaluateHidden()
+            let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(
+                tag: "deviceTrackerComponentLoaded")!
+            deviceTrackerComponentLoadedRow.hidden = false
+            deviceTrackerComponentLoadedRow.evaluateHidden()
+            deviceTrackerComponentLoadedRow.updateCell()
+            self.tableView.reloadData()
+            HomeAssistantAPI.sharedInstance.setupZones()
+            _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
+        }
     }
 }
 
