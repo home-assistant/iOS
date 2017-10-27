@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.4</string>
+	<string>1.1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>0</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -67,14 +67,14 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>To send location to Home Assistant.
+We always need access for things like geofences, iBeacons and accurate reporting.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>To send location to Home Assistant.
 We always need access for things like geofences, iBeacons and accurate reporting.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>To send location to Home Assistant.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>To send location to Home Assistant.
-We always need access for things like geofences, iBeacons and accurate reporting.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
