@@ -323,20 +323,7 @@ public class HomeAssistantAPI {
     }
 
     func sendOneshotLocation() -> Promise<Bool> {
-        return Promise { fulfill, reject in
-            Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, timeout: 25, success: { (_, location) in
-                print("A new update of location is available: \(location)")
-                self.submitLocation(updateType: .Manual,
-                                    coordinates: location.coordinate,
-                                    accuracy: location.horizontalAccuracy,
-                                    zone: nil)
-                fulfill(true)
-            }) { (_, _, error) in
-                print("Error when trying to get a oneshot location!", error)
-                Crashlytics.sharedInstance().recordError(error)
-                reject(error)
-            }
-        }
+        return getAndSendLocation(trigger: LocationUpdateTypes.Manual)
     }
 
     func getAndSendLocation(trigger: LocationUpdateTypes?) -> Promise<Bool> {
@@ -353,7 +340,7 @@ public class HomeAssistantAPI {
                                     zone: nil)
                 fulfill(true)
             }) { (_, _, error) in
-                print("Error when trying to get a oneshot location!", error)
+                print("Error when trying to get a oneshot location for \(updateTrigger) trigger!", error)
                 Crashlytics.sharedInstance().recordError(error)
                 reject(error)
             }
