@@ -11,8 +11,8 @@ PODS:
   - DeviceKit (1.4.0)
   - Eureka (4.0.1)
   - Fabric (1.7.0)
-  - FontAwesomeKit/Core (2.2.4)
-  - FontAwesomeKit/MaterialDesignIcons (2.2.4):
+  - FontAwesomeKit/Core (2.2.5)
+  - FontAwesomeKit/MaterialDesignIcons (2.2.5):
     - FontAwesomeKit/Core
   - KeychainAccess (3.1.0)
   - MBProgressHUD (1.0.0)
@@ -57,7 +57,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   FontAwesomeKit:
-    :commit: 8032213d13242c6466a048730f0defe98e10c1d6
+    :commit: e4069745624783372481bab7d163f4485931b527
     :git: https://github.com/robbiet480/FontAwesomeKit.git
 
 SPEC CHECKSUMS:
@@ -69,7 +69,7 @@ SPEC CHECKSUMS:
   DeviceKit: fa74d97499660e88081718b16688e19217595dba
   Eureka: c8bd5cc07143b6f66268c208d28a246c99b41955
   Fabric: e6be012366472553807dada21243c5ab8d904151
-  FontAwesomeKit: b5c9ddc9504c4a07945b7b4590e7f9ad5a50e073
+  FontAwesomeKit: c56e7e8db4ad4e7325ce73a8033dadf2fd4a5cb2
   KeychainAccess: 94c5540b32eabf7bc32bfb976a268e8ea05fd6da
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   ObjectMapper: 92230db59bf8f341a5c3a3cf0b9fbdde3cf0d87f
