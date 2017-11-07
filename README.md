@@ -60,7 +60,6 @@ To keep the Xcode layout mirrored with on-disk layout we're using [Synx](https:/
 - [Eureka](https://github.com/xmartlabs/Eureka): Elegant iOS form builder in Swift
 - [FontAwesomeKit](https://github.com/robbiet480/FontAwesomeKit): Icon font library for iOS.
 - [MBProgressHUD](https://github.com/jdg/MBProgressHUD): MBProgressHUD + Customizations
-- [PermissionScope](https://github.com/nickoneill/PermissionScope): Intelligent iOS permissions UI and unified API
 - [Whisper](https://github.com/hyperoslo/Whisper): Whisper is a component that will make the task of display messages and in-app notifications simple. It has three different views inside
 
 ### Utilities
