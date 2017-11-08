@@ -198,9 +198,6 @@ platform :ios do
       app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png"
     )
 
-    gitter(integration_id: ENV["HOMEASSISTANT_GITTER_INTEGRATION_ID"],
-           message: "New build β v#{complete_version_number} uploaded to Fabric")
-
     rocket
   end
 
@@ -235,9 +232,6 @@ platform :ios do
       app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png"
     )
 
-    gitter(integration_id: ENV["HOMEASSISTANT_GITTER_INTEGRATION_ID"],
-           message: "New build β v#{complete_version_number} uploaded to Fabric")
-
     rocket
   end
 
@@ -245,7 +239,6 @@ platform :ios do
 
   after_all do |lane|
     # This block is called, only if the executed lane was successful
-    # Should really have Gitter hooks
   end
 
   error do |lane, exception|
