@@ -539,6 +539,12 @@ public class HomeAssistantAPI {
                                 fulfill(jsonDict["message"]!)
                             }
                         case .failure(let error):
+                            if let afError = error as? AFError {
+                                CLSLogv("Error when attemping to CreateEvent(): %@",
+                                        getVaList([afError.localizedDescription]))
+                                Crashlytics.sharedInstance().recordError(afError)
+                                reject(afError)
+                            }
                             CLSLogv("Error when attemping to CreateEvent(): %@",
                                     getVaList([error.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(error)
@@ -551,14 +557,14 @@ public class HomeAssistantAPI {
         }
     }
 
-    func CallService(domain: String, service: String, serviceData: [String: Any]) -> Promise<[ServicesResponse]> {
+    func CallService(domain: String, service: String, serviceData: [String: Any]) -> Promise<[Entity]> {
         return Promise { fulfill, reject in
             if let manager = self.manager,
                 let queryUrl = baseAPIURL?.appendingPathComponent("services/\(domain)/\(service)") {
                 _ = manager.request(queryUrl, method: .post,
                                           parameters: serviceData, encoding: JSONEncoding.default)
                     .validate()
-                    .responseArray { (response: DataResponse<[ServicesResponse]>) in
+                    .responseArray { (response: DataResponse<[Entity]>) in
                         switch response.result {
                         case .success:
                             if let resVal = response.result.value {
@@ -567,9 +573,24 @@ public class HomeAssistantAPI {
                                 reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
-                            CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
-                            reject(error)
+                            if let afError = error as? AFError {
+                                var errorUserInfo: [String: Any] = [:]
+                                if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
+                                    if let errorJSON = convertToDictionary(text: utf8Text),
+                                        let errMessage = errorJSON["message"] as? String {
+                                        errorUserInfo["errorMessage"] = errMessage
+                                    }
+                                }
+                                CLSLogv("Error on CallService() request: %@", getVaList([afError.localizedDescription]))
+                                Crashlytics.sharedInstance().recordError(afError)
+                                let customError = NSError(domain: "io.robbie.HomeAssistant", code: afError.responseCode!,
+                                                          userInfo: errorUserInfo)
+                                reject(customError)
+                            } else {
+                                CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
+                                Crashlytics.sharedInstance().recordError(error)
+                                reject(error)
+                            }
                         }
                 }
             } else {
@@ -713,27 +734,27 @@ public class HomeAssistantAPI {
         }
     }
 
-    func turnOn(entityId: String) -> Promise<[ServicesResponse]> {
+    func turnOn(entityId: String) -> Promise<[Entity]> {
         return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
     }
 
-    func turnOnEntity(entity: Entity) -> Promise<[ServicesResponse]> {
+    func turnOnEntity(entity: Entity) -> Promise<[Entity]> {
         return CallService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entity.ID])
     }
 
-    func turnOff(entityId: String) -> Promise<[ServicesResponse]> {
+    func turnOff(entityId: String) -> Promise<[Entity]> {
         return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entityId])
     }
 
-    func turnOffEntity(entity: Entity) -> Promise<[ServicesResponse]> {
+    func turnOffEntity(entity: Entity) -> Promise<[Entity]> {
         return CallService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entity.ID])
     }
 
-    func toggle(entityId: String) -> Promise<[ServicesResponse]> {
+    func toggle(entityId: String) -> Promise<[Entity]> {
         return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
     }
 
-    func toggleEntity(entity: Entity) -> Promise<[ServicesResponse]> {
+    func toggleEntity(entity: Entity) -> Promise<[Entity]> {
         return CallService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
 

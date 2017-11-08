@@ -253,6 +253,25 @@ func removeSpecialCharsFromString(text: String) -> String {
     return String(text.characters.filter {okayChars.contains($0) })
 }
 
+func convertToDictionary(text: String) -> [String: Any]? {
+    if let data = text.data(using: .utf8) {
+        do {
+            return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    return nil
+}
+
+func showAlert(title: String, message: String) {
+    let alert = UIAlertController(title: title, message: message,
+                                  preferredStyle: UIAlertControllerStyle.alert)
+    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+    UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true,
+                                                                completion: nil)
+}
+
 extension UIImage {
     func scaledToSize(_ size: CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)

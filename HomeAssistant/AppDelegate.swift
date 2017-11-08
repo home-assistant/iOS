@@ -14,6 +14,7 @@ import UserNotifications
 import AlamofireNetworkActivityIndicator
 import KeychainAccess
 import SwiftLocation
+import Alamofire
 
 let keychain = Keychain(service: "io.robbie.homeassistant")
 
@@ -201,20 +202,51 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
-        var serviceData: [String: String] = url.queryItems!
-        serviceData["sourceApplication"] = options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String
+        var serviceData: [String: String] = [:]
+        if let queryItems = url.queryItems {
+            serviceData = queryItems
+        }
         switch url.host! {
         case "call_service": // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
             let domain = url.pathComponents[1].components(separatedBy: ".")[0]
             let service = url.pathComponents[1].components(separatedBy: ".")[1]
-            _ = HomeAssistantAPI.sharedInstance.CallService(domain: domain,
-                                                            service: service,
-                                                            serviceData: serviceData)
+            HomeAssistantAPI.sharedInstance.CallService(domain: domain, service: service,
+                                                        serviceData: serviceData).then { _ -> Void in
+                showAlert(title: "Called service", message: "Successfully called \(url.pathComponents[1])")
+            }.catch { error in
+                let error = error as NSError
+                var alertTitle = "Error"
+                var alertMessage = "An unknown error occurred while attempting to call service \(url.pathComponents[1])\n\(error.localizedDescription)"
+                if error.code == 400 {
+                    alertTitle = "Invalid syntax"
+                    alertMessage = "Something was wrong with your syntax"
+                    if let errorMessage = error.userInfo["errorMessage"] as? String {
+                        alertMessage = errorMessage
+                    }
+                } else if error.code == 404 {
+                    alertTitle = "Invalid service"
+                    alertMessage = "\(url.pathComponents[1]) is not a valid service"
+                }
+                showAlert(title: alertTitle, message: alertMessage)
+            }
         case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
-            _ = HomeAssistantAPI.sharedInstance.CreateEvent(eventType: url.pathComponents[1],
-                                                            eventData: serviceData)
+            HomeAssistantAPI.sharedInstance.CreateEvent(eventType: url.pathComponents[1],
+                                                        eventData: serviceData).then { _ -> Void in
+                                                            showAlert(title: "Fired event",
+                                                                      message: "Fired event \(url.pathComponents[1])")
+            }.catch { error -> Void in
+                let alertMsg = "An unknown error occurred while attempting to fire event \(url.pathComponents[1])\n\(error.localizedDescription)"
+                showAlert(title: "Error",
+                          message: alertMsg)
+            }
         case "send_location": // homeassistant://send_location/
-            _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
+            HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
+                showAlert(title: "Sent location", message: "Sent a one shot location")
+            }.catch { error in
+                let alertMsg = "An unknown error occurred while attempting to send location\n\(error.localizedDescription)"
+                showAlert(title: "Error",
+                          message: alertMsg)
+            }
         default:
             print("Can't route", url.host!)
         }
