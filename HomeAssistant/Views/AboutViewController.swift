@@ -75,7 +75,7 @@ class AboutViewController: FormViewController {
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
                 }.onCellSelection({ _, _  in
-                    openURLStringInBrowser(url: "https://discord.gg/c5DvZ4e")
+                    openURLStringInBrowser(url: "https://discord.gg/C7fXPmt")
                 })
 
             <<< ButtonRow {
