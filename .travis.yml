@@ -32,3 +32,4 @@ notifications:
     on_success: change
     on_failure: always
     on_start: never
+rvm: 2.4.2
