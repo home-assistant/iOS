@@ -45,6 +45,11 @@ Fetches the push notification certificates and saves them as p12 files in push_c
 fastlane ios icons
 ```
 Generate proper icons for all build trains
+### ios localize
+```
+fastlane ios localize
+```
+Download latest localization files from Lokalize
 ### ios ci
 ```
 fastlane ios ci

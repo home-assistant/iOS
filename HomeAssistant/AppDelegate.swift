@@ -15,6 +15,7 @@ import AlamofireNetworkActivityIndicator
 import KeychainAccess
 import SwiftLocation
 import Alamofire
+import Lokalise
 
 let keychain = Keychain(service: "io.robbie.homeassistant")
 
@@ -28,6 +29,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         Fabric.with([Crashlytics.self])
+
+        Lokalise.shared.setAPIToken("acabbc62ec40d6b5132577ae71703d71881bb57d",
+                                    projectID: "834452985a05254348aee2.46389241")
+        Lokalise.shared.swizzleMainBundle()
 
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
@@ -81,7 +86,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {}
 
-    func applicationDidBecomeActive(_ application: UIApplication) {}
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        Lokalise.shared.checkForUpdates { (updated, error) in
+            if let error = error {
+                print("Error when updating localizations from Lokalise", error)
+            }
+            print("Localizations updated from Lokalise?", updated)
+        }
+    }
 
     func applicationWillTerminate(_ application: UIApplication) {}
 
@@ -240,7 +252,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         default:
             print("Can't route", url.host!)
             showAlert(title: L10n.UrlHandler.Error.title,
-                      message: L10n.UrlHandler.NoService.Error.message(url.host!))
+                      message: L10n.UrlHandler.NoService.message(url.host!))
         }
         return true
     }

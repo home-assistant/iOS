@@ -15,6 +15,7 @@ PODS:
   - FontAwesomeKit/MaterialDesignIcons (2.2.5):
     - FontAwesomeKit/Core
   - KeychainAccess (3.1.0)
+  - Lokalise (0.7.1)
   - MBProgressHUD (1.0.0)
   - ObjectMapper (3.0.0)
   - PromiseKit (4.4.3):
@@ -43,6 +44,7 @@ DEPENDENCIES:
   - Fabric
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
   - KeychainAccess
+  - Lokalise
   - MBProgressHUD
   - ObjectMapper
   - PromiseKit
@@ -71,6 +73,7 @@ SPEC CHECKSUMS:
   Fabric: e6be012366472553807dada21243c5ab8d904151
   FontAwesomeKit: c56e7e8db4ad4e7325ce73a8033dadf2fd4a5cb2
   KeychainAccess: 94c5540b32eabf7bc32bfb976a268e8ea05fd6da
+  Lokalise: 38bda716a23f83113b16add807ac7bad4c26884c
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   ObjectMapper: 92230db59bf8f341a5c3a3cf0b9fbdde3cf0d87f
   PromiseKit: fbb52a0d154402c57eeb6eccd36dd7724fcf6117
@@ -78,6 +81,6 @@ SPEC CHECKSUMS:
   SwiftLint: 1b670ce79284c76520f84060e87d645078fd32fa
   SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
 
-PODFILE CHECKSUM: baf8a1d097cf935771afb34b78a717f3bec5193f
+PODFILE CHECKSUM: 74b1374e0de43362b7ba0c86cb0c9a40e7afae45
 
 COCOAPODS: 1.3.1

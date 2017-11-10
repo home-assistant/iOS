@@ -29,6 +29,8 @@ platform :ios do
     ENV["MATCH_PASSWORD"] = ENV["HOMEASSISTANT_CERTIFICATE_KEY"]
     ENV["PILOT_APPLE_ID"] = ENV["HOMEASSISTANT_APPLE_ID"]
     ENV["SIGH_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
+    ENV["LOKALISE_API_TOKEN"] = ENV["HOMEASSISTANT_LOKALIZE_TOKEN"]
+    ENV["LOKALISE_PROJECT_ID"] = ENV["HOMEASSISTANT_LOKALIZE_PROJECT_ID"]
   end
 
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
@@ -72,6 +74,11 @@ platform :ios do
     appicon(appicon_path: 'HomeAssistant/Resources/Assets.xcassets', appicon_image_file: 'icons/dev.png', appicon_name: 'AppIcon.dev.appiconset', appicon_devices: [:ipad, :iphone])
     appicon(appicon_path: 'HomeAssistant/Resources/Assets.xcassets', appicon_image_file: 'icons/beta.png', appicon_name: 'AppIcon.beta.appiconset', appicon_devices: [:ipad, :iphone])
     appicon(appicon_path: 'HomeAssistant/Resources/Assets.xcassets', appicon_image_file: 'icons/release.png', appicon_devices: [:ipad, :iphone])
+  end
+
+  desc "Download latest localization files from Lokalize"
+  lane :localize do
+    lokalise(destination: 'HomeAssistant/Resources/')
   end
 
   def change_log_since_last_tag
