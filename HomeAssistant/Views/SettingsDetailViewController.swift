@@ -32,13 +32,6 @@ class SettingsDetailViewController: FormViewController {
                         prefs.setValue(row.value, forKey: "openInChrome")
                         prefs.synchronize()
             }
-            //                <<< SwitchRow("allowAllGroups") {
-            //                    $0.title = "Show all groups"
-            //                    $0.value = prefs.bool(forKey: "allowAllGroups")
-            //                    }.onChange { row in
-            //                        prefs.setValue(row.value, forKey: "allowAllGroups")
-            //                        prefs.synchronize()
-        //                }
         case "location":
             self.title = L10n.SettingsDetails.Location.title
             self.form
@@ -209,15 +202,6 @@ class SettingsDetailViewController: FormViewController {
                     self.present(alert, animated: true, completion: nil)
                 }
 
-            //                <<< ButtonRow {
-            //                    $0.title = "Import system sounds"
-            //                }.onCellSelection {_, _ in
-            //                    let list = getSoundList()
-            //                    print("system sounds list", list)
-            //                    for sound in list {
-            //                        copyFileToDirectory(sound)
-            //                    }
-        //                }
         default:
             print("Something went wrong, no settings detail group named \(detailGroup)")
         }

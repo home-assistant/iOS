@@ -18,19 +18,6 @@ func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeigh
         Crashlytics.sharedInstance().setObjectValue(iconIdentifier, forKey: "iconIdentifier")
         let fixedIconIdentifier = iconIdentifier.replacingOccurrences(of: ":", with: "-")
         let iconCode = iconCodes[fixedIconIdentifier]
-        if iconIdentifier.contains("mdi") == false || iconCode == nil {
-            print("Invalid icon requested", iconIdentifier)
-            CLSLogv("Invalid icon requested %@", getVaList([iconIdentifier]))
-            let alert = UIAlertController(title: "Invalid icon",
-                                          // swiftlint:disable:next line_length
-                message: "There is an invalid icon in your configuration. Please search your configuration files for: \(iconIdentifier) and set it to a valid Material Design Icon. Until then, this icon will be a red exclamation point and this alert will continue to display.", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-            UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
-            let iconCode = iconCodes["mdi-exclamation"]
-            let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
-            theIcon?.addAttribute(NSAttributedStringKey.foregroundColor.rawValue, value: colorWithHexString("#ff0000"))
-            return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
-        }
         CLSLogv("Requesting MaterialDesignIcon: Identifier: %@, Fixed Identifier: %@, Width: %f, Height: %f",
                 getVaList([iconIdentifier, fixedIconIdentifier, iconWidth, iconHeight]))
         let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
@@ -136,52 +123,6 @@ func movePushNotificationSounds() -> Int {
         }
     }
     return movedFiles
-}
-
-func getSoundList() -> [String] {
-    var result: [String] = []
-    let fileManager = FileManager.default
-    let enumerator: FileManager.DirectoryEnumerator = fileManager.enumerator(atPath:
-        "/System/Library/Audio/UISounds/New")!
-    for url in enumerator.allObjects {
-        if let urlString = url as? String {
-            result.append(urlString)
-        }
-    }
-    return result
-}
-
-// copy sound file to /Library/Sounds directory, it will be auto detect and played when a push notification arrive
-func copyFileToDirectory(_ fileName: String) {
-    let fileManager = FileManager.default
-
-    let libraryDir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.libraryDirectory,
-                                                         FileManager.SearchPathDomainMask.userDomainMask, true)
-    let directoryPath = "\(libraryDir.first!)/Sounds"
-    do {
-        print("Creating sounds directory at", directoryPath)
-        try fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
-    } catch let error as NSError {
-        print("Error creating /Library/Sounds directory", error)
-        return
-    }
-
-    let systemSoundPath = "/System/Library/Audio/UISounds/New/\(fileName)"
-    let notificationSoundPath = "\(directoryPath)/\(fileName)"
-
-    let fileExist = fileManager.fileExists(atPath: notificationSoundPath)
-    if fileExist {
-        do {
-            try fileManager.removeItem(atPath: notificationSoundPath)
-        } catch let error as NSError {
-            print("Error when attempting to remove item", error)
-        }
-    }
-    do {
-        try fileManager.copyItem(atPath: systemSoundPath, toPath: notificationSoundPath)
-    } catch let error as NSError {
-        print("Error when attempgint to copy item", error)
-    }
 }
 
 func listAllInstalledPushNotificationSounds() -> [String] {

@@ -80,8 +80,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
 
         self.deviceID = keychain["deviceID"]
 
-        //        checkForEmail()
-
         if showErrorConnectingMessage {
             let errDesc = (showErrorConnectingMessageError?.localizedDescription)!
             let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
@@ -93,8 +91,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
 
         let queue = DispatchQueue(label: "io.robbie.homeassistant", attributes: [])
         queue.async { () -> Void in
-            // swiftlint:disable:next line_length
-            NSLog("Attempting to discover Home Assistant instances, also publishing app to Bonjour/mDNS to hopefully have HA load the iOS/ZeroConf components.")
             self.discovery.stopDiscovery()
             self.discovery.stopPublish()
 
@@ -471,39 +467,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
         let notifyPlatformLoadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
         notifyPlatformLoadedRow.value = HomeAssistantAPI.sharedInstance.iosNotifyPlatformLoaded ? "✔️" : "✖️"
         notifyPlatformLoadedRow.updateCell()
-    }
-
-    @IBOutlet var emailInput: UITextField!
-    func emailEntered(_ sender: UIAlertAction) {
-        if let email = emailInput.text {
-            if emailInput.text != "" {
-                print("Captured email", email)
-                Crashlytics.sharedInstance().setUserEmail(email)
-                print("First launch, setting NSUserDefault.")
-                prefs.set(true, forKey: "emailSet")
-                prefs.set(email, forKey: "userEmail")
-            } else {
-                checkForEmail()
-            }
-        } else {
-            checkForEmail()
-        }
-    }
-
-    func checkForEmail() {
-        if prefs.bool(forKey: "emailSet") == false || prefs.string(forKey: "userEmail") == nil {
-            print("This is first launch, let's prompt user for email.")
-            let alert = UIAlertController(title: "Welcome",
-                message: "Please enter the email address you used to sign up for the beta program with.",
-                preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: emailEntered))
-            alert.addTextField(configurationHandler: {(textField: UITextField!) in
-                textField.placeholder = "myawesomeemail@gmail.com"
-                textField.keyboardType = .emailAddress
-                self.emailInput = textField
-            })
-            self.present(alert, animated: true, completion: nil)
-        }
     }
 
     func ResetApp() {
