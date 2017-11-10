@@ -1,10 +1,3 @@
-/*
-  Localizable.strings
-  HomeAssistant
-
-  Created by Robert Trencheny on 1/8/17.
-  Copyright © 2017 Robbie Trencheny. All rights reserved.
-*/
 "location_change_notification.title" = "Location change";
 "zone_entered_notification.message" = "%@ entered";
 "significant_location_change_notification.message" = "Significant location change detected, notifying Home Assistant";
@@ -12,11 +5,12 @@
 "manual_location_update_notification.message" = "Successfully sent a one shot location to the server";
 "manual_location_update_failed_notification.title" = "Location failed to update";
 "manual_location_update_failed_notification.message" = "Failed to send current location to server. The error was %@";
-
 "settings.navigation_bar.title" = "Settings";
 "settings.navigation_bar.about_button.title" = "About";
 "settings.connection_error_notification.title" = "Connection Error";
-"settings.connection_error_notification.message" = "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was:\n\n %@";
+"settings.connection_error_notification.message" = "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was:\
+\
+ %@";
 "settings.certificate_error_notification.title" = "Self-signed or invalid certificate detected";
 "settings.certificate_error_notification.message" = "A self-signed or invalid SSL certificate has been detected. Certificates of this kind are not supported by Home Assistant for iOS. Please tap the More Info button for further information.";
 "settings.discovery_section.header" = "Discovered Home Assistants";
@@ -34,7 +28,6 @@
 "settings.connection_error.forbidden.message" = "The password was incorrect.";
 "settings.connection_error.invalid_url.title" = "Error unwrapping URL";
 "settings.connection_error.invalid_url.message" = "Looks like your URL is invalid. Please check the format and try again.";
-
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.title" = "Name";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";
@@ -44,26 +37,18 @@
 "settings.status_section.ios_component_loaded_row.title" = "iOS Component Loaded";
 "settings.status_section.device_tracker_component_loaded_row.title" = "Device Tracker Component Loaded";
 "settings.status_section.notify_platform_loaded_row.title" = "iOS Notify Platform Loaded";
-
 "settings.device_id_section.footer" = "Device ID is the identifier used when sending location updates to Home Assistant, as well as the target to send push notifications to.";
 "settings.device_id_section.device_id_row.title" = "Device ID";
-
 "settings.general_settings_button.title" = "General Settings";
-
 "settings.details_section.enable_location_row.title" = "Enable location tracking";
 "settings.details_section.location_settings_row.title" = "Location Settings";
-
 "settings.details_section.enable_notification_row.title" = "Enable notifications";
 "settings.details_section.notification_settings_row.title" = "Notification Settings";
-
 "settings.reset_section.reset_row.title" = "Reset";
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_alert.message" = "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.";
-
-
 "settings_details.general.title" = "General Settings";
 "settings_details.general.chrome.title" = "Open links in Chrome";
-
 "settings_details.location.title" = "Location Settings";
 "settings_details.location.notifications.header" = "Notifications";
 "settings_details.location.notifications.enter.title" = "Enter Zone Notifications";
@@ -80,40 +65,32 @@
 "settings_details.location.zones.beacon_major.title" = "iBeacon Major";
 "settings_details.location.zones.beacon_minor.title" = "iBeacon Minor";
 "settings_details.location.zones.footer" = "To disable location tracking add track_ios: false to each zones settings or under customize.";
-
 "settings_details.notifications.title" = "Notification Settings";
 "settings_details.notifications.push_id_section.header" = "Push ID";
 "settings_details.notifications.push_id_section.footer" = "This is the target to use in your Home Assistant configuration. Tap to copy or share.";
 "settings_details.notifications.push_id_section.placeholder" = "Push ID";
 "settings_details.notifications.push_id_section.not_registered" = "Not registered for remote notifications";
-
 "settings_details.notifications.update_section.footer" = "Updating push settings will request the latest push actions and categories from Home Assistant.";
 "settings_details.notifications.update_section.button.title" = "Update push settings";
 "settings_details.notifications.update_section.updated_alert.title" = "Settings Imported";
 "settings_details.notifications.update_section.updated_alert.message" = "Push settings imported from Home Assistant.";
-
 "settings_details.notifications.sounds_section.footer" = "Custom push notification sounds can be added via iTunes.";
 "settings_details.notifications.sounds_section.button.title" = "Import Sounds";
 "settings_details.notifications.sounds_section.imported_alert.title" = "Sounds Imported";
 "settings_details.notifications.sounds_section.imported_alert.message" = "%d sounds were imported. Please restart your phone to complete the import.";
-
 "settings_details.notifications.badge_section.button.title" = "Reset badge to 0";
 "settings_details.notifications.badge_section.reset_alert.title" = "Badge reset";
 "settings_details.notifications.badge_section.reset_alert.message" = "The badge has been reset to 0.";
-
-
-
-"permissions.location.message" = "We use this to inform\r\nHome Assistant of your device location and state.";
-"permissions.notification.message" = "We use this to let you\r\nsend notifications to your device.";
-
+"permissions.location.message" = "We use this to inform\r\
+Home Assistant of your device location and state.";
+"permissions.notification.message" = "We use this to let you\r\
+send notifications to your device.";
 "devices_map.title" = "Devices & Zones";
 "devices_map.map_types.standard" = "Standard";
 "devices_map.map_types.hybrid" = "Hybrid";
 "devices_map.map_types.satellite" = "Satellite";
 "devices_map.battery_label" = "Battery";
-
 "ok_label" = "OK";
-
 "about.title" = "About";
 "about.logo.app_title" = "Home Assistant for iOS";
 "about.logo.tagline" = "Awaken Your Home";
@@ -126,17 +103,17 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant on Facebook";
 "about.github.title" = "GitHub";
 "about.github_issue_tracker.title" = "GitHub Issue Tracker";
-
 "url_handler.error.title" = "Error";
 "url_handler.no_service.message" = "%@ is not a valid route";
 "url_handler.call_service.success.title" = "Called service";
 "url_handler.call_service.success.message" = "Successfully called %@";
-"url_handler.call_service.error.message" = "An error occurred while attempting to call service %@\n%@";
-
+"url_handler.call_service.error.message" = "An error occurred while attempting to call service %@\
+%@";
 "url_handler.fire_event.success.title" = "Fired event";
 "url_handler.fire_event.success.message" = "Successfully fired event %@";
-"url_handler.fire_event.error.message" = "An error occurred while attempting to fire event %@\n%@";
-
+"url_handler.fire_event.error.message" = "An error occurred while attempting to fire event %@\
+%@";
 "url_handler.send_location.success.title" = "Sent location";
 "url_handler.send_location.success.message" = "Sent a one shot location";
-"url_handler.send_location.error.message" = "An unknown error occurred while attempting to send location\n%@";
+"url_handler.send_location.error.message" = "An unknown error occurred while attempting to send location\
+%@";
