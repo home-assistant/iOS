@@ -1,32 +1,21 @@
-New Features:
+Summer is over, school is back in session, that means it's well past time for a big Home Assistant for iOS update! We are back on track and working on pumping out new features and squashing bugs once more. Apologies for the lull there in the summer.
 
-  - Add a reset function to clear out credentials and device ID, resetting the app to its fresh state
-  - Add background fetch so battery updates even more frequently than before
-  - Add a new notification for background fetch
-  - Initial iBeacon support. Note: Need some features added to Home Assistant for this, expect this to be activated this weekend w/ 0.45.0
-  - Add location update via background fetch notification
-  - Camera notification content extension supports play/pause controls
-  - Map is no longer a static image which makes it look much better
-  - Map supports multiple pins. Look for updated docs in the next day or two describing how to do this
-  - Map supports customization of features via the push payload
+Here's what's new in this version:
 
-Fixes:
+- iPhone X compatibility (IMHO HA looks super slick on it)
+- Default camera category attachment content-type to JPEG
+- Status bar color changes with frontend theme color
+- Support landscape orientation
+- Improved permission dialogs
+- Improve API communication with Home Assistant
+- Change chat support link from Gitter to Discord
+- Add the version string to the about page
+- Our first translation: German!
+- Improve location management
+- Swift 4
+- Removed a bunch of stale code and dependencies
+- Removed native UI. It's web view only from here on out since Home Assistant adds new components/platforms too frequently for native UI to keep up
+- Lots of web view improvements around sizing/layout and logic
+- Status bar improvements for landscape and sizing issues
 
-  - Notification actions didn't work if activationMode was set to background and app had been terminated
-  - Significant Location Updates correctly send a notification (if you have that enabled)
-  - Significant Location Updates didn't work after app termination
-  - Fix weblinks so they open in external browser
-  - General Settings is now correctly hidden if you don't have Chrome installed and shown if you do
-  - Open in Chrome preference was continually being overwritten at app launch
-  - Send location during background fetch only if location is enabled, otherwise just update device state (i.e. battery)
-  - Web view contents aren't cut off at the bottom anymore
-
-Misc:
-
-  - Disable entity picture downloading for now, should speed up startup and most operations
-  - Continue localization work. German is coming up this week, French shortly thereafter!
-  - Changed to a new icon
-  - Add a space to the display name so notifications look better at the expense of a truncated homescreen name
-  - Status bar is now Home Assistant blue
-  - Set color of toolbar items to Home Assistant blue
-  - Remove old dependencies to cut down app size
+Don't forget to leave an updated review as iOS 11 resets reviews with every new version. Thanks!

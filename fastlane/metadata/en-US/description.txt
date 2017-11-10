@@ -7,10 +7,11 @@ Home Assistant is an open-source home automation platform running on Python 3. S
 - Arduino
 - Belkin WeMo
 - Dark Sky
-- Digital Ocean
-- Ecobee
+- ecobee
+- Google Assistant
 - Google Cast
 - IFTTT
+- IKEA Trådfri (Tradfri)
 - Kodi/XBMC
 - MQTT
 - MySensors
@@ -23,4 +24,4 @@ Home Assistant is an open-source home automation platform running on Python 3. S
 - Wink
 - Z-Wave
 
-Home Assistant for iOS requires an iPhone running iOS 9.3 or later and a previously configured Home Assistant instance running on a server.
+Home Assistant for iOS requires an iPhone running iOS 9.3 or later and a previously configured Home Assistant instance. The instance must be accessible from the Internet and secured with a valid, non self-signed, SSL certificate for location tracking. Basic notifications work without external access.

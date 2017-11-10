@@ -50,6 +50,11 @@ Generate proper icons for all build trains
 fastlane ios localize
 ```
 Download latest localization files from Lokalize
+### ios update_lokalise
+```
+fastlane ios update_lokalise
+```
+
 ### ios ci
 ```
 fastlane ios ci

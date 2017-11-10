@@ -62,6 +62,9 @@ fastlane/screenshots
 # scan temporary files
 fastlane/test_output
 fastlane/keys
+fastlane/metadata/trade_representative_contact_information/
+fastlane/metadata/review_information/
+
 env.sh
 
 push_certs/*

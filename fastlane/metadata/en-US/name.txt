@@ -1,1 +1,1 @@
-Home Assistant — Open Source Home Automation
+Home Assistant for iOS

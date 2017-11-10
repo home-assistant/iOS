@@ -81,6 +81,14 @@ platform :ios do
     lokalise(destination: 'HomeAssistant/Resources/')
   end
 
+  lane :update_lokalise do
+    lokalise_metadata(
+        action: "update_lokalise",
+        add_languages: true,
+        override_translation: true
+    )
+  end
+
   def change_log_since_last_tag
     # http://git-scm.com/docs/pretty-formats
     # <short hash> <commit title>
