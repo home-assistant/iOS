@@ -212,43 +212,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let service = url.pathComponents[1].components(separatedBy: ".")[1]
             HomeAssistantAPI.sharedInstance.CallService(domain: domain, service: service,
                                                         serviceData: serviceData).then { _ -> Void in
-                showAlert(title: "Called service", message: "Successfully called \(url.pathComponents[1])")
+                showAlert(title: L10n.UrlHandler.CallService.Success.title,
+                          message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
             }.catch { error in
-                let error = error as NSError
-                var alertTitle = "Error"
-                var alertMessage = "An unknown error occurred while attempting to call service \(url.pathComponents[1])\n\(error.localizedDescription)"
-                if error.code == 400 {
-                    alertTitle = "Invalid syntax"
-                    alertMessage = "Something was wrong with your syntax"
-                    if let errorMessage = error.userInfo["errorMessage"] as? String {
-                        alertMessage = errorMessage
-                    }
-                } else if error.code == 404 {
-                    alertTitle = "Invalid service"
-                    alertMessage = "\(url.pathComponents[1]) is not a valid service"
-                }
-                showAlert(title: alertTitle, message: alertMessage)
+                showAlert(title: L10n.UrlHandler.Error.title,
+                          message: L10n.UrlHandler.CallService.Error.message(url.pathComponents[1],
+                                                                             error.localizedDescription))
             }
         case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
             HomeAssistantAPI.sharedInstance.CreateEvent(eventType: url.pathComponents[1],
                                                         eventData: serviceData).then { _ -> Void in
-                                                            showAlert(title: "Fired event",
-                                                                      message: "Fired event \(url.pathComponents[1])")
+                showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
+                          message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
             }.catch { error -> Void in
-                let alertMsg = "An unknown error occurred while attempting to fire event \(url.pathComponents[1])\n\(error.localizedDescription)"
-                showAlert(title: "Error",
-                          message: alertMsg)
+                showAlert(title: L10n.UrlHandler.Error.title,
+                          message: L10n.UrlHandler.FireEvent.Error.message(url.pathComponents[1],
+                                                                           error.localizedDescription))
             }
         case "send_location": // homeassistant://send_location/
             HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
-                showAlert(title: "Sent location", message: "Sent a one shot location")
+                showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
+                          message: L10n.UrlHandler.SendLocation.Success.message)
             }.catch { error in
-                let alertMsg = "An unknown error occurred while attempting to send location\n\(error.localizedDescription)"
-                showAlert(title: "Error",
-                          message: alertMsg)
+                showAlert(title: L10n.UrlHandler.Error.title,
+                          message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription))
             }
         default:
             print("Can't route", url.host!)
+            showAlert(title: L10n.UrlHandler.Error.title,
+                      message: L10n.UrlHandler.NoService.Error.message(url.host!))
         }
         return true
     }
@@ -268,7 +260,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                                                zone: nil)
             }) { (_, _, error) -> Void in
                 // something went wrong. request will be cancelled automatically
-                NSLog("Something went wrong when trying to get significant location updates! Error was: @%",
+                NSLog("Error during significant location update registration: @%",
                       error.localizedDescription)
                 Crashlytics.sharedInstance().recordError(error)
             }

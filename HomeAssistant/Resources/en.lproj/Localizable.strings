@@ -126,3 +126,17 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant on Facebook";
 "about.github.title" = "GitHub";
 "about.github_issue_tracker.title" = "GitHub Issue Tracker";
+
+"url_handler.error.title" = "Error";
+"url_handler.no_service.message" = "%@ is not a valid route";
+"url_handler.call_service.success.title" = "Called service";
+"url_handler.call_service.success.message" = "Successfully called %@";
+"url_handler.call_service.error.message" = "An error occurred while attempting to call service %@\n%@";
+
+"url_handler.fire_event.success.title" = "Fired event";
+"url_handler.fire_event.success.message" = "Successfully fired event %@";
+"url_handler.fire_event.error.message" = "An error occurred while attempting to fire event %@\n%@";
+
+"url_handler.send_location.success.title" = "Sent location";
+"url_handler.send_location.success.message" = "Sent a one shot location";
+"url_handler.send_location.error.message" = "An unknown error occurred while attempting to send location\n%@";

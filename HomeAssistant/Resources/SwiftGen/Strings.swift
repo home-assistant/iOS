@@ -469,6 +469,76 @@ enum L10n {
     static let message = L10n.tr("Localizable", "significant_location_change_notification.message")
   }
 
+  enum UrlHandler {
+
+    enum CallService {
+
+      enum Error {
+        /// An error occurred while attempting to call service %@\n%@
+        static func message(_ p1: String, _ p2: String) -> String {
+          return L10n.tr("Localizable", "url_handler.call_service.error.message", p1, p2)
+        }
+      }
+
+      enum Success {
+        /// Successfully called %@
+        static func message(_ p1: String) -> String {
+          return L10n.tr("Localizable", "url_handler.call_service.success.message", p1)
+        }
+        /// Called service
+        static let title = L10n.tr("Localizable", "url_handler.call_service.success.title")
+      }
+    }
+
+    enum Error {
+      /// Error
+      static let title = L10n.tr("Localizable", "url_handler.error.title")
+    }
+
+    enum FireEvent {
+
+      enum Error {
+        /// An error occurred while attempting to fire event %@\n%@
+        static func message(_ p1: String, _ p2: String) -> String {
+          return L10n.tr("Localizable", "url_handler.fire_event.error.message", p1, p2)
+        }
+      }
+
+      enum Success {
+        /// Successfully fired event %@
+        static func message(_ p1: String) -> String {
+          return L10n.tr("Localizable", "url_handler.fire_event.success.message", p1)
+        }
+        /// Fired event
+        static let title = L10n.tr("Localizable", "url_handler.fire_event.success.title")
+      }
+    }
+
+    enum NoService {
+      /// %@ is not a valid route
+      static func message(_ p1: String) -> String {
+        return L10n.tr("Localizable", "url_handler.no_service.message", p1)
+      }
+    }
+
+    enum SendLocation {
+
+      enum Error {
+        /// An unknown error occurred while attempting to send location\n%@
+        static func message(_ p1: String) -> String {
+          return L10n.tr("Localizable", "url_handler.send_location.error.message", p1)
+        }
+      }
+
+      enum Success {
+        /// Sent a one shot location
+        static let message = L10n.tr("Localizable", "url_handler.send_location.success.message")
+        /// Sent location
+        static let title = L10n.tr("Localizable", "url_handler.send_location.success.title")
+      }
+    }
+  }
+
   enum ZoneEnteredNotification {
     /// %@ entered
     static func message(_ p1: String) -> String {
