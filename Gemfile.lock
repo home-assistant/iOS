@@ -69,7 +69,7 @@ GEM
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
     fastimage (2.1.0)
-    fastlane (2.64.0)
+    fastlane (2.64.1)
       CFPropertyList (>= 2.3, < 3.0.0)
       addressable (>= 2.3, < 3.0.0)
       babosa (>= 1.0.2, < 2.0.0)
@@ -99,7 +99,7 @@ GEM
       terminal-table (>= 1.4.5, < 2.0.0)
       tty-screen (~> 0.5.0)
       word_wrap (~> 1.0.0)
-      xcodeproj (>= 1.5.0, < 2.0.0)
+      xcodeproj (>= 1.5.2, < 2.0.0)
       xcpretty (>= 0.2.4, < 1.0.0)
       xcpretty-travis-formatter (>= 0.0.3)
     fastlane-plugin-appicon (0.10.0)
@@ -117,7 +117,7 @@ GEM
       mime-types (~> 3.0)
       representable (~> 3.0)
       retriable (>= 2.0, < 4.0)
-    googleauth (0.6.1)
+    googleauth (0.6.2)
       faraday (~> 0.12)
       jwt (>= 1.4, < 3.0)
       logging (~> 2.0)
@@ -208,4 +208,4 @@ DEPENDENCIES
   synx
 
 BUNDLED WITH
-   1.15.4
+   1.16.0
