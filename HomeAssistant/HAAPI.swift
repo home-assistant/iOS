@@ -119,6 +119,13 @@ public class HomeAssistantAPI {
 
         self.manager = Alamofire.SessionManager(configuration: configuration)
 
+        if #available(iOS 10, *) {
+            UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
+                prefs.setValue((settings.authorizationStatus == UNAuthorizationStatus.authorized),
+                               forKey: "notificationsEnabled")
+            })
+        }
+
         return
 
     }
