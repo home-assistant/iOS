@@ -60,31 +60,30 @@
 "settings_details.location.zones.enter_exit_tracked.title" = "Enter/exit tracked";
 "settings_details.location.zones.location.title" = "Locatie";
 "settings_details.location.zones.radius.title" = "Radius";
-"settings_details.location.zones.beacon.prop_not_set.value" = "Not set";
+"settings_details.location.zones.beacon.prop_not_set.value" = "Niet ingesteld";
 "settings_details.location.zones.beacon_uuid.title" = "iBeacon UUID";
-"settings_details.location.zones.beacon_major.title" = "iBeacon Major";
-"settings_details.location.zones.beacon_minor.title" = "iBeacon Minor";
-"settings_details.location.zones.footer" = "To disable location tracking add track_ios: false to each zones settings or under customize.";
-"settings_details.notifications.title" = "Notification Settings";
+"settings_details.location.zones.beacon_major.title" = "Grote iBeacon";
+"settings_details.location.zones.beacon_minor.title" = "Kleine iBeacon";
+"settings_details.location.zones.footer" = "Om het bijhouden van locaties uit te schakelen, voegt u track_ios: false toe aan elke zone-instelling of onder customize.";
+"settings_details.notifications.title" = "Notificatie instellingen";
 "settings_details.notifications.push_id_section.header" = "Push-ID";
 "settings_details.notifications.push_id_section.footer" = "This is the target to use in your Home Assistant configuration. Tap to copy or share.";
 "settings_details.notifications.push_id_section.placeholder" = "Push-ID";
-"settings_details.notifications.push_id_section.not_registered" = "Not registered for remote notifications";
-"settings_details.notifications.update_section.footer" = "Updating push settings will request the latest push actions and categories from Home Assistant.";
+"settings_details.notifications.push_id_section.not_registered" = "Niet geregistreerd voor externe meldingen";
+"settings_details.notifications.update_section.footer" = "Bij het bijwerken van push-instellingen worden de nieuwste push-acties en categorieën bij Home Assistant aangevraagd.";
 "settings_details.notifications.update_section.button.title" = "Push-instellingen updaten";
 "settings_details.notifications.update_section.updated_alert.title" = "Instellingen geïmporteerd";
 "settings_details.notifications.update_section.updated_alert.message" = "Push instellingen geïmporteerd vanuit Home Assistent.";
-"settings_details.notifications.sounds_section.footer" = "Custom push notification sounds can be added via iTunes.";
+"settings_details.notifications.sounds_section.footer" = "Aangepaste pushberichtgeluiden kunnen via iTunes worden toegevoegd.";
 "settings_details.notifications.sounds_section.button.title" = "Geluiden importeren";
 "settings_details.notifications.sounds_section.imported_alert.title" = "Geluiden geïmporteerd";
-"settings_details.notifications.sounds_section.imported_alert.message" = "%d sounds were imported. Please restart your phone to complete the import.";
+"settings_details.notifications.sounds_section.imported_alert.message" = "%d geluiden zijn geïmporteerd. Herstart je telefoon om het importeren te voltooien.";
 "settings_details.notifications.badge_section.button.title" = "Zet badge terug naar 0";
 "settings_details.notifications.badge_section.reset_alert.title" = "Badge herstellen";
 "settings_details.notifications.badge_section.reset_alert.message" = "De badge is hersteld naar 0";
-"permissions.location.message" = "We use this to inform\r\
-Home Assistant of your device location and state.";
-"permissions.notification.message" = "We use this to let you\r\
-send notifications to your device.";
+"permissions.location.message" = "We gebruiken dit om Home Assistant te informeren \ r \
+ over de locatie en status van uw apparaat.";
+"permissions.notification.message" = "We gebruiken dit om notificaties naar je apparaat te sturen.";
 "devices_map.title" = "Apparaten & Zones";
 "devices_map.map_types.standard" = "Standaard";
 "devices_map.map_types.hybrid" = "Hybride";
@@ -109,22 +108,22 @@ send notifications to your device.";
 "url_handler.call_service.success.message" = "Successfully called %@";
 "url_handler.call_service.error.message" = "An error occurred while attempting to call service %@\
 %@";
-"url_handler.fire_event.success.title" = "Fired event";
-"url_handler.fire_event.success.message" = "Successfully fired event %@";
-"url_handler.fire_event.error.message" = "An error occurred while attempting to fire event %@\
-%@";
+"url_handler.fire_event.success.title" = "Gebeurtenis uitgevoerd";
+"url_handler.fire_event.success.message" = "Gebeurtenis met succes uitgevoerd %@";
+"url_handler.fire_event.error.message" = "Er is een fout opgetreden bij een poging om gebeurtenis %@ uit te voeren \
+ %@";
 "url_handler.send_location.success.title" = "Locatie verzonden";
 "url_handler.send_location.success.message" = "Eenmalige locatie verstuurd";
 "url_handler.send_location.error.message" = "An unknown error occurred while attempting to send location\
 %@";
-"settings_details.notifications.prompt_to_open_urls.title" = "Confirm before opening URL";
-"yes_label" = "Yes";
-"no_label" = "No";
-"alerts.open_url_from_notification.title" = "Open URL?";
-"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
-"settings_details.location.updates.header" = "Update sources";
-"settings_details.location.updates.footer" = "Manual location updates can always be triggered";
+"settings_details.notifications.prompt_to_open_urls.title" = "Bevestig vóór het openen van URL";
+"yes_label" = "Ja";
+"no_label" = "Nee";
+"alerts.open_url_from_notification.title" = "URL openen?";
+"alerts.open_url_from_notification.message" = "Open URL ( %@ ) uit melding?";
+"settings_details.location.updates.header" = "Bronnen bijwerken";
+"settings_details.location.updates.footer" = "Handmatige locatie-updates kunnen altijd worden geactiveerd";
 "settings_details.location.updates.zone.title" = "Zone enter/exit";
-"settings_details.location.updates.background.title" = "Background fetch";
-"settings_details.location.updates.significant.title" = "Significant location change";
-"settings_details.location.updates.notification.title" = "Push notification request";
+"settings_details.location.updates.background.title" = "Op achtergrond ophalen";
+"settings_details.location.updates.significant.title" = "Aanzienlijke locatiewijziging";
+"settings_details.location.updates.notification.title" = "Push notificatieverzoek";
