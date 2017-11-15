@@ -334,7 +334,19 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                        willPresent notification: UNNotification,
                                        // swiftlint:disable:next line_length
                                        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("Received notification!")
-        return completionHandler([.alert, .badge, .sound])
+        var methods: UNNotificationPresentationOptions = [.alert, .badge, .sound]
+        if let presentationOptions = notification.request.content.userInfo["presentation_options"] as? [String] {
+            methods = []
+            if presentationOptions.contains("sound") || notification.request.content.sound != nil {
+                methods.insert(.sound)
+            }
+            if presentationOptions.contains("badge") {
+                methods.insert(.badge)
+            }
+            if presentationOptions.contains("alert") {
+                methods.insert(.alert)
+            }
+        }
+        return completionHandler(methods)
     }
 }
