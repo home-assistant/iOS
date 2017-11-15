@@ -66,6 +66,7 @@
 "settings_details.location.zones.beacon_minor.title" = "iBeacon Minor";
 "settings_details.location.zones.footer" = "To disable location tracking add track_ios: false to each zones settings or under customize.";
 "settings_details.notifications.title" = "Notification Settings";
+"settings_details.notifications.prompt_to_open_urls.title" = "Confirm before opening URL";
 "settings_details.notifications.push_id_section.header" = "Push ID";
 "settings_details.notifications.push_id_section.footer" = "This is the target to use in your Home Assistant configuration. Tap to copy or share.";
 "settings_details.notifications.push_id_section.placeholder" = "Push ID";
@@ -91,6 +92,8 @@ send notifications to your device.";
 "devices_map.map_types.satellite" = "Satellite";
 "devices_map.battery_label" = "Battery";
 "ok_label" = "OK";
+"yes_label" = "Yes";
+"no_label" = "No";
 "about.title" = "About";
 "about.logo.app_title" = "Home Assistant for iOS";
 "about.logo.tagline" = "Awaken Your Home";
@@ -117,3 +120,5 @@ send notifications to your device.";
 "url_handler.send_location.success.message" = "Sent a one shot location";
 "url_handler.send_location.error.message" = "An unknown error occurred while attempting to send location\
 %@";
+"alerts.open_url_from_notification.title" = "Open URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";

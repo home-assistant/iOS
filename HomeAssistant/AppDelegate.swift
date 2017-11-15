@@ -54,8 +54,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if prefs.object(forKey: "openInChrome") == nil && OpenInChromeController().isChromeInstalled() {
             prefs.setValue(true, forKey: "openInChrome")
-            prefs.synchronize()
         }
+        
+        if prefs.object(forKey: "confirmBeforeOpeningUrl") == nil {
+            prefs.setValue(true, forKey: "confirmBeforeOpeningUrl")
+        }
+        
+        prefs.synchronize()
 
         registerForSignificantLocationUpdates()
 
@@ -111,7 +116,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Error when trying to register for push", error)
         Crashlytics.sharedInstance().recordError(error)
     }
-
+    
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
@@ -289,8 +294,33 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         if let textInput = response as? UNTextInputNotificationResponse {
             userText = textInput.userText
         }
+        let userInfo = response.notification.request.content.userInfo
+        if let openUrl = userInfo["url"] as? String,
+            let url = URL(string: openUrl) {
+            if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
+                let alert = UIAlertController(title: L10n.Alerts.OpenUrlFromNotification.title,
+                                              message: L10n.Alerts.OpenUrlFromNotification.message(openUrl),
+                                              preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: L10n.noLabel, style: UIAlertActionStyle.default, handler: nil))
+                alert.addAction(UIAlertAction(title: L10n.yesLabel, style: UIAlertActionStyle.default, handler: { _ in
+                    UIApplication.shared.open(url, options: [:],
+                                              completionHandler: nil)
+                }))
+                var rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                if let navigationController = rootViewController as? UINavigationController {
+                    rootViewController = navigationController.viewControllers.first
+                }
+                if let tabBarController = rootViewController as? UITabBarController {
+                    rootViewController = tabBarController.selectedViewController
+                }
+                rootViewController?.present(alert, animated: true, completion: nil)
+            } else {
+                UIApplication.shared.open(url, options: [:],
+                                          completionHandler: nil)
+            }
+        }
         HomeAssistantAPI.sharedInstance.handlePushAction(identifier: response.actionIdentifier,
-                                                         userInfo: response.notification.request.content.userInfo,
+                                                         userInfo: userInfo,
                                                          userInput: userText).then { _ in
                                                             completionHandler()
             }.catch { err -> Void in

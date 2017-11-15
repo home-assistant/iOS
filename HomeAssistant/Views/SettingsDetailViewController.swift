@@ -140,6 +140,14 @@ class SettingsDetailViewController: FormViewController {
         case "notifications":
             self.title = "Notification Settings"
             self.form
+                +++ Section()
+                <<< SwitchRow("confirmBeforeOpeningUrl") {
+                    $0.title = L10n.SettingsDetails.Notifications.PromptToOpenUrls.title
+                    $0.value = prefs.bool(forKey: "confirmBeforeOpeningUrl")
+                }.onChange { row in
+                    prefs.setValue(row.value, forKey: "confirmBeforeOpeningUrl")
+                    prefs.synchronize()
+                }
                 +++ Section(header: L10n.SettingsDetails.Notifications.PushIdSection.header,
                             footer: L10n.SettingsDetails.Notifications.PushIdSection.footer)
                 <<< TextAreaRow {

@@ -7,8 +7,12 @@ import Foundation
 
 // swiftlint:disable explicit_type_interface identifier_name line_length nesting type_body_length type_name
 enum L10n {
+  /// No
+  static let noLabel = L10n.tr("Localizable", "no_label")
   /// OK
   static let okLabel = L10n.tr("Localizable", "ok_label")
+  /// Yes
+  static let yesLabel = L10n.tr("Localizable", "yes_label")
 
   enum About {
     /// About
@@ -64,6 +68,18 @@ enum L10n {
     enum Website {
       /// Website
       static let title = L10n.tr("Localizable", "about.website.title")
+    }
+  }
+
+  enum Alerts {
+
+    enum OpenUrlFromNotification {
+      /// Open URL (%@) found in notification?
+      static func message(_ p1: String) -> String {
+        return L10n.tr("Localizable", "alerts.open_url_from_notification.message", p1)
+      }
+      /// Open URL?
+      static let title = L10n.tr("Localizable", "alerts.open_url_from_notification.title")
     }
   }
 
@@ -413,6 +429,11 @@ enum L10n {
           /// Badge reset
           static let title = L10n.tr("Localizable", "settings_details.notifications.badge_section.reset_alert.title")
         }
+      }
+
+      enum PromptToOpenUrls {
+        /// Confirm before opening URL
+        static let title = L10n.tr("Localizable", "settings_details.notifications.prompt_to_open_urls.title")
       }
 
       enum PushIdSection {
