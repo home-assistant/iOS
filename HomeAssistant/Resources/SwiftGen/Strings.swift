@@ -369,6 +369,8 @@ enum L10n {
       }
 
       enum Updates {
+        /// Manual location updates can always be triggered
+        static let footer = L10n.tr("Localizable", "settings_details.location.updates.footer")
         /// Update sources
         static let header = L10n.tr("Localizable", "settings_details.location.updates.header")
 
