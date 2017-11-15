@@ -463,6 +463,9 @@
 		B640485D1FBBBB1C00F0CCCD /* nl-NL */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "nl-NL"; path = "nl-NL.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		B640485E1FBBBB1D00F0CCCD /* nl-NL */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "nl-NL"; path = "nl-NL.lproj/MainInterface.strings"; sourceTree = "<group>"; };
 		B640485F1FBBBB1D00F0CCCD /* nl-NL */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "nl-NL"; path = "nl-NL.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		B64048601FBBBBFA00F0CCCD /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		B64048611FBBBBFA00F0CCCD /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/MainInterface.strings"; sourceTree = "<group>"; };
+		B64048621FBBBBFA00F0CCCD /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AboutViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeAssistantLogoView.xib; sourceTree = "<group>"; };
 		B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInChromeController.swift; sourceTree = "<group>"; };
@@ -1258,6 +1261,7 @@
 				"it-IT",
 				nl,
 				"nl-NL",
+				"en-US",
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -1919,6 +1923,7 @@
 				B64048571FBBBB0900F0CCCD /* it-IT */,
 				B640485A1FBBBB1200F0CCCD /* nl */,
 				B640485D1FBBBB1C00F0CCCD /* nl-NL */,
+				B64048601FBBBBFA00F0CCCD /* en-US */,
 			);
 			name = LaunchScreen.storyboard;
 			path = .;
@@ -1936,6 +1941,7 @@
 				B64048581FBBBB0900F0CCCD /* it-IT */,
 				B640485B1FBBBB1200F0CCCD /* nl */,
 				B640485E1FBBBB1D00F0CCCD /* nl-NL */,
+				B64048611FBBBBFA00F0CCCD /* en-US */,
 			);
 			name = MainInterface.storyboard;
 			sourceTree = "<group>";
@@ -1953,6 +1959,7 @@
 				B64048591FBBBB0A00F0CCCD /* it-IT */,
 				B640485C1FBBBB1300F0CCCD /* nl */,
 				B640485F1FBBBB1D00F0CCCD /* nl-NL */,
+				B64048621FBBBBFA00F0CCCD /* en-US */,
 			);
 			name = Localizable.strings;
 			path = .;
