@@ -118,3 +118,8 @@ an dieses Gerät gesschickt.";
 "url_handler.send_location.success.message" = "Einmaliger Standort gesendet";
 "url_handler.send_location.error.message" = "Ein unbekannter Fehler ist beim Senden des Standorts aufgetreten\
 %@";
+"settings_details.notifications.prompt_to_open_urls.title" = "Confirm before opening URL";
+"yes_label" = "Yes";
+"no_label" = "No";
+"alerts.open_url_from_notification.title" = "Open URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";

@@ -116,3 +116,8 @@
 "url_handler.send_location.success.title" = "位置已发送";
 "url_handler.send_location.success.message" = "已发送一个位置";
 "url_handler.send_location.error.message" = "尝试发送位置时发生了一个未知错误 %@";
+"settings_details.notifications.prompt_to_open_urls.title" = "Confirm before opening URL";
+"yes_label" = "Yes";
+"no_label" = "No";
+"alerts.open_url_from_notification.title" = "Open URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";

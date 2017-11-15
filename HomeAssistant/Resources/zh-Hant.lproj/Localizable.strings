@@ -111,3 +111,8 @@
 "url_handler.send_location.success.title" = "傳送座標";
 "url_handler.send_location.success.message" = "更新你的座標";
 "url_handler.send_location.error.message" = "要更新位置資訊%@時發生錯誤";
+"settings_details.notifications.prompt_to_open_urls.title" = "Confirm before opening URL";
+"yes_label" = "Yes";
+"no_label" = "No";
+"alerts.open_url_from_notification.title" = "Open URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";

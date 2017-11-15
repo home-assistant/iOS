@@ -117,3 +117,8 @@
 "url_handler.send_location.success.message" = "Enviada la ubicación";
 "url_handler.send_location.error.message" = "Se produjo un error desconocido al intentar enviar la ubicación \
  %@";
+"settings_details.notifications.prompt_to_open_urls.title" = "Confirm before opening URL";
+"yes_label" = "Yes";
+"no_label" = "No";
+"alerts.open_url_from_notification.title" = "Open URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";

@@ -117,3 +117,8 @@ send notifications to your device.";
 "url_handler.send_location.success.message" = "Sent a one shot location";
 "url_handler.send_location.error.message" = "An unknown error occurred while attempting to send location\
 %@";
+"settings_details.notifications.prompt_to_open_urls.title" = "Confirm before opening URL";
+"yes_label" = "Yes";
+"no_label" = "No";
+"alerts.open_url_from_notification.title" = "Open URL?";
+"alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
