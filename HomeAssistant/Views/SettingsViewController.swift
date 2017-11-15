@@ -85,7 +85,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
                                           message: L10n.Settings.ConnectionErrorNotification.message(errDesc),
                                           preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
 
@@ -133,7 +133,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                             let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
                             let alert = UIAlertController(title: title, message: message,
                                                           preferredStyle: UIAlertControllerStyle.alert)
-                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
                             self.present(alert, animated: true, completion: nil)
                         } else {
                             self.baseURL = cleanUrl.cleanedURL
@@ -200,7 +200,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                                 let alert = UIAlertController(title: title,
                                                               message: message,
                                                               preferredStyle: UIAlertControllerStyle.alert)
-                                alert.addAction(UIAlertAction(title: "OK",
+                                alert.addAction(UIAlertAction(title: L10n.okLabel,
                                                               style: UIAlertActionStyle.default,
                                                               handler: nil))
                                 self.present(alert, animated: true, completion: nil)
@@ -211,7 +211,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                             let alert = UIAlertController(title: L10n.Settings.ConnectionError.InvalidUrl.title,
                                                           message: errMsg,
                                                           preferredStyle: UIAlertControllerStyle.alert)
-                            alert.addAction(UIAlertAction(title: "OK",
+                            alert.addAction(UIAlertAction(title: L10n.okLabel,
                                                           style: UIAlertActionStyle.default,
                                                           handler: nil))
                             self.present(alert, animated: true, completion: nil)
@@ -316,7 +316,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                                 let alert = UIAlertController(title: L10n.Settings.ConnectionSection.ErrorEnablingNotifications.title,
                                                               message: L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message,
                                                               preferredStyle: UIAlertControllerStyle.alert)
-                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default,
+                                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
                                                               handler: nil))
                                 self.present(alert, animated: true, completion: nil)
                             } else {

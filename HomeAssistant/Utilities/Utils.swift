@@ -208,7 +208,7 @@ func convertToDictionary(text: String) -> [String: Any]? {
 func showAlert(title: String, message: String) {
     let alert = UIAlertController(title: title, message: message,
                                   preferredStyle: UIAlertControllerStyle.alert)
-    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
     UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true,
                                                                 completion: nil)
 }
