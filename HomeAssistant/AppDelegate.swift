@@ -36,7 +36,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             resumeRegionMonitoring()
         }
 
-        UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+        if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
+            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+        }
 
         NetworkActivityIndicatorManager.shared.isEnabled = true
 
@@ -55,11 +57,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if prefs.object(forKey: "openInChrome") == nil && OpenInChromeController().isChromeInstalled() {
             prefs.setValue(true, forKey: "openInChrome")
         }
-        
+
         if prefs.object(forKey: "confirmBeforeOpeningUrl") == nil {
             prefs.setValue(true, forKey: "confirmBeforeOpeningUrl")
         }
-        
+
+        if prefs.object(forKey: "locationUpdateOnZone") == nil {
+            prefs.set(true, forKey: "locationUpdateOnZone")
+        }
+
+        if prefs.object(forKey: "locationUpdateOnBackgroundFetch") == nil {
+            prefs.set(true, forKey: "locationUpdateOnBackgroundFetch")
+        }
+
+        if prefs.object(forKey: "locationUpdateOnSignificant") == nil {
+            prefs.set(true, forKey: "locationUpdateOnSignificant")
+        }
+
+        if prefs.object(forKey: "locationUpdateOnNotification") == nil {
+            prefs.set(true, forKey: "locationUpdateOnNotification")
+        }
+
         prefs.synchronize()
 
         registerForSignificantLocationUpdates()
@@ -122,15 +140,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("Received remote notification in completion handler!")
 
-        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
-                                              deviceID: keychain["deviceID"])
-
         if let userInfoDict = userInfo as? [String: Any] {
             if let hadict = userInfoDict["homeassistant"] as? [String: String] {
                 if let command = hadict["command"] {
                     switch command {
                     case "request_location_update":
+                        if prefs.bool(forKey: "locationUpdateOnNotification") == false {
+                            completionHandler(UIBackgroundFetchResult.noData)
+                        }
                         print("Received remote request to provide a location update")
+                        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
+                                                              password: keychain["apiPassword"],
+                                                              deviceID: keychain["deviceID"])
                         HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
                             print("Did successfully send location when requested via APNS?", success)
                             if success == true {
@@ -160,6 +181,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") == false {
+            completionHandler(UIBackgroundFetchResult.noData)
+        }
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short)
         print("Background fetch activated at \(timestamp)!")
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],

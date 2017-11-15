@@ -35,6 +35,40 @@ class SettingsDetailViewController: FormViewController {
         case "location":
             self.title = L10n.SettingsDetails.Location.title
             self.form
+                +++ Section(header: L10n.SettingsDetails.Location.Updates.header,
+                            footer: L10n.SettingsDetails.Location.Updates.footer)
+                <<< SwitchRow {
+                        $0.title = L10n.SettingsDetails.Location.Updates.Zone.title
+                        $0.value = prefs.bool(forKey: "locationUpdateOnZone")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "locationUpdateOnZone")
+                        }
+                    })
+                <<< SwitchRow {
+                        $0.title = L10n.SettingsDetails.Location.Updates.Background.title
+                        $0.value = prefs.bool(forKey: "locationUpdateOnBackgroundFetch")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "locationUpdateOnBackgroundFetch")
+                        }
+                    })
+                <<< SwitchRow {
+                        $0.title = L10n.SettingsDetails.Location.Updates.Significant.title
+                        $0.value = prefs.bool(forKey: "locationUpdateOnSignificant")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "locationUpdateOnSignificant")
+                        }
+                    })
+                <<< SwitchRow {
+                        $0.title = L10n.SettingsDetails.Location.Updates.Notification.title
+                        $0.value = prefs.bool(forKey: "locationUpdateOnNotification")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "locationUpdateOnNotification")
+                        }
+                    })
                 +++ Section(header: L10n.SettingsDetails.Location.Notifications.header, footer: "")
                 <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Location.Notifications.Enter.title

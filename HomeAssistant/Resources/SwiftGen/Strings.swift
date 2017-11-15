@@ -368,6 +368,31 @@ enum L10n {
         }
       }
 
+      enum Updates {
+        /// Update sources
+        static let header = L10n.tr("Localizable", "settings_details.location.updates.header")
+
+        enum Background {
+          /// Background fetch
+          static let title = L10n.tr("Localizable", "settings_details.location.updates.background.title")
+        }
+
+        enum Notification {
+          /// Push notification request
+          static let title = L10n.tr("Localizable", "settings_details.location.updates.notification.title")
+        }
+
+        enum Significant {
+          /// Significant location change
+          static let title = L10n.tr("Localizable", "settings_details.location.updates.significant.title")
+        }
+
+        enum Zone {
+          /// Zone enter/exit
+          static let title = L10n.tr("Localizable", "settings_details.location.updates.zone.title")
+        }
+      }
+
       enum Zones {
         /// To disable location tracking add track_ios: false to each zones settings or under customize.
         static let footer = L10n.tr("Localizable", "settings_details.location.zones.footer")

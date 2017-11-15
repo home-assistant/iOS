@@ -112,7 +112,13 @@
 "url_handler.send_location.success.message" = "更新你的座標";
 "url_handler.send_location.error.message" = "要更新位置資訊%@時發生錯誤";
 "settings_details.notifications.prompt_to_open_urls.title" = "Confirm before opening URL";
-"yes_label" = "Yes";
-"no_label" = "No";
+"yes_label" = "是";
+"no_label" = "否";
 "alerts.open_url_from_notification.title" = "Open URL?";
 "alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
+"settings_details.location.updates.header" = "Update sources";
+"settings_details.location.updates.footer" = "Manual location updates can always be triggered";
+"settings_details.location.updates.zone.title" = "Zone enter/exit";
+"settings_details.location.updates.background.title" = "Background fetch";
+"settings_details.location.updates.significant.title" = "Significant location change";
+"settings_details.location.updates.notification.title" = "Push notification request";

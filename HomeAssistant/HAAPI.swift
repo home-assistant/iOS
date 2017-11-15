@@ -285,6 +285,9 @@ public class HomeAssistantAPI {
     }
 
     func setupZones() {
+        if prefs.bool(forKey: "locationUpdateOnZone") == false {
+            return
+        }
         if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
             if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
                 return entity.Domain == "zone"
