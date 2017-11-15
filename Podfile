@@ -16,7 +16,6 @@ target 'HomeAssistant' do
   pod 'Fabric'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
   pod 'KeychainAccess'
-  pod 'Lokalise'
   pod 'MBProgressHUD'
   pod 'ObjectMapper'
   pod 'PromiseKit'
