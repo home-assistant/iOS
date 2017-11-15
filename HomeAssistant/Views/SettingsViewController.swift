@@ -133,7 +133,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                             let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
                             let alert = UIAlertController(title: title, message: message,
                                                           preferredStyle: UIAlertControllerStyle.alert)
-                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                                          handler: nil))
                             self.present(alert, animated: true, completion: nil)
                         } else {
                             self.baseURL = cleanUrl.cleanedURL
@@ -329,12 +330,12 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                                         row.hidden = true
                                         row.updateCell()
                                         row.evaluateHidden()
-                                        let notificationSettingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
-                                        notificationSettingsRow.hidden = false
-                                        notificationSettingsRow.evaluateHidden()
-                                        let notifyPlatformLoadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
-                                        notifyPlatformLoadedRow.hidden = false
-                                        notifyPlatformLoadedRow.evaluateHidden()
+                                        let settingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
+                                        settingsRow.hidden = false
+                                        settingsRow.evaluateHidden()
+                                        let loadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
+                                        loadedRow.hidden = false
+                                        loadedRow.evaluateHidden()
                                         self.tableView.reloadData()
                                     })
                                 }

@@ -593,7 +593,8 @@ public class HomeAssistantAPI {
                                 }
                                 CLSLogv("Error on CallService() request: %@", getVaList([afError.localizedDescription]))
                                 Crashlytics.sharedInstance().recordError(afError)
-                                let customError = NSError(domain: "io.robbie.HomeAssistant", code: afError.responseCode!,
+                                let customError = NSError(domain: "io.robbie.HomeAssistant",
+                                                          code: afError.responseCode!,
                                                           userInfo: errorUserInfo)
                                 reject(customError)
                             } else {
