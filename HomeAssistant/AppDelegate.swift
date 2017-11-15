@@ -126,7 +126,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 _ = HomeAssistantAPI.sharedInstance.IdentifyDevice()
             }
         }
-
     }
 
     func application(_ application: UIApplication,
@@ -134,15 +133,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Error when trying to register for push", error)
         Crashlytics.sharedInstance().recordError(error)
     }
-    
+
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("Received remote notification in completion handler!")
 
-        if let userInfoDict = userInfo as? [String: Any] {
-            if let hadict = userInfoDict["homeassistant"] as? [String: String] {
-                if let command = hadict["command"] {
+        if let userInfoDict = userInfo as? [String: Any],
+            let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
                     switch command {
                     case "request_location_update":
                         if prefs.bool(forKey: "locationUpdateOnNotification") == false {
@@ -168,12 +166,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         print("Received unknown command via APNS!", userInfo)
                         completionHandler(UIBackgroundFetchResult.noData)
                     }
-                } else {
-                    completionHandler(UIBackgroundFetchResult.failed)
-                }
-            } else {
-                completionHandler(UIBackgroundFetchResult.failed)
-            }
         } else {
             completionHandler(UIBackgroundFetchResult.failed)
         }
