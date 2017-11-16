@@ -92,17 +92,17 @@ platform :ios do
   end
 
   desc "Download latest localization files from Lokalize"
-  lane :localize do
+  lane :update_strings do
     lokalise(destination: "HomeAssistant/Resources/", use_original: true)
   end
 
   desc "Upload iTunes Connect metadata to Lokalise"
-  lane :update_lokalise do
+  lane :update_lokalise_metadata do
     lokalise_metadata(action: "update_lokalise", override_translation: true)
   end
 
   desc "Download iTunes metadata from Lokalise and upload to iTunes Connect"
-  lane :update_itunes do
+  lane :update_itunes_metadata do
     lokalise_metadata(action: "update_itunes")
   end
 

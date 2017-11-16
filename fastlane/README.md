@@ -45,19 +45,19 @@ Fetches the push notification certificates and saves them as p12 files in push_c
 fastlane ios icons
 ```
 Generate proper icons for all build trains
-### ios localize
+### ios update_strings
 ```
-fastlane ios localize
+fastlane ios update_strings
 ```
 Download latest localization files from Lokalize
-### ios update_lokalise
+### ios update_lokalise_metadata
 ```
-fastlane ios update_lokalise
+fastlane ios update_lokalise_metadata
 ```
 Upload iTunes Connect metadata to Lokalise
-### ios update_itunes
+### ios update_itunes_metadata
 ```
-fastlane ios update_itunes
+fastlane ios update_itunes_metadata
 ```
 Download iTunes metadata from Lokalise and upload to iTunes Connect
 ### ios bump_build
