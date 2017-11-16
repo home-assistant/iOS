@@ -81,17 +81,19 @@ platform :ios do
     lokalise(destination: 'HomeAssistant/Resources/')
   end
 
+  desc "Upload iTunes Connect metadata to Lokalise"
   lane :update_lokalise do
-    lokalise_metadata(
-        action: "update_lokalise",
-        add_languages: true,
-        override_translation: true
-    )
+    lokalise_metadata(action: "update_lokalise", add_languages: true, override_translation: true)
+  end
+
+  desc "Download iTunes metadata from Lokalise and upload to iTunes Connect"
+  lane :update_itunes do
+    lokalise_metadata(action: "update_itunes")
   end
 
   def change_log_since_last_tag
     # http://git-scm.com/docs/pretty-formats
-    # <short hash> <commit title>
+    # - <short hash> <commit title>
     return changelog_from_git_commits(pretty: '- %s (%h)')
   end
 
@@ -162,7 +164,7 @@ platform :ios do
     increment_build_number
 
     # Needed so that the changelog doesn't include the version bump commit
-    change_log = changelog_from_git_commits(pretty: '- %s (%h)')
+    change_log = change_log_since_last_tag
 
     commit_version_bump(
       message: "Version bump to #{complete_version_number}",

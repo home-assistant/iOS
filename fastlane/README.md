@@ -54,7 +54,12 @@ Download latest localization files from Lokalize
 ```
 fastlane ios update_lokalise
 ```
-
+Upload iTunes Connect metadata to Lokalise
+### ios update_itunes
+```
+fastlane ios update_itunes
+```
+Download iTunes metadata from Lokalise and upload to iTunes Connect
 ### ios ci
 ```
 fastlane ios ci
