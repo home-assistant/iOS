@@ -33,32 +33,38 @@ PODS:
   - SwiftLocation (2.0.7)
 
 DEPENDENCIES:
-  - Alamofire
-  - AlamofireNetworkActivityIndicator
-  - AlamofireObjectMapper
-  - CPDAcknowledgements
-  - Crashlytics
-  - DeviceKit
-  - Eureka
-  - Fabric
+  - Alamofire (= 4.5.1)
+  - AlamofireNetworkActivityIndicator (= 2.2.0)
+  - AlamofireObjectMapper (= 5.0.0)
+  - CPDAcknowledgements (= 1.0.0)
+  - Crashlytics (= 3.9.0)
+  - DeviceKit (= 1.4.0)
+  - Eureka (= 4.0.1)
+  - Fabric (= 1.7.0)
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
-  - KeychainAccess
-  - MBProgressHUD
-  - ObjectMapper
-  - PromiseKit
-  - SwiftGen
-  - SwiftLint
-  - SwiftLocation
+  - KeychainAccess (= 3.1.0)
+  - MBProgressHUD (= 1.0.0)
+  - ObjectMapper (= 3.0.0)
+  - PromiseKit (= 4.4.3)
+  - SwiftGen (= 5.2.0)
+  - SwiftLint (= 0.23.1)
+  - SwiftLocation (from `https://github.com/hamzaansari09/SwiftLocation.git`, branch `master`)
 
 EXTERNAL SOURCES:
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
+  SwiftLocation:
+    :branch: master
+    :git: https://github.com/hamzaansari09/SwiftLocation.git
 
 CHECKOUT OPTIONS:
   FontAwesomeKit:
     :commit: e4069745624783372481bab7d163f4485931b527
     :git: https://github.com/robbiet480/FontAwesomeKit.git
+  SwiftLocation:
+    :commit: a0627e7363783217b54b44658d341317485e29a2
+    :git: https://github.com/hamzaansari09/SwiftLocation.git
 
 SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
@@ -76,8 +82,8 @@ SPEC CHECKSUMS:
   PromiseKit: fbb52a0d154402c57eeb6eccd36dd7724fcf6117
   SwiftGen: d75f6c3a1ecfed4a5ae372e477d452297efdb718
   SwiftLint: 1b670ce79284c76520f84060e87d645078fd32fa
-  SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
+  SwiftLocation: c474b51ebde74ca94d26eff005d2ebbdbb458dd9
 
-PODFILE CHECKSUM: baf8a1d097cf935771afb34b78a717f3bec5193f
+PODFILE CHECKSUM: 90f71c7848a5def53ca7b2f77f73f323ad1fd71b
 
 COCOAPODS: 1.3.1
