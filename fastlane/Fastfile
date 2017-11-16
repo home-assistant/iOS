@@ -133,8 +133,23 @@ platform :ios do
   end
 
   desc "Bump build number"
-  lane :bump do
-    update_build_number
+  lane :bump_build do
+    git_pull(only_tags: true)
+
+    increment_version_number(version_number: get_version_number)
+    increment_build_number
+
+    bump
+  end
+
+  desc "Bump version number"
+  lane :bump_version do
+    git_pull(only_tags: true)
+
+    increment_version_number
+    increment_build_number(build_number: 1)
+
+    bump
   end
 
   lane :release do
@@ -157,12 +172,7 @@ platform :ios do
     fabric_beta
   end
 
-  private_lane :update_build_number do
-    git_pull(only_tags: true)
-
-    increment_version_number(version_number: get_version_number)
-    increment_build_number
-
+  private_lane :bump do
     # Needed so that the changelog doesn't include the version bump commit
     change_log = change_log_since_last_tag
 
