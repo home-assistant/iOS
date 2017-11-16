@@ -16,8 +16,6 @@ REQUIRED_XCODE_VERSION = "9.1"
 default_platform :ios
 
 platform :ios do
-  commit = last_git_commit
-
   before_all do
     setup
   end
@@ -83,7 +81,7 @@ platform :ios do
 
   desc "Upload iTunes Connect metadata to Lokalise"
   lane :update_lokalise do
-    lokalise_metadata(action: "update_lokalise", add_languages: true, override_translation: true)
+    lokalise_metadata(action: "update_lokalise", override_translation: true)
   end
 
   desc "Download iTunes metadata from Lokalise and upload to iTunes Connect"
