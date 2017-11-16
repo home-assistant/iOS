@@ -1,1 +1,27 @@
+想在任何地方控制智能設備和監控你家裡的情況嗎？Home Assistant IOS版本提供你在移動設備上就能遠端操作家裡的智能家居設備，也可根據你的需求自動化的運作，將結果通知給你。
 
+Home Assistant是一套使用Python3開發的智能家居平台，支援了以下設備
+
+- Amazon Echo (Alexa)
+- Apple TV
+- Arduino
+- Belkin WeMo
+- Dark Sky
+- ecobee
+- Google Assistant
+- Google Cast
+- IFTTT
+- IKEA Trådfri (Tradfri)
+- Kodi/XBMC
+- MQTT
+- MySensors
+- Nest
+- Owntracks
+- Philips Hue
+- Plex
+- Pushbullet
+- Sonos
+- Wink
+- Z-Wave
+
+Home Assistant IOS版本需求 9.3以上的IOS版本，並且需要一個已經設定完成的Home Assistant智能家居環境。主機端請設定好可被網際網路存取的外部IP以及安全的SSL憑證，這可以保證你在安全的環境下操作。
