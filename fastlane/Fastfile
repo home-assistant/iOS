@@ -111,6 +111,7 @@ platform :ios do
   desc "Submits a new Beta Build to Fabric"
   desc "Submits a new Beta Build to Apple TestFlight"
   lane :ci do
+    slack(message: "Beginning Travis CI build")
     create_keychain(
       name: ENV["MATCH_KEYCHAIN_NAME"],
       password: ENV["MATCH_PASSWORD"],
@@ -260,6 +261,10 @@ platform :ios do
 
     # certs
 
+    if is_ci
+      slack(message: "Beginning build")
+    end
+
     gym(scheme: "Release", export_options: {
       provisioningProfiles: {
         "io.robbie.HomeAssistant" => "match AppStore io.robbie.HomeAssistant",
@@ -272,9 +277,12 @@ platform :ios do
     pilot(
       changelog: changelog_from_git_commits(pretty: '- %s'),
       skip_submission: true,
-      distribute_external: false,
-      skip_waiting_for_build_processing: true
+      distribute_external: false
     )
+
+    if is_ci
+      slack(message: "Uploaded new beta build to TestFlight. Please wait 15-60 minutes for the build to become available for download.")
+    end
 
     rocket
   end
