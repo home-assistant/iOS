@@ -1,21 +1,13 @@
-Summer is over, school is back in session, that means it's well past time for a big Home Assistant for iOS update! We are back on track and working on pumping out new features and squashing bugs once more. Apologies for the lull there in the summer.
+Another week, another new Home Assistant for iOS build!
 
-Here's what's new in this version:
+- More localization support! We now support Chinese (Traditional and Simplified), Dutch and Spanish. Minor updates were also made to the existing German translation.
+- Add support for granular control of location update triggers (in Settings->Location)
+- Support customization of notification display options (see online docs for this, but allows you to specify badge/alert/sound or any combination of the three for each notification)
+- Add ability to send URL in push notification which opens upon tap
+- Add confirmation dialogs when opening a homeassistant:// URL
+- Re-enable Fabric so I can start tracking crashes again
+- Improve notification permission check
+- Lots of other localization work
+- Bug fixes
 
-- iPhone X compatibility (IMHO HA looks super slick on it)
-- Default camera category attachment content-type to JPEG
-- Status bar color changes with frontend theme color
-- Support landscape orientation
-- Improved permission dialogs
-- Improve API communication with Home Assistant
-- Change chat support link from Gitter to Discord
-- Add the version string to the about page
-- Our first translation: German!
-- Improve location management
-- Swift 4
-- Removed a bunch of stale code and dependencies
-- Removed native UI. It's web view only from here on out since Home Assistant adds new components/platforms too frequently for native UI to keep up
-- Lots of web view improvements around sizing/layout and logic
-- Status bar improvements for landscape and sizing issues
-
-Don't forget to leave an updated review as iOS 11 resets reviews with every new version. Thanks!
+Please submit a rating if you haven't already, it's my fuel that keeps me going!
