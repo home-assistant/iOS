@@ -16,6 +16,24 @@ REQUIRED_XCODE_VERSION = "9.1"
 default_platform :ios
 
 platform :ios do
+  def change_log_since_last_tag
+    # http://git-scm.com/docs/pretty-formats
+    # - <short hash> <commit title>
+    return changelog_from_git_commits(pretty: "- %s (%h)")
+  end
+
+  def version_string(version_number, build_number)
+    "#{version_number} (#{build_number})"
+  end
+
+  def tag_name(build_type, version_number, build_number)
+    "#{build_type}/#{version_number}/#{build_number}"
+  end
+
+  def complete_version_number
+    return version_string(get_version_number, get_build_number)
+  end
+
   before_all do
     setup
   end
@@ -33,29 +51,28 @@ platform :ios do
 
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
   lane :certs do
-    match(app_identifier: "io.robbie.HomeAssistant", type: "appstore", readonly: true)
-    match(app_identifier: "io.robbie.HomeAssistant", type: "development", readonly: true)
-
-    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "appstore", readonly: true)
-    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "development", readonly: true)
-
-    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "appstore", readonly: true)
-    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "development", readonly: true)
-
-    match(app_identifier: "io.robbie.HomeAssistant.MapNotificationContentExtension", type: "appstore", readonly: true)
-    match(app_identifier: "io.robbie.HomeAssistant.MapNotificationContentExtension", type: "development", readonly: true)
-
-    match(app_identifier: "io.robbie.HomeAssistant.dev", type: "appstore", readonly: true)
-    match(app_identifier: "io.robbie.HomeAssistant.dev", type: "development", readonly: true)
-
-    match(app_identifier: "io.robbie.HomeAssistant.dev.APNSAttachmentService", type: "appstore", readonly: true)
-    match(app_identifier: "io.robbie.HomeAssistant.dev.APNSAttachmentService", type: "development", readonly: true)
-
-    match(app_identifier: "io.robbie.HomeAssistant.dev.NotificationContentExtension", type: "appstore", readonly: true)
-    match(app_identifier: "io.robbie.HomeAssistant.dev.NotificationContentExtension", type: "development", readonly: true)
-
-    match(app_identifier: "io.robbie.HomeAssistant.dev.MapNotificationContentExtension", type: "appstore", readonly: true)
-    match(app_identifier: "io.robbie.HomeAssistant.dev.MapNotificationContentExtension", type: "development", readonly: true)
+    match(app_identifier: [
+            "io.robbie.HomeAssistant",
+            "io.robbie.HomeAssistant.APNSAttachmentService",
+            "io.robbie.HomeAssistant.NotificationContentExtension",
+            "io.robbie.HomeAssistant.MapNotificationContentExtension",
+            "io.robbie.HomeAssistant.dev",
+            "io.robbie.HomeAssistant.dev.APNSAttachmentService",
+            "io.robbie.HomeAssistant.dev.NotificationContentExtension",
+            "io.robbie.HomeAssistant.dev.MapNotificationContentExtension"],
+          type: "appstore",
+          readonly: true)
+    match(app_identifier: [
+            "io.robbie.HomeAssistant",
+            "io.robbie.HomeAssistant.APNSAttachmentService",
+            "io.robbie.HomeAssistant.NotificationContentExtension",
+            "io.robbie.HomeAssistant.MapNotificationContentExtension",
+            "io.robbie.HomeAssistant.dev",
+            "io.robbie.HomeAssistant.dev.APNSAttachmentService",
+            "io.robbie.HomeAssistant.dev.NotificationContentExtension",
+            "io.robbie.HomeAssistant.dev.MapNotificationContentExtension"],
+          type: "development",
+          readonly: true)
   end
 
   desc "Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password."
@@ -69,14 +86,14 @@ platform :ios do
 
   desc "Generate proper icons for all build trains"
   lane :icons do
-    appicon(appicon_path: 'HomeAssistant/Resources/Assets.xcassets', appicon_image_file: 'icons/dev.png', appicon_name: 'AppIcon.dev.appiconset', appicon_devices: [:ipad, :iphone])
-    appicon(appicon_path: 'HomeAssistant/Resources/Assets.xcassets', appicon_image_file: 'icons/beta.png', appicon_name: 'AppIcon.beta.appiconset', appicon_devices: [:ipad, :iphone])
-    appicon(appicon_path: 'HomeAssistant/Resources/Assets.xcassets', appicon_image_file: 'icons/release.png', appicon_devices: [:ipad, :iphone])
+    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "AppIcon.dev.appiconset", appicon_devices: [:ipad, :iphone])
+    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "AppIcon.beta.appiconset", appicon_devices: [:ipad, :iphone])
+    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_devices: [:ipad, :iphone])
   end
 
   desc "Download latest localization files from Lokalize"
   lane :localize do
-    lokalise(destination: 'HomeAssistant/Resources/', use_original: true)
+    lokalise(destination: "HomeAssistant/Resources/", use_original: true)
   end
 
   desc "Upload iTunes Connect metadata to Lokalise"
@@ -89,73 +106,6 @@ platform :ios do
     lokalise_metadata(action: "update_itunes")
   end
 
-  def change_log_since_last_tag
-    # http://git-scm.com/docs/pretty-formats
-    # - <short hash> <commit title>
-    return changelog_from_git_commits(pretty: '- %s (%h)')
-  end
-
-  def version_string(version_number, build_number)
-    "#{version_number} (#{build_number})"
-  end
-
-  def tag_name(build_type, version_number, build_number)
-    "#{build_type}/#{version_number}/#{build_number}"
-  end
-
-  def complete_version_number
-    return version_string(get_version_number, get_build_number)
-  end
-
-  desc "Runs all the unit tests"
-  desc "Submits a new Beta Build to Fabric"
-  desc "Submits a new Beta Build to Apple TestFlight"
-  lane :ci do
-    slack(message: "Beginning Travis CI build")
-    create_keychain(
-      name: ENV["MATCH_KEYCHAIN_NAME"],
-      password: ENV["MATCH_PASSWORD"],
-      timeout: 3600,
-      default_keychain: true,
-    )
-
-    certs
-
-    bump_build
-
-    sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["HOMEASSISTANT_CERTIFICATE_KEY"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
-    if is_ci && ENV['TRAVIS_PULL_REQUEST'] == "false"
-      if git_branch == "master"
-        ENV["FASTLANE_PASSWORD"] = ENV["HOMEASSISTANT_ITUNES_PASSWORD"]
-        match(app_identifier: "io.robbie.HomeAssistant", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-        match(app_identifier: "io.robbie.HomeAssistant", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-
-        match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-        match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-
-        match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-        match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-
-        match(app_identifier: "io.robbie.HomeAssistant.MapNotificationContentExtension", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-        match(app_identifier: "io.robbie.HomeAssistant.MapNotificationContentExtension", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-        itc
-      elsif git_branch == "dev"
-        match(app_identifier: "io.robbie.HomeAssistant.dev", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-        match(app_identifier: "io.robbie.HomeAssistant.dev", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-
-        match(app_identifier: "io.robbie.HomeAssistant.dev.APNSAttachmentService", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-        match(app_identifier: "io.robbie.HomeAssistant.dev.APNSAttachmentService", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-
-        match(app_identifier: "io.robbie.HomeAssistant.dev.NotificationContentExtension", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-        match(app_identifier: "io.robbie.HomeAssistant.dev.NotificationContentExtension", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-
-        match(app_identifier: "io.robbie.HomeAssistant.dev.MapNotificationContentExtension", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-        match(app_identifier: "io.robbie.HomeAssistant.dev.MapNotificationContentExtension", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-        fabric
-      end
-    end
-  end
-
   desc "Bump build number"
   lane :bump_build do
     git_pull(only_tags: true)
@@ -163,7 +113,7 @@ platform :ios do
     increment_version_number(version_number: get_version_number)
     increment_build_number
 
-    bump
+    finalize_bump
   end
 
   desc "Bump version number"
@@ -173,37 +123,20 @@ platform :ios do
     increment_version_number
     increment_build_number(build_number: 1)
 
-    bump
+    finalize_bump
   end
 
-  lane :release do
-    cocoapods(repo_update: true)
-    fabric_beta
-    itunes
-  end
-
-  desc "Submit a new Beta Build to Apple TestFlight"
-  desc "This will also make sure the profile is up to date"
-  lane :itc do
-    cocoapods(repo_update: true)
-    itunes
-  end
-
-  desc "Submit a new Beta Build to Fabric"
-  desc "This will also make sure the profile is up to date"
-  lane :fabric do
-    cocoapods(repo_update: true)
-    fabric_beta
-  end
-
-  private_lane :bump do
-    # Needed so that the changelog doesn't include the version bump commit
+  private_lane :finalize_bump do
+    # Needed so that the changelog doesn"t include the version bump commit
     change_log = change_log_since_last_tag
 
-    commit_version_bump(
-      message: "[ci skip] Version bump to #{complete_version_number}",
-      xcodeproj: "HomeAssistant.xcodeproj"
-    )
+    commit_message = "Version bump to #{complete_version_number}"
+
+    if is_ci
+      commit_message = "[ci skip] Version bump to #{complete_version_number}"
+    end
+
+    commit_version_bump(message: commit_message, xcodeproj: "HomeAssistant.xcodeproj")
 
     push_to_git_remote(remote_branch: "master")
 
@@ -217,49 +150,45 @@ platform :ios do
     )
   end
 
-  desc "Submit a new Beta Build to Fabric"
-  desc "This will also make sure the profile is up to date"
-  private_lane :fabric_beta do |options|
-
-    clean_build_artifacts
-    clear_derived_data
-
-    # certs
-
-    gym
-
-    notification(
-      subtitle: "Finished Building",
-      message: "Uploading to Fabric",
-      activate: "com.googlecode.iterm2",
-      app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png"
+  desc "Runs build when on Travis"
+  lane :ci do
+    slack(message: "Beginning Travis CI build")
+    create_keychain(
+      name: ENV["MATCH_KEYCHAIN_NAME"],
+      password: ENV["MATCH_PASSWORD"],
+      timeout: 3600,
+      default_keychain: true,
     )
 
-    crashlytics(
-      api_token: ENV['HOMEASSISTANT_FABRIC_CLIENT_ID'],
-      build_secret: ENV['HOMEASSISTANT_FABRIC_SECRET'],
-      notes: changelog_from_git_commits(pretty: '- %s'),
-      groups: ["Home Assistant"]
-    )
+    sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["HOMEASSISTANT_CERTIFICATE_KEY"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
+    if is_ci && ENV["TRAVIS_PULL_REQUEST"] == "false" && git_branch == "master"
+      ENV["FASTLANE_PASSWORD"] = ENV["HOMEASSISTANT_ITUNES_PASSWORD"]
 
-    notification(
-      subtitle: "Finished",
-      message: "Build #{complete_version_number} built and uploaded to Fabric",
-      activate: "com.googlecode.iterm2",
-      app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png"
-    )
-
-    rocket
+      match(app_identifier: [
+              "io.robbie.HomeAssistant",
+              "io.robbie.HomeAssistant.APNSAttachmentService",
+              "io.robbie.HomeAssistant.NotificationContentExtension",
+              "io.robbie.HomeAssistant.MapNotificationContentExtension"],
+            type: "appstore",
+            readonly: true,
+            keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
+            keychain_password: ENV["MATCH_PASSWORD"])
+      itunes
+    end
   end
 
-  desc "Submit a new Beta Build to Apple TestFlight"
-  desc "This will also make sure the profile is up to date"
-  private_lane :itunes do |options|
+  desc "Submit a new beta build to TestFlight"
+  lane :itunes do |options|
+
+    # Needed so that the changelog doesn"t include the version bump commit
+    change_log = change_log_since_last_tag
+
+    bump_build
 
     clean_build_artifacts
     clear_derived_data
 
-    # certs
+    cocoapods(repo_update: true)
 
     if is_ci
       slack(message: "Beginning build")
@@ -275,7 +204,7 @@ platform :ios do
     })
 
     pilot(
-      changelog: changelog_from_git_commits(pretty: '- %s'),
+      changelog: change_log,
       skip_submission: true,
       distribute_external: false
     )
@@ -285,14 +214,5 @@ platform :ios do
     end
 
     rocket
-  end
-
-  # You can define as many lanes as you want
-
-  after_all do |lane|
-    # This block is called, only if the executed lane was successful
-  end
-
-  error do |lane, exception|
   end
 end

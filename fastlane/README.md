@@ -60,15 +60,6 @@ Upload iTunes Connect metadata to Lokalise
 fastlane ios update_itunes
 ```
 Download iTunes metadata from Lokalise and upload to iTunes Connect
-### ios ci
-```
-fastlane ios ci
-```
-Runs all the unit tests
-
-Submits a new Beta Build to Fabric
-
-Submits a new Beta Build to Apple TestFlight
 ### ios bump_build
 ```
 fastlane ios bump_build
@@ -79,25 +70,16 @@ Bump build number
 fastlane ios bump_version
 ```
 Bump version number
-### ios release
+### ios ci
 ```
-fastlane ios release
+fastlane ios ci
 ```
-
-### ios itc
+Runs build when on Travis
+### ios itunes
 ```
-fastlane ios itc
+fastlane ios itunes
 ```
-Submit a new Beta Build to Apple TestFlight
-
-This will also make sure the profile is up to date
-### ios fabric
-```
-fastlane ios fabric
-```
-Submit a new Beta Build to Fabric
-
-This will also make sure the profile is up to date
+Submit a new beta build to TestFlight
 
 ----
 
