@@ -122,6 +122,8 @@ platform :ios do
 
     certs
 
+    bump_build
+
     sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["HOMEASSISTANT_CERTIFICATE_KEY"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
     if is_ci && ENV['TRAVIS_PULL_REQUEST'] == "false"
       if git_branch == "master"
@@ -239,24 +241,11 @@ platform :ios do
 
     gym(scheme: "Release")
 
-    notification(
-      subtitle: "Finished Building",
-      message: "Uploading to Testflight",
-      activate: "com.googlecode.iterm2",
-      app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png"
-    )
-
     pilot(
       changelog: changelog_from_git_commits(pretty: '- %s'),
       skip_submission: true,
-      distribute_external: false
-    )
-
-    notification(
-      subtitle: "Finished",
-      message: "Build #{complete_version_number} built and uploaded to Testflight",
-      activate: "com.googlecode.iterm2",
-      app_icon:"https://raw.githubusercontent.com/fastlane/fastlane/master/fastlane/assets/fastlane.png"
+      distribute_external: false,
+      skip_waiting_for_build_processing: true
     )
 
     rocket
