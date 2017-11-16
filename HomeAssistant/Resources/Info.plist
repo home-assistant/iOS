@@ -36,7 +36,7 @@
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
-		<string>${HOMEASSISTANT_FABRIC_CLIENT_ID}</string>
+		<string>af2930e95b69736a32e543d07fe9c8078649a61e</string>
 		<key>Kits</key>
 		<array>
 			<dict>
