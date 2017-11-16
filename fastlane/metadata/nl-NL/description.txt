@@ -1,1 +1,27 @@
+Beheer en bewaak uw huis van overal ter wereld. Met Home Assistant voor iOS kunt u al uw apparaten bedienen en beschikt u over geavanceerde locatie- en meldingsengines om complexe mobiele automatiseringen mogelijk te maken. 
 
+ Home Assistant is een open-source domotica-platform dat draait op Python 3. Ondersteunde producten zijn onder meer: 
+
+ - Amazon Echo (Alexa) 
+ - Apple TV 
+ - Arduino 
+ - Belkin WeMo 
+ - Dark Sky
+ - ecobee 
+ - Google-assistent 
+ - Google Cast 
+ - IFTTT 
+ - IKEA Trådfri (Tradfri) 
+ - Kodi / XBMC 
+ - MQTT 
+ - MySensors 
+ - Nest 
+ - OwnTracks 
+ - Philips Hue 
+ - Plex 
+ - Pushbullet 
+ - Sonos 
+ - Wink 
+ - Z-wave 
+
+ Home Assistant voor iOS vereist een iPhone met iOS 9.3 of hoger en een eerder geconfigureerde Home Assistant-instantie. De instantie moet toegankelijk zijn vanaf internet en beveiligd met een geldig, niet-zelfondertekend, SSL-certificaat voor het volgen van locaties. Basismeldingen werken zonder externe toegang.

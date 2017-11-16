@@ -1,1 +1,24 @@
+门里门外皆是家。Home Assistant 凭借强大的定位、推送及自动化配置系统，让你无论处在世界哪个角落，都能随心控制家中的智能家居设备。
 
+Home Assistant 是一个基于 Python 3 的开源智能家居自动化平台。目前支持的设备有：
+
+- Amazon Echo 智能音箱 (Alexa)
+- Apple TV
+- Arduino
+- Belkin WeMo
+- Broadlink (博联)
+- Dark Sky
+- Google Assistant
+- IFTTT
+- IKEA ‎TRÅDFRI
+- Kodi/XBMC
+- Mijia (米家)
+- MQTT
+- MySensors
+- Owntracks
+- Philips Hue 智能照明
+- Plex
+- Sonos
+- Z-Wave
+
+Home Assistant for iOS 工作在 iOS 9.3 或更高版本的 iOS 设备中，使用前需完成 Home Assistant 系统搭建。地理位置追踪要求数据源持有非自签名的 SSL 证书。基本通知功能的运行无须外部依赖。
