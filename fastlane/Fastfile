@@ -177,11 +177,11 @@ platform :ios do
     change_log = change_log_since_last_tag
 
     commit_version_bump(
-      message: "Version bump to #{complete_version_number}",
+      message: "[ci skip] Version bump to #{complete_version_number}",
       xcodeproj: "HomeAssistant.xcodeproj"
     )
 
-    push_to_git_remote
+    push_to_git_remote(remote_branch: "master")
 
     set_github_release(
       repository_name: "home-assistant/home-assistant-iOS",
