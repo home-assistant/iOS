@@ -16,7 +16,7 @@ module Fastlane
           metadata = get_metadata()
           add_languages = params[:add_languages]
           override_translation = params[:override_translation]
-          if add_languages == true 
+          if add_languages == true
             create_languages(metadata.keys)
           end
           if override_translation == true
@@ -42,13 +42,13 @@ module Fastlane
         metadata.each { |language, translations|
           other_translations = other_metadata[language]
           filtered_translations = {}
-          
+
           if other_translations != nil && other_translations.empty? == false
             translations.each { |key, value|
               other_value = other_translations[key]
               filtered_translations[key] = value unless other_value != nil && other_value.empty? == false
             }
-          else 
+          else
             filtered_translations = translations
           end
 
@@ -77,7 +77,7 @@ module Fastlane
               translation = translations[key]
               puts translation
               final_translations[lang] = translation if translation != nil && translation.empty? == false
-            end 
+            end
           }
 
           config[parameter.to_sym] = final_translations
@@ -97,7 +97,7 @@ module Fastlane
         uri = URI("https://lokalise.co/api/#{path}")
         request = Net::HTTP::Post.new(uri)
         request.set_form_data(request_data)
-  
+
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
         response = http.request(request)
@@ -118,12 +118,12 @@ module Fastlane
       end
 
       def self.upload_metadata(metadata)
-        
+
         keys = []
 
         metadata_keys.each do |key, value|
           key = make_key_object_from_metadata(key, metadata)
-          if key 
+          if key
             keys << key
           end
         end
@@ -147,7 +147,7 @@ module Fastlane
             key_data["translations"][fix_language_name(iso_code, true)] = translation
           end
         }
-        unless key_data["translations"].empty? 
+        unless key_data["translations"].empty?
           return key_data
         else
           return nil
@@ -182,7 +182,7 @@ module Fastlane
 
         response = make_request("string/list", data)
 
-        valid_languages = itunes_connect_languages_in_lokalise()        
+        valid_languages = itunes_connect_languages_in_lokalise()
         metadata = {}
 
         response["strings"].each { |lang, translation_objects|
@@ -191,7 +191,7 @@ module Fastlane
             translation_objects.each { |object|
               key = object["key"]
               translation = object["translation"]
-              if valid_keys.include?(key) && translation != nil && translation.empty? == false 
+              if valid_keys.include?(key) && translation != nil && translation.empty? == false
                 translations[key] = translation
               end
             }
@@ -212,7 +212,7 @@ module Fastlane
           hash[key] = text unless text.empty?
         rescue => exception
           raise exception
-        end        
+        end
       end
 
       def self.metadata_keys()
@@ -231,8 +231,8 @@ module Fastlane
       end
 
       def self.itunes_connect_languages_in_lokalise()
-        return itunes_connect_languages().map { |lang| 
-          fix_language_name(lang, true) 
+        return itunes_connect_languages().map { |lang|
+          fix_language_name(lang, true)
         }
       end
 
@@ -274,10 +274,14 @@ module Fastlane
           name =  name.gsub("-","_")
           name = "en" if name == "en_US"
           name = "de" if name == "de_DE"
-        else 
+          name = "nl" if name == "nl_NL"
+          name = "es" if name == "es_ES"
+        else
           name = name.gsub("_","-")
           name = "en-US" if name == "en"
           name = "de-DE" if name == "de"
+          name = "nl-NL" if name == "nl"
+          name = "es-ES" if name == "es"
         end
         return name
       end
