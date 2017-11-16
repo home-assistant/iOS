@@ -259,7 +259,14 @@ platform :ios do
 
     # certs
 
-    gym(scheme: "Release")
+    gym(scheme: "Release", export_options: {
+      provisioningProfiles: {
+        "io.robbie.HomeAssistant" => "match AppStore io.robbie.HomeAssistant",
+        "io.robbie.HomeAssistant.APNSAttachmentService" => "match AppStore io.robbie.HomeAssistant.APNSAttachmentService",
+        "io.robbie.HomeAssistant.NotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.NotificationContentExtension",
+        "io.robbie.HomeAssistant.MapNotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.MapNotificationContentExtension"
+      }
+    })
 
     pilot(
       changelog: changelog_from_git_commits(pretty: '- %s'),
