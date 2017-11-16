@@ -1,3 +1,3 @@
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "我们建议选择“始终允许”以获得最佳位置体验。选择“使用应用期间”时，iBeacons，地理围栏，后台位置更新和准确性报告等功能将无法使用。";
+"NSLocationAlwaysUsageDescription" = "我们总是需要获取您的位置，以实现iBeacons，地理围栏，后台位置更新和准确性报告等功能。";
+"NSLocationWhenInUseUsageDescription" = "只允许“使用应用期间”访问您的位置，将禁用iBeacons，地理围栏，后台位置更新和准确性报告等功能。";
