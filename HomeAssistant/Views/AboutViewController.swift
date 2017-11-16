@@ -91,6 +91,9 @@ class AboutViewController: FormViewController {
 
             <<< ButtonRow {
                 $0.title = L10n.About.HomeAssistantOnTwitter.title
+                if let lang = Locale.current.languageCode {
+                    $0.hidden = Condition(booleanLiteral: lang.hasPrefix("zh"))
+                }
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
@@ -102,6 +105,9 @@ class AboutViewController: FormViewController {
 
             <<< ButtonRow {
                 $0.title = L10n.About.HomeAssistantOnFacebook.title
+                if let lang = Locale.current.languageCode {
+                    $0.hidden = Condition(booleanLiteral: lang.hasPrefix("zh"))
+                }
                 }.cellUpdate { cell, _ in
                     cell.textLabel?.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
