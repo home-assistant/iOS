@@ -78,7 +78,7 @@ platform :ios do
 
   desc "Download latest localization files from Lokalize"
   lane :localize do
-    lokalise(destination: 'HomeAssistant/Resources/')
+    lokalise(destination: 'HomeAssistant/Resources/', use_original: true)
   end
 
   desc "Upload iTunes Connect metadata to Lokalise"
