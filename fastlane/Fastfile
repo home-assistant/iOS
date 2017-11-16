@@ -33,29 +33,29 @@ platform :ios do
 
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
   lane :certs do
-    match(app_identifier: "io.robbie.HomeAssistant", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-    match(app_identifier: "io.robbie.HomeAssistant", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+    match(app_identifier: "io.robbie.HomeAssistant", type: "appstore", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant", type: "development", readonly: true)
 
-    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "appstore", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "development", readonly: true)
 
-    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "appstore", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "development", readonly: true)
 
-    match(app_identifier: "io.robbie.HomeAssistant.MapNotificationContentExtension", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-    match(app_identifier: "io.robbie.HomeAssistant.MapNotificationContentExtension", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+    match(app_identifier: "io.robbie.HomeAssistant.MapNotificationContentExtension", type: "appstore", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant.MapNotificationContentExtension", type: "development", readonly: true)
 
-    match(app_identifier: "io.robbie.HomeAssistant.dev", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-    match(app_identifier: "io.robbie.HomeAssistant.dev", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+    match(app_identifier: "io.robbie.HomeAssistant.dev", type: "appstore", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant.dev", type: "development", readonly: true)
 
-    match(app_identifier: "io.robbie.HomeAssistant.dev.APNSAttachmentService", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-    match(app_identifier: "io.robbie.HomeAssistant.dev.APNSAttachmentService", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+    match(app_identifier: "io.robbie.HomeAssistant.dev.APNSAttachmentService", type: "appstore", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant.dev.APNSAttachmentService", type: "development", readonly: true)
 
-    match(app_identifier: "io.robbie.HomeAssistant.dev.NotificationContentExtension", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-    match(app_identifier: "io.robbie.HomeAssistant.dev.NotificationContentExtension", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+    match(app_identifier: "io.robbie.HomeAssistant.dev.NotificationContentExtension", type: "appstore", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant.dev.NotificationContentExtension", type: "development", readonly: true)
 
-    match(app_identifier: "io.robbie.HomeAssistant.dev.MapNotificationContentExtension", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
-    match(app_identifier: "io.robbie.HomeAssistant.dev.MapNotificationContentExtension", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+    match(app_identifier: "io.robbie.HomeAssistant.dev.MapNotificationContentExtension", type: "appstore", readonly: true)
+    match(app_identifier: "io.robbie.HomeAssistant.dev.MapNotificationContentExtension", type: "development", readonly: true)
   end
 
   desc "Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password."
@@ -125,8 +125,30 @@ platform :ios do
     sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["HOMEASSISTANT_CERTIFICATE_KEY"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
     if is_ci && ENV['TRAVIS_PULL_REQUEST'] == "false"
       if git_branch == "master"
+        match(app_identifier: "io.robbie.HomeAssistant", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+        match(app_identifier: "io.robbie.HomeAssistant", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+
+        match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+        match(app_identifier: "io.robbie.HomeAssistant.APNSAttachmentService", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+
+        match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+        match(app_identifier: "io.robbie.HomeAssistant.NotificationContentExtension", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+
+        match(app_identifier: "io.robbie.HomeAssistant.MapNotificationContentExtension", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+        match(app_identifier: "io.robbie.HomeAssistant.MapNotificationContentExtension", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
         itc
       elsif git_branch == "dev"
+        match(app_identifier: "io.robbie.HomeAssistant.dev", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+        match(app_identifier: "io.robbie.HomeAssistant.dev", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+
+        match(app_identifier: "io.robbie.HomeAssistant.dev.APNSAttachmentService", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+        match(app_identifier: "io.robbie.HomeAssistant.dev.APNSAttachmentService", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+
+        match(app_identifier: "io.robbie.HomeAssistant.dev.NotificationContentExtension", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+        match(app_identifier: "io.robbie.HomeAssistant.dev.NotificationContentExtension", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+
+        match(app_identifier: "io.robbie.HomeAssistant.dev.MapNotificationContentExtension", type: "appstore", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
+        match(app_identifier: "io.robbie.HomeAssistant.dev.MapNotificationContentExtension", type: "development", readonly: true, keychain_name: ENV["MATCH_KEYCHAIN_NAME"], keychain_password: ENV["MATCH_PASSWORD"])
         fabric
       end
     end
