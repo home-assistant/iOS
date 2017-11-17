@@ -907,11 +907,9 @@ public class HomeAssistantAPI {
                                 newAction.identifier = action.Identifier
                                 newAction.isAuthenticationRequired = action.AuthenticationRequired
                                 newAction.isDestructive = action.Destructive
-                                var behavior: UIUserNotificationActionBehavior
-                                if action.Behavior == "default" {
-                                    behavior = UIUserNotificationActionBehavior.default
-                                } else {
-                                    behavior = UIUserNotificationActionBehavior.textInput
+                                var behavior: UIUserNotificationActionBehavior = .default
+                                if action.Behavior.lowercased() == "textinput" {
+                                    behavior = .textInput
                                 }
                                 newAction.behavior = behavior
                                 let foreground = UIUserNotificationActivationMode.foreground
@@ -956,21 +954,19 @@ public class HomeAssistantAPI {
                                 if action.AuthenticationRequired { actionOptions.insert(.authenticationRequired) }
                                 if action.Destructive { actionOptions.insert(.destructive) }
                                 if action.ActivationMode == "foreground" { actionOptions.insert(.foreground) }
-                                if action.Behavior == "default" {
-                                    let newAction = UNNotificationAction(identifier: action.Identifier!,
-                                                                         title: action.Title!, options: actionOptions)
-                                    categoryActions.append(newAction)
-                                } else if action.Behavior == "TextInput" {
+                                var newAction = UNNotificationAction(identifier: action.Identifier!,
+                                                                     title: action.Title!, options: actionOptions)
+                                if action.Behavior.lowercased() == "textinput" {
                                     if let identifier = action.Identifier, let btnTitle = action.TextInputButtonTitle,
                                         let place = action.TextInputPlaceholder, let title = action.Title {
-                                        let newAction = UNTextInputNotificationAction(identifier: identifier,
-                                                                                      title: title,
-                                                                                      options: actionOptions,
-                                                                                      textInputButtonTitle: btnTitle,
-                                                                                      textInputPlaceholder: place)
-                                        categoryActions.append(newAction)
+                                        newAction = UNTextInputNotificationAction(identifier: identifier,
+                                                                                  title: title,
+                                                                                  options: actionOptions,
+                                                                                  textInputButtonTitle: btnTitle,
+                                                                                  textInputPlaceholder: place)
                                     }
                                 }
+                                categoryActions.append(newAction)
                             }
                         } else {
                             continue
@@ -1026,6 +1022,7 @@ public class HomeAssistantAPI {
             }
             if let textInput = userInput {
                 eventData["response_info"] = textInput
+                eventData["textInput"] = textInput
             }
             HomeAssistantAPI.sharedInstance.CreateEvent(eventType: "ios.notification_action_fired",
                                                         eventData: eventData).then { _ in
