@@ -1016,7 +1016,8 @@ public class HomeAssistantAPI {
             let device = Device()
             var eventData: [String: Any] = ["actionName": identifier,
                                            "sourceDevicePermanentID": DeviceUID.uid(),
-                                           "sourceDeviceName": device.name]
+                                           "sourceDeviceName": device.name,
+                                           "sourceDeviceID": deviceID]
             if let dataDict = userInfo["homeassistant"] {
                 eventData["action_data"] = dataDict
             }
