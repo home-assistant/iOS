@@ -193,7 +193,7 @@ platform :ios do
     cocoapods(repo_update: true)
 
     if is_ci
-      slack(message: "Beginning build")
+      slack(message: "Completed bump, clean and CocoaPods install, now beginning build")
     end
 
     gym(scheme: "Release", export_options: {
@@ -205,6 +205,10 @@ platform :ios do
       }
     })
 
+    if is_ci
+      slack(message: "Build complete, now uploading to TestFlight, this will take 15-60 minutes")
+    end
+
     pilot(
       changelog: change_log,
       skip_submission: true,
@@ -212,7 +216,7 @@ platform :ios do
     )
 
     if is_ci
-      slack(message: "Uploaded new beta build to TestFlight. Please wait 15-60 minutes for the build to become available for download.")
+      slack(message: "Uploaded new beta build to TestFlight")
     end
 
     rocket
