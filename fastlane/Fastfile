@@ -152,15 +152,6 @@ platform :ios do
 
   desc "Runs build when on Travis"
   lane :ci do
-    slack(message: "Beginning Travis CI build")
-    create_keychain(
-      name: ENV["MATCH_KEYCHAIN_NAME"],
-      password: ENV["MATCH_PASSWORD"],
-      timeout: 3600,
-      default_keychain: true,
-    )
-
-    sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["HOMEASSISTANT_CERTIFICATE_KEY"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
     if is_ci && ENV["TRAVIS_PULL_REQUEST"] == "false" && git_branch == "master"
       ENV["FASTLANE_PASSWORD"] = ENV["HOMEASSISTANT_ITUNES_PASSWORD"]
 
@@ -173,6 +164,17 @@ platform :ios do
             readonly: true,
             keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
             keychain_password: ENV["MATCH_PASSWORD"])
+
+      slack(message: "Beginning Travis CI build")
+      create_keychain(
+        name: ENV["MATCH_KEYCHAIN_NAME"],
+        password: ENV["MATCH_PASSWORD"],
+        timeout: 3600,
+        default_keychain: true,
+      )
+
+      sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["HOMEASSISTANT_CERTIFICATE_KEY"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
+
       itunes
     end
   end
