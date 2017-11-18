@@ -1,4 +1,10 @@
 "location_change_notification.title" = "Location change";
+"location_change_notification.beacon_region_enter.body" = "%@ entered via iBeacon";
+"location_change_notification.beacon_region_exit.body" = "%@ exited via iBeacon";
+"location_change_notification.region_enter.body" = "%@ entered";
+"location_change_notification.region_exit.body" = "%@ exited";
+"location_change_notification.significant_location_update.body" = "Significant location change detected";
+"location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
 "zone_entered_notification.message" = "%@ entered";
 "significant_location_change_notification.message" = "Significant location change detected, notifying Home Assistant";
 "manual_location_update_notification.title" = "Location updated";

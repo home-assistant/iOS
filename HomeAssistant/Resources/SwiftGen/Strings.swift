@@ -102,6 +102,44 @@ enum L10n {
   enum LocationChangeNotification {
     /// Location change
     static let title = L10n.tr("Localizable", "location_change_notification.title")
+
+    enum BackgroundFetch {
+      /// Current location delivery triggered via background fetch
+      static let body = L10n.tr("Localizable", "location_change_notification.background_fetch.body")
+    }
+
+    enum BeaconRegionEnter {
+      /// %@ entered via iBeacon
+      static func body(_ p1: String) -> String {
+        return L10n.tr("Localizable", "location_change_notification.beacon_region_enter.body", p1)
+      }
+    }
+
+    enum BeaconRegionExit {
+      /// %@ exited via iBeacon
+      static func body(_ p1: String) -> String {
+        return L10n.tr("Localizable", "location_change_notification.beacon_region_exit.body", p1)
+      }
+    }
+
+    enum RegionEnter {
+      /// %@ entered
+      static func body(_ p1: String) -> String {
+        return L10n.tr("Localizable", "location_change_notification.region_enter.body", p1)
+      }
+    }
+
+    enum RegionExit {
+      /// %@ exited
+      static func body(_ p1: String) -> String {
+        return L10n.tr("Localizable", "location_change_notification.region_exit.body", p1)
+      }
+    }
+
+    enum SignificantLocationUpdate {
+      /// Significant location change detected
+      static let body = L10n.tr("Localizable", "location_change_notification.significant_location_update.body")
+    }
   }
 
   enum ManualLocationUpdateFailedNotification {

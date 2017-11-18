@@ -235,27 +235,27 @@ public class HomeAssistantAPI {
 
         switch updateType {
         case .BeaconRegionEnter:
-            notificationBody = "\(zone!.Name) entered via iBeacon"
+            notificationBody = L10n.LocationChangeNotification.BeaconRegionEnter.body(zone!.Name)
             notificationIdentifer = "\(zone!.Name)_beacon_entered"
             shouldNotify = prefs.bool(forKey: "beaconEnterNotifications")
         case .BeaconRegionExit:
-            notificationBody = "\(zone!.Name) exited via iBeacon"
+            notificationBody = L10n.LocationChangeNotification.BeaconRegionExit.body(zone!.Name)
             notificationIdentifer = "\(zone!.Name)_beacon_exited"
             shouldNotify = prefs.bool(forKey: "beaconExitNotifications")
         case .RegionEnter:
-            notificationBody = "\(zone!.Name) entered"
+            notificationBody = L10n.LocationChangeNotification.RegionEnter.body(zone!.Name)
             notificationIdentifer = "\(zone!.Name)_entered"
             shouldNotify = prefs.bool(forKey: "enterNotifications")
         case .RegionExit:
-            notificationBody = "\(zone!.Name) exited"
+            notificationBody = L10n.LocationChangeNotification.RegionExit.body(zone!.Name)
             notificationIdentifer = "\(zone!.Name)_exited"
             shouldNotify = prefs.bool(forKey: "exitNotifications")
         case .SignificantLocationUpdate:
-            notificationBody = "Significant location change detected"
+            notificationBody = L10n.LocationChangeNotification.SignificantLocationUpdate.body
             notificationIdentifer = "sig_change"
             shouldNotify = prefs.bool(forKey: "significantLocationChangeNotifications")
         case .BackgroundFetch:
-            notificationBody = "Current location delivery triggered via background fetch"
+            notificationBody = L10n.LocationChangeNotification.BackgroundFetch.body
             notificationIdentifer = "background_fetch"
             shouldNotify = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
         default:
