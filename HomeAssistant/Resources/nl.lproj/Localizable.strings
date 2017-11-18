@@ -51,13 +51,13 @@
 "settings_details.general.chrome.title" = "Koppelingen openen in Chrome";
 "settings_details.location.title" = "Locatie-instellingen";
 "settings_details.location.notifications.header" = "Meldingen";
-"settings_details.location.notifications.enter.title" = "Enter Zone Notifications";
-"settings_details.location.notifications.exit.title" = "Verlaten zone meldingen";
-"settings_details.location.notifications.beacon_enter.title" = "Enter Zone via iBeacon Notifications";
-"settings_details.location.notifications.beacon_exit.title" = "Exit Zone via iBeacon Notifications";
-"settings_details.location.notifications.location_change.title" = "Significant Location Change Notifications";
-"settings_details.location.notifications.background_fetch.title" = "Background Fetch Notifications";
-"settings_details.location.zones.enter_exit_tracked.title" = "Enter/exit tracked";
+"settings_details.location.notifications.enter.title" = "Betreden zone notificaties";
+"settings_details.location.notifications.exit.title" = "Verlaten zone notificaties";
+"settings_details.location.notifications.beacon_enter.title" = "Betreden zone via iBeacon notificaties";
+"settings_details.location.notifications.beacon_exit.title" = "Verlaten zone via iBeacon notificaties";
+"settings_details.location.notifications.location_change.title" = "Aanzienlijke locatiewijziging Notificaties";
+"settings_details.location.notifications.background_fetch.title" = "Op achtergrond notificaties ophalen";
+"settings_details.location.zones.enter_exit_tracked.title" = "Betreden/Verlaten gevolgd.";
 "settings_details.location.zones.location.title" = "Locatie";
 "settings_details.location.zones.radius.title" = "Radius";
 "settings_details.location.zones.beacon.prop_not_set.value" = "Niet ingesteld";
@@ -67,7 +67,7 @@
 "settings_details.location.zones.footer" = "Om het bijhouden van locaties uit te schakelen, voegt u track_ios: false toe aan elke zone-instelling of onder customize.";
 "settings_details.notifications.title" = "Notificatie instellingen";
 "settings_details.notifications.push_id_section.header" = "Push-ID";
-"settings_details.notifications.push_id_section.footer" = "This is the target to use in your Home Assistant configuration. Tap to copy or share.";
+"settings_details.notifications.push_id_section.footer" = "Dit is het doel om te gebruiken in uw Home Assistent configuratie. Tik om te kopiëren of te delen.";
 "settings_details.notifications.push_id_section.placeholder" = "Push-ID";
 "settings_details.notifications.push_id_section.not_registered" = "Niet geregistreerd voor externe meldingen";
 "settings_details.notifications.update_section.footer" = "Bij het bijwerken van push-instellingen worden de nieuwste push-acties en categorieën bij Home Assistant aangevraagd.";
@@ -104,18 +104,18 @@
 "about.github_issue_tracker.title" = "GitHub Issue Tracker";
 "url_handler.error.title" = "Fout";
 "url_handler.no_service.message" = "%@ is geen geldige route";
-"url_handler.call_service.success.title" = "Called service";
-"url_handler.call_service.success.message" = "Successfully called %@";
-"url_handler.call_service.error.message" = "An error occurred while attempting to call service %@\
-%@";
+"url_handler.call_service.success.title" = "Aangeroepen dienst";
+"url_handler.call_service.success.message" = "Met succes uitgevoerd %@";
+"url_handler.call_service.error.message" = "Er is een fout opgetreden bij een poging om gebeurtenis %@ uit te voeren \
+ %@";
 "url_handler.fire_event.success.title" = "Gebeurtenis uitgevoerd";
 "url_handler.fire_event.success.message" = "Gebeurtenis met succes uitgevoerd %@";
 "url_handler.fire_event.error.message" = "Er is een fout opgetreden bij een poging om gebeurtenis %@ uit te voeren \
  %@";
 "url_handler.send_location.success.title" = "Locatie verzonden";
 "url_handler.send_location.success.message" = "Eenmalige locatie verstuurd";
-"url_handler.send_location.error.message" = "An unknown error occurred while attempting to send location\
-%@";
+"url_handler.send_location.error.message" = "Er is een onbekende fout opgetreden tijdens een poging om de locatie te verzenden \
+ %@";
 "settings_details.notifications.prompt_to_open_urls.title" = "Bevestig vóór het openen van URL";
 "yes_label" = "Ja";
 "no_label" = "Nee";
@@ -126,4 +126,4 @@
 "settings_details.location.updates.zone.title" = "Zone enter/exit";
 "settings_details.location.updates.background.title" = "Op achtergrond ophalen";
 "settings_details.location.updates.significant.title" = "Aanzienlijke locatiewijziging";
-"settings_details.location.updates.notification.title" = "Push notificatieverzoek";
+"settings_details.location.updates.notification.title" = "Push notificatie verzoek";
