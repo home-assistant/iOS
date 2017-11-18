@@ -127,3 +127,9 @@
 "settings_details.location.updates.background.title" = "Op achtergrond ophalen";
 "settings_details.location.updates.significant.title" = "Aanzienlijke locatiewijziging";
 "settings_details.location.updates.notification.title" = "Push notificatie verzoek";
+"location_change_notification.beacon_region_enter.body" = "%@ entered via iBeacon";
+"location_change_notification.beacon_region_exit.body" = "%@ exited via iBeacon";
+"location_change_notification.region_enter.body" = "%@ entered";
+"location_change_notification.region_exit.body" = "%@ exited";
+"location_change_notification.significant_location_update.body" = "Significant location change detected";
+"location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
