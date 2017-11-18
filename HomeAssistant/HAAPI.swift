@@ -1187,7 +1187,7 @@ class BeaconManager: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         print("Entered region", region.identifier)
         if let zone = zones[region.identifier] {
-            HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
+            HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionEnter,
                                                            coordinates: zone.locationCoordinates(),
                                                            accuracy: 1,
                                                            zone: zone)
