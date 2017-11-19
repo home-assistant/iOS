@@ -233,22 +233,27 @@ public class HomeAssistantAPI {
         var notificationIdentifer = ""
         var shouldNotify = false
 
+        var zoneName = "Unknown zone"
+        if let zone = zone {
+            zoneName = zone.Name
+        }
+
         switch updateType {
         case .BeaconRegionEnter:
-            notificationBody = L10n.LocationChangeNotification.BeaconRegionEnter.body(zone!.Name)
-            notificationIdentifer = "\(zone!.Name)_beacon_entered"
+            notificationBody = L10n.LocationChangeNotification.BeaconRegionEnter.body(zoneName)
+            notificationIdentifer = "\(zoneName)_beacon_entered"
             shouldNotify = prefs.bool(forKey: "beaconEnterNotifications")
         case .BeaconRegionExit:
-            notificationBody = L10n.LocationChangeNotification.BeaconRegionExit.body(zone!.Name)
-            notificationIdentifer = "\(zone!.Name)_beacon_exited"
+            notificationBody = L10n.LocationChangeNotification.BeaconRegionExit.body(zoneName)
+            notificationIdentifer = "\(zoneName)_beacon_exited"
             shouldNotify = prefs.bool(forKey: "beaconExitNotifications")
         case .RegionEnter:
-            notificationBody = L10n.LocationChangeNotification.RegionEnter.body(zone!.Name)
-            notificationIdentifer = "\(zone!.Name)_entered"
+            notificationBody = L10n.LocationChangeNotification.RegionEnter.body(zoneName)
+            notificationIdentifer = "\(zoneName)_entered"
             shouldNotify = prefs.bool(forKey: "enterNotifications")
         case .RegionExit:
-            notificationBody = L10n.LocationChangeNotification.RegionExit.body(zone!.Name)
-            notificationIdentifer = "\(zone!.Name)_exited"
+            notificationBody = L10n.LocationChangeNotification.RegionExit.body(zoneName)
+            notificationIdentifer = "\(zoneName)_exited"
             shouldNotify = prefs.bool(forKey: "exitNotifications")
         case .SignificantLocationUpdate:
             notificationBody = L10n.LocationChangeNotification.SignificantLocationUpdate.body
@@ -466,8 +471,8 @@ public class HomeAssistantAPI {
                     .responseArray { (response: DataResponse<[Entity]>) in
                         switch response.result {
                         case .success:
-                            self.cachedEntities = response.result.value!
                             if let resVal = response.result.value {
+                                self.cachedEntities = resVal
                                 fulfill(resVal)
                             } else {
                                 reject(APIError.invalidResponse)
@@ -545,8 +550,9 @@ public class HomeAssistantAPI {
                     .responseJSON { response in
                         switch response.result {
                         case .success:
-                            if let jsonDict = response.result.value as? [String: String] {
-                                fulfill(jsonDict["message"]!)
+                            if let jsonDict = response.result.value as? [String: String],
+                                let msg = jsonDict["message"] {
+                                fulfill(msg)
                             }
                         case .failure(let error):
                             if let afError = error as? AFError {
@@ -954,24 +960,23 @@ public class HomeAssistantAPI {
                                 if action.AuthenticationRequired { actionOptions.insert(.authenticationRequired) }
                                 if action.Destructive { actionOptions.insert(.destructive) }
                                 if action.ActivationMode == "foreground" { actionOptions.insert(.foreground) }
-                                var newAction = UNNotificationAction(identifier: action.Identifier!,
-                                                                     title: action.Title!, options: actionOptions)
-                                if action.Behavior.lowercased() == "textinput" {
-                                    if let identifier = action.Identifier, let btnTitle = action.TextInputButtonTitle,
-                                        let place = action.TextInputPlaceholder, let title = action.Title {
-                                        newAction = UNTextInputNotificationAction(identifier: identifier,
-                                                                                  title: title,
+                                var newAction = UNNotificationAction(identifier: action.Identifier,
+                                                                     title: action.Title, options: actionOptions)
+                                if action.Behavior.lowercased() == "textinput",
+                                    let btnTitle = action.TextInputButtonTitle, 
+                                    let place = action.TextInputPlaceholder {
+                                        newAction = UNTextInputNotificationAction(identifier: action.Identifier,
+                                                                                  title: action.Title,
                                                                                   options: actionOptions,
                                                                                   textInputButtonTitle: btnTitle,
                                                                                   textInputPlaceholder: place)
-                                    }
                                 }
                                 categoryActions.append(newAction)
                             }
                         } else {
                             continue
                         }
-                        let finalCategory = UNNotificationCategory.init(identifier: category.Identifier!,
+                        let finalCategory = UNNotificationCategory.init(identifier: category.Identifier,
                                                                         actions: categoryActions,
                                                                         intentIdentifiers: [],
                                                                         options: [.customDismissAction])
@@ -1208,8 +1213,9 @@ class BeaconManager: NSObject, CLLocationManagerDelegate {
     func startScanning(zone: Zone) {
         print("Begin scanning iBeacons for zone", zone.ID)
         var beaconRegion: CLBeaconRegion? = nil
-        if let uuid = zone.UUID, let major = zone.Major, let minor = zone.Minor {
-            beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: uuid)!,
+        if let uuidStr = zone.UUID, let uuid = UUID(uuidString: uuidStr),
+            let major = zone.Major, let minor = zone.Minor {
+            beaconRegion = CLBeaconRegion(proximityUUID: uuid,
                                           major: CLBeaconMajorValue(major),
                                           minor: CLBeaconMinorValue(minor), identifier: zone.ID)
         } else if let uuid = zone.UUID, let major = zone.Major {

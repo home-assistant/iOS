@@ -22,8 +22,8 @@ class PushConfiguration: Mappable {
 }
 
 class PushCategory: Mappable {
-    var Name: String?
-    var Identifier: String?
+    var Name: String = "Unknown"
+    var Identifier: String = "unknown"
 
     var Actions: [PushAction]?
 
@@ -39,8 +39,8 @@ class PushCategory: Mappable {
 }
 
 class PushAction: Mappable {
-    var Title: String?
-    var Identifier: String?
+    var Title: String = "Missing title"
+    var Identifier: String = "missing"
     var AuthenticationRequired: Bool = false
     var Behavior: String = "default"
     var ActivationMode: String = "background"
