@@ -24,6 +24,8 @@ func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeigh
         theIcon?.addAttribute(NSAttributedStringKey.foregroundColor.rawValue, value: color)
         return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
     } else {
+        CLSLogv("Error loading Material Design Icons while requesting icon: %@, Width: %f, Height: %f",
+                getVaList([iconIdentifier, iconWidth, iconHeight]))
         return UIImage()
     }
 }
