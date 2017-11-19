@@ -65,6 +65,11 @@ enum L10n {
       static let tagline = L10n.tr("Localizable", "about.logo.tagline")
     }
 
+    enum Review {
+      /// Leave a review
+      static let title = L10n.tr("Localizable", "about.review.title")
+    }
+
     enum Website {
       /// Website
       static let title = L10n.tr("Localizable", "about.website.title")

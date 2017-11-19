@@ -44,6 +44,17 @@ class AboutViewController: FormViewController {
                         _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
+            <<< ButtonRow {
+                    $0.title = L10n.About.Review.title
+                }.cellUpdate { cell, _ in
+                    cell.textLabel?.textAlignment = .left
+                    cell.accessoryType = .disclosureIndicator
+                    cell.editingAccessoryType = cell.accessoryType
+                    cell.textLabel?.textColor = nil
+                }.onCellSelection({ _, _  in
+                    let urlStr = "https://itunes.apple.com/app/id1099568401?action=write-review&mt=8"
+                    UIApplication.shared.openURL(URL(string: urlStr)!)
+                })
             +++ Section()
             <<< ButtonRow {
                 $0.title = L10n.About.Website.title

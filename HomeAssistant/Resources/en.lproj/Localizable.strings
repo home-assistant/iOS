@@ -95,6 +95,7 @@ send notifications to your device.";
 "about.logo.app_title" = "Home Assistant for iOS";
 "about.logo.tagline" = "Awaken Your Home";
 "about.acknowledgements.title" = "Acknowledgements";
+"about.review.title" = "Leave a review";
 "about.website.title" = "Website";
 "about.forums.title" = "Forums";
 "about.chat.title" = "Chat";
