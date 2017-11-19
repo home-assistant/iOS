@@ -314,8 +314,10 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                         let center = UNUserNotificationCenter.current()
                         center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
                             if error != nil {
-                                let alert = UIAlertController(title: L10n.Settings.ConnectionSection.ErrorEnablingNotifications.title,
-                                                              message: L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message,
+                                let title = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.title
+                                let message = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message
+                                let alert = UIAlertController(title: title,
+                                                              message: message,
                                                               preferredStyle: UIAlertControllerStyle.alert)
                                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
                                                               handler: nil))
