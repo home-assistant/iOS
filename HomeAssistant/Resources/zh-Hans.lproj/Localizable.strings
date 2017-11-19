@@ -127,9 +127,9 @@
 "settings_details.location.updates.background.title" = "后台推送";
 "settings_details.location.updates.significant.title" = "显著的位置变更";
 "settings_details.location.updates.notification.title" = "通知推送请求";
-"location_change_notification.beacon_region_enter.body" = "%@ entered via iBeacon";
-"location_change_notification.beacon_region_exit.body" = "%@ exited via iBeacon";
-"location_change_notification.region_enter.body" = "%@ entered";
-"location_change_notification.region_exit.body" = "%@ exited";
-"location_change_notification.significant_location_update.body" = "Significant location change detected";
-"location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
+"location_change_notification.beacon_region_enter.body" = "%@ 由 iBeacon 识别进入";
+"location_change_notification.beacon_region_exit.body" = "%@ 由 iBeacon 识别离开";
+"location_change_notification.region_enter.body" = "%@ 进入";
+"location_change_notification.region_exit.body" = "%@ 离开";
+"location_change_notification.significant_location_update.body" = "监测到显著位置变更";
+"location_change_notification.background_fetch.body" = "通过后台获取当前位置信息";
