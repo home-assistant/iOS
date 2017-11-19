@@ -10,7 +10,10 @@ import Foundation
 import ObjectMapper
 
 let usesSSL = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
-    return Bool(value!.hasPrefix("https://"))
+    if let url = value {
+        return Bool(url.hasPrefix("https://"))
+    }
+    return false
 }, toJSON: { (_: Bool?) -> String? in
     return nil
 })
