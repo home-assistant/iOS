@@ -13,16 +13,22 @@ import KeychainAccess
 
 func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeight: Double, color: UIColor) -> UIImage {
     if let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as? [String: String] {
-        Crashlytics.sharedInstance().setFloatValue(Float(iconWidth), forKey: "iconWidth")
-        Crashlytics.sharedInstance().setFloatValue(Float(iconHeight), forKey: "iconHeight")
-        Crashlytics.sharedInstance().setObjectValue(iconIdentifier, forKey: "iconIdentifier")
         let fixedIconIdentifier = iconIdentifier.replacingOccurrences(of: ":", with: "-")
         let iconCode = iconCodes[fixedIconIdentifier]
         CLSLogv("Requesting MaterialDesignIcon: Identifier: %@, Fixed Identifier: %@, Width: %f, Height: %f",
                 getVaList([iconIdentifier, fixedIconIdentifier, iconWidth, iconHeight]))
         let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
         theIcon?.addAttribute(NSAttributedStringKey.foregroundColor.rawValue, value: color)
-        return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
+        if let icon = theIcon {
+            return icon.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
+        } else {
+            CLSLogv("Error generating requested icon %@, Width: %f, Height: %f, falling back to mdi-help",
+                    getVaList([iconIdentifier, iconWidth, iconHeight]))
+            let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCodes["mdi-help"],
+                                                                size: CGFloat(iconWidth))
+            theIcon?.addAttribute(NSAttributedStringKey.foregroundColor.rawValue, value: color)
+            return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
+        }
     } else {
         CLSLogv("Error loading Material Design Icons while requesting icon: %@, Width: %f, Height: %f",
                 getVaList([iconIdentifier, iconWidth, iconHeight]))
