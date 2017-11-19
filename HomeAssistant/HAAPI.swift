@@ -963,7 +963,7 @@ public class HomeAssistantAPI {
                                 var newAction = UNNotificationAction(identifier: action.Identifier,
                                                                      title: action.Title, options: actionOptions)
                                 if action.Behavior.lowercased() == "textinput",
-                                    let btnTitle = action.TextInputButtonTitle, 
+                                    let btnTitle = action.TextInputButtonTitle,
                                     let place = action.TextInputPlaceholder {
                                         newAction = UNTextInputNotificationAction(identifier: action.Identifier,
                                                                                   title: action.Title,
