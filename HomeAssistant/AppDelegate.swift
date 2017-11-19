@@ -46,12 +46,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UNUserNotificationCenter.current().delegate = self
         }
 
-        Crashlytics.sharedInstance().setObjectValue(prefs.integer(forKey: "lastInstalledVersion"),
+        Crashlytics.sharedInstance().setObjectValue(prefs.string(forKey: "lastInstalledVersion"),
                                                     forKey: "lastInstalledVersion")
-        if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") {
-            if let stringedBundleVersion = bundleVersion as? String {
-                prefs.set(stringedBundleVersion, forKey: "lastInstalledVersion")
-            }
+        Crashlytics.sharedInstance().setObjectValue(prefs.integer(forKey: "lastInstalledBundleVersion"),
+                                                    forKey: "lastInstalledBundleVersion")
+        Crashlytics.sharedInstance().setObjectValue(prefs.string(forKey: "lastInstalledShortVersion"),
+                                                    forKey: "lastInstalledShortVersion")
+        if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion"),
+            let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString"),
+            let stringedShortVersion = shortVersion as? String,
+            let stringedBundleVersion = bundleVersion as? String {
+                let combined = "\(stringedShortVersion) (\(stringedBundleVersion))"
+                prefs.set(stringedBundleVersion, forKey: "lastInstalledBundleVersion")
+                prefs.set(stringedShortVersion, forKey: "lastInstalledShortVersion")
+                prefs.set(combined, forKey: "lastInstalledVersion")
         }
 
         if prefs.object(forKey: "openInChrome") == nil && OpenInChromeController().isChromeInstalled() {
@@ -119,7 +127,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = HomeAssistantAPI.sharedInstance.RegisterDeviceForPush(deviceToken: tokenString).then { resp -> Void in
             if let pushId = resp.PushId {
                 print("Registered for push. Platform: \(resp.SNSPlatform ?? "MISSING"), PushID: \(pushId)")
-                CLSLogv("Registered for push:", getVaList([pushId]))
+                CLSLogv("Registered for push %@:", getVaList([pushId]))
                 Crashlytics.sharedInstance().setUserIdentifier(pushId)
                 prefs.setValue(pushId, forKey: "pushID")
                 HomeAssistantAPI.sharedInstance.pushID = pushId
