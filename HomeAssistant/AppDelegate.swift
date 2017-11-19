@@ -46,47 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UNUserNotificationCenter.current().delegate = self
         }
 
-        Crashlytics.sharedInstance().setObjectValue(prefs.string(forKey: "lastInstalledVersion"),
-                                                    forKey: "lastInstalledVersion")
-        Crashlytics.sharedInstance().setObjectValue(prefs.integer(forKey: "lastInstalledBundleVersion"),
-                                                    forKey: "lastInstalledBundleVersion")
-        Crashlytics.sharedInstance().setObjectValue(prefs.string(forKey: "lastInstalledShortVersion"),
-                                                    forKey: "lastInstalledShortVersion")
-        if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion"),
-            let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString"),
-            let stringedShortVersion = shortVersion as? String,
-            let stringedBundleVersion = bundleVersion as? String {
-                let combined = "\(stringedShortVersion) (\(stringedBundleVersion))"
-                prefs.set(stringedBundleVersion, forKey: "lastInstalledBundleVersion")
-                prefs.set(stringedShortVersion, forKey: "lastInstalledShortVersion")
-                prefs.set(combined, forKey: "lastInstalledVersion")
-        }
-
-        if prefs.object(forKey: "openInChrome") == nil && OpenInChromeController().isChromeInstalled() {
-            prefs.setValue(true, forKey: "openInChrome")
-        }
-
-        if prefs.object(forKey: "confirmBeforeOpeningUrl") == nil {
-            prefs.setValue(true, forKey: "confirmBeforeOpeningUrl")
-        }
-
-        if prefs.object(forKey: "locationUpdateOnZone") == nil {
-            prefs.set(true, forKey: "locationUpdateOnZone")
-        }
-
-        if prefs.object(forKey: "locationUpdateOnBackgroundFetch") == nil {
-            prefs.set(true, forKey: "locationUpdateOnBackgroundFetch")
-        }
-
-        if prefs.object(forKey: "locationUpdateOnSignificant") == nil {
-            prefs.set(true, forKey: "locationUpdateOnSignificant")
-        }
-
-        if prefs.object(forKey: "locationUpdateOnNotification") == nil {
-            prefs.set(true, forKey: "locationUpdateOnNotification")
-        }
-
-        prefs.synchronize()
+        setDefaults()
 
         registerForSignificantLocationUpdates()
 
