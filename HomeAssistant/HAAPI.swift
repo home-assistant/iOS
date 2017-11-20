@@ -204,14 +204,12 @@ public class HomeAssistantAPI {
             batteryState = "Full"
         }
 
-        let hostname = UIDevice().name
-
         let locationUpdate: [String: Any] = [
             "battery": Int(UIDevice.current.batteryLevel*100),
             "battery_status": batteryState,
             "gps": [coordinates.latitude, coordinates.longitude],
             "gps_accuracy": accuracy,
-            "hostname": hostname,
+            "hostname": UIDevice.current.name,
             "dev_id": deviceID
         ]
 
@@ -354,11 +352,11 @@ public class HomeAssistantAPI {
                                     accuracy: location.horizontalAccuracy,
                                     zone: nil)
                 fulfill(true)
-            }) { (_, _, error) in
+            }, error: { (_, _, error) in
                 print("Error when trying to get a oneshot location for \(updateTrigger) trigger!", error)
                 Crashlytics.sharedInstance().recordError(error)
                 reject(error)
-            }
+            })
         }
     }
 

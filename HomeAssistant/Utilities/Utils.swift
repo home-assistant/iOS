@@ -198,8 +198,8 @@ func openURLInBrowser(urlToOpen: URL) {
 
 func removeSpecialCharsFromString(text: String) -> String {
     let okayChars: Set<Character> =
-        Set("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890".characters)
-    return String(text.characters.filter {okayChars.contains($0) })
+        Set("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890")
+    return String(text.filter {okayChars.contains($0) })
 }
 
 func convertToDictionary(text: String) -> [String: Any]? {
@@ -272,16 +272,5 @@ extension UIImage {
         let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return newImage
-    }
-}
-
-extension String {
-
-    subscript (i: Int) -> Character {
-        return self[self.characters.index(self.startIndex, offsetBy: i)]
-    }
-
-    subscript (i: Int) -> String {
-        return String(self[i] as Character)
     }
 }

@@ -247,12 +247,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                                                coordinates: location.coordinate,
                                                                                accuracy: location.horizontalAccuracy,
                                                                                zone: nil)
-            }) { (_, _, error) -> Void in
+            }, error: { (_, _, error) -> Void in
                 // something went wrong. request will be cancelled automatically
                 NSLog("Error during significant location update registration: @%",
                       error.localizedDescription)
                 Crashlytics.sharedInstance().recordError(error)
-            }
+            })
         }
     }
 
