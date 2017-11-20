@@ -68,13 +68,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                 return
             }.catch {err -> Void in
                 print("Error on connect!!!", err)
-                let settingsView = SettingsViewController()
-                settingsView.showErrorConnectingMessage = true
-                settingsView.showErrorConnectingMessageError = err
-                settingsView.doneButton = true
-                settingsView.delegate = self
-                let navController = UINavigationController(rootViewController: settingsView)
-                self.present(navController, animated: true, completion: nil)
+                self.openSettingsWithError(error: err)
             }
         } else {
             let settingsView = SettingsViewController()
@@ -165,8 +159,28 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         return nil
     }
 
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        print("Failure during nav", error)
+        openSettingsWithError(error: error)
+    }
+
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        print("Failure during content load", error)
+        openSettingsWithError(error: error)
+    }
+
     @objc func refreshWebView(_ sender: UIButton) {
         self.webView.reload()
+    }
+
+    func openSettingsWithError(error: Error) {
+        let settingsView = SettingsViewController()
+        settingsView.showErrorConnectingMessage = true
+        settingsView.showErrorConnectingMessageError = error
+        settingsView.doneButton = true
+        settingsView.delegate = self
+        let navController = UINavigationController(rootViewController: settingsView)
+        self.present(navController, animated: true, completion: nil)
     }
 
     @objc func openSettingsView(_ sender: UIButton) {
