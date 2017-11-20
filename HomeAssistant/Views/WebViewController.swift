@@ -90,7 +90,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        var toolbarItems: [UIBarButtonItem] = []
+        var barItems: [UIBarButtonItem] = []
 
         var tabBarIconColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
 
@@ -107,38 +107,34 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                                                   iconWidth: 30, iconHeight: 30,
                                                   color: tabBarIconColor)
 
-            toolbarItems.append(UIBarButtonItem(image: uploadIcon,
-                                                style: .plain,
-                                                target: self,
-                                                action: #selector(sendCurrentLocation(_:))
+            barItems.append(UIBarButtonItem(image: uploadIcon,
+                                            style: .plain,
+                                            target: self,
+                                            action: #selector(sendCurrentLocation(_:))
                 )
             )
 
             let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
 
-            toolbarItems.append(UIBarButtonItem(image: mapIcon,
-                                                style: .plain,
-                                                target: self,
-                                                action: #selector(openMapView(_:))))
-        }
-
-        toolbarItems.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
-
-        let refreshIcon = getIconForIdentifier("mdi:reload", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
-
-        toolbarItems.append(UIBarButtonItem(image: refreshIcon,
+            barItems.append(UIBarButtonItem(image: mapIcon,
                                             style: .plain,
                                             target: self,
+                                            action: #selector(openMapView(_:))))
+        }
+
+        barItems.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
+
+        barItems.append(UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
                                             action: #selector(refreshWebView(_:))))
 
         let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
 
-        toolbarItems.append(UIBarButtonItem(image: settingsIcon,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(openSettingsView(_:))))
+        barItems.append(UIBarButtonItem(image: settingsIcon,
+                                        style: .plain,
+                                        target: self,
+                                        action: #selector(openSettingsView(_:))))
 
-        self.setToolbarItems(toolbarItems, animated: false)
+        self.setToolbarItems(barItems, animated: false)
         self.navigationController?.toolbar.tintColor = tabBarIconColor
 
         if HomeAssistantAPI.sharedInstance.Configured {
@@ -169,8 +165,37 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         openSettingsWithError(error: error)
     }
 
-    @objc func refreshWebView(_ sender: UIButton) {
-        self.webView.reload()
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        let stop = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(self.refreshWebView(_:)))
+        var removeAt = 2
+        if self.toolbarItems?.count == 5 {
+            removeAt = 3
+        }
+        var items = self.toolbarItems
+        items?.remove(at: removeAt)
+        items?.insert(stop, at: removeAt)
+        self.setToolbarItems(items, animated: true)
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        var removeAt = 2
+        if self.toolbarItems?.count == 5 {
+            removeAt = 3
+        }
+        let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
+                                      action: #selector(self.refreshWebView(_:)))
+        var items = self.toolbarItems
+        items?.remove(at: removeAt)
+        items?.insert(refresh, at: removeAt)
+        self.setToolbarItems(items, animated: true)
+    }
+
+    @objc func refreshWebView(_ sender: UIBarButtonItem) {
+        if self.webView.isLoading {
+            self.webView.stopLoading()
+        } else {
+            self.webView.reload()
+        }
     }
 
     func openSettingsWithError(error: Error) {
