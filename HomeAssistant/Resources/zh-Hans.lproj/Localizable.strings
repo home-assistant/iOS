@@ -133,3 +133,4 @@
 "location_change_notification.region_exit.body" = "%@ 离开";
 "location_change_notification.significant_location_update.body" = "监测到显著位置变更";
 "location_change_notification.background_fetch.body" = "通过后台获取当前位置信息";
+"about.review.title" = "Leave a review";

@@ -128,3 +128,4 @@
 "location_change_notification.region_exit.body" = "%@ exited";
 "location_change_notification.significant_location_update.body" = "Significant location change detected";
 "location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
+"about.review.title" = "Leave a review";

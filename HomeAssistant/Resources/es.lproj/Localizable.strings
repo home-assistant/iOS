@@ -134,3 +134,4 @@
 "location_change_notification.region_exit.body" = "%@ ha salido";
 "location_change_notification.significant_location_update.body" = "Cambio de ubicación significativo detectado";
 "location_change_notification.background_fetch.body" = "Ubicación actual activada en segundo plano";
+"about.review.title" = "Leave a review";

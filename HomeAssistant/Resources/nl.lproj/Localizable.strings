@@ -133,3 +133,4 @@
 "location_change_notification.region_exit.body" = "%@ verlaten";
 "location_change_notification.significant_location_update.body" = "Aanzienlijke locatiewijziging";
 "location_change_notification.background_fetch.body" = "Huidige locatie levering geactiveerd via achtergrond ophalen";
+"about.review.title" = "Leave a review";
