@@ -172,7 +172,7 @@ class SettingsDetailViewController: FormViewController {
             }
 
         case "notifications":
-            self.title = "Notification Settings"
+            self.title = L10n.SettingsDetails.Notifications.title
             self.form
                 +++ Section()
                 <<< SwitchRow("confirmBeforeOpeningUrl") {
@@ -204,10 +204,10 @@ class SettingsDetailViewController: FormViewController {
                     $0.title = L10n.SettingsDetails.Notifications.UpdateSection.Button.title
                 }.onCellSelection {_, _ in
                     HomeAssistantAPI.sharedInstance.setupPush()
-                    // swiftlint:disable:next line_length
-                    let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.title,
-                                                  // swiftlint:disable:next line_length
-                                                  message: L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.message,
+                    let title = L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.title
+                    let message = L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.message
+                    let alert = UIAlertController(title: title,
+                                                  message: message,
                                                   preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
                                                   handler: nil))
