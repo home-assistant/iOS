@@ -75,7 +75,6 @@ public class MapViewController: UIViewController, TypedRowControllerType, MKMapV
         if let value = row.value {
             let dropPin = MKPointAnnotation()
             dropPin.coordinate = value.coordinate
-            dropPin.title = "Pin"
             mapView.addAnnotation(dropPin)
             let region = MKCoordinateRegionMakeWithDistance(value.coordinate, 400, 400)
             mapView.setRegion(region, animated: true)
