@@ -208,10 +208,8 @@ public class HomeAssistantAPI {
 
         let locationUpdate: [String: Any] = [
             "battery": Int(UIDevice.current.batteryLevel*100),
-            "battery_status": batteryState,
             "gps": [coordinates.latitude, coordinates.longitude],
             "gps_accuracy": accuracy,
-            "hostname": hostname,
             "dev_id": deviceID
         ]
 
