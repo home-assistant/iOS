@@ -212,12 +212,9 @@ platform :ios do
     pilot(
       changelog: change_log,
       skip_submission: true,
-      distribute_external: false
+      distribute_external: false,
+      skip_waiting_for_build_processing: true
     )
-
-    if is_ci
-      slack(message: "Uploaded new beta build to TestFlight")
-    end
 
     rocket
   end
