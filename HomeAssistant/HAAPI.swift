@@ -278,51 +278,22 @@ public class HomeAssistantAPI {
         if prefs.bool(forKey: "locationUpdateOnZone") == false {
             return
         }
+
         if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
-            if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
-                return entity.Domain == "zone"
-            }) as? [Zone] {
-                Crashlytics.sharedInstance().setObjectValue(zoneEntities.count, forKey: "numberOfZones")
-                for zone in zoneEntities {
-                    if zone.TrackingEnabled == false {
-                        print("Skipping zone set to not track!")
-                        continue
-                    }
-                    if zone.UUID != nil && CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self) {
-                        locationManager.startScanning(zone: zone)
-                    }
-                    do {
-                        try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius,
-                                             enter: { _ in
-                                                print("Entered in region!")
-                                                self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
-                                                                    coordinates: zone.locationCoordinates(),
-                                                                    accuracy: 1,
-                                                                    zone: zone)
-                        }, exit: { _ in
-                            print("Exited from the region")
-                            self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
-                                                coordinates: zone.locationCoordinates(),
-                                                accuracy: 1,
-                                                zone: zone)
-                        }, error: { req, error in
-                            CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
-                            req.cancel()
-                        })
-                    } catch let error {
-                        CLSLogv("Error when setting up zones for tracking: %@",
-                                getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                    }
+            let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
+                if entity.Domain == "zone", let zone = entity as? Zone {
+                    return zone.TrackingEnabled
                 }
+                return false
+            }) as! [Zone]
+            for zone in zoneEntities {
+                locationManager.startMonitoring(zone: zone)
             }
-
         }
-
     }
 
     func sendOneshotLocation() -> Promise<Bool> {
+        print("Sending one shot location")
         return getAndSendLocation(trigger: LocationUpdateTypes.Manual)
     }
 
@@ -1172,10 +1143,10 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     internal var onCurrentLocation: OnLocationUpdated?
     var zones: [String: Zone] = [String: Zone]()
 
-    init(settings: Settings, requestManager: HttpRequestManager) {
-        self.settings = settings
-        self.requestManager = requestManager
+    override init() {
         super.init()
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.allowsBackgroundLocationUpdates = true
         locationManager.delegate = self
         authorize()
         startMonitoring()
@@ -1193,9 +1164,10 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         locationManager.startMonitoringSignificantLocationChanges()
     }
 
-    func triggerLocationEvent(_ manager: CLLocationManager, trigger: LocationUpdateTypes, region: CLRegion, zone: Zone) {
+    func triggerLocationEvent(_ manager: CLLocationManager, trigger: LocationUpdateTypes,
+                              region: CLRegion, zone: Zone) {
         // Do nothing in case we don't want to trigger an enter event
-        if location.TrackingEnabled == false {
+        if zone.TrackingEnabled == false {
             return
         }
 
@@ -1209,7 +1181,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
                                                        zone: zone)
     }
 
-    private func startMonitoring(zone: Zone) {
+    func startMonitoring(zone: Zone) {
         if zone.UUID == nil {
             // Geofence / CircularRegion
             let region = CLCircularRegion(
@@ -1220,8 +1192,9 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
             locationManager.startMonitoring(for: region)
         } else {
             // iBeacon
-            guard let uuidString = zone.uuid, let uuid = UUID(uuidString: uuidString) else {
-                return Error("Could not start monitoring of CLBeaconRegion because of missing / invalid UUID")
+            guard let uuidString = zone.UUID, let uuid = UUID(uuidString: uuidString) else {
+                print("Could not start monitoring of CLBeaconRegion because of missing / invalid UUID")
+                return
             }
             guard let major = zone.Major, let minor =
                 zone.Minor else {
@@ -1231,8 +1204,8 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
             }
             let beaconRegion = CLBeaconRegion(
                 proximityUUID: uuid,
-                major: CLBeaconMajorValue(major.intValue),
-                minor: CLBeaconMinorValue(minor.intValue),
+                major: CLBeaconMajorValue(major),
+                minor: CLBeaconMinorValue(minor),
                 identifier: uuidString
             )
             beaconRegion.notifyEntryStateOnDisplay = true
@@ -1249,9 +1222,9 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
 
         // start monitoring for all existing regions
-        geofences.forEach { zone in
+        zones.forEach { zone in
             print("Starting geofence \(zone)")
-            startMonitoring(zone: zone)
+            startMonitoring(zone: zone.value)
         }
     }
 

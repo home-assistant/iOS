@@ -13,7 +13,6 @@ import PromiseKit
 import UserNotifications
 import AlamofireNetworkActivityIndicator
 import KeychainAccess
-import SwiftLocation
 import Alamofire
 
 let keychain = Keychain(service: "io.robbie.homeassistant")
@@ -24,6 +23,7 @@ let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    @objc var locationManager: LocationManager!
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -31,8 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
-
-        resumeRegionMonitoring()
 
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
@@ -47,22 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setDefaults()
 
         if HomeAssistantAPI.sharedInstance.locationEnabled {
-            HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
-                                                  password: keychain["apiPassword"],
-                                                  deviceID: keychain["deviceID"])
-            Location.getLocation(accuracy: .neighborhood, frequency: .significant, timeout: nil,
-                                 success: { (_, location) -> Void in
-
-                                    HomeAssistantAPI.sharedInstance.submitLocation(updateType: .SignificantLocationUpdate,
-                                                                                   coordinates: location.coordinate,
-                                                                                   accuracy: location.horizontalAccuracy,
-                                                                                   zone: nil)
-            }, error: { (_, _, error) -> Void in
-                // something went wrong. request will be cancelled automatically
-                NSLog("Error during significant location update registration: @%",
-                      error.localizedDescription)
-                Crashlytics.sharedInstance().recordError(error)
-            })
+            locationManager = LocationManager()
         }
 
         window = UIWindow.init(frame: UIScreen.main.bounds)
@@ -165,6 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                               deviceID: keychain["deviceID"])
         if HomeAssistantAPI.sharedInstance.locationEnabled {
             HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .BackgroundFetch).done { success in
+                print("Sending location via background fetch")
                 if success == true {
                     completionHandler(UIBackgroundFetchResult.newData)
                 } else {
