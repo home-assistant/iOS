@@ -116,7 +116,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
                                                               password: keychain["apiPassword"],
                                                               deviceID: keychain["deviceID"])
-                        HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual).done { success in
+                        HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .PushNotification).done { success in
                             print("Did successfully send location when requested via APNS?", success)
                             if success == true {
                                 completionHandler(UIBackgroundFetchResult.newData)
@@ -218,7 +218,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                                            error.localizedDescription))
             }
         case "send_location": // homeassistant://send_location/
-            HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual).done { _ in
+            HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .URLScheme).done { _ in
                 showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
                           message: L10n.UrlHandler.SendLocation.Success.message)
             }.catch { error in
