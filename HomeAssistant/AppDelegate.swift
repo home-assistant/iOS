@@ -32,9 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
 
-        if launchOptions?[UIApplicationLaunchOptionsKey.location] != nil {
-            resumeRegionMonitoring()
-        }
+        resumeRegionMonitoring()
 
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
@@ -48,7 +46,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setDefaults()
 
-        registerForSignificantLocationUpdates()
+        if HomeAssistantAPI.sharedInstance.locationEnabled {
+            HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
+                                                  password: keychain["apiPassword"],
+                                                  deviceID: keychain["deviceID"])
+            Location.getLocation(accuracy: .neighborhood, frequency: .significant, timeout: nil,
+                                 success: { (_, location) -> Void in
+
+                                    HomeAssistantAPI.sharedInstance.submitLocation(updateType: .SignificantLocationUpdate,
+                                                                                   coordinates: location.coordinate,
+                                                                                   accuracy: location.horizontalAccuracy,
+                                                                                   zone: nil)
+            }, error: { (_, _, error) -> Void in
+                // something went wrong. request will be cancelled automatically
+                NSLog("Error during significant location update registration: @%",
+                      error.localizedDescription)
+                Crashlytics.sharedInstance().recordError(error)
+            })
+        }
 
         window = UIWindow.init(frame: UIScreen.main.bounds)
         window?.backgroundColor = .white
@@ -232,37 +247,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                       message: L10n.UrlHandler.NoService.message(url.host!))
         }
         return true
-    }
-
-    func registerForSignificantLocationUpdates() {
-        if HomeAssistantAPI.sharedInstance.locationEnabled {
-            Location.getLocation(accuracy: .neighborhood, frequency: .significant, timeout: nil,
-                                 success: { (_, location) -> Void in
-
-                                HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
-                                                                      password: keychain["apiPassword"],
-                                                                      deviceID: keychain["deviceID"])
-
-                                HomeAssistantAPI.sharedInstance.submitLocation(updateType: .SignificantLocationUpdate,
-                                                                               coordinates: location.coordinate,
-                                                                               accuracy: location.horizontalAccuracy,
-                                                                               zone: nil)
-            }, error: { (_, _, error) -> Void in
-                // something went wrong. request will be cancelled automatically
-                NSLog("Error during significant location update registration: @%",
-                      error.localizedDescription)
-                Crashlytics.sharedInstance().recordError(error)
-            })
-        }
-    }
-
-    func resumeRegionMonitoring() {
-        if HomeAssistantAPI.sharedInstance.locationEnabled {
-            HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
-                                                  deviceID: keychain["deviceID"])
-
-            HomeAssistantAPI.sharedInstance.beaconManager.resumeScanning()
-        }
     }
 
 }

@@ -47,7 +47,7 @@ public class HomeAssistantAPI {
 
     private var manager: Alamofire.SessionManager?
 
-    let beaconManager = BeaconManager()
+    let locationManager = LocationManager()
 
     var cachedEntities: [Entity]?
 
@@ -289,7 +289,7 @@ public class HomeAssistantAPI {
                         continue
                     }
                     if zone.UUID != nil && CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self) {
-                        beaconManager.startScanning(zone: zone)
+                        locationManager.startScanning(zone: zone)
                     }
                     do {
                         try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius,
@@ -1162,85 +1162,150 @@ class Bonjour {
 
 }
 
-class BeaconManager: NSObject, CLLocationManagerDelegate {
+public typealias OnLocationUpdated = ((CLLocation?) -> Void)
 
-    var locationManager: CLLocationManager!
+class LocationManager: NSObject, CLLocationManagerDelegate {
 
+    let locationManager = CLLocationManager()
+    var onLocation: OnLocationUpdated?
+    var backgroundTask: UIBackgroundTaskIdentifier?
+    internal var onCurrentLocation: OnLocationUpdated?
     var zones: [String: Zone] = [String: Zone]()
 
-    override init() {
+    init(settings: Settings, requestManager: HttpRequestManager) {
+        self.settings = settings
+        self.requestManager = requestManager
         super.init()
-
-        locationManager = CLLocationManager()
         locationManager.delegate = self
+        authorize()
+        startMonitoring()
+        syncMonitoredRegions()
     }
 
-    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        print("Entered region", region.identifier)
-        if let zone = zones[region.identifier] {
-            HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionEnter,
-                                                           coordinates: zone.locationCoordinates(),
-                                                           accuracy: 1,
-                                                           zone: zone)
+    private func authorize() {
+        if CLLocationManager.authorizationStatus() != .authorizedAlways {
+            locationManager.requestAlwaysAuthorization()
         }
     }
 
-    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        print("Exited region", region.identifier)
-        if let zone = zones[region.identifier] {
-            HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
-                                                           coordinates: zone.locationCoordinates(),
-                                                           accuracy: 1,
-                                                           zone: zone)
-        }
+    private func startMonitoring() {
+        locationManager.startUpdatingLocation()
+        locationManager.startMonitoringSignificantLocationChanges()
     }
 
-    func startScanning(zone: Zone) {
-        print("Begin scanning iBeacons for zone", zone.ID)
-        var beaconRegion: CLBeaconRegion? = nil
-        if let uuidStr = zone.UUID, let uuid = UUID(uuidString: uuidStr),
-            let major = zone.Major, let minor = zone.Minor {
-            beaconRegion = CLBeaconRegion(proximityUUID: uuid,
-                                          major: CLBeaconMajorValue(major),
-                                          minor: CLBeaconMinorValue(minor), identifier: zone.ID)
-        } else if let uuid = zone.UUID, let major = zone.Major {
-            beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: uuid)!,
-                                          major: CLBeaconMajorValue(major),
-                                          identifier: zone.ID)
-        } else if let uuid = zone.UUID {
-            beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: uuid)!, identifier: zone.ID)
+    func triggerLocationEvent(_ manager: CLLocationManager, trigger: LocationUpdateTypes, region: CLRegion, zone: Zone) {
+        // Do nothing in case we don't want to trigger an enter event
+        if location.TrackingEnabled == false {
+            return
         }
-        if let beaconRegion = beaconRegion {
+
+        backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
+            self?.endBackgroundTask()
+        }
+
+        HomeAssistantAPI.sharedInstance.submitLocation(updateType: trigger,
+                                                       coordinates: zone.locationCoordinates(),
+                                                       accuracy: 1,
+                                                       zone: zone)
+    }
+
+    private func startMonitoring(zone: Zone) {
+        if zone.UUID == nil {
+            // Geofence / CircularRegion
+            let region = CLCircularRegion(
+                center: CLLocationCoordinate2DMake(zone.Latitude, zone.Longitude),
+                radius: zone.Radius,
+                identifier: zone.ID
+            )
+            locationManager.startMonitoring(for: region)
+        } else {
+            // iBeacon
+            guard let uuidString = zone.uuid, let uuid = UUID(uuidString: uuidString) else {
+                return Error("Could not start monitoring of CLBeaconRegion because of missing / invalid UUID")
+            }
+            guard let major = zone.Major, let minor =
+                zone.Minor else {
+                    return locationManager.startMonitoring(for:
+                        CLBeaconRegion(proximityUUID: uuid, identifier: uuidString)
+                    )
+            }
+            let beaconRegion = CLBeaconRegion(
+                proximityUUID: uuid,
+                major: CLBeaconMajorValue(major.intValue),
+                minor: CLBeaconMinorValue(minor.intValue),
+                identifier: uuidString
+            )
             beaconRegion.notifyEntryStateOnDisplay = true
             zones[zone.ID] = zone
             locationManager.startMonitoring(for: beaconRegion)
         }
     }
 
-    func resumeScanning() {
-        print("Resuming scanning of \(locationManager.monitoredRegions.count) regions!")
-        HomeAssistantAPI.sharedInstance.GetStates().then { (entities) -> Void in
-            if let zoneEntities: [Zone] = entities.filter({ (entity) -> Bool in
-                return entity.Domain == "zone"
-            }) as? [Zone] {
-                for zone in zoneEntities {
-                    if zone.TrackingEnabled == false {
-                        continue
-                    }
-                    self.zones[zone.ID] = zone
-                }
-            }
-        }.catch { error in
-            CLSLogv("Unable to resume scanning because GetStates call failed: %@!",
-                    getVaList([error.localizedDescription]))
-            Crashlytics.sharedInstance().recordError(error)
+    @objc func syncMonitoredRegions() {
+        // stop monitoring for all regions regions
+        locationManager.monitoredRegions.forEach { region in
+            print("Stopping region \(region)")
+            locationManager.stopMonitoring(for: region)
+        }
+
+        // start monitoring for all existing regions
+        geofences.forEach { zone in
+            print("Starting geofence \(zone)")
+            startMonitoring(zone: zone)
         }
     }
 
+    @objc func performAfterRetrievingCurrentLocation(completion: @escaping OnLocationUpdated) {
+        onCurrentLocation = completion
+        locationManager.startUpdatingLocation()
+    }
+}
+
+// MARK: CLLocationManagerDelegate
+extension LocationManager {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .denied {
+            onLocation?(nil)
+        }
         if status == .authorizedAlways {
             prefs.setValue(true, forKey: "locationEnabled")
             prefs.synchronize()
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        onLocation?(locations.first)
+        onCurrentLocation?(locations.first)
+        locationManager.stopUpdatingLocation()
+    }
+
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        if let zone = zones[region.identifier] {
+            var trigger = LocationUpdateTypes.RegionEnter
+            if zone.UUID != nil {
+                trigger = LocationUpdateTypes.BeaconRegionEnter
+            }
+            triggerLocationEvent(manager, trigger: trigger, region: region, zone: zone)
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        if let zone = zones[region.identifier] {
+            var trigger = LocationUpdateTypes.RegionExit
+            if zone.UUID != nil {
+                trigger = LocationUpdateTypes.BeaconRegionExit
+            }
+            triggerLocationEvent(manager, trigger: trigger, region: region, zone: zone)
+        }
+    }
+}
+
+// MARK: BackgroundTask
+extension LocationManager {
+    func endBackgroundTask() {
+        if backgroundTask != UIBackgroundTaskInvalid {
+            UIApplication.shared.endBackgroundTask(backgroundTask!)
+            backgroundTask = UIBackgroundTaskInvalid
         }
     }
 }
