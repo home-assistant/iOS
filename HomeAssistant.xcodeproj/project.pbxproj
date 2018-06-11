@@ -2046,7 +2046,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2108,7 +2108,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Robert Trencheny (UTQFCBPQRF)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Robert Trencheny (UTQFCBPQRF)";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENABLE_NS_ASSERTIONS = NO;
