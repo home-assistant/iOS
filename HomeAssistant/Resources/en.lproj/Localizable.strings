@@ -57,6 +57,8 @@
 "settings_details.location.notifications.beacon_exit.title" = "Exit Zone via iBeacon Notifications";
 "settings_details.location.notifications.location_change.title" = "Significant Location Change Notifications";
 "settings_details.location.notifications.background_fetch.title" = "Background Fetch Notifications";
+"settings_details.location.notifications.push_notification.title" = "Pushed Location Request Notifications";
+"settings_details.location.notifications.url_scheme.title" = "URL Scheme Location Notifications";
 "settings_details.location.zones.enter_exit_tracked.title" = "Enter/exit tracked";
 "settings_details.location.zones.location.title" = "Location";
 "settings_details.location.zones.radius.title" = "Radius";
@@ -134,4 +136,6 @@ send notifications to your device.";
 "location_change_notification.region_exit.body" = "%@ exited";
 "location_change_notification.significant_location_update.body" = "Significant location change detected";
 "location_change_notification.background_fetch.body" = "Current location delivery triggered via background fetch";
+"location_change_notification.push_notification.body" = "Location updated via push notification";
+"location_change_notification.url_scheme.body" = "Location updated via URL Scheme";
 "about.review.title" = "Leave a review";

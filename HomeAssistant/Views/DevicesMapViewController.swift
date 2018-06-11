@@ -194,7 +194,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
     }
 
     @objc func sendCurrentLocation(_ sender: UIBarButtonItem) {
-        HomeAssistantAPI.sharedInstance.sendOneshotLocation().done { _ in
+        HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual).done { _ in
             let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
                                           message: L10n.ManualLocationUpdateNotification.message,
                                           preferredStyle: UIAlertControllerStyle.alert)

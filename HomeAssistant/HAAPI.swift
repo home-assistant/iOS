@@ -9,7 +9,6 @@
 import Foundation
 import Alamofire
 import PromiseKit
-import SwiftLocation
 import CoreLocation
 import AlamofireObjectMapper
 import ObjectMapper
@@ -185,7 +184,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    // swiftlint:disable:next function_body_length
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     func submitLocation(updateType: LocationUpdateTypes,
                         coordinates: CLLocationCoordinate2D,
                         accuracy: CLLocationAccuracy,
@@ -248,6 +247,14 @@ public class HomeAssistantAPI {
             notificationBody = L10n.LocationChangeNotification.BackgroundFetch.body
             notificationIdentifer = "background_fetch"
             shouldNotify = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
+        case .PushNotification:
+            notificationBody = L10n.LocationChangeNotification.PushNotification.body
+            notificationIdentifer = "push_notification"
+            shouldNotify = prefs.bool(forKey: "pushLocationRequestNotifications")
+        case .URLScheme:
+            notificationBody = L10n.LocationChangeNotification.UrlScheme.body
+            notificationIdentifer = "url_scheme"
+            shouldNotify = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
         default:
             notificationBody = ""
         }
@@ -280,21 +287,19 @@ public class HomeAssistantAPI {
         }
 
         if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
-            let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
-                if entity.Domain == "zone", let zone = entity as? Zone {
-                    return zone.TrackingEnabled
+            for entity in cachedEntities {
+                if entity.Domain != "zone" {
+                    continue
                 }
-                return false
-            }) as! [Zone]
-            for zone in zoneEntities {
-                locationManager.startMonitoring(zone: zone)
+                if let zone = entity as? Zone {
+                    if zone.TrackingEnabled == false {
+                        continue
+                    }
+
+                    locationManager.startMonitoring(zone: zone)
+                }
             }
         }
-    }
-
-    func sendOneshotLocation() -> Promise<Bool> {
-        print("Sending one shot location")
-        return getAndSendLocation(trigger: LocationUpdateTypes.Manual)
     }
 
     func getAndSendLocation(trigger: LocationUpdateTypes?) -> Promise<Bool> {
@@ -303,18 +308,17 @@ public class HomeAssistantAPI {
             updateTrigger = trigger
         }
         return Promise { seal in
-            Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, timeout: 25, success: { (_, location) in
-                print("A new update of location is available: \(location) via \(updateTrigger) trigger")
-                self.submitLocation(updateType: updateTrigger,
-                                    coordinates: location.coordinate,
-                                    accuracy: location.horizontalAccuracy,
-                                    zone: nil)
-                seal.fulfill(true)
-            }, error: { (_, _, error) in
-                print("Error when trying to get a oneshot location for \(updateTrigger) trigger!", error)
-                Crashlytics.sharedInstance().recordError(error)
-                seal.reject(error)
-            })
+            _ = LocationManager { [weak self] location in
+                if let location = location {
+                    self?.submitLocation(updateType: updateTrigger,
+                                        coordinates: location.coordinate,
+                                        accuracy: location.horizontalAccuracy,
+                                        zone: nil)
+                    seal.fulfill(true)
+                    return
+                }
+                seal.fulfill(false)
+            }
         }
     }
 
@@ -1153,6 +1157,13 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         syncMonitoredRegions()
     }
 
+    init(onLocationCallback: @escaping OnLocationUpdated) {
+        onLocation = onLocationCallback
+        super.init()
+        locationManager.delegate = self
+        locationManager.startUpdatingLocation()
+    }
+
     private func authorize() {
         if CLLocationManager.authorizationStatus() != .authorizedAlways {
             locationManager.requestAlwaysAuthorization()
@@ -1227,11 +1238,6 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
             startMonitoring(zone: zone.value)
         }
     }
-
-    @objc func performAfterRetrievingCurrentLocation(completion: @escaping OnLocationUpdated) {
-        onCurrentLocation = completion
-        locationManager.startUpdatingLocation()
-    }
 }
 
 // MARK: CLLocationManagerDelegate
@@ -1247,8 +1253,8 @@ extension LocationManager {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        onLocation?(locations.first)
-        onCurrentLocation?(locations.first)
+        onLocation?(locations.last)
+        onCurrentLocation?(locations.last)
         locationManager.stopUpdatingLocation()
     }
 
@@ -1291,4 +1297,6 @@ enum LocationUpdateTypes {
     case Manual
     case SignificantLocationUpdate
     case BackgroundFetch
+    case PushNotification
+    case URLScheme
 }

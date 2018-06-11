@@ -526,7 +526,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             deviceTrackerComponentLoadedRow.updateCell()
             self.tableView.reloadData()
             HomeAssistantAPI.sharedInstance.setupZones()
-//            _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
+//            _ = HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual)
         }
     }
 }

@@ -117,6 +117,22 @@ class SettingsDetailViewController: FormViewController {
                         prefs.set(val, forKey: "backgroundFetchLocationChangeNotifications")
                     }
                 })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.PushNotification.title
+                    $0.value = prefs.bool(forKey: "pushLocationRequestNotifications")
+                }.onChange({ (row) in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "pushLocationRequestNotifications")
+                    }
+                })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.UrlScheme.title
+                    $0.value = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
+                }.onChange({ (row) in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "urlSchemeLocationRequestNotifications")
+                    }
+                })
             if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
                 if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
                     return entity.Domain == "zone"
