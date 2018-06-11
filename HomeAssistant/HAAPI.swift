@@ -192,24 +192,11 @@ public class HomeAssistantAPI {
                         zone: Zone?) {
         UIDevice.current.isBatteryMonitoringEnabled = true
 
-        var batteryState = "Unplugged"
-        switch UIDevice.current.batteryState {
-        case .unknown:
-            batteryState = "Unknown"
-        case .charging:
-            batteryState = "Charging"
-        case .unplugged:
-            batteryState = "Unplugged"
-        case .full:
-            batteryState = "Full"
-        }
-
         let locationUpdate: [String: Any] = [
             "battery": Int(UIDevice.current.batteryLevel*100),
-            "battery_status": batteryState,
             "gps": [coordinates.latitude, coordinates.longitude],
             "gps_accuracy": accuracy,
-            "hostname": UIDevice.current.name,
+            "host_name": UIDevice.current.name,
             "dev_id": deviceID
         ]
 
