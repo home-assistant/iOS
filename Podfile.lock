@@ -46,6 +46,23 @@ DEPENDENCIES:
   - SwiftGen (= 5.3.0)
   - SwiftLint (= 0.25.1)
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - AlamofireNetworkActivityIndicator
+    - AlamofireObjectMapper
+    - CPDAcknowledgements
+    - Crashlytics
+    - DeviceKit
+    - Eureka
+    - Fabric
+    - KeychainAccess
+    - MBProgressHUD
+    - ObjectMapper
+    - PromiseKit
+    - SwiftGen
+    - SwiftLint
+
 EXTERNAL SOURCES:
   FontAwesomeKit:
     :branch: Material-Design-Icons
@@ -75,4 +92,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 1dd1d536bdf8a69bc8d19a19d6e81bb87037f2dc
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.5.3
