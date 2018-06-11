@@ -1,53 +1,51 @@
 PODS:
-  - Alamofire (4.5.1)
-  - AlamofireNetworkActivityIndicator (2.2.0):
-    - Alamofire (~> 4.5)
+  - Alamofire (4.7.2)
+  - AlamofireNetworkActivityIndicator (2.2.1):
+    - Alamofire (~> 4.7)
   - AlamofireObjectMapper (5.0.0):
     - Alamofire (~> 4.1)
     - ObjectMapper (~> 3.0)
   - CPDAcknowledgements (1.0.0)
-  - Crashlytics (3.9.0):
-    - Fabric (~> 1.7.0)
-  - DeviceKit (1.4.0)
-  - Eureka (4.0.1)
-  - Fabric (1.7.0)
+  - Crashlytics (3.10.2):
+    - Fabric (~> 1.7.7)
+  - DeviceKit (1.7.0)
+  - Eureka (4.1.1)
+  - Fabric (1.7.7)
   - FontAwesomeKit/Core (2.2.5)
   - FontAwesomeKit/MaterialDesignIcons (2.2.5):
     - FontAwesomeKit/Core
-  - KeychainAccess (3.1.0)
-  - MBProgressHUD (1.0.0)
-  - ObjectMapper (3.0.0)
-  - PromiseKit (4.4.3):
-    - PromiseKit/Foundation (= 4.4.3)
-    - PromiseKit/QuartzCore (= 4.4.3)
-    - PromiseKit/UIKit (= 4.4.3)
-  - PromiseKit/CorePromise (4.4.3)
-  - PromiseKit/Foundation (4.4.3):
+  - KeychainAccess (3.1.1)
+  - MBProgressHUD (1.1.0)
+  - ObjectMapper (3.2.0)
+  - PromiseKit (6.3.0):
+    - PromiseKit/CorePromise (= 6.3.0)
+    - PromiseKit/Foundation (= 6.3.0)
+    - PromiseKit/UIKit (= 6.3.0)
+  - PromiseKit/CorePromise (6.3.0)
+  - PromiseKit/Foundation (6.3.0):
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (4.4.3):
+  - PromiseKit/UIKit (6.3.0):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (4.4.3):
-    - PromiseKit/CorePromise
-  - SwiftGen (5.2.0)
-  - SwiftLint (0.23.1)
+  - SwiftGen (5.3.0)
+  - SwiftLint (0.25.1)
   - SwiftLocation (2.0.7)
 
 DEPENDENCIES:
-  - Alamofire (= 4.5.1)
-  - AlamofireNetworkActivityIndicator (= 2.2.0)
+  - Alamofire (= 4.7.2)
+  - AlamofireNetworkActivityIndicator (= 2.2.1)
   - AlamofireObjectMapper (= 5.0.0)
   - CPDAcknowledgements (= 1.0.0)
-  - Crashlytics (= 3.9.0)
-  - DeviceKit (= 1.4.0)
-  - Eureka (= 4.0.1)
-  - Fabric (= 1.7.0)
+  - Crashlytics (= 3.10.2)
+  - DeviceKit (= 1.7.0)
+  - Eureka (= 4.1.1)
+  - Fabric (= 1.7.7)
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
-  - KeychainAccess (= 3.1.0)
-  - MBProgressHUD (= 1.0.0)
-  - ObjectMapper (= 3.0.0)
-  - PromiseKit (= 4.4.3)
-  - SwiftGen (= 5.2.0)
-  - SwiftLint (= 0.23.1)
+  - KeychainAccess (= 3.1.1)
+  - MBProgressHUD (= 1.1.0)
+  - ObjectMapper (= 3.2.0)
+  - PromiseKit (= 6.3.0)
+  - SwiftGen (= 5.3.0)
+  - SwiftLint (= 0.25.1)
   - SwiftLocation (from `https://github.com/hamzaansari09/SwiftLocation.git`, branch `master`)
 
 EXTERNAL SOURCES:
@@ -67,23 +65,23 @@ CHECKOUT OPTIONS:
     :git: https://github.com/hamzaansari09/SwiftLocation.git
 
 SPEC CHECKSUMS:
-  Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
-  AlamofireNetworkActivityIndicator: 81e1630e7cfed22a4e4e82a174c59e651dc4f8ca
+  Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
+  AlamofireNetworkActivityIndicator: aeac50e6ecb78ec71a5f1f29098bcf4ec2962910
   AlamofireObjectMapper: 5fafc816351cbbc0d486611aaeba7461c0cbad49
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
-  Crashlytics: 64aad5dd97249dd3ff94b979fea140144590cdd3
-  DeviceKit: fa74d97499660e88081718b16688e19217595dba
-  Eureka: c8bd5cc07143b6f66268c208d28a246c99b41955
-  Fabric: e6be012366472553807dada21243c5ab8d904151
+  Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
+  DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
+  Eureka: b88fb930e42c79f8c03c373d0fcdc28c1d6c50ed
+  Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
   FontAwesomeKit: c56e7e8db4ad4e7325ce73a8033dadf2fd4a5cb2
-  KeychainAccess: 94c5540b32eabf7bc32bfb976a268e8ea05fd6da
-  MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
-  ObjectMapper: 92230db59bf8f341a5c3a3cf0b9fbdde3cf0d87f
-  PromiseKit: fbb52a0d154402c57eeb6eccd36dd7724fcf6117
-  SwiftGen: d75f6c3a1ecfed4a5ae372e477d452297efdb718
-  SwiftLint: 1b670ce79284c76520f84060e87d645078fd32fa
+  KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
+  MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
+  ObjectMapper: 5cccd2de6f253eda859df8116a5a554d9769e859
+  PromiseKit: cf84bbb1235a61473b326c5cf0b41f6828f87ba5
+  SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
+  SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
   SwiftLocation: c474b51ebde74ca94d26eff005d2ebbdbb458dd9
 
-PODFILE CHECKSUM: 90f71c7848a5def53ca7b2f77f73f323ad1fd71b
+PODFILE CHECKSUM: b978ce316d17c5a075b95a575fd351206f2d9481
 
 COCOAPODS: 1.3.1

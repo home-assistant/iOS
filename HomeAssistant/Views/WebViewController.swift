@@ -58,7 +58,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
         if HomeAssistantAPI.sharedInstance.Configured {
-            HomeAssistantAPI.sharedInstance.Connect().then { _ -> Void in
+            HomeAssistantAPI.sharedInstance.Connect().done {_ in
                 if HomeAssistantAPI.sharedInstance.notificationsEnabled {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
@@ -228,7 +228,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     @objc func sendCurrentLocation(_ sender: UIButton) {
-        HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual).then { _ -> Void in
+        HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual).done {_ in
             let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
                                           message: L10n.ManualLocationUpdateNotification.message,
                                           preferredStyle: UIAlertControllerStyle.alert)

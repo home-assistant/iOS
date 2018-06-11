@@ -131,8 +131,8 @@ public class HomeAssistantAPI {
     }
 
     func Connect() -> Promise<ConfigResponse> {
-        return Promise { fulfill, reject in
-            GetConfig().then { config -> Void in
+        return Promise { seal in
+            GetConfig().done { config in
                 if let components = config.Components {
                     self.loadedComponents = components
                 }
@@ -157,13 +157,13 @@ public class HomeAssistantAPI {
                                                 object: nil,
                                                 userInfo: nil)
 
-                _ = self.GetManifestJSON().then(execute: { manifest -> Void in
+                _ = self.GetManifestJSON().done { manifest in
                     if let themeColor = manifest.ThemeColor {
                         prefs.setValue(themeColor, forKey: "themeColor")
                     }
-                })
+                }
 
-                _ = self.GetStates().then(execute: { _ -> Void in
+                _ = self.GetStates().done { _ in
                     if self.locationEnabled {
                         self.setupZones()
                     }
@@ -174,18 +174,18 @@ public class HomeAssistantAPI {
                     }
 
                     //                self.GetHistory()
-                    fulfill(config)
-                })
+                    seal.fulfill(config)
+                }
             }.catch {error in
                 print("Error at launch!", error)
                 Crashlytics.sharedInstance().recordError(error)
-                reject(error)
+                seal.reject(error)
             }
 
         }
     }
 
-    // swiftlint:disable:next function_body_length cyclomatic_complexity
+    // swiftlint:disable:next function_body_length
     func submitLocation(updateType: LocationUpdateTypes,
                         coordinates: CLLocationCoordinate2D,
                         accuracy: CLLocationAccuracy,
@@ -204,7 +204,7 @@ public class HomeAssistantAPI {
             self.IdentifyDevice()
         }.then {_ in
             self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate)
-        }.then { _ in
+        }.done { _ in
             print("Device seen!")
         }.catch { err in
             print("Error when updating location!", err)
@@ -331,24 +331,24 @@ public class HomeAssistantAPI {
         if let trigger = trigger {
             updateTrigger = trigger
         }
-        return Promise { fulfill, reject in
+        return Promise { seal in
             Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, timeout: 25, success: { (_, location) in
                 print("A new update of location is available: \(location) via \(updateTrigger) trigger")
                 self.submitLocation(updateType: updateTrigger,
                                     coordinates: location.coordinate,
                                     accuracy: location.horizontalAccuracy,
                                     zone: nil)
-                fulfill(true)
+                seal.fulfill(true)
             }, error: { (_, _, error) in
                 print("Error when trying to get a oneshot location for \(updateTrigger) trigger!", error)
                 Crashlytics.sharedInstance().recordError(error)
-                reject(error)
+                seal.reject(error)
             })
         }
     }
 
     func GetManifestJSON() -> Promise<ManifestJSON> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             if let manager = self.manager, let queryUrl = baseURL?.appendingPathComponent("manifest.json") {
                 _ = manager.request(queryUrl, method: .get)
                     .validate()
@@ -356,24 +356,24 @@ public class HomeAssistantAPI {
                         switch response.result {
                         case .success:
                             if let resVal = response.result.value {
-                                fulfill(resVal)
+                                seal.fulfill(resVal)
                             } else {
-                                reject(APIError.invalidResponse)
+                                seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
                             CLSLogv("Error on GetManifestJSON() request: %@", getVaList([error.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(error)
-                            reject(error)
+                            seal.reject(error)
                         }
                 }
             } else {
-                reject(APIError.managerNotAvailable)
+                seal.reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func GetStatus() -> Promise<StatusResponse> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             if let manager = self.manager, let queryUrl = baseAPIURL {
                 _ = manager.request(queryUrl, method: .get)
                            .validate()
@@ -381,25 +381,25 @@ public class HomeAssistantAPI {
                                 switch response.result {
                                 case .success:
                                     if let resVal = response.result.value {
-                                        fulfill(resVal)
+                                        seal.fulfill(resVal)
                                     } else {
-                                        reject(APIError.invalidResponse)
+                                        seal.reject(APIError.invalidResponse)
                                     }
                                 case .failure(let error):
                                     CLSLogv("Error on GetStatus() request: %@",
                                             getVaList([error.localizedDescription]))
                                     Crashlytics.sharedInstance().recordError(error)
-                                    reject(error)
+                                    seal.reject(error)
                                 }
                             }
             } else {
-                reject(APIError.managerNotAvailable)
+                seal.reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func GetConfig() -> Promise<ConfigResponse> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("config") {
                 _ = manager.request(queryUrl, method: .get)
                            .validate()
@@ -407,24 +407,24 @@ public class HomeAssistantAPI {
                             switch response.result {
                             case .success:
                                 if let resVal = response.result.value {
-                                    fulfill(resVal)
+                                    seal.fulfill(resVal)
                                 } else {
-                                    reject(APIError.invalidResponse)
+                                    seal.reject(APIError.invalidResponse)
                                 }
                             case .failure(let error):
                                 CLSLogv("Error on GetConfig() request: %@", getVaList([error.localizedDescription]))
                                 Crashlytics.sharedInstance().recordError(error)
-                                reject(error)
+                                seal.reject(error)
                             }
                 }
             } else {
-                reject(APIError.managerNotAvailable)
+                seal.reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func GetServices() -> Promise<[ServicesResponse]> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("services") {
                 _ = manager.request(queryUrl, method: .get)
                     .validate()
@@ -432,24 +432,24 @@ public class HomeAssistantAPI {
                         switch response.result {
                         case .success:
                             if let resVal = response.result.value {
-                                fulfill(resVal)
+                                seal.fulfill(resVal)
                             } else {
-                                reject(APIError.invalidResponse)
+                                seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
                             CLSLogv("Error on GetServices() request: %@", getVaList([error.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(error)
-                            reject(error)
+                            seal.reject(error)
                         }
                 }
             } else {
-                reject(APIError.managerNotAvailable)
+                seal.reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func GetStates() -> Promise<[Entity]> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("states") {
                 _ = manager.request(queryUrl, method: .get)
                     .validate()
@@ -458,24 +458,24 @@ public class HomeAssistantAPI {
                         case .success:
                             if let resVal = response.result.value {
                                 self.cachedEntities = resVal
-                                fulfill(resVal)
+                                seal.fulfill(resVal)
                             } else {
-                                reject(APIError.invalidResponse)
+                                seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
                             CLSLogv("Error on GetStates() request: %@", getVaList([error.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(error)
-                            reject(error)
+                            seal.reject(error)
                         }
                 }
             } else {
-                reject(APIError.managerNotAvailable)
+                seal.reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func GetEntityState(entityId: String) -> Promise<Entity> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("states/\(entityId)") {
                 _ = manager.request(queryUrl, method: .get)
                     .validate()
@@ -483,24 +483,24 @@ public class HomeAssistantAPI {
                         switch response.result {
                         case .success:
                             if let resVal = response.result.value {
-                                fulfill(resVal)
+                                seal.fulfill(resVal)
                             } else {
-                                reject(APIError.invalidResponse)
+                                seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
                             CLSLogv("Error on GetEntityState() request: %@", getVaList([error.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(error)
-                            reject(error)
+                            seal.reject(error)
                         }
                 }
             } else {
-                reject(APIError.managerNotAvailable)
+                seal.reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func SetState(entityId: String, state: String) -> Promise<Entity> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("states/\(entityId)") {
                 _ = manager.request(queryUrl, method: .post,
                                           parameters: ["state": state], encoding: JSONEncoding.default)
@@ -509,25 +509,25 @@ public class HomeAssistantAPI {
                                     switch response.result {
                                     case .success:
                                         if let resVal = response.result.value {
-                                            fulfill(resVal)
+                                            seal.fulfill(resVal)
                                         } else {
-                                            reject(APIError.invalidResponse)
+                                            seal.reject(APIError.invalidResponse)
                                         }
                                     case .failure(let error):
                                         CLSLogv("Error when attemping to SetState(): %@",
                                                 getVaList([error.localizedDescription]))
                                         Crashlytics.sharedInstance().recordError(error)
-                                        reject(error)
+                                        seal.reject(error)
                                     }
                                   }
             } else {
-                reject(APIError.managerNotAvailable)
+                seal.reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<String> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("events/\(eventType)") {
                 _ = manager.request(queryUrl, method: .post,
                                           parameters: eventData, encoding: JSONEncoding.default)
@@ -537,29 +537,29 @@ public class HomeAssistantAPI {
                         case .success:
                             if let jsonDict = response.result.value as? [String: String],
                                 let msg = jsonDict["message"] {
-                                fulfill(msg)
+                                seal.fulfill(msg)
                             }
                         case .failure(let error):
                             if let afError = error as? AFError {
                                 CLSLogv("Error when attemping to CreateEvent(): %@",
                                         getVaList([afError.localizedDescription]))
                                 Crashlytics.sharedInstance().recordError(afError)
-                                reject(afError)
+                                seal.reject(afError)
                             }
                             CLSLogv("Error when attemping to CreateEvent(): %@",
                                     getVaList([error.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(error)
-                            reject(error)
+                            seal.reject(error)
                         }
                 }
             } else {
-                reject(APIError.managerNotAvailable)
+                seal.reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func CallService(domain: String, service: String, serviceData: [String: Any]) -> Promise<[Entity]> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             if let manager = self.manager,
                 let queryUrl = baseAPIURL?.appendingPathComponent("services/\(domain)/\(service)") {
                 _ = manager.request(queryUrl, method: .post,
@@ -569,9 +569,9 @@ public class HomeAssistantAPI {
                         switch response.result {
                         case .success:
                             if let resVal = response.result.value {
-                                fulfill(resVal)
+                                seal.fulfill(resVal)
                             } else {
-                                reject(APIError.invalidResponse)
+                                seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
                             if let afError = error as? AFError {
@@ -587,44 +587,44 @@ public class HomeAssistantAPI {
                                 let customError = NSError(domain: "io.robbie.HomeAssistant",
                                                           code: afError.responseCode!,
                                                           userInfo: errorUserInfo)
-                                reject(customError)
+                                seal.reject(customError)
                             } else {
                                 CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
                                 Crashlytics.sharedInstance().recordError(error)
-                                reject(error)
+                                seal.reject(error)
                             }
                         }
                 }
             } else {
-                reject(APIError.managerNotAvailable)
+                seal.reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func GetDiscoveryInfo(baseUrl: URL) -> Promise<DiscoveryInfoResponse> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             _ = Alamofire.request(baseUrl.appendingPathComponent("/api/discovery_info"))
                          .validate()
                          .responseObject { (response: DataResponse<DiscoveryInfoResponse>) -> Void in
                             switch response.result {
                             case .success:
                                 if let resVal = response.result.value {
-                                    fulfill(resVal)
+                                    seal.fulfill(resVal)
                                 } else {
-                                    reject(APIError.invalidResponse)
+                                    seal.reject(APIError.invalidResponse)
                                 }
                             case .failure(let error):
                                 CLSLogv("Error on getDiscoveryInfo() request: %@",
                                         getVaList([error.localizedDescription]))
                                 Crashlytics.sharedInstance().recordError(error)
-                                reject(error)
+                                seal.reject(error)
                             }
                         }
         }
     }
 
     func IdentifyDevice() -> Promise<String> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             if let manager = self.manager,
                 let queryUrl = baseAPIURL?.appendingPathComponent("ios/identify") {
                 _ = manager.request(queryUrl, method: .post,
@@ -634,25 +634,25 @@ public class HomeAssistantAPI {
                             switch response.result {
                             case .success:
                                 if let resVal = response.result.value {
-                                    fulfill(resVal)
+                                    seal.fulfill(resVal)
                                 } else {
-                                    reject(APIError.invalidResponse)
+                                    seal.reject(APIError.invalidResponse)
                                 }
                             case .failure(let error):
                                 CLSLogv("Error when attemping to IdentifyDevice(): %@",
                                         getVaList([error.localizedDescription]))
                                 Crashlytics.sharedInstance().recordError(error)
-                                reject(error)
+                                seal.reject(error)
                             }
                 }
             } else {
-                reject(APIError.managerNotAvailable)
+                seal.reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func RemoveDevice() -> Promise<String> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             if let manager = self.manager,
                 let queryUrl = baseAPIURL?.appendingPathComponent("ios/identify") {
                 _ = manager.request(queryUrl, method: .delete,
@@ -662,26 +662,26 @@ public class HomeAssistantAPI {
                         switch response.result {
                         case .success:
                             if let resVal = response.result.value {
-                                fulfill(resVal)
+                                seal.fulfill(resVal)
                             } else {
-                                reject(APIError.invalidResponse)
+                                seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
                             CLSLogv("Error when attemping to RemoveDevice(): %@",
                                     getVaList([error.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(error)
-                            reject(error)
+                            seal.reject(error)
                         }
                 }
             } else {
-                reject(APIError.managerNotAvailable)
+                seal.reject(APIError.managerNotAvailable)
             }
         }
     }
 
     func RegisterDeviceForPush(deviceToken: String) -> Promise<PushRegistrationResponse> {
         let queryUrl = "https://ios-push.home-assistant.io/registrations"
-        return Promise { fulfill, reject in
+        return Promise { seal in
             Alamofire.request(queryUrl,
                               method: .post,
                               parameters: buildPushRegistrationDict(deviceToken: deviceToken),
@@ -690,7 +690,7 @@ public class HomeAssistantAPI {
                     switch response.result {
                     case .success:
                         if let json = response.result.value {
-                            fulfill(json)
+                            seal.fulfill(json)
                         } else {
                             let retErr = NSError(domain: "io.robbie.HomeAssistant",
                                                  code: 404,
@@ -698,20 +698,20 @@ public class HomeAssistantAPI {
                             CLSLogv("Error when attemping to registerDeviceForPush(), json was nil!: %@",
                                     getVaList([retErr.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(retErr)
-                            reject(retErr)
+                            seal.reject(retErr)
                         }
                     case .failure(let error):
                         CLSLogv("Error when attemping to registerDeviceForPush(): %@",
                                 getVaList([error.localizedDescription]))
                         Crashlytics.sharedInstance().recordError(error)
-                        reject(error)
+                        seal.reject(error)
                     }
             }
         }
     }
 
     func GetPushSettings() -> Promise<PushConfiguration> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("ios/push") {
                 _ = manager.request(queryUrl, method: .get)
                     .validate()
@@ -719,19 +719,19 @@ public class HomeAssistantAPI {
                         switch response.result {
                         case .success:
                             if let resVal = response.result.value {
-                                fulfill(resVal)
+                                seal.fulfill(resVal)
                             } else {
-                                reject(APIError.invalidResponse)
+                                seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
                             CLSLogv("Error on GetPushSettings() request: %@",
                                     getVaList([error.localizedDescription]))
                             Crashlytics.sharedInstance().recordError(error)
-                            reject(error)
+                            seal.reject(error)
                         }
                 }
             } else {
-                reject(APIError.managerNotAvailable)
+                seal.reject(APIError.managerNotAvailable)
             }
         }
     }
@@ -883,8 +883,8 @@ public class HomeAssistantAPI {
     }
 
     func setupPushActions() -> Promise<Set<UIUserNotificationCategory>> {
-        return Promise { fulfill, reject in
-            self.GetPushSettings().then { pushSettings -> Void in
+        return Promise { seal in
+            self.GetPushSettings().done { pushSettings in
                 var allCategories = Set<UIMutableUserNotificationCategory>()
                 if let categories = pushSettings.Categories {
                     for category in categories {
@@ -922,19 +922,19 @@ public class HomeAssistantAPI {
                         }
                     }
                 }
-                fulfill(allCategories)
-            }.catch(execute: { (error) in
+                seal.fulfill(allCategories)
+            }.catch { error in
                 CLSLogv("Error on setupPushActions() request: %@", getVaList([error.localizedDescription]))
                 Crashlytics.sharedInstance().recordError(error)
-                reject(error)
-            })
+                seal.reject(error)
+            }
         }
     }
 
     @available(iOS 10, *)
     func setupUserNotificationPushActions() -> Promise<Set<UNNotificationCategory>> {
-        return Promise { fulfill, reject in
-            self.GetPushSettings().then { pushSettings -> Void in
+        return Promise { seal in
+            self.GetPushSettings().done { pushSettings in
                 var allCategories = Set<UNNotificationCategory>()
                 if let categories = pushSettings.Categories {
                     for category in categories {
@@ -968,13 +968,13 @@ public class HomeAssistantAPI {
                         allCategories.insert(finalCategory)
                     }
                 }
-                fulfill(allCategories)
-            }.catch(execute: { (error) in
+                seal.fulfill(allCategories)
+            }.catch { error in
                 CLSLogv("Error on setupUserNotificationPushActions() request: %@",
                         getVaList([error.localizedDescription]))
                 Crashlytics.sharedInstance().recordError(error)
-                reject(error)
-            })
+                seal.reject(error)
+            }
         }
     }
 
@@ -983,14 +983,14 @@ public class HomeAssistantAPI {
             UIApplication.shared.registerForRemoteNotifications()
         })
         if #available(iOS 10, *) {
-            self.setupUserNotificationPushActions().then { categories -> Void in
+            self.setupUserNotificationPushActions().done { categories in
                 UNUserNotificationCenter.current().setNotificationCategories(categories)
                 }.catch {error -> Void in
                     print("Error when attempting to setup push actions", error)
                     Crashlytics.sharedInstance().recordError(error)
             }
         } else {
-            self.setupPushActions().then { categories -> Void in
+            self.setupPushActions().done { categories in
                 let types: UIUserNotificationType = ([.alert, .badge, .sound])
                 let settings = UIUserNotificationSettings(types: types, categories: categories)
                 UIApplication.shared.registerUserNotificationSettings(settings)
@@ -1002,7 +1002,7 @@ public class HomeAssistantAPI {
     }
 
     func handlePushAction(identifier: String, userInfo: [AnyHashable: Any], userInput: String?) -> Promise<Bool> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             let device = Device()
             var eventData: [String: Any] = ["actionName": identifier,
                                            "sourceDevicePermanentID": DeviceUID.uid(),
@@ -1016,11 +1016,11 @@ public class HomeAssistantAPI {
                 eventData["textInput"] = textInput
             }
             HomeAssistantAPI.sharedInstance.CreateEvent(eventType: "ios.notification_action_fired",
-                                                        eventData: eventData).then { _ in
-                                                            fulfill(true)
+                                                        eventData: eventData).done { _ -> Void in
+                                                            seal.fulfill(true)
                 }.catch {error in
                     Crashlytics.sharedInstance().recordError(error)
-                    reject(error)
+                    seal.reject(error)
             }
         }
     }
@@ -1219,7 +1219,7 @@ class BeaconManager: NSObject, CLLocationManagerDelegate {
 
     func resumeScanning() {
         print("Resuming scanning of \(locationManager.monitoredRegions.count) regions!")
-        HomeAssistantAPI.sharedInstance.GetStates().then { (entities) -> Void in
+        HomeAssistantAPI.sharedInstance.GetStates().done { entities in
             if let zoneEntities: [Zone] = entities.filter({ (entity) -> Bool in
                 return entity.Domain == "zone"
             }) as? [Zone] {

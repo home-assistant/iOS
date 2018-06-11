@@ -290,7 +290,7 @@ open class HomeAssistantTimestampTransform: DateFormatterTransform {
 
     public init() {
         let formatter = DateFormatter()
-        formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale!
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         if let HATimezone = prefs.string(forKey: "time_zone") {
             formatter.timeZone = TimeZone(identifier: HATimezone)!
