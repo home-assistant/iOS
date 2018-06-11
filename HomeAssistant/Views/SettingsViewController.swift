@@ -162,7 +162,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                         if let baseUrl = self.baseURL {
                             HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseUrl.absoluteString,
                                                                   password: self.password, deviceID: self.deviceID)
-                            HomeAssistantAPI.sharedInstance.Connect().then { config -> Void in
+                            HomeAssistantAPI.sharedInstance.Connect().done { config in
                                 print("Connected!")
                                 if let url = self.baseURL {
                                     keychain["baseURL"] = url.absoluteString

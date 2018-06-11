@@ -98,15 +98,15 @@ public extension UIColor {
             return "00000000"
         }
         if let cssColor = cssToHexDictionairy[hexString.uppercased()] {
-            return cssColor.characters.count == 8 ? cssColor : cssColor + "ff"
+            return cssColor.count == 8 ? cssColor : cssColor + "ff"
         }
         if hexString.hasPrefix("#") {
-            hexString = String(hexString.characters.dropFirst())
+            hexString = String(hexString.dropFirst())
         }
-        if hexString.characters.count == 3 || hexString.characters.count == 4 {
-            hexString = hexString.characters.map { "\($0)\($0)" } .joined()
+        if hexString.count == 3 || hexString.count == 4 {
+            hexString = hexString.map { "\($0)\($0)" }.joined()
         }
-        let hasAlpha = hexString.characters.count > 7
+        let hasAlpha = hexString.count > 7
         if !hasAlpha {
             hexString += "ff"
         }

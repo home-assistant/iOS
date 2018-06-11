@@ -8,7 +8,6 @@
 
 import UIKit
 import Eureka
-import PromiseKit
 import Crashlytics
 
 class SettingsDetailViewController: FormViewController {

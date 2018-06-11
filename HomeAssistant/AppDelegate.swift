@@ -99,7 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         print("Registering push with tokenString: \(tokenString)")
 
-        _ = HomeAssistantAPI.sharedInstance.RegisterDeviceForPush(deviceToken: tokenString).then { resp -> Void in
+        _ = HomeAssistantAPI.sharedInstance.RegisterDeviceForPush(deviceToken: tokenString).done { resp in
             if let pushId = resp.PushId {
                 print("Registered for push. Platform: \(resp.SNSPlatform ?? "MISSING"), PushID: \(pushId)")
                 CLSLogv("Registered for push %@:", getVaList([pushId]))
@@ -133,7 +133,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
                                                               password: keychain["apiPassword"],
                                                               deviceID: keychain["deviceID"])
-                        HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { success -> Void in
+                        HomeAssistantAPI.sharedInstance.sendOneshotLocation().done { success in
                             print("Did successfully send location when requested via APNS?", success)
                             if success == true {
                                 completionHandler(UIBackgroundFetchResult.newData)
@@ -164,7 +164,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
         if HomeAssistantAPI.sharedInstance.locationEnabled {
-            HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .BackgroundFetch).then { success -> Void in
+            HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .BackgroundFetch).done { success in
                 if success == true {
                     completionHandler(UIBackgroundFetchResult.newData)
                 } else {
@@ -176,7 +176,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     completionHandler(UIBackgroundFetchResult.failed)
             }
         } else {
-            HomeAssistantAPI.sharedInstance.IdentifyDevice().then { _ -> Void in
+            HomeAssistantAPI.sharedInstance.IdentifyDevice().done { _ in
                 completionHandler(UIBackgroundFetchResult.newData)
             }.catch {error in
                 print("Error when attempting to identify device during background fetch")
@@ -215,7 +215,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let domain = url.pathComponents[1].components(separatedBy: ".")[0]
             let service = url.pathComponents[1].components(separatedBy: ".")[1]
             HomeAssistantAPI.sharedInstance.CallService(domain: domain, service: service,
-                                                        serviceData: serviceData).then { _ -> Void in
+                                                        serviceData: serviceData).done { _ in
                 showAlert(title: L10n.UrlHandler.CallService.Success.title,
                           message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
             }.catch { error in
@@ -225,7 +225,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
             HomeAssistantAPI.sharedInstance.CreateEvent(eventType: url.pathComponents[1],
-                                                        eventData: serviceData).then { _ -> Void in
+                                                        eventData: serviceData).done { _ in
                 showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
                           message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
             }.catch { error -> Void in
@@ -234,7 +234,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                                            error.localizedDescription))
             }
         case "send_location": // homeassistant://send_location/
-            HomeAssistantAPI.sharedInstance.sendOneshotLocation().then { _ -> Void in
+            HomeAssistantAPI.sharedInstance.sendOneshotLocation().done { _ in
                 showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
                           message: L10n.UrlHandler.SendLocation.Success.message)
             }.catch { error in
@@ -289,7 +289,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
         HomeAssistantAPI.sharedInstance.handlePushAction(identifier: response.actionIdentifier,
                                                          userInfo: userInfo,
-                                                         userInput: userText).then { _ in
+                                                         userInput: userText).done { _ in
                                                             completionHandler()
             }.catch { err -> Void in
                 print("Error: \(err)")
