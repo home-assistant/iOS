@@ -11,8 +11,8 @@
 
 # This is the minimum version number required.
 # Update this, if you use features of a newer version
-fastlane_version "2.64.1"
-REQUIRED_XCODE_VERSION = "9.1"
+fastlane_version "2.97.0"
+REQUIRED_XCODE_VERSION = "9.4"
 default_platform :ios
 
 platform :ios do
@@ -31,7 +31,7 @@ platform :ios do
   end
 
   def complete_version_number
-    return version_string(get_version_number, get_build_number)
+    return version_string(get_version_number(target: "HomeAssistant"), get_build_number)
   end
 
   before_all do
@@ -110,7 +110,7 @@ platform :ios do
   lane :bump_build do
     git_pull(only_tags: true)
 
-    increment_version_number(version_number: get_version_number)
+    increment_version_number(version_number: get_version_number(target: "HomeAssistant"))
     increment_build_number
 
     finalize_bump
@@ -144,7 +144,7 @@ platform :ios do
       repository_name: "home-assistant/home-assistant-iOS",
       api_token: ENV["HOMEASSISTANT_GITHUB_API_TOKEN"],
       name: complete_version_number,
-      tag_name: tag_name("testflight", get_version_number, get_build_number),
+      tag_name: tag_name("testflight", get_version_number(target: "HomeAssistant"), get_build_number),
       description: change_log || "Release commit",
       is_prerelease: false
     )
@@ -212,12 +212,9 @@ platform :ios do
     pilot(
       changelog: change_log,
       skip_submission: true,
-      distribute_external: false
+      distribute_external: false,
+      skip_waiting_for_build_processing: true
     )
-
-    if is_ci
-      slack(message: "Uploaded new beta build to TestFlight")
-    end
 
     rocket
   end

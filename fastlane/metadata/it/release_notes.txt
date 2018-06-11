@@ -1,1 +1,13 @@
+Un'altra settimana, un'altra nuova versione di Home Assistant per iOS! 
 
+ - Più supporto per la localizzazione! Ora supportiamo cinese (tradizionale e semplificato), olandese e spagnolo. Sono stati apportati anche piccoli aggiornamenti alla traduzione tedesca esistente. 
+ - Aggiunto il supporto per il controllo granulare dei trigger di aggiornamento della posizione (in Impostazioni-> Posizione) 
+ - Supporto per la personalizzazione delle opzioni di visualizzazione delle notifiche (consulta la documentazione online per questo, consente di specificare badge / avviso / suono o qualsiasi combinazione dei tre per ciascuna notifica) 
+ - Aggiunta la possibilità di inviare URL nella notifica push che si apre su tap 
+ - Aggiunta la finestra di conferma durante l'apertura di un URL homeassistant://
+ - Riattivato Fabric in modo da poter avviare nuovamente il tracciamento degli arresti anomali 
+ - Migliorato il controllo dei permessi di notifica 
+ - Molte altre modifiche alla localizzazione 
+ - Correzioni di bug 
+
+ Invia una valutazione se non l'hai già fatto, è il carburante che mi fa andare avanti!

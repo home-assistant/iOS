@@ -1,1 +1,1 @@
-Home Assistant IOS版本
+Home Assistant iOS版本
