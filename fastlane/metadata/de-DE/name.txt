@@ -1,1 +1,1 @@
-Home Assistant for iOS
+Home Assistant für iOS

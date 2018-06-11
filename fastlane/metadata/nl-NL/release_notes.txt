@@ -1,1 +1,13 @@
+Een nieuwe week, weer een update voor Home Assistant iOS! 
 
+ - Meer ondersteuning voor talen! We ondersteunen nu Chinees (traditioneel en vereenvoudigd), Nederlands en Spaans. Kleine updates zijn ook doorgevoerd in de bestaande Duitse vertaling. 
+ - Ondersteuning toevoegen voor granulaire controle van locatieactualisatietriggers (in Instellingen-> Locatie) 
+ - Ondersteuning van aanpassing van weergave-opties voor meldingen (zie hiervoor online docs, maar u kunt een badge / waarschuwing / geluid specificeren of een combinatie van de drie voor elke melding) 
+ - Voeg de mogelijkheid toe om een ​​URL te verzenden in een pushmelding die bij aanraking wordt geopend 
+ - Bevestigingsdialogen toevoegen bij het openen van een homeassistant: // URL 
+ - Schakel Fabric opnieuw in, zodat ik crashes opnieuw kan volgen 
+ - Verbeter de controle van de toestemmingsrechten op notificaties.
+ - Veel werk aan lokalisatie.
+ - Bugfixes 
+
+ Geef een beoordeling op als je dat nog niet hebt gedaan, het is mijn brandstof die me op de been houdt!

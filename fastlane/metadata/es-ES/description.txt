@@ -1,1 +1,27 @@
+Controle y monitorize su hogar desde cualquier lugar del mundo. Home Assistant para iOS le permite controlar todos sus dispositivos y proporciona motores de localización y notificación avanzados para permitir automatizaciones móviles complejas. 
 
+ Home Assistant es una plataforma de automatización del hogar de código abierto que se ejecuta en Python 3. Los productos compatibles incluyen: 
+
+ - Amazon Echo (Alexa) 
+ - Apple TV 
+ - Arduino 
+ - Belkin WeMo 
+ - DarkSky 
+ - ecobee 
+ - Google Assistant
+ - Google Cast 
+ - IFTTT 
+ - IKEA Trådfri (Tradfri) 
+ - Kodi / XBMC 
+ - MQTT 
+ - MySensors 
+ - Nido 
+ - Owntracks 
+ - Philips Hue 
+ - Plex 
+ - Pushbullet 
+ - Sonos 
+ - Wink
+ - Z-Wave 
+
+ Home Assistant para iOS requiere un iPhone con iOS 9.3 o posterior y una instancia de Home Assistant configurada previamente. La instancia debe ser accesible desde Internet y estar protegida con un certificado SSL válido, no autofirmado, para el seguimiento de la ubicación. Las notificaciones básicas funcionan sin acceso externo.
