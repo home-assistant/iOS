@@ -1282,7 +1282,7 @@ extension LocationManager {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         onLocation?(locations.last, nil)
-        print("Got location, stopping updates!", locations.last, locations.count)
+        print("Got location, stopping updates!", locations.last.debugDescription, locations.count)
         locationManager.stopUpdatingLocation()
     }
 
