@@ -1175,7 +1175,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         locationManager.startMonitoringSignificantLocationChanges()
     }
 
-    func triggerLocationEvent(_ manager: CLLocationManager, trigger: LocationUpdateTypes,
+    func triggerRegionEvent(_ manager: CLLocationManager, trigger: LocationUpdateTypes,
                               region: CLRegion, zone: Zone) {
         // Do nothing in case we don't want to trigger an enter event
         if zone.TrackingEnabled == false {
@@ -1193,48 +1193,56 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
 
     func startMonitoring(zone: Zone) {
-        if zone.UUID == nil {
+        var regionToMonitor: CLRegion?
+        if let uuidString = zone.UUID {
+            print("Starting monitoring of beacon zone \(zone.ID)")
+            // iBeacon
+            guard let uuid = UUID(uuidString: uuidString) else {
+                print("Could not start monitoring of CLBeaconRegion because of invalid UUID")
+                return
+            }
+            var beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: uuidString)
+            if let major = zone.Major, let minor = zone.Minor {
+                beaconRegion = CLBeaconRegion(
+                    proximityUUID: uuid,
+                    major: CLBeaconMajorValue(major),
+                    minor: CLBeaconMinorValue(minor),
+                    identifier: zone.ID
+                )
+            } else if let major = zone.Major {
+                beaconRegion = CLBeaconRegion(
+                    proximityUUID: uuid,
+                    major: CLBeaconMajorValue(major),
+                    identifier: zone.ID
+                )
+            }
+            beaconRegion.notifyEntryStateOnDisplay = true
+            regionToMonitor = beaconRegion
+        } else {
+            print("Starting monitoring of geographic zone \(zone.ID)")
             // Geofence / CircularRegion
-            let region = CLCircularRegion(
+            regionToMonitor = CLCircularRegion(
                 center: CLLocationCoordinate2DMake(zone.Latitude, zone.Longitude),
                 radius: zone.Radius,
                 identifier: zone.ID
             )
-            locationManager.startMonitoring(for: region)
-        } else {
-            // iBeacon
-            guard let uuidString = zone.UUID, let uuid = UUID(uuidString: uuidString) else {
-                print("Could not start monitoring of CLBeaconRegion because of missing / invalid UUID")
-                return
-            }
-            guard let major = zone.Major, let minor =
-                zone.Minor else {
-                    return locationManager.startMonitoring(for:
-                        CLBeaconRegion(proximityUUID: uuid, identifier: uuidString)
-                    )
-            }
-            let beaconRegion = CLBeaconRegion(
-                proximityUUID: uuid,
-                major: CLBeaconMajorValue(major),
-                minor: CLBeaconMinorValue(minor),
-                identifier: uuidString
-            )
-            beaconRegion.notifyEntryStateOnDisplay = true
+        }
+        if let newRegion = regionToMonitor {
             zones[zone.ID] = zone
-            locationManager.startMonitoring(for: beaconRegion)
+            locationManager.startMonitoring(for: newRegion)
         }
     }
 
     @objc func syncMonitoredRegions() {
         // stop monitoring for all regions regions
         locationManager.monitoredRegions.forEach { region in
-            print("Stopping region \(region)")
+            print("Stopping monitoring of region \(region.identifier)")
             locationManager.stopMonitoring(for: region)
         }
 
         // start monitoring for all existing regions
         zones.forEach { zone in
-            print("Starting geofence \(zone)")
+            print("Starting monitoring of zone \(zone)")
             startMonitoring(zone: zone.value)
         }
     }
@@ -1264,7 +1272,7 @@ extension LocationManager {
             if zone.UUID != nil {
                 trigger = LocationUpdateTypes.BeaconRegionEnter
             }
-            triggerLocationEvent(manager, trigger: trigger, region: region, zone: zone)
+            triggerRegionEvent(manager, trigger: trigger, region: region, zone: zone)
         }
     }
 
@@ -1274,7 +1282,7 @@ extension LocationManager {
             if zone.UUID != nil {
                 trigger = LocationUpdateTypes.BeaconRegionExit
             }
-            triggerLocationEvent(manager, trigger: trigger, region: region, zone: zone)
+            triggerRegionEvent(manager, trigger: trigger, region: region, zone: zone)
         }
     }
 }
