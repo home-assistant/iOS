@@ -35,7 +35,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
 
     let discovery = Bonjour()
 
-    var locationManager: CLLocationManager = CLLocationManager()
+    var authLocationManager: CLLocationManager = CLLocationManager()
 
     override func viewWillDisappear(_ animated: Bool) {
         NSLog("Stopping Home Assistant discovery")
@@ -52,7 +52,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
-        self.locationManager.delegate = self
+        self.authLocationManager.delegate = self
 
         let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
                                           style: .plain,
@@ -291,7 +291,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                 $0.title = L10n.Settings.DetailsSection.EnableLocationRow.title
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.locationEnabled)
             }.onCellSelection { _, _ in
-                self.locationManager.requestAlwaysAuthorization()
+                self.authLocationManager.requestAlwaysAuthorization()
             }
 
             <<< ButtonRow("locationSettings") {
@@ -525,8 +525,11 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             deviceTrackerComponentLoadedRow.evaluateHidden()
             deviceTrackerComponentLoadedRow.updateCell()
             self.tableView.reloadData()
-            HomeAssistantAPI.sharedInstance.setupZones()
-            _ = HomeAssistantAPI.sharedInstance.sendOneshotLocation()
+            if prefs.bool(forKey: "locationUpdateOnZone") == false,
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                appDelegate.locationManager.syncMonitoredRegions()
+            }
+//            _ = HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual)
         }
     }
 }

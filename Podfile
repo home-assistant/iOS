@@ -19,9 +19,9 @@ target 'HomeAssistant' do
   pod 'MBProgressHUD', '1.1.0'
   pod 'ObjectMapper', '3.2.0'
   pod 'PromiseKit', '6.3.0'
+  pod 'RealmSwift'
   pod 'SwiftGen', '5.3.0'
   pod 'SwiftLint', '0.25.1'
-  pod 'SwiftLocation', :git => 'https://github.com/hamzaansari09/SwiftLocation.git', :branch => 'master'
 end
 
 target 'HomeAssistantTests' do

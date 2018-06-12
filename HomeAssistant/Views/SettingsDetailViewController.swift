@@ -117,57 +117,68 @@ class SettingsDetailViewController: FormViewController {
                         prefs.set(val, forKey: "backgroundFetchLocationChangeNotifications")
                     }
                 })
-            if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
-                if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
-                    return entity.Domain == "zone"
-                }) as? [Zone] {
-                    for zone in zoneEntities {
-                        self.form
-                            +++ Section(header: zone.Name, footer: "") {
-                                $0.tag = zone.ID
-                            }
-                            <<< SwitchRow {
-                                $0.title = L10n.SettingsDetails.Location.Zones.EnterExitTracked.title
-                                $0.value = zone.TrackingEnabled
-                                $0.disabled = Condition(booleanLiteral: true)
-                            }
-                            <<< LocationRow {
-                                $0.title = L10n.SettingsDetails.Location.Zones.Location.title
-                                $0.value = zone.location()
-                            }
-                            <<< LabelRow {
-                                $0.title = L10n.SettingsDetails.Location.Zones.Radius.title
-                                $0.value = "\(Int(zone.Radius)) m"
-                            }
-                            <<< LabelRow {
-                                $0.title = L10n.SettingsDetails.Location.Zones.BeaconUuid.title
-                                $0.value = zone.UUID
-                                $0.hidden = Condition(booleanLiteral: (zone.UUID == nil))
-                            }
-                            <<< LabelRow {
-                                $0.title = L10n.SettingsDetails.Location.Zones.BeaconMajor.title
-                                if let major = zone.Major {
-                                    $0.value = String(describing: major)
-                                } else {
-                                    $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
-                                }
-                                $0.hidden = Condition(booleanLiteral: (zone.Major == nil))
-                            }
-                            <<< LabelRow {
-                                $0.title = L10n.SettingsDetails.Location.Zones.BeaconMinor.title
-                                if let minor = zone.Minor {
-                                    $0.value = String(describing: minor)
-                                } else {
-                                    $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
-                                }
-                                $0.hidden = Condition(booleanLiteral: (zone.Minor == nil))
-                            }
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.PushNotification.title
+                    $0.value = prefs.bool(forKey: "pushLocationRequestNotifications")
+                }.onChange({ (row) in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "pushLocationRequestNotifications")
                     }
-                    if zoneEntities.count > 0 {
-                        self.form
-                            +++ Section(header: "", footer: L10n.SettingsDetails.Location.Zones.footer)
+                })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.UrlScheme.title
+                    $0.value = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
+                }.onChange({ (row) in
+                    if let val = row.value {
+                        prefs.set(val, forKey: "urlSchemeLocationRequestNotifications")
                     }
+                })
+            let zoneEntities = realm.objects(RLMZone.self).map { $0 }
+            for zone in zoneEntities {
+                self.form
+                    +++ Section(header: zone.Name, footer: "") {
+                        $0.tag = zone.ID
+                    }
+                    <<< SwitchRow {
+                        $0.title = L10n.SettingsDetails.Location.Zones.EnterExitTracked.title
+                        $0.value = zone.TrackingEnabled
+                        $0.disabled = Condition(booleanLiteral: true)
+                    }
+                    <<< LocationRow {
+                        $0.title = L10n.SettingsDetails.Location.Zones.Location.title
+                        $0.value = zone.location()
+                    }
+                    <<< LabelRow {
+                        $0.title = L10n.SettingsDetails.Location.Zones.Radius.title
+                        $0.value = "\(Int(zone.Radius)) m"
+                    }
+                    <<< LabelRow {
+                        $0.title = L10n.SettingsDetails.Location.Zones.BeaconUuid.title
+                        $0.value = zone.UUID
+                        $0.hidden = Condition(booleanLiteral: (zone.UUID == nil))
+                    }
+                    <<< LabelRow {
+                        $0.title = L10n.SettingsDetails.Location.Zones.BeaconMajor.title
+                        if let major = zone.Major.value {
+                            $0.value = String(describing: major)
+                        } else {
+                            $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
+                        }
+                        $0.hidden = Condition(booleanLiteral: (zone.Major.value == nil))
+                    }
+                    <<< LabelRow {
+                        $0.title = L10n.SettingsDetails.Location.Zones.BeaconMinor.title
+                        if let minor = zone.Minor.value {
+                            $0.value = String(describing: minor)
+                        } else {
+                            $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
+                        }
+                        $0.hidden = Condition(booleanLiteral: (zone.Minor.value == nil))
                 }
+            }
+            if zoneEntities.count > 0 {
+                self.form
+                    +++ Section(header: "", footer: L10n.SettingsDetails.Location.Zones.footer)
             }
 
         case "notifications":

@@ -229,6 +229,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     @objc func sendCurrentLocation(_ sender: UIButton) {
         HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual).done {_ in
+            print("Sending current location via button press")
             let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
                                           message: L10n.ManualLocationUpdateNotification.message,
                                           preferredStyle: UIAlertControllerStyle.alert)

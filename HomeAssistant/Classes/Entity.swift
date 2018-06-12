@@ -102,7 +102,7 @@ class Entity: StaticMappable {
             case "zone":
                 return Zone()
             default:
-                print("No class found for:", entityType)
+                //print("No class found for:", entityType)
                 return Entity()
             }
         }

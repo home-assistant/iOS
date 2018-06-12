@@ -9,13 +9,13 @@
 import Foundation
 import Alamofire
 import PromiseKit
-import SwiftLocation
 import CoreLocation
 import AlamofireObjectMapper
 import ObjectMapper
 import DeviceKit
 import Crashlytics
 import UserNotifications
+import RealmSwift
 
 let APIClientSharedInstance = HomeAssistantAPI()
 
@@ -47,7 +47,7 @@ public class HomeAssistantAPI {
 
     private var manager: Alamofire.SessionManager?
 
-    let beaconManager = BeaconManager()
+    let locationManager = LocationManager()
 
     var cachedEntities: [Entity]?
 
@@ -164,10 +164,6 @@ public class HomeAssistantAPI {
                 }
 
                 _ = self.GetStates().done { _ in
-                    if self.locationEnabled {
-                        self.setupZones()
-                    }
-
                     if self.loadedComponents.contains("ios") {
                         CLSLogv("iOS component loaded, attempting identify", getVaList([]))
                         _ = self.IdentifyDevice()
@@ -185,11 +181,11 @@ public class HomeAssistantAPI {
         }
     }
 
-    // swiftlint:disable:next function_body_length
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     func submitLocation(updateType: LocationUpdateTypes,
                         coordinates: CLLocationCoordinate2D,
                         accuracy: CLLocationAccuracy,
-                        zone: Zone?) {
+                        zone: RLMZone?) {
         UIDevice.current.isBatteryMonitoringEnabled = true
 
         let locationUpdate: [String: Any] = [
@@ -248,6 +244,14 @@ public class HomeAssistantAPI {
             notificationBody = L10n.LocationChangeNotification.BackgroundFetch.body
             notificationIdentifer = "background_fetch"
             shouldNotify = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
+        case .PushNotification:
+            notificationBody = L10n.LocationChangeNotification.PushNotification.body
+            notificationIdentifer = "push_notification"
+            shouldNotify = prefs.bool(forKey: "pushLocationRequestNotifications")
+        case .URLScheme:
+            notificationBody = L10n.LocationChangeNotification.UrlScheme.body
+            notificationIdentifer = "url_scheme"
+            shouldNotify = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
         default:
             notificationBody = ""
         }
@@ -274,76 +278,23 @@ public class HomeAssistantAPI {
 
     }
 
-    func setupZones() {
-        if prefs.bool(forKey: "locationUpdateOnZone") == false {
-            return
-        }
-        if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
-            if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
-                return entity.Domain == "zone"
-            }) as? [Zone] {
-                Crashlytics.sharedInstance().setObjectValue(zoneEntities.count, forKey: "numberOfZones")
-                for zone in zoneEntities {
-                    if zone.TrackingEnabled == false {
-                        print("Skipping zone set to not track!")
-                        continue
-                    }
-                    if zone.UUID != nil && CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self) {
-                        beaconManager.startScanning(zone: zone)
-                    }
-                    do {
-                        try Location.monitor(regionAt: zone.locationCoordinates(), radius: zone.Radius,
-                                             enter: { _ in
-                                                print("Entered in region!")
-                                                self.submitLocation(updateType: LocationUpdateTypes.RegionEnter,
-                                                                    coordinates: zone.locationCoordinates(),
-                                                                    accuracy: 1,
-                                                                    zone: zone)
-                        }, exit: { _ in
-                            print("Exited from the region")
-                            self.submitLocation(updateType: LocationUpdateTypes.RegionExit,
-                                                coordinates: zone.locationCoordinates(),
-                                                accuracy: 1,
-                                                zone: zone)
-                        }, error: { req, error in
-                            CLSLogv("Error in region monitoring: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
-                            req.cancel()
-                        })
-                    } catch let error {
-                        CLSLogv("Error when setting up zones for tracking: %@",
-                                getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                    }
-                }
-            }
-
-        }
-
-    }
-
-    func sendOneshotLocation() -> Promise<Bool> {
-        return getAndSendLocation(trigger: LocationUpdateTypes.Manual)
-    }
-
     func getAndSendLocation(trigger: LocationUpdateTypes?) -> Promise<Bool> {
         var updateTrigger: LocationUpdateTypes = .Manual
         if let trigger = trigger {
             updateTrigger = trigger
         }
         return Promise { seal in
-            Location.getLocation(accuracy: .neighborhood, frequency: .oneShot, timeout: 25, success: { (_, location) in
-                print("A new update of location is available: \(location) via \(updateTrigger) trigger")
-                self.submitLocation(updateType: updateTrigger,
-                                    coordinates: location.coordinate,
-                                    accuracy: location.horizontalAccuracy,
-                                    zone: nil)
-                seal.fulfill(true)
-            }, error: { (_, _, error) in
-                print("Error when trying to get a oneshot location for \(updateTrigger) trigger!", error)
-                Crashlytics.sharedInstance().recordError(error)
-                seal.reject(error)
-            })
+            _ = LocationManager { [weak self] location in
+                if let location = location {
+                    self?.submitLocation(updateType: updateTrigger,
+                                        coordinates: location.coordinate,
+                                        accuracy: location.horizontalAccuracy,
+                                        zone: nil)
+                    seal.fulfill(true)
+                    return
+                }
+                seal.fulfill(false)
+            }
         }
     }
 
@@ -458,6 +409,7 @@ public class HomeAssistantAPI {
                         case .success:
                             if let resVal = response.result.value {
                                 self.cachedEntities = resVal
+                                self.storeEntities(entities: resVal)
                                 seal.fulfill(resVal)
                             } else {
                                 seal.reject(APIError.invalidResponse)
@@ -1039,6 +991,34 @@ public class HomeAssistantAPI {
         return (true, urlComponents.url!)
     }
 
+    func storeEntities(entities: [Entity]) {
+        let storeableComponents = ["zone"]
+        let storeableEntities = entities.filter { (entity) -> Bool in
+            return storeableComponents.contains(entity.Domain)
+        }
+
+        for entity in storeableEntities {
+            print("Storing \(entity.ID)")
+
+            if entity.Domain == "zone", let zone = entity as? Zone {
+                let storeableZone = RLMZone()
+                storeableZone.ID = zone.ID
+                storeableZone.Latitude = zone.Latitude
+                storeableZone.Longitude = zone.Longitude
+                storeableZone.Radius = zone.Radius
+                storeableZone.TrackingEnabled = zone.TrackingEnabled
+                storeableZone.UUID = zone.UUID
+                storeableZone.Major.value = zone.Major
+                storeableZone.Minor.value = zone.Minor
+
+                // swiftlint:disable:next force_try
+                try! realm.write {
+                    realm.add(storeableZone, update: true)
+                }
+            }
+        }
+    }
+
 }
 
 class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
@@ -1162,85 +1142,158 @@ class Bonjour {
 
 }
 
-class BeaconManager: NSObject, CLLocationManagerDelegate {
+public typealias OnLocationUpdated = ((CLLocation?) -> Void)
 
-    var locationManager: CLLocationManager!
+class LocationManager: NSObject, CLLocationManagerDelegate {
 
-    var zones: [String: Zone] = [String: Zone]()
+    let locationManager = CLLocationManager()
+    var onLocation: OnLocationUpdated?
+    var backgroundTask: UIBackgroundTaskIdentifier?
+    internal var onCurrentLocation: OnLocationUpdated?
+
+    var zones: [RLMZone] {
+        return realm.objects(RLMZone.self).map { $0 }
+    }
 
     override init() {
         super.init()
-
-        locationManager = CLLocationManager()
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.allowsBackgroundLocationUpdates = true
         locationManager.delegate = self
+        startMonitoring()
+        syncMonitoredRegions()
     }
 
-    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        print("Entered region", region.identifier)
-        if let zone = zones[region.identifier] {
-            HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionEnter,
-                                                           coordinates: zone.locationCoordinates(),
-                                                           accuracy: 1,
-                                                           zone: zone)
-        }
+    init(onLocationCallback: @escaping OnLocationUpdated) {
+        onLocation = onLocationCallback
+        super.init()
+        locationManager.delegate = self
+        locationManager.startUpdatingLocation()
     }
 
-    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        print("Exited region", region.identifier)
-        if let zone = zones[region.identifier] {
-            HomeAssistantAPI.sharedInstance.submitLocation(updateType: .BeaconRegionExit,
-                                                           coordinates: zone.locationCoordinates(),
-                                                           accuracy: 1,
-                                                           zone: zone)
-        }
+    private func startMonitoring() {
+        locationManager.startUpdatingLocation()
+        locationManager.startMonitoringSignificantLocationChanges()
     }
 
-    func startScanning(zone: Zone) {
-        print("Begin scanning iBeacons for zone", zone.ID)
-        var beaconRegion: CLBeaconRegion? = nil
-        if let uuidStr = zone.UUID, let uuid = UUID(uuidString: uuidStr),
-            let major = zone.Major, let minor = zone.Minor {
-            beaconRegion = CLBeaconRegion(proximityUUID: uuid,
-                                          major: CLBeaconMajorValue(major),
-                                          minor: CLBeaconMinorValue(minor), identifier: zone.ID)
-        } else if let uuid = zone.UUID, let major = zone.Major {
-            beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: uuid)!,
-                                          major: CLBeaconMajorValue(major),
-                                          identifier: zone.ID)
-        } else if let uuid = zone.UUID {
-            beaconRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: uuid)!, identifier: zone.ID)
+    func triggerRegionEvent(_ manager: CLLocationManager, trigger: LocationUpdateTypes,
+                            region: CLRegion) {
+        var trig = trigger
+        guard let zone = zones.filter({ region.identifier == $0.UUID }).first else {
+            return syncMonitoredRegions()
         }
-        if let beaconRegion = beaconRegion {
-            beaconRegion.notifyEntryStateOnDisplay = true
-            zones[zone.ID] = zone
-            locationManager.startMonitoring(for: beaconRegion)
+        // Do nothing in case we don't want to trigger an enter event
+        if zone.TrackingEnabled == false {
+            return
         }
-    }
 
-    func resumeScanning() {
-        print("Resuming scanning of \(locationManager.monitoredRegions.count) regions!")
-        HomeAssistantAPI.sharedInstance.GetStates().done { entities in
-            if let zoneEntities: [Zone] = entities.filter({ (entity) -> Bool in
-                return entity.Domain == "zone"
-            }) as? [Zone] {
-                for zone in zoneEntities {
-                    if zone.TrackingEnabled == false {
-                        continue
-                    }
-                    self.zones[zone.ID] = zone
-                }
+        if zone.IsBeaconRegion {
+            if trigger == .RegionEnter {
+                trig = .BeaconRegionEnter
             }
-        }.catch { error in
-            CLSLogv("Unable to resume scanning because GetStates call failed: %@!",
-                    getVaList([error.localizedDescription]))
-            Crashlytics.sharedInstance().recordError(error)
+            if trigger == .RegionExit {
+                trig = .BeaconRegionExit
+            }
+        }
+
+        backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
+            self?.endBackgroundTask()
+        }
+
+        HomeAssistantAPI.sharedInstance.submitLocation(updateType: trig,
+                                                       coordinates: zone.locationCoordinates(),
+                                                       accuracy: 1,
+                                                       zone: zone)
+    }
+
+    func startMonitoring(zone: RLMZone) {
+        var regionToMonitor: CLRegion?
+        if let uuidString = zone.UUID {
+            print("Starting monitoring of beacon zone \(zone.ID)")
+            // iBeacon
+            guard let uuid = UUID(uuidString: uuidString) else {
+                print("Could not start monitoring of CLBeaconRegion because of invalid UUID")
+                return
+            }
+            var beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: uuidString)
+            if let major = zone.Major.value, let minor = zone.Minor.value {
+                beaconRegion = CLBeaconRegion(
+                    proximityUUID: uuid,
+                    major: CLBeaconMajorValue(major),
+                    minor: CLBeaconMinorValue(minor),
+                    identifier: zone.ID
+                )
+            } else if let major = zone.Major.value {
+                beaconRegion = CLBeaconRegion(
+                    proximityUUID: uuid,
+                    major: CLBeaconMajorValue(major),
+                    identifier: zone.ID
+                )
+            }
+            beaconRegion.notifyEntryStateOnDisplay = true
+            regionToMonitor = beaconRegion
+        } else {
+            print("Starting monitoring of geographic zone \(zone.ID)")
+            // Geofence / CircularRegion
+            regionToMonitor = CLCircularRegion(
+                center: CLLocationCoordinate2DMake(zone.Latitude, zone.Longitude),
+                radius: zone.Radius,
+                identifier: zone.ID
+            )
+        }
+        if let newRegion = regionToMonitor {
+            locationManager.startMonitoring(for: newRegion)
         }
     }
 
+    @objc func syncMonitoredRegions() {
+        // stop monitoring for all regions regions
+        locationManager.monitoredRegions.forEach { region in
+            print("Stopping monitoring of region \(region.identifier)")
+            locationManager.stopMonitoring(for: region)
+        }
+
+        // start monitoring for all existing regions
+        zones.forEach { zone in
+            print("Starting monitoring of zone \(zone)")
+            startMonitoring(zone: zone)
+        }
+    }
+}
+
+// MARK: CLLocationManagerDelegate
+extension LocationManager {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .denied {
+            onLocation?(nil)
+        }
         if status == .authorizedAlways {
             prefs.setValue(true, forKey: "locationEnabled")
             prefs.synchronize()
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        onLocation?(locations.last)
+        onCurrentLocation?(locations.last)
+        locationManager.stopUpdatingLocation()
+    }
+
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        triggerRegionEvent(manager, trigger: .RegionEnter, region: region)
+    }
+
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        triggerRegionEvent(manager, trigger: .RegionExit, region: region)
+    }
+}
+
+// MARK: BackgroundTask
+extension LocationManager {
+    func endBackgroundTask() {
+        if backgroundTask != UIBackgroundTaskInvalid {
+            UIApplication.shared.endBackgroundTask(backgroundTask!)
+            backgroundTask = UIBackgroundTaskInvalid
         }
     }
 }
@@ -1253,4 +1306,6 @@ enum LocationUpdateTypes {
     case Manual
     case SignificantLocationUpdate
     case BackgroundFetch
+    case PushNotification
+    case URLScheme
 }

@@ -13,8 +13,13 @@ import PromiseKit
 import UserNotifications
 import AlamofireNetworkActivityIndicator
 import KeychainAccess
-import SwiftLocation
 import Alamofire
+import RealmSwift
+
+let realmConfig = Realm.Configuration(schemaVersion: 4, migrationBlock: nil, deleteRealmIfMigrationNeeded: false)
+
+// swiftlint:disable:next force_try
+let realm = try! Realm(configuration: realmConfig)
 
 let keychain = Keychain(service: "io.robbie.homeassistant")
 
@@ -24,6 +29,7 @@ let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    @objc var locationManager: LocationManager!
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -31,10 +37,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
-
-        if launchOptions?[UIApplicationLaunchOptionsKey.location] != nil {
-            resumeRegionMonitoring()
-        }
 
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
@@ -48,7 +50,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setDefaults()
 
-        registerForSignificantLocationUpdates()
+        if HomeAssistantAPI.sharedInstance.locationEnabled {
+            locationManager = LocationManager()
+        }
 
         window = UIWindow.init(frame: UIScreen.main.bounds)
         window?.backgroundColor = .white
@@ -118,7 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
                                                               password: keychain["apiPassword"],
                                                               deviceID: keychain["deviceID"])
-                        HomeAssistantAPI.sharedInstance.sendOneshotLocation().done { success in
+                        HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .PushNotification).done { success in
                             print("Did successfully send location when requested via APNS?", success)
                             if success == true {
                                 completionHandler(UIBackgroundFetchResult.newData)
@@ -150,6 +154,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                               deviceID: keychain["deviceID"])
         if HomeAssistantAPI.sharedInstance.locationEnabled {
             HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .BackgroundFetch).done { success in
+                print("Sending location via background fetch")
                 if success == true {
                     completionHandler(UIBackgroundFetchResult.newData)
                 } else {
@@ -219,7 +224,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                                            error.localizedDescription))
             }
         case "send_location": // homeassistant://send_location/
-            HomeAssistantAPI.sharedInstance.sendOneshotLocation().done { _ in
+            HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .URLScheme).done { _ in
                 showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
                           message: L10n.UrlHandler.SendLocation.Success.message)
             }.catch { error in
@@ -232,37 +237,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                       message: L10n.UrlHandler.NoService.message(url.host!))
         }
         return true
-    }
-
-    func registerForSignificantLocationUpdates() {
-        if HomeAssistantAPI.sharedInstance.locationEnabled {
-            Location.getLocation(accuracy: .neighborhood, frequency: .significant, timeout: nil,
-                                 success: { (_, location) -> Void in
-
-                                HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
-                                                                      password: keychain["apiPassword"],
-                                                                      deviceID: keychain["deviceID"])
-
-                                HomeAssistantAPI.sharedInstance.submitLocation(updateType: .SignificantLocationUpdate,
-                                                                               coordinates: location.coordinate,
-                                                                               accuracy: location.horizontalAccuracy,
-                                                                               zone: nil)
-            }, error: { (_, _, error) -> Void in
-                // something went wrong. request will be cancelled automatically
-                NSLog("Error during significant location update registration: @%",
-                      error.localizedDescription)
-                Crashlytics.sharedInstance().recordError(error)
-            })
-        }
-    }
-
-    func resumeRegionMonitoring() {
-        if HomeAssistantAPI.sharedInstance.locationEnabled {
-            HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
-                                                  deviceID: keychain["deviceID"])
-
-            HomeAssistantAPI.sharedInstance.beaconManager.resumeScanning()
-        }
     }
 
 }

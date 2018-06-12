@@ -195,6 +195,7 @@
 		B6E47E8E1CBA3EDB0027F6CA /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E8D1CBA3EDB0027F6CA /* Zone.swift */; };
 		B6E47E9A1CBB47EC0027F6CA /* DeviceUID.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E991CBB47EC0027F6CA /* DeviceUID.m */; };
 		B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E857A11CB1CCCC00F96925 /* Utils.swift */; };
+		B6EE36A220CF593E001494E3 /* RealmZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EE36A120CF593E001494E3 /* RealmZone.swift */; };
 		B6F02BE91CB46AF40029ABE7 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BE81CB46AF40029ABE7 /* Entity.swift */; };
 		B6F02BEB1CB46D090029ABE7 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BEA1CB46D090029ABE7 /* Group.swift */; };
 		B6F02BEE1CB46EB10029ABE7 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BED1CB46EB10029ABE7 /* Status.swift */; };
@@ -517,6 +518,7 @@
 		B6E47E991CBB47EC0027F6CA /* DeviceUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceUID.m; sourceTree = "<group>"; };
 		B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HomeAssistant-Bridging-Header.h"; sourceTree = "<group>"; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		B6EE36A120CF593E001494E3 /* RealmZone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmZone.swift; sourceTree = "<group>"; };
 		B6F02BE81CB46AF40029ABE7 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Entity.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B6F02BEA1CB46D090029ABE7 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		B6F02BED1CB46EB10029ABE7 /* Status.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
@@ -1024,6 +1026,7 @@
 				B6F02C0D1CB489770029ABE7 /* Thermostat.swift */,
 				B6F02C0E1CB489770029ABE7 /* Weblink.swift */,
 				B6E47E8D1CBA3EDB0027F6CA /* Zone.swift */,
+				B6EE36A120CF593E001494E3 /* RealmZone.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1039,7 +1042,6 @@
 				B627CB031D83C87B0057173E /* Sources */,
 				B627CB041D83C87B0057173E /* Frameworks */,
 				B627CB051D83C87B0057173E /* Resources */,
-				796BA16F0573738A7AAC59E9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1061,7 +1063,6 @@
 				B657A8E41CA646EB00121384 /* Resources */,
 				B6E47E861CB9FD350027F6CA /* [CP] Copy Acknowledgements */,
 				D458061599D246B74530F402 /* [CP] Embed Pods Frameworks */,
-				EB3BEB157867EEEFE3AFD2F3 /* [CP] Copy Pods Resources */,
 				B6AAD7AC1D827DD40090B220 /* Embed App Extensions */,
 				B6E8579C1CB1167200F96925 /* Fabric */,
 			);
@@ -1085,8 +1086,6 @@
 				B657A8F81CA646EB00121384 /* Sources */,
 				B657A8F91CA646EB00121384 /* Frameworks */,
 				B657A8FA1CA646EB00121384 /* Resources */,
-				C1A731CE521F4B94A0023EB2 /* [CP] Embed Pods Frameworks */,
-				927C18E0046399C372241C05 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1106,8 +1105,6 @@
 				B657A9031CA646EB00121384 /* Sources */,
 				B657A9041CA646EB00121384 /* Frameworks */,
 				B657A9051CA646EB00121384 /* Resources */,
-				E1D7ED1C6708B6DF6A053D3F /* [CP] Copy Pods Resources */,
-				E445C53B71DD731BC3EEF984 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1127,7 +1124,6 @@
 				B678DB201EA991E30045312F /* Sources */,
 				B678DB211EA991E30045312F /* Frameworks */,
 				B678DB221EA991E30045312F /* Resources */,
-				9ABB1A3B50054494D373ECCD /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1146,7 +1142,6 @@
 				B6AAD79D1D827DD40090B220 /* Sources */,
 				B6AAD79E1D827DD40090B220 /* Frameworks */,
 				B6AAD79F1D827DD40090B220 /* Resources */,
-				E899FB7104B5D2D0A4B40BD5 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1515,51 +1510,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		796BA16F0573738A7AAC59E9 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		927C18E0046399C372241C05 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9ABB1A3B50054494D373ECCD /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MapNotificationContentExtension/Pods-MapNotificationContentExtension-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		B4C5FFA905628382C93E2D91 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1620,21 +1570,6 @@
 			shellPath = /bin/sh;
 			shellScript = "if [ -f env.sh ];\nthen\n    source env.sh\nfi\n[ -z \"$HOMEASSISTANT_FABRIC_CLIENT_ID\" ] && echo \"$HOMEASSISTANT_FABRIC_CLIENT_ID is not defined on your ENV\" && exit 0;\n [ -z \"$HOMEASSISTANT_FABRIC_SECRET\" ] && echo \"$HOMEASSISTANT_FABRIC_SECRET is not defined on your ENV\" && exit 0;\n \"${PODS_ROOT}/Fabric/run\" ${HOMEASSISTANT_FABRIC_CLIENT_ID} ${HOMEASSISTANT_FABRIC_SECRET}";
 		};
-		C1A731CE521F4B94A0023EB2 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		D458061599D246B74530F402 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1653,7 +1588,8 @@
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftLocation/SwiftLocation.framework",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -1668,7 +1604,8 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftLocation.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1691,66 +1628,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E1D7ED1C6708B6DF6A053D3F /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E445C53B71DD731BC3EEF984 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E899FB7104B5D2D0A4B40BD5 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		EB3BEB157867EEEFE3AFD2F3 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		EE918EC7744FD53B5836AC00 /* [CP] Check Pods Manifest.lock */ = {
@@ -1840,6 +1717,7 @@
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				B6E47E881CBA01310027F6CA /* CallService.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
+				B6EE36A220CF593E001494E3 /* RealmZone.swift in Sources */,
 				B6880B2B1D7B9E6400CCB899 /* Climate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2165,8 +2043,6 @@
 					"-framework",
 					"\"Security\"",
 					"-framework",
-					"\"SwiftLocation\"",
-					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
 					"\"UIKit\"",
@@ -2214,8 +2090,6 @@
 					"\"PromiseKit\"",
 					"-framework",
 					"\"Security\"",
-					"-framework",
-					"\"SwiftLocation\"",
 					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
