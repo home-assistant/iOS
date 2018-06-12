@@ -195,6 +195,7 @@
 		B6E47E8E1CBA3EDB0027F6CA /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E8D1CBA3EDB0027F6CA /* Zone.swift */; };
 		B6E47E9A1CBB47EC0027F6CA /* DeviceUID.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E991CBB47EC0027F6CA /* DeviceUID.m */; };
 		B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E857A11CB1CCCC00F96925 /* Utils.swift */; };
+		B6EE36A220CF593E001494E3 /* RealmZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EE36A120CF593E001494E3 /* RealmZone.swift */; };
 		B6F02BE91CB46AF40029ABE7 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BE81CB46AF40029ABE7 /* Entity.swift */; };
 		B6F02BEB1CB46D090029ABE7 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BEA1CB46D090029ABE7 /* Group.swift */; };
 		B6F02BEE1CB46EB10029ABE7 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BED1CB46EB10029ABE7 /* Status.swift */; };
@@ -517,6 +518,7 @@
 		B6E47E991CBB47EC0027F6CA /* DeviceUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceUID.m; sourceTree = "<group>"; };
 		B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HomeAssistant-Bridging-Header.h"; sourceTree = "<group>"; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		B6EE36A120CF593E001494E3 /* RealmZone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmZone.swift; sourceTree = "<group>"; };
 		B6F02BE81CB46AF40029ABE7 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Entity.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B6F02BEA1CB46D090029ABE7 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		B6F02BED1CB46EB10029ABE7 /* Status.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
@@ -1024,6 +1026,7 @@
 				B6F02C0D1CB489770029ABE7 /* Thermostat.swift */,
 				B6F02C0E1CB489770029ABE7 /* Weblink.swift */,
 				B6E47E8D1CBA3EDB0027F6CA /* Zone.swift */,
+				B6EE36A120CF593E001494E3 /* RealmZone.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1585,6 +1588,8 @@
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -1599,6 +1604,8 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1710,6 +1717,7 @@
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				B6E47E881CBA01310027F6CA /* CallService.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
+				B6EE36A220CF593E001494E3 /* RealmZone.swift in Sources */,
 				B6880B2B1D7B9E6400CCB899 /* Climate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
