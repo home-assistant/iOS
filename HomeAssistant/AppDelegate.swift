@@ -16,7 +16,7 @@ import KeychainAccess
 import Alamofire
 import RealmSwift
 
-let realmConfig = Realm.Configuration(schemaVersion: 4, migrationBlock: nil, deleteRealmIfMigrationNeeded: false)
+let realmConfig = Realm.Configuration(schemaVersion: 4, migrationBlock: nil, deleteRealmIfMigrationNeeded: true)
 
 // swiftlint:disable:next force_try
 let realm = try! Realm(configuration: realmConfig)
