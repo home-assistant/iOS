@@ -47,7 +47,7 @@ public class HomeAssistantAPI {
 
     private var manager: Alamofire.SessionManager?
 
-    let locationManager = LocationManager()
+    var locationManager = LocationManager()
 
     var cachedEntities: [Entity]?
 
@@ -188,12 +188,19 @@ public class HomeAssistantAPI {
                         zone: RLMZone?) {
         UIDevice.current.isBatteryMonitoringEnabled = true
 
+        var source = "gps"
+
+        if updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit {
+            source = "bluetooth_le"
+        }
+
         let locationUpdate: [String: Any] = [
             "battery": Int(UIDevice.current.batteryLevel*100),
             "gps": [coordinates.latitude, coordinates.longitude],
             "gps_accuracy": accuracy,
             "host_name": UIDevice.current.name,
-            "dev_id": deviceID
+            "dev_id": deviceID,
+            "source_type": source
         ]
 
         firstly {
@@ -283,18 +290,21 @@ public class HomeAssistantAPI {
         if let trigger = trigger {
             updateTrigger = trigger
         }
+
         return Promise { seal in
-            _ = LocationManager { [weak self] location in
+            locationManager.getCurrentLocation(onLocationCallback: { (location, error) in
                 if let location = location {
-                    self?.submitLocation(updateType: updateTrigger,
+                    self.submitLocation(updateType: updateTrigger,
                                         coordinates: location.coordinate,
                                         accuracy: location.horizontalAccuracy,
                                         zone: nil)
                     seal.fulfill(true)
                     return
                 }
-                seal.fulfill(false)
-            }
+                if let error = error {
+                    seal.reject(error)
+                }
+            })
         }
     }
 
@@ -1142,14 +1152,13 @@ class Bonjour {
 
 }
 
-public typealias OnLocationUpdated = ((CLLocation?) -> Void)
+public typealias OnLocationUpdated = ((CLLocation?, Error?) -> Void)
 
 class LocationManager: NSObject, CLLocationManagerDelegate {
 
     let locationManager = CLLocationManager()
     var onLocation: OnLocationUpdated?
     var backgroundTask: UIBackgroundTaskIdentifier?
-    internal var onCurrentLocation: OnLocationUpdated?
 
     var zones: [RLMZone] {
         return realm.objects(RLMZone.self).map { $0 }
@@ -1164,15 +1173,12 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         syncMonitoredRegions()
     }
 
-    init(onLocationCallback: @escaping OnLocationUpdated) {
-        onLocation = onLocationCallback
-        super.init()
-        locationManager.delegate = self
+    func getCurrentLocation(onLocationCallback: @escaping OnLocationUpdated) {
         locationManager.startUpdatingLocation()
+        onLocation = onLocationCallback
     }
 
     private func startMonitoring() {
-        locationManager.startUpdatingLocation()
         locationManager.startMonitoringSignificantLocationChanges()
     }
 
@@ -1265,7 +1271,8 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
 extension LocationManager {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .denied {
-            onLocation?(nil)
+            onLocation?(nil, NSError.init(domain: "io.robbie.homeassistant", code: 403,
+                                          userInfo: ["locationStatus": "denied"]))
         }
         if status == .authorizedAlways {
             prefs.setValue(true, forKey: "locationEnabled")
@@ -1274,8 +1281,8 @@ extension LocationManager {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        onLocation?(locations.last)
-        onCurrentLocation?(locations.last)
+        onLocation?(locations.last, nil)
+        print("Got location, stopping updates!", locations.last, locations.count)
         locationManager.stopUpdatingLocation()
     }
 
@@ -1285,6 +1292,56 @@ extension LocationManager {
 
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         triggerRegionEvent(manager, trigger: .RegionExit, region: region)
+    }
+
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        if let clErr = error as? CLError {
+            switch clErr {
+            case CLError.locationUnknown:
+                print("The location manager was unable to obtain a location value right now.")
+                return // This just means that GPS may be taking an extra moment, so don't throw an error.
+            case CLError.denied:
+                print("Access to the location service was denied by the user.")
+            case CLError.network:
+                print("The network was unavailable or a network error occurred.")
+            case CLError.headingFailure:
+                print("The heading could not be determined.")
+            case CLError.regionMonitoringDenied:
+                print("Access to the region monitoring service was denied by the user.")
+            case CLError.regionMonitoringFailure:
+                print("A registered region cannot be monitored.")
+            case CLError.regionMonitoringSetupDelayed:
+                print("Core Location could not initialize the region monitoring feature immediately.")
+            case CLError.regionMonitoringResponseDelayed:
+                print("Core Location will deliver events but they may be delayed.")
+            case CLError.geocodeFoundNoResult:
+                print("The geocode request yielded no result.")
+            case CLError.geocodeFoundPartialResult:
+                print("The geocode request yielded a partial result.")
+            case CLError.geocodeCanceled:
+                print("The geocode request was canceled.")
+            case CLError.deferredFailed:
+                print("The location manager did not enter deferred mode for an unknown reason.")
+            case CLError.deferredNotUpdatingLocation:
+                print("The manager did not enter deferred mode because updates were already disabled or paused.")
+            case CLError.deferredAccuracyTooLow:
+                print("Deferred mode is not supported for the requested accuracy.")
+            case CLError.deferredDistanceFiltered:
+                print("Deferred mode does not support distance filters.")
+            case CLError.deferredCanceled:
+                print("The request for deferred updates was canceled by your app or by the location manager.")
+            case CLError.rangingUnavailable:
+                print("Ranging is disabled.")
+            case CLError.rangingFailure:
+                print("A general ranging error occurred.")
+            default:
+                print("other Core Location error")
+            }
+        } else {
+            print("other error:", error.localizedDescription)
+        }
+        onLocation?(nil, error)
     }
 }
 

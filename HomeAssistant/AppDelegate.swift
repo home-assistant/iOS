@@ -29,7 +29,6 @@ let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    @objc var locationManager: LocationManager!
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -49,10 +48,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         setDefaults()
-
-        if HomeAssistantAPI.sharedInstance.locationEnabled {
-            locationManager = LocationManager()
-        }
 
         window = UIWindow.init(frame: UIScreen.main.bounds)
         window?.backgroundColor = .white
