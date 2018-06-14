@@ -526,7 +526,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             deviceTrackerComponentLoadedRow.updateCell()
             self.tableView.reloadData()
             if prefs.bool(forKey: "locationUpdateOnZone") == false {
-                HomeAssistantAPI.sharedInstance.locationManager.syncMonitoredRegions()
+                HomeAssistantAPI.sharedInstance.regionManager.syncMonitoredRegions()
             }
 //            _ = HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual)
         }

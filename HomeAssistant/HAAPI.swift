@@ -47,7 +47,8 @@ public class HomeAssistantAPI {
 
     private var manager: Alamofire.SessionManager?
 
-    var locationManager = LocationManager()
+    var regionManager = RegionManager()
+    var locationManager: LocationManager?
 
     var cachedEntities: [Entity]?
 
@@ -182,31 +183,51 @@ public class HomeAssistantAPI {
     }
 
     // swiftlint:disable:next function_body_length cyclomatic_complexity
-    func submitLocation(updateType: LocationUpdateTypes,
-                        coordinates: CLLocationCoordinate2D,
-                        accuracy: CLLocationAccuracy,
+    func submitLocation(updateType: LocationUpdateTrigger,
+                        location: CLLocation?,
+                        visit: CLVisit?,
                         zone: RLMZone?) {
-        UIDevice.current.isBatteryMonitoringEnabled = true
 
-        var source = "gps"
-
-        if updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit {
-            source = "bluetooth_le"
+        var loc: CLLocation = CLLocation()
+        if let location = location {
+            loc = location
+        } else if let zone = zone {
+            loc = zone.location()
+        } else if let visit = visit {
+            loc = visit.location()
         }
 
-        let locationUpdate: [String: Any] = [
-            "battery": Int(UIDevice.current.batteryLevel*100),
-            "gps": [coordinates.latitude, coordinates.longitude],
-            "gps_accuracy": accuracy,
-            "host_name": UIDevice.current.name,
-            "dev_id": deviceID,
-            "source_type": source
-        ]
+        UIDevice.current.isBatteryMonitoringEnabled = true
+
+        let payload = DeviceTrackerSee(location: loc)
+        payload.Trigger = updateType
+
+        let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
+
+        payload.Battery = UIDevice.current.batteryLevel
+        payload.DeviceID = deviceID
+        payload.Hostname = UIDevice.current.name
+        payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
+
+        print("JSON payload", payload.toJSONString(prettyPrint: false)!)
+
+        var jsonPayload = "{\"missing\": \"payload\"}"
+        if let p = payload.toJSONString(prettyPrint: false) {
+            jsonPayload = p
+        }
+
+        // swiftlint:disable:next force_try
+        try! realm.write {
+            realm.add(LocationHistoryEntry(updateType: updateType, location: location,
+                                           zone: zone, payload: jsonPayload))
+        }
+
+        let payloadDict: [String: Any] = Mapper<DeviceTrackerSee>().toJSON(payload)
 
         firstly {
             self.IdentifyDevice()
         }.then {_ in
-            self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate)
+            self.CallService(domain: "device_tracker", service: "see", serviceData: payloadDict)
         }.done { _ in
             print("Device seen!")
         }.catch { err in
@@ -285,26 +306,24 @@ public class HomeAssistantAPI {
 
     }
 
-    func getAndSendLocation(trigger: LocationUpdateTypes?) -> Promise<Bool> {
-        var updateTrigger: LocationUpdateTypes = .Manual
+    func getAndSendLocation(trigger: LocationUpdateTrigger?) -> Promise<Bool> {
+        var updateTrigger: LocationUpdateTrigger = .Manual
         if let trigger = trigger {
             updateTrigger = trigger
         }
+        print("getAndSendLocation called via", String(describing: updateTrigger))
 
         return Promise { seal in
-            locationManager.getCurrentLocation(onLocationCallback: { (location, error) in
+            locationManager = LocationManager { location, error in
                 if let location = location {
-                    self.submitLocation(updateType: updateTrigger,
-                                        coordinates: location.coordinate,
-                                        accuracy: location.horizontalAccuracy,
-                                        zone: nil)
+                    self.submitLocation(updateType: updateTrigger, location: location, visit: nil, zone: nil)
                     seal.fulfill(true)
                     return
                 }
                 if let error = error {
                     seal.reject(error)
                 }
-            })
+            }
         }
     }
 
@@ -1011,19 +1030,9 @@ public class HomeAssistantAPI {
             print("Storing \(entity.ID)")
 
             if entity.Domain == "zone", let zone = entity as? Zone {
-                let storeableZone = RLMZone()
-                storeableZone.ID = zone.ID
-                storeableZone.Latitude = zone.Latitude
-                storeableZone.Longitude = zone.Longitude
-                storeableZone.Radius = zone.Radius
-                storeableZone.TrackingEnabled = zone.TrackingEnabled
-                storeableZone.UUID = zone.UUID
-                storeableZone.Major.value = zone.Major
-                storeableZone.Minor.value = zone.Minor
-
                 // swiftlint:disable:next force_try
                 try! realm.write {
-                    realm.add(storeableZone, update: true)
+                    realm.add(RLMZone(zone: zone), update: true)
                 }
             }
         }
@@ -1154,10 +1163,9 @@ class Bonjour {
 
 public typealias OnLocationUpdated = ((CLLocation?, Error?) -> Void)
 
-class LocationManager: NSObject, CLLocationManagerDelegate {
+class RegionManager: NSObject, CLLocationManagerDelegate {
 
     let locationManager = CLLocationManager()
-    var onLocation: OnLocationUpdated?
     var backgroundTask: UIBackgroundTaskIdentifier?
 
     var zones: [RLMZone] {
@@ -1169,25 +1177,23 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.delegate = self
+        locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
         startMonitoring()
         syncMonitoredRegions()
     }
 
-    func getCurrentLocation(onLocationCallback: @escaping OnLocationUpdated) {
-        locationManager.startUpdatingLocation()
-        onLocation = onLocationCallback
-    }
-
     private func startMonitoring() {
         locationManager.startMonitoringSignificantLocationChanges()
+        locationManager.startMonitoringVisits()
     }
 
-    func triggerRegionEvent(_ manager: CLLocationManager, trigger: LocationUpdateTypes,
+    func triggerRegionEvent(_ manager: CLLocationManager, trigger: LocationUpdateTrigger,
                             region: CLRegion) {
         var trig = trigger
-        guard let zone = zones.filter({ region.identifier == $0.UUID }).first else {
+        guard let zone = zones.filter({ region.identifier == $0.BeaconUUID }).first else {
             return syncMonitoredRegions()
         }
+
         // Do nothing in case we don't want to trigger an enter event
         if zone.TrackingEnabled == false {
             return
@@ -1206,49 +1212,13 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
             self?.endBackgroundTask()
         }
 
-        HomeAssistantAPI.sharedInstance.submitLocation(updateType: trig,
-                                                       coordinates: zone.locationCoordinates(),
-                                                       accuracy: 1,
-                                                       zone: zone)
+        HomeAssistantAPI.sharedInstance.submitLocation(updateType: trig, location: nil,
+                                                       visit: nil, zone: zone)
     }
 
     func startMonitoring(zone: RLMZone) {
-        var regionToMonitor: CLRegion?
-        if let uuidString = zone.UUID {
-            print("Starting monitoring of beacon zone \(zone.ID)")
-            // iBeacon
-            guard let uuid = UUID(uuidString: uuidString) else {
-                print("Could not start monitoring of CLBeaconRegion because of invalid UUID")
-                return
-            }
-            var beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: uuidString)
-            if let major = zone.Major.value, let minor = zone.Minor.value {
-                beaconRegion = CLBeaconRegion(
-                    proximityUUID: uuid,
-                    major: CLBeaconMajorValue(major),
-                    minor: CLBeaconMinorValue(minor),
-                    identifier: zone.ID
-                )
-            } else if let major = zone.Major.value {
-                beaconRegion = CLBeaconRegion(
-                    proximityUUID: uuid,
-                    major: CLBeaconMajorValue(major),
-                    identifier: zone.ID
-                )
-            }
-            beaconRegion.notifyEntryStateOnDisplay = true
-            regionToMonitor = beaconRegion
-        } else {
-            print("Starting monitoring of geographic zone \(zone.ID)")
-            // Geofence / CircularRegion
-            regionToMonitor = CLCircularRegion(
-                center: CLLocationCoordinate2DMake(zone.Latitude, zone.Longitude),
-                radius: zone.Radius,
-                identifier: zone.ID
-            )
-        }
-        if let newRegion = regionToMonitor {
-            locationManager.startMonitoring(for: newRegion)
+        if let region = zone.region() {
+            locationManager.startMonitoring(for: region)
         }
     }
 
@@ -1268,12 +1238,8 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
 }
 
 // MARK: CLLocationManagerDelegate
-extension LocationManager {
+extension RegionManager {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .denied {
-            onLocation?(nil, NSError.init(domain: "io.robbie.homeassistant", code: 403,
-                                          userInfo: ["locationStatus": "denied"]))
-        }
         if status == .authorizedAlways {
             prefs.setValue(true, forKey: "locationEnabled")
             prefs.synchronize()
@@ -1281,26 +1247,95 @@ extension LocationManager {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        onLocation?(locations.last, nil)
-        print("Got location, stopping updates!", locations.last.debugDescription, locations.count)
+        print("RegionManager: Got location, stopping updates!", locations.last.debugDescription, locations.count)
+        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .Unknown,
+                                                       location: locations.last,
+                                                       visit: nil,
+                                                       zone: nil)
         locationManager.stopUpdatingLocation()
     }
 
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        print("Region entered", region.identifier)
         triggerRegionEvent(manager, trigger: .RegionEnter, region: region)
     }
 
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        print("Region exited", region.identifier)
         triggerRegionEvent(manager, trigger: .RegionExit, region: region)
+    }
+
+    func locationManager(_ manager: CLLocationManager, didVisit visit: CLVisit) {
+        print("Visit logged")
+        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .Visit,
+                                                       location: nil,
+                                                       visit: visit,
+                                                       zone: nil)
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        if let clErr = error as? CLError {
+            // swiftlint:disable:next force_try
+            try! realm.write {
+                let locErr = LocationError(err: clErr)
+                realm.add(locErr)
+            }
+            print(clErr.debugDescription)
+            if clErr.code == CLError.locationUnknown {
+                // locationUnknown just means that GPS may be taking an extra moment, so don't throw an error.
+                return
+            }
+        } else {
+            print("other error:", error.localizedDescription)
+        }
+    }
+}
+
+// MARK: BackgroundTask
+extension RegionManager {
+    func endBackgroundTask() {
+        if backgroundTask != UIBackgroundTaskInvalid {
+            UIApplication.shared.endBackgroundTask(backgroundTask!)
+            backgroundTask = UIBackgroundTaskInvalid
+        }
+    }
+}
+
+class LocationManager: NSObject, CLLocationManagerDelegate {
+    let locationManager = CLLocationManager()
+    var onLocationUpdated: OnLocationUpdated
+
+    init(onLocation: @escaping OnLocationUpdated) {
+        onLocationUpdated = onLocation
+        super.init()
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
+        locationManager.delegate = self
+        locationManager.startUpdatingLocation()
+    }
+}
+
+extension LocationManager {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("LocationManager: Got location, stopping updates!", locations.last.debugDescription, locations.count)
+        onLocationUpdated(locations.first, nil)
+        manager.stopUpdatingLocation()
+        manager.delegate = nil
     }
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         if let clErr = error as? CLError {
+            // swiftlint:disable:next force_try
+            try! realm.write {
+                let locErr = LocationError(err: clErr)
+                realm.add(locErr)
+            }
             switch clErr {
             case CLError.locationUnknown:
                 print("The location manager was unable to obtain a location value right now.")
-                return // This just means that GPS may be taking an extra moment, so don't throw an error.
+            return // This just means that GPS may be taking an extra moment, so don't throw an error.
             case CLError.denied:
                 print("Access to the location service was denied by the user.")
             case CLError.network:
@@ -1338,31 +1373,24 @@ extension LocationManager {
             default:
                 print("other Core Location error")
             }
+            onLocationUpdated(nil, clErr)
         } else {
             print("other error:", error.localizedDescription)
-        }
-        onLocation?(nil, error)
-    }
-}
-
-// MARK: BackgroundTask
-extension LocationManager {
-    func endBackgroundTask() {
-        if backgroundTask != UIBackgroundTaskInvalid {
-            UIApplication.shared.endBackgroundTask(backgroundTask!)
-            backgroundTask = UIBackgroundTaskInvalid
+            onLocationUpdated(nil, error)
         }
     }
 }
 
-enum LocationUpdateTypes {
-    case RegionEnter
-    case RegionExit
-    case BeaconRegionEnter
-    case BeaconRegionExit
-    case Manual
-    case SignificantLocationUpdate
-    case BackgroundFetch
-    case PushNotification
-    case URLScheme
+enum LocationUpdateTrigger: String {
+    case Visit = "Visit"
+    case RegionEnter = "Geographic Region Entered"
+    case RegionExit = "Geographic Region Exited"
+    case BeaconRegionEnter = "iBeacon Region Entered"
+    case BeaconRegionExit = "iBeacon Region Exited"
+    case Manual = "Manual"
+    case SignificantLocationUpdate = "Significant Location Update"
+    case BackgroundFetch = "Background Fetch"
+    case PushNotification = "Push Notification"
+    case URLScheme = "URL Scheme"
+    case Unknown = "Unknown"
 }

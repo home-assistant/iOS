@@ -154,26 +154,26 @@ class SettingsDetailViewController: FormViewController {
                     }
                     <<< LabelRow {
                         $0.title = L10n.SettingsDetails.Location.Zones.BeaconUuid.title
-                        $0.value = zone.UUID
-                        $0.hidden = Condition(booleanLiteral: (zone.UUID == nil))
+                        $0.value = zone.BeaconUUID
+                        $0.hidden = Condition(booleanLiteral: (zone.BeaconUUID == nil))
                     }
                     <<< LabelRow {
                         $0.title = L10n.SettingsDetails.Location.Zones.BeaconMajor.title
-                        if let major = zone.Major.value {
+                        if let major = zone.BeaconMajor.value {
                             $0.value = String(describing: major)
                         } else {
                             $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
                         }
-                        $0.hidden = Condition(booleanLiteral: (zone.Major.value == nil))
+                        $0.hidden = Condition(booleanLiteral: (zone.BeaconMajor.value == nil))
                     }
                     <<< LabelRow {
                         $0.title = L10n.SettingsDetails.Location.Zones.BeaconMinor.title
-                        if let minor = zone.Minor.value {
+                        if let minor = zone.BeaconMinor.value {
                             $0.value = String(describing: minor)
                         } else {
                             $0.value = L10n.SettingsDetails.Location.Zones.Beacon.PropNotSet.value
                         }
-                        $0.hidden = Condition(booleanLiteral: (zone.Minor.value == nil))
+                        $0.hidden = Condition(booleanLiteral: (zone.BeaconMinor.value == nil))
                 }
             }
             if zoneEntities.count > 0 {
