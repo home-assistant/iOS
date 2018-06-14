@@ -32,6 +32,9 @@ class DeviceTrackerSee: Mappable {
     var ArrivalDate: Date?
     var DepartureDate: Date?
 
+    var ActivityType: String?
+    var ActivityConfidence: String?
+
     init() {}
 
     required init?(map: Map) {}
@@ -66,6 +69,9 @@ class DeviceTrackerSee: Mappable {
 
         ArrivalDate          <- (map["attributes.arrival_date"], HomeAssistantTimestampTransform())
         DepartureDate        <- (map["attributes.departure_date"], HomeAssistantTimestampTransform())
+
+        ActivityType         <- map["attributes.activity_type"]
+        ActivityConfidence   <- map["attributes.activity_confidence"]
     }
 }
 

@@ -16,6 +16,7 @@ import DeviceKit
 import Crashlytics
 import UserNotifications
 import RealmSwift
+import CoreMotion
 
 let APIClientSharedInstance = HomeAssistantAPI()
 
@@ -209,7 +210,12 @@ public class HomeAssistantAPI {
         payload.Hostname = UIDevice.current.name
         payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
 
-        print("JSON payload", payload.toJSONString(prettyPrint: false)!)
+        if let activity = self.regionManager.lastActivity {
+            payload.ActivityType = activity.activityType
+            payload.ActivityConfidence = String(describing: activity.confidence)
+        }
+
+        print("JSON payload", payload.toJSONString(prettyPrint: false))
 
         var jsonPayload = "{\"missing\": \"payload\"}"
         if let p = payload.toJSONString(prettyPrint: false) {
@@ -1163,14 +1169,20 @@ class Bonjour {
 
 public typealias OnLocationUpdated = ((CLLocation?, Error?) -> Void)
 
-class RegionManager: NSObject, CLLocationManagerDelegate {
+class RegionManager: NSObject {
 
     let locationManager = CLLocationManager()
     var backgroundTask: UIBackgroundTaskIdentifier?
+    let activityManager = CMMotionActivityManager()
+    var lastActivity: CMMotionActivity?
 
     var zones: [RLMZone] {
         return realm.objects(RLMZone.self).map { $0 }
     }
+
+    internal lazy var coreMotionQueue: OperationQueue = {
+        return OperationQueue()
+    }()
 
     override init() {
         super.init()
@@ -1220,6 +1232,13 @@ class RegionManager: NSObject, CLLocationManagerDelegate {
         if let region = zone.region() {
             locationManager.startMonitoring(for: region)
         }
+
+        activityManager.startActivityUpdates(to: coreMotionQueue) { activity in
+            if let act = activity {
+                print("Got motion activity")
+                self.lastActivity = act
+            }
+        }
     }
 
     @objc func syncMonitoredRegions() {
@@ -1238,7 +1257,7 @@ class RegionManager: NSObject, CLLocationManagerDelegate {
 }
 
 // MARK: CLLocationManagerDelegate
-extension RegionManager {
+extension RegionManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways {
             prefs.setValue(true, forKey: "locationEnabled")
@@ -1301,7 +1320,7 @@ extension RegionManager {
     }
 }
 
-class LocationManager: NSObject, CLLocationManagerDelegate {
+class LocationManager: NSObject {
     let locationManager = CLLocationManager()
     var onLocationUpdated: OnLocationUpdated
 
@@ -1316,7 +1335,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
 }
 
-extension LocationManager {
+extension LocationManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print("LocationManager: Got location, stopping updates!", locations.last.debugDescription, locations.count)
         onLocationUpdated(locations.first, nil)
@@ -1324,7 +1343,6 @@ extension LocationManager {
         manager.delegate = nil
     }
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         if let clErr = error as? CLError {
             // swiftlint:disable:next force_try
@@ -1357,4 +1375,22 @@ enum LocationUpdateTrigger: String {
     case PushNotification = "Push Notification"
     case URLScheme = "URL Scheme"
     case Unknown = "Unknown"
+}
+
+extension CMMotionActivity {
+    var activityType: String {
+        if self.walking {
+            return "Walking"
+        } else if self.running {
+            return "Running"
+        } else if self.automotive {
+            return "Automotive"
+        } else if self.cycling {
+            return "Cycling"
+        } else if self.stationary {
+            return "Stationary"
+        } else {
+            return "Unknown"
+        }
+    }
 }

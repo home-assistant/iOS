@@ -68,12 +68,14 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We suggest selecting &quot;Always Allow&quot; for the best location experience.
-Selecting &quot;Only While Using the App&quot; will disable iBeacons, geofences, background location updates and accurate reporting.</string>
+	<string>We suggest selecting "Always Allow" for the best location experience.
+Selecting "Only While Using the App" will disable iBeacons, geofences, background location updates and accurate reporting.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

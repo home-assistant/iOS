@@ -143,7 +143,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") == false {
             completionHandler(UIBackgroundFetchResult.noData)
         }
-        let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short)
+        let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         print("Background fetch activated at \(timestamp)!")
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
