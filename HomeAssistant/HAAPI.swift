@@ -1332,46 +1332,10 @@ extension LocationManager {
                 let locErr = LocationError(err: clErr)
                 realm.add(locErr)
             }
-            switch clErr {
-            case CLError.locationUnknown:
-                print("The location manager was unable to obtain a location value right now.")
-            return // This just means that GPS may be taking an extra moment, so don't throw an error.
-            case CLError.denied:
-                print("Access to the location service was denied by the user.")
-            case CLError.network:
-                print("The network was unavailable or a network error occurred.")
-            case CLError.headingFailure:
-                print("The heading could not be determined.")
-            case CLError.regionMonitoringDenied:
-                print("Access to the region monitoring service was denied by the user.")
-            case CLError.regionMonitoringFailure:
-                print("A registered region cannot be monitored.")
-            case CLError.regionMonitoringSetupDelayed:
-                print("Core Location could not initialize the region monitoring feature immediately.")
-            case CLError.regionMonitoringResponseDelayed:
-                print("Core Location will deliver events but they may be delayed.")
-            case CLError.geocodeFoundNoResult:
-                print("The geocode request yielded no result.")
-            case CLError.geocodeFoundPartialResult:
-                print("The geocode request yielded a partial result.")
-            case CLError.geocodeCanceled:
-                print("The geocode request was canceled.")
-            case CLError.deferredFailed:
-                print("The location manager did not enter deferred mode for an unknown reason.")
-            case CLError.deferredNotUpdatingLocation:
-                print("The manager did not enter deferred mode because updates were already disabled or paused.")
-            case CLError.deferredAccuracyTooLow:
-                print("Deferred mode is not supported for the requested accuracy.")
-            case CLError.deferredDistanceFiltered:
-                print("Deferred mode does not support distance filters.")
-            case CLError.deferredCanceled:
-                print("The request for deferred updates was canceled by your app or by the location manager.")
-            case CLError.rangingUnavailable:
-                print("Ranging is disabled.")
-            case CLError.rangingFailure:
-                print("A general ranging error occurred.")
-            default:
-                print("other Core Location error")
+            print(clErr.debugDescription)
+            if clErr.code == CLError.locationUnknown {
+                // locationUnknown just means that GPS may be taking an extra moment, so don't throw an error.
+                return
             }
             onLocationUpdated(nil, clErr)
         } else {
