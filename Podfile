@@ -22,11 +22,19 @@ target 'HomeAssistant' do
   pod 'RealmSwift'
   pod 'SwiftGen', '5.3.0'
   pod 'SwiftLint', '0.25.1'
+
+  target 'HomeAssistantTests' do
+    inherit! :search_paths
+  end
 end
 
-target 'HomeAssistantTests' do
-
+target 'Shared' do
+    pod 'RealmSwift'
+    target 'SharedTests' do
+      inherit! :search_paths
+    end
 end
+
 
 target 'HomeAssistantUITests' do
 

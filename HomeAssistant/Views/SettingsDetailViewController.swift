@@ -9,6 +9,7 @@
 import UIKit
 import Eureka
 import Crashlytics
+import Shared
 
 class SettingsDetailViewController: FormViewController {
 
@@ -133,6 +134,7 @@ class SettingsDetailViewController: FormViewController {
                         prefs.set(val, forKey: "urlSchemeLocationRequestNotifications")
                     }
                 })
+            let realm = Current.realm()
             let zoneEntities = realm.objects(RLMZone.self).map { $0 }
             for zone in zoneEntities {
                 self.form

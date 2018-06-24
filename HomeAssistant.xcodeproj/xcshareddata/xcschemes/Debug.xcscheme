@@ -29,12 +29,32 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B657A9061CA646EB00121384"
                BuildableName = "HomeAssistantUITests.xctest"
                BlueprintName = "HomeAssistantUITests"
+               ReferencedContainer = "container:HomeAssistant.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B657A8FB1CA646EB00121384"
+               BuildableName = "HomeAssistantTests.xctest"
+               BlueprintName = "HomeAssistantTests"
+               ReferencedContainer = "container:HomeAssistant.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D03D88D920E0A7AB00D4F28D"
+               BuildableName = "SharedTests.xctest"
+               BlueprintName = "SharedTests"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </TestableReference>

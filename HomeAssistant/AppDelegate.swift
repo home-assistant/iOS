@@ -15,18 +15,15 @@ import AlamofireNetworkActivityIndicator
 import KeychainAccess
 import Alamofire
 import RealmSwift
+import Shared
 
-var Current = Environment()
+//var Current = Environment()
 
-let realmConfig = Realm.Configuration(fileURL: Current.storageURLProviding.dataStoreURL(), schemaVersion: 4,
-                                      migrationBlock: nil, deleteRealmIfMigrationNeeded: true)
-
-// swiftlint:disable:next force_try
-let realm = try! Realm(configuration: realmConfig)
+//let kAppGroupID = "group.io.robbie.homeassistant"
 
 let keychain = Keychain(service: "io.robbie.homeassistant")
 
-let prefs = UserDefaults(suiteName: "group.io.robbie.homeassistant")!
+let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -36,7 +33,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         Fabric.with([Crashlytics.self])
-
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
 

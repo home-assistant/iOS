@@ -26,11 +26,11 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.3.0):
     - PromiseKit/CorePromise
-  - Realm (3.7.1):
-    - Realm/Headers (= 3.7.1)
-  - Realm/Headers (3.7.1)
-  - RealmSwift (3.7.1):
-    - Realm (= 3.7.1)
+  - Realm (3.7.3):
+    - Realm/Headers (= 3.7.3)
+  - Realm/Headers (3.7.3)
+  - RealmSwift (3.7.3):
+    - Realm (= 3.7.3)
   - SwiftGen (5.3.0)
   - SwiftLint (0.25.1)
 
@@ -53,7 +53,7 @@ DEPENDENCIES:
   - SwiftLint (= 0.25.1)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - Alamofire
     - AlamofireNetworkActivityIndicator
     - AlamofireObjectMapper
@@ -95,11 +95,11 @@ SPEC CHECKSUMS:
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   ObjectMapper: 5cccd2de6f253eda859df8116a5a554d9769e859
   PromiseKit: cf84bbb1235a61473b326c5cf0b41f6828f87ba5
-  Realm: 906be37d52f17f25484ac01643a7f26a9d3bfbd5
-  RealmSwift: 1c2b6bae3dc55bb87e080ffa96537d71442f6dce
+  Realm: f366e954e3330d4915a319e96cc04e2ee09a9ef2
+  RealmSwift: 56f111b1dd439973fbe1c066b067ac4702285441
   SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
   SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
 
-PODFILE CHECKSUM: 80d8a051f410dd3c3781a3da3bf4c6c82321517a
+PODFILE CHECKSUM: 17be49bc73f3ba29bb45607093f437c80df9dba0
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.5.0
