@@ -23,6 +23,9 @@ public class ClientEventTableViewController: UITableViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = L10n.Settings.EventLog.title
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: L10n.ClientEvents.View.clear,
+                                                                 style: .plain, target: self,
+                                                                 action: #selector(clearTapped))
         self.results = Current.clientEventStore.getEvents()
         self.notificationToken = self.results?.observe { changes in
             self.tableView.applyChanges(changes: changes)
@@ -30,6 +33,10 @@ public class ClientEventTableViewController: UITableViewController {
     }
     deinit {
         notificationToken = nil
+    }
+
+    @objc func clearTapped() {
+        Current.clientEventStore.clearAllEvents()
     }
 }
 
