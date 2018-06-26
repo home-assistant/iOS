@@ -207,7 +207,8 @@ public class HomeAssistantAPI {
         firstly {
             self.IdentifyDevice()
         }.then {_ in
-            self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate)
+            self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate,
+                             shouldLog: false)
         }.done { _ in
             print("Device seen!")
         }.catch { err in
@@ -264,6 +265,8 @@ public class HomeAssistantAPI {
             notificationBody = ""
         }
 
+        Current.clientEventStore.addEvent(ClientEvent(text: notificationBody, type: .locationUpdate,
+                                                      payload: locationUpdate))
         if shouldNotify {
             if #available(iOS 10, *) {
                 let content = UNMutableNotificationContent()
@@ -521,7 +524,8 @@ public class HomeAssistantAPI {
         }
     }
 
-    func CallService(domain: String, service: String, serviceData: [String: Any]) -> Promise<[Entity]> {
+    func CallService(domain: String, service: String, serviceData: [String: Any], shouldLog: Bool = true)
+        -> Promise<[Entity]> {
         return Promise { seal in
 
             guard let manager = self.manager,

@@ -15,7 +15,8 @@ public class ClientEvent: Object {
     public enum EventType: String {
         case notification
         case serviceCall
-        case unknown
+        case locationUpdate
+        case unknown        
     }
 
     convenience public init(text: String, type: EventType, payload: [String: Any]? = nil) {
