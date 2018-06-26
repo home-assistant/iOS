@@ -88,6 +88,20 @@ internal enum L10n {
     }
   }
 
+  internal enum ClientEvents {
+
+    internal enum EventType {
+      /// Location Update
+      internal static let locationUpdate = L10n.tr("Localizable", "client_events.event_type.location_update")
+      /// Notification
+      internal static let notification = L10n.tr("Localizable", "client_events.event_type.notification")
+      /// Service Call
+      internal static let serviceCall = L10n.tr("Localizable", "client_events.event_type.service_call")
+      /// Unknown
+      internal static let unknown = L10n.tr("Localizable", "client_events.event_type.unknown")
+    }
+  }
+
   internal enum DevicesMap {
     /// Battery
     internal static let batteryLabel = L10n.tr("Localizable", "devices_map.battery_label")
@@ -125,6 +139,11 @@ internal enum L10n {
       internal static func body(_ p1: String) -> String {
         return L10n.tr("Localizable", "location_change_notification.beacon_region_exit.body", p1)
       }
+    }
+
+    internal enum Manual {
+      /// Location update triggered by user
+      internal static let body = L10n.tr("Localizable", "location_change_notification.manual.body")
     }
 
     internal enum PushNotification {

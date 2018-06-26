@@ -207,7 +207,8 @@ public class HomeAssistantAPI {
         firstly {
             self.IdentifyDevice()
         }.then {_ in
-            self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate)
+            self.CallService(domain: "device_tracker", service: "see", serviceData: locationUpdate,
+                             shouldLog: false)
         }.done { _ in
             print("Device seen!")
         }.catch { err in
@@ -260,10 +261,13 @@ public class HomeAssistantAPI {
             notificationBody = L10n.LocationChangeNotification.UrlScheme.body
             notificationIdentifer = "url_scheme"
             shouldNotify = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
-        default:
-            notificationBody = ""
+        case .Manual:
+            notificationBody = L10n.LocationChangeNotification.Manual.body
+            shouldNotify = false
         }
 
+        Current.clientEventStore.addEvent(ClientEvent(text: notificationBody, type: .locationUpdate,
+                                                      payload: locationUpdate))
         if shouldNotify {
             if #available(iOS 10, *) {
                 let content = UNMutableNotificationContent()
@@ -521,7 +525,8 @@ public class HomeAssistantAPI {
         }
     }
 
-    func CallService(domain: String, service: String, serviceData: [String: Any]) -> Promise<[Entity]> {
+    func CallService(domain: String, service: String, serviceData: [String: Any], shouldLog: Bool = true)
+        -> Promise<[Entity]> {
         return Promise { seal in
 
             guard let manager = self.manager,
@@ -536,9 +541,11 @@ public class HomeAssistantAPI {
                     switch response.result {
                     case .success:
                         if let resVal = response.result.value {
-                            let event = ClientEvent(text: "Calling service: \(domain) - \(service)",
-                                type: .serviceCall, payload: serviceData)
-                            Current.clientEventStore.addEvent(event)
+                            if shouldLog {
+                                let event = ClientEvent(text: "Calling service: \(domain) - \(service)",
+                                    type: .serviceCall, payload: serviceData)
+                                Current.clientEventStore.addEvent(event)
+                            }
                             seal.fulfill(resVal)
                         } else {
                             seal.reject(APIError.invalidResponse)
