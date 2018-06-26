@@ -18,26 +18,26 @@ class ClientEventTests: XCTestCase {
         self.store = ClientEventStore()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
 
     func testStartsEmpty() {
-        XCTAssertEqual(0,  store.getEvents().count)
+        XCTAssertEqual(0, store.getEvents().count)
     }
 
     func testCanWriteClientEvent() {
-        let event = ClientEvent.eventWithText("Yo", type: .notification)
+        let event = ClientEvent(text: "Yo", type: .notification)
         self.store.addEvent(event)
-        XCTAssertEqual(1,  store.getEvents().count)
+        XCTAssertEqual(1, store.getEvents().count)
     }
 
     func testEventWrittenCorrectly() {
         let date = Date()
         Current.date = { date }
-        let event = ClientEvent.eventWithText("Yo", type: .notification)
+        let event = ClientEvent(text: "Yo", type: .notification)
         self.store.addEvent(event)
         let retrieved = self.store.getEvents().first
         XCTAssertEqual(retrieved?.text, "Yo")

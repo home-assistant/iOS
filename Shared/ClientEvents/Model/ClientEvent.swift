@@ -9,29 +9,38 @@
 import Foundation
 import RealmSwift
 
+/// Contains data about an event that occured on the client, used for logging.
 public class ClientEvent: Object {
+    /// The type of event being logged.
     public enum EventType: String {
         case notification
         case serviceCall
         case unknown
     }
-    public static func eventWithText(_ text: String, type: EventType, payload: [String: Any]? = nil) -> ClientEvent {
-        let event = ClientEvent()
-        event.text = text
-        event.type = type
-        event.jsonPayload = payload
-        return event
+
+    convenience public init(text: String, type: EventType, payload: [String: Any]? = nil) {
+        self.init()
+        self.text = text
+        self.type = type
+        self.jsonPayload = payload
     }
 
+    /// The date the event occured.
     @objc public dynamic var date: Date = Current.date()
+
+    /// The text describing the event.
     @objc public dynamic var text: String = ""
     @objc private dynamic var typeString: String = EventType.unknown.rawValue
+
+    /// The even type
     public var type: EventType {
         get { return EventType(rawValue: self.typeString) ?? .unknown }
         set { self.typeString = newValue.rawValue }
     }
 
     @objc private dynamic var jsonData: Data?
+
+    /// The payload for the event.
     public var jsonPayload: [String: Any]? {
         set {
             guard let payload = newValue else {

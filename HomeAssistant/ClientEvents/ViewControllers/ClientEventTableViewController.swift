@@ -38,8 +38,7 @@ extension ClientEventTableViewController {
     }
 
     override public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
-        -> UITableViewCell
-    {
+        -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell",
                                                  for: indexPath) as UITableViewCell
         if let item = self.results?[indexPath.item], let eventCell = cell as? ClientEventCell {

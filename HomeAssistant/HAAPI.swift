@@ -536,7 +536,7 @@ public class HomeAssistantAPI {
                     switch response.result {
                     case .success:
                         if let resVal = response.result.value {
-                            let event = ClientEvent.eventWithText("Calling service: \(domain) - \(service)",
+                            let event = ClientEvent(text: "Calling service: \(domain) - \(service)",
                                 type: .serviceCall, payload: serviceData)
                             Current.clientEventStore.addEvent(event)
                             seal.fulfill(resVal)

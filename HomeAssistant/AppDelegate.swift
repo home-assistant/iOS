@@ -17,10 +17,6 @@ import Alamofire
 import RealmSwift
 import Shared
 
-//var Current = Environment()
-
-//let kAppGroupID = "group.io.robbie.homeassistant"
-
 let keychain = Keychain(service: "io.robbie.homeassistant")
 
 let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
