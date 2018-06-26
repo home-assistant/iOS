@@ -141,6 +141,11 @@ internal enum L10n {
       }
     }
 
+    internal enum Manual {
+      /// Location update triggered by user
+      internal static let body = L10n.tr("Localizable", "location_change_notification.manual.body")
+    }
+
     internal enum PushNotification {
       /// Location updated via push notification
       internal static let body = L10n.tr("Localizable", "location_change_notification.push_notification.body")

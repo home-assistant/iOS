@@ -261,8 +261,9 @@ public class HomeAssistantAPI {
             notificationBody = L10n.LocationChangeNotification.UrlScheme.body
             notificationIdentifer = "url_scheme"
             shouldNotify = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
-        default:
-            notificationBody = ""
+        case .Manual:
+            notificationBody = L10n.LocationChangeNotification.Manual.body
+            shouldNotify = false
         }
 
         Current.clientEventStore.addEvent(ClientEvent(text: notificationBody, type: .locationUpdate,
