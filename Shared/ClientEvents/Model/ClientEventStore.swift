@@ -25,4 +25,16 @@ public struct ClientEventStore {
         let realm = Current.realm()
         return realm.objects(ClientEvent.self).sorted(byKeyPath: "date", ascending: false)
     }
+
+    public var clearAllEvents: () -> Void = {
+        let realm = Current.realm()
+
+        do {
+            try realm.write {
+                realm.delete(realm.objects(ClientEvent.self))
+            }
+        } catch {
+            print("Error writing client event: \(error)")
+        }
+    }
 }

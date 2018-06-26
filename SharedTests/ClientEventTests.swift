@@ -44,4 +44,11 @@ class ClientEventTests: XCTestCase {
         XCTAssertEqual(retrieved?.type, .notification)
         XCTAssertEqual(retrieved?.date, date)
     }
+
+    func testCanClearEvents() {
+        let event = ClientEvent(text: "Yo", type: .notification)
+        self.store.addEvent(event)
+        XCTAssertEqual(1, store.getEvents().count)
+        self.store.clearAllEvents()
+    }
 }

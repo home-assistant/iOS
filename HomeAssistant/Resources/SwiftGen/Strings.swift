@@ -100,6 +100,11 @@ internal enum L10n {
       /// Unknown
       internal static let unknown = L10n.tr("Localizable", "client_events.event_type.unknown")
     }
+
+    internal enum View {
+      /// Clear
+      internal static let clear = L10n.tr("Localizable", "client_events.view.clear")
+    }
   }
 
   internal enum DevicesMap {
