@@ -365,10 +365,10 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             }
 
             <<< ButtonRow("eventLog") {
-                $0.title = "Event Log"
+                $0.title = L10n.Settings.EventLog.title
                 let controllerProvider = ControllerProvider.storyBoard(storyboardId: "clientEventsList",
                                                                        storyboardName: "ClientEvents",
-                                                                       bundle:  Bundle.main)
+                                                                       bundle: Bundle.main)
                 $0.presentationMode = .show(controllerProvider: controllerProvider, onDismiss: { vc in
                     _ = vc.navigationController?.popViewController(animated: true)
                 })

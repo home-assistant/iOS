@@ -300,6 +300,11 @@ internal enum L10n {
       internal static let requiresPassword = L10n.tr("Localizable", "settings.discovery_section.requiresPassword")
     }
 
+    internal enum EventLog {
+      /// Event Log
+      internal static let title = L10n.tr("Localizable", "settings.event_log.title")
+    }
+
     internal enum GeneralSettingsButton {
       /// General Settings
       internal static let title = L10n.tr("Localizable", "settings.general_settings_button.title")

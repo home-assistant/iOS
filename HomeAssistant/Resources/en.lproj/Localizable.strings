@@ -28,6 +28,7 @@
 "settings.connection_error.forbidden.message" = "The password was incorrect.";
 "settings.connection_error.invalid_url.title" = "Error unwrapping URL";
 "settings.connection_error.invalid_url.message" = "Looks like your URL is invalid. Please check the format and try again.";
+"settings.event_log.title" = "Event Log";
 "settings.status_section.header" = "Status";
 "settings.status_section.location_name_row.title" = "Name";
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";

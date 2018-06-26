@@ -22,6 +22,7 @@ public class ClientEventTableViewController: UITableViewController {
     var notificationToken: NotificationToken?
     override public func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.title = L10n.Settings.EventLog.title
         self.results = Current.clientEventStore.getEvents()
         self.notificationToken = self.results?.observe { changes in
             self.tableView.applyChanges(changes: changes)
