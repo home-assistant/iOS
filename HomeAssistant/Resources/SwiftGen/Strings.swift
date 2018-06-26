@@ -88,6 +88,20 @@ internal enum L10n {
     }
   }
 
+  internal enum ClientEvents {
+
+    internal enum EventType {
+      /// Location Update
+      internal static let locationUpdate = L10n.tr("Localizable", "client_events.event_type.location_update")
+      /// Notification
+      internal static let notification = L10n.tr("Localizable", "client_events.event_type.notification")
+      /// Service Call
+      internal static let serviceCall = L10n.tr("Localizable", "client_events.event_type.service_call")
+      /// Unknown
+      internal static let unknown = L10n.tr("Localizable", "client_events.event_type.unknown")
+    }
+  }
+
   internal enum DevicesMap {
     /// Battery
     internal static let batteryLabel = L10n.tr("Localizable", "devices_map.battery_label")

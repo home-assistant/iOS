@@ -140,3 +140,7 @@ send notifications to your device.";
 "location_change_notification.push_notification.body" = "Location updated via push notification";
 "location_change_notification.url_scheme.body" = "Location updated via URL Scheme";
 "about.review.title" = "Leave a review";
+"client_events.event_type.service_call" = "Service Call";
+"client_events.event_type.notification" = "Notification";
+"client_events.event_type.location_update" = "Location Update";
+"client_events.event_type.unknown" = "Unknown";

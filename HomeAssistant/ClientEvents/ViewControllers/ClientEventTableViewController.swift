@@ -45,11 +45,12 @@ extension ClientEventTableViewController {
         if let item = self.results?[indexPath.item], let eventCell = cell as? ClientEventCell {
             eventCell.titleLabel.text = item.text
             eventCell.dateLabel.text = self.dateFormatter.string(from: item.date)
-            eventCell.typeLabel.text = item.type.rawValue
+            eventCell.typeLabel.text = item.type.displayText
         }
         return cell
     }
 }
+
 extension UITableView {
     func applyChanges<T>(changes: RealmCollectionChange<T>) {
         switch changes {
@@ -63,6 +64,21 @@ extension UITableView {
             self.deleteRows(at: deletions.map(fromRow), with: .automatic)
             self.endUpdates()
         case .error(let error): fatalError("\(error)")
+        }
+    }
+}
+
+extension ClientEvent.EventType {
+    var displayText: String {
+        switch self {
+        case .notification:
+            return L10n.ClientEvents.EventType.notification
+        case .locationUpdate:
+            return L10n.ClientEvents.EventType.locationUpdate
+        case .serviceCall:
+            return L10n.ClientEvents.EventType.serviceCall
+        case .unknown:
+            return L10n.ClientEvents.EventType.unknown
         }
     }
 }
