@@ -16,6 +16,7 @@ import DeviceKit
 import Crashlytics
 import UserNotifications
 import RealmSwift
+import Shared
 
 let APIClientSharedInstance = HomeAssistantAPI()
 
@@ -522,43 +523,47 @@ public class HomeAssistantAPI {
 
     func CallService(domain: String, service: String, serviceData: [String: Any]) -> Promise<[Entity]> {
         return Promise { seal in
-            if let manager = self.manager,
-                let queryUrl = baseAPIURL?.appendingPathComponent("services/\(domain)/\(service)") {
-                _ = manager.request(queryUrl, method: .post,
-                                          parameters: serviceData, encoding: JSONEncoding.default)
-                    .validate()
-                    .responseArray { (response: DataResponse<[Entity]>) in
-                        switch response.result {
-                        case .success:
-                            if let resVal = response.result.value {
-                                seal.fulfill(resVal)
-                            } else {
-                                seal.reject(APIError.invalidResponse)
-                            }
-                        case .failure(let error):
-                            if let afError = error as? AFError {
-                                var errorUserInfo: [String: Any] = [:]
-                                if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
-                                    if let errorJSON = convertToDictionary(text: utf8Text),
-                                        let errMessage = errorJSON["message"] as? String {
-                                        errorUserInfo["errorMessage"] = errMessage
-                                    }
-                                }
-                                CLSLogv("Error on CallService() request: %@", getVaList([afError.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(afError)
-                                let customError = NSError(domain: "io.robbie.HomeAssistant",
-                                                          code: afError.responseCode!,
-                                                          userInfo: errorUserInfo)
-                                seal.reject(customError)
-                            } else {
-                                CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(error)
-                                seal.reject(error)
-                            }
+
+            guard let manager = self.manager,
+                let queryUrl = baseAPIURL?.appendingPathComponent("services/\(domain)/\(service)") else {
+                    seal.reject(APIError.managerNotAvailable)
+                    return
+            }
+            _ = manager.request(queryUrl, method: .post,
+                                parameters: serviceData, encoding: JSONEncoding.default)
+                .validate()
+                .responseArray { (response: DataResponse<[Entity]>) in
+                    switch response.result {
+                    case .success:
+                        if let resVal = response.result.value {
+                            let event = ClientEvent(text: "Calling service: \(domain) - \(service)",
+                                type: .serviceCall, payload: serviceData)
+                            Current.clientEventStore.addEvent(event)
+                            seal.fulfill(resVal)
+                        } else {
+                            seal.reject(APIError.invalidResponse)
                         }
-                }
-            } else {
-                seal.reject(APIError.managerNotAvailable)
+                    case .failure(let error):
+                        if let afError = error as? AFError {
+                            var errorUserInfo: [String: Any] = [:]
+                            if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
+                                if let errorJSON = convertToDictionary(text: utf8Text),
+                                    let errMessage = errorJSON["message"] as? String {
+                                    errorUserInfo["errorMessage"] = errMessage
+                                }
+                            }
+                            CLSLogv("Error on CallService() request: %@", getVaList([afError.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(afError)
+                            let customError = NSError(domain: "io.robbie.HomeAssistant",
+                                                      code: afError.responseCode!,
+                                                      userInfo: errorUserInfo)
+                            seal.reject(customError)
+                        } else {
+                            CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            seal.reject(error)
+                        }
+                    }
             }
         }
     }
@@ -1020,7 +1025,7 @@ public class HomeAssistantAPI {
                 storeableZone.UUID = zone.UUID
                 storeableZone.Major.value = zone.Major
                 storeableZone.Minor.value = zone.Minor
-
+                let realm = Current.realm()
                 // swiftlint:disable:next force_try
                 try! realm.write {
                     realm.add(storeableZone, update: true)
@@ -1161,6 +1166,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     var backgroundTask: UIBackgroundTaskIdentifier?
 
     var zones: [RLMZone] {
+        let realm = Current.realm()
         return realm.objects(RLMZone.self).map { $0 }
     }
 

@@ -9,16 +9,17 @@
 import UserNotifications
 import MobileCoreServices
 import KeychainAccess
+import Shared
+
 
 final class NotificationService: UNNotificationServiceExtension {
-
     private var contentHandler: ((UNNotificationContent) -> Void)?
     private var bestAttemptContent: UNMutableNotificationContent?
 
     // swiftlint:disable cyclomatic_complexity
     // swiftlint:disable function_body_length
     override func didReceive(_ request: UNNotificationRequest,
-                             withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
+                             withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {        
         print("APNSAttachmentService started!")
         print("Received userInfo", request.content.userInfo)
         self.contentHandler = contentHandler

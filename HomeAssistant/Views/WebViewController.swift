@@ -55,7 +55,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         webView.scrollView.bounces = false
 
-        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
+                                              password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
         if HomeAssistantAPI.sharedInstance.Configured {
             HomeAssistantAPI.sharedInstance.Connect().done {_ in
