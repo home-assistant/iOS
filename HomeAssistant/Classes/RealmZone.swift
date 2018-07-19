@@ -21,6 +21,7 @@ class RLMZone: Object {
     @objc dynamic var TrackingEnabled = true
     @objc dynamic var enterNotification = true
     @objc dynamic var exitNotification = true
+    @objc dynamic var inRegion = false
 
     // Beacons
     @objc dynamic var BeaconUUID: String?
@@ -91,12 +92,16 @@ class RLMZone: Object {
             return beaconRegion
         } else {
             // Geofence / CircularRegion
-            return CLCircularRegion(
-                center: CLLocationCoordinate2DMake(self.Latitude, self.Longitude),
-                radius: self.Radius,
-                identifier: self.ID
-            )
+            return self.circularRegion()
         }
+    }
+
+    func circularRegion() -> CLCircularRegion {
+        return CLCircularRegion(
+            center: CLLocationCoordinate2DMake(self.Latitude, self.Longitude),
+            radius: self.Radius,
+            identifier: self.ID
+        )
     }
 
     override static func primaryKey() -> String? {

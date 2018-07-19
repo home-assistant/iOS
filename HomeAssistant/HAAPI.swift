@@ -222,13 +222,23 @@ public class HomeAssistantAPI {
             jsonPayload = p
         }
 
+        let payloadDict: [String: Any] = Mapper<DeviceTrackerSee>().toJSON(payload)
+
+        UIDevice.current.isBatteryMonitoringEnabled = false
+
         // swiftlint:disable:next force_try
         try! realm.write {
             realm.add(LocationHistoryEntry(updateType: updateType, location: location,
                                            zone: zone, payload: jsonPayload))
         }
 
-        let payloadDict: [String: Any] = Mapper<DeviceTrackerSee>().toJSON(payload)
+        if self.regionManager.checkIfInsideAnyRegions(location: loc.coordinate).count > 0 {
+            print("Not submitting location change since we are already inside of a zone")
+            for activeZone in self.regionManager.zones {
+                print("Zone check", activeZone.ID, activeZone.inRegion)
+            }
+            return
+        }
 
         firstly {
             self.IdentifyDevice()
@@ -240,8 +250,6 @@ public class HomeAssistantAPI {
             print("Error when updating location!", err)
             Crashlytics.sharedInstance().recordError(err as NSError)
         }
-
-        UIDevice.current.isBatteryMonitoringEnabled = false
 
         let notificationTitle = "Location change"
         var notificationBody = ""
@@ -1033,7 +1041,7 @@ public class HomeAssistantAPI {
         }
 
         for entity in storeableEntities {
-            print("Storing \(entity.ID)")
+            // print("Storing \(entity.ID)")
 
             if entity.Domain == "zone", let zone = entity as? Zone {
                 // swiftlint:disable:next force_try
@@ -1175,9 +1183,14 @@ class RegionManager: NSObject {
     var backgroundTask: UIBackgroundTaskIdentifier?
     let activityManager = CMMotionActivityManager()
     var lastActivity: CMMotionActivity?
+    var lastLocation: CLLocation?
 
     var zones: [RLMZone] {
         return realm.objects(RLMZone.self).map { $0 }
+    }
+
+    var activeZones: [RLMZone] {
+        return realm.objects(RLMZone.self).filter(NSPredicate(format: "inRegion == %@", NSNumber(value: true))).map { $0 }
     }
 
     internal lazy var coreMotionQueue: OperationQueue = {
@@ -1224,6 +1237,11 @@ class RegionManager: NSObject {
             self?.endBackgroundTask()
         }
 
+        // swiftlint:disable:next force_try
+        try! realm.write {
+            zone.inRegion = (trig == .RegionEnter || trig == .BeaconRegionEnter)
+        }
+
         HomeAssistantAPI.sharedInstance.submitLocation(updateType: trig, location: nil,
                                                        visit: nil, zone: zone)
     }
@@ -1234,15 +1252,12 @@ class RegionManager: NSObject {
         }
 
         activityManager.startActivityUpdates(to: coreMotionQueue) { activity in
-            if let act = activity {
-                print("Got motion activity")
-                self.lastActivity = act
-            }
+            self.lastActivity = activity
         }
     }
 
     @objc func syncMonitoredRegions() {
-        // stop monitoring for all regions regions
+        // stop monitoring for all regions
         locationManager.monitoredRegions.forEach { region in
             print("Stopping monitoring of region \(region.identifier)")
             locationManager.stopMonitoring(for: region)
@@ -1252,6 +1267,16 @@ class RegionManager: NSObject {
         zones.forEach { zone in
             print("Starting monitoring of zone \(zone)")
             startMonitoring(zone: zone)
+        }
+    }
+
+    func checkIfInsideAnyRegions(location: CLLocationCoordinate2D) -> Set<CLRegion> {
+        return self.locationManager.monitoredRegions.filter { (region) -> Bool in
+            if let circRegion = region as? CLCircularRegion {
+                // print("Checking", circRegion.identifier)
+                return circRegion.contains(location)
+            }
+            return false
         }
     }
 }
@@ -1271,6 +1296,9 @@ extension RegionManager: CLLocationManagerDelegate {
                                                        location: locations.last,
                                                        visit: nil,
                                                        zone: nil)
+
+        self.lastLocation = locations.last
+
         locationManager.stopUpdatingLocation()
     }
 
@@ -1307,6 +1335,25 @@ extension RegionManager: CLLocationManagerDelegate {
         } else {
             print("other error:", error.localizedDescription)
         }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
+//        let insideRegions = checkIfInsideAnyRegions(location: lastLocation.coordinate)
+//        for inside in insideRegions {
+//            print("System reports inside for zone", inside.identifier)
+//        }
+        print("Started monitoring region", region.identifier)
+        locationManager.requestState(for: region)
+    }
+
+    func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
+        var strState = "Unknown"
+        if state == .inside {
+            strState = "Inside"
+        } else if state == .outside {
+            strState = "Outside"
+        }
+        print("\(strState) region", region.identifier)
     }
 }
 
