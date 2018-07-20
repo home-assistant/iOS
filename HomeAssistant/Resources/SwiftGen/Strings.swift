@@ -7,10 +7,14 @@ import Foundation
 
 // swiftlint:disable explicit_type_interface identifier_name line_length nesting type_body_length type_name
 internal enum L10n {
+  /// Cancel
+  internal static let cancelLabel = L10n.tr("Localizable", "cancel_label")
   /// No
   internal static let noLabel = L10n.tr("Localizable", "no_label")
   /// OK
   internal static let okLabel = L10n.tr("Localizable", "ok_label")
+  /// Username
+  internal static let usernameLabel = L10n.tr("Localizable", "username_label")
   /// Yes
   internal static let yesLabel = L10n.tr("Localizable", "yes_label")
 

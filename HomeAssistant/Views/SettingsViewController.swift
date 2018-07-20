@@ -81,7 +81,10 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
         self.deviceID = keychain["deviceID"]
 
         if showErrorConnectingMessage {
-            let errDesc = (showErrorConnectingMessageError?.localizedDescription)!
+            var errDesc = ""
+            if let err = showErrorConnectingMessageError?.localizedDescription {
+                errDesc = err
+            }
             let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
                                           message: L10n.Settings.ConnectionErrorNotification.message(errDesc),
                                           preferredStyle: UIAlertControllerStyle.alert)

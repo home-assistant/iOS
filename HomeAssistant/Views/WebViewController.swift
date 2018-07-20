@@ -159,18 +159,24 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         print("Failure during nav", error)
-        openSettingsWithError(error: error)
+        if !error.isCancelled {
+            openSettingsWithError(error: error)
+        }
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         print("Failure during content load", error)
-        openSettingsWithError(error: error)
+        if !error.isCancelled {
+            openSettingsWithError(error: error)
+        }
     }
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         let stop = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(self.refreshWebView(_:)))
         var removeAt = 2
-        if self.toolbarItems?.count == 5 {
+        if self.toolbarItems?.count == 3 {
+            removeAt = 1
+        } else if self.toolbarItems?.count == 5 {
             removeAt = 3
         }
         var items = self.toolbarItems
@@ -179,9 +185,55 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.setToolbarItems(items, animated: true)
     }
 
+    // for basic auth, fixes #95
+    func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge,
+                 completionHandler: @escaping(URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+
+        let authMethod = challenge.protectionSpace.authenticationMethod
+        guard authMethod == NSURLAuthenticationMethodHTTPBasic else {
+            print("Not handling auth method", authMethod)
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
+        if challenge.previousFailureCount == 0 {
+            let space = challenge.protectionSpace
+
+            let alert = UIAlertController(title: "\(space.`protocol`!)://\(space.host):\(space.port)",
+                message: space.realm, preferredStyle: .alert)
+
+            alert.addTextField {
+                $0.placeholder = L10n.usernameLabel
+            }
+
+            alert.addTextField {
+                $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.title
+                $0.isSecureTextEntry = true
+            }
+
+            alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel) { _ in
+                completionHandler(.cancelAuthenticationChallenge, nil)
+            })
+
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default) { _ in
+                let textFields = alert.textFields!
+                let credential = URLCredential(user: textFields[0].text!,
+                                               password: textFields[1].text!,
+                                               persistence: .forSession)
+                completionHandler(.useCredential, credential)
+            })
+
+        } else {
+            completionHandler(.performDefaultHandling, nil)
+        }
+
+    }
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         var removeAt = 2
-        if self.toolbarItems?.count == 5 {
+        if self.toolbarItems?.count == 3 {
+            removeAt = 1
+        } else if self.toolbarItems?.count == 5 {
             removeAt = 3
         }
         let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
@@ -190,6 +242,22 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         items?.remove(at: removeAt)
         items?.insert(refresh, at: removeAt)
         self.setToolbarItems(items, animated: true)
+
+        if let apiPass = keychain["apiPassword"] {
+            webView.evaluateJavaScript("localStorage.getItem(\"authToken\")") { (result, error) in
+                var storedPass = ""
+                if result != nil, let resString = result as? String {
+                    print("Result", resString)
+                    storedPass = resString
+                }
+                if error != nil || result == nil || storedPass != apiPass {
+                    print("Setting password into LocalStorage")
+                    webView.evaluateJavaScript("localStorage.setItem(\"authToken\", \"\(apiPass)\")") { (_, _) in
+                        webView.reload()
+                    }
+                }
+            }
+        }
     }
 
     @objc func refreshWebView(_ sender: UIBarButtonItem) {
@@ -252,11 +320,19 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     func updateWebViewSettings() {
-        self.webView.configuration.userContentController.removeAllUserScripts()
         if let apiPass = keychain["apiPassword"] {
-            let scriptStr = "window.hassConnection = createHassConnection(\"\(apiPass)\");"
-            let script = WKUserScript(source: scriptStr, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-            self.webView.configuration.userContentController.addUserScript(script)
+            self.webView.evaluateJavaScript("localStorage.getItem(\"authToken\")") { (result, error) in
+                var storedPass = ""
+                if result != nil, let resString = result as? String {
+                    storedPass = resString
+                }
+                if error != nil || result == nil || storedPass != apiPass {
+                    print("Setting password into LocalStorage")
+                    self.webView.evaluateJavaScript("localStorage.setItem(\"authToken\", \"\(apiPass)\")") { (_, _) in
+                        self.webView.reload()
+                    }
+                }
+            }
         }
     }
 
