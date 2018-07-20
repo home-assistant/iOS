@@ -11,6 +11,7 @@ import WebKit
 import KeychainAccess
 import PromiseKit
 
+// swiftlint:disable:next type_body_length
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, ConnectionInfoChangedDelegate {
 
     var webView: WKWebView!
@@ -55,7 +56,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         webView.scrollView.bounces = false
 
-        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
+                                              password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
         if HomeAssistantAPI.sharedInstance.Configured {
             HomeAssistantAPI.sharedInstance.Connect().done {_ in

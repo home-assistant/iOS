@@ -9,9 +9,9 @@
 import UserNotifications
 import MobileCoreServices
 import KeychainAccess
+import Shared
 
 final class NotificationService: UNNotificationServiceExtension {
-
     private var contentHandler: ((UNNotificationContent) -> Void)?
     private var bestAttemptContent: UNMutableNotificationContent?
 

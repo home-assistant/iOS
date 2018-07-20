@@ -92,6 +92,25 @@ internal enum L10n {
     }
   }
 
+  internal enum ClientEvents {
+
+    internal enum EventType {
+      /// Location Update
+      internal static let locationUpdate = L10n.tr("Localizable", "client_events.event_type.location_update")
+      /// Notification
+      internal static let notification = L10n.tr("Localizable", "client_events.event_type.notification")
+      /// Service Call
+      internal static let serviceCall = L10n.tr("Localizable", "client_events.event_type.service_call")
+      /// Unknown
+      internal static let unknown = L10n.tr("Localizable", "client_events.event_type.unknown")
+    }
+
+    internal enum View {
+      /// Clear
+      internal static let clear = L10n.tr("Localizable", "client_events.view.clear")
+    }
+  }
+
   internal enum DevicesMap {
     /// Battery
     internal static let batteryLabel = L10n.tr("Localizable", "devices_map.battery_label")
@@ -131,6 +150,11 @@ internal enum L10n {
       }
     }
 
+    internal enum Manual {
+      /// Location update triggered by user
+      internal static let body = L10n.tr("Localizable", "location_change_notification.manual.body")
+    }
+
     internal enum PushNotification {
       /// Location updated via push notification
       internal static let body = L10n.tr("Localizable", "location_change_notification.push_notification.body")
@@ -155,9 +179,19 @@ internal enum L10n {
       internal static let body = L10n.tr("Localizable", "location_change_notification.significant_location_update.body")
     }
 
+    internal enum Unknown {
+      /// Location updated via unknown method
+      internal static let body = L10n.tr("Localizable", "location_change_notification.unknown.body")
+    }
+
     internal enum UrlScheme {
       /// Location updated via URL Scheme
       internal static let body = L10n.tr("Localizable", "location_change_notification.url_scheme.body")
+    }
+
+    internal enum Visit {
+      /// Location updated via Visit
+      internal static let body = L10n.tr("Localizable", "location_change_notification.visit.body")
     }
   }
 
@@ -304,6 +338,11 @@ internal enum L10n {
       internal static let requiresPassword = L10n.tr("Localizable", "settings.discovery_section.requiresPassword")
     }
 
+    internal enum EventLog {
+      /// Event Log
+      internal static let title = L10n.tr("Localizable", "settings.event_log.title")
+    }
+
     internal enum GeneralSettingsButton {
       /// General Settings
       internal static let title = L10n.tr("Localizable", "settings.general_settings_button.title")
@@ -432,6 +471,11 @@ internal enum L10n {
         internal enum UrlScheme {
           /// URL Scheme Location Notifications
           internal static let title = L10n.tr("Localizable", "settings_details.location.notifications.url_scheme.title")
+        }
+
+        internal enum Visit {
+          /// Visit Location Notifications
+          internal static let title = L10n.tr("Localizable", "settings_details.location.notifications.visit.title")
         }
       }
 

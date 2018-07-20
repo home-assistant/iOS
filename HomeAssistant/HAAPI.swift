@@ -17,6 +17,7 @@ import Crashlytics
 import UserNotifications
 import RealmSwift
 import CoreMotion
+import Shared
 
 let APIClientSharedInstance = HomeAssistantAPI()
 
@@ -215,8 +216,6 @@ public class HomeAssistantAPI {
             payload.ActivityConfidence = String(describing: activity.confidence)
         }
 
-        print("JSON payload", payload.toJSONString(prettyPrint: false))
-
         var jsonPayload = "{\"missing\": \"payload\"}"
         if let p = payload.toJSONString(prettyPrint: false) {
             jsonPayload = p
@@ -226,6 +225,7 @@ public class HomeAssistantAPI {
 
         UIDevice.current.isBatteryMonitoringEnabled = false
 
+        let realm = Current.realm()
         // swiftlint:disable:next force_try
         try! realm.write {
             realm.add(LocationHistoryEntry(updateType: updateType, location: location,
@@ -243,7 +243,8 @@ public class HomeAssistantAPI {
         firstly {
             self.IdentifyDevice()
         }.then {_ in
-            self.CallService(domain: "device_tracker", service: "see", serviceData: payloadDict)
+            self.CallService(domain: "device_tracker", service: "see", serviceData: payloadDict,
+                             shouldLog: false)
         }.done { _ in
             print("Device seen!")
         }.catch { err in
@@ -294,10 +295,20 @@ public class HomeAssistantAPI {
             notificationBody = L10n.LocationChangeNotification.UrlScheme.body
             notificationIdentifer = "url_scheme"
             shouldNotify = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
-        default:
-            notificationBody = ""
+        case .Visit:
+            notificationBody = L10n.LocationChangeNotification.Visit.body
+            notificationIdentifer = "visit"
+            shouldNotify = prefs.bool(forKey: "visitLocationRequestNotifications")
+        case .Manual:
+            notificationBody = L10n.LocationChangeNotification.Manual.body
+            shouldNotify = false
+        case .Unknown:
+            notificationBody = L10n.LocationChangeNotification.Unknown.body
+            shouldNotify = false
         }
 
+        Current.clientEventStore.addEvent(ClientEvent(text: notificationBody, type: .locationUpdate,
+                                                      payload: payloadDict))
         if shouldNotify {
             if #available(iOS 10, *) {
                 let content = UNMutableNotificationContent()
@@ -553,45 +564,52 @@ public class HomeAssistantAPI {
         }
     }
 
-    func CallService(domain: String, service: String, serviceData: [String: Any]) -> Promise<[Entity]> {
+    func CallService(domain: String, service: String, serviceData: [String: Any], shouldLog: Bool = true)
+        -> Promise<[Entity]> {
         return Promise { seal in
-            if let manager = self.manager,
-                let queryUrl = baseAPIURL?.appendingPathComponent("services/\(domain)/\(service)") {
-                _ = manager.request(queryUrl, method: .post,
-                                          parameters: serviceData, encoding: JSONEncoding.default)
-                    .validate()
-                    .responseArray { (response: DataResponse<[Entity]>) in
-                        switch response.result {
-                        case .success:
-                            if let resVal = response.result.value {
-                                seal.fulfill(resVal)
-                            } else {
-                                seal.reject(APIError.invalidResponse)
+
+            guard let manager = self.manager,
+                let queryUrl = baseAPIURL?.appendingPathComponent("services/\(domain)/\(service)") else {
+                    seal.reject(APIError.managerNotAvailable)
+                    return
+            }
+            _ = manager.request(queryUrl, method: .post,
+                                parameters: serviceData, encoding: JSONEncoding.default)
+                .validate()
+                .responseArray { (response: DataResponse<[Entity]>) in
+                    switch response.result {
+                    case .success:
+                        if let resVal = response.result.value {
+                            if shouldLog {
+                                let event = ClientEvent(text: "Calling service: \(domain) - \(service)",
+                                    type: .serviceCall, payload: serviceData)
+                                Current.clientEventStore.addEvent(event)
                             }
-                        case .failure(let error):
-                            if let afError = error as? AFError {
-                                var errorUserInfo: [String: Any] = [:]
-                                if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
-                                    if let errorJSON = convertToDictionary(text: utf8Text),
-                                        let errMessage = errorJSON["message"] as? String {
-                                        errorUserInfo["errorMessage"] = errMessage
-                                    }
-                                }
-                                CLSLogv("Error on CallService() request: %@", getVaList([afError.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(afError)
-                                let customError = NSError(domain: "io.robbie.HomeAssistant",
-                                                          code: afError.responseCode!,
-                                                          userInfo: errorUserInfo)
-                                seal.reject(customError)
-                            } else {
-                                CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(error)
-                                seal.reject(error)
-                            }
+                            seal.fulfill(resVal)
+                        } else {
+                            seal.reject(APIError.invalidResponse)
                         }
-                }
-            } else {
-                seal.reject(APIError.managerNotAvailable)
+                    case .failure(let error):
+                        if let afError = error as? AFError {
+                            var errorUserInfo: [String: Any] = [:]
+                            if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
+                                if let errorJSON = convertToDictionary(text: utf8Text),
+                                    let errMessage = errorJSON["message"] as? String {
+                                    errorUserInfo["errorMessage"] = errMessage
+                                }
+                            }
+                            CLSLogv("Error on CallService() request: %@", getVaList([afError.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(afError)
+                            let customError = NSError(domain: "io.robbie.HomeAssistant",
+                                                      code: afError.responseCode!,
+                                                      userInfo: errorUserInfo)
+                            seal.reject(customError)
+                        } else {
+                            CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            seal.reject(error)
+                        }
+                    }
             }
         }
     }
@@ -1044,6 +1062,17 @@ public class HomeAssistantAPI {
             // print("Storing \(entity.ID)")
 
             if entity.Domain == "zone", let zone = entity as? Zone {
+                let storeableZone = RLMZone()
+                storeableZone.ID = zone.ID
+                storeableZone.Latitude = zone.Latitude
+                storeableZone.Longitude = zone.Longitude
+                storeableZone.Radius = zone.Radius
+                storeableZone.TrackingEnabled = zone.TrackingEnabled
+                storeableZone.BeaconUUID = zone.UUID
+                storeableZone.BeaconMajor.value = zone.Major
+                storeableZone.BeaconMinor.value = zone.Minor
+
+                let realm = Current.realm()
                 // swiftlint:disable:next force_try
                 try! realm.write {
                     realm.add(RLMZone(zone: zone), update: true)
@@ -1186,11 +1215,14 @@ class RegionManager: NSObject {
     var lastLocation: CLLocation?
 
     var zones: [RLMZone] {
+        let realm = Current.realm()
         return realm.objects(RLMZone.self).map { $0 }
     }
 
     var activeZones: [RLMZone] {
-        return realm.objects(RLMZone.self).filter(NSPredicate(format: "inRegion == %@", NSNumber(value: true))).map { $0 }
+        let realm = Current.realm()
+        return realm.objects(RLMZone.self).filter(NSPredicate(format: "inRegion == %@",
+                                                              NSNumber(value: true))).map { $0 }
     }
 
     internal lazy var coreMotionQueue: OperationQueue = {
@@ -1237,6 +1269,7 @@ class RegionManager: NSObject {
             self?.endBackgroundTask()
         }
 
+        let realm = Current.realm()
         // swiftlint:disable:next force_try
         try! realm.write {
             zone.inRegion = (trig == .RegionEnter || trig == .BeaconRegionEnter)
@@ -1322,6 +1355,7 @@ extension RegionManager: CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         if let clErr = error as? CLError {
+            let realm = Current.realm()
             // swiftlint:disable:next force_try
             try! realm.write {
                 let locErr = LocationError(err: clErr)
@@ -1392,6 +1426,7 @@ extension LocationManager: CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         if let clErr = error as? CLError {
+            let realm = Current.realm()
             // swiftlint:disable:next force_try
             try! realm.write {
                 let locErr = LocationError(err: clErr)
