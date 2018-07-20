@@ -192,42 +192,42 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                  completionHandler: @escaping(URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
 
         let authMethod = challenge.protectionSpace.authenticationMethod
-        guard authMethod == NSURLAuthenticationMethodHTTPBasic else {
+
+        guard authMethod == NSURLAuthenticationMethodDefault ||
+              authMethod == NSURLAuthenticationMethodHTTPBasic ||
+              authMethod == NSURLAuthenticationMethodHTTPDigest else {
             print("Not handling auth method", authMethod)
             completionHandler(.performDefaultHandling, nil)
             return
         }
 
-        if challenge.previousFailureCount == 0 {
-            let space = challenge.protectionSpace
+        let space = challenge.protectionSpace
 
-            let alert = UIAlertController(title: "\(space.`protocol`!)://\(space.host):\(space.port)",
-                message: space.realm, preferredStyle: .alert)
+        let alert = UIAlertController(title: "\(space.`protocol`!)://\(space.host):\(space.port)",
+            message: space.realm, preferredStyle: .alert)
 
-            alert.addTextField {
-                $0.placeholder = L10n.usernameLabel
-            }
-
-            alert.addTextField {
-                $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.title
-                $0.isSecureTextEntry = true
-            }
-
-            alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel) { _ in
-                completionHandler(.cancelAuthenticationChallenge, nil)
-            })
-
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default) { _ in
-                let textFields = alert.textFields!
-                let credential = URLCredential(user: textFields[0].text!,
-                                               password: textFields[1].text!,
-                                               persistence: .forSession)
-                completionHandler(.useCredential, credential)
-            })
-
-        } else {
-            completionHandler(.performDefaultHandling, nil)
+        alert.addTextField {
+            $0.placeholder = L10n.usernameLabel
         }
+
+        alert.addTextField {
+            $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.title
+            $0.isSecureTextEntry = true
+        }
+
+        alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel) { _ in
+            completionHandler(.cancelAuthenticationChallenge, nil)
+        })
+
+        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default) { _ in
+            let textFields = alert.textFields!
+            let credential = URLCredential(user: textFields[0].text!,
+                                           password: textFields[1].text!,
+                                           persistence: .forSession)
+            completionHandler(.useCredential, credential)
+        })
+
+        present(alert, animated: true, completion: nil)
 
     }
 
@@ -244,22 +244,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         items?.remove(at: removeAt)
         items?.insert(refresh, at: removeAt)
         self.setToolbarItems(items, animated: true)
-
-        if let apiPass = keychain["apiPassword"] {
-            webView.evaluateJavaScript("localStorage.getItem(\"authToken\")") { (result, error) in
-                var storedPass = ""
-                if result != nil, let resString = result as? String {
-                    print("Result", resString)
-                    storedPass = resString
-                }
-                if error != nil || result == nil || storedPass != apiPass {
-                    print("Setting password into LocalStorage")
-                    webView.evaluateJavaScript("localStorage.setItem(\"authToken\", \"\(apiPass)\")") { (_, _) in
-                        webView.reload()
-                    }
-                }
-            }
-        }
     }
 
     @objc func refreshWebView(_ sender: UIBarButtonItem) {
