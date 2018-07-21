@@ -243,6 +243,8 @@
 		D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A6367120DB7D1100E5C49B /* ClientEventTests.swift */; };
 		D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D06C750F20D87FAF00E9DB7F /* ClientEventCell.swift */; };
+		D0BE44052101B89300C74314 /* SignInFlow.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0BE44042101B89300C74314 /* SignInFlow.storyboard */; };
+		D0BE44082102F39A00C74314 /* TokenInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44072102F39A00C74314 /* TokenInfo.swift */; };
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
 		D18BB39F0BE75F5C3F086FE2 /* Pods-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */; };
@@ -619,6 +621,8 @@
 		D06C750F20D87FAF00E9DB7F /* ClientEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventCell.swift; sourceTree = "<group>"; };
 		D0A6367120DB7D1100E5C49B /* ClientEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTests.swift; sourceTree = "<group>"; };
 		D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Realm+Initialization.swift"; sourceTree = "<group>"; };
+		D0BE44042101B89300C74314 /* SignInFlow.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SignInFlow.storyboard; sourceTree = "<group>"; };
+		D0BE44072102F39A00C74314 /* TokenInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInfo.swift; sourceTree = "<group>"; };
 		D0FF79CB20D778B50034574D /* ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEvent.swift; sourceTree = "<group>"; };
 		D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventStore.swift; sourceTree = "<group>"; };
 		D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTableViewController.swift; sourceTree = "<group>"; };
@@ -979,6 +983,7 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
+				D0BE44022101AF2F00C74314 /* SignIn */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
 				B6F02BE71CB4698A0029ABE7 /* Classes */,
 				B69933961E232AF50054453D /* Resources */,
@@ -1201,6 +1206,30 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		D0BE44022101AF2F00C74314 /* SignIn */ = {
+			isa = PBXGroup;
+			children = (
+				D0BE44032101B87400C74314 /* Resources */,
+			);
+			path = SignIn;
+			sourceTree = "<group>";
+		};
+		D0BE44032101B87400C74314 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D0BE44042101B89300C74314 /* SignInFlow.storyboard */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		D0BE44062102F32300C74314 /* Authorization */ = {
+			isa = PBXGroup;
+			children = (
+				D0BE44072102F39A00C74314 /* TokenInfo.swift */,
+			);
+			path = Authorization;
+			sourceTree = "<group>";
+		};
 		D0FF79C920D7787F0034574D /* ClientEvents */ = {
 			isa = PBXGroup;
 			children = (
@@ -1229,6 +1258,7 @@
 		D0FF79D020D87CF60034574D /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				D0BE44062102F32300C74314 /* Authorization */,
 				D0A6367320DBE91300E5C49B /* Extensions */,
 				D00302BC20D4BEC0004C2CA9 /* Structs */,
 			);
@@ -1680,6 +1710,7 @@
 				B60616521D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav in Resources */,
 				B60616101D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav in Resources */,
 				B606167D1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav in Resources */,
+				D0BE44052101B89300C74314 /* SignInFlow.storyboard in Resources */,
 				B60616931D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Basement.wav in Resources */,
 				B60616271D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav in Resources */,
 				B606167C1D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav in Resources */,
@@ -2134,6 +2165,7 @@
 				D03D893920E0AF8E00D4F28D /* ClientEvent.swift in Sources */,
 				D03D893620E0AEFA00D4F28D /* Environment.swift in Sources */,
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
+				D0BE44082102F39A00C74314 /* TokenInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2418,7 +2450,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B06F54971227E33FB2315DA5 /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
@@ -2468,7 +2500,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 459B53A1935B67E05A3C893A /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
