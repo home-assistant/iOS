@@ -9,7 +9,7 @@
 import UIKit
 import Eureka
 import PromiseKit
-import Crashlytics
+//import Crashlytics
 import SafariServices
 import Alamofire
 import KeychainAccess

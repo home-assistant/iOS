@@ -1287,7 +1287,6 @@
 				B657A8E41CA646EB00121384 /* Resources */,
 				B6E47E861CB9FD350027F6CA /* [CP] Copy Acknowledgements */,
 				B6AAD7AC1D827DD40090B220 /* Embed App Extensions */,
-				B6E8579C1CB1167200F96925 /* Fabric */,
 				D03D88EE20E0A7AC00D4F28D /* Embed Frameworks */,
 				EA575E8535DE3AD4C8974CA2 /* [CP] Embed Pods Frameworks */,
 			);
@@ -1924,20 +1923,6 @@
 			shellPath = /bin/sh;
 			shellScript = "cp \"${SRCROOT}/Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-acknowledgements.plist\" \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Pods-acknowledgements.plist\"";
 		};
-		B6E8579C1CB1167200F96925 /* Fabric */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Fabric;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -f env.sh ];\nthen\n    source env.sh\nfi\n[ -z \"$HOMEASSISTANT_FABRIC_CLIENT_ID\" ] && echo \"$HOMEASSISTANT_FABRIC_CLIENT_ID is not defined on your ENV\" && exit 0;\n [ -z \"$HOMEASSISTANT_FABRIC_SECRET\" ] && echo \"$HOMEASSISTANT_FABRIC_SECRET is not defined on your ENV\" && exit 0;\n \"${PODS_ROOT}/Fabric/run\" ${HOMEASSISTANT_FABRIC_CLIENT_ID} ${HOMEASSISTANT_FABRIC_SECRET}";
-		};
 		D03D895020E1EF4900D4F28D /* Swiftgen */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2434,11 +2419,7 @@
 					"-framework",
 					"\"Alamofire\"",
 					"-framework",
-					"\"Crashlytics\"",
-					"-framework",
 					"\"Eureka\"",
-					"-framework",
-					"\"Fabric\"",
 					"-framework",
 					"\"FontAwesomeKit\"",
 					"-framework",
@@ -2484,11 +2465,7 @@
 					"-framework",
 					"\"Alamofire\"",
 					"-framework",
-					"\"Crashlytics\"",
-					"-framework",
 					"\"Eureka\"",
-					"-framework",
-					"\"Fabric\"",
 					"-framework",
 					"\"FontAwesomeKit\"",
 					"-framework",

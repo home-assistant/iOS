@@ -7,8 +7,8 @@
 //
 
 import UIKit
-import Fabric
-import Crashlytics
+//import Fabric
+//import Crashlytics
 import PromiseKit
 import UserNotifications
 import AlamofireNetworkActivityIndicator
@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        Fabric.with([Crashlytics.self])
+//        Fabric.with([Crashlytics.self])
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
 
@@ -81,8 +81,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = HomeAssistantAPI.sharedInstance.RegisterDeviceForPush(deviceToken: tokenString).done { resp in
             if let pushId = resp.PushId {
                 print("Registered for push. Platform: \(resp.SNSPlatform ?? "MISSING"), PushID: \(pushId)")
-                CLSLogv("Registered for push %@:", getVaList([pushId]))
-                Crashlytics.sharedInstance().setUserIdentifier(pushId)
+//                CLSLogv("Registered for push %@:", getVaList([pushId]))
+                // TO-DO Crashlytics.sharedInstance().setUserIdentifier(pushId)
                 prefs.setValue(pushId, forKey: "pushID")
                 HomeAssistantAPI.sharedInstance.pushID = pushId
                 _ = HomeAssistantAPI.sharedInstance.IdentifyDevice()
@@ -93,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError error: Swift.Error) {
         print("Error when trying to register for push", error)
-        Crashlytics.sharedInstance().recordError(error)
+        // TO-DO Crashlytics.sharedInstance().recordError(error)
     }
 
     func application(_ application: UIApplication,
@@ -121,7 +121,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             }
                         }.catch {error in
                             print("Error when attempting to submit location update")
-                            Crashlytics.sharedInstance().recordError(error)
+                            // TO-DO Crashlytics.sharedInstance().recordError(error)
                             completionHandler(UIBackgroundFetchResult.failed)
                         }
                     default:
@@ -152,7 +152,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
                 }.catch {error in
                     print("Error when attempting to submit location update during background fetch")
-                    Crashlytics.sharedInstance().recordError(error)
+                    // TO-DO Crashlytics.sharedInstance().recordError(error)
                     completionHandler(UIBackgroundFetchResult.failed)
             }
         } else {
@@ -160,7 +160,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(UIBackgroundFetchResult.newData)
             }.catch {error in
                 print("Error when attempting to identify device during background fetch")
-                Crashlytics.sharedInstance().recordError(error)
+                // TO-DO Crashlytics.sharedInstance().recordError(error)
                 completionHandler(UIBackgroundFetchResult.failed)
             }
         }
@@ -273,7 +273,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                                             completionHandler()
             }.catch { err -> Void in
                 print("Error: \(err)")
-                Crashlytics.sharedInstance().recordError(err)
+                // TO-DO Crashlytics.sharedInstance().recordError(err)
                 completionHandler()
         }
     }

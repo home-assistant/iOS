@@ -8,7 +8,7 @@
 
 import UIKit
 import Eureka
-import Crashlytics
+//import Crashlytics
 import Shared
 
 class SettingsDetailViewController: FormViewController {

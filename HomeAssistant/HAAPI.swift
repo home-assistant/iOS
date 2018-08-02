@@ -13,7 +13,7 @@ import CoreLocation
 import AlamofireObjectMapper
 import ObjectMapper
 import DeviceKit
-import Crashlytics
+//import Crashlytics
 import UserNotifications
 import RealmSwift
 import CoreMotion
@@ -150,11 +150,11 @@ public class HomeAssistantAPI {
                 prefs.setValue(config.Timezone, forKey: "time_zone")
                 prefs.setValue(config.Version, forKey: "version")
 
-                Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
-                Crashlytics.sharedInstance().setObjectValue(self.loadedComponents.joined(separator: ","),
-                                                            forKey: "loadedComponents")
-                Crashlytics.sharedInstance().setObjectValue(self.enabledPermissions.joined(separator: ","),
-                                                            forKey: "allowedPermissions")
+                // TO-DO Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
+                // TO-DO Crashlytics.sharedInstance().setObjectValue(self.loadedComponents.joined(separator: ","),
+//                                                            forKey: "loadedComponents")
+                // TO-DO Crashlytics.sharedInstance().setObjectValue(self.enabledPermissions.joined(separator: ","),
+//                                                            forKey: "allowedPermissions")
 
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
                                                 object: nil,
@@ -168,7 +168,7 @@ public class HomeAssistantAPI {
 
                 _ = self.GetStates().done { _ in
                     if self.loadedComponents.contains("ios") {
-                        CLSLogv("iOS component loaded, attempting identify", getVaList([]))
+//                        CLSLogv("iOS component loaded, attempting identify", getVaList([]))
                         _ = self.IdentifyDevice()
                     }
 
@@ -177,14 +177,14 @@ public class HomeAssistantAPI {
                 }
             }.catch {error in
                 print("Error at launch!", error)
-                Crashlytics.sharedInstance().recordError(error)
+                // TO-DO Crashlytics.sharedInstance().recordError(error)
                 seal.reject(error)
             }
 
         }
     }
 
-    // swiftlint:disable:next function_body_length cyclomatic_complexity
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func submitLocation(updateType: LocationUpdateTrigger,
                         location: CLLocation?,
                         visit: CLVisit?,
@@ -249,7 +249,7 @@ public class HomeAssistantAPI {
             print("Device seen!")
         }.catch { err in
             print("Error when updating location!", err)
-            Crashlytics.sharedInstance().recordError(err as NSError)
+            // TO-DO Crashlytics.sharedInstance().recordError(err as NSError)
         }
 
         let notificationTitle = "Location change"
@@ -366,8 +366,8 @@ public class HomeAssistantAPI {
                                 seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
-                            CLSLogv("Error on GetManifestJSON() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
+//                            CLSLogv("Error on GetManifestJSON() request: %@", getVaList([error.localizedDescription]))
+                            // TO-DO Crashlytics.sharedInstance().recordError(error)
                             seal.reject(error)
                         }
                 }
@@ -391,9 +391,9 @@ public class HomeAssistantAPI {
                                         seal.reject(APIError.invalidResponse)
                                     }
                                 case .failure(let error):
-                                    CLSLogv("Error on GetStatus() request: %@",
-                                            getVaList([error.localizedDescription]))
-                                    Crashlytics.sharedInstance().recordError(error)
+//                                    CLSLogv("Error on GetStatus() request: %@",
+//                                            getVaList([error.localizedDescription]))
+                                    // TO-DO Crashlytics.sharedInstance().recordError(error)
                                     seal.reject(error)
                                 }
                             }
@@ -417,8 +417,8 @@ public class HomeAssistantAPI {
                                     seal.reject(APIError.invalidResponse)
                                 }
                             case .failure(let error):
-                                CLSLogv("Error on GetConfig() request: %@", getVaList([error.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(error)
+//                                CLSLogv("Error on GetConfig() request: %@", getVaList([error.localizedDescription]))
+                                // TO-DO Crashlytics.sharedInstance().recordError(error)
                                 seal.reject(error)
                             }
                 }
@@ -442,8 +442,8 @@ public class HomeAssistantAPI {
                                 seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
-                            CLSLogv("Error on GetServices() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
+//                            CLSLogv("Error on GetServices() request: %@", getVaList([error.localizedDescription]))
+                            // TO-DO Crashlytics.sharedInstance().recordError(error)
                             seal.reject(error)
                         }
                 }
@@ -469,8 +469,8 @@ public class HomeAssistantAPI {
                                 seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
-                            CLSLogv("Error on GetStates() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
+//                            CLSLogv("Error on GetStates() request: %@", getVaList([error.localizedDescription]))
+                            // TO-DO Crashlytics.sharedInstance().recordError(error)
                             seal.reject(error)
                         }
                 }
@@ -494,8 +494,8 @@ public class HomeAssistantAPI {
                                 seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
-                            CLSLogv("Error on GetEntityState() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
+//                            CLSLogv("Error on GetEntityState() request: %@", getVaList([error.localizedDescription]))
+                            // TO-DO Crashlytics.sharedInstance().recordError(error)
                             seal.reject(error)
                         }
                 }
@@ -520,9 +520,9 @@ public class HomeAssistantAPI {
                                             seal.reject(APIError.invalidResponse)
                                         }
                                     case .failure(let error):
-                                        CLSLogv("Error when attemping to SetState(): %@",
-                                                getVaList([error.localizedDescription]))
-                                        Crashlytics.sharedInstance().recordError(error)
+//                                        CLSLogv("Error when attemping to SetState(): %@",
+//                                                getVaList([error.localizedDescription]))
+                                        // TO-DO Crashlytics.sharedInstance().recordError(error)
                                         seal.reject(error)
                                     }
                                   }
@@ -547,14 +547,14 @@ public class HomeAssistantAPI {
                             }
                         case .failure(let error):
                             if let afError = error as? AFError {
-                                CLSLogv("Error when attemping to CreateEvent(): %@",
-                                        getVaList([afError.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(afError)
+//                                CLSLogv("Error when attemping to CreateEvent(): %@",
+//                                        getVaList([afError.localizedDescription]))
+                                // TO-DO Crashlytics.sharedInstance().recordError(afError)
                                 seal.reject(afError)
                             }
-                            CLSLogv("Error when attemping to CreateEvent(): %@",
-                                    getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
+//                            CLSLogv("Error when attemping to CreateEvent(): %@",
+//                                    getVaList([error.localizedDescription]))
+                            // TO-DO Crashlytics.sharedInstance().recordError(error)
                             seal.reject(error)
                         }
                 }
@@ -598,15 +598,15 @@ public class HomeAssistantAPI {
                                     errorUserInfo["errorMessage"] = errMessage
                                 }
                             }
-                            CLSLogv("Error on CallService() request: %@", getVaList([afError.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(afError)
+//                            CLSLogv("Error on CallService() request: %@", getVaList([afError.localizedDescription]))
+                            // TO-DO Crashlytics.sharedInstance().recordError(afError)
                             let customError = NSError(domain: "io.robbie.HomeAssistant",
                                                       code: afError.responseCode!,
                                                       userInfo: errorUserInfo)
                             seal.reject(customError)
                         } else {
-                            CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
+//                            CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
+                            // TO-DO Crashlytics.sharedInstance().recordError(error)
                             seal.reject(error)
                         }
                     }
@@ -627,9 +627,9 @@ public class HomeAssistantAPI {
                                     seal.reject(APIError.invalidResponse)
                                 }
                             case .failure(let error):
-                                CLSLogv("Error on getDiscoveryInfo() request: %@",
-                                        getVaList([error.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(error)
+//                                CLSLogv("Error on getDiscoveryInfo() request: %@",
+//                                        getVaList([error.localizedDescription]))
+                                // TO-DO Crashlytics.sharedInstance().recordError(error)
                                 seal.reject(error)
                             }
                         }
@@ -652,9 +652,9 @@ public class HomeAssistantAPI {
                                     seal.reject(APIError.invalidResponse)
                                 }
                             case .failure(let error):
-                                CLSLogv("Error when attemping to IdentifyDevice(): %@",
-                                        getVaList([error.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(error)
+//                                CLSLogv("Error when attemping to IdentifyDevice(): %@",
+//                                        getVaList([error.localizedDescription]))
+                                // TO-DO Crashlytics.sharedInstance().recordError(error)
                                 seal.reject(error)
                             }
                 }
@@ -680,9 +680,9 @@ public class HomeAssistantAPI {
                                 seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
-                            CLSLogv("Error when attemping to RemoveDevice(): %@",
-                                    getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
+//                            CLSLogv("Error when attemping to RemoveDevice(): %@",
+//                                    getVaList([error.localizedDescription]))
+                            // TO-DO Crashlytics.sharedInstance().recordError(error)
                             seal.reject(error)
                         }
                 }
@@ -708,15 +708,15 @@ public class HomeAssistantAPI {
                             let retErr = NSError(domain: "io.robbie.HomeAssistant",
                                                  code: 404,
                                                  userInfo: ["message": "json was nil!"])
-                            CLSLogv("Error when attemping to registerDeviceForPush(), json was nil!: %@",
-                                    getVaList([retErr.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(retErr)
+//                            CLSLogv("Error when attemping to registerDeviceForPush(), json was nil!: %@",
+//                                    getVaList([retErr.localizedDescription]))
+                            // TO-DO Crashlytics.sharedInstance().recordError(retErr)
                             seal.reject(retErr)
                         }
                     case .failure(let error):
-                        CLSLogv("Error when attemping to registerDeviceForPush(): %@",
-                                getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
+//                        CLSLogv("Error when attemping to registerDeviceForPush(): %@",
+//                                getVaList([error.localizedDescription]))
+                        // TO-DO Crashlytics.sharedInstance().recordError(error)
                         seal.reject(error)
                     }
             }
@@ -737,9 +737,9 @@ public class HomeAssistantAPI {
                                 seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
-                            CLSLogv("Error on GetPushSettings() request: %@",
-                                    getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
+//                            CLSLogv("Error on GetPushSettings() request: %@",
+//                                    getVaList([error.localizedDescription]))
+                            // TO-DO Crashlytics.sharedInstance().recordError(error)
                             seal.reject(error)
                         }
                 }
@@ -937,8 +937,8 @@ public class HomeAssistantAPI {
                 }
                 seal.fulfill(allCategories)
             }.catch { error in
-                CLSLogv("Error on setupPushActions() request: %@", getVaList([error.localizedDescription]))
-                Crashlytics.sharedInstance().recordError(error)
+//                CLSLogv("Error on setupPushActions() request: %@", getVaList([error.localizedDescription]))
+                // TO-DO Crashlytics.sharedInstance().recordError(error)
                 seal.reject(error)
             }
         }
@@ -983,9 +983,9 @@ public class HomeAssistantAPI {
                 }
                 seal.fulfill(allCategories)
             }.catch { error in
-                CLSLogv("Error on setupUserNotificationPushActions() request: %@",
-                        getVaList([error.localizedDescription]))
-                Crashlytics.sharedInstance().recordError(error)
+//                CLSLogv("Error on setupUserNotificationPushActions() request: %@",
+//                        getVaList([error.localizedDescription]))
+                // TO-DO Crashlytics.sharedInstance().recordError(error)
                 seal.reject(error)
             }
         }
@@ -1000,7 +1000,7 @@ public class HomeAssistantAPI {
                 UNUserNotificationCenter.current().setNotificationCategories(categories)
                 }.catch {error -> Void in
                     print("Error when attempting to setup push actions", error)
-                    Crashlytics.sharedInstance().recordError(error)
+                    // TO-DO Crashlytics.sharedInstance().recordError(error)
             }
         } else {
             self.setupPushActions().done { categories in
@@ -1009,7 +1009,7 @@ public class HomeAssistantAPI {
                 UIApplication.shared.registerUserNotificationSettings(settings)
                 }.catch {error -> Void in
                     print("Error when attempting to setup push actions", error)
-                    Crashlytics.sharedInstance().recordError(error)
+                    // TO-DO Crashlytics.sharedInstance().recordError(error)
             }
         }
     }
@@ -1032,7 +1032,7 @@ public class HomeAssistantAPI {
                                                         eventData: eventData).done { _ -> Void in
                                                             seal.fulfill(true)
                 }.catch {error in
-                    Crashlytics.sharedInstance().recordError(error)
+                    // TO-DO Crashlytics.sharedInstance().recordError(error)
                     seal.reject(error)
             }
         }
