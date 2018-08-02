@@ -188,11 +188,7 @@ func openURLInBrowser(urlToOpen: URL) {
     if OpenInChromeController.sharedInstance.isChromeInstalled() && prefs.bool(forKey: "openInChrome") {
         _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
     } else {
-        if #available(iOS 10, *) {
-            UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
-        } else {
-            _ = UIApplication.shared.openURL(urlToOpen)
-        }
+        UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
     }
 }
 

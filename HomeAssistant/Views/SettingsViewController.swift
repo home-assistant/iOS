@@ -313,45 +313,37 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                 $0.title = L10n.Settings.DetailsSection.EnableNotificationRow.title
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.notificationsEnabled)
                 }.onCellSelection { _, row in
-                    if #available(iOS 10, *) {
-                        let center = UNUserNotificationCenter.current()
-                        center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
-                            if error != nil {
-                                let title = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.title
-                                let message = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message
-                                let alert = UIAlertController(title: title,
-                                                              message: message,
-                                                              preferredStyle: UIAlertControllerStyle.alert)
-                                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
-                                                              handler: nil))
-                                self.present(alert, animated: true, completion: nil)
-                            } else {
-                                print("Notifications Permissions finished!", granted)
-                                prefs.setValue(granted, forKey: "notificationsEnabled")
-                                prefs.synchronize()
-                                if granted {
-                                    HomeAssistantAPI.sharedInstance.setupPush()
-                                    DispatchQueue.main.async(execute: {
-                                        row.hidden = true
-                                        row.updateCell()
-                                        row.evaluateHidden()
-                                        let settingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
-                                        settingsRow.hidden = false
-                                        settingsRow.evaluateHidden()
-                                        let loadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
-                                        loadedRow.hidden = false
-                                        loadedRow.evaluateHidden()
-                                        self.tableView.reloadData()
-                                    })
-                                }
+                    let center = UNUserNotificationCenter.current()
+                    center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+                        if error != nil {
+                            let title = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.title
+                            let message = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message
+                            let alert = UIAlertController(title: title,
+                                                          message: message,
+                                                          preferredStyle: UIAlertControllerStyle.alert)
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                                          handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                        } else {
+                            print("Notifications Permissions finished!", granted)
+                            prefs.setValue(granted, forKey: "notificationsEnabled")
+                            prefs.synchronize()
+                            if granted {
+                                HomeAssistantAPI.sharedInstance.setupPush()
+                                DispatchQueue.main.async(execute: {
+                                    row.hidden = true
+                                    row.updateCell()
+                                    row.evaluateHidden()
+                                    let settingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
+                                    settingsRow.hidden = false
+                                    settingsRow.evaluateHidden()
+                                    let loadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
+                                    loadedRow.hidden = false
+                                    loadedRow.evaluateHidden()
+                                    self.tableView.reloadData()
+                                })
                             }
                         }
-                    } else {
-                        DispatchQueue.main.async(execute: {
-                            let setting = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
-                            UIApplication.shared.registerUserNotificationSettings(setting)
-                            UIApplication.shared.registerForRemoteNotifications()
-                        })
                     }
             }
 
