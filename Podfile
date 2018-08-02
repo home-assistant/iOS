@@ -29,10 +29,10 @@ target 'HomeAssistant' do
 end
 
 target 'Shared' do
-    pod 'RealmSwift'
-    target 'SharedTests' do
-      inherit! :search_paths
-    end
+  pod 'RealmSwift'
+  target 'SharedTests' do
+    inherit! :search_paths
+  end
 end
 
 
@@ -42,14 +42,17 @@ end
 
 target 'APNSAttachmentService' do
   pod 'KeychainAccess', '3.1.1'
+  pod 'RealmSwift'
 end
 
 target 'MapNotificationContentExtension' do
-    pod 'MBProgressHUD', '1.1.0'
+  pod 'MBProgressHUD', '1.1.0'
+  pod 'RealmSwift'
 end
 
 
 target 'NotificationContentExtension' do
   pod 'KeychainAccess', '3.1.1'
   pod 'MBProgressHUD', '1.1.0'
+  pod 'RealmSwift'
 end
