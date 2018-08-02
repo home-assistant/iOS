@@ -2418,7 +2418,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B06F54971227E33FB2315DA5 /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
@@ -2468,7 +2468,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 459B53A1935B67E05A3C893A /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
