@@ -51,7 +51,7 @@
 "settings_details.general.title" = "General Settings";
 "settings_details.general.chrome.title" = "Open links in Chrome";
 "settings_details.location.title" = "Location Settings";
-"settings_details.location.notifications.header" = "Notifications";
+"settings_details.location.notifications.header" = "Location Notifications";
 "settings_details.location.notifications.enter.title" = "Enter Zone Notifications";
 "settings_details.location.notifications.exit.title" = "Exit Zone Notifications";
 "settings_details.location.notifications.beacon_enter.title" = "Enter Zone via iBeacon Notifications";

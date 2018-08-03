@@ -314,7 +314,12 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.notificationsEnabled)
                 }.onCellSelection { _, row in
                     let center = UNUserNotificationCenter.current()
-                    center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+                    var options: UNAuthorizationOptions = [.alert, .badge, .sound]
+                    if #available(iOS 12.0, *) {
+                        options = [.alert, .badge, .sound,
+                                   .providesAppNotificationSettings, .criticalAlert]
+                    }
+                    center.requestAuthorization(options: options) { (granted, error) in
                         if error != nil {
                             let title = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.title
                             let message = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message
