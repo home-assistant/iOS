@@ -19,9 +19,9 @@ target 'HomeAssistant' do
   pod 'MBProgressHUD', '1.1.0'
   pod 'ObjectMapper', '3.3.0'
   pod 'PromiseKit', '6.3.4'
-  pod 'RealmSwift'
+  pod 'RealmSwift', '3.7.5'
   pod 'SwiftGen', '5.3.0'
-  pod 'SwiftLint', '0.25.1'
+  pod 'SwiftLint', '0.27.0'
 
   target 'HomeAssistantTests' do
     inherit! :search_paths
@@ -29,7 +29,7 @@ target 'HomeAssistant' do
 end
 
 target 'Shared' do
-  pod 'RealmSwift'
+  pod 'RealmSwift', '3.7.5'
   target 'SharedTests' do
     inherit! :search_paths
   end
@@ -42,17 +42,17 @@ end
 
 target 'APNSAttachmentService' do
   pod 'KeychainAccess', '3.1.1'
-  pod 'RealmSwift'
+  pod 'RealmSwift', '3.7.5'
 end
 
 target 'MapNotificationContentExtension' do
   pod 'MBProgressHUD', '1.1.0'
-  pod 'RealmSwift'
+  pod 'RealmSwift', '3.7.5'
 end
 
 
 target 'NotificationContentExtension' do
   pod 'KeychainAccess', '3.1.1'
   pod 'MBProgressHUD', '1.1.0'
-  pod 'RealmSwift'
+  pod 'RealmSwift', '3.7.5'
 end

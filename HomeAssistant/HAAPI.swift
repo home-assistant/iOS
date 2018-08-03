@@ -314,7 +314,7 @@ public class HomeAssistantAPI {
             let content = UNMutableNotificationContent()
             content.title = notificationTitle
             content.body = notificationBody
-            content.sound = UNNotificationSound.default()
+            content.sound = UNNotificationSound.default
 
             if zoneRelated {
                 content.threadIdentifier = zoneName
@@ -1349,9 +1349,9 @@ extension RegionManager: CLLocationManagerDelegate {
 // MARK: BackgroundTask
 extension RegionManager {
     func endBackgroundTask() {
-        if backgroundTask != UIBackgroundTaskInvalid {
+        if backgroundTask != UIBackgroundTaskIdentifier.invalid {
             UIApplication.shared.endBackgroundTask(backgroundTask!)
-            backgroundTask = UIBackgroundTaskInvalid
+            backgroundTask = UIBackgroundTaskIdentifier.invalid
         }
     }
 }

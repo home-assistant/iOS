@@ -86,7 +86,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
                     // swiftlint:disable:next line_length
                     let circle = HACircle.init(center: zone.locationCoordinates(), radius: CLLocationDistance(zone.Radius))
                     circle.type = "zone"
-                    mapView.add(circle)
+                    mapView.addOverlay(circle)
                 }
             }
 
@@ -111,25 +111,25 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
                     if let radius = device.GPSAccuracy {
                         let circle = HACircle.init(center: device.locationCoordinates(), radius: radius)
                         circle.type = "device"
-                        mapView.add(circle)
+                        mapView.addOverlay(circle)
                     }
                 }
             }
         }
 
-        var zoomRect: MKMapRect = MKMapRectNull
+        var zoomRect: MKMapRect = MKMapRect.null
         for index in 0..<mapView.annotations.count {
             let annotation = mapView.annotations[index]
-            let aPoint: MKMapPoint = MKMapPointForCoordinate(annotation.coordinate)
-            let rect: MKMapRect = MKMapRectMake(aPoint.x, aPoint.y, 0.1, 0.1)
+            let aPoint: MKMapPoint = MKMapPoint.init(annotation.coordinate)
+            let rect: MKMapRect = MKMapRect.init(x: aPoint.x, y: aPoint.y, width: 0.1, height: 0.1)
 
-            zoomRect = MKMapRectUnion(zoomRect, rect)
+            zoomRect = zoomRect.union(rect)
         }
 
         if let firstOverlay = mapView.overlays.first {
-            let rect = mapView.overlays.reduce(firstOverlay.boundingMapRect, {MKMapRectUnion($0, $1.boundingMapRect)})
+            let rect = mapView.overlays.reduce(firstOverlay.boundingMapRect, {$0.union($1.boundingMapRect)})
 
-            mapView.setVisibleMapRect(MKMapRectUnion(zoomRect, rect),
+            mapView.setVisibleMapRect(zoomRect.union(rect),
                                       edgePadding: UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0),
                                       animated: true)
         }
@@ -197,15 +197,15 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual).done { _ in
             let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
                                           message: L10n.ManualLocationUpdateNotification.message,
-                                          preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
+                                          preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
             }.catch {error in
                 let nserror = error as NSError
                 let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
                     message: L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription),
-                    preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
+                    preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
         }
     }

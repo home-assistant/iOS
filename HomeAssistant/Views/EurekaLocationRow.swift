@@ -48,7 +48,7 @@ public class MapViewController: UIViewController, TypedRowControllerType, MKMapV
 
     lazy var mapView: MKMapView = { [unowned self] in
         let v = MKMapView(frame: self.view.bounds)
-        v.autoresizingMask = UIViewAutoresizing.flexibleWidth.union(UIViewAutoresizing.flexibleHeight)
+        v.autoresizingMask = UIView.AutoresizingMask.flexibleWidth.union(UIView.AutoresizingMask.flexibleHeight)
         return v
         }()
 
@@ -76,12 +76,12 @@ public class MapViewController: UIViewController, TypedRowControllerType, MKMapV
             let dropPin = MKPointAnnotation()
             dropPin.coordinate = value.coordinate
             mapView.addAnnotation(dropPin)
-            let region = MKCoordinateRegionMakeWithDistance(value.coordinate, 400, 400)
+            let region = MKCoordinateRegion.init(center: value.coordinate, latitudinalMeters: 400, longitudinalMeters: 400)
             mapView.setRegion(region, animated: true)
             if value.horizontalAccuracy != 0 {
                 let circle = HACircle.init(center: value.coordinate, radius: value.horizontalAccuracy)
                 circle.type = "device"
-                mapView.add(circle)
+                mapView.addOverlay(circle)
             }
         }
 

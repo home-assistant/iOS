@@ -28,13 +28,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 //        Fabric.with([Crashlytics.self])
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
 
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
-            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
         }
 
         NetworkActivityIndicatorManager.shared.isEnabled = true
@@ -186,7 +186,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     func application(_ app: UIApplication,
                      open url: URL,
-                     options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
+                     options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
         var serviceData: [String: String] = [:]
@@ -288,9 +288,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
                 let alert = UIAlertController(title: L10n.Alerts.OpenUrlFromNotification.title,
                                               message: L10n.Alerts.OpenUrlFromNotification.message(openUrl),
-                                              preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: L10n.noLabel, style: UIAlertActionStyle.default, handler: nil))
-                alert.addAction(UIAlertAction(title: L10n.yesLabel, style: UIAlertActionStyle.default, handler: { _ in
+                                              preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: L10n.noLabel, style: UIAlertAction.Style.default, handler: nil))
+                alert.addAction(UIAlertAction(title: L10n.yesLabel, style: UIAlertAction.Style.default, handler: { _ in
                     UIApplication.shared.open(url, options: [:],
                                               completionHandler: nil)
                 }))

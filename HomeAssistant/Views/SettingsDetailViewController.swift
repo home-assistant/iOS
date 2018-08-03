@@ -167,8 +167,8 @@ class SettingsDetailViewController: FormViewController {
                     let message = L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.message
                     let alert = UIAlertController(title: title,
                                                   message: message,
-                                                  preferredStyle: UIAlertControllerStyle.alert)
-                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                                  preferredStyle: UIAlertController.Style.alert)
+                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                                   handler: nil))
                     self.present(alert, animated: true, completion: nil)
                 }
@@ -182,9 +182,9 @@ class SettingsDetailViewController: FormViewController {
                         let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.SoundsSection.ImportedAlert.title,
                                                       // swiftlint:disable:next line_length
                                                       message: L10n.SettingsDetails.Notifications.SoundsSection.ImportedAlert.message(moved),
-                                                      preferredStyle: UIAlertControllerStyle.alert)
+                                                      preferredStyle: UIAlertController.Style.alert)
                         alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                                      style: UIAlertActionStyle.default, handler: nil))
+                                                      style: UIAlertAction.Style.default, handler: nil))
                         self.present(alert, animated: true, completion: nil)
                 }
 
@@ -197,9 +197,9 @@ class SettingsDetailViewController: FormViewController {
                     let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.title,
                                                   // swiftlint:disable:next line_length
                                                   message: L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.message,
-                                                  preferredStyle: UIAlertControllerStyle.alert)
+                                                  preferredStyle: UIAlertController.Style.alert)
                     alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                                  style: UIAlertActionStyle.default, handler: nil))
+                                                  style: UIAlertAction.Style.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
                 }
 
