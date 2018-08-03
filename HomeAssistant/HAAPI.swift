@@ -257,8 +257,10 @@ public class HomeAssistantAPI {
         var shouldNotify = false
 
         var zoneName = "Unknown zone"
+        var zoneRelated = false
         if let zone = zone {
             zoneName = zone.Name
+            zoneRelated = true
         }
 
         switch updateType {
@@ -313,6 +315,13 @@ public class HomeAssistantAPI {
             content.title = notificationTitle
             content.body = notificationBody
             content.sound = UNNotificationSound.default()
+
+            if zoneRelated {
+                content.threadIdentifier = zoneName
+            } else {
+                // Group all location notifications together as "location" if they aren't generated from a zone.
+                content.threadIdentifier = "location"
+            }
 
             UNUserNotificationCenter.current().add(UNNotificationRequest.init(identifier: notificationIdentifer,
                                                                               content: content, trigger: nil))
