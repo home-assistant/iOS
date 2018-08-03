@@ -56,3 +56,13 @@ target 'NotificationContentExtension' do
   pod 'MBProgressHUD', '1.1.0'
   pod 'RealmSwift', '3.7.5'
 end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    if ['AlamofireNetworkActivityIndicator', 'AlamofireObjectMapper', 'DeviceKit', 'Eureka', 'ObjectMapper', 'PromiseKit'].include? target.name
+      target.build_configurations.each do |config|
+        config.build_settings['SWIFT_VERSION'] = '4.0'
+      end
+    end
+  end
+end
