@@ -212,7 +212,7 @@ public class HomeAssistantAPI {
 
         if let activity = self.regionManager.lastActivity {
             payload.ActivityType = activity.activityType
-            payload.ActivityConfidence = String(describing: activity.confidence)
+            payload.ActivityConfidence = activity.confidence.description
         }
 
         var jsonPayload = "{\"missing\": \"payload\"}"
@@ -227,7 +227,7 @@ public class HomeAssistantAPI {
         let realm = Current.realm()
         // swiftlint:disable:next force_try
         try! realm.write {
-            realm.add(LocationHistoryEntry(updateType: updateType, location: location,
+            realm.add(LocationHistoryEntry(updateType: updateType, location: loc,
                                            zone: zone, payload: jsonPayload))
         }
 
@@ -1429,5 +1429,18 @@ extension CMMotionActivity {
         } else {
             return "Unknown"
         }
+    }
+}
+
+extension CMMotionActivityConfidence {
+    var description: String {
+        if self == CMMotionActivityConfidence.low {
+            return "Low"
+        } else if self == CMMotionActivityConfidence.medium {
+            return "Medium"
+        } else if self == CMMotionActivityConfidence.high {
+            return "High"
+        }
+        return "Unknown"
     }
 }
