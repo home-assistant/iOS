@@ -14,6 +14,11 @@
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
+		<key>HomeAssistantIntent.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>23</integer>
+		</dict>
 		<key>HomeAssistantTests.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -45,8 +50,10 @@
 		</dict>
 		<key>Shared.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
-			<integer>23</integer>
+			<integer>25</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -77,6 +84,21 @@
 			<true/>
 		</dict>
 		<key>B6AAD7A01D827DD40090B220</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B6D729362113FEC500E89088</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B6D7293F2113FEC600E89088</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D03D891620E0A85200D4F28D</key>
 		<dict>
 			<key>primary</key>
 			<true/>

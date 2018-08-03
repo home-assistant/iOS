@@ -18,6 +18,7 @@ import UserNotifications
 import RealmSwift
 import CoreMotion
 import Shared
+import Intents
 
 let APIClientSharedInstance = HomeAssistantAPI()
 
@@ -315,6 +316,24 @@ public class HomeAssistantAPI {
 
             UNUserNotificationCenter.current().add(UNNotificationRequest.init(identifier: notificationIdentifer,
                                                                               content: content, trigger: nil))
+        }
+
+        if #available(iOS 12.0, *) {
+            let intent = SendLocationIntent()
+
+            let interaction = INInteraction(intent: intent, response: nil)
+
+            interaction.donate { (error) in
+                if error != nil {
+                    if let error = error as NSError? {
+                        print("Interaction donation failed: \(error)")
+                    } else {
+                        print("Successfully donated interaction")
+                    }
+                } else {
+                    print("Donated send location interaction")
+                }
+            }
         }
 
     }

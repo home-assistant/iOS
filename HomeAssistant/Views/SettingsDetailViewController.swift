@@ -11,6 +11,7 @@ import Eureka
 //import Crashlytics
 import Shared
 
+// swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController {
 
     var detailGroup: String = "display"

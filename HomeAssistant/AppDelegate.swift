@@ -7,10 +7,11 @@
 //
 
 import UIKit
+import Intents
+import UserNotifications
 //import Fabric
 //import Crashlytics
 import PromiseKit
-import UserNotifications
 import AlamofireNetworkActivityIndicator
 import KeychainAccess
 import Alamofire
@@ -49,6 +50,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
                     print("Requested critical alert access", granted, error)
                 }
+            }
+        }
+
+        if #available(iOS 12.0, *) {
+            INPreferences.requestSiriAuthorization { (status) in
+                print("Siri Authorization status", status)
             }
         }
 
@@ -176,6 +183,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func application(_ app: UIApplication,
                      open url: URL,
                      options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
@@ -189,6 +197,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         case "call_service": // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
             let domain = url.pathComponents[1].components(separatedBy: ".")[0]
             let service = url.pathComponents[1].components(separatedBy: ".")[1]
+
+            if #available(iOS 12.0, *) {
+                let intent = CallServiceIntent()
+                intent.serviceName = url.pathComponents[1]
+                intent.serviceData = url.query
+
+                let interaction = INInteraction(intent: intent, response: nil)
+
+                interaction.donate { (error) in
+                    if error != nil {
+                        if let error = error as NSError? {
+                            print("CallService Interaction donation failed: \(error)")
+                        } else {
+                            print("CallService Successfully donated interaction")
+                        }
+                    }
+                }
+            }
+
             HomeAssistantAPI.sharedInstance.CallService(domain: domain, service: service,
                                                         serviceData: serviceData).done { _ in
                 showAlert(title: L10n.UrlHandler.CallService.Success.title,
@@ -199,6 +226,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                                              error.localizedDescription))
             }
         case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
+
+            if #available(iOS 12.0, *) {
+                let intent = FireEventIntent()
+                intent.eventName = url.pathComponents[1]
+                intent.eventData = url.query
+
+                let interaction = INInteraction(intent: intent, response: nil)
+
+                interaction.donate { (error) in
+                    if error != nil {
+                        if let error = error as NSError? {
+                            print("FireEvent Interaction donation failed: \(error)")
+                        } else {
+                            print("FireEvent Successfully donated interaction")
+                        }
+                    }
+                }
+            }
+
             HomeAssistantAPI.sharedInstance.CreateEvent(eventType: url.pathComponents[1],
                                                         eventData: serviceData).done { _ in
                 showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
