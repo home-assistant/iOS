@@ -285,11 +285,26 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings.connection_section.error_enabling_notifications.title")
       }
 
+      internal enum ExternalBaseUrl {
+        /// External URL
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.external_base_url.title")
+      }
+
+      internal enum InternalBaseUrl {
+        /// Internal URL
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.internal_base_url.title")
+      }
+
       internal enum InvalidUrlSchemeNotification {
         /// The URL must begin with either http:// or https://.
         internal static let message = L10n.tr("Localizable", "settings.connection_section.invalid_url_scheme_notification.message")
         /// Invalid URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.invalid_url_scheme_notification.title")
+      }
+
+      internal enum NetworkName {
+        /// Current Network Name
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.network_name.title")
       }
 
       internal enum SaveButton {

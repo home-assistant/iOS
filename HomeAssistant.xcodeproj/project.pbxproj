@@ -1446,6 +1446,9 @@
 						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 0900;
 						SystemCapabilities = {
+							com.apple.AccessWiFi = {
+								enabled = 1;
+							};
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
 							};
