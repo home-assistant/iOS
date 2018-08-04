@@ -216,6 +216,14 @@ public class HomeAssistantAPI {
             payload.ActivityConfidence = activity.confidence.description
         }
 
+        if let zone = zone, zone.ID == "zone.home" {
+            if updateType == .BeaconRegionEnter || updateType == .RegionEnter {
+                payload.LocationName = "home"
+            } else if updateType == .BeaconRegionExit || updateType == .RegionExit {
+                payload.LocationName = "not_home"
+            }
+        }
+
         var jsonPayload = "{\"missing\": \"payload\"}"
         if let p = payload.toJSONString(prettyPrint: false) {
             jsonPayload = p
