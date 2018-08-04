@@ -88,6 +88,9 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
         self.basicAuthUsername = keychain["basicAuthUsername"]
         self.basicAuthPassword = keychain["basicAuthPassword"]
 
+        self.internalBaseURL = keychain["internalBaseURL"]
+        self.internalBaseURLSSID = keychain["internalBaseURLSSID"]
+
         if showErrorConnectingMessage {
             var errDesc = ""
             if let err = showErrorConnectingMessageError?.localizedDescription {
@@ -168,7 +171,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
 
             <<< SwitchRow("internalUrl") {
                 $0.title = "Use internal URL"
-                $0.value = false
+                $0.value = (self.internalBaseURL != nil && self.internalBaseURLSSID != nil)
             }.onChange { row in
                 print("Row changed, now", row.value)
                 if let boolVal = row.value {
@@ -192,8 +195,10 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             <<< LabelRow("ssid") {
                 $0.title = L10n.Settings.ConnectionSection.NetworkName.title
                 $0.value = L10n.ClientEvents.EventType.unknown
-                $0.hidden = true
-                if let ssid = HomeAssistantAPI.sharedInstance.getSSID() {
+                $0.hidden = Condition(booleanLiteral: !(self.internalBaseURL != nil && self.internalBaseURLSSID != nil))
+                if let ssid = self.internalBaseURLSSID {
+                    $0.value = ssid
+                } else if let ssid = HomeAssistantAPI.sharedInstance.getSSID() {
                     $0.value = ssid
                 }
             }
@@ -202,7 +207,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                 $0.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
                 $0.value = self.internalBaseURL
                 $0.placeholder = "http://hassio.local:8123"
-                $0.hidden = true
+                $0.hidden = Condition(booleanLiteral: !(self.internalBaseURL != nil && self.internalBaseURLSSID != nil))
                 }.onCellHighlightChanged({ (_, row) in
                     if row.isHighlighted == false {
                         if let url = row.value {
