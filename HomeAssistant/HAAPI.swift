@@ -92,9 +92,10 @@ public class HomeAssistantAPI {
     }
 
     func Setup(baseURLString: String?, password: String?, deviceID: String?) {
-        let keychain = Keychain(service: "io.robbie.homeassistant")
+        let appKeychain = Keychain(service: "io.robbie.homeassistant")
+        let basicAuthKeychain = Keychain(server: baseURLString, protocolType: .https, authenticationType: .httpBasic)
 
-        if let ssid = keychain["internalBaseURLSSID"], let internalURL = keychain["internalBaseURL"],
+        if let ssid = appKeychain["internalBaseURLSSID"], let internalURL = appKeychain["internalBaseURL"],
             ssid == getSSID() {
             self.baseURL = URL(string: internalURL)
             self.baseAPIURL = self.baseURL?.appendingPathComponent("api")
@@ -132,7 +133,8 @@ public class HomeAssistantAPI {
 
         self.manager = Alamofire.SessionManager(configuration: configuration)
 
-        if let basicUsername = keychain["basicAuthUsername"], let basicPassword = keychain["basicAuthPassword"] {
+        if let basicUsername = basicAuthKeychain["basicAuthUsername"],
+            let basicPassword = basicAuthKeychain["basicAuthPassword"] {
             self.manager?.delegate.sessionDidReceiveChallenge = { session, challenge in
                 print("Received basic auth challenge")
 
