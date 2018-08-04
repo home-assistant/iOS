@@ -273,6 +273,23 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings.connection_section.base_url.title")
       }
 
+      internal enum BasicAuth {
+
+        internal enum Password {
+          /// verysecure
+          internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.basic_auth.password.placeholder")
+          /// Password
+          internal static let title = L10n.tr("Localizable", "settings.connection_section.basic_auth.password.title")
+        }
+
+        internal enum Username {
+          /// iam
+          internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.basic_auth.username.placeholder")
+          /// Username
+          internal static let title = L10n.tr("Localizable", "settings.connection_section.basic_auth.username.title")
+        }
+      }
+
       internal enum ConnectRow {
         /// Connect
         internal static let title = L10n.tr("Localizable", "settings.connection_section.connect_row.title")

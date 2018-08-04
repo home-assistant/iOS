@@ -138,6 +138,24 @@ public class HomeAssistantAPI {
                            forKey: "notificationsEnabled")
         })
 
+        if let basicUsername = keychain["basicAuthUsername"], let basicPassword = keychain["basicAuthPassword"] {
+            self.manager?.delegate.sessionDidReceiveChallenge = { session, challenge in
+                print("Received basic auth challenge")
+
+                let authMethod = challenge.protectionSpace.authenticationMethod
+
+                guard authMethod == NSURLAuthenticationMethodDefault ||
+                    authMethod == NSURLAuthenticationMethodHTTPBasic ||
+                    authMethod == NSURLAuthenticationMethodHTTPDigest else {
+                        print("Not handling auth method", authMethod)
+                        return (.performDefaultHandling, nil)
+                }
+
+                return (.useCredential, URLCredential(user: basicUsername, password: basicPassword,
+                                                      persistence: .synchronizable))
+            }
+        }
+
         return
 
     }

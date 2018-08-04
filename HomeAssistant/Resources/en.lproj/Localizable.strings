@@ -28,6 +28,10 @@
 "settings.connection_section.internal_base_url.title" = "Internal URL";
 "settings.connection_section.external_base_url.title" = "External URL";
 "settings.connection_section.save_button.title" = "Save";
+"settings.connection_section.basic_auth.username.title" = "Username";
+"settings.connection_section.basic_auth.password.title" = "Password";
+"settings.connection_section.basic_auth.username.placeholder" = "iam";
+"settings.connection_section.basic_auth.password.placeholder" = "verysecure";
 "settings.connection_error.forbidden.message" = "The password was incorrect.";
 "settings.connection_error.invalid_url.title" = "Error unwrapping URL";
 "settings.connection_error.invalid_url.message" = "Looks like your URL is invalid. Please check the format and try again.";
