@@ -18,6 +18,8 @@ import UserNotifications
 import RealmSwift
 import CoreMotion
 import Shared
+import SystemConfiguration.CaptiveNetwork
+import KeychainAccess
 import Intents
 
 let APIClientSharedInstance = HomeAssistantAPI()
@@ -91,17 +93,25 @@ public class HomeAssistantAPI {
     }
 
     func Setup(baseURLString: String?, password: String?, deviceID: String?) {
-        if let baseURLString = baseURLString {
+        let keychain = Keychain(service: "io.robbie.homeassistant")
+
+        if let ssid = keychain["internalBaseURLSSID"], let internalURL = keychain["internalBaseURL"],
+            ssid == getSSID() {
+            self.baseURL = URL(string: internalURL)
+            self.baseAPIURL = self.baseURL?.appendingPathComponent("api")
+        } else if let baseURLString = baseURLString {
             if let baseURL = URL(string: baseURLString) {
                 if self.Configured && self.baseURL == baseURL && self.apiPassword == password &&
                     self.deviceID == deviceID {
                     print("HAAPI already configured, returning from Setup")
                     return
                 }
+
                 self.baseURL = baseURL
                 self.baseAPIURL = self.baseURL?.appendingPathComponent("api")
             }
         }
+
         var headers = [String: String]()
         if let password = password {
             headers["X-HA-Access"] = password
@@ -1045,6 +1055,21 @@ public class HomeAssistantAPI {
             }
         }
     }
+
+    func getSSID() -> String? {
+        var ssid: String?
+        if let interfaces = CNCopySupportedInterfaces() as NSArray? {
+            for interface in interfaces {
+                // swiftlint:disable:next force_cast
+                if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as! CFString) as NSDictionary? {
+                    ssid = interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
+                    break
+                }
+            }
+        }
+        return ssid
+    }
+
 
 }
 

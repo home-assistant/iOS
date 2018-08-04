@@ -15,6 +15,7 @@ import Alamofire
 import KeychainAccess
 import CoreLocation
 import UserNotifications
+import SystemConfiguration.CaptiveNetwork
 
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
@@ -29,6 +30,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
 
     var baseURL: URL?
     var password: String?
+    var internalBaseURL: URL?
+    var internalBaseURLSSID: String?
     var deviceID: String?
 
     var configured = false
@@ -158,10 +161,72 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                     }
                 }
 
+            <<< SwitchRow("internalUrl") {
+                $0.title = "Use internal URL"
+                $0.value = false
+            }.onChange { row in
+                print("Row changed, now", row.value)
+                if let boolVal = row.value {
+                    print("Setting rows to val", !boolVal)
+                    let ssidRow: LabelRow = self.form.rowBy(tag: "ssid")!
+                    ssidRow.hidden = Condition(booleanLiteral: !boolVal)
+                    ssidRow.evaluateHidden()
+                    let internalURLRow: URLRow = self.form.rowBy(tag: "internalBaseURL")!
+                    internalURLRow.hidden = Condition(booleanLiteral: !boolVal)
+                    internalURLRow.evaluateHidden()
+                    let connectRow: ButtonRow = self.form.rowBy(tag: "connect")!
+                    connectRow.evaluateHidden()
+                    connectRow.updateCell()
+                    let externalURLRow: URLRow = self.form.rowBy(tag: "baseURL")!
+                    externalURLRow.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
+                    externalURLRow.updateCell()
+                    self.tableView.reloadData()
+                }
+            }
+
+            <<< LabelRow("ssid") {
+                $0.title = L10n.Settings.ConnectionSection.NetworkName.title
+                $0.value = L10n.ClientEvents.EventType.unknown
+                $0.hidden = true
+                if let ssid = HomeAssistantAPI.sharedInstance.getSSID() {
+                    $0.value = ssid
+                }
+            }
+
+            <<< URLRow("internalBaseURL") {
+                $0.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
+                $0.value = self.internalBaseURL
+                $0.placeholder = "http://hassio.local:8123"
+                $0.hidden = true
+                }.onCellHighlightChanged({ (_, row) in
+                    if row.isHighlighted == false {
+                        if let url = row.value {
+                            let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
+                            if !cleanUrl.hasValidScheme {
+                                let title = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.title
+                                let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
+                                let alert = UIAlertController(title: title, message: message,
+                                                              preferredStyle: UIAlertController.Style.alert)
+                                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
+                                                              handler: nil))
+                                self.present(alert, animated: true, completion: nil)
+                            } else {
+                                self.internalBaseURL = cleanUrl.cleanedURL
+                            }
+                        }
+                    }
+                })
+
             <<< ButtonRow("connect") {
                     $0.title = L10n.Settings.ConnectionSection.SaveButton.title
                 }.onCellSelection { _, _ in
                     if self.form.validate().count == 0 {
+                        if let internalBaseURL = self.internalBaseURL {
+                            keychain["internalBaseURL"] = internalBaseURL.absoluteString
+                        }
+                        if let internalBaseURLSSID = self.internalBaseURLSSID {
+                            keychain["internalBaseURLSSID"] = internalBaseURLSSID
+                        }
                         if let baseUrl = self.baseURL {
                             HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseUrl.absoluteString,
                                                                   password: self.password, deviceID: self.deviceID)
