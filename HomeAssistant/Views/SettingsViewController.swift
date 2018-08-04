@@ -32,6 +32,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
     var password: String?
     var internalBaseURL: URL?
     var internalBaseURLSSID: String?
+    var basicAuthUsername: String?
+    var basicAuthPassword: String?
     var deviceID: String?
 
     var configured = false
@@ -82,6 +84,9 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
         self.password = keychain["apiPassword"]
 
         self.deviceID = keychain["deviceID"]
+
+        self.basicAuthUsername = keychain["basicAuthUsername"]
+        self.basicAuthPassword = keychain["basicAuthPassword"]
 
         if showErrorConnectingMessage {
             var errDesc = ""
@@ -217,6 +222,42 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                     }
                 })
 
+            <<< SwitchRow("basicAuth") {
+                $0.title = "Basic authentication"
+                $0.value = (self.basicAuthUsername != nil && self.basicAuthPassword != nil)
+                }.onChange { row in
+                    if let boolVal = row.value {
+                        print("Setting rows to val", !boolVal)
+                        let basicAuthUsername: TextRow = self.form.rowBy(tag: "basicAuthUsername")!
+                        basicAuthUsername.hidden = Condition(booleanLiteral: !boolVal)
+                        basicAuthUsername.evaluateHidden()
+                        let basicAuthPassword: PasswordRow = self.form.rowBy(tag: "basicAuthPassword")!
+                        basicAuthPassword.hidden = Condition(booleanLiteral: !boolVal)
+                        basicAuthPassword.evaluateHidden()
+                        self.tableView.reloadData()
+                    }
+            }
+
+            <<< TextRow("basicAuthUsername") {
+                $0.title = L10n.Settings.ConnectionSection.BasicAuth.Username.title
+                $0.hidden = Condition(booleanLiteral: !(self.basicAuthUsername != nil && self.basicAuthPassword != nil))
+                $0.value = self.basicAuthUsername
+                $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Username.placeholder
+            }
+
+            <<< PasswordRow("basicAuthPassword") {
+                $0.title = L10n.Settings.ConnectionSection.BasicAuth.Password.title
+                $0.value = self.basicAuthPassword
+                $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Password.placeholder
+                $0.hidden = Condition(booleanLiteral: !(self.basicAuthUsername != nil && self.basicAuthPassword != nil))
+                }.onChange { row in
+                    self.basicAuthPassword = row.value
+                }.cellUpdate { cell, row in
+                    if !row.isValid {
+                        cell.titleLabel?.textColor = .red
+                    }
+            }
+
             <<< ButtonRow("connect") {
                     $0.title = L10n.Settings.ConnectionSection.SaveButton.title
                 }.onCellSelection { _, _ in
@@ -226,6 +267,12 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                         }
                         if let internalBaseURLSSID = self.internalBaseURLSSID {
                             keychain["internalBaseURLSSID"] = internalBaseURLSSID
+                        }
+                        if let basicAuthUsername = self.basicAuthUsername {
+                            keychain["basicAuthUsername"] = basicAuthUsername
+                        }
+                        if let basicAuthPassword = self.basicAuthPassword {
+                            keychain["basicAuthPassword"] = basicAuthPassword
                         }
                         if let baseUrl = self.baseURL {
                             HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseUrl.absoluteString,
