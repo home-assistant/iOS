@@ -215,6 +215,14 @@ public class HomeAssistantAPI {
             payload.ActivityConfidence = activity.confidence.description
         }
 
+        if let zone = zone, zone.ID == "zone.home" {
+            if updateType == .BeaconRegionEnter || updateType == .RegionEnter {
+                payload.LocationName = "home"
+            } else if updateType == .BeaconRegionExit || updateType == .RegionExit {
+                payload.LocationName = "not_home"
+            }
+        }
+
         var jsonPayload = "{\"missing\": \"payload\"}"
         if let p = payload.toJSONString(prettyPrint: false) {
             jsonPayload = p
@@ -355,7 +363,9 @@ public class HomeAssistantAPI {
         print("getAndSendLocation called via", String(describing: updateTrigger))
 
         return Promise { seal in
+            regionManager.oneShotLocationActive = true
             locationManager = LocationManager { location, error in
+                self.regionManager.oneShotLocationActive = false
                 if let location = location {
                     self.submitLocation(updateType: updateTrigger, location: location, visit: nil, zone: nil)
                     seal.fulfill(true)
@@ -1168,6 +1178,7 @@ class RegionManager: NSObject {
     let activityManager = CMMotionActivityManager()
     var lastActivity: CMMotionActivity?
     var lastLocation: CLLocation?
+    var oneShotLocationActive: Bool = false
 
     var zones: [RLMZone] {
         let realm = Current.realm()
@@ -1202,12 +1213,14 @@ class RegionManager: NSObject {
     func triggerRegionEvent(_ manager: CLLocationManager, trigger: LocationUpdateTrigger,
                             region: CLRegion) {
         var trig = trigger
-        guard let zone = zones.filter({ region.identifier == $0.BeaconUUID }).first else {
+        guard let zone = zones.filter({ region.identifier == $0.ID }).first else {
+            print("Zone ID \(region.identifier) doesn't exist in Realm, syncing monitored regions now")
             return syncMonitoredRegions()
         }
 
         // Do nothing in case we don't want to trigger an enter event
         if zone.TrackingEnabled == false {
+            print("Tracking enabled is false")
             return
         }
 
@@ -1229,6 +1242,8 @@ class RegionManager: NSObject {
         try! realm.write {
             zone.inRegion = (trig == .RegionEnter || trig == .BeaconRegionEnter)
         }
+
+        print("Submit location for zone \(zone.ID) with trigger \(trig.rawValue)")
 
         HomeAssistantAPI.sharedInstance.submitLocation(updateType: trig, location: nil,
                                                        visit: nil, zone: zone)
@@ -1279,8 +1294,12 @@ extension RegionManager: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if self.oneShotLocationActive {
+            print("NOT accepting region manager update as one shot location service is active")
+            return
+        }
         print("RegionManager: Got location, stopping updates!", locations.last.debugDescription, locations.count)
-        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .Unknown,
+        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .SignificantLocationUpdate,
                                                        location: locations.last,
                                                        visit: nil,
                                                        zone: nil)
@@ -1341,6 +1360,8 @@ extension RegionManager: CLLocationManagerDelegate {
             strState = "Inside"
         } else if state == .outside {
             strState = "Outside"
+        } else if state == .unknown {
+            strState = "Unknown"
         }
         print("\(strState) region", region.identifier)
     }

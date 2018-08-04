@@ -89,6 +89,8 @@ class RLMZone: Object {
                 )
             }
             beaconRegion.notifyEntryStateOnDisplay = true
+            beaconRegion.notifyOnEntry = true
+            beaconRegion.notifyOnExit = true
             return beaconRegion
         } else {
             // Geofence / CircularRegion
@@ -97,11 +99,14 @@ class RLMZone: Object {
     }
 
     func circularRegion() -> CLCircularRegion {
-        return CLCircularRegion(
+        let region = CLCircularRegion(
             center: CLLocationCoordinate2DMake(self.Latitude, self.Longitude),
             radius: self.Radius,
             identifier: self.ID
         )
+        region.notifyOnEntry = true
+        region.notifyOnExit = true
+        return region
     }
 
     override static func primaryKey() -> String? {

@@ -19,6 +19,7 @@ class DeviceTrackerSee: Mappable {
     var Hostname: String?
     var Location: CLLocationCoordinate2D?
     var SourceType: UpdateTypes = .GlobalPositioningSystem
+    var LocationName: String?
 
     // Attributes
 
@@ -59,6 +60,7 @@ class DeviceTrackerSee: Mappable {
         Accuracy             <- map["gps_accuracy"]
         Hostname             <- map["host_name"]
         SourceType           <- (map["source_type"], EnumTransform<UpdateTypes>())
+        LocationName         <- map["location_name"]
 
         Speed                <- map["attributes.speed"]
         Altitude             <- map["attributes.altitude"]
