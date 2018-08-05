@@ -41,7 +41,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
     let discovery = Bonjour()
 
     let keychain = Keychain(service: "io.robbie.homeassistant")
-    let basicAuthKeychain = Keychain(server: baseURLString, protocolType: .https, authenticationType: .httpBasic)
+    let basicAuthKeychain = Keychain(server: baseURL, protocolType: .https, authenticationType: .httpBasic)
 
     var authLocationManager: CLLocationManager = CLLocationManager()
 
@@ -91,7 +91,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
         self.basicAuthUsername = basicAuthKeychain["basicAuthUsername"]
         self.basicAuthPassword = basicAuthKeychain["basicAuthPassword"]
 
-        self.internalBaseURL = keychain["internalBaseURL"] as? URL
+        self.internalBaseURL = URL(string: keychain["internalBaseURL"])
         self.internalBaseURLSSID = keychain["internalBaseURLSSID"]
 
         if showErrorConnectingMessage {
@@ -269,6 +269,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                     $0.title = L10n.Settings.ConnectionSection.SaveButton.title
                 }.onCellSelection { _, _ in
                     if self.form.validate().count == 0 {
+                        let keychain = self.keychain
                         if let internalBaseURL = self.internalBaseURL {
                             keychain["internalBaseURL"] = internalBaseURL.absoluteString
                         }

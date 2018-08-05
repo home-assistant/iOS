@@ -93,7 +93,7 @@ public class HomeAssistantAPI {
 
     func Setup(baseURLString: String?, password: String?, deviceID: String?) {
         let appKeychain = Keychain(service: "io.robbie.homeassistant")
-        let basicAuthKeychain = Keychain(server: baseURLString, protocolType: .https, authenticationType: .httpBasic)
+        let basicAuthKeychain = Keychain(server: baseURLString!, protocolType: .https, authenticationType: .httpBasic)
 
         if let ssid = appKeychain["internalBaseURLSSID"], let internalURL = appKeychain["internalBaseURL"],
             ssid == getSSID() {
