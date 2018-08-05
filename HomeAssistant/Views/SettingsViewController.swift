@@ -82,7 +82,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
         }
         
         let keychain = Keychain(service: "io.robbie.homeassistant")
-        let basicAuthKeychain = Keychain(server: baseURL, protocolType: .https, authenticationType: .httpBasic)
+        let basicAuthKeychain = Keychain(server: baseURL!, protocolType: .https, authenticationType: .httpBasic)
 
         self.password = keychain["apiPassword"]
 
