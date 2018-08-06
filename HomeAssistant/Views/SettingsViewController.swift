@@ -74,6 +74,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             self.navigationItem.setRightBarButton(doneButton, animated: true)
         }
 
+        let keychain = Keychain(service: "io.robbie.homeassistant")
         if let baseURLString = keychain["baseURL"] {
             if let baseURL = URL(string: baseURLString) {
                 self.baseURL = baseURL
@@ -81,14 +82,16 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             }
         }
 
+        let basicAuthKeychain = Keychain(server: baseURL!, protocolType: .https, authenticationType: .httpBasic)
+
         self.password = keychain["apiPassword"]
 
         self.deviceID = keychain["deviceID"]
 
-        self.basicAuthUsername = keychain["basicAuthUsername"]
-        self.basicAuthPassword = keychain["basicAuthPassword"]
+        self.basicAuthUsername = basicAuthKeychain["basicAuthUsername"]
+        self.basicAuthPassword = basicAuthKeychain["basicAuthPassword"]
 
-        self.internalBaseURL = keychain["internalBaseURL"]
+        self.internalBaseURL = URL(string: keychain["internalBaseURL"]!)
         self.internalBaseURLSSID = keychain["internalBaseURLSSID"]
 
         if showErrorConnectingMessage {
@@ -173,7 +176,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                 $0.title = "Use internal URL"
                 $0.value = (self.internalBaseURL != nil && self.internalBaseURLSSID != nil)
             }.onChange { row in
-                print("Row changed, now", row.value)
                 if let boolVal = row.value {
                     print("Setting rows to val", !boolVal)
                     let ssidRow: LabelRow = self.form.rowBy(tag: "ssid")!
@@ -216,8 +218,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                                 let title = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.title
                                 let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
                                 let alert = UIAlertController(title: title, message: message,
-                                                              preferredStyle: UIAlertController.Style.alert)
-                                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
+                                                              preferredStyle: UIAlertControllerStyle.alert)
+                                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
                                                               handler: nil))
                                 self.present(alert, animated: true, completion: nil)
                             } else {
@@ -274,10 +276,10 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                             keychain["internalBaseURLSSID"] = internalBaseURLSSID
                         }
                         if let basicAuthUsername = self.basicAuthUsername {
-                            keychain["basicAuthUsername"] = basicAuthUsername
+                            basicAuthKeychain["basicAuthUsername"] = basicAuthUsername
                         }
                         if let basicAuthPassword = self.basicAuthPassword {
-                            keychain["basicAuthPassword"] = basicAuthPassword
+                            basicAuthKeychain["basicAuthPassword"] = basicAuthPassword
                         }
                         if let baseUrl = self.baseURL {
                             HomeAssistantAPI.sharedInstance.Setup(baseURLString: baseUrl.absoluteString,
