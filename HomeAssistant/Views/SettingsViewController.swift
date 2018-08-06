@@ -32,6 +32,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
     var password: String?
     var internalBaseURL: URL?
     var internalBaseURLSSID: String?
+    var internalBaseURLEnabled: Bool = false
     var basicAuthUsername: String?
     var basicAuthPassword: String?
     var basicAuthEnabled: Bool = false
@@ -95,6 +96,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
         if let url = keychain["internalBaseURL"], let ssid = keychain["internalBaseURLSSID"] {
             self.internalBaseURL = URL(string: url)
             self.internalBaseURLSSID = ssid
+            self.internalBaseURLEnabled = true
         }
 
         if showErrorConnectingMessage {
@@ -177,7 +179,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
 
             <<< SwitchRow("internalUrl") {
                 $0.title = "Use internal URL"
-                $0.value = (self.internalBaseURL != nil && self.internalBaseURLSSID != nil)
+                $0.value = self.internalBaseURLEnabled
             }.onChange { row in
                 if let boolVal = row.value {
                     print("Setting rows to val", !boolVal)
@@ -191,7 +193,11 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                     connectRow.evaluateHidden()
                     connectRow.updateCell()
                     let externalURLRow: URLRow = self.form.rowBy(tag: "baseURL")!
-                    externalURLRow.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
+                    if boolVal == true {
+                        externalURLRow.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
+                    } else {
+                        externalURLRow.title = L10n.Settings.ConnectionSection.BaseUrl.title
+                    }
                     externalURLRow.updateCell()
                     self.tableView.reloadData()
                 }
@@ -200,37 +206,38 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             <<< LabelRow("ssid") {
                 $0.title = L10n.Settings.ConnectionSection.NetworkName.title
                 $0.value = L10n.ClientEvents.EventType.unknown
-                $0.hidden = Condition(booleanLiteral: !(self.internalBaseURL != nil && self.internalBaseURLSSID != nil))
+                $0.hidden = Condition(booleanLiteral: !self.internalBaseURLEnabled)
                 if let ssid = self.internalBaseURLSSID {
                     $0.value = ssid
                 } else if let ssid = HomeAssistantAPI.sharedInstance.getSSID() {
                     $0.value = ssid
                 }
+                self.internalBaseURLSSID = $0.value
             }
 
             <<< URLRow("internalBaseURL") {
                 $0.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
                 $0.value = self.internalBaseURL
                 $0.placeholder = "http://hassio.local:8123"
-                $0.hidden = Condition(booleanLiteral: !(self.internalBaseURL != nil && self.internalBaseURLSSID != nil))
-                }.onCellHighlightChanged({ (_, row) in
-                    if row.isHighlighted == false {
-                        if let url = row.value {
-                            let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
-                            if !cleanUrl.hasValidScheme {
-                                let title = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.title
-                                let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
-                                let alert = UIAlertController(title: title, message: message,
-                                                              preferredStyle: UIAlertControllerStyle.alert)
-                                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
-                                                              handler: nil))
-                                self.present(alert, animated: true, completion: nil)
-                            } else {
-                                self.internalBaseURL = cleanUrl.cleanedURL
-                            }
+                $0.hidden = Condition(booleanLiteral: !self.internalBaseURLEnabled)
+            }.onCellHighlightChanged({ (_, row) in
+                if row.isHighlighted == false {
+                    if let url = row.value {
+                        let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
+                        if !cleanUrl.hasValidScheme {
+                            let title = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.title
+                            let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
+                            let alert = UIAlertController(title: title, message: message,
+                                                          preferredStyle: UIAlertControllerStyle.alert)
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                                          handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                        } else {
+                            self.internalBaseURL = cleanUrl.cleanedURL
                         }
                     }
-                })
+                }
+            })
 
             <<< SwitchRow("basicAuth") {
                 $0.title = "Basic authentication"
