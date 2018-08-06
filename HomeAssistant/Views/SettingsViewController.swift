@@ -84,10 +84,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             }
         }
 
-        let basicAuthKeychain = Keychain(server: baseURL!, protocolType: .https, authenticationType: .httpBasic)
-
-        self.basicAuthEnabled = (basicAuthKeychain["basicAuthUsername"] != nil &&
-                                 basicAuthKeychain["basicAuthPassword"] != nil)
+        var basicAuthKeychain = Keychain(server: baseURL!, protocolType: .https, authenticationType: .httpBasic)
 
         self.password = keychain["apiPassword"]
 
@@ -97,7 +94,11 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             self.internalBaseURL = URL(string: url)
             self.internalBaseURLSSID = ssid
             self.internalBaseURLEnabled = true
+            basicAuthKeychain = Keychain(server: url, protocolType: .https, authenticationType: .httpBasic)
         }
+
+        self.basicAuthEnabled = (basicAuthKeychain["basicAuthUsername"] != nil &&
+            basicAuthKeychain["basicAuthPassword"] != nil)
 
         if showErrorConnectingMessage {
             var errDesc = ""
