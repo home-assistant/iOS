@@ -92,14 +92,16 @@ public class HomeAssistantAPI {
         return permissionsContainer
     }
 
+    // swiftlint:disable:next function_body_length
     func Setup(baseURLString: String?, password: String?, deviceID: String?) {
         let appKeychain = Keychain(service: "io.robbie.homeassistant")
-        let basicAuthKeychain = Keychain(server: baseURLString!, protocolType: .https, authenticationType: .httpBasic)
+        var basicAuthKeychain = Keychain(server: baseURLString!, protocolType: .https, authenticationType: .httpBasic)
 
         if let ssid = appKeychain["internalBaseURLSSID"], let internalURL = appKeychain["internalBaseURL"],
             ssid == getSSID() {
             self.baseURL = URL(string: internalURL)
             self.baseAPIURL = self.baseURL?.appendingPathComponent("api")
+            basicAuthKeychain = Keychain(server: internalURL, protocolType: .https, authenticationType: .httpBasic)
         } else if let baseURLString = baseURLString {
             if let baseURL = URL(string: baseURLString) {
                 if self.Configured && self.baseURL == baseURL && self.apiPassword == password &&
@@ -1089,7 +1091,6 @@ public class HomeAssistantAPI {
         }
         return ssid
     }
-
 
 }
 

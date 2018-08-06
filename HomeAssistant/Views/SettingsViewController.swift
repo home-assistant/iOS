@@ -32,8 +32,10 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
     var password: String?
     var internalBaseURL: URL?
     var internalBaseURLSSID: String?
+    var internalBaseURLEnabled: Bool = false
     var basicAuthUsername: String?
     var basicAuthPassword: String?
+    var basicAuthEnabled: Bool = false
     var deviceID: String?
 
     var configured = false
@@ -82,19 +84,21 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             }
         }
 
-        let basicAuthKeychain = Keychain(server: baseURL!, protocolType: .https, authenticationType: .httpBasic)
+        var basicAuthKeychain = Keychain(server: baseURL!, protocolType: .https, authenticationType: .httpBasic)
 
         self.password = keychain["apiPassword"]
 
         self.deviceID = keychain["deviceID"]
 
-        self.basicAuthUsername = basicAuthKeychain["basicAuthUsername"]
-        self.basicAuthPassword = basicAuthKeychain["basicAuthPassword"]
-
         if let url = keychain["internalBaseURL"], let ssid = keychain["internalBaseURLSSID"] {
             self.internalBaseURL = URL(string: url)
             self.internalBaseURLSSID = ssid
+            self.internalBaseURLEnabled = true
+            basicAuthKeychain = Keychain(server: url, protocolType: .https, authenticationType: .httpBasic)
         }
+
+        self.basicAuthEnabled = (basicAuthKeychain["basicAuthUsername"] != nil &&
+            basicAuthKeychain["basicAuthPassword"] != nil)
 
         if showErrorConnectingMessage {
             var errDesc = ""
@@ -176,7 +180,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
 
             <<< SwitchRow("internalUrl") {
                 $0.title = "Use internal URL"
-                $0.value = (self.internalBaseURL != nil && self.internalBaseURLSSID != nil)
+                $0.value = self.internalBaseURLEnabled
             }.onChange { row in
                 if let boolVal = row.value {
                     print("Setting rows to val", !boolVal)
@@ -190,7 +194,11 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                     connectRow.evaluateHidden()
                     connectRow.updateCell()
                     let externalURLRow: URLRow = self.form.rowBy(tag: "baseURL")!
-                    externalURLRow.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
+                    if boolVal == true {
+                        externalURLRow.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
+                    } else {
+                        externalURLRow.title = L10n.Settings.ConnectionSection.BaseUrl.title
+                    }
                     externalURLRow.updateCell()
                     self.tableView.reloadData()
                 }
@@ -199,72 +207,75 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             <<< LabelRow("ssid") {
                 $0.title = L10n.Settings.ConnectionSection.NetworkName.title
                 $0.value = L10n.ClientEvents.EventType.unknown
-                $0.hidden = Condition(booleanLiteral: !(self.internalBaseURL != nil && self.internalBaseURLSSID != nil))
+                $0.hidden = Condition(booleanLiteral: !self.internalBaseURLEnabled)
                 if let ssid = self.internalBaseURLSSID {
                     $0.value = ssid
                 } else if let ssid = HomeAssistantAPI.sharedInstance.getSSID() {
                     $0.value = ssid
                 }
+                self.internalBaseURLSSID = $0.value
             }
 
             <<< URLRow("internalBaseURL") {
                 $0.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
                 $0.value = self.internalBaseURL
                 $0.placeholder = "http://hassio.local:8123"
-                $0.hidden = Condition(booleanLiteral: !(self.internalBaseURL != nil && self.internalBaseURLSSID != nil))
-                }.onCellHighlightChanged({ (_, row) in
-                    if row.isHighlighted == false {
-                        if let url = row.value {
-                            let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
-                            if !cleanUrl.hasValidScheme {
-                                let title = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.title
-                                let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
-                                let alert = UIAlertController(title: title, message: message,
-                                                              preferredStyle: UIAlertControllerStyle.alert)
-                                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
-                                                              handler: nil))
-                                self.present(alert, animated: true, completion: nil)
-                            } else {
-                                self.internalBaseURL = cleanUrl.cleanedURL
-                            }
+                $0.hidden = Condition(booleanLiteral: !self.internalBaseURLEnabled)
+            }.onCellHighlightChanged({ (_, row) in
+                if row.isHighlighted == false {
+                    if let url = row.value {
+                        let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
+                        if !cleanUrl.hasValidScheme {
+                            let title = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.title
+                            let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
+                            let alert = UIAlertController(title: title, message: message,
+                                                          preferredStyle: UIAlertControllerStyle.alert)
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                                          handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                        } else {
+                            self.internalBaseURL = cleanUrl.cleanedURL
                         }
                     }
-                })
+                }
+            })
 
             <<< SwitchRow("basicAuth") {
                 $0.title = "Basic authentication"
-                $0.value = (self.basicAuthUsername != nil && self.basicAuthPassword != nil)
-                }.onChange { row in
-                    if let boolVal = row.value {
-                        print("Setting rows to val", !boolVal)
-                        let basicAuthUsername: TextRow = self.form.rowBy(tag: "basicAuthUsername")!
-                        basicAuthUsername.hidden = Condition(booleanLiteral: !boolVal)
-                        basicAuthUsername.evaluateHidden()
-                        let basicAuthPassword: PasswordRow = self.form.rowBy(tag: "basicAuthPassword")!
-                        basicAuthPassword.hidden = Condition(booleanLiteral: !boolVal)
-                        basicAuthPassword.evaluateHidden()
-                        self.tableView.reloadData()
-                    }
+                $0.value = self.basicAuthEnabled
+            }.onChange { row in
+                if let boolVal = row.value {
+                    print("Setting rows to val", !boolVal)
+                    let basicAuthUsername: TextRow = self.form.rowBy(tag: "basicAuthUsername")!
+                    basicAuthUsername.hidden = Condition(booleanLiteral: !boolVal)
+                    basicAuthUsername.evaluateHidden()
+                    let basicAuthPassword: PasswordRow = self.form.rowBy(tag: "basicAuthPassword")!
+                    basicAuthPassword.hidden = Condition(booleanLiteral: !boolVal)
+                    basicAuthPassword.evaluateHidden()
+                    self.tableView.reloadData()
+                }
             }
 
             <<< TextRow("basicAuthUsername") {
                 $0.title = L10n.Settings.ConnectionSection.BasicAuth.Username.title
-                $0.hidden = Condition(booleanLiteral: !(self.basicAuthUsername != nil && self.basicAuthPassword != nil))
-                $0.value = self.basicAuthUsername
+                $0.hidden = Condition(booleanLiteral: !self.basicAuthEnabled)
+                $0.value = basicAuthKeychain["basicAuthUsername"]
                 $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Username.placeholder
+            }.onChange { row in
+                self.basicAuthUsername = row.value
             }
 
             <<< PasswordRow("basicAuthPassword") {
                 $0.title = L10n.Settings.ConnectionSection.BasicAuth.Password.title
-                $0.value = self.basicAuthPassword
+                $0.value = basicAuthKeychain["basicAuthPassword"]
                 $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Password.placeholder
-                $0.hidden = Condition(booleanLiteral: !(self.basicAuthUsername != nil && self.basicAuthPassword != nil))
-                }.onChange { row in
-                    self.basicAuthPassword = row.value
-                }.cellUpdate { cell, row in
-                    if !row.isValid {
-                        cell.titleLabel?.textColor = .red
-                    }
+                $0.hidden = Condition(booleanLiteral: !self.basicAuthEnabled)
+            }.onChange { row in
+                self.basicAuthPassword = row.value
+            }.cellUpdate { cell, row in
+                if !row.isValid {
+                    cell.titleLabel?.textColor = .red
+                }
             }
 
             <<< ButtonRow("connect") {
