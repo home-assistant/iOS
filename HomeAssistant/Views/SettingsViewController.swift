@@ -74,14 +74,14 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             self.navigationItem.setRightBarButton(doneButton, animated: true)
         }
 
+        let keychain = Keychain(service: "io.robbie.homeassistant")
         if let baseURLString = keychain["baseURL"] {
             if let baseURL = URL(string: baseURLString) {
                 self.baseURL = baseURL
                 self.configured = true
             }
         }
-        
-        let keychain = Keychain(service: "io.robbie.homeassistant")
+
         let basicAuthKeychain = Keychain(server: baseURL!, protocolType: .https, authenticationType: .httpBasic)
 
         self.password = keychain["apiPassword"]
