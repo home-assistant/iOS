@@ -1,56 +1,51 @@
 PODS:
-  - Alamofire (4.7.2)
+  - Alamofire (4.7.3)
   - AlamofireNetworkActivityIndicator (2.2.1):
     - Alamofire (~> 4.7)
-  - AlamofireObjectMapper (5.0.0):
+  - AlamofireObjectMapper (5.1.0):
     - Alamofire (~> 4.1)
-    - ObjectMapper (~> 3.0)
+    - ObjectMapper (~> 3.3)
   - CPDAcknowledgements (1.0.0)
-  - Crashlytics (3.10.2):
-    - Fabric (~> 1.7.7)
   - DeviceKit (1.7.0)
-  - Eureka (4.1.1)
-  - Fabric (1.7.7)
+  - Eureka (4.2.0)
   - FontAwesomeKit/Core (2.2.5)
   - FontAwesomeKit/MaterialDesignIcons (2.2.5):
     - FontAwesomeKit/Core
   - KeychainAccess (3.1.1)
   - MBProgressHUD (1.1.0)
-  - ObjectMapper (3.2.0)
-  - PromiseKit (6.3.0):
-    - PromiseKit/CorePromise (= 6.3.0)
-    - PromiseKit/Foundation (= 6.3.0)
-    - PromiseKit/UIKit (= 6.3.0)
-  - PromiseKit/CorePromise (6.3.0)
-  - PromiseKit/Foundation (6.3.0):
+  - ObjectMapper (3.3.0)
+  - PromiseKit (6.3.4):
+    - PromiseKit/CorePromise (= 6.3.4)
+    - PromiseKit/Foundation (= 6.3.4)
+    - PromiseKit/UIKit (= 6.3.4)
+  - PromiseKit/CorePromise (6.3.4)
+  - PromiseKit/Foundation (6.3.4):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (6.3.0):
+  - PromiseKit/UIKit (6.3.4):
     - PromiseKit/CorePromise
-  - Realm (3.7.3):
-    - Realm/Headers (= 3.7.3)
-  - Realm/Headers (3.7.3)
-  - RealmSwift (3.7.3):
-    - Realm (= 3.7.3)
+  - Realm (3.7.5):
+    - Realm/Headers (= 3.7.5)
+  - Realm/Headers (3.7.5)
+  - RealmSwift (3.7.5):
+    - Realm (= 3.7.5)
   - SwiftGen (5.3.0)
-  - SwiftLint (0.25.1)
+  - SwiftLint (0.27.0)
 
 DEPENDENCIES:
-  - Alamofire (= 4.7.2)
+  - Alamofire (= 4.7.3)
   - AlamofireNetworkActivityIndicator (= 2.2.1)
-  - AlamofireObjectMapper (= 5.0.0)
+  - AlamofireObjectMapper (= 5.1.0)
   - CPDAcknowledgements (= 1.0.0)
-  - Crashlytics (= 3.10.2)
   - DeviceKit (= 1.7.0)
-  - Eureka (= 4.1.1)
-  - Fabric (= 1.7.7)
+  - Eureka (= 4.2.0)
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
   - KeychainAccess (= 3.1.1)
   - MBProgressHUD (= 1.1.0)
-  - ObjectMapper (= 3.2.0)
-  - PromiseKit (= 6.3.0)
-  - RealmSwift
+  - ObjectMapper (= 3.3.0)
+  - PromiseKit (= 6.3.4)
+  - RealmSwift (= 3.7.5)
   - SwiftGen (= 5.3.0)
-  - SwiftLint (= 0.25.1)
+  - SwiftLint (= 0.27.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -58,10 +53,8 @@ SPEC REPOS:
     - AlamofireNetworkActivityIndicator
     - AlamofireObjectMapper
     - CPDAcknowledgements
-    - Crashlytics
     - DeviceKit
     - Eureka
-    - Fabric
     - KeychainAccess
     - MBProgressHUD
     - ObjectMapper
@@ -82,24 +75,22 @@ CHECKOUT OPTIONS:
     :git: https://github.com/robbiet480/FontAwesomeKit.git
 
 SPEC CHECKSUMS:
-  Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
+  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
   AlamofireNetworkActivityIndicator: aeac50e6ecb78ec71a5f1f29098bcf4ec2962910
-  AlamofireObjectMapper: 5fafc816351cbbc0d486611aaeba7461c0cbad49
+  AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
-  Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
   DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
-  Eureka: b88fb930e42c79f8c03c373d0fcdc28c1d6c50ed
-  Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
+  Eureka: 0748c7bbb2560130e43c7bfa83e99c98854a1f42
   FontAwesomeKit: c56e7e8db4ad4e7325ce73a8033dadf2fd4a5cb2
   KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
-  ObjectMapper: 5cccd2de6f253eda859df8116a5a554d9769e859
-  PromiseKit: cf84bbb1235a61473b326c5cf0b41f6828f87ba5
-  Realm: f366e954e3330d4915a319e96cc04e2ee09a9ef2
-  RealmSwift: 56f111b1dd439973fbe1c066b067ac4702285441
+  ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
+  PromiseKit: e1425568123ec844a944c93f2bcb29d511d39cf5
+  Realm: c286caf4dbf346ce24aad49ca76c7ce622d4a082
+  RealmSwift: 2a9281e37d6de55f66f76254d49d28aeb1b729e4
   SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
-  SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
+  SwiftLint: 3207c1faa2240bf8973b191820a116113cd11073
 
-PODFILE CHECKSUM: be84cb3e2da23e02ccb14ec0811c42dfa8e56389
+PODFILE CHECKSUM: cb5cb9051010b0940e52a44d206ee35e8f75ee1b
 
 COCOAPODS: 1.5.3

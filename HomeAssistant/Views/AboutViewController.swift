@@ -164,11 +164,7 @@ class AboutViewController: FormViewController {
         /* Tweetbot app precedence */
         if let tweetbotURL = URL(string: "tweetbot:///user_profile/"+username) {
             if UIApplication.shared.canOpenURL(tweetbotURL) {
-                if #available(iOS 10, *) {
-                    UIApplication.shared.open(tweetbotURL, options: [:], completionHandler: nil)
-                } else {
-                    _ = UIApplication.shared.openURL(tweetbotURL)
-                }
+                UIApplication.shared.open(tweetbotURL, options: [:], completionHandler: nil)
                 return
             }
         }
@@ -176,11 +172,7 @@ class AboutViewController: FormViewController {
         /* Twitter app fallback */
         if let twitterURL = URL(string: "twitter:///user?screen_name="+username) {
             if UIApplication.shared.canOpenURL(twitterURL) {
-                if #available(iOS 10, *) {
-                    UIApplication.shared.open(twitterURL, options: [:], completionHandler: nil)
-                } else {
-                    _ = UIApplication.shared.openURL(twitterURL)
-                }
+                UIApplication.shared.open(twitterURL, options: [:], completionHandler: nil)
                 return
             }
         }
@@ -188,11 +180,7 @@ class AboutViewController: FormViewController {
         /* Safari fallback */
         if let webURL = URL(string: "https://twitter.com/"+username) {
             if UIApplication.shared.canOpenURL(webURL) {
-                if #available(iOS 10, *) {
-                    UIApplication.shared.open(webURL, options: [:], completionHandler: nil)
-                } else {
-                    _ = UIApplication.shared.openURL(webURL)
-                }
+                UIApplication.shared.open(webURL, options: [:], completionHandler: nil)
                 return
             }
         }
@@ -201,11 +189,7 @@ class AboutViewController: FormViewController {
     func openInFacebook(pageId: String) {
         if let facebookURL = URL(string: "fb://page/"+pageId) {
             if UIApplication.shared.canOpenURL(facebookURL) {
-                if #available(iOS 10, *) {
-                    UIApplication.shared.open(facebookURL, options: [:], completionHandler: nil)
-                } else {
-                    _ = UIApplication.shared.openURL(facebookURL)
-                }
+                UIApplication.shared.open(facebookURL, options: [:], completionHandler: nil)
                 return
             }
         }

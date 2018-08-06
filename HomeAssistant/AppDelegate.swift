@@ -7,10 +7,11 @@
 //
 
 import UIKit
-import Fabric
-import Crashlytics
-import PromiseKit
+import Intents
 import UserNotifications
+//import Fabric
+//import Crashlytics
+import PromiseKit
 import AlamofireNetworkActivityIndicator
 import KeychainAccess
 import Alamofire
@@ -27,19 +28,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        Fabric.with([Crashlytics.self])
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+//        Fabric.with([Crashlytics.self])
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
 
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
-            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
         }
 
         NetworkActivityIndicatorManager.shared.isEnabled = true
 
-        if #available(iOS 10, *) {
-            UNUserNotificationCenter.current().delegate = self
+        UNUserNotificationCenter.current().delegate = self
+
+        if #available(iOS 12.0, *) {
+            UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+                guard settings.authorizationStatus == .authorized else {return}
+
+                let opts: UNAuthorizationOptions = [.providesAppNotificationSettings, .criticalAlert]
+
+                UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
+                    print("Requested critical alert access", granted, error)
+                }
+            }
+        }
+
+        if #available(iOS 12.0, *) {
+            INPreferences.requestSiriAuthorization { (status) in
+                print("Siri Authorization status", status)
+            }
         }
 
         setDefaults()
@@ -81,8 +98,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = HomeAssistantAPI.sharedInstance.RegisterDeviceForPush(deviceToken: tokenString).done { resp in
             if let pushId = resp.PushId {
                 print("Registered for push. Platform: \(resp.SNSPlatform ?? "MISSING"), PushID: \(pushId)")
-                CLSLogv("Registered for push %@:", getVaList([pushId]))
-                Crashlytics.sharedInstance().setUserIdentifier(pushId)
+//                CLSLogv("Registered for push %@:", getVaList([pushId]))
+                // TO-DO Crashlytics.sharedInstance().setUserIdentifier(pushId)
                 prefs.setValue(pushId, forKey: "pushID")
                 HomeAssistantAPI.sharedInstance.pushID = pushId
                 _ = HomeAssistantAPI.sharedInstance.IdentifyDevice()
@@ -93,7 +110,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError error: Swift.Error) {
         print("Error when trying to register for push", error)
-        Crashlytics.sharedInstance().recordError(error)
+        // TO-DO Crashlytics.sharedInstance().recordError(error)
     }
 
     func application(_ application: UIApplication,
@@ -121,7 +138,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             }
                         }.catch {error in
                             print("Error when attempting to submit location update")
-                            Crashlytics.sharedInstance().recordError(error)
+                            // TO-DO Crashlytics.sharedInstance().recordError(error)
                             completionHandler(UIBackgroundFetchResult.failed)
                         }
                     default:
@@ -152,7 +169,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
                 }.catch {error in
                     print("Error when attempting to submit location update during background fetch")
-                    Crashlytics.sharedInstance().recordError(error)
+                    // TO-DO Crashlytics.sharedInstance().recordError(error)
                     completionHandler(UIBackgroundFetchResult.failed)
             }
         } else {
@@ -160,30 +177,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(UIBackgroundFetchResult.newData)
             }.catch {error in
                 print("Error when attempting to identify device during background fetch")
-                Crashlytics.sharedInstance().recordError(error)
+                // TO-DO Crashlytics.sharedInstance().recordError(error)
                 completionHandler(UIBackgroundFetchResult.failed)
             }
         }
     }
 
-    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?,
-                     forRemoteNotification userInfo: [AnyHashable: Any],
-                     withResponseInfo responseInfo: [AnyHashable: Any],
-                     completionHandler: @escaping () -> Void) {
-        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
-                                              deviceID: keychain["deviceID"])
-        var userInput: String?
-        if let userText = responseInfo[UIUserNotificationActionResponseTypedTextKey] as? String {
-            userInput = userText
-        }
-        _ = HomeAssistantAPI.sharedInstance.handlePushAction(identifier: identifier!,
-                                                             userInfo: userInfo,
-                                                             userInput: userInput)
-    }
-
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func application(_ app: UIApplication,
                      open url: URL,
-                     options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
+                     options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
         var serviceData: [String: String] = [:]
@@ -194,6 +197,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         case "call_service": // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
             let domain = url.pathComponents[1].components(separatedBy: ".")[0]
             let service = url.pathComponents[1].components(separatedBy: ".")[1]
+
+            if #available(iOS 12.0, *) {
+                let intent = CallServiceIntent()
+                intent.serviceName = url.pathComponents[1]
+                intent.serviceData = url.query
+
+                let interaction = INInteraction(intent: intent, response: nil)
+
+                interaction.donate { (error) in
+                    if error != nil {
+                        if let error = error as NSError? {
+                            print("CallService Interaction donation failed: \(error)")
+                        } else {
+                            print("CallService Successfully donated interaction")
+                        }
+                    }
+                }
+            }
+
             HomeAssistantAPI.sharedInstance.CallService(domain: domain, service: service,
                                                         serviceData: serviceData).done { _ in
                 showAlert(title: L10n.UrlHandler.CallService.Success.title,
@@ -204,6 +226,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                                                              error.localizedDescription))
             }
         case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
+
+            if #available(iOS 12.0, *) {
+                let intent = FireEventIntent()
+                intent.eventName = url.pathComponents[1]
+                intent.eventData = url.query
+
+                let interaction = INInteraction(intent: intent, response: nil)
+
+                interaction.donate { (error) in
+                    if error != nil {
+                        if let error = error as NSError? {
+                            print("FireEvent Interaction donation failed: \(error)")
+                        } else {
+                            print("FireEvent Successfully donated interaction")
+                        }
+                    }
+                }
+            }
+
             HomeAssistantAPI.sharedInstance.CreateEvent(eventType: url.pathComponents[1],
                                                         eventData: serviceData).done { _ in
                 showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
@@ -231,7 +272,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
-@available(iOS 10, *)
 extension AppDelegate: UNUserNotificationCenterDelegate {
     public func userNotificationCenter(_ center: UNUserNotificationCenter,
                                        didReceive response: UNNotificationResponse,
@@ -248,9 +288,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
                 let alert = UIAlertController(title: L10n.Alerts.OpenUrlFromNotification.title,
                                               message: L10n.Alerts.OpenUrlFromNotification.message(openUrl),
-                                              preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: L10n.noLabel, style: UIAlertActionStyle.default, handler: nil))
-                alert.addAction(UIAlertAction(title: L10n.yesLabel, style: UIAlertActionStyle.default, handler: { _ in
+                                              preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: L10n.noLabel, style: UIAlertAction.Style.default, handler: nil))
+                alert.addAction(UIAlertAction(title: L10n.yesLabel, style: UIAlertAction.Style.default, handler: { _ in
                     UIApplication.shared.open(url, options: [:],
                                               completionHandler: nil)
                 }))
@@ -273,7 +313,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                                             completionHandler()
             }.catch { err -> Void in
                 print("Error: \(err)")
-                Crashlytics.sharedInstance().recordError(err)
+                // TO-DO Crashlytics.sharedInstance().recordError(err)
                 completionHandler()
         }
     }
@@ -296,5 +336,24 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             }
         }
         return completionHandler(methods)
+    }
+
+    public func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                       openSettingsFor notification: UNNotification?) {
+        let view = SettingsDetailViewController()
+        view.detailGroup = "notifications"
+        view.doneButton = true
+
+        var rootViewController = UIApplication.shared.keyWindow?.rootViewController
+        if let navigationController = rootViewController as? UINavigationController {
+            rootViewController = navigationController.viewControllers.first
+        }
+        if let tabBarController = rootViewController as? UITabBarController {
+            rootViewController = tabBarController.selectedViewController
+        }
+
+        let navController = UINavigationController(rootViewController: view)
+
+        rootViewController?.present(navController, animated: true, completion: nil)
     }
 }

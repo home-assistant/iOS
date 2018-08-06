@@ -9,7 +9,7 @@
 import UserNotifications
 import MobileCoreServices
 import KeychainAccess
-import Shared
+//import Shared
 
 final class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?

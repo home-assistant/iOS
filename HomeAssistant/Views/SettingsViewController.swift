@@ -9,7 +9,7 @@
 import UIKit
 import Eureka
 import PromiseKit
-import Crashlytics
+//import Crashlytics
 import SafariServices
 import Alamofire
 import KeychainAccess
@@ -107,8 +107,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
             }
             let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
                                           message: L10n.Settings.ConnectionErrorNotification.message(errDesc),
-                                          preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
+                                          preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
 
@@ -155,8 +155,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                             let title = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.title
                             let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
                             let alert = UIAlertController(title: title, message: message,
-                                                          preferredStyle: UIAlertControllerStyle.alert)
-                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                                          preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                                           handler: nil))
                             self.present(alert, animated: true, completion: nil)
                         } else {
@@ -335,9 +335,9 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                                 let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
                                 let alert = UIAlertController(title: title,
                                                               message: message,
-                                                              preferredStyle: UIAlertControllerStyle.alert)
+                                                              preferredStyle: UIAlertController.Style.alert)
                                 alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                                              style: UIAlertActionStyle.default,
+                                                              style: UIAlertAction.Style.default,
                                                               handler: nil))
                                 self.present(alert, animated: true, completion: nil)
                             }
@@ -346,9 +346,9 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                             let errMsg = L10n.Settings.ConnectionError.InvalidUrl.message
                             let alert = UIAlertController(title: L10n.Settings.ConnectionError.InvalidUrl.title,
                                                           message: errMsg,
-                                                          preferredStyle: UIAlertControllerStyle.alert)
+                                                          preferredStyle: UIAlertController.Style.alert)
                             alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                                          style: UIAlertActionStyle.default,
+                                                          style: UIAlertAction.Style.default,
                                                           handler: nil))
                             self.present(alert, animated: true, completion: nil)
                         }
@@ -445,45 +445,42 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                 $0.title = L10n.Settings.DetailsSection.EnableNotificationRow.title
                 $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.notificationsEnabled)
                 }.onCellSelection { _, row in
-                    if #available(iOS 10, *) {
-                        let center = UNUserNotificationCenter.current()
-                        center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
-                            if error != nil {
-                                let title = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.title
-                                let message = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message
-                                let alert = UIAlertController(title: title,
-                                                              message: message,
-                                                              preferredStyle: UIAlertControllerStyle.alert)
-                                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
-                                                              handler: nil))
-                                self.present(alert, animated: true, completion: nil)
-                            } else {
-                                print("Notifications Permissions finished!", granted)
-                                prefs.setValue(granted, forKey: "notificationsEnabled")
-                                prefs.synchronize()
-                                if granted {
-                                    HomeAssistantAPI.sharedInstance.setupPush()
-                                    DispatchQueue.main.async(execute: {
-                                        row.hidden = true
-                                        row.updateCell()
-                                        row.evaluateHidden()
-                                        let settingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
-                                        settingsRow.hidden = false
-                                        settingsRow.evaluateHidden()
-                                        let loadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
-                                        loadedRow.hidden = false
-                                        loadedRow.evaluateHidden()
-                                        self.tableView.reloadData()
-                                    })
-                                }
+                    let center = UNUserNotificationCenter.current()
+                    var options: UNAuthorizationOptions = [.alert, .badge, .sound]
+                    if #available(iOS 12.0, *) {
+                        options = [.alert, .badge, .sound,
+                                   .providesAppNotificationSettings, .criticalAlert]
+                    }
+                    center.requestAuthorization(options: options) { (granted, error) in
+                        if error != nil {
+                            let title = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.title
+                            let message = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message
+                            let alert = UIAlertController(title: title,
+                                                          message: message,
+                                                          preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
+                                                          handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                        } else {
+                            print("Notifications Permissions finished!", granted)
+                            prefs.setValue(granted, forKey: "notificationsEnabled")
+                            prefs.synchronize()
+                            if granted {
+                                HomeAssistantAPI.sharedInstance.setupPush()
+                                DispatchQueue.main.async(execute: {
+                                    row.hidden = true
+                                    row.updateCell()
+                                    row.evaluateHidden()
+                                    let settingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
+                                    settingsRow.hidden = false
+                                    settingsRow.evaluateHidden()
+                                    let loadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
+                                    loadedRow.hidden = false
+                                    loadedRow.evaluateHidden()
+                                    self.tableView.reloadData()
+                                })
                             }
                         }
-                    } else {
-                        DispatchQueue.main.async(execute: {
-                            let setting = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
-                            UIApplication.shared.registerUserNotificationSettings(setting)
-                            UIApplication.shared.registerForRemoteNotifications()
-                        })
                     }
             }
 
@@ -520,7 +517,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                 }.onCellSelection { _, row in
                     let alert = UIAlertController(title: L10n.Settings.ResetSection.ResetAlert.title,
                                                   message: L10n.Settings.ResetSection.ResetAlert.message,
-                                                  preferredStyle: UIAlertControllerStyle.alert)
+                                                  preferredStyle: UIAlertController.Style.alert)
 
                     alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 
@@ -556,7 +553,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
                 discoverySection
                     <<< ButtonRow(discoveryInfo.LocationName) {
                             $0.title = discoveryInfo.LocationName
-                            $0.cellStyle = UITableViewCellStyle.subtitle
+                            $0.cellStyle = UITableViewCell.CellStyle.subtitle
                         }.cellUpdate { cell, _ in
                             cell.textLabel?.textColor = .black
                             cell.detailTextLabel?.text = detailTextLabel

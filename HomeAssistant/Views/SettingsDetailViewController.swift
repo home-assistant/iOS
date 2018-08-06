@@ -8,17 +8,28 @@
 
 import UIKit
 import Eureka
-import Crashlytics
+//import Crashlytics
 import Shared
 
+// swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController {
 
     var detailGroup: String = "display"
+
+    var doneButton: Bool = false
 
     // swiftlint:disable:next function_body_length cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+
+        if doneButton {
+            let closeSelector = #selector(SettingsDetailViewController.closeSettingsDetailView(_:))
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
+                                             action: closeSelector)
+
+            self.navigationItem.setRightBarButton(doneButton, animated: true)
+        }
 
         switch detailGroup {
         case "general":
@@ -69,79 +80,7 @@ class SettingsDetailViewController: FormViewController {
                             prefs.set(val, forKey: "locationUpdateOnNotification")
                         }
                     })
-                +++ Section(header: L10n.SettingsDetails.Location.Notifications.header, footer: "")
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Notifications.Enter.title
-                    $0.value = prefs.bool(forKey: "enterNotifications")
-                }.onChange({ (row) in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "enterNotifications")
-                    }
-                })
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Notifications.Exit.title
-                    $0.value = prefs.bool(forKey: "exitNotifications")
-                }.onChange({ (row) in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "exitNotifications")
-                    }
-                })
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Notifications.BeaconEnter.title
-                    $0.value = prefs.bool(forKey: "beaconEnterNotifications")
-                }.onChange({ (row) in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "beaconEnterNotifications")
-                    }
-                })
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Notifications.BeaconExit.title
-                    $0.value = prefs.bool(forKey: "beaconExitNotifications")
-                }.onChange({ (row) in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "beaconExitNotifications")
-                    }
-                })
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Notifications.LocationChange.title
-                    $0.value = prefs.bool(forKey: "significantLocationChangeNotifications")
-                }.onChange({ (row) in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "significantLocationChangeNotifications")
-                    }
-                })
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Notifications.BackgroundFetch.title
-                    $0.value = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
-                }.onChange({ (row) in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "backgroundFetchLocationChangeNotifications")
-                    }
-                })
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Notifications.PushNotification.title
-                    $0.value = prefs.bool(forKey: "pushLocationRequestNotifications")
-                }.onChange({ (row) in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "pushLocationRequestNotifications")
-                    }
-                })
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Notifications.UrlScheme.title
-                    $0.value = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
-                }.onChange({ (row) in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "urlSchemeLocationRequestNotifications")
-                    }
-                })
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Notifications.Visit.title
-                    $0.value = prefs.bool(forKey: "visitLocationRequestNotifications")
-                }.onChange({ (row) in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "visitLocationRequestNotifications")
-                    }
-                })
+
             let realm = Current.realm()
             let zoneEntities = realm.objects(RLMZone.self).map { $0 }
             for zone in zoneEntities {
@@ -228,8 +167,8 @@ class SettingsDetailViewController: FormViewController {
                     let message = L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.message
                     let alert = UIAlertController(title: title,
                                                   message: message,
-                                                  preferredStyle: UIAlertControllerStyle.alert)
-                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                                  preferredStyle: UIAlertController.Style.alert)
+                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                                   handler: nil))
                     self.present(alert, animated: true, completion: nil)
                 }
@@ -243,9 +182,9 @@ class SettingsDetailViewController: FormViewController {
                         let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.SoundsSection.ImportedAlert.title,
                                                       // swiftlint:disable:next line_length
                                                       message: L10n.SettingsDetails.Notifications.SoundsSection.ImportedAlert.message(moved),
-                                                      preferredStyle: UIAlertControllerStyle.alert)
+                                                      preferredStyle: UIAlertController.Style.alert)
                         alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                                      style: UIAlertActionStyle.default, handler: nil))
+                                                      style: UIAlertAction.Style.default, handler: nil))
                         self.present(alert, animated: true, completion: nil)
                 }
 
@@ -258,11 +197,85 @@ class SettingsDetailViewController: FormViewController {
                     let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.title,
                                                   // swiftlint:disable:next line_length
                                                   message: L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.message,
-                                                  preferredStyle: UIAlertControllerStyle.alert)
+                                                  preferredStyle: UIAlertController.Style.alert)
                     alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                                  style: UIAlertActionStyle.default, handler: nil))
+                                                  style: UIAlertAction.Style.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
                 }
+
+                +++ Section(header: L10n.SettingsDetails.Location.Notifications.header, footer: "")
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.Enter.title
+                    $0.value = prefs.bool(forKey: "enterNotifications")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "enterNotifications")
+                        }
+                    })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.Exit.title
+                    $0.value = prefs.bool(forKey: "exitNotifications")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "exitNotifications")
+                        }
+                    })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.BeaconEnter.title
+                    $0.value = prefs.bool(forKey: "beaconEnterNotifications")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "beaconEnterNotifications")
+                        }
+                    })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.BeaconExit.title
+                    $0.value = prefs.bool(forKey: "beaconExitNotifications")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "beaconExitNotifications")
+                        }
+                    })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.LocationChange.title
+                    $0.value = prefs.bool(forKey: "significantLocationChangeNotifications")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "significantLocationChangeNotifications")
+                        }
+                    })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.BackgroundFetch.title
+                    $0.value = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "backgroundFetchLocationChangeNotifications")
+                        }
+                    })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.PushNotification.title
+                    $0.value = prefs.bool(forKey: "pushLocationRequestNotifications")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "pushLocationRequestNotifications")
+                        }
+                    })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.UrlScheme.title
+                    $0.value = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "urlSchemeLocationRequestNotifications")
+                        }
+                    })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.Visit.title
+                    $0.value = prefs.bool(forKey: "visitLocationRequestNotifications")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "visitLocationRequestNotifications")
+                        }
+                    })
 
         default:
             print("Something went wrong, no settings detail group named \(detailGroup)")
@@ -272,5 +285,9 @@ class SettingsDetailViewController: FormViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+
+    @objc func closeSettingsDetailView(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
     }
 }
