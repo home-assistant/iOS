@@ -34,6 +34,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
     var internalBaseURLSSID: String?
     var basicAuthUsername: String?
     var basicAuthPassword: String?
+    var basicAuthEnabled: Bool = false
     var deviceID: String?
 
     var configured = false
@@ -84,12 +85,12 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
 
         let basicAuthKeychain = Keychain(server: baseURL!, protocolType: .https, authenticationType: .httpBasic)
 
+        self.basicAuthEnabled = (basicAuthKeychain["basicAuthUsername"] != nil &&
+                                 basicAuthKeychain["basicAuthPassword"] != nil)
+
         self.password = keychain["apiPassword"]
 
         self.deviceID = keychain["deviceID"]
-
-        self.basicAuthUsername = basicAuthKeychain["basicAuthUsername"]
-        self.basicAuthPassword = basicAuthKeychain["basicAuthPassword"]
 
         if let url = keychain["internalBaseURL"], let ssid = keychain["internalBaseURLSSID"] {
             self.internalBaseURL = URL(string: url)
@@ -233,38 +234,40 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
 
             <<< SwitchRow("basicAuth") {
                 $0.title = "Basic authentication"
-                $0.value = (self.basicAuthUsername != nil && self.basicAuthPassword != nil)
-                }.onChange { row in
-                    if let boolVal = row.value {
-                        print("Setting rows to val", !boolVal)
-                        let basicAuthUsername: TextRow = self.form.rowBy(tag: "basicAuthUsername")!
-                        basicAuthUsername.hidden = Condition(booleanLiteral: !boolVal)
-                        basicAuthUsername.evaluateHidden()
-                        let basicAuthPassword: PasswordRow = self.form.rowBy(tag: "basicAuthPassword")!
-                        basicAuthPassword.hidden = Condition(booleanLiteral: !boolVal)
-                        basicAuthPassword.evaluateHidden()
-                        self.tableView.reloadData()
-                    }
+                $0.value = self.basicAuthEnabled
+            }.onChange { row in
+                if let boolVal = row.value {
+                    print("Setting rows to val", !boolVal)
+                    let basicAuthUsername: TextRow = self.form.rowBy(tag: "basicAuthUsername")!
+                    basicAuthUsername.hidden = Condition(booleanLiteral: !boolVal)
+                    basicAuthUsername.evaluateHidden()
+                    let basicAuthPassword: PasswordRow = self.form.rowBy(tag: "basicAuthPassword")!
+                    basicAuthPassword.hidden = Condition(booleanLiteral: !boolVal)
+                    basicAuthPassword.evaluateHidden()
+                    self.tableView.reloadData()
+                }
             }
 
             <<< TextRow("basicAuthUsername") {
                 $0.title = L10n.Settings.ConnectionSection.BasicAuth.Username.title
-                $0.hidden = Condition(booleanLiteral: !(self.basicAuthUsername != nil && self.basicAuthPassword != nil))
-                $0.value = self.basicAuthUsername
+                $0.hidden = Condition(booleanLiteral: !self.basicAuthEnabled)
+                $0.value = basicAuthKeychain["basicAuthUsername"]
                 $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Username.placeholder
+            }.onChange { row in
+                self.basicAuthUsername = row.value
             }
 
             <<< PasswordRow("basicAuthPassword") {
                 $0.title = L10n.Settings.ConnectionSection.BasicAuth.Password.title
-                $0.value = self.basicAuthPassword
+                $0.value = basicAuthKeychain["basicAuthPassword"]
                 $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Password.placeholder
-                $0.hidden = Condition(booleanLiteral: !(self.basicAuthUsername != nil && self.basicAuthPassword != nil))
-                }.onChange { row in
-                    self.basicAuthPassword = row.value
-                }.cellUpdate { cell, row in
-                    if !row.isValid {
-                        cell.titleLabel?.textColor = .red
-                    }
+                $0.hidden = Condition(booleanLiteral: !self.basicAuthEnabled)
+            }.onChange { row in
+                self.basicAuthPassword = row.value
+            }.cellUpdate { cell, row in
+                if !row.isValid {
+                    cell.titleLabel?.textColor = .red
+                }
             }
 
             <<< ButtonRow("connect") {
