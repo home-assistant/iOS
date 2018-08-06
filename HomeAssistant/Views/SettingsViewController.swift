@@ -91,8 +91,10 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
         self.basicAuthUsername = basicAuthKeychain["basicAuthUsername"]
         self.basicAuthPassword = basicAuthKeychain["basicAuthPassword"]
 
-        self.internalBaseURL = URL(string: keychain["internalBaseURL"]!)
-        self.internalBaseURLSSID = keychain["internalBaseURLSSID"]
+        if let url = keychain["internalBaseURL"], let ssid = keychain["internalBaseURLSSID"] {
+            self.internalBaseURL = URL(string: url)
+            self.internalBaseURLSSID = ssid
+        }
 
         if showErrorConnectingMessage {
             var errDesc = ""
