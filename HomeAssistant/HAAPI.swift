@@ -52,7 +52,7 @@ public class HomeAssistantAPI {
     private var manager: Alamofire.SessionManager?
 
     var regionManager = RegionManager()
-    var locationManager: LocationManager?
+    var oneShotLocationManager: OneShotLocationManager?
 
     var cachedEntities: [Entity]?
 
@@ -222,44 +222,26 @@ public class HomeAssistantAPI {
                         visit: CLVisit?,
                         zone: RLMZone?) {
 
-        var loc: CLLocation = CLLocation()
-        if let location = location {
-            loc = location
-        } else if let zone = zone {
-            loc = zone.location()
-        } else if let visit = visit {
-            loc = visit.location()
-        }
-
         UIDevice.current.isBatteryMonitoringEnabled = true
 
-        let payload = DeviceTrackerSee(location: loc)
-        payload.Trigger = updateType
+        let payload = DeviceTrackerSee(trigger: updateType, location: location, visit: visit, zone: zone)
 
-        let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
+        payload.Trigger = updateType
 
         payload.Battery = UIDevice.current.batteryLevel
         payload.DeviceID = deviceID
         payload.Hostname = UIDevice.current.name
-        payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
 
         if let activity = self.regionManager.lastActivity {
-            payload.ActivityType = activity.activityType
-            payload.ActivityConfidence = activity.confidence.description
-        }
-
-        if let zone = zone, zone.ID == "zone.home" {
-            if updateType == .BeaconRegionEnter || updateType == .RegionEnter {
-                payload.LocationName = "home"
-            } else if updateType == .BeaconRegionExit || updateType == .RegionExit {
-                payload.LocationName = "not_home"
-            }
+            payload.SetActivity(activity: activity)
         }
 
         var jsonPayload = "{\"missing\": \"payload\"}"
         if let p = payload.toJSONString(prettyPrint: false) {
             jsonPayload = p
         }
+
+        print("jsonPayload", jsonPayload)
 
         let payloadDict: [String: Any] = Mapper<DeviceTrackerSee>().toJSON(payload)
 
@@ -268,23 +250,24 @@ public class HomeAssistantAPI {
         let realm = Current.realm()
         // swiftlint:disable:next force_try
         try! realm.write {
-            realm.add(LocationHistoryEntry(updateType: updateType, location: loc,
+            realm.add(LocationHistoryEntry(updateType: updateType, location: payload.cllocation,
                                            zone: zone, payload: jsonPayload))
         }
 
-        if self.regionManager.checkIfInsideAnyRegions(location: loc.coordinate).count > 0 {
-            print("Not submitting location change since we are already inside of a zone")
-            for activeZone in self.regionManager.zones {
-                print("Zone check", activeZone.ID, activeZone.inRegion)
+        if let location = payload.Location {
+            if self.regionManager.checkIfInsideAnyRegions(location: location).count > 0 {
+                print("Not submitting location change since we are already inside of a zone")
+                for activeZone in self.regionManager.zones {
+                    print("Zone check", activeZone.ID, activeZone.inRegion)
+                }
+                return
             }
-            return
         }
 
         firstly {
             self.IdentifyDevice()
         }.then {_ in
-            self.CallService(domain: "device_tracker", service: "see", serviceData: payloadDict,
-                             shouldLog: false)
+            self.CallService(domain: "device_tracker", service: "see", serviceData: payloadDict, shouldLog: false)
         }.done { _ in
             print("Device seen!")
         }.catch { err in
@@ -311,11 +294,11 @@ public class HomeAssistantAPI {
             notificationBody = L10n.LocationChangeNotification.BeaconRegionExit.body(zoneName)
             notificationIdentifer = "\(zoneName)_beacon_exited"
             shouldNotify = prefs.bool(forKey: "beaconExitNotifications")
-        case .RegionEnter:
+        case .GPSRegionEnter:
             notificationBody = L10n.LocationChangeNotification.RegionEnter.body(zoneName)
             notificationIdentifer = "\(zoneName)_entered"
             shouldNotify = prefs.bool(forKey: "enterNotifications")
-        case .RegionExit:
+        case .GPSRegionExit:
             notificationBody = L10n.LocationChangeNotification.RegionExit.body(zoneName)
             notificationIdentifer = "\(zoneName)_exited"
             shouldNotify = prefs.bool(forKey: "exitNotifications")
@@ -342,7 +325,7 @@ public class HomeAssistantAPI {
         case .Manual:
             notificationBody = L10n.LocationChangeNotification.Manual.body
             shouldNotify = false
-        case .Unknown:
+        case .RegionEnter, .RegionExit, .Unknown:
             notificationBody = L10n.LocationChangeNotification.Unknown.body
             shouldNotify = false
         }
@@ -380,7 +363,7 @@ public class HomeAssistantAPI {
 
         return Promise { seal in
             regionManager.oneShotLocationActive = true
-            locationManager = LocationManager { location, error in
+            oneShotLocationManager = OneShotLocationManager { location, error in
                 self.regionManager.oneShotLocationActive = false
                 if let location = location {
                     self.submitLocation(updateType: updateTrigger, location: location, visit: nil, zone: nil)
@@ -1262,7 +1245,7 @@ class Bonjour {
 
 public typealias OnLocationUpdated = ((CLLocation?, Error?) -> Void)
 
-class RegionManager: NSObject {
+class RegionManager: NSObject, CLLocationManagerDelegate {
 
     let locationManager = CLLocationManager()
     var backgroundTask: UIBackgroundTaskIdentifier?
@@ -1301,6 +1284,13 @@ class RegionManager: NSObject {
         locationManager.startMonitoringVisits()
     }
 
+    func endBackgroundTask() {
+        if backgroundTask != UIBackgroundTaskInvalid {
+            UIApplication.shared.endBackgroundTask(backgroundTask!)
+            backgroundTask = UIBackgroundTaskInvalid
+        }
+    }
+
     func triggerRegionEvent(_ manager: CLLocationManager, trigger: LocationUpdateTrigger,
                             region: CLRegion) {
         var trig = trigger
@@ -1322,6 +1312,13 @@ class RegionManager: NSObject {
             if trigger == .RegionExit {
                 trig = .BeaconRegionExit
             }
+        } else {
+            if trigger == .RegionEnter {
+                trig = .GPSRegionEnter
+            }
+            if trigger == .RegionExit {
+                trig = .GPSRegionExit
+            }
         }
 
         backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
@@ -1331,7 +1328,7 @@ class RegionManager: NSObject {
         let realm = Current.realm()
         // swiftlint:disable:next force_try
         try! realm.write {
-            zone.inRegion = (trig == .RegionEnter || trig == .BeaconRegionEnter)
+            zone.inRegion = (trig == .GPSRegionEnter || trig == .BeaconRegionEnter)
         }
 
         print("Submit location for zone \(zone.ID) with trigger \(trig.rawValue)")
@@ -1359,7 +1356,6 @@ class RegionManager: NSObject {
 
         // start monitoring for all existing regions
         zones.forEach { zone in
-            print("Starting monitoring of zone \(zone)")
             startMonitoring(zone: zone)
         }
     }
@@ -1373,10 +1369,7 @@ class RegionManager: NSObject {
             return false
         }
     }
-}
 
-// MARK: CLLocationManagerDelegate
-extension RegionManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways {
             prefs.setValue(true, forKey: "locationEnabled")
@@ -1389,6 +1382,12 @@ extension RegionManager: CLLocationManagerDelegate {
             print("NOT accepting region manager update as one shot location service is active")
             return
         }
+
+        if self.lastLocation == nil {
+            print("NOT accepting region manager update since we appear to be in startup and regions may not be active")
+            return
+        }
+
         print("RegionManager: Got location, stopping updates!", locations.last.debugDescription, locations.count)
         HomeAssistantAPI.sharedInstance.submitLocation(updateType: .SignificantLocationUpdate,
                                                        location: locations.last,
@@ -1396,7 +1395,6 @@ extension RegionManager: CLLocationManagerDelegate {
                                                        zone: nil)
 
         self.lastLocation = locations.last
-
         locationManager.stopUpdatingLocation()
     }
 
@@ -1426,22 +1424,21 @@ extension RegionManager: CLLocationManagerDelegate {
                 let locErr = LocationError(err: clErr)
                 realm.add(locErr)
             }
-            print(clErr.debugDescription)
+            print("Received CLError:", clErr.debugDescription)
             if clErr.code == CLError.locationUnknown {
                 // locationUnknown just means that GPS may be taking an extra moment, so don't throw an error.
                 return
             }
         } else {
-            print("other error:", error.localizedDescription)
+            print("Received non-CLError when we only expected CLError:", error.localizedDescription)
         }
     }
 
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-//        let insideRegions = checkIfInsideAnyRegions(location: lastLocation.coordinate)
-//        for inside in insideRegions {
-//            print("System reports inside for zone", inside.identifier)
-//        }
-        print("Started monitoring region", region.identifier)
+        guard let zone = zones.filter({ region.identifier == $0.ID }).first else {
+            return
+        }
+        print("Started monitoring region", region.identifier, zone)
         locationManager.requestState(for: region)
     }
 
@@ -1455,20 +1452,20 @@ extension RegionManager: CLLocationManagerDelegate {
             strState = "Unknown"
         }
         print("\(strState) region", region.identifier)
-    }
-}
 
-// MARK: BackgroundTask
-extension RegionManager {
-    func endBackgroundTask() {
-        if backgroundTask != UIBackgroundTaskInvalid {
-            UIApplication.shared.endBackgroundTask(backgroundTask!)
-            backgroundTask = UIBackgroundTaskInvalid
+        guard let zone = zones.filter({ region.identifier == $0.ID }).first else {
+            return
+        }
+
+        let realm = Current.realm()
+        // swiftlint:disable:next force_try
+        try! realm.write {
+            zone.inRegion = (state == .inside)
         }
     }
 }
 
-class LocationManager: NSObject {
+class OneShotLocationManager: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
     var onLocationUpdated: OnLocationUpdated
 
@@ -1481,9 +1478,7 @@ class LocationManager: NSObject {
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
     }
-}
 
-extension LocationManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print("LocationManager: Got location, stopping updates!", locations.last.debugDescription, locations.count)
         onLocationUpdated(locations.first, nil)
@@ -1499,14 +1494,14 @@ extension LocationManager: CLLocationManagerDelegate {
                 let locErr = LocationError(err: clErr)
                 realm.add(locErr)
             }
-            print(clErr.debugDescription)
+            print("Received CLError:", clErr.debugDescription)
             if clErr.code == CLError.locationUnknown {
                 // locationUnknown just means that GPS may be taking an extra moment, so don't throw an error.
                 return
             }
             onLocationUpdated(nil, clErr)
         } else {
-            print("other error:", error.localizedDescription)
+            print("Received non-CLError when we only expected CLError:", error.localizedDescription)
             onLocationUpdated(nil, error)
         }
     }
@@ -1514,8 +1509,10 @@ extension LocationManager: CLLocationManagerDelegate {
 
 enum LocationUpdateTrigger: String {
     case Visit = "Visit"
-    case RegionEnter = "Geographic Region Entered"
-    case RegionExit = "Geographic Region Exited"
+    case RegionEnter = "Region Entered"
+    case RegionExit = "Region Exited"
+    case GPSRegionEnter = "Geographic Region Entered"
+    case GPSRegionExit = "Geographic Region Exited"
     case BeaconRegionEnter = "iBeacon Region Entered"
     case BeaconRegionExit = "iBeacon Region Exited"
     case Manual = "Manual"
@@ -1524,35 +1521,4 @@ enum LocationUpdateTrigger: String {
     case PushNotification = "Push Notification"
     case URLScheme = "URL Scheme"
     case Unknown = "Unknown"
-}
-
-extension CMMotionActivity {
-    var activityType: String {
-        if self.walking {
-            return "Walking"
-        } else if self.running {
-            return "Running"
-        } else if self.automotive {
-            return "Automotive"
-        } else if self.cycling {
-            return "Cycling"
-        } else if self.stationary {
-            return "Stationary"
-        } else {
-            return "Unknown"
-        }
-    }
-}
-
-extension CMMotionActivityConfidence {
-    var description: String {
-        if self == CMMotionActivityConfidence.low {
-            return "Low"
-        } else if self == CMMotionActivityConfidence.medium {
-            return "Medium"
-        } else if self == CMMotionActivityConfidence.high {
-            return "High"
-        }
-        return "Unknown"
-    }
 }
