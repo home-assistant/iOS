@@ -638,6 +638,11 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate {
         detailsSection.hidden = true
         detailsSection.evaluateHidden()
         self.tableView.reloadData()
+
+        let keys = keychain.allKeys()
+        for key in keys {
+            keychain[key] = nil
+        }
     }
 
     @objc func openAbout(_ sender: UIButton) {
