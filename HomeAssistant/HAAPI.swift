@@ -898,11 +898,17 @@ public class HomeAssistantAPI {
 
     // MARK: - Helper methods for reducing boilerplate.
 
-    private func handleError<T>(_ error: (Error), callingFunctionName: String, resolver: Resolver<T>) {
-        CLSLogv("Error on \(callingFunctionName)() request: %@",
-            getVaList([error.localizedDescription]))
-        Crashlytics.sharedInstance().recordError(error)
-        resolver.reject(error)
+    private func handleResponse<T>(response: DataResponse<T>, seal: Resolver<T>,
+                                   callingFunctionName: String) {
+        switch response.result {
+        case .success(let value):
+            seal.fulfill(value)
+        case .failure(let error):
+            CLSLogv("Error on \(callingFunctionName)() request: %@",
+                getVaList([error.localizedDescription]))
+            Crashlytics.sharedInstance().recordError(error)
+            seal.reject(error)
+        }
     }
 
     private func request(path: String, callingFunctionName: String, method: HTTPMethod = .get,
@@ -918,12 +924,8 @@ public class HomeAssistantAPI {
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseString { (response: DataResponse<String>) in
-                    switch response.result {
-                    case .success(let value):
-                        seal.fulfill(value)
-                    case .failure(let error):
-                        self.handleError(error, callingFunctionName: callingFunctionName, resolver: seal)
-                    }
+                   self.handleResponse(response: response, seal: seal,
+                                       callingFunctionName: callingFunctionName)
             }
 
         }
@@ -942,12 +944,8 @@ public class HomeAssistantAPI {
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseObject { (response: DataResponse<T>) in
-                    switch response.result {
-                    case .success(let value):
-                        seal.fulfill(value)
-                    case .failure(let error):
-                        self.handleError(error, callingFunctionName: callingFunctionName, resolver: seal)
-                    }
+                    self.handleResponse(response: response, seal: seal,
+                                        callingFunctionName: callingFunctionName)
             }
 
         }
@@ -966,12 +964,8 @@ public class HomeAssistantAPI {
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseArray { (response: DataResponse<[T]>) in
-                    switch response.result {
-                    case .success(let value):
-                        seal.fulfill(value)
-                    case .failure(let error):
-                        self.handleError(error, callingFunctionName: callingFunctionName, resolver: seal)
-                    }
+                    self.handleResponse(response: response, seal: seal,
+                                        callingFunctionName: callingFunctionName)
             }
 
         }
@@ -990,12 +984,8 @@ public class HomeAssistantAPI {
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseArray { (response: DataResponse<[T]>) in
-                    switch response.result {
-                    case .success(let value):
-                        seal.fulfill(value)
-                    case .failure(let error):
-                        self.handleError(error, callingFunctionName: callingFunctionName, resolver: seal)
-                    }
+                    self.handleResponse(response: response, seal: seal,
+                                        callingFunctionName: callingFunctionName)
             }
 
         }
@@ -1014,12 +1004,8 @@ public class HomeAssistantAPI {
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseObject { (response: DataResponse<T>) in
-                    switch response.result {
-                    case .success(let value):
-                        seal.fulfill(value)
-                    case .failure(let error):
-                        self.handleError(error, callingFunctionName: callingFunctionName, resolver: seal)
-                    }
+                    self.handleResponse(response: response, seal: seal,
+                                        callingFunctionName: callingFunctionName)
             }
 
         }
