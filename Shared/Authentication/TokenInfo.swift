@@ -7,10 +7,17 @@
 //
 
 import Foundation
+import ObjectMapper
 
-public struct TokenInfo {
+public struct TokenInfo: ImmutableMappable {
     let accessToken: String
     let expiration: Date
     let refreshToken: String
-    let tokenType: String
+
+    public init(map: Map) throws {
+        self.accessToken = try map.value("access_token")
+        self.refreshToken = try map.value("refresh_token")
+        let ttlInSeconds: Int = try map.value("expires_in")
+        self.expiration = Date(timeIntervalSinceNow: TimeInterval(ttlInSeconds))
+    }
 }

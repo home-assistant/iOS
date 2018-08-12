@@ -6,7 +6,7 @@ use_frameworks!
 plugin 'cocoapods-acknowledgements'
 
 target 'HomeAssistant' do
-  pod 'Alamofire', '4.7.2'
+  pod 'Alamofire', '4.7.3'
   pod 'AlamofireNetworkActivityIndicator', '2.2.1'
   pod 'AlamofireObjectMapper', '5.1.0'
   pod 'CPDAcknowledgements', '1.0.0'
@@ -29,12 +29,11 @@ target 'HomeAssistant' do
 end
 
 target 'Shared' do
-    pod 'Alamofire', '4.7.2'
+    pod 'Alamofire', '4.7.3'
     pod 'AlamofireObjectMapper', '5.1.0'
     pod 'ObjectMapper', '3.3.0'
     pod 'PromiseKit', '6.3.0'
-    pod 'PromiseKit/Alamofire', '~> 6.0'
-  pod 'RealmSwift'
+    pod 'RealmSwift'
   target 'SharedTests' do
     inherit! :search_paths
   end

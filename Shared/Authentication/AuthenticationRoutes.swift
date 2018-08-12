@@ -8,48 +8,51 @@
 
 import Alamofire
 import Foundation
-let baseURLString = "http://192.168.86.187:8123"
+let baseURLString = "http://localhost.charlesproxy.com:8123"
 let kClientId = "https://www.home-assistant.io/ios"
-let kRedirectURI = "homeassistant://"
+let kRedirectURI = "https://www.home-assistant.io/ios"
 
-enum AuthenticationRoutes: URLRequestConvertible {
-    case providers
-    case loginFlow(provider: AuthenticationProvider)
+enum AuthenticationRoutes: Alamofire.URLRequestConvertible {
+   case token(authorizationCode: String)
+    case refreshToken(token: String)
 
     func asURLRequest() throws -> URLRequest {
         let baseURL = try baseURLString.asURL()
-        var request = URLRequest(url: baseURL.appendingPathComponent(self.path))
-        request.httpMethod = self.method.rawValue
-
+        let baseRequest =  try URLRequest(url: baseURL.appendingPathComponent(self.path), method: self.method)
+        let request: URLRequest
+        if let parameters = self.parameters {
+            request = try URLEncoding.httpBody.encode(baseRequest, with: parameters)
+        } else {
+            request = baseRequest
+        }
         return request
     }
 
     // MARK: - Private helpers
     private var method: HTTPMethod {
         switch self {
-        case .providers:
-            return .get
-        case .loginFlow:
+        case .token:
+            return .post
+        case .refreshToken:
             return .post
         }
     }
 
     private var parameters: Parameters? {
         switch self {
-        case .providers:
-            return nil
-        case .loginFlow(let provider):
-            let handler = [provider.type, provider.id]
-            return ["handler": handler, "redirect_uri": kRedirectURI, "client_id": kClientId]
+        case .token(let authorizationCode):
+            return ["client_id": kClientId, "grant_type": "authorization_code", "code": authorizationCode]
+        case .refreshToken(let token):
+            return ["client_id": kClientId, "grant_type": "refresh_token", "refresh_token": token]
         }
     }
 
     private var path: String {
         switch self {
-        case .providers:
-            return "/auth/providers"
-        case .loginFlow:
-            return "/auth/login_flow"
+        case .token:
+            return "/auth/token"
+        case .refreshToken:
+            return "/auth/token"
         }
     }
 }

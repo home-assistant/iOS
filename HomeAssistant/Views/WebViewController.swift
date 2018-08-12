@@ -56,10 +56,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         webView.scrollView.bounces = false
 
-        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
+        HomeAssistantAPI.sharedInstance.setup(baseURLString: keychain["baseURL"],
                                               password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
-        if HomeAssistantAPI.sharedInstance.Configured {
+        if HomeAssistantAPI.sharedInstance.isConfigured {
             HomeAssistantAPI.sharedInstance.Connect().done {_ in
                 if HomeAssistantAPI.sharedInstance.notificationsEnabled {
                     UIApplication.shared.registerForRemoteNotifications()
@@ -141,7 +141,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.setToolbarItems(barItems, animated: false)
         self.navigationController?.toolbar.tintColor = tabBarIconColor
 
-        if HomeAssistantAPI.sharedInstance.Configured {
+        if HomeAssistantAPI.sharedInstance.isConfigured {
             if let baseURL = HomeAssistantAPI.sharedInstance.baseURL {
                 let myRequest = URLRequest(url: baseURL)
                 self.webView.load(myRequest)

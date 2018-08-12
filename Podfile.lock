@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (4.7.2)
+  - Alamofire (4.7.3)
   - AlamofireNetworkActivityIndicator (2.2.1):
     - Alamofire (~> 4.7)
   - AlamofireObjectMapper (5.1.0):
@@ -21,9 +21,6 @@ PODS:
     - PromiseKit/CorePromise (= 6.3.0)
     - PromiseKit/Foundation (= 6.3.0)
     - PromiseKit/UIKit (= 6.3.0)
-  - PromiseKit/Alamofire (6.3.0):
-    - Alamofire (~> 4.0)
-    - PromiseKit/CorePromise
   - PromiseKit/CorePromise (6.3.0)
   - PromiseKit/Foundation (6.3.0):
     - PromiseKit/CorePromise
@@ -38,7 +35,7 @@ PODS:
   - SwiftLint (0.25.1)
 
 DEPENDENCIES:
-  - Alamofire (= 4.7.2)
+  - Alamofire (= 4.7.3)
   - AlamofireNetworkActivityIndicator (= 2.2.1)
   - AlamofireObjectMapper (= 5.1.0)
   - CPDAcknowledgements (= 1.0.0)
@@ -51,7 +48,6 @@ DEPENDENCIES:
   - MBProgressHUD (= 1.1.0)
   - ObjectMapper (= 3.3.0)
   - PromiseKit (= 6.3.0)
-  - PromiseKit/Alamofire (~> 6.0)
   - RealmSwift
   - SwiftGen (= 5.3.0)
   - SwiftLint (= 0.25.1)
@@ -86,7 +82,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/robbiet480/FontAwesomeKit.git
 
 SPEC CHECKSUMS:
-  Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
+  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
   AlamofireNetworkActivityIndicator: aeac50e6ecb78ec71a5f1f29098bcf4ec2962910
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
@@ -104,6 +100,6 @@ SPEC CHECKSUMS:
   SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
   SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
 
-PODFILE CHECKSUM: 019264cd9c2870c53af3b46c698996531079043d
+PODFILE CHECKSUM: 66a9d1c3fa15cfdd915902f50249af14adbcce0d
 
 COCOAPODS: 1.5.3

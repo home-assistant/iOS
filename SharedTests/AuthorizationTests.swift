@@ -25,10 +25,24 @@ class AuthorizationTests: XCTestCase {
     
     func testExample() {
         let exp = self.expectation(description: "yo")
+
         firstly {
             AuthenticationAPI.listProviders()
-            }.then { (providers: [AuthenticationProvider]) in
-            print(providers)
+            }.then { providers in
+AuthenticationAPI.authenticationForm(for: providers.first!)
+            }.then { form in
+                AuthenticationAPI.postAuthenticationResponses(["username": "stephen", "password":"password"],
+                                                              flowId: form.flowId)
+            }.done { response in
+                switch response {
+                case .invalid(let form):
+                    print(form)
+                case .valid(_, _, let code):
+                AuthenticationAPI.fetchTokenWithCode(code).done { dictionary in
+                        print(dictionary)
+                    }
+                }
+
         }
 
         self.wait(for: [exp], timeout: 10.0)

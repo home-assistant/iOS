@@ -248,7 +248,9 @@
 		D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE441121043B8100C74314 /* AuthorizationTests.swift */; };
 		D0BE441421043DF700C74314 /* AuthenticationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE441321043DF700C74314 /* AuthenticationProvider.swift */; };
 		D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44152104410D00C74314 /* AuthenticationAPI.swift */; };
-		D0BE441C21050D3B00C74314 /* DataEntryFlowForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE441B21050D3B00C74314 /* DataEntryFlowForm.swift */; };
+		D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C8845F211ED11900CCB501 /* SafariServices.framework */; };
+		D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88461211ED16300CCB501 /* AuthenticationController.swift */; };
+		D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88463211F33CE00CCB501 /* TokenManager.swift */; };
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
 		D18BB39F0BE75F5C3F086FE2 /* Pods-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */; };
@@ -630,7 +632,9 @@
 		D0BE441121043B8100C74314 /* AuthorizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationTests.swift; sourceTree = "<group>"; };
 		D0BE441321043DF700C74314 /* AuthenticationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationProvider.swift; sourceTree = "<group>"; };
 		D0BE44152104410D00C74314 /* AuthenticationAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationAPI.swift; sourceTree = "<group>"; };
-		D0BE441B21050D3B00C74314 /* DataEntryFlowForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataEntryFlowForm.swift; sourceTree = "<group>"; };
+		D0C8845F211ED11900CCB501 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
+		D0C88461211ED16300CCB501 /* AuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
+		D0C88463211F33CE00CCB501 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		D0FF79CB20D778B50034574D /* ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEvent.swift; sourceTree = "<group>"; };
 		D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventStore.swift; sourceTree = "<group>"; };
 		D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTableViewController.swift; sourceTree = "<group>"; };
@@ -657,6 +661,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */,
 				B6CFF5DC2101985200CC523F /* Realm.framework in Frameworks */,
 				B6CFF5DE2101985200CC523F /* RealmSwift.framework in Frameworks */,
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
@@ -724,6 +729,7 @@
 		29278BB24639BA945D3D86B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D0C8845F211ED11900CCB501 /* SafariServices.framework */,
 				B6CFF5DB2101985200CC523F /* Realm.framework */,
 				B6CFF5DD2101985200CC523F /* RealmSwift.framework */,
 				B6CFF5D92101984A00CC523F /* RealmSwift.framework */,
@@ -991,6 +997,7 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
+				D0C8845E211ED0BA00CCB501 /* Authentication */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
 				B6F02BE71CB4698A0029ABE7 /* Classes */,
 				B69933961E232AF50054453D /* Resources */,
@@ -1170,8 +1177,6 @@
 		D03D891820E0A85300D4F28D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				D0BE441A21050A7B00C74314 /* DataEntryFlow */,
-				D0BE440C2104365B00C74314 /* Networking */,
 				D0BE440B2104224A00C74314 /* Authentication */,
 				D0FF79D020D87CF60034574D /* Common */,
 				D0FF79C920D7787F0034574D /* ClientEvents */,
@@ -1224,23 +1229,17 @@
 				D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */,
 				D0BE441321043DF700C74314 /* AuthenticationProvider.swift */,
 				D0BE44152104410D00C74314 /* AuthenticationAPI.swift */,
+				D0C88463211F33CE00CCB501 /* TokenManager.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
 		};
-		D0BE440C2104365B00C74314 /* Networking */ = {
+		D0C8845E211ED0BA00CCB501 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				D0C88461211ED16300CCB501 /* AuthenticationController.swift */,
 			);
-			path = Networking;
-			sourceTree = "<group>";
-		};
-		D0BE441A21050A7B00C74314 /* DataEntryFlow */ = {
-			isa = PBXGroup;
-			children = (
-				D0BE441B21050D3B00C74314 /* DataEntryFlowForm.swift */,
-			);
-			path = DataEntryFlow;
+			path = Authentication;
 			sourceTree = "<group>";
 		};
 		D0FF79C920D7787F0034574D /* ClientEvents */ = {
@@ -1913,7 +1912,7 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/PromiseKit.default-Alamofire/PromiseKit.framework",
+				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 			);
@@ -2025,7 +2024,6 @@
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/PromiseKit.default-Alamofire/PromiseKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -2133,6 +2131,7 @@
 				B6F02C171CB489770029ABE7 /* Scene.swift in Sources */,
 				B6C2C18120D1FDFC00BD810B /* DeviceTrackerSee.swift in Sources */,
 				B657A91A1CA647C500121384 /* HAAPI.swift in Sources */,
+				D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */,
 				B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */,
 				B6F02C1B1CB489770029ABE7 /* Switch.swift in Sources */,
 				B6C2C17F20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift in Sources */,
@@ -2183,9 +2182,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
 				D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */,
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
-				D0BE441C21050D3B00C74314 /* DataEntryFlowForm.swift in Sources */,
 				D03D893B20E0B2E300D4F28D /* Constants.swift in Sources */,
 				D0BE441421043DF700C74314 /* AuthenticationProvider.swift in Sources */,
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
@@ -2481,6 +2480,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Robert Trencheny (43BAGK8JW5)";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;

@@ -56,7 +56,7 @@ public class HomeAssistantAPI {
 
     var cachedEntities: [Entity]?
 
-    var Configured: Bool {
+    var isConfigured: Bool {
         return self.baseURL != nil
     }
 
@@ -91,7 +91,7 @@ public class HomeAssistantAPI {
         return permissionsContainer
     }
 
-    func Setup(baseURLString: String?, password: String?, deviceID: String?) {
+    func setup(baseURLString: String?, password: String?, deviceID: String?) {
         let appKeychain = Keychain(service: "io.robbie.homeassistant")
         let basicAuthKeychain = Keychain(server: baseURLString!, protocolType: .https, authenticationType: .httpBasic)
 
@@ -101,7 +101,7 @@ public class HomeAssistantAPI {
             self.baseAPIURL = self.baseURL?.appendingPathComponent("api")
         } else if let baseURLString = baseURLString {
             if let baseURL = URL(string: baseURLString) {
-                if self.Configured && self.baseURL == baseURL && self.apiPassword == password &&
+                if self.isConfigured && self.baseURL == baseURL && self.apiPassword == password &&
                     self.deviceID == deviceID {
                     print("HAAPI already configured, returning from Setup")
                     return
@@ -392,7 +392,9 @@ public class HomeAssistantAPI {
         }
     }
 
+
     func GetManifestJSON() -> Promise<ManifestJSON> {
+//        return self.request(path: "manifest.json", callingFunctionName: "\(#function)", method: .get)
         return Promise { seal in
             if let manager = self.manager, let queryUrl = baseURL?.appendingPathComponent("manifest.json") {
                 _ = manager.request(queryUrl, method: .get)
@@ -1135,7 +1137,110 @@ public class HomeAssistantAPI {
         return ssid
     }
 
+    // MARK: - Helper methods for reducing boilerplate.
 
+    private func handleError<T>(_ error: (Error), callingFunctionName: String, resolver: Resolver<T>) {
+        CLSLogv("Error on \(callingFunctionName)() request: %@",
+            getVaList([error.localizedDescription]))
+        Crashlytics.sharedInstance().recordError(error)
+        resolver.reject(error)
+    }
+
+    private func request<T: BaseMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
+                                          parameters: Parameters? = nil,
+                                          encoding: ParameterEncoding = URLEncoding.default,
+                                          headers: HTTPHeaders? = nil) -> Promise<T> {
+        return Promise { seal in
+            guard let manager = self.manager, let url = self.baseURL?.appendingPathComponent(path) else {
+                seal.reject(APIError.managerNotAvailable)
+                return
+            }
+
+            _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
+                .validate()
+                .responseObject { (response: DataResponse<T>) in
+                    switch response.result {
+                    case .success(let value):
+                        seal.fulfill(value)
+                    case .failure(let error):
+                        self.handleError(error, callingFunctionName: callingFunctionName, resolver: seal)
+                    }
+            }
+
+        }
+    }
+
+    private func request<T: BaseMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
+                                          parameters: Parameters? = nil,
+                                          encoding: ParameterEncoding = URLEncoding.default,
+                                          headers: HTTPHeaders? = nil) -> Promise<[T]> {
+        return Promise { seal in
+             guard let manager = self.manager, let url = self.baseURL?.appendingPathComponent(path) else {
+                seal.reject(APIError.managerNotAvailable)
+                return
+            }
+
+            _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
+                .validate()
+                .responseArray { (response: DataResponse<[T]>) in
+                    switch response.result {
+                    case .success(let value):
+                        seal.fulfill(value)
+                    case .failure(let error):
+                        self.handleError(error, callingFunctionName: callingFunctionName, resolver: seal)
+                    }
+            }
+
+        }
+    }
+
+    private func request<T: ImmutableMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
+                                               parameters: Parameters? = nil,
+                                               encoding: ParameterEncoding = URLEncoding.default,
+                                               headers: HTTPHeaders? = nil) -> Promise<[T]> {
+        return Promise { seal in
+             guard let manager = self.manager, let url = self.baseURL?.appendingPathComponent(path) else {
+                seal.reject(APIError.managerNotAvailable)
+                return
+            }
+
+            _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
+                .validate()
+                .responseArray { (response: DataResponse<[T]>) in
+                    switch response.result {
+                    case .success(let value):
+                        seal.fulfill(value)
+                    case .failure(let error):
+                        self.handleError(error, callingFunctionName: callingFunctionName, resolver: seal)
+                    }
+            }
+
+        }
+    }
+
+    private func request<T: ImmutableMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
+                                               parameters: Parameters? = nil,
+                                               encoding: ParameterEncoding = URLEncoding.default,
+                                               headers: HTTPHeaders? = nil) -> Promise<T> {
+        return Promise { seal in
+             guard let manager = self.manager, let url = self.baseURL?.appendingPathComponent(path) else {
+                seal.reject(APIError.managerNotAvailable)
+                return
+            }
+
+            _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
+                .validate()
+                .responseObject { (response: DataResponse<T>) in
+                    switch response.result {
+                    case .success(let value):
+                        seal.fulfill(value)
+                    case .failure(let error):
+                        self.handleError(error, callingFunctionName: callingFunctionName, resolver: seal)
+                    }
+            }
+
+        }
+    }
 }
 
 class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {

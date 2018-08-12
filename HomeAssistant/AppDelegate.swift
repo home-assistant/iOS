@@ -16,6 +16,7 @@ import KeychainAccess
 import Alamofire
 import RealmSwift
 import Shared
+import SafariServices
 
 let keychain = Keychain(service: "io.robbie.homeassistant")
 
@@ -25,11 +26,24 @@ let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var safariVC: SFSafariViewController?
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         Fabric.with([Crashlytics.self])
-        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+//        if let baseURLString = keychain["baseURL"], let baseURL = URL(string: baseURLString) {
+//
+//        }
+//        firstly {
+//            Current.tokenManager.bearerToken
+//        }.catch { error in
+//            guard let missingError = error as? TokenManager.TokenError,missingError == .tokenUnavailable else {
+//                print("Error getting bearer token: \(error)"
+//                return
+//            }
+//
+//            let safariVC = SFSafariViewController(url: <#T##URL#>)
+//        )
+        HomeAssistantAPI.sharedInstance.setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
 
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
@@ -60,6 +74,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+        func ensureToken() {
+
+        }
     func applicationWillResignActive(_ application: UIApplication) {}
 
     func applicationDidEnterBackground(_ application: UIApplication) {}
@@ -109,7 +126,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             completionHandler(UIBackgroundFetchResult.noData)
                         }
                         print("Received remote request to provide a location update")
-                        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
+                        HomeAssistantAPI.sharedInstance.setup(baseURLString: keychain["baseURL"],
                                                               password: keychain["apiPassword"],
                                                               deviceID: keychain["deviceID"])
                         HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .PushNotification).done { success in
@@ -140,7 +157,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         print("Background fetch activated at \(timestamp)!")
-        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+        HomeAssistantAPI.sharedInstance.setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
         if HomeAssistantAPI.sharedInstance.locationEnabled {
             HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .BackgroundFetch).done { success in
@@ -170,7 +187,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      forRemoteNotification userInfo: [AnyHashable: Any],
                      withResponseInfo responseInfo: [AnyHashable: Any],
                      completionHandler: @escaping () -> Void) {
-        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+        HomeAssistantAPI.sharedInstance.setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
         var userInput: String?
         if let userText = responseInfo[UIUserNotificationActionResponseTypedTextKey] as? String {
@@ -184,7 +201,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ app: UIApplication,
                      open url: URL,
                      options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
-        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+        HomeAssistantAPI.sharedInstance.setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
         var serviceData: [String: String] = [:]
         if let queryItems = url.queryItems {
@@ -236,7 +253,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     public func userNotificationCenter(_ center: UNUserNotificationCenter,
                                        didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
-        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
+        HomeAssistantAPI.sharedInstance.setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
                                               deviceID: keychain["deviceID"])
         var userText: String?
         if let textInput = response as? UNTextInputNotificationResponse {
