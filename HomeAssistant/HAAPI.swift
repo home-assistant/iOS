@@ -196,7 +196,7 @@ public class HomeAssistantAPI {
                     }
                 }
 
-                _ = self.GetStates().done { _ in
+                _ = self.GetStates().done { entities in
                     if self.loadedComponents.contains("ios") {
                         CLSLogv("iOS component loaded, attempting identify", getVaList([]))
                         _ = self.IdentifyDevice()
@@ -392,133 +392,28 @@ public class HomeAssistantAPI {
         }
     }
 
-
     func GetManifestJSON() -> Promise<ManifestJSON> {
-//        return self.request(path: "manifest.json", callingFunctionName: "\(#function)", method: .get)
-        return Promise { seal in
-            if let manager = self.manager, let queryUrl = baseURL?.appendingPathComponent("manifest.json") {
-                _ = manager.request(queryUrl, method: .get)
-                    .validate()
-                    .responseObject { (response: DataResponse<ManifestJSON>) in
-                        switch response.result {
-                        case .success:
-                            if let resVal = response.result.value {
-                                seal.fulfill(resVal)
-                            } else {
-                                seal.reject(APIError.invalidResponse)
-                            }
-                        case .failure(let error):
-                            CLSLogv("Error on GetManifestJSON() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
-                            seal.reject(error)
-                        }
-                }
-            } else {
-                seal.reject(APIError.managerNotAvailable)
-            }
-        }
+        return self.request(path: "manifest.json", callingFunctionName: "\(#function)", method: .get)
     }
 
     func GetStatus() -> Promise<StatusResponse> {
-        return Promise { seal in
-            if let manager = self.manager, let queryUrl = baseAPIURL {
-                _ = manager.request(queryUrl, method: .get)
-                           .validate()
-                           .responseObject { (response: DataResponse<StatusResponse>) in
-                                switch response.result {
-                                case .success:
-                                    if let resVal = response.result.value {
-                                        seal.fulfill(resVal)
-                                    } else {
-                                        seal.reject(APIError.invalidResponse)
-                                    }
-                                case .failure(let error):
-                                    CLSLogv("Error on GetStatus() request: %@",
-                                            getVaList([error.localizedDescription]))
-                                    Crashlytics.sharedInstance().recordError(error)
-                                    seal.reject(error)
-                                }
-                            }
-            } else {
-                seal.reject(APIError.managerNotAvailable)
-            }
-        }
+        return self.request(path: "", callingFunctionName: "\(#function)", method: .get)
     }
 
     func GetConfig() -> Promise<ConfigResponse> {
-        return Promise { seal in
-            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("config") {
-                _ = manager.request(queryUrl, method: .get)
-                           .validate()
-                           .responseObject { (response: DataResponse<ConfigResponse>) in
-                            switch response.result {
-                            case .success:
-                                if let resVal = response.result.value {
-                                    seal.fulfill(resVal)
-                                } else {
-                                    seal.reject(APIError.invalidResponse)
-                                }
-                            case .failure(let error):
-                                CLSLogv("Error on GetConfig() request: %@", getVaList([error.localizedDescription]))
-                                Crashlytics.sharedInstance().recordError(error)
-                                seal.reject(error)
-                            }
-                }
-            } else {
-                seal.reject(APIError.managerNotAvailable)
-            }
-        }
+        return self.request(path: "config", callingFunctionName: "\(#function)")
     }
 
     func GetServices() -> Promise<[ServicesResponse]> {
-        return Promise { seal in
-            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("services") {
-                _ = manager.request(queryUrl, method: .get)
-                    .validate()
-                    .responseArray { (response: DataResponse<[ServicesResponse]>) in
-                        switch response.result {
-                        case .success:
-                            if let resVal = response.result.value {
-                                seal.fulfill(resVal)
-                            } else {
-                                seal.reject(APIError.invalidResponse)
-                            }
-                        case .failure(let error):
-                            CLSLogv("Error on GetServices() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
-                            seal.reject(error)
-                        }
-                }
-            } else {
-                seal.reject(APIError.managerNotAvailable)
-            }
-        }
+        return self.request(path: "services", callingFunctionName: "\(#function)")
     }
 
     func GetStates() -> Promise<[Entity]> {
-        return Promise { seal in
-            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("states") {
-                _ = manager.request(queryUrl, method: .get)
-                    .validate()
-                    .responseArray { (response: DataResponse<[Entity]>) in
-                        switch response.result {
-                        case .success:
-                            if let resVal = response.result.value {
-                                self.cachedEntities = resVal
-                                self.storeEntities(entities: resVal)
-                                seal.fulfill(resVal)
-                            } else {
-                                seal.reject(APIError.invalidResponse)
-                            }
-                        case .failure(let error):
-                            CLSLogv("Error on GetStates() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
-                            seal.reject(error)
-                        }
-                }
-            } else {
-                seal.reject(APIError.managerNotAvailable)
-            }
+        return self.request(path: "states", callingFunctionName: "\(#function)").then {
+                (entities: [Entity]) -> Promise<[Entity]> in
+                self.cachedEntities = entities
+                self.storeEntities(entities: entities)
+                return Promise.value(entities)
         }
     }
 
