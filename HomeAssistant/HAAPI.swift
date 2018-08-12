@@ -49,7 +49,7 @@ public class HomeAssistantAPI {
     var baseAPIURL: URL?
     var apiPassword: String?
 
-    private var manager: Alamofire.SessionManager?
+     var manager: Alamofire.SessionManager?
 
     var regionManager = RegionManager()
     var locationManager: LocationManager?
@@ -894,121 +894,6 @@ public class HomeAssistantAPI {
             }
         }
         return ssid
-    }
-
-    // MARK: - Helper methods for reducing boilerplate.
-
-    private func handleResponse<T>(response: DataResponse<T>, seal: Resolver<T>,
-                                   callingFunctionName: String) {
-        switch response.result {
-        case .success(let value):
-            seal.fulfill(value)
-        case .failure(let error):
-            CLSLogv("Error on \(callingFunctionName)() request: %@",
-                getVaList([error.localizedDescription]))
-            Crashlytics.sharedInstance().recordError(error)
-            seal.reject(error)
-        }
-    }
-
-    private func request(path: String, callingFunctionName: String, method: HTTPMethod = .get,
-                         parameters: Parameters? = nil,
-                         encoding: ParameterEncoding = URLEncoding.default,
-                         headers: HTTPHeaders? = nil) -> Promise<String> {
-        return Promise { seal in
-            guard let manager = self.manager, let url = self.baseAPIURL?.appendingPathComponent(path) else {
-                seal.reject(APIError.managerNotAvailable)
-                return
-            }
-
-            _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
-                .validate()
-                .responseString { (response: DataResponse<String>) in
-                   self.handleResponse(response: response, seal: seal,
-                                       callingFunctionName: callingFunctionName)
-            }
-
-        }
-    }
-
-    private func request<T: BaseMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
-                                          parameters: Parameters? = nil,
-                                          encoding: ParameterEncoding = URLEncoding.default,
-                                          headers: HTTPHeaders? = nil) -> Promise<T> {
-        return Promise { seal in
-            guard let manager = self.manager, let url = self.baseAPIURL?.appendingPathComponent(path) else {
-                seal.reject(APIError.managerNotAvailable)
-                return
-            }
-
-            _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
-                .validate()
-                .responseObject { (response: DataResponse<T>) in
-                    self.handleResponse(response: response, seal: seal,
-                                        callingFunctionName: callingFunctionName)
-            }
-
-        }
-    }
-
-    private func request<T: BaseMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
-                                          parameters: Parameters? = nil,
-                                          encoding: ParameterEncoding = URLEncoding.default,
-                                          headers: HTTPHeaders? = nil) -> Promise<[T]> {
-        return Promise { seal in
-             guard let manager = self.manager, let url = self.baseAPIURL?.appendingPathComponent(path) else {
-                seal.reject(APIError.managerNotAvailable)
-                return
-            }
-
-            _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
-                .validate()
-                .responseArray { (response: DataResponse<[T]>) in
-                    self.handleResponse(response: response, seal: seal,
-                                        callingFunctionName: callingFunctionName)
-            }
-
-        }
-    }
-
-    private func request<T: ImmutableMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
-                                               parameters: Parameters? = nil,
-                                               encoding: ParameterEncoding = URLEncoding.default,
-                                               headers: HTTPHeaders? = nil) -> Promise<[T]> {
-        return Promise { seal in
-             guard let manager = self.manager, let url = self.baseAPIURL?.appendingPathComponent(path) else {
-                seal.reject(APIError.managerNotAvailable)
-                return
-            }
-
-            _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
-                .validate()
-                .responseArray { (response: DataResponse<[T]>) in
-                    self.handleResponse(response: response, seal: seal,
-                                        callingFunctionName: callingFunctionName)
-            }
-
-        }
-    }
-
-    private func request<T: ImmutableMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
-                                               parameters: Parameters? = nil,
-                                               encoding: ParameterEncoding = URLEncoding.default,
-                                               headers: HTTPHeaders? = nil) -> Promise<T> {
-        return Promise { seal in
-             guard let manager = self.manager, let url = self.baseAPIURL?.appendingPathComponent(path) else {
-                seal.reject(APIError.managerNotAvailable)
-                return
-            }
-
-            _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
-                .validate()
-                .responseObject { (response: DataResponse<T>) in
-                    self.handleResponse(response: response, seal: seal,
-                                        callingFunctionName: callingFunctionName)
-            }
-
-        }
     }
 }
 

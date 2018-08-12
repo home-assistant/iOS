@@ -251,6 +251,7 @@
 		D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C8845F211ED11900CCB501 /* SafariServices.framework */; };
 		D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88461211ED16300CCB501 /* AuthenticationController.swift */; };
 		D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88463211F33CE00CCB501 /* TokenManager.swift */; };
+		D0C8846A2120EB8A00CCB501 /* HAAPI+RequestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */; };
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
 		D18BB39F0BE75F5C3F086FE2 /* Pods-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */; };
@@ -635,6 +636,7 @@
 		D0C8845F211ED11900CCB501 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		D0C88461211ED16300CCB501 /* AuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
 		D0C88463211F33CE00CCB501 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
+		D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAAPI+RequestHelpers.swift"; sourceTree = "<group>"; };
 		D0FF79CB20D778B50034574D /* ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEvent.swift; sourceTree = "<group>"; };
 		D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventStore.swift; sourceTree = "<group>"; };
 		D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTableViewController.swift; sourceTree = "<group>"; };
@@ -1007,6 +1009,7 @@
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
 				B657A9191CA647C500121384 /* HAAPI.swift */,
 				B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */,
+				D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */,
 			);
 			path = HomeAssistant;
 			sourceTree = "<group>";
@@ -2133,6 +2136,7 @@
 				B657A91A1CA647C500121384 /* HAAPI.swift in Sources */,
 				D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */,
 				B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */,
+				D0C8846A2120EB8A00CCB501 /* HAAPI+RequestHelpers.swift in Sources */,
 				B6F02C1B1CB489770029ABE7 /* Switch.swift in Sources */,
 				B6C2C17F20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift in Sources */,
 				B6F02C111CB489770029ABE7 /* GarageDoor.swift in Sources */,
