@@ -91,14 +91,16 @@ public class HomeAssistantAPI {
         return permissionsContainer
     }
 
+    // swiftlint:disable:next function_body_length
     func setup(baseURLString: String?, password: String?, deviceID: String?) {
         let appKeychain = Keychain(service: "io.robbie.homeassistant")
-        let basicAuthKeychain = Keychain(server: baseURLString!, protocolType: .https, authenticationType: .httpBasic)
+        var basicAuthKeychain = Keychain(server: baseURLString!, protocolType: .https, authenticationType: .httpBasic)
 
         if let ssid = appKeychain["internalBaseURLSSID"], let internalURL = appKeychain["internalBaseURL"],
             ssid == getSSID() {
             self.baseURL = URL(string: internalURL)
             self.baseAPIURL = self.baseURL?.appendingPathComponent("api")
+            basicAuthKeychain = Keychain(server: internalURL, protocolType: .https, authenticationType: .httpBasic)
         } else if let baseURLString = baseURLString {
             if let baseURL = URL(string: baseURLString) {
                 if self.isConfigured && self.baseURL == baseURL && self.apiPassword == password &&
@@ -197,6 +199,8 @@ public class HomeAssistantAPI {
                 }
 
                 _ = self.GetStates().done { entities in
+                    self.cachedEntities = entities
+                    self.storeEntities(entities: entities)
                     if self.loadedComponents.contains("ios") {
                         CLSLogv("iOS component loaded, attempting identify", getVaList([]))
                         _ = self.IdentifyDevice()
@@ -409,37 +413,11 @@ public class HomeAssistantAPI {
     }
 
     func GetStates() -> Promise<[Entity]> {
-        return self.request(path: "states", callingFunctionName: "\(#function)").then {
-                (entities: [Entity]) -> Promise<[Entity]> in
-                self.cachedEntities = entities
-                self.storeEntities(entities: entities)
-                return Promise.value(entities)
-        }
+        return self.request(path: "states", callingFunctionName: "\(#function)")
     }
 
     func GetEntityState(entityId: String) -> Promise<Entity> {
-        return Promise { seal in
-            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("states/\(entityId)") {
-                _ = manager.request(queryUrl, method: .get)
-                    .validate()
-                    .responseObject { (response: DataResponse<Entity>) in
-                        switch response.result {
-                        case .success:
-                            if let resVal = response.result.value {
-                                seal.fulfill(resVal)
-                            } else {
-                                seal.reject(APIError.invalidResponse)
-                            }
-                        case .failure(let error):
-                            CLSLogv("Error on GetEntityState() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
-                            seal.reject(error)
-                        }
-                }
-            } else {
-                seal.reject(APIError.managerNotAvailable)
-            }
-        }
+        return self.request(path: "states/\(entityId)", callingFunctionName: "\(#function)")
     }
 
     func SetState(entityId: String, state: String) -> Promise<Entity> {

@@ -1,3 +1,3 @@
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "我們建議你選擇\"永遠允許提供座標\"以獲得最好的定位體驗。\"只允許使用app的時間提供座標資訊\"，這將會自動關閉iBeacons、地理圍欄、背景更新等功能";
-"NSLocationAlwaysUsageDescription" = "程式需要你提供以下權限如存取iBeacons、地址圍欄、背景運作等功能來獲得你最新的座標資訊";
-"NSLocationWhenInUseUsageDescription" = "只允許使用app的時間提供座標資訊，這將會自動關閉iBeacons、地理圍欄、背景更新等功能";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "我們建議你選擇\"永遠允許提供座標\"以獲得最好的定位體驗。\"只允許在使用app的期間提供座標資訊\"，這將會自動關閉iBeacons、地理圍欄、背景更新等功能";
+"NSLocationAlwaysUsageDescription" = "程式需要你提供以下權限，如存取iBeacons、地址圍欄、背景運作等功能來取得你目前的座標資訊";
+"NSLocationWhenInUseUsageDescription" = "只允許在使用app的期間內提供座標資訊，這將會自動關閉iBeacons、地理圍欄、背景更新等功能";
