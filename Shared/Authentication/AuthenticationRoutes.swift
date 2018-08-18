@@ -8,16 +8,21 @@
 
 import Alamofire
 import Foundation
-let baseURLString = "http://localhost.charlesproxy.com:8123"
-let kClientId = "https://www.home-assistant.io/ios"
-let kRedirectURI = "https://www.home-assistant.io/ios"
 
-enum AuthenticationRoutes: Alamofire.URLRequestConvertible {
-   case token(authorizationCode: String)
-    case refreshToken(token: String)
+let kClientId = "https://blackgold9.github.io/home-assistant-iOS"
+struct RouteInfo: Alamofire.URLRequestConvertible  {
+    let route: AuthenticationRoute
+    let baseURL: URL
 
     func asURLRequest() throws -> URLRequest {
-        let baseURL = try baseURLString.asURL()
+        return try self.route.asURLRequestWith(baseURL: self.baseURL)
+    }
+}
+enum AuthenticationRoute {
+    case token(authorizationCode: String)
+    case refreshToken(token: String)
+
+    func asURLRequestWith(baseURL: URL) throws -> URLRequest {
         let baseRequest =  try URLRequest(url: baseURL.appendingPathComponent(self.path), method: self.method)
         let request: URLRequest
         if let parameters = self.parameters {
@@ -29,6 +34,7 @@ enum AuthenticationRoutes: Alamofire.URLRequestConvertible {
     }
 
     // MARK: - Private helpers
+
     private var method: HTTPMethod {
         switch self {
         case .token:

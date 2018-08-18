@@ -22,5 +22,7 @@ public struct Environment {
     /// Provides the Realm used for many data storage tasks.
     public var realm: () -> Realm = Realm.live
 
-    public var tokenManager = TokenManager()
+    public var tokenManager: TokenManager?
+
+    public var settingsStore = SettingsStore()
 }

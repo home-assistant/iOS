@@ -91,50 +91,53 @@ public class HomeAssistantAPI {
         return permissionsContainer
     }
 
-    // swiftlint:disable:next function_body_length
-    func setup(baseURLString: String?, password: String?, deviceID: String?) {
-        let appKeychain = Keychain(service: "io.robbie.homeassistant")
-        var basicAuthKeychain = Keychain(server: baseURLString!, protocolType: .https, authenticationType: .httpBasic)
+    private var tokenManager: TokenManager?
+    /// Initialzie an API object with an authenticated tokenManager.
+    public init?(baseURL: URL, authenticationMethod: AuthenticationMethod) {
+        self.baseURL = baseURL
+        switch authenticationMethod {
+        case .legacy(let apiPassword, ):
 
-        if let ssid = appKeychain["internalBaseURLSSID"], let internalURL = appKeychain["internalBaseURL"],
-            ssid == getSSID() {
-            self.baseURL = URL(string: internalURL)
-            self.baseAPIURL = self.baseURL?.appendingPathComponent("api")
-            basicAuthKeychain = Keychain(server: internalURL, protocolType: .https, authenticationType: .httpBasic)
-        } else if let baseURLString = baseURLString {
-            if let baseURL = URL(string: baseURLString) {
-                if self.isConfigured && self.baseURL == baseURL && self.apiPassword == password &&
-                    self.deviceID == deviceID {
-                    print("HAAPI already configured, returning from Setup")
-                    return
-                }
-
-                self.baseURL = baseURL
-                self.baseAPIURL = self.baseURL?.appendingPathComponent("api")
+            break
+        case .modern(let tokenInfo):
+            self.tokenManager = TokenManager(baseURL: baseURL, tokenInfo: tokenInfo)
+            guard let sessionManager = self.manager else {
+                return nil
             }
-        }
 
-        var headers = [String: String]()
+            sessionManager.retrier = self.tokenManager
+            sessionManager.adapter = self.tokenManager
+        }
+    }
+
+    public enum AuthenticationMethod {
+        case legacy(apiPassword: String)
+        case modern(tokenInfo: TokenInfo)
+    }
+
+    public func authenticatedAPI() -> HomeAssistantAPI? {
+        if let baseURL = Current.settingsStore.baseURL, let tokenInfo = Current.settingsStore.tokenInfo {
+            let tokenManager = TokenManager(baseURL: baseURL, tokenInfo: tokenInfo)
+            assert(tokenManager.isAuthenticated)
+            let api = HomeAssistantAPI()
+
+        }
+    }
+
+    private func configureSessionManager(withPassword password: String?) {
+        var headers = Alamofire.SessionManager.defaultHTTPHeaders
         if let password = password {
             headers["X-HA-Access"] = password
         }
-        if let deviceID = deviceID {
-            self.deviceID = deviceID
-        }
-
-        pushID = prefs.string(forKey: "pushID")
-
-        var defaultHeaders = Alamofire.SessionManager.defaultHTTPHeaders
-        for (header, value) in headers {
-            defaultHeaders[header] = value
-        }
 
         let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = defaultHeaders
+        configuration.httpAdditionalHeaders = headers
         configuration.timeoutIntervalForRequest = 10 // seconds
-
         self.manager = Alamofire.SessionManager(configuration: configuration)
+    }
 
+    // swiftlint:disable:next function_body_length
+    fileprivate func configureBasicAuthWithKeychain(_ basicAuthKeychain: Keychain) {
         if let basicUsername = basicAuthKeychain["basicAuthUsername"],
             let basicPassword = basicAuthKeychain["basicAuthPassword"] {
             self.manager?.delegate.sessionDidReceiveChallenge = { session, challenge in
@@ -153,6 +156,36 @@ public class HomeAssistantAPI {
                                                       persistence: .synchronizable))
             }
         }
+    }
+
+    func setup(baseURLString: String?, password: String?, deviceID: String?) {
+        let appKeychain = Keychain(service: "io.robbie.homeassistant")
+        var basicAuthKeychain = Keychain(server: baseURLString!, protocolType: .https, authenticationType: .httpBasic)
+
+        if let ssid = appKeychain["internalBaseURLSSID"], let internalURL = appKeychain["internalBaseURL"],
+            ssid == getSSID() {
+            self.baseURL = URL(string: internalURL)
+            self.baseAPIURL = self.baseURL?.appendingPathComponent("api")
+            basicAuthKeychain = Keychain(server: internalURL, protocolType: .https, authenticationType: .httpBasic)
+        } else if let baseURLString = baseURLString, let baseURL = URL(string: baseURLString) {
+            if self.isConfigured && self.baseURL == baseURL && self.apiPassword == password &&
+                self.deviceID == deviceID {
+                print("HAAPI already configured, returning from Setup")
+                return
+            }
+
+            self.baseURL = baseURL
+            self.baseAPIURL = baseURL.appendingPathComponent("api")
+        }
+
+        if let deviceID = deviceID {
+            self.deviceID = deviceID
+        }
+
+        self.pushID = prefs.string(forKey: "pushID")
+
+        self.configureSessionManager(withPassword: password)
+        self.configureBasicAuthWithKeychain(basicAuthKeychain)
 
         if #available(iOS 10, *) {
             UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
@@ -215,6 +248,26 @@ public class HomeAssistantAPI {
                 seal.reject(error)
             }
 
+        }
+    }
+
+    public enum HomeAssistantAPIError: Error {
+        case notAuthenticated
+    }
+    static var internalAuthenticatedAPI: Promise<HomeAssistantAPI>?
+    public static var authenticatedAPI: Promise<HomeAssistantAPI> {
+        if let apiPromise = self.internalAuthenticatedAPI {
+            return apiPromise
+        }
+
+        return Promise<HomeAssistantAPI> { seal in
+            if let tokenInfo = Current.settingsStore.tokenInfo, let baseURL = Current.settingsStore.baseURL {
+                let tokenManager = TokenManager(baseURL: baseURL, tokenInfo: tokenInfo)
+                let api = HomeAssistantAPI()
+                api.manager?.retrier = tokenManager
+                api.manager?.adapter = tokenManager
+                seal.fulfill(api)
+            }
         }
     }
 

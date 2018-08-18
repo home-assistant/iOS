@@ -238,6 +238,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 showAlert(title: L10n.UrlHandler.Error.title,
                           message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription))
             }
+        case "auth-callback": // homeassistant://auth-callback
+           NotificationCenter.default.post(name: Notification.Name("AuthCallback"), object: nil,
+                                           userInfo: ["url": url])
         default:
             print("Can't route", url.host!)
             showAlert(title: L10n.UrlHandler.Error.title,
