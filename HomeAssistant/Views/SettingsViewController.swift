@@ -18,21 +18,12 @@ import UserNotifications
 import Shared
 import SystemConfiguration.CaptiveNetwork
 
-struct ConnectionInfo: Codable {
-    struct BasicAuthCredentials: Codable {
-        let username: String
-        let password: String
-    }
-
-    let baseURL: URL
-    let internalBaseURL: URL?
-    let internalSSID: String?
-    let basicAuthCredentials: BasicAuthCredentials?
-}
-
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFSafariViewControllerDelegate {
+    enum SettingsError: Error {
+        case configurationFailed
+    }
     var authenticationController: AuthenticationController = AuthenticationController()
     func showAuthenticationViewController(_ viewController: SFSafariViewController) {
         viewController.delegate = self
@@ -58,6 +49,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     var useLegacyAuth: Bool = false
 
     var configured = false
+    var connectionInfo: ConnectionInfo?
 
     let discovery = Bonjour()
     var authLocationManager: CLLocationManager = CLLocationManager()
@@ -72,164 +64,22 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         self.title = L10n.Settings.NavigationBar.title
     }
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-
-        self.useLegacyAuth = Current.settingsStore.tokenInfo == nil
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func connectionInfoFromUI() -> ConnectionInfo? {
-        if let baseURL = self.baseURL {
-            let credentials: ConnectionInfo.BasicAuthCredentials?
-            if let username = self.basicAuthUsername, let password = self.basicAuthPassword {
-                credentials = ConnectionInfo.BasicAuthCredentials(username: username, password: password)
-            } else {
-                credentials = nil
-            }
-
-            let connectionInfo = ConnectionInfo(baseURL: baseURL,
-                                                internalBaseURL: self.internalBaseURL,
-                                                internalSSID: self.internalBaseURLSSID,
-                                                basicAuthCredentials: credentials)
-            return connectionInfo
-        }
-
-        return nil
-    }
-
-    /// Attempt to connect to the server with the supplied credentials. If it succeeds, save those
-    /// credentials and update the UI
-    private func validateConnection(basicAuthKeychain: Keychain) {
-        let keychain = Keychain(service: "io.robbie.homeassistant")
-
-
-        if let baseURLString = keychain["baseURL"] {
-            if let baseURL = URL(string: baseURLString) {
-                self.baseURL = baseURL
-                self.configured = true
-            }
-        }
-
-        if let internalBaseURL = self.internalBaseURL {
-            keychain["internalBaseURL"] = internalBaseURL.absoluteString
-        }
-        if let internalBaseURLSSID = self.internalBaseURLSSID {
-            keychain["internalBaseURLSSID"] = internalBaseURLSSID
-        }
-        if let basicAuthUsername = self.basicAuthUsername {
-            basicAuthKeychain["basicAuthUsername"] = basicAuthUsername
-        }
-        if let basicAuthPassword = self.basicAuthPassword {
-            basicAuthKeychain["basicAuthPassword"] = basicAuthPassword
-        }
-
-
-        if let baseUrl = self.baseURL {
-            if !self.useLegacyAuth {
-                let tokenManager = TokenManager(baseURL: baseUrl)
-                _ = firstly {
-                    self.authenticationController.authenticateWithBrowser(at: baseUrl)
-                    }.then { (code: String) -> Promise<String> in
-                        return tokenManager.initialTokenWithCode(code)
-                    }.then { _ -> Promise<ConfigResponse> in
-                        // At this point we are authenticated with modern auth. Clear legacy password.
-                        keychain["apiPassword"] = nil
-                        HomeAssistantAPI.sharedInstance.setup(baseURLString: baseUrl.absoluteString,
-                                                              password: nil, deviceID: self.deviceID)
-                        HomeAssistantAPI.sharedInstance.manager?.adapter = tokenManager
-                        HomeAssistantAPI.sharedInstance.manager?.retrier = tokenManager
-                        return HomeAssistantAPI.sharedInstance.Connect()
-                    }.done { config in
-                        self.configureUIWith(configResponse: config)
-                    }.catch { error in
-                        if let afError = error as? AFError {
-                            print(afError)
-                        }
-                }
-            } else {
-                HomeAssistantAPI.sharedInstance.setup(baseURLString: baseUrl.absoluteString,
-                                                      password: self.password, deviceID: self.deviceID)
-
-                HomeAssistantAPI.sharedInstance.Connect().done { config in
-                    /// Connected with legacy auth. Store credentials.
-                    if let url = self.baseURL {
-                        keychain["baseURL"] = url.absoluteString
-                    }
-
-                    if let password = self.password {
-                        keychain["apiPassword"] = password
-                    }
-
-                    self.configureUIWith(configResponse: config)
-                    }.catch { error in
-                        print("Connection error!", error)
-                        var errorMessage = error.localizedDescription
-                        if let error = error as? AFError {
-                            if error.responseCode == 401 {
-                                errorMessage = L10n.Settings.ConnectionError.Forbidden.message
-                            }
-                        }
-                        let title = L10n.Settings.ConnectionErrorNotification.title
-                        let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
-                        let alert = UIAlertController(title: title,
-                                                      message: message,
-                                                      preferredStyle: UIAlertControllerStyle.alert)
-                        alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                                      style: UIAlertActionStyle.default,
-                                                      handler: nil))
-                        self.present(alert, animated: true, completion: nil)
-                }
-            }
-        } else {
-            let errMsg = L10n.Settings.ConnectionError.InvalidUrl.message
-            let alert = UIAlertController(title: L10n.Settings.ConnectionError.InvalidUrl.title,
-                                          message: errMsg,
-                                          preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                          style: UIAlertActionStyle.default,
-                                          handler: nil))
-            self.present(alert, animated: true, completion: nil)
-        }
-    }
-
-    private func configureDiscoveryObservers() {
-        let queue = DispatchQueue(label: "io.robbie.homeassistant", attributes: [])
-        queue.async { () -> Void in
-            self.discovery.stopDiscovery()
-            self.discovery.stopPublish()
-
-            self.discovery.startDiscovery()
-            self.discovery.startPublish()
-        }
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)),
-                                               name: NSNotification.Name(rawValue: "homeassistant.discovered"),
-                                               object: nil)
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(SettingsViewController.HomeAssistantUndiscovered(_:)),
-                                               name: NSNotification.Name(rawValue: "homeassistant.undiscovered"),
-                                               object: nil)
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(SettingsViewController.Connected(_:)),
-                                               name: NSNotification.Name(rawValue: "connected"),
-                                               object: nil)
-    }
-
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let api = HomeAssistantAPI.authenticatedAPI()
+
+        // Initial state
+        self.useLegacyAuth = Current.settingsStore.tokenInfo == nil
+        self.connectionInfo = Current.settingsStore.connectionInfo
+
+        // Authentication
+        self.authLocationManager.delegate = self
         self.authenticationController.presentAuthenticationViewController = { controller in
             self.present(controller, animated: true, completion: nil)
         }
 
-        self.authLocationManager.delegate = self
         let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
                                           style: .plain,
                                           target: self,
@@ -246,27 +96,18 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         }
 
         let keychain = Keychain(service: "io.robbie.homeassistant")
-        if let baseURLString = keychain["baseURL"] {
-            if let baseURL = URL(string: baseURLString) {
-                self.baseURL = baseURL
-                self.configured = true
+        if let connectionInfo = self.connectionInfo {
+            self.baseURL = connectionInfo.baseURL
+            self.configured = true
+            self.password = keychain["apiPassword"]
+            if let url = connectionInfo.internalBaseURL, let ssid = connectionInfo.internalSSID {
+                self.internalBaseURL = url
+                self.internalBaseURLSSID = ssid
+                self.internalBaseURLEnabled = true
             }
         }
 
-        var basicAuthKeychain = Keychain(server: baseURL!, protocolType: .https, authenticationType: .httpBasic)
-
-        self.password = keychain["apiPassword"]
-        self.deviceID = keychain["deviceID"]
-
-        if let url = keychain["internalBaseURL"], let ssid = keychain["internalBaseURLSSID"] {
-            self.internalBaseURL = URL(string: url)
-            self.internalBaseURLSSID = ssid
-            self.internalBaseURLEnabled = true
-            basicAuthKeychain = Keychain(server: url, protocolType: .https, authenticationType: .httpBasic)
-        }
-
-        self.basicAuthEnabled = (basicAuthKeychain["basicAuthUsername"] != nil &&
-            basicAuthKeychain["basicAuthPassword"] != nil)
+        self.deviceID = Current.settingsStore.deviceID
 
         if showErrorConnectingMessage {
             var errDesc = ""
@@ -276,7 +117,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
                                           message: L10n.Settings.ConnectionErrorNotification.message(errDesc),
                                           preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                          handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
 
@@ -296,13 +138,14 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }.onCellHighlightChanged({ (_, row) in
                 if row.isHighlighted == false {
                     if let url = row.value {
-                        let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
+                        let cleanUrl = self.cleanBaseURL(baseUrl: url)
                         if !cleanUrl.hasValidScheme {
                             let title = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.title
                             let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
                             let alert = UIAlertController(title: title, message: message,
                                                           preferredStyle: UIAlertControllerStyle.alert)
-                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                            alert.addAction(UIAlertAction(title: L10n.okLabel,
+                                                          style: UIAlertActionStyle.default,
                                                           handler: nil))
                             self.present(alert, animated: true, completion: nil)
                         } else {
@@ -328,6 +171,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 $0.title = L10n.Settings.ConnectionSection.ApiPasswordRow.title
                 $0.value = self.password
                 $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.placeholder
+                $0.hidden = Condition(booleanLiteral: !self.useLegacyAuth)
                 }.onChange { row in
                     self.password = row.value
                 }.cellUpdate { cell, row in
@@ -368,7 +212,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 $0.hidden = Condition(booleanLiteral: !self.internalBaseURLEnabled)
                 if let ssid = self.internalBaseURLSSID {
                     $0.value = ssid
-                } else if let ssid = HomeAssistantAPI.sharedInstance.getSSID() {
+                } else if let ssid = ConnectionInfo.currentSSID() {
                     $0.value = ssid
                 }
                 self.internalBaseURLSSID = $0.value
@@ -382,7 +226,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }.onCellHighlightChanged({ (_, row) in
                 if row.isHighlighted == false {
                     if let url = row.value {
-                        let cleanUrl = HomeAssistantAPI.sharedInstance.CleanBaseURL(baseUrl: url)
+                        let cleanUrl = self.cleanBaseURL(baseUrl: url)
                         if !cleanUrl.hasValidScheme {
                             let title = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.title
                             let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
@@ -417,7 +261,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             <<< TextRow("basicAuthUsername") {
                 $0.title = L10n.Settings.ConnectionSection.BasicAuth.Username.title
                 $0.hidden = Condition(booleanLiteral: !self.basicAuthEnabled)
-                $0.value = basicAuthKeychain["basicAuthUsername"]
+                $0.value = self.connectionInfo?.basicAuthCredentials?.username ?? ""
                 $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Username.placeholder
             }.onChange { row in
                 self.basicAuthUsername = row.value
@@ -425,7 +269,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
             <<< PasswordRow("basicAuthPassword") {
                 $0.title = L10n.Settings.ConnectionSection.BasicAuth.Password.title
-                $0.value = basicAuthKeychain["basicAuthPassword"]
+                $0.value = self.connectionInfo?.basicAuthCredentials?.password ?? ""
                 $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Password.placeholder
                 $0.hidden = Condition(booleanLiteral: !self.basicAuthEnabled)
             }.onChange { row in
@@ -440,7 +284,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     $0.title = L10n.Settings.ConnectionSection.SaveButton.title
                 }.onCellSelection { _, _ in
                     if self.form.validate().count == 0 {
-                        self.validateConnection(basicAuthKeychain: basicAuthKeychain)
+                        self.validateConnection()
                     }
                 }
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
@@ -463,17 +307,17 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }
             <<< LabelRow("iosComponentLoaded") {
                 $0.title = L10n.Settings.StatusSection.IosComponentLoadedRow.title
-                $0.value = HomeAssistantAPI.sharedInstance.iosComponentLoaded ? "✔️" : "✖️"
+                $0.value = api?.iosComponentLoaded ?? false ? "✔️" : "✖️"
             }
             <<< LabelRow("deviceTrackerComponentLoaded") {
                 $0.title = L10n.Settings.StatusSection.DeviceTrackerComponentLoadedRow.title
-                $0.value = HomeAssistantAPI.sharedInstance.deviceTrackerComponentLoaded ? "✔️" : "✖️"
-                $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.locationEnabled == false)
+                $0.value = api?.deviceTrackerComponentLoaded ?? false ? "✔️" : "✖️"
+                $0.hidden = Condition(booleanLiteral: !(Current.settingsStore.locationEnabled))
             }
             <<< LabelRow("notifyPlatformLoaded") {
                 $0.title = L10n.Settings.StatusSection.NotifyPlatformLoadedRow.title
-                $0.value = HomeAssistantAPI.sharedInstance.iosNotifyPlatformLoaded ? "✔️" : "✖️"
-                $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.notificationsEnabled == false)
+                $0.value = api?.iosNotifyPlatformLoaded ?? false ? "✔️" : "✖️"
+                $0.hidden = Condition(booleanLiteral: !(api?.notificationsEnabled ?? false))
             }
 
             +++ Section(header: "", footer: L10n.Settings.DeviceIdSection.footer)
@@ -482,13 +326,13 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 if let deviceID = self.deviceID {
                     $0.value = deviceID
                 } else {
-                    $0.value = HomeAssistantAPI.sharedInstance.deviceID
+                    $0.value = Current.settingsStore.deviceID
                 }
                 $0.cell.textField.autocapitalizationType = .none
                 }.cellUpdate { _, row in
                     if row.isHighlighted == false {
                         if let deviceId = row.value {
-                            HomeAssistantAPI.sharedInstance.deviceID = deviceId
+                            Current.settingsStore.deviceID = deviceId
                             self.deviceID = deviceId
                             keychain["deviceID"] = deviceId
                         }
@@ -512,14 +356,14 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
             <<< ButtonRow("enableLocation") {
                 $0.title = L10n.Settings.DetailsSection.EnableLocationRow.title
-                $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.locationEnabled)
+                $0.hidden = Condition(booleanLiteral: Current.settingsStore.locationEnabled)
             }.onCellSelection { _, _ in
                 self.authLocationManager.requestAlwaysAuthorization()
             }
 
             <<< ButtonRow("locationSettings") {
                 $0.title = L10n.Settings.DetailsSection.LocationSettingsRow.title
-                $0.hidden = Condition(booleanLiteral: !HomeAssistantAPI.sharedInstance.locationEnabled)
+                $0.hidden = Condition(booleanLiteral: !(Current.settingsStore.locationEnabled))
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     let view = SettingsDetailViewController()
                     view.detailGroup = "location"
@@ -531,7 +375,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
             <<< ButtonRow("enableNotifications") {
                 $0.title = L10n.Settings.DetailsSection.EnableNotificationRow.title
-                $0.hidden = Condition(booleanLiteral: HomeAssistantAPI.sharedInstance.notificationsEnabled)
+                $0.hidden = Condition(booleanLiteral: api?.notificationsEnabled ?? false)
                 }.onCellSelection { _, row in
                     if #available(iOS 10, *) {
                         let center = UNUserNotificationCenter.current()
@@ -549,8 +393,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                                 print("Notifications Permissions finished!", granted)
                                 prefs.setValue(granted, forKey: "notificationsEnabled")
                                 prefs.synchronize()
-                                if granted {
-                                    HomeAssistantAPI.sharedInstance.setupPush()
+                                if granted, let api = api {
+                                    api.setupPush()
                                     DispatchQueue.main.async(execute: {
                                         row.hidden = true
                                         row.updateCell()
@@ -577,7 +421,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
             <<< ButtonRow("notificationSettings") {
                 $0.title = L10n.Settings.DetailsSection.NotificationSettingsRow.title
-                $0.hidden = Condition(booleanLiteral: !HomeAssistantAPI.sharedInstance.notificationsEnabled)
+                $0.hidden = Condition(booleanLiteral: !(api?.notificationsEnabled ?? false))
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     let view = SettingsDetailViewController()
                     view.detailGroup = "notifications"
@@ -695,13 +539,14 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
     @objc func Connected(_ notification: Notification) {
         let iosComponentLoadedRow: LabelRow = self.form.rowBy(tag: "iosComponentLoaded")!
-        iosComponentLoadedRow.value = HomeAssistantAPI.sharedInstance.iosComponentLoaded ? "✔️" : "✖️"
+        let api = HomeAssistantAPI.authenticatedAPI()
+        iosComponentLoadedRow.value = api?.iosComponentLoaded ?? false ? "✔️" : "✖️"
         iosComponentLoadedRow.updateCell()
         let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(tag: "deviceTrackerComponentLoaded")!
-        deviceTrackerComponentLoadedRow.value = HomeAssistantAPI.sharedInstance.deviceTrackerComponentLoaded ? "✔️" : "✖️"
+        deviceTrackerComponentLoadedRow.value = api?.deviceTrackerComponentLoaded ?? false ? "✔️" : "✖️"
         deviceTrackerComponentLoadedRow.updateCell()
         let notifyPlatformLoadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
-        notifyPlatformLoadedRow.value = HomeAssistantAPI.sharedInstance.iosNotifyPlatformLoaded ? "✔️" : "✖️"
+        notifyPlatformLoadedRow.value = api?.iosNotifyPlatformLoaded ?? false ? "✔️" : "✖️"
         notifyPlatformLoadedRow.updateCell()
     }
 
@@ -728,6 +573,128 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         self.tableView.reloadData()
     }
 
+    /// Grab the connection info from fields in the UI.
+    private func connectionInfoFromUI() -> ConnectionInfo? {
+        if let baseURL = self.baseURL {
+            let credentials: ConnectionInfo.BasicAuthCredentials?
+            if let username = self.basicAuthUsername, let password = self.basicAuthPassword {
+                credentials = ConnectionInfo.BasicAuthCredentials(username: username, password: password)
+            } else {
+                credentials = nil
+            }
+
+            let connectionInfo = ConnectionInfo(baseURL: baseURL,
+                                                internalBaseURL: self.internalBaseURL,
+                                                internalSSID: self.internalBaseURLSSID,
+                                                basicAuthCredentials: credentials)
+            return connectionInfo
+        }
+
+        return nil
+    }
+
+    private func handleConnectionError(_ error: (Error)) {
+        print("Connection error!", error)
+        var errorMessage = error.localizedDescription
+        if let error = error as? AFError {
+            if error.responseCode == 401 {
+                errorMessage = L10n.Settings.ConnectionError.Forbidden.message
+            }
+        }
+        let title = L10n.Settings.ConnectionErrorNotification.title
+        let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
+        let alert = UIAlertController(title: title,
+                                      message: message,
+                                      preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: L10n.okLabel,
+                                      style: UIAlertActionStyle.default,
+                                      handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+
+    /// Attempt to connect to the server with the supplied credentials. If it succeeds, save those
+    /// credentials and update the UI
+    private func validateConnection() {
+        let keychain = Keychain(service: "io.robbie.homeassistant")
+
+        guard let connectionInfo = self.connectionInfoFromUI() else {
+            let errMsg = L10n.Settings.ConnectionError.InvalidUrl.message
+            let alert = UIAlertController(title: L10n.Settings.ConnectionError.InvalidUrl.title,
+                                          message: errMsg,
+                                          preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: L10n.okLabel,
+                                          style: UIAlertActionStyle.default,
+                                          handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            return
+        }
+
+        if !self.useLegacyAuth {
+            let tokenManager = TokenManager(baseURL: connectionInfo.activeURL, tokenInfo: nil)
+            _ = firstly {
+                self.authenticationController.authenticateWithBrowser(at: connectionInfo.activeURL)
+                }.then { (code: String) -> Promise<String> in
+                    return tokenManager.initialTokenWithCode(code)
+                }.then { _ -> Promise<ConfigResponse> in
+                    // At this point we are authenticated with modern auth. Clear legacy password.
+                    keychain["apiPassword"] = nil
+                    Current.settingsStore.connectionInfo = connectionInfo
+                    guard let tokenInfo = Current.settingsStore.tokenInfo else {
+                        throw SettingsError.configurationFailed
+                    }
+
+                    let api = HomeAssistantAPI(connectionInfo: connectionInfo,
+                                               authenticationMethod: .modern(tokenInfo: tokenInfo))
+                    return api.Connect()
+                }.done { config in
+                    self.configureUIWith(configResponse: config)
+                }.catch { error in
+                    self.handleConnectionError(error)
+            }
+        } else {
+            let api = HomeAssistantAPI(connectionInfo: connectionInfo,
+                                       authenticationMethod: .legacy(apiPassword: self.password))
+            api.Connect().done { config in
+                /// Connected with legacy auth. Store credentials.
+                Current.settingsStore.connectionInfo = connectionInfo
+                if let password = self.password {
+                    keychain["apiPassword"] = password
+                }
+
+                self.configureUIWith(configResponse: config)
+                }.catch { error in
+                    self.handleConnectionError(error)
+            }
+        }
+
+    }
+
+    private func configureDiscoveryObservers() {
+        let queue = DispatchQueue(label: "io.robbie.homeassistant", attributes: [])
+        queue.async { () -> Void in
+            self.discovery.stopDiscovery()
+            self.discovery.stopPublish()
+
+            self.discovery.startDiscovery()
+            self.discovery.startPublish()
+        }
+
+        let center = NotificationCenter.default
+        center.addObserver(self,
+                           selector: #selector(SettingsViewController.HomeAssistantDiscovered(_:)),
+                           name: NSNotification.Name(rawValue: "homeassistant.discovered"),
+                           object: nil)
+
+        center.addObserver(self,
+                           selector: #selector(SettingsViewController.HomeAssistantUndiscovered(_:)),
+                           name: NSNotification.Name(rawValue: "homeassistant.undiscovered"),
+                           object: nil)
+
+        center.addObserver(self,
+                           selector: #selector(SettingsViewController.Connected(_:)),
+                           name: NSNotification.Name(rawValue: "connected"),
+                           object: nil)
+    }
     private func configureUIWith(configResponse config: ConfigResponse) {
         print("Connected!")
         self.form.setValues(["locationName": config.LocationName, "version": config.Version])
@@ -763,8 +730,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways {
-            prefs.setValue(true, forKey: "locationEnabled")
-            prefs.synchronize()
+            Current.settingsStore.locationEnabled = true
             let enableLocationRow: ButtonRow = self.form.rowBy(tag: "enableLocation")!
             enableLocationRow.hidden = true
             enableLocationRow.updateCell()
@@ -780,10 +746,24 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             deviceTrackerComponentLoadedRow.updateCell()
             self.tableView.reloadData()
             if prefs.bool(forKey: "locationUpdateOnZone") == false {
-                HomeAssistantAPI.sharedInstance.regionManager.syncMonitoredRegions()
+                HomeAssistantAPI.authenticatedAPI()?.regionManager.syncMonitoredRegions()
             }
 //            _ = HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual)
         }
+    }
+
+    func cleanBaseURL(baseUrl: URL) -> (hasValidScheme: Bool, cleanedURL: URL) {
+        if (baseUrl.absoluteString.hasPrefix("http://") || baseUrl.absoluteString.hasPrefix("https://")) == false {
+            return (false, baseUrl)
+        }
+        var urlComponents = URLComponents()
+        urlComponents.scheme = baseUrl.scheme
+        urlComponents.host = baseUrl.host
+        urlComponents.port = baseUrl.port
+        //        if urlComponents.port == nil {
+        //            urlComponents.port = (baseUrl.scheme == "http") ? 80 : 443
+        //        }
+        return (true, urlComponents.url!)
     }
 }
 

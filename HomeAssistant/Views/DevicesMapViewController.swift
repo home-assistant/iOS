@@ -78,7 +78,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
         self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
 
-        if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
+        if let api = HomeAssistantAPI.authenticatedAPI(), let cachedEntities = api.cachedEntities {
             if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
                 return entity.Domain == "zone"
             }) as? [Zone] {
@@ -194,17 +194,19 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
     }
 
     @objc func sendCurrentLocation(_ sender: UIBarButtonItem) {
-        HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual).done { _ in
-            let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
-                                          message: L10n.ManualLocationUpdateNotification.message,
-                                          preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+        HomeAssistantAPI.authenticatedAPIPromise.then { api in
+            api.getAndSendLocation(trigger: .Manual)
+            }.done { _ in
+                let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
+                                              message: L10n.ManualLocationUpdateNotification.message,
+                                              preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
             }.catch {error in
                 let nserror = error as NSError
                 let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
-                    message: L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription),
-                    preferredStyle: UIAlertControllerStyle.alert)
+                                              message: L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription),
+                                              preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
         }

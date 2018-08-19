@@ -15,8 +15,7 @@ import ObjectMapper
 extension HomeAssistantAPI {
     // MARK: - Helper methods for reducing boilerplate.
 
-    func handleResponse<T>(response: DataResponse<T>, seal: Resolver<T>,
-                                   callingFunctionName: String) {
+    func handleResponse<T>(response: DataResponse<T>, seal: Resolver<T>, callingFunctionName: String) {
         switch response.result {
         case .success(let value):
             seal.fulfill(value)
@@ -29,15 +28,15 @@ extension HomeAssistantAPI {
     }
 
     func request(path: String, callingFunctionName: String, method: HTTPMethod = .get,
-                         parameters: Parameters? = nil,
-                         encoding: ParameterEncoding = URLEncoding.default,
-                         headers: HTTPHeaders? = nil) -> Promise<String> {
+                 parameters: Parameters? = nil, encoding: ParameterEncoding = URLEncoding.default,
+                 headers: HTTPHeaders? = nil) -> Promise<String> {
         return Promise { seal in
-            guard let manager = self.manager, let url = self.baseAPIURL?.appendingPathComponent(path) else {
+            guard let manager = self.manager  else {
                 seal.reject(APIError.managerNotAvailable)
                 return
             }
 
+            let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseString { (response: DataResponse<String>) in
@@ -49,15 +48,15 @@ extension HomeAssistantAPI {
     }
 
     func request<T: BaseMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
-                                          parameters: Parameters? = nil,
-                                          encoding: ParameterEncoding = URLEncoding.default,
-                                          headers: HTTPHeaders? = nil) -> Promise<T> {
+                                  parameters: Parameters? = nil,
+                                  encoding: ParameterEncoding = URLEncoding.default,
+                                  headers: HTTPHeaders? = nil) -> Promise<T> {
         return Promise { seal in
-            guard let manager = self.manager, let url = self.baseAPIURL?.appendingPathComponent(path) else {
+            guard let manager = self.manager else {
                 seal.reject(APIError.managerNotAvailable)
                 return
             }
-
+            let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseObject { (response: DataResponse<T>) in
@@ -69,15 +68,16 @@ extension HomeAssistantAPI {
     }
 
     func request<T: BaseMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
-                                          parameters: Parameters? = nil,
-                                          encoding: ParameterEncoding = URLEncoding.default,
-                                          headers: HTTPHeaders? = nil) -> Promise<[T]> {
+                                  parameters: Parameters? = nil,
+                                  encoding: ParameterEncoding = URLEncoding.default,
+                                  headers: HTTPHeaders? = nil) -> Promise<[T]> {
         return Promise { seal in
-            guard let manager = self.manager, let url = self.baseAPIURL?.appendingPathComponent(path) else {
+            guard let manager = self.manager else {
                 seal.reject(APIError.managerNotAvailable)
                 return
             }
 
+            let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseArray { (response: DataResponse<[T]>) in
@@ -89,15 +89,16 @@ extension HomeAssistantAPI {
     }
 
     func request<T: ImmutableMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
-                                               parameters: Parameters? = nil,
-                                               encoding: ParameterEncoding = URLEncoding.default,
-                                               headers: HTTPHeaders? = nil) -> Promise<[T]> {
+                                       parameters: Parameters? = nil,
+                                       encoding: ParameterEncoding = URLEncoding.default,
+                                       headers: HTTPHeaders? = nil) -> Promise<[T]> {
         return Promise { seal in
-            guard let manager = self.manager, let url = self.baseAPIURL?.appendingPathComponent(path) else {
+            guard let manager = self.manager else {
                 seal.reject(APIError.managerNotAvailable)
                 return
             }
 
+            let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseArray { (response: DataResponse<[T]>) in
@@ -109,15 +110,16 @@ extension HomeAssistantAPI {
     }
 
     func request<T: ImmutableMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
-                                               parameters: Parameters? = nil,
-                                               encoding: ParameterEncoding = URLEncoding.default,
-                                               headers: HTTPHeaders? = nil) -> Promise<T> {
+                                       parameters: Parameters? = nil,
+                                       encoding: ParameterEncoding = URLEncoding.default,
+                                       headers: HTTPHeaders? = nil) -> Promise<T> {
         return Promise { seal in
-            guard let manager = self.manager, let url = self.baseAPIURL?.appendingPathComponent(path) else {
+            guard let manager = self.manager else {
                 seal.reject(APIError.managerNotAvailable)
                 return
             }
 
+            let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseObject { (response: DataResponse<T>) in

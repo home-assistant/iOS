@@ -35,43 +35,43 @@ class Thermostat: Entity {
         TargetTemperatureLow  <- map["attributes.target_temp_low"]
     }
     func turnFanOn() {
-        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "thermostat",
-                                                        service: "set_fan_mode",
-                                                        serviceData: [
-                                                            "entity_id": self.ID as AnyObject,
-                                                            "fan": "on" as AnyObject
+        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "thermostat",
+                                                             service: "set_fan_mode",
+                                                             serviceData: [
+                                                                "entity_id": self.ID as AnyObject,
+                                                                "fan": "on" as AnyObject
             ])
     }
     func turnFanOff() {
-        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "thermostat",
-                                                        service: "set_fan_mode",
-                                                        serviceData: [
-                                                            "entity_id": self.ID as AnyObject,
-                                                            "fan": "off" as AnyObject
+        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "thermostat",
+                                                             service: "set_fan_mode",
+                                                             serviceData: [
+                                                                "entity_id": self.ID as AnyObject,
+                                                                "fan": "off" as AnyObject
             ])
     }
     func setAwayModeOn() {
-        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "thermostat",
-                                                        service: "set_away_mode",
-                                                        serviceData: [
-                                                            "entity_id": self.ID as AnyObject,
-                                                            "away_mode": "on" as AnyObject
+        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "thermostat",
+                                                             service: "set_away_mode",
+                                                             serviceData: [
+                                                                "entity_id": self.ID as AnyObject,
+                                                                "away_mode": "on" as AnyObject
             ])
     }
     func setAwayModeOff() {
-        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "thermostat",
-                                                        service: "set_away_mode",
-                                                        serviceData: [
-                                                            "entity_id": self.ID as AnyObject,
-                                                            "away_mode": "off" as AnyObject
+        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "thermostat",
+                                                             service: "set_away_mode",
+                                                             serviceData: [
+                                                                "entity_id": self.ID as AnyObject,
+                                                                "away_mode": "off" as AnyObject
             ])
     }
     func setTemperature(_ newTemp: Float) {
-        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "thermostat",
-                                                        service: "set_temperature",
-                                                        serviceData: [
-                                                            "entity_id": self.ID as AnyObject,
-                                                            "temperature": newTemp as AnyObject
+        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "thermostat",
+                                                             service: "set_temperature",
+                                                             serviceData: [
+                                                                "entity_id": self.ID as AnyObject,
+                                                                "temperature": newTemp as AnyObject
             ])
     }
 

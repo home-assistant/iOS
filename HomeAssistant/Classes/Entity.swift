@@ -130,15 +130,15 @@ class Entity: StaticMappable {
     }
 
     func turnOn() {
-        _ = HomeAssistantAPI.sharedInstance.turnOnEntity(entity: self)
+        _ = HomeAssistantAPI.authenticatedAPI()?.turnOnEntity(entity: self)
     }
 
     func turnOff() {
-        _ = HomeAssistantAPI.sharedInstance.turnOffEntity(entity: self)
+        _ = HomeAssistantAPI.authenticatedAPI()?.turnOffEntity(entity: self)
     }
 
     func toggle() {
-        _ = HomeAssistantAPI.sharedInstance.toggleEntity(entity: self)
+        _ = HomeAssistantAPI.authenticatedAPI()?.toggleEntity(entity: self)
     }
 
     var ComponentIcon: String {

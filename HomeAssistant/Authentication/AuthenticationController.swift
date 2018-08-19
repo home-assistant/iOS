@@ -45,6 +45,7 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
                     // Fallback on earlier versions
                 }
                 safariVC.delegate = self
+                self.authenticationViewController = safariVC
                 self.presentAuthenticationViewController?(safariVC)
             } else {
                 resolver.reject(AuthenticationControllerError.invalidURL)
@@ -59,7 +60,7 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
             return
         }
 
-        controller.dismiss(animated: true, completion: nil)
+
         resolver.reject(AuthenticationControllerError.userCancelled)
         self.cleanUp()
     }
@@ -85,6 +86,7 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
             if let codeParamter = parameter, let code = codeParamter.value {
                 self.promiseResolver?.fulfill(code)
             }
+            self.authenticationViewController?.dismiss(animated: true, completion: nil)
             self.cleanUp()
         }
     }

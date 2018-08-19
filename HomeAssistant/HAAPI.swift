@@ -18,51 +18,45 @@ import UserNotifications
 import RealmSwift
 import CoreMotion
 import Shared
-import SystemConfiguration.CaptiveNetwork
-import KeychainAccess
 
-let APIClientSharedInstance = HomeAssistantAPI()
+import KeychainAccess
 
 // swiftlint:disable file_length
 
 // swiftlint:disable:next type_body_length
 public class HomeAssistantAPI {
-
-    class var sharedInstance: HomeAssistantAPI {
-        return APIClientSharedInstance
-    }
-
     enum APIError: Error {
         case managerNotAvailable
         case invalidResponse
         case cantBuildURL
+        case notConfigured
     }
 
-    var deviceID: String = removeSpecialCharsFromString(text: UIDevice.current.name)
-                            .replacingOccurrences(of: " ", with: "_")
-                            .lowercased()
+    public enum AuthenticationMethod {
+        case legacy(apiPassword: String?)
+        case modern(tokenInfo: TokenInfo)
+    }
+
     var pushID: String?
 
     var loadedComponents = [String]()
 
-    var baseURL: URL?
-    var baseAPIURL: URL?
+    var baseURL: URL {
+        return self.connectionInfo.baseURL
+    }
+
+    var baseAPIURL: URL {
+        return self.baseURL.appendingPathComponent("api")
+    }
+
     var apiPassword: String?
 
-     var manager: Alamofire.SessionManager?
+    private(set) var manager: Alamofire.SessionManager!
 
     var regionManager = RegionManager()
     var locationManager: LocationManager?
 
     var cachedEntities: [Entity]?
-
-    var isConfigured: Bool {
-        return self.baseURL != nil
-    }
-
-    var locationEnabled: Bool {
-        return prefs.bool(forKey: "locationEnabled")
-    }
 
     var notificationsEnabled: Bool {
         return prefs.bool(forKey: "notificationsEnabled")
@@ -85,46 +79,45 @@ public class HomeAssistantAPI {
         if self.notificationsEnabled {
             permissionsContainer.append("notifications")
         }
-        if self.locationEnabled {
+        if Current.settingsStore.locationEnabled {
             permissionsContainer.append("location")
         }
         return permissionsContainer
     }
 
     private var tokenManager: TokenManager?
+    var connectionInfo: ConnectionInfo
+
     /// Initialzie an API object with an authenticated tokenManager.
-    public init?(baseURL: URL, authenticationMethod: AuthenticationMethod) {
-        self.baseURL = baseURL
+    public init(connectionInfo: ConnectionInfo, authenticationMethod: AuthenticationMethod) {
+        self.connectionInfo = connectionInfo
+
         switch authenticationMethod {
-        case .legacy(let apiPassword, ):
-
-            break
+        case .legacy(let apiPassword):
+            self.manager = self.configureSessionManager(withPassword: apiPassword)
         case .modern(let tokenInfo):
-            self.tokenManager = TokenManager(baseURL: baseURL, tokenInfo: tokenInfo)
-            guard let sessionManager = self.manager else {
-                return nil
-            }
+            self.tokenManager = TokenManager(baseURL: connectionInfo.baseURL, tokenInfo: tokenInfo)
+            let manager = self.configureSessionManager()
+            manager.retrier = self.tokenManager
+            manager.adapter = self.tokenManager
+            self.manager = manager
+        }
 
-            sessionManager.retrier = self.tokenManager
-            sessionManager.adapter = self.tokenManager
+        let basicAuthKeychain = Keychain(server: self.baseURL.absoluteString, protocolType: .https,
+                                         authenticationType: .httpBasic)
+        self.configureBasicAuthWithKeychain(basicAuthKeychain)
+
+        self.pushID = prefs.string(forKey: "pushID")
+
+        if #available(iOS 10, *) {
+            UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
+                prefs.setValue((settings.authorizationStatus == UNAuthorizationStatus.authorized),
+                               forKey: "notificationsEnabled")
+            })
         }
     }
 
-    public enum AuthenticationMethod {
-        case legacy(apiPassword: String)
-        case modern(tokenInfo: TokenInfo)
-    }
-
-    public func authenticatedAPI() -> HomeAssistantAPI? {
-        if let baseURL = Current.settingsStore.baseURL, let tokenInfo = Current.settingsStore.tokenInfo {
-            let tokenManager = TokenManager(baseURL: baseURL, tokenInfo: tokenInfo)
-            assert(tokenManager.isAuthenticated)
-            let api = HomeAssistantAPI()
-
-        }
-    }
-
-    private func configureSessionManager(withPassword password: String?) {
+    private func configureSessionManager(withPassword password: String? = nil) -> SessionManager {
         var headers = Alamofire.SessionManager.defaultHTTPHeaders
         if let password = password {
             headers["X-HA-Access"] = password
@@ -133,14 +126,13 @@ public class HomeAssistantAPI {
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = headers
         configuration.timeoutIntervalForRequest = 10 // seconds
-        self.manager = Alamofire.SessionManager(configuration: configuration)
+        return Alamofire.SessionManager(configuration: configuration)
     }
 
-    // swiftlint:disable:next function_body_length
     fileprivate func configureBasicAuthWithKeychain(_ basicAuthKeychain: Keychain) {
         if let basicUsername = basicAuthKeychain["basicAuthUsername"],
             let basicPassword = basicAuthKeychain["basicAuthPassword"] {
-            self.manager?.delegate.sessionDidReceiveChallenge = { session, challenge in
+            self.manager.delegate.sessionDidReceiveChallenge = { session, challenge in
                 print("Received basic auth challenge")
 
                 let authMethod = challenge.protectionSpace.authenticationMethod
@@ -161,39 +153,6 @@ public class HomeAssistantAPI {
     func setup(baseURLString: String?, password: String?, deviceID: String?) {
         let appKeychain = Keychain(service: "io.robbie.homeassistant")
         var basicAuthKeychain = Keychain(server: baseURLString!, protocolType: .https, authenticationType: .httpBasic)
-
-        if let ssid = appKeychain["internalBaseURLSSID"], let internalURL = appKeychain["internalBaseURL"],
-            ssid == getSSID() {
-            self.baseURL = URL(string: internalURL)
-            self.baseAPIURL = self.baseURL?.appendingPathComponent("api")
-            basicAuthKeychain = Keychain(server: internalURL, protocolType: .https, authenticationType: .httpBasic)
-        } else if let baseURLString = baseURLString, let baseURL = URL(string: baseURLString) {
-            if self.isConfigured && self.baseURL == baseURL && self.apiPassword == password &&
-                self.deviceID == deviceID {
-                print("HAAPI already configured, returning from Setup")
-                return
-            }
-
-            self.baseURL = baseURL
-            self.baseAPIURL = baseURL.appendingPathComponent("api")
-        }
-
-        if let deviceID = deviceID {
-            self.deviceID = deviceID
-        }
-
-        self.pushID = prefs.string(forKey: "pushID")
-
-        self.configureSessionManager(withPassword: password)
-        self.configureBasicAuthWithKeychain(basicAuthKeychain)
-
-        if #available(iOS 10, *) {
-            UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
-                prefs.setValue((settings.authorizationStatus == UNAuthorizationStatus.authorized),
-                               forKey: "notificationsEnabled")
-            })
-        }
-
         return
 
     }
@@ -254,23 +213,62 @@ public class HomeAssistantAPI {
     public enum HomeAssistantAPIError: Error {
         case notAuthenticated
     }
-    static var internalAuthenticatedAPI: Promise<HomeAssistantAPI>?
-    public static var authenticatedAPI: Promise<HomeAssistantAPI> {
-        if let apiPromise = self.internalAuthenticatedAPI {
-            return apiPromise
+//    static var internalAuthenticatedAPI: Promise<HomeAssistantAPI>?
+//    public static var authenticatedAPI: Promise<HomeAssistantAPI> {
+//        if let apiPromise = self.internalAuthenticatedAPI {
+//            return apiPromise
+//        }
+//
+//        return Promise<HomeAssistantAPI> { seal in
+//            guard let connectionInfo = Current.settingsStore.connectionInfo else {
+//                seal.reject(HomeAssistantAPIError.notAuthenticated)
+//                return
+//            }
+//
+//            if let tokenInfo = Current.settingsStore.tokenInfo {
+//                let api = HomeAssistantAPI(connectionInfo: connectionInfo,
+//                                           authenticationMethod: .modern(tokenInfo: tokenInfo))
+//                seal.fulfill(api)
+//            } else {
+//                seal.reject(HomeAssistantAPIError.notAuthenticated)
+//                return
+//            }
+//        }
+//    }
+
+    private static var sharedAPI: HomeAssistantAPI?
+    public static func authenticatedAPI() -> HomeAssistantAPI? {
+        if let api = sharedAPI {
+            return api
         }
 
-        return Promise<HomeAssistantAPI> { seal in
-            if let tokenInfo = Current.settingsStore.tokenInfo, let baseURL = Current.settingsStore.baseURL {
-                let tokenManager = TokenManager(baseURL: baseURL, tokenInfo: tokenInfo)
-                let api = HomeAssistantAPI()
-                api.manager?.retrier = tokenManager
-                api.manager?.adapter = tokenManager
-                seal.fulfill(api)
-            }
+        guard let connectionInfo = Current.settingsStore.connectionInfo else {
+            return nil
+        }
+
+        if let tokenInfo = Current.settingsStore.tokenInfo {
+            let api = HomeAssistantAPI(connectionInfo: connectionInfo,
+                                       authenticationMethod: .modern(tokenInfo: tokenInfo))
+            self.sharedAPI = api
+            return api
+        } else {
+            let api = HomeAssistantAPI(connectionInfo: connectionInfo,
+                                       authenticationMethod: .legacy(apiPassword: keychain["apiPassword"]))
+            self.sharedAPI = api
+            return api
         }
     }
 
+    public static var authenticatedAPIPromise: Promise<HomeAssistantAPI> {
+        return Promise { seal in
+            if let api = self.authenticatedAPI() {
+                seal.fulfill(api)
+            } else {
+                seal.reject(APIError.notConfigured)
+            }
+        }
+    }
+    
     // swiftlint:disable:next function_body_length cyclomatic_complexity
     func submitLocation(updateType: LocationUpdateTrigger,
                         location: CLLocation?,
@@ -294,7 +292,7 @@ public class HomeAssistantAPI {
         let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
 
         payload.Battery = UIDevice.current.batteryLevel
-        payload.DeviceID = deviceID
+        payload.DeviceID = Current.settingsStore.deviceID
         payload.Hostname = UIDevice.current.name
         payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
 
@@ -480,26 +478,23 @@ public class HomeAssistantAPI {
 
     func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<String> {
         return Promise { seal in
-            if let manager = self.manager, let queryUrl = baseAPIURL?.appendingPathComponent("events/\(eventType)") {
-                _ = manager.request(queryUrl, method: .post,
-                                          parameters: eventData, encoding: JSONEncoding.default)
-                    .validate()
-                    .responseJSON { response in
-                        switch response.result {
-                        case .success:
-                            if let jsonDict = response.result.value as? [String: String],
-                                let msg = jsonDict["message"] {
-                                seal.fulfill(msg)
-                            }
-                        case .failure(let error):
-                            CLSLogv("Error when attemping to CreateEvent(): %@",
-                                    getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
-                            seal.reject(error)
+            let queryUrl = self.baseAPIURL.appendingPathComponent("events/\(eventType)")
+            _ = manager.request(queryUrl, method: .post,
+                                parameters: eventData, encoding: JSONEncoding.default)
+                .validate()
+                .responseJSON { response in
+                    switch response.result {
+                    case .success:
+                        if let jsonDict = response.result.value as? [String: String],
+                            let msg = jsonDict["message"] {
+                            seal.fulfill(msg)
                         }
-                }
-            } else {
-                seal.reject(APIError.managerNotAvailable)
+                    case .failure(let error):
+                        CLSLogv("Error when attemping to CreateEvent(): %@",
+                                getVaList([error.localizedDescription]))
+                        Crashlytics.sharedInstance().recordError(error)
+                        seal.reject(error)
+                    }
             }
         }
     }
@@ -507,12 +502,7 @@ public class HomeAssistantAPI {
     func CallService(domain: String, service: String, serviceData: [String: Any], shouldLog: Bool = true)
         -> Promise<[Entity]> {
         return Promise { seal in
-
-            guard let manager = self.manager,
-                let queryUrl = baseAPIURL?.appendingPathComponent("services/\(domain)/\(service)") else {
-                    seal.reject(APIError.managerNotAvailable)
-                    return
-            }
+            let queryUrl = self.baseAPIURL.appendingPathComponent("services/\(domain)/\(service)")
             _ = manager.request(queryUrl, method: .post,
                                 parameters: serviceData, encoding: JSONEncoding.default)
                 .validate()
@@ -642,7 +632,7 @@ public class HomeAssistantAPI {
             }
         }
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
-        ident.DeviceID = deviceID
+        ident.DeviceID = Current.settingsStore.deviceID
         ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
         ident.DeviceModel = deviceKitDevice.model
         ident.DeviceName = deviceKitDevice.name
@@ -697,7 +687,7 @@ public class HomeAssistantAPI {
             }
         }
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
-        ident.DeviceID = deviceID
+        ident.DeviceID = Current.settingsStore.deviceID
         ident.DeviceName = deviceKitDevice.name
         ident.DevicePermanentID = DeviceUID.uid()
         ident.DeviceSystemName = deviceKitDevice.systemName
@@ -734,7 +724,7 @@ public class HomeAssistantAPI {
             }
         }
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
-        ident.DeviceID = deviceID
+        ident.DeviceID = Current.settingsStore.deviceID
         ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
         ident.DeviceModel = deviceKitDevice.model
         ident.DeviceName = deviceKitDevice.name
@@ -870,11 +860,15 @@ public class HomeAssistantAPI {
 
     func handlePushAction(identifier: String, userInfo: [AnyHashable: Any], userInput: String?) -> Promise<Bool> {
         return Promise { seal in
+            guard let api = HomeAssistantAPI.authenticatedAPI() else {
+                throw APIError.notConfigured
+            }
+
             let device = Device()
             var eventData: [String: Any] = ["actionName": identifier,
                                            "sourceDevicePermanentID": DeviceUID.uid(),
                                            "sourceDeviceName": device.name,
-                                           "sourceDeviceID": deviceID]
+                                           "sourceDeviceID": Current.settingsStore.deviceID]
             if let dataDict = userInfo["homeassistant"] {
                 eventData["action_data"] = dataDict
             }
@@ -882,28 +876,15 @@ public class HomeAssistantAPI {
                 eventData["response_info"] = textInput
                 eventData["textInput"] = textInput
             }
-            HomeAssistantAPI.sharedInstance.CreateEvent(eventType: "ios.notification_action_fired",
-                                                        eventData: eventData).done { _ -> Void in
-                                                            seal.fulfill(true)
+
+            let eventType = "ios.notification_action_fired"
+            api.CreateEvent(eventType: eventType, eventData: eventData).done { _ -> Void in
+                seal.fulfill(true)
                 }.catch {error in
                     Crashlytics.sharedInstance().recordError(error)
                     seal.reject(error)
             }
         }
-    }
-
-    func CleanBaseURL(baseUrl: URL) -> (hasValidScheme: Bool, cleanedURL: URL) {
-        if (baseUrl.absoluteString.hasPrefix("http://") || baseUrl.absoluteString.hasPrefix("https://")) == false {
-            return (false, baseUrl)
-        }
-        var urlComponents = URLComponents()
-        urlComponents.scheme = baseUrl.scheme
-        urlComponents.host = baseUrl.host
-        urlComponents.port = baseUrl.port
-        //        if urlComponents.port == nil {
-        //            urlComponents.port = (baseUrl.scheme == "http") ? 80 : 443
-        //        }
-        return (true, urlComponents.url!)
     }
 
     func storeEntities(entities: [Entity]) {
@@ -933,20 +914,6 @@ public class HomeAssistantAPI {
                 }
             }
         }
-    }
-
-    func getSSID() -> String? {
-        var ssid: String?
-        if let interfaces = CNCopySupportedInterfaces() as NSArray? {
-            for interface in interfaces {
-                // swiftlint:disable:next force_cast
-                if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as! CFString) as NSDictionary? {
-                    ssid = interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
-                    break
-                }
-            }
-        }
-        return ssid
     }
 }
 
@@ -1114,6 +1081,10 @@ class RegionManager: NSObject {
 
     func triggerRegionEvent(_ manager: CLLocationManager, trigger: LocationUpdateTrigger,
                             region: CLRegion) {
+        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+           return
+        }
+
         var trig = trigger
         guard let zone = zones.filter({ region.identifier == $0.ID }).first else {
             print("Zone ID \(region.identifier) doesn't exist in Realm, syncing monitored regions now")
@@ -1147,8 +1118,7 @@ class RegionManager: NSObject {
 
         print("Submit location for zone \(zone.ID) with trigger \(trig.rawValue)")
 
-        HomeAssistantAPI.sharedInstance.submitLocation(updateType: trig, location: nil,
-                                                       visit: nil, zone: zone)
+        api.submitLocation(updateType: trig, location: nil, visit: nil, zone: zone)
     }
 
     func startMonitoring(zone: RLMZone) {
@@ -1196,15 +1166,16 @@ extension RegionManager: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+            return
+        }
         if self.oneShotLocationActive {
             print("NOT accepting region manager update as one shot location service is active")
             return
         }
         print("RegionManager: Got location, stopping updates!", locations.last.debugDescription, locations.count)
-        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .SignificantLocationUpdate,
-                                                       location: locations.last,
-                                                       visit: nil,
-                                                       zone: nil)
+        api.submitLocation(updateType: .SignificantLocationUpdate, location: locations.last, visit: nil,
+                           zone: nil)
 
         self.lastLocation = locations.last
 
@@ -1222,11 +1193,12 @@ extension RegionManager: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didVisit visit: CLVisit) {
+        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+            return
+        }
+
         print("Visit logged")
-        HomeAssistantAPI.sharedInstance.submitLocation(updateType: .Visit,
-                                                       location: nil,
-                                                       visit: visit,
-                                                       zone: nil)
+        api.submitLocation(updateType: .Visit, location: nil, visit: visit, zone: nil)
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
