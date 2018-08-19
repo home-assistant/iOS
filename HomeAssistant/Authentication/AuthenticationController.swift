@@ -60,7 +60,6 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
             return
         }
 
-
         resolver.reject(AuthenticationControllerError.userCancelled)
         self.cleanUp()
     }
@@ -70,9 +69,9 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
     private func configureAuthenticationObserver() {
         let notificationCenter = NotificationCenter.default
         let notificationName = Notification.Name("AuthCallback")
+        let queue = OperationQueue.main
         self.authenticationObserver = notificationCenter.addObserver(forName: notificationName, object: nil,
-                                                                     queue: OperationQueue.main)
-        { notification in
+                                                                     queue: queue) { notification in
             self.authenticationViewController?.dismiss(animated: true, completion: nil)
             guard let url = notification.userInfo?["url"] as? URL,
                 let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
