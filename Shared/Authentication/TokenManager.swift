@@ -22,6 +22,9 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     private var refreshPromiseCache: Promise<String>?
     private let baseURL: URL
 
+    /// This should be set to enable the token manager to trigger re-authentication when needed.
+    public var authenticationRequiredCallback: (() -> Promise<String>)?
+
     public var isAuthenticated: Bool {
         return self.tokenInfo != nil
     }
@@ -57,6 +60,66 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
     }
 
+    // MARK: - RequestRetrier
+
+    public func should(_ manager: SessionManager, retry request: Request, with error: Error,
+                       completion: @escaping RequestRetryCompletion) {
+        guard let baseURL = Current.settingsStore.baseURL else {
+            completion(false, 0)
+            return
+        }
+
+        if request.retryCount > 3 {
+            print("Reached maximum retries for request: \(request)")
+            completion(false, 0)
+            return
+        }
+
+        if request.request?.url?.host == baseURL.host && request.request?.url?.scheme == baseURL.scheme
+            && request.response?.statusCode == 401 {
+            // If this is a call to our server, and we failed with not authorized, try to refresh the token.
+            _ = self.refreshToken.done { _ in
+                guard let tokenInfo = self.tokenInfo else {
+                    print("Token Info not avaialble after refresh")
+                    completion(false, 0)
+                    return
+                }
+
+//                do {
+//                    if let urlRequest = request.request {
+//                        var newRequest = urlRequest
+//                        newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
+//                        request.request = newRequest
+//                    }
+//                } catch {
+//                    print("Failure updating authentication for request in retrier")
+//                }
+
+                // If we get a token, retry.
+                completion(true, 2)
+            }.catch { _ in
+                // If not, ahh well.
+                completion(false, 0)
+            }
+        } else {
+            completion(false, 0)
+        }
+    }
+
+    // MARK: - RequestAdapter
+
+    public func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
+        guard let tokenInfo = self.tokenInfo else {
+            return urlRequest
+        }
+
+        var newRequest = urlRequest
+        newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
+        return newRequest
+    }
+
+    // MARK: - Private helpers
+
     private var currentToken: Promise<String> {
         return Promise<String> { seal in
             guard let tokenInfo = self.tokenInfo else {
@@ -73,6 +136,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
     }
 
+    private var newCodePromise: Promise<Void>?
     private var refreshToken: Promise<String> {
         guard let tokenInfo = self.tokenInfo else {
             return Promise(error: TokenError.tokenUnavailable)
@@ -82,47 +146,27 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             return refreshPromise
         }
 
-        let promise = firstly {
-            self.authenticationAPI.refreshTokenWith(tokenInfo: tokenInfo)
-        }.map { tokenInfo -> String in
+        let promise: Promise<String> =
+            self.authenticationAPI.refreshTokenWith(tokenInfo: tokenInfo).map { tokenInfo in
+            self.refreshPromiseCache = nil
             Current.settingsStore.tokenInfo = tokenInfo
+            self.tokenInfo = tokenInfo
             return tokenInfo.accessToken
+        }.ensure {
+            self.refreshPromiseCache = nil
+        }
+
+        promise.catch { error in
+            if let networkError = error as? AFError, let statusCode = networkError.responseCode,
+                statusCode == 400 {
+                /// Server rejected the refresh token. All is lost.
+                self.tokenInfo = nil
+                Current.settingsStore.tokenInfo = nil
+                Current.signInRequiredCallback?()
+            }
         }
 
         self.refreshPromiseCache = promise
         return promise
-    }
-
-    // MARK: - RequestRetrier
-
-    public func should(_ manager: SessionManager, retry request: Request, with error: Error,
-                       completion: @escaping RequestRetryCompletion) {
-        guard let baseURL = Current.settingsStore.baseURL else {
-            completion(false, 0)
-            return
-        }
-
-        if request.request?.url?.baseURL == baseURL && request.response?.statusCode == 401 {
-            // If this is a call to our server, and we failed with not authorized, try to refresh the token.
-            _ = self.refreshToken.done { _ in
-                // If we get a token, retry.
-                completion(true, 0)
-            }.catch { _ in
-                // If not, ahh well.
-                completion(false, 0)
-            }
-        }
-    }
-
-    // MARK: - RequestAdapter
-
-    public func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
-        guard let tokenInfo = self.tokenInfo else {
-            return urlRequest
-        }
-
-        var newRequest = urlRequest
-        newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
-        return newRequest
     }
 }

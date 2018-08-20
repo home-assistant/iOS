@@ -28,7 +28,8 @@ public class AuthenticationAPI {
 
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {
         return Promise { seal in
-            let routeInfo = RouteInfo(route: AuthenticationRoute.refreshToken(token: tokenInfo.refreshToken),
+            let token = tokenInfo.refreshToken
+            let routeInfo = RouteInfo(route: AuthenticationRoute.refreshToken(token: token),
                                       baseURL: self.baseURL)
             let request = Alamofire.request(routeInfo)
             let context = TokenInfo.TokenInfoContext(oldTokenInfo: tokenInfo)

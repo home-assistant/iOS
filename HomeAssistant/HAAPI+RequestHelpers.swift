@@ -37,7 +37,8 @@ extension HomeAssistantAPI {
             }
 
             let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
-            _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
+            _ = manager.request(url, method: method, parameters: parameters, encoding: encoding,
+                                headers: headers)
                 .validate()
                 .responseString { (response: DataResponse<String>) in
                     self.handleResponse(response: response, seal: seal,

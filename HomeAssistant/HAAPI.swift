@@ -86,6 +86,7 @@ public class HomeAssistantAPI {
     }
 
     private var tokenManager: TokenManager?
+    private let authenticationController = AuthenticationController()
     var connectionInfo: ConnectionInfo
 
     /// Initialzie an API object with an authenticated tokenManager.
@@ -97,6 +98,9 @@ public class HomeAssistantAPI {
             self.manager = self.configureSessionManager(withPassword: apiPassword)
         case .modern(let tokenInfo):
             self.tokenManager = TokenManager(baseURL: connectionInfo.baseURL, tokenInfo: tokenInfo)
+            tokenManager?.authenticationRequiredCallback = {
+                return self.authenticationController.authenticateWithBrowser(at: connectionInfo.baseURL)
+            }
             let manager = self.configureSessionManager()
             manager.retrier = self.tokenManager
             manager.adapter = self.tokenManager
@@ -148,13 +152,6 @@ public class HomeAssistantAPI {
                                                       persistence: .synchronizable))
             }
         }
-    }
-
-    func setup(baseURLString: String?, password: String?, deviceID: String?) {
-        let appKeychain = Keychain(service: "io.robbie.homeassistant")
-        var basicAuthKeychain = Keychain(server: baseURLString!, protocolType: .https, authenticationType: .httpBasic)
-        return
-
     }
 
     func Connect() -> Promise<ConfigResponse> {
@@ -213,28 +210,6 @@ public class HomeAssistantAPI {
     public enum HomeAssistantAPIError: Error {
         case notAuthenticated
     }
-//    static var internalAuthenticatedAPI: Promise<HomeAssistantAPI>?
-//    public static var authenticatedAPI: Promise<HomeAssistantAPI> {
-//        if let apiPromise = self.internalAuthenticatedAPI {
-//            return apiPromise
-//        }
-//
-//        return Promise<HomeAssistantAPI> { seal in
-//            guard let connectionInfo = Current.settingsStore.connectionInfo else {
-//                seal.reject(HomeAssistantAPIError.notAuthenticated)
-//                return
-//            }
-//
-//            if let tokenInfo = Current.settingsStore.tokenInfo {
-//                let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-//                                           authenticationMethod: .modern(tokenInfo: tokenInfo))
-//                seal.fulfill(api)
-//            } else {
-//                seal.reject(HomeAssistantAPIError.notAuthenticated)
-//                return
-//            }
-//        }
-//    }
 
     private static var sharedAPI: HomeAssistantAPI?
     public static func authenticatedAPI() -> HomeAssistantAPI? {
@@ -268,7 +243,7 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
+
     // swiftlint:disable:next function_body_length cyclomatic_complexity
     func submitLocation(updateType: LocationUpdateTrigger,
                         location: CLLocation?,

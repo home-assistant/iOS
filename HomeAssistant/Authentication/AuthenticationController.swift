@@ -9,9 +9,9 @@
 import Foundation
 import PromiseKit
 import SafariServices
-let kAuthenticationPath = "/auth/authorize?response_type=code&client_id=https%3A//blackgold9.github.io"
-    + "/home-assistant-iOS&redirect_uri=homeassistant%3A%2F%2Fauth-callback"
+import Shared
 
+/// Manages browser verification to retrive an access code that can be exchanged for an authentication token.
 class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
     enum AuthenticationControllerError: Error {
         case invalidURL
@@ -21,20 +21,21 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
     private var promiseResolver: Resolver<String>?
     private var authenticationObserver: NSObjectProtocol?
     private var authenticationViewController: SFSafariViewController?
-    var presentAuthenticationViewController: ((UIViewController) -> Void)?
 
     override init() {
         super.init()
         self.configureAuthenticationObserver()
     }
 
+    /// Opens a browser to the URL for obtaining an access code.
     func authenticateWithBrowser(at baseURL: URL) -> Promise<String> {
         return Promise { (resolver: Resolver<String>) in
             self.promiseResolver = resolver
             var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
             components?.path = "/auth/authorize"
             let responseTypeQuery = URLQueryItem(name: "response_type", value: "code")
-            let clientIDQuery = URLQueryItem(name: "client_id", value: "https://blackgold9.github.io/home-assistant-iOS")
+            let clientIDQuery = URLQueryItem(name: "client_id",
+                                             value: "https://blackgold9.github.io/home-assistant-iOS")
             let redirectQuery = URLQueryItem(name: "redirect_uri", value: "homeassistant://auth-callback")
             components?.queryItems = [responseTypeQuery, clientIDQuery, redirectQuery]
             if let newURL = try components?.asURL() {
@@ -46,7 +47,7 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
                 }
                 safariVC.delegate = self
                 self.authenticationViewController = safariVC
-                self.presentAuthenticationViewController?(safariVC)
+                Current.authenticationControllerPresenter?(safariVC)
             } else {
                 resolver.reject(AuthenticationControllerError.invalidURL)
             }

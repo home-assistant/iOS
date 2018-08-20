@@ -24,15 +24,11 @@ let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     var window: UIWindow?
     var safariVC: SFSafariViewController?
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         Fabric.with([Crashlytics.self])
-
-//        HomeAssistantAPI.sharedInstance.setup(baseURLString: keychain["baseURL"], password: keychain["apiPassword"],
-//                                              deviceID: keychain["deviceID"])
 
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
@@ -59,11 +55,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window!.rootViewController = navController
         self.window!.makeKeyAndVisible()
 
+        Current.authenticationControllerPresenter = { controller in
+            navController.present(controller, animated: true, completion: nil)
+        }
+        Current.signInRequiredCallback = {
+            let alert = UIAlertController(title: "You must sign in to continue",
+                                          message: "The server has rejected your credentials, "
+                                                  + "and you must sign in again to continue.",
+                                          preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                          handler: { _ in
+                                            navController.popToViewController(webView, animated: true)
+                                            webView.showSettingsViewController()
+            }))
+
+            navController.present(alert, animated: true, completion: nil)
+        }
+
         return true
-    }
-
-    func ensureToken() {
-
     }
 
     func applicationWillResignActive(_ application: UIApplication) {}

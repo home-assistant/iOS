@@ -25,4 +25,8 @@ public struct Environment {
     public var tokenManager: TokenManager?
 
     public var settingsStore = SettingsStore()
+
+    public var authenticationControllerPresenter: ((UIViewController) -> Void)?
+
+    public var signInRequiredCallback: (() -> Void)?
 }

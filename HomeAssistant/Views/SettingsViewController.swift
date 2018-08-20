@@ -76,9 +76,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
         // Authentication
         self.authLocationManager.delegate = self
-        self.authenticationController.presentAuthenticationViewController = { controller in
-            self.present(controller, animated: true, completion: nil)
-        }
 
         let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
                                           style: .plain,
