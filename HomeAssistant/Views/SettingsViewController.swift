@@ -630,7 +630,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             let tokenManager = TokenManager(baseURL: connectionInfo.activeURL, tokenInfo: nil)
             _ = firstly {
                 self.authenticationController.authenticateWithBrowser(at: connectionInfo.activeURL)
-                }.then { (code: String) -> Promise<String> in
+            }.then { (code: String) -> Promise<String> in
                     return tokenManager.initialTokenWithCode(code)
                 }.then { _ -> Promise<ConfigResponse> in
                     // At this point we are authenticated with modern auth. Clear legacy password.

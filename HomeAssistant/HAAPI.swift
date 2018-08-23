@@ -320,83 +320,7 @@ public class HomeAssistantAPI {
             Crashlytics.sharedInstance().recordError(err as NSError)
         }
 
-        let notificationTitle = "Location change"
-        var notificationBody = ""
-        var notificationIdentifer = ""
-        var shouldNotify = false
-
-        var zoneName = "Unknown zone"
-        if let zone = zone {
-            zoneName = zone.Name
-        }
-
-        switch updateType {
-        case .BeaconRegionEnter:
-            notificationBody = L10n.LocationChangeNotification.BeaconRegionEnter.body(zoneName)
-            notificationIdentifer = "\(zoneName)_beacon_entered"
-            shouldNotify = prefs.bool(forKey: "beaconEnterNotifications")
-        case .BeaconRegionExit:
-            notificationBody = L10n.LocationChangeNotification.BeaconRegionExit.body(zoneName)
-            notificationIdentifer = "\(zoneName)_beacon_exited"
-            shouldNotify = prefs.bool(forKey: "beaconExitNotifications")
-        case .RegionEnter:
-            notificationBody = L10n.LocationChangeNotification.RegionEnter.body(zoneName)
-            notificationIdentifer = "\(zoneName)_entered"
-            shouldNotify = prefs.bool(forKey: "enterNotifications")
-        case .RegionExit:
-            notificationBody = L10n.LocationChangeNotification.RegionExit.body(zoneName)
-            notificationIdentifer = "\(zoneName)_exited"
-            shouldNotify = prefs.bool(forKey: "exitNotifications")
-        case .SignificantLocationUpdate:
-            notificationBody = L10n.LocationChangeNotification.SignificantLocationUpdate.body
-            notificationIdentifer = "sig_change"
-            shouldNotify = prefs.bool(forKey: "significantLocationChangeNotifications")
-        case .BackgroundFetch:
-            notificationBody = L10n.LocationChangeNotification.BackgroundFetch.body
-            notificationIdentifer = "background_fetch"
-            shouldNotify = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
-        case .PushNotification:
-            notificationBody = L10n.LocationChangeNotification.PushNotification.body
-            notificationIdentifer = "push_notification"
-            shouldNotify = prefs.bool(forKey: "pushLocationRequestNotifications")
-        case .URLScheme:
-            notificationBody = L10n.LocationChangeNotification.UrlScheme.body
-            notificationIdentifer = "url_scheme"
-            shouldNotify = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
-        case .Visit:
-            notificationBody = L10n.LocationChangeNotification.Visit.body
-            notificationIdentifer = "visit"
-            shouldNotify = prefs.bool(forKey: "visitLocationRequestNotifications")
-        case .Manual:
-            notificationBody = L10n.LocationChangeNotification.Manual.body
-            shouldNotify = false
-        case .Unknown:
-            notificationBody = L10n.LocationChangeNotification.Unknown.body
-            shouldNotify = false
-        }
-
-        Current.clientEventStore.addEvent(ClientEvent(text: notificationBody, type: .locationUpdate,
-                                                      payload: payloadDict))
-        if shouldNotify {
-            if #available(iOS 10, *) {
-                let content = UNMutableNotificationContent()
-                content.title = notificationTitle
-                content.body = notificationBody
-                content.sound = UNNotificationSound.default()
-
-                UNUserNotificationCenter.current().add(UNNotificationRequest.init(identifier: notificationIdentifer,
-                                                                                  content: content, trigger: nil))
-            } else {
-                let notification = UILocalNotification()
-                notification.alertTitle = notificationTitle
-                notification.alertBody = notificationBody
-                notification.alertAction = "open"
-                notification.fireDate = NSDate() as Date
-                notification.soundName = UILocalNotificationDefaultSoundName
-                UIApplication.shared.scheduleLocalNotification(notification)
-            }
-        }
-
+        self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: payloadDict)
     }
 
     func getAndSendLocation(trigger: LocationUpdateTrigger?) -> Promise<Bool> {
@@ -423,7 +347,29 @@ public class HomeAssistantAPI {
     }
 
     func GetManifestJSON() -> Promise<ManifestJSON> {
-        return self.request(path: "manifest.json", callingFunctionName: "\(#function)", method: .get)
+        return Promise { seal in
+            if let manager = self.manager {
+                let queryUrl = self.connectionInfo.activeURL.appendingPathComponent("manifest.json")
+                _ = manager.request(queryUrl, method: .get)
+                    .validate()
+                    .responseObject { (response: DataResponse<ManifestJSON>) in
+                        switch response.result {
+                        case .success:
+                            if let resVal = response.result.value {
+                                seal.fulfill(resVal)
+                            } else {
+                                seal.reject(APIError.invalidResponse)
+                            }
+                        case .failure(let error):
+                            CLSLogv("Error on GetManifestJSON() request: %@", getVaList([error.localizedDescription]))
+                            Crashlytics.sharedInstance().recordError(error)
+                            seal.reject(error)
+                        }
+                }
+            } else {
+                seal.reject(APIError.managerNotAvailable)
+            }
+        }
     }
 
     func GetStatus() -> Promise<StatusResponse> {
@@ -950,6 +896,33 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
         return DiscoveryInfoResponse(JSON: outputDict)!
     }
 
+    private func sendLocalNotification(withZone: RLMZone?, updateType: LocationUpdateTrigger,
+                                       payloadDict: [String: Any]) {
+        var zoneName = withZone?.Name ?? "Unknown zone"
+        let notificationOptions = updateType.notificationOptionsFor(zoneName: zoneName)
+        Current.clientEventStore.addEvent(ClientEvent(text: notificationOptions.body, type: .locationUpdate,
+            payload: payloadDict))
+        if notificationOptions.shouldNotify {
+            if #available(iOS 10, *) {
+                let content = UNMutableNotificationContent()
+                content.title = notificationOptions.title
+                content.body = notificationOptions.body
+                content.sound = UNNotificationSound.default()
+
+                let notificationRequest = UNNotificationRequest.init(identifier: notificationOptions.identifier,
+                    content: content, trigger: nil)
+                UNUserNotificationCenter.current().add(notificationRequest)
+            } else {
+                let notification = UILocalNotification()
+                notification.alertTitle = notificationOptions.title
+                notification.alertBody = notificationOptions.body
+                notification.alertAction = "open"
+                notification.fireDate = NSDate() as Date
+                notification.soundName = UILocalNotificationDefaultSoundName
+                UIApplication.shared.scheduleLocalNotification(notification)
+            }
+        }
+    }
 }
 
 class Bonjour {
@@ -1271,6 +1244,13 @@ extension LocationManager: CLLocationManagerDelegate {
 }
 
 enum LocationUpdateTrigger: String {
+    struct NotificationOptions {
+        let shouldNotify: Bool
+        let identifier: String?
+        let title: String
+        let body: String
+    }
+
     case Visit = "Visit"
     case RegionEnter = "Geographic Region Entered"
     case RegionExit = "Geographic Region Exited"
@@ -1282,6 +1262,60 @@ enum LocationUpdateTrigger: String {
     case PushNotification = "Push Notification"
     case URLScheme = "URL Scheme"
     case Unknown = "Unknown"
+
+    func notificationOptionsFor(zoneName: String) -> NotificationOptions {
+        let shouldNotify: Bool
+        let identifier: String?
+        let body: String
+        let title = "Location change"
+
+        switch self {
+        case .BeaconRegionEnter:
+            body = L10n.LocationChangeNotification.BeaconRegionEnter.body(zoneName)
+            identifier = "\(zoneName)_beacon_entered"
+            shouldNotify = prefs.bool(forKey: "beaconEnterNotifications")
+        case .BeaconRegionExit:
+            body = L10n.LocationChangeNotification.BeaconRegionExit.body(zoneName)
+            identifier = "\(zoneName)_beacon_exited"
+            shouldNotify = prefs.bool(forKey: "beaconExitNotifications")
+        case .RegionEnter:
+            body = L10n.LocationChangeNotification.RegionEnter.body(zoneName)
+            identifier = "\(zoneName)_entered"
+            shouldNotify = prefs.bool(forKey: "enterNotifications")
+        case .RegionExit:
+            body = L10n.LocationChangeNotification.RegionExit.body(zoneName)
+            identifier = "\(zoneName)_exited"
+            shouldNotify = prefs.bool(forKey: "exitNotifications")
+        case .SignificantLocationUpdate:
+            body = L10n.LocationChangeNotification.SignificantLocationUpdate.body
+            identifier = "sig_change"
+            shouldNotify = prefs.bool(forKey: "significantLocationChangeNotifications")
+        case .BackgroundFetch:
+            body = L10n.LocationChangeNotification.BackgroundFetch.body
+            identifier = "background_fetch"
+            shouldNotify = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
+        case .PushNotification:
+            body = L10n.LocationChangeNotification.PushNotification.body
+            identifier = "push_notification"
+            shouldNotify = prefs.bool(forKey: "pushLocationRequestNotifications")
+        case .URLScheme:
+            body = L10n.LocationChangeNotification.UrlScheme.body
+            identifier = "url_scheme"
+            shouldNotify = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
+        case .Visit:
+            body = L10n.LocationChangeNotification.Visit.body
+            identifier = "visit"
+            shouldNotify = prefs.bool(forKey: "visitLocationRequestNotifications")
+        case .Manual:
+            body = L10n.LocationChangeNotification.Manual.body
+            shouldNotify = false
+        case .Unknown:
+            body = L10n.LocationChangeNotification.Unknown.body
+            shouldNotify = false
+        }
+
+        return NotificationOptions(shouldNotify: shouldNotify, identifier: identifier, title: title, body: body)
+    }
 }
 
 extension CMMotionActivity {

@@ -56,7 +56,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window!.makeKeyAndVisible()
 
         Current.authenticationControllerPresenter = { controller in
-            navController.present(controller, animated: true, completion: nil)
+            if let presentedController = navController.topViewController?.presentedViewController {
+                presentedController.present(controller, animated: true, completion: nil)
+                return
+            }
+
+            navController.topViewController?.present(controller, animated: true, completion: nil)
         }
         Current.signInRequiredCallback = {
             let alert = UIAlertController(title: "You must sign in to continue",
