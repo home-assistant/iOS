@@ -244,7 +244,6 @@ public class HomeAssistantAPI {
         }
     }
 
-    // swiftlint:disable:next function_body_length cyclomatic_complexity
     func submitLocation(updateType: LocationUpdateTrigger,
                         location: CLLocation?,
                         visit: CLVisit?,
@@ -709,6 +708,35 @@ public class HomeAssistantAPI {
         }
     }
 
+    private func sendLocalNotification(withZone: RLMZone?, updateType: LocationUpdateTrigger,
+                                       payloadDict: [String: Any]) {
+        let zoneName = withZone?.Name ?? "Unknown zone"
+        let notificationOptions = updateType.notificationOptionsFor(zoneName: zoneName)
+        Current.clientEventStore.addEvent(ClientEvent(text: notificationOptions.body, type: .locationUpdate,
+                                                      payload: payloadDict))
+        if notificationOptions.shouldNotify {
+            if #available(iOS 10, *) {
+                let content = UNMutableNotificationContent()
+                content.title = notificationOptions.title
+                content.body = notificationOptions.body
+                content.sound = UNNotificationSound.default()
+
+                let notificationRequest =
+                    UNNotificationRequest.init(identifier: notificationOptions.identifier ?? "",
+                        content: content, trigger: nil)
+                UNUserNotificationCenter.current().add(notificationRequest)
+            } else {
+                let notification = UILocalNotification()
+                notification.alertTitle = notificationOptions.title
+                notification.alertBody = notificationOptions.body
+                notification.alertAction = "open"
+                notification.fireDate = NSDate() as Date
+                notification.soundName = UILocalNotificationDefaultSoundName
+                UIApplication.shared.scheduleLocalNotification(notification)
+            }
+        }
+    }
+
     @available(iOS 10, *)
     func setupUserNotificationPushActions() -> Promise<Set<UNNotificationCategory>> {
         return Promise { seal in
@@ -894,34 +922,6 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
             }
         }
         return DiscoveryInfoResponse(JSON: outputDict)!
-    }
-
-    private func sendLocalNotification(withZone: RLMZone?, updateType: LocationUpdateTrigger,
-                                       payloadDict: [String: Any]) {
-        var zoneName = withZone?.Name ?? "Unknown zone"
-        let notificationOptions = updateType.notificationOptionsFor(zoneName: zoneName)
-        Current.clientEventStore.addEvent(ClientEvent(text: notificationOptions.body, type: .locationUpdate,
-            payload: payloadDict))
-        if notificationOptions.shouldNotify {
-            if #available(iOS 10, *) {
-                let content = UNMutableNotificationContent()
-                content.title = notificationOptions.title
-                content.body = notificationOptions.body
-                content.sound = UNNotificationSound.default()
-
-                let notificationRequest = UNNotificationRequest.init(identifier: notificationOptions.identifier,
-                    content: content, trigger: nil)
-                UNUserNotificationCenter.current().add(notificationRequest)
-            } else {
-                let notification = UILocalNotification()
-                notification.alertTitle = notificationOptions.title
-                notification.alertBody = notificationOptions.body
-                notification.alertAction = "open"
-                notification.fireDate = NSDate() as Date
-                notification.soundName = UILocalNotificationDefaultSoundName
-                UIApplication.shared.scheduleLocalNotification(notification)
-            }
-        }
     }
 }
 
@@ -1265,7 +1265,7 @@ enum LocationUpdateTrigger: String {
 
     func notificationOptionsFor(zoneName: String) -> NotificationOptions {
         let shouldNotify: Bool
-        let identifier: String?
+        var identifier: String = ""
         let body: String
         let title = "Location change"
 
