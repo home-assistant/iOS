@@ -244,6 +244,9 @@
 		D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A6367120DB7D1100E5C49B /* ClientEventTests.swift */; };
 		D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D06C750F20D87FAF00E9DB7F /* ClientEventCell.swift */; };
+		D0B25BC92130CA0D00678C2C /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BC82130CA0D00678C2C /* LocationManager.swift */; };
+		D0B25BCB2130CA2D00678C2C /* RegionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCA2130CA2D00678C2C /* RegionManager.swift */; };
+		D0B25BCD2130CAB400678C2C /* Bonjur.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjur.swift */; };
 		D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44092104224600C74314 /* TokenInfo.swift */; };
 		D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */; };
 		D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE441121043B8100C74314 /* AuthorizationTests.swift */; };
@@ -630,6 +633,9 @@
 		D06C750F20D87FAF00E9DB7F /* ClientEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventCell.swift; sourceTree = "<group>"; };
 		D0A6367120DB7D1100E5C49B /* ClientEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTests.swift; sourceTree = "<group>"; };
 		D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Realm+Initialization.swift"; sourceTree = "<group>"; };
+		D0B25BC82130CA0D00678C2C /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		D0B25BCA2130CA2D00678C2C /* RegionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionManager.swift; sourceTree = "<group>"; };
+		D0B25BCC2130CAB400678C2C /* Bonjur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bonjur.swift; sourceTree = "<group>"; };
 		D0BE44092104224600C74314 /* TokenInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenInfo.swift; sourceTree = "<group>"; };
 		D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationRoutes.swift; sourceTree = "<group>"; };
 		D0BE441121043B8100C74314 /* AuthorizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationTests.swift; sourceTree = "<group>"; };
@@ -1001,6 +1007,7 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
+				D0B25BC72130C9BB00678C2C /* Location */,
 				D0C8845E211ED0BA00CCB501 /* Authentication */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
 				B6F02BE71CB4698A0029ABE7 /* Classes */,
@@ -1071,6 +1078,7 @@
 				B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */,
 				B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */,
 				B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */,
+				D0B25BCC2130CAB400678C2C /* Bonjur.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1235,6 +1243,15 @@
 				D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		D0B25BC72130C9BB00678C2C /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				D0B25BC82130CA0D00678C2C /* LocationManager.swift */,
+				D0B25BCA2130CA2D00678C2C /* RegionManager.swift */,
+			);
+			path = Location;
 			sourceTree = "<group>";
 		};
 		D0BE440B2104224A00C74314 /* Authentication */ = {
@@ -2134,6 +2151,7 @@
 				B64D047A1CB8908B00B945C8 /* StateChanged.swift in Sources */,
 				B6C2C17920D1DD2A00BD810B /* LocationHistory.swift in Sources */,
 				B6E857A21CB1CCCC00F96925 /* Utils.swift in Sources */,
+				D0B25BCB2130CA2D00678C2C /* RegionManager.swift in Sources */,
 				B6E47E8E1CBA3EDB0027F6CA /* Zone.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				B6DBF7681D89F8C100402A57 /* Fan.swift in Sources */,
@@ -2148,6 +2166,7 @@
 				B6F02C0F1CB489770029ABE7 /* BinarySensor.swift in Sources */,
 				B60EAE9B1DBC347C0062C97C /* PushRegistrationResponse.swift in Sources */,
 				B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */,
+				D0B25BC92130CA0D00678C2C /* LocationManager.swift in Sources */,
 				B6E47E9A1CBB47EC0027F6CA /* DeviceUID.m in Sources */,
 				B6F02C121CB489770029ABE7 /* InputBoolean.swift in Sources */,
 				B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */,
@@ -2157,6 +2176,7 @@
 				B6F02C191CB489770029ABE7 /* Sensor.swift in Sources */,
 				B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */,
 				B6F02C141CB489770029ABE7 /* Light.swift in Sources */,
+				D0B25BCD2130CAB400678C2C /* Bonjur.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
 				B6DBF7661D89F7D800402A57 /* Automation.swift in Sources */,
 				B64D047D1CB8916300B945C8 /* Event.swift in Sources */,
