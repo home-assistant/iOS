@@ -10,7 +10,7 @@ import Foundation
 import ObjectMapper
 
 // swiftlint:disable:next type_body_length
-class Entity: StaticMappable {
+public class Entity: StaticMappable {
     let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
 
     @objc dynamic var ID: String = ""
@@ -55,7 +55,7 @@ class Entity: StaticMappable {
     var BatteryLevel: Int?
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
-    class func objectForMapping(map: Map) -> BaseMappable? {
+    public class func objectForMapping(map: Map) -> BaseMappable? {
         if let entityId: String = map["entity_id"].value() {
             let entityType = entityId.components(separatedBy: ".")[0]
             switch entityType {
@@ -109,7 +109,7 @@ class Entity: StaticMappable {
         return nil
     }
 
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         ID                <- map["entity_id"]
         State             <- map["state"]
         Attributes        <- map["attributes"]

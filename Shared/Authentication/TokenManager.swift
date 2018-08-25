@@ -79,21 +79,11 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             && request.response?.statusCode == 401 {
             // If this is a call to our server, and we failed with not authorized, try to refresh the token.
             _ = self.refreshToken.done { _ in
-                guard let tokenInfo = self.tokenInfo else {
+                guard self.tokenInfo != nil else {
                     print("Token Info not avaialble after refresh")
                     completion(false, 0)
                     return
                 }
-
-//                do {
-//                    if let urlRequest = request.request {
-//                        var newRequest = urlRequest
-//                        newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
-//                        request.request = newRequest
-//                    }
-//                } catch {
-//                    print("Failure updating authentication for request in retrier")
-//                }
 
                 // If we get a token, retry.
                 completion(true, 2)

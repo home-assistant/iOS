@@ -10,21 +10,21 @@ import Foundation
 import CoreLocation
 import ObjectMapper
 
-class ManifestJSONIcon: Mappable {
+public class ManifestJSONIcon: Mappable {
     var Sizes: String?
     var Source: String?
     var IconType: String?
 
-    required init?(map: Map) { }
+    required public init?(map: Map) { }
 
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         Sizes      <- map["sizes"]
         Source     <- map["src"]
         IconType       <- map["type"]
     }
 }
 
-class ManifestJSON: Mappable {
+public class ManifestJSON: Mappable {
     var BackgroundColor: String?
     var Description: String?
     var Direction: String?
@@ -37,9 +37,9 @@ class ManifestJSON: Mappable {
     var StartURL: String?
     var ThemeColor: String?
 
-    required init?(map: Map) { }
+    required public init?(map: Map) { }
 
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         BackgroundColor <- map["background_color"]
         Description     <- map["description"]
         Direction       <- map["dir"]

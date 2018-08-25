@@ -1016,8 +1016,6 @@
 				B679B1FA1E1F3D020071D366 /* Utilities */,
 				B679B1F91E1F3CFB0071D366 /* Views */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
-				B657A9191CA647C500121384 /* HAAPI.swift */,
-				D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */,
 				B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */,
 			);
 			path = HomeAssistant;
@@ -1190,6 +1188,8 @@
 		D014EEAA212928EC008EA6F5 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				B657A9191CA647C500121384 /* HAAPI.swift */,
+				D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";

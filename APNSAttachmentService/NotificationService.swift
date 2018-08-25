@@ -21,6 +21,12 @@ final class NotificationService: UNNotificationServiceExtension {
                              withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         print("APNSAttachmentService started!")
         print("Received userInfo", request.content.userInfo)
+
+        let eventText = "Received Notification: \(request.content.title) - \(request.content.subtitle)"
+        let event = ClientEvent(text: eventText, type: .notification,
+                                payload: request.content.userInfo as? [String: Any])
+        Current.clientEventStore.addEvent(event)
+
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
 

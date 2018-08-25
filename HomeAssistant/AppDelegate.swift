@@ -101,14 +101,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         print("Registering push with tokenString: \(tokenString)")
 
-        _ = api.RegisterDeviceForPush(deviceToken: tokenString).done { resp in
+        _ = api.registerDeviceForPush(deviceToken: tokenString).done { resp in
             if let pushId = resp.PushId {
                 print("Registered for push. Platform: \(resp.SNSPlatform ?? "MISSING"), PushID: \(pushId)")
                 CLSLogv("Registered for push %@:", getVaList([pushId]))
                 Crashlytics.sharedInstance().setUserIdentifier(pushId)
                 prefs.setValue(pushId, forKey: "pushID")
                 Current.settingsStore.pushID = pushId
-                _ = api.IdentifyDevice()
+                _ = api.identifyDevice()
             }
         }
     }
@@ -185,7 +185,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     completionHandler(UIBackgroundFetchResult.failed)
             }
         } else {
-            api.IdentifyDevice().done { _ in
+            api.identifyDevice().done { _ in
                 completionHandler(UIBackgroundFetchResult.newData)
             }.catch {error in
                 print("Error when attempting to identify device during background fetch")
@@ -223,46 +223,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             serviceData = queryItems
         }
         switch url.host! {
-        case "call_service": // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
-            let domain = url.pathComponents[1].components(separatedBy: ".")[0]
-            let service = url.pathComponents[1].components(separatedBy: ".")[1]
-            _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.CallService(domain: domain, service: service, serviceData: serviceData)
-            }.done { _ in
-                    showAlert(title: L10n.UrlHandler.CallService.Success.title,
-                              message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
-            }.catch { error in
-                    showAlert(title: L10n.UrlHandler.Error.title,
-                              message: L10n.UrlHandler.CallService.Error.message(url.pathComponents[1],
-                                                                                 error.localizedDescription))
-            }
-        case "fire_event": // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
-            _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                    api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
-            }.done { _ in
-                showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
-                          message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
-            }.catch { error -> Void in
-                showAlert(title: L10n.UrlHandler.Error.title,
-                          message: L10n.UrlHandler.FireEvent.Error.message(url.pathComponents[1],
-                                                                           error.localizedDescription))
-            }
-        case "send_location": // homeassistant://send_location/
-            _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.getAndSendLocation(trigger: .URLScheme)
-            }.done { _ in
-                showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
-                          message: L10n.UrlHandler.SendLocation.Success.message)
-            }.catch { error in
-                showAlert(title: L10n.UrlHandler.Error.title,
-                          message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription))
-            }
+        case "call_service":
+            callServiceURLHAndler(url, serviceData)
+        case "fire_event":
+            fireEventURLHandler(url, serviceData)
+        case "send_location":
+            sendLocationURLHandler()
         case "auth-callback": // homeassistant://auth-callback
            NotificationCenter.default.post(name: Notification.Name("AuthCallback"), object: nil,
                                            userInfo: ["url": url])
@@ -274,6 +240,56 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    // MARK: - Private helpers
+
+    private func fireEventURLHandler(_ url: URL, _ serviceData: [String: String]) {
+        // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
+        _ = firstly {
+            HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.createEvent(eventType: url.pathComponents[1], eventData: serviceData)
+            }.done { _ in
+                showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
+                          message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
+            }.catch { error -> Void in
+                showAlert(title: L10n.UrlHandler.Error.title,
+                          message: L10n.UrlHandler.FireEvent.Error.message(url.pathComponents[1],
+                                                                           error.localizedDescription))
+        }
+    }
+
+    private func callServiceURLHAndler(_ url: URL, _ serviceData: [String: String]) {
+        // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
+        let domain = url.pathComponents[1].components(separatedBy: ".")[0]
+        let service = url.pathComponents[1].components(separatedBy: ".")[1]
+        _ = firstly {
+            HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.callService(domain: domain, service: service, serviceData: serviceData)
+            }.done { _ in
+                showAlert(title: L10n.UrlHandler.CallService.Success.title,
+                          message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
+            }.catch { error in
+                showAlert(title: L10n.UrlHandler.Error.title,
+                          message: L10n.UrlHandler.CallService.Error.message(url.pathComponents[1],
+                                                                             error.localizedDescription))
+        }
+    }
+
+    private func sendLocationURLHandler() {
+        // homeassistant://send_location/
+        _ = firstly {
+            HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.getAndSendLocation(trigger: .URLScheme)
+            }.done { _ in
+                showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
+                          message: L10n.UrlHandler.SendLocation.Success.message)
+            }.catch { error in
+                showAlert(title: L10n.UrlHandler.Error.title,
+                          message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription))
+        }
+    }
 }
 
 @available(iOS 10, *)

@@ -56,7 +56,7 @@ class Climate: Entity {
     }
 
     func TurnFanOn() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "climate",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "climate",
                                                         service: "set_fan_mode",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,
@@ -65,7 +65,7 @@ class Climate: Entity {
     }
 
     func TurnFanOff() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "climate",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "climate",
                                                         service: "set_fan_mode",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,
@@ -74,7 +74,7 @@ class Climate: Entity {
     }
 
     func SetAwayModeOn() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "climate",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "climate",
                                                         service: "set_away_mode",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,
@@ -83,7 +83,7 @@ class Climate: Entity {
     }
 
     func SetAwayModeOff() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "climate",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "climate",
                                                         service: "set_away_mode",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,
@@ -92,7 +92,7 @@ class Climate: Entity {
     }
 
     func SetTemperature(_ newTemp: Float) {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "climate",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "climate",
                                                         service: "set_temperature",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,
@@ -101,7 +101,7 @@ class Climate: Entity {
     }
 
     func SetHumidity(_ newHumidity: Int) {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "climate",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "climate",
                                                         service: "set_humidity",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,
@@ -110,7 +110,7 @@ class Climate: Entity {
     }
 
     func SetSwingMode(_ newSwingMode: String) {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "climate",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "climate",
                                                         service: "set_swing_mode",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,
@@ -119,7 +119,7 @@ class Climate: Entity {
     }
 
     func SetOperationMode(_ newOperationMode: String) {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "climate",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "climate",
                                                         service: "set_operation_mode",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,
@@ -128,7 +128,7 @@ class Climate: Entity {
     }
 
     func TurnAuxHeatOn() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "climate",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "climate",
                                                         service: "set_aux_heat",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,
@@ -137,7 +137,7 @@ class Climate: Entity {
     }
 
     func TurnAuxHeatOff() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.CallService(domain: "climate",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "climate",
                                                         service: "set_aux_heat",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,

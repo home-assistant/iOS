@@ -9,7 +9,7 @@
 import Foundation
 import ObjectMapper
 
-class ConfigResponse: Mappable {
+public class ConfigResponse: Mappable {
     var Components: [String]?
     var Version: String?
     var ConfigDirectory: String?
@@ -24,11 +24,9 @@ class ConfigResponse: Mappable {
     var Latitude: Float?
     var Longitude: Float?
 
-    required init?(map: Map) {
+    required public init?(map: Map) {}
 
-    }
-
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         Components      <- map["components"]
         Version         <- map["version"]
         ConfigDirectory <- map["config_dir"]
