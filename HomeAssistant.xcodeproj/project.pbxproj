@@ -211,7 +211,6 @@
 		B6F02BE91CB46AF40029ABE7 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BE81CB46AF40029ABE7 /* Entity.swift */; };
 		B6F02BEB1CB46D090029ABE7 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BEA1CB46D090029ABE7 /* Group.swift */; };
 		B6F02BEE1CB46EB10029ABE7 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BED1CB46EB10029ABE7 /* Status.swift */; };
-		B6F02BF01CB46EC70029ABE7 /* Bootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BEF1CB46EC70029ABE7 /* Bootstrap.swift */; };
 		B6F02BF21CB470570029ABE7 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF11CB470570029ABE7 /* Config.swift */; };
 		B6F02BF61CB4728D0029ABE7 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF51CB4728D0029ABE7 /* History.swift */; };
 		B6F02BFA1CB47F930029ABE7 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF91CB47F930029ABE7 /* Events.swift */; };
@@ -247,6 +246,7 @@
 		D0B25BC92130CA0D00678C2C /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BC82130CA0D00678C2C /* LocationManager.swift */; };
 		D0B25BCB2130CA2D00678C2C /* RegionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCA2130CA2D00678C2C /* RegionManager.swift */; };
 		D0B25BCD2130CAB400678C2C /* Bonjur.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjur.swift */; };
+		D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD121323CA600678C2C /* ClientEventPayloadViewController.swift */; };
 		D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44092104224600C74314 /* TokenInfo.swift */; };
 		D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */; };
 		D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE441121043B8100C74314 /* AuthorizationTests.swift */; };
@@ -597,7 +597,6 @@
 		B6F02BE81CB46AF40029ABE7 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Entity.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B6F02BEA1CB46D090029ABE7 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		B6F02BED1CB46EB10029ABE7 /* Status.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
-		B6F02BEF1CB46EC70029ABE7 /* Bootstrap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bootstrap.swift; sourceTree = "<group>"; };
 		B6F02BF11CB470570029ABE7 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		B6F02BF51CB4728D0029ABE7 /* History.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		B6F02BF91CB47F930029ABE7 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
@@ -636,6 +635,7 @@
 		D0B25BC82130CA0D00678C2C /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		D0B25BCA2130CA2D00678C2C /* RegionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionManager.swift; sourceTree = "<group>"; };
 		D0B25BCC2130CAB400678C2C /* Bonjur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bonjur.swift; sourceTree = "<group>"; };
+		D0B25BD121323CA600678C2C /* ClientEventPayloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventPayloadViewController.swift; sourceTree = "<group>"; };
 		D0BE44092104224600C74314 /* TokenInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenInfo.swift; sourceTree = "<group>"; };
 		D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationRoutes.swift; sourceTree = "<group>"; };
 		D0BE441121043B8100C74314 /* AuthorizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationTests.swift; sourceTree = "<group>"; };
@@ -1117,25 +1117,18 @@
 			isa = PBXGroup;
 			children = (
 				B6F02BFF1CB4880C0029ABE7 /* Components */,
-				B6F02BEC1CB46E810029ABE7 /* HA API Responses */,
-				B6F02BE81CB46AF40029ABE7 /* Entity.swift */,
-				B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */,
-				B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */,
-				B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */,
-				B6767A501D0234E700F2A08B /* SwitchableEntity.swift */,
-				B6EE36A120CF593E001494E3 /* RealmZone.swift */,
 				B6C2C17820D1DD2A00BD810B /* LocationHistory.swift */,
 				B6C2C18020D1FDFC00BD810B /* DeviceTrackerSee.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
 		};
-		B6F02BEC1CB46E810029ABE7 /* HA API Responses */ = {
+		B6F02BEC1CB46E810029ABE7 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */,
 				B64D047B1CB8915500B945C8 /* SSE */,
 				B6FBE3961D46A4E500EE0E36 /* Beacons.swift */,
-				B6F02BEF1CB46EC70029ABE7 /* Bootstrap.swift */,
 				B6F02BF11CB470570029ABE7 /* Config.swift */,
 				B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */,
 				B6F02BF91CB47F930029ABE7 /* Events.swift */,
@@ -1145,7 +1138,7 @@
 				B6F02BED1CB46EB10029ABE7 /* Status.swift */,
 				B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */,
 			);
-			path = "HA API Responses";
+			path = Responses;
 			sourceTree = "<group>";
 		};
 		B6F02BFF1CB4880C0029ABE7 /* Components */ = {
@@ -1188,6 +1181,9 @@
 		D014EEAA212928EC008EA6F5 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				D0B25BD0213218B000678C2C /* Requests */,
+				D0B25BCF2132179900678C2C /* Models */,
+				B6F02BEC1CB46E810029ABE7 /* Responses */,
 				B657A9191CA647C500121384 /* HAAPI.swift */,
 				D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */,
 			);
@@ -1248,10 +1244,29 @@
 		D0B25BC72130C9BB00678C2C /* Location */ = {
 			isa = PBXGroup;
 			children = (
+				B6EE36A120CF593E001494E3 /* RealmZone.swift */,
 				D0B25BC82130CA0D00678C2C /* LocationManager.swift */,
 				D0B25BCA2130CA2D00678C2C /* RegionManager.swift */,
 			);
 			path = Location;
+			sourceTree = "<group>";
+		};
+		D0B25BCF2132179900678C2C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B6F02BE81CB46AF40029ABE7 /* Entity.swift */,
+				B6767A501D0234E700F2A08B /* SwitchableEntity.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D0B25BD0213218B000678C2C /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */,
+				B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */,
+			);
+			path = Requests;
 			sourceTree = "<group>";
 		};
 		D0BE440B2104224A00C74314 /* Authentication */ = {
@@ -1310,6 +1325,7 @@
 			isa = PBXGroup;
 			children = (
 				D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */,
+				D0B25BD121323CA600678C2C /* ClientEventPayloadViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -1958,6 +1974,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
+				"${BUILT_PRODUCTS_DIR}/DeviceKit/DeviceKit.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
@@ -1968,6 +1985,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireObjectMapper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
@@ -2161,7 +2179,6 @@
 				B6F02C1D1CB489770029ABE7 /* Weblink.swift in Sources */,
 				B657A8EE1CA646EB00121384 /* SettingsViewController.swift in Sources */,
 				B6F02BFC1CB4800C0029ABE7 /* Services.swift in Sources */,
-				B6F02BF01CB46EC70029ABE7 /* Bootstrap.swift in Sources */,
 				B6F02BFA1CB47F930029ABE7 /* Events.swift in Sources */,
 				B6F02C0F1CB489770029ABE7 /* BinarySensor.swift in Sources */,
 				B60EAE9B1DBC347C0062C97C /* PushRegistrationResponse.swift in Sources */,
@@ -2191,6 +2208,7 @@
 				B6F02C111CB489770029ABE7 /* GarageDoor.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				B6E47E881CBA01310027F6CA /* CallService.swift in Sources */,
+				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
 				B6EE36A220CF593E001494E3 /* RealmZone.swift in Sources */,
 				B6880B2B1D7B9E6400CCB899 /* Climate.swift in Sources */,

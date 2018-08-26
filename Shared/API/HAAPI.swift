@@ -259,6 +259,7 @@ public class HomeAssistantAPI {
         let realm = Current.realm()
         // swiftlint:disable:next force_try
         try! realm.write {
+            // TODO: IS this needed?
             realm.add(LocationHistoryEntry(updateType: updateType, location: loc,
                                            zone: zone, payload: jsonPayload))
         }

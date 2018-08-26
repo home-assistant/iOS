@@ -36,7 +36,6 @@ public class PushRegistrationResponse: Mappable {
     init() {}
 
     required public init?(map: Map) {
-
     }
 
     public func mapping(map: Map) {

@@ -64,7 +64,8 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
     public func should(_ manager: SessionManager, retry request: Request, with error: Error,
                        completion: @escaping RequestRetryCompletion) {
-        guard let baseURL = Current.settingsStore.baseURL else {
+        guard let connectionInfo = Current.settingsStore.connectionInfo,
+            let requestURL = request.request?.url else {
             completion(false, 0)
             return
         }
@@ -75,8 +76,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             return
         }
 
-        if request.request?.url?.host == baseURL.host && request.request?.url?.scheme == baseURL.scheme
-            && request.response?.statusCode == 401 {
+        if self.isURLValid(requestURL, for: connectionInfo) && request.response?.statusCode == 401 {
             // If this is a call to our server, and we failed with not authorized, try to refresh the token.
             _ = self.refreshToken.done { _ in
                 guard self.tokenInfo != nil else {
@@ -124,6 +124,20 @@ public class TokenManager: RequestAdapter, RequestRetrier {
                 seal.reject(TokenError.expired)
             }
         }
+    }
+
+    private func isURLValid(_ url: URL, for connectionInfo: ConnectionInfo) -> Bool {
+        if self.url(url, matchesPrefixOf: connectionInfo.baseURL) {
+            return true
+        } else if let internalURL = connectionInfo.internalBaseURL {
+            return self.url(url, matchesPrefixOf: internalURL)
+        }
+
+        return false
+    }
+
+    private func url(_ url: URL, matchesPrefixOf referenceURL: URL) -> Bool {
+        return url.host == referenceURL.host && url.scheme == referenceURL.scheme
     }
 
     private var newCodePromise: Promise<Void>?
