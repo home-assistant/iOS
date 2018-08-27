@@ -10,9 +10,17 @@ import Foundation
 import UIKit
 import Shared
 
+/// View controller responsible for displaying the details of a client event. 
 class ClientEventPayloadViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     private var jsonString: String?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        self.textView.text = self.jsonString
+    }
+
     func showEvent(_ event: ClientEvent) {
         guard let payloadObject = event.jsonPayload else {
             return
@@ -25,11 +33,5 @@ class ClientEventPayloadViewController: UIViewController {
         } catch _ {
             print("Error printing event")
         }
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        self.textView.text = self.jsonString
     }
 }

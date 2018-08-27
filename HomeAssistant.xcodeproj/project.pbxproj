@@ -247,6 +247,8 @@
 		D0B25BCB2130CA2D00678C2C /* RegionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCA2130CA2D00678C2C /* RegionManager.swift */; };
 		D0B25BCD2130CAB400678C2C /* Bonjur.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjur.swift */; };
 		D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD121323CA600678C2C /* ClientEventPayloadViewController.swift */; };
+		D0B25BD62133128800678C2C /* UNNotificationContent+ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */; };
+		D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
 		D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44092104224600C74314 /* TokenInfo.swift */; };
 		D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */; };
 		D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE441121043B8100C74314 /* AuthorizationTests.swift */; };
@@ -636,6 +638,7 @@
 		D0B25BCA2130CA2D00678C2C /* RegionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionManager.swift; sourceTree = "<group>"; };
 		D0B25BCC2130CAB400678C2C /* Bonjur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bonjur.swift; sourceTree = "<group>"; };
 		D0B25BD121323CA600678C2C /* ClientEventPayloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventPayloadViewController.swift; sourceTree = "<group>"; };
+		D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNNotificationContent+ClientEvent.swift"; sourceTree = "<group>"; };
 		D0BE44092104224600C74314 /* TokenInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenInfo.swift; sourceTree = "<group>"; };
 		D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationRoutes.swift; sourceTree = "<group>"; };
 		D0BE441121043B8100C74314 /* AuthorizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationTests.swift; sourceTree = "<group>"; };
@@ -718,6 +721,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				B6CFF5DA2101984A00CC523F /* RealmSwift.framework in Frameworks */,
 				B6CFF5D82101984500CC523F /* Realm.framework in Frameworks */,
 				3AC00A80BA3DC65D7A31D3F7 /* Pods_Shared.framework in Frameworks */,
@@ -1269,6 +1273,14 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
+		D0B25BD42133126E00678C2C /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		D0BE440B2104224A00C74314 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
@@ -1307,6 +1319,7 @@
 		D0FF79C920D7787F0034574D /* ClientEvents */ = {
 			isa = PBXGroup;
 			children = (
+				D0B25BD42133126E00678C2C /* Extensions */,
 				D0FF79CA20D778A50034574D /* Model */,
 			);
 			path = ClientEvents;
@@ -2264,6 +2277,7 @@
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				D0C8847A2122A65800CCB501 /* SettingsStore.swift in Sources */,
+				D0B25BD62133128800678C2C /* UNNotificationContent+ClientEvent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2815,7 +2829,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.Shared;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -2851,7 +2865,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.Shared;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
