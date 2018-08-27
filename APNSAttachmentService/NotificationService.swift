@@ -22,7 +22,7 @@ final class NotificationService: UNNotificationServiceExtension {
         print("APNSAttachmentService started!")
         print("Received userInfo", request.content.userInfo)
 
-        let event = ClientEvent(text: request.content.clientEventTitle eventText, type: .notification,
+        let event = ClientEvent(text: request.content.clientEventTitle, type: .notification,
                                 payload: request.content.userInfo as? [String: Any])
         Current.clientEventStore.addEvent(event)
 

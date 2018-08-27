@@ -45,7 +45,7 @@ class ClientEventTests: XCTestCase {
         mutableContent.subtitle = "Fake Sub"
         mutableContent.userInfo = [ "aps" : ["alert": alert, "sound": "default:"]]
 
-        let expectedTitle = "Recei	ved Notification: \(mutableContent.title) - \(mutableContent.subtitle)"
+        let expectedTitle = "Received Notification: \(mutableContent.title) - \(mutableContent.subtitle)"
         let content = mutableContent as UNNotificationContent
         XCTAssertEqual(content.clientEventTitle, expectedTitle)
     }
