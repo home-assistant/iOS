@@ -10,6 +10,7 @@ import UIKit
 import WebKit
 import KeychainAccess
 import PromiseKit
+import Shared
 
 // swiftlint:disable:next type_body_length
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, ConnectionInfoChangedDelegate {
@@ -56,31 +57,31 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         webView.scrollView.bounces = false
 
-        HomeAssistantAPI.sharedInstance.Setup(baseURLString: keychain["baseURL"],
-                                              password: keychain["apiPassword"],
-                                              deviceID: keychain["deviceID"])
-        if HomeAssistantAPI.sharedInstance.Configured {
-            HomeAssistantAPI.sharedInstance.Connect().done {_ in
-                if HomeAssistantAPI.sharedInstance.notificationsEnabled {
+        if let api = HomeAssistantAPI.authenticatedAPI(),
+            let connectionInfo = Current.settingsStore.connectionInfo {
+            api.Connect().done {_ in
+                if api.notificationsEnabled {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
                 print("Connected!")
-                if let baseURL = HomeAssistantAPI.sharedInstance.baseURL {
-                    let myRequest = URLRequest(url: baseURL)
-                    self.webView.load(myRequest)
-                }
+                let myRequest = URLRequest(url: connectionInfo.activeURL)
+                self.webView.load(myRequest)
                 return
             }.catch {err -> Void in
                 print("Error on connect!!!", err)
                 self.openSettingsWithError(error: err)
             }
         } else {
-            let settingsView = SettingsViewController()
-            settingsView.doneButton = true
-            settingsView.delegate = self
-            let navController = UINavigationController(rootViewController: settingsView)
-            self.present(navController, animated: true, completion: nil)
+            self.showSettingsViewController()
         }
+    }
+
+    public func showSettingsViewController() {
+        let settingsView = SettingsViewController()
+        settingsView.doneButton = true
+        settingsView.delegate = self
+        let navController = UINavigationController(rootViewController: settingsView)
+        self.present(navController, animated: true, completion: nil)
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -105,7 +106,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             }
         }
 
-        if HomeAssistantAPI.sharedInstance.locationEnabled {
+        if Current.settingsStore.locationEnabled {
 
             let uploadIcon = getIconForIdentifier("mdi:upload",
                                                   iconWidth: 30, iconHeight: 30,
@@ -141,11 +142,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.setToolbarItems(barItems, animated: false)
         self.navigationController?.toolbar.tintColor = tabBarIconColor
 
-        if HomeAssistantAPI.sharedInstance.Configured {
-            if let baseURL = HomeAssistantAPI.sharedInstance.baseURL {
-                let myRequest = URLRequest(url: baseURL)
-                self.webView.load(myRequest)
-            }
+        if let connectionInfo = Current.settingsStore.connectionInfo {
+            let myRequest = URLRequest(url: connectionInfo.activeURL)
+            self.webView.load(myRequest)
         }
     }
 
@@ -282,21 +281,25 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     @objc func sendCurrentLocation(_ sender: UIButton) {
-        HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual).done {_ in
+        firstly {
+            HomeAssistantAPI.authenticatedAPIPromise
+        }.then { api in
+            api.getAndSendLocation(trigger: .Manual)
+        }.done {_ in
             print("Sending current location via button press")
             let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
                                           message: L10n.ManualLocationUpdateNotification.message,
                                           preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
-            }.catch {error in
-                let nserror = error as NSError
-                let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
-                let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
-                                              message: message,
-                                              preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
+        }.catch {error in
+            let nserror = error as NSError
+            let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
+            let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
+                                          message: message,
+                                          preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
 

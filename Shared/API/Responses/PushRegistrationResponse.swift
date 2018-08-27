@@ -9,7 +9,7 @@
 import Foundation
 import ObjectMapper
 
-class PushRegistrationResponse: Mappable {
+public class PushRegistrationResponse: Mappable {
     var APNSSandbox: Bool?
     var AppBuildNumber: Int?
     var AppBundleIdentifer: String?
@@ -35,11 +35,10 @@ class PushRegistrationResponse: Mappable {
 
     init() {}
 
-    required init?(map: Map) {
-
+    required public init?(map: Map) {
     }
 
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         APNSSandbox              <- map["registration.apnsSandbox"]
         AppBuildNumber           <- map["registration.appBuildNumber"]
         AppBundleIdentifer       <- map["registration.appBundleIdentifer"]

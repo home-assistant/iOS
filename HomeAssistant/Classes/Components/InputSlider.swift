@@ -28,10 +28,10 @@ class InputSlider: Entity {
     }
 
     func SelectValue(_ value: Float) {
-        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "input_slider",
-                                                        service: "select_value",
-                                                        serviceData: ["entity_id": self.ID as AnyObject,
-                                                                      "value": value as AnyObject
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "input_slider",
+                                                             service: "select_value",
+                                                             serviceData: ["entity_id": self.ID as AnyObject,
+                                                                           "value": value as AnyObject
             ]
         )
     }

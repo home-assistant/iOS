@@ -46,7 +46,7 @@ private func encodeByAddingPercentEscapes(_ input: String?) -> String {
 }
 
 open class OpenInChromeController {
-    open static let sharedInstance = OpenInChromeController()
+    public static let sharedInstance = OpenInChromeController()
 
     open func isChromeInstalled() -> Bool {
         if let simpleURL = URL(string: googleChromeHTTPScheme),

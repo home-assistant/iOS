@@ -18,7 +18,7 @@ let usesSSL = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
     return nil
 })
 
-class DiscoveryInfoResponse: Mappable {
+public class DiscoveryInfoResponse: Mappable {
     var BaseURL: URL?
     var BaseURLString: String = ""
     var LocationName: String = ""
@@ -26,11 +26,11 @@ class DiscoveryInfoResponse: Mappable {
     var Version: String = ""
     var UsesSSL: Bool = false
 
-    required init?(map: Map) {
+    required public init?(map: Map) {
 
     }
 
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         BaseURL             <- (map["base_url"], URLTransform())
         BaseURLString       <- map["base_url"]
         LocationName        <- map["location_name"]

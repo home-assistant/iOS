@@ -52,7 +52,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D03D88D920E0A7AB00D4F28D"
+               BlueprintIdentifier = "D03D894120E0BC1800D4F28D"
                BuildableName = "SharedTests.xctest"
                BlueprintName = "SharedTests"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
