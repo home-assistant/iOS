@@ -21,6 +21,11 @@ final class NotificationService: UNNotificationServiceExtension {
                              withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         print("APNSAttachmentService started!")
         print("Received userInfo", request.content.userInfo)
+
+        let event = ClientEvent(text: request.content.clientEventTitle eventText, type: .notification,
+                                payload: request.content.userInfo as? [String: Any])
+        Current.clientEventStore.addEvent(event)
+
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
 
@@ -50,6 +55,7 @@ final class NotificationService: UNNotificationServiceExtension {
             guard let entityId = content.userInfo["entity_id"] as? String else {
                 return failEarly()
             }
+
             incomingAttachment["url"] = "\(baseURL)/api/camera_proxy/\(entityId)?api_password=\(apiPassword)"
             if incomingAttachment["content-type"] == nil {
                 incomingAttachment["content-type"] = "jpeg"
@@ -76,38 +82,14 @@ final class NotificationService: UNNotificationServiceExtension {
 
         var attachmentOptions: [String: Any] = [:]
         if let attachmentContentType = incomingAttachment["content-type"] as? String {
-            var contentType: CFString = attachmentContentType as CFString
-            switch attachmentContentType.lowercased() {
-            case "aiff":
-                contentType = kUTTypeAudioInterchangeFileFormat
-            case "avi":
-                contentType = kUTTypeAVIMovie
-            case "gif":
-                contentType = kUTTypeGIF
-            case "jpeg", "jpg":
-                contentType = kUTTypeJPEG
-            case "mp3":
-                contentType = kUTTypeMP3
-            case "mpeg":
-                contentType = kUTTypeMPEG
-            case "mpeg2":
-                contentType = kUTTypeMPEG2Video
-            case "mpeg4":
-                contentType = kUTTypeMPEG4
-            case "mpeg4audio":
-                contentType = kUTTypeMPEG4Audio
-            case "png":
-                contentType = kUTTypePNG
-            case "waveformaudio":
-                contentType = kUTTypeWaveformAudio
-            default:
-                contentType = attachmentContentType as CFString
-            }
-            attachmentOptions[UNNotificationAttachmentOptionsTypeHintKey] = contentType
+            attachmentOptions[UNNotificationAttachmentOptionsTypeHintKey] =
+                self.contentTypeForString(attachmentContentType)
         }
+
         if let attachmentHideThumbnail = incomingAttachment["hide-thumbnail"] as? Bool {
             attachmentOptions[UNNotificationAttachmentOptionsThumbnailHiddenKey] = attachmentHideThumbnail
         }
+
         guard let attachmentData = NSData(contentsOf: attachmentURL) else { return failEarly() }
         guard let attachment = UNNotificationAttachment.create(fileIdentifier: attachmentURL.lastPathComponent,
                                                                data: attachmentData,
@@ -131,6 +113,37 @@ final class NotificationService: UNNotificationServiceExtension {
         }
     }
 
+    private func contentTypeForString(_ contentTypeString: String) -> CFString {
+        let contentType: CFString
+        switch contentTypeString.lowercased() {
+        case "aiff":
+            contentType = kUTTypeAudioInterchangeFileFormat
+        case "avi":
+            contentType = kUTTypeAVIMovie
+        case "gif":
+            contentType = kUTTypeGIF
+        case "jpeg", "jpg":
+            contentType = kUTTypeJPEG
+        case "mp3":
+            contentType = kUTTypeMP3
+        case "mpeg":
+            contentType = kUTTypeMPEG
+        case "mpeg2":
+            contentType = kUTTypeMPEG2Video
+        case "mpeg4":
+            contentType = kUTTypeMPEG4
+        case "mpeg4audio":
+            contentType = kUTTypeMPEG4Audio
+        case "png":
+            contentType = kUTTypePNG
+        case "waveformaudio":
+            contentType = kUTTypeWaveformAudio
+        default:
+            contentType = contentTypeString as CFString
+        }
+
+        return contentType
+    }
 }
 
 extension UNNotificationAttachment {

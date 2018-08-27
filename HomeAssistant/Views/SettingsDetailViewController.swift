@@ -223,7 +223,7 @@ class SettingsDetailViewController: FormViewController {
                 <<< ButtonRow {
                     $0.title = L10n.SettingsDetails.Notifications.UpdateSection.Button.title
                 }.onCellSelection {_, _ in
-                    HomeAssistantAPI.sharedInstance.setupPush()
+                    HomeAssistantAPI.authenticatedAPI()?.setupPush()
                     let title = L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.title
                     let message = L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.message
                     let alert = UIAlertController(title: title,

@@ -19,9 +19,8 @@ class LocationHistoryEntry: Object {
     @objc dynamic var Payload: String = ""
     @objc dynamic var CreatedAt = Date()
 
-    convenience init(updateType: LocationUpdateTrigger,
-                     location: CLLocation?,
-                     zone: RLMZone?, payload: String) {
+    convenience init(updateType: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?,
+                     payload: String) {
         self.init()
 
         var loc = CLLocation()

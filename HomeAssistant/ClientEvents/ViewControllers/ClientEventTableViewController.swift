@@ -35,6 +35,14 @@ public class ClientEventTableViewController: UITableViewController {
         notificationToken = nil
     }
 
+    public override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let identifier = segue.identifier, identifier == "showPayload",
+            let selectedIndexPath = self.tableView.indexPathForSelectedRow,
+            let event = results?[selectedIndexPath.row],
+            let payloadVC = segue.destination as? ClientEventPayloadViewController {
+            payloadVC.showEvent(event)
+        }
+    }
     @objc func clearTapped() {
         Current.clientEventStore.clearAllEvents()
     }

@@ -33,7 +33,6 @@ class PushRegistrationRequest: Mappable {
     init() {}
 
     required init?(map: Map) {
-
     }
 
     func mapping(map: Map) {

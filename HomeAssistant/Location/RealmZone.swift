@@ -11,7 +11,7 @@ import ObjectMapper
 import CoreLocation
 import RealmSwift
 
-class RLMZone: Object {
+public class RLMZone: Object {
 
     @objc dynamic var ID: String = ""
 
@@ -109,7 +109,7 @@ class RLMZone: Object {
         return region
     }
 
-    override static func primaryKey() -> String? {
+    override public static func primaryKey() -> String? {
         return "ID"
     }
 

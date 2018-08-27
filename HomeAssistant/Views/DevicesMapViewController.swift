@@ -61,33 +61,22 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
         self.navigationItem.rightBarButtonItem = rightBarItem
 
-        // Do any additional setup after loading the view.
-        mapView = MKMapView()
+        self.configureMapView()
 
-        mapView.mapType = .standard
-        mapView.frame = view.frame
-        mapView.delegate = self
-        mapView.showsUserLocation = false
-        mapView.showsPointsOfInterest = false
-        view.addSubview(mapView)
-
-        let locateMeButton = MKUserTrackingBarButtonItem(mapView: mapView)
+        let locateMeButton = MKUserTrackingBarButtonItem(mapView: self.mapView)
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         let segmentedControlButtonItem = UIBarButtonItem(customView: typeController)
         //        let bookmarksButton = UIBarButtonItem(barButtonSystemItem: .Bookmarks, target: self, action: nil)
 
         self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
 
-        if let cachedEntities = HomeAssistantAPI.sharedInstance.cachedEntities {
-            if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
-                return entity.Domain == "zone"
-            }) as? [Zone] {
-                for zone in zoneEntities {
-                    // swiftlint:disable:next line_length
-                    let circle = HACircle.init(center: zone.locationCoordinates(), radius: CLLocationDistance(zone.Radius))
-                    circle.type = "zone"
-                    mapView.add(circle)
-                }
+        if let api = HomeAssistantAPI.authenticatedAPI(), let cachedEntities = api.cachedEntities {
+            let zoneEntities = cachedEntities.compactMap { $0.Domain == "zone" ? $0 as? Zone : nil }
+            for zone in zoneEntities {
+                let circle = HACircle.init(center: zone.locationCoordinates(),
+                                           radius: CLLocationDistance(zone.Radius))
+                circle.type = "zone"
+                mapView.add(circle)
             }
 
             if let deviceEntities: [DeviceTracker] = cachedEntities.filter({ (entity) -> Bool in
@@ -194,19 +183,37 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
     }
 
     @objc func sendCurrentLocation(_ sender: UIBarButtonItem) {
-        HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual).done { _ in
-            let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
-                                          message: L10n.ManualLocationUpdateNotification.message,
-                                          preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+        HomeAssistantAPI.authenticatedAPIPromise.then { api in
+            api.getAndSendLocation(trigger: .Manual)
+            }.done { _ in
+                let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
+                                              message: L10n.ManualLocationUpdateNotification.message,
+                                              preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                              handler: nil))
+                self.present(alert, animated: true, completion: nil)
             }.catch {error in
                 let nserror = error as NSError
+                let errorDescription = nserror.localizedDescription
+                let message = L10n.ManualLocationUpdateFailedNotification.message(errorDescription)
                 let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
-                    message: L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription),
-                    preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
+                                              message: message, preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                              handler: nil))
                 self.present(alert, animated: true, completion: nil)
         }
+    }
+
+    // MARK: - Private helpers
+
+    private func configureMapView() {
+        self.mapView = MKMapView()
+
+        self.mapView.mapType = .standard
+        self.mapView.frame = view.frame
+        self.mapView.delegate = self
+        self.mapView.showsUserLocation = false
+        self.mapView.showsPointsOfInterest = false
+        view.addSubview(self.mapView)
     }
 }

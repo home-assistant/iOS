@@ -8,6 +8,7 @@
 
 import XCTest
 import RealmSwift
+import UserNotifications
 @testable import Shared
 
 class ClientEventTests: XCTestCase {
@@ -27,6 +28,37 @@ class ClientEventTests: XCTestCase {
     func testStartsEmpty() {
         XCTAssertEqual(0, store.getEvents().count)
     }
+
+    func testNotificationTitleForNotificationWithoutTitle() {
+        let mutableContent = UNMutableNotificationContent()
+        let alert = "House mode changed to away"
+        let expectedTitle = "Received Notification: \(alert)"
+        mutableContent.userInfo = [ "aps" : ["alert": alert, "sound": "default:"]]
+        let content = mutableContent as UNNotificationContent
+        XCTAssertEqual(content.clientEventTitle, expectedTitle)
+    }
+
+    func testNotificationTitleForNotificationWithATitle() {
+        let mutableContent = UNMutableNotificationContent()
+        let alert = "House mode changed to away"
+        mutableContent.title = "Home Assistant Notification"
+        mutableContent.subtitle = "Fake Sub"
+        mutableContent.userInfo = [ "aps" : ["alert": alert, "sound": "default:"]]
+
+        let expectedTitle = "Recei	ved Notification: \(mutableContent.title) - \(mutableContent.subtitle)"
+        let content = mutableContent as UNNotificationContent
+        XCTAssertEqual(content.clientEventTitle, expectedTitle)
+    }
+
+    func testUnknownNotification() {
+        let mutableContent = UNMutableNotificationContent()
+        mutableContent.userInfo = [ "aps" : ["sound": "default:"]]
+
+        let expectedTitle = "Received a Push Notification"
+        let content = mutableContent as UNNotificationContent
+        XCTAssertEqual(content.clientEventTitle, expectedTitle)
+    }
+
 
     func testCanWriteClientEvent() {
         let event = ClientEvent(text: "Yo", type: .notification)

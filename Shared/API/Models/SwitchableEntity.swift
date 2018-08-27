@@ -11,12 +11,12 @@ import ObjectMapper
 
 class SwitchableEntity: Entity {
 
-    var IsOn: Bool?
+    var isOn: Bool?
 
     override func mapping(map: Map) {
         super.mapping(map: map)
 
-        IsOn         <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
+        isOn <- (map["state"], ComponentBoolTransform(trueValue: "on", falseValue: "off"))
     }
 
     override var EntityColor: UIColor {

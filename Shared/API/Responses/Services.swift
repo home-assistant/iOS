@@ -9,43 +9,43 @@
 import Foundation
 import ObjectMapper
 
-class ServicesResponse: Mappable {
+public class ServicesResponse: Mappable {
     var Domain: String?
     var Services: [String: ServiceDefinition] = [:]
 
-    required init?(map: Map) {
+    required public init?(map: Map) {
 
     }
 
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         Domain    <- map["domain"]
         Services  <- map["services"]
     }
 }
 
-class ServiceDefinition: Mappable {
+public class ServiceDefinition: Mappable {
     var Description: String?
     var Fields: [String: ServiceField] = [:]
 
-    required init?(map: Map) {
+    required public init?(map: Map) {
 
     }
 
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         Description  <- map["description"]
         Fields       <- map["fields"]
     }
 }
 
-class ServiceField: Mappable {
+public class ServiceField: Mappable {
     var Description: String?
     var Example: AnyObject?
 
-    required init?(map: Map) {
+    required public init?(map: Map) {
 
     }
 
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         Description  <- map["description"]
         Example      <- map["example"]
     }

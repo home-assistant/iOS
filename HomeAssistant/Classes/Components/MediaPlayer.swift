@@ -87,7 +87,7 @@ class MediaPlayer: Entity {
     }
 
     func muteOn() {
-        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "media_player",
                                                         service: "volume_mute",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,
@@ -95,7 +95,7 @@ class MediaPlayer: Entity {
             ])
     }
     func muteOff() {
-        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "media_player",
                                                         service: "volume_mute",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,
@@ -104,7 +104,7 @@ class MediaPlayer: Entity {
     }
     func setVolume(_ newVolume: Float) {
         let fixedVolume = newVolume/100
-        _ = HomeAssistantAPI.sharedInstance.CallService(domain: "media_player",
+        _ = HomeAssistantAPI.authenticatedAPI()?.callService(domain: "media_player",
                                                         service: "volume_set",
                                                         serviceData: [
                                                             "entity_id": self.ID as AnyObject,
