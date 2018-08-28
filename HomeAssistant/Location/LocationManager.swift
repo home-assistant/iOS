@@ -10,7 +10,7 @@ import CoreLocation
 import Foundation
 import Shared
 
-class LocationManager: NSObject {
+class OneShotLocationManager: NSObject {
     let locationManager = CLLocationManager()
     var onLocationUpdated: OnLocationUpdated
 
@@ -25,7 +25,7 @@ class LocationManager: NSObject {
     }
 }
 
-extension LocationManager: CLLocationManagerDelegate {
+extension OneShotLocationManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print("LocationManager: Got location, stopping updates!", locations.last.debugDescription, locations.count)
         onLocationUpdated(locations.first, nil)
@@ -41,14 +41,14 @@ extension LocationManager: CLLocationManagerDelegate {
                 let locErr = LocationError(err: clErr)
                 realm.add(locErr)
             }
-            print(clErr.debugDescription)
+            print("Received CLError:", clErr.debugDescription)
             if clErr.code == CLError.locationUnknown {
                 // locationUnknown just means that GPS may be taking an extra moment, so don't throw an error.
                 return
             }
             onLocationUpdated(nil, clErr)
         } else {
-            print("other error:", error.localizedDescription)
+            print("Received non-CLError when we only expected CLError:", error.localizedDescription)
             onLocationUpdated(nil, error)
         }
     }
