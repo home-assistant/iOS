@@ -71,12 +71,15 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
 
         if let api = HomeAssistantAPI.authenticatedAPI(), let cachedEntities = api.cachedEntities {
-            let zoneEntities = cachedEntities.compactMap { $0.Domain == "zone" ? $0 as? Zone : nil }
-            for zone in zoneEntities {
-                let circle = HACircle.init(center: zone.locationCoordinates(),
-                                           radius: CLLocationDistance(zone.Radius))
-                circle.type = "zone"
-                mapView.add(circle)
+            if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
+                return entity.Domain == "zone"
+            }) as? [Zone] {
+                for zone in zoneEntities {
+                    let circle = HACircle.init(center: zone.locationCoordinates(),
+                                               radius: CLLocationDistance(zone.Radius))
+                    circle.type = "zone"
+                    mapView.add(circle)
+                }
             }
 
             if let deviceEntities: [DeviceTracker] = cachedEntities.filter({ (entity) -> Bool in

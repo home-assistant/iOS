@@ -213,15 +213,6 @@ public class HomeAssistantAPI {
                                location: CLLocation?,
                                visit: CLVisit?,
                                zone: RLMZone?) {
-        var loc: CLLocation = CLLocation()
-        if let location = location {
-            loc = location
-        } else if let zone = zone {
-            loc = zone.location()
-        } else if let visit = visit {
-            loc = visit.location()
-        }
-
         UIDevice.current.isBatteryMonitoringEnabled = true
 
         let payload = DeviceTrackerSee(trigger: updateType, location: location, visit: visit, zone: zone)
@@ -254,8 +245,8 @@ public class HomeAssistantAPI {
                                            zone: zone, payload: jsonPayload))
         }
 
-        if let locaiton = payload.Location,
-            self.regionManager.checkIfInsideAnyRegions(location: loc.coordinate).count > 0 {
+        if let location = payload.Location,
+            self.regionManager.checkIfInsideAnyRegions(location: location).count > 0 {
             print("Not submitting location change since we are already inside of a zone")
             for activeZone in self.regionManager.zones {
                 print("Zone check", activeZone.ID, activeZone.inRegion)
