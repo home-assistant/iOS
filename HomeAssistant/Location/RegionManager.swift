@@ -78,6 +78,13 @@ class RegionManager: NSObject {
             if trigger == .RegionExit {
                 trig = .BeaconRegionExit
             }
+        } else {
+            if trigger == .RegionEnter {
+                trig = .GPSRegionEnter
+            }
+            if trigger == .RegionExit {
+                trig = .GPSRegionExit
+            }
         }
 
         backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
@@ -87,7 +94,7 @@ class RegionManager: NSObject {
         let realm = Current.realm()
         // swiftlint:disable:next force_try
         try! realm.write {
-            zone.inRegion = (trig == .RegionEnter || trig == .BeaconRegionEnter)
+            zone.inRegion = (trig == .GPSRegionEnter || trig == .BeaconRegionEnter)
         }
 
         print("Submit location for zone \(zone.ID) with trigger \(trig.rawValue)")
@@ -147,6 +154,12 @@ extension RegionManager: CLLocationManagerDelegate {
             print("NOT accepting region manager update as one shot location service is active")
             return
         }
+
+        if self.lastLocation == nil {
+            print("NOT accepting region manager update since we appear to be in startup and regions may not be active")
+            return
+        }
+
         print("RegionManager: Got location, stopping updates!", locations.last.debugDescription, locations.count)
         api.submitLocation(updateType: .SignificantLocationUpdate, location: locations.last, visit: nil,
                            zone: nil)
@@ -183,22 +196,22 @@ extension RegionManager: CLLocationManagerDelegate {
                 let locErr = LocationError(err: clErr)
                 realm.add(locErr)
             }
-            print(clErr.debugDescription)
+            print("Received CLError:", clErr.debugDescription)
             if clErr.code == CLError.locationUnknown {
                 // locationUnknown just means that GPS may be taking an extra moment, so don't throw an error.
                 return
             }
         } else {
-            print("other error:", error.localizedDescription)
+            print("Received non-CLError when we only expected CLError:", error.localizedDescription)
         }
     }
 
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-        //        let insideRegions = checkIfInsideAnyRegions(location: lastLocation.coordinate)
-        //        for inside in insideRegions {
-        //            print("System reports inside for zone", inside.identifier)
-        //        }
-        print("Started monitoring region", region.identifier)
+        guard let zone = zones.filter({ region.identifier == $0.ID }).first else {
+            return
+        }
+
+        print("Started monitoring region", region.identifier, zone)
         locationManager.requestState(for: region)
     }
 
@@ -212,6 +225,16 @@ extension RegionManager: CLLocationManagerDelegate {
             strState = "Unknown"
         }
         print("\(strState) region", region.identifier)
+
+        guard let zone = zones.filter({ region.identifier == $0.ID }).first else {
+            return
+        }
+
+        let realm = Current.realm()
+        // swiftlint:disable:next force_try
+        try! realm.write {
+            zone.inRegion = (state == .inside)
+        }
     }
 }
 

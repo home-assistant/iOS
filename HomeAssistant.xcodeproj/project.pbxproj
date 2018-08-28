@@ -185,7 +185,6 @@
 		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
 		B678DB391EA999AC0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB381EA999AC0045312F /* MainInterface.storyboard */; };
 		B6880B2B1D7B9E6400CCB899 /* Climate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6880B2A1D7B9E6400CCB899 /* Climate.swift */; };
-		B688AB45211938F1002FCAD6 /* CMMotion+StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */; };
 		B688AB4721193946002FCAD6 /* ObjectMapperTransformers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */; };
 		B689EBCB1D8B7C800000AECE /* MjpegStreamingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */; };
 		B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
@@ -255,6 +254,7 @@
 		D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */; };
 		D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE441121043B8100C74314 /* AuthorizationTests.swift */; };
 		D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44152104410D00C74314 /* AuthenticationAPI.swift */; };
+		D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */; };
 		D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C8845F211ED11900CCB501 /* SafariServices.framework */; };
 		D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88461211ED16300CCB501 /* AuthenticationController.swift */; };
 		D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88463211F33CE00CCB501 /* TokenManager.swift */; };
@@ -1084,8 +1084,6 @@
 				B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */,
 				B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */,
 				B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */,
-				B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */,
-				B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */,
 				D0B25BCC2130CAB400678C2C /* Bonjur.swift */,
 			);
 			path = Utilities;
@@ -1246,6 +1244,7 @@
 		D0A6367320DBE91300E5C49B /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */,
 				D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */,
 			);
 			path = Extensions;
@@ -1352,6 +1351,7 @@
 		D0FF79D020D87CF60034574D /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */,
 				D0A6367320DBE91300E5C49B /* Extensions */,
 				D00302BC20D4BEC0004C2CA9 /* Structs */,
 			);
@@ -2173,7 +2173,6 @@
 				B6F02C1C1CB489770029ABE7 /* Thermostat.swift in Sources */,
 				B64D09AF1D7D561E008EB487 /* InputSlider.swift in Sources */,
 				B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */,
-				B688AB45211938F1002FCAD6 /* CMMotion+StringExtensions.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
 				B6F02C151CB489770029ABE7 /* Lock.swift in Sources */,
 				B629E8D61DAD8CFA00040A90 /* PushRegistrationRequest.swift in Sources */,
@@ -2277,6 +2276,7 @@
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
 				D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */,
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
+				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
 				D03D893B20E0B2E300D4F28D /* Constants.swift in Sources */,
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,

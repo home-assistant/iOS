@@ -53,7 +53,7 @@ public class HomeAssistantAPI {
     private(set) var manager: Alamofire.SessionManager!
 
     var regionManager = RegionManager()
-    var locationManager: LocationManager?
+    var oneShotLocationManager: OneShotLocationManager?
 
     var cachedEntities: [Entity]?
 
@@ -224,7 +224,7 @@ public class HomeAssistantAPI {
 
         UIDevice.current.isBatteryMonitoringEnabled = true
 
-        let payload = DeviceTrackerSee(location: loc)
+        let payload = DeviceTrackerSee(trigger: updateType, location: location, visit: visit, zone: zone)
         payload.Trigger = updateType
 
         let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
@@ -235,16 +235,7 @@ public class HomeAssistantAPI {
         payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
 
         if let activity = self.regionManager.lastActivity {
-            payload.ActivityType = activity.activityType
-            payload.ActivityConfidence = activity.confidence.description
-        }
-
-        if let zone = zone, zone.ID == "zone.home" {
-            if updateType == .BeaconRegionEnter || updateType == .RegionEnter {
-                payload.LocationName = "home"
-            } else if updateType == .BeaconRegionExit || updateType == .RegionExit {
-                payload.LocationName = "not_home"
-            }
+            payload.SetActivity(activity: activity)
         }
 
         var jsonPayload = "{\"missing\": \"payload\"}"
@@ -259,12 +250,12 @@ public class HomeAssistantAPI {
         let realm = Current.realm()
         // swiftlint:disable:next force_try
         try! realm.write {
-            // TODO: IS this needed?
-            realm.add(LocationHistoryEntry(updateType: updateType, location: loc,
+            realm.add(LocationHistoryEntry(updateType: updateType, location: payload.cllocation,
                                            zone: zone, payload: jsonPayload))
         }
 
-        if self.regionManager.checkIfInsideAnyRegions(location: loc.coordinate).count > 0 {
+        if let locaiton = payload.Location,
+            self.regionManager.checkIfInsideAnyRegions(location: loc.coordinate).count > 0 {
             print("Not submitting location change since we are already inside of a zone")
             for activeZone in self.regionManager.zones {
                 print("Zone check", activeZone.ID, activeZone.inRegion)
@@ -296,7 +287,7 @@ public class HomeAssistantAPI {
 
         return Promise { seal in
             regionManager.oneShotLocationActive = true
-            locationManager = LocationManager { location, error in
+            oneShotLocationManager = OneShotLocationManager { location, error in
                 self.regionManager.oneShotLocationActive = false
                 if let location = location {
                     self.submitLocation(updateType: updateTrigger, location: location, visit: nil, zone: nil)
@@ -877,8 +868,10 @@ public enum LocationUpdateTrigger: String {
     }
 
     case Visit = "Visit"
-    case RegionEnter = "Geographic Region Entered"
-    case RegionExit = "Geographic Region Exited"
+    case RegionEnter = "Region Entered"
+    case RegionExit = "Region Exited"
+    case GPSRegionEnter = "Geographic Region Entered"
+    case GPSRegionExit = "Geographic Region Exited"
     case BeaconRegionEnter = "iBeacon Region Entered"
     case BeaconRegionExit = "iBeacon Region Exited"
     case Manual = "Manual"
@@ -903,11 +896,11 @@ public enum LocationUpdateTrigger: String {
             body = L10n.LocationChangeNotification.BeaconRegionExit.body(zoneName)
             identifier = "\(zoneName)_beacon_exited"
             shouldNotify = prefs.bool(forKey: "beaconExitNotifications")
-        case .RegionEnter:
+        case .GPSRegionEnter:
             body = L10n.LocationChangeNotification.RegionEnter.body(zoneName)
             identifier = "\(zoneName)_entered"
             shouldNotify = prefs.bool(forKey: "enterNotifications")
-        case .RegionExit:
+        case .GPSRegionExit:
             body = L10n.LocationChangeNotification.RegionExit.body(zoneName)
             identifier = "\(zoneName)_exited"
             shouldNotify = prefs.bool(forKey: "exitNotifications")
@@ -934,7 +927,7 @@ public enum LocationUpdateTrigger: String {
         case .Manual:
             body = L10n.LocationChangeNotification.Manual.body
             shouldNotify = false
-        case .Unknown:
+        case .RegionExit, .RegionEnter, .Unknown:
             body = L10n.LocationChangeNotification.Unknown.body
             shouldNotify = false
         }
