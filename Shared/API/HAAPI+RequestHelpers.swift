@@ -31,11 +31,6 @@ extension HomeAssistantAPI {
                  parameters: Parameters? = nil, encoding: ParameterEncoding = URLEncoding.default,
                  headers: HTTPHeaders? = nil) -> Promise<String> {
         return Promise { seal in
-            guard let manager = self.manager  else {
-                seal.reject(APIError.managerNotAvailable)
-                return
-            }
-
             let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding,
                                 headers: headers)
@@ -53,10 +48,6 @@ extension HomeAssistantAPI {
                                   encoding: ParameterEncoding = URLEncoding.default,
                                   headers: HTTPHeaders? = nil) -> Promise<T> {
         return Promise { seal in
-            guard let manager = self.manager else {
-                seal.reject(APIError.managerNotAvailable)
-                return
-            }
             let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
@@ -73,11 +64,6 @@ extension HomeAssistantAPI {
                                   encoding: ParameterEncoding = URLEncoding.default,
                                   headers: HTTPHeaders? = nil) -> Promise<[T]> {
         return Promise { seal in
-            guard let manager = self.manager else {
-                seal.reject(APIError.managerNotAvailable)
-                return
-            }
-
             let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
@@ -94,12 +80,7 @@ extension HomeAssistantAPI {
                                        encoding: ParameterEncoding = URLEncoding.default,
                                        headers: HTTPHeaders? = nil) -> Promise<[T]> {
         return Promise { seal in
-            guard let manager = self.manager else {
-                seal.reject(APIError.managerNotAvailable)
-                return
-            }
-
-            let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
+           let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
                 .responseArray { (response: DataResponse<[T]>) in
@@ -115,11 +96,6 @@ extension HomeAssistantAPI {
                                        encoding: ParameterEncoding = URLEncoding.default,
                                        headers: HTTPHeaders? = nil) -> Promise<T> {
         return Promise { seal in
-            guard let manager = self.manager else {
-                seal.reject(APIError.managerNotAvailable)
-                return
-            }
-
             let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
             _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
