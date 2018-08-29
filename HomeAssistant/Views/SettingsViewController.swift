@@ -246,6 +246,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }.onChange { row in
                 if let boolVal = row.value {
                     print("Setting rows to val", !boolVal)
+                    self.basicAuthEnabled = boolVal
                     let basicAuthUsername: TextRow = self.form.rowBy(tag: "basicAuthUsername")!
                     basicAuthUsername.hidden = Condition(booleanLiteral: !boolVal)
                     basicAuthUsername.evaluateHidden()
@@ -580,7 +581,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     private func connectionInfoFromUI() -> ConnectionInfo? {
         if let baseURL = self.baseURL {
             let credentials: ConnectionInfo.BasicAuthCredentials?
-            if let username = self.basicAuthUsername, let password = self.basicAuthPassword {
+            if self.basicAuthEnabled, let username = self.basicAuthUsername,
+                let password = self.basicAuthPassword {
                 credentials = ConnectionInfo.BasicAuthCredentials(username: username, password: password)
             } else {
                 credentials = nil
