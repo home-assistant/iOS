@@ -585,6 +585,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             } else {
                 credentials = nil
             }
+
             let internalURL = self.internalBaseURLEnabled ? self.internalBaseURL : nil
             let internalSSID = self.internalBaseURLEnabled ? self.internalBaseURLSSID : nil
             let connectionInfo = ConnectionInfo(baseURL: baseURL,
