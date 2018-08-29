@@ -183,6 +183,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }.onChange { row in
                 if let boolVal = row.value {
                     print("Setting rows to val", !boolVal)
+                    self.internalBaseURLEnabled = boolVal
                     let ssidRow: LabelRow = self.form.rowBy(tag: "ssid")!
                     ssidRow.hidden = Condition(booleanLiteral: !boolVal)
                     ssidRow.evaluateHidden()
@@ -584,10 +585,11 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             } else {
                 credentials = nil
             }
-
+            let internalURL = self.internalBaseURLEnabled ? self.internalBaseURL : nil
+            let internalSSID = self.internalBaseURLEnabled ? self.internalBaseURLSSID : nil
             let connectionInfo = ConnectionInfo(baseURL: baseURL,
-                                                internalBaseURL: self.internalBaseURL,
-                                                internalSSID: self.internalBaseURLSSID,
+                                                internalBaseURL: internalURL,
+                                                internalSSID: internalSSID,
                                                 basicAuthCredentials: credentials)
             return connectionInfo
         }
