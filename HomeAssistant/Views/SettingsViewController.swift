@@ -23,6 +23,7 @@ import SystemConfiguration.CaptiveNetwork
 class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFSafariViewControllerDelegate {
     enum SettingsError: Error {
         case configurationFailed
+        case credentialsUnavailable
     }
     var authenticationController: AuthenticationController = AuthenticationController()
     func showAuthenticationViewController(_ viewController: SFSafariViewController) {
@@ -38,7 +39,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     var showErrorConnectingMessageError: Error?
 
     var baseURL: URL?
-    var password: String?
+    var legacyPassword: String?
     var internalBaseURL: URL?
     var internalBaseURLSSID: String?
     var internalBaseURLEnabled: Bool = false
@@ -96,7 +97,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         if let connectionInfo = self.connectionInfo {
             self.baseURL = connectionInfo.baseURL
             self.configured = true
-            self.password = keychain["apiPassword"]
+
+            self.legacyPassword = keychain["apiPassword"]
             if let url = connectionInfo.internalBaseURL, let ssid = connectionInfo.internalSSID {
                 self.internalBaseURL = url
                 self.internalBaseURLSSID = ssid
@@ -153,7 +155,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             })
             <<< SwitchRow("useLegacyAuth") {
                 $0.title = "Use legacy authentication"
-                $0.value = self.password != nil
+                $0.value = self.legacyPassword != nil
                 }.onChange { switchRow in
                     guard let passwordRow = self.form.rowBy(tag: "apiPassword") else {
                         return
@@ -166,11 +168,11 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }
             <<< PasswordRow("apiPassword") {
                 $0.title = L10n.Settings.ConnectionSection.ApiPasswordRow.title
-                $0.value = self.password
+                $0.value = self.legacyPassword
                 $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.placeholder
                 $0.hidden = Condition(booleanLiteral: !self.useLegacyAuth)
                 }.onChange { row in
-                    self.password = row.value
+                    self.legacyPassword = row.value
                 }.cellUpdate { cell, row in
                     if !row.isValid {
                         cell.titleLabel?.textColor = .red
@@ -498,7 +500,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                             urlRow.updateCell()
                             let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
                             apiPasswordRow.value = ""
-                            apiPasswordRow.hidden = Condition(booleanLiteral: !discoveryInfo.RequiresPassword)
+                            apiPasswordRow.hidden = Condition(booleanLiteral: !self.useLegacyAuth ||
+                                !discoveryInfo.RequiresPassword)
                             apiPasswordRow.evaluateHidden()
                             if discoveryInfo.RequiresPassword {
                                 apiPasswordRow.add(rule: RuleRequired())
@@ -619,12 +622,69 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         self.present(alert, animated: true, completion: nil)
     }
 
+    /// Resolves to the connection info used to connect. As a side effect, the successful tokenInfo is stored.
+    private func confirmConnection(with connectionInfo: ConnectionInfo) -> Promise<ConnectionInfo> {
+        let tryExistingCredentials: () -> Promise<ConfigResponse> = {
+            if let existingTokenInfo = Current.settingsStore.tokenInfo {                
+                let api = HomeAssistantAPI(connectionInfo: connectionInfo,
+                                           authenticationMethod: .modern(tokenInfo: existingTokenInfo))
+                return api.GetConfig()
+            } else {
+                return Promise(error: SettingsError.credentialsUnavailable)
+            }
+        }
+
+        return Promise { seal in
+            firstly {
+                tryExistingCredentials()
+                }.done { _ in
+                    _ = seal.fulfill(connectionInfo)
+                }.catch { innerError in
+                    let confirmWithBrowser = {
+                        self.authenticateThenConfirmConnection(with: connectionInfo).done { connectionInfo in
+                            seal.fulfill(connectionInfo)
+                        }.catch { browserFlowError in
+                            seal.reject(browserFlowError)
+                        }
+                    }
+
+                    if case SettingsError.credentialsUnavailable = innerError {
+                        _ = confirmWithBrowser()
+                        return
+                    }
+
+                    if let afError = innerError as? AFError,
+                        case .responseValidationFailed(reason: let reason) = afError,
+                        case .unacceptableStatusCode(code: let code) = reason,
+                        code == 401 {
+                        _ = confirmWithBrowser()
+                        return
+                    }
+
+                    seal.reject(innerError)
+            }
+        }
+    }
+
+    private func authenticateThenConfirmConnection(with connectionInfo: ConnectionInfo) ->
+        Promise<ConnectionInfo> {
+            print("Attempting browser auth to: \(connectionInfo.activeURL)")
+            return firstly {
+                self.authenticationController.authenticateWithBrowser(at: connectionInfo.activeURL)
+            }.then { (code: String) -> Promise<String> in
+                print("Browser auth succeeded, getting token")
+                let tokenManager = TokenManager(baseURL: connectionInfo.activeURL, tokenInfo: nil)
+                return tokenManager.initialTokenWithCode(code)
+            }.then { _ -> Promise<ConnectionInfo> in
+                print("Token acquired")
+                return Promise.value(connectionInfo)
+            }
+    }
+
     /// Attempt to connect to the server with the supplied credentials. If it succeeds, save those
     /// credentials and update the UI
     private func validateConnection() {
-        let keychain = Keychain(service: "io.robbie.homeassistant")
-
-        guard let connectionInfo = self.connectionInfoFromUI() else {
+       guard let connectionInfo = self.connectionInfoFromUI() else {
             let errMsg = L10n.Settings.ConnectionError.InvalidUrl.message
             let alert = UIAlertController(title: L10n.Settings.ConnectionError.InvalidUrl.title,
                                           message: errMsg,
@@ -637,34 +697,35 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         }
 
         if !self.useLegacyAuth {
-            let tokenManager = TokenManager(baseURL: connectionInfo.activeURL, tokenInfo: nil)
             _ = firstly {
-                self.authenticationController.authenticateWithBrowser(at: connectionInfo.activeURL)
-                }.then { (code: String) -> Promise<String> in
-                    return tokenManager.initialTokenWithCode(code)
-                }.then { _ -> Promise<ConfigResponse> in
+                    self.confirmConnection(with: connectionInfo)
+                }.then { confirmedConnectionInfo -> Promise<ConfigResponse> in
                     // At this point we are authenticated with modern auth. Clear legacy password.
+                    print("Confirmed connection to server: " + connectionInfo.activeURL.absoluteString)
+                    let keychain = Keychain(service: "io.robbie.homeassistant")                    
                     keychain["apiPassword"] = nil
-                    Current.settingsStore.connectionInfo = connectionInfo
+                    Current.settingsStore.connectionInfo = confirmedConnectionInfo
                     guard let tokenInfo = Current.settingsStore.tokenInfo else {
+                        print("No token available when we think there should be")
                         throw SettingsError.configurationFailed
                     }
 
-                    let api = HomeAssistantAPI(connectionInfo: connectionInfo,
+                    let api = HomeAssistantAPI(connectionInfo: confirmedConnectionInfo,
                                                authenticationMethod: .modern(tokenInfo: tokenInfo))
                     return api.Connect()
                 }.done { config in
+                    print("Getting current configuration successful. Updating UI")
                     self.configureUIWith(configResponse: config)
                 }.catch { error in
                     self.handleConnectionError(error)
             }
         } else {
             let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-                                       authenticationMethod: .legacy(apiPassword: self.password))
+                                       authenticationMethod: .legacy(apiPassword: self.legacyPassword))
             api.Connect().done { config in
                 /// Connected with legacy auth. Store credentials.
                 Current.settingsStore.connectionInfo = connectionInfo
-                if let password = self.password {
+                if let password = self.legacyPassword {
                     keychain["apiPassword"] = password
                 }
 
