@@ -60,6 +60,33 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
     }
 
+    private var rfc3339formatter:DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.calendar = Calendar(identifier: Calendar.Identifier.iso8601)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter
+    }()
+
+    public var authDictionaryForWebView: Promise<[String: Any]> {
+        return firstly {
+                self.bearerToken
+            }.map { _ -> [String: Any] in
+                // TokenInfo is refreshed at this point.
+                guard let info = self.tokenInfo  else {
+                    throw TokenError.tokenUnavailable
+                }
+
+                var dictionary: [String: Any] = [:]
+                dictionary["access_token"] = info.accessToken
+                dictionary["token_type"] = "Bearer"
+                let formatter = self.rfc3339formatter
+                dictionary["expires"] = formatter.string(from: info.expiration)
+                return dictionary
+        }
+    }
+
     // MARK: - RequestRetrier
 
     public func should(_ manager: SessionManager, retry request: Request, with error: Error,
@@ -76,7 +103,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             return
         }
 
-        if self.isURLValid(requestURL, for: connectionInfo) && request.response?.statusCode == 401 {
+        if case TokenError.expired = error, self.isURLValid(requestURL, for: connectionInfo) {
             // If this is a call to our server, and we failed with not authorized, try to refresh the token.
             _ = self.refreshToken.done { _ in
                 guard self.tokenInfo != nil else {
@@ -99,8 +126,17 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     // MARK: - RequestAdapter
 
     public func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
-        guard let tokenInfo = self.tokenInfo else {
+        let isTokenRequest = urlRequest.mainDocumentURL?.path == "/auth/token"
+        guard !isTokenRequest else {
             return urlRequest
+        }
+
+        guard let tokenInfo = self.tokenInfo else {
+            throw TokenError.tokenUnavailable
+        }
+
+        guard !tokenInfo.needsRefresh else {
+            throw TokenError.expired
         }
 
         var newRequest = urlRequest
