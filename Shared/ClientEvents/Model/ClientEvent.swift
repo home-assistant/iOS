@@ -16,6 +16,7 @@ public class ClientEvent: Object {
         case notification
         case serviceCall
         case locationUpdate
+        case networkRequest
         case unknown
     }
 

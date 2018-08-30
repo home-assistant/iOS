@@ -92,6 +92,8 @@ extension ClientEvent.EventType {
             return L10n.ClientEvents.EventType.locationUpdate
         case .serviceCall:
             return L10n.ClientEvents.EventType.serviceCall
+        case .networkRequest:
+            return L10n.ClientEvents.EventType.networkRequest
         case .unknown:
             return L10n.ClientEvents.EventType.unknown
         }

@@ -673,7 +673,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 self.authenticationController.authenticateWithBrowser(at: connectionInfo.activeURL)
             }.then { (code: String) -> Promise<String> in
                 print("Browser auth succeeded, getting token")
-                let tokenManager = TokenManager(baseURL: connectionInfo.activeURL, tokenInfo: nil)
+                let tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: nil)
                 return tokenManager.initialTokenWithCode(code)
             }.then { _ -> Promise<ConnectionInfo> in
                 print("Token acquired")

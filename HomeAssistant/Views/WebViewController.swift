@@ -38,6 +38,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         let config = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
+        userContentController.add(self, name: "getExternalAuth")
         config.userContentController = userContentController
 
         webView = WKWebView(frame: self.view!.frame, configuration: config)
@@ -327,5 +328,31 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
+    }
+}
+
+extension WebViewController: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if message.name == "getExternalAuth", let messageBody = message.body as? [String: Any],
+            let callbackName = messageBody["callback"], let tokenManager = Current.tokenManager {
+            tokenManager.authDictionaryForWebView.done { dictionary in
+                let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
+                if let jsonString = String(data: jsonData!, encoding: .utf8) {
+                    let script = "\(callbackName)('\(jsonString)')"
+
+                    self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
+                        if let error = error {
+                            print("We failed: \(error)")
+                        }
+
+                        print("Success: \(result ?? "No result returned")")
+                    })
+                }
+                }.catch { error in
+                    print("Failed to authenticate webview: \(error)")
+            }
+
+            print(callbackName)
+        }
     }
 }

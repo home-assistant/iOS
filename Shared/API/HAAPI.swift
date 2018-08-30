@@ -96,7 +96,7 @@ public class HomeAssistantAPI {
         case .legacy(let apiPassword):
             self.manager = self.configureSessionManager(withPassword: apiPassword)
         case .modern(let tokenInfo):
-            self.tokenManager = TokenManager(baseURL: connectionInfo.baseURL, tokenInfo: tokenInfo)
+            self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
             tokenManager?.authenticationRequiredCallback = {
                 return self.authenticationController.authenticateWithBrowser(at: connectionInfo.baseURL)
             }

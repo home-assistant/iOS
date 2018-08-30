@@ -149,6 +149,7 @@ send notifications to your device.";
 "client_events.event_type.service_call" = "Service Call";
 "client_events.event_type.notification" = "Notification";
 "client_events.event_type.location_update" = "Location Update";
+"client_events.event_type.networkRequest" = "Network Request";
 "client_events.event_type.unknown" = "Unknown";
 "client_events.view.clear" = "Clear";
 "settings.connection_section.network_name.title" = "Current Network Name";

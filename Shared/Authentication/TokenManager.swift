@@ -20,7 +20,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     private var tokenInfo: TokenInfo?
     private var authenticationAPI: AuthenticationAPI
     private var refreshPromiseCache: Promise<String>?
-    private let baseURL: URL
+    private let connectionInfo: ConnectionInfo
 
     /// This should be set to enable the token manager to trigger re-authentication when needed.
     public var authenticationRequiredCallback: (() -> Promise<String>)?
@@ -29,9 +29,9 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         return self.tokenInfo != nil
     }
 
-    public init(baseURL: URL, tokenInfo: TokenInfo? = nil) {
-        self.baseURL = baseURL
-        self.authenticationAPI = AuthenticationAPI(baseURL: baseURL)
+    public init(connectionInfo: ConnectionInfo, tokenInfo: TokenInfo? = nil) {
+        self.connectionInfo = connectionInfo
+        self.authenticationAPI = AuthenticationAPI(connectionInfo: self.connectionInfo)
         self.tokenInfo = tokenInfo
     }
 
@@ -42,7 +42,6 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         return self.authenticationAPI.fetchTokenWithCode(code).then { tokenInfo -> Promise<String> in
             self.tokenInfo = tokenInfo
             Current.settingsStore.tokenInfo = tokenInfo
-            Current.settingsStore.baseURL = self.baseURL
             return self.bearerToken
         }
     }
@@ -57,6 +56,33 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             }
 
             return self.refreshToken
+        }
+    }
+
+    private var rfc3339formatter:DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.calendar = Calendar(identifier: Calendar.Identifier.iso8601)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter
+    }()
+
+    public var authDictionaryForWebView: Promise<[String: Any]> {
+        return firstly {
+                self.bearerToken
+            }.map { _ -> [String: Any] in
+                // TokenInfo is refreshed at this point.
+                guard let info = self.tokenInfo  else {
+                    throw TokenError.tokenUnavailable
+                }
+
+                var dictionary: [String: Any] = [:]
+                dictionary["access_token"] = info.accessToken
+                dictionary["token_type"] = "Bearer"
+                let formatter = self.rfc3339formatter
+                dictionary["expires"] = formatter.string(from: info.expiration)
+                return dictionary
         }
     }
 
@@ -76,7 +102,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             return
         }
 
-        if self.isURLValid(requestURL, for: connectionInfo) && request.response?.statusCode == 401 {
+        if case TokenError.expired = error, self.isURLValid(requestURL, for: connectionInfo) {
             // If this is a call to our server, and we failed with not authorized, try to refresh the token.
             _ = self.refreshToken.done { _ in
                 guard self.tokenInfo != nil else {
@@ -99,10 +125,22 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     // MARK: - RequestAdapter
 
     public func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
-        guard let tokenInfo = self.tokenInfo else {
+        let isTokenRequest = urlRequest.mainDocumentURL?.path == "/auth/token"
+        guard !isTokenRequest else {
             return urlRequest
         }
 
+        guard let tokenInfo = self.tokenInfo else {
+            throw TokenError.tokenUnavailable
+        }
+
+        guard !tokenInfo.needsRefresh else {
+            throw TokenError.expired
+        }
+
+        let text = "Request(SSID: \(ConnectionInfo.currentSSID() ?? "Unavailable") - \(urlRequest.url?.absoluteString ?? "URL Unavailable")"
+        let networkEvent = ClientEvent(text: text, type: .networkRequest)
+        Current.clientEventStore.addEvent(networkEvent)
         var newRequest = urlRequest
         newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
         return newRequest
