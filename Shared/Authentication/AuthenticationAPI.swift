@@ -15,22 +15,22 @@ import ObjectMapper
 typealias URLRequestConvertible = Alamofire.URLRequestConvertible
 
 public class AuthenticationAPI {
-    let baseURL: URL
+    let connectionInfo: ConnectionInfo
     public enum AuthenticationError: Error {
         case unexepectedType
         case unexpectedResponse
         case invalidCode
     }
 
-    init(baseURL: URL) {
-        self.baseURL = baseURL
+    init(connectionInfo: ConnectionInfo) {
+        self.connectionInfo = connectionInfo
     }
 
     public func refreshTokenWith(tokenInfo: TokenInfo) -> Promise<TokenInfo> {
         return Promise { seal in
             let token = tokenInfo.refreshToken
             let routeInfo = RouteInfo(route: AuthenticationRoute.refreshToken(token: token),
-                                      baseURL: self.baseURL)
+                                      baseURL: self.connectionInfo.activeURL)
             let request = Alamofire.request(routeInfo)
             let context = TokenInfo.TokenInfoContext(oldTokenInfo: tokenInfo)
             request.validate().responseObject(context: context) { (dataresponse: DataResponse<TokenInfo>) in
@@ -48,7 +48,7 @@ public class AuthenticationAPI {
     public func fetchTokenWithCode(_ authorizationCode: String) -> Promise<TokenInfo> {
         return Promise { seal in
             let routeInfo = RouteInfo(route: AuthenticationRoute.token(authorizationCode: authorizationCode),
-                                      baseURL: self.baseURL)
+                                      baseURL: self.connectionInfo.activeURL)
             let request = Alamofire.request(routeInfo)
             request.validate().responseObject { (dataresponse: DataResponse<TokenInfo>) in
                 switch dataresponse.result {

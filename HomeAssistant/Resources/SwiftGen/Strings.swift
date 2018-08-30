@@ -97,6 +97,8 @@ internal enum L10n {
     internal enum EventType {
       /// Location Update
       internal static let locationUpdate = L10n.tr("Localizable", "client_events.event_type.location_update")
+      /// Network Request
+      internal static let networkRequest = L10n.tr("Localizable", "client_events.event_type.networkRequest")
       /// Notification
       internal static let notification = L10n.tr("Localizable", "client_events.event_type.notification")
       /// Service Call

@@ -20,7 +20,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     private var tokenInfo: TokenInfo?
     private var authenticationAPI: AuthenticationAPI
     private var refreshPromiseCache: Promise<String>?
-    private let baseURL: URL
+    private let connectionInfo: ConnectionInfo
 
     /// This should be set to enable the token manager to trigger re-authentication when needed.
     public var authenticationRequiredCallback: (() -> Promise<String>)?
@@ -29,9 +29,9 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         return self.tokenInfo != nil
     }
 
-    public init(baseURL: URL, tokenInfo: TokenInfo? = nil) {
-        self.baseURL = baseURL
-        self.authenticationAPI = AuthenticationAPI(baseURL: baseURL)
+    public init(connectionInfo: ConnectionInfo, tokenInfo: TokenInfo? = nil) {
+        self.connectionInfo = connectionInfo
+        self.authenticationAPI = AuthenticationAPI(connectionInfo: self.connectionInfo)
         self.tokenInfo = tokenInfo
     }
 
@@ -42,7 +42,6 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         return self.authenticationAPI.fetchTokenWithCode(code).then { tokenInfo -> Promise<String> in
             self.tokenInfo = tokenInfo
             Current.settingsStore.tokenInfo = tokenInfo
-            Current.settingsStore.baseURL = self.baseURL
             return self.bearerToken
         }
     }
@@ -103,6 +102,9 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             return urlRequest
         }
 
+        let text = "Request(SSID: \(ConnectionInfo.currentSSID() ?? "Unavailable") - \(urlRequest.url?.absoluteString ?? "URL Unavailable")"
+        let networkEvent = ClientEvent(text: text, type: .networkRequest)
+        Current.clientEventStore.addEvent(networkEvent)
         var newRequest = urlRequest
         newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
         return newRequest
