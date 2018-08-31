@@ -40,14 +40,6 @@ public class HomeAssistantAPI {
 
     var loadedComponents = [String]()
 
-    var baseURL: URL {
-        return self.connectionInfo.baseURL
-    }
-
-    var baseAPIURL: URL {
-        return self.baseURL.appendingPathComponent("api")
-    }
-
     var apiPassword: String?
 
     private(set) var manager: Alamofire.SessionManager!
@@ -106,7 +98,8 @@ public class HomeAssistantAPI {
             self.manager = manager
         }
 
-        let basicAuthKeychain = Keychain(server: self.baseURL.absoluteString, protocolType: .https,
+        let basicAuthKeychain = Keychain(server: self.connectionInfo.baseURL.absoluteString,
+                                         protocolType: .https,
                                          authenticationType: .httpBasic)
         self.configureBasicAuthWithKeychain(basicAuthKeychain)
 
@@ -346,7 +339,7 @@ public class HomeAssistantAPI {
 
     public func createEvent(eventType: String, eventData: [String: Any]) -> Promise<String> {
         return Promise { seal in
-            let queryUrl = self.baseAPIURL.appendingPathComponent("events/\(eventType)")
+            let queryUrl = self.connectionInfo.activeAPIURL.appendingPathComponent("events/\(eventType)")
             _ = manager.request(queryUrl, method: .post,
                                 parameters: eventData, encoding: JSONEncoding.default)
                 .validate()
@@ -371,7 +364,8 @@ public class HomeAssistantAPI {
                             shouldLog: Bool = true)
         -> Promise<[Entity]> {
         return Promise { seal in
-            let queryUrl = self.baseAPIURL.appendingPathComponent("services/\(domain)/\(service)")
+            let queryUrl =
+                self.connectionInfo.activeAPIURL.appendingPathComponent("services/\(domain)/\(service)")
             _ = manager.request(queryUrl, method: .post,
                                 parameters: serviceData, encoding: JSONEncoding.default)
                 .validate()
