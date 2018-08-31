@@ -139,11 +139,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         print("Received remote request to provide a location update")
                         api.getAndSendLocation(trigger: .PushNotification).done { success in
                             print("Did successfully send location when requested via APNS?", success)
-                            if success == true {
-                                completionHandler(.newData)
-                            } else {
-                                completionHandler(.failed)
-                            }
+                            completionHandler(.newData)
                         }.catch {error in
                             print("Error when attempting to submit location update")
                             Crashlytics.sharedInstance().recordError(error)
@@ -174,11 +170,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if Current.settingsStore.locationEnabled {
             api.getAndSendLocation(trigger: .BackgroundFetch).done { success in
                 print("Sending location via background fetch")
-                if success == true {
-                    completionHandler(UIBackgroundFetchResult.newData)
-                } else {
-                    completionHandler(UIBackgroundFetchResult.failed)
-                }
+                completionHandler(UIBackgroundFetchResult.newData)
                 }.catch {error in
                     print("Error when attempting to submit location update during background fetch")
                     Crashlytics.sharedInstance().recordError(error)
