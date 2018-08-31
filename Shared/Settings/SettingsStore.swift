@@ -13,19 +13,6 @@ public class SettingsStore {
     let keychain = Keychain(service: "io.robbie.homeassistant")
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
-    public var baseURL: URL? {
-        get {
-            guard let urlString = keychain["baseURL"] else {
-                return nil
-            }
-
-            return try? urlString.asURL()
-        }
-        set {
-            keychain["baseURL"] = newValue?.absoluteString
-        }
-    }
-
     public var tokenInfo: TokenInfo? {
         get {
             guard let tokenData = try? keychain.getData("tokenInfo"),
