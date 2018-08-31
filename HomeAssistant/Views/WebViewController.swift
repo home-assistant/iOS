@@ -20,6 +20,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(WebViewController.loadActiveURL),
+                                               name: NSNotification.Name.UIApplicationDidBecomeActive,
+                                               object: nil)
         let statusBarView: UIView = UIView(frame: .zero)
         statusBarView.tag = 111
         if let themeColor = prefs.string(forKey: "themeColor") {
@@ -244,6 +247,23 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         items?.remove(at: removeAt)
         items?.insert(refresh, at: removeAt)
         self.setToolbarItems(items, animated: true)
+    }
+
+    @objc func loadActiveURL() {
+        if let api = HomeAssistantAPI.authenticatedAPI(),
+            let connectionInfo = Current.settingsStore.connectionInfo,
+            self.webView.url != connectionInfo.activeURL {
+            api.Connect().done { _ in
+                print("Changing webview to current active URL!")
+                let myRequest = URLRequest(url: connectionInfo.activeURL)
+                self.webView.load(myRequest)
+                }.catch {err -> Void in
+                    print("Error on connect!!!", err)
+                    self.openSettingsWithError(error: err)
+            }
+        } else {
+            self.showSettingsViewController()
+        }
     }
 
     @objc func refreshWebView(_ sender: UIBarButtonItem) {
