@@ -62,7 +62,8 @@ class RegionManager: NSObject {
         var trig = trigger
         guard let zone = zones.filter({ region.identifier == $0.ID }).first else {
             print("Zone ID \(region.identifier) doesn't exist in Realm, syncing monitored regions now")
-            return syncMonitoredRegions()
+            syncMonitoredRegions()
+            return
         }
 
         // Do nothing in case we don't want to trigger an enter event
@@ -91,15 +92,20 @@ class RegionManager: NSObject {
             self?.endBackgroundTask()
         }
 
-        let realm = Current.realm()
-        // swiftlint:disable:next force_try
-        try! realm.write {
-            zone.inRegion = (trig == .GPSRegionEnter || trig == .BeaconRegionEnter)
+        let inRegion = (trig == .GPSRegionEnter || trig == .BeaconRegionEnter)
+        let shouldUpdate = zone.inRegion != inRegion
+        if shouldUpdate {
+            print("Submitting location for zone \(zone.ID) with trigger \(trig.rawValue)")
+            api.submitLocation(updateType: trig, location: nil, visit: nil, zone: zone).done {
+                let realm = Current.realm()
+                // swiftlint:disable:next force_try
+                try! realm.write {
+                    zone.inRegion = inRegion
+                }
+            }.catch { error in
+                print("Error sending location after region trigger event: \(error)")
+            }
         }
-
-        print("Submit location for zone \(zone.ID) with trigger \(trig.rawValue)")
-
-        api.submitLocation(updateType: trig, location: nil, visit: nil, zone: zone)
     }
 
     func startMonitoring(zone: RLMZone) {
@@ -138,6 +144,7 @@ class RegionManager: NSObject {
 }
 
 // MARK: CLLocationManagerDelegate
+
 extension RegionManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways {
@@ -162,7 +169,7 @@ extension RegionManager: CLLocationManagerDelegate {
 
         print("RegionManager: Got location, stopping updates!", locations.last.debugDescription, locations.count)
         api.submitLocation(updateType: .SignificantLocationUpdate, location: locations.last, visit: nil,
-                           zone: nil)
+                           zone: nil).catch { print("Error submitting location: \($0)" )}
 
         self.lastLocation = locations.last
 
@@ -185,7 +192,9 @@ extension RegionManager: CLLocationManagerDelegate {
         }
 
         print("Visit logged")
-        api.submitLocation(updateType: .Visit, location: nil, visit: visit, zone: nil)
+        api.submitLocation(updateType: .Visit, location: nil, visit: visit, zone: nil).catch { error in
+            print("Error submitting location: \(error)")
+        }
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
