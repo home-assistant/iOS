@@ -20,6 +20,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(WebViewController.loadActiveURLIfNeeded),
+                                               name: NSNotification.Name.UIApplicationDidBecomeActive,
+                                               object: nil)
         let statusBarView: UIView = UIView(frame: .zero)
         statusBarView.tag = 111
         if let themeColor = prefs.string(forKey: "themeColor") {
@@ -174,7 +178,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        let stop = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(self.refreshWebView(_:)))
+        let stop = UIBarButtonItem(barButtonSystemItem: .stop, target: self,
+                                   action: #selector(self.refreshWebView(_:)))
         var removeAt = 2
         if self.toolbarItems?.count == 3 {
             removeAt = 1
@@ -246,9 +251,22 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.setToolbarItems(items, animated: true)
     }
 
+    @objc func loadActiveURLIfNeeded() {
+        if HomeAssistantAPI.authenticatedAPI() != nil,
+            let connectionInfo = Current.settingsStore.connectionInfo {
+            if let currentURL = self.webView.url, !currentURL.baseIsEqual(to: connectionInfo.activeURL) {
+                print("Changing webview to current active URL!")
+                let myRequest = URLRequest(url: connectionInfo.activeURL)
+                self.webView.load(myRequest)
+            }
+        }
+    }
+
     @objc func refreshWebView(_ sender: UIBarButtonItem) {
         if self.webView.isLoading {
             self.webView.stopLoading()
+        } else if let connectionInfo = Current.settingsStore.connectionInfo {
+            self.webView.load(URLRequest(url: connectionInfo.activeURL))
         } else {
             self.webView.reload()
         }
