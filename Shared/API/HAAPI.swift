@@ -167,6 +167,7 @@ public class HomeAssistantAPI {
 
     public enum HomeAssistantAPIError: Error {
         case notAuthenticated
+        case unknown
     }
 
     private static var sharedAPI: HomeAssistantAPI?
@@ -205,7 +206,7 @@ public class HomeAssistantAPI {
     public func submitLocation(updateType: LocationUpdateTrigger,
                                location: CLLocation?,
                                visit: CLVisit?,
-                               zone: RLMZone?) {
+                               zone: RLMZone?) -> Promise<Void> {
         UIDevice.current.isBatteryMonitoringEnabled = true
 
         let payload = DeviceTrackerSee(trigger: updateType, location: location, visit: visit, zone: zone)
@@ -238,31 +239,25 @@ public class HomeAssistantAPI {
                                            zone: zone, payload: jsonPayload))
         }
 
-        if let location = payload.Location,
-            self.regionManager.checkIfInsideAnyRegions(location: location).count > 0 {
-            print("Not submitting location change since we are already inside of a zone")
-            for activeZone in self.regionManager.zones {
-                print("Zone check", activeZone.ID, activeZone.inRegion)
-            }
-            return
-        }
-
-        firstly {
+        let promise = firstly {
             self.identifyDevice()
         }.then {_ in
             self.callService(domain: "device_tracker", service: "see", serviceData: payloadDict,
                              shouldLog: false)
         }.done { _ in
             print("Device seen!")
-        }.catch { err in
+            self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: payloadDict)
+        }
+
+        promise.catch { err in
             print("Error when updating location!", err)
             Crashlytics.sharedInstance().recordError(err as NSError)
         }
 
-        self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: payloadDict)
+        return promise
     }
 
-    public func getAndSendLocation(trigger: LocationUpdateTrigger?) -> Promise<Bool> {
+    public func getAndSendLocation(trigger: LocationUpdateTrigger?) -> Promise<Void> {
         var updateTrigger: LocationUpdateTrigger = .Manual
         if let trigger = trigger {
             updateTrigger = trigger
@@ -272,15 +267,20 @@ public class HomeAssistantAPI {
         return Promise { seal in
             regionManager.oneShotLocationActive = true
             oneShotLocationManager = OneShotLocationManager { location, error in
-                self.regionManager.oneShotLocationActive = false
-                if let location = location {
-                    self.submitLocation(updateType: updateTrigger, location: location, visit: nil, zone: nil)
-                    seal.fulfill(true)
+                guard let location = location else {
+                    seal.reject(error ?? HomeAssistantAPIError.unknown)
                     return
                 }
-                if let error = error {
-                    seal.reject(error)
-                }
+
+                self.regionManager.oneShotLocationActive = false
+                firstly {
+                    self.submitLocation(updateType: updateTrigger, location: location,
+                                        visit: nil, zone: nil)
+                    }.done { _ in
+                        seal.fulfill(())
+                    }.catch { error in
+                        seal.reject(error)
+                    }
             }
         }
     }
