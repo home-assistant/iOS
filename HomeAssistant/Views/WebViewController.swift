@@ -268,7 +268,16 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         } else if let connectionInfo = Current.settingsStore.connectionInfo {
             self.webView.load(URLRequest(url: connectionInfo.activeURL))
         } else {
-            self.webView.reload()
+            let websiteDataTypes = NSSet(array: [WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
+            let date = Date(timeIntervalSince1970: 0)
+            if let typeSet = websiteDataTypes as? Set<String> {
+                WKWebsiteDataStore.default().removeData(ofTypes: typeSet, modifiedSince: date,
+                                                        completionHandler: {
+                                                            self.webView.reload()
+                })
+            } else {
+                self.webView.reload()
+            }
         }
     }
 
