@@ -611,6 +611,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 errorMessage = L10n.Settings.ConnectionError.Forbidden.message
             }
         }
+
         let title = L10n.Settings.ConnectionErrorNotification.title
         let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
         let alert = UIAlertController(title: title,
@@ -625,7 +626,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     /// Resolves to the connection info used to connect. As a side effect, the successful tokenInfo is stored.
     private func confirmConnection(with connectionInfo: ConnectionInfo) -> Promise<ConnectionInfo> {
         let tryExistingCredentials: () -> Promise<ConfigResponse> = {
-            if let existingTokenInfo = Current.settingsStore.tokenInfo {                
+            if let existingTokenInfo = Current.settingsStore.tokenInfo {
                 let api = HomeAssistantAPI(connectionInfo: connectionInfo,
                                            authenticationMethod: .modern(tokenInfo: existingTokenInfo))
                 return api.GetConfig()
