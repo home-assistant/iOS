@@ -263,12 +263,23 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     @objc func refreshWebView(_ sender: UIBarButtonItem) {
-        if self.webView.isLoading {
-            self.webView.stopLoading()
-        } else if let connectionInfo = Current.settingsStore.connectionInfo {
-            self.webView.load(URLRequest(url: connectionInfo.activeURL))
+        let redirectOrReload = {
+            if self.webView.isLoading {
+                self.webView.stopLoading()
+            } else if let connectionInfo = Current.settingsStore.connectionInfo {
+                self.webView.load(URLRequest(url: connectionInfo.activeURL))
+            } else {
+                self.webView.reload()
+            }
+        }
+
+        let websiteDataTypes = NSSet(array: [WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
+        let date = Date(timeIntervalSince1970: 0)
+        if let typeSet = websiteDataTypes as? Set<String> {
+            WKWebsiteDataStore.default().removeData(ofTypes: typeSet, modifiedSince: date,
+                                                    completionHandler: redirectOrReload)
         } else {
-            self.webView.reload()
+            redirectOrReload()
         }
     }
 
