@@ -48,7 +48,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         webView = WKWebView(frame: self.view!.frame, configuration: config)
         webView.navigationDelegate = self
         webView.uiDelegate = self
-        self.updateWebViewSettings()
         self.view!.addSubview(webView)
 
         webView.translatesAutoresizingMaskIntoConstraints = false
@@ -63,13 +62,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         webView.scrollView.bounces = false
 
         if let api = HomeAssistantAPI.authenticatedAPI(),
-            let connectionInfo = Current.settingsStore.connectionInfo {
+            let connectionInfo = Current.settingsStore.connectionInfo,
+            let webviewURL = connectionInfo.webviewURL {
             api.Connect().done {_ in
                 if api.notificationsEnabled {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
                 print("Connected!")
-                let myRequest = URLRequest(url: connectionInfo.activeURL)
+                let myRequest = URLRequest(url: webviewURL)
                 self.webView.load(myRequest)
                 return
             }.catch {err -> Void in
@@ -147,8 +147,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.setToolbarItems(barItems, animated: false)
         self.navigationController?.toolbar.tintColor = tabBarIconColor
 
-        if let connectionInfo = Current.settingsStore.connectionInfo {
-            let myRequest = URLRequest(url: connectionInfo.activeURL)
+        if let connectionInfo = Current.settingsStore.connectionInfo,
+            let webviewURL = connectionInfo.webviewURL {
+            let myRequest = URLRequest(url: webviewURL)
             self.webView.load(myRequest)
         }
     }
@@ -253,10 +254,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     @objc func loadActiveURLIfNeeded() {
         if HomeAssistantAPI.authenticatedAPI() != nil,
-            let connectionInfo = Current.settingsStore.connectionInfo {
-            if let currentURL = self.webView.url, !currentURL.baseIsEqual(to: connectionInfo.activeURL) {
+            let connectionInfo = Current.settingsStore.connectionInfo,
+            let webviewURL = connectionInfo.webviewURL {
+            if let currentURL = self.webView.url, !currentURL.baseIsEqual(to: webviewURL) {
                 print("Changing webview to current active URL!")
-                let myRequest = URLRequest(url: connectionInfo.activeURL)
+                let myRequest = URLRequest(url: webviewURL)
                 self.webView.load(myRequest)
             }
         }
@@ -322,30 +324,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }
     }
 
-    func userReconnected() {
-        print("User reconnected! Reset the web view!")
-        updateWebViewSettings()
-    }
-
-    func updateWebViewSettings() {
-        if let apiPass = keychain["apiPassword"] {
-            self.webView.evaluateJavaScript("localStorage.getItem(\"authToken\")") { (result, error) in
-                var storedPass = ""
-                if result != nil, let resString = result as? String {
-                    storedPass = resString
-                }
-                if error != nil || result == nil || storedPass != apiPass {
-                    print("Setting password into LocalStorage")
-                    self.webView.evaluateJavaScript("localStorage.setItem(\"authToken\", \"\(apiPass)\")") { (_, _) in
-                        self.webView.reload()
-                    }
-                }
-            }
-        }
-    }
-
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
+    }
+
+    func userReconnected() {
+        self.loadActiveURLIfNeeded()
     }
 }
 
@@ -372,5 +356,18 @@ extension WebViewController: WKScriptMessageHandler {
 
             print(callbackName)
         }
+    }
+}
+
+extension ConnectionInfo {
+    var webviewURL: URL? {
+        guard var components = URLComponents(url: self.activeURL, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+
+        let queryItem = URLQueryItem(name: "external_auth", value: "1")
+        components.queryItems = [queryItem]
+
+        return try? components.asURL()
     }
 }
