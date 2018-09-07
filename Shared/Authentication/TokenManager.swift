@@ -59,15 +59,6 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
     }
 
-    private var rfc3339formatter:DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.calendar = Calendar(identifier: Calendar.Identifier.iso8601)
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
-    }()
-
     public var authDictionaryForWebView: Promise<[String: Any]> {
         return firstly {
                 self.bearerToken
@@ -79,9 +70,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
                 var dictionary: [String: Any] = [:]
                 dictionary["access_token"] = info.accessToken
-                dictionary["token_type"] = "Bearer"
-                let formatter = self.rfc3339formatter
-                dictionary["expires"] = formatter.string(from: info.expiration)
+                dictionary["expires_in"] = Int(info.expiration.timeIntervalSince(Current.date()))
                 return dictionary
         }
     }

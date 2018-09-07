@@ -41,25 +41,22 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         statusBarView.translatesAutoresizingMaskIntoConstraints = false
 
         let config = WKWebViewConfiguration()
-        let userContentController = WKUserContentController()
-        userContentController.add(self, name: "getExternalAuth")
-        config.userContentController = userContentController
-
-        webView = WKWebView(frame: self.view!.frame, configuration: config)
-        webView.navigationDelegate = self
-        webView.uiDelegate = self
+        self.webView = WKWebView(frame: self.view!.frame, configuration: config)
         self.view!.addSubview(webView)
+        let userContentController = webView.configuration.userContentController
+        userContentController.add(self, name: "getExternalAuth")
 
-        webView.translatesAutoresizingMaskIntoConstraints = false
+        self.webView.navigationDelegate = self
+        self.webView.uiDelegate = self
 
-        webView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        webView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        webView.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
-        webView.bottomAnchor.constraint(equalTo: self.bottomLayoutGuide.topAnchor).isActive = true
+        self.webView.translatesAutoresizingMaskIntoConstraints = false
 
-        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-        webView.scrollView.bounces = false
+        self.webView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.webView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        self.webView.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
+        self.webView.bottomAnchor.constraint(equalTo: self.bottomLayoutGuide.topAnchor).isActive = true
+        self.webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.webView.scrollView.bounces = false
 
         if let api = HomeAssistantAPI.authenticatedAPI(),
             let connectionInfo = Current.settingsStore.connectionInfo,
@@ -267,8 +264,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     @objc func refreshWebView(_ sender: UIBarButtonItem) {
         if self.webView.isLoading {
             self.webView.stopLoading()
-        } else if let connectionInfo = Current.settingsStore.connectionInfo {
-            self.webView.load(URLRequest(url: connectionInfo.activeURL))
+        } else if let connectionInfo = Current.settingsStore.connectionInfo,
+            let url = connectionInfo.webviewURL {
+            self.webView.load(URLRequest(url: url))
         } else {
             self.webView.reload()
         }
@@ -337,10 +335,11 @@ extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "getExternalAuth", let messageBody = message.body as? [String: Any],
             let callbackName = messageBody["callback"], let tokenManager = Current.tokenManager {
+            print("Callback hit")
             tokenManager.authDictionaryForWebView.done { dictionary in
                 let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
                 if let jsonString = String(data: jsonData!, encoding: .utf8) {
-                    let script = "\(callbackName)('\(jsonString)')"
+                    let script = "\(callbackName)(\(jsonString))"
 
                     self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
                         if let error = error {

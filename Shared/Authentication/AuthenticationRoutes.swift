@@ -9,7 +9,7 @@
 import Alamofire
 import Foundation
 
-let kClientId = "https://blackgold9.github.io/home-assistant-iOS"
+let kClientId = "https://home-assistant.io/iOS"
 struct RouteInfo: Alamofire.URLRequestConvertible {
     let route: AuthenticationRoute
     let baseURL: URL

@@ -54,6 +54,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         self.window!.rootViewController = navController
         self.window!.makeKeyAndVisible()
+        if let tokenInfo = Current.settingsStore.tokenInfo,
+            let connectionInfo = Current.settingsStore.connectionInfo {
+            Current.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
+        }
 
         Current.authenticationControllerPresenter = { controller in
             if let presentedController = navController.topViewController?.presentedViewController {
