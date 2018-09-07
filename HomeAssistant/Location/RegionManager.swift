@@ -44,8 +44,8 @@ class RegionManager: NSObject {
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.delegate = self
         locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
-        startMonitoring()
-        syncMonitoredRegions()
+        self.startMonitoring()
+        self.syncMonitoredRegions()
     }
 
     private func startMonitoring() {
@@ -113,22 +113,22 @@ class RegionManager: NSObject {
             locationManager.startMonitoring(for: region)
         }
 
-        activityManager.startActivityUpdates(to: coreMotionQueue) { activity in
-            self.lastActivity = activity
+        activityManager.startActivityUpdates(to: coreMotionQueue) { [weak self] activity in
+            self?.lastActivity = activity
         }
     }
 
     @objc func syncMonitoredRegions() {
-        // stop monitoring for all regions
-        locationManager.monitoredRegions.forEach { region in
+        // stop monitoring for all regions        
+        locationManager.monitoredRegions.forEach { [weak self] region in
             print("Stopping monitoring of region \(region.identifier)")
-            locationManager.stopMonitoring(for: region)
+            self?.locationManager.stopMonitoring(for: region)
         }
 
         // start monitoring for all existing regions
-        zones.forEach { zone in
+        zones.forEach { [weak self] zone in
             print("Starting monitoring of zone \(zone)")
-            startMonitoring(zone: zone)
+            self?.startMonitoring(zone: zone)
         }
     }
 
@@ -146,7 +146,8 @@ class RegionManager: NSObject {
 // MARK: CLLocationManagerDelegate
 
 extension RegionManager: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+    func locationManager(_ manager: CLLocationManager,
+                         didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways {
             prefs.setValue(true, forKey: "locationEnabled")
             prefs.synchronize()
@@ -205,6 +206,7 @@ extension RegionManager: CLLocationManagerDelegate {
                 let locErr = LocationError(err: clErr)
                 realm.add(locErr)
             }
+
             print("Received CLError:", clErr.debugDescription)
             if clErr.code == CLError.locationUnknown {
                 // locationUnknown just means that GPS may be taking an extra moment, so don't throw an error.

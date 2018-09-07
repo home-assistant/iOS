@@ -41,10 +41,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         statusBarView.translatesAutoresizingMaskIntoConstraints = false
 
         let config = WKWebViewConfiguration()
+        let userContentController = WKUserContentController()
+        userContentController.add(self, name: "getExternalAuth")
+        config.userContentController = userContentController
+
         self.webView = WKWebView(frame: self.view!.frame, configuration: config)
         self.view!.addSubview(webView)
-        let userContentController = webView.configuration.userContentController
-        userContentController.add(self, name: "getExternalAuth")
 
         self.webView.navigationDelegate = self
         self.webView.uiDelegate = self
@@ -262,13 +264,23 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     @objc func refreshWebView(_ sender: UIBarButtonItem) {
-        if self.webView.isLoading {
-            self.webView.stopLoading()
-        } else if let connectionInfo = Current.settingsStore.connectionInfo,
-            let url = connectionInfo.webviewURL {
-            self.webView.load(URLRequest(url: url))
+        let redirectOrReload = {
+            if self.webView.isLoading {
+                self.webView.stopLoading()
+            } else if let connectionInfo = Current.settingsStore.connectionInfo {
+                self.webView.load(URLRequest(url: connectionInfo.activeURL))
+            } else {
+                self.webView.reload()
+            }
+        }
+
+        let websiteDataTypes = NSSet(array: [WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
+        let date = Date(timeIntervalSince1970: 0)
+        if let typeSet = websiteDataTypes as? Set<String> {
+            WKWebsiteDataStore.default().removeData(ofTypes: typeSet, modifiedSince: date,
+                                                    completionHandler: redirectOrReload)
         } else {
-            self.webView.reload()
+            redirectOrReload()
         }
     }
 

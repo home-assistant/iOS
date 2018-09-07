@@ -89,8 +89,11 @@ public class HomeAssistantAPI {
             self.manager = self.configureSessionManager(withPassword: apiPassword)
         case .modern(let tokenInfo):
             self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
-            tokenManager?.authenticationRequiredCallback = {
-                return self.authenticationController.authenticateWithBrowser(at: connectionInfo.baseURL)
+            tokenManager?.authenticationRequiredCallback = { [weak self] in
+                guard let authenticationController = self?.authenticationController else {
+                    return Promise(error: HomeAssistantAPIError.unknown)
+                }
+                return authenticationController.authenticateWithBrowser(at: connectionInfo.baseURL)
             }
             let manager = self.configureSessionManager()
             manager.retrier = self.tokenManager
