@@ -46,6 +46,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         config.userContentController = userContentController
 
         self.webView = WKWebView(frame: self.view!.frame, configuration: config)
+        self.updateWebViewSettings()
         self.view!.addSubview(webView)
 
         self.webView.navigationDelegate = self
@@ -338,7 +339,25 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         return .lightContent
     }
 
+    func updateWebViewSettings() {
+        if let apiPass = keychain["apiPassword"] {
+            self.webView.evaluateJavaScript("localStorage.getItem(\"authToken\")") { (result, error) in
+                var storedPass = ""
+                if result != nil, let resString = result as? String {
+                    storedPass = resString
+                }
+                if error != nil || result == nil || storedPass != apiPass {
+                    print("Setting password into LocalStorage")
+                    self.webView.evaluateJavaScript("localStorage.setItem(\"authToken\", \"\(apiPass)\")") { (_, _) in
+                        self.webView.reload()
+                    }
+                }
+            }
+        }
+    }
+
     func userReconnected() {
+        self.updateWebViewSettings()
         self.loadActiveURLIfNeeded()
     }
 }
@@ -346,26 +365,30 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "getExternalAuth", let messageBody = message.body as? [String: Any],
-            let callbackName = messageBody["callback"], let tokenManager = Current.tokenManager {
-            print("Callback hit")
-            tokenManager.authDictionaryForWebView.done { dictionary in
-                let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
-                if let jsonString = String(data: jsonData!, encoding: .utf8) {
-                    let script = "\(callbackName)(\(jsonString))"
+            let callbackName = messageBody["callback"] {
+            if let tokenManager = Current.tokenManager {
+                print("Callback hit")
+                tokenManager.authDictionaryForWebView.done { dictionary in
+                    let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
+                    if let jsonString = String(data: jsonData!, encoding: .utf8) {
+                        let script = "\(callbackName)(true, \(jsonString))"
 
-                    self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
-                        if let error = error {
-                            print("We failed: \(error)")
-                        }
+                        self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
+                            if let error = error {
+                                print("We failed: \(error)")
+                            }
 
-                        print("Success: \(result ?? "No result returned")")
-                    })
-                }
+                            print("Success: \(result ?? "No result returned")")
+                        })
+                    }
                 }.catch { error in
+                    self.webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
                     print("Failed to authenticate webview: \(error)")
+                }
+            } else {
+                self.webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
+                print("Failed to authenticate webview. Token Unavailable")
             }
-
-            print(callbackName)
         }
     }
 }
