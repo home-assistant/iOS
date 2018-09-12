@@ -268,8 +268,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         let redirectOrReload = {
             if self.webView.isLoading {
                 self.webView.stopLoading()
-            } else if let connectionInfo = Current.settingsStore.connectionInfo {
-                self.webView.load(URLRequest(url: connectionInfo.activeURL))
+            } else if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL {
+                self.webView.load(URLRequest(url: webviewURL))
             } else {
                 self.webView.reload()
             }
