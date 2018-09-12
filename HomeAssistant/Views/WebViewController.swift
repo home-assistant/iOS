@@ -45,31 +45,31 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         userContentController.add(self, name: "getExternalAuth")
         config.userContentController = userContentController
 
-        webView = WKWebView(frame: self.view!.frame, configuration: config)
-        webView.navigationDelegate = self
-        webView.uiDelegate = self
+        self.webView = WKWebView(frame: self.view!.frame, configuration: config)
         self.updateWebViewSettings()
         self.view!.addSubview(webView)
 
-        webView.translatesAutoresizingMaskIntoConstraints = false
+        self.webView.navigationDelegate = self
+        self.webView.uiDelegate = self
 
-        webView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        webView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        webView.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
-        webView.bottomAnchor.constraint(equalTo: self.bottomLayoutGuide.topAnchor).isActive = true
+        self.webView.translatesAutoresizingMaskIntoConstraints = false
 
-        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-        webView.scrollView.bounces = false
+        self.webView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        self.webView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        self.webView.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
+        self.webView.bottomAnchor.constraint(equalTo: self.bottomLayoutGuide.topAnchor).isActive = true
+        self.webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.webView.scrollView.bounces = false
 
         if let api = HomeAssistantAPI.authenticatedAPI(),
-            let connectionInfo = Current.settingsStore.connectionInfo {
+            let connectionInfo = Current.settingsStore.connectionInfo,
+            let webviewURL = connectionInfo.webviewURL {
             api.Connect().done {_ in
                 if api.notificationsEnabled {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
                 print("Connected!")
-                let myRequest = URLRequest(url: connectionInfo.activeURL)
+                let myRequest = URLRequest(url: webviewURL)
                 self.webView.load(myRequest)
                 return
             }.catch {err -> Void in
@@ -147,8 +147,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.setToolbarItems(barItems, animated: false)
         self.navigationController?.toolbar.tintColor = tabBarIconColor
 
-        if let connectionInfo = Current.settingsStore.connectionInfo {
-            let myRequest = URLRequest(url: connectionInfo.activeURL)
+        if let connectionInfo = Current.settingsStore.connectionInfo,
+            let webviewURL = connectionInfo.webviewURL {
+            let myRequest = URLRequest(url: webviewURL)
             self.webView.load(myRequest)
         }
     }
@@ -253,10 +254,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     @objc func loadActiveURLIfNeeded() {
         if HomeAssistantAPI.authenticatedAPI() != nil,
-            let connectionInfo = Current.settingsStore.connectionInfo {
-            if let currentURL = self.webView.url, !currentURL.baseIsEqual(to: connectionInfo.activeURL) {
+            let connectionInfo = Current.settingsStore.connectionInfo,
+            let webviewURL = connectionInfo.webviewURL {
+            if let currentURL = self.webView.url, !currentURL.baseIsEqual(to: webviewURL) {
                 print("Changing webview to current active URL!")
-                let myRequest = URLRequest(url: connectionInfo.activeURL)
+                let myRequest = URLRequest(url: webviewURL)
                 self.webView.load(myRequest)
             }
         }
@@ -333,9 +335,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }
     }
 
-    func userReconnected() {
-        print("User reconnected! Reset the web view!")
-        updateWebViewSettings()
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
 
     func updateWebViewSettings() {
@@ -355,33 +356,52 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }
     }
 
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+    func userReconnected() {
+        self.updateWebViewSettings()
+        self.loadActiveURLIfNeeded()
     }
 }
 
 extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "getExternalAuth", let messageBody = message.body as? [String: Any],
-            let callbackName = messageBody["callback"], let tokenManager = Current.tokenManager {
-            tokenManager.authDictionaryForWebView.done { dictionary in
-                let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
-                if let jsonString = String(data: jsonData!, encoding: .utf8) {
-                    let script = "\(callbackName)('\(jsonString)')"
+            let callbackName = messageBody["callback"] {
+            if let tokenManager = Current.tokenManager {
+                print("Callback hit")
+                tokenManager.authDictionaryForWebView.done { dictionary in
+                    let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
+                    if let jsonString = String(data: jsonData!, encoding: .utf8) {
+                        let script = "\(callbackName)(true, \(jsonString))"
 
-                    self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
-                        if let error = error {
-                            print("We failed: \(error)")
-                        }
+                        self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
+                            if let error = error {
+                                print("We failed: \(error)")
+                            }
 
-                        print("Success: \(result ?? "No result returned")")
-                    })
-                }
+                            print("Success: \(result ?? "No result returned")")
+                        })
+                    }
                 }.catch { error in
+                    self.webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
                     print("Failed to authenticate webview: \(error)")
+                }
+            } else {
+                self.webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
+                print("Failed to authenticate webview. Token Unavailable")
             }
-
-            print(callbackName)
         }
+    }
+}
+
+extension ConnectionInfo {
+    var webviewURL: URL? {
+        guard var components = URLComponents(url: self.activeURL, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+
+        let queryItem = URLQueryItem(name: "external_auth", value: "1")
+        components.queryItems = [queryItem]
+
+        return try? components.asURL()
     }
 }

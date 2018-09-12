@@ -35,7 +35,7 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
             components?.path = "/auth/authorize"
             let responseTypeQuery = URLQueryItem(name: "response_type", value: "code")
             let clientIDQuery = URLQueryItem(name: "client_id",
-                                             value: "https://home-assistant.io/ios")
+                                             value: "https://home-assistant.io/iOS")
             let redirectQuery = URLQueryItem(name: "redirect_uri", value: "homeassistant://auth-callback")
             components?.queryItems = [responseTypeQuery, clientIDQuery, redirectQuery]
             if let newURL = try components?.asURL() {
