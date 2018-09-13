@@ -43,6 +43,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         let config = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
         userContentController.add(self, name: "getExternalAuth")
+        userContentController.add(self, name: "revokeExternalAuth")
         config.userContentController = userContentController
 
         self.webView = WKWebView(frame: self.view!.frame, configuration: config)
@@ -389,6 +390,20 @@ extension WebViewController: WKScriptMessageHandler {
                 self.webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
                 print("Failed to authenticate webview. Token Unavailable")
             }
+        } else if message.name == "revokeExternalAuth", let messageBody = message.body as? [String: Any],
+            let callbackName = messageBody["callback"] {
+            Current.tokenManager = nil
+            Current.settingsStore.connectionInfo = nil
+            self.showSettingsViewController()
+            let script = "\(callbackName)(true, nil)"
+
+            self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
+                if let error = error {
+                    print("Failed calling sign out callback: \(error)")
+                }
+
+                print("Successfully informed web client of signout.")
+            })
         }
     }
 }
