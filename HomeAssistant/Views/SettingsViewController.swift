@@ -72,7 +72,9 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         let api = HomeAssistantAPI.authenticatedAPI()
 
         // Initial state
-        self.useLegacyAuth = Current.settingsStore.tokenInfo == nil
+        let keychain = Keychain(service: "io.robbie.homeassistant")
+        self.legacyPassword = keychain["apiPassword"]
+        self.useLegacyAuth = Current.settingsStore.tokenInfo == nil && self.legacyPassword != nil
         self.connectionInfo = Current.settingsStore.connectionInfo
 
         // Authentication
@@ -93,12 +95,10 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             self.navigationItem.setRightBarButton(doneButton, animated: true)
         }
 
-        let keychain = Keychain(service: "io.robbie.homeassistant")
         if let connectionInfo = self.connectionInfo {
             self.baseURL = connectionInfo.baseURL
             self.configured = true
 
-            self.legacyPassword = keychain["apiPassword"]
             if let url = connectionInfo.internalBaseURL, let ssid = connectionInfo.internalSSID {
                 self.internalBaseURL = url
                 self.internalBaseURLSSID = ssid
@@ -155,7 +155,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             })
             <<< SwitchRow("useLegacyAuth") {
                 $0.title = "Use legacy authentication"
-                $0.value = self.legacyPassword != nil
+                $0.value = self.useLegacyAuth
                 }.onChange { switchRow in
                     guard let passwordRow = self.form.rowBy(tag: "apiPassword") else {
                         return
@@ -703,7 +703,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 }.then { confirmedConnectionInfo -> Promise<ConfigResponse> in
                     // At this point we are authenticated with modern auth. Clear legacy password.
                     print("Confirmed connection to server: " + connectionInfo.activeURL.absoluteString)
-                    let keychain = Keychain(service: "io.robbie.homeassistant")                    
+                    let keychain = Keychain(service: "io.robbie.homeassistant")
                     keychain["apiPassword"] = nil
                     Current.settingsStore.connectionInfo = confirmedConnectionInfo
                     guard let tokenInfo = Current.settingsStore.tokenInfo else {

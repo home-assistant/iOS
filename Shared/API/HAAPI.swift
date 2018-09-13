@@ -116,6 +116,11 @@ public class HomeAssistantAPI {
         }
     }
 
+    /// Configure global state of the app to use our newly validated credentials.
+    func confirmAPI() {
+        Current.tokenManager = self.tokenManager
+    }
+
     public func Connect() -> Promise<ConfigResponse> {
         return Promise { seal in
             GetConfig().done { config in
