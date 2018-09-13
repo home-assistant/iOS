@@ -133,3 +133,4 @@ Apache-2.0
 ## Credits
 
 The format and some content of this README.md comes from the [SwipeIt](https://github.com/ivanbruel/SwipeIt) project.
+
