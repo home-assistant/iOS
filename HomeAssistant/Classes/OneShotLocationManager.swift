@@ -8,7 +8,7 @@
 
 import CoreLocation
 import Foundation
-import Shared
+import PromiseKit
 
 class OneShotLocationManager: NSObject {
     let locationManager = CLLocationManager()
@@ -50,6 +50,35 @@ extension OneShotLocationManager: CLLocationManagerDelegate {
         } else {
             print("Received non-CLError when we only expected CLError:", error.localizedDescription)
             onLocationUpdated(nil, error)
+        }
+    }
+
+    public func sendLocation(trigger: LocationUpdateTrigger?) -> Promise<Void> {
+        var updateTrigger: LocationUpdateTrigger = .Manual
+        if let trigger = trigger {
+            updateTrigger = trigger
+        }
+
+        print("getAndSendLocation called via", String(describing: updateTrigger))
+
+        return Promise { seal in
+            regionManager.oneShotLocationActive = true
+            oneShotLocationManager = OneShotLocationManager { location, error in
+                guard let location = location else {
+                    seal.reject(error ?? HomeAssistantAPIError.unknown)
+                    return
+                }
+
+                self.regionManager.oneShotLocationActive = false
+                firstly {
+                    self.submitLocation(updateType: updateTrigger, location: location,
+                                        visit: nil, zone: nil)
+                    }.done { _ in
+                        seal.fulfill(())
+                    }.catch { error in
+                        seal.reject(error)
+                }
+            }
         }
     }
 }

@@ -9,7 +9,6 @@
 import CoreLocation
 import CoreMotion
 import Foundation
-import Shared
 import UIKit
 
 public typealias OnLocationUpdated = ((CLLocation?, Error?) -> Void)

@@ -11,7 +11,7 @@ import ObjectMapper
 
 // swiftlint:disable:next type_body_length
 public class Entity: StaticMappable {
-    let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
+    let DefaultEntityUIColor = UIColor.defaultEntityColor
 
     @objc dynamic var ID: String = ""
     @objc dynamic var State: String = ""
@@ -236,7 +236,7 @@ public class Entity: StaticMappable {
     var EntityColor: UIColor {
         switch self.Domain {
         case "binary_sensor", "input_boolean", "media_player", "script", "switch":
-            return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
+            return self.State == "on" ? UIColor.onColor : self.DefaultEntityUIColor
         case "light":
             if self.State == "on" {
                 if let rgb = self.Attributes["rgb_color"] as? [Float] {
@@ -245,26 +245,25 @@ public class Entity: StaticMappable {
                     let blue = CGFloat(rgb[2]/255.0)
                     return UIColor.init(red: red, green: green, blue: blue, alpha: 1)
                 } else {
-                    return colorWithHexString("#DCC91F", alpha: 1)
+                    return UIColor.onColor
                 }
             } else {
                 return self.DefaultEntityUIColor
             }
         case "sun":
-            return self.State == "above_horizon" ? colorWithHexString("#DCC91F",
-                                                                      alpha: 1) : self.DefaultEntityUIColor
+            return self.State == "above_horizon" ? UIColor.onColor : self.DefaultEntityUIColor
         default:
             let hexColor = self.State == "unavailable" ? "#bdbdbd" : "#44739E"
-            return colorWithHexString(hexColor, alpha: 1)
+            return hexColor.colorWithHexValue()
         }
     }
 
     var EntityIcon: UIImage {
-        return getIconForIdentifier(self.StateIcon(), iconWidth: 30, iconHeight: 30, color: self.EntityColor)
+        return  UIImage.iconForIdentifier(self.StateIcon(), iconWidth: 30, iconHeight: 30, color: self.EntityColor)
     }
 
     func EntityIcon(width: Double, height: Double, color: UIColor) -> UIImage {
-        return getIconForIdentifier(self.StateIcon(), iconWidth: width, iconHeight: height, color: color)
+        return UIImage.iconForIdentifier(self.StateIcon(), iconWidth: width, iconHeight: height, color: color)
     }
 
     var Name: String {

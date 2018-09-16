@@ -20,6 +20,8 @@ import RealmSwift
 import Shared
 import UserNotifications
 
+private let keychain = Keychain(service: "io.robbie.homeassistant")
+
 // swiftlint:disable file_length
 
 // swiftlint:disable:next type_body_length
@@ -36,6 +38,8 @@ public class HomeAssistantAPI {
         case modern(tokenInfo: TokenInfo)
     }
 
+    let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
+
     var pushID: String?
 
     var loadedComponents = [String]()
@@ -50,7 +54,7 @@ public class HomeAssistantAPI {
     var cachedEntities: [Entity]?
 
     var notificationsEnabled: Bool {
-        return prefs.bool(forKey: "notificationsEnabled")
+        return self.prefs.bool(forKey: "notificationsEnabled")
     }
 
     var iosComponentLoaded: Bool {
@@ -88,6 +92,7 @@ public class HomeAssistantAPI {
         case .legacy(let apiPassword):
             self.manager = self.configureSessionManager(withPassword: apiPassword)
         case .modern(let tokenInfo):
+            // TODO: Take this into account when promoting to the main API. The one in Current is separate, which is bad.
             self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
             tokenManager?.authenticationRequiredCallback = { [weak self] in
                 guard let authenticationController = self?.authenticationController else {
@@ -106,11 +111,11 @@ public class HomeAssistantAPI {
                                          authenticationType: .httpBasic)
         self.configureBasicAuthWithKeychain(basicAuthKeychain)
 
-        self.pushID = prefs.string(forKey: "pushID")
+        self.pushID = self.prefs.string(forKey: "pushID")
 
         if #available(iOS 10, *) {
             UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
-                prefs.setValue((settings.authorizationStatus == UNAuthorizationStatus.authorized),
+                self.prefs.setValue((settings.authorizationStatus == UNAuthorizationStatus.authorized),
                                forKey: "notificationsEnabled")
             })
         }
@@ -127,16 +132,16 @@ public class HomeAssistantAPI {
                 if let components = config.Components {
                     self.loadedComponents = components
                 }
-                prefs.setValue(config.ConfigDirectory, forKey: "config_dir")
-                prefs.setValue(config.LocationName, forKey: "location_name")
-                prefs.setValue(config.Latitude, forKey: "latitude")
-                prefs.setValue(config.Longitude, forKey: "longitude")
-                prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
-                prefs.setValue(config.LengthUnit, forKey: "length_unit")
-                prefs.setValue(config.MassUnit, forKey: "mass_unit")
-                prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
-                prefs.setValue(config.Timezone, forKey: "time_zone")
-                prefs.setValue(config.Version, forKey: "version")
+                self.prefs.setValue(config.ConfigDirectory, forKey: "config_dir")
+                self.prefs.setValue(config.LocationName, forKey: "location_name")
+                self.prefs.setValue(config.Latitude, forKey: "latitude")
+                self.prefs.setValue(config.Longitude, forKey: "longitude")
+                self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
+                self.prefs.setValue(config.LengthUnit, forKey: "length_unit")
+                self.prefs.setValue(config.MassUnit, forKey: "mass_unit")
+                self.prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
+                self.prefs.setValue(config.Timezone, forKey: "time_zone")
+                self.prefs.setValue(config.Version, forKey: "version")
 
                 Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
                 Crashlytics.sharedInstance().setObjectValue(self.loadedComponents.joined(separator: ","),
@@ -150,7 +155,7 @@ public class HomeAssistantAPI {
 
                 _ = self.getManifestJSON().done { manifest in
                     if let themeColor = manifest.ThemeColor {
-                        prefs.setValue(themeColor, forKey: "themeColor")
+                        self.prefs.setValue(themeColor, forKey: "themeColor")
                     }
                 }
 
@@ -394,7 +399,7 @@ public class HomeAssistantAPI {
                         if let afError = error as? AFError {
                             var errorUserInfo: [String: Any] = [:]
                             if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
-                                if let errorJSON = convertToDictionary(text: utf8Text),
+                                if let errorJSON = utf8Text.dictionary(),
                                     let errMessage = errorJSON["message"] as? String {
                                     errorUserInfo["errorMessage"] = errMessage
                                 }
@@ -508,13 +513,13 @@ public class HomeAssistantAPI {
         ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
         ident.DeviceModel = deviceKitDevice.model
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = DeviceUID.uid()
+        ident.DevicePermanentID = Current.deviceID()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
         ident.Permissions = self.enabledPermissions
         ident.PushID = pushID
-        ident.PushSounds = listAllInstalledPushNotificationSounds()
+        ident.PushSounds = Notifications.installedPushNotificationSounds()
 
         UIDevice.current.isBatteryMonitoringEnabled = true
 
@@ -561,20 +566,20 @@ public class HomeAssistantAPI {
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
         ident.DeviceID = Current.settingsStore.deviceID
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = DeviceUID.uid()
+        ident.DevicePermanentID = Current.deviceID()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
         ident.DeviceTimezone = (NSTimeZone.local as NSTimeZone).name
-        ident.PushSounds = listAllInstalledPushNotificationSounds()
+        ident.PushSounds = Notifications.installedPushNotificationSounds()
         ident.PushToken = deviceToken
-        if let email = prefs.string(forKey: "userEmail") {
+        if let email = self.prefs.string(forKey: "userEmail") {
             ident.UserEmail = email
         }
-        if let version = prefs.string(forKey: "version") {
+        if let version = self.prefs.string(forKey: "version") {
             ident.HomeAssistantVersion = version
         }
-        if let timeZone = prefs.string(forKey: "time_zone") {
+        if let timeZone = self.prefs.string(forKey: "time_zone") {
             ident.HomeAssistantTimezone = timeZone
         }
 
@@ -600,192 +605,15 @@ public class HomeAssistantAPI {
         ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
         ident.DeviceModel = deviceKitDevice.model
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = DeviceUID.uid()
+        ident.DevicePermanentID = Current.deviceID()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
         ident.Permissions = self.enabledPermissions
         ident.PushID = pushID
-        ident.PushSounds = listAllInstalledPushNotificationSounds()
+        ident.PushSounds = Notifications.installedPushNotificationSounds()
 
         return Mapper().toJSON(ident)
-    }
-
-    func setupPushActions() -> Promise<Set<UIUserNotificationCategory>> {
-        return Promise { seal in
-            self.getPushSettings().done { pushSettings in
-                var allCategories = Set<UIMutableUserNotificationCategory>()
-                if let categories = pushSettings.Categories {
-                    for category in categories {
-                        let finalCategory = UIMutableUserNotificationCategory()
-                        finalCategory.identifier = category.Identifier
-                        var categoryActions = [UIMutableUserNotificationAction]()
-                        if let actions = category.Actions {
-                            for action in actions {
-                                let newAction = UIMutableUserNotificationAction()
-                                newAction.title = action.Title
-                                newAction.identifier = action.Identifier
-                                newAction.isAuthenticationRequired = action.AuthenticationRequired
-                                newAction.isDestructive = action.Destructive
-                                var behavior: UIUserNotificationActionBehavior = .default
-                                if action.Behavior.lowercased() == "textinput" {
-                                    behavior = .textInput
-                                }
-                                newAction.behavior = behavior
-                                let foreground = UIUserNotificationActivationMode.foreground
-                                let background = UIUserNotificationActivationMode.background
-                                let mode = (action.ActivationMode == "foreground") ? foreground : background
-                                newAction.activationMode = mode
-                                if let textInputButtonTitle = action.TextInputButtonTitle {
-                                    let titleKey = UIUserNotificationTextInputActionButtonTitleKey
-                                    newAction.parameters[titleKey] = textInputButtonTitle
-                                }
-                                categoryActions.append(newAction)
-                            }
-                            finalCategory.setActions(categoryActions,
-                                                     for: UIUserNotificationActionContext.default)
-                            allCategories.insert(finalCategory)
-                        } else {
-                            print("Category has no actions defined, continuing loop")
-                            continue
-                        }
-                    }
-                }
-                seal.fulfill(allCategories)
-            }.catch { error in
-                CLSLogv("Error on setupPushActions() request: %@", getVaList([error.localizedDescription]))
-                Crashlytics.sharedInstance().recordError(error)
-                seal.reject(error)
-            }
-        }
-    }
-
-    private func sendLocalNotification(withZone: RLMZone?, updateType: LocationUpdateTrigger,
-                                       payloadDict: [String: Any]) {
-        let zoneName = withZone?.Name ?? "Unknown zone"
-        let notificationOptions = updateType.notificationOptionsFor(zoneName: zoneName)
-        Current.clientEventStore.addEvent(ClientEvent(text: notificationOptions.body, type: .locationUpdate,
-                                                      payload: payloadDict))
-        if notificationOptions.shouldNotify {
-            if #available(iOS 10, *) {
-                let content = UNMutableNotificationContent()
-                content.title = notificationOptions.title
-                content.body = notificationOptions.body
-                content.sound = UNNotificationSound.default()
-
-                let notificationRequest =
-                    UNNotificationRequest.init(identifier: notificationOptions.identifier ?? "",
-                        content: content, trigger: nil)
-                UNUserNotificationCenter.current().add(notificationRequest)
-            } else {
-                let notification = UILocalNotification()
-                notification.alertTitle = notificationOptions.title
-                notification.alertBody = notificationOptions.body
-                notification.alertAction = "open"
-                notification.fireDate = NSDate() as Date
-                notification.soundName = UILocalNotificationDefaultSoundName
-                UIApplication.shared.scheduleLocalNotification(notification)
-            }
-        }
-    }
-
-    @available(iOS 10, *)
-    func setupUserNotificationPushActions() -> Promise<Set<UNNotificationCategory>> {
-        return Promise { seal in
-            self.getPushSettings().done { pushSettings in
-                var allCategories = Set<UNNotificationCategory>()
-                if let categories = pushSettings.Categories {
-                    for category in categories {
-                        var categoryActions = [UNNotificationAction]()
-                        if let actions = category.Actions {
-                            for action in actions {
-                                var actionOptions = UNNotificationActionOptions([])
-                                if action.AuthenticationRequired { actionOptions.insert(.authenticationRequired) }
-                                if action.Destructive { actionOptions.insert(.destructive) }
-                                if action.ActivationMode == "foreground" { actionOptions.insert(.foreground) }
-                                var newAction = UNNotificationAction(identifier: action.Identifier,
-                                                                     title: action.Title, options: actionOptions)
-                                if action.Behavior.lowercased() == "textinput",
-                                    let btnTitle = action.TextInputButtonTitle,
-                                    let place = action.TextInputPlaceholder {
-                                        newAction = UNTextInputNotificationAction(identifier: action.Identifier,
-                                                                                  title: action.Title,
-                                                                                  options: actionOptions,
-                                                                                  textInputButtonTitle: btnTitle,
-                                                                                  textInputPlaceholder: place)
-                                }
-                                categoryActions.append(newAction)
-                            }
-                        } else {
-                            continue
-                        }
-                        let finalCategory = UNNotificationCategory.init(identifier: category.Identifier,
-                                                                        actions: categoryActions,
-                                                                        intentIdentifiers: [],
-                                                                        options: [.customDismissAction])
-                        allCategories.insert(finalCategory)
-                    }
-                }
-                seal.fulfill(allCategories)
-            }.catch { error in
-                CLSLogv("Error on setupUserNotificationPushActions() request: %@",
-                        getVaList([error.localizedDescription]))
-                Crashlytics.sharedInstance().recordError(error)
-                seal.reject(error)
-            }
-        }
-    }
-
-    func setupPush() {
-        DispatchQueue.main.async(execute: {
-            UIApplication.shared.registerForRemoteNotifications()
-        })
-        if #available(iOS 10, *) {
-            self.setupUserNotificationPushActions().done { categories in
-                UNUserNotificationCenter.current().setNotificationCategories(categories)
-                }.catch {error -> Void in
-                    print("Error when attempting to setup push actions", error)
-                    Crashlytics.sharedInstance().recordError(error)
-            }
-        } else {
-            self.setupPushActions().done { categories in
-                let types: UIUserNotificationType = ([.alert, .badge, .sound])
-                let settings = UIUserNotificationSettings(types: types, categories: categories)
-                UIApplication.shared.registerUserNotificationSettings(settings)
-                }.catch {error -> Void in
-                    print("Error when attempting to setup push actions", error)
-                    Crashlytics.sharedInstance().recordError(error)
-            }
-        }
-    }
-
-    func handlePushAction(identifier: String, userInfo: [AnyHashable: Any], userInput: String?) -> Promise<Bool> {
-        return Promise { seal in
-            guard let api = HomeAssistantAPI.authenticatedAPI() else {
-                throw APIError.notConfigured
-            }
-
-            let device = Device()
-            var eventData: [String: Any] = ["actionName": identifier,
-                                           "sourceDevicePermanentID": DeviceUID.uid(),
-                                           "sourceDeviceName": device.name,
-                                           "sourceDeviceID": Current.settingsStore.deviceID]
-            if let dataDict = userInfo["homeassistant"] {
-                eventData["action_data"] = dataDict
-            }
-            if let textInput = userInput {
-                eventData["response_info"] = textInput
-                eventData["textInput"] = textInput
-            }
-
-            let eventType = "ios.notification_action_fired"
-            api.createEvent(eventType: eventType, eventData: eventData).done { _ -> Void in
-                seal.fulfill(true)
-                }.catch {error in
-                    Crashlytics.sharedInstance().recordError(error)
-                    seal.reject(error)
-            }
-        }
     }
 
     func storeEntities(entities: [Entity]) {
@@ -850,112 +678,4 @@ public class HomeAssistantAPI {
         }
     }
 
-}
-
-public enum LocationUpdateTrigger: String {
-    struct NotificationOptions {
-        let shouldNotify: Bool
-        let identifier: String?
-        let title: String
-        let body: String
-    }
-
-    case Visit = "Visit"
-    case RegionEnter = "Region Entered"
-    case RegionExit = "Region Exited"
-    case GPSRegionEnter = "Geographic Region Entered"
-    case GPSRegionExit = "Geographic Region Exited"
-    case BeaconRegionEnter = "iBeacon Region Entered"
-    case BeaconRegionExit = "iBeacon Region Exited"
-    case Manual = "Manual"
-    case SignificantLocationUpdate = "Significant Location Update"
-    case BackgroundFetch = "Background Fetch"
-    case PushNotification = "Push Notification"
-    case URLScheme = "URL Scheme"
-    case Unknown = "Unknown"
-
-    func notificationOptionsFor(zoneName: String) -> NotificationOptions {
-        let shouldNotify: Bool
-        var identifier: String = ""
-        let body: String
-        let title = "Location change"
-
-        switch self {
-        case .BeaconRegionEnter:
-            body = L10n.LocationChangeNotification.BeaconRegionEnter.body(zoneName)
-            identifier = "\(zoneName)_beacon_entered"
-            shouldNotify = prefs.bool(forKey: "beaconEnterNotifications")
-        case .BeaconRegionExit:
-            body = L10n.LocationChangeNotification.BeaconRegionExit.body(zoneName)
-            identifier = "\(zoneName)_beacon_exited"
-            shouldNotify = prefs.bool(forKey: "beaconExitNotifications")
-        case .GPSRegionEnter:
-            body = L10n.LocationChangeNotification.RegionEnter.body(zoneName)
-            identifier = "\(zoneName)_entered"
-            shouldNotify = prefs.bool(forKey: "enterNotifications")
-        case .GPSRegionExit:
-            body = L10n.LocationChangeNotification.RegionExit.body(zoneName)
-            identifier = "\(zoneName)_exited"
-            shouldNotify = prefs.bool(forKey: "exitNotifications")
-        case .SignificantLocationUpdate:
-            body = L10n.LocationChangeNotification.SignificantLocationUpdate.body
-            identifier = "sig_change"
-            shouldNotify = prefs.bool(forKey: "significantLocationChangeNotifications")
-        case .BackgroundFetch:
-            body = L10n.LocationChangeNotification.BackgroundFetch.body
-            identifier = "background_fetch"
-            shouldNotify = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
-        case .PushNotification:
-            body = L10n.LocationChangeNotification.PushNotification.body
-            identifier = "push_notification"
-            shouldNotify = prefs.bool(forKey: "pushLocationRequestNotifications")
-        case .URLScheme:
-            body = L10n.LocationChangeNotification.UrlScheme.body
-            identifier = "url_scheme"
-            shouldNotify = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
-        case .Visit:
-            body = L10n.LocationChangeNotification.Visit.body
-            identifier = "visit"
-            shouldNotify = prefs.bool(forKey: "visitLocationRequestNotifications")
-        case .Manual:
-            body = L10n.LocationChangeNotification.Manual.body
-            shouldNotify = false
-        case .RegionExit, .RegionEnter, .Unknown:
-            body = L10n.LocationChangeNotification.Unknown.body
-            shouldNotify = false
-        }
-
-        return NotificationOptions(shouldNotify: shouldNotify, identifier: identifier, title: title, body: body)
-    }
-}
-
-extension CMMotionActivity {
-    var activityType: String {
-        if self.walking {
-            return "Walking"
-        } else if self.running {
-            return "Running"
-        } else if self.automotive {
-            return "Automotive"
-        } else if self.cycling {
-            return "Cycling"
-        } else if self.stationary {
-            return "Stationary"
-        } else {
-            return "Unknown"
-        }
-    }
-}
-
-extension CMMotionActivityConfidence {
-    var description: String {
-        if self == CMMotionActivityConfidence.low {
-            return "Low"
-        } else if self == CMMotionActivityConfidence.medium {
-            return "Medium"
-        } else if self == CMMotionActivityConfidence.high {
-            return "High"
-        }
-        return "Unknown"
-    }
 }

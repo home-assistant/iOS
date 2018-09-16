@@ -29,4 +29,6 @@ public struct Environment {
     public var authenticationControllerPresenter: ((UIViewController) -> Void)?
 
     public var signInRequiredCallback: (() -> Void)?
+
+    public var deviceID: (() -> String)!
 }

@@ -33,6 +33,7 @@ target 'Shared' do
     pod 'AlamofireObjectMapper', '5.1.0'
     pod 'Crashlytics', '3.10.2'
     pod 'DeviceKit', '1.7.0'
+    pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
     pod 'KeychainAccess', '3.1.1'
     pod 'ObjectMapper', '3.3.0'
     pod 'PromiseKit', '6.3.0'
