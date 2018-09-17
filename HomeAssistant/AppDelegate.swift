@@ -36,9 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         NetworkActivityIndicatorManager.shared.isEnabled = true
 
-        if #available(iOS 10, *) {
-            UNUserNotificationCenter.current().delegate = self
-        }
+        UNUserNotificationCenter.current().delegate = self
 
         setDefaults()
 
@@ -191,26 +189,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?,
-                     forRemoteNotification userInfo: [AnyHashable: Any],
-                     withResponseInfo responseInfo: [AnyHashable: Any],
-                     completionHandler: @escaping () -> Void) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            print("Notifcation action failed because api was not authenticated")
-            completionHandler()
-            return
-        }
-
-        var userInput: String?
-        if let userText = responseInfo[UIUserNotificationActionResponseTypedTextKey] as? String {
-            userInput = userText
-        }
-
-        _ = api.handlePushAction(identifier: identifier!, userInfo: userInfo, userInput: userInput).ensure {
-            completionHandler()
-        }
-    }
-
     func application(_ app: UIApplication,
                      open url: URL,
                      options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
@@ -288,7 +266,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-@available(iOS 10, *)
 extension AppDelegate: UNUserNotificationCenterDelegate {
     public func userNotificationCenter(_ center: UNUserNotificationCenter,
                                        didReceive response: UNNotificationResponse,

@@ -9,7 +9,6 @@
 import Foundation
 import UserNotifications
 
-@available(iOS 10, *)
 public extension UNNotificationContent {
     public var clientEventTitle: String {
         var eventText: String

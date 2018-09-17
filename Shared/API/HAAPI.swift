@@ -108,12 +108,10 @@ public class HomeAssistantAPI {
 
         self.pushID = prefs.string(forKey: "pushID")
 
-        if #available(iOS 10, *) {
-            UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
-                prefs.setValue((settings.authorizationStatus == UNAuthorizationStatus.authorized),
-                               forKey: "notificationsEnabled")
-            })
-        }
+        UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
+            prefs.setValue((settings.authorizationStatus == UNAuthorizationStatus.authorized),
+                           forKey: "notificationsEnabled")
+        })
     }
 
     /// Configure global state of the app to use our newly validated credentials.
@@ -611,55 +609,6 @@ public class HomeAssistantAPI {
         return Mapper().toJSON(ident)
     }
 
-    func setupPushActions() -> Promise<Set<UIUserNotificationCategory>> {
-        return Promise { seal in
-            self.getPushSettings().done { pushSettings in
-                var allCategories = Set<UIMutableUserNotificationCategory>()
-                if let categories = pushSettings.Categories {
-                    for category in categories {
-                        let finalCategory = UIMutableUserNotificationCategory()
-                        finalCategory.identifier = category.Identifier
-                        var categoryActions = [UIMutableUserNotificationAction]()
-                        if let actions = category.Actions {
-                            for action in actions {
-                                let newAction = UIMutableUserNotificationAction()
-                                newAction.title = action.Title
-                                newAction.identifier = action.Identifier
-                                newAction.isAuthenticationRequired = action.AuthenticationRequired
-                                newAction.isDestructive = action.Destructive
-                                var behavior: UIUserNotificationActionBehavior = .default
-                                if action.Behavior.lowercased() == "textinput" {
-                                    behavior = .textInput
-                                }
-                                newAction.behavior = behavior
-                                let foreground = UIUserNotificationActivationMode.foreground
-                                let background = UIUserNotificationActivationMode.background
-                                let mode = (action.ActivationMode == "foreground") ? foreground : background
-                                newAction.activationMode = mode
-                                if let textInputButtonTitle = action.TextInputButtonTitle {
-                                    let titleKey = UIUserNotificationTextInputActionButtonTitleKey
-                                    newAction.parameters[titleKey] = textInputButtonTitle
-                                }
-                                categoryActions.append(newAction)
-                            }
-                            finalCategory.setActions(categoryActions,
-                                                     for: UIUserNotificationActionContext.default)
-                            allCategories.insert(finalCategory)
-                        } else {
-                            print("Category has no actions defined, continuing loop")
-                            continue
-                        }
-                    }
-                }
-                seal.fulfill(allCategories)
-            }.catch { error in
-                CLSLogv("Error on setupPushActions() request: %@", getVaList([error.localizedDescription]))
-                Crashlytics.sharedInstance().recordError(error)
-                seal.reject(error)
-            }
-        }
-    }
-
     private func sendLocalNotification(withZone: RLMZone?, updateType: LocationUpdateTrigger,
                                        payloadDict: [String: Any]) {
         let zoneName = withZone?.Name ?? "Unknown zone"
@@ -667,29 +616,18 @@ public class HomeAssistantAPI {
         Current.clientEventStore.addEvent(ClientEvent(text: notificationOptions.body, type: .locationUpdate,
                                                       payload: payloadDict))
         if notificationOptions.shouldNotify {
-            if #available(iOS 10, *) {
-                let content = UNMutableNotificationContent()
-                content.title = notificationOptions.title
-                content.body = notificationOptions.body
-                content.sound = UNNotificationSound.default()
+            let content = UNMutableNotificationContent()
+            content.title = notificationOptions.title
+            content.body = notificationOptions.body
+            content.sound = UNNotificationSound.default()
 
-                let notificationRequest =
-                    UNNotificationRequest.init(identifier: notificationOptions.identifier ?? "",
-                        content: content, trigger: nil)
-                UNUserNotificationCenter.current().add(notificationRequest)
-            } else {
-                let notification = UILocalNotification()
-                notification.alertTitle = notificationOptions.title
-                notification.alertBody = notificationOptions.body
-                notification.alertAction = "open"
-                notification.fireDate = NSDate() as Date
-                notification.soundName = UILocalNotificationDefaultSoundName
-                UIApplication.shared.scheduleLocalNotification(notification)
-            }
+            let notificationRequest =
+                UNNotificationRequest.init(identifier: notificationOptions.identifier ?? "",
+                                           content: content, trigger: nil)
+            UNUserNotificationCenter.current().add(notificationRequest)
         }
     }
 
-    @available(iOS 10, *)
     func setupUserNotificationPushActions() -> Promise<Set<UNNotificationCategory>> {
         return Promise { seal in
             self.getPushSettings().done { pushSettings in
@@ -740,22 +678,11 @@ public class HomeAssistantAPI {
         DispatchQueue.main.async(execute: {
             UIApplication.shared.registerForRemoteNotifications()
         })
-        if #available(iOS 10, *) {
-            self.setupUserNotificationPushActions().done { categories in
-                UNUserNotificationCenter.current().setNotificationCategories(categories)
-                }.catch {error -> Void in
-                    print("Error when attempting to setup push actions", error)
-                    Crashlytics.sharedInstance().recordError(error)
-            }
-        } else {
-            self.setupPushActions().done { categories in
-                let types: UIUserNotificationType = ([.alert, .badge, .sound])
-                let settings = UIUserNotificationSettings(types: types, categories: categories)
-                UIApplication.shared.registerUserNotificationSettings(settings)
-                }.catch {error -> Void in
-                    print("Error when attempting to setup push actions", error)
-                    Crashlytics.sharedInstance().recordError(error)
-            }
+        self.setupUserNotificationPushActions().done { categories in
+            UNUserNotificationCenter.current().setNotificationCategories(categories)
+        }.catch {error -> Void in
+            print("Error when attempting to setup push actions", error)
+            Crashlytics.sharedInstance().recordError(error)
         }
     }
 
