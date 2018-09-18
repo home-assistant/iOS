@@ -22,16 +22,6 @@ final class NotificationService: UNNotificationServiceExtension {
         print("APNSAttachmentService started!")
         print("Received userInfo", request.content.userInfo)
 
-        func failEarly() {
-            contentHandler(request.content)
-        }
-
-        guard let authenticatedAPI = HomeAssistantAPI.authenticatedAPI() else {
-            print("Not Authenticated! Can't handle notification.")
-            failEarly()
-            return
-        }
-
         let event = ClientEvent(text: request.content.clientEventTitle, type: .notification,
                                 payload: request.content.userInfo as? [String: Any])
         Current.clientEventStore.addEvent(event)
@@ -39,7 +29,17 @@ final class NotificationService: UNNotificationServiceExtension {
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
 
-        var baseURL = authenticatedAPI.connectionInfo.activeAPIURL
+        func failEarly() {
+            contentHandler(request.content)
+        }
+
+        let keychain = Keychain(service: "io.robbie.homeassistant")
+        guard let baseURL = keychain["baseURL"] else {
+            return failEarly()
+        }
+        guard let apiPassword = keychain["apiPassword"] else {
+            return failEarly()
+        }
 
         guard let content = (request.content.mutableCopy() as? UNMutableNotificationContent) else {
             return failEarly()
@@ -56,7 +56,7 @@ final class NotificationService: UNNotificationServiceExtension {
                 return failEarly()
             }
 
-            incomingAttachment["url"] = baseURL.appendPathComponent("/camera_proxy/\(entityId)")
+            incomingAttachment["url"] = "\(baseURL)/api/camera_proxy/\(entityId)?api_password=\(apiPassword)"
             if incomingAttachment["content-type"] == nil {
                 incomingAttachment["content-type"] = "jpeg"
             }
@@ -73,7 +73,7 @@ final class NotificationService: UNNotificationServiceExtension {
         }
 
         if attachmentString.hasPrefix("/api/") { // prepend base URL
-            attachmentString = baseURL.appendingPathComponent(attachmentString).absoluteString
+            attachmentString = baseURL + attachmentString
         }
 
         guard let attachmentURL = URL(string: attachmentString) else {
@@ -90,22 +90,17 @@ final class NotificationService: UNNotificationServiceExtension {
             attachmentOptions[UNNotificationAttachmentOptionsThumbnailHiddenKey] = attachmentHideThumbnail
         }
 
-        authenticatedAPI.downloadDataAt(url: attachmentURL).done { data in
-            guard let attachment =
-                UNNotificationAttachment.create(fileIdentifier: attachmentURL.lastPathComponent,
-                                                data: data as NSData,
-                                                options: attachmentOptions) else {
-                                                    failEarly()
-                                                    return
-            }
+        guard let attachmentData = NSData(contentsOf: attachmentURL) else { return failEarly() }
+        guard let attachment = UNNotificationAttachment.create(fileIdentifier: attachmentURL.lastPathComponent,
+                                                               data: attachmentData,
+                                                               options: attachmentOptions) else {
+                                                                return failEarly()
+        }
 
-            content.attachments.append(attachment)
+        content.attachments.append(attachment)
 
-            if let copiedContent = content.copy() as? UNNotificationContent {
-                contentHandler(copiedContent)
-            }
-        }.catch{ error in
-            print("Failed to process attachment. Error: \(error)")
+        if let copiedContent = content.copy() as? UNNotificationContent {
+            contentHandler(copiedContent)
         }
     }
 
