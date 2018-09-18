@@ -382,7 +382,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     var opts: UNAuthorizationOptions = [.alert, .badge, .sound]
 
                     if #available(iOS 12.0, *) {
-                        opts = [.alert, .badge, .sound, .criticalAlert]
+                        opts = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
                     }
 
                     center.requestAuthorization(options: opts) { (granted, error) in

@@ -464,7 +464,7 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "settings_details.location.title")
 
       internal enum Notifications {
-        /// Notifications
+        /// Location Notifications
         internal static let header = L10n.tr("Localizable", "settings_details.location.notifications.header")
 
         internal enum BackgroundFetch {

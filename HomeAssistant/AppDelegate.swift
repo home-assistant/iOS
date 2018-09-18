@@ -38,6 +38,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UNUserNotificationCenter.current().delegate = self
 
+        // Tell the system we have a app notification settings screen and want critical alerts
+        // This is effectively a migration
+        if #available(iOS 12.0, *) {
+            UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+                guard settings.authorizationStatus == .authorized else {return}
+                let opts: UNAuthorizationOptions = [.providesAppNotificationSettings, .criticalAlert]
+                UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
+                    print("Requested critical alert access", granted, error.debugDescription)
+                }
+            }
+        }
+
         setDefaults()
 
         window = UIWindow.init(frame: UIScreen.main.bounds)
@@ -331,5 +343,21 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             }
         }
         return completionHandler(methods)
+    }
+
+    public func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                       openSettingsFor notification: UNNotification?) {
+        let view = SettingsDetailViewController()
+        view.detailGroup = "notifications"
+        view.doneButton = true
+        var rootViewController = UIApplication.shared.keyWindow?.rootViewController
+        if let navigationController = rootViewController as? UINavigationController {
+            rootViewController = navigationController.viewControllers.first
+        }
+        if let tabBarController = rootViewController as? UITabBarController {
+            rootViewController = tabBarController.selectedViewController
+        }
+        let navController = UINavigationController(rootViewController: view)
+        rootViewController?.present(navController, animated: true, completion: nil)
     }
 }
