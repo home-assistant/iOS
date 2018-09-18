@@ -10,6 +10,9 @@ import UIKit
 import Eureka
 import Crashlytics
 import Shared
+import Intents
+import IntentsUI
+import PromiseKit
 
 class SettingsDetailViewController: FormViewController {
 
@@ -275,6 +278,77 @@ class SettingsDetailViewController: FormViewController {
                         }
                     })
 
+        case "siri":
+            var entityIDs: [String] = []
+
+            _ = HomeAssistantAPI.authenticatedAPI()?.GetStates().done { entities in
+                for entity in entities {
+                    entityIDs.append(entity.ID)
+                }
+            }
+
+            self.title = L10n.SettingsDetails.Siri.title
+            if #available(iOS 12.0, *) {
+                self.form
+                    +++ Section(header: "Generic Shortcuts", footer: "")
+                    <<< ButtonRow {
+                        $0.title = "Send Location"
+                        $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
+                            if let shortcut = INShortcut(intent: SendLocationIntent()) {
+                                let viewController = INUIAddVoiceShortcutViewController(shortcut: shortcut)
+                                viewController.delegate = self
+                                return viewController
+                            }
+                            return UIViewController()
+                        }, onDismiss: { vc in
+                            _ = vc.navigationController?.popViewController(animated: true)
+                        })
+                    }
+                    <<< ButtonRow {
+                        $0.title = "Fire Event"
+                        $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
+                            if let shortcut = INShortcut(intent: SendLocationIntent()) {
+                                let viewController = INUIAddVoiceShortcutViewController(shortcut: shortcut)
+                                viewController.delegate = self
+                                return viewController
+                            }
+                            return UIViewController()
+                            }, onDismiss: { vc in
+                                _ = vc.navigationController?.popViewController(animated: true)
+                        })
+                    }
+
+                    self.form +++ Section(header: "Services", footer: "")
+
+                _ = HomeAssistantAPI.authenticatedAPIPromise.then { api in
+                    api.GetServices()
+                }.done { serviceResp in
+                    for domainContainer in serviceResp.sorted(by: { (a, b) -> Bool in
+                        return a.Domain < b.Domain
+                    }) {
+                        for service in domainContainer.Services.sorted(by: { (a, b) -> Bool in
+                            return a.key < b.key
+                        }) {
+                            self.form.last! <<< ButtonRow {
+                                $0.title = domainContainer.Domain + "." + service.key
+                                $0.cellStyle = .subtitle
+                                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                                    let siriConfigurator = SiriShortcutServiceConfigurator()
+                                    siriConfigurator.domain = domainContainer.Domain
+                                    siriConfigurator.serviceName = service.key
+                                    siriConfigurator.serviceData = service.value
+                                    siriConfigurator.entityIDs = entityIDs
+                                    return siriConfigurator
+                                }, onDismiss: { vc in
+                                    _ = vc.navigationController?.popViewController(animated: true)
+                                })
+                            }.cellUpdate({ cell, _ in
+                                cell.detailTextLabel?.text = service.value.Description
+                            })
+                        }
+                    }
+                }
+            }
 
         default:
             print("Something went wrong, no settings detail group named \(detailGroup)")
@@ -288,5 +362,48 @@ class SettingsDetailViewController: FormViewController {
 
     @objc func closeSettingsDetailView(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+}
+
+@available (iOS 12, *)
+extension SettingsDetailViewController: INUIAddVoiceShortcutViewControllerDelegate {
+
+    func addVoiceShortcutViewController(_ controller: INUIAddVoiceShortcutViewController,
+                                        didFinishWith voiceShortcut: INVoiceShortcut?,
+                                        error: Error?) {
+        if let error = error {
+            print("error adding voice shortcut:\(error.localizedDescription)")
+            return
+        }
+        print("UPDATE SHORTCUTS 3")
+    }
+
+    func addVoiceShortcutViewControllerDidCancel(_ controller: INUIAddVoiceShortcutViewController) {
+        dismiss(animated: true, completion: nil)
+    }
+}
+
+// MARK: - INUIEditVoiceShortcutViewControllerDelegate
+
+@available (iOS 12, *)
+extension SettingsDetailViewController: INUIEditVoiceShortcutViewControllerDelegate {
+
+    func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
+                                         didUpdate voiceShortcut: INVoiceShortcut?,
+                                         error: Error?) {
+        if let error = error {
+            print("error adding voice shortcut:\(error.localizedDescription)")
+            return
+        }
+        print("UPDATE SHORTCUTS HERE 1")
+    }
+
+    func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
+                                         didDeleteVoiceShortcutWithIdentifier deletedVoiceShortcutIdentifier: UUID) {
+        print("UPDATE SHORTCUTS HERE 2")
+    }
+
+    func editVoiceShortcutViewControllerDidCancel(_ controller: INUIEditVoiceShortcutViewController) {
+        dismiss(animated: true, completion: nil)
     }
 }

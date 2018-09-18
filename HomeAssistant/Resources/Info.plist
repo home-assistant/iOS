@@ -76,6 +76,12 @@ Selecting "Only While Using the App" will disable iBeacons, geofences, backgroun
 	<string>Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>CallServiceIntent</string>
+		<string>FireEventIntent</string>
+		<string>SendLocationIntent</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

@@ -44,6 +44,7 @@
 "settings.details_section.location_settings_row.title" = "Location Settings";
 "settings.details_section.enable_notification_row.title" = "Enable notifications";
 "settings.details_section.notification_settings_row.title" = "Notification Settings";
+"settings.details_section.siri_shortcuts_row.title" = "Siri Shortcuts";
 "settings.reset_section.reset_row.title" = "Reset";
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_alert.message" = "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.";
@@ -81,6 +82,7 @@
 "settings_details.notifications.badge_section.button.title" = "Reset badge to 0";
 "settings_details.notifications.badge_section.reset_alert.title" = "Badge reset";
 "settings_details.notifications.badge_section.reset_alert.message" = "The badge has been reset to 0.";
+"settings_details.siri.title" = "Siri Shortcuts";
 "permissions.location.message" = "We use this to inform\r\
 Home Assistant of your device location and state.";
 "permissions.notification.message" = "We use this to let you\r\

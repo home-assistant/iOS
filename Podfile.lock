@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (4.7.3)
-  - AlamofireNetworkActivityIndicator (2.2.1):
+  - AlamofireNetworkActivityIndicator (2.3.0):
     - Alamofire (~> 4.7)
   - AlamofireObjectMapper (5.1.0):
     - Alamofire (~> 4.1)
@@ -8,7 +8,7 @@ PODS:
   - CPDAcknowledgements (1.0.0)
   - Crashlytics (3.10.2):
     - Fabric (~> 1.7.7)
-  - DeviceKit (1.7.0)
+  - DeviceKit (1.8.0)
   - Eureka (4.1.1)
   - Fabric (1.7.7)
   - FontAwesomeKit/Core (2.2.5)
@@ -26,22 +26,22 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.3.0):
     - PromiseKit/CorePromise
-  - Realm (3.7.4):
-    - Realm/Headers (= 3.7.4)
-  - Realm/Headers (3.7.4)
-  - RealmSwift (3.7.4):
-    - Realm (= 3.7.4)
+  - Realm (3.9.0):
+    - Realm/Headers (= 3.9.0)
+  - Realm/Headers (3.9.0)
+  - RealmSwift (3.9.0):
+    - Realm (= 3.9.0)
   - SwiftGen (5.3.0)
   - SwiftLint (0.25.1)
 
 DEPENDENCIES:
   - Alamofire (= 4.7.3)
-  - AlamofireNetworkActivityIndicator (= 2.2.1)
+  - AlamofireNetworkActivityIndicator (= 2.3.0)
   - AlamofireObjectMapper (= 5.1.0)
   - CPDAcknowledgements (= 1.0.0)
   - Crashlytics (= 3.10.2)
-  - DeviceKit (= 1.7.0)
-  - Eureka (= 4.1.1)
+  - DeviceKit (= 1.8)
+  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `Swift-4.2`)
   - Fabric (= 1.7.7)
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
   - KeychainAccess (= 3.1.1)
@@ -60,7 +60,6 @@ SPEC REPOS:
     - CPDAcknowledgements
     - Crashlytics
     - DeviceKit
-    - Eureka
     - Fabric
     - KeychainAccess
     - MBProgressHUD
@@ -72,22 +71,28 @@ SPEC REPOS:
     - SwiftLint
 
 EXTERNAL SOURCES:
+  Eureka:
+    :branch: Swift-4.2
+    :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
 
 CHECKOUT OPTIONS:
+  Eureka:
+    :commit: 3f60ec327419837b0dc8373813a90d061242c2f4
+    :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :commit: e4069745624783372481bab7d163f4485931b527
     :git: https://github.com/robbiet480/FontAwesomeKit.git
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  AlamofireNetworkActivityIndicator: aeac50e6ecb78ec71a5f1f29098bcf4ec2962910
+  AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
-  DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
+  DeviceKit: c7ae6f7b16c2239156ac64fc22de0b0975f0d0b5
   Eureka: b88fb930e42c79f8c03c373d0fcdc28c1d6c50ed
   Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
   FontAwesomeKit: c56e7e8db4ad4e7325ce73a8033dadf2fd4a5cb2
@@ -95,11 +100,11 @@ SPEC CHECKSUMS:
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
   PromiseKit: cf84bbb1235a61473b326c5cf0b41f6828f87ba5
-  Realm: a469bb59e33f9926102ccaea4349822c53b9117e
-  RealmSwift: a45861b21c180f5cf0f122144b9759fa8dde3e9e
+  Realm: 3d36f208bf3aff8335dc3298742140182bde4edb
+  RealmSwift: aa4d11917bfcfaa3ed51f219102a487ecd895447
   SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
   SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
 
-PODFILE CHECKSUM: 7a0fb3675f5aeb9e14bebbacd18e4614fa8d641c
+PODFILE CHECKSUM: 63b20743ce15a6e911270a77dfc4390853a72150
 
 COCOAPODS: 1.6.0.beta.1

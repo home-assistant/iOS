@@ -440,6 +440,22 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 })
             }
 
+        if #available(iOS 12.0, *), let lastSection = self.form.last {
+        lastSection
+            <<< ButtonRow("siriShortcuts") {
+                $0.title = L10n.Settings.DetailsSection.SiriShortcutsRow.title
+                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                    let view = SettingsDetailViewController()
+                    view.detailGroup = "siri"
+                    return view
+                    }, onDismiss: { vc in
+                        _ = vc.navigationController?.popViewController(animated: true)
+                })
+            }
+        }
+
+        self.form
+
             +++ Section {
                 $0.tag = "reset"
                 $0.hidden = Condition(booleanLiteral: !self.configured)

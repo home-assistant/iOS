@@ -56,17 +56,15 @@ platform :ios do
             "io.robbie.HomeAssistant.APNSAttachmentService",
             "io.robbie.HomeAssistant.NotificationContentExtension",
             "io.robbie.HomeAssistant.MapNotificationContentExtension",
-            "io.robbie.HomeAssistant.HomeAssistantIntent"],
-          type: "appstore",
-          force: true)
+            "io.robbie.HomeAssistant.Intents"],
+          type: "appstore")
     match(app_identifier: [
             "io.robbie.HomeAssistant.dev",
             "io.robbie.HomeAssistant.dev.APNSAttachmentService",
             "io.robbie.HomeAssistant.dev.NotificationContentExtension",
             "io.robbie.HomeAssistant.dev.MapNotificationContentExtension",
-            "io.robbie.HomeAssistant.dev.HomeAssistantIntent"],
-          type: "development",
-          force: true)
+            "io.robbie.HomeAssistant.dev.Intents"],
+          type: "development")
   end
 
   desc "Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password."

@@ -7,16 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4198A1F4D4CDA145589AE606 /* Pods_HomeAssistantTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 651D3AE14561E93617E7853E /* Pods_HomeAssistantTests.framework */; };
+		02AE28AC525E5D612E7286E5 /* Pods_HomeAssistantTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43AB54799EB87A557706496F /* Pods_HomeAssistantTests.framework */; };
+		02B39A1B83FEF0D542E90D04 /* Pods_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC37955AF1BB2532AA650C03 /* Pods_Shared.framework */; };
+		04DAC97D81952A420744BAC2 /* Pods_MapNotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EDA12708E44B827FA50129F /* Pods_MapNotificationContentExtension.framework */; };
+		3B7D40B54D3190ABCCD8B535 /* Pods_APNSAttachmentService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A22AE3EFC396F6CDF542E9E /* Pods_APNSAttachmentService.framework */; };
 		474AA46EC65ABB974EFC74A4 /* Pods-APNSAttachmentService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */; };
 		5487B2333FBD80B7ED0CFD47 /* Pods-NotificationContentExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */; };
 		5731AE3FADDE686AA2749762 /* Pods-SharedTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = EF756F51509DAA0CBE8789BC /* Pods-SharedTests-metadata.plist */; };
-		6305B0E117738EA9009B09B0 /* Pods_NotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6791EF925EEF0C38548CD256 /* Pods_NotificationContentExtension.framework */; };
-		72610221AA80924D518E061B /* Pods_APNSAttachmentService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E69CBB7C45B01FAFC6E48FAC /* Pods_APNSAttachmentService.framework */; };
-		96A2001EB9B0E2CFEEE279D3 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D64C9AA80B41EEC60063D287 /* Pods_HomeAssistant.framework */; };
-		A8F8FD8FC7772208234AF859 /* Pods_MapNotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52A27430445D5FA741FD9F65 /* Pods_MapNotificationContentExtension.framework */; };
+		5A92BE534520B95D5FEBE14E /* Pods_SharedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31257B50C7EA9D258381EDF1 /* Pods_SharedTests.framework */; };
+		67E3C0D6FF85B714616D7E06 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCEB562289F2BAD1AB97FE80 /* Pods_HomeAssistant.framework */; };
 		B42EC0201B3E045A771E909C /* Pods-HomeAssistant-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */; };
 		B60248001FBD343000998205 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
+		B6050D966FE666A990E843E4 /* Pods_HomeAssistantUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13DB96DAE817D59F3F4F0533 /* Pods_HomeAssistantUITests.framework */; };
 		B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */; };
 		B606160A1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615051D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav */; };
 		B606160B1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615061D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav */; };
@@ -176,6 +178,15 @@
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B66428121CF7A83200903804 /* PushConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66428111CF7A83200903804 /* PushConfiguration.swift */; };
 		B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */; };
+		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
+		B66C58AC215086F0004AB261 /* SiriIntents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* SiriIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B66C58B12150891B004AB261 /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B02150891B004AB261 /* CallService.swift */; };
+		B66C58B32150892A004AB261 /* FireEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B22150892A004AB261 /* FireEvent.swift */; };
+		B66C58B52150898A004AB261 /* SendLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B42150898A004AB261 /* SendLocation.swift */; };
+		B66C58B7215089EA004AB261 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B6215089EA004AB261 /* Intents.intentdefinition */; };
+		B66C58B821508AB5004AB261 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B6215089EA004AB261 /* Intents.intentdefinition */; };
+		B66C58B921508BA0004AB261 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B6215089EA004AB261 /* Intents.intentdefinition */; };
+		B66C58BD21509934004AB261 /* SiriShortcutServiceConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58BC21509934004AB261 /* SiriShortcutServiceConfigurator.swift */; };
 		B6767A511D0234E700F2A08B /* SwitchableEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6767A501D0234E700F2A08B /* SwitchableEntity.swift */; };
 		B678DB251EA991E40045312F /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
 		B678DB261EA991E40045312F /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
@@ -231,7 +242,6 @@
 		B6F02C1C1CB489770029ABE7 /* Thermostat.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C0D1CB489770029ABE7 /* Thermostat.swift */; };
 		B6F02C1D1CB489770029ABE7 /* Weblink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02C0E1CB489770029ABE7 /* Weblink.swift */; };
 		B6FBE3971D46A4E500EE0E36 /* Beacons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FBE3961D46A4E500EE0E36 /* Beacons.swift */; };
-		C422441A8D42C0C0ECD00B65 /* Pods_SharedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2068EA5B3B31ECB6CB52DAE /* Pods_SharedTests.framework */; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
 		D03D892920E0A85300D4F28D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03D892D20E0A85300D4F28D /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -265,8 +275,7 @@
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
 		D18BB39F0BE75F5C3F086FE2 /* Pods-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */; };
 		DE00A0A32956903FEB4C59D3 /* Pods-MapNotificationContentExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */; };
-		E49D644A2DCA60BFADCBD936 /* Pods_HomeAssistantUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5126BD22E33DFF65A3EE7415 /* Pods_HomeAssistantUITests.framework */; };
-		E8C3D7275BCF1F24013B843C /* Pods_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE12F4C14745CDE94AC0FCCA /* Pods_Shared.framework */; };
+		E18E55DF8DCBDE3BBE3D983C /* Pods_NotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCBA3C9C70F46037F6EB9EAD /* Pods_NotificationContentExtension.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -290,6 +299,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = B657A8E51CA646EB00121384;
 			remoteInfo = HomeAssistant;
+		};
+		B66C58AA215086F0004AB261 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B66C58A4215086F0004AB261;
+			remoteInfo = Intents;
 		};
 		B678DB2E1EA991E40045312F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -330,6 +346,7 @@
 			files = (
 				B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */,
 				B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */,
+				B66C58AC215086F0004AB261 /* SiriIntents.appex in Embed App Extensions */,
 				B678DB301EA991E40045312F /* MapNotificationContentExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -349,28 +366,29 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		034EEC162038B458A317F3F1 /* Pods-MapNotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MapNotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-MapNotificationContentExtension/Pods-MapNotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
-		12AB72CF3616C12A931F5CCC /* Pods-APNSAttachmentService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.debug.xcconfig"; sourceTree = "<group>"; };
-		1BE4E193F46AA72BE0D543FA /* Pods-APNSAttachmentService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.release.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.release.xcconfig"; sourceTree = "<group>"; };
-		2B1BA1485CD2E8B8B717A0CB /* Pods-HomeAssistantUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.release.xcconfig"; sourceTree = "<group>"; };
-		2B3B042DB9FEA2AF31632E87 /* Pods-HomeAssistantTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.release.xcconfig"; sourceTree = "<group>"; };
+		0467BC05765E3E49B6B6888A /* Pods-MapNotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MapNotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MapNotificationContentExtension/Pods-MapNotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		06FAA08FF9538CE904820734 /* Pods-HomeAssistantUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.release.xcconfig"; sourceTree = "<group>"; };
+		0AE5665FC7E9C412851EFEDA /* Pods-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.debug.xcconfig"; sourceTree = "<group>"; };
+		13DB96DAE817D59F3F4F0533 /* Pods_HomeAssistantUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1498020275CF447198861444 /* Pods-HomeAssistantUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		1705EF2AEE096495DF751D8D /* Pods-SharedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.release.xcconfig"; sourceTree = "<group>"; };
+		2A22AE3EFC396F6CDF542E9E /* Pods_APNSAttachmentService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_APNSAttachmentService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		31257B50C7EA9D258381EDF1 /* Pods_SharedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-HomeAssistant-metadata.plist"; path = "Pods/Pods-HomeAssistant-metadata.plist"; sourceTree = "<group>"; };
-		35E976FB59E98D68CB6A306B /* Pods-Shared.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.release.xcconfig"; sourceTree = "<group>"; };
 		3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-APNSAttachmentService-metadata.plist"; path = "Pods/Pods-APNSAttachmentService-metadata.plist"; sourceTree = "<group>"; };
-		5126BD22E33DFF65A3EE7415 /* Pods_HomeAssistantUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		52A27430445D5FA741FD9F65 /* Pods_MapNotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MapNotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5315273D5E1F342A28F41A0E /* Pods-SharedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.release.xcconfig"; sourceTree = "<group>"; };
-		651D3AE14561E93617E7853E /* Pods_HomeAssistantTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6791EF925EEF0C38548CD256 /* Pods_NotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		696B6278523F8CD77F2F5FD0 /* Pods-HomeAssistantTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.debug.xcconfig"; sourceTree = "<group>"; };
-		72FE6793A67F871851C36183 /* Pods-NotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
-		7ED34A84DB4A557A7838A054 /* Pods-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.debug.xcconfig"; sourceTree = "<group>"; };
+		43AB54799EB87A557706496F /* Pods_HomeAssistantTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		483926F85DCB7A588F48D584 /* Pods-NotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
+		4B7B533082CD5897FDB73C4E /* Pods-APNSAttachmentService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.release.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.release.xcconfig"; sourceTree = "<group>"; };
+		5293FE4667BFA574573EB4B7 /* Pods-APNSAttachmentService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.debug.xcconfig"; sourceTree = "<group>"; };
+		589D3ACF94247A529FF58ED0 /* Pods-Shared.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.release.xcconfig"; sourceTree = "<group>"; };
+		5EDA12708E44B827FA50129F /* Pods_MapNotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MapNotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		60FAC5E054BC3C9FEE64DA4C /* Pods-SharedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.debug.xcconfig"; sourceTree = "<group>"; };
+		85C89D04CE3401AF3FA28019 /* Pods-NotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-metadata.plist"; path = "Pods/Pods-Shared-metadata.plist"; sourceTree = "<group>"; };
+		9389E08826152955A2F4D229 /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
 		93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-NotificationContentExtension-metadata.plist"; path = "Pods/Pods-NotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
-		97A31227F1DBACAA5668694D /* Pods-NotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
-		9B7256D26774A4D24C2FE41D /* Pods-HomeAssistantUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		A4F9D8111BCB2F53B5CD3585 /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
-		B2068EA5B3B31ECB6CB52DAE /* Pods_SharedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9502D5CACE19DFE8468D83E9 /* Pods-HomeAssistantTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.release.xcconfig"; sourceTree = "<group>"; };
+		AC37955AF1BB2532AA650C03 /* Pods_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B60247EC1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		B60247ED1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B60247EE1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainInterface.strings; sourceTree = "<group>"; };
@@ -563,6 +581,15 @@
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
 		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
 		B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestJSON.swift; sourceTree = "<group>"; };
+		B66C58A5215086F0004AB261 /* SiriIntents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SiriIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B66C58A7215086F0004AB261 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
+		B66C58A9215086F0004AB261 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B66C58B02150891B004AB261 /* CallService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
+		B66C58B22150892A004AB261 /* FireEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireEvent.swift; sourceTree = "<group>"; };
+		B66C58B42150898A004AB261 /* SendLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendLocation.swift; sourceTree = "<group>"; };
+		B66C58B6215089EA004AB261 /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
+		B66C58BC21509934004AB261 /* SiriShortcutServiceConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiriShortcutServiceConfigurator.swift; sourceTree = "<group>"; };
+		B66C58BF2150B410004AB261 /* SiriIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SiriIntents.entitlements; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B678DB241EA991E30045312F /* MapNotificationContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MapNotificationContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B678DB281EA991E40045312F /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
@@ -625,8 +652,9 @@
 		B6F02C0D1CB489770029ABE7 /* Thermostat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Thermostat.swift; sourceTree = "<group>"; };
 		B6F02C0E1CB489770029ABE7 /* Weblink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Weblink.swift; sourceTree = "<group>"; };
 		B6FBE3961D46A4E500EE0E36 /* Beacons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Beacons.swift; sourceTree = "<group>"; };
-		BE12F4C14745CDE94AC0FCCA /* Pods_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C631E1CD5F65B081DAC4E1B9 /* Pods-MapNotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MapNotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MapNotificationContentExtension/Pods-MapNotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		B8538709654BE524858A8656 /* Pods-HomeAssistantTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.debug.xcconfig"; sourceTree = "<group>"; };
+		C26F87E3A8D7A6A0442B986F /* Pods-MapNotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MapNotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-MapNotificationContentExtension/Pods-MapNotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
+		CCEB562289F2BAD1AB97FE80 /* Pods_HomeAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00302BD20D4BEDB004C2CA9 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfo.swift; sourceTree = "<group>"; };
 		D03D891720E0A85200D4F28D /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -657,12 +685,11 @@
 		D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventStore.swift; sourceTree = "<group>"; };
 		D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTableViewController.swift; sourceTree = "<group>"; };
 		D0FF79D420D87DB10034574D /* ClientEvents.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ClientEvents.storyboard; sourceTree = "<group>"; };
-		D64C9AA80B41EEC60063D287 /* Pods_HomeAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCBA3C9C70F46037F6EB9EAD /* Pods_NotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-MapNotificationContentExtension-metadata.plist"; path = "Pods/Pods-MapNotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
-		E69CBB7C45B01FAFC6E48FAC /* Pods_APNSAttachmentService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_APNSAttachmentService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E8D1729E7513A851517059AE /* Pods-HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.release.xcconfig"; sourceTree = "<group>"; };
+		DDDC8EEF89B5F8314E9A27F0 /* Pods-HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.release.xcconfig"; sourceTree = "<group>"; };
+		E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-SiriIntents-metadata.plist"; path = "Pods/Pods-SiriIntents-metadata.plist"; sourceTree = "<group>"; };
 		EF756F51509DAA0CBE8789BC /* Pods-SharedTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-SharedTests-metadata.plist"; path = "Pods/Pods-SharedTests-metadata.plist"; sourceTree = "<group>"; };
-		F3E3D24EB731593FDDE7B767 /* Pods-SharedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -672,7 +699,7 @@
 			files = (
 				B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */,
 				B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */,
-				6305B0E117738EA9009B09B0 /* Pods_NotificationContentExtension.framework in Frameworks */,
+				E18E55DF8DCBDE3BBE3D983C /* Pods_NotificationContentExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -684,7 +711,7 @@
 				B6CFF5DC2101985200CC523F /* Realm.framework in Frameworks */,
 				B6CFF5DE2101985200CC523F /* RealmSwift.framework in Frameworks */,
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
-				96A2001EB9B0E2CFEEE279D3 /* Pods_HomeAssistant.framework in Frameworks */,
+				67E3C0D6FF85B714616D7E06 /* Pods_HomeAssistant.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -692,7 +719,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4198A1F4D4CDA145589AE606 /* Pods_HomeAssistantTests.framework in Frameworks */,
+				02AE28AC525E5D612E7286E5 /* Pods_HomeAssistantTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -700,7 +727,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E49D644A2DCA60BFADCBD936 /* Pods_HomeAssistantUITests.framework in Frameworks */,
+				B6050D966FE666A990E843E4 /* Pods_HomeAssistantUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B66C58A2215086F0004AB261 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -710,7 +744,7 @@
 			files = (
 				B678DB261EA991E40045312F /* UserNotificationsUI.framework in Frameworks */,
 				B678DB251EA991E40045312F /* UserNotifications.framework in Frameworks */,
-				A8F8FD8FC7772208234AF859 /* Pods_MapNotificationContentExtension.framework in Frameworks */,
+				04DAC97D81952A420744BAC2 /* Pods_MapNotificationContentExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -719,7 +753,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D03D893420E0A8FE00D4F28D /* Shared.framework in Frameworks */,
-				72610221AA80924D518E061B /* Pods_APNSAttachmentService.framework in Frameworks */,
+				3B7D40B54D3190ABCCD8B535 /* Pods_APNSAttachmentService.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -730,7 +764,7 @@
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				B6CFF5DA2101984A00CC523F /* RealmSwift.framework in Frameworks */,
 				B6CFF5D82101984500CC523F /* Realm.framework in Frameworks */,
-				E8C3D7275BCF1F24013B843C /* Pods_Shared.framework in Frameworks */,
+				02B39A1B83FEF0D542E90D04 /* Pods_Shared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -739,7 +773,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */,
-				C422441A8D42C0C0ECD00B65 /* Pods_SharedTests.framework in Frameworks */,
+				5A92BE534520B95D5FEBE14E /* Pods_SharedTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -757,14 +791,14 @@
 				B6393F871CB2561100503916 /* MapKit.framework */,
 				B627CB081D83C87B0057173E /* UserNotifications.framework */,
 				B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */,
-				E69CBB7C45B01FAFC6E48FAC /* Pods_APNSAttachmentService.framework */,
-				D64C9AA80B41EEC60063D287 /* Pods_HomeAssistant.framework */,
-				651D3AE14561E93617E7853E /* Pods_HomeAssistantTests.framework */,
-				5126BD22E33DFF65A3EE7415 /* Pods_HomeAssistantUITests.framework */,
-				52A27430445D5FA741FD9F65 /* Pods_MapNotificationContentExtension.framework */,
-				6791EF925EEF0C38548CD256 /* Pods_NotificationContentExtension.framework */,
-				BE12F4C14745CDE94AC0FCCA /* Pods_Shared.framework */,
-				B2068EA5B3B31ECB6CB52DAE /* Pods_SharedTests.framework */,
+				2A22AE3EFC396F6CDF542E9E /* Pods_APNSAttachmentService.framework */,
+				CCEB562289F2BAD1AB97FE80 /* Pods_HomeAssistant.framework */,
+				43AB54799EB87A557706496F /* Pods_HomeAssistantTests.framework */,
+				13DB96DAE817D59F3F4F0533 /* Pods_HomeAssistantUITests.framework */,
+				5EDA12708E44B827FA50129F /* Pods_MapNotificationContentExtension.framework */,
+				DCBA3C9C70F46037F6EB9EAD /* Pods_NotificationContentExtension.framework */,
+				AC37955AF1BB2532AA650C03 /* Pods_Shared.framework */,
+				31257B50C7EA9D258381EDF1 /* Pods_SharedTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -778,22 +812,23 @@
 				DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */,
 				932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */,
 				EF756F51509DAA0CBE8789BC /* Pods-SharedTests-metadata.plist */,
-				12AB72CF3616C12A931F5CCC /* Pods-APNSAttachmentService.debug.xcconfig */,
-				1BE4E193F46AA72BE0D543FA /* Pods-APNSAttachmentService.release.xcconfig */,
-				A4F9D8111BCB2F53B5CD3585 /* Pods-HomeAssistant.debug.xcconfig */,
-				E8D1729E7513A851517059AE /* Pods-HomeAssistant.release.xcconfig */,
-				696B6278523F8CD77F2F5FD0 /* Pods-HomeAssistantTests.debug.xcconfig */,
-				2B3B042DB9FEA2AF31632E87 /* Pods-HomeAssistantTests.release.xcconfig */,
-				9B7256D26774A4D24C2FE41D /* Pods-HomeAssistantUITests.debug.xcconfig */,
-				2B1BA1485CD2E8B8B717A0CB /* Pods-HomeAssistantUITests.release.xcconfig */,
-				C631E1CD5F65B081DAC4E1B9 /* Pods-MapNotificationContentExtension.debug.xcconfig */,
-				034EEC162038B458A317F3F1 /* Pods-MapNotificationContentExtension.release.xcconfig */,
-				97A31227F1DBACAA5668694D /* Pods-NotificationContentExtension.debug.xcconfig */,
-				72FE6793A67F871851C36183 /* Pods-NotificationContentExtension.release.xcconfig */,
-				7ED34A84DB4A557A7838A054 /* Pods-Shared.debug.xcconfig */,
-				35E976FB59E98D68CB6A306B /* Pods-Shared.release.xcconfig */,
-				F3E3D24EB731593FDDE7B767 /* Pods-SharedTests.debug.xcconfig */,
-				5315273D5E1F342A28F41A0E /* Pods-SharedTests.release.xcconfig */,
+				E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */,
+				5293FE4667BFA574573EB4B7 /* Pods-APNSAttachmentService.debug.xcconfig */,
+				4B7B533082CD5897FDB73C4E /* Pods-APNSAttachmentService.release.xcconfig */,
+				9389E08826152955A2F4D229 /* Pods-HomeAssistant.debug.xcconfig */,
+				DDDC8EEF89B5F8314E9A27F0 /* Pods-HomeAssistant.release.xcconfig */,
+				B8538709654BE524858A8656 /* Pods-HomeAssistantTests.debug.xcconfig */,
+				9502D5CACE19DFE8468D83E9 /* Pods-HomeAssistantTests.release.xcconfig */,
+				1498020275CF447198861444 /* Pods-HomeAssistantUITests.debug.xcconfig */,
+				06FAA08FF9538CE904820734 /* Pods-HomeAssistantUITests.release.xcconfig */,
+				0467BC05765E3E49B6B6888A /* Pods-MapNotificationContentExtension.debug.xcconfig */,
+				C26F87E3A8D7A6A0442B986F /* Pods-MapNotificationContentExtension.release.xcconfig */,
+				85C89D04CE3401AF3FA28019 /* Pods-NotificationContentExtension.debug.xcconfig */,
+				483926F85DCB7A588F48D584 /* Pods-NotificationContentExtension.release.xcconfig */,
+				0AE5665FC7E9C412851EFEDA /* Pods-Shared.debug.xcconfig */,
+				589D3ACF94247A529FF58ED0 /* Pods-Shared.release.xcconfig */,
+				60FAC5E054BC3C9FEE64DA4C /* Pods-SharedTests.debug.xcconfig */,
+				1705EF2AEE096495DF751D8D /* Pods-SharedTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -988,6 +1023,7 @@
 				B6AAD7A21D827DD40090B220 /* APNSAttachmentService */,
 				D03D891820E0A85300D4F28D /* Shared */,
 				D03D894320E0BC1800D4F28D /* SharedTests */,
+				B66C58A6215086F0004AB261 /* Intents */,
 				29278BB24639BA945D3D86B4 /* Frameworks */,
 				B657A8E81CA646EB00121384 /* HomeAssistant */,
 				B657A8FF1CA646EB00121384 /* HomeAssistantTests */,
@@ -1010,6 +1046,7 @@
 				B678DB241EA991E30045312F /* MapNotificationContentExtension.appex */,
 				D03D891720E0A85200D4F28D /* Shared.framework */,
 				D03D894220E0BC1800D4F28D /* SharedTests.xctest */,
+				B66C58A5215086F0004AB261 /* SiriIntents.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1050,6 +1087,19 @@
 			path = HomeAssistantUITests;
 			sourceTree = "<group>";
 		};
+		B66C58A6215086F0004AB261 /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				B66C58BF2150B410004AB261 /* SiriIntents.entitlements */,
+				B66C58A7215086F0004AB261 /* IntentHandler.swift */,
+				B66C58A9215086F0004AB261 /* Info.plist */,
+				B66C58B02150891B004AB261 /* CallService.swift */,
+				B66C58B22150892A004AB261 /* FireEvent.swift */,
+				B66C58B42150898A004AB261 /* SendLocation.swift */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
 		B678DB271EA991E40045312F /* MapNotificationContentExtension */ = {
 			isa = PBXGroup;
 			children = (
@@ -1071,6 +1121,7 @@
 				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
 				B657A8ED1CA646EB00121384 /* SettingsViewController.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
+				B66C58BC21509934004AB261 /* SiriShortcutServiceConfigurator.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1101,6 +1152,7 @@
 				B60247FE1FBD343000998205 /* InfoPlist.strings */,
 				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
 				B69933931E232AEA0054453D /* Localizable.strings */,
+				B66C58B6215089EA004AB261 /* Intents.intentdefinition */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1387,7 +1439,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B627CB181D83C87B0057173E /* Build configuration list for PBXNativeTarget "NotificationContentExtension" */;
 			buildPhases = (
-				8C2107BB702AAEE1399AF5D0 /* [CP] Check Pods Manifest.lock */,
+				BD1FA7E167637AD12AEAF513 /* [CP] Check Pods Manifest.lock */,
 				B627CB031D83C87B0057173E /* Sources */,
 				B627CB041D83C87B0057173E /* Frameworks */,
 				B627CB051D83C87B0057173E /* Resources */,
@@ -1405,7 +1457,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B657A9101CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistant" */;
 			buildPhases = (
-				5CC877B373F58CCF6B6C3F6B /* [CP] Check Pods Manifest.lock */,
+				7F669AD7422D4608D7157C0F /* [CP] Check Pods Manifest.lock */,
 				D03D895020E1EF4900D4F28D /* Swiftgen */,
 				B641BC261E20BAF3002CCBC1 /* Swiftlint */,
 				B657A8E21CA646EB00121384 /* Sources */,
@@ -1415,7 +1467,7 @@
 				B6AAD7AC1D827DD40090B220 /* Embed App Extensions */,
 				B6E8579C1CB1167200F96925 /* Fabric */,
 				D03D88EE20E0A7AC00D4F28D /* Embed Frameworks */,
-				FCD243CD267012CDC670E293 /* [CP] Embed Pods Frameworks */,
+				1AD18D079A8F679E3440E5C4 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1424,6 +1476,7 @@
 				B627CB141D83C87B0057173E /* PBXTargetDependency */,
 				B678DB2F1EA991E40045312F /* PBXTargetDependency */,
 				D03D892B20E0A85300D4F28D /* PBXTargetDependency */,
+				B66C58AB215086F0004AB261 /* PBXTargetDependency */,
 			);
 			name = HomeAssistant;
 			productName = HomeAssistant;
@@ -1434,7 +1487,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B657A9131CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistantTests" */;
 			buildPhases = (
-				83C558F9F4F6E0428E3E1C1D /* [CP] Check Pods Manifest.lock */,
+				3440380F9C620E9BDB94C526 /* [CP] Check Pods Manifest.lock */,
 				B657A8F81CA646EB00121384 /* Sources */,
 				B657A8F91CA646EB00121384 /* Frameworks */,
 				B657A8FA1CA646EB00121384 /* Resources */,
@@ -1453,7 +1506,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B657A9161CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistantUITests" */;
 			buildPhases = (
-				A0DE6F9C5FB2814093DE5C80 /* [CP] Check Pods Manifest.lock */,
+				6526F19353960349A0E004C4 /* [CP] Check Pods Manifest.lock */,
 				B657A9031CA646EB00121384 /* Sources */,
 				B657A9041CA646EB00121384 /* Frameworks */,
 				B657A9051CA646EB00121384 /* Resources */,
@@ -1468,11 +1521,28 @@
 			productReference = B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		B66C58A4215086F0004AB261 /* SiriIntents */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B66C58AD215086F0004AB261 /* Build configuration list for PBXNativeTarget "SiriIntents" */;
+			buildPhases = (
+				B66C58A1215086F0004AB261 /* Sources */,
+				B66C58A2215086F0004AB261 /* Frameworks */,
+				B66C58A3215086F0004AB261 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SiriIntents;
+			productName = Intents;
+			productReference = B66C58A5215086F0004AB261 /* SiriIntents.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		B678DB231EA991E30045312F /* MapNotificationContentExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B678DB311EA991E40045312F /* Build configuration list for PBXNativeTarget "MapNotificationContentExtension" */;
 			buildPhases = (
-				621B7DF9237DA6628CE153E8 /* [CP] Check Pods Manifest.lock */,
+				9FD7E59FA00D147ACA8DC507 /* [CP] Check Pods Manifest.lock */,
 				B678DB201EA991E30045312F /* Sources */,
 				B678DB211EA991E30045312F /* Frameworks */,
 				B678DB221EA991E30045312F /* Resources */,
@@ -1490,7 +1560,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B6AAD7A91D827DD40090B220 /* Build configuration list for PBXNativeTarget "APNSAttachmentService" */;
 			buildPhases = (
-				F02FD9CF4B1D406406A2BB38 /* [CP] Check Pods Manifest.lock */,
+				3010191A90CD0354A210A3F4 /* [CP] Check Pods Manifest.lock */,
 				B6AAD79D1D827DD40090B220 /* Sources */,
 				B6AAD79E1D827DD40090B220 /* Frameworks */,
 				B6AAD79F1D827DD40090B220 /* Resources */,
@@ -1508,7 +1578,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D03D892E20E0A85300D4F28D /* Build configuration list for PBXNativeTarget "Shared" */;
 			buildPhases = (
-				CB8791C269BE53DC8CEC4703 /* [CP] Check Pods Manifest.lock */,
+				1F27C5BD52D6E38308C8597A /* [CP] Check Pods Manifest.lock */,
 				D03D891220E0A85200D4F28D /* Sources */,
 				D03D891320E0A85200D4F28D /* Frameworks */,
 				D03D891420E0A85200D4F28D /* Headers */,
@@ -1527,7 +1597,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D03D894A20E0BC1800D4F28D /* Build configuration list for PBXNativeTarget "SharedTests" */;
 			buildPhases = (
-				0DE3E2B5A37ADB48F54C9848 /* [CP] Check Pods Manifest.lock */,
+				3490DC51897E953396F09D89 /* [CP] Check Pods Manifest.lock */,
 				D03D893E20E0BC1800D4F28D /* Sources */,
 				D03D893F20E0BC1800D4F28D /* Frameworks */,
 				D03D894020E0BC1800D4F28D /* Resources */,
@@ -1548,7 +1618,7 @@
 		B657A8DE1CA646EB00121384 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0940;
+				LastSwiftUpdateCheck = 1000;
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Robbie Trencheny";
 				TargetAttributes = {
@@ -1605,6 +1675,16 @@
 						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 1000;
 						TestTargetID = B657A8E51CA646EB00121384;
+					};
+					B66C58A4215086F0004AB261 = {
+						CreatedOnToolsVersion = 10.0;
+						DevelopmentTeam = UTQFCBPQRF;
+						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					B678DB231EA991E30045312F = {
 						CreatedOnToolsVersion = 8.3.1;
@@ -1672,6 +1752,7 @@
 				B678DB231EA991E30045312F /* MapNotificationContentExtension */,
 				D03D891620E0A85200D4F28D /* Shared */,
 				D03D894120E0BC1800D4F28D /* SharedTests */,
+				B66C58A4215086F0004AB261 /* SiriIntents */,
 			);
 		};
 /* End PBXProject section */
@@ -1844,6 +1925,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B66C58A3215086F0004AB261 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B678DB221EA991E30045312F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1880,7 +1968,53 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0DE3E2B5A37ADB48F54C9848 /* [CP] Check Pods Manifest.lock */ = {
+		1AD18D079A8F679E3440E5C4 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
+				"${BUILT_PRODUCTS_DIR}/CPDAcknowledgements/CPDAcknowledgements.framework",
+				"${BUILT_PRODUCTS_DIR}/DeviceKit/DeviceKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
+				"${BUILT_PRODUCTS_DIR}/FontAwesomeKit/FontAwesomeKit.framework",
+				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
+				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityIndicator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireObjectMapper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CPDAcknowledgements.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FontAwesomeKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		1F27C5BD52D6E38308C8597A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1895,14 +2029,14 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SharedTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Shared-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		5CC877B373F58CCF6B6C3F6B /* [CP] Check Pods Manifest.lock */ = {
+		3010191A90CD0354A210A3F4 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1917,36 +2051,14 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-HomeAssistant-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-APNSAttachmentService-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		621B7DF9237DA6628CE153E8 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MapNotificationContentExtension-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		83C558F9F4F6E0428E3E1C1D /* [CP] Check Pods Manifest.lock */ = {
+		3440380F9C620E9BDB94C526 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1968,7 +2080,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8C2107BB702AAEE1399AF5D0 /* [CP] Check Pods Manifest.lock */ = {
+		3490DC51897E953396F09D89 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1983,14 +2095,14 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-NotificationContentExtension-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-SharedTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A0DE6F9C5FB2814093DE5C80 /* [CP] Check Pods Manifest.lock */ = {
+		6526F19353960349A0E004C4 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2006,6 +2118,50 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-HomeAssistantUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7F669AD7422D4608D7157C0F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HomeAssistant-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9FD7E59FA00D147ACA8DC507 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MapNotificationContentExtension-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2054,7 +2210,7 @@
 			shellPath = /bin/sh;
 			shellScript = "if [ -f env.sh ];\nthen\n    source env.sh\nfi\n[ -z \"$HOMEASSISTANT_FABRIC_CLIENT_ID\" ] && echo \"$HOMEASSISTANT_FABRIC_CLIENT_ID is not defined on your ENV\" && exit 0;\n [ -z \"$HOMEASSISTANT_FABRIC_SECRET\" ] && echo \"$HOMEASSISTANT_FABRIC_SECRET is not defined on your ENV\" && exit 0;\n \"${PODS_ROOT}/Fabric/run\" ${HOMEASSISTANT_FABRIC_CLIENT_ID} ${HOMEASSISTANT_FABRIC_SECRET}";
 		};
-		CB8791C269BE53DC8CEC4703 /* [CP] Check Pods Manifest.lock */ = {
+		BD1FA7E167637AD12AEAF513 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2069,7 +2225,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Shared-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-NotificationContentExtension-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2090,74 +2246,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"$PODS_ROOT\"/SwiftGen/bin/swiftgen config run --config ./HomeAssistant/swiftgen.yml";
 		};
-		F02FD9CF4B1D406406A2BB38 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-APNSAttachmentService-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FCD243CD267012CDC670E293 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/CPDAcknowledgements/CPDAcknowledgements.framework",
-				"${BUILT_PRODUCTS_DIR}/DeviceKit/DeviceKit.framework",
-				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
-				"${BUILT_PRODUCTS_DIR}/FontAwesomeKit/FontAwesomeKit.framework",
-				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
-				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
-				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
-				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
-				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityIndicator.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireObjectMapper.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CPDAcknowledgements.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FontAwesomeKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -2176,6 +2264,7 @@
 			files = (
 				B6F02BE91CB46AF40029ABE7 /* Entity.swift in Sources */,
 				B626AAEF1D8F44DC00A0D225 /* DiscoveryInfo.swift in Sources */,
+				B66C58B7215089EA004AB261 /* Intents.intentdefinition in Sources */,
 				B6F02C1A1CB489770029ABE7 /* Sun.swift in Sources */,
 				B62A67A01D80E933009E46F9 /* IdentifyRequest.swift in Sources */,
 				B6F02C1C1CB489770029ABE7 /* Thermostat.swift in Sources */,
@@ -2221,6 +2310,7 @@
 				B6F02C191CB489770029ABE7 /* Sensor.swift in Sources */,
 				B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */,
 				B6F02C141CB489770029ABE7 /* Light.swift in Sources */,
+				B66C58BD21509934004AB261 /* SiriShortcutServiceConfigurator.swift in Sources */,
 				D0B25BCD2130CAB400678C2C /* Bonjur.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
 				B6DBF7661D89F7D800402A57 /* Automation.swift in Sources */,
@@ -2261,6 +2351,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B66C58A1215086F0004AB261 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B66C58B52150898A004AB261 /* SendLocation.swift in Sources */,
+				B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */,
+				B66C58B32150892A004AB261 /* FireEvent.swift in Sources */,
+				B66C58B821508AB5004AB261 /* Intents.intentdefinition in Sources */,
+				B66C58B12150891B004AB261 /* CallService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B678DB201EA991E30045312F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2284,6 +2386,7 @@
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
 				D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */,
 				D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */,
+				B66C58B921508BA0004AB261 /* Intents.intentdefinition in Sources */,
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
@@ -2324,6 +2427,11 @@
 			isa = PBXTargetDependency;
 			target = B657A8E51CA646EB00121384 /* HomeAssistant */;
 			targetProxy = B657A9081CA646EB00121384 /* PBXContainerItemProxy */;
+		};
+		B66C58AB215086F0004AB261 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B66C58A4215086F0004AB261 /* SiriIntents */;
+			targetProxy = B66C58AA215086F0004AB261 /* PBXContainerItemProxy */;
 		};
 		B678DB2F1EA991E40045312F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2412,7 +2520,7 @@
 /* Begin XCBuildConfiguration section */
 		B627CB161D83C87B0057173E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 97A31227F1DBACAA5668694D /* Pods-NotificationContentExtension.debug.xcconfig */;
+			baseConfigurationReference = 85C89D04CE3401AF3FA28019 /* Pods-NotificationContentExtension.debug.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
@@ -2433,7 +2541,7 @@
 		};
 		B627CB171D83C87B0057173E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 72FE6793A67F871851C36183 /* Pods-NotificationContentExtension.release.xcconfig */;
+			baseConfigurationReference = 483926F85DCB7A588F48D584 /* Pods-NotificationContentExtension.release.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
@@ -2572,7 +2680,7 @@
 		};
 		B657A9111CA646EB00121384 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A4F9D8111BCB2F53B5CD3585 /* Pods-HomeAssistant.debug.xcconfig */;
+			baseConfigurationReference = 9389E08826152955A2F4D229 /* Pods-HomeAssistant.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
@@ -2620,7 +2728,7 @@
 		};
 		B657A9121CA646EB00121384 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E8D1729E7513A851517059AE /* Pods-HomeAssistant.release.xcconfig */;
+			baseConfigurationReference = DDDC8EEF89B5F8314E9A27F0 /* Pods-HomeAssistant.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_PREFIX}";
@@ -2668,7 +2776,7 @@
 		};
 		B657A9141CA646EB00121384 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 696B6278523F8CD77F2F5FD0 /* Pods-HomeAssistantTests.debug.xcconfig */;
+			baseConfigurationReference = B8538709654BE524858A8656 /* Pods-HomeAssistantTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = HomeAssistantTests/Info.plist;
@@ -2683,7 +2791,7 @@
 		};
 		B657A9151CA646EB00121384 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2B3B042DB9FEA2AF31632E87 /* Pods-HomeAssistantTests.release.xcconfig */;
+			baseConfigurationReference = 9502D5CACE19DFE8468D83E9 /* Pods-HomeAssistantTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = HomeAssistantTests/Info.plist;
@@ -2697,7 +2805,7 @@
 		};
 		B657A9171CA646EB00121384 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9B7256D26774A4D24C2FE41D /* Pods-HomeAssistantUITests.debug.xcconfig */;
+			baseConfigurationReference = 1498020275CF447198861444 /* Pods-HomeAssistantUITests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = HomeAssistantUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2710,7 +2818,7 @@
 		};
 		B657A9181CA646EB00121384 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2B1BA1485CD2E8B8B717A0CB /* Pods-HomeAssistantUITests.release.xcconfig */;
+			baseConfigurationReference = 06FAA08FF9538CE904820734 /* Pods-HomeAssistantUITests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = HomeAssistantUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2721,9 +2829,63 @@
 			};
 			name = Release;
 		};
+		B66C58AE215086F0004AB261 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = Intents/SiriIntents.entitlements;
+				CODE_SIGN_STYLE = Manual;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Intents/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.Intents";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.Intents";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B66C58AF215086F0004AB261 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = Intents/SiriIntents.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Intents/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.Intents";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.Intents";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		B678DB321EA991E40045312F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C631E1CD5F65B081DAC4E1B9 /* Pods-MapNotificationContentExtension.debug.xcconfig */;
+			baseConfigurationReference = 0467BC05765E3E49B6B6888A /* Pods-MapNotificationContentExtension.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -2744,7 +2906,7 @@
 		};
 		B678DB331EA991E40045312F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 034EEC162038B458A317F3F1 /* Pods-MapNotificationContentExtension.release.xcconfig */;
+			baseConfigurationReference = C26F87E3A8D7A6A0442B986F /* Pods-MapNotificationContentExtension.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -2763,7 +2925,7 @@
 		};
 		B6AAD7AA1D827DD40090B220 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 12AB72CF3616C12A931F5CCC /* Pods-APNSAttachmentService.debug.xcconfig */;
+			baseConfigurationReference = 5293FE4667BFA574573EB4B7 /* Pods-APNSAttachmentService.debug.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
@@ -2783,7 +2945,7 @@
 		};
 		B6AAD7AB1D827DD40090B220 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1BE4E193F46AA72BE0D543FA /* Pods-APNSAttachmentService.release.xcconfig */;
+			baseConfigurationReference = 4B7B533082CD5897FDB73C4E /* Pods-APNSAttachmentService.release.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
@@ -2802,7 +2964,7 @@
 		};
 		D03D892F20E0A85300D4F28D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7ED34A84DB4A557A7838A054 /* Pods-Shared.debug.xcconfig */;
+			baseConfigurationReference = 0AE5665FC7E9C412851EFEDA /* Pods-Shared.debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2834,7 +2996,7 @@
 		};
 		D03D893020E0A85300D4F28D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 35E976FB59E98D68CB6A306B /* Pods-Shared.release.xcconfig */;
+			baseConfigurationReference = 589D3ACF94247A529FF58ED0 /* Pods-Shared.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2864,7 +3026,7 @@
 		};
 		D03D894B20E0BC1800D4F28D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F3E3D24EB731593FDDE7B767 /* Pods-SharedTests.debug.xcconfig */;
+			baseConfigurationReference = 60FAC5E054BC3C9FEE64DA4C /* Pods-SharedTests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -2887,7 +3049,7 @@
 		};
 		D03D894C20E0BC1800D4F28D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5315273D5E1F342A28F41A0E /* Pods-SharedTests.release.xcconfig */;
+			baseConfigurationReference = 1705EF2AEE096495DF751D8D /* Pods-SharedTests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -2950,6 +3112,15 @@
 			buildConfigurations = (
 				B657A9171CA646EB00121384 /* Debug */,
 				B657A9181CA646EB00121384 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B66C58AD215086F0004AB261 /* Build configuration list for PBXNativeTarget "SiriIntents" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B66C58AE215086F0004AB261 /* Debug */,
+				B66C58AF215086F0004AB261 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

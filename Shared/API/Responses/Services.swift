@@ -10,7 +10,7 @@ import Foundation
 import ObjectMapper
 
 public class ServicesResponse: Mappable {
-    var Domain: String?
+    var Domain: String = ""
     var Services: [String: ServiceDefinition] = [:]
 
     required public init?(map: Map) {
@@ -40,6 +40,8 @@ public class ServiceDefinition: Mappable {
 public class ServiceField: Mappable {
     var Description: String?
     var Example: AnyObject?
+    var Default: AnyObject?
+    var Values: [AnyObject]?
 
     required public init?(map: Map) {
 
@@ -48,5 +50,7 @@ public class ServiceField: Mappable {
     public func mapping(map: Map) {
         Description  <- map["description"]
         Example      <- map["example"]
+        Default      <- map["default"]
+        Values       <- map["values"]
     }
 }

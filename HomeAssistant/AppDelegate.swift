@@ -17,6 +17,7 @@ import Alamofire
 import RealmSwift
 import Shared
 import SafariServices
+import Intents
 
 let keychain = Keychain(service: "io.robbie.homeassistant")
 
@@ -230,6 +231,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func fireEventURLHandler(_ url: URL, _ serviceData: [String: String]) {
         // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
+
+        if #available(iOS 12.0, *) {
+            let intent = FireEventIntent()
+            intent.eventName = url.pathComponents[1]
+            intent.eventData = url.query
+
+            let interaction = INInteraction(intent: intent, response: nil)
+
+            interaction.donate { (error) in
+                if error != nil {
+                    if let error = error as NSError? {
+                        print("FireEvent Interaction donation failed: \(error)")
+                    } else {
+                        print("FireEvent Successfully donated interaction")
+                    }
+                }
+            }
+        }
+
         _ = firstly {
             HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
@@ -248,6 +268,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
         let domain = url.pathComponents[1].components(separatedBy: ".")[0]
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
+
+        if #available(iOS 12.0, *) {
+            let intent = CallServiceIntent()
+            intent.serviceName = url.pathComponents[1]
+            intent.serviceData = url.query
+
+            let interaction = INInteraction(intent: intent, response: nil)
+
+            interaction.donate { (error) in
+                if error != nil {
+                    if let error = error as NSError? {
+                        print("CallService Interaction donation failed: \(error)")
+                    } else {
+                        print("CallService Successfully donated interaction")
+                    }
+                }
+            }
+        }
+
         _ = firstly {
             HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in

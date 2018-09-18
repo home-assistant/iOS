@@ -353,6 +353,11 @@ internal enum L10n {
         /// Notification Settings
         internal static let title = L10n.tr("Localizable", "settings.details_section.notification_settings_row.title")
       }
+
+      internal enum SiriShortcutsRow {
+        /// Siri Shortcuts
+        internal static let title = L10n.tr("Localizable", "settings.details_section.siri_shortcuts_row.title")
+      }
     }
 
     internal enum DeviceIdSection {
@@ -654,6 +659,11 @@ internal enum L10n {
           internal static let title = L10n.tr("Localizable", "settings_details.notifications.update_section.updated_alert.title")
         }
       }
+    }
+
+    internal enum Siri {
+      /// Siri Shortcuts
+      internal static let title = L10n.tr("Localizable", "settings_details.siri.title")
     }
   }
 

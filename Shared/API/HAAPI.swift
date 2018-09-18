@@ -19,6 +19,7 @@ import ObjectMapper
 import RealmSwift
 import Shared
 import UserNotifications
+import Intents
 
 // swiftlint:disable file_length
 
@@ -413,6 +414,28 @@ public class HomeAssistantAPI {
         }
     }
 
+    public func RenderTemplate(templateStr: String) -> Promise<String> {
+        return Promise { seal in
+            let queryUrl = self.connectionInfo.activeAPIURL.appendingPathComponent("template")
+            _ = manager.request(queryUrl, method: .post,
+                                parameters: ["template":templateStr], encoding: JSONEncoding.default)
+                .validate()
+                .responseString { response in
+                    switch response.result {
+                    case .success:
+                        if let strResponse = response.result.value {
+                            seal.fulfill(strResponse)
+                        }
+                    case .failure(let error):
+                        CLSLogv("Error when attemping to RenderTemplate(): %@",
+                                getVaList([error.localizedDescription]))
+                        Crashlytics.sharedInstance().recordError(error)
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
+
     public func getDiscoveryInfo(baseUrl: URL) -> Promise<DiscoveryInfoResponse> {
         return self.request(path: "discover_info", callingFunctionName: "\(#function)")
     }
@@ -631,6 +654,22 @@ public class HomeAssistantAPI {
                 UNNotificationRequest.init(identifier: notificationOptions.identifier ?? "",
                                            content: content, trigger: nil)
             UNUserNotificationCenter.current().add(notificationRequest)
+        }
+
+        if #available(iOS 12.0, *) {
+            let intent = SendLocationIntent()
+            let interaction = INInteraction(intent: intent, response: nil)
+            interaction.donate { (error) in
+                if error != nil {
+                    if let error = error as NSError? {
+                        print("Interaction donation failed: \(error)")
+                    } else {
+                        print("Successfully donated interaction")
+                    }
+                } else {
+                    print("Donated send location interaction")
+                }
+            }
         }
     }
 

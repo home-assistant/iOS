@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '9.0'
+platform :ios, '10.0'
 # Uncomment this line if you're using Swift
 use_frameworks!
 
@@ -7,12 +7,12 @@ plugin 'cocoapods-acknowledgements'
 
 target 'HomeAssistant' do
   pod 'Alamofire', '4.7.3'
-  pod 'AlamofireNetworkActivityIndicator', '2.2.1'
+  pod 'AlamofireNetworkActivityIndicator', '2.3.0'
   pod 'AlamofireObjectMapper', '5.1.0'
   pod 'CPDAcknowledgements', '1.0.0'
   pod 'Crashlytics', '3.10.2'
-  pod 'DeviceKit', '1.7.0'
-  pod 'Eureka', '4.1.1'
+  pod 'DeviceKit', '1.8'
+  pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'Swift-4.2'
   pod 'Fabric', '1.7.7'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
   pod 'KeychainAccess', '3.1.1'
@@ -32,7 +32,7 @@ target 'Shared' do
   pod 'Alamofire', '4.7.3'
   pod 'AlamofireObjectMapper', '5.1.0'
   pod 'Crashlytics', '3.10.2'
-  pod 'DeviceKit', '1.7.0'
+  pod 'DeviceKit', '1.8'
   pod 'KeychainAccess', '3.1.1'
   pod 'ObjectMapper', '3.3.0'
   pod 'PromiseKit', '6.3.0'
