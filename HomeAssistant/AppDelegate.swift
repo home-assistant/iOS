@@ -26,16 +26,17 @@ let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var safariVC: SFSafariViewController?
+    let regionManager = RegionManager()
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         Fabric.with([Crashlytics.self])
-
+        Current.deviceIDProvider = { DeviceUID.uid() }
+        Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         }
 
         NetworkActivityIndicatorManager.shared.isEnabled = true
-
         if #available(iOS 10, *) {
             UNUserNotificationCenter.current().delegate = self
         }

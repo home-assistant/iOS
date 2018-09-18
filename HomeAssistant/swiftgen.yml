@@ -2,4 +2,4 @@ strings:
   paths:
     - Resources/en.lproj/Localizable.strings
   templateName: structured-swift4
-  output: Resources/SwiftGen/Strings.swift
+  output: ../Shared/Resources/SwiftGen/Strings.swift

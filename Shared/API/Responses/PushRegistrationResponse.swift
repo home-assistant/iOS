@@ -10,28 +10,28 @@ import Foundation
 import ObjectMapper
 
 public class PushRegistrationResponse: Mappable {
-    var APNSSandbox: Bool?
-    var AppBuildNumber: Int?
-    var AppBundleIdentifer: String?
-    var AppVersionNumber: String?
-    var DeviceId: String?
-    var DeviceName: String?
-    var DevicePermanentID: String?
-    var DeviceSystemName: String?
-    var DeviceSystemVersion: String?
-    var DeviceTimezone: String?
-    var DeviceType: String?
-    var EndpointARN: String?
-    var HomeAssistantTimezone: String?
-    var HomeAssistantVersion: String?
-    var IPAddress: String?
-    var PushId: String?
-    var PushSounds: [String]?
-    var PushToken: String?
-    var RegisteredAt: Date?
-    var SNSPlatform: String?
-    var SubscriptionARN: String?
-    var UserEmail: String?
+    public var APNSSandbox: Bool?
+    public var AppBuildNumber: Int?
+    public var AppBundleIdentifer: String?
+    public var AppVersionNumber: String?
+    public var DeviceId: String?
+    public var DeviceName: String?
+    public var DevicePermanentID: String?
+    public var DeviceSystemName: String?
+    public var DeviceSystemVersion: String?
+    public var DeviceTimezone: String?
+    public var DeviceType: String?
+    public var EndpointARN: String?
+    public var HomeAssistantTimezone: String?
+    public var HomeAssistantVersion: String?
+    public var IPAddress: String?
+    public var PushId: String?
+    public var PushSounds: [String]?
+    public var PushToken: String?
+    public var RegisteredAt: Date?
+    public var SNSPlatform: String?
+    public var SubscriptionARN: String?
+    public var UserEmail: String?
 
     init() {}
 

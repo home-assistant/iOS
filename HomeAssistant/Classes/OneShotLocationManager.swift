@@ -8,13 +8,16 @@
 
 import CoreLocation
 import Foundation
-import Shared
+import PromiseKit
 
-class OneShotLocationManager: NSObject {
+public typealias OnLocationUpdated = ((CLLocation?, Error?) -> Void)
+
+public class OneShotLocationManager: NSObject {
     let locationManager = CLLocationManager()
     var onLocationUpdated: OnLocationUpdated
+    public var waitingForLocation = false
 
-    init(onLocation: @escaping OnLocationUpdated) {
+    public init(onLocation: @escaping OnLocationUpdated) {
         onLocationUpdated = onLocation
         super.init()
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
@@ -26,14 +29,14 @@ class OneShotLocationManager: NSObject {
 }
 
 extension OneShotLocationManager: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print("LocationManager: Got location, stopping updates!", locations.last.debugDescription, locations.count)
         onLocationUpdated(locations.first, nil)
         manager.stopUpdatingLocation()
         manager.delegate = nil
     }
 
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         if let clErr = error as? CLError {
             let realm = Current.realm()
             // swiftlint:disable:next force_try

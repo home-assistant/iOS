@@ -24,7 +24,7 @@ class Sun: Entity {
     }
 
     override var EntityColor: UIColor {
-        return self.State == "above_horizon" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
+        return self.State == "above_horizon" ? UIColor.onColor : self.DefaultEntityUIColor
     }
 
     override var ComponentIcon: String {
