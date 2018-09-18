@@ -620,6 +620,12 @@ public class HomeAssistantAPI {
             content.title = notificationOptions.title
             content.body = notificationOptions.body
             content.sound = UNNotificationSound.default
+            if !zoneName.isEmpty {
+                content.threadIdentifier = zoneName
+            } else {
+                // Group all location notifications together as "location" if they aren't generated from a zone.
+                content.threadIdentifier = "location"
+            }
 
             let notificationRequest =
                 UNNotificationRequest.init(identifier: notificationOptions.identifier ?? "",
