@@ -10,19 +10,19 @@ import Foundation
 import ObjectMapper
 
 public class ConfigResponse: Mappable {
-    var Components: [String]?
-    var Version: String?
-    var ConfigDirectory: String?
+    public var Components: [String]?
+    public var Version: String?
+    public var ConfigDirectory: String?
 
-    var TemperatureUnit: String?
-    var LengthUnit: String?
-    var MassUnit: String?
-    var VolumeUnit: String?
+    public var TemperatureUnit: String?
+    public var LengthUnit: String?
+    public var MassUnit: String?
+    public var VolumeUnit: String?
 
-    var LocationName: String?
-    var Timezone: String?
-    var Latitude: Float?
-    var Longitude: Float?
+    public var LocationName: String?
+    public var Timezone: String?
+    public var Latitude: Float?
+    public var Longitude: Float?
 
     required public init?(map: Map) {}
 

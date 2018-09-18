@@ -13,22 +13,21 @@ import RealmSwift
 
 public class RLMZone: Object {
 
-    @objc dynamic var ID: String = ""
-
-    @objc dynamic var Latitude: Double = 0.0
-    @objc dynamic var Longitude: Double = 0.0
-    @objc dynamic var Radius: Double = 0.0
-    @objc dynamic var TrackingEnabled = true
-    @objc dynamic var enterNotification = true
-    @objc dynamic var exitNotification = true
-    @objc dynamic var inRegion = false
+    @objc public dynamic var ID: String = ""
+    @objc public dynamic var Latitude: Double = 0.0
+    @objc public dynamic var Longitude: Double = 0.0
+    @objc public dynamic var Radius: Double = 0.0
+    @objc public dynamic var TrackingEnabled = true
+    @objc public dynamic var enterNotification = true
+    @objc public dynamic var exitNotification = true
+    @objc public dynamic var inRegion = false
 
     // Beacons
-    @objc dynamic var BeaconUUID: String?
-    let BeaconMajor = RealmOptional<Int>()
-    let BeaconMinor = RealmOptional<Int>()
+    @objc public dynamic var BeaconUUID: String?
+    public let BeaconMajor = RealmOptional<Int>()
+    public let BeaconMinor = RealmOptional<Int>()
 
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         ID                       <- map["entity_id"]
 
         Latitude                 <- map["attributes.latitude"]
@@ -53,12 +52,12 @@ public class RLMZone: Object {
         self.BeaconMinor.value = zone.Minor
     }
 
-    func locationCoordinates() -> CLLocationCoordinate2D {
+    public func locationCoordinates() -> CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: CLLocationDegrees(self.Latitude),
                                       longitude: CLLocationDegrees(self.Longitude))
     }
 
-    func location() -> CLLocation {
+    public func location() -> CLLocation {
         return CLLocation(coordinate: self.locationCoordinates(),
                           altitude: 0,
                           horizontalAccuracy: self.Radius,
@@ -66,7 +65,7 @@ public class RLMZone: Object {
                           timestamp: Date())
     }
 
-    func region() -> CLRegion? {
+    public func region() -> CLRegion? {
         if let uuidString = self.BeaconUUID {
             // iBeacon
             guard let uuid = UUID(uuidString: uuidString) else {
@@ -98,7 +97,7 @@ public class RLMZone: Object {
         }
     }
 
-    func circularRegion() -> CLCircularRegion {
+    public func circularRegion() -> CLCircularRegion {
         let region = CLCircularRegion(
             center: CLLocationCoordinate2DMake(self.Latitude, self.Longitude),
             radius: self.Radius,
@@ -109,21 +108,21 @@ public class RLMZone: Object {
         return region
     }
 
-    override public static func primaryKey() -> String? {
+    public override static func primaryKey() -> String? {
         return "ID"
     }
 
-    var Name: String {
+    public var Name: String {
         return self.ID.replacingOccurrences(of: "\(self.Domain).",
                                             with: "").replacingOccurrences(of: "_",
                                                                            with: " ").capitalized
     }
 
-    var Domain: String {
+    public var Domain: String {
         return self.ID.components(separatedBy: ".")[0]
     }
 
-    var IsBeaconRegion: Bool {
+    public var IsBeaconRegion: Bool {
         return self.BeaconUUID != nil
     }
 }

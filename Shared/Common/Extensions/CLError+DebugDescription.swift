@@ -10,7 +10,7 @@ import Foundation
 import CoreLocation
 
 extension CLError {
-    var debugDescription: String {
+    public var debugDescription: String {
         switch self.code {
         case CLError.locationUnknown:
             return "The location manager was unable to obtain a location value right now."
