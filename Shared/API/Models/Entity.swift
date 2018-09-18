@@ -11,11 +11,11 @@ import ObjectMapper
 
 // swiftlint:disable:next type_body_length
 public class Entity: StaticMappable {
-    let DefaultEntityUIColor = colorWithHexString("#44739E", alpha: 1)
+    let DefaultEntityUIColor = UIColor.defaultEntityColor
 
-    @objc dynamic var ID: String = ""
-    @objc dynamic var State: String = ""
-    @objc dynamic var Attributes: [String: Any] {
+    @objc public dynamic var ID: String = ""
+    @objc public dynamic var State: String = ""
+    @objc public dynamic var Attributes: [String: Any] {
         get {
             guard let dictionaryData = attributesData else {
                 return [String: Any]()
@@ -38,21 +38,21 @@ public class Entity: StaticMappable {
         }
     }
     @objc fileprivate dynamic var attributesData: Data?
-    @objc dynamic var FriendlyName: String?
-    @objc dynamic var Hidden = false
-    @objc dynamic var Icon: String?
-    @objc dynamic var MobileIcon: String?
-    @objc dynamic var Picture: String?
-    var DownloadedPicture: UIImage?
-    var UnitOfMeasurement: String?
-    @objc dynamic var LastChanged: Date?
-    @objc dynamic var LastUpdated: Date?
+    @objc public dynamic var FriendlyName: String?
+    @objc public dynamic var Hidden = false
+    @objc public dynamic var Icon: String?
+    @objc public dynamic var MobileIcon: String?
+    @objc public dynamic var Picture: String?
+    public var DownloadedPicture: UIImage?
+    public var UnitOfMeasurement: String?
+    @objc public dynamic var LastChanged: Date?
+    @objc public dynamic var LastUpdated: Date?
     //    let Groups = LinkingObjects(fromType: Group.self, property: "Entities")
 
     // Z-Wave properties
-    @objc dynamic var Location: String?
-    @objc dynamic var NodeID: String?
-    var BatteryLevel: Int?
+    @objc public dynamic var Location: String?
+    @objc public dynamic var NodeID: String?
+    public var BatteryLevel: Int?
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     public class func objectForMapping(map: Map) -> BaseMappable? {
@@ -129,19 +129,19 @@ public class Entity: StaticMappable {
 
     }
 
-    func turnOn() {
+    public func turnOn() {
         _ = HomeAssistantAPI.authenticatedAPI()?.turnOnEntity(entity: self)
     }
 
-    func turnOff() {
+    public func turnOff() {
         _ = HomeAssistantAPI.authenticatedAPI()?.turnOffEntity(entity: self)
     }
 
-    func toggle() {
+    public func toggle() {
         _ = HomeAssistantAPI.authenticatedAPI()?.toggleEntity(entity: self)
     }
 
-    var ComponentIcon: String {
+    public var ComponentIcon: String {
         switch self.Domain {
         case "alarm_control_panel":
             return "mdi:bell"
@@ -213,7 +213,7 @@ public class Entity: StaticMappable {
         }
     }
 
-    func StateIcon() -> String {
+    public func StateIcon() -> String {
         if self.MobileIcon != nil { return self.MobileIcon! }
         if self.Icon != nil { return self.Icon! }
         switch self {
@@ -233,10 +233,10 @@ public class Entity: StaticMappable {
         }
     }
 
-    var EntityColor: UIColor {
+    public var EntityColor: UIColor {
         switch self.Domain {
         case "binary_sensor", "input_boolean", "media_player", "script", "switch":
-            return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
+            return self.State == "on" ? UIColor.onColor : self.DefaultEntityUIColor
         case "light":
             if self.State == "on" {
                 if let rgb = self.Attributes["rgb_color"] as? [Float] {
@@ -245,29 +245,28 @@ public class Entity: StaticMappable {
                     let blue = CGFloat(rgb[2]/255.0)
                     return UIColor.init(red: red, green: green, blue: blue, alpha: 1)
                 } else {
-                    return colorWithHexString("#DCC91F", alpha: 1)
+                    return UIColor.onColor
                 }
             } else {
                 return self.DefaultEntityUIColor
             }
         case "sun":
-            return self.State == "above_horizon" ? colorWithHexString("#DCC91F",
-                                                                      alpha: 1) : self.DefaultEntityUIColor
+            return self.State == "above_horizon" ? UIColor.onColor : self.DefaultEntityUIColor
         default:
             let hexColor = self.State == "unavailable" ? "#bdbdbd" : "#44739E"
-            return colorWithHexString(hexColor, alpha: 1)
+            return hexColor.colorWithHexValue()
         }
     }
 
-    var EntityIcon: UIImage {
-        return getIconForIdentifier(self.StateIcon(), iconWidth: 30, iconHeight: 30, color: self.EntityColor)
+    public var EntityIcon: UIImage {
+        return  UIImage.iconForIdentifier(self.StateIcon(), iconWidth: 30, iconHeight: 30, color: self.EntityColor)
     }
 
-    func EntityIcon(width: Double, height: Double, color: UIColor) -> UIImage {
-        return getIconForIdentifier(self.StateIcon(), iconWidth: width, iconHeight: height, color: color)
+    public func EntityIcon(width: Double, height: Double, color: UIColor) -> UIImage {
+        return UIImage.iconForIdentifier(self.StateIcon(), iconWidth: width, iconHeight: height, color: color)
     }
 
-    var Name: String {
+    public var Name: String {
         if let friendly = self.FriendlyName {
             return friendly
         } else {
@@ -277,11 +276,11 @@ public class Entity: StaticMappable {
         }
     }
 
-    var CleanedState: String {
+    public var CleanedState: String {
         return self.State.replacingOccurrences(of: "_", with: " ").capitalized
     }
 
-    var Domain: String {
+    public var Domain: String {
         return self.ID.components(separatedBy: ".")[0]
     }
 }

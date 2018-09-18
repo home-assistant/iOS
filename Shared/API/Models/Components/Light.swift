@@ -56,7 +56,7 @@ class Light: Entity {
                 let blue = CGFloat(rgb![2]/255.0)
                 return UIColor.init(red: red, green: green, blue: blue, alpha: 1)
             } else {
-                return colorWithHexString("#DCC91F", alpha: 1)
+                return UIColor.onColor
             }
         } else {
             return self.DefaultEntityUIColor
