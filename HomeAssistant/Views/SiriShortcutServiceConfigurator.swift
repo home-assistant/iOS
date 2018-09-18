@@ -35,14 +35,6 @@ class SiriShortcutServiceConfigurator: FormViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
                                                                  action: #selector(addToSiri))
 
-        var suggestions: [INShortcut] = []
-
-        if let shortcut = INShortcut(intent: fireEvent) {
-            suggestions.append(shortcut)
-        }
-
-        INVoiceShortcutCenter.shared.setShortcutSuggestions(suggestions)
-
         PickerInlineRow<String>.defaultCellUpdate = { cell, row in
             if !row.isValid {
                 cell.backgroundColor = .red
