@@ -23,6 +23,8 @@ class SiriShortcutServiceConfigurator: FormViewController {
     var serviceData: ServiceDefinition?
     var entityIDs: [String] = []
 
+    var serviceDataJSON: String?
+
     // swiftlint:disable cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +34,14 @@ class SiriShortcutServiceConfigurator: FormViewController {
 
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
                                                                  action: #selector(addToSiri))
+
+        var suggestions: [INShortcut] = []
+
+        if let shortcut = INShortcut(intent: fireEvent) {
+            suggestions.append(shortcut)
+        }
+
+        INVoiceShortcutCenter.shared.setShortcutSuggestions(suggestions)
 
         PickerInlineRow<String>.defaultCellUpdate = { cell, row in
             if !row.isValid {
@@ -190,6 +200,11 @@ class SiriShortcutServiceConfigurator: FormViewController {
             serviceIntent.serviceName = self.title
             serviceIntent.serviceData = jsonString
 
+            let intentJSONData = try? JSONSerialization.data(withJSONObject: ["serviceName": serviceIntent.serviceName,
+                                                                              "serviceData": formData],
+                                                             options: [])
+            serviceDataJSON = String(data: intentJSONData!, encoding: .utf8)
+
             if let shortcut = INShortcut(intent: serviceIntent) {
                 let viewController = INUIAddVoiceShortcutViewController(shortcut: shortcut)
                 viewController.modalPresentationStyle = .formSheet
@@ -210,7 +225,18 @@ extension SiriShortcutServiceConfigurator: INUIAddVoiceShortcutViewControllerDel
             print("error adding voice shortcut:\(error.localizedDescription)")
             return
         }
-        print("UPDATE SHORTCUTS 3")
+
+        if let voiceShortcut = voiceShortcut {
+            print("UPDATE SHORTCUTS 3")
+
+            let realm = Current.realm()
+            // swiftlint:disable:next force_try
+            try! realm.write {
+                realm.add(SiriShortcut(intent: "CallService", shortcut: voiceShortcut, jsonData: serviceDataJSON))
+            }
+            dismiss(animated: true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
+        }
     }
 
     func addVoiceShortcutViewControllerDidCancel(_ controller: INUIAddVoiceShortcutViewController) {

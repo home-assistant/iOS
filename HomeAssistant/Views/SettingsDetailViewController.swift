@@ -20,6 +20,8 @@ class SettingsDetailViewController: FormViewController {
 
     var doneButton: Bool = false
 
+    var voiceShortcutManager: Any?
+
     // swiftlint:disable:next function_body_length cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +32,10 @@ class SettingsDetailViewController: FormViewController {
             let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
                                              action: closeSelector)
             self.navigationItem.setRightBarButton(doneButton, animated: true)
+        }
+
+        if #available(iOS 12.0, *) {
+            voiceShortcutManager = VoiceShortcutsManager.init()
         }
 
         switch detailGroup {
@@ -289,6 +295,32 @@ class SettingsDetailViewController: FormViewController {
 
             self.title = L10n.SettingsDetails.Siri.title
             if #available(iOS 12.0, *) {
+                self.form
+                    +++ Section(header: "Existing Shortcuts", footer: "")
+                let realm = Current.realm()
+                let shortcuts = realm.objects(SiriShortcut.self).map { $0 }
+                for shortcut in shortcuts {
+                self.form.last!
+                    <<< ButtonRow {
+                        $0.cellStyle = .subtitle
+                        $0.title = shortcut.InvocationPhrase
+                        $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
+                            if let identifier = shortcut.Identifier,
+                                let shortcutManager = self.voiceShortcutManager as? VoiceShortcutsManager,
+                                let shortcut = shortcutManager.voiceShortcut(for: identifier) {
+                                let viewController = INUIEditVoiceShortcutViewController(voiceShortcut: shortcut)
+                                viewController.delegate = self
+                                return viewController
+                            }
+                            return UIViewController()
+                        }, onDismiss: { vc in
+                            _ = vc.navigationController?.popViewController(animated: true)
+                        })
+                    }.cellUpdate({ cell, _ in
+                        cell.detailTextLabel?.text = shortcut.Data
+                    })
+                }
+
                 self.form
                     +++ Section(header: "Generic Shortcuts", footer: "")
                     <<< ButtonRow {
