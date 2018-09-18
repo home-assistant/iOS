@@ -10,15 +10,15 @@ import Foundation
 import ObjectMapper
 import CoreLocation
 
-class DeviceTracker: Entity {
+public class DeviceTracker: Entity {
 
-    var Latitude: Double?
-    var Longitude: Double?
-    var Battery: Int?
-    var GPSAccuracy: Double? // It's a double for direct use in CLLocationDistance
-    @objc dynamic var IsHome: Bool = false
+    public var Latitude: Double?
+    public var Longitude: Double?
+    public var Battery: Int?
+    public var GPSAccuracy: Double? // It's a double for direct use in CLLocationDistance
+    @objc public dynamic var IsHome: Bool = false
 
-    override func mapping(map: Map) {
+    public override func mapping(map: Map) {
         super.mapping(map: map)
 
         Latitude     <- map["attributes.latitude"]
@@ -28,7 +28,7 @@ class DeviceTracker: Entity {
         IsHome       <- (map["state"], ComponentBoolTransform(trueValue: "home", falseValue: "not_home"))
     }
 
-    func locationCoordinates() -> CLLocationCoordinate2D {
+    public func locationCoordinates() -> CLLocationCoordinate2D {
         if self.Latitude != nil && self.Longitude != nil {
             return CLLocationCoordinate2D(latitude: self.Latitude!, longitude: self.Longitude!)
         } else {
@@ -36,7 +36,7 @@ class DeviceTracker: Entity {
         }
     }
 
-    func location() -> CLLocation {
+    public func location() -> CLLocation {
         if let accr = self.GPSAccuracy {
             return CLLocation(coordinate: self.locationCoordinates(),
                               altitude: 0,
@@ -52,7 +52,7 @@ class DeviceTracker: Entity {
         }
     }
 
-    override var ComponentIcon: String {
+    public override var ComponentIcon: String {
         return "mdi:account"
     }
 }

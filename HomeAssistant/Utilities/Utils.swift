@@ -10,7 +10,8 @@ import Foundation
 import FontAwesomeKit
 import Crashlytics
 import KeychainAccess
-private let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
+import Shared
+
 // Thanks to http://stackoverflow.com/a/35624018/486182
 // Must reboot device after installing new push sounds (http://stackoverflow.com/q/34998278/486182)
 

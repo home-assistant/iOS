@@ -17,7 +17,6 @@ import Foundation
 import KeychainAccess
 import ObjectMapper
 import RealmSwift
-import Shared
 import UserNotifications
 
 private let keychain = Keychain(service: "io.robbie.homeassistant")
@@ -26,7 +25,7 @@ private let keychain = Keychain(service: "io.robbie.homeassistant")
 
 // swiftlint:disable:next type_body_length
 public class HomeAssistantAPI {
-    enum APIError: Error {
+    public enum APIError: Error {
         case managerNotAvailable
         case invalidResponse
         case cantBuildURL
@@ -40,32 +39,31 @@ public class HomeAssistantAPI {
 
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
-    var pushID: String?
+    public var pushID: String?
 
-    var loadedComponents = [String]()
+    public var loadedComponents = [String]()
 
     var apiPassword: String?
 
     private(set) var manager: Alamofire.SessionManager!
 
-    var regionManager = RegionManager()
-    var oneShotLocationManager: OneShotLocationManager?
+    public var oneShotLocationManager: OneShotLocationManager?
 
-    var cachedEntities: [Entity]?
+    public var cachedEntities: [Entity]?
 
-    var notificationsEnabled: Bool {
+    public var notificationsEnabled: Bool {
         return self.prefs.bool(forKey: "notificationsEnabled")
     }
 
-    var iosComponentLoaded: Bool {
+    public var iosComponentLoaded: Bool {
         return self.loadedComponents.contains("ios")
     }
 
-    var deviceTrackerComponentLoaded: Bool {
+    public var deviceTrackerComponentLoaded: Bool {
         return self.loadedComponents.contains("device_tracker")
     }
 
-    var iosNotifyPlatformLoaded: Bool {
+    public var iosNotifyPlatformLoaded: Bool {
         return self.loadedComponents.contains("notify.ios")
     }
 
@@ -80,9 +78,8 @@ public class HomeAssistantAPI {
         return permissionsContainer
     }
 
-    private var tokenManager: TokenManager?
-    private let authenticationController = AuthenticationController()
-    var connectionInfo: ConnectionInfo
+    var tokenManager: TokenManager?
+    public var connectionInfo: ConnectionInfo
 
     /// Initialzie an API object with an authenticated tokenManager.
     public init(connectionInfo: ConnectionInfo, authenticationMethod: AuthenticationMethod) {
@@ -94,12 +91,6 @@ public class HomeAssistantAPI {
         case .modern(let tokenInfo):
             // TODO: Take this into account when promoting to the main API. The one in Current is separate, which is bad.
             self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
-            tokenManager?.authenticationRequiredCallback = { [weak self] in
-                guard let authenticationController = self?.authenticationController else {
-                    return Promise(error: HomeAssistantAPIError.unknown)
-                }
-                return authenticationController.authenticateWithBrowser(at: connectionInfo.baseURL)
-            }
             let manager = self.configureSessionManager()
             manager.retrier = self.tokenManager
             manager.adapter = self.tokenManager
@@ -216,88 +207,6 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func submitLocation(updateType: LocationUpdateTrigger,
-                               location: CLLocation?,
-                               visit: CLVisit?,
-                               zone: RLMZone?) -> Promise<Void> {
-        UIDevice.current.isBatteryMonitoringEnabled = true
-
-        let payload = DeviceTrackerSee(trigger: updateType, location: location, visit: visit, zone: zone)
-        payload.Trigger = updateType
-
-        let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
-
-        payload.Battery = UIDevice.current.batteryLevel
-        payload.DeviceID = Current.settingsStore.deviceID
-        payload.Hostname = UIDevice.current.name
-        payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
-
-        if let activity = self.regionManager.lastActivity {
-            payload.SetActivity(activity: activity)
-        }
-
-        var jsonPayload = "{\"missing\": \"payload\"}"
-        if let p = payload.toJSONString(prettyPrint: false) {
-            jsonPayload = p
-        }
-
-        let payloadDict: [String: Any] = Mapper<DeviceTrackerSee>().toJSON(payload)
-
-        UIDevice.current.isBatteryMonitoringEnabled = false
-
-        let realm = Current.realm()
-        // swiftlint:disable:next force_try
-        try! realm.write {
-            realm.add(LocationHistoryEntry(updateType: updateType, location: payload.cllocation,
-                                           zone: zone, payload: jsonPayload))
-        }
-
-        let promise = firstly {
-            self.identifyDevice()
-        }.then {_ in
-            self.callService(domain: "device_tracker", service: "see", serviceData: payloadDict,
-                             shouldLog: false)
-        }.done { _ in
-            print("Device seen!")
-            self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: payloadDict)
-        }
-
-        promise.catch { err in
-            print("Error when updating location!", err)
-            Crashlytics.sharedInstance().recordError(err as NSError)
-        }
-
-        return promise
-    }
-
-    public func getAndSendLocation(trigger: LocationUpdateTrigger?) -> Promise<Void> {
-        var updateTrigger: LocationUpdateTrigger = .Manual
-        if let trigger = trigger {
-            updateTrigger = trigger
-        }
-        print("getAndSendLocation called via", String(describing: updateTrigger))
-
-        return Promise { seal in
-            regionManager.oneShotLocationActive = true
-            oneShotLocationManager = OneShotLocationManager { location, error in
-                guard let location = location else {
-                    seal.reject(error ?? HomeAssistantAPIError.unknown)
-                    return
-                }
-
-                self.regionManager.oneShotLocationActive = false
-                firstly {
-                    self.submitLocation(updateType: updateTrigger, location: location,
-                                        visit: nil, zone: nil)
-                    }.done { _ in
-                        seal.fulfill(())
-                    }.catch { error in
-                        seal.reject(error)
-                    }
-            }
-        }
-    }
-
     public func getManifestJSON() -> Promise<ManifestJSON> {
         return Promise { seal in
             if let manager = self.manager {
@@ -369,6 +278,19 @@ public class HomeAssistantAPI {
                         Crashlytics.sharedInstance().recordError(error)
                         seal.reject(error)
                     }
+            }
+        }
+    }
+
+    public func downloadDataAt(url: URL) -> Promise<Data> {
+        return Promise { seal in
+            self.manager.download(url).responseData { downloadResponse in
+                switch downloadResponse.result {
+                case .success(let data):
+                    seal.fulfill(data)
+                case .failure(let error):
+                    seal.reject(error)
+                }
             }
         }
     }
@@ -490,7 +412,7 @@ public class HomeAssistantAPI {
         return callService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
 
-    func getPushSettings() -> Promise<PushConfiguration> {
+    public func getPushSettings() -> Promise<PushConfiguration> {
         return self.request(path: "ios/push", callingFunctionName: "\(#function)")
     }
 
@@ -513,7 +435,7 @@ public class HomeAssistantAPI {
         ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
         ident.DeviceModel = deviceKitDevice.model
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = Current.deviceID()
+        ident.DevicePermanentID = Current.deviceIDProvider()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
@@ -566,7 +488,7 @@ public class HomeAssistantAPI {
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
         ident.DeviceID = Current.settingsStore.deviceID
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = Current.deviceID()
+        ident.DevicePermanentID = Current.deviceIDProvider()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
@@ -605,7 +527,7 @@ public class HomeAssistantAPI {
         ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
         ident.DeviceModel = deviceKitDevice.model
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = Current.deviceID()
+        ident.DevicePermanentID = Current.deviceIDProvider()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description

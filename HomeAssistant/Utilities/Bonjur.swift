@@ -8,6 +8,7 @@
 
 import DeviceKit
 import Foundation
+import Shared
 
 class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
 

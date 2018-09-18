@@ -11,11 +11,11 @@ import Foundation
 private let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 public enum LocationUpdateTrigger: String {
 
-    struct NotificationOptions {
-        let shouldNotify: Bool
-        let identifier: String?
-        let title: String
-        let body: String
+    public struct NotificationOptions {
+        public let shouldNotify: Bool
+        public let identifier: String?
+        public let title: String
+        public let body: String
     }
 
     case Visit = "Visit"
@@ -32,7 +32,7 @@ public enum LocationUpdateTrigger: String {
     case URLScheme = "URL Scheme"
     case Unknown = "Unknown"
 
-    func notificationOptionsFor(zoneName: String) -> NotificationOptions {
+    public func notificationOptionsFor(zoneName: String) -> NotificationOptions {
         let shouldNotify: Bool
         var identifier: String = ""
         let body: String

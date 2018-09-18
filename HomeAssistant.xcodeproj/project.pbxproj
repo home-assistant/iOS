@@ -160,8 +160,6 @@
 		B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */; };
 		B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */; };
 		B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64BB3A71E9C6551001E8B46 /* WebViewController.swift */; };
-		B64D047A1CB8908B00B945C8 /* StateChanged.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D04791CB8908B00B945C8 /* StateChanged.swift */; };
-		B64D047D1CB8916300B945C8 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D047C1CB8916300B945C8 /* Event.swift */; };
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
 		B657A8EE1CA646EB00121384 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8ED1CA646EB00121384 /* SettingsViewController.swift */; };
 		B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F21CA646EB00121384 /* Assets.xcassets */; };
@@ -181,13 +179,10 @@
 		B699339C1E2338960054453D /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B699339B1E2338960054453D /* SnapshotHelper.swift */; };
 		B6AAD7A41D827DD40090B220 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AAD7A31D827DD40090B220 /* NotificationService.swift */; };
 		B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		B6C2C17F20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */; };
 		B6CFF5D82101984500CC523F /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5D72101984500CC523F /* Realm.framework */; };
 		B6CFF5DA2101984A00CC523F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5D92101984A00CC523F /* RealmSwift.framework */; };
 		B6CFF5DC2101985200CC523F /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5DB2101985200CC523F /* Realm.framework */; };
 		B6CFF5DE2101985200CC523F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5DD2101985200CC523F /* RealmSwift.framework */; };
-		B6E47E881CBA01310027F6CA /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E871CBA01310027F6CA /* CallService.swift */; };
-		B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
 		D03D892920E0A85300D4F28D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03D892D20E0A85300D4F28D /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -247,7 +242,6 @@
 		D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
 		D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF304214DD0D400D1D360 /* UIColor+HA.swift */; };
 		D0EEF306214DD3CF00D1D360 /* ObjectMapperTransformers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */; };
-		D0EEF307214DD54F00D1D360 /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BC82130CA0D00678C2C /* OneShotLocationManager.swift */; };
 		D0EEF308214DD55300D1D360 /* RegionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCA2130CA2D00678C2C /* RegionManager.swift */; };
 		D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF309214DD64C00D1D360 /* UIImage+Icons.swift */; };
 		D0EEF30C214DD79100D1D360 /* ManifestJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */; };
@@ -268,6 +262,14 @@
 		D0EEF32D214DF94900D1D360 /* PushRegistrationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */; };
 		D0EEF32E214DF99500D1D360 /* PushRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */; };
 		D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF330214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift */; };
+		D0EEF332214EB2BC00D1D360 /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BC82130CA0D00678C2C /* OneShotLocationManager.swift */; };
+		D0EEF334214EB44000D1D360 /* HomeAssistantAPI+Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF333214EB44000D1D360 /* HomeAssistantAPI+Location.swift */; };
+		D0EEF335214EB77100D1D360 /* CLLocation+ToDoubleArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */; };
+		D0EEF336214EB7B800D1D360 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
+		D0EEF33E214EC76A00D1D360 /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E871CBA01310027F6CA /* CallService.swift */; };
+		D0EEF33F214EC76A00D1D360 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D047C1CB8916300B945C8 /* Event.swift */; };
+		D0EEF340214EC76A00D1D360 /* ServiceExecuted.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */; };
+		D0EEF341214EC76A00D1D360 /* StateChanged.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D04791CB8908B00B945C8 /* StateChanged.swift */; };
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
 		D18BB39F0BE75F5C3F086FE2 /* Pods-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */; };
@@ -320,6 +322,13 @@
 			remoteInfo = Shared;
 		};
 		D03D894820E0BC1800D4F28D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D03D891620E0A85200D4F28D;
+			remoteInfo = Shared;
+		};
+		D0EEF344214F15CA00D1D360 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
 			proxyType = 1;
@@ -667,8 +676,8 @@
 		D0EEF31F214DE3B300D1D360 /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTrigger.swift; sourceTree = "<group>"; };
 		D0EEF326214DF31D00D1D360 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
-		D0EEF328214DF57800D1D360 /* Shared-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Shared-Bridging-Header.h"; sourceTree = "<group>"; };
 		D0EEF330214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeAssistantAPI+Notifications.swift"; sourceTree = "<group>"; };
+		D0EEF333214EB44000D1D360 /* HomeAssistantAPI+Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeAssistantAPI+Location.swift"; sourceTree = "<group>"; };
 		D0FF79CB20D778B50034574D /* ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEvent.swift; sourceTree = "<group>"; };
 		D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventStore.swift; sourceTree = "<group>"; };
 		D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTableViewController.swift; sourceTree = "<group>"; };
@@ -1101,7 +1110,6 @@
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 				B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */,
-				B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */,
 				D0B25BCC2130CAB400678C2C /* Bonjur.swift */,
 			);
 			path = Utilities;
@@ -1135,6 +1143,7 @@
 			children = (
 				D0B25BC82130CA0D00678C2C /* OneShotLocationManager.swift */,
 				D0B25BCA2130CA2D00678C2C /* RegionManager.swift */,
+				D0EEF333214EB44000D1D360 /* HomeAssistantAPI+Location.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1220,7 +1229,6 @@
 				D0FF79C920D7787F0034574D /* ClientEvents */,
 				D03D891920E0A85300D4F28D /* Shared.h */,
 				D03D891A20E0A85300D4F28D /* Info.plist */,
-				D0EEF328214DF57800D1D360 /* Shared-Bridging-Header.h */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -1256,6 +1264,7 @@
 		D0A6367320DBE91300E5C49B /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */,
 				B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */,
 				B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */,
 				D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */,
@@ -1451,6 +1460,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				D0EEF345214F15CA00D1D360 /* PBXTargetDependency */,
 			);
 			name = NotificationContentExtension;
 			productName = NotificationContentExtension;
@@ -1563,8 +1573,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D03D892E20E0A85300D4F28D /* Build configuration list for PBXNativeTarget "Shared" */;
 			buildPhases = (
-				D0EEF31D214DDD5E00D1D360 /* SwiftGen */,
 				FAA3E6162BCD7322035D7E0A /* [CP] Check Pods Manifest.lock */,
+				D0EEF31D214DDD5E00D1D360 /* SwiftGen */,
 				D03D891220E0A85200D4F28D /* Sources */,
 				D03D891320E0A85200D4F28D /* Frameworks */,
 				D03D891420E0A85200D4F28D /* Headers */,
@@ -2142,13 +2152,9 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 			);
 			name = SwiftGen;
-			outputFileListPaths = (
-			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2233,26 +2239,22 @@
 			files = (
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
+				D0EEF334214EB44000D1D360 /* HomeAssistantAPI+Location.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
-				B64D047A1CB8908B00B945C8 /* StateChanged.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
+				D0EEF336214EB7B800D1D360 /* Strings.swift in Sources */,
 				B657A8EE1CA646EB00121384 /* SettingsViewController.swift in Sources */,
-				D0EEF307214DD54F00D1D360 /* OneShotLocationManager.swift in Sources */,
 				B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */,
 				D0EEF308214DD55300D1D360 /* RegionManager.swift in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
-				B6E47E8A1CBA01DC0027F6CA /* ServiceExecuted.swift in Sources */,
 				D0B25BCD2130CAB400678C2C /* Bonjur.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
 				D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */,
 				D0EEF32B214DF75500D1D360 /* DeviceUID.m in Sources */,
-				B64D047D1CB8916300B945C8 /* Event.swift in Sources */,
 				D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */,
 				B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */,
-				B6C2C17F20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
-				B6E47E881CBA01310027F6CA /* CallService.swift in Sources */,
 				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
@@ -2300,14 +2302,17 @@
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
 				D0EEF2F7214D8B7900D1D360 /* Sensor.swift in Sources */,
 				D0EEF315214DD7A400D1D360 /* Beacons.swift in Sources */,
+				D0EEF332214EB2BC00D1D360 /* OneShotLocationManager.swift in Sources */,
 				D0EEF32E214DF99500D1D360 /* PushRegistrationRequest.swift in Sources */,
 				D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */,
 				D0EEF2D1214D8B6700D1D360 /* Entity.swift in Sources */,
 				D0EEF2F2214D8B7900D1D360 /* Light.swift in Sources */,
+				D0EEF335214EB77100D1D360 /* CLLocation+ToDoubleArray.swift in Sources */,
 				D0EEF318214DD7A400D1D360 /* Events.swift in Sources */,
 				D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */,
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
 				D0EEF2FA214D8B7900D1D360 /* Thermostat.swift in Sources */,
+				D0EEF340214EC76A00D1D360 /* ServiceExecuted.swift in Sources */,
 				D0EEF31A214DD7A400D1D360 /* PushConfiguration.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
 				D0EEF2FC214D8B7900D1D360 /* Zone.swift in Sources */,
@@ -2316,10 +2321,12 @@
 				D0EEF319214DD7A400D1D360 /* History.swift in Sources */,
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
 				D0EEF2F9214D8B7900D1D360 /* Switch.swift in Sources */,
+				D0EEF33E214EC76A00D1D360 /* CallService.swift in Sources */,
 				D0EEF2F5214D8B7900D1D360 /* Scene.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,
 				D0EEF306214DD3CF00D1D360 /* ObjectMapperTransformers.swift in Sources */,
 				D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */,
+				D0EEF341214EC76A00D1D360 /* StateChanged.swift in Sources */,
 				D0EEF2EB214D8B7900D1D360 /* DeviceTracker.swift in Sources */,
 				D0EEF2EA214D8B7900D1D360 /* Climate.swift in Sources */,
 				D0EEF30D214DD79A00D1D360 /* Status.swift in Sources */,
@@ -2327,6 +2334,7 @@
 				D0EEF317214DD7A400D1D360 /* DiscoveryInfo.swift in Sources */,
 				D03D893B20E0B2E300D4F28D /* Constants.swift in Sources */,
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
+				D0EEF33F214EC76A00D1D360 /* Event.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,
 				D0EEF2FE214D8C8400D1D360 /* DeviceTrackerSee.swift in Sources */,
 				D0EEF2CA214D89AA00D1D360 /* HAAPI.swift in Sources */,
@@ -2407,6 +2415,11 @@
 			isa = PBXTargetDependency;
 			target = D03D891620E0A85200D4F28D /* Shared */;
 			targetProxy = D03D894820E0BC1800D4F28D /* PBXContainerItemProxy */;
+		};
+		D0EEF345214F15CA00D1D360 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D03D891620E0A85200D4F28D /* Shared */;
+			targetProxy = D0EEF344214F15CA00D1D360 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

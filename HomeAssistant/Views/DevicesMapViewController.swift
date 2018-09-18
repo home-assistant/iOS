@@ -44,10 +44,10 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
                                  action: #selector(DevicesMapViewController.switchMapType(_:)),
                                  for: .valueChanged)
 
-        let uploadIcon = getIconForIdentifier("mdi:upload",
-                                              iconWidth: 30,
-                                              iconHeight: 30,
-                                              color: UIColor.defaultEntityColor)
+        let uploadIcon = UIImage.iconForIdentifier("mdi:upload",
+                                                   iconWidth: 30,
+                                                   iconHeight: 30,
+                                                   color: UIColor.defaultEntityColor)
 
         let leftBarItem = UIBarButtonItem(image: uploadIcon,
                                           style: .plain,

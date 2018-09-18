@@ -6,8 +6,12 @@
 //  Copyright © 2018 Robbie Trencheny. All rights reserved.
 //
 
+import Crashlytics
+import DeviceKit
 import Foundation
+import PromiseKit
 import Shared
+import UserNotifications
 
 extension HomeAssistantAPI {
     func setupPushActions() -> Promise<Set<UIUserNotificationCategory>> {
@@ -59,7 +63,7 @@ extension HomeAssistantAPI {
         }
     }
 
-    private func sendLocalNotification(withZone: RLMZone?, updateType: LocationUpdateTrigger,
+    func sendLocalNotification(withZone: RLMZone?, updateType: LocationUpdateTrigger,
                                        payloadDict: [String: Any]) {
         let zoneName = withZone?.Name ?? "Unknown zone"
         let notificationOptions = updateType.notificationOptionsFor(zoneName: zoneName)
@@ -166,7 +170,7 @@ extension HomeAssistantAPI {
 
             let device = Device()
             var eventData: [String: Any] = ["actionName": identifier,
-                                            "sourceDevicePermanentID": Current.deviceID(),
+                                            "sourceDevicePermanentID": Current.deviceIDProvider(),
                                             "sourceDeviceName": device.name,
                                             "sourceDeviceID": Current.settingsStore.deviceID]
             if let dataDict = userInfo["homeassistant"] {
