@@ -27,11 +27,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var safariVC: SFSafariViewController?
     func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Fabric.with([Crashlytics.self])
 
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
-            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
         }
 
         NetworkActivityIndicatorManager.shared.isEnabled = true
@@ -69,8 +69,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let alert = UIAlertController(title: "You must sign in to continue",
                                           message: "The server has rejected your credentials, "
                                                   + "and you must sign in again to continue.",
-                                          preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                          preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                           handler: { _ in
                                             navController.popToViewController(webView, animated: true)
                                             webView.showSettingsViewController()
@@ -191,7 +191,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ app: UIApplication,
                      open url: URL,
-                     options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
+                     options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         var serviceData: [String: String] = [:]
         if let queryItems = url.queryItems {
             serviceData = queryItems
@@ -280,10 +280,11 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
                 let alert = UIAlertController(title: L10n.Alerts.OpenUrlFromNotification.title,
                                               message: L10n.Alerts.OpenUrlFromNotification.message(openUrl),
-                                              preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: L10n.noLabel, style: UIAlertActionStyle.default, handler: nil))
-                alert.addAction(UIAlertAction(title: L10n.yesLabel, style: UIAlertActionStyle.default, handler: { _ in
-                    UIApplication.shared.open(url, options: [:],
+                                              preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: L10n.noLabel, style: UIAlertAction.Style.default, handler: nil))
+                alert.addAction(UIAlertAction(title: L10n.yesLabel, style: UIAlertAction.Style.default, handler: { _ in
+                    UIApplication.shared.open(url,
+                                              options: [:],
                                               completionHandler: nil)
                 }))
                 var rootViewController = UIApplication.shared.keyWindow?.rootViewController

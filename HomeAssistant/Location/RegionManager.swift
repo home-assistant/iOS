@@ -252,9 +252,9 @@ extension RegionManager: CLLocationManagerDelegate {
 // MARK: BackgroundTask
 extension RegionManager {
     func endBackgroundTask() {
-        if backgroundTask != UIBackgroundTaskInvalid {
+        if backgroundTask! != UIBackgroundTaskIdentifier.invalid {
             UIApplication.shared.endBackgroundTask(backgroundTask!)
-            backgroundTask = UIBackgroundTaskInvalid
+            backgroundTask = UIBackgroundTaskIdentifier.invalid
         }
     }
 }

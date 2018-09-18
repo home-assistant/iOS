@@ -115,8 +115,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }
             let alert = UIAlertController(title: L10n.Settings.ConnectionErrorNotification.title,
                                           message: L10n.Settings.ConnectionErrorNotification.message(errDesc),
-                                          preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                          preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                           handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
@@ -142,9 +142,9 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                             let title = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.title
                             let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
                             let alert = UIAlertController(title: title, message: message,
-                                                          preferredStyle: UIAlertControllerStyle.alert)
+                                                          preferredStyle: UIAlertController.Style.alert)
                             alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                                          style: UIAlertActionStyle.default,
+                                                          style: UIAlertAction.Style.default,
                                                           handler: nil))
                             self.present(alert, animated: true, completion: nil)
                         } else {
@@ -231,8 +231,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                             let title = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.title
                             let message = L10n.Settings.ConnectionSection.InvalidUrlSchemeNotification.message
                             let alert = UIAlertController(title: title, message: message,
-                                                          preferredStyle: UIAlertControllerStyle.alert)
-                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                                          preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                                           handler: nil))
                             self.present(alert, animated: true, completion: nil)
                         } else {
@@ -385,8 +385,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                             let message = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message
                             let alert = UIAlertController(title: title,
                                                           message: message,
-                                                          preferredStyle: UIAlertControllerStyle.alert)
-                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                                          preferredStyle: UIAlertController.Style.alert)
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                                           handler: nil))
                             self.present(alert, animated: true, completion: nil)
                         } else {
@@ -445,7 +445,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 }.onCellSelection { _, row in
                     let alert = UIAlertController(title: L10n.Settings.ResetSection.ResetAlert.title,
                                                   message: L10n.Settings.ResetSection.ResetAlert.message,
-                                                  preferredStyle: UIAlertControllerStyle.alert)
+                                                  preferredStyle: UIAlertController.Style.alert)
 
                     alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 
@@ -481,7 +481,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 discoverySection
                     <<< ButtonRow(discoveryInfo.LocationName) {
                             $0.title = discoveryInfo.LocationName
-                            $0.cellStyle = UITableViewCellStyle.subtitle
+                            $0.cellStyle = UITableViewCell.CellStyle.subtitle
                         }.cellUpdate { cell, _ in
                             cell.textLabel?.textColor = .black
                             cell.detailTextLabel?.text = detailTextLabel
@@ -608,9 +608,9 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         let message = L10n.Settings.ConnectionErrorNotification.message(errorMessage)
         let alert = UIAlertController(title: title,
                                       message: message,
-                                      preferredStyle: UIAlertControllerStyle.alert)
+                                      preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                      style: UIAlertActionStyle.default,
+                                      style: UIAlertAction.Style.default,
                                       handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
@@ -681,9 +681,9 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             let errMsg = L10n.Settings.ConnectionError.InvalidUrl.message
             let alert = UIAlertController(title: L10n.Settings.ConnectionError.InvalidUrl.title,
                                           message: errMsg,
-                                          preferredStyle: UIAlertControllerStyle.alert)
+                                          preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                          style: UIAlertActionStyle.default,
+                                          style: UIAlertAction.Style.default,
                                           handler: nil))
             self.present(alert, animated: true, completion: nil)
             return

@@ -18,7 +18,7 @@ func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeigh
         CLSLogv("Requesting MaterialDesignIcon: Identifier: %@, Fixed Identifier: %@, Width: %f, Height: %f",
                 getVaList([iconIdentifier, fixedIconIdentifier, iconWidth, iconHeight]))
         let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
-        theIcon?.addAttribute(NSAttributedStringKey.foregroundColor.rawValue, value: color)
+        theIcon?.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: color)
         if let icon = theIcon {
             return icon.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
         } else {
@@ -26,7 +26,7 @@ func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeigh
                     getVaList([iconIdentifier, iconWidth, iconHeight]))
             let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCodes["mdi-help"],
                                                                 size: CGFloat(iconWidth))
-            theIcon?.addAttribute(NSAttributedStringKey.foregroundColor.rawValue, value: color)
+            theIcon?.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: color)
             return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
         }
     } else {
@@ -188,7 +188,8 @@ func openURLInBrowser(urlToOpen: URL) {
     if OpenInChromeController.sharedInstance.isChromeInstalled() && prefs.bool(forKey: "openInChrome") {
         _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
     } else {
-        UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
+        UIApplication.shared.open(urlToOpen, options: [:],
+                                  completionHandler: nil)
     }
 }
 
@@ -205,8 +206,8 @@ func convertToDictionary(text: String) -> [String: Any]? {
 
 func showAlert(title: String, message: String) {
     let alert = UIAlertController(title: title, message: message,
-                                  preferredStyle: UIAlertControllerStyle.alert)
-    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
+                                  preferredStyle: UIAlertController.Style.alert)
+    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
     UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true,
                                                                 completion: nil)
 }

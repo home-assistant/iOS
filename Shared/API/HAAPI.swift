@@ -619,7 +619,7 @@ public class HomeAssistantAPI {
             let content = UNMutableNotificationContent()
             content.title = notificationOptions.title
             content.body = notificationOptions.body
-            content.sound = UNNotificationSound.default()
+            content.sound = UNNotificationSound.default
 
             let notificationRequest =
                 UNNotificationRequest.init(identifier: notificationOptions.identifier ?? "",

@@ -57,7 +57,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         self.mapView.showsScale = (haDict["shows_scale"] != nil)
         self.mapView.showsTraffic = (haDict["shows_traffic"] != nil)
 
-        let span = MKCoordinateSpanMake(0.1, 0.1)
+        let span = MKCoordinateSpan.init(latitudeDelta: 0.1, longitudeDelta: 0.1)
         let region = MKCoordinateRegion(center: location, span: span)
         self.mapView.setRegion(region, animated: true)
         view.addSubview(self.mapView)
@@ -88,7 +88,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                 for annotation in self.mapView.annotations {
                     polylinePoints.append(annotation.coordinate)
                 }
-                self.mapView.add(MKPolyline(coordinates: &polylinePoints, count: polylinePoints.count))
+                self.mapView.addOverlay(MKPolyline(coordinates: &polylinePoints, count: polylinePoints.count))
             }
 
             mapView.showAnnotations(mapView.annotations, animated: true)

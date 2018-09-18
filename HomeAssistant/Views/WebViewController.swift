@@ -22,7 +22,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(WebViewController.loadActiveURLIfNeeded),
-                                               name: NSNotification.Name.UIApplicationDidBecomeActive,
+                                               name: UIApplication.didBecomeActiveNotification,
                                                object: nil)
         let statusBarView: UIView = UIView(frame: .zero)
         statusBarView.tag = 111
@@ -322,16 +322,16 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             print("Sending current location via button press")
             let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
                                           message: L10n.ManualLocationUpdateNotification.message,
-                                          preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
+                                          preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }.catch {error in
             let nserror = error as NSError
             let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
             let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
                                           message: message,
-                                          preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
+                                          preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
     }
