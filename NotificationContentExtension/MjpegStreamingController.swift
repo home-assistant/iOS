@@ -7,7 +7,6 @@
 //  Copyright © 2016 Stefano Vettor. All rights reserved.
 //
 
-import Shared
 import UIKit
 
 open class MjpegStreamingController: NSObject, URLSessionDataDelegate {

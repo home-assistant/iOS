@@ -19,12 +19,12 @@ let usesSSL = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
 })
 
 public class DiscoveryInfoResponse: Mappable {
-    public var BaseURL: URL?
-    public var BaseURLString: String = ""
-    public var LocationName: String = ""
-    public var RequiresPassword: Bool = false
-    public var Version: String = ""
-    public var UsesSSL: Bool = false
+    var BaseURL: URL?
+    var BaseURLString: String = ""
+    var LocationName: String = ""
+    var RequiresPassword: Bool = false
+    var Version: String = ""
+    var UsesSSL: Bool = false
 
     required public init?(map: Map) {
 

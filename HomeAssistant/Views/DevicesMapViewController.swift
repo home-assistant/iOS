@@ -8,7 +8,6 @@
 
 import UIKit
 import MapKit
-import Shared
 
 enum MapType: Int {
     case standard = 0
@@ -44,10 +43,10 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
                                  action: #selector(DevicesMapViewController.switchMapType(_:)),
                                  for: .valueChanged)
 
-        let uploadIcon = UIImage.iconForIdentifier("mdi:upload",
-                                                   iconWidth: 30,
-                                                   iconHeight: 30,
-                                                   color: UIColor.defaultEntityColor)
+        let uploadIcon = getIconForIdentifier("mdi:upload",
+                                              iconWidth: 30,
+                                              iconHeight: 30,
+                                              color: colorWithHexString("#44739E", alpha: 1))
 
         let leftBarItem = UIBarButtonItem(image: uploadIcon,
                                           style: .plain,

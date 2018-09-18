@@ -9,49 +9,49 @@
 import Foundation
 import ObjectMapper
 
-public class PushConfiguration: Mappable {
-    public var Categories: [PushCategory]?
+class PushConfiguration: Mappable {
+    var Categories: [PushCategory]?
 
-    public required init?(map: Map) {
+    required init?(map: Map) {
 
     }
 
-    public func mapping(map: Map) {
+    func mapping(map: Map) {
         Categories        <- map["categories"]
     }
 }
 
-public class PushCategory: Mappable {
-    public var Name: String = "Unknown"
-    public var Identifier: String = "unknown"
+class PushCategory: Mappable {
+    var Name: String = "Unknown"
+    var Identifier: String = "unknown"
 
-    public var Actions: [PushAction]?
+    var Actions: [PushAction]?
 
-    public required init?(map: Map) {
+    required init?(map: Map) {
 
     }
 
-    public func mapping(map: Map) {
+    func mapping(map: Map) {
         Name        <- map["name"]
         Identifier  <- map["identifier"]
         Actions     <- map["actions"]
     }
 }
 
-public class PushAction: Mappable {
-    public var Title: String = "Missing title"
-    public var Identifier: String = "missing"
-    public var AuthenticationRequired: Bool = false
-    public var Behavior: String = "default"
-    public var ActivationMode: String = "background"
-    public var Destructive: Bool = false
-    public var TextInputButtonTitle: String?
-    public var TextInputPlaceholder: String?
+class PushAction: Mappable {
+    var Title: String = "Missing title"
+    var Identifier: String = "missing"
+    var AuthenticationRequired: Bool = false
+    var Behavior: String = "default"
+    var ActivationMode: String = "background"
+    var Destructive: Bool = false
+    var TextInputButtonTitle: String?
+    var TextInputPlaceholder: String?
 
-    public required init?(map: Map) {
+    required init?(map: Map) {
     }
 
-    public func mapping(map: Map) {
+    func mapping(map: Map) {
         Title                  <- map["title"]
         Identifier             <- map["identifier"]
         AuthenticationRequired <- map["authenticationRequired"]

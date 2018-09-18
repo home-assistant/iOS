@@ -11,41 +11,41 @@ import ObjectMapper
 import CoreLocation
 import CoreMotion
 
-public class DeviceTrackerSee: Mappable {
+class DeviceTrackerSee: Mappable {
 
-    public var HorizontalAccuracy: CLLocationAccuracy?
-    public var Attributes: [String: Any] = [:]
-    public var Battery: Float = 0.0
-    public var DeviceID: String?
-    public var Hostname: String?
-    public var Location: CLLocationCoordinate2D?
-    public var SourceType: UpdateTypes = .GlobalPositioningSystem
-    public var LocationName: LocationNames?
-    public var ConsiderHome: TimeInterval?
+    var HorizontalAccuracy: CLLocationAccuracy?
+    var Attributes: [String: Any] = [:]
+    var Battery: Float = 0.0
+    var DeviceID: String?
+    var Hostname: String?
+    var Location: CLLocationCoordinate2D?
+    var SourceType: UpdateTypes = .GlobalPositioningSystem
+    var LocationName: LocationNames?
+    var ConsiderHome: TimeInterval?
 
     // Attributes
-    public var Speed: CLLocationSpeed?
-    public var Altitude: CLLocationDistance?
-    public var Course: CLLocationDirection?
-    public var VerticalAccuracy: CLLocationAccuracy?
-    public var Trigger: LocationUpdateTrigger = .Unknown
-    public var Timestamp: Date?
-    public var Floor: Int?
+    var Speed: CLLocationSpeed?
+    var Altitude: CLLocationDistance?
+    var Course: CLLocationDirection?
+    var VerticalAccuracy: CLLocationAccuracy?
+    var Trigger: LocationUpdateTrigger = .Unknown
+    var Timestamp: Date?
+    var Floor: Int?
 
     // CLVisit
-    public var ArrivalDate: Date?
-    public var DepartureDate: Date?
+    var ArrivalDate: Date?
+    var DepartureDate: Date?
 
     // CMMotionActivity
-    public var ActivityType: String?
-    public var ActivityConfidence: String?
-    public var ActivityStartDate: Date?
+    var ActivityType: String?
+    var ActivityConfidence: String?
+    var ActivityStartDate: Date?
 
     init() {}
 
-    public required init?(map: Map) {}
+    required init?(map: Map) {}
 
-    public convenience init(trigger: LocationUpdateTrigger, location: CLLocation?, visit: CLVisit?, zone: RLMZone?) {
+    convenience init(trigger: LocationUpdateTrigger, location: CLLocation?, visit: CLVisit?, zone: RLMZone?) {
         self.init()
 
         self.Trigger = trigger
@@ -61,7 +61,7 @@ public class DeviceTrackerSee: Mappable {
         }
     }
 
-    public func SetVisit(visit: CLVisit) {
+    func SetVisit(visit: CLVisit) {
         self.HorizontalAccuracy = visit.horizontalAccuracy
         self.Location = visit.coordinate
         if visit.arrivalDate != NSDate.distantPast {
@@ -72,7 +72,7 @@ public class DeviceTrackerSee: Mappable {
         }
     }
 
-    public func SetZone(zone: RLMZone) {
+    func SetZone(zone: RLMZone) {
         self.HorizontalAccuracy = zone.Radius
         self.Location = zone.locationCoordinates()
 
@@ -88,7 +88,7 @@ public class DeviceTrackerSee: Mappable {
         }
     }
 
-    public func SetLocation(location: CLLocation) {
+    func SetLocation(location: CLLocation) {
         self.HorizontalAccuracy = location.horizontalAccuracy
         self.Location = location.coordinate
         self.Speed = location.speed
@@ -99,13 +99,13 @@ public class DeviceTrackerSee: Mappable {
         self.Floor = location.floor?.level
     }
 
-    public func SetActivity(activity: CMMotionActivity) {
+    func SetActivity(activity: CMMotionActivity) {
         self.ActivityType = activity.activityType
         self.ActivityConfidence = activity.confidence.description
         self.ActivityStartDate = activity.startDate
     }
 
-    public func ClearLocation() {
+    func ClearLocation() {
         self.HorizontalAccuracy = nil
         self.Location = nil
         self.Speed = nil
@@ -117,7 +117,7 @@ public class DeviceTrackerSee: Mappable {
         self.DepartureDate = nil
     }
 
-    public var cllocation: CLLocation? {
+    var cllocation: CLLocation? {
         if let location = self.Location, let altitude = self.Altitude, let hAccuracy = self.HorizontalAccuracy,
             let vAccuracy = self.VerticalAccuracy, let timestamp = self.Timestamp {
             return CLLocation(coordinate: location, altitude: altitude, horizontalAccuracy: hAccuracy,
@@ -129,7 +129,7 @@ public class DeviceTrackerSee: Mappable {
     }
 
     // Mappable
-    public func mapping(map: Map) {
+    func mapping(map: Map) {
         Attributes           <-  map["attributes"]
         Battery              <- (map["battery"], FloatToIntTransform())
         DeviceID             <-  map["dev_id"]
@@ -157,14 +157,14 @@ public class DeviceTrackerSee: Mappable {
     }
 }
 
-public enum UpdateTypes: String {
+enum UpdateTypes: String {
     case GlobalPositioningSystem = "gps"
     case Router = "router"
     case Bluetooth = "bluetooth"
     case BluetoothLowEnergy = "bluetooth_le"
 }
 
-public enum LocationNames: String {
+enum LocationNames: String {
     case Home = "home"
     case NotHome = "not_home"
 }

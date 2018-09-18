@@ -92,15 +92,6 @@ public class SettingsStore {
         }
     }
 
-    public var timezone: String? {
-        get {
-            return prefs.string(forKey: "time_zone")
-        }
-        set {
-            prefs.setValue(newValue, forKey: "time_zone")
-        }
-    }
-
     // MARK: - Private helpers
 
     private var hasMigratedConnection: Bool {
