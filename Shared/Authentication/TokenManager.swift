@@ -22,6 +22,9 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     private var refreshPromiseCache: Promise<String>?
     private let connectionInfo: ConnectionInfo
 
+    /// This should be set to enable the token manager to trigger re-authentication when needed.
+    public var authenticationRequiredCallback: (() -> Promise<String>)?
+
     public var isAuthenticated: Bool {
         return self.tokenInfo != nil
     }
@@ -84,9 +87,6 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
         if request.retryCount > 3 {
             print("Reached maximum retries for request: \(request)")
-            let event = ClientEvent(text: "Failed to make request: \(request) after 3 tries",
-                type: .networkRequest)
-            Current.clientEventStore.addEvent(event)
             completion(false, 0)
             return
         }

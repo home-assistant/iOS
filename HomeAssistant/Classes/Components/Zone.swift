@@ -10,21 +10,21 @@ import Foundation
 import ObjectMapper
 import CoreLocation
 
-public class Zone: Entity {
+class Zone: Entity {
 
-    @objc public dynamic var Latitude: Double = 0.0
-    @objc public dynamic var Longitude: Double = 0.0
-    @objc public dynamic var Radius: Double = 0.0
-    @objc public dynamic var TrackingEnabled = true
-    @objc public dynamic var enterNotification = true
-    @objc public dynamic var exitNotification = true
+    @objc dynamic var Latitude: Double = 0.0
+    @objc dynamic var Longitude: Double = 0.0
+    @objc dynamic var Radius: Double = 0.0
+    @objc dynamic var TrackingEnabled = true
+    @objc dynamic var enterNotification = true
+    @objc dynamic var exitNotification = true
 
     // Beacons
-    @objc public dynamic var UUID: String?
-    public var Major: Int?
-    public var Minor: Int?
+    @objc dynamic var UUID: String?
+    var Major: Int?
+    var Minor: Int?
 
-    public override func mapping(map: Map) {
+    override func mapping(map: Map) {
         super.mapping(map: map)
 
         Latitude           <- map["attributes.latitude"]
@@ -36,12 +36,12 @@ public class Zone: Entity {
         Minor              <- map["attributes.beacon.minor"]
     }
 
-    public func locationCoordinates() -> CLLocationCoordinate2D {
+    func locationCoordinates() -> CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: CLLocationDegrees(self.Latitude),
                                       longitude: CLLocationDegrees(self.Longitude))
     }
 
-    public func location() -> CLLocation {
+    func location() -> CLLocation {
         return CLLocation(coordinate: self.locationCoordinates(),
                           altitude: 0,
                           horizontalAccuracy: self.Radius,

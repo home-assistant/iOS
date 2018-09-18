@@ -10,7 +10,7 @@ import UIKit
 import UserNotifications
 import UserNotificationsUI
 import MBProgressHUD
-import Shared
+import KeychainAccess
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
 
@@ -22,12 +22,21 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     var streamingController: MjpegStreamingController?
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let keychain = Keychain(service: "io.robbie.homeassistant")
+        if let url = keychain["baseURL"] {
+            baseURL = url
+        }
+        if let pass = keychain["apiPassword"] {
+            urlConfiguration.httpAdditionalHeaders = ["X-HA-Access": pass]
+        }
+    }
+
     func didReceive(_ notification: UNNotification) {
         print("Received a \(notification.request.content.categoryIdentifier) notification type")
 
-        guard let apiURL = HomeAssistantAPI.authenticatedAPI()?.connectionInfo.activeAPIURL else {
-            return
-        }
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
         hud.detailsLabel.text = "Loading \(notification.request.content.categoryIdentifier)..."
         hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
@@ -37,9 +46,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             self.showErrorLabel(message: "No entity_id found in payload!")
             return
         }
-
-        let urlString = apiURL.absoluteString
-        guard let cameraProxyURL = URL(string: "\(urlString)/camera_proxy_stream/\(entityId)") else {
+        guard let cameraProxyURL = URL(string: "\(baseURL)/api/camera_proxy_stream/\(entityId)") else {
             self.showErrorLabel(message: "Could not form a valid URL!")
             return
         }

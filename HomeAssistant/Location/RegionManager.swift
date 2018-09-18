@@ -12,6 +12,8 @@ import Foundation
 import Shared
 import UIKit
 
+public typealias OnLocationUpdated = ((CLLocation?, Error?) -> Void)
+
 class RegionManager: NSObject {
 
     let locationManager = CLLocationManager()
@@ -156,7 +158,7 @@ extension RegionManager: CLLocationManagerDelegate {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             return
         }
-        if Current.isPerformingSingleShotLocationQuery {
+        if self.oneShotLocationActive {
             print("NOT accepting region manager update as one shot location service is active")
             return
         }

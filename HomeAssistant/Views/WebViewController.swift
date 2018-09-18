@@ -114,9 +114,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         if Current.settingsStore.locationEnabled {
 
-            let uploadIcon = UIImage.iconForIdentifier("mdi:upload",
-                                                       iconWidth: 30, iconHeight: 30,
-                                                       color: tabBarIconColor)
+            let uploadIcon = getIconForIdentifier("mdi:upload",
+                                                  iconWidth: 30, iconHeight: 30,
+                                                  color: tabBarIconColor)
 
             barItems.append(UIBarButtonItem(image: uploadIcon,
                                             style: .plain,
@@ -125,7 +125,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                 )
             )
 
-            let mapIcon = UIImage.iconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
+            let mapIcon = getIconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
 
             barItems.append(UIBarButtonItem(image: mapIcon,
                                             style: .plain,
@@ -138,8 +138,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         barItems.append(UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
                                             action: #selector(refreshWebView(_:))))
 
-        let settingsIcon = UIImage.iconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30,
-                                                     color: tabBarIconColor)
+        let settingsIcon = getIconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
 
         barItems.append(UIBarButtonItem(image: settingsIcon,
                                         style: .plain,
@@ -395,7 +394,6 @@ extension WebViewController: WKScriptMessageHandler {
             let callbackName = messageBody["callback"] {
             Current.tokenManager = nil
             Current.settingsStore.connectionInfo = nil
-            Current.settingsStore.tokenInfo = nil
             self.showSettingsViewController()
             let script = "\(callbackName)(true, nil)"
 

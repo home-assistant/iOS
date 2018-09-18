@@ -7,13 +7,12 @@
 //
 
 import Foundation
-import PromiseKit
 import RealmSwift
 
 public var Current = Environment()
 /// The current "operating envrionment" the app. Implementations can be swapped out to facilitate better
 /// unit tests.
-public class Environment {
+public struct Environment {
     /// Provides URLs usable for storing data.
     public var date: () -> Date = Date.init
 
@@ -30,20 +29,4 @@ public class Environment {
     public var authenticationControllerPresenter: ((UIViewController) -> Void)?
 
     public var signInRequiredCallback: (() -> Void)?
-
-    public var deviceIDProvider: (() -> String)!
-
-    public var isPerformingSingleShotLocationQuery = false
-
-    public var syncMonitoredRegions: (() -> Void)?
-
-    public func updateWith(authenticatedAPI: HomeAssistantAPI) {
-        guard let tokenManager = authenticatedAPI.tokenManager else {
-            assertionFailure("Should have had token manager")
-            return
-        }
-
-        self.tokenManager = tokenManager
-        self.settingsStore.connectionInfo = authenticatedAPI.connectionInfo
-    }
 }

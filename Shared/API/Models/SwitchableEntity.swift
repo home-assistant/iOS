@@ -20,6 +20,6 @@ class SwitchableEntity: Entity {
     }
 
     override var EntityColor: UIColor {
-        return self.State == "on" ? UIColor.onColor : self.DefaultEntityUIColor
+        return self.State == "on" ? colorWithHexString("#DCC91F", alpha: 1) : self.DefaultEntityUIColor
     }
 }

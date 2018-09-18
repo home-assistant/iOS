@@ -10,16 +10,16 @@ import Foundation
 import RealmSwift
 import CoreLocation
 
-public class LocationHistoryEntry: Object {
-    @objc public dynamic var Trigger: String?
-    @objc public dynamic var Zone: RLMZone?
-    @objc public dynamic var Latitude = 0.0
-    @objc public dynamic var Longitude = 0.0
-    @objc public dynamic var Accuracy = 0.0
-    @objc public dynamic var Payload: String = ""
-    @objc public dynamic var CreatedAt = Date()
+class LocationHistoryEntry: Object {
+    @objc dynamic var Trigger: String?
+    @objc dynamic var Zone: RLMZone?
+    @objc dynamic var Latitude = 0.0
+    @objc dynamic var Longitude = 0.0
+    @objc dynamic var Accuracy = 0.0
+    @objc dynamic var Payload: String = ""
+    @objc dynamic var CreatedAt = Date()
 
-    public convenience init(updateType: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?,
+    convenience init(updateType: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?,
                      payload: String) {
         self.init()
 
@@ -38,17 +38,17 @@ public class LocationHistoryEntry: Object {
         self.Payload = payload
     }
 
-    public var clLocation: CLLocation {
+    var clLocation: CLLocation {
         return CLLocation(latitude: self.Latitude, longitude: self.Longitude)
     }
 }
 
-public class LocationError: Object {
-    @objc public dynamic var Code: Int = 0
-    @objc public dynamic var Description: String = ""
-    @objc public dynamic var CreatedAt = Date()
+class LocationError: Object {
+    @objc dynamic var Code: Int = 0
+    @objc dynamic var Description: String = ""
+    @objc dynamic var CreatedAt = Date()
 
-    public convenience init(err: CLError) {
+    convenience init(err: CLError) {
         self.init()
         self.Code = err.errorCode
         self.Description = err.debugDescription

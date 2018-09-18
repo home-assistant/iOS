@@ -34,7 +34,7 @@ open class HomeAssistantTimestampTransform: DateFormatterTransform {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        if let HATimezone = Current.settingsStore.timezone {
+        if let HATimezone = prefs.string(forKey: "time_zone") {
             formatter.timeZone = TimeZone(identifier: HATimezone)!
         } else {
             formatter.timeZone = TimeZone.autoupdatingCurrent

@@ -638,30 +638,31 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         return Promise { seal in
             firstly {
                 tryExistingCredentials()
-            }.done { _ in
-                _ = seal.fulfill(connectionInfo)
-            }.catch { innerError in
-                let confirmWithBrowser = {
-                    self.authenticateThenConfirmConnection(with: connectionInfo).done { connectionInfo in
-                        seal.fulfill(connectionInfo)
+                }.done { _ in
+                    _ = seal.fulfill(connectionInfo)
+                }.catch { innerError in
+                    let confirmWithBrowser = {
+                        self.authenticateThenConfirmConnection(with: connectionInfo).done { connectionInfo in
+                            seal.fulfill(connectionInfo)
                         }.catch { browserFlowError in
                             seal.reject(browserFlowError)
+                        }
                     }
-                }
 
-                if case SettingsError.credentialsUnavailable = innerError {
-                    _ = confirmWithBrowser()
-                    return
-                }
+                    if case SettingsError.credentialsUnavailable = innerError {
+                        _ = confirmWithBrowser()
+                        return
+                    }
 
-                if let afError = innerError as? AFError,
-                    case .responseValidationFailed(reason: let reason) = afError,
-                    case .unacceptableStatusCode(code: let code) = reason, code == 401 {
-                    _ = confirmWithBrowser()
-                    return
-                }
+                    if let afError = innerError as? AFError,
+                        case .responseValidationFailed(reason: let reason) = afError,
+                        case .unacceptableStatusCode(code: let code) = reason,
+                        code == 401 {
+                        _ = confirmWithBrowser()
+                        return
+                    }
 
-                seal.reject(innerError)
+                    seal.reject(innerError)
             }
         }
     }
@@ -712,7 +713,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
                     let api = HomeAssistantAPI(connectionInfo: confirmedConnectionInfo,
                                                authenticationMethod: .modern(tokenInfo: tokenInfo))
-                    Current.updateWith(authenticatedAPI: api)
                     return api.Connect()
                 }.done { config in
                     print("Getting current configuration successful. Updating UI")
@@ -723,7 +723,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         } else {
             let api = HomeAssistantAPI(connectionInfo: connectionInfo,
                                        authenticationMethod: .legacy(apiPassword: self.legacyPassword))
-            Current.updateWith(authenticatedAPI: api)
             api.Connect().done { config in
                 /// Connected with legacy auth. Store credentials.
                 Current.settingsStore.connectionInfo = connectionInfo
@@ -816,7 +815,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             deviceTrackerComponentLoadedRow.updateCell()
             self.tableView.reloadData()
             if prefs.bool(forKey: "locationUpdateOnZone") == false {
-                Current.syncMonitoredRegions?()
+                HomeAssistantAPI.authenticatedAPI()?.regionManager.syncMonitoredRegions()
             }
 //            _ = HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual)
         }
