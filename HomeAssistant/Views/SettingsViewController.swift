@@ -379,7 +379,13 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 $0.hidden = Condition(booleanLiteral: api?.notificationsEnabled ?? false)
                 }.onCellSelection { _, row in
                     let center = UNUserNotificationCenter.current()
-                    center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+                    var opts: UNAuthorizationOptions = [.alert, .badge, .sound]
+
+                    if #available(iOS 12.0, *) {
+                        opts = [.alert, .badge, .sound, .criticalAlert]
+                    }
+
+                    center.requestAuthorization(options: opts) { (granted, error) in
                         if error != nil {
                             let title = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.title
                             let message = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message
