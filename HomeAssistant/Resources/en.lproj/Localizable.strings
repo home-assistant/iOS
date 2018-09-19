@@ -145,6 +145,7 @@ send notifications to your device.";
 "location_change_notification.url_scheme.body" = "Location updated via URL Scheme";
 "location_change_notification.visit.body" = "Location updated via Visit";
 "location_change_notification.manual.body" = "Location update triggered by user";
+"location_change_notification.siri.body" = "Location update triggered by Siri";
 "location_change_notification.unknown.body" = "Location updated via unknown method";
 "cancel_label" = "Cancel";
 "username_label" = "Username";

@@ -9,10 +9,19 @@
 import Foundation
 import UIKit
 import CoreLocation
+import Shared
 
 class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
     func confirm(intent: SendLocationIntent, completion: @escaping (SendLocationIntentResponse) -> Void) {
         // TODO: Ensure we can contact Home Assistant, token is valid, etc, here. Otherwise, throw a failure NOW.
+
+        print("HELLO WORLD")
+
+        HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
+            print("Can't get a authenticated API", error)
+            completion(SendLocationIntentResponse(code: .failureConnectivity, userActivity: nil))
+            return
+        }
 
         // Attempt to grab pasteboard contents and split by command.
         // The hope is the user has something like LAT,LONG on the pasteboard
@@ -69,6 +78,20 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
     func handle(intent: SendLocationIntent, completion: @escaping (SendLocationIntentResponse) -> Void) {
         print("Handling send location")
         completion(SendLocationIntentResponse(code: .success, userActivity: nil))
+
+        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+            completion(SendLocationIntentResponse(code: .failureConnectivity, userActivity: nil))
+            return
+        }
+
+        api.submitLocation(updateType: LocationUpdateTrigger.Siri, location: intent.location?.location,
+                           visit: nil, zone: nil).done {
+                completion(SendLocationIntentResponse(code: .success, userActivity: nil))
+            }.catch { error in
+                print("Error sending location during Siri Shortcut call: \(error)")
+                completion(SendLocationIntentResponse(code: .failure, userActivity: nil))
+        }
+
     }
 
     func completeConfirm(place: CLPlacemark?, source: SendLocationClipboardLocationParsedAs,

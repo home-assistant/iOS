@@ -57,7 +57,6 @@ target 'APNSAttachmentService' do
   pod 'ObjectMapper', '3.3.0'
   pod 'PromiseKit', '6.3.0'
   pod 'RealmSwift'
-  pod 'RealmSwift'
 end
 
 target 'MapNotificationContentExtension' do
@@ -70,4 +69,8 @@ target 'NotificationContentExtension' do
   pod 'KeychainAccess', '3.1.1'
   pod 'MBProgressHUD', '1.1.0'
   pod 'RealmSwift'
+end
+
+target 'SiriIntents' do
+  pod 'PromiseKit', '6.3.0'
 end

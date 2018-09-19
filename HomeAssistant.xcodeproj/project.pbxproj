@@ -7,16 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		17F687A4C383C368190ECC6A /* Pods_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C863041DBD61852ABF272214 /* Pods_Shared.framework */; };
-		1C09597037660B5857A2F805 /* Pods_NotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F38AFE3A14BF8E59B3B808F2 /* Pods_NotificationContentExtension.framework */; };
+		0C6645270B5B70DF1C404144 /* Pods-SiriIntents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */; };
+		30B85F861E66F0DAAFEB54C7 /* Pods_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C313AF4D468AB190E8037CD /* Pods_Shared.framework */; };
 		474AA46EC65ABB974EFC74A4 /* Pods-APNSAttachmentService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */; };
+		4FE36452FD1867F809F41E49 /* Pods_HomeAssistantTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1B0A4C6DDA7E3BEEC26F547 /* Pods_HomeAssistantTests.framework */; };
 		5487B2333FBD80B7ED0CFD47 /* Pods-NotificationContentExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */; };
 		5731AE3FADDE686AA2749762 /* Pods-SharedTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = EF756F51509DAA0CBE8789BC /* Pods-SharedTests-metadata.plist */; };
-		6BC3BCBB4AA6327602D69EE9 /* Pods_HomeAssistantTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6BF7D5C4F087133180C55E3 /* Pods_HomeAssistantTests.framework */; };
-		712218AB1158CEC51FD10D96 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0899BED28F8045BF72AC736F /* Pods_HomeAssistant.framework */; };
-		7C2F64197E9F795AC7B39FE9 /* Pods_SharedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20BD240AE22C0752908C97BF /* Pods_SharedTests.framework */; };
-		8940FE82808CE043B39CC1BD /* Pods_MapNotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94E326E254EB1DFC469D1FEA /* Pods_MapNotificationContentExtension.framework */; };
-		ADCC559D7D3E3AA2F0F2FBF8 /* Pods_HomeAssistantUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCCEAF3734E38828CDE7571A /* Pods_HomeAssistantUITests.framework */; };
+		624E1EE93ADF2BCEBAD63009 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4006CBDBF64859AF0E9011ED /* Pods_HomeAssistant.framework */; };
+		72625B4395C0437F9C219339 /* Pods_MapNotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C886B5110EC5D410C831AFA /* Pods_MapNotificationContentExtension.framework */; };
+		7BA84E5B6CE019CF4E986992 /* Pods_APNSAttachmentService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E5E7E61EE485C352E1C8AD6 /* Pods_APNSAttachmentService.framework */; };
+		7DF26C2F06693DF37D0465B9 /* Pods_SharedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CD944AAC132F720795921B /* Pods_SharedTests.framework */; };
+		95B7302562F6E39FCC1B7027 /* Pods_HomeAssistantUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB766B592F68C3A77A45B8DB /* Pods_HomeAssistantUITests.framework */; };
+		B01FF39DE0E8F4132CF8BE27 /* Pods_SiriIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70919A704881CDB21FA9057B /* Pods_SiriIntents.framework */; };
 		B42EC0201B3E045A771E909C /* Pods-HomeAssistant-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */; };
 		B60248001FBD343000998205 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
 		B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */; };
@@ -215,6 +217,7 @@
 		B6C0914D2151F93D00A326DC /* GarageDoor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091382151F93D00A326DC /* GarageDoor.swift */; };
 		B6C0914E2151F93D00A326DC /* Thermostat.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091392151F93D00A326DC /* Thermostat.swift */; };
 		B6C0914F2151F93D00A326DC /* MediaPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0913A2151F93D00A326DC /* MediaPlayer.swift */; };
+		B6C09153215206BB00A326DC /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6CFF5D82101984500CC523F /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5D72101984500CC523F /* Realm.framework */; };
 		B6CFF5DA2101984A00CC523F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5D92101984A00CC523F /* RealmSwift.framework */; };
 		B6CFF5DC2101985200CC523F /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5DB2101985200CC523F /* Realm.framework */; };
@@ -276,7 +279,6 @@
 		D0EEF32E214DF99500D1D360 /* PushRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */; };
 		D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF330214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift */; };
 		D0EEF332214EB2BC00D1D360 /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BC82130CA0D00678C2C /* OneShotLocationManager.swift */; };
-		D0EEF334214EB44000D1D360 /* HomeAssistantAPI+Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF333214EB44000D1D360 /* HomeAssistantAPI+Location.swift */; };
 		D0EEF335214EB77100D1D360 /* CLLocation+ToDoubleArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */; };
 		D0EEF336214EB7B800D1D360 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		D0EEF33E214EC76A00D1D360 /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E871CBA01310027F6CA /* CallService.swift */; };
@@ -287,7 +289,7 @@
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
 		D18BB39F0BE75F5C3F086FE2 /* Pods-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */; };
 		DE00A0A32956903FEB4C59D3 /* Pods-MapNotificationContentExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */; };
-		FD7C643F7C653740162E5A6E /* Pods_APNSAttachmentService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826850E46BD47A4F664C /* Pods_APNSAttachmentService.framework */; };
+		E2ED3EF4C326644AC83ABDDF /* Pods_NotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E698FF9CA76230AC24516250 /* Pods_NotificationContentExtension.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -385,24 +387,26 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		01EB826850E46BD47A4F664C /* Pods_APNSAttachmentService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_APNSAttachmentService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		053FE304466C4259AB88E863 /* Pods-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.debug.xcconfig"; sourceTree = "<group>"; };
-		0899BED28F8045BF72AC736F /* Pods_HomeAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CB0FF78379A751666BA5F01 /* Pods-Shared.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.release.xcconfig"; sourceTree = "<group>"; };
+		0E5E7E61EE485C352E1C8AD6 /* Pods_APNSAttachmentService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_APNSAttachmentService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A22C9564854C68F8BB98C7B /* Pods-HomeAssistantTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.release.xcconfig"; sourceTree = "<group>"; };
-		20BD240AE22C0752908C97BF /* Pods_SharedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		31C75BCB652BE80FD209047E /* Pods-SiriIntents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SiriIntents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SiriIntents/Pods-SiriIntents.debug.xcconfig"; sourceTree = "<group>"; };
 		33092E375AEEE0A0698BAFE8 /* Pods-APNSAttachmentService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.debug.xcconfig"; sourceTree = "<group>"; };
 		3443BAF89532B0060D7F21DA /* Pods-HomeAssistantTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.debug.xcconfig"; sourceTree = "<group>"; };
 		34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-HomeAssistant-metadata.plist"; path = "Pods/Pods-HomeAssistant-metadata.plist"; sourceTree = "<group>"; };
 		38DAF4076308205E87A558B2 /* Pods-MapNotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MapNotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-MapNotificationContentExtension/Pods-MapNotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
 		3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-APNSAttachmentService-metadata.plist"; path = "Pods/Pods-APNSAttachmentService-metadata.plist"; sourceTree = "<group>"; };
+		4006CBDBF64859AF0E9011ED /* Pods_HomeAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E3BEAB44DE5D9E511E4AB10 /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
+		5C886B5110EC5D410C831AFA /* Pods_MapNotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MapNotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		70919A704881CDB21FA9057B /* Pods_SiriIntents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SiriIntents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-metadata.plist"; path = "Pods/Pods-Shared-metadata.plist"; sourceTree = "<group>"; };
 		93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-NotificationContentExtension-metadata.plist"; path = "Pods/Pods-NotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
-		94E326E254EB1DFC469D1FEA /* Pods_MapNotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MapNotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		98EF9571B53E20B1EBDCA5C7 /* Pods-HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.release.xcconfig"; sourceTree = "<group>"; };
+		9C313AF4D468AB190E8037CD /* Pods_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CAD80CC752DC73E0A709C94 /* Pods-NotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
-		A6BF7D5C4F087133180C55E3 /* Pods_HomeAssistantTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2821E7FC93344003A62FF42 /* Pods-SiriIntents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SiriIntents.release.xcconfig"; path = "Pods/Target Support Files/Pods-SiriIntents/Pods-SiriIntents.release.xcconfig"; sourceTree = "<group>"; };
 		B3C91BF27B302BB9D7C57C79 /* Pods-HomeAssistantUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		B593DC4405E9FABC1157CA32 /* Pods-SharedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B60247EC1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -582,7 +586,6 @@
 		B64BB3A71E9C6551001E8B46 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		B64D04791CB8908B00B945C8 /* StateChanged.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateChanged.swift; sourceTree = "<group>"; };
 		B64D047C1CB8916300B945C8 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
-		B64D09AE1D7D561E008EB487 /* InputSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputSlider.swift; sourceTree = "<group>"; };
 		B657A8E61CA646EB00121384 /* Home Assistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B657A8ED1CA646EB00121384 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -615,7 +618,6 @@
 		B678DB341EA992A90045312F /* MapNotificationContentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MapNotificationContentExtension.entitlements; sourceTree = "<group>"; };
 		B678DB361EA9999C0045312F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		B678DB381EA999AC0045312F /* MainInterface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
-		B6880B2A1D7B9E6400CCB899 /* Climate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Climate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotion+StringExtensions.swift"; sourceTree = "<group>"; };
 		B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectMapperTransformers.swift; sourceTree = "<group>"; };
 		B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MjpegStreamingController.swift; sourceTree = "<group>"; };
@@ -653,52 +655,33 @@
 		B6C091382151F93D00A326DC /* GarageDoor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GarageDoor.swift; sourceTree = "<group>"; };
 		B6C091392151F93D00A326DC /* Thermostat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Thermostat.swift; sourceTree = "<group>"; };
 		B6C0913A2151F93D00A326DC /* MediaPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPlayer.swift; sourceTree = "<group>"; };
-		B6C2C17820D1DD2A00BD810B /* LocationHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHistory.swift; sourceTree = "<group>"; };
+		B6C09151215206A800A326DC /* PromiseKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PromiseKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLError+DebugDescription.swift"; sourceTree = "<group>"; };
 		B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+ToDoubleArray.swift"; sourceTree = "<group>"; };
-		B6C2C18020D1FDFC00BD810B /* DeviceTrackerSee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceTrackerSee.swift; sourceTree = "<group>"; };
 		B6CFF5D72101984500CC523F /* Realm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Realm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CFF5D92101984A00CC523F /* RealmSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CFF5DB2101985200CC523F /* Realm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Realm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CFF5DD2101985200CC523F /* RealmSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B6DBF7651D89F7D800402A57 /* Automation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Automation.swift; sourceTree = "<group>"; };
-		B6DBF7671D89F8C100402A57 /* Fan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fan.swift; sourceTree = "<group>"; };
 		B6E47E871CBA01310027F6CA /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceExecuted.swift; sourceTree = "<group>"; };
-		B6E47E8D1CBA3EDB0027F6CA /* Zone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
 		B6E47E981CBB47CC0027F6CA /* DeviceUID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceUID.h; sourceTree = "<group>"; };
 		B6E47E991CBB47EC0027F6CA /* DeviceUID.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = DeviceUID.m; sourceTree = "<group>"; };
 		B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HomeAssistant-Bridging-Header.h"; sourceTree = "<group>"; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		B6EE36A120CF593E001494E3 /* RealmZone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmZone.swift; sourceTree = "<group>"; };
 		B6F02BE81CB46AF40029ABE7 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Entity.swift; sourceTree = "<group>"; };
-		B6F02BEA1CB46D090029ABE7 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		B6F02BED1CB46EB10029ABE7 /* Status.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
 		B6F02BF11CB470570029ABE7 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		B6F02BF51CB4728D0029ABE7 /* History.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		B6F02BF91CB47F930029ABE7 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		B6F02BFB1CB4800C0029ABE7 /* Services.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
-		B6F02C001CB489770029ABE7 /* BinarySensor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinarySensor.swift; sourceTree = "<group>"; };
-		B6F02C011CB489770029ABE7 /* DeviceTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceTracker.swift; sourceTree = "<group>"; };
-		B6F02C021CB489770029ABE7 /* GarageDoor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GarageDoor.swift; sourceTree = "<group>"; };
-		B6F02C031CB489770029ABE7 /* InputBoolean.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputBoolean.swift; sourceTree = "<group>"; };
-		B6F02C041CB489770029ABE7 /* InputSelect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputSelect.swift; sourceTree = "<group>"; };
-		B6F02C051CB489770029ABE7 /* Light.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Light.swift; sourceTree = "<group>"; };
-		B6F02C061CB489770029ABE7 /* Lock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lock.swift; sourceTree = "<group>"; };
-		B6F02C071CB489770029ABE7 /* MediaPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPlayer.swift; sourceTree = "<group>"; };
-		B6F02C081CB489770029ABE7 /* Scene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
-		B6F02C091CB489770029ABE7 /* Script.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
-		B6F02C0A1CB489770029ABE7 /* Sensor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sensor.swift; sourceTree = "<group>"; };
-		B6F02C0B1CB489770029ABE7 /* Sun.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sun.swift; sourceTree = "<group>"; };
-		B6F02C0C1CB489770029ABE7 /* Switch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switch.swift; sourceTree = "<group>"; };
-		B6F02C0D1CB489770029ABE7 /* Thermostat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Thermostat.swift; sourceTree = "<group>"; };
-		B6F02C0E1CB489770029ABE7 /* Weblink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Weblink.swift; sourceTree = "<group>"; };
 		B6FBE3961D46A4E500EE0E36 /* Beacons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Beacons.swift; sourceTree = "<group>"; };
 		B71D996003A1793B7DC0BD05 /* Pods-APNSAttachmentService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.release.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.release.xcconfig"; sourceTree = "<group>"; };
+		BB766B592F68C3A77A45B8DB /* Pods_HomeAssistantUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2122AA56D508AB2AAFED0FC /* Pods-HomeAssistantUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.release.xcconfig"; sourceTree = "<group>"; };
 		C2364BCA3A88879307E0ECB0 /* Pods-SharedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.release.xcconfig"; sourceTree = "<group>"; };
+		C3CD944AAC132F720795921B /* Pods_SharedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C40FB685C0A5635CA919EABB /* Pods-MapNotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MapNotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MapNotificationContentExtension/Pods-MapNotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
-		C863041DBD61852ABF272214 /* Pods_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00302BD20D4BEDB004C2CA9 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfo.swift; sourceTree = "<group>"; };
 		D03D891720E0A85200D4F28D /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -733,17 +716,16 @@
 		D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTrigger.swift; sourceTree = "<group>"; };
 		D0EEF326214DF31D00D1D360 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		D0EEF330214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeAssistantAPI+Notifications.swift"; sourceTree = "<group>"; };
-		D0EEF333214EB44000D1D360 /* HomeAssistantAPI+Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeAssistantAPI+Location.swift"; sourceTree = "<group>"; };
 		D0FF79CB20D778B50034574D /* ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEvent.swift; sourceTree = "<group>"; };
 		D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventStore.swift; sourceTree = "<group>"; };
 		D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTableViewController.swift; sourceTree = "<group>"; };
 		D0FF79D420D87DB10034574D /* ClientEvents.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ClientEvents.storyboard; sourceTree = "<group>"; };
+		D1B0A4C6DDA7E3BEEC26F547 /* Pods_HomeAssistantTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D32BDCED6A08DFF8C557427A /* Pods-NotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
 		DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-MapNotificationContentExtension-metadata.plist"; path = "Pods/Pods-MapNotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
-		DCCEAF3734E38828CDE7571A /* Pods_HomeAssistantUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-SiriIntents-metadata.plist"; path = "Pods/Pods-SiriIntents-metadata.plist"; sourceTree = "<group>"; };
+		E698FF9CA76230AC24516250 /* Pods_NotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF756F51509DAA0CBE8789BC /* Pods-SharedTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-SharedTests-metadata.plist"; path = "Pods/Pods-SharedTests-metadata.plist"; sourceTree = "<group>"; };
-		F38AFE3A14BF8E59B3B808F2 /* Pods_NotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -753,7 +735,7 @@
 			files = (
 				B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */,
 				B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */,
-				1C09597037660B5857A2F805 /* Pods_NotificationContentExtension.framework in Frameworks */,
+				E2ED3EF4C326644AC83ABDDF /* Pods_NotificationContentExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -765,7 +747,7 @@
 				B6CFF5DC2101985200CC523F /* Realm.framework in Frameworks */,
 				B6CFF5DE2101985200CC523F /* RealmSwift.framework in Frameworks */,
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
-				712218AB1158CEC51FD10D96 /* Pods_HomeAssistant.framework in Frameworks */,
+				624E1EE93ADF2BCEBAD63009 /* Pods_HomeAssistant.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -773,7 +755,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6BC3BCBB4AA6327602D69EE9 /* Pods_HomeAssistantTests.framework in Frameworks */,
+				4FE36452FD1867F809F41E49 /* Pods_HomeAssistantTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -781,7 +763,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADCC559D7D3E3AA2F0F2FBF8 /* Pods_HomeAssistantUITests.framework in Frameworks */,
+				95B7302562F6E39FCC1B7027 /* Pods_HomeAssistantUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -789,6 +771,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6C09153215206BB00A326DC /* Shared.framework in Frameworks */,
+				B01FF39DE0E8F4132CF8BE27 /* Pods_SiriIntents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -798,7 +782,7 @@
 			files = (
 				B678DB261EA991E40045312F /* UserNotificationsUI.framework in Frameworks */,
 				B678DB251EA991E40045312F /* UserNotifications.framework in Frameworks */,
-				8940FE82808CE043B39CC1BD /* Pods_MapNotificationContentExtension.framework in Frameworks */,
+				72625B4395C0437F9C219339 /* Pods_MapNotificationContentExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -807,7 +791,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D03D893420E0A8FE00D4F28D /* Shared.framework in Frameworks */,
-				FD7C643F7C653740162E5A6E /* Pods_APNSAttachmentService.framework in Frameworks */,
+				7BA84E5B6CE019CF4E986992 /* Pods_APNSAttachmentService.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -819,7 +803,7 @@
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				B6CFF5DA2101984A00CC523F /* RealmSwift.framework in Frameworks */,
 				B6CFF5D82101984500CC523F /* Realm.framework in Frameworks */,
-				17F687A4C383C368190ECC6A /* Pods_Shared.framework in Frameworks */,
+				30B85F861E66F0DAAFEB54C7 /* Pods_Shared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -828,7 +812,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */,
-				7C2F64197E9F795AC7B39FE9 /* Pods_SharedTests.framework in Frameworks */,
+				7DF26C2F06693DF37D0465B9 /* Pods_SharedTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -838,6 +822,7 @@
 		29278BB24639BA945D3D86B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B6C09151215206A800A326DC /* PromiseKit.framework */,
 				D0EEF300214D8EAB00D1D360 /* CoreLocation.framework */,
 				D0C8845F211ED11900CCB501 /* SafariServices.framework */,
 				B6CFF5DB2101985200CC523F /* Realm.framework */,
@@ -847,14 +832,15 @@
 				B6393F871CB2561100503916 /* MapKit.framework */,
 				B627CB081D83C87B0057173E /* UserNotifications.framework */,
 				B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */,
-				01EB826850E46BD47A4F664C /* Pods_APNSAttachmentService.framework */,
-				0899BED28F8045BF72AC736F /* Pods_HomeAssistant.framework */,
-				A6BF7D5C4F087133180C55E3 /* Pods_HomeAssistantTests.framework */,
-				DCCEAF3734E38828CDE7571A /* Pods_HomeAssistantUITests.framework */,
-				94E326E254EB1DFC469D1FEA /* Pods_MapNotificationContentExtension.framework */,
-				F38AFE3A14BF8E59B3B808F2 /* Pods_NotificationContentExtension.framework */,
-				C863041DBD61852ABF272214 /* Pods_Shared.framework */,
-				20BD240AE22C0752908C97BF /* Pods_SharedTests.framework */,
+				0E5E7E61EE485C352E1C8AD6 /* Pods_APNSAttachmentService.framework */,
+				4006CBDBF64859AF0E9011ED /* Pods_HomeAssistant.framework */,
+				D1B0A4C6DDA7E3BEEC26F547 /* Pods_HomeAssistantTests.framework */,
+				BB766B592F68C3A77A45B8DB /* Pods_HomeAssistantUITests.framework */,
+				5C886B5110EC5D410C831AFA /* Pods_MapNotificationContentExtension.framework */,
+				E698FF9CA76230AC24516250 /* Pods_NotificationContentExtension.framework */,
+				9C313AF4D468AB190E8037CD /* Pods_Shared.framework */,
+				C3CD944AAC132F720795921B /* Pods_SharedTests.framework */,
+				70919A704881CDB21FA9057B /* Pods_SiriIntents.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -885,6 +871,8 @@
 				0CB0FF78379A751666BA5F01 /* Pods-Shared.release.xcconfig */,
 				B593DC4405E9FABC1157CA32 /* Pods-SharedTests.debug.xcconfig */,
 				C2364BCA3A88879307E0ECB0 /* Pods-SharedTests.release.xcconfig */,
+				31C75BCB652BE80FD209047E /* Pods-SiriIntents.debug.xcconfig */,
+				B2821E7FC93344003A62FF42 /* Pods-SiriIntents.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1252,13 +1240,9 @@
 		B6F02BE71CB4698A0029ABE7 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				B6F02BFF1CB4880C0029ABE7 /* Components */,
-				B6C2C17820D1DD2A00BD810B /* LocationHistory.swift */,
-				B6C2C18020D1FDFC00BD810B /* DeviceTrackerSee.swift */,
 				B63CAE682150CE5100A68AFB /* SiriShortcut.swift */,
 				D0B25BC82130CA0D00678C2C /* OneShotLocationManager.swift */,
 				D0B25BCA2130CA2D00678C2C /* RegionManager.swift */,
-				D0EEF333214EB44000D1D360 /* HomeAssistantAPI+Location.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1279,34 +1263,6 @@
 				B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */,
 			);
 			path = Responses;
-			sourceTree = "<group>";
-		};
-		B6F02BFF1CB4880C0029ABE7 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				B6DBF7651D89F7D800402A57 /* Automation.swift */,
-				B6F02C001CB489770029ABE7 /* BinarySensor.swift */,
-				B6880B2A1D7B9E6400CCB899 /* Climate.swift */,
-				B6F02C011CB489770029ABE7 /* DeviceTracker.swift */,
-				B6DBF7671D89F8C100402A57 /* Fan.swift */,
-				B6F02C021CB489770029ABE7 /* GarageDoor.swift */,
-				B6F02BEA1CB46D090029ABE7 /* Group.swift */,
-				B6F02C031CB489770029ABE7 /* InputBoolean.swift */,
-				B6F02C041CB489770029ABE7 /* InputSelect.swift */,
-				B64D09AE1D7D561E008EB487 /* InputSlider.swift */,
-				B6F02C051CB489770029ABE7 /* Light.swift */,
-				B6F02C061CB489770029ABE7 /* Lock.swift */,
-				B6F02C071CB489770029ABE7 /* MediaPlayer.swift */,
-				B6F02C081CB489770029ABE7 /* Scene.swift */,
-				B6F02C091CB489770029ABE7 /* Script.swift */,
-				B6F02C0A1CB489770029ABE7 /* Sensor.swift */,
-				B6F02C0B1CB489770029ABE7 /* Sun.swift */,
-				B6F02C0C1CB489770029ABE7 /* Switch.swift */,
-				B6F02C0D1CB489770029ABE7 /* Thermostat.swift */,
-				B6F02C0E1CB489770029ABE7 /* Weblink.swift */,
-				B6E47E8D1CBA3EDB0027F6CA /* Zone.swift */,
-			);
-			path = Components;
 			sourceTree = "<group>";
 		};
 		D00302BC20D4BEC0004C2CA9 /* Structs */ = {
@@ -1597,7 +1553,7 @@
 				B6AAD7AC1D827DD40090B220 /* Embed App Extensions */,
 				B6E8579C1CB1167200F96925 /* Fabric */,
 				D03D88EE20E0A7AC00D4F28D /* Embed Frameworks */,
-				3A032572F5E9A152B52AB4B4 /* [CP] Embed Pods Frameworks */,
+				BEEA77E23D85DC4B27378DEA /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1655,6 +1611,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B66C58AD215086F0004AB261 /* Build configuration list for PBXNativeTarget "SiriIntents" */;
 			buildPhases = (
+				FE2410D822218EA6B0CA7770 /* [CP] Check Pods Manifest.lock */,
 				B66C58A1215086F0004AB261 /* Sources */,
 				B66C58A2215086F0004AB261 /* Frameworks */,
 				B66C58A3215086F0004AB261 /* Resources */,
@@ -2060,6 +2017,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C6645270B5B70DF1C404144 /* Pods-SiriIntents-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2163,52 +2121,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		3A032572F5E9A152B52AB4B4 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/CPDAcknowledgements/CPDAcknowledgements.framework",
-				"${BUILT_PRODUCTS_DIR}/DeviceKit/DeviceKit.framework",
-				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
-				"${BUILT_PRODUCTS_DIR}/FontAwesomeKit/FontAwesomeKit.framework",
-				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
-				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
-				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
-				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
-				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityIndicator.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireObjectMapper.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CPDAcknowledgements.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FontAwesomeKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		5AB9C4C5DE906E922C385E8C /* [CP] Check Pods Manifest.lock */ = {
@@ -2359,6 +2271,52 @@
 			shellPath = /bin/sh;
 			shellScript = "if [ -f env.sh ];\nthen\n    source env.sh\nfi\n[ -z \"$HOMEASSISTANT_FABRIC_CLIENT_ID\" ] && echo \"$HOMEASSISTANT_FABRIC_CLIENT_ID is not defined on your ENV\" && exit 0;\n [ -z \"$HOMEASSISTANT_FABRIC_SECRET\" ] && echo \"$HOMEASSISTANT_FABRIC_SECRET is not defined on your ENV\" && exit 0;\n \"${PODS_ROOT}/Fabric/run\" ${HOMEASSISTANT_FABRIC_CLIENT_ID} ${HOMEASSISTANT_FABRIC_SECRET}";
 		};
+		BEEA77E23D85DC4B27378DEA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
+				"${BUILT_PRODUCTS_DIR}/CPDAcknowledgements/CPDAcknowledgements.framework",
+				"${BUILT_PRODUCTS_DIR}/DeviceKit/DeviceKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
+				"${BUILT_PRODUCTS_DIR}/FontAwesomeKit/FontAwesomeKit.framework",
+				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
+				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityIndicator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireObjectMapper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CPDAcknowledgements.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FontAwesomeKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		D0EEF31D214DDD5E00D1D360 /* SwiftGen */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2372,6 +2330,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"$PODS_ROOT\"/SwiftGen/bin/swiftgen config run --config ./HomeAssistant/swiftgen.yml\n";
+		};
+		FE2410D822218EA6B0CA7770 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SiriIntents-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2394,7 +2374,6 @@
 				B63CAE692150CE5100A68AFB /* SiriShortcut.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
-				D0EEF334214EB44000D1D360 /* HomeAssistantAPI+Location.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
@@ -2974,6 +2953,7 @@
 		};
 		B66C58AE215086F0004AB261 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 31C75BCB652BE80FD209047E /* Pods-SiriIntents.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -2990,6 +2970,13 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"UIKit\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.Intents";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.Intents";
@@ -3002,6 +2989,7 @@
 		};
 		B66C58AF215086F0004AB261 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B2821E7FC93344003A62FF42 /* Pods-SiriIntents.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -3017,6 +3005,13 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"UIKit\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.Intents";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.Intents";

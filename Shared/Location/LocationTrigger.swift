@@ -30,6 +30,7 @@ public enum LocationUpdateTrigger: String {
     case BackgroundFetch = "Background Fetch"
     case PushNotification = "Push Notification"
     case URLScheme = "URL Scheme"
+    case Siri = "Siri"
     case Unknown = "Unknown"
 
     public func notificationOptionsFor(zoneName: String) -> NotificationOptions {
@@ -77,6 +78,9 @@ public enum LocationUpdateTrigger: String {
             shouldNotify = prefs.bool(forKey: "visitLocationRequestNotifications")
         case .Manual:
             body = L10n.LocationChangeNotification.Manual.body
+            shouldNotify = false
+        case .Siri:
+            body = L10n.LocationChangeNotification.Siri.body
             shouldNotify = false
         case .RegionExit, .RegionEnter, .Unknown:
             body = L10n.LocationChangeNotification.Unknown.body

@@ -181,6 +181,11 @@ internal enum L10n {
       internal static let body = L10n.tr("Localizable", "location_change_notification.significant_location_update.body")
     }
 
+    internal enum Siri {
+      /// Location update triggered by Siri
+      internal static let body = L10n.tr("Localizable", "location_change_notification.siri.body")
+    }
+
     internal enum Unknown {
       /// Location updated via unknown method
       internal static let body = L10n.tr("Localizable", "location_change_notification.unknown.body")
