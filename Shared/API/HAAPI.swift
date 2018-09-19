@@ -261,6 +261,22 @@ public class HomeAssistantAPI {
             Crashlytics.sharedInstance().recordError(err as NSError)
         }
 
+        if #available(iOS 12.0, *) {
+            let intent = SendLocationIntent()
+            let interaction = INInteraction(intent: intent, response: nil)
+            interaction.donate { (error) in
+                if error != nil {
+                    if let error = error as NSError? {
+                        print("Interaction donation failed: \(error)")
+                    } else {
+                        print("Successfully donated interaction")
+                    }
+                } else {
+                    print("Donated send location interaction")
+                }
+            }
+        }
+
         return promise
     }
 
@@ -385,6 +401,30 @@ public class HomeAssistantAPI {
                                     type: .serviceCall, payload: serviceData)
                                 Current.clientEventStore.addEvent(event)
                             }
+
+                            // Don't want to donate device_tracker.see calls
+                            if #available(iOS 12.0, *), service != "see" {
+                                let intent = CallServiceIntent()
+                                intent.serviceName = domain + "." + service
+
+                                let jsonData = try? JSONSerialization.data(withJSONObject: serviceData, options: [])
+                                let jsonString = String(data: jsonData!, encoding: .utf8)
+
+                                intent.serviceData = jsonString
+                                let interaction = INInteraction(intent: intent, response: nil)
+                                interaction.donate { (error) in
+                                    if error != nil {
+                                        if let error = error as NSError? {
+                                            print("Interaction donation failed: \(error)")
+                                        } else {
+                                            print("Successfully donated interaction")
+                                        }
+                                    } else {
+                                        print("Donated call service interaction")
+                                    }
+                                }
+                            }
+
                             seal.fulfill(resVal)
                         } else {
                             seal.reject(APIError.invalidResponse)
@@ -654,22 +694,6 @@ public class HomeAssistantAPI {
                 UNNotificationRequest.init(identifier: notificationOptions.identifier ?? "",
                                            content: content, trigger: nil)
             UNUserNotificationCenter.current().add(notificationRequest)
-        }
-
-        if #available(iOS 12.0, *) {
-            let intent = SendLocationIntent()
-            let interaction = INInteraction(intent: intent, response: nil)
-            interaction.donate { (error) in
-                if error != nil {
-                    if let error = error as NSError? {
-                        print("Interaction donation failed: \(error)")
-                    } else {
-                        print("Successfully donated interaction")
-                    }
-                } else {
-                    print("Donated send location interaction")
-                }
-            }
         }
     }
 
