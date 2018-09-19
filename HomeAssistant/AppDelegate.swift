@@ -27,10 +27,12 @@ let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var safariVC: SFSafariViewController?
+    let regionManager = RegionManager()
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Fabric.with([Crashlytics.self])
-
+        Current.deviceIDProvider = { DeviceUID.uid() }
+        Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
         }
@@ -49,6 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     print("Requested critical alert access", granted, error.debugDescription)
                 }
             }
+
         }
 
         setDefaults()

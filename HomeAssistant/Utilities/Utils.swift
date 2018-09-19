@@ -10,6 +10,7 @@ import Foundation
 import FontAwesomeKit
 import Crashlytics
 import KeychainAccess
+import Shared
 
 func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeight: Double, color: UIColor) -> UIImage {
     if let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as? [String: String] {
@@ -131,38 +132,6 @@ func movePushNotificationSounds() -> Int {
         }
     }
     return movedFiles
-}
-
-func listAllInstalledPushNotificationSounds() -> [String] {
-    let fileManager: FileManager = FileManager()
-
-    let libraryPath: URL
-
-    do {
-        libraryPath = try fileManager.url(for: .libraryDirectory,
-                                          in: FileManager.SearchPathDomainMask.userDomainMask,
-                                          appropriateFor: nil,
-                                          create: false)
-    } catch let error as NSError {
-        print("Error when building URL for library directory", error)
-        return [String]()
-    }
-
-    let librarySoundsPath = libraryPath.appendingPathComponent("Sounds")
-
-    let librarySoundsContents = fileManager.enumerator(at: librarySoundsPath,
-                                                       includingPropertiesForKeys: nil,
-                                                       options: FileManager.DirectoryEnumerationOptions(),
-                                                       errorHandler: nil)!
-
-    var allSounds = [String]()
-
-    for obj in librarySoundsContents.allObjects {
-        if let fileUrl = obj as? URL {
-            allSounds.append(fileUrl.lastPathComponent)
-        }
-    }
-    return allSounds
 }
 
 func resetStores() {

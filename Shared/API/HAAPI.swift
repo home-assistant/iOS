@@ -17,15 +17,16 @@ import Foundation
 import KeychainAccess
 import ObjectMapper
 import RealmSwift
-import Shared
 import UserNotifications
 import Intents
+
+private let keychain = Keychain(service: "io.robbie.homeassistant")
 
 // swiftlint:disable file_length
 
 // swiftlint:disable:next type_body_length
 public class HomeAssistantAPI {
-    enum APIError: Error {
+    public enum APIError: Error {
         case managerNotAvailable
         case invalidResponse
         case cantBuildURL
@@ -37,32 +38,33 @@ public class HomeAssistantAPI {
         case modern(tokenInfo: TokenInfo)
     }
 
-    var pushID: String?
+    let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
-    var loadedComponents = [String]()
+    public var pushID: String?
+
+    public var loadedComponents = [String]()
 
     var apiPassword: String?
 
     private(set) var manager: Alamofire.SessionManager!
 
-    var regionManager = RegionManager()
-    var oneShotLocationManager: OneShotLocationManager?
+    public var oneShotLocationManager: OneShotLocationManager?
 
-    var cachedEntities: [Entity]?
+    public var cachedEntities: [Entity]?
 
-    var notificationsEnabled: Bool {
-        return prefs.bool(forKey: "notificationsEnabled")
+    public var notificationsEnabled: Bool {
+        return self.prefs.bool(forKey: "notificationsEnabled")
     }
 
-    var iosComponentLoaded: Bool {
+    public var iosComponentLoaded: Bool {
         return self.loadedComponents.contains("ios")
     }
 
-    var deviceTrackerComponentLoaded: Bool {
+    public var deviceTrackerComponentLoaded: Bool {
         return self.loadedComponents.contains("device_tracker")
     }
 
-    var iosNotifyPlatformLoaded: Bool {
+    public var iosNotifyPlatformLoaded: Bool {
         return self.loadedComponents.contains("notify.ios")
     }
 
@@ -77,9 +79,8 @@ public class HomeAssistantAPI {
         return permissionsContainer
     }
 
-    private var tokenManager: TokenManager?
-    private let authenticationController = AuthenticationController()
-    var connectionInfo: ConnectionInfo
+    var tokenManager: TokenManager?
+    public var connectionInfo: ConnectionInfo
 
     /// Initialzie an API object with an authenticated tokenManager.
     public init(connectionInfo: ConnectionInfo, authenticationMethod: AuthenticationMethod) {
@@ -89,13 +90,8 @@ public class HomeAssistantAPI {
         case .legacy(let apiPassword):
             self.manager = self.configureSessionManager(withPassword: apiPassword)
         case .modern(let tokenInfo):
+            // TODO: Take this into account when promoting to the main API. The one in Current is separate, which is bad.
             self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
-            tokenManager?.authenticationRequiredCallback = { [weak self] in
-                guard let authenticationController = self?.authenticationController else {
-                    return Promise(error: HomeAssistantAPIError.unknown)
-                }
-                return authenticationController.authenticateWithBrowser(at: connectionInfo.baseURL)
-            }
             let manager = self.configureSessionManager()
             manager.retrier = self.tokenManager
             manager.adapter = self.tokenManager
@@ -107,12 +103,13 @@ public class HomeAssistantAPI {
                                          authenticationType: .httpBasic)
         self.configureBasicAuthWithKeychain(basicAuthKeychain)
 
-        self.pushID = prefs.string(forKey: "pushID")
+        self.pushID = self.prefs.string(forKey: "pushID")
 
         UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
             prefs.setValue((settings.authorizationStatus == UNAuthorizationStatus.authorized),
                            forKey: "notificationsEnabled")
         })
+
     }
 
     /// Configure global state of the app to use our newly validated credentials.
@@ -126,16 +123,16 @@ public class HomeAssistantAPI {
                 if let components = config.Components {
                     self.loadedComponents = components
                 }
-                prefs.setValue(config.ConfigDirectory, forKey: "config_dir")
-                prefs.setValue(config.LocationName, forKey: "location_name")
-                prefs.setValue(config.Latitude, forKey: "latitude")
-                prefs.setValue(config.Longitude, forKey: "longitude")
-                prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
-                prefs.setValue(config.LengthUnit, forKey: "length_unit")
-                prefs.setValue(config.MassUnit, forKey: "mass_unit")
-                prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
-                prefs.setValue(config.Timezone, forKey: "time_zone")
-                prefs.setValue(config.Version, forKey: "version")
+                self.prefs.setValue(config.ConfigDirectory, forKey: "config_dir")
+                self.prefs.setValue(config.LocationName, forKey: "location_name")
+                self.prefs.setValue(config.Latitude, forKey: "latitude")
+                self.prefs.setValue(config.Longitude, forKey: "longitude")
+                self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
+                self.prefs.setValue(config.LengthUnit, forKey: "length_unit")
+                self.prefs.setValue(config.MassUnit, forKey: "mass_unit")
+                self.prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
+                self.prefs.setValue(config.Timezone, forKey: "time_zone")
+                self.prefs.setValue(config.Version, forKey: "version")
 
                 Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
                 Crashlytics.sharedInstance().setObjectValue(self.loadedComponents.joined(separator: ","),
@@ -149,7 +146,7 @@ public class HomeAssistantAPI {
 
                 _ = self.getManifestJSON().done { manifest in
                     if let themeColor = manifest.ThemeColor {
-                        prefs.setValue(themeColor, forKey: "themeColor")
+                        self.prefs.setValue(themeColor, forKey: "themeColor")
                     }
                 }
 
@@ -383,6 +380,19 @@ public class HomeAssistantAPI {
         }
     }
 
+    public func downloadDataAt(url: URL) -> Promise<Data> {
+        return Promise { seal in
+            self.manager.download(url).responseData { downloadResponse in
+                switch downloadResponse.result {
+                case .success(let data):
+                    seal.fulfill(data)
+                case .failure(let error):
+                    seal.reject(error)
+                }
+            }
+        }
+    }
+
     public func callService(domain: String, service: String, serviceData: [String: Any],
                             shouldLog: Bool = true)
         -> Promise<[Entity]> {
@@ -433,7 +443,7 @@ public class HomeAssistantAPI {
                         if let afError = error as? AFError {
                             var errorUserInfo: [String: Any] = [:]
                             if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
-                                if let errorJSON = convertToDictionary(text: utf8Text),
+                                if let errorJSON = utf8Text.dictionary(),
                                     let errMessage = errorJSON["message"] as? String {
                                     errorUserInfo["errorMessage"] = errMessage
                                 }
@@ -546,7 +556,7 @@ public class HomeAssistantAPI {
         return callService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
     }
 
-    func getPushSettings() -> Promise<PushConfiguration> {
+    public func getPushSettings() -> Promise<PushConfiguration> {
         return self.request(path: "ios/push", callingFunctionName: "\(#function)")
     }
 
@@ -569,13 +579,13 @@ public class HomeAssistantAPI {
         ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
         ident.DeviceModel = deviceKitDevice.model
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = DeviceUID.uid()
+        ident.DevicePermanentID = Current.deviceIDProvider()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
         ident.Permissions = self.enabledPermissions
         ident.PushID = pushID
-        ident.PushSounds = listAllInstalledPushNotificationSounds()
+        ident.PushSounds = Notifications.installedPushNotificationSounds()
 
         UIDevice.current.isBatteryMonitoringEnabled = true
 
@@ -622,20 +632,20 @@ public class HomeAssistantAPI {
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
         ident.DeviceID = Current.settingsStore.deviceID
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = DeviceUID.uid()
+        ident.DevicePermanentID = Current.deviceIDProvider()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
         ident.DeviceTimezone = (NSTimeZone.local as NSTimeZone).name
-        ident.PushSounds = listAllInstalledPushNotificationSounds()
+        ident.PushSounds = Notifications.installedPushNotificationSounds()
         ident.PushToken = deviceToken
-        if let email = prefs.string(forKey: "userEmail") {
+        if let email = self.prefs.string(forKey: "userEmail") {
             ident.UserEmail = email
         }
-        if let version = prefs.string(forKey: "version") {
+        if let version = self.prefs.string(forKey: "version") {
             ident.HomeAssistantVersion = version
         }
-        if let timeZone = prefs.string(forKey: "time_zone") {
+        if let timeZone = self.prefs.string(forKey: "time_zone") {
             ident.HomeAssistantTimezone = timeZone
         }
 
@@ -661,13 +671,13 @@ public class HomeAssistantAPI {
         ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
         ident.DeviceModel = deviceKitDevice.model
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = DeviceUID.uid()
+        ident.DevicePermanentID = Current.deviceIDProvider()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
         ident.Permissions = self.enabledPermissions
         ident.PushID = pushID
-        ident.PushSounds = listAllInstalledPushNotificationSounds()
+        ident.PushSounds = Notifications.installedPushNotificationSounds()
 
         return Mapper().toJSON(ident)
     }
@@ -846,112 +856,4 @@ public class HomeAssistantAPI {
         }
     }
 
-}
-
-public enum LocationUpdateTrigger: String {
-    struct NotificationOptions {
-        let shouldNotify: Bool
-        let identifier: String?
-        let title: String
-        let body: String
-    }
-
-    case Visit = "Visit"
-    case RegionEnter = "Region Entered"
-    case RegionExit = "Region Exited"
-    case GPSRegionEnter = "Geographic Region Entered"
-    case GPSRegionExit = "Geographic Region Exited"
-    case BeaconRegionEnter = "iBeacon Region Entered"
-    case BeaconRegionExit = "iBeacon Region Exited"
-    case Manual = "Manual"
-    case SignificantLocationUpdate = "Significant Location Update"
-    case BackgroundFetch = "Background Fetch"
-    case PushNotification = "Push Notification"
-    case URLScheme = "URL Scheme"
-    case Unknown = "Unknown"
-
-    func notificationOptionsFor(zoneName: String) -> NotificationOptions {
-        let shouldNotify: Bool
-        var identifier: String = ""
-        let body: String
-        let title = "Location change"
-
-        switch self {
-        case .BeaconRegionEnter:
-            body = L10n.LocationChangeNotification.BeaconRegionEnter.body(zoneName)
-            identifier = "\(zoneName)_beacon_entered"
-            shouldNotify = prefs.bool(forKey: "beaconEnterNotifications")
-        case .BeaconRegionExit:
-            body = L10n.LocationChangeNotification.BeaconRegionExit.body(zoneName)
-            identifier = "\(zoneName)_beacon_exited"
-            shouldNotify = prefs.bool(forKey: "beaconExitNotifications")
-        case .GPSRegionEnter:
-            body = L10n.LocationChangeNotification.RegionEnter.body(zoneName)
-            identifier = "\(zoneName)_entered"
-            shouldNotify = prefs.bool(forKey: "enterNotifications")
-        case .GPSRegionExit:
-            body = L10n.LocationChangeNotification.RegionExit.body(zoneName)
-            identifier = "\(zoneName)_exited"
-            shouldNotify = prefs.bool(forKey: "exitNotifications")
-        case .SignificantLocationUpdate:
-            body = L10n.LocationChangeNotification.SignificantLocationUpdate.body
-            identifier = "sig_change"
-            shouldNotify = prefs.bool(forKey: "significantLocationChangeNotifications")
-        case .BackgroundFetch:
-            body = L10n.LocationChangeNotification.BackgroundFetch.body
-            identifier = "background_fetch"
-            shouldNotify = prefs.bool(forKey: "backgroundFetchLocationChangeNotifications")
-        case .PushNotification:
-            body = L10n.LocationChangeNotification.PushNotification.body
-            identifier = "push_notification"
-            shouldNotify = prefs.bool(forKey: "pushLocationRequestNotifications")
-        case .URLScheme:
-            body = L10n.LocationChangeNotification.UrlScheme.body
-            identifier = "url_scheme"
-            shouldNotify = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
-        case .Visit:
-            body = L10n.LocationChangeNotification.Visit.body
-            identifier = "visit"
-            shouldNotify = prefs.bool(forKey: "visitLocationRequestNotifications")
-        case .Manual:
-            body = L10n.LocationChangeNotification.Manual.body
-            shouldNotify = false
-        case .RegionExit, .RegionEnter, .Unknown:
-            body = L10n.LocationChangeNotification.Unknown.body
-            shouldNotify = false
-        }
-
-        return NotificationOptions(shouldNotify: shouldNotify, identifier: identifier, title: title, body: body)
-    }
-}
-
-extension CMMotionActivity {
-    var activityType: String {
-        if self.walking {
-            return "Walking"
-        } else if self.running {
-            return "Running"
-        } else if self.automotive {
-            return "Automotive"
-        } else if self.cycling {
-            return "Cycling"
-        } else if self.stationary {
-            return "Stationary"
-        } else {
-            return "Unknown"
-        }
-    }
-}
-
-extension CMMotionActivityConfidence {
-    var description: String {
-        if self == CMMotionActivityConfidence.low {
-            return "Low"
-        } else if self == CMMotionActivityConfidence.medium {
-            return "Medium"
-        } else if self == CMMotionActivityConfidence.high {
-            return "High"
-        }
-        return "Unknown"
-    }
 }
