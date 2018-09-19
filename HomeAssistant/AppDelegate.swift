@@ -68,13 +68,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
 
             _ = HomeAssistantAPI.authenticatedAPIPromise.then { api in
+                api.GetEvents()
+            }.then { eventsResp -> Promise<HomeAssistantAPI> in
+                for event in eventsResp {
+                    if let eventName = event.Event {
+                        if eventName == "*" {
+                            continue
+                        }
+                        if let shortcut = INShortcut(intent: FireEventIntent(eventName: eventName)) {
+                            shortcutsToSuggest.append(shortcut)
+                        }
+                    }
+                }
+
+                return HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
                 api.GetServices()
             }.done { serviceResp in
                 for domainContainer in serviceResp {
                     let domain = domainContainer.Domain
                     for service in domainContainer.Services {
-                        if let shortcut = INShortcut(intent: CallServiceIntent(domain: domain,
-                                                                               service: service.key,
+                        if let shortcut = INShortcut(intent: CallServiceIntent(domain: domain, service: service.key,
                                                                                description: service.value.Description)) {
                             shortcutsToSuggest.append(shortcut)
                         }

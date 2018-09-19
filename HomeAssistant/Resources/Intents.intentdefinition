@@ -97,7 +97,7 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Call service ${serviceDomain}.${service} with data ${payload}</string>
+					<string>Call service ${serviceDomain}.${service} with data: ${payload}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>le6NdS</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -112,7 +112,7 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>${serviceDescription}. Will send pasteboard contents as payload.</string>
+					<string>${serviceDescription}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>SGxPSB</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -127,7 +127,7 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Call service ￼${serviceDomain}.${service}. Will send pasteboard contents as payload.</string>
+					<string>Call service ￼${serviceDomain}.${service}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>MDmaRg</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -479,13 +479,13 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Fires ${eventName} to the Home Assistant event bus. Will send pasteboard contents as event data.</string>
+					<string>Fires an event named ${eventName} to the Home Assistant event bus. Will send pasteboard contents as event data.</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>nIl9ET</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Fires ${eventName} with pasteboard data</string>
+					<string>Fire ${eventName} with pasteboard data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>lnrohM</string>
 				</dict>
@@ -494,13 +494,13 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Fires ${eventName} to the Home Assistant event bus with ${eventData}.</string>
+					<string>Fires an event named ${eventName} to the Home Assistant event bus with ${eventData}.</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>GoLNMt</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Fire event ${eventName} with pre set data</string>
+					<string>Fire ${eventName} with data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>yS9QV0</string>
 				</dict>

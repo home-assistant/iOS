@@ -246,6 +246,10 @@ public class HomeAssistantAPI {
         return self.request(path: "services", callingFunctionName: "\(#function)")
     }
 
+    public func GetEvents() -> Promise<[EventsResponse]> {
+        return self.request(path: "events", callingFunctionName: "\(#function)")
+    }
+
     public func GetStates() -> Promise<[Entity]> {
         return self.request(path: "states", callingFunctionName: "\(#function)")
     }
