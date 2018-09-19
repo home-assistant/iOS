@@ -317,13 +317,13 @@ public class HomeAssistantAPI {
                             // Don't want to donate device_tracker.see calls
                             if #available(iOS 12.0, *), service != "see" {
                                 let intent = CallServiceIntent()
-                                intent.domain = domain
+                                intent.serviceDomain = domain
                                 intent.service = service
 
                                 let jsonData = try? JSONSerialization.data(withJSONObject: serviceData, options: [])
                                 let jsonString = String(data: jsonData!, encoding: .utf8)
 
-                                intent.data = jsonString
+                                intent.payload = jsonString
                                 let interaction = INInteraction(intent: intent, response: nil)
                                 interaction.donate { (error) in
                                     if error != nil {

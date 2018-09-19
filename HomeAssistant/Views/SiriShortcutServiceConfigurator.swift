@@ -185,14 +185,9 @@ class SiriShortcutServiceConfigurator: FormViewController {
         let validationResult = self.form.validate()
         if validationResult.count == 0 {
             let formData = form.values()
-            let jsonData = try? JSONSerialization.data(withJSONObject: formData, options: [])
-            let jsonString = String(data: jsonData!, encoding: .utf8)
 
-            let serviceIntent = CallServiceIntent()
-            serviceIntent.domain = domain
-            serviceIntent.service = serviceName
-            serviceIntent.data = jsonString
-
+            let serviceIntent = CallServiceIntent(domain: domain, service: serviceName, payload: formData)
+            
             let intentJSONData = try? JSONSerialization.data(withJSONObject: ["domain": domain,
                                                                               "service": serviceName,
                                                                               "data": formData],

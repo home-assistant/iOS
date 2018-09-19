@@ -336,19 +336,6 @@ class SettingsDetailViewController: FormViewController {
                             _ = vc.navigationController?.popViewController(animated: true)
                         })
                     }
-                    <<< ButtonRow {
-                        $0.title = "Fire Event"
-                        $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
-                            if let shortcut = INShortcut(intent: SendLocationIntent()) {
-                                let viewController = INUIAddVoiceShortcutViewController(shortcut: shortcut)
-                                viewController.delegate = self
-                                return viewController
-                            }
-                            return UIViewController()
-                            }, onDismiss: { vc in
-                                _ = vc.navigationController?.popViewController(animated: true)
-                        })
-                    }
 
                     self.form +++ Section(header: "Services", footer: "")
 
@@ -361,6 +348,7 @@ class SettingsDetailViewController: FormViewController {
                         for service in domainContainer.Services.sorted(by: { (a, b) -> Bool in
                             return a.key < b.key
                         }) {
+
                             self.form.last! <<< ButtonRow {
                                 $0.title = domainContainer.Domain + "." + service.key
                                 $0.cellStyle = .subtitle
@@ -380,6 +368,7 @@ class SettingsDetailViewController: FormViewController {
                         }
                     }
                 }
+
             }
 
         default:

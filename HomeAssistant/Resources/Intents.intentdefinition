@@ -72,40 +72,70 @@
 			<key>INIntentDescriptionID</key>
 			<string>FBQiVD</string>
 			<key>INIntentLastParameterTag</key>
-			<integer>5</integer>
+			<integer>6</integer>
 			<key>INIntentName</key>
 			<string>CallService</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
-				<key>domain,service</key>
+				<key></key>
 				<dict>
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Call service￼${domain}.${service} with clipboard data</string>
+					<string>Call a service on Home Assistant. Expects a JSON object on the pasteboard like {"serviceDomain": "homeassistant", "service": "turn_on", "payload": {"foo": "bar"}}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>MDmaRg</string>
+					<string>4wVIAN</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Call service￼${domain}.${service} with clipboard data</string>
+					<string>Call Service</string>
 					<key>INIntentParameterCombinationTitleID</key>
-					<string>wKnW1P</string>
+					<string>ntnbP2</string>
 				</dict>
-				<key>service,domain,data</key>
+				<key>service,serviceDomain,payload</key>
 				<dict>
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Call service ${domain}.${service} with data</string>
+					<string>Call service ${serviceDomain}.${service} with data ${payload}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>le6NdS</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Call service ${domain}.${service}with data</string>
+					<string>Call ${serviceDomain}.${service} with data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>uUk5RX</string>
+				</dict>
+				<key>serviceDescription,serviceDomain,service</key>
+				<dict>
+					<key>INIntentParameterCombinationIsPrimary</key>
+					<false/>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>${serviceDescription}. Will send pasteboard contents as payload.</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>SGxPSB</string>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Call service ${serviceDomain}.${service} with pasteboard data</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>CiB3s6</string>
+				</dict>
+				<key>serviceDomain,service</key>
+				<dict>
+					<key>INIntentParameterCombinationIsPrimary</key>
+					<false/>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>Call service ￼${serviceDomain}.${service}. Will send pasteboard contents as payload.</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>MDmaRg</string>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Call￼ ${serviceDomain}.${service} with pasteboard data</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>wKnW1P</string>
 				</dict>
 			</dict>
 			<key>INIntentParameters</key>
@@ -114,7 +144,7 @@
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>1</integer>
 					<key>INIntentParameterName</key>
-					<string>domain</string>
+					<string>serviceDomain</string>
 					<key>INIntentParameterSupportsMultipleValues</key>
 					<false/>
 					<key>INIntentParameterTag</key>
@@ -138,11 +168,23 @@
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>3</integer>
 					<key>INIntentParameterName</key>
-					<string>data</string>
+					<string>payload</string>
 					<key>INIntentParameterSupportsMultipleValues</key>
 					<false/>
 					<key>INIntentParameterTag</key>
 					<integer>4</integer>
+					<key>INIntentParameterType</key>
+					<string>String</string>
+				</dict>
+				<dict>
+					<key>INIntentParameterDisplayPriority</key>
+					<integer>4</integer>
+					<key>INIntentParameterName</key>
+					<string>serviceDescription</string>
+					<key>INIntentParameterSupportsMultipleValues</key>
+					<false/>
+					<key>INIntentParameterTag</key>
+					<integer>6</integer>
 					<key>INIntentParameterType</key>
 					<string>String</string>
 				</dict>
@@ -346,7 +388,7 @@
 						<key>INIntentResponseCodeName</key>
 						<string>failureConnectivity</string>
 						<key>INIntentResponseCodeSuccess</key>
-						<true/>
+						<false/>
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
@@ -417,18 +459,33 @@
 			<string>FireEvent</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
+				<key></key>
+				<dict>
+					<key>INIntentParameterCombinationIsPrimary</key>
+					<false/>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>Fire an event to the Home Assistant event bus. Expects a JSON object on the pasteboard like {"eventName": "my.event", "eventData": {"foo": "bar"}}</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>47v44G</string>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Fire event</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>c00c45</string>
+				</dict>
 				<key>eventName</key>
 				<dict>
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Fired ${eventName} to Home Assistant</string>
+					<string>Fires ${eventName} to the Home Assistant event bus. Will send pasteboard contents as event data.</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>nIl9ET</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Fired ${eventName} to Home Assistant</string>
+					<string>Fires ${eventName} with pasteboard data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>lnrohM</string>
 				</dict>
@@ -437,13 +494,13 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Fired ${eventName} with ${eventData} to Home Assistant</string>
+					<string>Fires ${eventName} to the Home Assistant event bus with ${eventData}.</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>GoLNMt</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Fired ${eventName} to Home Assistant</string>
+					<string>Fire event ${eventName} with pre set data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>yS9QV0</string>
 				</dict>

@@ -41,15 +41,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UNUserNotificationCenter.current().delegate = self
 
-        // Tell the system we have a app notification settings screen and want critical alerts
-        // This is effectively a migration
         if #available(iOS 12.0, *) {
+            // Tell the system we have a app notification settings screen and want critical alerts
+            // This is effectively a migration
+
             UNUserNotificationCenter.current().getNotificationSettings { (settings) in
                 guard settings.authorizationStatus == .authorized else {return}
                 let opts: UNAuthorizationOptions = [.providesAppNotificationSettings, .criticalAlert]
                 UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
                     print("Requested critical alert access", granted, error.debugDescription)
                 }
+            }
+
+            var shortcutsToSuggest: [INShortcut] = []
+
+            if let shortcut = INShortcut(intent: FireEventIntent()) {
+                shortcutsToSuggest.append(shortcut)
+            }
+
+            if let shortcut = INShortcut(intent: SendLocationIntent()) {
+                shortcutsToSuggest.append(shortcut)
+            }
+
+            if let shortcut = INShortcut(intent: CallServiceIntent()) {
+                shortcutsToSuggest.append(shortcut)
+            }
+
+            _ = HomeAssistantAPI.authenticatedAPIPromise.then { api in
+                api.GetServices()
+            }.done { serviceResp in
+                for domainContainer in serviceResp {
+                    let domain = domainContainer.Domain
+                    for service in domainContainer.Services {
+                        if let shortcut = INShortcut(intent: CallServiceIntent(domain: domain,
+                                                                               service: service.key,
+                                                                               description: service.value.Description)) {
+                            shortcutsToSuggest.append(shortcut)
+                        }
+                    }
+                }
+
+                print("Suggesting", shortcutsToSuggest.count, "shortcuts to Siri")
+
+                INVoiceShortcutCenter.shared.setShortcutSuggestions(shortcutsToSuggest)
             }
 
         }
@@ -236,11 +270,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
 
         if #available(iOS 12.0, *) {
-            let intent = FireEventIntent()
-            intent.eventName = url.pathComponents[1]
-            intent.eventData = url.query
-
-            let interaction = INInteraction(intent: intent, response: nil)
+            let interaction = INInteraction(intent: FireEventIntent(eventName: url.pathComponents[1],
+                                                                    payload: url.query), response: nil)
 
             interaction.donate { (error) in
                 if error != nil {
@@ -273,10 +304,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
 
         if #available(iOS 12.0, *) {
-            let intent = CallServiceIntent()
-            intent.domain = domain
-            intent.service = service
-            intent.data = url.query
+            let intent = CallServiceIntent(domain: domain, service: service, payload: url.query)
 
             let interaction = INInteraction(intent: intent, response: nil)
 

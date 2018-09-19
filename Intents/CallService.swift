@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import Shared
 
 class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
@@ -18,13 +19,13 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
             return
         }
 
-        if intent.domain != nil && intent.service != nil && intent.data != nil {
+        if intent.serviceDomain != nil && intent.service != nil && intent.payload != nil {
             // Service name and data was already set
             completion(CallServiceIntentResponse(code: .ready, userActivity: nil))
         } else if let pasteboardString = UIPasteboard.general.string {
             if intent.service != nil {
                 // Only service name was set, get data from clipboard
-                intent.data = pasteboardString
+                intent.payload = pasteboardString
             } else {
                 // Nothing was set, hope there's a JSON object on clipboard containing service name and data
                 // JSON object should be same payload as we send to HA + a service key
@@ -37,7 +38,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
                         }
                         if let data = jsonArray["data"] {
                             let jsonData = try JSONSerialization.data(withJSONObject: data, options: [])
-                            intent.data = String(data: jsonData, encoding: .utf8)
+                            intent.payload = String(data: jsonData, encoding: .utf8)
                         }
                     } else {
                         print("Unable to parse pasteboard JSON")
@@ -61,7 +62,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
             return
         }
 
-        if let domain = intent.domain, let service = intent.service, let data = intent.data {
+        if let domain = intent.serviceDomain, let service = intent.service, let data = intent.payload {
             print("Handling call service shortcut", service, data)
 
             let data = data.data(using: .utf8)!
