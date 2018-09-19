@@ -49,15 +49,15 @@ target 'HomeAssistantUITests' do
 end
 
 target 'APNSAttachmentService' do
+  pod 'Alamofire', '4.7.3'
+  pod 'AlamofireObjectMapper', '5.1.0'
+  pod 'DeviceKit', '1.8'
+  pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
   pod 'KeychainAccess', '3.1.1'
+  pod 'ObjectMapper', '3.3.0'
+  pod 'PromiseKit', '6.3.0'
   pod 'RealmSwift'
-   pod 'Alamofire', '4.7.3'
-    pod 'AlamofireObjectMapper', '5.1.0'
-    pod 'DeviceKit', '1.7.0'
-    pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
-    pod 'ObjectMapper', '3.3.0'
-    pod 'PromiseKit', '6.3.0'
-    pod 'RealmSwift'
+  pod 'RealmSwift'
 end
 
 target 'MapNotificationContentExtension' do

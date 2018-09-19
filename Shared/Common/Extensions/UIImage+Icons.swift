@@ -17,7 +17,7 @@ extension UIImage {
             CLSLogv("Requesting MaterialDesignIcon: Identifier: %@, Fixed Identifier: %@, Width: %f, Height: %f",
                     getVaList([iconIdentifier, fixedIconIdentifier, iconWidth, iconHeight]))
             let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
-            theIcon?.addAttribute(NSAttributedStringKey.foregroundColor.rawValue, value: color)
+            theIcon?.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: color)
             if let icon = theIcon {
                 return icon.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
             } else {
@@ -25,7 +25,7 @@ extension UIImage {
                         getVaList([iconIdentifier, iconWidth, iconHeight]))
                 let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCodes["mdi-help"],
                                                                     size: CGFloat(iconWidth))
-                theIcon?.addAttribute(NSAttributedStringKey.foregroundColor.rawValue, value: color)
+                theIcon?.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: color)
                 return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
             }
         } else {
