@@ -3,7 +3,47 @@
 <plist version="1.0">
 <dict>
 	<key>INEnums</key>
-	<array/>
+	<array>
+		<dict>
+			<key>INEnumName</key>
+			<string>ClipboardLocationParsedAs</string>
+			<key>INEnumType</key>
+			<string>Regular</string>
+			<key>INEnumValues</key>
+			<array>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>unknown</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>xa9Bk7</string>
+					<key>INEnumValueIndex</key>
+					<integer>0</integer>
+					<key>INEnumValueName</key>
+					<string>unknown</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Latitude, Longitude</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>dC8g33</string>
+					<key>INEnumValueIndex</key>
+					<integer>1</integer>
+					<key>INEnumValueName</key>
+					<string>latlong</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Address</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>50P1YJ</string>
+					<key>INEnumValueIndex</key>
+					<integer>2</integer>
+					<key>INEnumValueName</key>
+					<string>address</string>
+				</dict>
+			</array>
+		</dict>
+	</array>
 	<key>INIntentDefinitionModelVersion</key>
 	<string>1.0</string>
 	<key>INIntentDefinitionSystemVersion</key>
@@ -174,7 +214,7 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Report your current location as ${location}to Home Assistant</string>
+					<string>Report your current location as ${location} to Home Assistant</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>rwj6u7</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -216,7 +256,7 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Location updated</string>
+						<string>Location updated to current location</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>4fFx9y</string>
 						<key>INIntentResponseCodeName</key>
@@ -224,11 +264,68 @@
 						<key>INIntentResponseCodeSuccess</key>
 						<true/>
 					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to update location, the clipboard contents could not be parsed</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>VGzL7U</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failureClipboardNotParseable</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to update location, Home Assistant is not currently reachable</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>KHH48D</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failureConnectivity</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Location updated to ${location} via clipboard containing ${source}</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>7NpJ76</string>
+						<key>INIntentResponseCodeName</key>
+						<string>successViaClipboard</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
-				<integer>0</integer>
+				<integer>4</integer>
 				<key>INIntentResponseParameters</key>
-				<array/>
+				<array>
+					<dict>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>1</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>location</string>
+						<key>INIntentResponseParameterSupportsMultipleValues</key>
+						<false/>
+						<key>INIntentResponseParameterTag</key>
+						<integer>2</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>Placemark</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>2</integer>
+						<key>INIntentResponseParameterEnumType</key>
+						<string>ClipboardLocationParsedAs</string>
+						<key>INIntentResponseParameterName</key>
+						<string>source</string>
+						<key>INIntentResponseParameterSupportsMultipleValues</key>
+						<false/>
+						<key>INIntentResponseParameterTag</key>
+						<integer>4</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>Integer</string>
+					</dict>
+				</array>
 			</dict>
 			<key>INIntentRestrictions</key>
 			<integer>0</integer>
