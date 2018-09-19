@@ -10,53 +10,50 @@ import Foundation
 import UIKit
 import CoreLocation
 import Shared
+import MapKit
 
 class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
     func confirm(intent: SendLocationIntent, completion: @escaping (SendLocationIntentResponse) -> Void) {
-        // TODO: Ensure we can contact Home Assistant, token is valid, etc, here. Otherwise, throw a failure NOW.
-
-        print("HELLO WORLD")
-
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
             print("Can't get a authenticated API", error)
             completion(SendLocationIntentResponse(code: .failureConnectivity, userActivity: nil))
             return
         }
 
-        // Attempt to grab pasteboard contents and split by command.
+        // If location is already set, use that. If not...
+        // Attempt to grab pasteboard contents and split by comma.
         // The hope is the user has something like LAT,LONG on the pasteboard
         // and we can use that for a CLLocation to update location with.
         // If they don't have a string like that then we assume they have a address on pasteboard.
 
-        let geocoder = CLGeocoder()
-
-        if let pasteboardString = UIPasteboard.general.string {
+        if let place = intent.location {
+            self.completeConfirm(place: place, source: .stored, completion: completion)
+            return
+        } else if let pasteboardString = UIPasteboard.general.string {
             print("Pasteboard contains...", pasteboardString)
             let allowedLatLongChars = CharacterSet(charactersIn: "0123456789,-.")
             if pasteboardString.rangeOfCharacter(from: allowedLatLongChars.inverted) == nil {
                 print("Appears we have a lat,long formatted string")
                 let splitString = pasteboardString.components(separatedBy: ",")
                 if let latitude = CLLocationDegrees(splitString[0]), let longitude = CLLocationDegrees(splitString[1]) {
-                    if !CLLocationCoordinate2DIsValid(CLLocationCoordinate2D(latitude: latitude,
-                                                                             longitude: longitude)) {
+                    let coord = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+
+                    if !CLLocationCoordinate2DIsValid(coord) {
                         print("Invalid coords!!")
                         completion(SendLocationIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
                         return
                     }
-                    geocoder.reverseGeocodeLocation(CLLocation(latitude: latitude, longitude: longitude)) {
-                        (placemarks, error) in
-                        if let error = error {
-                            print("Error when reverse geocoding LAT,LNG!", error)
-                            completion(SendLocationIntentResponse(code: .failureClipboardNotParseable,
-                                                                  userActivity: nil))
-                        }
-                        if let placemarks = placemarks {
-                            print("Got a placemark!", placemarks[0])
-                            self.completeConfirm(place: placemarks.first, source: .latlong, completion: completion)
-                        }
-                    }
+
+                    // We use MKPlacemark so we can return a CLPlacemark without requiring use of the geocoder
+                    self.completeConfirm(place: MKPlacemark(coordinate: coord), source: .latlong,
+                                         completion: completion)
+                    return
+                } else {
+                    completion(SendLocationIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
                 }
             } else { // Fallback to assuming that there's an address on there
+                let geocoder = CLGeocoder()
+
                 print("Not a lat,long, attempting geocode of string")
                 geocoder.geocodeAddressString(pasteboardString) { (placemarks, error) in
                     if let error = error {
@@ -70,7 +67,7 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                 }
             }
         } else {
-            print("Nothing on Clipboard, assuming user wants current location")
+            print("Nothing on Clipboard and a Placemark wasn't given, assuming user wants current location")
             completeConfirm(place: nil, source: .unknown, completion: completion)
         }
     }

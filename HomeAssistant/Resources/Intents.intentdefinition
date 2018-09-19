@@ -41,6 +41,16 @@
 					<key>INEnumValueName</key>
 					<string>address</string>
 				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Stored value</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>0cl84c</string>
+					<key>INEnumValueIndex</key>
+					<integer>3</integer>
+					<key>INEnumValueName</key>
+					<string>stored</string>
+				</dict>
 			</array>
 		</dict>
 	</array>
