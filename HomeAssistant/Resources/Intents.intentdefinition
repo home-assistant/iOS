@@ -72,38 +72,38 @@
 			<key>INIntentDescriptionID</key>
 			<string>FBQiVD</string>
 			<key>INIntentLastParameterTag</key>
-			<integer>4</integer>
+			<integer>5</integer>
 			<key>INIntentName</key>
 			<string>CallService</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
-				<key>serviceName</key>
+				<key>domain,service</key>
 				<dict>
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Call service ￼</string>
+					<string>Call service￼${domain}.${service} with clipboard data</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>MDmaRg</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Call service ${serviceName}</string>
+					<string>Call service￼${domain}.${service} with clipboard data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>wKnW1P</string>
 				</dict>
-				<key>serviceName,serviceData</key>
+				<key>service,domain,data</key>
 				<dict>
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Call service ${serviceName} with data: ${serviceData}</string>
+					<string>Call service ${domain}.${service} with data</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>le6NdS</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Call service ${serviceName}</string>
+					<string>Call service ${domain}.${service}with data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>uUk5RX</string>
 				</dict>
@@ -114,7 +114,7 @@
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>1</integer>
 					<key>INIntentParameterName</key>
-					<string>serviceName</string>
+					<string>domain</string>
 					<key>INIntentParameterSupportsMultipleValues</key>
 					<false/>
 					<key>INIntentParameterTag</key>
@@ -126,7 +126,19 @@
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>2</integer>
 					<key>INIntentParameterName</key>
-					<string>serviceData</string>
+					<string>service</string>
+					<key>INIntentParameterSupportsMultipleValues</key>
+					<false/>
+					<key>INIntentParameterTag</key>
+					<integer>5</integer>
+					<key>INIntentParameterType</key>
+					<string>String</string>
+				</dict>
+				<dict>
+					<key>INIntentParameterDisplayPriority</key>
+					<integer>3</integer>
+					<key>INIntentParameterName</key>
+					<string>data</string>
 					<key>INIntentParameterSupportsMultipleValues</key>
 					<false/>
 					<key>INIntentParameterTag</key>
@@ -151,7 +163,7 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Called ${serviceName}</string>
+						<string>Called ${domain}.${service}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>rFSNpu</string>
 						<key>INIntentResponseCodeName</key>
@@ -159,20 +171,62 @@
 						<key>INIntentResponseCodeSuccess</key>
 						<true/>
 					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to call service, the clipboard contents could not be parsed</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>30yAOG</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failureClipboardNotParseable</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to call service, Home Assistant is not currently reachable</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>2KWKqM</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failureConnectivity</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Successfully sent ${domain}.${service} with clipboard contents to Home Assistant</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>ri4H1h</string>
+						<key>INIntentResponseCodeName</key>
+						<string>successViaClipboard</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
-				<integer>2</integer>
+				<integer>3</integer>
 				<key>INIntentResponseParameters</key>
 				<array>
 					<dict>
 						<key>INIntentResponseParameterDisplayPriority</key>
 						<integer>1</integer>
 						<key>INIntentResponseParameterName</key>
-						<string>serviceName</string>
+						<string>domain</string>
 						<key>INIntentResponseParameterSupportsMultipleValues</key>
 						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>2</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>String</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>2</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>service</string>
+						<key>INIntentResponseParameterSupportsMultipleValues</key>
+						<false/>
+						<key>INIntentResponseParameterTag</key>
+						<integer>3</integer>
 						<key>INIntentResponseParameterType</key>
 						<string>String</string>
 					</dict>
@@ -442,6 +496,36 @@
 						<string>8BMgur</string>
 						<key>INIntentResponseCodeName</key>
 						<string>success</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to fire event, the clipboard contents could not be parsed</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>KU19Ap</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failureClipboardNotParseable</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to fire event, Home Assistant is not currently reachable</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>glRCfJ</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failureConnectivity</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Successfully sent ${eventName} with clipboard contents to Home Assistant</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>qfHa79</string>
+						<key>INIntentResponseCodeName</key>
+						<string>successViaClipboard</string>
 						<key>INIntentResponseCodeSuccess</key>
 						<true/>
 					</dict>

@@ -189,11 +189,13 @@ class SiriShortcutServiceConfigurator: FormViewController {
             let jsonString = String(data: jsonData!, encoding: .utf8)
 
             let serviceIntent = CallServiceIntent()
-            serviceIntent.serviceName = self.title
-            serviceIntent.serviceData = jsonString
+            serviceIntent.domain = domain
+            serviceIntent.service = serviceName
+            serviceIntent.data = jsonString
 
-            let intentJSONData = try? JSONSerialization.data(withJSONObject: ["serviceName": serviceIntent.serviceName,
-                                                                              "serviceData": formData],
+            let intentJSONData = try? JSONSerialization.data(withJSONObject: ["domain": domain,
+                                                                              "service": serviceName,
+                                                                              "data": formData],
                                                              options: [])
             serviceDataJSON = String(data: intentJSONData!, encoding: .utf8)
 
