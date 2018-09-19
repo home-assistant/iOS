@@ -646,4 +646,101 @@ public class HomeAssistantAPI {
         }
     }
 
+    public func submitLocation(updateType: LocationUpdateTrigger,
+                               location: CLLocation?,
+                               visit: CLVisit?,
+                               zone: RLMZone?) -> Promise<Void> {
+        UIDevice.current.isBatteryMonitoringEnabled = true
+
+        let payload = DeviceTrackerSee(trigger: updateType, location: location, visit: visit, zone: zone)
+        payload.Trigger = updateType
+
+        let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
+
+        payload.Battery = UIDevice.current.batteryLevel
+        payload.DeviceID = Current.settingsStore.deviceID
+        payload.Hostname = UIDevice.current.name
+        payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
+
+        var jsonPayload = "{\"missing\": \"payload\"}"
+        if let p = payload.toJSONString(prettyPrint: false) {
+            jsonPayload = p
+        }
+
+        let payloadDict: [String: Any] = Mapper<DeviceTrackerSee>().toJSON(payload)
+
+        UIDevice.current.isBatteryMonitoringEnabled = false
+
+        let realm = Current.realm()
+        // swiftlint:disable:next force_try
+        try! realm.write {
+            realm.add(LocationHistoryEntry(updateType: updateType, location: payload.cllocation,
+                                           zone: zone, payload: jsonPayload))
+        }
+
+        let promise = firstly {
+            self.identifyDevice()
+            }.then {_ in
+                self.callService(domain: "device_tracker", service: "see", serviceData: payloadDict,
+                                 shouldLog: false)
+            }.done { _ in
+                print("Device seen!")
+                self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: payloadDict)
+        }
+
+        promise.catch { err in
+            print("Error when updating location!", err)
+            Crashlytics.sharedInstance().recordError(err as NSError)
+        }
+
+        return promise
+    }
+
+    public func getAndSendLocation(trigger: LocationUpdateTrigger?) -> Promise<Void> {
+        var updateTrigger: LocationUpdateTrigger = .Manual
+        if let trigger = trigger {
+            updateTrigger = trigger
+        }
+        print("getAndSendLocation called via", String(describing: updateTrigger))
+
+        return Promise { seal in
+            Current.isPerformingSingleShotLocationQuery = true
+            self.oneShotLocationManager = OneShotLocationManager { location, error in
+                guard let location = location else {
+                    seal.reject(error ?? HomeAssistantAPIError.unknown)
+                    return
+                }
+
+                Current.isPerformingSingleShotLocationQuery = true
+                firstly {
+                    self.submitLocation(updateType: updateTrigger, location: location,
+                                        visit: nil, zone: nil)
+                    }.done { _ in
+                        seal.fulfill(())
+                    }.catch { error in
+                        seal.reject(error)
+                }
+            }
+        }
+    }
+
+    func sendLocalNotification(withZone: RLMZone?, updateType: LocationUpdateTrigger,
+                               payloadDict: [String: Any]) {
+        let zoneName = withZone?.Name ?? "Unknown zone"
+        let notificationOptions = updateType.notificationOptionsFor(zoneName: zoneName)
+        Current.clientEventStore.addEvent(ClientEvent(text: notificationOptions.body, type: .locationUpdate,
+                                                      payload: payloadDict))
+        if notificationOptions.shouldNotify {
+            let content = UNMutableNotificationContent()
+            content.title = notificationOptions.title
+            content.body = notificationOptions.body
+            content.sound = UNNotificationSound.default
+
+            let notificationRequest =
+                UNNotificationRequest.init(identifier: notificationOptions.identifier ?? "",
+                                           content: content, trigger: nil)
+            UNUserNotificationCenter.current().add(notificationRequest)
+        }
+    }
+
 }

@@ -12,56 +12,6 @@ import Crashlytics
 import KeychainAccess
 import Shared
 
-func getIconForIdentifier(_ iconIdentifier: String, iconWidth: Double, iconHeight: Double, color: UIColor) -> UIImage {
-    if let iconCodes = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as? [String: String] {
-        let fixedIconIdentifier = iconIdentifier.replacingOccurrences(of: ":", with: "-")
-        let iconCode = iconCodes[fixedIconIdentifier]
-        CLSLogv("Requesting MaterialDesignIcon: Identifier: %@, Fixed Identifier: %@, Width: %f, Height: %f",
-                getVaList([iconIdentifier, fixedIconIdentifier, iconWidth, iconHeight]))
-        let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(iconWidth))
-        theIcon?.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: color)
-        if let icon = theIcon {
-            return icon.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
-        } else {
-            CLSLogv("Error generating requested icon %@, Width: %f, Height: %f, falling back to mdi-help",
-                    getVaList([iconIdentifier, iconWidth, iconHeight]))
-            let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCodes["mdi-help"],
-                                                                size: CGFloat(iconWidth))
-            theIcon?.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: color)
-            return theIcon!.image(with: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)))
-        }
-    } else {
-        CLSLogv("Error loading Material Design Icons while requesting icon: %@, Width: %f, Height: %f",
-                getVaList([iconIdentifier, iconWidth, iconHeight]))
-        return UIImage()
-    }
-}
-
-func colorWithHexString(_ hexString: String, alpha: CGFloat? = 1.0) -> UIColor {
-
-    // Convert hex string to an integer
-    let hexint = Int(intFromHexString(hexString))
-    let red = CGFloat((hexint & 0xff0000) >> 16) / 255.0
-    let green = CGFloat((hexint & 0xff00) >> 8) / 255.0
-    let blue = CGFloat((hexint & 0xff) >> 0) / 255.0
-    let alpha = alpha!
-
-    // Create color object, specifying alpha as well
-    let color = UIColor(red: red, green: green, blue: blue, alpha: alpha)
-    return color
-}
-
-func intFromHexString(_ hexStr: String) -> UInt32 {
-    var hexInt: UInt32 = 0
-    // Create scanner
-    let scanner: Scanner = Scanner(string: hexStr)
-    // Tell scanner to skip the # character
-    scanner.charactersToBeSkipped = CharacterSet(charactersIn: "#")
-    // Scan hex value
-    scanner.scanHexInt32(&hexInt)
-    return hexInt
-}
-
 // Thanks to http://stackoverflow.com/a/35624018/486182
 // Must reboot device after installing new push sounds (http://stackoverflow.com/q/34998278/486182)
 
