@@ -430,7 +430,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 })
             }
 
-            <<< ButtonRow("eventLog") {
+
+            +++ ButtonRow("eventLog") {
                 $0.title = L10n.Settings.EventLog.title
                 let controllerProvider = ControllerProvider.storyBoard(storyboardId: "clientEventsList",
                                                                        storyboardName: "ClientEvents",
@@ -440,9 +441,9 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 })
             }
 
-        if #available(iOS 12.0, *), let lastSection = self.form.last {
-        lastSection
-            <<< ButtonRow("siriShortcuts") {
+        if #available(iOS 12.0, *) {
+            self.form +++ ButtonRow() {
+                $0.tag = "siriShortcuts"
                 $0.title = L10n.Settings.DetailsSection.SiriShortcutsRow.title
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     let view = SettingsDetailViewController()
