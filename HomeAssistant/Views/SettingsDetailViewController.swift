@@ -285,6 +285,10 @@ class SettingsDetailViewController: FormViewController {
                     })
 
         case "siri":
+            INPreferences.requestSiriAuthorization { (status) in
+                print("Siri auth status", status.rawValue)
+            }
+
             var entityIDs: [String] = []
 
             _ = HomeAssistantAPI.authenticatedAPI()?.GetStates().done { entities in
