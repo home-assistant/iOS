@@ -13,7 +13,7 @@
 			<array>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>unknown</string>
+					<string>Unknown</string>
 					<key>INEnumValueDisplayNameID</key>
 					<string>xa9Bk7</string>
 					<key>INEnumValueIndex</key>
@@ -23,7 +23,7 @@
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Latitude, Longitude</string>
+					<string>Coordinates</string>
 					<key>INEnumValueDisplayNameID</key>
 					<string>dC8g33</string>
 					<key>INEnumValueIndex</key>
@@ -289,7 +289,7 @@
 		</dict>
 		<dict>
 			<key>INIntentCategory</key>
-			<string>checkIn</string>
+			<string>share</string>
 			<key>INIntentDescription</key>
 			<string>Send location to Home Assistant</string>
 			<key>INIntentDescriptionID</key>
@@ -305,7 +305,7 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Send your current location to Home Assistant</string>
+					<string>Send a location to Home Assistant. Will attempt to use pasteboard contents as location, otherwise will use current location.</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>WXKbGy</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -392,7 +392,7 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Location updated to ${location} via clipboard containing ${source}</string>
+						<string>Location updated to contents of pasteboard that were parsed as ${source}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>7NpJ76</string>
 						<key>INIntentResponseCodeName</key>
@@ -400,9 +400,19 @@
 						<key>INIntentResponseCodeSuccess</key>
 						<true/>
 					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to geocode ${pasteboardContents} to a valid location</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>sbkx4E</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failureGeocoding</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
+					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
-				<integer>4</integer>
+				<integer>5</integer>
 				<key>INIntentResponseParameters</key>
 				<array>
 					<dict>
@@ -431,6 +441,18 @@
 						<key>INIntentResponseParameterType</key>
 						<string>Integer</string>
 					</dict>
+					<dict>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>3</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>pasteboardContents</string>
+						<key>INIntentResponseParameterSupportsMultipleValues</key>
+						<false/>
+						<key>INIntentResponseParameterTag</key>
+						<integer>5</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>String</string>
+					</dict>
 				</array>
 			</dict>
 			<key>INIntentRestrictions</key>
@@ -444,7 +466,7 @@
 			<key>INIntentUserConfirmationRequired</key>
 			<false/>
 			<key>INIntentVerb</key>
-			<string>CheckIn</string>
+			<string>Send</string>
 		</dict>
 		<dict>
 			<key>INIntentCategory</key>

@@ -178,9 +178,6 @@
 		B66C58B12150891B004AB261 /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B02150891B004AB261 /* CallService.swift */; };
 		B66C58B32150892A004AB261 /* FireEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B22150892A004AB261 /* FireEvent.swift */; };
 		B66C58B52150898A004AB261 /* SendLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B42150898A004AB261 /* SendLocation.swift */; };
-		B66C58B7215089EA004AB261 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B6215089EA004AB261 /* Intents.intentdefinition */; };
-		B66C58B821508AB5004AB261 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B6215089EA004AB261 /* Intents.intentdefinition */; };
-		B66C58B921508BA0004AB261 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B6215089EA004AB261 /* Intents.intentdefinition */; };
 		B66C58BD21509934004AB261 /* SiriShortcutServiceConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58BC21509934004AB261 /* SiriShortcutServiceConfigurator.swift */; };
 		B678DB251EA991E40045312F /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
 		B678DB261EA991E40045312F /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
@@ -223,6 +220,8 @@
 		B6CFF5DA2101984A00CC523F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5D92101984A00CC523F /* RealmSwift.framework */; };
 		B6CFF5DC2101985200CC523F /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5DB2101985200CC523F /* Realm.framework */; };
 		B6CFF5DE2101985200CC523F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5DD2101985200CC523F /* RealmSwift.framework */; };
+		B6EA98B9215306DF00788ACC /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B6215089EA004AB261 /* Intents.intentdefinition */; };
+		B6EA98BB215306E300788ACC /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B6215089EA004AB261 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (codegen, ); }; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
 		D03D892920E0A85300D4F28D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03D892D20E0A85300D4F28D /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -1425,13 +1424,6 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		D0EEF2CB214D8A3000D1D360 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Utilities;
-			sourceTree = "<group>";
-		};
 		D0EEF31C214DDD3800D1D360 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1494,7 +1486,6 @@
 		D0FF79D020D87CF60034574D /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				D0EEF2CB214D8A3000D1D360 /* Utilities */,
 				B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */,
 				D0A6367320DBE91300E5C49B /* Extensions */,
 				D00302BC20D4BEC0004C2CA9 /* Structs */,
@@ -1773,6 +1764,9 @@
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
 								enabled = 1;
 							};
 						};
@@ -2372,7 +2366,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B66C58B7215089EA004AB261 /* Intents.intentdefinition in Sources */,
 				B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */,
 				B63CAE692150CE5100A68AFB /* SiriShortcut.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
@@ -2397,6 +2390,7 @@
 				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
+				B6EA98BB215306E300788ACC /* Intents.intentdefinition in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2425,7 +2419,7 @@
 				B66C58B52150898A004AB261 /* SendLocation.swift in Sources */,
 				B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */,
 				B66C58B32150892A004AB261 /* FireEvent.swift in Sources */,
-				B66C58B821508AB5004AB261 /* Intents.intentdefinition in Sources */,
+				B6EA98B9215306DF00788ACC /* Intents.intentdefinition in Sources */,
 				B66C58B12150891B004AB261 /* CallService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2464,7 +2458,6 @@
 				B6C091492151F93D00A326DC /* Weblink.swift in Sources */,
 				D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */,
 				B6C091442151F93D00A326DC /* Light.swift in Sources */,
-				B66C58B921508BA0004AB261 /* Intents.intentdefinition in Sources */,
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
 				B6C0914E2151F93D00A326DC /* Thermostat.swift in Sources */,
 				D0EEF340214EC76A00D1D360 /* ServiceExecuted.swift in Sources */,

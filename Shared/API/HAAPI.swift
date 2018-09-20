@@ -318,30 +318,6 @@ public class HomeAssistantAPI {
                                 Current.clientEventStore.addEvent(event)
                             }
 
-                            // Don't want to donate device_tracker.see calls
-                            if #available(iOS 12.0, *), service != "see" {
-                                let intent = CallServiceIntent()
-                                intent.serviceDomain = domain
-                                intent.service = service
-
-                                let jsonData = try? JSONSerialization.data(withJSONObject: serviceData, options: [])
-                                let jsonString = String(data: jsonData!, encoding: .utf8)
-
-                                intent.payload = jsonString
-                                let interaction = INInteraction(intent: intent, response: nil)
-                                interaction.donate { (error) in
-                                    if error != nil {
-                                        if let error = error as NSError? {
-                                            print("Interaction donation failed: \(error)")
-                                        } else {
-                                            print("Successfully donated interaction")
-                                        }
-                                    } else {
-                                        print("Donated call service interaction")
-                                    }
-                                }
-                            }
-
                             seal.fulfill(resVal)
                         } else {
                             seal.reject(APIError.invalidResponse)
@@ -486,7 +462,7 @@ public class HomeAssistantAPI {
         ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
         ident.DeviceModel = deviceKitDevice.model
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = Current.deviceIDProvider()
+//        ident.DevicePermanentID = Current.deviceIDProvider()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
@@ -539,7 +515,7 @@ public class HomeAssistantAPI {
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
         ident.DeviceID = Current.settingsStore.deviceID
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = Current.deviceIDProvider()
+//        ident.DevicePermanentID = Current.deviceIDProvider()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
@@ -578,7 +554,7 @@ public class HomeAssistantAPI {
         ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
         ident.DeviceModel = deviceKitDevice.model
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = Current.deviceIDProvider()
+//        ident.DevicePermanentID = Current.deviceIDProvider()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description

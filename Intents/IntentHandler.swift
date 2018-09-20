@@ -24,6 +24,7 @@ class IntentHandler: INExtension {
         if intent is SendLocationIntent {
             return SendLocationIntentHandler()
         }
+
         return self
     }
 
