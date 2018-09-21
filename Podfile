@@ -12,7 +12,7 @@ target 'HomeAssistant' do
   pod 'CPDAcknowledgements', '1.0.0'
   pod 'Crashlytics', '3.10.2'
   pod 'DeviceKit', '1.8'
-  pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'Swift-4.2'
+  pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
   pod 'Fabric', '1.7.7'
   pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
   pod 'KeychainAccess', '3.1.1'
@@ -22,6 +22,7 @@ target 'HomeAssistant' do
   pod 'RealmSwift'
   pod 'SwiftGen', '5.3.0'
   pod 'SwiftLint', '0.25.1'
+  pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow'
 
   target 'HomeAssistantTests' do
     inherit! :search_paths

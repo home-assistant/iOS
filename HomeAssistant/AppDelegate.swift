@@ -272,7 +272,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                            userInfo: ["url": url])
         default:
             print("Can't route", url.host!)
-            showAlert(title: L10n.UrlHandler.Error.title,
+            showAlert(title: L10n.errorLabel,
                       message: L10n.UrlHandler.NoService.message(url.host!))
         }
         return true
@@ -306,7 +306,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
                           message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
             }.catch { error -> Void in
-                showAlert(title: L10n.UrlHandler.Error.title,
+                showAlert(title: L10n.errorLabel,
                           message: L10n.UrlHandler.FireEvent.Error.message(url.pathComponents[1],
                                                                            error.localizedDescription))
         }
@@ -341,7 +341,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 showAlert(title: L10n.UrlHandler.CallService.Success.title,
                           message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
             }.catch { error in
-                showAlert(title: L10n.UrlHandler.Error.title,
+                showAlert(title: L10n.errorLabel,
                           message: L10n.UrlHandler.CallService.Error.message(url.pathComponents[1],
                                                                              error.localizedDescription))
         }
@@ -357,7 +357,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
                           message: L10n.UrlHandler.SendLocation.Success.message)
             }.catch { error in
-                showAlert(title: L10n.UrlHandler.Error.title,
+                showAlert(title: L10n.errorLabel,
                           message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription))
         }
     }

@@ -14,6 +14,7 @@ import Intents
 import IntentsUI
 import PromiseKit
 import ObjectMapper
+import ViewRow
 
 @available(iOS 12, *)
 class SiriShortcutServiceConfigurator: FormViewController {
@@ -25,37 +26,43 @@ class SiriShortcutServiceConfigurator: FormViewController {
 
     var serviceDataJSON: String?
 
-    // swiftlint:disable cyclomatic_complexity
+    // swiftlint:disable cyclomatic_complexity function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
         self.title = domain + "." + serviceName
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
-                                                                 action: #selector(addToSiri))
-
         PickerInlineRow<String>.defaultCellUpdate = { cell, row in
             if !row.isValid {
-                cell.backgroundColor = .red
+                cell.textLabel?.textColor = .red
+            }
+        }
+
+        TextRow.defaultCellUpdate = { cell, row in
+            cell.textField.clearButtonMode = .whileEditing
+            if !row.isValid {
+                cell.textLabel?.textColor = .red
             }
         }
 
         TextAreaRow.defaultCellUpdate = { cell, row in
             if !row.isValid {
-                cell.backgroundColor = .red
+                cell.placeholderLabel?.textColor = .red
             }
         }
 
         IntRow.defaultCellUpdate = { cell, row in
+            cell.textField.clearButtonMode = .whileEditing
             if !row.isValid {
-                cell.titleLabel?.textColor = .red
+                cell.textLabel?.textColor = .red
             }
         }
 
         DecimalRow.defaultCellUpdate = { cell, row in
+            cell.textField.clearButtonMode = .whileEditing
             if !row.isValid {
-                cell.titleLabel?.textColor = .red
+                cell.textLabel?.textColor = .red
             }
         }
 
@@ -65,13 +72,27 @@ class SiriShortcutServiceConfigurator: FormViewController {
             }
         }
 
+        self.form
+            +++ Section(header: "Settings", footer: "") {
+                $0.tag = "settings"
+            }
+            <<< TextRow("name") {
+                $0.title = "Shortcut name"
+                $0.add(rule: RuleRequired())
+            }
+            <<< SwitchRow("notifyOnRun") {
+                $0.title = "Send notification when run"
+            }
+
+        var setFirstHeaderToFields = false
+
         if let service = serviceData {
             for (key, field) in service.Fields {
                 var footer = ""
                 var optionalField = false
                 if let desc = field.Description {
                     footer = desc
-                    if desc.lowercased().range(of: "optional") != nil {
+                    if desc.range(of: "optional", options: .caseInsensitive) != nil {
                         optionalField = true
                     }
                 }
@@ -80,10 +101,19 @@ class SiriShortcutServiceConfigurator: FormViewController {
                     footer += " Suggested: \(example)"
                 }
 
-                self.form +++ Section(header: "", footer: footer)
+                let supportsTemplates = (key.range(of: "template", options: .caseInsensitive) != nil ||
+                                         footer.range(of: "template", options: .caseInsensitive) != nil)
+
+                var header = ""
+                if setFirstHeaderToFields == false {
+                    header = "Fields"
+                    setFirstHeaderToFields = true
+                }
+
+                var rowsToAdd: [BaseRow] = []
 
                 if key == "entity_id" {
-                    self.form.last! <<< PickerInlineRow<String> {
+                    rowsToAdd.append(PickerInlineRow<String> {
                         $0.tag = key
                         $0.title = key
                         if !optionalField {
@@ -104,9 +134,51 @@ class SiriShortcutServiceConfigurator: FormViewController {
                         }
 
                         $0.options = sortedEntityIDs
-                    }
+                    })
+                } else if supportsTemplates {
+                    header = key
+                    rowsToAdd.append(TextAreaRow {
+                        $0.tag = key
+                        $0.title = key
+                        if !optionalField {
+                            $0.add(rule: RuleRequired())
+                        }
+                        $0.placeholder = field.Example as? String
+                        if let defaultValue = field.Default, let defaultValueStr = defaultValue as? String {
+                            $0.value = defaultValueStr
+                        }
+
+                    })
+
+                    rowsToAdd.append(ButtonRow {
+                        $0.tag = key + "_render_template"
+                        $0.title = "Render Template"
+                    }.onCellSelection({ _, _ in
+                        if let row = self.form.rowBy(tag: key) as? TextAreaRow, let value = row.value {
+                            print("Render template from", value)
+
+                            HomeAssistantAPI.authenticatedAPI()?.RenderTemplate(templateStr: value).done { val in
+                                print("Rendered value is", val)
+
+                                let alert = UIAlertController(title: "Success", message: val,
+                                                              preferredStyle: UIAlertController.Style.alert)
+                                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
+                                                              handler: nil))
+                                self.present(alert, animated: true, completion: nil)
+
+                            }.catch { renderErr in
+                                print("Error rendering template!", renderErr)
+                                let alert = UIAlertController(title: L10n.errorLabel,
+                                                              message: renderErr.localizedDescription,
+                                                              preferredStyle: UIAlertController.Style.alert)
+                                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
+                                                              handler: nil))
+                                self.present(alert, animated: true, completion: nil)
+                            }
+                        }
+                    }))
                 } else if let example = field.Example as? String {
-                    self.form.last! <<< TextRow {
+                    rowsToAdd.append(TextRow {
                         $0.tag = key
                         $0.title = key
                         if !optionalField {
@@ -116,9 +188,9 @@ class SiriShortcutServiceConfigurator: FormViewController {
                         if let defaultValue = field.Default, let defaultValueStr = defaultValue as? String {
                             $0.value = defaultValueStr
                         }
-                    }
+                    })
                 } else if let example = field.Example as? Int {
-                    self.form.last! <<< IntRow {
+                    rowsToAdd.append(IntRow {
                         $0.tag = key
                         $0.title = key
                         if !optionalField {
@@ -128,9 +200,9 @@ class SiriShortcutServiceConfigurator: FormViewController {
                         if let defaultValue = field.Default, let defaultValueInt = defaultValue as? Int {
                             $0.value = defaultValueInt
                         }
-                    }
+                    })
                 } else if let example = field.Example as? Double {
-                    self.form.last! <<< DecimalRow {
+                    rowsToAdd.append(DecimalRow {
                         $0.tag = key
                         $0.title = key
                         if !optionalField {
@@ -140,9 +212,9 @@ class SiriShortcutServiceConfigurator: FormViewController {
                         if let defaultValue = field.Default, let defaultValueDouble = defaultValue as? Double {
                             $0.value = defaultValueDouble
                         }
-                    }
+                    })
                 } else if let example = field.Example as? Bool {
-                    self.form.last! <<< SwitchRow {
+                    rowsToAdd.append(SwitchRow {
                         $0.tag = key
                         $0.title = key
                         if !optionalField {
@@ -153,9 +225,9 @@ class SiriShortcutServiceConfigurator: FormViewController {
                         } else {
                             $0.value = example
                         }
-                    }
+                    })
                 } else {
-                    self.form.last! <<< TextRow {
+                    rowsToAdd.append(TextRow {
                         $0.tag = key
                         $0.title = key
                         if !optionalField {
@@ -164,10 +236,71 @@ class SiriShortcutServiceConfigurator: FormViewController {
                         if let defaultValue = field.Default, let defaultValueStr = defaultValue as? String {
                             $0.value = defaultValueStr
                         }
-                    }
+                    })
                 }
+
+                if let defaultVal = field.Default {
+                    rowsToAdd.append(ButtonRow {
+                        $0.tag = key + "fill_with_default"
+                        $0.title = "Use default value"
+                        }.onCellSelection({ cell, row in
+                            self.form.setValues([key: defaultVal])
+                            self.tableView.reloadData()
+                            if let updatedRow = self.form.rowBy(tag: key) {
+                                updatedRow.reload()
+                                updatedRow.updateCell()
+                            }
+                        }))
+                }
+
+                if let example = field.Example {
+                    rowsToAdd.append(ButtonRow {
+                        $0.tag = key + "fill_with_example"
+                        $0.title = "Use suggested value"
+                    }.onCellSelection({ cell, row in
+                        self.form.setValues([key: example])
+                        self.tableView.reloadData()
+                        if let updatedRow = self.form.rowBy(tag: key) {
+                            updatedRow.reload()
+                            updatedRow.updateCell()
+                        }
+                    }))
+                }
+
+                var section = Section(header: header, footer: footer) {
+                    $0.tag = key
+                }
+
+                section += rowsToAdd
+
+                self.form +++ section
+
             }
         }
+
+        self.form
+            +++ Section {
+                $0.tag = "add_to_siri"
+            }
+            <<< ViewRow<UIView> {
+                    $0.tag = "add_to_siri"
+                }.cellSetup { (cell, row) in
+                    cell.backgroundColor = UIColor.clear
+                    cell.preservesSuperviewLayoutMargins = false
+
+                    //  Construct the view for the cell
+                    cell.view = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+
+                    let button = INUIAddVoiceShortcutButton(style: .blackOutline)
+                    button.translatesAutoresizingMaskIntoConstraints = false
+
+                    cell.view?.addSubview(button)
+
+                    cell.view?.centerXAnchor.constraint(equalTo: button.centerXAnchor).isActive = true
+                    cell.view?.centerYAnchor.constraint(equalTo: button.centerYAnchor).isActive = true
+
+                    button.addTarget(self, action: #selector(self.addToSiri(_:)), for: .touchUpInside)
+                }
     }
 
     override func didReceiveMemoryWarning() {
@@ -187,7 +320,7 @@ class SiriShortcutServiceConfigurator: FormViewController {
             let formData = form.values()
 
             let serviceIntent = CallServiceIntent(domain: domain, service: serviceName, payload: formData)
-            
+
             let intentJSONData = try? JSONSerialization.data(withJSONObject: ["domain": domain,
                                                                               "service": serviceName,
                                                                               "data": formData],

@@ -9,6 +9,8 @@ import Foundation
 internal enum L10n {
   /// Cancel
   internal static let cancelLabel = L10n.tr("Localizable", "cancel_label")
+  /// Error
+  internal static let errorLabel = L10n.tr("Localizable", "error_label")
   /// No
   internal static let noLabel = L10n.tr("Localizable", "no_label")
   /// OK
@@ -696,11 +698,6 @@ internal enum L10n {
         /// Called service
         internal static let title = L10n.tr("Localizable", "url_handler.call_service.success.title")
       }
-    }
-
-    internal enum Error {
-      /// Error
-      internal static let title = L10n.tr("Localizable", "url_handler.error.title")
     }
 
     internal enum FireEvent {

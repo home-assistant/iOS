@@ -9,7 +9,7 @@ PODS:
   - Crashlytics (3.10.2):
     - Fabric (~> 1.7.7)
   - DeviceKit (1.8.0)
-  - Eureka (4.1.1)
+  - Eureka (4.2.0)
   - Fabric (1.7.7)
   - FontAwesomeKit/Core (2.2.5)
   - FontAwesomeKit/MaterialDesignIcons (2.2.5):
@@ -33,6 +33,8 @@ PODS:
     - Realm (= 3.9.0)
   - SwiftGen (5.3.0)
   - SwiftLint (0.25.1)
+  - ViewRow (0.3.0):
+    - Eureka (>= 4.0.0)
 
 DEPENDENCIES:
   - Alamofire (= 4.7.3)
@@ -41,7 +43,7 @@ DEPENDENCIES:
   - CPDAcknowledgements (= 1.0.0)
   - Crashlytics (= 3.10.2)
   - DeviceKit (= 1.8)
-  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `Swift-4.2`)
+  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
   - Fabric (= 1.7.7)
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
   - KeychainAccess (= 3.1.1)
@@ -51,6 +53,7 @@ DEPENDENCIES:
   - RealmSwift
   - SwiftGen (= 5.3.0)
   - SwiftLint (= 0.25.1)
+  - ViewRow (from `https://github.com/EurekaCommunity/ViewRow`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -72,19 +75,24 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Eureka:
-    :branch: Swift-4.2
+    :branch: master
     :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :branch: Material-Design-Icons
     :git: https://github.com/robbiet480/FontAwesomeKit.git
+  ViewRow:
+    :git: https://github.com/EurekaCommunity/ViewRow
 
 CHECKOUT OPTIONS:
   Eureka:
-    :commit: 3f60ec327419837b0dc8373813a90d061242c2f4
+    :commit: 864cfa640566b35b6e119d45dd748523b62fb1c7
     :git: https://github.com/xmartlabs/Eureka.git
   FontAwesomeKit:
     :commit: e4069745624783372481bab7d163f4485931b527
     :git: https://github.com/robbiet480/FontAwesomeKit.git
+  ViewRow:
+    :commit: 4228f70075419e9c749f7378eab6369d5878ee9f
+    :git: https://github.com/EurekaCommunity/ViewRow
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
@@ -93,7 +101,7 @@ SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
   DeviceKit: c7ae6f7b16c2239156ac64fc22de0b0975f0d0b5
-  Eureka: b88fb930e42c79f8c03c373d0fcdc28c1d6c50ed
+  Eureka: 0748c7bbb2560130e43c7bfa83e99c98854a1f42
   Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
   FontAwesomeKit: c56e7e8db4ad4e7325ce73a8033dadf2fd4a5cb2
   KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
@@ -104,7 +112,8 @@ SPEC CHECKSUMS:
   RealmSwift: aa4d11917bfcfaa3ed51f219102a487ecd895447
   SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
   SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
+  ViewRow: e278428ff53da5eab18b191d3e19a16f3e299fc1
 
-PODFILE CHECKSUM: 2747170f2fce7f8586d18a6f5d86a5edea161ee4
+PODFILE CHECKSUM: ee597af7e3c137a4571812b1ffcf941afc0a84ea
 
 COCOAPODS: 1.6.0.beta.1
