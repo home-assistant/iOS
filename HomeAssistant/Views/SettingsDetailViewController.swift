@@ -299,10 +299,12 @@ class SettingsDetailViewController: FormViewController {
 
             self.title = L10n.SettingsDetails.Siri.title
             if #available(iOS 12.0, *) {
-                self.form
-                    +++ Section(header: "Existing Shortcuts", footer: "")
                 let realm = Current.realm()
                 let shortcuts = realm.objects(SiriShortcut.self).map { $0 }
+                if shortcuts.count > 0 {
+                    self.form
+                        +++ Section(header: "Existing Shortcuts", footer: "")
+                }
                 for shortcut in shortcuts {
                 self.form.last!
                     <<< ButtonRow {
