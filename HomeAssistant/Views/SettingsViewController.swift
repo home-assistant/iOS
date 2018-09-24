@@ -386,7 +386,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     }
 
                     center.requestAuthorization(options: opts) { (granted, error) in
-                        if error != nil {
+                        if error != nil || granted == false {
                             let title = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.title
                             let message = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message
                             let alert = UIAlertController(title: title,
@@ -396,7 +396,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                                                           handler: nil))
                             self.present(alert, animated: true, completion: nil)
                         } else {
-                            print("Notifications Permissions finished!", granted)
+                            print("Notifications Permissions finished with success!", granted)
                             prefs.setValue(granted, forKey: "notificationsEnabled")
                             prefs.synchronize()
                             if granted, let api = api {
