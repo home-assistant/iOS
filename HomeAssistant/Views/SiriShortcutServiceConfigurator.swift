@@ -31,6 +31,18 @@ class SiriShortcutServiceConfigurator: FormViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
+        // Create the info button
+        let infoButton = UIButton(type: .infoLight)
+
+        // You will need to configure the target action for the button itself, not the bar button item
+        infoButton.addTarget(self, action: #selector(getInfoAction), for: .touchUpInside)
+
+        // Create a bar button item using the info button as its custom view
+        let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
+
+        // Use it as required
+        self.navigationItem.rightBarButtonItem = infoBarButtonItem
+
         self.title = domain + "." + serviceName
 
         PickerInlineRow<String>.defaultCellUpdate = { cell, row in
@@ -334,6 +346,12 @@ class SiriShortcutServiceConfigurator: FormViewController {
                 present(viewController, animated: true, completion: nil)
             }
         }
+    }
+
+    @objc
+    func getInfoAction(_ sender: Any) {
+        // FIXME: Actually open a modal window with docs!
+        print("getInfoAction hit, open docs page!")
     }
 }
 
