@@ -105,12 +105,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setDefaults()
 
         window = UIWindow.init(frame: UIScreen.main.bounds)
-        window?.backgroundColor = .white
+        window?.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
 
         let webView = WebViewController()
 
         let navController = UINavigationController(rootViewController: webView)
-
         navController.setToolbarHidden(false, animated: false)
         navController.setNavigationBarHidden(true, animated: false)
 

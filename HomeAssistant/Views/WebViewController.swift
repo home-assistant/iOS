@@ -16,6 +16,8 @@ import Shared
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, ConnectionInfoChangedDelegate {
 
     var webView: WKWebView!
+    var waitingToHideToolbar: Bool = false
+    var themeColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
 
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
@@ -24,13 +26,15 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                                                selector: #selector(WebViewController.loadActiveURLIfNeeded),
                                                name: UIApplication.didBecomeActiveNotification,
                                                object: nil)
-        let statusBarView: UIView = UIView(frame: .zero)
+
+        let statusBarView: UIView = UIView(frame: UIApplication.shared.statusBarFrame)
         statusBarView.tag = 111
-        if let themeColor = prefs.string(forKey: "themeColor") {
-            statusBarView.backgroundColor = UIColor.init(hex: themeColor)
-        } else {
-            statusBarView.backgroundColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
+
+        if let storedThemeColor = prefs.string(forKey: "themeColor") {
+            themeColor = UIColor.init(hex: storedThemeColor)
         }
+
+        statusBarView.backgroundColor = themeColor
         view.addSubview(statusBarView)
 
         statusBarView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
@@ -48,17 +52,21 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         self.webView = WKWebView(frame: self.view!.frame, configuration: config)
         self.updateWebViewSettings()
+        self.webView.isOpaque = true
+        self.webView.scrollView.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
         self.view!.addSubview(webView)
 
         self.webView.navigationDelegate = self
         self.webView.uiDelegate = self
+        self.webView.scrollView.delegate = self
 
         self.webView.translatesAutoresizingMaskIntoConstraints = false
 
         self.webView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         self.webView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        self.webView.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
-        self.webView.bottomAnchor.constraint(equalTo: self.bottomLayoutGuide.topAnchor).isActive = true
+        self.webView.topAnchor.constraint(equalTo: statusBarView.bottomAnchor).isActive = true
+        self.webView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+
         self.webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.webView.scrollView.bounces = false
 
@@ -101,22 +109,22 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
         var barItems: [UIBarButtonItem] = []
 
-        var tabBarIconColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
+        if let storedThemeColor = prefs.string(forKey: "themeColor") {
+            themeColor = UIColor.init(hex: storedThemeColor)
+        }
 
-        if let themeColor = prefs.string(forKey: "themeColor") {
-            tabBarIconColor = UIColor.init(hex: themeColor)
-            if let statusBarView = self.view.viewWithTag(111) {
-                statusBarView.backgroundColor = UIColor.init(hex: themeColor)
-            }
+        if let statusBarView = self.view.viewWithTag(111) {
+            statusBarView.backgroundColor = themeColor
         }
 
         if Current.settingsStore.locationEnabled {
 
             let uploadIcon = UIImage.iconForIdentifier("mdi:upload",
                                                        iconWidth: 30, iconHeight: 30,
-                                                       color: tabBarIconColor)
+                                                       color: themeColor)
 
             barItems.append(UIBarButtonItem(image: uploadIcon,
                                             style: .plain,
@@ -125,7 +133,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                 )
             )
 
-            let mapIcon = UIImage.iconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: tabBarIconColor)
+            let mapIcon = UIImage.iconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: themeColor)
 
             barItems.append(UIBarButtonItem(image: mapIcon,
                                             style: .plain,
@@ -136,10 +144,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         barItems.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
 
         barItems.append(UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
-                                            action: #selector(refreshWebView(_:))))
+                                        action: #selector(refreshWebView(_:))))
 
         let settingsIcon = UIImage.iconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30,
-                                                     color: tabBarIconColor)
+                                                     color: themeColor)
 
         barItems.append(UIBarButtonItem(image: settingsIcon,
                                         style: .plain,
@@ -147,7 +155,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                                         action: #selector(openSettingsView(_:))))
 
         self.setToolbarItems(barItems, animated: false)
-        self.navigationController?.toolbar.tintColor = tabBarIconColor
+        self.navigationController?.toolbar.tintColor = themeColor
 
         if let connectionInfo = Current.settingsStore.connectionInfo,
             let webviewURL = connectionInfo.webviewURL {
@@ -252,6 +260,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         items?.remove(at: removeAt)
         items?.insert(refresh, at: removeAt)
         self.setToolbarItems(items, animated: true)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            self.navigationController?.setToolbarHidden(true, animated: true)
+        }
     }
 
     @objc func loadActiveURLIfNeeded() {
@@ -362,6 +374,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.updateWebViewSettings()
         self.loadActiveURLIfNeeded()
     }
+
 }
 
 extension WebViewController: WKScriptMessageHandler {
@@ -406,6 +419,24 @@ extension WebViewController: WKScriptMessageHandler {
 
                 print("Successfully informed web client of signout.")
             })
+        }
+    }
+}
+
+extension WebViewController: UIScrollViewDelegate {
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        if velocity.y>0 {
+            self.waitingToHideToolbar = false
+            self.navigationController?.setToolbarHidden(true, animated: true)
+        } else {
+            self.navigationController?.setToolbarHidden(false, animated: true)
+            self.waitingToHideToolbar = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                if self.waitingToHideToolbar {
+                    self.navigationController?.setToolbarHidden(true, animated: true)
+                }
+            }
         }
     }
 }
