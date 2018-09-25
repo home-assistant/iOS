@@ -233,7 +233,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         print("Background fetch activated at \(timestamp)!")
         if Current.settingsStore.locationEnabled {
-            api.getAndSendLocation(trigger: .BackgroundFetch).done { success in
+            api.getAndSendLocation(trigger: .BackgroundFetch).done { _ in
                 print("Sending location via background fetch")
                 completionHandler(UIBackgroundFetchResult.newData)
                 }.catch {error in

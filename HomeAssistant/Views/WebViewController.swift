@@ -412,7 +412,7 @@ extension WebViewController: WKScriptMessageHandler {
             self.showSettingsViewController()
             let script = "\(callbackName)(true, nil)"
 
-            self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
+            self.webView.evaluateJavaScript(script, completionHandler: { (_, error) in
                 if let error = error {
                     print("Failed calling sign out callback: \(error)")
                 }

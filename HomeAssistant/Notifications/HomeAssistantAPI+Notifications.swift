@@ -14,7 +14,7 @@ import Shared
 import UserNotifications
 
 extension HomeAssistantAPI {
-    
+
     func setupUserNotificationPushActions() -> Promise<Set<UNNotificationCategory>> {
         return Promise { seal in
             self.getPushSettings().done { pushSettings in

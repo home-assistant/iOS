@@ -351,7 +351,7 @@ public class HomeAssistantAPI {
         return Promise { seal in
             let queryUrl = self.connectionInfo.activeAPIURL.appendingPathComponent("template")
             _ = manager.request(queryUrl, method: .post,
-                                parameters: ["template":templateStr], encoding: JSONEncoding.default)
+                                parameters: ["template": templateStr], encoding: JSONEncoding.default)
                 .validate()
                 .responseString { response in
                     switch response.result {

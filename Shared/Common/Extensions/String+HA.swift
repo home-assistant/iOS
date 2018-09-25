@@ -44,5 +44,4 @@ extension String {
         return hexInt
     }
 
-    
 }

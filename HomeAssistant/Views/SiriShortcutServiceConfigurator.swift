@@ -255,7 +255,7 @@ class SiriShortcutServiceConfigurator: FormViewController {
                     rowsToAdd.append(ButtonRow {
                         $0.tag = key + "fill_with_default"
                         $0.title = "Use default value"
-                        }.onCellSelection({ cell, row in
+                        }.onCellSelection({ _, _ in
                             self.form.setValues([key: defaultVal])
                             self.tableView.reloadData()
                             if let updatedRow = self.form.rowBy(tag: key) {
@@ -269,7 +269,7 @@ class SiriShortcutServiceConfigurator: FormViewController {
                     rowsToAdd.append(ButtonRow {
                         $0.tag = key + "fill_with_example"
                         $0.title = "Use suggested value"
-                    }.onCellSelection({ cell, row in
+                    }.onCellSelection({ _, _ in
                         self.form.setValues([key: example])
                         self.tableView.reloadData()
                         if let updatedRow = self.form.rowBy(tag: key) {
@@ -296,7 +296,7 @@ class SiriShortcutServiceConfigurator: FormViewController {
             }
             <<< ViewRow<UIView> {
                     $0.tag = "add_to_siri"
-                }.cellSetup { (cell, row) in
+                }.cellSetup { (cell, _) in
                     cell.backgroundColor = UIColor.clear
                     cell.preservesSuperviewLayoutMargins = false
 

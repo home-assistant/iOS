@@ -87,7 +87,7 @@ class SettingsDetailViewController: FormViewController {
                             prefs.set(val, forKey: "locationUpdateOnNotification")
                         }
                     })
-                
+
             let realm = Current.realm()
             let zoneEntities = realm.objects(RLMZone.self).map { $0 }
             for zone in zoneEntities {
