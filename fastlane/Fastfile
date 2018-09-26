@@ -56,14 +56,18 @@ platform :ios do
             "io.robbie.HomeAssistant.APNSAttachmentService",
             "io.robbie.HomeAssistant.NotificationContentExtension",
             "io.robbie.HomeAssistant.MapNotificationContentExtension",
-            "io.robbie.HomeAssistant.Intents"],
+            "io.robbie.HomeAssistant.Intents",
+            "io.robbie.HomeAssistant.watchkitapp",
+            "io.robbie.HomeAssistant.watchkitapp.watchkitextension"],
           type: "appstore")
     match(app_identifier: [
             "io.robbie.HomeAssistant.dev",
             "io.robbie.HomeAssistant.dev.APNSAttachmentService",
             "io.robbie.HomeAssistant.dev.NotificationContentExtension",
             "io.robbie.HomeAssistant.dev.MapNotificationContentExtension",
-            "io.robbie.HomeAssistant.dev.Intents"],
+            "io.robbie.HomeAssistant.dev.Intents",
+            "io.robbie.HomeAssistant.dev.watchkitapp",
+            "io.robbie.HomeAssistant.dev.watchkitapp.watchkitextension"],
           type: "development")
   end
 
@@ -78,9 +82,13 @@ platform :ios do
 
   desc "Generate proper icons for all build trains"
   lane :icons do
-    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "AppIcon.dev.appiconset", appicon_devices: [:ipad, :iphone])
-    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "AppIcon.beta.appiconset", appicon_devices: [:ipad, :iphone])
-    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_devices: [:ipad, :iphone])
+    # appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "AppIcon.dev.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing])
+    # appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "AppIcon.beta.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing])
+    # appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_devices: [:ipad, :iphone, :ios_marketing])
+
+    appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "WatchIcon.dev.appiconset", appicon_devices: [:watch, :watch_marketing])
+    appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "WatchIcon.beta.appiconset", appicon_devices: [:watch, :watch_marketing])
+    appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_name: "WatchIcon.appiconset", appicon_devices: [:watch, :watch_marketing])
   end
 
   desc "Download latest localization files from Lokalize"
@@ -156,10 +164,13 @@ platform :ios do
       )
 
       match(app_identifier: [
-              "io.robbie.HomeAssistant",
-              "io.robbie.HomeAssistant.APNSAttachmentService",
-              "io.robbie.HomeAssistant.NotificationContentExtension",
-              "io.robbie.HomeAssistant.MapNotificationContentExtension"],
+            "io.robbie.HomeAssistant",
+            "io.robbie.HomeAssistant.APNSAttachmentService",
+            "io.robbie.HomeAssistant.NotificationContentExtension",
+            "io.robbie.HomeAssistant.MapNotificationContentExtension",
+            "io.robbie.HomeAssistant.Intents",
+            "io.robbie.HomeAssistant.watchkitapp",
+            "io.robbie.HomeAssistant.watchkitapp.watchkitextension"],
             type: "appstore",
             readonly: true,
             keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
@@ -193,7 +204,10 @@ platform :ios do
         "io.robbie.HomeAssistant" => "match AppStore io.robbie.HomeAssistant",
         "io.robbie.HomeAssistant.APNSAttachmentService" => "match AppStore io.robbie.HomeAssistant.APNSAttachmentService",
         "io.robbie.HomeAssistant.NotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.NotificationContentExtension",
-        "io.robbie.HomeAssistant.MapNotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.MapNotificationContentExtension"
+        "io.robbie.HomeAssistant.MapNotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.MapNotificationContentExtension",
+        "io.robbie.HomeAssistant.Intents" => "match AppStore io.robbie.HomeAssistant.Intents",
+        "io.robbie.HomeAssistant.watchkitapp" => "match AppStore io.robbie.HomeAssistant.watchkitapp",
+        "io.robbie.HomeAssistant.watchkitapp.watchkitextension" => "match AppStore io.robbie.HomeAssistant.watchkitapp.watchkitextension",
       }
     })
 

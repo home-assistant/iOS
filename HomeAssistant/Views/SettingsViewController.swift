@@ -17,6 +17,7 @@ import CoreLocation
 import UserNotifications
 import Shared
 import SystemConfiguration.CaptiveNetwork
+import WatchConnectivity
 
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
@@ -454,6 +455,18 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }
         }
 
+        self.form +++ ButtonRow {
+            $0.tag = "watchSettings"
+            $0.title = L10n.Settings.DetailsSection.WatchRow.title
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                let view = SettingsDetailViewController()
+                view.detailGroup = "watchSettings"
+                return view
+                }, onDismiss: { vc in
+                    _ = vc.navigationController?.popViewController(animated: true)
+            })
+        }
+
         self.form
 
             +++ Section {
@@ -853,4 +866,20 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
 protocol ConnectionInfoChangedDelegate: class {
     func userReconnected()
+}
+
+extension SettingsViewController: WCSessionDelegate {
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+        print("Activation completed with state", activationState, error)
+    }
+
+    func sessionDidBecomeInactive(_ session: WCSession) {
+        print("Session inactive")
+    }
+
+    func sessionDidDeactivate(_ session: WCSession) {
+        print("Session deactivated")
+    }
+
+
 }

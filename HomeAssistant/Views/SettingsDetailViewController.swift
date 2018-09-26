@@ -14,6 +14,7 @@ import Intents
 import IntentsUI
 import PromiseKit
 
+// swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController {
 
     var detailGroup: String = "display"
@@ -284,6 +285,38 @@ class SettingsDetailViewController: FormViewController {
                         }
                     })
 
+        case "watchSettings":
+            self.title = "Apple Watch"
+
+            for group in ComplicationGroup.allCases {
+                let members = group.members
+                var header = group.name
+                if members.count == 1 {
+                    header = ""
+                }
+                self.form +++ Section(header: header, footer: group.description)
+
+                for member in members {
+                    self.form.last!
+                        <<< ButtonRow {
+                            $0.cellStyle = .subtitle
+                            $0.title = member.shortName
+                            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                                    let watchConfigurator = WatchComplicationConfigurator()
+                                    watchConfigurator.family = member
+                                    return watchConfigurator
+                                }, onDismiss: { vc in
+                                    _ = vc.navigationController?.popViewController(animated: true)
+                            })
+                            }.cellUpdate({ (cell, row) in
+                                cell.detailTextLabel?.text = member.description
+                                cell.detailTextLabel?.numberOfLines = 0
+                                cell.detailTextLabel?.lineBreakMode = .byWordWrapping
+                            })
+                }
+
+            }
+
         case "siri":
             INPreferences.requestSiriAuthorization { (status) in
                 print("Siri auth status", status.rawValue)
@@ -370,6 +403,8 @@ class SettingsDetailViewController: FormViewController {
                                 })
                             }.cellUpdate({ cell, _ in
                                 cell.detailTextLabel?.text = service.value.Description
+                                cell.detailTextLabel?.numberOfLines = 0
+                                cell.detailTextLabel?.lineBreakMode = .byWordWrapping
                             })
                         }
                     }
@@ -390,6 +425,7 @@ class SettingsDetailViewController: FormViewController {
     @objc func closeSettingsDetailView(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
     }
+
 }
 
 @available (iOS 12, *)

@@ -58,6 +58,13 @@ class SiriShortcutServiceConfigurator: FormViewController {
             }
         }
 
+        TextAreaRow.defaultCellSetup = { cell, row in
+            if #available(iOS 11.0, *) {
+                cell.textView.smartQuotesType = .no
+                cell.textView.smartDashesType = .no
+            }
+        }
+
         TextAreaRow.defaultCellUpdate = { cell, row in
             if !row.isValid {
                 cell.placeholderLabel?.textColor = .red

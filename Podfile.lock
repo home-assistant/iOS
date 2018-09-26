@@ -5,6 +5,9 @@ PODS:
   - AlamofireObjectMapper (5.1.0):
     - Alamofire (~> 4.1)
     - ObjectMapper (~> 3.3)
+  - ColorPickerRow (1.2.1):
+    - Eureka (>= 3.0.0)
+    - UIColor_Hex_Swift (>= 3.0.0)
   - CPDAcknowledgements (1.0.0)
   - Crashlytics (3.10.2):
     - Fabric (~> 1.7.7)
@@ -33,6 +36,7 @@ PODS:
     - Realm (= 3.9.0)
   - SwiftGen (5.3.0)
   - SwiftLint (0.25.1)
+  - UIColor_Hex_Swift (4.2.0)
   - ViewRow (0.3.0):
     - Eureka (>= 4.0.0)
 
@@ -40,6 +44,7 @@ DEPENDENCIES:
   - Alamofire (= 4.7.3)
   - AlamofireNetworkActivityIndicator (= 2.3.0)
   - AlamofireObjectMapper (= 5.1.0)
+  - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `Swift4.2`)
   - CPDAcknowledgements (= 1.0.0)
   - Crashlytics (= 3.10.2)
   - DeviceKit (= 1.8)
@@ -53,6 +58,7 @@ DEPENDENCIES:
   - RealmSwift
   - SwiftGen (= 5.3.0)
   - SwiftLint (= 0.25.1)
+  - UIColor_Hex_Swift
   - ViewRow (from `https://github.com/EurekaCommunity/ViewRow`)
 
 SPEC REPOS:
@@ -72,8 +78,12 @@ SPEC REPOS:
     - RealmSwift
     - SwiftGen
     - SwiftLint
+    - UIColor_Hex_Swift
 
 EXTERNAL SOURCES:
+  ColorPickerRow:
+    :branch: Swift4.2
+    :git: https://github.com/EurekaCommunity/ColorPickerRow
   Eureka:
     :branch: master
     :git: https://github.com/xmartlabs/Eureka.git
@@ -84,6 +94,9 @@ EXTERNAL SOURCES:
     :git: https://github.com/EurekaCommunity/ViewRow
 
 CHECKOUT OPTIONS:
+  ColorPickerRow:
+    :commit: a96f57a887975cb6483736d2a8be961ca1b0580d
+    :git: https://github.com/EurekaCommunity/ColorPickerRow
   Eureka:
     :commit: 864cfa640566b35b6e119d45dd748523b62fb1c7
     :git: https://github.com/xmartlabs/Eureka.git
@@ -98,6 +111,7 @@ SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
   AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
+  ColorPickerRow: 87dd091c54fff65cf554f79ca1556312ee66282f
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
   DeviceKit: c7ae6f7b16c2239156ac64fc22de0b0975f0d0b5
@@ -112,8 +126,9 @@ SPEC CHECKSUMS:
   RealmSwift: aa4d11917bfcfaa3ed51f219102a487ecd895447
   SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
   SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
+  UIColor_Hex_Swift: bc07fc197421ee896b9ed6dcfa2054b7fbf75145
   ViewRow: e278428ff53da5eab18b191d3e19a16f3e299fc1
 
-PODFILE CHECKSUM: ee597af7e3c137a4571812b1ffcf941afc0a84ea
+PODFILE CHECKSUM: 17b59a2b4ba7405ba684e29da9a8305fa87ae45e
 
 COCOAPODS: 1.6.0.beta.1

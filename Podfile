@@ -9,6 +9,7 @@ target 'HomeAssistant' do
   pod 'Alamofire', '4.7.3'
   pod 'AlamofireNetworkActivityIndicator', '2.3.0'
   pod 'AlamofireObjectMapper', '5.1.0'
+  pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'Swift4.2'
   pod 'CPDAcknowledgements', '1.0.0'
   pod 'Crashlytics', '3.10.2'
   pod 'DeviceKit', '1.8'
@@ -22,6 +23,7 @@ target 'HomeAssistant' do
   pod 'RealmSwift'
   pod 'SwiftGen', '5.3.0'
   pod 'SwiftLint', '0.25.1'
+  pod 'UIColor_Hex_Swift'
   pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow'
 
   target 'HomeAssistantTests' do

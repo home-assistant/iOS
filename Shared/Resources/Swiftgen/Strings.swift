@@ -365,6 +365,11 @@ internal enum L10n {
         /// Siri Shortcuts
         internal static let title = L10n.tr("Localizable", "settings.details_section.siri_shortcuts_row.title")
       }
+
+      internal enum WatchRow {
+        /// Apple Watch
+        internal static let title = L10n.tr("Localizable", "settings.details_section.watch_row.title")
+      }
     }
 
     internal enum DeviceIdSection {

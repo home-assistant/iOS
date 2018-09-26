@@ -45,6 +45,7 @@
 "settings.details_section.enable_notification_row.title" = "Enable notifications";
 "settings.details_section.notification_settings_row.title" = "Notification Settings";
 "settings.details_section.siri_shortcuts_row.title" = "Siri Shortcuts";
+"settings.details_section.watch_row.title" = "Apple Watch";
 "settings.reset_section.reset_row.title" = "Reset";
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_alert.message" = "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.";

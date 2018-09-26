@@ -19,7 +19,7 @@
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>12</integer>
+			<integer>3</integer>
 		</dict>
 		<key>HomeAssistantTests.xcscheme</key>
 		<dict>
@@ -38,7 +38,7 @@
 		<key>Intents.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>29</integer>
+			<integer>4</integer>
 		</dict>
 		<key>MapNotificationContentExtension.xcscheme</key>
 		<dict>
@@ -59,6 +59,16 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>2</integer>
+		</dict>
+		<key>WatchApp (Complication).xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>35</integer>
+		</dict>
+		<key>WatchApp.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>34</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
