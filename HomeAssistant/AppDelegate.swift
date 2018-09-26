@@ -18,6 +18,8 @@ import RealmSwift
 import Shared
 import SafariServices
 import Intents
+import WatchKit
+import WatchConnectivity
 
 let keychain = Keychain(service: "io.robbie.homeassistant")
 
@@ -250,6 +252,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(UIBackgroundFetchResult.failed)
             }
         }
+
+        if WCSession.isSupported() {
+            let session = WCSession.default
+            session.delegate = self
+            session.activate()
+        }
     }
 
     func application(_ app: UIApplication,
@@ -444,4 +452,41 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let navController = UINavigationController(rootViewController: view)
         rootViewController?.present(navController, animated: true, completion: nil)
     }
+}
+
+extension AppDelegate: WCSessionDelegate {
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+        print("Activation completed with", activationState.rawValue)
+        print("Session", session.isPaired, session.isReachable, session.activationState)
+
+        if session.isPaired && session.activationState == .activated {
+            let realm = Current.realm()
+            let complicationsObjects = realm.objects(WatchComplication.self)
+
+            print("Sending", complicationsObjects)
+
+            session.transferCurrentComplicationUserInfo(["complication": Array(complicationsObjects)])
+        }
+    }
+
+    func sessionDidBecomeInactive(_ session: WCSession) {
+        print("Session did become inactive", session)
+    }
+
+    func sessionDidDeactivate(_ session: WCSession) {
+        print("Session did deactivate", session)
+    }
+
+    func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
+        print("did finish userInfoTransfer", userInfoTransfer, userInfoTransfer.userInfo)
+    }
+
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
+        print("Received data dictionary!", userInfo)
+//        if let complicationUserInfo = userInfo["complication"] as? [String: Any] {
+//            //refresh the complication with the decoded data normally
+//
+//        }
+    }
+
 }

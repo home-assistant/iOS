@@ -41,6 +41,13 @@ class WatchComplicationConfigurator: FormViewController {
 
         self.title = self.family.name
 
+        TextAreaRow.defaultCellSetup = { cell, row in
+            if #available(iOS 11.0, *) {
+                cell.textView.smartQuotesType = .no
+                cell.textView.smartDashesType = .no
+            }
+        }
+
         self.form
             +++ Section {
                 $0.tag = "template"
@@ -72,7 +79,6 @@ class WatchComplicationConfigurator: FormViewController {
                 self.chosenTemplate = template
                 self.reloadForm(template: template)
             }
-
         }.cellUpdate { cell, row in
             cell.detailTextLabel?.text = row.value?.style
         }.cellSetup { cell, row in
@@ -208,6 +214,41 @@ class WatchComplicationConfigurator: FormViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        if self.isBeingDismissed || self.isMovingFromParent {
+            var templateName = "UNKNOWN"
+
+            if let template = self.form.rowBy(tag: "template") as? PushRow<ComplicationTemplate>,
+                let value = template.value {
+                templateName = value.rawValue
+            }
+
+            var formVals = self.form.values(includeHidden: false)
+
+            for (key, val) in formVals {
+                if key.contains("color"), let color = val as? UIColor {
+                    formVals[key] = color.hexString(true)
+                }
+            }
+
+            formVals.removeValue(forKey: "template")
+
+            print("BYE BYE CONFIGURATOR", formVals)
+
+            let complication = WatchComplication()
+            complication.Family = self.family.rawValue
+            complication.Template = templateName
+            complication.Data = formVals
+            print("COMPLICATION", complication)
+
+            let realm = Current.realm()
+            // swiftlint:disable:next force_try
+            try! realm.write {
+                realm.add(complication, update: true)
+            }
+        }
+    }
+
     @objc
     func getInfoAction(_ sender: Any) {
         // FIXME: Actually open a modal window with docs!
@@ -221,7 +262,7 @@ class WatchComplicationConfigurator: FormViewController {
             HomeAssistantAPI.authenticatedAPI()?.RenderTemplate(templateStr: value).done { val in
                 print("Rendered value is", val)
 
-                let alert = UIAlertController(title: "Success", message: val,
+                let alert = UIAlertController(title: "Output Preview", message: val,
                                               preferredStyle: UIAlertController.Style.alert)
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                               handler: nil))
@@ -258,33 +299,36 @@ class WatchComplicationConfigurator: FormViewController {
     }
 
     func addComplicationTextAreaFormSection(location: ComplicationTextAreas) -> Section {
+        var cleanLocation = location.rawValue.lowercased()
+        cleanLocation = cleanLocation.replacingOccurrences(of: " ", with: "")
+        cleanLocation = cleanLocation.replacingOccurrences(of: ",", with: "")
+        let key = cleanLocation + "_text"
         let section = Section(header: location.rawValue, footer: location.description) {
             $0.tag = location.rawValue
             $0.hidden = true
         }
 
         section.append(TextAreaRow {
-            $0.tag = location.rawValue
+            $0.tag = key
             $0.title = location.rawValue
             $0.add(rule: RuleRequired())
             $0.placeholder = "{{ states(\"weather.current_temperature\") }}"
         })
 
         section.append(ButtonRow {
-            $0.tag = location.rawValue+"_render_template"
             $0.title = "Preview Output"
         }.onCellSelection({ _, _ in
-            self.renderTemplateForRow(row: "line"+location.rawValue)
+            self.renderTemplateForRow(row: key)
         }))
 
         section.append(InlineColorPickerRow { (row) in
-            row.tag = location.rawValue+"_color"
+            row.tag = key+"_color"
             row.title = "Color"
             row.isCircular = true
             row.showsPaletteNames = true
             row.value = UIColor.green
             }.onChange { (picker) in
-                print("color for "+location.rawValue+": \(picker.value!.hexString(false))")
+                print("color for "+key+": \(picker.value!.hexString(false))")
         })
         return section
     }

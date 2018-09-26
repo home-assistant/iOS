@@ -65,7 +65,7 @@ enum ComplicationGroup {
 
 extension ComplicationGroup: CaseIterable {}
 
-enum ComplicationGroupMember {
+enum ComplicationGroupMember: String {
     case circularSmall
     case extraLarge
     case graphicBezel
@@ -268,7 +268,7 @@ enum ComplicationGroupMember {
 extension ComplicationGroupMember: CaseIterable {}
 
 // swiftlint:disable:next type_body_length
-enum ComplicationTemplate {
+enum ComplicationTemplate: String {
     case CircularSmallRingImage
     case CircularSmallSimpleImage
     case CircularSmallStackImage
