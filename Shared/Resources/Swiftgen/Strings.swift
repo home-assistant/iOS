@@ -922,6 +922,557 @@ internal enum L10n {
       }
     }
   }
+
+  internal enum Watch {
+
+    internal enum Labels {
+
+      internal enum ComplicationGroup {
+
+        internal enum CircularSmall {
+          /// Use circular small complications to display content in the corners of the Color watch face.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group.circular_small.description")
+          /// Circular Small
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group.circular_small.name")
+        }
+
+        internal enum ExtraLarge {
+          /// Use the extra large complications to display content on the X-Large watch faces.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group.extra_large.description")
+          /// Extra Large
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group.extra_large.name")
+        }
+
+        internal enum Graphic {
+          /// Use graphic complications to display visually rich content in the Infograph and Infograph Modular clock faces.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group.graphic.description")
+          /// Graphic
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group.graphic.name")
+        }
+
+        internal enum Modular {
+          /// Use modular small complications to display content in the Modular watch face.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group.modular.description")
+          /// Modular
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group.modular.name")
+        }
+
+        internal enum Utilitarian {
+          /// Use the utilitarian complications to display content in the Utility, Motion, Mickey Mouse, and Minnie Mouse watch faces.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group.utilitarian.description")
+          /// Utilitarian
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group.utilitarian.name")
+        }
+      }
+
+      internal enum ComplicationGroupMember {
+
+        internal enum CircularSmall {
+          /// A small circular area used in the Color clock face.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group_member.circular_small.description")
+          /// Circular Small
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group_member.circular_small.name")
+          /// Circular Small
+          internal static let shortName = L10n.tr("Localizable", "watch.labels.complication_group_member.circular_small.short_name")
+        }
+
+        internal enum ExtraLarge {
+          /// A large square area used in the X-Large clock face.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group_member.extra_large.description")
+          /// Extra Large
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group_member.extra_large.name")
+          /// Extra Large
+          internal static let shortName = L10n.tr("Localizable", "watch.labels.complication_group_member.extra_large.short_name")
+        }
+
+        internal enum GraphicBezel {
+          /// A small square area used in the Modular clock face.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group_member.graphic_bezel.description")
+          /// Graphic Bezel
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group_member.graphic_bezel.name")
+          /// Bezel
+          internal static let shortName = L10n.tr("Localizable", "watch.labels.complication_group_member.graphic_bezel.short_name")
+        }
+
+        internal enum GraphicCircular {
+          /// A large rectangular area used in the Modular clock face.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group_member.graphic_circular.description")
+          /// Graphic Circular
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group_member.graphic_circular.name")
+          /// Circular
+          internal static let shortName = L10n.tr("Localizable", "watch.labels.complication_group_member.graphic_circular.short_name")
+        }
+
+        internal enum GraphicCorner {
+          /// A small square or rectangular area used in the Utility, Mickey, Chronograph, and Simple clock faces.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group_member.graphic_corner.description")
+          /// Graphic Corner
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group_member.graphic_corner.name")
+          /// Corner
+          internal static let shortName = L10n.tr("Localizable", "watch.labels.complication_group_member.graphic_corner.short_name")
+        }
+
+        internal enum GraphicRectangular {
+          /// A small rectangular area used in the in the Photos, Motion, and Timelapse clock faces.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group_member.graphic_rectangular.description")
+          /// Graphic Rectangular
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group_member.graphic_rectangular.name")
+          /// Rectangular
+          internal static let shortName = L10n.tr("Localizable", "watch.labels.complication_group_member.graphic_rectangular.short_name")
+        }
+
+        internal enum ModularLarge {
+          /// A large rectangular area that spans the width of the screen in the Utility and Mickey clock faces.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group_member.modular_large.description")
+          /// Modular Large
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group_member.modular_large.name")
+          /// Large
+          internal static let shortName = L10n.tr("Localizable", "watch.labels.complication_group_member.modular_large.short_name")
+        }
+
+        internal enum ModularSmall {
+          /// A curved area that fills the corners in the Infograph clock face.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group_member.modular_small.description")
+          /// Modular Small
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group_member.modular_small.name")
+          /// Small
+          internal static let shortName = L10n.tr("Localizable", "watch.labels.complication_group_member.modular_small.short_name")
+        }
+
+        internal enum UtilitarianLarge {
+          /// A circular area used in the Infograph and Infograph Modular clock faces.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group_member.utilitarian_large.description")
+          /// Utilitarian Large
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group_member.utilitarian_large.name")
+          /// Large
+          internal static let shortName = L10n.tr("Localizable", "watch.labels.complication_group_member.utilitarian_large.short_name")
+        }
+
+        internal enum UtilitarianSmall {
+          /// A circular area with optional curved text placed along the bezel of the Infograph clock face.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group_member.utilitarian_small.description")
+          /// Utilitarian Small
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group_member.utilitarian_small.name")
+          /// Small
+          internal static let shortName = L10n.tr("Localizable", "watch.labels.complication_group_member.utilitarian_small.short_name")
+        }
+
+        internal enum UtilitarianSmallFlat {
+          /// A large rectangular area used in the Infograph Modular clock face.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_group_member.utilitarian_small_flat.description")
+          /// Utilitarian Small Flat
+          internal static let name = L10n.tr("Localizable", "watch.labels.complication_group_member.utilitarian_small_flat.name")
+          /// Small Flat
+          internal static let shortName = L10n.tr("Localizable", "watch.labels.complication_group_member.utilitarian_small_flat.short_name")
+        }
+      }
+
+      internal enum ComplicationTemplate {
+
+        internal enum CircularSmallRingImage {
+          /// A template for displaying a single image surrounded by a configurable progress ring.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.circular_small_ring_image.description")
+        }
+
+        internal enum CircularSmallRingText {
+          /// A template for displaying a short text string encircled by a configurable progress ring.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.circular_small_ring_text.description")
+        }
+
+        internal enum CircularSmallSimpleImage {
+          /// A template for displaying a single image.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.circular_small_simple_image.description")
+        }
+
+        internal enum CircularSmallSimpleText {
+          /// A template for displaying a short text string.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.circular_small_simple_text.description")
+        }
+
+        internal enum CircularSmallStackImage {
+          /// A template for displaying an image with a line of text below it.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.circular_small_stack_image.description")
+        }
+
+        internal enum CircularSmallStackText {
+          /// A template for displaying two text strings stacked on top of each other.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.circular_small_stack_text.description")
+        }
+
+        internal enum ExtraLargeColumnsText {
+          /// A template for displaying two rows and two columns of text.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.extra_large_columns_text.description")
+        }
+
+        internal enum ExtraLargeRingImage {
+          /// A template for displaying an image encircled by a configurable progress ring.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.extra_large_ring_image.description")
+        }
+
+        internal enum ExtraLargeRingText {
+          /// A template for displaying text encircled by a configurable progress ring.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.extra_large_ring_text.description")
+        }
+
+        internal enum ExtraLargeSimpleImage {
+          /// A template for displaying an image.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.extra_large_simple_image.description")
+        }
+
+        internal enum ExtraLargeSimpleText {
+          /// A template for displaying a small amount of text
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.extra_large_simple_text.description")
+        }
+
+        internal enum ExtraLargeStackImage {
+          /// A template for displaying a single image with a short line of text below it.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.extra_large_stack_image.description")
+        }
+
+        internal enum ExtraLargeStackText {
+          /// A template for displaying two strings stacked one on top of the other.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.extra_large_stack_text.description")
+        }
+
+        internal enum GraphicBezelCircularText {
+          /// A template for displaying a circular complication with text along the bezel.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_bezel_circular_text.description")
+        }
+
+        internal enum GraphicCircularClosedGaugeImage {
+          /// A template for displaying a full-color circular image and a closed circular gauge.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_circular_closed_gauge_image.description")
+        }
+
+        internal enum GraphicCircularClosedGaugeText {
+          /// A template for displaying text inside a closed circular gauge.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_circular_closed_gauge_text.description")
+        }
+
+        internal enum GraphicCircularImage {
+          /// A template for displaying a full-color circular image.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_circular_image.description")
+        }
+
+        internal enum GraphicCircularOpenGaugeImage {
+          /// A template for displaying a full-color circular image, an open gauge, and text.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_circular_open_gauge_image.description")
+        }
+
+        internal enum GraphicCircularOpenGaugeRangeText {
+          /// A template for displaying text inside an open gauge, with leading and trailing text for the gauge.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_circular_open_gauge_range_text.description")
+        }
+
+        internal enum GraphicCircularOpenGaugeSimpleText {
+          /// A template for displaying text inside an open gauge, with a single piece of text for the gauge.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_circular_open_gauge_simple_text.description")
+        }
+
+        internal enum GraphicCornerCircularImage {
+          /// A template for displaying an image in the clock face’s corner.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_corner_circular_image.description")
+        }
+
+        internal enum GraphicCornerGaugeImage {
+          /// A template for displaying an image and a gauge in the clock face’s corner.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_corner_gauge_image.description")
+        }
+
+        internal enum GraphicCornerGaugeText {
+          /// A template for displaying text and a gauge in the clock face’s corner.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_corner_gauge_text.description")
+        }
+
+        internal enum GraphicCornerStackText {
+          /// A template for displaying stacked text in the clock face’s corner.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_corner_stack_text.description")
+        }
+
+        internal enum GraphicCornerTextImage {
+          /// A template for displaying an image and text in the clock face’s corner.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_corner_text_image.description")
+        }
+
+        internal enum GraphicRectangularLargeImage {
+          /// A template for displaying a large rectangle containing header text and an image.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_rectangular_large_image.description")
+        }
+
+        internal enum GraphicRectangularStandardBody {
+          /// A template for displaying a large rectangle containing text.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_rectangular_standard_body.description")
+        }
+
+        internal enum GraphicRectangularTextGauge {
+          /// A template for displaying a large rectangle containing text and a gauge.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.graphic_rectangular_text_gauge.description")
+        }
+
+        internal enum ModularLargeColumns {
+          /// A template for displaying multiple columns of data.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.modular_large_columns.description")
+        }
+
+        internal enum ModularLargeStandardBody {
+          /// A template for displaying a header row and two lines of text
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.modular_large_standard_body.description")
+        }
+
+        internal enum ModularLargeTable {
+          /// A template for displaying a header row and columns
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.modular_large_table.description")
+        }
+
+        internal enum ModularLargeTallBody {
+          /// A template for displaying a header row and a tall row of body text.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.modular_large_tall_body.description")
+        }
+
+        internal enum ModularSmallColumnsText {
+          /// A template for displaying two rows and two columns of text
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.modular_small_columns_text.description")
+        }
+
+        internal enum ModularSmallRingImage {
+          /// A template for displaying an image encircled by a configurable progress ring
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.modular_small_ring_image.description")
+        }
+
+        internal enum ModularSmallRingText {
+          /// A template for displaying text encircled by a configurable progress ring
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.modular_small_ring_text.description")
+        }
+
+        internal enum ModularSmallSimpleImage {
+          /// A template for displaying an image.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.modular_small_simple_image.description")
+        }
+
+        internal enum ModularSmallSimpleText {
+          /// A template for displaying a small amount of text.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.modular_small_simple_text.description")
+        }
+
+        internal enum ModularSmallStackImage {
+          /// A template for displaying a single image with a short line of text below it.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.modular_small_stack_image.description")
+        }
+
+        internal enum ModularSmallStackText {
+          /// A template for displaying two strings stacked one on top of the other.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.modular_small_stack_text.description")
+        }
+
+        internal enum Style {
+          /// Circular Image
+          internal static let circularImage = L10n.tr("Localizable", "watch.labels.complication_template.style.circular_image")
+          /// Circular Text
+          internal static let circularText = L10n.tr("Localizable", "watch.labels.complication_template.style.circular_text")
+          /// Closed Gauge Image
+          internal static let closedGaugeImage = L10n.tr("Localizable", "watch.labels.complication_template.style.closed_gauge_image")
+          /// Closed Gauge Text
+          internal static let closedGaugeText = L10n.tr("Localizable", "watch.labels.complication_template.style.closed_gauge_text")
+          /// Columns
+          internal static let columns = L10n.tr("Localizable", "watch.labels.complication_template.style.columns")
+          /// Columns Text
+          internal static let columnsText = L10n.tr("Localizable", "watch.labels.complication_template.style.columns_text")
+          /// Flat
+          internal static let flat = L10n.tr("Localizable", "watch.labels.complication_template.style.flat")
+          /// Gauge Image
+          internal static let gaugeImage = L10n.tr("Localizable", "watch.labels.complication_template.style.gauge_image")
+          /// Gauge Text
+          internal static let gaugeText = L10n.tr("Localizable", "watch.labels.complication_template.style.gauge_text")
+          /// Large Image
+          internal static let largeImage = L10n.tr("Localizable", "watch.labels.complication_template.style.large_image")
+          /// Open Gauge Image
+          internal static let openGaugeImage = L10n.tr("Localizable", "watch.labels.complication_template.style.open_gauge_image")
+          /// Open Gauge Range Text
+          internal static let openGaugeRangeText = L10n.tr("Localizable", "watch.labels.complication_template.style.open_gauge_range_text")
+          /// Open Gauge Simple Text
+          internal static let openGaugeSimpleText = L10n.tr("Localizable", "watch.labels.complication_template.style.open_gauge_simple_text")
+          /// Ring Image
+          internal static let ringImage = L10n.tr("Localizable", "watch.labels.complication_template.style.ring_image")
+          /// Ring Text
+          internal static let ringText = L10n.tr("Localizable", "watch.labels.complication_template.style.ring_text")
+          /// Simple Image
+          internal static let simpleImage = L10n.tr("Localizable", "watch.labels.complication_template.style.simple_image")
+          /// Simple Text
+          internal static let simpleText = L10n.tr("Localizable", "watch.labels.complication_template.style.simple_text")
+          /// Square
+          internal static let square = L10n.tr("Localizable", "watch.labels.complication_template.style.square")
+          /// Stack Image
+          internal static let stackImage = L10n.tr("Localizable", "watch.labels.complication_template.style.stack_image")
+          /// Stack Text
+          internal static let stackText = L10n.tr("Localizable", "watch.labels.complication_template.style.stack_text")
+          /// Standard Body
+          internal static let standardBody = L10n.tr("Localizable", "watch.labels.complication_template.style.standard_body")
+          /// Table
+          internal static let table = L10n.tr("Localizable", "watch.labels.complication_template.style.table")
+          /// Tall Body
+          internal static let tallBody = L10n.tr("Localizable", "watch.labels.complication_template.style.tall_body")
+          /// Text Gauge
+          internal static let textGauge = L10n.tr("Localizable", "watch.labels.complication_template.style.text_gauge")
+          /// Text Image
+          internal static let textImage = L10n.tr("Localizable", "watch.labels.complication_template.style.text_image")
+        }
+
+        internal enum UtilitarianLargeFlat {
+          /// A template for displaying an image and string in a single long line.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.utilitarian_large_flat.description")
+        }
+
+        internal enum UtilitarianSmallFlat {
+          /// A template for displaying an image and text in a single line.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.utilitarian_small_flat.description")
+        }
+
+        internal enum UtilitarianSmallRingImage {
+          /// A template for displaying an image encircled by a configurable progress ring
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.utilitarian_small_ring_image.description")
+        }
+
+        internal enum UtilitarianSmallRingText {
+          /// A template for displaying text encircled by a configurable progress ring.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.utilitarian_small_ring_text.description")
+        }
+
+        internal enum UtilitarianSmallSquare {
+          /// A template for displaying a single square image.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_template.utilitarian_small_square.description")
+        }
+      }
+
+      internal enum ComplicationTextAreas {
+
+        internal enum Body1 {
+          /// The main body text to display in the complication.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.body1.description")
+          /// Body 1
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.body1.label")
+        }
+
+        internal enum Body2 {
+          /// The secondary body text to display in the complication.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.body2.description")
+          /// Body 2
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.body2.label")
+        }
+
+        internal enum Bottom {
+          /// The text to display at the bottom of the gauge.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.bottom.description")
+          /// Bottom
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.bottom.label")
+        }
+
+        internal enum Center {
+          /// The text to display in the complication.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.center.description")
+          /// Center
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.center.label")
+        }
+
+        internal enum Header {
+          /// The header text to display in the complication.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.header.description")
+          /// Header
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.header.label")
+        }
+
+        internal enum Inner {
+          /// The inner text to display in the complication.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.inner.description")
+          /// Inner
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.inner.label")
+        }
+
+        internal enum InsideRing {
+          /// The text to display in the ring of the complication.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.inside_ring.description")
+          /// Inside Ring
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.inside_ring.label")
+        }
+
+        internal enum Leading {
+          /// The text to display on the leading edge of the gague.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.leading.description")
+          /// Leading
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.leading.label")
+        }
+
+        internal enum Line1 {
+          /// The text to display on the top line of the complication.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.line1.description")
+          /// Line 1
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.line1.label")
+        }
+
+        internal enum Line2 {
+          /// The text to display on the bottom line of the complication.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.line2.description")
+          /// Line 2
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.line2.label")
+        }
+
+        internal enum Outer {
+          /// The outer text to display in the complication.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.outer.description")
+          /// Outer
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.outer.label")
+        }
+
+        internal enum Row1Column1 {
+          /// The text to display in the first column of the first row.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.row1_column1.description")
+          /// Row 1, Column 1
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.row1_column1.label")
+        }
+
+        internal enum Row1Column2 {
+          /// The text to display in the second column of the first row.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.row1_column2.description")
+          /// Row 1, Column 2
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.row1_column2.label")
+        }
+
+        internal enum Row2Column1 {
+          /// The text to display in the first column of the second row.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.row2_column1.description")
+          /// Row 2, Column 1
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.row2_column1.label")
+        }
+
+        internal enum Row2Column2 {
+          /// The text to display in the second column of the second row.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.row2_column2.description")
+          /// Row 2, Column 2
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.row2_column2.label")
+        }
+
+        internal enum Row3Column1 {
+          /// The text to display in the first column of the third row.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.row3_column1.description")
+          /// Row 3, Column 1
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.row3_column1.label")
+        }
+
+        internal enum Row3Column2 {
+          /// The text to display in the second column of the third row.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.row3_column2.description")
+          /// Row 3, Column 2
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.row3_column2.label")
+        }
+
+        internal enum Trailing {
+          /// The text to display on the trailing edge of the gauge.
+          internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.trailing.description")
+          /// Trailing
+          internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.trailing.label")
+        }
+      }
+    }
+  }
 }
 // swiftlint:enable explicit_type_interface identifier_name line_length nesting type_body_length type_name
 

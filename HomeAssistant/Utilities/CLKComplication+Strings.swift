@@ -18,30 +18,30 @@ enum ComplicationGroup {
     var name: String {
         switch self {
         case .circularSmall:
-            return "Circular Small"
+            return L10n.Watch.Labels.ComplicationGroup.CircularSmall.name
         case .extraLarge:
-            return "Extra Large"
+            return L10n.Watch.Labels.ComplicationGroup.ExtraLarge.name
         case .graphic:
-            return "Graphic"
+            return L10n.Watch.Labels.ComplicationGroup.Graphic.name
         case .modular:
-            return "Modular"
+            return L10n.Watch.Labels.ComplicationGroup.Modular.name
         case .utilitarian:
-            return "Utilitarian"
+            return L10n.Watch.Labels.ComplicationGroup.Utilitarian.name
         }
     }
 
     var description: String {
         switch self {
         case .circularSmall:
-            return "Use circular small complications to display content in the corners of the Color watch face."
+            return L10n.Watch.Labels.ComplicationGroup.CircularSmall.description
         case .extraLarge:
-            return "Use the extra large complications to display content on the X-Large watch faces."
+            return L10n.Watch.Labels.ComplicationGroup.ExtraLarge.description
         case .graphic:
-            return "Use graphic complications to display visually rich content in the Infograph and Infograph Modular clock faces."
+            return L10n.Watch.Labels.ComplicationGroup.Graphic.description
         case .modular:
-            return "Use modular small complications to display content in the Modular watch face."
+            return L10n.Watch.Labels.ComplicationGroup.Modular.description
         case .utilitarian:
-            return "Use the utilitarian complications to display content in the Utility, Motion, Mickey Mouse, and Minnie Mouse watch faces."
+            return L10n.Watch.Labels.ComplicationGroup.Utilitarian.description
         }
     }
 
@@ -111,54 +111,54 @@ enum ComplicationGroupMember: String {
     var name: String {
         switch self {
         case .circularSmall:
-            return "Circular Small"
+            return L10n.Watch.Labels.ComplicationGroupMember.CircularSmall.name
         case .extraLarge:
-            return "Extra Large"
+            return L10n.Watch.Labels.ComplicationGroupMember.ExtraLarge.name
         case .graphicBezel:
-            return "Graphic Bezel"
+            return L10n.Watch.Labels.ComplicationGroupMember.GraphicBezel.name
         case .graphicCircular:
-            return "Graphic Circular"
+            return L10n.Watch.Labels.ComplicationGroupMember.GraphicCircular.name
         case .graphicCorner:
-            return "Graphic Corner"
+            return L10n.Watch.Labels.ComplicationGroupMember.GraphicCorner.name
         case .graphicRectangular:
-            return "Graphic Rectangular"
+            return L10n.Watch.Labels.ComplicationGroupMember.GraphicRectangular.name
         case .modularLarge:
-            return "Modular Large"
+            return L10n.Watch.Labels.ComplicationGroupMember.ModularLarge.name
         case .modularSmall:
-            return "Modular Small"
+            return L10n.Watch.Labels.ComplicationGroupMember.ModularSmall.name
         case .utilitarianLarge:
-            return "Utilitarian Large"
+            return L10n.Watch.Labels.ComplicationGroupMember.UtilitarianLarge.name
         case .utilitarianSmall:
-            return "Utilitarian Small"
+            return L10n.Watch.Labels.ComplicationGroupMember.UtilitarianSmall.name
         case .utilitarianSmallFlat:
-            return "Utilitarian Small Flat"
+            return L10n.Watch.Labels.ComplicationGroupMember.UtilitarianSmallFlat.name
         }
     }
 
     var shortName: String {
         switch self {
         case .circularSmall:
-            return "Circular Small"
+            return L10n.Watch.Labels.ComplicationGroupMember.CircularSmall.shortName
         case .extraLarge:
-            return "Extra Large"
+            return L10n.Watch.Labels.ComplicationGroupMember.ExtraLarge.shortName
         case .graphicBezel:
-            return "Bezel"
+            return L10n.Watch.Labels.ComplicationGroupMember.GraphicBezel.shortName
         case .graphicCircular:
-            return "Circular"
+            return L10n.Watch.Labels.ComplicationGroupMember.GraphicCircular.shortName
         case .graphicCorner:
-            return "Corner"
+            return L10n.Watch.Labels.ComplicationGroupMember.GraphicCorner.shortName
         case .graphicRectangular:
-            return "Rectangular"
+            return L10n.Watch.Labels.ComplicationGroupMember.GraphicRectangular.shortName
         case .modularLarge:
-            return "Large"
+            return L10n.Watch.Labels.ComplicationGroupMember.ModularLarge.shortName
         case .modularSmall:
-            return "Small"
+            return L10n.Watch.Labels.ComplicationGroupMember.ModularSmall.shortName
         case .utilitarianLarge:
-            return "Large"
+            return L10n.Watch.Labels.ComplicationGroupMember.UtilitarianLarge.shortName
         case .utilitarianSmall:
-            return "Small"
+            return L10n.Watch.Labels.ComplicationGroupMember.UtilitarianSmall.shortName
         case .utilitarianSmallFlat:
-            return "Small Flat"
+            return L10n.Watch.Labels.ComplicationGroupMember.UtilitarianSmallFlat.shortName
         }
     }
 
@@ -207,27 +207,27 @@ enum ComplicationGroupMember: String {
     var description: String {
         switch self {
         case .circularSmall:
-            return "A small circular area used in the Color clock face."
+            return L10n.Watch.Labels.ComplicationGroupMember.CircularSmall.description
         case .extraLarge:
-            return "A large square area used in the X-Large clock face."
+            return L10n.Watch.Labels.ComplicationGroupMember.ExtraLarge.description
         case .modularSmall:
-            return "A small square area used in the Modular clock face."
+            return L10n.Watch.Labels.ComplicationGroupMember.GraphicBezel.description
         case .modularLarge:
-            return "A large rectangular area used in the Modular clock face."
+            return L10n.Watch.Labels.ComplicationGroupMember.GraphicCircular.description
         case .utilitarianSmall:
-            return "A small square or rectangular area used in the Utility, Mickey, Chronograph, and Simple clock faces."
+            return L10n.Watch.Labels.ComplicationGroupMember.GraphicCorner.description
         case .utilitarianSmallFlat:
-            return "A small rectangular area used in the in the Photos, Motion, and Timelapse clock faces."
+            return L10n.Watch.Labels.ComplicationGroupMember.GraphicRectangular.description
         case .utilitarianLarge:
-            return "A large rectangular area that spans the width of the screen in the Utility and Mickey clock faces."
+            return L10n.Watch.Labels.ComplicationGroupMember.ModularLarge.description
         case .graphicCorner:
-            return "A curved area that fills the corners in the Infograph clock face."
+            return L10n.Watch.Labels.ComplicationGroupMember.ModularSmall.description
         case .graphicCircular:
-            return "A circular area used in the Infograph and Infograph Modular clock faces."
+            return L10n.Watch.Labels.ComplicationGroupMember.UtilitarianLarge.description
         case .graphicBezel:
-            return "A circular area with optional curved text placed along the bezel of the Infograph clock face."
+            return L10n.Watch.Labels.ComplicationGroupMember.UtilitarianSmall.description
         case .graphicRectangular:
-            return "A large rectangular area used in the Infograph Modular clock face."
+            return L10n.Watch.Labels.ComplicationGroupMember.UtilitarianSmallFlat.description
         }
     }
 
@@ -317,148 +317,148 @@ enum ComplicationTemplate: String {
     var style: String {
         switch self {
         case .CircularSmallRingImage, .ExtraLargeRingImage, .ModularSmallRingImage, .UtilitarianSmallRingImage:
-            return "Ring Image"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.ringImage
         case .CircularSmallSimpleImage, .ExtraLargeSimpleImage, .ModularSmallSimpleImage:
-            return "Simple Image"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.simpleImage
         case .CircularSmallStackImage, .ExtraLargeStackImage, .ModularSmallStackImage:
-            return "Stack Image"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.stackImage
         case .CircularSmallRingText, .ExtraLargeRingText, .ModularSmallRingText, .UtilitarianSmallRingText:
-            return "Ring Text"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.ringText
         case .CircularSmallSimpleText, .ExtraLargeSimpleText, .ModularSmallSimpleText:
-            return "Simple Text"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.simpleText
         case .CircularSmallStackText, .ExtraLargeStackText, .ModularSmallStackText, .GraphicCornerStackText:
-            return "Stack Text"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.stackText
         case .ExtraLargeColumnsText, .ModularSmallColumnsText:
-            return "Columns Text"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.columnsText
         case .ModularLargeStandardBody, .GraphicRectangularStandardBody:
-            return "Standard Body"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.standardBody
         case .ModularLargeTallBody:
-            return "Tall Body"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.tallBody
         case .ModularLargeColumns:
-            return "Columns"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.columns
         case .ModularLargeTable:
-            return "Table"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.table
         case .UtilitarianSmallFlat, .UtilitarianLargeFlat:
-            return "Flat"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.flat
         case .UtilitarianSmallSquare:
-            return "Square"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.square
         case .GraphicCornerCircularImage, .GraphicCircularImage:
-            return "Circular Image"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.circularImage
         case .GraphicCornerGaugeImage:
-            return "Gauge Image"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.gaugeImage
         case .GraphicCornerGaugeText:
-            return "Gauge Text"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.gaugeText
         case .GraphicCornerTextImage:
-            return "Text Image"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.textImage
         case .GraphicCircularClosedGaugeImage:
-            return "Closed Gauge Image"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.closedGaugeImage
         case .GraphicCircularOpenGaugeImage:
-            return "Open Gauge Image"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.openGaugeImage
         case .GraphicCircularClosedGaugeText:
-            return "Closed Gauge Text"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.closedGaugeText
         case .GraphicCircularOpenGaugeSimpleText:
-            return "Open Gauge Simple Text"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.openGaugeSimpleText
         case .GraphicCircularOpenGaugeRangeText:
-            return "Open Gauge Range Text"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.openGaugeRangeText
         case .GraphicBezelCircularText:
-            return "Circular Text"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.circularText
         case .GraphicRectangularTextGauge:
-            return "Text Gauge"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.textGauge
         case .GraphicRectangularLargeImage:
-            return "Large Image"
+            return L10n.Watch.Labels.ComplicationTemplate.Style.largeImage
         }
     }
 
     var description: String {
         switch self {
         case .CircularSmallRingImage:
-            return "A template for displaying a single image surrounded by a configurable progress ring."
+            return L10n.Watch.Labels.ComplicationTemplate.CircularSmallRingImage.description
         case .CircularSmallSimpleImage:
-            return "A template for displaying a single image."
+            return L10n.Watch.Labels.ComplicationTemplate.CircularSmallSimpleImage.description
         case .CircularSmallStackImage:
-            return "A template for displaying an image with a line of text below it."
+            return L10n.Watch.Labels.ComplicationTemplate.CircularSmallStackImage.description
         case .CircularSmallRingText:
-            return "A template for displaying a short text string encircled by a configurable progress ring."
+            return L10n.Watch.Labels.ComplicationTemplate.CircularSmallRingText.description
         case .CircularSmallSimpleText:
-            return "A template for displaying a short text string."
+            return L10n.Watch.Labels.ComplicationTemplate.CircularSmallSimpleText.description
         case .CircularSmallStackText:
-            return "A template for displaying two text strings stacked on top of each other."
+            return L10n.Watch.Labels.ComplicationTemplate.CircularSmallStackText.description
         case .ExtraLargeRingImage:
-            return "A template for displaying an image encircled by a configurable progress ring."
+            return L10n.Watch.Labels.ComplicationTemplate.ExtraLargeRingImage.description
         case .ExtraLargeSimpleImage:
-            return "A template for displaying an image."
+            return L10n.Watch.Labels.ComplicationTemplate.ExtraLargeSimpleImage.description
         case .ExtraLargeStackImage:
-            return "A template for displaying a single image with a short line of text below it."
+            return L10n.Watch.Labels.ComplicationTemplate.ExtraLargeStackImage.description
         case .ExtraLargeColumnsText:
-            return "A template for displaying two rows and two columns of text."
+            return L10n.Watch.Labels.ComplicationTemplate.ExtraLargeColumnsText.description
         case .ExtraLargeRingText:
-            return "A template for displaying text encircled by a configurable progress ring."
+            return L10n.Watch.Labels.ComplicationTemplate.ExtraLargeRingText.description
         case .ExtraLargeSimpleText:
-            return "A template for displaying a small amount of text"
+            return L10n.Watch.Labels.ComplicationTemplate.ExtraLargeSimpleText.description
         case .ExtraLargeStackText:
-            return "A template for displaying two strings stacked one on top of the other."
+            return L10n.Watch.Labels.ComplicationTemplate.ExtraLargeStackText.description
         case .ModularSmallRingImage:
-            return "A template for displaying an image encircled by a configurable progress ring"
+            return L10n.Watch.Labels.ComplicationTemplate.ModularSmallRingImage.description
         case .ModularSmallSimpleImage:
-            return "A template for displaying an image."
+            return L10n.Watch.Labels.ComplicationTemplate.ModularSmallSimpleImage.description
         case .ModularSmallStackImage:
-            return "A template for displaying a single image with a short line of text below it."
+            return L10n.Watch.Labels.ComplicationTemplate.ModularSmallStackImage.description
         case .ModularSmallColumnsText:
-            return "A template for displaying two rows and two columns of text"
+            return L10n.Watch.Labels.ComplicationTemplate.ModularSmallColumnsText.description
         case .ModularSmallRingText:
-            return "A template for displaying text encircled by a configurable progress ring"
+            return L10n.Watch.Labels.ComplicationTemplate.ModularSmallRingText.description
         case .ModularSmallSimpleText:
-            return "A template for displaying a small amount of text."
+            return L10n.Watch.Labels.ComplicationTemplate.ModularSmallSimpleText.description
         case .ModularSmallStackText:
-            return "A template for displaying two strings stacked one on top of the other."
+            return L10n.Watch.Labels.ComplicationTemplate.ModularSmallStackText.description
         case .ModularLargeStandardBody:
-            return "A template for displaying a header row and two lines of text"
+            return L10n.Watch.Labels.ComplicationTemplate.ModularLargeStandardBody.description
         case .ModularLargeTallBody:
-            return "A template for displaying a header row and a tall row of body text."
+            return L10n.Watch.Labels.ComplicationTemplate.ModularLargeTallBody.description
         case .ModularLargeColumns:
-            return "A template for displaying multiple columns of data."
+            return L10n.Watch.Labels.ComplicationTemplate.ModularLargeColumns.description
         case .ModularLargeTable:
-            return "A template for displaying a header row and columns"
+            return L10n.Watch.Labels.ComplicationTemplate.ModularLargeTable.description
         case .UtilitarianSmallFlat:
-            return "A template for displaying an image and text in a single line."
+            return L10n.Watch.Labels.ComplicationTemplate.UtilitarianSmallFlat.description
         case .UtilitarianSmallRingImage:
-            return "A template for displaying an image encircled by a configurable progress ring"
+            return L10n.Watch.Labels.ComplicationTemplate.UtilitarianSmallRingImage.description
         case .UtilitarianSmallRingText:
-            return "A template for displaying text encircled by a configurable progress ring."
+            return L10n.Watch.Labels.ComplicationTemplate.UtilitarianSmallRingText.description
         case .UtilitarianSmallSquare:
-            return "A template for displaying a single square image."
+            return L10n.Watch.Labels.ComplicationTemplate.UtilitarianSmallSquare.description
         case .UtilitarianLargeFlat:
-            return "A template for displaying an image and string in a single long line."
+            return L10n.Watch.Labels.ComplicationTemplate.UtilitarianLargeFlat.description
         case .GraphicCornerCircularImage:
-            return "A template for displaying an image in the clock face’s corner."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicCornerCircularImage.description
         case .GraphicCornerGaugeImage:
-            return "A template for displaying an image and a gauge in the clock face’s corner."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicCornerGaugeImage.description
         case .GraphicCornerGaugeText:
-            return "A template for displaying text and a gauge in the clock face’s corner."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicCornerGaugeText.description
         case .GraphicCornerStackText:
-            return "A template for displaying stacked text in the clock face’s corner."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicCornerStackText.description
         case .GraphicCornerTextImage:
-            return "A template for displaying an image and text in the clock face’s corner."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicCornerTextImage.description
         case .GraphicCircularImage:
-            return "A template for displaying a full-color circular image."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicCircularImage.description
         case .GraphicCircularClosedGaugeImage:
-            return "A template for displaying a full-color circular image and a closed circular gauge."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicCircularClosedGaugeImage.description
         case .GraphicCircularOpenGaugeImage:
-            return "A template for displaying a full-color circular image, an open gauge, and text."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicCircularOpenGaugeImage.description
         case .GraphicCircularClosedGaugeText:
-            return "A template for displaying text inside a closed circular gauge."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicCircularClosedGaugeText.description
         case .GraphicCircularOpenGaugeSimpleText:
-            return "A template for displaying text inside an open gauge, with a single piece of text for the gauge."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicCircularOpenGaugeSimpleText.description
         case .GraphicCircularOpenGaugeRangeText:
-            return "A template for displaying text inside an open gauge, with leading and trailing text for the gauge."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicCircularOpenGaugeRangeText.description
         case .GraphicBezelCircularText:
-            return "A template for displaying a circular complication with text along the bezel."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicBezelCircularText.description
         case .GraphicRectangularStandardBody:
-            return "A template for displaying a large rectangle containing text."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicRectangularStandardBody.description
         case .GraphicRectangularTextGauge:
-            return "A template for displaying a large rectangle containing text and a gauge."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicRectangularTextGauge.description
         case .GraphicRectangularLargeImage:
-            return "A template for displaying a large rectangle containing header text and an image."
+            return L10n.Watch.Labels.ComplicationTemplate.GraphicRectangularLargeImage.description
         }
     }
 
@@ -748,41 +748,82 @@ enum ComplicationTextAreas: String, CaseIterable {
     var description: String {
         switch self {
         case .Body1:
-            return "The main body text to display in the complication."
+            return L10n.Watch.Labels.ComplicationTextAreas.Body1.description
         case .Body2:
-            return "The secondary body text to display in the complication."
+            return L10n.Watch.Labels.ComplicationTextAreas.Body2.description
         case .Bottom:
-            return "The text to display at the bottom of the gauge."
+            return L10n.Watch.Labels.ComplicationTextAreas.Bottom.description
         case .Center:
-            return "The text to display in the complication."
+            return L10n.Watch.Labels.ComplicationTextAreas.Center.description
         case .Header:
-            return "The header text to display in the complication."
+            return L10n.Watch.Labels.ComplicationTextAreas.Header.description
         case .Inner:
-            return "The inner text to display in the complication."
+            return L10n.Watch.Labels.ComplicationTextAreas.Inner.description
         case .InsideRing:
-            return "The text to display in the ring of the complication."
+            return L10n.Watch.Labels.ComplicationTextAreas.InsideRing.description
         case .Leading:
-            return "The text to display on the leading edge of the gague."
+            return L10n.Watch.Labels.ComplicationTextAreas.Leading.description
         case .Line1:
-            return "The text to display on the top line of the complication."
+            return L10n.Watch.Labels.ComplicationTextAreas.Line1.description
         case .Line2:
-            return "The text to display on the bottom line of the complication."
+            return L10n.Watch.Labels.ComplicationTextAreas.Line2.description
         case .Outer:
-            return "The outer text to display in the complication."
+            return L10n.Watch.Labels.ComplicationTextAreas.Outer.description
         case .Row1Column1:
-            return "The text to display in the first column of the first row."
+            return L10n.Watch.Labels.ComplicationTextAreas.Row1Column1.description
         case .Row1Column2:
-            return "The text to display in the second column of the first row."
+            return L10n.Watch.Labels.ComplicationTextAreas.Row1Column2.description
         case .Row2Column1:
-            return "The text to display in the first column of the second row."
+            return L10n.Watch.Labels.ComplicationTextAreas.Row2Column1.description
         case .Row2Column2:
-            return "The text to display in the second column of the second row."
+            return L10n.Watch.Labels.ComplicationTextAreas.Row2Column2.description
         case .Row3Column1:
-            return "The text to display in the first column of the third row."
+            return L10n.Watch.Labels.ComplicationTextAreas.Row3Column1.description
         case .Row3Column2:
-            return "The text to display in the second column of the third row."
+            return L10n.Watch.Labels.ComplicationTextAreas.Row3Column2.description
         case .Trailing:
-            return "The text to display on the trailing edge of the gauge."
+            return L10n.Watch.Labels.ComplicationTextAreas.Trailing.description
+        }
+    }
+
+    var label: String {
+        switch self {
+        case .Body1:
+            return L10n.Watch.Labels.ComplicationTextAreas.Body1.label
+        case .Body2:
+            return L10n.Watch.Labels.ComplicationTextAreas.Body2.label
+        case .Bottom:
+            return L10n.Watch.Labels.ComplicationTextAreas.Bottom.label
+        case .Center:
+            return L10n.Watch.Labels.ComplicationTextAreas.Center.label
+        case .Header:
+            return L10n.Watch.Labels.ComplicationTextAreas.Header.label
+        case .Inner:
+            return L10n.Watch.Labels.ComplicationTextAreas.Inner.label
+        case .InsideRing:
+            return L10n.Watch.Labels.ComplicationTextAreas.InsideRing.label
+        case .Leading:
+            return L10n.Watch.Labels.ComplicationTextAreas.Leading.label
+        case .Line1:
+            return L10n.Watch.Labels.ComplicationTextAreas.Line1.label
+        case .Line2:
+            return L10n.Watch.Labels.ComplicationTextAreas.Line2.label
+        case .Outer:
+            return L10n.Watch.Labels.ComplicationTextAreas.Outer.label
+        case .Row1Column1:
+            return L10n.Watch.Labels.ComplicationTextAreas.Row1Column1.label
+        case .Row1Column2:
+            return L10n.Watch.Labels.ComplicationTextAreas.Row1Column2.label
+        case .Row2Column1:
+            return L10n.Watch.Labels.ComplicationTextAreas.Row2Column1.label
+        case .Row2Column2:
+            return L10n.Watch.Labels.ComplicationTextAreas.Row2Column2.label
+        case .Row3Column1:
+            return L10n.Watch.Labels.ComplicationTextAreas.Row3Column1.label
+        case .Row3Column2:
+            return L10n.Watch.Labels.ComplicationTextAreas.Row3Column2.label
+        case .Trailing:
+            return L10n.Watch.Labels.ComplicationTextAreas.Trailing.label
         }
     }
 }

@@ -303,14 +303,14 @@ class WatchComplicationConfigurator: FormViewController {
         cleanLocation = cleanLocation.replacingOccurrences(of: " ", with: "")
         cleanLocation = cleanLocation.replacingOccurrences(of: ",", with: "")
         let key = cleanLocation + "_text"
-        let section = Section(header: location.rawValue, footer: location.description) {
+        let section = Section(header: location.label, footer: location.description) {
             $0.tag = location.rawValue
             $0.hidden = true
         }
 
         section.append(TextAreaRow {
             $0.tag = key
-            $0.title = location.rawValue
+            $0.title = location.label
             $0.add(rule: RuleRequired())
             $0.placeholder = "{{ states(\"weather.current_temperature\") }}"
         })
