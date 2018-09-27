@@ -9,6 +9,9 @@
 import Foundation
 import CoreMotion
 
+// Don't translate these strings as they are sent to HA and we don't want to cause people to have to write
+// automations expecting localized strings.
+
 extension CMMotionActivity {
     var activityType: String {
         if self.walking {

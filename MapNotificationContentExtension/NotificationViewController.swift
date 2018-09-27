@@ -31,15 +31,15 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
         self.hud = hud
         guard let haDict = notification.request.content.userInfo["homeassistant"] as? [String: Any] else {
-            self.showErrorLabel(message: "Payload didn't contain a homeassistant dictionary!")
+            self.showErrorLabel(message: L10n.Extensions.Map.PayloadMissingHomeassistant.message)
             return
         }
         guard let latitudeString = haDict["latitude"] as? String else {
-            self.showErrorLabel(message: "Latitude wasn't found or couldn't be casted to string!")
+            self.showErrorLabel(message: L10n.Extensions.Map.ValueMissingOrUncastable.Latitude.message)
             return
         }
         guard let longitudeString = haDict["longitude"] as? String else {
-            self.showErrorLabel(message: "Longitude wasn't found or couldn't be casted to string!")
+            self.showErrorLabel(message: L10n.Extensions.Map.ValueMissingOrUncastable.Longitude.message)
             return
         }
         let latitude = Double.init(latitudeString)! as CLLocationDegrees
@@ -71,12 +71,12 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             let secondLongitude = Double.init(secondLongitudeString)! as CLLocationDegrees
             let secondDropPin = MKPointAnnotation()
             secondDropPin.coordinate = CLLocationCoordinate2D(latitude: secondLatitude, longitude: secondLongitude)
-            secondDropPin.title = "New Location"
+            secondDropPin.title = L10n.Extensions.Map.Location.new
             self.mapView.addAnnotation(secondDropPin)
 
             self.mapView.selectAnnotation(secondDropPin, animated: true)
 
-            dropPin.title = "Original Location"
+            dropPin.title = L10n.Extensions.Map.Location.original
         }
 
         self.mapView.addAnnotation(dropPin)
@@ -107,9 +107,9 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         let pinView: MKPinAnnotationView = MKPinAnnotationView()
         pinView.annotation = annotation
         if let title = annotation.title {
-            if title == "Original Location" {
+            if title == L10n.Extensions.Map.Location.original {
                 pinView.pinTintColor = .red
-            } else if title == "New Location" {
+            } else if title == L10n.Extensions.Map.Location.new {
                 pinView.pinTintColor = .green
             }
         } else {

@@ -37,7 +37,7 @@ public enum LocationUpdateTrigger: String {
         let shouldNotify: Bool
         var identifier: String = ""
         let body: String
-        let title = "Location change"
+        let title = L10n.LocationChangeNotification.title
 
         switch self {
         case .BeaconRegionEnter:

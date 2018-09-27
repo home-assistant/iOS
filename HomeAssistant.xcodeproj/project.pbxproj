@@ -237,6 +237,10 @@
 		B6CFF5DE2101985200CC523F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5DD2101985200CC523F /* RealmSwift.framework */; };
 		B6D77B2E215AFCFD00344092 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
+		B6E42616215C74FE007FEB7E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
+		B6E42617215C761A007FEB7E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
+		B6E42618215C761E007FEB7E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
+		B6E42619215C7620007FEB7E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B6EA98B9215306DF00788ACC /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B6215089EA004AB261 /* Intents.intentdefinition */; };
 		B6EA98BB215306E300788ACC /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B6215089EA004AB261 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (codegen, ); }; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
@@ -251,7 +255,7 @@
 		D03D894720E0BC1800D4F28D /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A6367120DB7D1100E5C49B /* ClientEventTests.swift */; };
 		D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D06C750F20D87FAF00E9DB7F /* ClientEventCell.swift */; };
-		D0B25BCD2130CAB400678C2C /* Bonjur.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjur.swift */; };
+		D0B25BCD2130CAB400678C2C /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
 		D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD121323CA600678C2C /* ClientEventPayloadViewController.swift */; };
 		D0B25BD62133128800678C2C /* UNNotificationContent+ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */; };
 		D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
@@ -774,7 +778,7 @@
 		D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Realm+Initialization.swift"; sourceTree = "<group>"; };
 		D0B25BC82130CA0D00678C2C /* OneShotLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneShotLocationManager.swift; sourceTree = "<group>"; };
 		D0B25BCA2130CA2D00678C2C /* RegionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionManager.swift; sourceTree = "<group>"; };
-		D0B25BCC2130CAB400678C2C /* Bonjur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bonjur.swift; sourceTree = "<group>"; };
+		D0B25BCC2130CAB400678C2C /* Bonjour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bonjour.swift; sourceTree = "<group>"; };
 		D0B25BD121323CA600678C2C /* ClientEventPayloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventPayloadViewController.swift; sourceTree = "<group>"; };
 		D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNNotificationContent+ClientEvent.swift"; sourceTree = "<group>"; };
 		D0BE44092104224600C74314 /* TokenInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenInfo.swift; sourceTree = "<group>"; };
@@ -1290,7 +1294,7 @@
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 				B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */,
-				D0B25BCC2130CAB400678C2C /* Bonjur.swift */,
+				D0B25BCC2130CAB400678C2C /* Bonjour.swift */,
 				B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */,
 				B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */,
 				B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */,
@@ -2054,6 +2058,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5487B2333FBD80B7ED0CFD47 /* Pods-NotificationContentExtension-metadata.plist in Resources */,
+				B6E42618215C761E007FEB7E /* Localizable.strings in Resources */,
 				B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2229,6 +2234,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE00A0A32956903FEB4C59D3 /* Pods-MapNotificationContentExtension-metadata.plist in Resources */,
+				B6E42619215C7620007FEB7E /* Localizable.strings in Resources */,
 				B678DB391EA999AC0045312F /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2593,6 +2599,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B689EBCB1D8B7C800000AECE /* MjpegStreamingController.swift in Sources */,
+				B6E42617215C761A007FEB7E /* Strings.swift in Sources */,
 				B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2618,7 +2625,7 @@
 				B6B6B14A215B137C003DE2DD /* WatchComplicationConfigurator.swift in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				B66C58BD21509934004AB261 /* SiriShortcutServiceConfigurator.swift in Sources */,
-				D0B25BCD2130CAB400678C2C /* Bonjur.swift in Sources */,
+				D0B25BCD2130CAB400678C2C /* Bonjour.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
 				D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */,
 				D0EEF32B214DF75500D1D360 /* DeviceUID.m in Sources */,
@@ -2666,6 +2673,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6E42616215C74FE007FEB7E /* Strings.swift in Sources */,
 				B678DB291EA991E40045312F /* NotificationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

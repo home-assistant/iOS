@@ -134,7 +134,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             <<< URLRow("baseURL") {
                 $0.title = L10n.Settings.ConnectionSection.BaseUrl.title
                 $0.value = self.baseURL
-                $0.placeholder = "https://homeassistant.myhouse.com"
+                $0.placeholder = L10n.Settings.ConnectionSection.BaseUrl.placeholder
             }.onCellHighlightChanged({ (_, row) in
                 if row.isHighlighted == false {
                     if let url = row.value {
@@ -155,7 +155,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 }
             })
             <<< SwitchRow("useLegacyAuth") {
-                $0.title = "Use legacy authentication"
+                $0.title = L10n.Settings.ConnectionSection.UseLegacyAuth.title
                 $0.value = self.useLegacyAuth
                 }.onChange { switchRow in
                     guard let passwordRow = self.form.rowBy(tag: "apiPassword") else {
@@ -181,7 +181,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 }
 
             <<< SwitchRow("internalUrl") {
-                $0.title = "Use internal URL"
+                $0.title = L10n.Settings.ConnectionSection.UseInternalUrl.title
                 $0.value = self.internalBaseURLEnabled
             }.onChange { row in
                 if let boolVal = row.value {
@@ -244,7 +244,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             })
 
             <<< SwitchRow("basicAuth") {
-                $0.title = "Basic authentication"
+                $0.title = L10n.Settings.ConnectionSection.BasicAuth.title
                 $0.value = self.basicAuthEnabled
             }.onChange { row in
                 if let boolVal = row.value {

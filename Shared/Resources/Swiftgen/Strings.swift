@@ -15,6 +15,10 @@ internal enum L10n {
   internal static let noLabel = L10n.tr("Localizable", "no_label")
   /// OK
   internal static let okLabel = L10n.tr("Localizable", "ok_label")
+  /// Preview Output
+  internal static let previewOutput = L10n.tr("Localizable", "preview_output")
+  /// Success
+  internal static let successLabel = L10n.tr("Localizable", "success_label")
   /// Username
   internal static let usernameLabel = L10n.tr("Localizable", "username_label")
   /// Yes
@@ -84,6 +88,13 @@ internal enum L10n {
 
   internal enum Alerts {
 
+    internal enum AuthRequired {
+      /// The server has rejected your credentials, and you must sign in again to continue.
+      internal static let message = L10n.tr("Localizable", "alerts.auth_required.message")
+      /// You must sign in to continue
+      internal static let title = L10n.tr("Localizable", "alerts.auth_required.title")
+    }
+
     internal enum OpenUrlFromNotification {
       /// Open URL (%@) found in notification?
       internal static func message(_ p1: String) -> String {
@@ -91,6 +102,50 @@ internal enum L10n {
       }
       /// Open URL?
       internal static let title = L10n.tr("Localizable", "alerts.open_url_from_notification.title")
+    }
+  }
+
+  internal enum ClError {
+
+    internal enum Description {
+      /// Deferred mode is not supported for the requested accuracy.
+      internal static let deferredAccuracyTooLow = L10n.tr("Localizable", "cl_error.description.deferred_accuracy_too_low")
+      /// The request for deferred updates was canceled by your app or by the location manager.
+      internal static let deferredCanceled = L10n.tr("Localizable", "cl_error.description.deferred_canceled")
+      /// Deferred mode does not support distance filters.
+      internal static let deferredDistanceFiltered = L10n.tr("Localizable", "cl_error.description.deferred_distance_filtered")
+      /// The location manager did not enter deferred mode for an unknown reason.
+      internal static let deferredFailed = L10n.tr("Localizable", "cl_error.description.deferred_failed")
+      /// The manager did not enter deferred mode since updates were already disabled/paused.
+      internal static let deferredNotUpdatingLocation = L10n.tr("Localizable", "cl_error.description.deferred_not_updating_location")
+      /// Access to the location service was denied by the user.
+      internal static let denied = L10n.tr("Localizable", "cl_error.description.denied")
+      /// The geocode request was canceled.
+      internal static let geocodeCanceled = L10n.tr("Localizable", "cl_error.description.geocode_canceled")
+      /// The geocode request yielded no result.
+      internal static let geocodeFoundNoResult = L10n.tr("Localizable", "cl_error.description.geocode_found_no_result")
+      /// The geocode request yielded a partial result.
+      internal static let geocodeFoundPartialResult = L10n.tr("Localizable", "cl_error.description.geocode_found_partial_result")
+      /// The heading could not be determined.
+      internal static let headingFailure = L10n.tr("Localizable", "cl_error.description.heading_failure")
+      /// The location manager was unable to obtain a location value right now.
+      internal static let locationUnknown = L10n.tr("Localizable", "cl_error.description.location_unknown")
+      /// The network was unavailable or a network error occurred.
+      internal static let network = L10n.tr("Localizable", "cl_error.description.network")
+      /// A general ranging error occurred.
+      internal static let rangingFailure = L10n.tr("Localizable", "cl_error.description.ranging_failure")
+      /// Ranging is disabled.
+      internal static let rangingUnavailable = L10n.tr("Localizable", "cl_error.description.ranging_unavailable")
+      /// Access to the region monitoring service was denied by the user.
+      internal static let regionMonitoringDenied = L10n.tr("Localizable", "cl_error.description.region_monitoring_denied")
+      /// A registered region cannot be monitored.
+      internal static let regionMonitoringFailure = L10n.tr("Localizable", "cl_error.description.region_monitoring_failure")
+      /// Core Location will deliver events but they may be delayed.
+      internal static let regionMonitoringResponseDelayed = L10n.tr("Localizable", "cl_error.description.region_monitoring_response_delayed")
+      /// Core Location could not initialize the region monitoring feature immediately.
+      internal static let regionMonitoringSetupDelayed = L10n.tr("Localizable", "cl_error.description.region_monitoring_setup_delayed")
+      /// Unknown Core Location error
+      internal static let unknown = L10n.tr("Localizable", "cl_error.description.unknown")
     }
   }
 
@@ -107,6 +162,20 @@ internal enum L10n {
       internal static let serviceCall = L10n.tr("Localizable", "client_events.event_type.service_call")
       /// Unknown
       internal static let unknown = L10n.tr("Localizable", "client_events.event_type.unknown")
+
+      internal enum Notification {
+        /// Received a Push Notification: %@
+        internal static func title(_ p1: String) -> String {
+          return L10n.tr("Localizable", "client_events.event_type.notification.title", p1)
+        }
+      }
+
+      internal enum Request {
+        /// Request(SSID: %@ - %@)
+        internal static func log(_ p1: String, _ p2: String) -> String {
+          return L10n.tr("Localizable", "client_events.event_type.request.log", p1, p2)
+        }
+      }
     }
 
     internal enum View {
@@ -128,6 +197,67 @@ internal enum L10n {
       internal static let satellite = L10n.tr("Localizable", "devices_map.map_types.satellite")
       /// Standard
       internal static let standard = L10n.tr("Localizable", "devices_map.map_types.standard")
+    }
+  }
+
+  internal enum Extensions {
+
+    internal enum Map {
+
+      internal enum Location {
+        /// New Location
+        internal static let new = L10n.tr("Localizable", "extensions.map.location.new")
+        /// Original Location
+        internal static let original = L10n.tr("Localizable", "extensions.map.location.original")
+      }
+
+      internal enum PayloadMissingHomeassistant {
+        /// Payload didn't contain a homeassistant dictionary!
+        internal static let message = L10n.tr("Localizable", "extensions.map.payload_missing_homeassistant.message")
+      }
+
+      internal enum ValueMissingOrUncastable {
+
+        internal enum Latitude {
+          /// Latitude wasn't found or couldn't be casted to string!
+          internal static let message = L10n.tr("Localizable", "extensions.map.value_missing_or_uncastable.latitude.message")
+        }
+
+        internal enum Longitude {
+          /// Longitude wasn't found or couldn't be casted to string!
+          internal static let message = L10n.tr("Localizable", "extensions.map.value_missing_or_uncastable.longitude.message")
+        }
+      }
+    }
+
+    internal enum NotificationContent {
+
+      internal enum Error {
+        /// No entity_id found in payload!
+        internal static let noEntityId = L10n.tr("Localizable", "extensions.notification_content.error.no_entity_id")
+
+        internal enum Request {
+          /// Authentication failed!
+          internal static let authFailed = L10n.tr("Localizable", "extensions.notification_content.error.request.auth_failed")
+          /// Entity '%@' not found!
+          internal static func entityNotFound(_ p1: String) -> String {
+            return L10n.tr("Localizable", "extensions.notification_content.error.request.entity_not_found", p1)
+          }
+          /// Got non-200 status code (%d)
+          internal static func other(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "extensions.notification_content.error.request.other", p1)
+          }
+          /// Unknown error!
+          internal static let unknown = L10n.tr("Localizable", "extensions.notification_content.error.request.unknown")
+        }
+      }
+
+      internal enum Hud {
+        /// Loading %@...
+        internal static func loading(_ p1: String) -> String {
+          return L10n.tr("Localizable", "extensions.notification_content.hud.loading", p1)
+        }
+      }
     }
   }
 
@@ -258,7 +388,7 @@ internal enum L10n {
     }
 
     internal enum ConnectionErrorNotification {
-      /// There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was:\n\n %@
+      /// There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was:\n\n%@
       internal static func message(_ p1: String) -> String {
         return L10n.tr("Localizable", "settings.connection_error_notification.message", p1)
       }
@@ -278,11 +408,15 @@ internal enum L10n {
       }
 
       internal enum BaseUrl {
+        /// https://homeassistant.myhouse.com
+        internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.base_url.placeholder")
         /// URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.base_url.title")
       }
 
       internal enum BasicAuth {
+        /// HTTP Basic Authentication
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.basic_auth.title")
 
         internal enum Password {
           /// verysecure
@@ -336,6 +470,16 @@ internal enum L10n {
       internal enum SaveButton {
         /// Save
         internal static let title = L10n.tr("Localizable", "settings.connection_section.save_button.title")
+      }
+
+      internal enum UseInternalUrl {
+        /// Use internal URL
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.use_internal_url.title")
+      }
+
+      internal enum UseLegacyAuth {
+        /// Use legacy authentication
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.use_legacy_auth.title")
       }
     }
 
@@ -456,7 +600,7 @@ internal enum L10n {
       }
 
       internal enum VersionRow {
-        /// 0.42.0
+        /// 0.78.0
         internal static let placeholder = L10n.tr("Localizable", "settings.status_section.version_row.placeholder")
         /// Version
         internal static let title = L10n.tr("Localizable", "settings.status_section.version_row.title")
@@ -679,9 +823,39 @@ internal enum L10n {
     }
   }
 
-  internal enum SignificantLocationChangeNotification {
-    /// Significant location change detected, notifying Home Assistant
-    internal static let message = L10n.tr("Localizable", "significant_location_change_notification.message")
+  internal enum SiriShortcuts {
+
+    internal enum Configurator {
+
+      internal enum Fields {
+        /// Use default value
+        internal static let useDefaultValue = L10n.tr("Localizable", "siri_shortcuts.configurator.fields.use_default_value")
+        /// Use suggested value
+        internal static let useSuggestedValue = L10n.tr("Localizable", "siri_shortcuts.configurator.fields.use_suggested_value")
+
+        internal enum Section {
+          /// Suggested: %@
+          internal static func footer(_ p1: String) -> String {
+            return L10n.tr("Localizable", "siri_shortcuts.configurator.fields.section.footer", p1)
+          }
+          /// Fields
+          internal static let header = L10n.tr("Localizable", "siri_shortcuts.configurator.fields.section.header")
+        }
+      }
+
+      internal enum Settings {
+
+        internal enum Name {
+          /// Shortcut name
+          internal static let title = L10n.tr("Localizable", "siri_shortcuts.configurator.settings.name.title")
+        }
+
+        internal enum NotifyOnRun {
+          /// Send notification when run
+          internal static let title = L10n.tr("Localizable", "siri_shortcuts.configurator.settings.notify_on_run.title")
+        }
+      }
+    }
   }
 
   internal enum UrlHandler {
@@ -746,13 +920,6 @@ internal enum L10n {
         /// Sent location
         internal static let title = L10n.tr("Localizable", "url_handler.send_location.success.title")
       }
-    }
-  }
-
-  internal enum ZoneEnteredNotification {
-    /// %@ entered
-    internal static func message(_ p1: String) -> String {
-      return L10n.tr("Localizable", "zone_entered_notification.message", p1)
     }
   }
 }

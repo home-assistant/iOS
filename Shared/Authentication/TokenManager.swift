@@ -127,7 +127,9 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             throw TokenError.expired
         }
 
-        let text = "Request(SSID: \(ConnectionInfo.currentSSID() ?? "Unavailable") - \(urlRequest.url?.absoluteString ?? "URL Unavailable")"
+        let text = L10n.ClientEvents.EventType.Request.log(ConnectionInfo.currentSSID() ?? "Unavailable",
+                                                           urlRequest.url?.absoluteString ?? "URL Unavailable")
+
         let networkEvent = ClientEvent(text: text, type: .networkRequest)
         Current.clientEventStore.addEvent(networkEvent)
         var newRequest = urlRequest

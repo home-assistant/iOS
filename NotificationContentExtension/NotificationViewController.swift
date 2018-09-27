@@ -29,12 +29,13 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         print("Received a \(notification.request.content.categoryIdentifier) notification type")
 
         let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        hud.detailsLabel.text = "Loading \(notification.request.content.categoryIdentifier)..."
+        let loadTxt = L10n.Extensions.NotificationContent.Hud.loading(notification.request.content.categoryIdentifier)
+        hud.detailsLabel.text = loadTxt
         hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
         self.hud = hud
 
         guard let entityId = notification.request.content.userInfo["entity_id"] as? String else {
-            self.showErrorLabel(message: "No entity_id found in payload!")
+            self.showErrorLabel(message: L10n.Extensions.NotificationContent.Error.noEntityId)
             return
         }
 //        guard let cameraProxyURL = baseURL.appendPathComponent("camera_proxy_stream/\(entityId)") else {
@@ -54,15 +55,15 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         api.GetCameraStream(cameraEntityID: entityId) { image, error in
             if let error = error, let afError = error as? AFError {
                 print("afError", afError)
-                var labelText = "Unknown error!"
+                var labelText = L10n.Extensions.NotificationContent.Error.Request.unknown
                 if let responseCode = afError.responseCode {
                     switch responseCode {
                     case 401:
-                        labelText = "Authentication failed!"
+                        labelText = L10n.Extensions.NotificationContent.Error.Request.authFailed
                     case 404:
-                        labelText = "Entity '\(entityId)' not found!"
+                        labelText = L10n.Extensions.NotificationContent.Error.Request.entityNotFound(entityId)
                     default:
-                        labelText = "Got non-200 status code (\(responseCode))"
+                        labelText = L10n.Extensions.NotificationContent.Error.Request.other(responseCode)
                     }
                 }
                 self.showErrorLabel(message: labelText)

@@ -13,43 +13,43 @@ extension CLError {
     public var debugDescription: String {
         switch self.code {
         case CLError.locationUnknown:
-            return "The location manager was unable to obtain a location value right now."
+            return L10n.ClError.Description.locationUnknown
         case CLError.denied:
-            return "Access to the location service was denied by the user."
+            return L10n.ClError.Description.denied
         case CLError.network:
-            return "The network was unavailable or a network error occurred."
+            return L10n.ClError.Description.network
         case CLError.headingFailure:
-            return "The heading could not be determined."
+            return L10n.ClError.Description.headingFailure
         case CLError.regionMonitoringDenied:
-            return "Access to the region monitoring service was denied by the user."
+            return L10n.ClError.Description.regionMonitoringDenied
         case CLError.regionMonitoringFailure:
-            return "A registered region cannot be monitored."
+            return L10n.ClError.Description.regionMonitoringFailure
         case CLError.regionMonitoringSetupDelayed:
-            return "Core Location could not initialize the region monitoring feature immediately."
+            return L10n.ClError.Description.regionMonitoringSetupDelayed
         case CLError.regionMonitoringResponseDelayed:
-            return "Core Location will deliver events but they may be delayed."
+            return L10n.ClError.Description.regionMonitoringResponseDelayed
         case CLError.geocodeFoundNoResult:
-            return "The geocode request yielded no result."
+            return L10n.ClError.Description.geocodeFoundNoResult
         case CLError.geocodeFoundPartialResult:
-            return "The geocode request yielded a partial result."
+            return L10n.ClError.Description.geocodeFoundPartialResult
         case CLError.geocodeCanceled:
-            return "The geocode request was canceled."
+            return L10n.ClError.Description.geocodeCanceled
         case CLError.deferredFailed:
-            return "The location manager did not enter deferred mode for an unknown reason."
+            return L10n.ClError.Description.deferredFailed
         case CLError.deferredNotUpdatingLocation:
-            return "The manager did not enter deferred mode since updates were already disabled/paused."
+            return L10n.ClError.Description.deferredNotUpdatingLocation
         case CLError.deferredAccuracyTooLow:
-            return "Deferred mode is not supported for the requested accuracy."
+            return L10n.ClError.Description.deferredAccuracyTooLow
         case CLError.deferredDistanceFiltered:
-            return "Deferred mode does not support distance filters."
+            return L10n.ClError.Description.deferredDistanceFiltered
         case CLError.deferredCanceled:
-            return "The request for deferred updates was canceled by your app or by the location manager."
+            return L10n.ClError.Description.deferredCanceled
         case CLError.rangingUnavailable:
-            return "Ranging is disabled."
+            return L10n.ClError.Description.rangingUnavailable
         case CLError.rangingFailure:
-            return "A general ranging error occurred."
+            return L10n.ClError.Description.rangingFailure
         default:
-            return "Unknown Core Location error"
+            return L10n.ClError.Description.unknown
         }
     }
 }

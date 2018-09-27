@@ -59,10 +59,8 @@ class SiriShortcutServiceConfigurator: FormViewController {
         }
 
         TextAreaRow.defaultCellSetup = { cell, row in
-            if #available(iOS 11.0, *) {
-                cell.textView.smartQuotesType = .no
-                cell.textView.smartDashesType = .no
-            }
+            cell.textView.smartQuotesType = .no
+            cell.textView.smartDashesType = .no
         }
 
         TextAreaRow.defaultCellUpdate = { cell, row in
@@ -96,11 +94,11 @@ class SiriShortcutServiceConfigurator: FormViewController {
                 $0.tag = "settings"
             }
             <<< TextRow("name") {
-                $0.title = "Shortcut name"
+                $0.title = L10n.SiriShortcuts.Configurator.Settings.Name.title
                 $0.add(rule: RuleRequired())
             }
             <<< SwitchRow("notifyOnRun") {
-                $0.title = "Send notification when run"
+                $0.title = L10n.SiriShortcuts.Configurator.Settings.NotifyOnRun.title
             }
 
         var setFirstHeaderToFields = false
@@ -117,7 +115,7 @@ class SiriShortcutServiceConfigurator: FormViewController {
                 }
 
                 if let example = field.Example {
-                    footer += " Suggested: \(example)"
+                    footer += L10n.SiriShortcuts.Configurator.Fields.Section.footer("\(example)")
                 }
 
                 let supportsTemplates = (key.range(of: "template", options: .caseInsensitive) != nil ||
@@ -125,7 +123,7 @@ class SiriShortcutServiceConfigurator: FormViewController {
 
                 var header = ""
                 if setFirstHeaderToFields == false {
-                    header = "Fields"
+                    header = L10n.SiriShortcuts.Configurator.Fields.Section.header
                     setFirstHeaderToFields = true
                 }
 
@@ -171,7 +169,7 @@ class SiriShortcutServiceConfigurator: FormViewController {
 
                     rowsToAdd.append(ButtonRow {
                         $0.tag = key + "_render_template"
-                        $0.title = "Render Template"
+                        $0.title = L10n.previewOutput
                     }.onCellSelection({ _, _ in
                         if let row = self.form.rowBy(tag: key) as? TextAreaRow, let value = row.value {
                             print("Render template from", value)
@@ -179,7 +177,7 @@ class SiriShortcutServiceConfigurator: FormViewController {
                             HomeAssistantAPI.authenticatedAPI()?.RenderTemplate(templateStr: value).done { val in
                                 print("Rendered value is", val)
 
-                                let alert = UIAlertController(title: "Success", message: val,
+                                let alert = UIAlertController(title: L10n.successLabel, message: val,
                                                               preferredStyle: UIAlertController.Style.alert)
                                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                                               handler: nil))
@@ -261,7 +259,7 @@ class SiriShortcutServiceConfigurator: FormViewController {
                 if let defaultVal = field.Default {
                     rowsToAdd.append(ButtonRow {
                         $0.tag = key + "fill_with_default"
-                        $0.title = "Use default value"
+                        $0.title = L10n.SiriShortcuts.Configurator.Fields.useDefaultValue
                         }.onCellSelection({ _, _ in
                             self.form.setValues([key: defaultVal])
                             self.tableView.reloadData()
@@ -275,7 +273,7 @@ class SiriShortcutServiceConfigurator: FormViewController {
                 if let example = field.Example {
                     rowsToAdd.append(ButtonRow {
                         $0.tag = key + "fill_with_example"
-                        $0.title = "Use suggested value"
+                        $0.title = L10n.SiriShortcuts.Configurator.Fields.useSuggestedValue
                     }.onCellSelection({ _, _ in
                         self.form.setValues([key: example])
                         self.tableView.reloadData()

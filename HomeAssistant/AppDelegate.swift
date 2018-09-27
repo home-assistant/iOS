@@ -131,9 +131,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             navController.topViewController?.present(controller, animated: true, completion: nil)
         }
         Current.signInRequiredCallback = {
-            let alert = UIAlertController(title: "You must sign in to continue",
-                                          message: "The server has rejected your credentials, "
-                                                  + "and you must sign in again to continue.",
+            let alert = UIAlertController(title: L10n.Alerts.AuthRequired.title,
+                                          message: L10n.Alerts.AuthRequired.message,
                                           preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                           handler: { _ in

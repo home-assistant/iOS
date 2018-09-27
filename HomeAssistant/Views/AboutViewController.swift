@@ -64,7 +64,7 @@ class AboutViewController: FormViewController {
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
                 }.onCellSelection({ _, _  in
-                    openURLStringInBrowser(url: "https://home-assistant.io/")
+                    openURLStringInBrowser(url: "https://www.home-assistant.io/")
                 })
 
             <<< ButtonRow {
@@ -97,7 +97,7 @@ class AboutViewController: FormViewController {
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
                 }.onCellSelection({ _, _  in
-                    openURLStringInBrowser(url: "https://home-assistant.io/docs/ecosystem/ios/")
+                    openURLStringInBrowser(url: "https://www.home-assistant.io/docs/ecosystem/ios/")
                 })
 
             <<< ButtonRow {
