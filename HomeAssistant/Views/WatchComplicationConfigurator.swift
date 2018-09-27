@@ -13,7 +13,7 @@ import Shared
 import PromiseKit
 import ObjectMapper
 import ColorPickerRow
-import FontAwesomeKit
+import Iconic
 import WatchKit
 import WatchConnectivity
 
@@ -148,8 +148,6 @@ class WatchComplicationConfigurator: FormViewController {
                 $0.value = $0.options?.first
         }
 
-        let allIcons = getIcons()
-
         self.form
             +++ Section {
                 $0.header = HeaderFooterView.init(stringLiteral: "Icon")
@@ -159,25 +157,27 @@ class WatchComplicationConfigurator: FormViewController {
             }
 
             <<< PushRow<String> {
-                    $0.options = Array(allIcons.keys).sorted()
+                    $0.options = MaterialDesignIcon.allCases.map({ $0.name })
                     $0.value = $0.options?.first
                     $0.selectorTitle = "Choose a icon"
                     $0.tag = "icon"
                 }.cellUpdate({ (cell, row) in
                     if let value = row.value {
-                        if let theIcon = allIcons[value],
-                            let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
-                            theIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: iconColorRow.value)
-                            cell.imageView?.image = theIcon.image(with: CGSize(width: CGFloat(30), height: CGFloat(30)))
+                        let theIcon = MaterialDesignIcon(named: value)
+                        if let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
+                            cell.imageView?.image = theIcon.image(ofSize: CGSize(width: CGFloat(30),
+                                                                                 height: CGFloat(30)),
+                                                                  color: iconColorRow.value)
                         }
                     }
                 }).onPresent { from, to in
                     to.selectableRowCellSetup = {cell, row in
                         if let value = row.selectableValue {
-                            if let theIcon = allIcons[value],
-                                let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
-                                theIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: iconColorRow.value)
-                                cell.imageView?.image = theIcon.image(with: CGSize(width: CGFloat(30), height: CGFloat(30)))
+                            let theIcon = MaterialDesignIcon(named: value)
+                            if let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
+                                cell.imageView?.image = theIcon.image(ofSize: CGSize(width: CGFloat(30),
+                                                                                     height: CGFloat(30)),
+                                                                      color: iconColorRow.value)
                             }
                         }
                     }
@@ -195,12 +195,10 @@ class WatchComplicationConfigurator: FormViewController {
                     print("icon color: \(picker.value!.hexString(false))")
                     if let iconRow = self.form.rowBy(tag: "icon") as? PushRow<String> {
                         if let value = iconRow.value {
-                            if let theIcon = allIcons[value] {
-                                theIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue,
-                                                     value: picker.value)
-                                iconRow.cell.imageView?.image = theIcon.image(with: CGSize(width: CGFloat(30),
-                                                                                           height: CGFloat(30)))
-                            }
+                            let theIcon = MaterialDesignIcon(named: value)
+                            iconRow.cell.imageView?.image = theIcon.image(ofSize: CGSize(width: CGFloat(30),
+                                                                                         height: CGFloat(30)),
+                                                                          color: picker.value)
                         }
                     }
                 }
@@ -238,7 +236,7 @@ class WatchComplicationConfigurator: FormViewController {
             let complication = WatchComplication()
             complication.Family = self.family.rawValue
             complication.Template = templateName
-            complication.Data = formVals
+            complication.Data = formVals as [String : Any]
             print("COMPLICATION", complication)
 
             let realm = Current.realm()
@@ -278,24 +276,6 @@ class WatchComplicationConfigurator: FormViewController {
                     self.present(alert, animated: true, completion: nil)
             }
         }
-    }
-
-    func getIcons() -> [String:FAKMaterialDesignIcons] {
-        // swiftlint:disable:next force_cast
-        let allIconsDict = FontAwesomeKit.FAKMaterialDesignIcons.allIcons() as! [String: String]
-        var allIcons: [String: FAKMaterialDesignIcons] = [:]
-
-        for (name, iconCode) in allIconsDict {
-            let cleanName = name.replacingOccurrences(of: "mdi-", with: "")
-            let theIcon = FontAwesomeKit.FAKMaterialDesignIcons(code: iconCode, size: CGFloat(30))
-
-//            theIcon?.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: color)
-            if let icon = theIcon {
-                allIcons[cleanName] = icon
-            }
-        }
-
-        return allIcons
     }
 
     func addComplicationTextAreaFormSection(location: ComplicationTextAreas) -> Section {

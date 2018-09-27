@@ -20,6 +20,7 @@ import SafariServices
 import Intents
 import WatchKit
 import WatchConnectivity
+import Iconic
 
 let keychain = Keychain(service: "io.robbie.homeassistant")
 
@@ -35,9 +36,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Fabric.with([Crashlytics.self])
         Current.deviceIDProvider = { DeviceUID.uid() }
         Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
+
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
         }
+
+        Iconic.registerMaterialDesignIcon()
+
+        MaterialDesignIcon.register()
 
         NetworkActivityIndicatorManager.shared.isEnabled = true
 

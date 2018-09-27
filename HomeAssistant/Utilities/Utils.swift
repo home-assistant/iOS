@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import FontAwesomeKit
 import Crashlytics
 import KeychainAccess
 import Shared

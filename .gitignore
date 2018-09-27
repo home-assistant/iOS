@@ -1,3 +1,4 @@
+
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -68,3 +69,5 @@ fastlane/metadata/review_information/
 env.sh
 
 push_certs/*
+Tools/*.py
+Tools/*.ttf

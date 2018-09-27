@@ -5,13 +5,26 @@ use_frameworks!
 
 plugin 'cocoapods-acknowledgements'
 
+if not File.exist?("Tools/MaterialDesignIcons.ttf")
+    puts "Didn't find Tools/MaterialDesignIcons.ttf, downloading and building now"
+    system("./Tools/BuildMaterialDesignIconsFont.sh")
+else
+    puts "Tools/MaterialDesignIcons.ttf already exists"
+end
+
+# Set FONT_PATH and CUSTOM_FONT_NAME variables for MDI
+puts "Setting FONT_PATH to '#{File.expand_path('./Tools/MaterialDesignIcons.ttf')}'"
+ENV['FONT_PATH'] = File.expand_path('./Tools/MaterialDesignIcons.ttf')
+puts "Setting CUSTOM_FONT_NAME to 'MaterialDesignIcons'"
+ENV['CUSTOM_FONT_NAME'] = 'MaterialDesignIcons'
+
 def shared_pods
     pod 'Alamofire', '4.7.3'
     pod 'AlamofireImage', '3.4.1'
     pod 'AlamofireObjectMapper', '5.1.0'
     pod 'Crashlytics', '3.10.2'
     pod 'DeviceKit', '1.8'
-    pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
+    pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
     pod 'KeychainAccess', '3.1.1'
     pod 'ObjectMapper', '3.3.0'
     pod 'PromiseKit', '6.3.0'
@@ -30,7 +43,7 @@ target 'HomeAssistant' do
   pod 'SwiftGen', '5.3.0'
   pod 'SwiftLint', '0.25.1'
   pod 'UIColor_Hex_Swift'
-  pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow'
+  pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'Swift4.2'
 
   target 'HomeAssistantTests' do
     inherit! :search_paths
