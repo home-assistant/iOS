@@ -1,5 +1,7 @@
 PODS:
   - Alamofire (4.7.3)
+  - AlamofireImage (3.4.1):
+    - Alamofire (~> 4.7)
   - AlamofireNetworkActivityIndicator (2.3.0):
     - Alamofire (~> 4.7)
   - AlamofireObjectMapper (5.1.0):
@@ -42,6 +44,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (= 4.7.3)
+  - AlamofireImage (= 3.4.1)
   - AlamofireNetworkActivityIndicator (= 2.3.0)
   - AlamofireObjectMapper (= 5.1.0)
   - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `Swift4.2`)
@@ -64,6 +67,7 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
+    - AlamofireImage
     - AlamofireNetworkActivityIndicator
     - AlamofireObjectMapper
     - CPDAcknowledgements
@@ -109,6 +113,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  AlamofireImage: 78d67ccbb763d87ba44b21583d2153500a195630
   AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
   ColorPickerRow: 87dd091c54fff65cf554f79ca1556312ee66282f
@@ -129,6 +134,6 @@ SPEC CHECKSUMS:
   UIColor_Hex_Swift: bc07fc197421ee896b9ed6dcfa2054b7fbf75145
   ViewRow: e278428ff53da5eab18b191d3e19a16f3e299fc1
 
-PODFILE CHECKSUM: 17b59a2b4ba7405ba684e29da9a8305fa87ae45e
+PODFILE CHECKSUM: 9bb3e7212f6a4ac02e9cf00abe762d703dffe655
 
 COCOAPODS: 1.6.0.beta.1

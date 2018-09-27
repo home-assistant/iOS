@@ -5,22 +5,28 @@ use_frameworks!
 
 plugin 'cocoapods-acknowledgements'
 
+def shared_pods
+    pod 'Alamofire', '4.7.3'
+    pod 'AlamofireImage', '3.4.1'
+    pod 'AlamofireObjectMapper', '5.1.0'
+    pod 'Crashlytics', '3.10.2'
+    pod 'DeviceKit', '1.8'
+    pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
+    pod 'KeychainAccess', '3.1.1'
+    pod 'ObjectMapper', '3.3.0'
+    pod 'PromiseKit', '6.3.0'
+    pod 'RealmSwift'
+end
+
 target 'HomeAssistant' do
-  pod 'Alamofire', '4.7.3'
+  shared_pods
+
   pod 'AlamofireNetworkActivityIndicator', '2.3.0'
-  pod 'AlamofireObjectMapper', '5.1.0'
   pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'Swift4.2'
   pod 'CPDAcknowledgements', '1.0.0'
-  pod 'Crashlytics', '3.10.2'
-  pod 'DeviceKit', '1.8'
   pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
   pod 'Fabric', '1.7.7'
-  pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
-  pod 'KeychainAccess', '3.1.1'
   pod 'MBProgressHUD', '1.1.0'
-  pod 'ObjectMapper', '3.3.0'
-  pod 'PromiseKit', '6.3.0'
-  pod 'RealmSwift'
   pod 'SwiftGen', '5.3.0'
   pod 'SwiftLint', '0.25.1'
   pod 'UIColor_Hex_Swift'
@@ -32,15 +38,8 @@ target 'HomeAssistant' do
 end
 
 target 'Shared' do
-  pod 'Alamofire', '4.7.3'
-  pod 'AlamofireObjectMapper', '5.1.0'
-  pod 'Crashlytics', '3.10.2'
-  pod 'DeviceKit', '1.8'
-  pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
-  pod 'KeychainAccess', '3.1.1'
-  pod 'ObjectMapper', '3.3.0'
-  pod 'PromiseKit', '6.3.0'
-  pod 'RealmSwift'
+  shared_pods
+
   target 'SharedTests' do
     inherit! :search_paths
   end
@@ -52,14 +51,7 @@ target 'HomeAssistantUITests' do
 end
 
 target 'APNSAttachmentService' do
-  pod 'Alamofire', '4.7.3'
-  pod 'AlamofireObjectMapper', '5.1.0'
-  pod 'DeviceKit', '1.8'
-  pod 'FontAwesomeKit/MaterialDesignIcons', :git => 'https://github.com/robbiet480/FontAwesomeKit.git', :branch => 'Material-Design-Icons'
-  pod 'KeychainAccess', '3.1.1'
-  pod 'ObjectMapper', '3.3.0'
-  pod 'PromiseKit', '6.3.0'
-  pod 'RealmSwift'
+  shared_pods
 end
 
 target 'MapNotificationContentExtension' do
@@ -69,9 +61,9 @@ end
 
 
 target 'NotificationContentExtension' do
-  pod 'KeychainAccess', '3.1.1'
-  pod 'MBProgressHUD', '1.1.0'
-  pod 'RealmSwift'
+    shared_pods
+
+    pod 'MBProgressHUD', '1.1.0'
 end
 
 target 'SiriIntents' do

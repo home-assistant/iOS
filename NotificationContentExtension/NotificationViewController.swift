@@ -11,28 +11,19 @@ import UserNotifications
 import UserNotificationsUI
 import MBProgressHUD
 import KeychainAccess
+import Shared
+import Alamofire
+import AlamofireImage
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
 
     var hud: MBProgressHUD?
 
-    private var baseURL: String = ""
+    private var baseURL: URL = Current.settingsStore.connectionInfo!.activeAPIURL
 
     let urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default
 
     var streamingController: MjpegStreamingController?
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        let keychain = Keychain(service: "io.robbie.homeassistant")
-        if let url = keychain["baseURL"] {
-            baseURL = url
-        }
-        if let pass = keychain["apiPassword"] {
-            urlConfiguration.httpAdditionalHeaders = ["X-HA-Access": pass]
-        }
-    }
 
     func didReceive(_ notification: UNNotification) {
         print("Received a \(notification.request.content.categoryIdentifier) notification type")
@@ -46,36 +37,65 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             self.showErrorLabel(message: "No entity_id found in payload!")
             return
         }
-        guard let cameraProxyURL = URL(string: "\(baseURL)/api/camera_proxy_stream/\(entityId)") else {
-            self.showErrorLabel(message: "Could not form a valid URL!")
+//        guard let cameraProxyURL = baseURL.appendPathComponent("camera_proxy_stream/\(entityId)") else {
+//            self.showErrorLabel(message: "Could not form a valid URL!")
+//            return
+//        }
+
+        guard let api = HomeAssistantAPI.authenticatedAPI() else {
             return
         }
 
         let imageView = UIImageView()
         imageView.frame = self.view.frame
 
-        streamingController = MjpegStreamingController(imageView: imageView, contentURL: cameraProxyURL,
-                                                       sessionConfiguration: urlConfiguration)
-        streamingController?.gotNon200Status = { code in
-            var labelText = "Unknown error!"
-            switch code {
-            case 401:
-                labelText = "Authentication failed!"
-            case 404:
-                labelText = "Entity '\(entityId)' not found!"
-            default:
-                labelText = "Got non-200 status code (\(code))"
-            }
-            self.showErrorLabel(message: labelText)
-        }
-        streamingController?.didFinishLoading = {
-            print("Finished loading")
-            self.hud!.hide(animated: true)
+        var frameCount = 0
 
-            self.view.addSubview(imageView)
+        api.GetCameraStream(cameraEntityID: entityId) { image, error in
+            if let error = error, let afError = error as? AFError {
+                print("afError", afError)
+                var labelText = "Unknown error!"
+                if let responseCode = afError.responseCode {
+                    switch responseCode {
+                    case 401:
+                        labelText = "Authentication failed!"
+                    case 404:
+                        labelText = "Entity '\(entityId)' not found!"
+                    default:
+                        labelText = "Got non-200 status code (\(responseCode))"
+                    }
+                }
+                self.showErrorLabel(message: labelText)
+                return
+            }
+
+            if let image = image {
+                if frameCount == 0 {
+                    print("Got first frame!")
+
+                    print("Finished loading")
+
+                    DispatchQueue.main.async(execute: {
+                        self.hud!.hide(animated: true)
+                    })
+
+                    self.view.addSubview(imageView)
+
+                    //            streamingController?.play()
+                    self.extensionContext?.mediaPlayingStarted()
+                }
+
+                frameCount += 1
+
+                print("FRAME", frameCount)
+
+                DispatchQueue.main.async {
+                    imageView.image = image
+                }
+
+            }
+
         }
-        streamingController?.play()
-        self.extensionContext?.mediaPlayingStarted()
     }
 
     var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType {
@@ -101,7 +121,9 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     func showErrorLabel(message: String) {
         self.extensionContext?.mediaPlayingStarted()
-        self.hud?.hide(animated: true)
+        DispatchQueue.main.async(execute: {
+            self.hud!.hide(animated: true)
+        })
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 21))
         label.center.y = self.view.center.y
         label.textAlignment = .center
