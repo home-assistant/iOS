@@ -156,6 +156,7 @@
 		B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
+		B63D28BC215D8D7A00F3B907 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */; };
 		B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */; };
 		B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */; };
@@ -1931,6 +1932,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D18BB39F0BE75F5C3F086FE2 /* Pods-Shared-metadata.plist in Resources */,
+				B63D28BC215D8D7A00F3B907 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
