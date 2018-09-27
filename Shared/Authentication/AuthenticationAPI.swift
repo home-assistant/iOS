@@ -1,5 +1,5 @@
 //
-//  AuthorizationAPI.swift
+//  AuthenticationAPI.swift
 //  Shared
 //
 //  Created by Stephan Vanterpool on 7/21/18.
@@ -40,6 +40,23 @@ public class AuthenticationAPI {
                 case .success(let value):
                     seal.fulfill(value)
                 }
+                return
+            }
+        }
+    }
+
+    public func revokeToken(tokenInfo: TokenInfo) -> Promise<Bool> {
+        return Promise { seal in
+            let token = tokenInfo.accessToken
+            let routeInfo = RouteInfo(route: AuthenticationRoute.revokeToken(token: token),
+                                      baseURL: self.connectionInfo.activeURL)
+            let request = Alamofire.request(routeInfo)
+            request.validate().response { response in
+                // https://developers.home-assistant.io/docs/en/auth_api.html#revoking-a-refresh-token says:
+                //
+                // The request will always respond with an empty body and HTTP status 200,
+                // regardless if the request was successful.
+                seal.fulfill(true)
                 return
             }
         }

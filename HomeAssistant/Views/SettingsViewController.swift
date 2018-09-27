@@ -710,7 +710,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
     /// Attempt to connect to the server with the supplied credentials. If it succeeds, save those
     /// credentials and update the UI
-    private func validateConnection() {
+    private func validateConnection() -> Bool {
        guard let connectionInfo = self.connectionInfoFromUI() else {
             let errMsg = L10n.Settings.ConnectionError.InvalidUrl.message
             let alert = UIAlertController(title: L10n.Settings.ConnectionError.InvalidUrl.title,
@@ -720,7 +720,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                                           style: UIAlertAction.Style.default,
                                           handler: nil))
             self.present(alert, animated: true, completion: nil)
-            return
+            return false
         }
 
         if !self.useLegacyAuth {
@@ -764,6 +764,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }
         }
 
+        return true
     }
 
     private func configureDiscoveryObservers() {
@@ -822,7 +823,10 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     }
 
     @objc func closeSettings(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
+        if self.form.validate().count == 0 && self.validateConnection() == true &&
+            Current.settingsStore.connectionInfo != nil {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
 
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {

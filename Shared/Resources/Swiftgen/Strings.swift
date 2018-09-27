@@ -353,12 +353,12 @@ internal enum L10n {
   internal enum Permissions {
 
     internal enum Location {
-      /// We use this to inform\r\nHome Assistant of your device location and state.
+      /// We use this to inform\rHome Assistant of your device location and state.
       internal static let message = L10n.tr("Localizable", "permissions.location.message")
     }
 
     internal enum Notification {
-      /// We use this to let you\r\nsend notifications to your device.
+      /// We use this to let you\rsend notifications to your device.
       internal static let message = L10n.tr("Localizable", "permissions.notification.message")
     }
   }
@@ -382,13 +382,13 @@ internal enum L10n {
       internal enum InvalidUrl {
         /// Looks like your URL is invalid. Please check the format and try again.
         internal static let message = L10n.tr("Localizable", "settings.connection_error.invalid_url.message")
-        /// Error unwrapping URL
+        /// Error parsing URL
         internal static let title = L10n.tr("Localizable", "settings.connection_error.invalid_url.title")
       }
     }
 
     internal enum ConnectionErrorNotification {
-      /// There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was:\n\n%@
+      /// There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was:\%@
       internal static func message(_ p1: String) -> String {
         return L10n.tr("Localizable", "settings.connection_error_notification.message", p1)
       }
@@ -600,7 +600,7 @@ internal enum L10n {
       }
 
       internal enum VersionRow {
-        /// 0.78.0
+        /// 0.80.0
         internal static let placeholder = L10n.tr("Localizable", "settings.status_section.version_row.placeholder")
         /// Version
         internal static let title = L10n.tr("Localizable", "settings.status_section.version_row.title")
@@ -863,7 +863,7 @@ internal enum L10n {
     internal enum CallService {
 
       internal enum Error {
-        /// An error occurred while attempting to call service %@\n%@
+        /// An error occurred while attempting to call service %@%@
         internal static func message(_ p1: String, _ p2: String) -> String {
           return L10n.tr("Localizable", "url_handler.call_service.error.message", p1, p2)
         }
@@ -882,7 +882,7 @@ internal enum L10n {
     internal enum FireEvent {
 
       internal enum Error {
-        /// An error occurred while attempting to fire event %@\n%@
+        /// An error occurred while attempting to fire event %@%@
         internal static func message(_ p1: String, _ p2: String) -> String {
           return L10n.tr("Localizable", "url_handler.fire_event.error.message", p1, p2)
         }
@@ -908,7 +908,7 @@ internal enum L10n {
     internal enum SendLocation {
 
       internal enum Error {
-        /// An unknown error occurred while attempting to send location\n%@
+        /// An unknown error occurred while attempting to send location%@
         internal static func message(_ p1: String) -> String {
           return L10n.tr("Localizable", "url_handler.send_location.error.message", p1)
         }

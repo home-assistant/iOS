@@ -405,20 +405,29 @@ extension WebViewController: WKScriptMessageHandler {
                 print("Failed to authenticate webview. Token Unavailable")
             }
         } else if message.name == "revokeExternalAuth", let messageBody = message.body as? [String: Any],
-            let callbackName = messageBody["callback"] {
-            Current.tokenManager = nil
-            Current.settingsStore.connectionInfo = nil
-            Current.settingsStore.tokenInfo = nil
-            self.showSettingsViewController()
-            let script = "\(callbackName)(true, nil)"
+            let callbackName = messageBody["callback"], let tokenManager = Current.tokenManager {
 
-            self.webView.evaluateJavaScript(script, completionHandler: { (_, error) in
-                if let error = error {
-                    print("Failed calling sign out callback: \(error)")
-                }
+            print("Time to revoke the access token!")
 
-                print("Successfully informed web client of signout.")
-            })
+            tokenManager.revokeToken().done { _ in
+                Current.tokenManager = nil
+                Current.settingsStore.connectionInfo = nil
+                Current.settingsStore.tokenInfo = nil
+                self.showSettingsViewController()
+                let script = "\(callbackName)(true)"
+
+                print("Running callback", script)
+
+                self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
+                    if let error = error {
+                        print("Failed calling sign out callback: \(error)")
+                    }
+
+                    print("Successfully informed web client of log out.")
+                })
+            }.catch { error in
+                print("Failed to revoke token", error)
+            }
         }
     }
 }
