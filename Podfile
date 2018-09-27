@@ -56,7 +56,6 @@ end
 
 target 'MapNotificationContentExtension' do
   pod 'MBProgressHUD', '1.1.0'
-  pod 'RealmSwift'
 end
 
 
