@@ -245,7 +245,7 @@ internal enum L10n {
       internal enum InvalidUrl {
         /// Looks like your URL is invalid. Please check the format and try again.
         internal static let message = L10n.tr("Localizable", "settings.connection_error.invalid_url.message")
-        /// Error unwrapping URL
+        /// Error parsing URL
         internal static let title = L10n.tr("Localizable", "settings.connection_error.invalid_url.title")
       }
     }

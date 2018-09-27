@@ -43,6 +43,15 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
     }
 
+    // Request the server revokes the current token.
+    public func revokeToken() -> Promise<Bool> {
+        guard let tokenInfo = self.tokenInfo else {
+            return Promise(error: TokenError.tokenUnavailable)
+        }
+
+        return self.authenticationAPI.revokeToken(tokenInfo: tokenInfo)
+    }
+
     public var bearerToken: Promise<String> {
         return firstly {
             self.currentToken
