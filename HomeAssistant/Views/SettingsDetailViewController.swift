@@ -8,11 +8,11 @@
 
 import UIKit
 import Eureka
-import Crashlytics
 import Shared
 import Intents
 import IntentsUI
 import PromiseKit
+import RealmSwift
 
 // swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController {
@@ -287,6 +287,41 @@ class SettingsDetailViewController: FormViewController {
 
         case "watchSettings":
             self.title = "Apple Watch"
+
+            self.form
+                +++ Section{
+                    $0.tag = "watch_data"
+                }
+                <<< LabelRow {
+                    $0.tag = "remaining_complication_sends"
+                    $0.title = "Remaining sends"
+                    if let delegate = UIApplication.shared.delegate as? AppDelegate,
+                        let session = delegate.watchSession {
+                        $0.value = session.remainingComplicationUserInfoTransfers.description
+                    }
+                }
+
+                <<< ButtonRow {
+                        $0.title = "Send data now"
+                    }.onCellSelection { cell, row in
+                        let realm = Current.realm()
+                        let complications = realm.objects(WatchComplication.self)
+
+                        print("Sending", complications)
+
+                        if let delegate = UIApplication.shared.delegate as? AppDelegate,
+                            let session = delegate.watchSession {
+
+                            let threadSafeObjs = Array(complications).map({ ThreadSafeReference(to: $0) })
+
+                            session.transferCurrentComplicationUserInfo(["complication": threadSafeObjs])
+
+                            if let remainingRow = self.form.rowBy(tag: "remaining_complication_sends") as? LabelRow {
+                                remainingRow.value = session.remainingComplicationUserInfoTransfers.description
+                                remainingRow.updateCell()
+                            }
+                        }
+                    }
 
             for group in ComplicationGroup.allCases {
                 let members = group.members

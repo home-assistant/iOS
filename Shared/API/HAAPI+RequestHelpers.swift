@@ -7,7 +7,6 @@
 //
 
 import Alamofire
-import Crashlytics
 import Foundation
 import PromiseKit
 import ObjectMapper
@@ -20,9 +19,7 @@ extension HomeAssistantAPI {
         case .success(let value):
             seal.fulfill(value)
         case .failure(let error):
-            CLSLogv("Error on \(callingFunctionName)() request: %@",
-                getVaList([error.localizedDescription]))
-            Crashlytics.sharedInstance().recordError(error)
+            print("Error on \(callingFunctionName)() request", error)
             seal.reject(error)
         }
     }

@@ -7,6 +7,7 @@
 //
 
 import ClockKit
+import RealmSwift
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
 
@@ -36,7 +37,35 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
                                  withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void) {
         // Call the handler with the current timeline entry
 
+        let realm = Realm.live()
+        print("Realm is located at:", realm.configuration.fileURL!)
+
+        let allComplications = realm.objects(WatchComplication.self)
+
+        print("All configured complications", allComplications, allComplications.count, allComplications.first)
+
+        let matchedFamily = ComplicationGroupMember(family: complication.family)
+
+        print("matchedFamily", matchedFamily.rawValue)
+        let pred = NSPredicate(format: "Family == %@", matchedFamily.rawValue)
+        guard let config = realm.objects(WatchComplication.self).filter(pred).first else {
+            print("No configured complication found for \(matchedFamily.rawValue), returning family specific 404")
+            // FIXME: Return a family specific template 404.
+            handler(nil)
+            return
+        }
+
+        print("complicationObjects", config)
+
         print("Providing template for", complication.family.description)
+
+        guard let template = config.template?.template else {
+            print("Unable to get CLKComplicationTemplate!")
+            handler(nil)
+            return
+        }
+
+        print("Would use", template)
 
         switch complication.family {
         case .modularSmall:

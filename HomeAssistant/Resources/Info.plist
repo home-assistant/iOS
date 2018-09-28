@@ -33,20 +33,6 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>35</string>
-	<key>Fabric</key>
-	<dict>
-		<key>APIKey</key>
-		<string>af2930e95b69736a32e543d07fe9c8078649a61e</string>
-		<key>Kits</key>
-		<array>
-			<dict>
-				<key>KitInfo</key>
-				<dict/>
-				<key>KitName</key>
-				<string>Crashlytics</string>
-			</dict>
-		</array>
-	</dict>
 	<key>IS_SANDBOXED</key>
 	<string>${IS_SANDBOXED}</string>
 	<key>ITSAppUsesNonExemptEncryption</key>

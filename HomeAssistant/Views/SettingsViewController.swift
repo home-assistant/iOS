@@ -9,7 +9,6 @@
 import UIKit
 import Eureka
 import PromiseKit
-import Crashlytics
 import SafariServices
 import Alamofire
 import KeychainAccess
@@ -286,7 +285,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     $0.title = L10n.Settings.ConnectionSection.SaveButton.title
                 }.onCellSelection { _, _ in
                     if self.form.validate().count == 0 {
-                        self.validateConnection()
+                        _ = self.validateConnection()
                     }
                 }
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
@@ -874,7 +873,7 @@ protocol ConnectionInfoChangedDelegate: class {
 
 extension SettingsViewController: WCSessionDelegate {
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        print("Activation completed with state", activationState, error)
+        print("Activation completed with state", activationState, error?.localizedDescription)
     }
 
     func sessionDidBecomeInactive(_ session: WCSession) {

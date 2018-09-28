@@ -39,6 +39,10 @@ class WatchComplicationConfigurator: FormViewController {
         // Use it as required
         self.navigationItem.rightBarButtonItem = infoBarButtonItem
 
+        let allComplications = Current.realm().objects(WatchComplication.self)
+
+        print("All configured complications", allComplications, allComplications.count, allComplications.first)
+
         self.title = self.family.name
 
         TextAreaRow.defaultCellSetup = { cell, row in
@@ -157,13 +161,13 @@ class WatchComplicationConfigurator: FormViewController {
             }
 
             <<< PushRow<String> {
-                    $0.options = MaterialDesignIcon.allCases.map({ $0.name })
+                    $0.options = MaterialDesignIcons.allCases.map({ $0.name })
                     $0.value = $0.options?.first
                     $0.selectorTitle = "Choose a icon"
                     $0.tag = "icon"
                 }.cellUpdate({ (cell, row) in
                     if let value = row.value {
-                        let theIcon = MaterialDesignIcon(named: value)
+                        let theIcon = MaterialDesignIcons(named: value)
                         if let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
                             cell.imageView?.image = theIcon.image(ofSize: CGSize(width: CGFloat(30),
                                                                                  height: CGFloat(30)),
@@ -173,7 +177,7 @@ class WatchComplicationConfigurator: FormViewController {
                 }).onPresent { from, to in
                     to.selectableRowCellSetup = {cell, row in
                         if let value = row.selectableValue {
-                            let theIcon = MaterialDesignIcon(named: value)
+                            let theIcon = MaterialDesignIcons(named: value)
                             if let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
                                 cell.imageView?.image = theIcon.image(ofSize: CGSize(width: CGFloat(30),
                                                                                      height: CGFloat(30)),
@@ -195,7 +199,7 @@ class WatchComplicationConfigurator: FormViewController {
                     print("icon color: \(picker.value!.hexString(false))")
                     if let iconRow = self.form.rowBy(tag: "icon") as? PushRow<String> {
                         if let value = iconRow.value {
-                            let theIcon = MaterialDesignIcon(named: value)
+                            let theIcon = MaterialDesignIcons(named: value)
                             iconRow.cell.imageView?.image = theIcon.image(ofSize: CGSize(width: CGFloat(30),
                                                                                          height: CGFloat(30)),
                                                                           color: picker.value)
@@ -236,10 +240,13 @@ class WatchComplicationConfigurator: FormViewController {
             let complication = WatchComplication()
             complication.Family = self.family.rawValue
             complication.Template = templateName
-            complication.Data = formVals as [String : Any]
+            complication.Data = formVals as [String: Any]
             print("COMPLICATION", complication)
 
             let realm = Current.realm()
+
+            print("Realm is located at:", realm.configuration.fileURL!)
+
             // swiftlint:disable:next force_try
             try! realm.write {
                 realm.add(complication, update: true)
@@ -288,28 +295,29 @@ class WatchComplicationConfigurator: FormViewController {
             $0.hidden = true
         }
 
-        section.append(TextAreaRow {
+        <<< TextAreaRow {
             $0.tag = key
             $0.title = location.label
             $0.add(rule: RuleRequired())
             $0.placeholder = "{{ states(\"weather.current_temperature\") }}"
-        })
+        }
 
-        section.append(ButtonRow {
+        <<< ButtonRow {
             $0.title = "Preview Output"
         }.onCellSelection({ _, _ in
             self.renderTemplateForRow(row: key)
-        }))
+        })
 
-        section.append(InlineColorPickerRow { (row) in
+        <<< InlineColorPickerRow { (row) in
             row.tag = key+"_color"
             row.title = "Color"
             row.isCircular = true
             row.showsPaletteNames = true
             row.value = UIColor.green
-            }.onChange { (picker) in
-                print("color for "+key+": \(picker.value!.hexString(false))")
-        })
+        }.onChange { (picker) in
+            print("color for "+key+": \(picker.value!.hexString(false))")
+        }
+
         return section
     }
 

@@ -22,7 +22,6 @@ def shared_pods
     pod 'Alamofire', '4.7.3'
     pod 'AlamofireImage', '3.4.1'
     pod 'AlamofireObjectMapper', '5.1.0'
-    pod 'Crashlytics', '3.10.2'
     pod 'DeviceKit', '1.8'
     pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
     pod 'KeychainAccess', '3.1.1'
@@ -36,9 +35,8 @@ target 'HomeAssistant' do
 
   pod 'AlamofireNetworkActivityIndicator', '2.3.0'
   pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'Swift4.2'
-  pod 'CPDAcknowledgements', '1.0.0'
+  pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
   pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
-  pod 'Fabric', '1.7.7'
   pod 'MBProgressHUD', '1.1.0'
   pod 'SwiftGen', '5.3.0'
   pod 'SwiftLint', '0.25.1'
@@ -80,4 +78,10 @@ end
 
 target 'SiriIntents' do
   pod 'PromiseKit', '6.3.0'
+end
+
+target 'WatchAppExtension' do
+  platform :watchos, '5.0'
+
+  pod 'RealmSwift'
 end

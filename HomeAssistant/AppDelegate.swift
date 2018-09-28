@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import Fabric
-import Crashlytics
 import PromiseKit
 import UserNotifications
 import AlamofireNetworkActivityIndicator
@@ -31,9 +29,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var safariVC: SFSafariViewController?
     let regionManager = RegionManager()
+
+    var watchSession: WCSession?
+
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        Fabric.with([Crashlytics.self])
         Current.deviceIDProvider = { DeviceUID.uid() }
         Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
 
@@ -41,13 +41,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
         }
 
-        Iconic.registerMaterialDesignIcon()
+        Iconic.registerMaterialDesignIcons()
 
-        MaterialDesignIcon.register()
+        MaterialDesignIcons.register()
 
         NetworkActivityIndicatorManager.shared.isEnabled = true
 
         UNUserNotificationCenter.current().delegate = self
+
+        // Activate watch session
+        if WCSession.isSupported() {
+            watchSession = WCSession.default
+            watchSession!.delegate = self
+            watchSession!.activate()
+        }
 
         if #available(iOS 12.0, *) {
             // Tell the system we have a app notification settings screen and want critical alerts
@@ -176,8 +183,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = api.registerDeviceForPush(deviceToken: tokenString).done { resp in
             if let pushId = resp.PushId {
                 print("Registered for push. Platform: \(resp.SNSPlatform ?? "MISSING"), PushID: \(pushId)")
-                CLSLogv("Registered for push %@:", getVaList([pushId]))
-                Crashlytics.sharedInstance().setUserIdentifier(pushId)
                 prefs.setValue(pushId, forKey: "pushID")
                 Current.settingsStore.pushID = pushId
                 _ = api.identifyDevice()
@@ -188,7 +193,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError error: Swift.Error) {
         print("Error when trying to register for push", error)
-        Crashlytics.sharedInstance().recordError(error)
     }
 
     func application(_ application: UIApplication,
@@ -214,7 +218,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             completionHandler(.newData)
                         }.catch {error in
                             print("Error when attempting to submit location update")
-                            Crashlytics.sharedInstance().recordError(error)
                             completionHandler(.failed)
                         }
                     default:
@@ -245,7 +248,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(UIBackgroundFetchResult.newData)
                 }.catch {error in
                     print("Error when attempting to submit location update during background fetch")
-                    Crashlytics.sharedInstance().recordError(error)
                     completionHandler(UIBackgroundFetchResult.failed)
             }
         } else {
@@ -253,15 +255,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(UIBackgroundFetchResult.newData)
             }.catch {error in
                 print("Error when attempting to identify device during background fetch")
-                Crashlytics.sharedInstance().recordError(error)
                 completionHandler(UIBackgroundFetchResult.failed)
             }
-        }
-
-        if WCSession.isSupported() {
-            let session = WCSession.default
-            session.delegate = self
-            session.activate()
         }
     }
 
@@ -418,7 +413,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             completionHandler()
         }.catch { err -> Void in
             print("Error: \(err)")
-            Crashlytics.sharedInstance().recordError(err)
         }
     }
 
@@ -460,17 +454,28 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 }
 
 extension AppDelegate: WCSessionDelegate {
-    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+    func session(_ session: WCSession,
+                 activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+
+        watchSession = session
+
         print("Activation completed with", activationState.rawValue)
         print("Session", session.isPaired, session.isReachable, session.activationState)
 
-        if session.isPaired && session.activationState == .activated {
-            let realm = Current.realm()
-            let complicationsObjects = realm.objects(WatchComplication.self)
+        if session.isWatchAppInstalled && session.isPaired && session.activationState == .activated {
+            storeApplicationContext(session.applicationContext)
 
-            print("Sending", complicationsObjects)
+            // Must create a fresh Realm instead of using Current.realm beacuse WCSessionDelegate runs on main thread
 
-            session.transferCurrentComplicationUserInfo(["complication": Array(complicationsObjects)])
+            let realm = Realm.live()
+            let complications = realm.objects(WatchComplication.self)
+
+            print("Sending", complications)
+
+            let threadSafeObjs = Array(complications).map({ ThreadSafeReference(to: $0) })
+
+            let transfer = session.transferCurrentComplicationUserInfo(["complication": threadSafeObjs])
+            print("transfer status", transfer.isTransferring)
         }
     }
 
@@ -480,6 +485,12 @@ extension AppDelegate: WCSessionDelegate {
 
     func sessionDidDeactivate(_ session: WCSession) {
         print("Session did deactivate", session)
+    }
+
+    func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String: Any]) {
+        print("Received application context!", applicationContext)
+
+        storeApplicationContext(applicationContext)
     }
 
     func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
@@ -492,6 +503,17 @@ extension AppDelegate: WCSessionDelegate {
 //            //refresh the complication with the decoded data normally
 //
 //        }
+    }
+
+    func storeApplicationContext(_ context: [String: Any]) {
+        if let activeComplications = context["activeComplications"] as? [String] {
+
+            let activeComplicationGroups = activeComplications.map({ ComplicationGroupMember(name: $0).name })
+
+            prefs.setValue(activeComplications, forKey: "activeComplications")
+            prefs.setValue(activeComplicationGroups, forKey: "activeComplicationGroups")
+            print("Saved active complications to NSUserDefaults")
+        }
     }
 
 }

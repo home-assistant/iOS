@@ -7,8 +7,12 @@
 //
 
 import Foundation
+#if os(watchOS)
+import ClockKit
+#endif
 
-enum ComplicationGroup {
+// swiftlint:disable cyclomatic_complexity type_body_length file_length
+enum ComplicationGroup: String {
     case circularSmall
     case extraLarge
     case graphic
@@ -108,6 +112,94 @@ enum ComplicationGroupMember: String {
         }
     }
 
+    #if os(watchOS)
+    init(family: CLKComplicationFamily) {
+        switch family {
+        case CLKComplicationFamily.circularSmall:
+            self = .circularSmall
+        case CLKComplicationFamily.extraLarge:
+            self = .extraLarge
+        case CLKComplicationFamily.graphicBezel:
+            self = .graphicBezel
+        case CLKComplicationFamily.graphicCircular:
+            self = .graphicCircular
+        case CLKComplicationFamily.graphicCorner:
+            self = .graphicCorner
+        case CLKComplicationFamily.graphicRectangular:
+            self = .graphicRectangular
+        case CLKComplicationFamily.modularLarge:
+            self = .modularLarge
+        case CLKComplicationFamily.modularSmall:
+            self = .modularSmall
+        case CLKComplicationFamily.utilitarianLarge:
+            self = .utilitarianLarge
+        case CLKComplicationFamily.utilitarianSmall:
+            self = .utilitarianSmall
+        case CLKComplicationFamily.utilitarianSmallFlat:
+            self = .utilitarianSmallFlat
+        default:
+            print("Unknown group member name", family.rawValue)
+            self = .circularSmall
+        }
+    }
+
+    var family: CLKComplicationFamily {
+        switch self {
+        case .circularSmall:
+            return .circularSmall
+        case .extraLarge:
+            return .extraLarge
+        case .graphicBezel:
+            return .graphicBezel
+        case .graphicCircular:
+            return .graphicCircular
+        case .graphicCorner:
+            return .graphicCorner
+        case .graphicRectangular:
+            return .graphicRectangular
+        case .modularLarge:
+            return .modularLarge
+        case .modularSmall:
+            return .modularSmall
+        case .utilitarianLarge:
+            return .utilitarianLarge
+        case .utilitarianSmall:
+            return .utilitarianSmall
+        case .utilitarianSmallFlat:
+            return .utilitarianSmallFlat
+        }
+    }
+    #endif
+
+//    #if os(iOS)
+//    var family: String {
+//        switch self {
+//        case .circularSmall:
+//            return "circularSmall"
+//        case .extraLarge:
+//            return "extraLarge"
+//        case .graphicBezel:
+//            return "graphicBezel"
+//        case .graphicCircular:
+//            return "graphicCircular"
+//        case .graphicCorner:
+//            return "graphicCorner"
+//        case .graphicRectangular:
+//            return "graphicRectangular"
+//        case .modularLarge:
+//            return "modularLarge"
+//        case .modularSmall:
+//            return "modularSmall"
+//        case .utilitarianLarge:
+//            return "utilitarianLarge"
+//        case .utilitarianSmall:
+//            return "utilitarianSmall"
+//        case .utilitarianSmallFlat:
+//            return "utilitarianSmallFlat"
+//        }
+//    }
+//    #endif
+
     var name: String {
         switch self {
         case .circularSmall:
@@ -159,33 +251,6 @@ enum ComplicationGroupMember: String {
             return L10n.Watch.Labels.ComplicationGroupMember.UtilitarianSmall.shortName
         case .utilitarianSmallFlat:
             return L10n.Watch.Labels.ComplicationGroupMember.UtilitarianSmallFlat.shortName
-        }
-    }
-
-    var family: String {
-        switch self {
-        case .circularSmall:
-            return "circularSmall"
-        case .extraLarge:
-            return "extraLarge"
-        case .graphicBezel:
-            return "graphicBezel"
-        case .graphicCircular:
-            return "graphicCircular"
-        case .graphicCorner:
-            return "graphicCorner"
-        case .graphicRectangular:
-            return "graphicRectangular"
-        case .modularLarge:
-            return "modularLarge"
-        case .modularSmall:
-            return "modularSmall"
-        case .utilitarianLarge:
-            return "utilitarianLarge"
-        case .utilitarianSmall:
-            return "utilitarianSmall"
-        case .utilitarianSmallFlat:
-            return "utilitarianSmallFlat"
         }
     }
 
@@ -651,6 +716,101 @@ enum ComplicationTemplate: String {
             return [.Header]
         }
     }
+
+    #if os(watchOS)
+    var template: CLKComplicationTemplate {
+        switch self {
+        case .CircularSmallRingImage:
+            return CLKComplicationTemplateCircularSmallRingImage()
+        case .CircularSmallSimpleImage:
+            return CLKComplicationTemplateCircularSmallSimpleImage()
+        case .CircularSmallStackImage:
+            return CLKComplicationTemplateCircularSmallStackImage()
+        case .CircularSmallRingText:
+            return CLKComplicationTemplateCircularSmallRingText()
+        case .CircularSmallSimpleText:
+            return CLKComplicationTemplateCircularSmallSimpleText()
+        case .CircularSmallStackText:
+            return CLKComplicationTemplateCircularSmallStackText()
+        case .ExtraLargeRingImage:
+            return CLKComplicationTemplateExtraLargeRingImage()
+        case .ExtraLargeSimpleImage:
+            return CLKComplicationTemplateExtraLargeSimpleImage()
+        case .ExtraLargeStackImage:
+            return CLKComplicationTemplateExtraLargeStackImage()
+        case .ExtraLargeColumnsText:
+            return CLKComplicationTemplateExtraLargeColumnsText()
+        case .ExtraLargeRingText:
+            return CLKComplicationTemplateExtraLargeRingText()
+        case .ExtraLargeSimpleText:
+            return CLKComplicationTemplateExtraLargeSimpleText()
+        case .ExtraLargeStackText:
+            return CLKComplicationTemplateExtraLargeStackText()
+        case .ModularSmallRingImage:
+            return CLKComplicationTemplateModularSmallRingImage()
+        case .ModularSmallSimpleImage:
+            return CLKComplicationTemplateModularSmallSimpleImage()
+        case .ModularSmallStackImage:
+            return CLKComplicationTemplateModularSmallStackImage()
+        case .ModularSmallColumnsText:
+            return CLKComplicationTemplateModularSmallColumnsText()
+        case .ModularSmallRingText:
+            return CLKComplicationTemplateModularSmallRingText()
+        case .ModularSmallSimpleText:
+            return CLKComplicationTemplateModularSmallSimpleText()
+        case .ModularSmallStackText:
+            return CLKComplicationTemplateModularSmallStackText()
+        case .ModularLargeStandardBody:
+            return CLKComplicationTemplateModularLargeStandardBody()
+        case .ModularLargeTallBody:
+            return CLKComplicationTemplateModularLargeTallBody()
+        case .ModularLargeColumns:
+            return CLKComplicationTemplateModularLargeColumns()
+        case .ModularLargeTable:
+            return CLKComplicationTemplateModularLargeTable()
+        case .UtilitarianSmallFlat:
+            return CLKComplicationTemplateUtilitarianSmallFlat()
+        case .UtilitarianSmallRingImage:
+            return CLKComplicationTemplateUtilitarianSmallRingImage()
+        case .UtilitarianSmallRingText:
+            return CLKComplicationTemplateUtilitarianSmallRingText()
+        case .UtilitarianSmallSquare:
+            return CLKComplicationTemplateUtilitarianSmallSquare()
+        case .UtilitarianLargeFlat:
+            return CLKComplicationTemplateUtilitarianLargeFlat()
+        case .GraphicCornerCircularImage:
+            return CLKComplicationTemplateGraphicCornerCircularImage()
+        case .GraphicCornerGaugeImage:
+            return CLKComplicationTemplateGraphicCornerGaugeImage()
+        case .GraphicCornerGaugeText:
+            return CLKComplicationTemplateGraphicCornerGaugeText()
+        case .GraphicCornerStackText:
+            return CLKComplicationTemplateGraphicCornerStackText()
+        case .GraphicCornerTextImage:
+            return CLKComplicationTemplateGraphicCornerTextImage()
+        case .GraphicCircularImage:
+            return CLKComplicationTemplateGraphicCircularImage()
+        case .GraphicCircularClosedGaugeImage:
+            return CLKComplicationTemplateGraphicCircularClosedGaugeImage()
+        case .GraphicCircularOpenGaugeImage:
+            return CLKComplicationTemplateGraphicCircularOpenGaugeImage()
+        case .GraphicCircularClosedGaugeText:
+            return CLKComplicationTemplateGraphicCircularClosedGaugeText()
+        case .GraphicCircularOpenGaugeSimpleText:
+            return CLKComplicationTemplateGraphicCircularOpenGaugeSimpleText()
+        case .GraphicCircularOpenGaugeRangeText:
+            return CLKComplicationTemplateGraphicCircularOpenGaugeRangeText()
+        case .GraphicBezelCircularText:
+            return CLKComplicationTemplateGraphicBezelCircularText()
+        case .GraphicRectangularStandardBody:
+            return CLKComplicationTemplateGraphicRectangularStandardBody()
+        case .GraphicRectangularTextGauge:
+            return CLKComplicationTemplateGraphicRectangularTextGauge()
+        case .GraphicRectangularLargeImage:
+            return CLKComplicationTemplateGraphicRectangularLargeImage()
+        }
+    }
+    #endif
 
     var hasRing: Bool {
         switch self {

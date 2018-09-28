@@ -6,7 +6,6 @@
 //  Copyright © 2018 Robbie Trencheny. All rights reserved.
 //
 
-import Crashlytics
 import DeviceKit
 import Foundation
 import PromiseKit
@@ -53,9 +52,7 @@ extension HomeAssistantAPI {
                 }
                 seal.fulfill(allCategories)
                 }.catch { error in
-                    CLSLogv("Error on setupUserNotificationPushActions() request: %@",
-                            getVaList([error.localizedDescription]))
-                    Crashlytics.sharedInstance().recordError(error)
+                    print("Error on setupUserNotificationPushActions() request", error)
                     seal.reject(error)
             }
         }
@@ -69,7 +66,6 @@ extension HomeAssistantAPI {
             UNUserNotificationCenter.current().setNotificationCategories(categories)
             }.catch {error -> Void in
                 print("Error when attempting to setup push actions", error)
-                Crashlytics.sharedInstance().recordError(error)
         }
     }
 
@@ -96,7 +92,6 @@ extension HomeAssistantAPI {
             api.createEvent(eventType: eventType, eventData: eventData).done { _ -> Void in
                 seal.fulfill(true)
                 }.catch {error in
-                    Crashlytics.sharedInstance().recordError(error)
                     seal.reject(error)
             }
         }

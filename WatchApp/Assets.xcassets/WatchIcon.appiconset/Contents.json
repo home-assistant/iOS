@@ -19,14 +19,14 @@
     {
       "size" : "29x29",
       "idiom" : "watch",
-      "filename" : "release-58x58.png",
+      "filename" : "release-58x58-1.png",
       "role" : "companionSettings",
       "scale" : "2x"
     },
     {
       "size" : "29x29",
       "idiom" : "watch",
-      "filename" : "release-87x87.png",
+      "filename" : "release-87x87-1.png",
       "role" : "companionSettings",
       "scale" : "3x"
     },
@@ -41,6 +41,7 @@
     {
       "size" : "44x44",
       "idiom" : "watch",
+      "filename" : "release-88x88.png",
       "scale" : "2x",
       "role" : "appLauncher",
       "subtype" : "40mm"
@@ -48,6 +49,7 @@
     {
       "size" : "50x50",
       "idiom" : "watch",
+      "filename" : "release-100x100.png",
       "scale" : "2x",
       "role" : "appLauncher",
       "subtype" : "44mm"
@@ -71,6 +73,7 @@
     {
       "size" : "108x108",
       "idiom" : "watch",
+      "filename" : "release-216x216.png",
       "scale" : "2x",
       "role" : "quickLook",
       "subtype" : "44mm"

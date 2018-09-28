@@ -6,9 +6,5 @@
 	<array>
 		<string>group.io.robbie.homeassistant</string>
 	</array>
-	<key>keychain-access-groups</key>
-	<array>
-		<string>$(AppIdentifierPrefix)io.robbie.HomeAssistant</string>
-	</array>
 </dict>
 </plist>

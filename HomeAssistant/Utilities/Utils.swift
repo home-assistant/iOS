@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Crashlytics
 import KeychainAccess
 import Shared
 
@@ -98,10 +97,6 @@ func resetStores() {
     }
 }
 
-func openURLStringInBrowser(url: String) {
-    openURLInBrowser(urlToOpen: URL(string: url)!)
-}
-
 func openURLInBrowser(urlToOpen: URL) {
     if OpenInChromeController.sharedInstance.isChromeInstalled() && prefs.bool(forKey: "openInChrome") {
         _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
@@ -131,12 +126,6 @@ func showAlert(title: String, message: String) {
 }
 
 func setDefaults() {
-    Crashlytics.sharedInstance().setObjectValue(prefs.string(forKey: "lastInstalledVersion"),
-                                                forKey: "lastInstalledVersion")
-    Crashlytics.sharedInstance().setObjectValue(prefs.integer(forKey: "lastInstalledBundleVersion"),
-                                                forKey: "lastInstalledBundleVersion")
-    Crashlytics.sharedInstance().setObjectValue(prefs.string(forKey: "lastInstalledShortVersion"),
-                                                forKey: "lastInstalledShortVersion")
     if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion"),
         let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString"),
         let stringedShortVersion = shortVersion as? String,

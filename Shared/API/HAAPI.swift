@@ -10,7 +10,6 @@ import Alamofire
 import AlamofireImage
 import AlamofireObjectMapper
 import PromiseKit
-import Crashlytics
 import CoreLocation
 import CoreMotion
 import DeviceKit
@@ -135,12 +134,6 @@ public class HomeAssistantAPI {
                 self.prefs.setValue(config.Timezone, forKey: "time_zone")
                 self.prefs.setValue(config.Version, forKey: "version")
 
-                Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
-                Crashlytics.sharedInstance().setObjectValue(self.loadedComponents.joined(separator: ","),
-                                                            forKey: "loadedComponents")
-                Crashlytics.sharedInstance().setObjectValue(self.enabledPermissions.joined(separator: ","),
-                                                            forKey: "allowedPermissions")
-
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
                                                 object: nil,
                                                 userInfo: nil)
@@ -155,7 +148,7 @@ public class HomeAssistantAPI {
                     self.cachedEntities = entities
                     self.storeEntities(entities: entities)
                     if self.loadedComponents.contains("ios") {
-                        CLSLogv("iOS component loaded, attempting identify", getVaList([]))
+                        print("iOS component loaded, attempting identify")
                         _ = self.identifyDevice()
                     }
 
@@ -163,7 +156,6 @@ public class HomeAssistantAPI {
                 }
             }.catch {error in
                 print("Error at launch!", error)
-                Crashlytics.sharedInstance().recordError(error)
                 seal.reject(error)
             }
 
@@ -223,9 +215,7 @@ public class HomeAssistantAPI {
                                 seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
-                            CLSLogv("Error on GetManifestJSON() request: %@",
-                                    getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
+                            print("Error on GetManifestJSON() request", error)
                             seal.reject(error)
                         }
                 }
@@ -278,9 +268,7 @@ public class HomeAssistantAPI {
                             seal.fulfill(msg)
                         }
                     case .failure(let error):
-                        CLSLogv("Error when attemping to CreateEvent(): %@",
-                                getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
+                        print("Error when attemping to CreateEvent():", error)
                         seal.reject(error)
                     }
             }
@@ -332,15 +320,13 @@ public class HomeAssistantAPI {
                                     errorUserInfo["errorMessage"] = errMessage
                                 }
                             }
-                            CLSLogv("Error on CallService() request: %@", getVaList([afError.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(afError)
+                            print("Error on CallService() request:", afError)
                             let customError = NSError(domain: "io.robbie.HomeAssistant",
                                                       code: afError.responseCode!,
                                                       userInfo: errorUserInfo)
                             seal.reject(customError)
                         } else {
-                            CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
+                            print("Error on CallService() request", error)
                             seal.reject(error)
                         }
                     }
@@ -361,9 +347,7 @@ public class HomeAssistantAPI {
                             seal.fulfill(strResponse)
                         }
                     case .failure(let error):
-                        CLSLogv("Error when attemping to RenderTemplate(): %@",
-                                getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
+                        print("Error when attemping to RenderTemplate()", error)
                         seal.reject(error)
                     }
             }
@@ -421,15 +405,12 @@ public class HomeAssistantAPI {
                             let retErr = NSError(domain: "io.robbie.HomeAssistant",
                                                  code: 404,
                                                  userInfo: ["message": "json was nil!"])
-                            CLSLogv("Error when attemping to registerDeviceForPush(), json was nil!: %@",
-                                    getVaList([retErr.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(retErr)
+                            print("Error when attemping to registerDeviceForPush(), json was nil!:",
+                                  retErr.localizedDescription)
                             seal.reject(retErr)
                         }
                     case .failure(let error):
-                        CLSLogv("Error when attemping to registerDeviceForPush(): %@",
-                                getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
+                        print("Error when attemping to registerDeviceForPush():", error)
                         seal.reject(error)
                     }
             }
@@ -693,7 +674,6 @@ public class HomeAssistantAPI {
 
         promise.catch { err in
             print("Error when updating location!", err)
-            Crashlytics.sharedInstance().recordError(err as NSError)
         }
 
         return promise

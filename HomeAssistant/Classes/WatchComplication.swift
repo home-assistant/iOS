@@ -45,4 +45,18 @@ public class WatchComplication: Object {
     override public static func ignoredProperties() -> [String] {
         return ["RenderedData"]
     }
+
+    var group: ComplicationGroup? {
+        if let groupStr = self.Family {
+            return ComplicationGroup(rawValue: groupStr)
+        }
+        return nil
+    }
+
+    var template: ComplicationTemplate? {
+        if let templateStr = self.Template {
+            return ComplicationTemplate(rawValue: templateStr)
+        }
+        return nil
+    }
 }

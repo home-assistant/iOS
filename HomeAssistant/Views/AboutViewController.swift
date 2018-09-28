@@ -53,7 +53,7 @@ class AboutViewController: FormViewController {
                     cell.textLabel?.textColor = nil
                 }.onCellSelection({ _, _  in
                     let urlStr = "https://itunes.apple.com/app/id1099568401?action=write-review&mt=8"
-                    UIApplication.shared.openURL(URL(string: urlStr)!)
+                    UIApplication.shared.open(URL(string: urlStr)!, options: [:], completionHandler: nil)
                 })
             +++ Section()
             <<< ButtonRow {
@@ -64,7 +64,7 @@ class AboutViewController: FormViewController {
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
                 }.onCellSelection({ _, _  in
-                    openURLStringInBrowser(url: "https://www.home-assistant.io/")
+                    openURLInBrowser(urlToOpen: URL(string: "https://www.home-assistant.io/")!)
                 })
 
             <<< ButtonRow {
@@ -75,7 +75,7 @@ class AboutViewController: FormViewController {
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
                 }.onCellSelection({ _, _  in
-                    openURLStringInBrowser(url: "https://community.home-assistant.io/")
+                    openURLInBrowser(urlToOpen: URL(string: "https://community.home-assistant.io/")!)
                 })
 
             <<< ButtonRow {
@@ -86,7 +86,7 @@ class AboutViewController: FormViewController {
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
                 }.onCellSelection({ _, _  in
-                    openURLStringInBrowser(url: "https://discord.gg/C7fXPmt")
+                    openURLInBrowser(urlToOpen: URL(string: "https://discord.gg/C7fXPmt")!)
                 })
 
             <<< ButtonRow {
@@ -97,7 +97,7 @@ class AboutViewController: FormViewController {
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
                 }.onCellSelection({ _, _  in
-                    openURLStringInBrowser(url: "https://www.home-assistant.io/docs/ecosystem/ios/")
+                    openURLInBrowser(urlToOpen: URL(string: "https://www.home-assistant.io/docs/ecosystem/ios/")!)
                 })
 
             <<< ButtonRow {
@@ -136,7 +136,7 @@ class AboutViewController: FormViewController {
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
                 }.onCellSelection({ _, _  in
-                    openURLStringInBrowser(url: "https://github.com/home-assistant/home-assistant-iOS")
+                    openURLInBrowser(urlToOpen: URL(string: "https://github.com/home-assistant/home-assistant-iOS")!)
                 })
 
             <<< ButtonRow {
@@ -147,7 +147,8 @@ class AboutViewController: FormViewController {
                     cell.editingAccessoryType = cell.accessoryType
                     cell.textLabel?.textColor = nil
                 }.onCellSelection({ _, _ in
-                    openURLStringInBrowser(url: "https://github.com/home-assistant/home-assistant-iOS/issues")
+                    openURLInBrowser(urlToOpen:
+                        URL(string: "https://github.com/home-assistant/home-assistant-iOS/issues")!)
                 })
     }
 
