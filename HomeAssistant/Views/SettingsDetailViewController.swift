@@ -23,6 +23,8 @@ class SettingsDetailViewController: FormViewController {
 
     var voiceShortcutManager: Any?
 
+    private let realm = Current.realm()
+
     // swiftlint:disable:next function_body_length cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,7 +91,6 @@ class SettingsDetailViewController: FormViewController {
                         }
                     })
 
-            let realm = Current.realm()
             let zoneEntities = realm.objects(RLMZone.self).map { $0 }
             for zone in zoneEntities {
                 self.form
@@ -166,6 +167,23 @@ class SettingsDetailViewController: FormViewController {
                         self.present(activityViewController, animated: true, completion: {})
                 }
 
+                let objs = realm.objects(NotificationCategory.self)
+                let categories = objs.sorted(byKeyPath: "Identifier")
+
+                let mvOpts: MultivaluedOptions = [.Insert, .Delete]
+
+                self.form
+                    +++ MultivaluedSection(multivaluedOptions: mvOpts, header: "Categories", footer: "") { section in
+                        section.multivaluedRowToInsertAt = { index in
+                            return self.getNotificationCategoryRow(nil)
+                        }
+
+                        for category in categories {
+                            section <<< getNotificationCategoryRow(category)
+                        }
+                }
+
+                self.form
                 +++ Section(header: "", footer: L10n.SettingsDetails.Notifications.UpdateSection.footer)
                 <<< ButtonRow {
                     $0.title = L10n.SettingsDetails.Notifications.UpdateSection.Button.title
@@ -304,8 +322,7 @@ class SettingsDetailViewController: FormViewController {
                 <<< ButtonRow {
                         $0.title = "Send data now"
                     }.onCellSelection { cell, row in
-                        let realm = Current.realm()
-                        let complications = realm.objects(WatchComplication.self)
+                        let complications = self.realm.objects(WatchComplication.self)
 
                         print("Sending", complications)
 
@@ -367,7 +384,6 @@ class SettingsDetailViewController: FormViewController {
 
             self.title = L10n.SettingsDetails.Siri.title
             if #available(iOS 12.0, *) {
-                let realm = Current.realm()
                 let shortcuts = realm.objects(SiriShortcut.self).map { $0 }
                 if shortcuts.count > 0 {
                     self.form
@@ -459,6 +475,40 @@ class SettingsDetailViewController: FormViewController {
 
     @objc func closeSettingsDetailView(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+
+    func getNotificationCategoryRow(_ category: NotificationCategory?) -> ButtonRowWithPresent<NotificationCategoryConfigurator> {
+        var identifier = "new_category_"+UUID().uuidString
+        var title = "New Category"
+
+        if let category = category {
+            identifier = category.Identifier
+            title = category.Name
+        }
+
+        return ButtonRowWithPresent<NotificationCategoryConfigurator> {
+            $0.tag = identifier
+            $0.title = title
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                return NotificationCategoryConfigurator(category: category)
+            }, onDismiss: { vc in
+                _ = vc.navigationController?.popViewController(animated: true)
+
+                if let vc = vc as? NotificationCategoryConfigurator {
+                    vc.row.title = vc.category.Name
+                    vc.row.updateCell()
+
+                    print("Saving category!", vc.category)
+
+                    // swiftlint:disable:next force_try
+                    try! self.realm.write {
+                        self.realm.add(vc.category, update: true)
+                    }
+                }
+
+                ProvideNotificationCategoriesToSystem()
+            })
+        }
     }
 
 }

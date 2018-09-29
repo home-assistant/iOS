@@ -194,6 +194,10 @@
 		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
 		B678DB391EA999AC0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB381EA999AC0045312F /* MainInterface.storyboard */; };
 		B689EBCB1D8B7C800000AECE /* MjpegStreamingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */; };
+		B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */; };
+		B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */; };
+		B68EDD07215F215E00DD6B28 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD06215F215E00DD6B28 /* Notifications.swift */; };
+		B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */; };
 		B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
 		B69933951E232AEA0054453D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B699339C1E2338960054453D /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B699339B1E2338960054453D /* SnapshotHelper.swift */; };
@@ -239,6 +243,8 @@
 		B6CFF5DA2101984A00CC523F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5D92101984A00CC523F /* RealmSwift.framework */; };
 		B6CFF5DC2101985200CC523F /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5DB2101985200CC523F /* Realm.framework */; };
 		B6CFF5DE2101985200CC523F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5DD2101985200CC523F /* RealmSwift.framework */; };
+		B6DAC735215F069300727D2A /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC734215F069300727D2A /* NotificationCategory.swift */; };
+		B6DAC737215F06B100727D2A /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6E42616215C74FE007FEB7E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		B6E42617215C761A007FEB7E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
@@ -687,6 +693,10 @@
 		B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MjpegStreamingController.swift; sourceTree = "<group>"; };
 		B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = APNSAttachmentService.entitlements; sourceTree = "<group>"; };
 		B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationContentExtension.entitlements; sourceTree = "<group>"; };
+		B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategoryConfigurator.swift; sourceTree = "<group>"; };
+		B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationActionConfigurator.swift; sourceTree = "<group>"; };
+		B68EDD06215F215E00DD6B28 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifierEurekaRow.swift; sourceTree = "<group>"; };
 		B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSS3+Hex.swift"; sourceTree = "<group>"; };
 		B69933941E232AEA0054453D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B699339B1E2338960054453D /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
@@ -745,6 +755,8 @@
 		B6CFF5D92101984A00CC523F /* RealmSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CFF5DB2101985200CC523F /* Realm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Realm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CFF5DD2101985200CC523F /* RealmSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6DAC734215F069300727D2A /* NotificationCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategory.swift; sourceTree = "<group>"; };
+		B6DAC736215F06B100727D2A /* NotificationAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAction.swift; sourceTree = "<group>"; };
 		B6E47E871CBA01310027F6CA /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceExecuted.swift; sourceTree = "<group>"; };
 		B6E47E981CBB47CC0027F6CA /* DeviceUID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceUID.h; sourceTree = "<group>"; };
@@ -1289,6 +1301,8 @@
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
 				B66C58BC21509934004AB261 /* SiriShortcutServiceConfigurator.swift */,
 				B6B6B149215B137C003DE2DD /* WatchComplicationConfigurator.swift */,
+				B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */,
+				B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1306,6 +1320,8 @@
 				B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */,
 				B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */,
 				B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */,
+				B68EDD06215F215E00DD6B28 /* Notifications.swift */,
+				B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1401,6 +1417,8 @@
 				D0B25BC82130CA0D00678C2C /* OneShotLocationManager.swift */,
 				D0B25BCA2130CA2D00678C2C /* RegionManager.swift */,
 				B6B6B14E215B6866003DE2DD /* WatchComplication.swift */,
+				B6DAC734215F069300727D2A /* NotificationCategory.swift */,
+				B6DAC736215F06B100727D2A /* NotificationAction.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -2650,8 +2668,11 @@
 				B6B6B15B215B6D39003DE2DD /* WatchComplication.swift in Sources */,
 				B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */,
 				B63CAE692150CE5100A68AFB /* SiriShortcut.swift in Sources */,
+				B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */,
+				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
+				B6DAC737215F06B100727D2A /* NotificationAction.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				B6B6B14C215B1E86003DE2DD /* CLKComplication+Strings.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
@@ -2660,6 +2681,7 @@
 				B657A8EE1CA646EB00121384 /* SettingsViewController.swift in Sources */,
 				B6A5D9F5215233EC0013963F /* SiriIntents+ConvenienceInits.swift in Sources */,
 				B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */,
+				B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */,
 				D0EEF308214DD55300D1D360 /* RegionManager.swift in Sources */,
 				B6B6B14A215B137C003DE2DD /* WatchComplicationConfigurator.swift in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
@@ -2667,12 +2689,14 @@
 				D0B25BCD2130CAB400678C2C /* Bonjour.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
 				D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */,
+				B6DAC735215F069300727D2A /* NotificationCategory.swift in Sources */,
 				D0EEF32B214DF75500D1D360 /* DeviceUID.m in Sources */,
 				D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */,
 				B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
+				B68EDD07215F215E00DD6B28 /* Notifications.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
 				B6EA98BB215306E300788ACC /* Intents.intentdefinition in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,

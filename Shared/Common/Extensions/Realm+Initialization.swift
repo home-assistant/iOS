@@ -38,6 +38,9 @@ extension Realm {
         }
 
         let storeURL =  directoryURL.appendingPathComponent("store.realm", isDirectory: false)
+
+        print("Realm is stored at", storeURL.description)
+
         let config = Realm.Configuration(fileURL: storeURL, schemaVersion: 4,
                                          migrationBlock: nil, deleteRealmIfMigrationNeeded: true)
         // swiftlint:disable:next force_try

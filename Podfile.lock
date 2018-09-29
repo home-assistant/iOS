@@ -12,7 +12,7 @@ PODS:
     - UIColor_Hex_Swift (>= 3.0.0)
   - CPDAcknowledgements (1.0.0)
   - DeviceKit (1.8.0)
-  - Eureka (4.2.0)
+  - Eureka (4.3.0)
   - Iconic (1.5)
   - KeychainAccess (3.1.1)
   - MBProgressHUD (1.1.0)
@@ -99,7 +99,7 @@ CHECKOUT OPTIONS:
     :commit: 2f289a19c3ec41f835a9629fdbea4a89033f61a1
     :git: https://github.com/CocoaPods/CPDAcknowledgements
   Eureka:
-    :commit: 864cfa640566b35b6e119d45dd748523b62fb1c7
+    :commit: fd1af1ad81dd67ae51eb19448838022ce6db8203
     :git: https://github.com/xmartlabs/Eureka.git
   Iconic:
     :commit: f984e1e7e0ded870a09f79d980e498b24427af9c
@@ -116,7 +116,7 @@ SPEC CHECKSUMS:
   ColorPickerRow: 87dd091c54fff65cf554f79ca1556312ee66282f
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   DeviceKit: c7ae6f7b16c2239156ac64fc22de0b0975f0d0b5
-  Eureka: 0748c7bbb2560130e43c7bfa83e99c98854a1f42
+  Eureka: e2dd50c3d6e07d2d2501d4141e903ec64fa3724e
   Iconic: ee7252a3c892c74cc1175334e2c40f0260a19bd3
   KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9

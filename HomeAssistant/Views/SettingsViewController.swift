@@ -17,6 +17,7 @@ import UserNotifications
 import Shared
 import SystemConfiguration.CaptiveNetwork
 import WatchConnectivity
+import RealmSwift
 
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
@@ -490,7 +491,34 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     }))
 
                     self.present(alert, animated: true, completion: nil)
-        }
+                }
+
+            +++ Section(header: "Developer Options", footer: "Don't use these if you don't know what you are doing!")
+            <<< ButtonRow {
+                    $0.title = "Copy Realm from group to container"
+                }.onCellSelection { _, _ in
+                    let appGroupRealmPath = Current.realm().configuration.fileURL!
+                    let containerRealmPath = Realm.Configuration.defaultConfiguration.fileURL!
+
+                    print("Would copy from", appGroupRealmPath, "to", containerRealmPath)
+
+                    do {
+                        _ = try FileManager.default.replaceItemAt(containerRealmPath, withItemAt: appGroupRealmPath)
+                    } catch let error as NSError {
+                        // Catch fires here, with an NSError being thrown
+                        print("error occurred, here are the details:\n \(error)")
+                    }
+
+                    let msg = "Copied Realm from \(appGroupRealmPath) to \(containerRealmPath)"
+
+                    let alert = UIAlertController(title: "Copied Realm",
+                                                  message: msg,
+                                                  preferredStyle: UIAlertController.Style.alert)
+
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+                    self.present(alert, animated: true, completion: nil)
+                }
     }
 
     override func didReceiveMemoryWarning() {
