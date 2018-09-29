@@ -15,7 +15,7 @@ import Shared
 // swiftlint:disable:next type_body_length
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, ConnectionInfoChangedDelegate {
 
-    var webView: WKWebView!
+    var webView: FullScreenWKWebView!
     var waitingToHideToolbar: Bool = false
     var themeColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
 
@@ -50,7 +50,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         userContentController.add(self, name: "revokeExternalAuth")
         config.userContentController = userContentController
 
-        self.webView = WKWebView(frame: self.view!.frame, configuration: config)
+        self.webView = FullScreenWKWebView(frame: self.view!.frame, configuration: config)
         self.updateWebViewSettings()
         self.webView.isOpaque = true
         self.webView.scrollView.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
@@ -460,5 +460,11 @@ extension ConnectionInfo {
         components.queryItems = [queryItem]
 
         return try? components.asURL()
+    }
+}
+
+class FullScreenWKWebView: WKWebView {
+    override var safeAreaInsets: UIEdgeInsets {
+        return .zero
     }
 }
