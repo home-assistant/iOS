@@ -19,7 +19,7 @@ public class NotificationCategory: Object {
     @objc dynamic var CategorySummaryFormat: String?
 
     // Options
-    @objc dynamic var SendDismissActions: Bool = false
+    @objc dynamic var SendDismissActions: Bool = true
     // iOS 11+ only
     @objc dynamic var HiddenPreviewsShowTitle: Bool = false
     @objc dynamic var HiddenPreviewsShowSubtitle: Bool = false
