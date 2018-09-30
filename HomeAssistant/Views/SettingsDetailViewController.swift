@@ -143,7 +143,7 @@ class SettingsDetailViewController: FormViewController {
         case "notifications":
             self.title = L10n.SettingsDetails.Notifications.title
 
-            var notificationSettings:UNNotificationSettings?
+            var notificationSettings: UNNotificationSettings?
 
             UNUserNotificationCenter.current().getNotificationSettings { settings in
                 notificationSettings = settings
@@ -189,22 +189,6 @@ class SettingsDetailViewController: FormViewController {
                         for category in categories {
                             section <<< getNotificationCategoryRow(category, notificationSettings)
                         }
-                }
-
-                self.form
-                +++ Section(header: "", footer: L10n.SettingsDetails.Notifications.UpdateSection.footer)
-                <<< ButtonRow {
-                    $0.title = L10n.SettingsDetails.Notifications.UpdateSection.Button.title
-                }.onCellSelection {_, _ in
-                    HomeAssistantAPI.authenticatedAPI()?.setupPush()
-                    let title = L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.title
-                    let message = L10n.SettingsDetails.Notifications.UpdateSection.UpdatedAlert.message
-                    let alert = UIAlertController(title: title,
-                                                  message: message,
-                                                  preferredStyle: UIAlertController.Style.alert)
-                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
-                                                  handler: nil))
-                    self.present(alert, animated: true, completion: nil)
                 }
 
                 +++ Section(header: "", footer: L10n.SettingsDetails.Notifications.SoundsSection.footer)

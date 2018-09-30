@@ -923,23 +923,6 @@ internal enum L10n {
           internal static let title = L10n.tr("Localizable", "settings_details.notifications.sounds_section.imported_alert.title")
         }
       }
-
-      internal enum UpdateSection {
-        /// Updating push settings will request the latest push actions and categories from Home Assistant.
-        internal static let footer = L10n.tr("Localizable", "settings_details.notifications.update_section.footer")
-
-        internal enum Button {
-          /// Update push settings
-          internal static let title = L10n.tr("Localizable", "settings_details.notifications.update_section.button.title")
-        }
-
-        internal enum UpdatedAlert {
-          /// Push settings imported from Home Assistant.
-          internal static let message = L10n.tr("Localizable", "settings_details.notifications.update_section.updated_alert.message")
-          /// Settings Imported
-          internal static let title = L10n.tr("Localizable", "settings_details.notifications.update_section.updated_alert.title")
-        }
-      }
     }
 
     internal enum Siri {

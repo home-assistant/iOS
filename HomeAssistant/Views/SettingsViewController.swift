@@ -401,7 +401,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                             prefs.setValue(granted, forKey: "notificationsEnabled")
                             prefs.synchronize()
                             if granted, let api = api {
-                                api.setupPush()
                                 DispatchQueue.main.async(execute: {
                                     row.hidden = true
                                     row.updateCell()
@@ -519,6 +518,11 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
                     self.present(alert, animated: true, completion: nil)
                 }
+            <<< ButtonRow {
+                    $0.title = "Import legacy push settings"
+                }.onCellSelection {_, _ in
+                    MigratePushSettingsToLocal()
+            }
     }
 
     override func didReceiveMemoryWarning() {

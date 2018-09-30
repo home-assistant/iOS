@@ -204,10 +204,6 @@
 "settings_details.notifications.sounds_section.imported_alert.message" = "%d sounds were imported. Please restart your phone to complete the import.";
 "settings_details.notifications.sounds_section.imported_alert.title" = "Sounds Imported";
 "settings_details.notifications.title" = "Notification Settings";
-"settings_details.notifications.update_section.button.title" = "Update push settings";
-"settings_details.notifications.update_section.footer" = "Updating push settings will request the latest push actions and categories from Home Assistant.";
-"settings_details.notifications.update_section.updated_alert.message" = "Push settings imported from Home Assistant.";
-"settings_details.notifications.update_section.updated_alert.title" = "Settings Imported";
 "settings_details.siri.title" = "Siri Shortcuts";
 "siri_shortcuts.configurator.fields.section.footer" = "Suggested: %@";
 "siri_shortcuts.configurator.fields.section.header" = "Fields";
