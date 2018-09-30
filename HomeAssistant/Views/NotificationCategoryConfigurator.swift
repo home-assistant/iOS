@@ -12,48 +12,66 @@ import Eureka
 import UserNotifications
 import RealmSwift
 import Shared
+import Iconic
 
 class NotificationCategoryConfigurator: FormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
-    
+
+    var settings: UNNotificationSettings?
     var category: NotificationCategory = NotificationCategory()
     var newCategory: Bool = true
     var allActions: [String: NotificationAction] = [:]
+    var shouldSave: Bool = false
 
+    // Notifications are allowed a max of 4 actions if using Alerts and 2 if using Banner
+    private var maxActionsForCategory = 4
+    private let defaultMultivalueOptions: MultivaluedOptions = [.Reorder, .Insert, .Delete]
+    private var addButtonRow: ButtonRow = ButtonRow()
     private let realm = Current.realm()
 
-    convenience init(category: NotificationCategory?) {
+    convenience init(category: NotificationCategory?, settings: UNNotificationSettings?) {
         self.init()
+        self.settings = settings
         if let category = category {
             self.category = category
             self.newCategory = false
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
-        // Create the info button
-        let infoButton = UIButton(type: .infoLight)
+        let cancelSelector = #selector(NotificationCategoryConfigurator.cancel)
 
-        // You will need to configure the target action for the button itself, not the bar button item
-        infoButton.addTarget(self, action: #selector(NotificationActionConfigurator.getInfoAction), for: .touchUpInside)
-
-        // Create a bar button item using the info button as its custom view
-        let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
-
-        // Use it as required
-        self.navigationItem.leftBarButtonItem = infoBarButtonItem
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self,
+                                                                 action: cancelSelector)
 
         let saveSelector = #selector(NotificationCategoryConfigurator.save)
 
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
                                                                  action: saveSelector)
 
-        self.title = "Category Configurator"
+        let infoButton = UIButton(type: .infoLight)
+
+        infoButton.addTarget(self, action: #selector(NotificationCategoryConfigurator.getInfoAction),
+                             for: .touchUpInside)
+
+        let infoButtonView = UIBarButtonItem(customView: infoButton)
+
+        let previewButton = UIBarButtonItem(withIcon: .eyeIcon, size: CGSize(width: 25, height: 25), target: self,
+                                            action: #selector(NotificationCategoryConfigurator.preview))
+
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+
+        self.setToolbarItems([infoButtonView, flexibleSpace, previewButton], animated: false)
+
+        self.navigationController?.setToolbarHidden(false, animated: false)
+
+        self.title = L10n.NotificationsConfigurator.Category.NavigationBar.title
 
         if newCategory == false {
             self.title = category.Name
@@ -74,14 +92,18 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         let existingActions = realm.objects(NotificationAction.self)
 //        let existingActions = objs.sorted(byKeyPath: "Order")
 
-        self.form
-        +++ Section(header: "Settings", footer: "") {
-            $0.tag = "settings"
+        var settingsFooter = L10n.NotificationsConfigurator.Settings.footer
+
+        if self.newCategory {
+            settingsFooter = L10n.NotificationsConfigurator.Settings.Footer.idSet
         }
+
+        self.form
+        +++ Section(header: L10n.NotificationsConfigurator.Settings.header, footer: settingsFooter)
 
         <<< TextRow {
             $0.tag = "name"
-            $0.title = "Name"
+            $0.title = L10n.NotificationsConfigurator.Category.Rows.Name.title
             $0.add(rule: RuleRequired())
             if !newCategory {
                 $0.value = self.category.Name
@@ -94,7 +116,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
         <<< NotificationIdentifierRow {
             $0.tag = "identifier"
-            $0.title = "Identifier"
+            $0.title = L10n.NotificationsConfigurator.identifier
             if !newCategory {
                 $0.value = self.category.Identifier
             }
@@ -106,13 +128,15 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
         if #available(iOS 11.0, *) {
         self.form
-            +++ Section(header: "Hidden Preview Placeholder",
-                        footer: "This text is only displayed if you have notification previews hidden. Use %u for the number of messages with the same thread identifier.")
+            +++ Section(header: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.header,
+                        footer: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.footer)
             <<< TextAreaRow {
                 $0.tag = "hiddenPreviewsBodyPlaceholder"
-                $0.placeholder = "There are %u notifications."
-                if !newCategory {
+                $0.placeholder = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
+                if !newCategory && self.category.HiddenPreviewsBodyPlaceholder != "" {
                     $0.value = self.category.HiddenPreviewsBodyPlaceholder
+                } else {
+                    $0.value = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
                 }
             }.onChange { row in
                 if let value = row.value {
@@ -123,12 +147,14 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
         if #available(iOS 12.0, *) {
             self.form
-                +++ Section(header: "Category Summary",
-                            footer: "A format string for the summary description used when the system groups the category’s notifications.")
+                +++ Section(header: L10n.NotificationsConfigurator.Category.Rows.CategorySummary.header,
+                            footer: L10n.NotificationsConfigurator.Category.Rows.CategorySummary.footer)
                 <<< TextAreaRow {
                     $0.tag = "categorySummaryFormat"
-                    if !newCategory {
+                    if !newCategory && self.category.CategorySummaryFormat != "" {
                         $0.value = self.category.CategorySummaryFormat
+                    } else {
+                        $0.value = L10n.NotificationsConfigurator.Category.Rows.CategorySummary.default
                     }
                 }.onChange { row in
                     if let value = row.value {
@@ -137,12 +163,45 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                 }
         }
 
-        let mvOpts: MultivaluedOptions = [.Reorder, .Insert, .Delete]
+        // Default footer if we can't get Notification Settings for some reason
+        var footer = L10n.NotificationsConfigurator.Category.Rows.Actions.Footer.default
+
+        if let settings = self.settings {
+            if settings.alertStyle == .alert {
+                footer = L10n.NotificationsConfigurator.Category.Rows.Actions.Footer.Style.alert
+            } else if settings.alertStyle == .banner {
+                maxActionsForCategory = 2
+                footer = L10n.NotificationsConfigurator.Category.Rows.Actions.Footer.Style.banner
+            }
+        }
 
         self.form
-            +++ MultivaluedSection(multivaluedOptions: mvOpts, header: "Actions", footer: "") { section in
+            +++ MultivaluedSection(multivaluedOptions: defaultMultivalueOptions,
+                                   header: L10n.NotificationsConfigurator.Category.Rows.Actions.header,
+                                   footer: footer) { section in
                     section.multivaluedRowToInsertAt = { index in
+
+                        if index >= self.maxActionsForCategory - 1 {
+                            section.multivaluedOptions = [.Reorder, .Delete]
+
+                            self.addButtonRow.hidden = true
+
+                            DispatchQueue.main.async { // I'm not sure why this is necessary
+                                self.addButtonRow.evaluateHidden()
+                            }
+                        }
+
                         return self.getActionRow(nil)
+                    }
+
+                    section.addButtonProvider = { section in
+                        self.addButtonRow = ButtonRow {
+                            $0.title = L10n.NotificationsConfigurator.Category.Rows.Actions.AddRow.title
+                            $0.cellStyle = .value1
+                        }.cellUpdate { cell, _ in
+                            cell.textLabel?.textAlignment = .left
+                        }
+                        return self.addButtonRow
                     }
 
                     for action in existingActions {
@@ -156,9 +215,20 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         // Dispose of any resources that can be recreated.
     }
 
+    override func rowsHaveBeenRemoved(_ rows: [BaseRow], at indexes: [IndexPath]) {
+        super.rowsHaveBeenRemoved(rows, at: indexes)
+        if let index = indexes.first?.section, let section = form.allSections[index] as? MultivaluedSection {
+            if section.count < maxActionsForCategory {
+                section.multivaluedOptions = self.defaultMultivalueOptions
+                self.addButtonRow.hidden = false // or could
+                self.addButtonRow.evaluateHidden()
+            }
+        }
+    }
+
     func getActionRow(_ action: NotificationAction?) -> ButtonRowWithPresent<NotificationActionConfigurator> {
         var identifier = "new_action_"+UUID().uuidString
-        var title = "New Action"
+        var title = L10n.NotificationsConfigurator.NewAction.title
 
         if let action = action {
             identifier = action.Identifier
@@ -177,56 +247,19 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                 if let vc = vc as? NotificationActionConfigurator {
                     vc.row.title = vc.action.Title
                     vc.row.updateCell()
-                    self.allActions[vc.action.Identifier] = vc.action
                     print("action", vc.action)
 
                     // swiftlint:disable:next force_try
                     try! self.realm.write {
                         self.realm.add(vc.action, update: true)
                     }
+
+                    self.category.Actions.append(vc.action)
                 }
 
             })
         }
     }
-
-//    override func viewDidDisappear(_ animated: Bool) {
-//        if self.isBeingDismissed || self.isMovingFromParent {
-//            var templateName = "UNKNOWN"
-//
-//            if let template = self.form.rowBy(tag: "template") as? PushRow<ComplicationTemplate>,
-//                let value = template.value {
-//                templateName = value.rawValue
-//            }
-//
-//            var formVals = self.form.values(includeHidden: false)
-//
-//            for (key, val) in formVals {
-//                if key.contains("color"), let color = val as? UIColor {
-//                    formVals[key] = color.hexString(true)
-//                }
-//            }
-//
-//            formVals.removeValue(forKey: "template")
-//
-//            print("BYE BYE CONFIGURATOR", formVals)
-//
-//            let complication = WatchComplication()
-//            complication.Family = self.family.rawValue
-//            complication.Template = templateName
-//            complication.Data = formVals as [String: Any]
-//            print("COMPLICATION", complication)
-//
-//            let realm = Current.realm()
-//
-//            print("Realm is located at:", realm.configuration.fileURL!)
-//
-//
-//            try! realm.write {
-//                realm.add(complication, update: true)
-//            }
-//        }
-//    }
 
     @objc
     func getInfoAction(_ sender: Any) {
@@ -241,14 +274,24 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         if self.form.validate().count == 0 {
             print("Category form is valid, calling dismiss callback!")
 
-            self.category.Actions.removeAll()
-
-            for action in self.allActions.map({ $1 }) {
-                self.category.Actions.append(action)
-            }
+            self.shouldSave = true
 
             onDismissCallback?(self)
         }
+    }
+
+    @objc
+    func cancel(_ sender: Any) {
+        print("Cancel hit, calling dismiss")
+
+        self.shouldSave = false
+
+        onDismissCallback?(self)
+    }
+
+    @objc
+    func preview(_ sender: Any) {
+        print("Preview hit")
     }
 
 }

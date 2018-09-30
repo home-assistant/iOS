@@ -13,6 +13,7 @@ import Intents
 import IntentsUI
 import PromiseKit
 import RealmSwift
+import UserNotifications
 
 // swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController {
@@ -141,6 +142,13 @@ class SettingsDetailViewController: FormViewController {
 
         case "notifications":
             self.title = L10n.SettingsDetails.Notifications.title
+
+            var notificationSettings:UNNotificationSettings?
+
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                notificationSettings = settings
+            }
+
             self.form
                 +++ Section()
                 <<< SwitchRow("confirmBeforeOpeningUrl") {
@@ -175,11 +183,11 @@ class SettingsDetailViewController: FormViewController {
                 self.form
                     +++ MultivaluedSection(multivaluedOptions: mvOpts, header: "Categories", footer: "") { section in
                         section.multivaluedRowToInsertAt = { index in
-                            return self.getNotificationCategoryRow(nil)
+                            return self.getNotificationCategoryRow(nil, notificationSettings)
                         }
 
                         for category in categories {
-                            section <<< getNotificationCategoryRow(category)
+                            section <<< getNotificationCategoryRow(category, notificationSettings)
                         }
                 }
 
@@ -477,7 +485,8 @@ class SettingsDetailViewController: FormViewController {
         self.dismiss(animated: true, completion: nil)
     }
 
-    func getNotificationCategoryRow(_ category: NotificationCategory?) -> ButtonRowWithPresent<NotificationCategoryConfigurator> {
+    func getNotificationCategoryRow(_ category: NotificationCategory?, _ settings: UNNotificationSettings?) ->
+        ButtonRowWithPresent<NotificationCategoryConfigurator> {
         var identifier = "new_category_"+UUID().uuidString
         var title = "New Category"
 
@@ -490,11 +499,16 @@ class SettingsDetailViewController: FormViewController {
             $0.tag = identifier
             $0.title = title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                return NotificationCategoryConfigurator(category: category)
+                return NotificationCategoryConfigurator(category: category, settings: settings)
             }, onDismiss: { vc in
                 _ = vc.navigationController?.popViewController(animated: true)
 
                 if let vc = vc as? NotificationCategoryConfigurator {
+                    if vc.shouldSave == false {
+                        print("Not saving category to DB and returning early!")
+                        return
+                    }
+
                     vc.row.title = vc.category.Name
                     vc.row.updateCell()
 

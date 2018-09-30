@@ -350,6 +350,131 @@ internal enum L10n {
     internal static let title = L10n.tr("Localizable", "manual_location_update_notification.title")
   }
 
+  internal enum NotificationsConfigurator {
+    /// Identifier
+    internal static let identifier = L10n.tr("Localizable", "notifications_configurator.identifier")
+
+    internal enum Action {
+
+      internal enum Rows {
+
+        internal enum AuthenticationRequired {
+          /// When the user selects an action with this option, the system prompts the user to unlock the device. After unlocking, Home Assistant will be notified of the selected action.
+          internal static let footer = L10n.tr("Localizable", "notifications_configurator.action.rows.authentication_required.footer")
+          /// Authentication Required
+          internal static let title = L10n.tr("Localizable", "notifications_configurator.action.rows.authentication_required.title")
+        }
+
+        internal enum Destructive {
+          /// When enabled, the action button is displayed with special highlighting to indicate that it performs a destructive task.
+          internal static let footer = L10n.tr("Localizable", "notifications_configurator.action.rows.destructive.footer")
+          /// Desctructive
+          internal static let title = L10n.tr("Localizable", "notifications_configurator.action.rows.destructive.title")
+        }
+
+        internal enum Foreground {
+          /// Enabling this will cause the app to launch if it's in the background when tapping a notification
+          internal static let footer = L10n.tr("Localizable", "notifications_configurator.action.rows.foreground.footer")
+          /// Launch app
+          internal static let title = L10n.tr("Localizable", "notifications_configurator.action.rows.foreground.title")
+        }
+
+        internal enum TextInputButtonTitle {
+          /// Button Title
+          internal static let title = L10n.tr("Localizable", "notifications_configurator.action.rows.text_input_button_title.title")
+        }
+
+        internal enum TextInputPlaceholder {
+          /// Placeholder
+          internal static let title = L10n.tr("Localizable", "notifications_configurator.action.rows.text_input_placeholder.title")
+        }
+
+        internal enum Title {
+          /// Title
+          internal static let title = L10n.tr("Localizable", "notifications_configurator.action.rows.title.title")
+        }
+      }
+
+      internal enum TextInput {
+        /// Text Input
+        internal static let title = L10n.tr("Localizable", "notifications_configurator.action.text_input.title")
+      }
+    }
+
+    internal enum Category {
+
+      internal enum NavigationBar {
+        /// Category Configurator
+        internal static let title = L10n.tr("Localizable", "notifications_configurator.category.navigation_bar.title")
+      }
+
+      internal enum Rows {
+
+        internal enum Actions {
+          /// Actions
+          internal static let header = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.header")
+
+          internal enum AddRow {
+            /// Add
+            internal static let title = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.add_row.title")
+          }
+
+          internal enum Footer {
+            /// Categories can have a maximum of 4 actions. Banner notifications will only show 2. Change your notification settings to Alert in order to add up to 4.
+            internal static let `default` = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.footer.default")
+
+            internal enum Style {
+              /// Categories can have a maximum of 4 actions. You are currently using the Alert style which allows 4 actions.
+              internal static let alert = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.footer.style.alert")
+              /// Categories can have a maximum of 4 actions. You are currently using the Banner style which allows 2 actions. Change your notification settings to Alert in order to add up to 4.
+              internal static let banner = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.footer.style.banner")
+            }
+          }
+        }
+
+        internal enum CategorySummary {
+          /// %%u notifications in %%@
+          internal static let `default` = L10n.tr("Localizable", "notifications_configurator.category.rows.category_summary.default")
+          /// A format string for the summary description used when the system groups the category’s notifications. You can optionally uses '%%u' to show the number of notifications in the group and '%%@' to show the summary argument provided in the push payload.
+          internal static let footer = L10n.tr("Localizable", "notifications_configurator.category.rows.category_summary.footer")
+          /// Category Summary
+          internal static let header = L10n.tr("Localizable", "notifications_configurator.category.rows.category_summary.header")
+        }
+
+        internal enum HiddenPreviewPlaceholder {
+          /// %%u notifications
+          internal static let `default` = L10n.tr("Localizable", "notifications_configurator.category.rows.hidden_preview_placeholder.default")
+          /// This text is only displayed if you have notification previews hidden. Use '%%u' for the number of messages with the same thread identifier.
+          internal static let footer = L10n.tr("Localizable", "notifications_configurator.category.rows.hidden_preview_placeholder.footer")
+          /// Hidden Preview Placeholder
+          internal static let header = L10n.tr("Localizable", "notifications_configurator.category.rows.hidden_preview_placeholder.header")
+        }
+
+        internal enum Name {
+          /// Name
+          internal static let title = L10n.tr("Localizable", "notifications_configurator.category.rows.name.title")
+        }
+      }
+    }
+
+    internal enum NewAction {
+      /// New Action
+      internal static let title = L10n.tr("Localizable", "notifications_configurator.new_action.title")
+    }
+
+    internal enum Settings {
+      /// Identifier must contain only letters and underscores. It must be globally unique to the app.
+      internal static let footer = L10n.tr("Localizable", "notifications_configurator.settings.footer")
+      /// Settings
+      internal static let header = L10n.tr("Localizable", "notifications_configurator.settings.header")
+
+      internal enum Footer {
+        /// Identifier can not be changed after creation. You must delete and recreate the action to change the identifier.
+        internal static let idSet = L10n.tr("Localizable", "notifications_configurator.settings.footer.id_set")
+      }
+    }
+  }
+
   internal enum Permissions {
 
     internal enum Location {

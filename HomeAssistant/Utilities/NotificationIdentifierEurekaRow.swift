@@ -15,15 +15,22 @@ public final class NotificationIdentifierRow: Row<NotificationIdentifierTextCell
 
         cellProvider = CellProvider<NotificationIdentifierTextCell>()
 
+        self.cell.textField.tag = 999
+
         self.cell.textField.autocapitalizationType = .allCharacters
 
         self.add(rule: RuleRegExp(regExpr: "[A-Z_]+"))
+        self.add(rule: RuleRequired())
     }
 }
 
 public class NotificationIdentifierTextCell: TextCell {
     public override func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
                                    replacementString string: String) -> Bool {
+
+        if textField.tag != 999 { // Only modify rows with the tag 999
+            return false
+        }
 
         if string.isEmpty {
             return true
@@ -33,6 +40,10 @@ public class NotificationIdentifierTextCell: TextCell {
     }
 
     public override func textFieldDidChange(_ textField: UITextField) {
+        if textField.tag != 999 { // Only modify rows with the tag 999
+            return
+        }
+
         textField.text = textField.text?.replacingOccurrences(of: " ", with: "_")
         row.value = textField.text
     }
