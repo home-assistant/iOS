@@ -16,8 +16,7 @@ import RealmSwift
 import Shared
 import SafariServices
 import Intents
-import WatchKit
-import WatchConnectivity
+import Communicator
 import Iconic
 
 let keychain = Keychain(service: "io.robbie.homeassistant")
@@ -29,8 +28,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var safariVC: SFSafariViewController?
     let regionManager = RegionManager()
-
-    var watchSession: WCSession?
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -49,12 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UNUserNotificationCenter.current().delegate = self
 
-        // Activate watch session
-        if WCSession.isSupported() {
-            watchSession = WCSession.default
-            watchSession!.delegate = self
-            watchSession!.activate()
-        }
+        setupWatchCommunicator()
 
         if #available(iOS 12.0, *) {
             // Tell the system we have a app notification settings screen and want critical alerts
@@ -368,6 +360,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                           message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription))
         }
     }
+
+    func setupWatchCommunicator() {
+        Communicator.shared.activationStateChangedObservers.add { state in
+            print("Activation state changed: ", state)
+        }
+
+        Communicator.shared.watchStateUpdatedObservers.add { watchState in
+            print("Watch state changed: ", watchState)
+        }
+
+        Communicator.shared.reachabilityChangedObservers.add { reachability in
+            print("Reachability changed: ", reachability)
+        }
+
+        Communicator.shared.immediateMessageReceivedObservers.add { message in
+            print("Received message: ", message.identifier)
+        }
+
+        Communicator.shared.blobReceivedObservers.add { blob in
+            print("Received blob: ", blob.identifier)
+        }
+
+        Communicator.shared.contextUpdatedObservers.add { context in
+            print("Received context: ", context)
+        }
+    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
@@ -451,69 +469,4 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let navController = UINavigationController(rootViewController: view)
         rootViewController?.present(navController, animated: true, completion: nil)
     }
-}
-
-extension AppDelegate: WCSessionDelegate {
-    func session(_ session: WCSession,
-                 activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-
-        watchSession = session
-
-        print("Activation completed with", activationState.rawValue)
-        print("Session", session.isPaired, session.isReachable, session.activationState)
-
-        if session.isWatchAppInstalled && session.isPaired && session.activationState == .activated {
-            storeApplicationContext(session.applicationContext)
-
-            // Must create a fresh Realm instead of using Current.realm beacuse WCSessionDelegate runs on main thread
-
-            let realm = Realm.live()
-            let complications = realm.objects(WatchComplication.self)
-
-            print("Sending", complications)
-
-            let threadSafeObjs = Array(complications).map({ ThreadSafeReference(to: $0) })
-
-            let transfer = session.transferCurrentComplicationUserInfo(["complication": threadSafeObjs])
-            print("transfer status", transfer.isTransferring)
-        }
-    }
-
-    func sessionDidBecomeInactive(_ session: WCSession) {
-        print("Session did become inactive", session)
-    }
-
-    func sessionDidDeactivate(_ session: WCSession) {
-        print("Session did deactivate", session)
-    }
-
-    func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String: Any]) {
-        print("Received application context!", applicationContext)
-
-        storeApplicationContext(applicationContext)
-    }
-
-    func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
-        print("did finish userInfoTransfer", userInfoTransfer, userInfoTransfer.userInfo)
-    }
-
-    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
-        print("Received data dictionary!", userInfo)
-//        if let complicationUserInfo = userInfo["complication"] as? [String: Any] {
-//            //refresh the complication with the decoded data normally
-//
-//        }
-    }
-
-    func storeApplicationContext(_ context: [String: Any]) {
-        if let activeComplications = context["activeComplications"] as? [String] {
-
-            let activeComplicationGroups = activeComplications.map({ ComplicationGroupMember(name: $0).name })
-
-            prefs.setValue(activeComplications, forKey: "activeComplications")
-            prefs.setValue(activeComplicationGroups, forKey: "activeComplicationGroups")
-            print("Saved active complications to NSUserDefaults")
-        }
-    }
-
 }

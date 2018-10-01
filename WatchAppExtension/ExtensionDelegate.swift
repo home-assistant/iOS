@@ -7,51 +7,30 @@
 //
 
 import WatchKit
-import WatchConnectivity
 import ClockKit
 import RealmSwift
+import Communicator
+import UserNotifications
 
-class ExtensionDelegate: NSObject, WKExtensionDelegate, WCSessionDelegate {
+class ExtensionDelegate: NSObject, WKExtensionDelegate {
+    // MARK: - Properties -
+    // MARK: Fileprivate
 
-    // Our WatchConnectivity Session for communicating with the iOS app
-    var watchSession: WCSession?
-
-    /** Called on the delegate of the receiver. Will be called on startup if an applicationContext is available. */
-    func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String: Any]) {
-        print("Received context!", applicationContext)
-
-        if let refs = applicationContext["complications"] as? [ThreadSafeReference<WatchComplication>] {
-            print("Received latest complication configurations!", refs)
-            let realm = Realm.live()
-
-            for ref in refs {
-                guard let complicationConfig = realm.resolve(ref) else {
-                    print("Unable to resolve Realm ThreadSafeReference, maybe config was deleted?")
-                    return
-                }
-
-                // swiftlint:disable:next force_try
-                try! realm.write {
-                    realm.add(complicationConfig, update: true)
-                }
-            }
-        } else {
-            print("Unable to cast complication refs!!!", applicationContext)
+    fileprivate var watchConnectivityTask: WKWatchConnectivityRefreshBackgroundTask? {
+        didSet {
+            print("watchConnectivityTask set")
+            oldValue?.setTaskCompleted()
         }
     }
 
-    func session(_ session: WCSession,
-                 activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        watchSession = session
-        print("Session did activate", session)
-
-        updateApplicationContext()
-    }
+    // MARK: - WKExtensionDelegate -
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
 
         print("didFinishLaunching")
+
+        setupWatchCommunicator()
     }
 
     func applicationDidBecomeActive() {
@@ -59,14 +38,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, WCSessionDelegate {
         // If the application was previously in the background, optionally refresh the user interface.
 
         print("didBecomeActive")
-
-        if watchSession == nil && WCSession.isSupported() {
-            watchSession = WCSession.default
-            watchSession!.delegate = self
-            watchSession!.activate()
-        }
-
-        updateApplicationContext()
     }
 
     func applicationWillResignActive() {
@@ -92,7 +63,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, WCSessionDelegate {
                                               estimatedSnapshotExpiration: Date.distantFuture, userInfo: nil)
             case let connectivityTask as WKWatchConnectivityRefreshBackgroundTask:
                 // Be sure to complete the connectivity task once you’re done.
-                connectivityTask.setTaskCompletedWithSnapshot(false)
+                watchConnectivityTask = connectivityTask
             case let urlSessionTask as WKURLSessionRefreshBackgroundTask:
                 // Be sure to complete the URL session task once you’re done.
                 urlSessionTask.setTaskCompletedWithSnapshot(false)
@@ -110,11 +81,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, WCSessionDelegate {
     }
 
     func updateApplicationContext() {
-        guard let watchSession = watchSession, watchSession.activationState == .activated else {
-            print("Session not available or active, not updating context!")
-            return
-        }
-
         var activeFamilies: [String] = []
 
         if let activeComplications = CLKComplicationServer.sharedInstance().activeComplications {
@@ -125,15 +91,101 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate, WCSessionDelegate {
 
         print("active families", activeFamilies)
 
-        print("applicationContext PRE", watchSession.applicationContext)
+        let context = Context(content: ["activeComplications": activeFamilies, "model": getModelName()])
+
+        let content = UNMutableNotificationContent()
+        content.title = "Context"
+        content.body = context.content.debugDescription
+        content.sound = UNNotificationSound.default
+
+        let notificationRequest =
+            UNNotificationRequest.init(identifier: "context",
+                                       content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(notificationRequest)
 
         do {
-            try watchSession.updateApplicationContext(["activeComplications": activeFamilies])
+            try Communicator.shared.sync(context: context)
         } catch let error as NSError {
             print("Updating the context failed: ", error.localizedDescription)
         }
 
-        print("applicationContext POST", watchSession.applicationContext)
+        print("Set the context")
     }
 
+    func setupWatchCommunicator() {
+        Communicator.shared.activationStateChangedObservers.add { state in
+            print("Activation state changed: ", state)
+
+            self.updateApplicationContext()
+        }
+
+        Communicator.shared.reachabilityChangedObservers.add { reachability in
+            print("Reachability changed: ", reachability)
+
+            self.updateApplicationContext()
+        }
+
+        Communicator.shared.immediateMessageReceivedObservers.add { message in
+            print("Received message: ", message.identifier)
+
+            self.endWatchConnectivityBackgroundTaskIfNecessary()
+        }
+
+        Communicator.shared.blobReceivedObservers.add { blob in
+            Communicator.shared.blobReceivedObservers.add { blob in
+                print("Received blob: ", blob.identifier)
+                self.endWatchConnectivityBackgroundTaskIfNecessary()
+            }
+        }
+
+        Communicator.shared.contextUpdatedObservers.add { context in
+            print("Received context: ", context)
+            self.endWatchConnectivityBackgroundTaskIfNecessary()
+        }
+
+        Communicator.shared.complicationInfoReceivedObservers.add { complicationInfo in
+            print("Received complication info: ", complicationInfo)
+
+            self.updateApplicationContext()
+
+            let realm = Realm.live()
+
+            for (family, data) in complicationInfo.content {
+                print("Family", family)
+                print("Data", data)
+
+                if let dataDict = data as? [String: Any], let complicationConfig = WatchComplication(JSON: dataDict) {
+                    // swiftlint:disable:next force_try
+                    try! realm.write {
+                        print("Writing", complicationConfig.Family)
+                        realm.add(complicationConfig, update: true)
+                    }
+                }
+            }
+
+            CLKComplicationServer.sharedInstance().activeComplications?.forEach {
+                CLKComplicationServer.sharedInstance().reloadTimeline(for: $0)
+            }
+            self.endWatchConnectivityBackgroundTaskIfNecessary()
+        }
+    }
+
+    private func endWatchConnectivityBackgroundTaskIfNecessary() {
+        // First check we're not expecting more data
+        guard !Communicator.shared.hasPendingDataToBeReceived else { return }
+        // And then end the task (if there is one!)
+        self.watchConnectivityTask?.setTaskCompleted()
+    }
+
+}
+
+func getModelName() -> String {
+    var systemInfo = utsname()
+    uname(&systemInfo)
+    let machineMirror = Mirror(reflecting: systemInfo.machine)
+    let identifier = machineMirror.children.reduce("") { identifier, element in
+        guard let value = element.value as? Int8, value != 0 else { return identifier }
+        return identifier + String(UnicodeScalar(UInt8(value)))
+    }
+    return identifier
 }

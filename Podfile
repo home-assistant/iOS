@@ -34,7 +34,8 @@ target 'HomeAssistant' do
   shared_pods
 
   pod 'AlamofireNetworkActivityIndicator', '2.3.0'
-  pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'Swift4.2'
+  pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
+  pod 'Communicator'
   pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
   pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
   pod 'MBProgressHUD', '1.1.0'
@@ -83,5 +84,9 @@ end
 target 'WatchAppExtension' do
   platform :watchos, '5.0'
 
+  pod 'Communicator'
+  pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
   pod 'RealmSwift'
+  pod 'ObjectMapper', '3.3.0'
+  pod 'UIColor_Hex_Swift'
 end

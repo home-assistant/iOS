@@ -19,12 +19,14 @@
     {
       "size" : "29x29",
       "idiom" : "watch",
+      "filename" : "dev-58x58-1.png",
       "role" : "companionSettings",
       "scale" : "2x"
     },
     {
       "size" : "29x29",
       "idiom" : "watch",
+      "filename" : "dev-87x87.png",
       "role" : "companionSettings",
       "scale" : "3x"
     },
@@ -39,6 +41,7 @@
     {
       "size" : "44x44",
       "idiom" : "watch",
+      "filename" : "dev-88x88.png",
       "scale" : "2x",
       "role" : "appLauncher",
       "subtype" : "40mm"
@@ -80,38 +83,6 @@
       "idiom" : "watch-marketing",
       "filename" : "dev-1024x1024.png",
       "scale" : "1x"
-    },
-    {
-      "size" : "29x29",
-      "idiom" : "watch",
-      "filename" : "dev-58x58.png",
-      "scale" : "2x",
-      "role" : "notificationCenter",
-      "subtype" : "44mm"
-    },
-    {
-      "size" : "29x29",
-      "idiom" : "watch",
-      "filename" : "dev-87x87.png",
-      "scale" : "3x",
-      "role" : "notificationCenter",
-      "subtype" : "44mm"
-    },
-    {
-      "size" : "29x29",
-      "idiom" : "watch",
-      "filename" : "dev-58x58.png",
-      "scale" : "2x",
-      "role" : "companionSettings",
-      "subtype" : "38mm"
-    },
-    {
-      "size" : "44x44",
-      "idiom" : "watch",
-      "filename" : "dev-88x88.png",
-      "scale" : "2x",
-      "role" : "appLauncher",
-      "subtype" : "42mm"
     }
   ],
   "info" : {

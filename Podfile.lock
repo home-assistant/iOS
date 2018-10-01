@@ -10,6 +10,8 @@ PODS:
   - ColorPickerRow (1.2.1):
     - Eureka (>= 3.0.0)
     - UIColor_Hex_Swift (>= 3.0.0)
+  - Communicator (3.1.0):
+    - TABObserverSet (= 2.1.0)
   - CPDAcknowledgements (1.0.0)
   - DeviceKit (1.8.0)
   - Eureka (4.3.0)
@@ -33,6 +35,7 @@ PODS:
     - Realm (= 3.10.0)
   - SwiftGen (5.3.0)
   - SwiftLint (0.25.1)
+  - TABObserverSet (2.1.0)
   - UIColor_Hex_Swift (4.2.0)
   - ViewRow (0.3.0):
     - Eureka (>= 4.0.0)
@@ -42,7 +45,8 @@ DEPENDENCIES:
   - AlamofireImage (= 3.4.1)
   - AlamofireNetworkActivityIndicator (= 2.3.0)
   - AlamofireObjectMapper (= 5.1.0)
-  - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `Swift4.2`)
+  - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `master`)
+  - Communicator
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - DeviceKit (= 1.8)
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
@@ -63,6 +67,7 @@ SPEC REPOS:
     - AlamofireImage
     - AlamofireNetworkActivityIndicator
     - AlamofireObjectMapper
+    - Communicator
     - DeviceKit
     - KeychainAccess
     - MBProgressHUD
@@ -72,11 +77,12 @@ SPEC REPOS:
     - RealmSwift
     - SwiftGen
     - SwiftLint
+    - TABObserverSet
     - UIColor_Hex_Swift
 
 EXTERNAL SOURCES:
   ColorPickerRow:
-    :branch: Swift4.2
+    :branch: master
     :git: https://github.com/EurekaCommunity/ColorPickerRow
   CPDAcknowledgements:
     :branch: master
@@ -93,7 +99,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   ColorPickerRow:
-    :commit: a96f57a887975cb6483736d2a8be961ca1b0580d
+    :commit: 3c1be59fb9be7f6d81c985d2837b6d31e66889c5
     :git: https://github.com/EurekaCommunity/ColorPickerRow
   CPDAcknowledgements:
     :commit: 2f289a19c3ec41f835a9629fdbea4a89033f61a1
@@ -114,6 +120,7 @@ SPEC CHECKSUMS:
   AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
   ColorPickerRow: 87dd091c54fff65cf554f79ca1556312ee66282f
+  Communicator: 0758c0ec1f8447b48c8a4d351cab27e9e706723f
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   DeviceKit: c7ae6f7b16c2239156ac64fc22de0b0975f0d0b5
   Eureka: e2dd50c3d6e07d2d2501d4141e903ec64fa3724e
@@ -126,9 +133,10 @@ SPEC CHECKSUMS:
   RealmSwift: 69121c8b86d0ae005fb779efdb10e606732e1c74
   SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
   SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
+  TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
   UIColor_Hex_Swift: bc07fc197421ee896b9ed6dcfa2054b7fbf75145
   ViewRow: e278428ff53da5eab18b191d3e19a16f3e299fc1
 
-PODFILE CHECKSUM: 045cb9fba03a23970faad3ea986b38d4a6f5cf04
+PODFILE CHECKSUM: fce285522ed03852c76e56d4b86827c52613abb0
 
 COCOAPODS: 1.6.0.beta.1

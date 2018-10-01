@@ -16,8 +16,8 @@ import CoreLocation
 import UserNotifications
 import Shared
 import SystemConfiguration.CaptiveNetwork
-import WatchConnectivity
 import RealmSwift
+import Communicator
 
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
@@ -554,6 +554,12 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                                                    content: content, trigger: nil)
                     UNUserNotificationCenter.current().add(notificationRequest)
             }
+            <<< ButtonRow {
+                $0.title = "Print Watch contexts to log"
+            }.onCellSelection { _, _ in
+                print("Most recently received context", Communicator.shared.mostRecentlyReceievedContext.content)
+                print("Most recently sent context", Communicator.shared.mostRecentlySentContext.content)
+            }
     }
 
     override func didReceiveMemoryWarning() {
@@ -957,20 +963,4 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
 protocol ConnectionInfoChangedDelegate: class {
     func userReconnected()
-}
-
-extension SettingsViewController: WCSessionDelegate {
-    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        print("Activation completed with state", activationState, error?.localizedDescription)
-    }
-
-    func sessionDidBecomeInactive(_ session: WCSession) {
-        print("Session inactive")
-    }
-
-    func sessionDidDeactivate(_ session: WCSession) {
-        print("Session deactivated")
-    }
-
-
 }

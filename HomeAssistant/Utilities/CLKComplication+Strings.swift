@@ -7,12 +7,14 @@
 //
 
 import Foundation
+import UIKit
 #if os(watchOS)
+import WatchKit
 import ClockKit
 #endif
 
 // swiftlint:disable cyclomatic_complexity type_body_length file_length
-enum ComplicationGroup: String {
+public enum ComplicationGroup: String {
     case circularSmall
     case extraLarge
     case graphic
@@ -69,7 +71,7 @@ enum ComplicationGroup: String {
 
 extension ComplicationGroup: CaseIterable {}
 
-enum ComplicationGroupMember: String {
+public enum ComplicationGroupMember: String {
     case circularSmall
     case extraLarge
     case graphicBezel
@@ -333,7 +335,7 @@ enum ComplicationGroupMember: String {
 extension ComplicationGroupMember: CaseIterable {}
 
 // swiftlint:disable:next type_body_length
-enum ComplicationTemplate: String {
+public enum ComplicationTemplate: String {
     case CircularSmallRingImage
     case CircularSmallSimpleImage
     case CircularSmallStackImage
@@ -667,7 +669,7 @@ enum ComplicationTemplate: String {
         case .ModularSmallStackText:
             return [.Line1, .Line2]
         case .ModularLargeStandardBody:
-            return [.Header, .Line1, .Line2]
+            return [.Header, .Body1, .Body2]
         case .ModularLargeTallBody:
             return [.Header, .Center]
         case .ModularLargeColumns:
@@ -718,7 +720,104 @@ enum ComplicationTemplate: String {
     }
 
     #if os(watchOS)
-    var template: CLKComplicationTemplate {
+    // swiftlint:disable:next function_body_length
+    init(_ template: CLKComplicationTemplate) {
+        switch template {
+        case is CLKComplicationTemplateCircularSmallRingImage:
+            self = .CircularSmallRingImage
+        case is CLKComplicationTemplateCircularSmallSimpleImage:
+            self = .CircularSmallSimpleImage
+        case is CLKComplicationTemplateCircularSmallStackImage:
+            self = .CircularSmallStackImage
+        case is CLKComplicationTemplateCircularSmallRingText:
+            self = .CircularSmallRingText
+        case is CLKComplicationTemplateCircularSmallSimpleText:
+            self = .CircularSmallSimpleText
+        case is CLKComplicationTemplateCircularSmallStackText:
+            self = .CircularSmallStackText
+        case is CLKComplicationTemplateExtraLargeRingImage:
+            self = .ExtraLargeRingImage
+        case is CLKComplicationTemplateExtraLargeSimpleImage:
+            self = .ExtraLargeSimpleImage
+        case is CLKComplicationTemplateExtraLargeStackImage:
+            self = .ExtraLargeStackImage
+        case is CLKComplicationTemplateExtraLargeColumnsText:
+            self = .ExtraLargeColumnsText
+        case is CLKComplicationTemplateExtraLargeRingText:
+            self = .ExtraLargeRingText
+        case is CLKComplicationTemplateExtraLargeSimpleText:
+            self = .ExtraLargeSimpleText
+        case is CLKComplicationTemplateExtraLargeStackText:
+            self = .ExtraLargeStackText
+        case is CLKComplicationTemplateModularSmallRingImage:
+            self = .ModularSmallRingImage
+        case is CLKComplicationTemplateModularSmallSimpleImage:
+            self = .ModularSmallSimpleImage
+        case is CLKComplicationTemplateModularSmallStackImage:
+            self = .ModularSmallStackImage
+        case is CLKComplicationTemplateModularSmallColumnsText:
+            self = .ModularSmallColumnsText
+        case is CLKComplicationTemplateModularSmallRingText:
+            self = .ModularSmallRingText
+        case is CLKComplicationTemplateModularSmallSimpleText:
+            self = .ModularSmallSimpleText
+        case is CLKComplicationTemplateModularSmallStackText:
+            self = .ModularSmallStackText
+        case is CLKComplicationTemplateModularLargeStandardBody:
+            self = .ModularLargeStandardBody
+        case is CLKComplicationTemplateModularLargeTallBody:
+            self = .ModularLargeTallBody
+        case is CLKComplicationTemplateModularLargeColumns:
+            self = .ModularLargeColumns
+        case is CLKComplicationTemplateModularLargeTable:
+            self = .ModularLargeTable
+        case is CLKComplicationTemplateUtilitarianSmallFlat:
+            self = .UtilitarianSmallFlat
+        case is CLKComplicationTemplateUtilitarianSmallRingImage:
+            self = .UtilitarianSmallRingImage
+        case is CLKComplicationTemplateUtilitarianSmallRingText:
+            self = .UtilitarianSmallRingText
+        case is CLKComplicationTemplateUtilitarianSmallSquare:
+            self = .UtilitarianSmallSquare
+        case is CLKComplicationTemplateUtilitarianLargeFlat:
+            self = .UtilitarianLargeFlat
+        case is CLKComplicationTemplateGraphicCornerCircularImage:
+            self = .GraphicCornerCircularImage
+        case is CLKComplicationTemplateGraphicCornerGaugeImage:
+            self = .GraphicCornerGaugeImage
+        case is CLKComplicationTemplateGraphicCornerGaugeText:
+            self = .GraphicCornerGaugeText
+        case is CLKComplicationTemplateGraphicCornerStackText:
+            self = .GraphicCornerStackText
+        case is CLKComplicationTemplateGraphicCornerTextImage:
+            self = .GraphicCornerTextImage
+        case is CLKComplicationTemplateGraphicCircularImage:
+            self = .GraphicCircularImage
+        case is CLKComplicationTemplateGraphicCircularClosedGaugeImage:
+            self = .GraphicCircularClosedGaugeImage
+        case is CLKComplicationTemplateGraphicCircularOpenGaugeImage:
+            self = .GraphicCircularOpenGaugeImage
+        case is CLKComplicationTemplateGraphicCircularClosedGaugeText:
+            self = .GraphicCircularClosedGaugeText
+        case is CLKComplicationTemplateGraphicCircularOpenGaugeSimpleText:
+            self = .GraphicCircularOpenGaugeSimpleText
+        case is CLKComplicationTemplateGraphicCircularOpenGaugeRangeText:
+            self = .GraphicCircularOpenGaugeRangeText
+        case is CLKComplicationTemplateGraphicBezelCircularText:
+            self = .GraphicBezelCircularText
+        case is CLKComplicationTemplateGraphicRectangularStandardBody:
+            self = .GraphicRectangularStandardBody
+        case is CLKComplicationTemplateGraphicRectangularTextGauge:
+            self = .GraphicRectangularTextGauge
+        case is CLKComplicationTemplateGraphicRectangularLargeImage:
+            self = .GraphicRectangularLargeImage
+        default:
+            print("Unknown template!", template.debugDescription)
+            self = .ModularSmallStackText
+        }
+    }
+
+    var CLKComplicationTemplate: CLKComplicationTemplate {
         switch self {
         case .CircularSmallRingImage:
             return CLKComplicationTemplateCircularSmallRingImage()
@@ -810,6 +909,213 @@ enum ComplicationTemplate: String {
             return CLKComplicationTemplateGraphicRectangularLargeImage()
         }
     }
+
+    // https://gist.github.com/robbiet480/2a38d499323cb964d47b2f5d8004694a
+    var imageSize: CGSize? {
+        // Template: Device Size: Image Size @1x
+        let imageSizes: [String: [Int: CGSize]] = [
+            "CircularSmallRingImage": [
+                38: CGSize(width: 40, height: 40),
+                40: CGSize(width: 44, height: 44),
+                42: CGSize(width: 44, height: 44),
+                44: CGSize(width: 48, height: 48)
+            ],
+            "CircularSmallSimpleImage": [
+                38: CGSize(width: 32, height: 32),
+                40: CGSize(width: 36, height: 36),
+                42: CGSize(width: 36, height: 36),
+                44: CGSize(width: 40, height: 40)
+            ],
+            "CircularSmallStackImage": [
+                38: CGSize(width: 32, height: 14),
+                40: CGSize(width: 34, height: 16),
+                42: CGSize(width: 34, height: 16),
+                44: CGSize(width: 38, height: 18)
+            ],
+            "ModularSmallRingImage": [
+                38: CGSize(width: 36, height: 36),
+                40: CGSize(width: 38, height: 38),
+                42: CGSize(width: 38, height: 38),
+                44: CGSize(width: 42, height: 42)
+            ],
+            "ModularSmallSimpleImage": [
+                38: CGSize(width: 52, height: 52),
+                40: CGSize(width: 58, height: 58),
+                42: CGSize(width: 58, height: 58),
+                44: CGSize(width: 64, height: 64)
+            ],
+            "ModularSmallStackImage": [
+                38: CGSize(width: 52, height: 28),
+                40: CGSize(width: 58, height: 30),
+                42: CGSize(width: 58, height: 30),
+                44: CGSize(width: 64, height: 34)
+            ],
+            "ModularLargeColumnsImage": [
+                38: CGSize(width: 64, height: 22),
+                40: CGSize(width: 74, height: 24),
+                42: CGSize(width: 74, height: 24),
+                44: CGSize(width: 84, height: 28)
+            ],
+            "ModularLargeStandardBody": [
+                38: CGSize(width: 64, height: 22),
+                40: CGSize(width: 74, height: 24),
+                42: CGSize(width: 74, height: 24),
+                44: CGSize(width: 84, height: 28)
+            ],
+            "ModularLargeTable": [
+                38: CGSize(width: 64, height: 22),
+                40: CGSize(width: 74, height: 24),
+                42: CGSize(width: 74, height: 24),
+                44: CGSize(width: 84, height: 28)
+            ],
+            "UtilitarianSmallFlatImage": [
+                38: CGSize(width: 42, height: 18),
+                40: CGSize(width: 44, height: 20),
+                42: CGSize(width: 44, height: 20)
+                // 44: CGSize(width: 20, height: 20) -- 44mm is marked "N/A" in HIG
+            ],
+            "UtilitarianSmallRingImage": [
+                38: CGSize(width: 28, height: 28),
+                40: CGSize(width: 28, height: 28),
+                42: CGSize(width: 28, height: 28),
+                44: CGSize(width: 32, height: 32)
+            ],
+            "UtilitarianSmallSquareImage": [
+                38: CGSize(width: 40, height: 40),
+                40: CGSize(width: 44, height: 44),
+                42: CGSize(width: 44, height: 44),
+                44: CGSize(width: 50, height: 50)
+            ],
+            "UtilitarianLargeFlatImage": [
+                38: CGSize(width: 42, height: 18),
+                40: CGSize(width: 44, height: 20),
+                42: CGSize(width: 44, height: 20)
+                // 44: CGSize(width: 20, height: 20) -- 44mm is marked "N/A" in HIG
+            ],
+            "ExtraLargeRingImage": [
+                38: CGSize(width: 126, height: 126),
+                40: CGSize(width: 133, height: 133),
+                42: CGSize(width: 133, height: 133),
+                44: CGSize(width: 146, height: 146)
+            ],
+            "ExtraLargeSimpleImage": [
+                38: CGSize(width: 182, height: 182),
+                40: CGSize(width: 203, height: 203),
+                42: CGSize(width: 203, height: 203),
+                44: CGSize(width: 224, height: 224)
+            ],
+            "ExtraLargeStackImage": [
+                38: CGSize(width: 156, height: 84),
+                40: CGSize(width: 174, height: 90),
+                42: CGSize(width: 174, height: 90),
+                44: CGSize(width: 192, height: 102)
+            ],
+            "GraphicCornerCircularImage": [
+                40: CGSize(width: 64, height: 64),
+                44: CGSize(width: 72, height: 72)
+            ],
+            "GraphicCornerGaugeImage": [
+                40: CGSize(width: 40, height: 40),
+                44: CGSize(width: 44, height: 44)
+            ],
+            "GraphicCornerTextImage": [
+                40: CGSize(width: 40, height: 40),
+                44: CGSize(width: 44, height: 44)
+            ],
+            "GraphicCircularImage": [
+                40: CGSize(width: 84, height: 84),
+                44: CGSize(width: 94, height: 94)
+            ],
+            "GraphicCircularClosedGaugeImage": [
+                40: CGSize(width: 54, height: 54),
+                44: CGSize(width: 62, height: 62)
+            ],
+            "GraphicCircularOpenGaugeImage": [
+                40: CGSize(width: 22, height: 22),
+                44: CGSize(width: 24, height: 24)
+            ],
+            "GraphicRectangularLargeImage": [
+                40: CGSize(width: 300, height: 94),
+                44: CGSize(width: 342, height: 108)
+            ],
+            "GraphicRectangularStandardBody": [
+                40: CGSize(width: 24, height: 24),
+                44: CGSize(width: 27, height: 27)
+            ],
+            "GraphicRectangularTextGauge": [
+                40: CGSize(width: 24, height: 24),
+                44: CGSize(width: 27, height: 27)
+            ]
+        ]
+
+        let deviceSize = WKInterfaceDevice.currentResolution().rawValue
+
+        if let sizeDict = imageSizes[self.rawValue], let size = sizeDict[deviceSize] {
+            return size
+        }
+
+        return nil
+    }
+
+    var placeholderImageSize: CGSize? {
+        // Template: Device Size: Image Size @1x
+        let imageSizes: [String: [Int: CGSize]] = [
+            "circularSmall": [
+                38: CGSize(width: 32, height: 32),
+                40: CGSize(width: 36, height: 36),
+                42: CGSize(width: 36, height: 36),
+                44: CGSize(width: 40, height: 40)
+            ],
+            "extraLarge": [
+                38: CGSize(width: 156, height: 156),
+                40: CGSize(width: 174, height: 174),
+                42: CGSize(width: 174, height: 174),
+                44: CGSize(width: 192, height: 192)
+            ],
+            "modular": [
+                38: CGSize(width: 52, height: 52),
+                40: CGSize(width: 58, height: 58),
+                42: CGSize(width: 58, height: 58),
+                44: CGSize(width: 64, height: 64)
+            ],
+            "utilitarian": [
+                38: CGSize(width: 40, height: 40),
+                40: CGSize(width: 44, height: 44),
+                42: CGSize(width: 44, height: 44),
+                44: CGSize(width: 50, height: 50)
+            ],
+            "graphicCorner": [
+                40: CGSize(width: 40, height: 40),
+                44: CGSize(width: 44, height: 44)
+            ],
+            "graphicCircular": [
+                40: CGSize(width: 84, height: 84),
+                44: CGSize(width: 94, height: 94)
+            ],
+            "graphicBezel": [
+                40: CGSize(width: 84, height: 84),
+                44: CGSize(width: 94, height: 94)
+            ],
+            "graphicRectangular": [
+                40: CGSize(width: 300, height: 94),
+                44: CGSize(width: 342, height: 108)
+            ]
+        ]
+
+        let deviceSize = WKInterfaceDevice.currentResolution().rawValue
+
+        var key: String = self.group.rawValue
+
+        if self.group == .graphic {
+            key = self.groupMember.rawValue
+        }
+
+        if let sizeDict = imageSizes[key], let size = sizeDict[deviceSize] {
+            return size
+        }
+
+        return nil
+    }
     #endif
 
     var hasRing: Bool {
@@ -863,10 +1169,12 @@ enum ComplicationTemplate: String {
     var hasImage: Bool {
         switch self {
         case .CircularSmallRingImage, .CircularSmallSimpleImage, .CircularSmallStackImage, .ExtraLargeRingImage,
-             .ExtraLargeSimpleImage, .ExtraLargeStackImage, .ModularSmallRingImage, .ModularSmallSimpleImage,
-             .ModularSmallStackImage, .UtilitarianSmallSquare, .UtilitarianSmallRingImage, .GraphicCornerCircularImage,
-             .GraphicCornerGaugeImage, .GraphicCornerTextImage, .GraphicCircularImage,
-             .GraphicCircularClosedGaugeImage, .GraphicCircularOpenGaugeImage, .GraphicRectangularLargeImage:
+             .ExtraLargeSimpleImage, .ExtraLargeStackImage, .GraphicCircularClosedGaugeImage, .GraphicCircularImage,
+             .GraphicCircularOpenGaugeImage, .GraphicCornerCircularImage, .GraphicCornerGaugeImage,
+             .GraphicCornerTextImage, .GraphicRectangularLargeImage, .GraphicRectangularStandardBody,
+             .GraphicRectangularTextGauge, .ModularLargeColumns, .ModularLargeStandardBody, .ModularLargeTable,
+             .ModularSmallRingImage, .ModularSmallSimpleImage, .ModularSmallStackImage, .UtilitarianLargeFlat,
+             .UtilitarianSmallFlat, .UtilitarianSmallRingImage, .UtilitarianSmallSquare:
             return true
         default:
             return false
@@ -885,7 +1193,7 @@ enum ComplicationTemplate: String {
 
 extension ComplicationTemplate: CaseIterable {}
 
-enum ComplicationTextAreas: String, CaseIterable {
+public enum ComplicationTextAreas: String, CaseIterable {
     case Body1 = "Body 1"
     case Body2 = "Body 2"
     case Bottom = "Bottom"
@@ -985,5 +1293,13 @@ enum ComplicationTextAreas: String, CaseIterable {
         case .Trailing:
             return L10n.Watch.Labels.ComplicationTextAreas.Trailing.label
         }
+    }
+
+    var slug: String {
+        var cleanLocation = self.rawValue
+        cleanLocation = cleanLocation.replacingOccurrences(of: " ", with: "")
+        cleanLocation = cleanLocation.replacingOccurrences(of: ",", with: "")
+
+        return cleanLocation
     }
 }

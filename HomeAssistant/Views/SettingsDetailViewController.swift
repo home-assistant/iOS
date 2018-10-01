@@ -14,6 +14,7 @@ import IntentsUI
 import PromiseKit
 import RealmSwift
 import UserNotifications
+import Communicator
 
 // swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController {
@@ -299,38 +300,46 @@ class SettingsDetailViewController: FormViewController {
             self.title = "Apple Watch"
 
             self.form
-                +++ Section{
+                +++ Section {
                     $0.tag = "watch_data"
                 }
                 <<< LabelRow {
                     $0.tag = "remaining_complication_sends"
                     $0.title = "Remaining sends"
-                    if let delegate = UIApplication.shared.delegate as? AppDelegate,
-                        let session = delegate.watchSession {
-                        $0.value = session.remainingComplicationUserInfoTransfers.description
-                    }
+                    $0.value = Communicator.shared.currentWatchState.numberOfComplicationInfoTransfersAvailable.description
                 }
 
                 <<< ButtonRow {
                         $0.title = "Send data now"
                     }.onCellSelection { cell, row in
-                        let complications = self.realm.objects(WatchComplication.self)
+
+                        var complications: [String: Any] = [String: Any]()
+
+                        for config in self.realm.objects(WatchComplication.self) {
+                            print("Config", config)
+                            print("Running toJSON!", config.toJSON())
+                            complications[config.Family.rawValue] = config.toJSON()
+                        }
 
                         print("Sending", complications)
 
-                        if let delegate = UIApplication.shared.delegate as? AppDelegate,
-                            let session = delegate.watchSession {
+                        let complicationInfo = ComplicationInfo(content: complications)
 
-                            let threadSafeObjs = Array(complications).map({ ThreadSafeReference(to: $0) })
+                        do {
+                            try Communicator.shared.transfer(complicationInfo: complicationInfo)
+                        } catch let error as NSError {
+                            print("Error transferring complication info", error.description)
+                        }
 
-                            session.transferCurrentComplicationUserInfo(["complication": threadSafeObjs])
-
-                            if let remainingRow = self.form.rowBy(tag: "remaining_complication_sends") as? LabelRow {
-                                remainingRow.value = session.remainingComplicationUserInfoTransfers.description
-                                remainingRow.updateCell()
-                            }
+                        if let remainingRow = self.form.rowBy(tag: "remaining_complication_sends") as? LabelRow {
+                            remainingRow.value = Communicator.shared.currentWatchState.numberOfComplicationInfoTransfersAvailable.description
+                            self.tableView.reloadData()
                         }
                     }
+
+            let existingComplications = Current.realm().objects(WatchComplication.self)
+
+            print("Existing configured complications", existingComplications, existingComplications.count, existingComplications.first)
 
             for group in ComplicationGroup.allCases {
                 let members = group.members
@@ -341,14 +350,22 @@ class SettingsDetailViewController: FormViewController {
                 self.form +++ Section(header: header, footer: group.description)
 
                 for member in members {
+
+                    var config = existingComplications.filter(NSPredicate(format: "rawFamily == %@",
+                                                                          member.rawValue)).first
+
+                    if config == nil {
+                        let newConfig = WatchComplication()
+                        newConfig.Family = member
+                        config = newConfig
+                    }
+
                     self.form.last!
                         <<< ButtonRow {
                             $0.cellStyle = .subtitle
                             $0.title = member.shortName
                             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                                    let watchConfigurator = WatchComplicationConfigurator()
-                                    watchConfigurator.family = member
-                                    return watchConfigurator
+                                    return WatchComplicationConfigurator(config)
                                 }, onDismiss: { vc in
                                     _ = vc.navigationController?.popViewController(animated: true)
                             })

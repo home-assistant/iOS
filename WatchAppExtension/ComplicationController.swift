@@ -47,7 +47,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         let matchedFamily = ComplicationGroupMember(family: complication.family)
 
         print("matchedFamily", matchedFamily.rawValue)
-        let pred = NSPredicate(format: "Family == %@", matchedFamily.rawValue)
+        let pred = NSPredicate(format: "rawFamily == %@", matchedFamily.rawValue)
         guard let config = realm.objects(WatchComplication.self).filter(pred).first else {
             print("No configured complication found for \(matchedFamily.rawValue), returning family specific 404")
             // FIXME: Return a family specific template 404.
@@ -59,77 +59,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
         print("Providing template for", complication.family.description)
 
-        guard let template = config.template?.template else {
-            print("Unable to get CLKComplicationTemplate!")
-            handler(nil)
-            return
-        }
-
-        print("Would use", template)
-
-        switch complication.family {
-        case .modularSmall:
-            let template = CLKComplicationTemplateModularSmallStackText()
-            template.line1TextProvider = CLKSimpleTextProvider(text: "Line 1", shortText: "L1")
-            template.line2TextProvider = CLKSimpleTextProvider(text: "Line 2", shortText: "L2")
+        if let template = config.CLKComplicationTemplate(family: complication.family) {
             handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template))
-            return
-        case .circularSmall:
-            let template = CLKComplicationTemplateCircularSmallSimpleText()
-            template.textProvider = CLKSimpleTextProvider(text: "Line 1", shortText: "L1")
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template))
-            return
-        case .extraLarge:
-            let template = CLKComplicationTemplateExtraLargeStackText()
-            template.line1TextProvider = CLKSimpleTextProvider(text: "Line 1", shortText: "L1")
-            template.line2TextProvider = CLKSimpleTextProvider(text: "Line 2", shortText: "L2")
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template))
-            return
-        case .graphicBezel:
-            let template = CLKComplicationTemplateGraphicBezelCircularText()
-            // FIXME: Add circTemplate
-            template.textProvider = CLKSimpleTextProvider(text: "Line 1", shortText: "L1")
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template))
-            return
-        case .graphicCircular:
-            let template = CLKComplicationTemplateGraphicCircularClosedGaugeText()
-            template.centerTextProvider = CLKSimpleTextProvider(text: "Line 1", shortText: "L1")
-            template.gaugeProvider = CLKSimpleGaugeProvider(style: .ring, gaugeColor: .orange, fillFraction: 0.623)
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template))
-            return
-        case .graphicCorner:
-            let template = CLKComplicationTemplateGraphicCornerStackText()
-            template.outerTextProvider = CLKSimpleTextProvider(text: "Line 1", shortText: "L1")
-            template.innerTextProvider = CLKSimpleTextProvider(text: "Line 2", shortText: "L2")
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template))
-            return
-        case .graphicRectangular:
-            let template = CLKComplicationTemplateGraphicRectangularStandardBody()
-            template.headerTextProvider = CLKSimpleTextProvider(text: "Line 1", shortText: "L1")
-            template.body1TextProvider = CLKSimpleTextProvider(text: "Line 2", shortText: "L2")
-            template.body2TextProvider = CLKSimpleTextProvider(text: "Line 3", shortText: "L3")
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template))
-            return
-        case .modularLarge:
-            let template = CLKComplicationTemplateModularLargeStandardBody()
-            template.headerTextProvider = CLKSimpleTextProvider(text: "Line 1", shortText: "L1")
-            template.body1TextProvider = CLKSimpleTextProvider(text: "Line 2", shortText: "L2")
-            template.body2TextProvider = CLKSimpleTextProvider(text: "Line 3", shortText: "L3")
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template))
-            return
-        case .utilitarianLarge:
-            let template = CLKComplicationTemplateUtilitarianLargeFlat()
-            template.textProvider = CLKSimpleTextProvider(text: "Line 1", shortText: "L1")
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template))
-            return
-        case .utilitarianSmall, .utilitarianSmallFlat:
-            let template = CLKComplicationTemplateUtilitarianSmallFlat()
-            template.textProvider = CLKSimpleTextProvider(text: "Line 1", shortText: "L1")
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template))
-            return
-        default:
-            print("Not providing template for", complication.family.description)
-            handler(nil)
         }
     }
 
