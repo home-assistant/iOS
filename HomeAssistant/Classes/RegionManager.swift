@@ -91,18 +91,25 @@ class RegionManager: NSObject {
         }
 
         let inRegion = (trig == .GPSRegionEnter || trig == .BeaconRegionEnter)
-        let shouldUpdate = zone.inRegion != inRegion
-        if shouldUpdate {
-            print("Submitting location for zone \(zone.ID) with trigger \(trig.rawValue)")
-            api.submitLocation(updateType: trig, location: nil, visit: nil, zone: zone).done {
-                let realm = Current.realm()
-                // swiftlint:disable:next force_try
-                try! realm.write {
-                    zone.inRegion = inRegion
-                }
-            }.catch { error in
-                print("Error sending location after region trigger event: \(error)")
+        guard zone.inRegion != inRegion else {
+            return
+        }
+
+        let message = "Submitting location for zone \(zone.ID) with trigger \(trig.rawValue)."
+        Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
+        api.submitLocation(updateType: trig, location: nil, visit: nil, zone: zone).done {
+            let realm = Current.realm()
+            // swiftlint:disable:next force_try
+            try! realm.write {
+                zone.inRegion = inRegion
             }
+        }.catch { error in
+            let eventName = trigger == .RegionEnter ? "Enter" : "Exit"
+            let SSID = "SSID: \(ConnectionInfo.currentSSID() ?? "Unavailable")"
+            let event = ClientEvent(text: "Failed to send location after region \(eventName). SSID: \(SSID)",
+                type: .locationUpdate)
+            Current.clientEventStore.addEvent(event)
+            print("Error sending location after region trigger event: \(error)")
         }
     }
 
