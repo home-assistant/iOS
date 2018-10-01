@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Iconic
 #if os(watchOS)
 import WatchKit
 import ClockKit
@@ -330,6 +331,118 @@ public enum ComplicationGroupMember: String {
             return [.GraphicRectangularStandardBody, .GraphicRectangularTextGauge, .GraphicRectangularLargeImage]
         }
     }
+
+    #if os(watchOS)
+    var errorTemplate: CLKComplicationTemplate {
+        let errorIcon = MaterialDesignIcons.alertCircleOutlineIcon
+
+        switch self {
+        case .circularSmall:
+            let template = CLKComplicationTemplateCircularSmallStackImage()
+            if let imageSize = ComplicationTemplate.CircularSmallStackImage.imageSize {
+                template.line1ImageProvider = CLKImageProvider(onePieceImage: errorIcon.image(ofSize: imageSize,
+                                                                                              color: .clear))
+            }
+            template.line2TextProvider = CLKSimpleTextProvider(text: "??")
+            template.tintColor = .red
+            return template
+        case .extraLarge:
+            let template = CLKComplicationTemplateExtraLargeStackImage()
+            if let imageSize = ComplicationTemplate.ExtraLargeStackImage.imageSize {
+                template.line1ImageProvider = CLKImageProvider(onePieceImage: errorIcon.image(ofSize: imageSize,
+                                                                                              color: .clear))
+            }
+            template.line2TextProvider = CLKSimpleTextProvider(text: "??")
+            template.tintColor = .red
+            return template
+        case .graphicBezel:
+            let template = CLKComplicationTemplateGraphicBezelCircularText()
+            let imageTemplate = CLKComplicationTemplateGraphicCircularImage()
+            if let imageSize = ComplicationTemplate.GraphicCircularImage.imageSize {
+                let image = errorIcon.image(ofSize: imageSize, color: .red)
+                imageTemplate.imageProvider = CLKFullColorImageProvider(fullColorImage: image)
+            }
+            template.circularTemplate = imageTemplate
+            template.textProvider = CLKSimpleTextProvider(text: "??")
+            template.tintColor = .red
+            return template
+        case .graphicCircular:
+            let template = CLKComplicationTemplateGraphicCircularImage()
+            if let imageSize = ComplicationTemplate.GraphicCircularImage.imageSize {
+                let image = errorIcon.image(ofSize: imageSize, color: .red)
+                template.imageProvider = CLKFullColorImageProvider(fullColorImage: image)
+            }
+            template.tintColor = .red
+            return template
+        case .graphicCorner:
+            let template = CLKComplicationTemplateGraphicCornerTextImage()
+            if let imageSize = ComplicationTemplate.GraphicCornerTextImage.imageSize {
+                let image = errorIcon.image(ofSize: imageSize, color: .red)
+                template.imageProvider = CLKFullColorImageProvider(fullColorImage: image)
+            }
+            template.textProvider = CLKSimpleTextProvider(text: "??")
+            template.tintColor = .red
+            return template
+        case .graphicRectangular:
+            let template = CLKComplicationTemplateGraphicRectangularStandardBody()
+            if let imageSize = ComplicationTemplate.GraphicRectangularStandardBody.imageSize {
+                let image = errorIcon.image(ofSize: imageSize, color: .red)
+                template.headerImageProvider = CLKFullColorImageProvider(fullColorImage: image)
+            }
+            template.headerTextProvider = CLKSimpleTextProvider(text: "Not configured")
+            let desc = ComplicationTemplate.GraphicRectangularStandardBody.description
+            template.body1TextProvider = CLKSimpleTextProvider(text: desc)
+            template.body2TextProvider = CLKSimpleTextProvider(text: "has not been configured")
+            template.tintColor = .red
+            return template
+        case .modularLarge:
+            let template = CLKComplicationTemplateModularLargeTallBody()
+            template.headerTextProvider = CLKSimpleTextProvider(text: "Not configured")
+            let desc = ComplicationTemplate.GraphicRectangularStandardBody.description
+            template.bodyTextProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+            template.tintColor = .red
+            return template
+        case .modularSmall:
+            let template = CLKComplicationTemplateModularSmallStackImage()
+            if let imageSize = ComplicationTemplate.ModularSmallStackImage.imageSize {
+                let image = errorIcon.image(ofSize: imageSize, color: .red)
+                template.line1ImageProvider = CLKImageProvider(onePieceImage: image)
+            }
+            let desc = ComplicationTemplate.ModularSmallStackImage.description
+            template.line2TextProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+            template.tintColor = .red
+            return template
+        case .utilitarianLarge:
+            let template = CLKComplicationTemplateUtilitarianLargeFlat()
+            if let imageSize = ComplicationTemplate.UtilitarianLargeFlat.imageSize {
+                let image = errorIcon.image(ofSize: imageSize, color: .red)
+                template.imageProvider = CLKImageProvider(onePieceImage: image)
+            }
+            let desc = ComplicationTemplate.UtilitarianLargeFlat.description
+            template.textProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+            template.tintColor = .red
+            return template
+        case .utilitarianSmall:
+            let template = CLKComplicationTemplateUtilitarianSmallSquare()
+            if let imageSize = ComplicationTemplate.UtilitarianSmallFlat.imageSize {
+                let image = errorIcon.image(ofSize: imageSize, color: .red)
+                template.imageProvider = CLKImageProvider(onePieceImage: image)
+            }
+            template.tintColor = .red
+            return template
+        case .utilitarianSmallFlat:
+            let template = CLKComplicationTemplateUtilitarianSmallFlat()
+            if let imageSize = ComplicationTemplate.UtilitarianSmallFlat.imageSize {
+                let image = errorIcon.image(ofSize: imageSize, color: .red)
+                template.imageProvider = CLKImageProvider(onePieceImage: image)
+            }
+            let desc = ComplicationTemplate.UtilitarianSmallFlat.description
+            template.textProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
+            template.tintColor = .red
+            return template
+        }
+    }
+    #endif
 }
 
 extension ComplicationGroupMember: CaseIterable {}

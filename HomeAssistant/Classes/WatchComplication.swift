@@ -140,6 +140,17 @@ public class WatchComplication: Object, Mappable {
         return nil
     }
 
+    var fullColorImageProvider: CLKFullColorImageProvider? {
+        if let iconDict = self.Data["icon"] as? [String: String], let iconName = iconDict["icon"],
+            let iconColor = iconDict["icon_color"], let iconSize = self.Template.imageSize {
+            let icon = MaterialDesignIcons(named: iconName)
+            let image = icon.image(ofSize: iconSize, color: UIColor(hex: iconColor))
+            return CLKFullColorImageProvider(fullColorImage: image)
+        }
+
+        return nil
+    }
+
     var gaugeProvider: CLKSimpleGaugeProvider? {
         if let gaugeDict = self.Data["gauge"] as? [String: String], let gaugeValue = gaugeDict["gauge"],
             let floatVal = Float(gaugeValue), let gaugeColor = gaugeDict["gauge_color"],
@@ -151,6 +162,20 @@ public class WatchComplication: Object, Mappable {
         }
 
         return nil
+    }
+
+    // swiftlint:disable:next large_tuple
+    var ringData: (Float, CLKComplicationRingStyle, UIColor) {
+        guard let ringDict = self.Data["ring"] as? [String: String], let ringValue = ringDict["ring"],
+            let floatVal = Float(ringValue), let ringColor = ringDict["ring_color"],
+            let ringStyle = ringDict["ring_style"] else {
+                print("Unable to get ring data!")
+                return (0, .open, UIColor.black)
+        }
+
+        let style = (ringStyle == "open" ? CLKComplicationRingStyle.open : CLKComplicationRingStyle.closed)
+
+        return (floatVal, style, UIColor(hex: ringColor))
     }
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
@@ -165,6 +190,10 @@ public class WatchComplication: Object, Mappable {
             if let iconProvider = self.iconProvider {
                 template.imageProvider = iconProvider
             }
+            let ringData = self.ringData
+            template.fillFraction = ringData.0
+            template.ringStyle = ringData.1
+            template.tintColor = ringData.2
             return template
         case .CircularSmallSimpleImage:
             let template = CLKComplicationTemplateCircularSmallSimpleImage()
@@ -186,6 +215,10 @@ public class WatchComplication: Object, Mappable {
             if let textProvider = self.textDataProviders["InsideRing"] {
                 template.textProvider = textProvider
             }
+            let ringData = self.ringData
+            template.fillFraction = ringData.0
+            template.ringStyle = ringData.1
+            template.tintColor = ringData.2
             return template
         case .CircularSmallSimpleText:
             let template = CLKComplicationTemplateCircularSmallSimpleText()
@@ -207,6 +240,10 @@ public class WatchComplication: Object, Mappable {
             if let iconProvider = self.iconProvider {
                 template.imageProvider = iconProvider
             }
+            let ringData = self.ringData
+            template.fillFraction = ringData.0
+            template.ringStyle = ringData.1
+            template.tintColor = ringData.2
             return template
         case .ExtraLargeSimpleImage:
             let template = CLKComplicationTemplateExtraLargeSimpleImage()
@@ -243,6 +280,10 @@ public class WatchComplication: Object, Mappable {
             if let textProvider = self.textDataProviders["InsideRing"] {
                 template.textProvider = textProvider
             }
+            let ringData = self.ringData
+            template.fillFraction = ringData.0
+            template.ringStyle = ringData.1
+            template.tintColor = ringData.2
             return template
         case .ExtraLargeSimpleText:
             let template = CLKComplicationTemplateExtraLargeSimpleText()
@@ -264,6 +305,10 @@ public class WatchComplication: Object, Mappable {
             if let iconProvider = self.iconProvider {
                 template.imageProvider = iconProvider
             }
+            let ringData = self.ringData
+            template.fillFraction = ringData.0
+            template.ringStyle = ringData.1
+            template.tintColor = ringData.2
             return template
         case .ModularSmallSimpleImage:
             let template = CLKComplicationTemplateModularSmallSimpleImage()
@@ -300,6 +345,10 @@ public class WatchComplication: Object, Mappable {
             if let textProvider = self.textDataProviders["InsideRing"] {
                 template.textProvider = textProvider
             }
+            let ringData = self.ringData
+            template.fillFraction = ringData.0
+            template.ringStyle = ringData.1
+            template.tintColor = ringData.2
             return template
         case .ModularSmallSimpleText:
             let template = CLKComplicationTemplateModularSmallSimpleText()
@@ -384,15 +433,26 @@ public class WatchComplication: Object, Mappable {
             if let iconProvider = self.iconProvider {
                 template.imageProvider = iconProvider
             }
+            let ringData = self.ringData
+            template.fillFraction = ringData.0
+            template.ringStyle = ringData.1
+            template.tintColor = ringData.2
             return template
         case .UtilitarianSmallRingText:
             let template = CLKComplicationTemplateUtilitarianSmallRingText()
             if let textProvider = self.textDataProviders["InsideRing"] {
                 template.textProvider = textProvider
             }
+            let ringData = self.ringData
+            template.fillFraction = ringData.0
+            template.ringStyle = ringData.1
+            template.tintColor = ringData.2
             return template
         case .UtilitarianSmallSquare:
             let template = CLKComplicationTemplateUtilitarianSmallSquare()
+            if let iconProvider = self.iconProvider {
+                template.imageProvider = iconProvider
+            }
             return template
         case .UtilitarianLargeFlat:
             let template = CLKComplicationTemplateUtilitarianLargeFlat()
@@ -402,17 +462,15 @@ public class WatchComplication: Object, Mappable {
             return template
         case .GraphicCornerCircularImage:
             let template = CLKComplicationTemplateGraphicCornerCircularImage()
-            // Need a FullImageProvider for this one
-//            if let iconProvider = self.iconProvider {
-//                template.imageProvider = iconProvider
-//            }
+            if let iconProvider = self.fullColorImageProvider {
+                template.imageProvider = iconProvider
+            }
             return template
         case .GraphicCornerGaugeImage:
             let template = CLKComplicationTemplateGraphicCornerGaugeImage()
-            // Need a FullImageProvider for this one
-//            if let iconProvider = self.iconProvider {
-//                template.imageProvider = iconProvider
-//            }
+            if let iconProvider = self.fullColorImageProvider {
+                template.imageProvider = iconProvider
+            }
             if let gaugeProvider = self.gaugeProvider {
                 template.gaugeProvider = gaugeProvider
             }
@@ -449,37 +507,33 @@ public class WatchComplication: Object, Mappable {
             return template
         case .GraphicCornerTextImage:
             let template = CLKComplicationTemplateGraphicCornerTextImage()
-            // Need a FullImageProvider for this one
-//            if let iconProvider = self.iconProvider {
-//                template.imageProvider = iconProvider
-//            }
+            if let iconProvider = self.fullColorImageProvider {
+                template.imageProvider = iconProvider
+            }
             if let textProvider = self.textDataProviders["Center"] {
                 template.textProvider = textProvider
             }
             return template
         case .GraphicCircularImage:
             let template = CLKComplicationTemplateGraphicCircularImage()
-            // Need a FullImageProvider for this one
-//            if let iconProvider = self.iconProvider {
-//                template.imageProvider = iconProvider
-//            }
+            if let iconProvider = self.fullColorImageProvider {
+                template.imageProvider = iconProvider
+            }
             return template
         case .GraphicCircularClosedGaugeImage:
             let template = CLKComplicationTemplateGraphicCircularClosedGaugeImage()
-            // Need a FullImageProvider for this one
-//            if let iconProvider = self.iconProvider {
-//                template.imageProvider = iconProvider
-//            }
+            if let iconProvider = self.fullColorImageProvider {
+                template.imageProvider = iconProvider
+            }
             if let gaugeProvider = self.gaugeProvider {
                 template.gaugeProvider = gaugeProvider
             }
             return template
         case .GraphicCircularOpenGaugeImage:
             let template = CLKComplicationTemplateGraphicCircularOpenGaugeImage()
-            // Need a FullImageProvider for this one
-//            if let iconProvider = self.iconProvider {
-//                template.bottomImageProvider = iconProvider
-//            }
+            if let iconProvider = self.fullColorImageProvider {
+                template.bottomImageProvider = iconProvider
+            }
             if let gaugeProvider = self.gaugeProvider {
                 template.gaugeProvider = gaugeProvider
             }
@@ -555,10 +609,9 @@ public class WatchComplication: Object, Mappable {
             return template
         case .GraphicRectangularLargeImage:
             let template = CLKComplicationTemplateGraphicRectangularLargeImage()
-//            if let iconProvider = self.iconProvider {
-//                template.imageProvider = iconProvider
-//            }
-            // Need a FullImageProvider for this one
+            if let iconProvider = self.fullColorImageProvider {
+                template.imageProvider = iconProvider
+            }
             if let textProvider = self.textDataProviders["Header"] {
                 template.textProvider = textProvider
             }
@@ -567,4 +620,5 @@ public class WatchComplication: Object, Mappable {
     }
 
     #endif
+// swiftlint:disable:next file_length
 }

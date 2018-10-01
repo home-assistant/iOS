@@ -95,8 +95,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 for domainContainer in serviceResp {
                     let domain = domainContainer.Domain
                     for service in domainContainer.Services {
+                        let desc = service.value.Description
                         if let shortcut = INShortcut(intent: CallServiceIntent(domain: domain, service: service.key,
-                                                                               description: service.value.Description)) {
+                                                                               description: desc)) {
                             shortcutsToSuggest.append(shortcut)
                         }
                     }
@@ -208,8 +209,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         api.getAndSendLocation(trigger: .PushNotification).done { success in
                             print("Did successfully send location when requested via APNS?", success)
                             completionHandler(.newData)
-                        }.catch {error in
-                            print("Error when attempting to submit location update")
+                        }.catch { error in
+                            print("Error when attempting to submit location update", error.localizedDescription)
                             completionHandler(.failed)
                         }
                     default:
@@ -238,15 +239,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             api.getAndSendLocation(trigger: .BackgroundFetch).done { _ in
                 print("Sending location via background fetch")
                 completionHandler(UIBackgroundFetchResult.newData)
-                }.catch {error in
-                    print("Error when attempting to submit location update during background fetch")
+                }.catch { error in
+                    print("Error when attempting to submit location update during background fetch",
+                          error.localizedDescription)
                     completionHandler(UIBackgroundFetchResult.failed)
             }
         } else {
             api.identifyDevice().done { _ in
                 completionHandler(UIBackgroundFetchResult.newData)
-            }.catch {error in
-                print("Error when attempting to identify device during background fetch")
+            }.catch { error in
+                print("Error when attempting to identify device during background fetch", error.localizedDescription)
                 completionHandler(UIBackgroundFetchResult.failed)
             }
         }

@@ -15,6 +15,7 @@ import ObjectMapper
 import ColorPickerRow
 import Iconic
 
+// swiftlint:disable:next type_body_length file_length
 class WatchComplicationConfigurator: FormViewController {
 
     var config: WatchComplication = WatchComplication()
@@ -29,7 +30,7 @@ class WatchComplicationConfigurator: FormViewController {
         }
     }
 
-    // swiftlint:disable:next function_body_length
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -71,7 +72,7 @@ class WatchComplicationConfigurator: FormViewController {
             $0.options = self.config.Family.templates
             $0.value = self.config.Template
             $0.selectorTitle = "Choose a template"
-        }.onPresent { from, to in
+        }.onPresent { _, to in
             to.enableDeselection = false
             to.selectableRowSetup = { row in
                 row.cellStyle = .subtitle
@@ -236,7 +237,7 @@ class WatchComplicationConfigurator: FormViewController {
                                                               color: iconColorRow.value)
                     }
                 }
-            }).onPresent { from, to in
+            }).onPresent { _, to in
                 to.selectableRowCellSetup = {cell, row in
                     if let value = row.selectableValue {
                         let theIcon = MaterialDesignIcons(named: value)
@@ -388,6 +389,7 @@ class WatchComplicationConfigurator: FormViewController {
         return section
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func reloadForm(template: ComplicationTemplate) {
         for section in self.form.allSections {
             if section.tag == "template" {

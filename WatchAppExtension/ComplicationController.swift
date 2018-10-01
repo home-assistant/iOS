@@ -13,8 +13,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
     // MARK: - Timeline Configuration
 
-    func getSupportedTimeTravelDirections(for complication: CLKComplication,
-                                          withHandler handler: @escaping (CLKComplicationTimeTravelDirections) -> Void) {
+    func getSupportedTimeTravelDirections(for complication: CLKComplication, withHandler
+        handler: @escaping (CLKComplicationTimeTravelDirections) -> Void) {
         handler([.backward, .forward])
     }
 
@@ -38,20 +38,13 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         // Call the handler with the current timeline entry
 
         let realm = Realm.live()
-        print("Realm is located at:", realm.configuration.fileURL!)
-
-        let allComplications = realm.objects(WatchComplication.self)
-
-        print("All configured complications", allComplications, allComplications.count, allComplications.first)
 
         let matchedFamily = ComplicationGroupMember(family: complication.family)
 
-        print("matchedFamily", matchedFamily.rawValue)
         let pred = NSPredicate(format: "rawFamily == %@", matchedFamily.rawValue)
         guard let config = realm.objects(WatchComplication.self).filter(pred).first else {
-            print("No configured complication found for \(matchedFamily.rawValue), returning family specific 404")
-            // FIXME: Return a family specific template 404.
-            handler(nil)
+            print("No configured complication found for \(matchedFamily.rawValue), returning family specific error")
+            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: matchedFamily.errorTemplate))
             return
         }
 

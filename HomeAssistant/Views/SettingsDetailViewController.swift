@@ -299,6 +299,8 @@ class SettingsDetailViewController: FormViewController {
         case "watchSettings":
             self.title = "Apple Watch"
 
+            let sends = Communicator.shared.currentWatchState.numberOfComplicationInfoTransfersAvailable.description
+
             self.form
                 +++ Section {
                     $0.tag = "watch_data"
@@ -306,12 +308,12 @@ class SettingsDetailViewController: FormViewController {
                 <<< LabelRow {
                     $0.tag = "remaining_complication_sends"
                     $0.title = "Remaining sends"
-                    $0.value = Communicator.shared.currentWatchState.numberOfComplicationInfoTransfersAvailable.description
+                    $0.value = sends
                 }
 
                 <<< ButtonRow {
                         $0.title = "Send data now"
-                    }.onCellSelection { cell, row in
+                    }.onCellSelection { _, _ in
 
                         var complications: [String: Any] = [String: Any]()
 
@@ -332,14 +334,13 @@ class SettingsDetailViewController: FormViewController {
                         }
 
                         if let remainingRow = self.form.rowBy(tag: "remaining_complication_sends") as? LabelRow {
+                            // swiftlint:disable:next line_length
                             remainingRow.value = Communicator.shared.currentWatchState.numberOfComplicationInfoTransfersAvailable.description
                             self.tableView.reloadData()
                         }
                     }
 
             let existingComplications = Current.realm().objects(WatchComplication.self)
-
-            print("Existing configured complications", existingComplications, existingComplications.count, existingComplications.first)
 
             for group in ComplicationGroup.allCases {
                 let members = group.members
@@ -369,7 +370,7 @@ class SettingsDetailViewController: FormViewController {
                                 }, onDismiss: { vc in
                                     _ = vc.navigationController?.popViewController(animated: true)
                             })
-                            }.cellUpdate({ (cell, row) in
+                            }.cellUpdate({ (cell, _) in
                                 cell.detailTextLabel?.text = member.description
                                 cell.detailTextLabel?.numberOfLines = 0
                                 cell.detailTextLabel?.lineBreakMode = .byWordWrapping
@@ -569,4 +570,5 @@ extension SettingsDetailViewController: INUIEditVoiceShortcutViewControllerDeleg
     func editVoiceShortcutViewControllerDidCancel(_ controller: INUIEditVoiceShortcutViewController) {
         dismiss(animated: true, completion: nil)
     }
+// swiftlint:disable:next file_length
 }
