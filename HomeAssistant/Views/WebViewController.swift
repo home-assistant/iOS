@@ -418,7 +418,7 @@ extension WebViewController: WKScriptMessageHandler {
 
                 print("Running callback", script)
 
-                self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
+                self.webView.evaluateJavaScript(script, completionHandler: { (_, error) in
                     if let error = error {
                         print("Failed calling sign out callback: \(error)")
                     }
@@ -467,4 +467,5 @@ class FullScreenWKWebView: WKWebView {
     override var safeAreaInsets: UIEdgeInsets {
         return .zero
     }
+// swiftlint:disable:next file_length
 }

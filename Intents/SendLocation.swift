@@ -66,6 +66,7 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
 
     }
 
+    // swiftlint:disable:next function_body_length
     func parseForLocation(intent: SendLocationIntent, completion: @escaping (SendLocationIntentResponse) -> Void) {
         // If location is already set in the intent, use that. If not,
         // We attempt to grab pasteboard contents and split by comma.
@@ -141,7 +142,7 @@ extension SendLocationIntentResponse {
     convenience init(code: SendLocationIntentResponseCode, userActivity: NSUserActivity?, place: CLPlacemark?,
                      source: SendLocationClipboardLocationParsedAs, pasteboardContents: String?) {
         self.init(code: code, userActivity: userActivity, pasteboardContents: pasteboardContents)
-        print("Confirming send location as place", place, "which was derived via", source)
+        print("Confirming send location as place", place.debugDescription, "which was derived via", source)
 
         self.location = place
         self.source = source

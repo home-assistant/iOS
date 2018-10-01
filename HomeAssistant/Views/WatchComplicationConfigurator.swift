@@ -15,7 +15,7 @@ import ObjectMapper
 import ColorPickerRow
 import Iconic
 
-// swiftlint:disable:next type_body_length file_length
+// swiftlint:disable:next type_body_length
 class WatchComplicationConfigurator: FormViewController {
 
     var config: WatchComplication = WatchComplication()
@@ -483,5 +483,5 @@ class WatchComplicationConfigurator: FormViewController {
 
         return groupedVals
     }
-
+// swiftlint:disable:next file_length
 }

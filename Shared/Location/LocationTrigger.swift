@@ -33,6 +33,7 @@ public enum LocationUpdateTrigger: String {
     case Siri = "Siri"
     case Unknown = "Unknown"
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     public func notificationOptionsFor(zoneName: String) -> NotificationOptions {
         let shouldNotify: Bool
         var identifier: String = ""

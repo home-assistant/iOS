@@ -24,11 +24,13 @@ let keychain = Keychain(service: "io.robbie.homeassistant")
 let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
 @UIApplicationMain
+// swiftlint:disable:next type_body_length
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var safariVC: SFSafariViewController?
     let regionManager = RegionManager()
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Current.deviceIDProvider = { DeviceUID.uid() }
@@ -471,4 +473,5 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let navController = UINavigationController(rootViewController: view)
         rootViewController?.present(navController, animated: true, completion: nil)
     }
+// swiftlint:disable:next file_length
 }

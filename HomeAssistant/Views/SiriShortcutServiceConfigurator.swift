@@ -17,6 +17,7 @@ import ObjectMapper
 import ViewRow
 
 @available(iOS 12, *)
+// swiftlint:disable:next type_body_length
 class SiriShortcutServiceConfigurator: FormViewController {
 
     var domain: String = "homeassistant"
@@ -412,4 +413,5 @@ extension SiriShortcutServiceConfigurator: INUIEditVoiceShortcutViewControllerDe
     func editVoiceShortcutViewControllerDidCancel(_ controller: INUIEditVoiceShortcutViewController) {
         dismiss(animated: true, completion: nil)
     }
+// swiftlint:disable:next file_length
 }

@@ -90,7 +90,8 @@ public class HomeAssistantAPI {
         case .legacy(let apiPassword):
             self.manager = self.configureSessionManager(withPassword: apiPassword)
         case .modern(let tokenInfo):
-            // TODO: Take this into account when promoting to the main API. The one in Current is separate, which is bad.
+            // TODO: Take this into account when promoting to the main API.
+            // The one in Current is separate, which is bad.
             self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
             let manager = self.configureSessionManager()
             manager.retrier = self.tokenManager

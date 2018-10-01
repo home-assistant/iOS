@@ -10,11 +10,11 @@ import Foundation
 
 class FireEventIntentHandler: NSObject, FireEventIntentHandling {
     func confirm(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
-        print("Confirming fire event", intent.eventName, intent.eventData)
+        print("Confirming fire event", intent.eventName.debugDescription, intent.eventData.debugDescription)
         completion(FireEventIntentResponse(code: .success, userActivity: nil))
     }
     func handle(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
-        print("Handling fire event", intent.eventName, intent.eventData)
+        print("Handling fire event", intent.eventName.debugDescription, intent.eventData.debugDescription)
         completion(FireEventIntentResponse(code: .success, userActivity: nil))
     }
 }

@@ -404,7 +404,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                             print("Notifications Permissions finished with success!", granted)
                             prefs.setValue(granted, forKey: "notificationsEnabled")
                             prefs.synchronize()
-                            if granted, let api = api {
+                            if granted, api != nil {
                                 DispatchQueue.main.async(execute: {
                                     row.hidden = true
                                     row.updateCell()
@@ -567,6 +567,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         // Dispose of any resources that can be recreated.
     }
 
+    // swiftlint:disable:next function_body_length
     @objc func HomeAssistantDiscovered(_ notification: Notification) {
         let discoverySection: Section = self.form.sectionBy(tag: "discoveredInstances")!
         discoverySection.hidden = false
@@ -778,6 +779,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
     /// Attempt to connect to the server with the supplied credentials. If it succeeds, save those
     /// credentials and update the UI
+    // swiftlint:disable:next function_body_length
     private func validateConnection() -> Bool {
        guard let connectionInfo = self.connectionInfoFromUI() else {
             let errMsg = L10n.Settings.ConnectionError.InvalidUrl.message

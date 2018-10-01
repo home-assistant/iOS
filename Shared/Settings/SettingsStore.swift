@@ -136,7 +136,7 @@ public class SettingsStore {
                 credentials = nil
             }
 
-            var internalURL: URL? = nil
+            var internalURL: URL?
             if let internalURLString = keychain["internalBaseURL"],
                 let parsedURL = URL(string: internalURLString) {
                 internalURL = parsedURL

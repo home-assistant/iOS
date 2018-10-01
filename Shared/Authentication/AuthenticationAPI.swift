@@ -51,7 +51,7 @@ public class AuthenticationAPI {
             let routeInfo = RouteInfo(route: AuthenticationRoute.revokeToken(token: token),
                                       baseURL: self.connectionInfo.activeURL)
             let request = Alamofire.request(routeInfo)
-            request.validate().response { response in
+            request.validate().response { _ in
                 // https://developers.home-assistant.io/docs/en/auth_api.html#revoking-a-refresh-token says:
                 //
                 // The request will always respond with an empty body and HTTP status 200,
