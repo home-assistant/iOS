@@ -497,7 +497,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     self.present(alert, animated: true, completion: nil)
                 }
 
-            +++ Section(header: "Developer Options", footer: "Don't use these if you don't know what you are doing!"){
+            +++ Section(header: "Developer Options", footer: "Don't use these if you don't know what you are doing!") {
                 $0.hidden = Condition(booleanLiteral: (Current.appConfiguration != .Debug))
                 $0.tag = "developerOptions"
             }
@@ -509,7 +509,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
                     print("Would copy from", appGroupRealmPath, "to", containerRealmPath)
 
-                    if FileManager.default.fileExists(atPath: containerRealmPath.path){
+                    if FileManager.default.fileExists(atPath: containerRealmPath.path) {
                         do {
                             _ = try FileManager.default.removeItem(at: containerRealmPath)
                         } catch let error {
