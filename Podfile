@@ -26,7 +26,7 @@ def shared_pods
     pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
     pod 'KeychainAccess', '3.1.1'
     pod 'ObjectMapper', '3.3.0'
-    pod 'PromiseKit', '6.3.0'
+    pod 'PromiseKit', '6.4.1'
     pod 'RealmSwift'
 end
 
@@ -40,7 +40,7 @@ target 'HomeAssistant' do
   pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
   pod 'MBProgressHUD', '1.1.0'
   pod 'SwiftGen', '5.3.0'
-  pod 'SwiftLint', '0.25.1'
+  pod 'SwiftLint', '0.27.0'
   pod 'UIColor_Hex_Swift'
   pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'Swift4.2'
 
@@ -78,7 +78,7 @@ target 'NotificationContentExtension' do
 end
 
 target 'SiriIntents' do
-  pod 'PromiseKit', '6.3.0'
+  pod 'PromiseKit', '6.4.1'
 end
 
 target 'WatchAppExtension' do
