@@ -10,6 +10,7 @@ import UIKit
 import Eureka
 import SafariServices
 import CPDAcknowledgements
+import Shared
 
 class AboutViewController: FormViewController {
 
@@ -17,11 +18,26 @@ class AboutViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.tableView.bounces = false
+
         self.title = L10n.About.title
 
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
                                                                  target: self,
                                                                  action: #selector(AboutViewController.close(_:)))
+
+        ButtonRow.defaultCellUpdate = { cell, row in
+            cell.textLabel?.textAlignment = .left
+            cell.accessoryType = .disclosureIndicator
+            cell.editingAccessoryType = cell.accessoryType
+            cell.textLabel?.textColor = nil
+        }
+
+        var hideBecauseChina = Condition(booleanLiteral: false)
+
+        if let lang = Locale.current.languageCode, lang.hasPrefix("zh") {
+            hideBecauseChina = Condition(booleanLiteral: true)
+        }
 
         form
             +++ Section {
@@ -29,127 +45,90 @@ class AboutViewController: FormViewController {
                                                                                   bundle: nil))
                 logoHeader.onSetupView = { view, _ in
                     view.AppTitle.text = L10n.About.Logo.appTitle
-                    if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-                        view.Version.text = version
-                    }
+                    view.Version.text = prefs.string(forKey: "lastInstalledVersion")
                     view.Tagline.text = L10n.About.Logo.tagline
+                    view.addGestureRecognizer(UITapGestureRecognizer(target: self,
+                                                                     action: #selector(self.tapAbout(_:))))
                 }
+
                 $0.header = logoHeader
             }
+
+            <<< ButtonRow {
+                    $0.title = L10n.About.Beta.title
+                    $0.disabled = Condition(booleanLiteral: Current.appConfiguration == .TestFlight)
+                }.onCellSelection { _, _  in
+                    let urlStr = "https://home-assistant.io/ios/beta/"
+                    UIApplication.shared.open(URL(string: urlStr)!, options: [:], completionHandler: nil)
+                }
+
             <<< ButtonRow {
                 $0.title = L10n.About.Acknowledgements.title
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     return self.generateAcknowledgements()
-                    }, onDismiss: { vc in
-                        _ = vc.navigationController?.popViewController(animated: true)
+                }, onDismiss: { vc in
+                    _ = vc.navigationController?.popViewController(animated: true)
                 })
             }
+
             <<< ButtonRow {
                     $0.title = L10n.About.Review.title
-                }.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .left
-                    cell.accessoryType = .disclosureIndicator
-                    cell.editingAccessoryType = cell.accessoryType
-                    cell.textLabel?.textColor = nil
-                }.onCellSelection({ _, _  in
+                }.onCellSelection { _, _  in
                     let urlStr = "https://itunes.apple.com/app/id1099568401?action=write-review&mt=8"
                     UIApplication.shared.open(URL(string: urlStr)!, options: [:], completionHandler: nil)
-                })
+                }
+
             +++ Section()
             <<< ButtonRow {
-                $0.title = L10n.About.Website.title
-                }.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .left
-                    cell.accessoryType = .disclosureIndicator
-                    cell.editingAccessoryType = cell.accessoryType
-                    cell.textLabel?.textColor = nil
-                }.onCellSelection({ _, _  in
+                    $0.title = L10n.About.Website.title
+                }.onCellSelection { _, _  in
                     openURLInBrowser(urlToOpen: URL(string: "https://www.home-assistant.io/")!)
-                })
+                }
 
             <<< ButtonRow {
-                $0.title = L10n.About.Forums.title
-                }.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .left
-                    cell.accessoryType = .disclosureIndicator
-                    cell.editingAccessoryType = cell.accessoryType
-                    cell.textLabel?.textColor = nil
-                }.onCellSelection({ _, _  in
+                    $0.title = L10n.About.Forums.title
+                }.onCellSelection { _, _  in
                     openURLInBrowser(urlToOpen: URL(string: "https://community.home-assistant.io/")!)
-                })
+                }
 
             <<< ButtonRow {
-                $0.title = L10n.About.Chat.title
-                }.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .left
-                    cell.accessoryType = .disclosureIndicator
-                    cell.editingAccessoryType = cell.accessoryType
-                    cell.textLabel?.textColor = nil
-                }.onCellSelection({ _, _  in
+                    $0.title = L10n.About.Chat.title
+                }.onCellSelection { _, _  in
                     openURLInBrowser(urlToOpen: URL(string: "https://discord.gg/C7fXPmt")!)
-                })
+                }
 
             <<< ButtonRow {
-                $0.title = L10n.About.Documentation.title
-                }.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .left
-                    cell.accessoryType = .disclosureIndicator
-                    cell.editingAccessoryType = cell.accessoryType
-                    cell.textLabel?.textColor = nil
-                }.onCellSelection({ _, _  in
+                    $0.title = L10n.About.Documentation.title
+                }.onCellSelection { _, _  in
                     openURLInBrowser(urlToOpen: URL(string: "https://www.home-assistant.io/docs/ecosystem/ios/")!)
-                })
+                }
 
             <<< ButtonRow {
-                $0.title = L10n.About.HomeAssistantOnTwitter.title
-                if let lang = Locale.current.languageCode {
-                    $0.hidden = Condition(booleanLiteral: lang.hasPrefix("zh"))
-                }
-                }.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .left
-                    cell.accessoryType = .disclosureIndicator
-                    cell.editingAccessoryType = cell.accessoryType
-                    cell.textLabel?.textColor = nil
-                }.onCellSelection({ _, _  in
+                    $0.title = L10n.About.HomeAssistantOnTwitter.title
+                    $0.hidden = hideBecauseChina
+                }.onCellSelection { _, _  in
                     self.openInTwitterApp(username: "home_assistant")
-                })
-
-            <<< ButtonRow {
-                $0.title = L10n.About.HomeAssistantOnFacebook.title
-                if let lang = Locale.current.languageCode {
-                    $0.hidden = Condition(booleanLiteral: lang.hasPrefix("zh"))
                 }
-                }.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .left
-                    cell.accessoryType = .disclosureIndicator
-                    cell.editingAccessoryType = cell.accessoryType
-                    cell.textLabel?.textColor = nil
-                }.onCellSelection({ _, _  in
+
+            <<< ButtonRow {
+                    $0.title = L10n.About.HomeAssistantOnFacebook.title
+                    $0.hidden = hideBecauseChina
+                }.onCellSelection { _, _  in
                     self.openInFacebook(pageId: "292963007723872")
-                })
+                }
 
             <<< ButtonRow {
-                $0.title = L10n.About.Github.title
-                }.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .left
-                    cell.accessoryType = .disclosureIndicator
-                    cell.editingAccessoryType = cell.accessoryType
-                    cell.textLabel?.textColor = nil
-                }.onCellSelection({ _, _  in
+                    $0.title = L10n.About.Github.title
+                }.onCellSelection { _, _  in
                     openURLInBrowser(urlToOpen: URL(string: "https://github.com/home-assistant/home-assistant-iOS")!)
-                })
+                }
 
             <<< ButtonRow {
-                $0.title = L10n.About.GithubIssueTracker.title
-                }.cellUpdate { cell, _ in
-                    cell.textLabel?.textAlignment = .left
-                    cell.accessoryType = .disclosureIndicator
-                    cell.editingAccessoryType = cell.accessoryType
-                    cell.textLabel?.textColor = nil
-                }.onCellSelection({ _, _ in
+                    $0.title = L10n.About.GithubIssueTracker.title
+                }.onCellSelection { _, _ in
                     openURLInBrowser(urlToOpen:
                         URL(string: "https://github.com/home-assistant/home-assistant-iOS/issues")!)
-                })
+                }
     }
 
     override func didReceiveMemoryWarning() {
@@ -199,6 +178,16 @@ class AboutViewController: FormViewController {
     @objc func close(_ sender: UIBarButtonItem) {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
+
+    @objc func tapAbout(_ sender: Any) {
+        let alert = UIAlertController(title: "You found me!",
+                                      message: "i love you",
+                                      preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "<3",
+                                      style: UIAlertAction.Style.default,
+                                      handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 class HomeAssistantLogoView: UIView {
@@ -206,6 +195,8 @@ class HomeAssistantLogoView: UIView {
     @IBOutlet weak var AppTitle: UILabel!
     @IBOutlet weak var Tagline: UILabel!
     @IBOutlet weak var Version: UILabel!
+    @IBOutlet weak var Image: UIImageView!
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }

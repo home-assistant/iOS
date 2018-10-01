@@ -56,6 +56,9 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     let discovery = Bonjour()
     var authLocationManager: CLLocationManager = CLLocationManager()
 
+    private var shakeCount = 0
+    private var maxShakeCount = 3
+
     override func viewWillDisappear(_ animated: Bool) {
         NSLog("Stopping Home Assistant discovery")
         self.discovery.stopDiscovery()
@@ -69,6 +72,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.becomeFirstResponder()
 
         let api = HomeAssistantAPI.authenticatedAPI()
 
@@ -492,7 +496,10 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     self.present(alert, animated: true, completion: nil)
                 }
 
-            +++ Section(header: "Developer Options", footer: "Don't use these if you don't know what you are doing!")
+            +++ Section(header: "Developer Options", footer: "Don't use these if you don't know what you are doing!"){
+                $0.hidden = Condition(booleanLiteral: (Current.appConfiguration != .Debug))
+                $0.tag = "developerOptions"
+            }
             <<< ButtonRow {
                     $0.title = "Copy Realm from group to container"
                 }.onCellSelection { _, _ in
@@ -501,8 +508,16 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
                     print("Would copy from", appGroupRealmPath, "to", containerRealmPath)
 
+                    if FileManager.default.fileExists(atPath: containerRealmPath.path){
+                        do {
+                            _ = try FileManager.default.removeItem(at: containerRealmPath)
+                        } catch let error {
+                            print("error occurred, here are the details:\n \(error)")
+                        }
+                    }
+
                     do {
-                        _ = try FileManager.default.replaceItemAt(containerRealmPath, withItemAt: appGroupRealmPath)
+                        _ = try FileManager.default.copyItem(at: appGroupRealmPath, to: containerRealmPath)
                     } catch let error as NSError {
                         // Catch fires here, with an NSError being thrown
                         print("error occurred, here are the details:\n \(error)")
@@ -896,6 +911,31 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         //            urlComponents.port = (baseUrl.scheme == "http") ? 80 : 443
         //        }
         return (true, urlComponents.url!)
+    }
+
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        if motion == .motionShake {
+            print("shake!")
+            if shakeCount == maxShakeCount {
+                if let section = self.form.sectionBy(tag: "developerOptions") {
+                    section.hidden = false
+                    section.evaluateHidden()
+
+                    let alert = UIAlertController(title: "You did it!",
+                                                  message: "Developer functions unlocked",
+                                                  preferredStyle: UIAlertController.Style.alert)
+                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
+                                                  handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
+                return
+            }
+            shakeCount += 1
+        }
     }
 }
 

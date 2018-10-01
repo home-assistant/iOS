@@ -10,6 +10,12 @@ import Foundation
 import PromiseKit
 import RealmSwift
 
+public enum AppConfiguration {
+    case Debug
+    case TestFlight
+    case AppStore
+}
+
 public var Current = Environment()
 /// The current "operating envrionment" the app. Implementations can be swapped out to facilitate better
 /// unit tests.
@@ -45,5 +51,27 @@ public class Environment {
 
         self.tokenManager = tokenManager
         self.settingsStore.connectionInfo = authenticatedAPI.connectionInfo
+    }
+
+    // This is private because the use of 'appConfiguration' is preferred.
+    private let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+
+    // This can be used to add debug statements.
+    public var isDebug: Bool {
+        #if DEBUG
+        return true
+        #else
+        return false
+        #endif
+    }
+
+    public var appConfiguration: AppConfiguration {
+        if isDebug {
+            return .Debug
+        } else if isTestFlight {
+            return .TestFlight
+        } else {
+            return .AppStore
+        }
     }
 }

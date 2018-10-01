@@ -33,6 +33,11 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "about.acknowledgements.title")
     }
 
+    internal enum Beta {
+      /// Join Beta
+      internal static let title = L10n.tr("Localizable", "about.beta.title")
+    }
+
     internal enum Chat {
       /// Chat
       internal static let title = L10n.tr("Localizable", "about.chat.title")
