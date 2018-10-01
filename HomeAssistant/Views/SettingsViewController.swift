@@ -485,9 +485,10 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                                                   message: L10n.Settings.ResetSection.ResetAlert.message,
                                                   preferredStyle: UIAlertController.Style.alert)
 
-                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                    alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
 
-                    alert.addAction(UIAlertAction(title: "Reset", style: .destructive, handler: { (_) in
+                    alert.addAction(UIAlertAction(title: L10n.Settings.ResetSection.ResetAlert.title,
+                                                  style: .destructive, handler: { (_) in
                         row.hidden = true
                         row.evaluateHidden()
                         self.ResetApp()
@@ -537,6 +538,21 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     $0.title = "Import legacy push settings"
                 }.onCellSelection {_, _ in
                     MigratePushSettingsToLocal()
+            }
+            <<< ButtonRow {
+                $0.title = "Test Critical Alerts"
+                }.onCellSelection {_, _ in
+                    let content = UNMutableNotificationContent()
+                    content.title = "Critical Alerts Test"
+                    content.body = "This is a critical alert"
+                    if #available(iOS 12.0, *) {
+                        content.sound = UNNotificationSound.defaultCriticalSound(withAudioVolume: 1)
+                    }
+
+                    let notificationRequest =
+                        UNNotificationRequest.init(identifier: "criticalAlertTest",
+                                                   content: content, trigger: nil)
+                    UNUserNotificationCenter.current().add(notificationRequest)
             }
     }
 
