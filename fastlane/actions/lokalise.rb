@@ -28,7 +28,7 @@ module Fastlane
           request_data["langs"] = languages.to_json
         end
 
-        uri = URI("https://lokalise.co/api/project/export")
+        uri = URI("https://api.lokalise.co/api/project/export")
         request = Net::HTTP::Post.new(uri)
         request.set_form_data(request_data)
 
@@ -42,8 +42,8 @@ module Fastlane
         if jsonResponse["response"]["status"] == "success" && jsonResponse["bundle"]["file"].kind_of?(String)  then
           UI.message "Downloading localizations archive 📦"
           FileUtils.mkdir_p("lokalisetmp")
-          filePath = jsonResponse["bundle"]["file"]
-          uri = URI("https://s3-eu-west-1.amazonaws.com/lokalise-assets/#{filePath}")
+          fileURL = jsonResponse["bundle"]["full_file"]
+          uri = URI(fileURL)
           http = Net::HTTP.new(uri.host, uri.port)
           http.use_ssl = true
           zipRequest = Net::HTTP::Get.new(uri)
