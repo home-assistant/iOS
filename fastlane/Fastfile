@@ -11,8 +11,8 @@
 
 # This is the minimum version number required.
 # Update this, if you use features of a newer version
-fastlane_version "2.104.0"
-REQUIRED_XCODE_VERSION = "9.4"
+fastlane_version "2.105.2"
+REQUIRED_XCODE_VERSION = "10.0"
 default_platform :ios
 
 platform :ios do
@@ -138,7 +138,7 @@ platform :ios do
 
     commit_version_bump(message: commit_message, xcodeproj: "HomeAssistant.xcodeproj")
 
-    push_to_git_remote(remote_branch: "master")
+    push_to_git_remote(remote_branch: git_branch)
 
     set_github_release(
       repository_name: "home-assistant/home-assistant-iOS",
@@ -152,7 +152,7 @@ platform :ios do
 
   desc "Runs build when on Travis"
   lane :ci do
-    if is_ci && ENV["TRAVIS_PULL_REQUEST"] == "false" && git_branch == "master"
+    if is_ci && ENV["TRAVIS_PULL_REQUEST"] == "false"
       ENV["FASTLANE_PASSWORD"] = ENV["HOMEASSISTANT_ITUNES_PASSWORD"]
 
       slack(message: "Beginning Travis CI build")
