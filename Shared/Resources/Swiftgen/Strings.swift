@@ -495,6 +495,11 @@ internal enum L10n {
 
   internal enum Settings {
 
+    internal enum AdvancedConnectionSettingsSection {
+      /// Advanced Connection Settings
+      internal static let title = L10n.tr("Localizable", "settings.advanced_connection_settings_section.title")
+    }
+
     internal enum CertificateErrorNotification {
       /// A self-signed or invalid SSL certificate has been detected. Certificates of this kind are not supported by Home Assistant for iOS. Please tap the More Info button for further information.
       internal static let message = L10n.tr("Localizable", "settings.certificate_error_notification.message")
@@ -598,8 +603,13 @@ internal enum L10n {
       }
 
       internal enum SaveButton {
-        /// Save
+        /// Validate and Save Connection Settings
         internal static let title = L10n.tr("Localizable", "settings.connection_section.save_button.title")
+      }
+
+      internal enum ShowAdvancedSettingsRow {
+        /// Show advanced settings
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.show_advanced_settings_row.title")
       }
 
       internal enum UseInternalUrl {

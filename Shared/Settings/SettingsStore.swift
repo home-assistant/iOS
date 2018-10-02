@@ -92,6 +92,15 @@ public class SettingsStore {
         }
     }
 
+    public var showAdvancedConnectionSettings: Bool {
+        get {
+            return prefs.bool(forKey: "showAdvancedConnectionSettings")
+        }
+        set {
+            prefs.set(newValue, forKey: "showAdvancedConnectionSettings")
+        }
+    }
+
     public var timezone: String? {
         get {
             return prefs.string(forKey: "time_zone")

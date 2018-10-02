@@ -111,6 +111,7 @@
 "permissions.location.message" = "We use this to inform\r\Home Assistant of your device location and state.";
 "permissions.notification.message" = "We use this to let you\r\send notifications to your device.";
 "preview_output" = "Preview Output";
+"settings.advanced_connection_settings_section.title" = "Advanced Connection Settings";
 "settings.certificate_error_notification.message" = "A self-signed or invalid SSL certificate has been detected. Certificates of this kind are not supported by Home Assistant for iOS. Please tap the More Info button for further information.";
 "settings.certificate_error_notification.title" = "Self-signed or invalid certificate detected";
 "settings.connection_error.forbidden.message" = "The password was incorrect.";
@@ -137,6 +138,8 @@
 "settings.connection_section.invalid_url_scheme_notification.title" = "Invalid URL";
 "settings.connection_section.network_name.title" = "Current Network Name";
 "settings.connection_section.save_button.title" = "Save";
+"settings.connection_section.save_button.title" = "Validate and Save Connection Settings";
+"settings.connection_section.show_advanced_settings_row.title" = "Show advanced settings";
 "settings.connection_section.use_internal_url.title" = "Use internal URL";
 "settings.connection_section.use_legacy_auth.title" = "Use legacy authentication";
 "settings.details_section.enable_location_row.title" = "Enable location tracking";
@@ -163,6 +166,7 @@
 "settings.status_section.location_name_row.placeholder" = "My Home Assistant";
 "settings.status_section.location_name_row.title" = "Name";
 "settings.status_section.notify_platform_loaded_row.title" = "iOS Notify Platform Loaded";
+"settings.status_section.version_row.placeholder" = "0.42.0";
 "settings.status_section.version_row.placeholder" = "0.80.0";
 "settings.status_section.version_row.title" = "Version";
 "settings_details.general.chrome.title" = "Open links in Chrome";

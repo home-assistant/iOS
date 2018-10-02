@@ -77,13 +77,16 @@ public class DeviceTrackerSee: Mappable {
         self.Location = zone.locationCoordinates()
 
         if zone.ID == "zone.home" {
-            if self.Trigger == .RegionEnter || self.Trigger == .BeaconRegionEnter {
+            switch self.Trigger {
+            case .RegionEnter, .GPSRegionEnter, .BeaconRegionEnter:
                 self.LocationName = LocationNames.Home
-            } else if self.Trigger == .RegionExit {
-                self.LocationName = LocationNames.NotHome
-            } else if self.Trigger == .BeaconRegionExit {
+            case .RegionExit, .GPSRegionExit:
+                self.LocationName =  LocationNames.NotHome
+            case .BeaconRegionExit:
                 self.ConsiderHome = TimeInterval(exactly: 180)
                 self.ClearLocation()
+            default:
+                break
             }
         }
     }
