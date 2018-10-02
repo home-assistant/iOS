@@ -110,7 +110,7 @@ class SettingsDetailViewController: FormViewController {
                     }
                     <<< LabelRow {
                         $0.title = L10n.SettingsDetails.Location.Zones.Radius.title
-                        $0.value = "\(Int(zone.Radius)) m"
+                        $0.value = L10n.SettingsDetails.Location.Zones.Radius.label(Int(zone.Radius))
                     }
                     <<< LabelRow {
                         $0.title = L10n.SettingsDetails.Location.Zones.BeaconUuid.title
@@ -182,7 +182,9 @@ class SettingsDetailViewController: FormViewController {
                 let mvOpts: MultivaluedOptions = [.Insert, .Delete]
 
                 self.form
-                    +++ MultivaluedSection(multivaluedOptions: mvOpts, header: "Categories", footer: "") { section in
+                    +++ MultivaluedSection(multivaluedOptions: mvOpts,
+                                           header: L10n.SettingsDetails.Notifications.Categories.header,
+                                           footer: "") { section in
                         section.multivaluedRowToInsertAt = { index in
                             return self.getNotificationCategoryRow(nil, notificationSettings)
                         }
@@ -297,7 +299,7 @@ class SettingsDetailViewController: FormViewController {
                     })
 
         case "watchSettings":
-            self.title = "Apple Watch"
+            self.title = L10n.SettingsDetails.Watch.title
 
             let sends = Communicator.shared.currentWatchState.numberOfComplicationInfoTransfersAvailable.description
 
@@ -307,12 +309,12 @@ class SettingsDetailViewController: FormViewController {
                 }
                 <<< LabelRow {
                     $0.tag = "remaining_complication_sends"
-                    $0.title = "Remaining sends"
+                    $0.title = L10n.SettingsDetails.Watch.RemainingSends.title
                     $0.value = sends
                 }
 
                 <<< ButtonRow {
-                        $0.title = "Send data now"
+                        $0.title = L10n.SettingsDetails.Watch.SendNow.title
                     }.onCellSelection { _, _ in
 
                         var complications: [String: Any] = [String: Any]()
@@ -490,7 +492,7 @@ class SettingsDetailViewController: FormViewController {
     func getNotificationCategoryRow(_ category: NotificationCategory?, _ settings: UNNotificationSettings?) ->
         ButtonRowWithPresent<NotificationCategoryConfigurator> {
         var identifier = "new_category_"+UUID().uuidString
-        var title = "New Category"
+        var title = L10n.SettingsDetails.Notifications.NewCategory.title
 
         if let category = category {
             identifier = category.Identifier

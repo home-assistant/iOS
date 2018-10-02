@@ -68,10 +68,10 @@ class WatchComplicationConfigurator: FormViewController {
 
         <<< PushRow<ComplicationTemplate> {
             $0.tag = "template"
-            $0.title = "Template"
+            $0.title = L10n.Watch.Configurator.Rows.Template.title
             $0.options = self.config.Family.templates
             $0.value = self.config.Template
-            $0.selectorTitle = "Choose a template"
+            $0.selectorTitle = L10n.Watch.Configurator.Rows.Template.selectorTitle
         }.onPresent { _, to in
             to.enableDeselection = false
             to.selectableRowSetup = { row in
@@ -112,21 +112,22 @@ class WatchComplicationConfigurator: FormViewController {
 
         <<< SegmentedRow<String> {
             $0.tag = "row2alignment"
-            $0.title = "Row 2 Alignment"
+            $0.title = L10n.Watch.Configurator.Rows.Row2Alignment.title
             $0.add(rule: RuleRequired())
-            $0.options = ["leading", "trailing"]
+            $0.options = [L10n.Watch.Configurator.Rows.Row2Alignment.Options.leading,
+                          L10n.Watch.Configurator.Rows.Row2Alignment.Options.trailing]
             $0.value = $0.options?.first
         }
 
-        +++ Section(header: "Gauge",
-                    footer: "The gague to display in the complication.") {
+        +++ Section(header: L10n.Watch.Configurator.Sections.Gauge.header,
+                    footer: L10n.Watch.Configurator.Sections.Gauge.footer) {
                         $0.tag = "gauge"
                         $0.hidden = true
         }
 
         <<< TextAreaRow {
             $0.tag = "gauge"
-            $0.title = "Gauge"
+            $0.title = L10n.Watch.Configurator.Rows.Gauge.title
             $0.add(rule: RuleRequired())
             if let gaugeDict = self.config.Data["gauge"] as? [String: Any],
                 let value = gaugeDict[$0.tag!] as? String {
@@ -136,13 +137,13 @@ class WatchComplicationConfigurator: FormViewController {
 
         <<< ButtonRow {
             $0.tag = "gauge_render_template"
-            $0.title = "Preview Output"
+            $0.title = L10n.previewOutput
             }.onCellSelection({ _, _ in
                 self.renderTemplateForRow(rowTag: "gauge")
             })
 
         <<< InlineColorPickerRow("gauge_color") {
-            $0.title = "Color"
+            $0.title = L10n.Watch.Configurator.Rows.Gauge.Color.title
             $0.isCircular = true
             $0.showsPaletteNames = true
             $0.value = UIColor.green
@@ -156,9 +157,10 @@ class WatchComplicationConfigurator: FormViewController {
 
         <<< SegmentedRow<String> {
             $0.tag = "gauge_type"
-            $0.title = "Type"
+            $0.title = L10n.Watch.Configurator.Rows.Gauge.GaugeType.title
             $0.add(rule: RuleRequired())
-            $0.options = ["open", "closed"]
+            $0.options = [L10n.Watch.Configurator.Rows.Gauge.GaugeType.Options.open,
+                          L10n.Watch.Configurator.Rows.Gauge.GaugeType.Options.closed]
             $0.value = $0.options?.first
             if let gaugeDict = self.config.Data["gauge"] as? [String: Any],
                 let value = gaugeDict[$0.tag!] as? String {
@@ -168,9 +170,10 @@ class WatchComplicationConfigurator: FormViewController {
 
         <<< SegmentedRow<String> {
             $0.tag = "gauge_style"
-            $0.title = "Style"
+            $0.title = L10n.Watch.Configurator.Rows.Gauge.Style.title
             $0.add(rule: RuleRequired())
-            $0.options = ["fill", "ring"]
+            $0.options = [L10n.Watch.Configurator.Rows.Gauge.Style.Options.fill,
+                          L10n.Watch.Configurator.Rows.Gauge.Style.Options.ring]
             $0.value = $0.options?.first
             if let gaugeDict = self.config.Data["gauge"] as? [String: Any],
                 let value = gaugeDict[$0.tag!] as? String {
@@ -178,14 +181,15 @@ class WatchComplicationConfigurator: FormViewController {
             }
         }
 
-        +++ Section(header: "Ring", footer: "The ring showing progress surrounding the text.") {
+        +++ Section(header: L10n.Watch.Configurator.Sections.Ring.header,
+                    footer: L10n.Watch.Configurator.Sections.Ring.footer) {
             $0.tag = "ring"
             $0.hidden = true
         }
 
         <<< TextAreaRow {
             $0.tag = "ring_value"
-            $0.title = "Fractional value"
+            $0.title = L10n.Watch.Configurator.Rows.Ring.Value.title
             $0.add(rule: RuleRequired())
             if let dict = self.config.Data["ring"] as? [String: Any],
                 let value = dict[$0.tag!] as? String {
@@ -195,16 +199,17 @@ class WatchComplicationConfigurator: FormViewController {
 
         <<< ButtonRow {
             $0.tag = "ring_render_template"
-            $0.title = "Preview Output"
+            $0.title = L10n.previewOutput
         }.onCellSelection({ _, _ in
             self.renderTemplateForRow(rowTag: "ring_value")
         })
 
         <<< SegmentedRow<String> {
             $0.tag = "ring_type"
-            $0.title = "Type"
+            $0.title = L10n.Watch.Configurator.Rows.Ring.RingType.title
             $0.add(rule: RuleRequired())
-            $0.options = ["open", "closed"]
+            $0.options = [L10n.Watch.Configurator.Rows.Ring.RingType.Options.open,
+                          L10n.Watch.Configurator.Rows.Ring.RingType.Options.closed]
             $0.value = $0.options?.first
             if let dict = self.config.Data["ring"] as? [String: Any],
                 let value = dict[$0.tag!] as? String {
@@ -212,9 +217,8 @@ class WatchComplicationConfigurator: FormViewController {
             }
         }
 
-        +++ Section {
-            $0.header = HeaderFooterView.init(stringLiteral: "Icon")
-            $0.footer = HeaderFooterView.init(stringLiteral: "The image to display.")
+        +++ Section(header: L10n.Watch.Configurator.Sections.Icon.header,
+                    footer: L10n.Watch.Configurator.Sections.Icon.footer) {
             $0.tag = "icon"
             $0.hidden = true
         }
@@ -222,7 +226,7 @@ class WatchComplicationConfigurator: FormViewController {
         <<< PushRow<String> {
                 $0.options = MaterialDesignIcons.allCases.map({ $0.name })
                 $0.value = $0.options?.first
-                $0.selectorTitle = "Choose a icon"
+                $0.selectorTitle = L10n.Watch.Configurator.Rows.Icon.Choose.title
                 $0.tag = "icon"
                 if let dict = self.config.Data["icon"] as? [String: Any],
                     let value = dict[$0.tag!] as? String {
@@ -254,7 +258,7 @@ class WatchComplicationConfigurator: FormViewController {
             }
 
         <<< InlineColorPickerRow("icon_color") {
-                $0.title = "Color"
+                $0.title = L10n.Watch.Configurator.Rows.Icon.Color.title
                 $0.isCircular = true
                 $0.showsPaletteNames = true
                 $0.value = UIColor.green
@@ -368,7 +372,7 @@ class WatchComplicationConfigurator: FormViewController {
         section.append(textRow)
 
         section.append(ButtonRow {
-            $0.title = "Preview Output"
+            $0.title = L10n.previewOutput
         }.onCellSelection({ _, _ in
             self.renderTemplateForRow(row: textRow)
         }))

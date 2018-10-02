@@ -879,6 +879,10 @@ internal enum L10n {
         }
 
         internal enum Radius {
+          /// %d m
+          internal static func label(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings_details.location.zones.radius.label", p1)
+          }
           /// Radius
           internal static let title = L10n.tr("Localizable", "settings_details.location.zones.radius.title")
         }
@@ -902,6 +906,16 @@ internal enum L10n {
           /// Badge reset
           internal static let title = L10n.tr("Localizable", "settings_details.notifications.badge_section.reset_alert.title")
         }
+      }
+
+      internal enum Categories {
+        /// Categories
+        internal static let header = L10n.tr("Localizable", "settings_details.notifications.categories.header")
+      }
+
+      internal enum NewCategory {
+        /// New Category
+        internal static let title = L10n.tr("Localizable", "settings_details.notifications.new_category.title")
       }
 
       internal enum PromptToOpenUrls {
@@ -943,6 +957,21 @@ internal enum L10n {
     internal enum Siri {
       /// Siri Shortcuts
       internal static let title = L10n.tr("Localizable", "settings_details.siri.title")
+    }
+
+    internal enum Watch {
+      /// Apple Watch
+      internal static let title = L10n.tr("Localizable", "settings_details.watch.title")
+
+      internal enum RemainingSends {
+        /// Remaining sends
+        internal static let title = L10n.tr("Localizable", "settings_details.watch.remaining_sends.title")
+      }
+
+      internal enum SendNow {
+        /// Send now
+        internal static let title = L10n.tr("Localizable", "settings_details.watch.send_now.title")
+      }
     }
   }
 
@@ -1047,6 +1076,149 @@ internal enum L10n {
   }
 
   internal enum Watch {
+
+    internal enum Configurator {
+
+      internal enum Rows {
+
+        internal enum Color {
+          /// Color
+          internal static let title = L10n.tr("Localizable", "watch.configurator.rows.color.title")
+        }
+
+        internal enum FractionalValue {
+          /// Fractional value
+          internal static let title = L10n.tr("Localizable", "watch.configurator.rows.fractional_value.title")
+        }
+
+        internal enum Gauge {
+          /// Gauge
+          internal static let title = L10n.tr("Localizable", "watch.configurator.rows.gauge.title")
+
+          internal enum Color {
+            /// Color
+            internal static let title = L10n.tr("Localizable", "watch.configurator.rows.gauge.color.title")
+          }
+
+          internal enum GaugeType {
+            /// Type
+            internal static let title = L10n.tr("Localizable", "watch.configurator.rows.gauge.gauge_type.title")
+
+            internal enum Options {
+              /// Closed
+              internal static let closed = L10n.tr("Localizable", "watch.configurator.rows.gauge.gauge_type.options.closed")
+              /// Open
+              internal static let `open` = L10n.tr("Localizable", "watch.configurator.rows.gauge.gauge_type.options.open")
+            }
+          }
+
+          internal enum Style {
+            /// Style
+            internal static let title = L10n.tr("Localizable", "watch.configurator.rows.gauge.style.title")
+
+            internal enum Options {
+              /// Fill
+              internal static let fill = L10n.tr("Localizable", "watch.configurator.rows.gauge.style.options.fill")
+              /// Ring
+              internal static let ring = L10n.tr("Localizable", "watch.configurator.rows.gauge.style.options.ring")
+            }
+          }
+        }
+
+        internal enum Icon {
+
+          internal enum Choose {
+            /// Choose an icon
+            internal static let title = L10n.tr("Localizable", "watch.configurator.rows.icon.choose.title")
+          }
+
+          internal enum Color {
+            /// Color
+            internal static let title = L10n.tr("Localizable", "watch.configurator.rows.icon.color.title")
+          }
+        }
+
+        internal enum PreviewOutput {
+          /// Preview Output
+          internal static let title = L10n.tr("Localizable", "watch.configurator.rows.preview_output.title")
+        }
+
+        internal enum Ring {
+          /// Ring
+          internal static let title = L10n.tr("Localizable", "watch.configurator.rows.ring.title")
+
+          internal enum Color {
+            /// Color
+            internal static let title = L10n.tr("Localizable", "watch.configurator.rows.ring.color.title")
+          }
+
+          internal enum RingType {
+            /// Type
+            internal static let title = L10n.tr("Localizable", "watch.configurator.rows.ring.ring_type.title")
+
+            internal enum Options {
+              /// Closed
+              internal static let closed = L10n.tr("Localizable", "watch.configurator.rows.ring.ring_type.options.closed")
+              /// Open
+              internal static let `open` = L10n.tr("Localizable", "watch.configurator.rows.ring.ring_type.options.open")
+            }
+          }
+
+          internal enum Value {
+            /// Fractional value
+            internal static let title = L10n.tr("Localizable", "watch.configurator.rows.ring.value.title")
+          }
+        }
+
+        internal enum Row2Alignment {
+          /// Row 2 Alignment
+          internal static let title = L10n.tr("Localizable", "watch.configurator.rows.row_2_alignment.title")
+
+          internal enum Options {
+            /// Leading
+            internal static let leading = L10n.tr("Localizable", "watch.configurator.rows.row_2_alignment.options.leading")
+            /// Trailing
+            internal static let trailing = L10n.tr("Localizable", "watch.configurator.rows.row_2_alignment.options.trailing")
+          }
+        }
+
+        internal enum Style {
+          /// Style
+          internal static let title = L10n.tr("Localizable", "watch.configurator.rows.style.title")
+        }
+
+        internal enum Template {
+          /// Choose a template
+          internal static let selectorTitle = L10n.tr("Localizable", "watch.configurator.rows.template.selector_title")
+          /// Template
+          internal static let title = L10n.tr("Localizable", "watch.configurator.rows.template.title")
+        }
+      }
+
+      internal enum Sections {
+
+        internal enum Gauge {
+          /// The gague to display in the complication.
+          internal static let footer = L10n.tr("Localizable", "watch.configurator.sections.gauge.footer")
+          /// Gauge
+          internal static let header = L10n.tr("Localizable", "watch.configurator.sections.gauge.header")
+        }
+
+        internal enum Icon {
+          /// The image to display in the complication.
+          internal static let footer = L10n.tr("Localizable", "watch.configurator.sections.icon.footer")
+          /// Icon
+          internal static let header = L10n.tr("Localizable", "watch.configurator.sections.icon.header")
+        }
+
+        internal enum Ring {
+          /// The ring showing progress surrounding the text.
+          internal static let footer = L10n.tr("Localizable", "watch.configurator.sections.ring.footer")
+          /// Ring
+          internal static let header = L10n.tr("Localizable", "watch.configurator.sections.ring.header")
+        }
+      }
+    }
 
     internal enum Labels {
 
