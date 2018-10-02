@@ -177,8 +177,24 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     if !row.isValid {
                         cell.titleLabel?.textColor = .red
                     }
+            }
+            <<< SwitchRow("showAdvancedConnectionSettings") {
+                $0.title = L10n.Settings.ConnectionSection.ShowAdvancedSettingsRow.title
+                $0.value = Current.settingsStore.showAdvancedConnectionSettings
+            }.onChange { switchRow in
+                guard let advancedSection = self.form.sectionBy(tag: "advancedConnectionSettings") else {
+                    return
                 }
 
+                Current.settingsStore.showAdvancedConnectionSettings = switchRow.value ?? false
+                advancedSection.hidden = Condition(booleanLiteral: !(switchRow.value ?? false))
+                advancedSection.evaluateHidden()
+                self.tableView.reloadData()
+            }
+            +++ Section(header: L10n.Settings.AdvancedConnectionSettingsSection.title, footer: "") {
+                $0.tag = "advancedConnectionSettings"
+                $0.hidden = Condition(booleanLiteral: !Current.settingsStore.showAdvancedConnectionSettings)
+            }
             <<< SwitchRow("internalUrl") {
                 $0.title = "Use internal URL"
                 $0.value = self.internalBaseURLEnabled
@@ -280,7 +296,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     cell.titleLabel?.textColor = .red
                 }
             }
-
+            +++ Section(header: "", footer: "")
             <<< ButtonRow("connect") {
                     $0.title = L10n.Settings.ConnectionSection.SaveButton.title
                 }.onCellSelection { _, _ in

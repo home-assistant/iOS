@@ -123,7 +123,11 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     // MARK: - RequestAdapter
 
     public func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
-        let isTokenRequest = urlRequest.mainDocumentURL?.path == "/auth/token"
+        guard let url = urlRequest.url else {
+            return urlRequest
+        }
+
+        let isTokenRequest = url.path == "/auth/token"
         guard !isTokenRequest else {
             return urlRequest
         }
@@ -136,8 +140,17 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             throw TokenError.expired
         }
 
-        let text = "Request(SSID: \(ConnectionInfo.currentSSID() ?? "Unavailable") - \(urlRequest.url?.absoluteString ?? "URL Unavailable")"
-        let networkEvent = ClientEvent(text: text, type: .networkRequest)
+        let urlText: String
+        if self.url(url, matchesPrefixOf: self.connectionInfo.baseURL) {
+            urlText = self.connectionInfo.internalBaseURL == nil ? "HASS URL" : "External HASS URL"
+        } else if let internalBaseURL = self.connectionInfo.internalBaseURL,
+            self.url(url, matchesPrefixOf: internalBaseURL) {
+            urlText = "Internal HASS URL"
+        } else {
+            urlText = "Non-HASS URL"
+        }
+
+        let networkEvent = ClientEvent(text: "[\(urlText)]\(url.path)", type: .networkRequest)
         Current.clientEventStore.addEvent(networkEvent)
         var newRequest = urlRequest
         newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
