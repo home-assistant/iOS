@@ -9,7 +9,7 @@ PODS:
   - Crashlytics (3.10.2):
     - Fabric (~> 1.7.7)
   - DeviceKit (1.7.0)
-  - Eureka (4.3.0)
+  - Eureka (4.1.1)
   - Fabric (1.7.7)
   - FontAwesomeKit/Core (2.2.5)
   - FontAwesomeKit/MaterialDesignIcons (2.2.5):
@@ -41,7 +41,7 @@ DEPENDENCIES:
   - CPDAcknowledgements (= 1.0.0)
   - Crashlytics (= 3.10.2)
   - DeviceKit (= 1.7.0)
-  - Eureka (= 4.3.0)
+  - Eureka (= 4.1.1)
   - Fabric (= 1.7.7)
   - FontAwesomeKit/MaterialDesignIcons (from `https://github.com/robbiet480/FontAwesomeKit.git`, branch `Material-Design-Icons`)
   - KeychainAccess (= 3.1.1)
@@ -88,7 +88,7 @@ SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
   DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
-  Eureka: 6d711cb30ca333b4bc893110285a722ae3840114
+  Eureka: b88fb930e42c79f8c03c373d0fcdc28c1d6c50ed
   Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
   FontAwesomeKit: c56e7e8db4ad4e7325ce73a8033dadf2fd4a5cb2
   KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
@@ -100,6 +100,6 @@ SPEC CHECKSUMS:
   SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
   SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
 
-PODFILE CHECKSUM: 6fb1947bcd168a166bb423841739ddccf4ae9432
+PODFILE CHECKSUM: 95001566b78cd9b86c41a05682cf651299d02b13
 
 COCOAPODS: 1.5.3
