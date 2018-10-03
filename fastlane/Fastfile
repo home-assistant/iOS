@@ -80,9 +80,9 @@ platform :ios do
 
   desc "Generate proper icons for all build trains"
   lane :icons do
-    # appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "AppIcon.dev.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing])
-    # appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "AppIcon.beta.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing])
-    # appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_devices: [:ipad, :iphone, :ios_marketing])
+    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "AppIcon.dev.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing])
+    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "AppIcon.beta.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing])
+    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_devices: [:ipad, :iphone, :ios_marketing])
 
     appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "WatchIcon.dev.appiconset", appicon_devices: [:watch, :watch_marketing])
     appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "WatchIcon.beta.appiconset", appicon_devices: [:watch, :watch_marketing])
