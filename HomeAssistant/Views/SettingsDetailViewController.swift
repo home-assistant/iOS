@@ -162,6 +162,7 @@ class SettingsDetailViewController: FormViewController {
                 +++ Section(header: L10n.SettingsDetails.Notifications.PushIdSection.header,
                             footer: L10n.SettingsDetails.Notifications.PushIdSection.footer)
                 <<< TextAreaRow {
+                    $0.tag = "pushID"
                     $0.placeholder = L10n.SettingsDetails.Notifications.PushIdSection.placeholder
                     if let pushID = prefs.string(forKey: "pushID") {
                         $0.value = pushID
@@ -170,10 +171,9 @@ class SettingsDetailViewController: FormViewController {
                     }
                     $0.disabled = true
                     $0.textAreaHeight = TextAreaHeight.dynamic(initialTextViewHeight: 40)
-                    }.onCellSelection { _, row in
-                        let activityViewController = UIActivityViewController(activityItems: [row.value! as String],
-                                                                              applicationActivities: nil)
-                        self.present(activityViewController, animated: true, completion: {})
+                }.cellSetup { cell, _ in
+                    cell.textView.addGestureRecognizer(UITapGestureRecognizer(target: self,
+                                                                              action: #selector(self.tapPushID(_:))))
                 }
 
                 let objs = realm.objects(NotificationCategory.self)
@@ -526,6 +526,17 @@ class SettingsDetailViewController: FormViewController {
 
                 ProvideNotificationCategoriesToSystem()
             })
+        }
+    }
+
+    @objc func tapPushID(_ sender: Any) {
+        if let row = self.form.rowBy(tag: "pushID") as? TextAreaRow, let rowValue = row.value {
+            let activityViewController = UIActivityViewController(activityItems: [rowValue],
+                                                                  applicationActivities: nil)
+            self.present(activityViewController, animated: true, completion: {})
+            if let popOver = activityViewController.popoverPresentationController {
+                popOver.sourceView = self.view
+            }
         }
     }
 
