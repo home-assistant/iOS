@@ -30,7 +30,10 @@
 		<key>NSExtensionAttributes</key>
 		<dict>
 			<key>UNNotificationExtensionCategory</key>
-			<string>camera</string>
+			<array>
+				<string>camera</string>
+				<string>map</string>
+			</array>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
 			<real>1</real>
 		</dict>

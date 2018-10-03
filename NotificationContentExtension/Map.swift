@@ -1,45 +1,37 @@
 //
-//  NotificationViewController.swift
-//  MapNotificationContentExtension
+//  Map.swift
+//  NotificationContentExtension
 //
-//  Created by Robert Trencheny on 4/20/17.
-//  Copyright © 2017 Robbie Trencheny. All rights reserved.
+//  Created by Robert Trencheny on 10/2/18.
+//  Copyright © 2018 Robbie Trencheny. All rights reserved.
 //
 
 import UIKit
 import UserNotifications
 import UserNotificationsUI
-import MBProgressHUD
 import MapKit
+import MBProgressHUD
 
-class NotificationViewController: UIViewController, UNNotificationContentExtension, MKMapViewDelegate {
+class MapViewController: UIView, NotificationCategory, MKMapViewDelegate {
 
-    var hud: MBProgressHUD?
+    var view: UIView = UIView(frame: .zero)
 
     var mapView: MKMapView!
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any required interface initialization here.
-    }
-
     // swiftlint:disable:next function_body_length
-    func didReceive(_ notification: UNNotification) {
-        print("Received a map notification")
-        let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        hud.detailsLabel.text = "Loading \(notification.request.content.categoryIdentifier)..."
-        hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
-        self.hud = hud
+    func didReceive(_ notification: UNNotification, view: UIView, extensionContext: NSExtensionContext?,
+                    hud: MBProgressHUD, completionHandler: @escaping (String?) -> Void) {
+
         guard let haDict = notification.request.content.userInfo["homeassistant"] as? [String: Any] else {
-            self.showErrorLabel(message: L10n.Extensions.Map.PayloadMissingHomeassistant.message)
+            completionHandler(L10n.Extensions.Map.PayloadMissingHomeassistant.message)
             return
         }
         guard let latitudeString = haDict["latitude"] as? String else {
-            self.showErrorLabel(message: L10n.Extensions.Map.ValueMissingOrUncastable.Latitude.message)
+            completionHandler(L10n.Extensions.Map.ValueMissingOrUncastable.Latitude.message)
             return
         }
         guard let longitudeString = haDict["longitude"] as? String else {
-            self.showErrorLabel(message: L10n.Extensions.Map.ValueMissingOrUncastable.Longitude.message)
+            completionHandler(L10n.Extensions.Map.ValueMissingOrUncastable.Longitude.message)
             return
         }
         let latitude = Double.init(latitudeString)! as CLLocationDegrees
@@ -95,6 +87,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             mapView.camera.altitude *= 1.4
         }
 
+        completionHandler(nil)
     }
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -129,17 +122,4 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         polylineRenderer.lineDashPattern = [2, 5]
         return polylineRenderer
     }
-
-    func showErrorLabel(message: String) {
-        self.hud?.hide(animated: true)
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 60))
-        label.center.y = self.view.center.y
-        label.textAlignment = .center
-        label.textColor = .red
-        label.text = message
-        label.lineBreakMode = .byWordWrapping
-        label.numberOfLines = 0
-        self.view.addSubview(label)
-    }
-
 }

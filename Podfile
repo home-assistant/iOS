@@ -66,11 +66,6 @@ target 'APNSAttachmentService' do
   shared_pods
 end
 
-target 'MapNotificationContentExtension' do
-  pod 'MBProgressHUD', '1.1.0'
-end
-
-
 target 'NotificationContentExtension' do
     shared_pods
 

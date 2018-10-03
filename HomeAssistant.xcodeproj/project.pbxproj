@@ -15,7 +15,6 @@
 		5731AE3FADDE686AA2749762 /* Pods-SharedTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = EF756F51509DAA0CBE8789BC /* Pods-SharedTests-metadata.plist */; };
 		624E1EE93ADF2BCEBAD63009 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4006CBDBF64859AF0E9011ED /* Pods_HomeAssistant.framework */; };
 		6EDD98D41F2594F18D2F3E38 /* Pods-WatchAppExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */; };
-		72625B4395C0437F9C219339 /* Pods_MapNotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C886B5110EC5D410C831AFA /* Pods_MapNotificationContentExtension.framework */; };
 		7BA84E5B6CE019CF4E986992 /* Pods_APNSAttachmentService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E5E7E61EE485C352E1C8AD6 /* Pods_APNSAttachmentService.framework */; };
 		7DF26C2F06693DF37D0465B9 /* Pods_SharedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CD944AAC132F720795921B /* Pods_SharedTests.framework */; };
 		885CE0315CAE164A877022E6 /* Pods_WatchAppExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6B6B152215B69FA003DE2DD /* Pods_WatchAppExtension.framework */; };
@@ -163,6 +162,8 @@
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
 		B63CAE692150CE5100A68AFB /* SiriShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63CAE682150CE5100A68AFB /* SiriShortcut.swift */; };
 		B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */; };
+		B63CCDC9216442BB00123C50 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDC8216442BB00123C50 /* Camera.swift */; };
+		B63CCDCB216442C200123C50 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCA216442C200123C50 /* Map.swift */; };
 		B63D28BD215D9E3600F3B907 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B63D28C0215DB71800F3B907 /* Realm+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */; };
 		B63D28C1215DB72100F3B907 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
@@ -187,12 +188,7 @@
 		B66C58B32150892A004AB261 /* FireEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B22150892A004AB261 /* FireEvent.swift */; };
 		B66C58B52150898A004AB261 /* SendLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B42150898A004AB261 /* SendLocation.swift */; };
 		B66C58BD21509934004AB261 /* SiriShortcutServiceConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58BC21509934004AB261 /* SiriShortcutServiceConfigurator.swift */; };
-		B678DB251EA991E40045312F /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
-		B678DB261EA991E40045312F /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
-		B678DB291EA991E40045312F /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B678DB281EA991E40045312F /* NotificationViewController.swift */; };
-		B678DB301EA991E40045312F /* MapNotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B678DB241EA991E30045312F /* MapNotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
-		B678DB391EA999AC0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB381EA999AC0045312F /* MainInterface.storyboard */; };
 		B689EBCB1D8B7C800000AECE /* MjpegStreamingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */; };
 		B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */; };
 		B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */; };
@@ -248,10 +244,8 @@
 		B6DAC735215F069300727D2A /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC734215F069300727D2A /* NotificationCategory.swift */; };
 		B6DAC737215F06B100727D2A /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
-		B6E42616215C74FE007FEB7E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		B6E42617215C761A007FEB7E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		B6E42618215C761E007FEB7E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
-		B6E42619215C7620007FEB7E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B6EA98B9215306DF00788ACC /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B6215089EA004AB261 /* Intents.intentdefinition */; };
 		B6EA98BB215306E300788ACC /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B6215089EA004AB261 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (codegen, ); }; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
@@ -320,7 +314,6 @@
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
 		D18BB39F0BE75F5C3F086FE2 /* Pods-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */; };
-		DE00A0A32956903FEB4C59D3 /* Pods-MapNotificationContentExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */; };
 		E2ED3EF4C326644AC83ABDDF /* Pods_NotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E698FF9CA76230AC24516250 /* Pods_NotificationContentExtension.framework */; };
 /* End PBXBuildFile section */
 
@@ -352,13 +345,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = B66C58A4215086F0004AB261;
 			remoteInfo = Intents;
-		};
-		B678DB2E1EA991E40045312F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B678DB231EA991E30045312F;
-			remoteInfo = MapNotificationContentExtension;
 		};
 		B6AAD7A61D827DD40090B220 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -414,7 +400,6 @@
 				B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */,
 				B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */,
 				B66C58AC215086F0004AB261 /* SiriIntents.appex in Embed App Extensions */,
-				B678DB301EA991E40045312F /* MapNotificationContentExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -637,6 +622,8 @@
 		B6393F871CB2561100503916 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B63CAE682150CE5100A68AFB /* SiriShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiriShortcut.swift; sourceTree = "<group>"; };
 		B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceShortcutsManager.swift; sourceTree = "<group>"; };
+		B63CCDC8216442BB00123C50 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
+		B63CCDCA216442C200123C50 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
 		B64048481FBBBA6800F0CCCD /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		B64048491FBBBA6800F0CCCD /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/MainInterface.strings"; sourceTree = "<group>"; };
 		B640484A1FBBBA6800F0CCCD /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -684,12 +671,7 @@
 		B66C58BC21509934004AB261 /* SiriShortcutServiceConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiriShortcutServiceConfigurator.swift; sourceTree = "<group>"; };
 		B66C58BF2150B410004AB261 /* SiriIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SiriIntents.entitlements; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
-		B678DB241EA991E30045312F /* MapNotificationContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MapNotificationContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		B678DB281EA991E40045312F /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
-		B678DB2D1EA991E40045312F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B678DB341EA992A90045312F /* MapNotificationContentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MapNotificationContentExtension.entitlements; sourceTree = "<group>"; };
 		B678DB361EA9999C0045312F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
-		B678DB381EA999AC0045312F /* MainInterface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotion+StringExtensions.swift"; sourceTree = "<group>"; };
 		B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectMapperTransformers.swift; sourceTree = "<group>"; };
 		B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MjpegStreamingController.swift; sourceTree = "<group>"; };
@@ -885,16 +867,6 @@
 			files = (
 				B6C09153215206BB00A326DC /* Shared.framework in Frameworks */,
 				B01FF39DE0E8F4132CF8BE27 /* Pods_SiriIntents.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B678DB211EA991E30045312F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B678DB261EA991E40045312F /* UserNotificationsUI.framework in Frameworks */,
-				B678DB251EA991E40045312F /* UserNotifications.framework in Frameworks */,
-				72625B4395C0437F9C219339 /* Pods_MapNotificationContentExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1179,6 +1151,8 @@
 				B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */,
 				B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */,
 				B627CB0D1D83C87B0057173E /* NotificationViewController.swift */,
+				B63CCDC8216442BB00123C50 /* Camera.swift */,
+				B63CCDCA216442C200123C50 /* Map.swift */,
 			);
 			path = NotificationContentExtension;
 			sourceTree = "<group>";
@@ -1207,7 +1181,6 @@
 				B657A8E81CA646EB00121384 /* HomeAssistant */,
 				B657A8FF1CA646EB00121384 /* HomeAssistantTests */,
 				B657A90A1CA646EB00121384 /* HomeAssistantUITests */,
-				B678DB271EA991E40045312F /* MapNotificationContentExtension */,
 				B627CB0C1D83C87B0057173E /* NotificationContentExtension */,
 				AAB60FA4DE371AD957F6907B /* Pods */,
 				B657A8E71CA646EB00121384 /* Products */,
@@ -1222,7 +1195,6 @@
 				B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */,
 				B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */,
 				B627CB071D83C87B0057173E /* NotificationContentExtension.appex */,
-				B678DB241EA991E30045312F /* MapNotificationContentExtension.appex */,
 				D03D891720E0A85200D4F28D /* Shared.framework */,
 				D03D894220E0BC1800D4F28D /* SharedTests.xctest */,
 				B66C58A5215086F0004AB261 /* SiriIntents.appex */,
@@ -1279,17 +1251,6 @@
 				B66C58B42150898A004AB261 /* SendLocation.swift */,
 			);
 			path = Intents;
-			sourceTree = "<group>";
-		};
-		B678DB271EA991E40045312F /* MapNotificationContentExtension */ = {
-			isa = PBXGroup;
-			children = (
-				B678DB381EA999AC0045312F /* MainInterface.storyboard */,
-				B678DB341EA992A90045312F /* MapNotificationContentExtension.entitlements */,
-				B678DB281EA991E40045312F /* NotificationViewController.swift */,
-				B678DB2D1EA991E40045312F /* Info.plist */,
-			);
-			path = MapNotificationContentExtension;
 			sourceTree = "<group>";
 		};
 		B679B1F91E1F3CFB0071D366 /* Views */ = {
@@ -1732,7 +1693,6 @@
 			dependencies = (
 				B6AAD7A71D827DD40090B220 /* PBXTargetDependency */,
 				B627CB141D83C87B0057173E /* PBXTargetDependency */,
-				B678DB2F1EA991E40045312F /* PBXTargetDependency */,
 				D03D892B20E0A85300D4F28D /* PBXTargetDependency */,
 				B66C58AB215086F0004AB261 /* PBXTargetDependency */,
 				B6CC5D9D2159D10F00833E5D /* PBXTargetDependency */,
@@ -1796,24 +1756,6 @@
 			name = SiriIntents;
 			productName = Intents;
 			productReference = B66C58A5215086F0004AB261 /* SiriIntents.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
-		B678DB231EA991E30045312F /* MapNotificationContentExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B678DB311EA991E40045312F /* Build configuration list for PBXNativeTarget "MapNotificationContentExtension" */;
-			buildPhases = (
-				5AB9C4C5DE906E922C385E8C /* [CP] Check Pods Manifest.lock */,
-				B678DB201EA991E30045312F /* Sources */,
-				B678DB211EA991E30045312F /* Frameworks */,
-				B678DB221EA991E30045312F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = MapNotificationContentExtension;
-			productName = MapNotificationContentExtension;
-			productReference = B678DB241EA991E30045312F /* MapNotificationContentExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B6AAD7A01D827DD40090B220 /* APNSAttachmentService */ = {
@@ -1987,17 +1929,6 @@
 							};
 						};
 					};
-					B678DB231EA991E30045312F = {
-						CreatedOnToolsVersion = 8.3.1;
-						DevelopmentTeam = UTQFCBPQRF;
-						LastSwiftMigration = 1000;
-						ProvisioningStyle = Manual;
-						SystemCapabilities = {
-							com.apple.Keychain = {
-								enabled = 1;
-							};
-						};
-					};
 					B6AAD7A01D827DD40090B220 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = UTQFCBPQRF;
@@ -2073,7 +2004,6 @@
 				B657A9061CA646EB00121384 /* HomeAssistantUITests */,
 				B6AAD7A01D827DD40090B220 /* APNSAttachmentService */,
 				B627CB061D83C87B0057173E /* NotificationContentExtension */,
-				B678DB231EA991E30045312F /* MapNotificationContentExtension */,
 				D03D891620E0A85200D4F28D /* Shared */,
 				D03D894120E0BC1800D4F28D /* SharedTests */,
 				B66C58A4215086F0004AB261 /* SiriIntents */,
@@ -2260,16 +2190,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B678DB221EA991E30045312F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DE00A0A32956903FEB4C59D3 /* Pods-MapNotificationContentExtension-metadata.plist in Resources */,
-				B6E42619215C7620007FEB7E /* Localizable.strings in Resources */,
-				B678DB391EA999AC0045312F /* MainInterface.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B6AAD79F1D827DD40090B220 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2376,28 +2296,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-NotificationContentExtension-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5AB9C4C5DE906E922C385E8C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MapNotificationContentExtension-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2673,6 +2571,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B63CCDCB216442C200123C50 /* Map.swift in Sources */,
+				B63CCDC9216442BB00123C50 /* Camera.swift in Sources */,
 				B689EBCB1D8B7C800000AECE /* MjpegStreamingController.swift in Sources */,
 				B6E42617215C761A007FEB7E /* Strings.swift in Sources */,
 				B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */,
@@ -2747,15 +2647,6 @@
 				B66C58B32150892A004AB261 /* FireEvent.swift in Sources */,
 				B6EA98B9215306DF00788ACC /* Intents.intentdefinition in Sources */,
 				B66C58B12150891B004AB261 /* CallService.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B678DB201EA991E30045312F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B6E42616215C74FE007FEB7E /* Strings.swift in Sources */,
-				B678DB291EA991E40045312F /* NotificationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2890,11 +2781,6 @@
 			isa = PBXTargetDependency;
 			target = B66C58A4215086F0004AB261 /* SiriIntents */;
 			targetProxy = B66C58AA215086F0004AB261 /* PBXContainerItemProxy */;
-		};
-		B678DB2F1EA991E40045312F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B678DB231EA991E30045312F /* MapNotificationContentExtension */;
-			targetProxy = B678DB2E1EA991E40045312F /* PBXContainerItemProxy */;
 		};
 		B6AAD7A71D827DD40090B220 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3378,48 +3264,6 @@
 			};
 			name = Release;
 		};
-		B678DB321EA991E40045312F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = C40FB685C0A5635CA919EABB /* Pods-MapNotificationContentExtension.debug.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CODE_SIGN_ENTITLEMENTS = MapNotificationContentExtension/MapNotificationContentExtension.entitlements;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				INFOPLIST_FILE = MapNotificationContentExtension/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.MapNotificationContentExtension";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "6a71f7b7-c2b5-41ab-800f-5c9b31c163f6";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.MapNotificationContentExtension";
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 4.2;
-			};
-			name = Debug;
-		};
-		B678DB331EA991E40045312F /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 38DAF4076308205E87A558B2 /* Pods-MapNotificationContentExtension.release.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CODE_SIGN_ENTITLEMENTS = MapNotificationContentExtension/MapNotificationContentExtension.entitlements;
-				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				INFOPLIST_FILE = MapNotificationContentExtension/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}.MapNotificationContentExtension";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "92f53f1e-23d3-48c4-ad03-f6e8753dff00";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.MapNotificationContentExtension";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
-			};
-			name = Release;
-		};
 		B6AAD7AA1D827DD40090B220 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 33092E375AEEE0A0698BAFE8 /* Pods-APNSAttachmentService.debug.xcconfig */;
@@ -3752,15 +3596,6 @@
 			buildConfigurations = (
 				B66C58AE215086F0004AB261 /* Debug */,
 				B66C58AF215086F0004AB261 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B678DB311EA991E40045312F /* Build configuration list for PBXNativeTarget "MapNotificationContentExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B678DB321EA991E40045312F /* Debug */,
-				B678DB331EA991E40045312F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
