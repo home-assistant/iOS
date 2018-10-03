@@ -63,6 +63,11 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "about.github_issue_tracker.title")
     }
 
+    internal enum HelpLocalize {
+      /// Help translate the app!
+      internal static let title = L10n.tr("Localizable", "about.help_localize.title")
+    }
+
     internal enum HomeAssistantOnFacebook {
       /// Home Assistant on Facebook
       internal static let title = L10n.tr("Localizable", "about.home_assistant_on_facebook.title")
@@ -603,7 +608,7 @@ internal enum L10n {
       }
 
       internal enum SaveButton {
-        /// Validate and Save Connection Settings
+        /// Save
         internal static let title = L10n.tr("Localizable", "settings.connection_section.save_button.title")
       }
 
@@ -740,7 +745,7 @@ internal enum L10n {
       }
 
       internal enum VersionRow {
-        /// 0.80.0
+        /// 0.42.0
         internal static let placeholder = L10n.tr("Localizable", "settings.status_section.version_row.placeholder")
         /// Version
         internal static let title = L10n.tr("Localizable", "settings.status_section.version_row.title")
@@ -952,6 +957,23 @@ internal enum L10n {
           internal static let title = L10n.tr("Localizable", "settings_details.notifications.sounds_section.imported_alert.title")
         }
       }
+
+      internal enum UpdateSection {
+        /// Updating push settings will request the latest push actions and categories from Home Assistant.
+        internal static let footer = L10n.tr("Localizable", "settings_details.notifications.update_section.footer")
+
+        internal enum Button {
+          /// Update push settings
+          internal static let title = L10n.tr("Localizable", "settings_details.notifications.update_section.button.title")
+        }
+
+        internal enum UpdatedAlert {
+          /// Push settings imported from Home Assistant.
+          internal static let message = L10n.tr("Localizable", "settings_details.notifications.update_section.updated_alert.message")
+          /// Settings Imported
+          internal static let title = L10n.tr("Localizable", "settings_details.notifications.update_section.updated_alert.title")
+        }
+      }
     }
 
     internal enum Siri {
@@ -1029,6 +1051,11 @@ internal enum L10n {
         /// Called service
         internal static let title = L10n.tr("Localizable", "url_handler.call_service.success.title")
       }
+    }
+
+    internal enum Error {
+      /// Error
+      internal static let title = L10n.tr("Localizable", "url_handler.error.title")
     }
 
     internal enum FireEvent {
@@ -1766,6 +1793,13 @@ internal enum L10n {
           internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.trailing.label")
         }
       }
+    }
+  }
+
+  internal enum ZoneEnteredNotification {
+    /// %@ entered
+    internal static func message(_ p1: String) -> String {
+      return L10n.tr("Localizable", "zone_entered_notification.message", p1)
     }
   }
 }

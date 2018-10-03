@@ -1,6 +1,5 @@
 "location_change_notification.title" = "位置发生改变";
 "zone_entered_notification.message" = "%@ 已进入范围";
-"significant_location_change_notification.message" = "检测到重大位置变化，通知Home Assistant";
 "manual_location_update_notification.title" = "位置已更新";
 "manual_location_update_notification.message" = "成功将一个位置发送到服务器";
 "manual_location_update_failed_notification.title" = "无法更新位置";

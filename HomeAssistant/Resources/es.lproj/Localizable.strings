@@ -1,6 +1,5 @@
 "location_change_notification.title" = "Cambio de ubicación";
 "zone_entered_notification.message" = "%@ entró";
-"significant_location_change_notification.message" = "Cambio significativo de ubicación detectado, notificando a Home Assistant";
 "manual_location_update_notification.title" = "Ubicación actualizada";
 "manual_location_update_notification.message" = "Enviada la ubicación exitosamente";
 "manual_location_update_failed_notification.title" = "La ubicación no se pudo actualizar";

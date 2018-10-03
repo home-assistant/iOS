@@ -1,6 +1,5 @@
 "location_change_notification.title" = "座標變更";
 "zone_entered_notification.message" = "%@ 已進入";
-"significant_location_change_notification.message" = "已偵測到座標變動";
 "manual_location_update_notification.title" = "座標已更新";
 "manual_location_update_notification.message" = "已成功更新座標到主機端";
 "manual_location_update_failed_notification.title" = "座標無法更新";

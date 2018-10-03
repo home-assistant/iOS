@@ -1,3 +1,5 @@
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
 "NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
 "NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
+"NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
+"NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";

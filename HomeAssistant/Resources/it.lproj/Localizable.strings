@@ -1,6 +1,5 @@
 "location_change_notification.title" = "Modifica di posizione";
 "zone_entered_notification.message" = "Entrato in %@";
-"significant_location_change_notification.message" = "Rilevata modifica di posizione significativa, notifica di Home Assistant in corso";
 "manual_location_update_notification.title" = "Posizione aggiornata";
 "manual_location_update_notification.message" = "Inviata con successo una posizione unica sul server";
 "manual_location_update_failed_notification.title" = "Impossibile aggiornare la posizione";

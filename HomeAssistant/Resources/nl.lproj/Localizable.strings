@@ -1,6 +1,5 @@
 "location_change_notification.title" = "Locatieverandering";
 "zone_entered_notification.message" = "%@ bezocht";
-"significant_location_change_notification.message" = "Aanzienlijke wijziging van locatie gedetecteerd, Home Assistant wordt op de hoogte gebracht.";
 "manual_location_update_notification.title" = "Locatie bijgewerkt";
 "manual_location_update_notification.message" = "Succesvol locatie eenmalig bijgewerkt";
 "manual_location_update_failed_notification.title" = "Mislukt om locatie bij te werken";

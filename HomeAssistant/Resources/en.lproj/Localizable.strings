@@ -1,6 +1,5 @@
 "location_change_notification.title" = "Location change";
 "zone_entered_notification.message" = "%@ entered";
-"significant_location_change_notification.message" = "Significant location change detected, notifying Home Assistant";
 "manual_location_update_notification.title" = "Location updated";
 "manual_location_update_notification.message" = "Successfully sent a one shot location to the server";
 "manual_location_update_failed_notification.title" = "Location failed to update";
@@ -95,6 +94,7 @@
 "about.forums.title" = "Forums";
 "about.chat.title" = "Chat";
 "about.documentation.title" = "Documentation";
+"about.help_localize.title" = "Help translate the app!";
 "about.home_assistant_on_twitter.title" = "Home Assistant on Twitter";
 "about.home_assistant_on_facebook.title" = "Home Assistant on Facebook";
 "about.github.title" = "GitHub";
