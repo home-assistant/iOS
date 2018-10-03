@@ -134,14 +134,6 @@ class SettingsDetailViewController: FormViewController {
                         prefs.set(val, forKey: "urlSchemeLocationRequestNotifications")
                     }
                 })
-                <<< SwitchRow {
-                    $0.title = L10n.SettingsDetails.Location.Notifications.Visit.title
-                    $0.value = prefs.bool(forKey: "visitLocationRequestNotifications")
-                }.onChange({ (row) in
-                    if let val = row.value {
-                        prefs.set(val, forKey: "visitLocationRequestNotifications")
-                    }
-                })
             let realm = Current.realm()
             let zoneEntities = realm.objects(RLMZone.self).map { $0 }
             for zone in zoneEntities {

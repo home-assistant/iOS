@@ -32,10 +32,6 @@ public class DeviceTrackerSee: Mappable {
     public var Timestamp: Date?
     public var Floor: Int?
 
-    // CLVisit
-    public var ArrivalDate: Date?
-    public var DepartureDate: Date?
-
     // CMMotionActivity
     public var ActivityType: String?
     public var ActivityConfidence: String?
@@ -45,7 +41,7 @@ public class DeviceTrackerSee: Mappable {
 
     public required init?(map: Map) {}
 
-    public convenience init(trigger: LocationUpdateTrigger, location: CLLocation?, visit: CLVisit?, zone: RLMZone?) {
+    public convenience init(trigger: LocationUpdateTrigger, location: CLLocation?,  zone: RLMZone?) {
         self.init()
 
         self.Trigger = trigger
@@ -54,21 +50,8 @@ public class DeviceTrackerSee: Mappable {
 
         if let location = location {
             self.SetLocation(location: location)
-        } else if let visit = visit {
-            self.SetVisit(visit: visit)
         } else if let zone = zone {
             self.SetZone(zone: zone)
-        }
-    }
-
-    public func SetVisit(visit: CLVisit) {
-        self.HorizontalAccuracy = visit.horizontalAccuracy
-        self.Location = visit.coordinate
-        if visit.arrivalDate != NSDate.distantPast {
-            self.ArrivalDate = visit.arrivalDate
-        }
-        if visit.departureDate != NSDate.distantFuture {
-            self.DepartureDate = visit.departureDate
         }
     }
 
@@ -116,8 +99,6 @@ public class DeviceTrackerSee: Mappable {
         self.Course = nil
         self.VerticalAccuracy = nil
         self.Timestamp = nil
-        self.ArrivalDate = nil
-        self.DepartureDate = nil
     }
 
     public var cllocation: CLLocation? {
@@ -150,9 +131,6 @@ public class DeviceTrackerSee: Mappable {
         Trigger              <- (map["attributes.trigger"], EnumTransform<LocationUpdateTrigger>())
         Timestamp            <- (map["attributes.timestamp"], HomeAssistantTimestampTransform())
         Floor                <-  map["attributes.floor"]
-
-        ArrivalDate          <- (map["attributes.arrival_date"], HomeAssistantTimestampTransform())
-        DepartureDate        <- (map["attributes.departure_date"], HomeAssistantTimestampTransform())
 
         ActivityType         <-  map["attributes.activity_type"]
         ActivityConfidence   <-  map["attributes.activity_confidence"]

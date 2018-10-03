@@ -18,7 +18,6 @@ public enum LocationUpdateTrigger: String {
         public let body: String
     }
 
-    case Visit = "Visit"
     case RegionEnter = "Region Entered"
     case RegionExit = "Region Exited"
     case GPSRegionEnter = "Geographic Region Entered"
@@ -71,10 +70,6 @@ public enum LocationUpdateTrigger: String {
             body = L10n.LocationChangeNotification.UrlScheme.body
             identifier = "url_scheme"
             shouldNotify = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
-        case .Visit:
-            body = L10n.LocationChangeNotification.Visit.body
-            identifier = "visit"
-            shouldNotify = prefs.bool(forKey: "visitLocationRequestNotifications")
         case .Manual:
             body = L10n.LocationChangeNotification.Manual.body
             shouldNotify = false

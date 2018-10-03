@@ -16,11 +16,10 @@ import Shared
 extension HomeAssistantAPI {
     public func submitLocation(updateType: LocationUpdateTrigger,
                                location: CLLocation?,
-                               visit: CLVisit?,
                                zone: RLMZone?) -> Promise<Void> {
         UIDevice.current.isBatteryMonitoringEnabled = true
 
-        let payload = DeviceTrackerSee(trigger: updateType, location: location, visit: visit, zone: zone)
+        let payload = DeviceTrackerSee(trigger: updateType, location: location, zone: zone)
         payload.Trigger = updateType
 
         let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
@@ -81,8 +80,7 @@ extension HomeAssistantAPI {
 
                 Current.isPerformingSingleShotLocationQuery = true
                 firstly {
-                    self.submitLocation(updateType: updateTrigger, location: location,
-                                        visit: nil, zone: nil)
+                    self.submitLocation(updateType: updateTrigger, location: location, zone: nil)
                     }.done { _ in
                         seal.fulfill(())
                     }.catch { error in
