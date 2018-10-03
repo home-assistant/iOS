@@ -2,30 +2,39 @@
 
 # A list of devices you want to take the screenshots from
 devices([
-  "iPhone 6",
-  "iPhone 6 Plus",
-  "iPhone 5",
-  "iPad Pro (12.9 inch)"
+  "iPhone 8",
+  "iPhone 8 Plus",
+  "iPhone SE",
+  "iPhone X",
+  "iPhone XS Max",
+  "iPad Pro (12.9-inch)",
+  "iPad Pro (9.7-inch)"
 ])
 
 languages([
-  "en-US"
+  "de-DE",
+  "en-US",
+  "es-ES",
+  "es-MX",
+  "it",
+  "nl-NL",
+  "zh-Hans",
+  "zh-Hant",
 ])
 
+erase_simulator(true)
+
 # The name of the scheme which contains the UI Tests
-scheme "HomeAssistant"
+scheme("HomeAssistantUITests")
 
 # Where should the resulting screenshots be stored?
-# output_directory "./screenshots"
+# output_directory("./screenshots")
 
-# clear_previous_screenshots true # remove the '#' to clear all previously generated screenshots before creating new ones
+# remove the '#' to clear all previously generated screenshots before creating new ones
+# clear_previous_screenshots(true)
 
-# Choose which project/workspace to use
-# project "./Project.xcodeproj"
-# workspace "./Project.xcworkspace"
-
-# Arguments to pass to the app on launch. See https://github.com/fastlane/snapshot#launch-arguments
+# Arguments to pass to the app on launch. See https://docs.fastlane.tools/actions/snapshot/#launch-arguments
 # launch_arguments(["-favColor red"])
 
 # For more information about all available options run
-# snapshot --help
+# fastlane action snapshot

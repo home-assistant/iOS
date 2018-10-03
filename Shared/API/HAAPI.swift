@@ -38,6 +38,8 @@ public class HomeAssistantAPI {
         case modern(tokenInfo: TokenInfo)
     }
 
+    public var authenticationMethodString = "unknown"
+
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
     public var pushID: String?
@@ -49,8 +51,6 @@ public class HomeAssistantAPI {
     private(set) var manager: Alamofire.SessionManager!
 
     public var oneShotLocationManager: OneShotLocationManager?
-
-    public var cachedEntities: [Entity]?
 
     public var notificationsEnabled: Bool {
         return self.prefs.bool(forKey: "notificationsEnabled")
@@ -89,6 +89,7 @@ public class HomeAssistantAPI {
         switch authenticationMethod {
         case .legacy(let apiPassword):
             self.manager = self.configureSessionManager(withPassword: apiPassword)
+            self.authenticationMethodString = "legacy"
         case .modern(let tokenInfo):
             // TODO: Take this into account when promoting to the main API.
             // The one in Current is separate, which is bad.
@@ -97,6 +98,7 @@ public class HomeAssistantAPI {
             manager.retrier = self.tokenManager
             manager.adapter = self.tokenManager
             self.manager = manager
+            self.authenticationMethodString = "modern"
         }
 
         let basicAuthKeychain = Keychain(server: self.connectionInfo.baseURL.absoluteString,
@@ -146,15 +148,16 @@ public class HomeAssistantAPI {
                 }
 
                 _ = self.GetStates().done { entities in
-                    self.cachedEntities = entities
-                    self.storeEntities(entities: entities)
-                    if self.loadedComponents.contains("ios") {
-                        print("iOS component loaded, attempting identify")
-                        _ = self.identifyDevice()
-                    }
+                        self.storeEntities(entities: entities)
+                        if self.loadedComponents.contains("ios") {
+                            print("iOS component loaded, attempting identify")
+                            _ = self.identifyDevice()
+                        }
 
-                    seal.fulfill(config)
-                }
+                        seal.fulfill(config)
+                    }.catch({ (error) in
+                        print("Error when getting states!", error)
+                    })
             }.catch {error in
                 print("Error at launch!", error)
                 seal.reject(error)
@@ -570,29 +573,27 @@ public class HomeAssistantAPI {
     }
 
     func storeEntities(entities: [Entity]) {
-        let storeableComponents = ["zone"]
+        let storeableComponents = ["zone", "device_tracker"]
         let storeableEntities = entities.filter { (entity) -> Bool in
             return storeableComponents.contains(entity.Domain)
         }
+
+        let realm = Current.realm()
 
         for entity in storeableEntities {
             // print("Storing \(entity.ID)")
 
             if entity.Domain == "zone", let zone = entity as? Zone {
-                let storeableZone = RLMZone()
-                storeableZone.ID = zone.ID
-                storeableZone.Latitude = zone.Latitude
-                storeableZone.Longitude = zone.Longitude
-                storeableZone.Radius = zone.Radius
-                storeableZone.TrackingEnabled = zone.TrackingEnabled
-                storeableZone.BeaconUUID = zone.UUID
-                storeableZone.BeaconMajor.value = zone.Major
-                storeableZone.BeaconMinor.value = zone.Minor
-
-                let realm = Current.realm()
                 // swiftlint:disable:next force_try
                 try! realm.write {
                     realm.add(RLMZone(zone: zone), update: true)
+                }
+            }
+
+            if entity.Domain == "device_tracker", let device = entity as? DeviceTracker {
+                // swiftlint:disable:next force_try
+                try! realm.write {
+                    realm.add(RLMDeviceTracker(device), update: true)
                 }
             }
         }

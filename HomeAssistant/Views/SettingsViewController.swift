@@ -460,21 +460,20 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 })
             }
 
-        if #available(iOS 12.0, *) {
-            self.form +++ ButtonRow {
-                $0.tag = "siriShortcuts"
-                $0.title = L10n.Settings.DetailsSection.SiriShortcutsRow.title
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    let view = SettingsDetailViewController()
-                    view.detailGroup = "siri"
-                    return view
-                    }, onDismiss: { vc in
-                        _ = vc.navigationController?.popViewController(animated: true)
-                })
-            }
+        +++ ButtonRow {
+            $0.hidden = Condition(booleanLiteral: UIDevice.current.systemVersion == "12")
+            $0.tag = "siriShortcuts"
+            $0.title = L10n.Settings.DetailsSection.SiriShortcutsRow.title
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                let view = SettingsDetailViewController()
+                view.detailGroup = "siri"
+                return view
+                }, onDismiss: { vc in
+                    _ = vc.navigationController?.popViewController(animated: true)
+            })
         }
 
-        self.form +++ ButtonRow {
+        +++ ButtonRow {
             $0.tag = "watchSettings"
             $0.title = L10n.Settings.DetailsSection.WatchRow.title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
@@ -486,96 +485,104 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             })
         }
 
-        self.form
+        +++ Section {
+            $0.tag = "reset"
+            $0.hidden = Condition(booleanLiteral: !self.configured)
+        }
+        <<< ButtonRow("resetApp") {
+            $0.title = L10n.Settings.ResetSection.ResetRow.title
+            }.cellUpdate { cell, _ in
+                cell.textLabel?.textColor = .red
+            }.onCellSelection { _, row in
+                let alert = UIAlertController(title: L10n.Settings.ResetSection.ResetAlert.title,
+                                              message: L10n.Settings.ResetSection.ResetAlert.message,
+                                              preferredStyle: UIAlertController.Style.alert)
 
-            +++ Section {
-                $0.tag = "reset"
-                $0.hidden = Condition(booleanLiteral: !self.configured)
+                alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
+
+                alert.addAction(UIAlertAction(title: L10n.Settings.ResetSection.ResetAlert.title,
+                                              style: .destructive, handler: { (_) in
+                    row.hidden = true
+                    row.evaluateHidden()
+                    self.ResetApp()
+                }))
+
+                self.present(alert, animated: true, completion: nil)
             }
-            <<< ButtonRow("resetApp") {
-                $0.title = L10n.Settings.ResetSection.ResetRow.title
-                }.cellUpdate { cell, _ in
-                    cell.textLabel?.textColor = .red
-                }.onCellSelection { _, row in
-                    let alert = UIAlertController(title: L10n.Settings.ResetSection.ResetAlert.title,
-                                                  message: L10n.Settings.ResetSection.ResetAlert.message,
-                                                  preferredStyle: UIAlertController.Style.alert)
 
-                    alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
+        +++ Section(header: "Developer Options", footer: "Don't use these if you don't know what you are doing!") {
+            $0.hidden = Condition(booleanLiteral: (Current.appConfiguration.rawValue > 1))
+            $0.tag = "developerOptions"
+        }
+        <<< ButtonRow {
+                $0.title = "Copy Realm from group to container"
+            }.onCellSelection { _, _ in
+                let appGroupRealmPath = Current.realm().configuration.fileURL!
+                let containerRealmPath = Realm.Configuration.defaultConfiguration.fileURL!
 
-                    alert.addAction(UIAlertAction(title: L10n.Settings.ResetSection.ResetAlert.title,
-                                                  style: .destructive, handler: { (_) in
-                        row.hidden = true
-                        row.evaluateHidden()
-                        self.ResetApp()
-                    }))
+                print("Would copy from", appGroupRealmPath, "to", containerRealmPath)
 
-                    self.present(alert, animated: true, completion: nil)
-                }
-
-            +++ Section(header: "Developer Options", footer: "Don't use these if you don't know what you are doing!") {
-                $0.hidden = Condition(booleanLiteral: (Current.appConfiguration != .Debug))
-                $0.tag = "developerOptions"
-            }
-            <<< ButtonRow {
-                    $0.title = "Copy Realm from group to container"
-                }.onCellSelection { _, _ in
-                    let appGroupRealmPath = Current.realm().configuration.fileURL!
-                    let containerRealmPath = Realm.Configuration.defaultConfiguration.fileURL!
-
-                    print("Would copy from", appGroupRealmPath, "to", containerRealmPath)
-
-                    if FileManager.default.fileExists(atPath: containerRealmPath.path) {
-                        do {
-                            _ = try FileManager.default.removeItem(at: containerRealmPath)
-                        } catch let error {
-                            print("error occurred, here are the details:\n \(error)")
-                        }
-                    }
-
+                if FileManager.default.fileExists(atPath: containerRealmPath.path) {
                     do {
-                        _ = try FileManager.default.copyItem(at: appGroupRealmPath, to: containerRealmPath)
-                    } catch let error as NSError {
-                        // Catch fires here, with an NSError being thrown
+                        _ = try FileManager.default.removeItem(at: containerRealmPath)
+                    } catch let error {
                         print("error occurred, here are the details:\n \(error)")
                     }
-
-                    let msg = "Copied Realm from \(appGroupRealmPath) to \(containerRealmPath)"
-
-                    let alert = UIAlertController(title: "Copied Realm",
-                                                  message: msg,
-                                                  preferredStyle: UIAlertController.Style.alert)
-
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-
-                    self.present(alert, animated: true, completion: nil)
                 }
-            <<< ButtonRow {
-                    $0.title = "Import legacy push settings"
-                }.onCellSelection {_, _ in
-                    MigratePushSettingsToLocal()
-            }
-            <<< ButtonRow {
-                $0.title = "Test Critical Alerts"
-                }.onCellSelection {_, _ in
-                    let content = UNMutableNotificationContent()
-                    content.title = "Critical Alerts Test"
-                    content.body = "This is a critical alert"
-                    if #available(iOS 12.0, *) {
-                        content.sound = UNNotificationSound.defaultCriticalSound(withAudioVolume: 1)
-                    }
 
-                    let notificationRequest =
-                        UNNotificationRequest.init(identifier: "criticalAlertTest",
-                                                   content: content, trigger: nil)
-                    UNUserNotificationCenter.current().add(notificationRequest)
+                do {
+                    _ = try FileManager.default.copyItem(at: appGroupRealmPath, to: containerRealmPath)
+                } catch let error as NSError {
+                    // Catch fires here, with an NSError being thrown
+                    print("error occurred, here are the details:\n \(error)")
+                }
+
+                let msg = "Copied Realm from \(appGroupRealmPath) to \(containerRealmPath)"
+
+                let alert = UIAlertController(title: "Copied Realm",
+                                              message: msg,
+                                              preferredStyle: UIAlertController.Style.alert)
+
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+                self.present(alert, animated: true, completion: nil)
             }
-            <<< ButtonRow {
-                $0.title = "Print Watch contexts to log"
+        <<< ButtonRow {
+                $0.title = "Import legacy push settings"
+            }.onCellSelection {_, _ in
+                MigratePushSettingsToLocal()
+        }
+        <<< ButtonRow {
+            $0.title = "Test Critical Alerts"
+            }.onCellSelection {_, _ in
+                let content = UNMutableNotificationContent()
+                content.title = "Critical Alerts Test"
+                content.body = "This is a critical alert"
+                if #available(iOS 12.0, *) {
+                    content.sound = UNNotificationSound.defaultCriticalSound(withAudioVolume: 1)
+                }
+
+                let notificationRequest =
+                    UNNotificationRequest.init(identifier: "criticalAlertTest",
+                                               content: content, trigger: nil)
+                UNUserNotificationCenter.current().add(notificationRequest)
+        }
+        <<< ButtonRow {
+            $0.title = "Print Watch contexts to log"
+        }.onCellSelection { _, _ in
+            print("Most recently received context", Communicator.shared.mostRecentlyReceievedContext.content)
+            print("Most recently sent context", Communicator.shared.mostRecentlySentContext.content)
+        }
+        <<< ButtonRow {
+            $0.title = "Show map content extension"
+        }.onCellSelection { _, _ in
+            self.showMapContentExtension()
+        }
+        <<< ButtonRow {
+            $0.title = "Show camera content extension"
             }.onCellSelection { _, _ in
-                print("Most recently received context", Communicator.shared.mostRecentlyReceievedContext.content)
-                print("Most recently sent context", Communicator.shared.mostRecentlySentContext.content)
-            }
+                self.showCameraContentExtension()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -976,6 +983,35 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }
             shakeCount += 1
         }
+    }
+
+    func showMapContentExtension() {
+        let content = UNMutableNotificationContent()
+        content.title = "Roommate has arrived at home"
+        content.subtitle = "Robbie has arrived at home."
+        content.body = "Eddie, Katie and Robbie are home."
+        content.sound = .default
+        content.userInfo = ["homeassistant": ["latitude": "40.785091", "longitude": "-73.968285"]]
+        content.categoryIdentifier = "map"
+
+        let notificationRequest =
+            UNNotificationRequest.init(identifier: "mapContentExtension",
+                                       content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(notificationRequest)
+    }
+
+    func showCameraContentExtension() {
+        let content = UNMutableNotificationContent()
+        content.title = "Motion detected"
+        content.body = "Motion has been detected outside"
+        content.sound = .default
+        content.userInfo = ["entity_id": "camera.demo_camera"]
+        content.categoryIdentifier = "camera"
+
+        let notificationRequest =
+            UNNotificationRequest.init(identifier: "cameraContentExtension",
+                                       content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(notificationRequest)
     }
 }
 

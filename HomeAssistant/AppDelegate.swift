@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var safariVC: SFSafariViewController?
     let regionManager = RegionManager()
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    // swiftlint:disable:next function_body_length
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Current.deviceIDProvider = { DeviceUID.uid() }
@@ -62,53 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
 
-            var shortcutsToSuggest: [INShortcut] = []
-
-            if let shortcut = INShortcut(intent: FireEventIntent()) {
-                shortcutsToSuggest.append(shortcut)
-            }
-
-            if let shortcut = INShortcut(intent: SendLocationIntent()) {
-                shortcutsToSuggest.append(shortcut)
-            }
-
-            if let shortcut = INShortcut(intent: CallServiceIntent()) {
-                shortcutsToSuggest.append(shortcut)
-            }
-
-            _ = HomeAssistantAPI.authenticatedAPIPromise.then { api in
-                api.GetEvents()
-            }.then { eventsResp -> Promise<HomeAssistantAPI> in
-                for event in eventsResp {
-                    if let eventName = event.Event {
-                        if eventName == "*" {
-                            continue
-                        }
-                        if let shortcut = INShortcut(intent: FireEventIntent(eventName: eventName)) {
-                            shortcutsToSuggest.append(shortcut)
-                        }
-                    }
-                }
-
-                return HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.GetServices()
-            }.done { serviceResp in
-                for domainContainer in serviceResp {
-                    let domain = domainContainer.Domain
-                    for service in domainContainer.Services {
-                        let desc = service.value.Description
-                        if let shortcut = INShortcut(intent: CallServiceIntent(domain: domain, service: service.key,
-                                                                               description: desc)) {
-                            shortcutsToSuggest.append(shortcut)
-                        }
-                    }
-                }
-
-                print("Suggesting", shortcutsToSuggest.count, "shortcuts to Siri")
-
-                INVoiceShortcutCenter.shared.setShortcutSuggestions(shortcutsToSuggest)
-            }
+//            suggestSiriShortcuts()
 
         }
 
@@ -125,12 +79,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         self.window!.rootViewController = navController
         self.window!.makeKeyAndVisible()
+
+        if Current.appConfiguration == .Debug {
+            let baseURL = URL(string: "https://privatedemo.home-assistant.io")!
+
+            keychain["apiPassword"] = "demoprivate"
+
+            let connectionInfo = ConnectionInfo(baseURL: baseURL, internalBaseURL: nil, internalSSID: nil,
+                                                basicAuthCredentials: nil)
+
+            let api = HomeAssistantAPI(connectionInfo: connectionInfo,
+                                       authenticationMethod: .legacy(apiPassword: "demoprivate"))
+            Current.updateWith(authenticatedAPI: api)
+            Current.settingsStore.connectionInfo = connectionInfo
+        }
+
         if let tokenInfo = Current.settingsStore.tokenInfo,
             let connectionInfo = Current.settingsStore.connectionInfo {
             Current.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
         }
 
         Current.authenticationControllerPresenter = { controller in
+            print("presenter")
             if let presentedController = navController.topViewController?.presentedViewController {
                 presentedController.present(controller, animated: true, completion: nil)
                 return
@@ -388,6 +358,57 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Communicator.shared.contextUpdatedObservers.add { context in
             print("Received context: ", context)
+        }
+    }
+
+    @available(iOS 12.0, *)
+    func suggestSiriShortcuts() {
+        var shortcutsToSuggest: [INShortcut] = []
+
+        if let shortcut = INShortcut(intent: FireEventIntent()) {
+            shortcutsToSuggest.append(shortcut)
+        }
+
+        if let shortcut = INShortcut(intent: SendLocationIntent()) {
+            shortcutsToSuggest.append(shortcut)
+        }
+
+        if let shortcut = INShortcut(intent: CallServiceIntent()) {
+            shortcutsToSuggest.append(shortcut)
+        }
+
+        _ = HomeAssistantAPI.authenticatedAPIPromise.then { api in
+            api.GetEvents()
+            }.then { eventsResp -> Promise<HomeAssistantAPI> in
+                for event in eventsResp {
+                    if let eventName = event.Event {
+                        if eventName == "*" {
+                            continue
+                        }
+                        if let shortcut = INShortcut(intent: FireEventIntent(eventName: eventName)) {
+                            shortcutsToSuggest.append(shortcut)
+                        }
+                    }
+                }
+
+                return HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.GetServices()
+            }.done { serviceResp in
+                for domainContainer in serviceResp {
+                    let domain = domainContainer.Domain
+                    for service in domainContainer.Services {
+                        let desc = service.value.Description
+                        if let shortcut = INShortcut(intent: CallServiceIntent(domain: domain, service: service.key,
+                                                                               description: desc)) {
+                            shortcutsToSuggest.append(shortcut)
+                        }
+                    }
+                }
+
+                print("Suggesting", shortcutsToSuggest.count, "shortcuts to Siri")
+
+                INVoiceShortcutCenter.shared.setShortcutSuggestions(shortcutsToSuggest)
         }
     }
 }

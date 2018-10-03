@@ -24,7 +24,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     func didReceive(_ notification: UNNotification) {
         if let category = NotificationCategories(rawValue: notification.request.content.categoryIdentifier) {
-            print("Received a", category, "notification")
+            print("Received a", category, "notification with userInfo", notification.request.content.userInfo)
 
             let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
             let loadTxt = L10n.Extensions.NotificationContent.Hud.loading(category.rawValue)

@@ -10,7 +10,8 @@ import Foundation
 import PromiseKit
 import RealmSwift
 
-public enum AppConfiguration {
+public enum AppConfiguration: Int, CaseIterable {
+    case FastlaneSnapshot
     case Debug
     case TestFlight
     case AppStore
@@ -44,17 +45,22 @@ public class Environment {
     public var syncMonitoredRegions: (() -> Void)?
 
     public func updateWith(authenticatedAPI: HomeAssistantAPI) {
-        guard let tokenManager = authenticatedAPI.tokenManager else {
-            assertionFailure("Should have had token manager")
-            return
+        if authenticatedAPI.authenticationMethodString == "modern" {
+            guard let tokenManager = authenticatedAPI.tokenManager else {
+                assertionFailure("Should have had token manager")
+                return
+            }
+
+            self.tokenManager = tokenManager
         }
 
-        self.tokenManager = tokenManager
         self.settingsStore.connectionInfo = authenticatedAPI.connectionInfo
     }
 
     // This is private because the use of 'appConfiguration' is preferred.
     private let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+
+    private let isFastlaneSnapshot = UserDefaults.standard.bool(forKey: "FASTLANE_SNAPSHOT")
 
     // This can be used to add debug statements.
     public var isDebug: Bool {
@@ -66,7 +72,9 @@ public class Environment {
     }
 
     public var appConfiguration: AppConfiguration {
-        if isDebug {
+        if isFastlaneSnapshot {
+            return .FastlaneSnapshot
+        } else if isDebug {
             return .Debug
         } else if isTestFlight {
             return .TestFlight

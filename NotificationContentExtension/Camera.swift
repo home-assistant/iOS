@@ -27,6 +27,8 @@ class CameraViewController: UIView, NotificationCategory {
     func didReceive(_ notification: UNNotification, view: UIView, extensionContext: NSExtensionContext?,
                     hud: MBProgressHUD, completionHandler: @escaping (String?) -> Void) {
 
+        view.accessibilityIdentifier = "camera_notification"
+
         parentView = view
 
         guard let entityId = notification.request.content.userInfo["entity_id"] as? String else {
@@ -45,6 +47,7 @@ class CameraViewController: UIView, NotificationCategory {
 
         let imageView = UIImageView()
         imageView.frame = view.frame
+        imageView.accessibilityIdentifier = "camera_notification_imageview"
 
         var frameCount = 0
 
@@ -86,7 +89,9 @@ class CameraViewController: UIView, NotificationCategory {
                 print("FRAME", frameCount)
 
                 DispatchQueue.main.async {
+                    image.accessibilityIdentifier = "camera_notification_image"
                     imageView.image = image
+                    imageView.image?.accessibilityIdentifier = image.accessibilityIdentifier
                 }
 
             }

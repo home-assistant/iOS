@@ -49,6 +49,8 @@ class MapViewController: UIView, NotificationCategory, MKMapViewDelegate {
         self.mapView.showsScale = (haDict["shows_scale"] != nil)
         self.mapView.showsTraffic = (haDict["shows_traffic"] != nil)
 
+        self.mapView.accessibilityIdentifier = "notification_map"
+
         let span = MKCoordinateSpan.init(latitudeDelta: 0.1, longitudeDelta: 0.1)
         let region = MKCoordinateRegion(center: location, span: span)
         self.mapView.setRegion(region, animated: true)
