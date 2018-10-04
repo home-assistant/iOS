@@ -52,29 +52,10 @@ platform :ios do
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
   lane :certs do
     match(app_identifier: [
-            "io.robbie.HomeAssistant",
-            "io.robbie.HomeAssistant.APNSAttachmentService",
-            "io.robbie.HomeAssistant.NotificationContentExtension",
-            "io.robbie.HomeAssistant.MapNotificationContentExtension",
-            "io.robbie.HomeAssistant.HomeAssistantIntent",
             "io.robbie.HomeAssistant.dev",
             "io.robbie.HomeAssistant.dev.APNSAttachmentService",
             "io.robbie.HomeAssistant.dev.NotificationContentExtension",
-            "io.robbie.HomeAssistant.dev.MapNotificationContentExtension",
-            "io.robbie.HomeAssistant.dev.HomeAssistantIntent"],
-          type: "appstore",
-          readonly: true)
-    match(app_identifier: [
-            "io.robbie.HomeAssistant",
-            "io.robbie.HomeAssistant.APNSAttachmentService",
-            "io.robbie.HomeAssistant.NotificationContentExtension",
-            "io.robbie.HomeAssistant.MapNotificationContentExtension",
-            "io.robbie.HomeAssistant.HomeAssistantIntent",
-            "io.robbie.HomeAssistant.dev",
-            "io.robbie.HomeAssistant.dev.APNSAttachmentService",
-            "io.robbie.HomeAssistant.dev.NotificationContentExtension",
-            "io.robbie.HomeAssistant.dev.MapNotificationContentExtension",
-            "io.robbie.HomeAssistant.dev.HomeAssistantIntent"],
+            "io.robbie.HomeAssistant.dev.MapNotificationContentExtension"],
           type: "development",
           readonly: true)
   end
