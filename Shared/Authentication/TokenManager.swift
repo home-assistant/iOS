@@ -91,10 +91,10 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             return
         }
 
-        if request.retryCount > 3 {
-            print("Reached maximum retries for request: \(request)")
-            let event = ClientEvent(text: "Failed to make request: \(request) after 3 tries",
-                type: .networkRequest)
+        if request.retryCount > 5 {
+            print("Reached maximum retries for request: \(self.loggableString(for: requestURL))")
+            let message = "Failed to make request: \(self.loggableString(for: requestURL)) after 3 tries"
+            let event = ClientEvent(text: message, type: .networkRequest)
             Current.clientEventStore.addEvent(event)
             completion(false, 0)
             return
@@ -110,13 +110,16 @@ public class TokenManager: RequestAdapter, RequestRetrier {
                 }
 
                 // If we get a token, retry.
-                completion(true, 2)
+                completion(true, 0)
             }.catch { _ in
                 // If not, ahh well.
                 completion(false, 0)
             }
         } else {
-            completion(false, 0)
+            let message = "Retry #\(request.retryCount) request: \(self.loggableString(for: requestURL))"
+            let event = ClientEvent(text: message, type: .networkRequest)
+            Current.clientEventStore.addEvent(event)
+            completion(true, TimeInterval(2 * request.retryCount))
         }
     }
 
@@ -140,6 +143,17 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             throw TokenError.expired
         }
 
+        let urlText = self.loggableString(for: url)
+        let networkEvent = ClientEvent(text: urlText, type: .networkRequest)
+        Current.clientEventStore.addEvent(networkEvent)
+        var newRequest = urlRequest
+        newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
+        return newRequest
+    }
+
+    // MARK: - Private helpers
+
+    private func loggableString(for url: URL) -> String {
         let urlText: String
         if self.url(url, matchesPrefixOf: self.connectionInfo.baseURL) {
             urlText = self.connectionInfo.internalBaseURL == nil ? "HASS URL" : "External HASS URL"
@@ -150,14 +164,8 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             urlText = "Non-HASS URL"
         }
 
-        let networkEvent = ClientEvent(text: "[\(urlText)]\(url.path)", type: .networkRequest)
-        Current.clientEventStore.addEvent(networkEvent)
-        var newRequest = urlRequest
-        newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
-        return newRequest
+        return "[\(urlText)]\(url.path)"
     }
-
-    // MARK: - Private helpers
 
     private var currentToken: Promise<String> {
         return Promise<String> { seal in
