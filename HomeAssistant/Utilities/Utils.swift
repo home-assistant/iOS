@@ -89,7 +89,7 @@ func resetStores() {
         print("Error when trying to delete everything from Keychain!")
     }
 
-    if let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant") {
+    if let groupDefaults = UserDefaults(suiteName: Constants.AppGroupID) {
         for key in groupDefaults.dictionaryRepresentation().keys {
             groupDefaults.removeObject(forKey: key)
         }

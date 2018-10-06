@@ -10,7 +10,7 @@ import Foundation
 import KeychainAccess
 
 public class SettingsStore {
-    let keychain = Keychain(service: "io.robbie.homeassistant")
+    let keychain = Keychain(service: Bundle.main.bundleIdentifier!)
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
     public var tokenInfo: TokenInfo? {

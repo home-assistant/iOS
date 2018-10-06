@@ -26,7 +26,7 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>WKCompanionAppBundleIdentifier</key>
-	<string>io.robbie.HomeAssistant${BUNDLE_ID_PREFIX}</string>
+	<string>io.robbie.HomeAssistant${BUNDLE_ID_SUFFIX}</string>
 	<key>WKWatchKitApp</key>
 	<true/>
 </dict>

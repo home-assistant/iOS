@@ -20,7 +20,7 @@ import RealmSwift
 import UserNotifications
 import Intents
 
-private let keychain = Keychain(service: "io.robbie.homeassistant")
+private let keychain = Keychain(service: Bundle.main.bundleIdentifier!)
 
 // swiftlint:disable file_length
 
@@ -325,7 +325,7 @@ public class HomeAssistantAPI {
                                 }
                             }
                             print("Error on CallService() request:", afError)
-                            let customError = NSError(domain: "io.robbie.HomeAssistant",
+                            let customError = NSError(domain: Bundle.main.bundleIdentifier!,
                                                       code: afError.responseCode!,
                                                       userInfo: errorUserInfo)
                             seal.reject(customError)
@@ -406,7 +406,7 @@ public class HomeAssistantAPI {
                         if let json = response.result.value {
                             seal.fulfill(json)
                         } else {
-                            let retErr = NSError(domain: "io.robbie.HomeAssistant",
+                            let retErr = NSError(domain: Bundle.main.bundleIdentifier!,
                                                  code: 404,
                                                  userInfo: ["message": "json was nil!"])
                             print("Error when attemping to registerDeviceForPush(), json was nil!:",

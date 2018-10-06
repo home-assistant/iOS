@@ -11,5 +11,5 @@ import Foundation
 /// Contains shared constants
 public struct Constants {
     /// The App Group ID used by the app and extensions for sharing data.
-    public static let AppGroupID = "group.io.robbie.homeassistant"
+    public static let AppGroupID = "group." + Bundle.main.bundleIdentifier!
 }
