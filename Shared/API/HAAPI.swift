@@ -11,7 +11,6 @@ import AlamofireObjectMapper
 import PromiseKit
 import Crashlytics
 import CoreLocation
-import CoreMotion
 import DeviceKit
 import Foundation
 import KeychainAccess
@@ -51,10 +50,6 @@ public class HomeAssistantAPI {
 
     public var cachedEntities: [Entity]?
 
-    public var notificationsEnabled: Bool {
-        return self.prefs.bool(forKey: "notificationsEnabled")
-    }
-
     public var iosComponentLoaded: Bool {
         return self.loadedComponents.contains("ios")
     }
@@ -69,7 +64,7 @@ public class HomeAssistantAPI {
 
     var enabledPermissions: [String] {
         var permissionsContainer: [String] = []
-        if self.notificationsEnabled {
+        if Current.settingsStore.notificationsEnabled {
             permissionsContainer.append("notifications")
         }
         if Current.settingsStore.locationEnabled {
@@ -106,8 +101,8 @@ public class HomeAssistantAPI {
 
         if #available(iOS 10, *) {
             UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
-                self.prefs.setValue((settings.authorizationStatus == UNAuthorizationStatus.authorized),
-                               forKey: "notificationsEnabled")
+                let notificationsAllowed = settings.authorizationStatus == UNAuthorizationStatus.authorized
+                Current.settingsStore.notificationsEnabled = notificationsAllowed
             })
         }
     }

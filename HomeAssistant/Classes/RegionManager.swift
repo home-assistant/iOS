@@ -117,8 +117,10 @@ class RegionManager: NSObject {
             locationManager.startMonitoring(for: region)
         }
 
-        activityManager.startActivityUpdates(to: coreMotionQueue) { [weak self] activity in
-            self?.lastActivity = activity
+        if Current.settingsStore.motionEnabled {
+            activityManager.startActivityUpdates(to: coreMotionQueue) { [weak self] activity in
+                self?.lastActivity = activity
+            }
         }
     }
 
@@ -153,8 +155,7 @@ extension RegionManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager,
                          didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways {
-            prefs.setValue(true, forKey: "locationEnabled")
-            prefs.synchronize()
+            Current.settingsStore.locationEnabled = status == .authorizedAlways
         }
     }
 

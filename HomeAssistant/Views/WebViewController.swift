@@ -11,6 +11,7 @@ import WebKit
 import KeychainAccess
 import PromiseKit
 import Shared
+import arek
 
 // swiftlint:disable:next type_body_length
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, ConnectionInfoChangedDelegate {
@@ -62,11 +63,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.webView.scrollView.bounces = false
 
+        EnsurePermissions()
+
         if let api = HomeAssistantAPI.authenticatedAPI(),
             let connectionInfo = Current.settingsStore.connectionInfo,
             let webviewURL = connectionInfo.webviewURL {
             api.Connect().done {_ in
-                if api.notificationsEnabled {
+                if Current.settingsStore.notificationsEnabled {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
                 print("Connected!")

@@ -17,6 +17,7 @@ import Alamofire
 import RealmSwift
 import Shared
 import SafariServices
+import arek
 
 let keychain = Keychain(service: "io.robbie.homeassistant")
 
@@ -29,6 +30,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let regionManager = RegionManager()
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        CheckPermissionsStatus()
+
         Fabric.with([Crashlytics.self])
         Current.deviceIDProvider = { DeviceUID.uid() }
         Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
@@ -91,7 +94,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {}
 
-    func applicationDidBecomeActive(_ application: UIApplication) {}
+    func applicationDidBecomeActive(_ application: UIApplication) { CheckPermissionsStatus() }
 
     func applicationWillTerminate(_ application: UIApplication) {}
 

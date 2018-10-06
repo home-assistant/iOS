@@ -9,6 +9,7 @@ target 'HomeAssistant' do
   pod 'Alamofire', '4.7.3'
   pod 'AlamofireNetworkActivityIndicator', '2.2.1'
   pod 'AlamofireObjectMapper', '5.1.0'
+  pod 'arek', '3.0.0'
   pod 'CPDAcknowledgements', '1.0.0'
   pod 'Crashlytics', '3.10.2'
   pod 'DeviceKit', '1.7.0'
