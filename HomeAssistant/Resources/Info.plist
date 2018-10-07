@@ -34,7 +34,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>7</string>
+	<string>8</string>
 	<key>IS_SANDBOXED</key>
 	<string>${IS_SANDBOXED}</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
