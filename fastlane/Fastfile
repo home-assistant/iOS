@@ -269,9 +269,8 @@ platform :ios do
     pilot(
       app_identifier: app_id,
       changelog: change_log,
-      skip_submission: true,
       distribute_external: true,
-      skip_waiting_for_build_processing: false
+      wait_for_uploaded_build: true
     )
 
     rocket
