@@ -2601,7 +2601,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"$PODS_ROOT\"/SwiftGen/bin/swiftgen config run --config ./HomeAssistant/swiftgen.yml\n";
+			shellScript = "\"$PODS_ROOT\"/SwiftGen/bin/swiftgen config run --config ./swiftgen.yml\n";
 		};
 		FE2410D822218EA6B0CA7770 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
