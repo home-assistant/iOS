@@ -122,7 +122,11 @@ public class RLMZone: Object {
         return self.ID.components(separatedBy: ".")[0]
     }
 
-    public var IsBeaconRegion: Bool {
+    public var isBeaconRegion: Bool {
         return self.BeaconUUID != nil
+    }
+
+    public override var debugDescription: String {
+        return "\(self.isBeaconRegion ? "Beacon " : "")Zone - ID: \(self.ID)"
     }
 }

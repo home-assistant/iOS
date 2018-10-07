@@ -31,7 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         CheckPermissionsStatus()
-
+        let event = ClientEvent(text: "Application Starting", type: .unknown)
+        Current.clientEventStore.addEvent(event)
         Fabric.with([Crashlytics.self])
         Current.deviceIDProvider = { DeviceUID.uid() }
         Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }

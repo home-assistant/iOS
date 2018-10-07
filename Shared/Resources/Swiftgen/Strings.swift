@@ -483,6 +483,8 @@ internal enum L10n {
   internal enum Permissions {
 
     internal enum Location {
+      /// We use this to inform\rHome Assistant of your device location and state.
+      internal static let message = L10n.tr("Localizable", "permissions.location.message")
 
       internal enum Initial {
         /// We need permission to allow informing\rHome Assistant of your device location and state.
@@ -545,6 +547,8 @@ internal enum L10n {
     }
 
     internal enum Notification {
+      /// We use this to let you\rsend notifications to your device.
+      internal static let message = L10n.tr("Localizable", "permissions.notification.message")
 
       internal enum Initial {
         /// We need permission to allow you\rsend notifications to your device.

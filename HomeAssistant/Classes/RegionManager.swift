@@ -42,6 +42,8 @@ class RegionManager: NSObject {
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.delegate = self
         locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
+        let event = ClientEvent(text: "Initializing Region Manager", type: .unknown)
+        Current.clientEventStore.addEvent(event)
         self.startMonitoring()
         self.syncMonitoredRegions()
     }
@@ -69,7 +71,7 @@ class RegionManager: NSObject {
             return
         }
 
-        if zone.IsBeaconRegion {
+        if zone.isBeaconRegion {
             if trigger == .RegionEnter {
                 trig = .BeaconRegionEnter
             }
@@ -134,6 +136,8 @@ class RegionManager: NSObject {
         // start monitoring for all existing regions
         zones.forEach { [weak self] zone in
             print("Starting monitoring of zone \(zone)")
+            let event = ClientEvent(text: "Monitoring: \(zone.debugDescription)", type: .unknown)
+            Current.clientEventStore.addEvent(event)
             self?.startMonitoring(zone: zone)
         }
     }
