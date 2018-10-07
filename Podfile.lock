@@ -5,65 +5,15 @@ PODS:
   - AlamofireObjectMapper (5.1.0):
     - Alamofire (~> 4.1)
     - ObjectMapper (~> 3.3)
-  - arek (3.0.0):
-    - arek/Bluetooth (= 3.0.0)
-    - arek/Camera (= 3.0.0)
-    - arek/CloudKit (= 3.0.0)
-    - arek/Contacts (= 3.0.0)
-    - arek/Core (= 3.0.0)
-    - arek/Events (= 3.0.0)
-    - arek/Health (= 3.0.0)
-    - arek/Location (= 3.0.0)
-    - arek/MediaLibrary (= 3.0.0)
-    - arek/Microphone (= 3.0.0)
-    - arek/Motion (= 3.0.0)
-    - arek/Notifications (= 3.0.0)
-    - arek/Photos (= 3.0.0)
-    - arek/Reminders (= 3.0.0)
-    - arek/SpeechRecognizer (= 3.0.0)
-    - PMAlertController (= 3.4.0)
-  - arek/Bluetooth (3.0.0):
-    - arek/Core
-    - PMAlertController (= 3.4.0)
-  - arek/Camera (3.0.0):
-    - arek/Core
-    - PMAlertController (= 3.4.0)
-  - arek/CloudKit (3.0.0):
-    - arek/Core
-    - PMAlertController (= 3.4.0)
-  - arek/Contacts (3.0.0):
-    - arek/Core
-    - PMAlertController (= 3.4.0)
   - arek/Core (3.0.0):
     - PMAlertController (= 3.4.0)
-  - arek/Events (3.0.0):
-    - arek/Core
-    - PMAlertController (= 3.4.0)
-  - arek/Health (3.0.0):
-    - arek/Core
-    - PMAlertController (= 3.4.0)
   - arek/Location (3.0.0):
-    - arek/Core
-    - PMAlertController (= 3.4.0)
-  - arek/MediaLibrary (3.0.0):
-    - arek/Core
-    - PMAlertController (= 3.4.0)
-  - arek/Microphone (3.0.0):
     - arek/Core
     - PMAlertController (= 3.4.0)
   - arek/Motion (3.0.0):
     - arek/Core
     - PMAlertController (= 3.4.0)
   - arek/Notifications (3.0.0):
-    - arek/Core
-    - PMAlertController (= 3.4.0)
-  - arek/Photos (3.0.0):
-    - arek/Core
-    - PMAlertController (= 3.4.0)
-  - arek/Reminders (3.0.0):
-    - arek/Core
-    - PMAlertController (= 3.4.0)
-  - arek/SpeechRecognizer (3.0.0):
     - arek/Core
     - PMAlertController (= 3.4.0)
   - CPDAcknowledgements (1.0.0)
@@ -100,7 +50,9 @@ DEPENDENCIES:
   - Alamofire (= 4.7.3)
   - AlamofireNetworkActivityIndicator (= 2.2.1)
   - AlamofireObjectMapper (= 5.1.0)
-  - arek (= 3.0.0)
+  - arek/Location (= 3.0.0)
+  - arek/Motion (= 3.0.0)
+  - arek/Notifications (= 3.0.0)
   - CPDAcknowledgements (= 1.0.0)
   - Crashlytics (= 3.10.2)
   - DeviceKit (= 1.7.0)
@@ -167,6 +119,6 @@ SPEC CHECKSUMS:
   SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
   SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
 
-PODFILE CHECKSUM: cdc22eb9421b50831a9870fab2d8466c7b72d209
+PODFILE CHECKSUM: e4a37bec5ad742d46c6dbeb110c83bc6e24c51bb
 
 COCOAPODS: 1.5.3
