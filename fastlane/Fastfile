@@ -218,8 +218,8 @@ platform :ios do
       slack(message: "Completed bump, clean and CocoaPods install, now beginning build")
     end
 
-    scheme = ""
-    config = ""
+    scheme = nil
+    config = nil
     provisioningProfiles = {}
 
     if git_branch == "master"
@@ -234,7 +234,7 @@ platform :ios do
         "io.robbie.HomeAssistant.watchkitapp.watchkitextension" => "match AppStore io.robbie.HomeAssistant.watchkitapp.watchkitextension",
       }
     elsif git_branch == "beta"
-      scheme == "Beta"
+      scheme = "Beta"
       config = "Beta"
       provisioningProfiles = {
         "io.robbie.HomeAssistant.beta" => "match AppStore io.robbie.HomeAssistant.beta",
