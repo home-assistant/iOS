@@ -139,7 +139,7 @@ platform :ios do
 
   private_lane :set_beta_version do
     increment_version_number(version_number: Time.new.year.to_s)
-    increment_build_number(build_number: Time.now.to_s)
+    increment_build_number(build_number: Time.now.to_i.to_s)
   end
 
   private_lane :finalize_bump do
