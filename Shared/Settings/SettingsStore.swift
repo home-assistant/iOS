@@ -140,9 +140,15 @@ public class SettingsStore {
     }
 
     private var defaultDeviceID: String {
-        return self.removeSpecialCharsFromString(text: UIDevice.current.name)
+        let baseID = self.removeSpecialCharsFromString(text: UIDevice.current.name)
             .replacingOccurrences(of: " ", with: "_")
             .lowercased()
+
+        if Current.appConfiguration != .Release {
+            return baseID+"_"+Current.appConfiguration.description.lowercased()
+        }
+
+        return baseID
     }
 
     private func removeSpecialCharsFromString(text: String) -> String {

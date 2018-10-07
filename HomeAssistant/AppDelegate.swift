@@ -39,9 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.deviceIDProvider = { DeviceUID.uid() }
         Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
 
-        if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
-            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
-        }
+        UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
 
         Iconic.registerMaterialDesignIcons()
 
@@ -206,12 +204,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") == false {
-            completionHandler(UIBackgroundFetchResult.noData)
-        }
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         print("Background fetch activated at \(timestamp)!")
-        if Current.settingsStore.locationEnabled {
+        if Current.settingsStore.locationEnabled && prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
             api.getAndSendLocation(trigger: .BackgroundFetch).done { _ in
                 print("Sending location via background fetch")
                 completionHandler(UIBackgroundFetchResult.newData)
@@ -488,13 +483,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let view = SettingsDetailViewController()
         view.detailGroup = "notifications"
         view.doneButton = true
-        var rootViewController = UIApplication.shared.keyWindow?.rootViewController
+        var rootViewController = self.window?.rootViewController
         if let navigationController = rootViewController as? UINavigationController {
             rootViewController = navigationController.viewControllers.first
         }
-        if let tabBarController = rootViewController as? UITabBarController {
-            rootViewController = tabBarController.selectedViewController
-        }
+        rootViewController?.dismiss(animated: false, completion: {
+            let navController = UINavigationController(rootViewController: view)
+            rootViewController?.present(navController, animated: true, completion: nil)
+        })
         let navController = UINavigationController(rootViewController: view)
         rootViewController?.present(navController, animated: true, completion: nil)
     }

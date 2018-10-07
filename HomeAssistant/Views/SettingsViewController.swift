@@ -48,7 +48,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     var basicAuthUsername: String?
     var basicAuthPassword: String?
     var basicAuthEnabled: Bool = false
-    var deviceID: String?
     var useLegacyAuth: Bool = false
 
     var configured = false
@@ -113,8 +112,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 self.internalBaseURLEnabled = true
             }
         }
-
-        self.deviceID = Current.settingsStore.deviceID
 
         if showErrorConnectingMessage {
             var errDesc = ""
@@ -348,18 +345,12 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             +++ Section(header: "", footer: L10n.Settings.DeviceIdSection.footer)
             <<< TextRow("deviceId") {
                 $0.title = L10n.Settings.DeviceIdSection.DeviceIdRow.title
-                if let deviceID = self.deviceID {
-                    $0.value = deviceID
-                } else {
-                    $0.value = Current.settingsStore.deviceID
-                }
+                $0.value = Current.settingsStore.deviceID
                 $0.cell.textField.autocapitalizationType = .none
                 }.cellUpdate { _, row in
                     if row.isHighlighted == false {
                         if let deviceId = row.value {
                             Current.settingsStore.deviceID = deviceId
-                            self.deviceID = deviceId
-                            keychain["deviceID"] = deviceId
                         }
                     }
             }
@@ -953,7 +944,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         if motion == .motionShake {
             print("shake!")
-            if shakeCount == maxShakeCount {
+            if shakeCount >= maxShakeCount {
                 if let section = self.form.sectionBy(tag: "developerOptions") {
                     section.hidden = false
                     section.evaluateHidden()

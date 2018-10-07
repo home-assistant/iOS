@@ -13,8 +13,21 @@ import RealmSwift
 public enum AppConfiguration: Int, CaseIterable {
     case FastlaneSnapshot
     case Debug
-    case TestFlight
-    case AppStore
+    case Beta
+    case Release
+
+    var description: String {
+        switch self {
+        case .FastlaneSnapshot:
+            return "fastlane"
+        case .Debug:
+            return "debug"
+        case .Beta:
+            return "beta"
+        case .Release:
+            return "release"
+        }
+    }
 }
 
 public var Current = Environment()
@@ -77,9 +90,9 @@ public class Environment {
         } else if isDebug {
             return .Debug
         } else if isTestFlight {
-            return .TestFlight
+            return .Beta
         } else {
-            return .AppStore
+            return .Release
         }
     }
 }

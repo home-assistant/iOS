@@ -9,6 +9,7 @@
 import Foundation
 import arek
 import Shared
+import UserNotifications
 
 var arekConfig: ArekConfiguration {
     return ArekConfiguration(frequency: .Always, presentInitialPopup: true, presentReEnablePopup: true)
@@ -73,14 +74,14 @@ func NotificationPermission() -> ArekNotifications {
                                           type: .native,
                                           styling: nil)
 
-//    var opts: UNAuthorizationOptions = [.alert, .badge, .sound]
-//
-//    if #available(iOS 12.0, *) {
-//        opts = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
-//    }
+    var opts: UNAuthorizationOptions = [.alert, .badge, .sound]
+
+    if #available(iOS 12.0, *) {
+        opts = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
+    }
 
     return ArekNotifications(configuration: arekConfig, initialPopupData: initialPopupData,
-                             reEnablePopupData: reEnablePopupData)
+                             reEnablePopupData: reEnablePopupData, notificationOptions: opts)
 }
 
 func CheckPermissionsStatus() {

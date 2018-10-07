@@ -56,7 +56,7 @@ class AboutViewController: FormViewController {
 
             <<< ButtonRow {
                     $0.title = L10n.About.Beta.title
-                    $0.disabled = Condition(booleanLiteral: Current.appConfiguration == .TestFlight)
+                    $0.disabled = Condition(booleanLiteral: Current.appConfiguration == .Beta)
                 }.onCellSelection { _, _  in
                     let urlStr = "https://home-assistant.io/ios/beta/"
                     UIApplication.shared.open(URL(string: urlStr)!, options: [:], completionHandler: nil)

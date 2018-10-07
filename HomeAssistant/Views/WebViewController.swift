@@ -25,6 +25,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
+
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(WebViewController.loadActiveURLIfNeeded),
                                                name: UIApplication.didBecomeActiveNotification,
@@ -461,6 +462,7 @@ extension WebViewController: WKScriptMessageHandler {
 extension WebViewController: UIScrollViewDelegate {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint,
                                    targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        print("End dragging", self.waitingToHideToolbar)
         if velocity.y>0 {
             self.waitingToHideToolbar = false
             self.navigationController?.setToolbarHidden(true, animated: true)
