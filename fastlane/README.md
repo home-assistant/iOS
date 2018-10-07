@@ -21,6 +21,11 @@ or alternatively using `brew cask install fastlane`
 fastlane ios certs
 ```
 Fetches the provisioning profiles so you can build locally and deploy to your device
+### ios refresh_dsyms
+```
+fastlane ios refresh_dsyms
+```
+
 ### ios push_certs
 ```
 fastlane ios push_certs
