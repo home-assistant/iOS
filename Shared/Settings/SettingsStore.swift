@@ -92,6 +92,24 @@ public class SettingsStore {
         }
     }
 
+    public var motionEnabled: Bool {
+        get {
+            return prefs.bool(forKey: "motionEnabled")
+        }
+        set {
+            prefs.set(newValue, forKey: "motionEnabled")
+        }
+    }
+
+    public var notificationsEnabled: Bool {
+        get {
+            return prefs.bool(forKey: "notificationsEnabled")
+        }
+        set {
+            prefs.set(newValue, forKey: "notificationsEnabled")
+        }
+    }
+
     public var showAdvancedConnectionSettings: Bool {
         get {
             return prefs.bool(forKey: "showAdvancedConnectionSettings")

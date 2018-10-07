@@ -18,6 +18,7 @@ import SafariServices
 import Intents
 import Communicator
 import Iconic
+import arek
 
 let keychain = Keychain(service: Bundle.main.bundleIdentifier!)
 
@@ -33,6 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // swiftlint:disable:next function_body_length
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        CheckPermissionsStatus()
+
         Current.deviceIDProvider = { DeviceUID.uid() }
         Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
 
@@ -131,7 +134,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {}
 
-    func applicationDidBecomeActive(_ application: UIApplication) {}
+    func applicationDidBecomeActive(_ application: UIApplication) { CheckPermissionsStatus() }
 
     func applicationWillTerminate(_ application: UIApplication) {}
 

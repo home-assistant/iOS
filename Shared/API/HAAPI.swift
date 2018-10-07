@@ -11,7 +11,6 @@ import AlamofireImage
 import AlamofireObjectMapper
 import PromiseKit
 import CoreLocation
-import CoreMotion
 import DeviceKit
 import Foundation
 import KeychainAccess
@@ -52,9 +51,7 @@ public class HomeAssistantAPI {
 
     public var oneShotLocationManager: OneShotLocationManager?
 
-    public var notificationsEnabled: Bool {
-        return self.prefs.bool(forKey: "notificationsEnabled")
-    }
+    public var cachedEntities: [Entity]?
 
     public var iosComponentLoaded: Bool {
         return self.loadedComponents.contains("ios")
@@ -70,7 +67,7 @@ public class HomeAssistantAPI {
 
     var enabledPermissions: [String] {
         var permissionsContainer: [String] = []
-        if self.notificationsEnabled {
+        if Current.settingsStore.notificationsEnabled {
             permissionsContainer.append("notifications")
         }
         if Current.settingsStore.locationEnabled {
@@ -109,10 +106,9 @@ public class HomeAssistantAPI {
         self.pushID = self.prefs.string(forKey: "pushID")
 
         UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
-            self.prefs.setValue((settings.authorizationStatus == UNAuthorizationStatus.authorized),
-                           forKey: "notificationsEnabled")
+            let notificationsAllowed = settings.authorizationStatus == UNAuthorizationStatus.authorized
+            Current.settingsStore.notificationsEnabled = notificationsAllowed
         })
-
     }
 
     /// Configure global state of the app to use our newly validated credentials.
@@ -634,11 +630,10 @@ public class HomeAssistantAPI {
 
     public func submitLocation(updateType: LocationUpdateTrigger,
                                location: CLLocation?,
-                               visit: CLVisit?,
                                zone: RLMZone?) -> Promise<Void> {
         UIDevice.current.isBatteryMonitoringEnabled = true
 
-        let payload = DeviceTrackerSee(trigger: updateType, location: location, visit: visit, zone: zone)
+        let payload = DeviceTrackerSee(trigger: updateType, location: location, zone: zone)
         payload.Trigger = updateType
 
         let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
@@ -699,7 +694,7 @@ public class HomeAssistantAPI {
                 Current.isPerformingSingleShotLocationQuery = true
                 firstly {
                     self.submitLocation(updateType: updateTrigger, location: location,
-                                        visit: nil, zone: nil)
+                                        zone: nil)
                     }.done { _ in
                         seal.fulfill(())
                     }.catch { error in

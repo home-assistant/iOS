@@ -14,10 +14,3 @@ extension CLLocationCoordinate2D {
         return [self.latitude, self.longitude]
     }
 }
-
-extension CLVisit {
-    func location() -> CLLocation {
-        return CLLocation(coordinate: self.coordinate, altitude: -1, horizontalAccuracy: self.horizontalAccuracy,
-                          verticalAccuracy: -1, timestamp: self.departureDate)
-    }
-}

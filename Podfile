@@ -31,30 +31,33 @@ def shared_pods
 end
 
 target 'HomeAssistant' do
-  shared_pods
+    shared_pods
 
-  pod 'AlamofireNetworkActivityIndicator', '2.3.0'
-  pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
-  pod 'Communicator'
-  pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
-  pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
-  pod 'MBProgressHUD', '1.1.0'
-  pod 'SwiftGen', '5.3.0'
-  pod 'SwiftLint', '0.27.0'
-  pod 'UIColor_Hex_Swift'
-  pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'Swift4.2'
+    pod 'AlamofireNetworkActivityIndicator', '2.3.0'
+    pod 'arek/Location', '4.0.2'
+    pod 'arek/Motion', '4.0.2'
+    pod 'arek/Notifications', '4.0.2'
+    pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
+    pod 'Communicator'
+    pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
+    pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
+    pod 'MBProgressHUD', '1.1.0'
+    pod 'SwiftGen', '5.3.0'
+    pod 'SwiftLint', '0.27.0'
+    pod 'UIColor_Hex_Swift'
+    pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'Swift4.2'
 
-  target 'HomeAssistantTests' do
-    inherit! :search_paths
-  end
+    target 'HomeAssistantTests' do
+      inherit! :search_paths
+    end
 end
 
 target 'Shared' do
-  shared_pods
+    shared_pods
 
-  target 'SharedTests' do
-    inherit! :search_paths
-  end
+    target 'SharedTests' do
+      inherit! :search_paths
+    end
 end
 
 
@@ -63,7 +66,7 @@ target 'HomeAssistantUITests' do
 end
 
 target 'APNSAttachmentService' do
-  shared_pods
+    shared_pods
 end
 
 target 'NotificationContentExtension' do
@@ -73,17 +76,17 @@ target 'NotificationContentExtension' do
 end
 
 target 'SiriIntents' do
-  pod 'PromiseKit', '6.4.1'
+    pod 'PromiseKit', '6.4.1'
 end
 
 target 'WatchAppExtension' do
-  platform :watchos, '5.0'
+    platform :watchos, '5.0'
 
-  pod 'Communicator'
-  pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
-  pod 'RealmSwift', '3.11.0'
-  pod 'ObjectMapper', '3.3.0'
-  pod 'UIColor_Hex_Swift'
+    pod 'Communicator'
+    pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
+    pod 'RealmSwift', '3.11.0'
+    pod 'ObjectMapper', '3.3.0'
+    pod 'UIColor_Hex_Swift'
 end
 
 post_install do |installer|

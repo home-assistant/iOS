@@ -18,6 +18,7 @@ import Shared
 import SystemConfiguration.CaptiveNetwork
 import RealmSwift
 import Communicator
+import arek
 
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
@@ -54,7 +55,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     var connectionInfo: ConnectionInfo?
 
     let discovery = Bonjour()
-    var authLocationManager: CLLocationManager = CLLocationManager()
 
     private var shakeCount = 0
     private var maxShakeCount = 3
@@ -74,6 +74,12 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         super.viewDidLoad()
         self.becomeFirstResponder()
 
+        let center = NotificationCenter.default
+        center.addObserver(self,
+                           selector: #selector(SettingsViewController.PermissionDidChange(_:)),
+                           name: NSNotification.Name(rawValue: "permission_change"),
+                           object: nil)
+
         let api = HomeAssistantAPI.authenticatedAPI()
 
         // Initial state
@@ -81,9 +87,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         self.legacyPassword = keychain["apiPassword"]
         self.useLegacyAuth = Current.settingsStore.tokenInfo == nil && self.legacyPassword != nil
         self.connectionInfo = Current.settingsStore.connectionInfo
-
-        // Authentication
-        self.authLocationManager.delegate = self
 
         let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
                                           style: .plain,
@@ -339,7 +342,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             <<< LabelRow("notifyPlatformLoaded") {
                 $0.title = L10n.Settings.StatusSection.NotifyPlatformLoadedRow.title
                 $0.value = api?.iosNotifyPlatformLoaded ?? false ? "✔️" : "✖️"
-                $0.hidden = Condition(booleanLiteral: !(api?.notificationsEnabled ?? false))
+                $0.hidden = Condition(booleanLiteral: !(Current.settingsStore.notificationsEnabled))
             }
 
             +++ Section(header: "", footer: L10n.Settings.DeviceIdSection.footer)
@@ -379,8 +382,32 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             <<< ButtonRow("enableLocation") {
                 $0.title = L10n.Settings.DetailsSection.EnableLocationRow.title
                 $0.hidden = Condition(booleanLiteral: Current.settingsStore.locationEnabled)
-            }.onCellSelection { _, _ in
-                self.authLocationManager.requestAlwaysAuthorization()
+            }.onCellSelection { _, row in
+                let permission = LocationPermission()
+
+                permission.manage { status in
+                    print("Location status", status)
+
+                    Current.settingsStore.locationEnabled = (status == .authorized)
+
+                    row.hidden = true
+                    row.updateCell()
+                    row.evaluateHidden()
+                    let locationSettingsRow: ButtonRow = self.form.rowBy(tag: "locationSettings")!
+                    locationSettingsRow.hidden = false
+                    locationSettingsRow.updateCell()
+                    locationSettingsRow.evaluateHidden()
+                    let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(
+                        tag: "deviceTrackerComponentLoaded")!
+                    deviceTrackerComponentLoadedRow.hidden = false
+                    deviceTrackerComponentLoadedRow.evaluateHidden()
+                    deviceTrackerComponentLoadedRow.updateCell()
+                    self.tableView.reloadData()
+                    if prefs.bool(forKey: "locationUpdateOnZone") == false {
+                        Current.syncMonitoredRegions?()
+                    }
+                    //            _ = HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual)
+                }
             }
 
             <<< ButtonRow("locationSettings") {
@@ -397,50 +424,33 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
             <<< ButtonRow("enableNotifications") {
                 $0.title = L10n.Settings.DetailsSection.EnableNotificationRow.title
-                $0.hidden = Condition(booleanLiteral: api?.notificationsEnabled ?? false)
+                $0.hidden = Condition(booleanLiteral: Current.settingsStore.notificationsEnabled)
                 }.onCellSelection { _, row in
-                    let center = UNUserNotificationCenter.current()
-                    var opts: UNAuthorizationOptions = [.alert, .badge, .sound]
+                    let permission = NotificationPermission()
 
-                    if #available(iOS 12.0, *) {
-                        opts = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
-                    }
+                    permission.manage { status in
+                        print("Notification status", status)
 
-                    center.requestAuthorization(options: opts) { (granted, error) in
-                        if error != nil || granted == false {
-                            let title = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.title
-                            let message = L10n.Settings.ConnectionSection.ErrorEnablingNotifications.message
-                            let alert = UIAlertController(title: title,
-                                                          message: message,
-                                                          preferredStyle: UIAlertController.Style.alert)
-                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
-                                                          handler: nil))
-                            self.present(alert, animated: true, completion: nil)
-                        } else {
-                            print("Notifications Permissions finished with success!", granted)
-                            prefs.setValue(granted, forKey: "notificationsEnabled")
-                            prefs.synchronize()
-                            if granted, api != nil {
-                                DispatchQueue.main.async(execute: {
-                                    row.hidden = true
-                                    row.updateCell()
-                                    row.evaluateHidden()
-                                    let settingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
-                                    settingsRow.hidden = false
-                                    settingsRow.evaluateHidden()
-                                    let loadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
-                                    loadedRow.hidden = false
-                                    loadedRow.evaluateHidden()
-                                    self.tableView.reloadData()
-                                })
-                            }
+                        Current.settingsStore.notificationsEnabled = (status == .authorized)
+
+                        if status == .authorized {
+                            row.hidden = true
+                            row.updateCell()
+                            row.evaluateHidden()
+                            let settingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
+                            settingsRow.hidden = false
+                            settingsRow.evaluateHidden()
+                            let loadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
+                            loadedRow.hidden = false
+                            loadedRow.evaluateHidden()
+                            self.tableView.reloadData()
                         }
                     }
             }
 
             <<< ButtonRow("notificationSettings") {
                 $0.title = L10n.Settings.DetailsSection.NotificationSettingsRow.title
-                $0.hidden = Condition(booleanLiteral: !(api?.notificationsEnabled ?? false))
+                $0.hidden = Condition(booleanLiteral: !(Current.settingsStore.notificationsEnabled))
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     let view = SettingsDetailViewController()
                     view.detailGroup = "notifications"
@@ -922,30 +932,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         }
     }
 
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedAlways {
-            Current.settingsStore.locationEnabled = true
-            let enableLocationRow: ButtonRow = self.form.rowBy(tag: "enableLocation")!
-            enableLocationRow.hidden = true
-            enableLocationRow.updateCell()
-            enableLocationRow.evaluateHidden()
-            let locationSettingsRow: ButtonRow = self.form.rowBy(tag: "locationSettings")!
-            locationSettingsRow.hidden = false
-            locationSettingsRow.updateCell()
-            locationSettingsRow.evaluateHidden()
-            let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(
-                tag: "deviceTrackerComponentLoaded")!
-            deviceTrackerComponentLoadedRow.hidden = false
-            deviceTrackerComponentLoadedRow.evaluateHidden()
-            deviceTrackerComponentLoadedRow.updateCell()
-            self.tableView.reloadData()
-            if prefs.bool(forKey: "locationUpdateOnZone") == false {
-                Current.syncMonitoredRegions?()
-            }
-//            _ = HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual)
-        }
-    }
-
     func cleanBaseURL(baseUrl: URL) -> (hasValidScheme: Bool, cleanedURL: URL) {
         if (baseUrl.absoluteString.hasPrefix("http://") || baseUrl.absoluteString.hasPrefix("https://")) == false {
             return (false, baseUrl)
@@ -1012,6 +998,51 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             UNNotificationRequest.init(identifier: "cameraContentExtension",
                                        content: content, trigger: nil)
         UNUserNotificationCenter.current().add(notificationRequest)
+    }
+
+    @objc func PermissionDidChange(_ notification: Notification) {
+        if let userInfo = (notification as Notification).userInfo as? [String: Any] {
+            if let locationChange = userInfo["location"] as? Bool {
+                print("Location granted?", locationChange)
+
+                DispatchQueue.main.async {
+                    let enableLocationRow: ButtonRow = self.form.rowBy(tag: "enableLocation")!
+                    enableLocationRow.hidden = Condition(booleanLiteral: locationChange)
+                    enableLocationRow.updateCell()
+                    enableLocationRow.evaluateHidden()
+                    let locationSettingsRow: ButtonRow = self.form.rowBy(tag: "locationSettings")!
+                    locationSettingsRow.hidden = Condition(booleanLiteral: !locationChange)
+                    locationSettingsRow.updateCell()
+                    locationSettingsRow.evaluateHidden()
+                    let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(
+                        tag: "deviceTrackerComponentLoaded")!
+                    deviceTrackerComponentLoadedRow.hidden = Condition(booleanLiteral: !locationChange)
+                    deviceTrackerComponentLoadedRow.evaluateHidden()
+                    deviceTrackerComponentLoadedRow.updateCell()
+                    self.tableView.reloadData()
+                    if prefs.bool(forKey: "locationUpdateOnZone") == false {
+                        Current.syncMonitoredRegions?()
+                    }
+                }
+            }
+            if let notificationsChange = userInfo["notifications"] as? Bool {
+                print("Notifications granted?", notificationsChange)
+
+                DispatchQueue.main.async {
+                    let enableNotificationsRow: ButtonRow = self.form.rowBy(tag: "enableNotifications")!
+                    enableNotificationsRow.hidden = Condition(booleanLiteral: notificationsChange)
+                    enableNotificationsRow.updateCell()
+                    enableNotificationsRow.evaluateHidden()
+                    let settingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
+                    settingsRow.hidden = Condition(booleanLiteral: !notificationsChange)
+                    settingsRow.evaluateHidden()
+                    let loadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
+                    loadedRow.hidden = Condition(booleanLiteral: !notificationsChange)
+                    loadedRow.evaluateHidden()
+                    self.tableView.reloadData()
+                }
+            }
+        }
     }
 }
 

@@ -158,6 +158,7 @@
 		B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
 		B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B627CB0D1D83C87B0057173E /* NotificationViewController.swift */; };
 		B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B637242321695EDF006B102A /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B637242221695EDF006B102A /* Permissions.swift */; };
 		B637243B21697AA7006B102A /* HomeAssistant Beta.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = B637243A21697AA7006B102A /* HomeAssistant Beta.entitlements */; };
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
 		B6393F881CB2561100503916 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6393F871CB2561100503916 /* MapKit.framework */; };
@@ -477,7 +478,6 @@
 		B2821E7FC93344003A62FF42 /* Pods-SiriIntents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SiriIntents.release.xcconfig"; path = "Pods/Target Support Files/Pods-SiriIntents/Pods-SiriIntents.release.xcconfig"; sourceTree = "<group>"; };
 		B3C91BF27B302BB9D7C57C79 /* Pods-HomeAssistantUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		B593DC4405E9FABC1157CA32 /* Pods-SharedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.debug.xcconfig"; sourceTree = "<group>"; };
-		B60247EC1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		B60247ED1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B60247EE1FBD21C600998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainInterface.strings; sourceTree = "<group>"; };
 		B60247FF1FBD343000998205 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -629,6 +629,7 @@
 		B627CB121D83C87B0057173E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrationRequest.swift; sourceTree = "<group>"; };
 		B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyRequest.swift; sourceTree = "<group>"; };
+		B637242221695EDF006B102A /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		B637243A21697AA7006B102A /* HomeAssistant Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant Beta.entitlements"; sourceTree = "<group>"; };
 		B637243C21697B06006B102A /* APNSAttachmentService Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "APNSAttachmentService Beta.entitlements"; sourceTree = "<group>"; };
 		B637243D21697B19006B102A /* SiriIntents Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "SiriIntents Beta.entitlements"; sourceTree = "<group>"; };
@@ -650,19 +651,14 @@
 		B63CCDDB2164717700123C50 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Intents.strings; sourceTree = "<group>"; };
 		B63CCDDD2164717900123C50 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Intents.strings; sourceTree = "<group>"; };
 		B63CCDDE21649AE400123C50 /* BayArea.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BayArea.gpx; sourceTree = "<group>"; };
-		B64048481FBBBA6800F0CCCD /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		B64048491FBBBA6800F0CCCD /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/MainInterface.strings"; sourceTree = "<group>"; };
 		B640484A1FBBBA6800F0CCCD /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		B640484B1FBBBA6C00F0CCCD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		B640484C1FBBBA6C00F0CCCD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/MainInterface.strings"; sourceTree = "<group>"; };
 		B640484D1FBBBA6C00F0CCCD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		B640484E1FBBBA8A00F0CCCD /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		B640484F1FBBBA8A00F0CCCD /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/MainInterface.strings; sourceTree = "<group>"; };
 		B64048501FBBBA8B00F0CCCD /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
-		B64048541FBBBAFF00F0CCCD /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		B64048551FBBBAFF00F0CCCD /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/MainInterface.strings; sourceTree = "<group>"; };
 		B64048561FBBBAFF00F0CCCD /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
-		B640485A1FBBBB1200F0CCCD /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		B640485B1FBBBB1200F0CCCD /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/MainInterface.strings; sourceTree = "<group>"; };
 		B640485C1FBBBB1300F0CCCD /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AboutViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1328,12 +1324,13 @@
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
 				B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */,
-				D0B25BCC2130CAB400678C2C /* Bonjour.swift */,
 				B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */,
 				B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */,
 				B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */,
 				B68EDD06215F215E00DD6B28 /* Notifications.swift */,
 				B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */,
+				D0B25BCC2130CAB400678C2C /* Bonjour.swift */,
+				B637242221695EDF006B102A /* Permissions.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -2552,12 +2549,14 @@
 				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper-iOS/ObjectMapper.framework",
+				"${BUILT_PRODUCTS_DIR}/PMAlertController/PMAlertController.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm-iOS/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift-iOS/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/TABObserverSet-iOS/TABObserverSet.framework",
 				"${BUILT_PRODUCTS_DIR}/UIColor_Hex_Swift-iOS/UIColor_Hex_Swift.framework",
 				"${BUILT_PRODUCTS_DIR}/ViewRow/ViewRow.framework",
+				"${BUILT_PRODUCTS_DIR}/arek/arek.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
@@ -2576,12 +2575,14 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PMAlertController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TABObserverSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIColor_Hex_Swift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ViewRow.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/arek.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2675,6 +2676,7 @@
 				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
 				B68EDD07215F215E00DD6B28 /* Notifications.swift in Sources */,
+				B637242321695EDF006B102A /* Permissions.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
 				B63CCDCC2164714900123C50 /* Intents.intentdefinition in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
@@ -2910,12 +2912,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				B657A8F51CA646EB00121384 /* Base */,
-				B64048481FBBBA6800F0CCCD /* zh-Hans */,
-				B640484B1FBBBA6C00F0CCCD /* zh-Hant */,
-				B640484E1FBBBA8A00F0CCCD /* es */,
-				B64048541FBBBAFF00F0CCCD /* it */,
-				B640485A1FBBBB1200F0CCCD /* nl */,
-				B60247EC1FBD21C600998205 /* de */,
 			);
 			name = LaunchScreen.storyboard;
 			path = .;
@@ -3036,7 +3032,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -3414,7 +3410,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -3826,11 +3822,11 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 10;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 8;
+				DYLIB_CURRENT_VERSION = 10;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;
@@ -3861,10 +3857,10 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 10;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 8;
+				DYLIB_CURRENT_VERSION = 10;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;

@@ -45,7 +45,7 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
             }
 
             api.submitLocation(updateType: LocationUpdateTrigger.Siri, location: resp.location?.location,
-                               visit: nil, zone: nil).done {
+                               zone: nil).done {
                                 print("Successfully submitted location")
 
                                 var respCode = SendLocationIntentResponseCode.success

@@ -48,7 +48,6 @@ class RegionManager: NSObject {
 
     private func startMonitoring() {
         locationManager.startMonitoringSignificantLocationChanges()
-        locationManager.startMonitoringVisits()
     }
 
     func triggerRegionEvent(_ manager: CLLocationManager, trigger: LocationUpdateTrigger,
@@ -97,7 +96,7 @@ class RegionManager: NSObject {
 
         let message = "Submitting location for zone \(zone.ID) with trigger \(trig.rawValue)."
         Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
-        api.submitLocation(updateType: trig, location: nil, visit: nil, zone: zone).done {
+        api.submitLocation(updateType: trig, location: nil, zone: zone).done {
             let realm = Current.realm()
             // swiftlint:disable:next force_try
             try! realm.write {
@@ -118,8 +117,10 @@ class RegionManager: NSObject {
             locationManager.startMonitoring(for: region)
         }
 
-        activityManager.startActivityUpdates(to: coreMotionQueue) { [weak self] activity in
-            self?.lastActivity = activity
+        if Current.settingsStore.motionEnabled {
+            activityManager.startActivityUpdates(to: coreMotionQueue) { [weak self] activity in
+                self?.lastActivity = activity
+            }
         }
     }
 
@@ -154,8 +155,7 @@ extension RegionManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager,
                          didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways {
-            prefs.setValue(true, forKey: "locationEnabled")
-            prefs.synchronize()
+            Current.settingsStore.locationEnabled = status == .authorizedAlways
         }
     }
 
@@ -174,7 +174,7 @@ extension RegionManager: CLLocationManagerDelegate {
         }
 
         print("RegionManager: Got location, stopping updates!", locations.last.debugDescription, locations.count)
-        api.submitLocation(updateType: .SignificantLocationUpdate, location: locations.last, visit: nil,
+        api.submitLocation(updateType: .SignificantLocationUpdate, location: locations.last,
                            zone: nil).catch { print("Error submitting location: \($0)" )}
 
         self.lastLocation = locations.last
@@ -190,17 +190,6 @@ extension RegionManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         print("Region exited", region.identifier)
         triggerRegionEvent(manager, trigger: .RegionExit, region: region)
-    }
-
-    func locationManager(_ manager: CLLocationManager, didVisit visit: CLVisit) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            return
-        }
-
-        print("Visit logged")
-        api.submitLocation(updateType: .Visit, location: nil, visit: visit, zone: nil).catch { error in
-            print("Error submitting location: \(error)")
-        }
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

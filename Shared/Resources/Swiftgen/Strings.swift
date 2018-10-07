@@ -64,7 +64,7 @@ internal enum L10n {
     }
 
     internal enum HelpLocalize {
-      /// Help translate the app!
+      /// Help localize the app!
       internal static let title = L10n.tr("Localizable", "about.help_localize.title")
     }
 
@@ -490,11 +490,98 @@ internal enum L10n {
     internal enum Location {
       /// We use this to inform\rHome Assistant of your device location and state.
       internal static let message = L10n.tr("Localizable", "permissions.location.message")
+
+      internal enum Initial {
+        /// We need permission to allow informing\rHome Assistant of your device location and state.
+        internal static let message = L10n.tr("Localizable", "permissions.location.initial.message")
+        /// Allow Location Access?
+        internal static let title = L10n.tr("Localizable", "permissions.location.initial.title")
+
+        internal enum Button {
+          /// Allow
+          internal static let allow = L10n.tr("Localizable", "permissions.location.initial.button.allow")
+          /// Deny
+          internal static let deny = L10n.tr("Localizable", "permissions.location.initial.button.deny")
+        }
+      }
+
+      internal enum Reenable {
+        /// You previously had location access enabled but it now appears disabled. Do you wish to re-enable it?
+        internal static let message = L10n.tr("Localizable", "permissions.location.reenable.message")
+        /// Re-enable Location Access?
+        internal static let title = L10n.tr("Localizable", "permissions.location.reenable.title")
+
+        internal enum Button {
+          /// Re-enable
+          internal static let allow = L10n.tr("Localizable", "permissions.location.reenable.button.allow")
+          /// Leave disabled
+          internal static let deny = L10n.tr("Localizable", "permissions.location.reenable.button.deny")
+        }
+      }
+    }
+
+    internal enum Motion {
+
+      internal enum Initial {
+        /// We can use motion data to enhance location updates but need permission to do so.
+        internal static let message = L10n.tr("Localizable", "permissions.motion.initial.message")
+        /// Allow Motion?
+        internal static let title = L10n.tr("Localizable", "permissions.motion.initial.title")
+
+        internal enum Button {
+          /// Allow
+          internal static let allow = L10n.tr("Localizable", "permissions.motion.initial.button.allow")
+          /// Deny
+          internal static let deny = L10n.tr("Localizable", "permissions.motion.initial.button.deny")
+        }
+      }
+
+      internal enum Reenable {
+        /// You previously had allowed use of motion data but it now appears to be disabled. Do you wish to re-enable motion data to enhance location updates?
+        internal static let message = L10n.tr("Localizable", "permissions.motion.reenable.message")
+        /// Re-enable Motion?
+        internal static let title = L10n.tr("Localizable", "permissions.motion.reenable.title")
+
+        internal enum Button {
+          /// Re-enable
+          internal static let allow = L10n.tr("Localizable", "permissions.motion.reenable.button.allow")
+          /// Leave disabled
+          internal static let deny = L10n.tr("Localizable", "permissions.motion.reenable.button.deny")
+        }
+      }
     }
 
     internal enum Notification {
       /// We use this to let you\rsend notifications to your device.
       internal static let message = L10n.tr("Localizable", "permissions.notification.message")
+
+      internal enum Initial {
+        /// We need permission to allow you\rsend notifications to your device.
+        internal static let message = L10n.tr("Localizable", "permissions.notification.initial.message")
+        /// Allow Notifications?
+        internal static let title = L10n.tr("Localizable", "permissions.notification.initial.title")
+
+        internal enum Button {
+          /// Allow
+          internal static let allow = L10n.tr("Localizable", "permissions.notification.initial.button.allow")
+          /// Deny
+          internal static let deny = L10n.tr("Localizable", "permissions.notification.initial.button.deny")
+        }
+      }
+
+      internal enum Reenable {
+        /// You previously had notifications enabled but they now appears disabled. Do you wish to re-enable notifications?
+        internal static let message = L10n.tr("Localizable", "permissions.notification.reenable.message")
+        /// Re-enable Notifications?
+        internal static let title = L10n.tr("Localizable", "permissions.notification.reenable.title")
+
+        internal enum Button {
+          /// Re-enable
+          internal static let allow = L10n.tr("Localizable", "permissions.notification.reenable.button.allow")
+          /// Leave disabled
+          internal static let deny = L10n.tr("Localizable", "permissions.notification.reenable.button.deny")
+        }
+      }
     }
   }
 
@@ -528,7 +615,7 @@ internal enum L10n {
     }
 
     internal enum ConnectionErrorNotification {
-      /// There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was:\%@
+      /// There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was: %@
       internal static func message(_ p1: String) -> String {
         return L10n.tr("Localizable", "settings.connection_error_notification.message", p1)
       }
@@ -608,7 +695,7 @@ internal enum L10n {
       }
 
       internal enum SaveButton {
-        /// Save
+        /// Validate and Save Connection Settings
         internal static let title = L10n.tr("Localizable", "settings.connection_section.save_button.title")
       }
 
@@ -1037,7 +1124,7 @@ internal enum L10n {
     internal enum CallService {
 
       internal enum Error {
-        /// An error occurred while attempting to call service %@%@
+        /// An error occurred while attempting to call service %@: %@
         internal static func message(_ p1: String, _ p2: String) -> String {
           return L10n.tr("Localizable", "url_handler.call_service.error.message", p1, p2)
         }
@@ -1061,7 +1148,7 @@ internal enum L10n {
     internal enum FireEvent {
 
       internal enum Error {
-        /// An error occurred while attempting to fire event %@%@
+        /// An error occurred while attempting to fire event %@: %@
         internal static func message(_ p1: String, _ p2: String) -> String {
           return L10n.tr("Localizable", "url_handler.fire_event.error.message", p1, p2)
         }
@@ -1087,7 +1174,7 @@ internal enum L10n {
     internal enum SendLocation {
 
       internal enum Error {
-        /// An unknown error occurred while attempting to send location%@
+        /// An unknown error occurred while attempting to send location: %@
         internal static func message(_ p1: String) -> String {
           return L10n.tr("Localizable", "url_handler.send_location.error.message", p1)
         }
@@ -1793,13 +1880,6 @@ internal enum L10n {
           internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.trailing.label")
         }
       }
-    }
-  }
-
-  internal enum ZoneEnteredNotification {
-    /// %@ entered
-    internal static func message(_ p1: String) -> String {
-      return L10n.tr("Localizable", "zone_entered_notification.message", p1)
     }
   }
 }
