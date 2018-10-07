@@ -135,10 +135,8 @@
 "settings.event_log.title" = "Event Log";
 "settings_details.location.notifications.push_notification.title" = "Pushed Location Request Notifications";
 "settings_details.location.notifications.url_scheme.title" = "URL Scheme Location Notifications";
-"settings_details.location.notifications.visit.title" = "Visit Location Notifications";
 "location_change_notification.push_notification.body" = "Location updated via push notification";
 "location_change_notification.url_scheme.body" = "Location updated via URL Scheme";
-"location_change_notification.visit.body" = "Location updated via Visit";
 "location_change_notification.manual.body" = "Location update triggered by user";
 "location_change_notification.unknown.body" = "Location updated via unknown method";
 "cancel_label" = "Cancel";

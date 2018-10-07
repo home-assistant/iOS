@@ -135,10 +135,8 @@
 "settings.event_log.title" = "事件日志";
 "settings_details.location.notifications.push_notification.title" = "推送位置请求通知";
 "settings_details.location.notifications.url_scheme.title" = "URL Scheme 位置通知";
-"settings_details.location.notifications.visit.title" = "Visit 位置通知";
 "location_change_notification.push_notification.body" = "通过通知推送更新了位置";
 "location_change_notification.url_scheme.body" = "通过 URL Scheme 更新了位置";
-"location_change_notification.visit.body" = "通过 Visit 更新了位置";
 "location_change_notification.manual.body" = "用户触发了更新位置";
 "location_change_notification.unknown.body" = "通过未知方法更新了位置";
 "cancel_label" = "取消";
