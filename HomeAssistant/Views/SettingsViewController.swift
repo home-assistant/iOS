@@ -948,6 +948,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 if let section = self.form.sectionBy(tag: "developerOptions") {
                     section.hidden = false
                     section.evaluateHidden()
+                    self.tableView.reloadData()
 
                     let alert = UIAlertController(title: "You did it!",
                                                   message: "Developer functions unlocked",
