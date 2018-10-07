@@ -180,10 +180,10 @@ platform :ios do
                  "io.robbie.HomeAssistant.watchkitapp.watchkitextension"]
 
       if git_branch == "beta"
-        app_ids = ["io.robbie.beta.HomeAssistant", "io.robbie.beta.HomeAssistant.APNSAttachmentService",
-                   "io.robbie.beta.HomeAssistant.NotificationContentExtension",
-                   "io.robbie.beta.HomeAssistant.Intents", "io.robbie.beta.HomeAssistant.watchkitapp",
-                   "io.robbie.beta.HomeAssistant.watchkitapp.watchkitextension"]
+        app_ids = ["io.robbie.HomeAssistant.beta", "io.robbie.HomeAssistant.beta.APNSAttachmentService",
+                   "io.robbie.HomeAssistant.beta.NotificationContentExtension",
+                   "io.robbie.HomeAssistant.beta.Intents", "io.robbie.HomeAssistant.beta.watchkitapp",
+                   "io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension"]
       end
 
       match(app_identifier: app_ids,
@@ -216,15 +216,30 @@ platform :ios do
       slack(message: "Completed bump, clean and CocoaPods install, now beginning build")
     end
 
-    gym(scheme: "Release", export_options: {
-      provisioningProfiles: {
-        "io.robbie.HomeAssistant" => "match AppStore io.robbie.HomeAssistant",
-        "io.robbie.HomeAssistant.APNSAttachmentService" => "match AppStore io.robbie.HomeAssistant.APNSAttachmentService",
-        "io.robbie.HomeAssistant.NotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.NotificationContentExtension",
-        "io.robbie.HomeAssistant.Intents" => "match AppStore io.robbie.HomeAssistant.Intents",
-        "io.robbie.HomeAssistant.watchkitapp" => "match AppStore io.robbie.HomeAssistant.watchkitapp",
-        "io.robbie.HomeAssistant.watchkitapp.watchkitextension" => "match AppStore io.robbie.HomeAssistant.watchkitapp.watchkitextension",
+    scheme = "Release"
+    provisioningProfiles = {
+      "io.robbie.HomeAssistant" => "match AppStore io.robbie.HomeAssistant",
+      "io.robbie.HomeAssistant.APNSAttachmentService" => "match AppStore io.robbie.HomeAssistant.APNSAttachmentService",
+      "io.robbie.HomeAssistant.NotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.NotificationContentExtension",
+      "io.robbie.HomeAssistant.Intents" => "match AppStore io.robbie.HomeAssistant.Intents",
+      "io.robbie.HomeAssistant.watchkitapp" => "match AppStore io.robbie.HomeAssistant.watchkitapp",
+      "io.robbie.HomeAssistant.watchkitapp.watchkitextension" => "match AppStore io.robbie.HomeAssistant.watchkitapp.watchkitextension",
+    }
+
+    if git_branch == "beta"
+      scheme == "Beta"
+      provisioningProfiles = {
+        "io.robbie.HomeAssistant.beta" => "match AppStore io.robbie.HomeAssistant.beta",
+        "io.robbie.HomeAssistant.beta.APNSAttachmentService" => "match AppStore io.robbie.HomeAssistant.beta.APNSAttachmentService",
+        "io.robbie.HomeAssistant.beta.NotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.beta.NotificationContentExtension",
+        "io.robbie.HomeAssistant.beta.Intents" => "match AppStore io.robbie.HomeAssistant.beta.Intents",
+        "io.robbie.HomeAssistant.beta.watchkitapp" => "match AppStore io.robbie.HomeAssistant.beta.watchkitapp",
+        "io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension" => "match AppStore io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension",
       }
+    end
+
+    gym(scheme: scheme, export_options: {
+      provisioningProfiles: provisioningProfiles
     })
 
     if is_ci
