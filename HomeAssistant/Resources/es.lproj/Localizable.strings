@@ -448,3 +448,4 @@
 "permissions.notification.reenable.message" = "You previously had notifications enabled but they now appears disabled. Do you wish to re-enable notifications?";
 "permissions.notification.reenable.button.allow" = "Re-enable";
 "permissions.notification.reenable.button.deny" = "Leave disabled";
+"about.help_localize.title" = "Help localize the app!";
