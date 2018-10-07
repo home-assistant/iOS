@@ -18,8 +18,6 @@ extension Realm {
     /// The live data store, located in shared storage.
     public static let live: () -> Realm = {
         let fileManager = FileManager.default
-        print("fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)",
-              fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID))
         let storeDirectoryURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)?
             .appendingPathComponent("dataStore", isDirectory: true)
 

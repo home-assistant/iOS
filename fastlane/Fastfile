@@ -137,6 +137,11 @@ platform :ios do
     finalize_bump
   end
 
+  private_lane :set_beta_version do
+    increment_version_number(version_number: Time.new.year)
+    increment_build_number(build_number: Time.now.to_i)
+  end
+
   private_lane :finalize_bump do
     # Needed so that the changelog doesn"t include the version bump commit
     change_log = change_log_since_last_tag
@@ -207,7 +212,11 @@ platform :ios do
     # Needed so that the changelog doesn"t include the version bump commit
     change_log = change_log_since_last_tag
 
-    bump_build
+    if git_branch == "master"
+      bump_build
+    elsif git_branch == "beta"
+      set_beta_version
+    end
 
     clean_build_artifacts
     clear_derived_data
@@ -220,11 +229,13 @@ platform :ios do
 
     scheme = nil
     config = nil
+    app_id = nil
     provisioningProfiles = {}
 
     if git_branch == "master"
       scheme = "Release"
       config = "Release"
+      app_id = "io.robbie.HomeAssistant"
       provisioningProfiles = {
         "io.robbie.HomeAssistant" => "match AppStore io.robbie.HomeAssistant",
         "io.robbie.HomeAssistant.APNSAttachmentService" => "match AppStore io.robbie.HomeAssistant.APNSAttachmentService",
@@ -236,6 +247,7 @@ platform :ios do
     elsif git_branch == "beta"
       scheme = "Beta"
       config = "Beta"
+      app_id = "io.robbie.HomeAssistant.beta"
       provisioningProfiles = {
         "io.robbie.HomeAssistant.beta" => "match AppStore io.robbie.HomeAssistant.beta",
         "io.robbie.HomeAssistant.beta.APNSAttachmentService" => "match AppStore io.robbie.HomeAssistant.beta.APNSAttachmentService",
@@ -255,10 +267,11 @@ platform :ios do
     end
 
     pilot(
+      app_identifier: app_id,
       changelog: change_log,
       skip_submission: true,
-      distribute_external: false,
-      skip_waiting_for_build_processing: true
+      distribute_external: true,
+      skip_waiting_for_build_processing: false
     )
 
     rocket
