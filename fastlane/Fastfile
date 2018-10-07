@@ -53,14 +53,26 @@ platform :ios do
   lane :certs do
     match(app_identifier: [
             "io.robbie.HomeAssistant",
+            "io.robbie.HomeAssistant.beta"],
+          type: "appstore",
+          template_name: "Critical Alerts iOS (Dist)")
+    match(app_identifier: "io.robbie.HomeAssistant.dev",
+          type: "development",
+          template_name: "Critical Alerts iOS (Dev)")
+
+    match(app_identifier: [
             "io.robbie.HomeAssistant.APNSAttachmentService",
             "io.robbie.HomeAssistant.NotificationContentExtension",
             "io.robbie.HomeAssistant.Intents",
             "io.robbie.HomeAssistant.watchkitapp",
-            "io.robbie.HomeAssistant.watchkitapp.watchkitextension"],
+            "io.robbie.HomeAssistant.watchkitapp.watchkitextension",
+            "io.robbie.HomeAssistant.beta.APNSAttachmentService",
+            "io.robbie.HomeAssistant.beta.NotificationContentExtension",
+            "io.robbie.HomeAssistant.beta.Intents",
+            "io.robbie.HomeAssistant.beta.watchkitapp",
+            "io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension"],
           type: "appstore")
     match(app_identifier: [
-            "io.robbie.HomeAssistant.dev",
             "io.robbie.HomeAssistant.dev.APNSAttachmentService",
             "io.robbie.HomeAssistant.dev.NotificationContentExtension",
             "io.robbie.HomeAssistant.dev.Intents",
@@ -74,7 +86,8 @@ platform :ios do
     pem(output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
     pem(development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
 
-    pem(app_identifier: "io.robbie.HomeAssistant.dev", output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+    pem(app_identifier: "io.robbie.HomeAssistant.beta", output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+
     pem(app_identifier: "io.robbie.HomeAssistant.dev", development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
   end
 
@@ -161,15 +174,22 @@ platform :ios do
         default_keychain: true,
       )
 
-      match(app_identifier: [
-            "io.robbie.HomeAssistant",
-            "io.robbie.HomeAssistant.APNSAttachmentService",
-            "io.robbie.HomeAssistant.NotificationContentExtension",
-            "io.robbie.HomeAssistant.Intents",
-            "io.robbie.HomeAssistant.watchkitapp",
-            "io.robbie.HomeAssistant.watchkitapp.watchkitextension"],
+      app_ids = ["io.robbie.HomeAssistant", "io.robbie.HomeAssistant.APNSAttachmentService",
+                 "io.robbie.HomeAssistant.NotificationContentExtension", "io.robbie.HomeAssistant.Intents",
+                 "io.robbie.HomeAssistant.watchkitapp",
+                 "io.robbie.HomeAssistant.watchkitapp.watchkitextension"]
+
+      if git_branch == "beta"
+        app_ids = ["io.robbie.beta.HomeAssistant", "io.robbie.beta.HomeAssistant.APNSAttachmentService",
+                   "io.robbie.beta.HomeAssistant.NotificationContentExtension",
+                   "io.robbie.beta.HomeAssistant.Intents", "io.robbie.beta.HomeAssistant.watchkitapp",
+                   "io.robbie.beta.HomeAssistant.watchkitapp.watchkitextension"]
+      end
+
+      match(app_identifier: app_ids,
             type: "appstore",
             readonly: true,
+            template_name: "Critical Alerts iOS (Dist)",
             keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
             keychain_password: ENV["MATCH_PASSWORD"])
 

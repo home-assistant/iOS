@@ -56,7 +56,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             UNUserNotificationCenter.current().getNotificationSettings { (settings) in
                 guard settings.authorizationStatus == .authorized else {return}
-                let opts: UNAuthorizationOptions = [.providesAppNotificationSettings, .criticalAlert]
+                let opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert,
+                                                    .providesAppNotificationSettings]
                 UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
                     print("Requested critical alert access", granted, error.debugDescription)
                 }
@@ -80,7 +81,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window!.rootViewController = navController
         self.window!.makeKeyAndVisible()
 
-        if Current.appConfiguration == .Debug {
+        if Current.appConfiguration == .FastlaneSnapshot {
             let baseURL = URL(string: "https://privatedemo.home-assistant.io")!
 
             keychain["apiPassword"] = "demoprivate"

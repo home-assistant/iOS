@@ -27,7 +27,7 @@ def shared_pods
     pod 'KeychainAccess', '3.1.1'
     pod 'ObjectMapper', '3.3.0'
     pod 'PromiseKit', '6.4.1'
-    pod 'RealmSwift'
+    pod 'RealmSwift', '3.11.0'
 end
 
 target 'HomeAssistant' do
@@ -81,7 +81,7 @@ target 'WatchAppExtension' do
 
   pod 'Communicator'
   pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
-  pod 'RealmSwift'
+  pod 'RealmSwift', '3.11.0'
   pod 'ObjectMapper', '3.3.0'
   pod 'UIColor_Hex_Swift'
 end

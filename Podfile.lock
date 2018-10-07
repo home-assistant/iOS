@@ -28,11 +28,11 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.4.1):
     - PromiseKit/CorePromise
-  - Realm (3.10.0):
-    - Realm/Headers (= 3.10.0)
-  - Realm/Headers (3.10.0)
-  - RealmSwift (3.10.0):
-    - Realm (= 3.10.0)
+  - Realm (3.11.0):
+    - Realm/Headers (= 3.11.0)
+  - Realm/Headers (3.11.0)
+  - RealmSwift (3.11.0):
+    - Realm (= 3.11.0)
   - SwiftGen (5.3.0)
   - SwiftLint (0.27.0)
   - TABObserverSet (2.1.0)
@@ -55,7 +55,7 @@ DEPENDENCIES:
   - MBProgressHUD (= 1.1.0)
   - ObjectMapper (= 3.3.0)
   - PromiseKit (= 6.4.1)
-  - RealmSwift
+  - RealmSwift (= 3.11.0)
   - SwiftGen (= 5.3.0)
   - SwiftLint (= 0.27.0)
   - UIColor_Hex_Swift
@@ -129,14 +129,14 @@ SPEC CHECKSUMS:
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
   PromiseKit: 4c76a6506638034e3d7bede97b2ff7743f7bd2dc
-  Realm: 85ab9e4f779d66f6e9ffeb118dc25b7f130c96ac
-  RealmSwift: 69121c8b86d0ae005fb779efdb10e606732e1c74
+  Realm: 92f09a102692b96a9a10e9617f214f15c5ab85fc
+  RealmSwift: 5f0481cd658bb751c509314b964a35eaa264d2cf
   SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
   SwiftLint: 3207c1faa2240bf8973b191820a116113cd11073
   TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
   UIColor_Hex_Swift: bc07fc197421ee896b9ed6dcfa2054b7fbf75145
   ViewRow: e278428ff53da5eab18b191d3e19a16f3e299fc1
 
-PODFILE CHECKSUM: 8749fb74be37c39933bb0ca1896a603d5b02593c
+PODFILE CHECKSUM: 7ef50effdace6c15e47674b0914d828d709adf04
 
 COCOAPODS: 1.6.0.beta.1
