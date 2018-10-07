@@ -270,8 +270,8 @@ platform :ios do
     pilot(
       app_identifier: app_id,
       changelog: change_log,
-      distribute_external: true,
-      wait_for_uploaded_build: true
+      distribute_external: false,
+      wait_for_uploaded_build: false
     )
 
     rocket
