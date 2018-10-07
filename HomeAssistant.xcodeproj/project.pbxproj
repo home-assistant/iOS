@@ -3094,7 +3094,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_MODULE_NAME = HomeAssistant;
-				PRODUCT_NAME = "Home Assistant";
+				PRODUCT_NAME = "Home Assistant β";
 				PROVISIONING_PROFILE = "3875637c-d045-4a07-879a-cf393f6a9f3e";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.beta";
 				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant/HomeAssistant-Bridging-Header.h";
