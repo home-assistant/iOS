@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		0C6645270B5B70DF1C404144 /* Pods-SiriIntents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */; };
+		2C510311BCEDD6CBE7E87B43 /* Pods_TodayWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9747D6CAD81E3B2DFC9FBF55 /* Pods_TodayWidget.framework */; };
 		30B85F861E66F0DAAFEB54C7 /* Pods_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C313AF4D468AB190E8037CD /* Pods_Shared.framework */; };
+		3A9474676287819D0F5A8A37 /* Pods-TodayWidget-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F3D32AC650F6D7A0F3C3D08 /* Pods-TodayWidget-metadata.plist */; };
 		474AA46EC65ABB974EFC74A4 /* Pods-APNSAttachmentService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */; };
 		4FE36452FD1867F809F41E49 /* Pods_HomeAssistantTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1B0A4C6DDA7E3BEEC26F547 /* Pods_HomeAssistantTests.framework */; };
 		5487B2333FBD80B7ED0CFD47 /* Pods-NotificationContentExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */; };
@@ -194,6 +196,11 @@
 		B66C58B32150892A004AB261 /* FireEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B22150892A004AB261 /* FireEvent.swift */; };
 		B66C58B52150898A004AB261 /* SendLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B42150898A004AB261 /* SendLocation.swift */; };
 		B66C58BD21509934004AB261 /* SiriShortcutServiceConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58BC21509934004AB261 /* SiriShortcutServiceConfigurator.swift */; };
+		B66F9F24216B1E61000CAA0F /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */; };
+		B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66F9F26216B1E61000CAA0F /* TodayViewController.swift */; };
+		B66F9F2E216B1E61000CAA0F /* TodayWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66F9F22216B1E61000CAA0F /* TodayWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B66F9F36216B2C74000CAA0F /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
+		B66F9F37216B2D89000CAA0F /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
 		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
 		B689EBCB1D8B7C800000AECE /* MjpegStreamingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B689EBCA1D8B7C800000AECE /* MjpegStreamingController.swift */; };
 		B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */; };
@@ -357,6 +364,13 @@
 			remoteGlobalIDString = B66C58A4215086F0004AB261;
 			remoteInfo = Intents;
 		};
+		B66F9F2C216B1E61000CAA0F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B66F9F21216B1E61000CAA0F;
+			remoteInfo = TodayWidget;
+		};
 		B6AAD7A61D827DD40090B220 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
@@ -410,6 +424,7 @@
 			files = (
 				B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */,
 				B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */,
+				B66F9F2E216B1E61000CAA0F /* TodayWidget.appex in Embed App Extensions */,
 				B66C58AC215086F0004AB261 /* SiriIntents.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -469,19 +484,24 @@
 		4006CBDBF64859AF0E9011ED /* Pods_HomeAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		479D6E6DAF6FF0AC314FCD78 /* Pods-Shared.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.beta.xcconfig"; sourceTree = "<group>"; };
 		4E3BEAB44DE5D9E511E4AB10 /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
+		4F3D32AC650F6D7A0F3C3D08 /* Pods-TodayWidget-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-TodayWidget-metadata.plist"; path = "Pods/Pods-TodayWidget-metadata.plist"; sourceTree = "<group>"; };
 		5C886B5110EC5D410C831AFA /* Pods_MapNotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MapNotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-WatchAppExtension-metadata.plist"; path = "Pods/Pods-WatchAppExtension-metadata.plist"; sourceTree = "<group>"; };
 		70919A704881CDB21FA9057B /* Pods_SiriIntents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SiriIntents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7137C9EB607C40A3C61A0714 /* Pods-NotificationContentExtension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.beta.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.beta.xcconfig"; sourceTree = "<group>"; };
+		7AFD77651650913C88FC27DA /* Pods-TodayWidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayWidget.release.xcconfig"; path = "Pods/Target Support Files/Pods-TodayWidget/Pods-TodayWidget.release.xcconfig"; sourceTree = "<group>"; };
 		83CD6778EF6CC62BD10201B0 /* Pods-WatchApp Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchApp Extension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WatchApp Extension/Pods-WatchApp Extension.debug.xcconfig"; sourceTree = "<group>"; };
 		873B6E96F0550786DE309324 /* Pods-SiriIntents.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SiriIntents.beta.xcconfig"; path = "Pods/Target Support Files/Pods-SiriIntents/Pods-SiriIntents.beta.xcconfig"; sourceTree = "<group>"; };
 		8A23D667E61167B019012FB2 /* Pods-HomeAssistantTests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.beta.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.beta.xcconfig"; sourceTree = "<group>"; };
 		91D800908F15C2F5AB1F1A9E /* Pods-WatchAppExtension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchAppExtension.beta.xcconfig"; path = "Pods/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension.beta.xcconfig"; sourceTree = "<group>"; };
 		932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-metadata.plist"; path = "Pods/Pods-Shared-metadata.plist"; sourceTree = "<group>"; };
 		93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-NotificationContentExtension-metadata.plist"; path = "Pods/Pods-NotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
+		94792EFF6CC1D1F598FB1878 /* Pods-TodayWidget.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayWidget.beta.xcconfig"; path = "Pods/Target Support Files/Pods-TodayWidget/Pods-TodayWidget.beta.xcconfig"; sourceTree = "<group>"; };
+		9747D6CAD81E3B2DFC9FBF55 /* Pods_TodayWidget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodayWidget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		98EF9571B53E20B1EBDCA5C7 /* Pods-HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.release.xcconfig"; sourceTree = "<group>"; };
 		9C313AF4D468AB190E8037CD /* Pods_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CAD80CC752DC73E0A709C94 /* Pods-NotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		A7EA9EB99C371FF0347645B0 /* Pods-TodayWidget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayWidget.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TodayWidget/Pods-TodayWidget.debug.xcconfig"; sourceTree = "<group>"; };
 		ADA887A38516201609B5042B /* Pods-WatchApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WatchApp/Pods-WatchApp.debug.xcconfig"; sourceTree = "<group>"; };
 		B2821E7FC93344003A62FF42 /* Pods-SiriIntents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SiriIntents.release.xcconfig"; path = "Pods/Target Support Files/Pods-SiriIntents/Pods-SiriIntents.release.xcconfig"; sourceTree = "<group>"; };
 		B3C91BF27B302BB9D7C57C79 /* Pods-HomeAssistantUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -699,6 +719,13 @@
 		B66C58B42150898A004AB261 /* SendLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendLocation.swift; sourceTree = "<group>"; };
 		B66C58BC21509934004AB261 /* SiriShortcutServiceConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiriShortcutServiceConfigurator.swift; sourceTree = "<group>"; };
 		B66C58BF2150B410004AB261 /* SiriIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SiriIntents.entitlements; sourceTree = "<group>"; };
+		B66F9F22216B1E61000CAA0F /* TodayWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TodayWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		B66F9F26216B1E61000CAA0F /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
+		B66F9F2B216B1E61000CAA0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B66F9F33216B208F000CAA0F /* TodayWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TodayWidget.entitlements; sourceTree = "<group>"; };
+		B66F9F34216B2119000CAA0F /* TodayWidget Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "TodayWidget Beta.entitlements"; sourceTree = "<group>"; };
+		B66F9F35216B2131000CAA0F /* TodayWidget Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "TodayWidget Development.entitlements"; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B678DB361EA9999C0045312F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotion+StringExtensions.swift"; sourceTree = "<group>"; };
@@ -913,6 +940,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B66F9F1F216B1E61000CAA0F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B66F9F24216B1E61000CAA0F /* NotificationCenter.framework in Frameworks */,
+				2C510311BCEDD6CBE7E87B43 /* Pods_TodayWidget.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B6AAD79E1D827DD40090B220 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -982,6 +1018,8 @@
 				C6A3DBFA26E216B20091A427 /* Pods_WatchApp_Extension.framework */,
 				F144996D4F1C4AE6B29D00FB /* Pods_WatchApp.framework */,
 				C629CD7034064C9D28B5B626 /* Pods_WatchAppExtension.framework */,
+				B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */,
+				9747D6CAD81E3B2DFC9FBF55 /* Pods_TodayWidget.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1033,6 +1071,10 @@
 				ADA887A38516201609B5042B /* Pods-WatchApp.debug.xcconfig */,
 				FD8B2659E5C47930248C1CBF /* Pods-WatchApp.release.xcconfig */,
 				3AEAD4B630DCEABB5172EBFB /* Pods-WatchApp.beta.xcconfig */,
+				A7EA9EB99C371FF0347645B0 /* Pods-TodayWidget.debug.xcconfig */,
+				7AFD77651650913C88FC27DA /* Pods-TodayWidget.release.xcconfig */,
+				94792EFF6CC1D1F598FB1878 /* Pods-TodayWidget.beta.xcconfig */,
+				4F3D32AC650F6D7A0F3C3D08 /* Pods-TodayWidget-metadata.plist */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1233,6 +1275,7 @@
 				B6AAD7A21D827DD40090B220 /* APNSAttachmentService */,
 				B66C58A6215086F0004AB261 /* Intents */,
 				B627CB0C1D83C87B0057173E /* NotificationContentExtension */,
+				B66F9F25216B1E61000CAA0F /* TodayWidget */,
 				B6CC5D832159D10D00833E5D /* WatchApp */,
 				B6CC5D922159D10E00833E5D /* WatchAppExtension */,
 				29278BB24639BA945D3D86B4 /* Frameworks */,
@@ -1257,6 +1300,7 @@
 				B66C58A5215086F0004AB261 /* SiriIntents.appex */,
 				B6CC5D822159D10D00833E5D /* WatchApp.app */,
 				B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */,
+				B66F9F22216B1E61000CAA0F /* TodayWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1311,6 +1355,18 @@
 				B66C58B42150898A004AB261 /* SendLocation.swift */,
 			);
 			path = Intents;
+			sourceTree = "<group>";
+		};
+		B66F9F25216B1E61000CAA0F /* TodayWidget */ = {
+			isa = PBXGroup;
+			children = (
+				B66F9F33216B208F000CAA0F /* TodayWidget.entitlements */,
+				B66F9F34216B2119000CAA0F /* TodayWidget Beta.entitlements */,
+				B66F9F35216B2131000CAA0F /* TodayWidget Development.entitlements */,
+				B66F9F26216B1E61000CAA0F /* TodayViewController.swift */,
+				B66F9F2B216B1E61000CAA0F /* Info.plist */,
+			);
+			path = TodayWidget;
 			sourceTree = "<group>";
 		};
 		B679B1F91E1F3CFB0071D366 /* Views */ = {
@@ -1769,6 +1825,7 @@
 				D03D892B20E0A85300D4F28D /* PBXTargetDependency */,
 				B66C58AB215086F0004AB261 /* PBXTargetDependency */,
 				B6CC5D9D2159D10F00833E5D /* PBXTargetDependency */,
+				B66F9F2D216B1E61000CAA0F /* PBXTargetDependency */,
 			);
 			name = HomeAssistant;
 			productName = HomeAssistant;
@@ -1829,6 +1886,24 @@
 			name = SiriIntents;
 			productName = Intents;
 			productReference = B66C58A5215086F0004AB261 /* SiriIntents.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		B66F9F21216B1E61000CAA0F /* TodayWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B66F9F32216B1E61000CAA0F /* Build configuration list for PBXNativeTarget "TodayWidget" */;
+			buildPhases = (
+				186E099C965991D82C4E41C5 /* [CP] Check Pods Manifest.lock */,
+				B66F9F1E216B1E61000CAA0F /* Sources */,
+				B66F9F1F216B1E61000CAA0F /* Frameworks */,
+				B66F9F20216B1E61000CAA0F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TodayWidget;
+			productName = TodayWidget;
+			productReference = B66F9F22216B1E61000CAA0F /* TodayWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B6AAD7A01D827DD40090B220 /* APNSAttachmentService */ = {
@@ -2003,6 +2078,19 @@
 							};
 						};
 					};
+					B66F9F21216B1E61000CAA0F = {
+						CreatedOnToolsVersion = 10.0;
+						DevelopmentTeam = UTQFCBPQRF;
+						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
+					};
 					B6AAD7A01D827DD40090B220 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = UTQFCBPQRF;
@@ -2083,6 +2171,7 @@
 				B66C58A4215086F0004AB261 /* SiriIntents */,
 				B6CC5D812159D10D00833E5D /* WatchApp */,
 				B6CC5D8D2159D10E00833E5D /* WatchAppExtension */,
+				B66F9F21216B1E61000CAA0F /* TodayWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -2266,6 +2355,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B66F9F20216B1E61000CAA0F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3A9474676287819D0F5A8A37 /* Pods-TodayWidget-metadata.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B6AAD79F1D827DD40090B220 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2352,6 +2449,28 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-HomeAssistantTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		186E099C965991D82C4E41C5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TodayWidget-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2759,6 +2878,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B66F9F1E216B1E61000CAA0F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */,
+				B66F9F37216B2D89000CAA0F /* UIColor+CSS3+Hex.swift in Sources */,
+				B66F9F36216B2C74000CAA0F /* Action.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B6AAD79D1D827DD40090B220 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2893,6 +3022,11 @@
 			isa = PBXTargetDependency;
 			target = B66C58A4215086F0004AB261 /* SiriIntents */;
 			targetProxy = B66C58AA215086F0004AB261 /* PBXContainerItemProxy */;
+		};
+		B66F9F2D216B1E61000CAA0F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B66F9F21216B1E61000CAA0F /* TodayWidget */;
+			targetProxy = B66F9F2C216B1E61000CAA0F /* PBXContainerItemProxy */;
 		};
 		B6AAD7A71D827DD40090B220 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3695,6 +3829,91 @@
 			};
 			name = Release;
 		};
+		B66F9F2F216B1E61000CAA0F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A7EA9EB99C371FF0347645B0 /* Pods-TodayWidget.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "TodayWidget/TodayWidget Development.entitlements";
+				CODE_SIGN_STYLE = Manual;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = TodayWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_SUFFIX}.TodayWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.TodayWidget";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B66F9F30216B1E61000CAA0F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7AFD77651650913C88FC27DA /* Pods-TodayWidget.release.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = TodayWidget/TodayWidget.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = TodayWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_SUFFIX}.TodayWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.TodayWidget";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		B66F9F31216B1E61000CAA0F /* Beta */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 94792EFF6CC1D1F598FB1878 /* Pods-TodayWidget.beta.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "TodayWidget/TodayWidget Beta.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = TodayWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_SUFFIX}.TodayWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.beta.TodayWidget";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Beta;
+		};
 		B6AAD7AA1D827DD40090B220 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 33092E375AEEE0A0698BAFE8 /* Pods-APNSAttachmentService.debug.xcconfig */;
@@ -4027,6 +4246,16 @@
 				B66C58AE215086F0004AB261 /* Debug */,
 				B66C58AF215086F0004AB261 /* Release */,
 				B637243721697585006B102A /* Beta */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B66F9F32216B1E61000CAA0F /* Build configuration list for PBXNativeTarget "TodayWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B66F9F2F216B1E61000CAA0F /* Debug */,
+				B66F9F30216B1E61000CAA0F /* Release */,
+				B66F9F31216B1E61000CAA0F /* Beta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -64,11 +64,13 @@ platform :ios do
             "io.robbie.HomeAssistant.APNSAttachmentService",
             "io.robbie.HomeAssistant.NotificationContentExtension",
             "io.robbie.HomeAssistant.Intents",
+            "io.robbie.HomeAssistant.TodayWidget",
             "io.robbie.HomeAssistant.watchkitapp",
             "io.robbie.HomeAssistant.watchkitapp.watchkitextension",
             "io.robbie.HomeAssistant.beta.APNSAttachmentService",
             "io.robbie.HomeAssistant.beta.NotificationContentExtension",
             "io.robbie.HomeAssistant.beta.Intents",
+            "io.robbie.HomeAssistant.beta.TodayWidget",
             "io.robbie.HomeAssistant.beta.watchkitapp",
             "io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension"],
           type: "appstore")
@@ -76,6 +78,7 @@ platform :ios do
             "io.robbie.HomeAssistant.dev.APNSAttachmentService",
             "io.robbie.HomeAssistant.dev.NotificationContentExtension",
             "io.robbie.HomeAssistant.dev.Intents",
+            "io.robbie.HomeAssistant.dev.TodayWidget",
             "io.robbie.HomeAssistant.dev.watchkitapp",
             "io.robbie.HomeAssistant.dev.watchkitapp.watchkitextension"],
           type: "development")

@@ -53,6 +53,11 @@
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
+		<key>TodayWidget.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>53</integer>
+		</dict>
 		<key>WatchApp (Complication).xcscheme</key>
 		<dict>
 			<key>orderHint</key>
