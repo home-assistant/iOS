@@ -25,6 +25,7 @@ PODS:
     - TABObserverSet (~> 2)
   - CPDAcknowledgements (1.0.0)
   - DeviceKit (1.8.0)
+  - EMTLoadingIndicator (4.0.0)
   - Eureka (4.3.0)
   - Iconic (1.5)
   - KeychainAccess (3.1.1)
@@ -64,6 +65,7 @@ DEPENDENCIES:
   - Communicator
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - DeviceKit (= 1.8)
+  - EMTLoadingIndicator (~> 4.0.0)
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
   - Iconic (from `https://github.com/robbiet480/Iconic.git`, branch `swift-4.2`)
   - KeychainAccess (= 3.1.1)
@@ -85,6 +87,7 @@ SPEC REPOS:
     - arek
     - Communicator
     - DeviceKit
+    - EMTLoadingIndicator
     - KeychainAccess
     - MBProgressHUD
     - ObjectMapper
@@ -141,6 +144,7 @@ SPEC CHECKSUMS:
   Communicator: 16a6743c9e7451f938406632b910ffb658339087
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   DeviceKit: c7ae6f7b16c2239156ac64fc22de0b0975f0d0b5
+  EMTLoadingIndicator: 84b875fbe500606bb9a5e411885bc152ae9a371f
   Eureka: e2dd50c3d6e07d2d2501d4141e903ec64fa3724e
   Iconic: ee7252a3c892c74cc1175334e2c40f0260a19bd3
   KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
@@ -156,6 +160,6 @@ SPEC CHECKSUMS:
   UIColor_Hex_Swift: bc07fc197421ee896b9ed6dcfa2054b7fbf75145
   ViewRow: e278428ff53da5eab18b191d3e19a16f3e299fc1
 
-PODFILE CHECKSUM: 451c58d78ad327b32aa21fc51fc46f2754bfbc6a
+PODFILE CHECKSUM: cbe1e4df4619f43b799dd242aab723c1a649b0c1
 
 COCOAPODS: 1.6.0.beta.1

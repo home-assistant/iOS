@@ -452,6 +452,8 @@ public class WatchComplication: Object, Mappable {
             let template = CLKComplicationTemplateUtilitarianSmallSquare()
             if let iconProvider = self.iconProvider {
                 template.imageProvider = iconProvider
+            } else {
+                return nil
             }
             return template
         case .UtilitarianLargeFlat:

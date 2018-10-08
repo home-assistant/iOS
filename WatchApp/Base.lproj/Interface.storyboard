@@ -1,15 +1,43 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="11134" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14313.18" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+    <device id="watch38" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11106"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="11055"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14238.10"/>
     </dependencies>
     <scenes>
-        <!--Interface Controller-->
+        <!--Home Assistant-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModuleProvider="target"/>
+                <controller title="Home Assistant" id="AgC-eL-Hgc" customClass="InterfaceController" customModule="WatchApp" customModuleProvider="target">
+                    <items>
+                        <table alignment="left" id="wzm-z7-qRv">
+                            <items>
+                                <tableRow identifier="actionRowType" id="Kqb-lS-KNT" customClass="ActionRowType" customModule="WatchAppExtension">
+                                    <group key="rootItem" width="1" height="42" alignment="left" id="bW2-9l-fJW">
+                                        <items>
+                                            <imageView width="24" height="24" alignment="left" verticalAlignment="center" id="YLy-LH-2Xz"/>
+                                            <label width="0.84999999999999998" height="1" alignment="left" text="Label" textAlignment="left" id="sVJ-HO-sLu"/>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="group" destination="bW2-9l-fJW" id="Gyh-bC-dVq"/>
+                                        <outlet property="image" destination="YLy-LH-2Xz" id="wsC-6W-roZ"/>
+                                        <outlet property="label" destination="sVJ-HO-sLu" id="VvI-Ig-iNo"/>
+                                    </connections>
+                                </tableRow>
+                            </items>
+                        </table>
+                    </items>
+                    <connections>
+                        <outlet property="tableView" destination="wzm-z7-qRv" id="vZo-SJ-Vm2"/>
+                    </connections>
+                </controller>
             </objects>
+            <point key="canvasLocation" x="34" y="30.5"/>
         </scene>
     </scenes>
+    <color key="tintColor" red="0.40000000000000002" green="0.78000000000000003" blue="0.95999999999999996" alpha="1" colorSpace="calibratedRGB"/>
 </document>

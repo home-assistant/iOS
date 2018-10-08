@@ -131,11 +131,37 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
-        Communicator.shared.blobReceivedObservers.add { blob in
-            Communicator.shared.blobReceivedObservers.add { blob in
-                print("Received blob: ", blob.identifier)
-                self.endWatchConnectivityBackgroundTaskIfNecessary()
+        Communicator.shared.guaranteedMessageReceivedObservers.add { message in
+            let realm = Realm.live()
+
+            if message.identifier == "actions" {
+                let content = message.content
+
+                if let actionJSONs = content["data"]! as? [[String: Any]] {
+                    // swiftlint:disable:next force_try
+                    try! realm.write {
+                        for actionJSON in actionJSONs {
+                            if let action = Action(JSON: actionJSON) {
+                                print("ACTION", action)
+                                realm.add(action, update: true)
+                            }
+                        }
+                    }
+                }
+//                let realm = Realm.live()
+//
+//                for actionData in allData! {
+//                    if let action = try NSKeyedUnarchiver.unarchiveObject(with: actionData) as? Action {
+//                        print("ACTION", action)
+//                    }
+//                }
             }
+        }
+
+        Communicator.shared.blobReceivedObservers.add { blob in
+            print("Received blob: ", blob.identifier)
+
+            self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
         Communicator.shared.contextUpdatedObservers.add { context in

@@ -333,7 +333,7 @@ public enum ComplicationGroupMember: String {
     }
 
     #if os(watchOS)
-    var errorTemplate: CLKComplicationTemplate {
+    var errorTemplate: CLKComplicationTemplate? {
         let errorIcon = MaterialDesignIcons.alertCircleOutlineIcon
 
         switch self {
@@ -427,6 +427,8 @@ public enum ComplicationGroupMember: String {
             if let imageSize = ComplicationTemplate.UtilitarianSmallFlat.imageSize {
                 let image = errorIcon.image(ofSize: imageSize, color: .red)
                 template.imageProvider = CLKImageProvider(onePieceImage: image)
+            } else {
+                return nil
             }
             template.tintColor = .red
             return template

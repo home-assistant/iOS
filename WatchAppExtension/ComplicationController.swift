@@ -36,7 +36,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         let pred = NSPredicate(format: "rawFamily == %@", matchedFamily.rawValue)
         guard let config = realm.objects(WatchComplication.self).filter(pred).first else {
             print("No configured complication found for \(matchedFamily.rawValue), returning family specific error")
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: matchedFamily.errorTemplate))
+            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: matchedFamily.errorTemplate!))
             return
         }
 

@@ -486,6 +486,18 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             })
         }
 
+        +++ ButtonRow {
+            $0.tag = "actions"
+            $0.title = "Actions"
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                let view = SettingsDetailViewController()
+                view.detailGroup = "actions"
+                return view
+                }, onDismiss: { vc in
+                    _ = vc.navigationController?.popViewController(animated: true)
+            })
+        }
+
         +++ Section {
             $0.tag = "reset"
             $0.hidden = Condition(booleanLiteral: !self.configured)

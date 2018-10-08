@@ -79,10 +79,17 @@ target 'SiriIntents' do
     pod 'PromiseKit', '6.4.1'
 end
 
+target 'WatchApp' do
+    platform :watchos, '5.0'
+
+    pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
+end
+
 target 'WatchAppExtension' do
     platform :watchos, '5.0'
 
     pod 'Communicator'
+    pod 'EMTLoadingIndicator', '~> 4.0.0'
     pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
     pod 'RealmSwift', '3.11.0'
     pod 'ObjectMapper', '3.3.0'

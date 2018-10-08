@@ -468,6 +468,24 @@ class SettingsDetailViewController: FormViewController {
 
             }
 
+        case "actions":
+            let objs = realm.objects(Action.self)
+            let actions = objs.sorted(byKeyPath: "Position")
+
+            let mvOpts: MultivaluedOptions = [.Insert, .Delete, .Reorder]
+
+            self.form
+                +++ MultivaluedSection(multivaluedOptions: mvOpts,
+                                       header: "",
+                                       footer: "Actions are used in the Today widget and Apple Watch app") { section in
+                                        section.multivaluedRowToInsertAt = { index in
+                                            return self.getActionRow(nil)
+                                        }
+
+                                        for action in actions {
+                                            section <<< getActionRow(action)
+                                        }
+            }
         default:
             print("Something went wrong, no settings detail group named \(detailGroup)")
         }
@@ -533,6 +551,72 @@ class SettingsDetailViewController: FormViewController {
         }
     }
 
+    func getActionRow(_ action: Action?) ->
+        ButtonRowWithPresent<ActionConfigurator> {
+            var identifier = "new_action_"+UUID().uuidString
+            var title = "New Action"
+
+            if let action = action {
+                identifier = action.Name
+                title = action.Name
+            }
+
+            return ButtonRowWithPresent<ActionConfigurator> {
+                $0.tag = identifier
+                $0.title = title
+                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                    return ActionConfigurator(action: action)
+                    }, onDismiss: { vc in
+                        _ = vc.navigationController?.popViewController(animated: true)
+
+                        print("DISMISS")
+
+                        if let vc = vc as? ActionConfigurator {
+                            if vc.shouldSave == false {
+                                print("Not saving action to DB and returning early!")
+                                return
+                            }
+
+                            vc.row.title = vc.action.Name
+                            vc.row.updateCell()
+
+                            print("Saving action!", vc.action)
+
+                            let realm = Current.realm()
+
+                            do {
+                                try realm.write {
+                                    realm.add(vc.action, update: true)
+                                }
+                            } catch let error as NSError {
+                                print("Error while saving to Realm!", error)
+                            }
+
+//                            let allActions = Array(realm.objects(Action.self)).map({
+//                                NSKeyedArchiver.archivedData(withRootObject: $0)
+//                            })
+//
+//                            let actionsData = NSKeyedArchiver.archivedData(withRootObject: allActions)
+//
+//                            let blob = Blob(identifier: "actions", content: actionsData)
+//
+//                            print("Sending blob!")
+
+                            let data = Array(realm.objects(Action.self))
+
+                            let message = GuaranteedMessage(identifier: "actions", content: ["data": data.toJSON()])
+
+                            print("Sending message", message)
+
+                            do {
+                                try Communicator.shared.send(guaranteedMessage: message)
+                            } catch let error as NSError {
+                                print("Sending actions failed: ", error.localizedDescription)
+                            }
+                        }
+                })
+            }
+    }
 }
 
 @available (iOS 12, *)

@@ -10,8 +10,18 @@ import Foundation
 
 /// Contains shared constants
 public struct Constants {
+    /// The Bundle ID used for the AppGroupID
+    private static var BundleID: String {
+        let baseBundleID = Bundle.main.bundleIdentifier!
+        var removeWatchID = baseBundleID.replacingOccurrences(of: ".watchkitapp", with: "")
+        removeWatchID = removeWatchID.replacingOccurrences(of: ".watchkitextension", with: "")
+
+        return removeWatchID.lowercased()
+    }
+
     /// The App Group ID used by the app and extensions for sharing data.
     public static var AppGroupID: String {
-        return "group." + Bundle.main.bundleIdentifier!.lowercased()
+        print("AppGroupID", "group." + self.BundleID)
+        return "group." + self.BundleID
     }
 }
