@@ -69,6 +69,10 @@ public class RLMZone: Object {
         if let uuidString = self.BeaconUUID {
             // iBeacon
             guard let uuid = UUID(uuidString: uuidString) else {
+                let event =
+                    ClientEvent(text: "Unable to create beacon region due to invalid UUID: \(uuidString)",
+                        type: .locationUpdate)
+                Current.clientEventStore.addEvent(event)
                 print("Could create CLBeaconRegion because of invalid UUID")
                 return nil
             }

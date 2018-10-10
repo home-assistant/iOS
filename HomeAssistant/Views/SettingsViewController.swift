@@ -747,16 +747,16 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         } else {
             let api = HomeAssistantAPI(connectionInfo: connectionInfo,
                                        authenticationMethod: .legacy(apiPassword: self.legacyPassword))
-            Current.updateWith(authenticatedAPI: api)
+
             api.Connect().done { config in
                 /// Connected with legacy auth. Store credentials.
                 Current.settingsStore.connectionInfo = connectionInfo
                 if let password = self.legacyPassword {
                     keychain["apiPassword"] = password
                 }
-
+                Current.updateWith(authenticatedAPI: api)
                 self.configureUIWith(configResponse: config)
-                }.catch { error in
+            }.catch { error in
                     self.handleConnectionError(error)
             }
         }
