@@ -83,11 +83,10 @@ public class HomeAssistantAPI {
 
         switch authenticationMethod {
         case .legacy(let apiPassword):
-            self.manager = self.configureSessionManager(withPassword: apiPassword)
+            self.manager = HomeAssistantAPI.configureSessionManager(withPassword: apiPassword)
         case .modern(let tokenInfo):
-            // TODO: Take this into account when promoting to the main API. The one in Current is separate, which is bad.
             self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
-            let manager = self.configureSessionManager()
+            let manager = HomeAssistantAPI.configureSessionManager()
             manager.retrier = self.tokenManager
             manager.adapter = self.tokenManager
             self.manager = manager
@@ -106,6 +105,29 @@ public class HomeAssistantAPI {
                 Current.settingsStore.notificationsEnabled = notificationsAllowed
             })
         }
+    }
+
+    func authenticatedSessionManager() -> Alamofire.SessionManager? {
+        guard Current.settingsStore.connectionInfo != nil else {
+            return nil
+        }
+
+        if Current.settingsStore.tokenInfo != nil {
+            let manager = HomeAssistantAPI.configureSessionManager()
+            manager.retrier = self.tokenManager
+            manager.adapter = self.tokenManager
+            return manager
+        } else {
+            return HomeAssistantAPI.configureSessionManager(withPassword: keychain["apiPassword"])
+        }
+    }
+
+    public func videoStreamer() -> MJPEGStreamer? {
+        guard let newManager = self.authenticatedSessionManager() else {
+            return nil
+        }
+
+        return MJPEGStreamer(manager: newManager)
     }
 
     /// Configure global state of the app to use our newly validated credentials.
@@ -171,6 +193,8 @@ public class HomeAssistantAPI {
     }
 
     private static var sharedAPI: HomeAssistantAPI?
+//    public static func authenticatedManager() -> Alamofire.SessionManager? {
+//    }
     public static func authenticatedAPI() -> HomeAssistantAPI? {
         if let api = sharedAPI {
             return api
@@ -379,7 +403,8 @@ public class HomeAssistantAPI {
     public func GetCameraStream(cameraEntityID: String, completionHandler: @escaping (Image?, Error?) -> Void) {
         let apiURL = self.connectionInfo.activeAPIURL
         let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(cameraEntityID)", isDirectory: false)
-        DispatchQueue.global(qos: .background).async {
+//        DispatchQueue.global(qos: .background).async {
+        
             let res = self.manager.request(queryUrl, method: .get)
                 .validate()
                 .response(completionHandler: { (response) in
@@ -388,13 +413,18 @@ public class HomeAssistantAPI {
                         return
                     }
                 })
-            DispatchQueue.main.async {
-                res.streamImage(imageScale: 1.0, inflateResponseImage: true, completionHandler: { (image) in
-                    completionHandler(image, nil)
-                    return
+//
+                res.streamImage(imageScale: 1.0, inflateResponseImage: false, completionHandler: { (image) in
+                    // Autorelease
+                    autoreleasepool {
+                        DispatchQueue.main.async {
+                            completionHandler(image, nil)
+                            return
+                        }
+                    }
                 })
-            }
-        }
+//            }
+//        }
     }
 
     public func getDiscoveryInfo(baseUrl: URL) -> Promise<DiscoveryInfoResponse> {
@@ -622,7 +652,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    private func configureSessionManager(withPassword password: String? = nil) -> SessionManager {
+    private static func configureSessionManager(withPassword password: String? = nil) -> SessionManager {
         var headers = Alamofire.SessionManager.defaultHTTPHeaders
         if let password = password {
             headers["X-HA-Access"] = password

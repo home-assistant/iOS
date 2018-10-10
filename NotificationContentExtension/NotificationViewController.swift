@@ -19,6 +19,8 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     var shouldPlay: Bool = true
 
+    var streamer: MJPEGStreamer?
+
     func didReceive(_ notification: UNNotification) {
         print("Received a \(notification.request.content.categoryIdentifier) notification type")
 
@@ -44,7 +46,15 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
         var frameCount = 0
 
-        api.GetCameraStream(cameraEntityID: entityId) { (image, error) in
+        guard let streamer = api.videoStreamer() else {
+            return
+        }
+
+        self.streamer = streamer
+        let apiURL = api.connectionInfo.activeAPIURL
+        let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(entityId)", isDirectory: false)
+
+        streamer.streamImages(fromURL: queryUrl) { (image, error) in
             if let error = error, let afError = error as? AFError {
                 var labelText = L10n.Extensions.NotificationContent.Error.Request.unknown
                 if let responseCode = afError.responseCode {
@@ -61,6 +71,11 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             }
 
             if let image = image {
+                defer {
+                    frameCount += 1
+                    print("FRAME", frameCount)
+                }
+
                 if frameCount == 0 {
                     print("Got first frame!")
 
@@ -71,20 +86,13 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                     })
 
                     self.view.addSubview(imageView)
-
                     self.extensionContext?.mediaPlayingStarted()
                 }
 
-                frameCount += 1
-
-                print("FRAME", frameCount)
-
                 if self.shouldPlay {
-                    DispatchQueue.main.async {
-                        image.accessibilityIdentifier = "camera_notification_image"
-                        imageView.image = image
-                        imageView.image?.accessibilityIdentifier = image.accessibilityIdentifier
-                    }
+                    image.accessibilityIdentifier = "camera_notification_image"
+                    imageView.image = image
+                    imageView.image?.accessibilityIdentifier = image.accessibilityIdentifier
                 }
 
             }
