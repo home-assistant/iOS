@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import AlamofireImage
 import AlamofireObjectMapper
 import PromiseKit
 import Crashlytics
@@ -371,6 +372,27 @@ public class HomeAssistantAPI {
                             seal.reject(error)
                         }
                     }
+            }
+        }
+    }
+
+    public func GetCameraStream(cameraEntityID: String, completionHandler: @escaping (Image?, Error?) -> Void) {
+        let apiURL = self.connectionInfo.activeAPIURL
+        let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(cameraEntityID)", isDirectory: false)
+        DispatchQueue.global(qos: .background).async {
+            let res = self.manager.request(queryUrl, method: .get)
+                .validate()
+                .response(completionHandler: { (response) in
+                    if let error = response.error {
+                        completionHandler(nil, error)
+                        return
+                    }
+                })
+            DispatchQueue.main.async {
+                res.streamImage(imageScale: 1.0, inflateResponseImage: true, completionHandler: { (image) in
+                    completionHandler(image, nil)
+                    return
+                })
             }
         }
     }
