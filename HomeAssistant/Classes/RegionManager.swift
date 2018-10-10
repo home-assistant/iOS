@@ -42,6 +42,8 @@ class RegionManager: NSObject {
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.delegate = self
         locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
+        let event = ClientEvent(text: "Initializing Region Manager", type: .unknown)
+        Current.clientEventStore.addEvent(event)
         self.startMonitoring()
         self.syncMonitoredRegions()
     }
@@ -53,6 +55,8 @@ class RegionManager: NSObject {
     func triggerRegionEvent(_ manager: CLLocationManager, trigger: LocationUpdateTrigger,
                             region: CLRegion) {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
+            let message = "Region update failed because client is not authenticated."
+            Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
             return
         }
 
@@ -69,7 +73,7 @@ class RegionManager: NSObject {
             return
         }
 
-        if zone.IsBeaconRegion {
+        if zone.isBeaconRegion {
             if trigger == .RegionEnter {
                 trig = .BeaconRegionEnter
             }
@@ -91,6 +95,8 @@ class RegionManager: NSObject {
 
         let inRegion = (trig == .GPSRegionEnter || trig == .BeaconRegionEnter)
         guard zone.inRegion != inRegion else {
+            let message = "Not updating zone \(zone.ID) with trigger \(trig.rawValue), because the database says nothing has changed."
+            Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
             return
         }
 
@@ -102,6 +108,10 @@ class RegionManager: NSObject {
             try! realm.write {
                 zone.inRegion = inRegion
             }
+
+            let message = "Succeeded updating zone \(zone.ID) with trigger \(trig.rawValue)."
+            Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
+
         }.catch { error in
             let eventName = trigger == .RegionEnter ? "Enter" : "Exit"
             let SSID = "SSID: \(ConnectionInfo.currentSSID() ?? "Unavailable")"
@@ -134,6 +144,8 @@ class RegionManager: NSObject {
         // start monitoring for all existing regions
         zones.forEach { [weak self] zone in
             print("Starting monitoring of zone \(zone)")
+            let event = ClientEvent(text: "Monitoring: \(zone.debugDescription)", type: .unknown)
+            Current.clientEventStore.addEvent(event)
             self?.startMonitoring(zone: zone)
         }
     }
