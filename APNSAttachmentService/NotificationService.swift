@@ -68,7 +68,7 @@ final class NotificationService: UNNotificationServiceExtension {
             return failEarly()
         }
 
-        if attachmentString.hasPrefix("/api/") { // prepend base URL
+        if attachmentString.hasPrefix("/") { // URL is something like /api or /www so lets prepend base URL
             needsAuth = true
         }
 
