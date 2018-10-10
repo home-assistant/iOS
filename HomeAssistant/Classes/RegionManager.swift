@@ -233,15 +233,7 @@ extension RegionManager: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
-        var strState = "Unknown"
-        if state == .inside {
-            strState = "Inside"
-        } else if state == .outside {
-            strState = "Outside"
-        } else if state == .unknown {
-            strState = "Unknown"
-        }
-        print("\(strState) region", region.identifier)
+        print("\(state.description) region", region.identifier)
 
         guard let zone = zones.filter({ region.identifier == $0.ID }).first else {
             return
@@ -261,6 +253,19 @@ extension RegionManager {
         if backgroundTask != UIBackgroundTaskInvalid {
             UIApplication.shared.endBackgroundTask(backgroundTask!)
             backgroundTask = UIBackgroundTaskInvalid
+        }
+    }
+}
+
+extension CLRegionState {
+    var description: String {
+        switch self {
+            case .inside:
+                    return "Inside"
+            case .outside:
+                    return "Outside"
+            default:
+                return "Unknown"
         }
     }
 }
