@@ -8,8 +8,8 @@
 
 import UserNotifications
 import MobileCoreServices
-import KeychainAccess
 import Shared
+import Alamofire
 
 final class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?
@@ -33,14 +33,6 @@ final class NotificationService: UNNotificationServiceExtension {
             contentHandler(request.content)
         }
 
-        let keychain = Keychain(service: "io.robbie.homeassistant")
-        guard let baseURL = keychain["baseURL"] else {
-            return failEarly()
-        }
-        guard let apiPassword = keychain["apiPassword"] else {
-            return failEarly()
-        }
-
         guard let content = (request.content.mutableCopy() as? UNMutableNotificationContent) else {
             return failEarly()
         }
@@ -51,15 +43,19 @@ final class NotificationService: UNNotificationServiceExtension {
             incomingAttachment = iAttachment
         }
 
+        var needsAuth = false
+
         if content.categoryIdentifier == "camera" && incomingAttachment["url"] == nil {
             guard let entityId = content.userInfo["entity_id"] as? String else {
                 return failEarly()
             }
 
-            incomingAttachment["url"] = "\(baseURL)/api/camera_proxy/\(entityId)?api_password=\(apiPassword)"
+            incomingAttachment["url"] = "/api/camera_proxy/\(entityId)"
             if incomingAttachment["content-type"] == nil {
                 incomingAttachment["content-type"] = "jpeg"
             }
+
+            needsAuth = true
         } else {
             // Check if we still have an empty dictionary
             if incomingAttachment.isEmpty {
@@ -68,12 +64,12 @@ final class NotificationService: UNNotificationServiceExtension {
             }
         }
 
-        guard var attachmentString = incomingAttachment["url"] as? String else {
+        guard let attachmentString = incomingAttachment["url"] as? String else {
             return failEarly()
         }
 
         if attachmentString.hasPrefix("/api/") { // prepend base URL
-            attachmentString = baseURL + attachmentString
+            needsAuth = true
         }
 
         guard let attachmentURL = URL(string: attachmentString) else {
@@ -90,17 +86,31 @@ final class NotificationService: UNNotificationServiceExtension {
             attachmentOptions[UNNotificationAttachmentOptionsThumbnailHiddenKey] = attachmentHideThumbnail
         }
 
-        guard let attachmentData = NSData(contentsOf: attachmentURL) else { return failEarly() }
-        guard let attachment = UNNotificationAttachment.create(fileIdentifier: attachmentURL.lastPathComponent,
-                                                               data: attachmentData,
-                                                               options: attachmentOptions) else {
-                                                                return failEarly()
-        }
+        _ = HomeAssistantAPI.authenticatedAPI()?.downloadDataAt(url: attachmentURL,
+                                                                needsAuth: needsAuth).done { fileURL in
 
-        content.attachments.append(attachment)
+            do {
+                let attachment = try UNNotificationAttachment(identifier: attachmentURL.lastPathComponent, url: fileURL,
+                                                              options: attachmentOptions)
+                content.attachments.append(attachment)
+            } catch let error {
+                print("Error when building UNNotificationAttachment: \(error)")
 
-        if let copiedContent = content.copy() as? UNNotificationContent {
-            contentHandler(copiedContent)
+                return failEarly()
+            }
+
+            if let copiedContent = content.copy() as? UNNotificationContent {
+                contentHandler(copiedContent)
+            }
+        }.catch { error in
+
+            if let error = error as? AFError, let desc = error.errorDescription {
+                print("Alamofire error while getting attachment data", desc)
+            } else {
+                print("Error when getting attachment data!", error.localizedDescription)
+            }
+
+            return failEarly()
         }
     }
 
@@ -143,28 +153,5 @@ final class NotificationService: UNNotificationServiceExtension {
         }
 
         return contentType
-    }
-}
-
-extension UNNotificationAttachment {
-
-    /// Save the attachment URL to disk
-    static func create(fileIdentifier: String, data: NSData,
-                       options: [AnyHashable: Any]?) -> UNNotificationAttachment? {
-        let fileManager = FileManager.default
-        let tmpSubFolderName = ProcessInfo.processInfo.globallyUniqueString
-        let tmpSubFolderURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(tmpSubFolderName,
-                                                                                                    isDirectory: true)
-
-        do {
-            try fileManager.createDirectory(at: tmpSubFolderURL!, withIntermediateDirectories: true, attributes: nil)
-            let fileURL = tmpSubFolderURL?.appendingPathComponent(fileIdentifier)
-            try data.write(to: fileURL!, options: [])
-            return try UNNotificationAttachment.init(identifier: "", url: fileURL!, options: options)
-        } catch let error {
-            print("Error when saving attachment: \(error)")
-        }
-
-        return nil
     }
 }
