@@ -277,12 +277,50 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func downloadDataAt(url: URL) -> Promise<Data> {
+    private func getDownloadDataPath(_ downloadingURL: URL) -> URL? {
+        let fileManager = FileManager.default
+
+        let groupDirURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)?
+            .appendingPathComponent("downloadedData", isDirectory: true)
+
+        guard let directoryURL = groupDirURL else {
+            assertionFailure("Unable to get groupDirURL.")
+            return nil
+        }
+
+        return directoryURL.appendingPathComponent(downloadingURL.lastPathComponent, isDirectory: false)
+    }
+
+    public func downloadDataAt(url: URL, needsAuth: Bool) -> Promise<URL> {
         return Promise { seal in
-            self.manager.download(url).responseData { downloadResponse in
+
+            var finalURL = url
+
+            let dataManager: Alamofire.SessionManager = needsAuth ? self.manager : Alamofire.SessionManager.default
+
+            if needsAuth {
+                if !url.absoluteString.hasPrefix(self.connectionInfo.activeURL.absoluteString) {
+                    print("URL does not contain base URL, prepending base URL to", url.absoluteString)
+                    finalURL = self.connectionInfo.activeURL.appendingPathComponent(url.absoluteString)
+                }
+
+                print("Data download needs auth!")
+            }
+
+            guard let downloadPath = self.getDownloadDataPath(finalURL) else {
+                print("Unable to get download path!")
+                seal.reject(NSError(domain: "io.robbie.HomeAssistant", code: 500, userInfo: nil))
+                return
+            }
+
+            let destination: DownloadRequest.DownloadFileDestination = { _, _ in
+                return (downloadPath, [.removePreviousFile, .createIntermediateDirectories])
+            }
+
+            dataManager.download(finalURL, to: destination).responseData { downloadResponse in
                 switch downloadResponse.result {
-                case .success(let data):
-                    seal.fulfill(data)
+                case .success:
+                    seal.fulfill(downloadResponse.destinationURL!)
                 case .failure(let error):
                     seal.reject(error)
                 }
