@@ -633,23 +633,30 @@ public class HomeAssistantAPI {
             // print("Storing \(entity.ID)")
 
             if entity.Domain == "zone", let zone = entity as? Zone {
-                let storeableZone = RLMZone()
-                storeableZone.ID = zone.ID
-                storeableZone.Latitude = zone.Latitude
-                storeableZone.Longitude = zone.Longitude
-                storeableZone.Radius = zone.Radius
-                storeableZone.TrackingEnabled = zone.TrackingEnabled
-                storeableZone.BeaconUUID = zone.UUID
-                storeableZone.BeaconMajor.value = zone.Major
-                storeableZone.BeaconMinor.value = zone.Minor
-
                 let realm = Current.realm()
-                // swiftlint:disable:next force_try
-                try! realm.write {
-                    realm.add(RLMZone(zone: zone), update: true)
+                if let existingZone = realm.object(ofType: RLMZone.self, forPrimaryKey: zone.ID) {
+                    // swiftlint:disable:next force_try
+                    try! realm.write {
+                        HomeAssistantAPI.updateZone(existingZone, withZoneEntity: zone)
+                    }
+                } else {
+                    // swiftlint:disable:next force_try
+                    try! realm.write {
+                        realm.add(RLMZone(zone: zone), update: true)
+                    }
                 }
             }
         }
+    }
+
+    private static func updateZone(_ storeableZone: RLMZone, withZoneEntity zone: Zone) {
+        storeableZone.Latitude = zone.Latitude
+        storeableZone.Longitude = zone.Longitude
+        storeableZone.Radius = zone.Radius
+        storeableZone.TrackingEnabled = zone.TrackingEnabled
+        storeableZone.BeaconUUID = zone.UUID
+        storeableZone.BeaconMajor.value = zone.Major
+        storeableZone.BeaconMinor.value = zone.Minor
     }
 
     private static func configureSessionManager(withPassword password: String? = nil) -> SessionManager {

@@ -304,7 +304,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     $0.title = L10n.Settings.ConnectionSection.SaveButton.title
                 }.onCellSelection { _, _ in
                     if self.form.validate().count == 0 {
-                        self.validateConnection()
+                        _ = self.validateConnection()
                     }
                 }
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {

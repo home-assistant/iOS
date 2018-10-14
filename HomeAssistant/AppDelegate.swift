@@ -27,14 +27,19 @@ let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var safariVC: SFSafariViewController?
-    let regionManager = RegionManager()
+    private(set) var regionManager: RegionManager!
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        CheckPermissionsStatus()
-        let event = ClientEvent(text: "Application Starting", type: .unknown)
+        let launchingForLocation = launchOptions?[.location] != nil
+        let launchMessage = "Application Starting" + (launchingForLocation ? " due to location change" : "")
+        let event = ClientEvent(text: launchMessage, type: .unknown)
         Current.clientEventStore.addEvent(event)
-        Fabric.with([Crashlytics.self])
+        CheckPermissionsStatus()
         Current.deviceIDProvider = { DeviceUID.uid() }
+        self.regionManager = RegionManager()
+
+        Fabric.with([Crashlytics.self])
+
         Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
