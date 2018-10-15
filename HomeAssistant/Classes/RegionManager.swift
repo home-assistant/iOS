@@ -82,7 +82,6 @@ class RegionManager: NSObject {
             if trigger == .RegionExit {
                 let message = "Not sending update for beacon region exit. On Purpose."
                 Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
-//                trig = .BeaconRegionExit
                 return
             }
         } else {
@@ -221,10 +220,6 @@ extension RegionManager: CLLocationManagerDelegate {
             print("Location is older than threshhold. ")
             return
         }
-//        if self.lastLocation == nil {
-//            print("NOT accepting region manager update since we appear to be in startup and regions may not be active")
-//            return
-//        }
 
         print("RegionManager: Got location, stopping updates!", last.debugDescription, locations.count)
         api.submitLocation(updateType: .SignificantLocationUpdate, location: last,
@@ -234,16 +229,6 @@ extension RegionManager: CLLocationManagerDelegate {
 
         locationManager.stopUpdatingLocation()
     }
-
-//    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-//        print("Region entered", region.identifier)
-//        triggerRegionEvent(manager, trigger: .RegionEnter, region: region)
-//    }
-//
-//    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-//        print("Region exited", region.identifier)
-//        triggerRegionEvent(manager, trigger: .RegionExit, region: region)
-//    }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         if let clErr = error as? CLError {
@@ -284,10 +269,6 @@ extension RegionManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
         print("\(state.description) region", region.identifier)
         guard state != .unknown else {
-            return
-        }
-
-        guard let zone = zones.zoneForRegion(region) else {
             return
         }
 
