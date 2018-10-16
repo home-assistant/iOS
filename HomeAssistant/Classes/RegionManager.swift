@@ -63,7 +63,7 @@ class RegionManager: NSObject {
         }
 
         var trig = trigger
-        guard let zone = zones.filter({ region.identifier == $0.beaconRegionID || region.identifier == $0.gpsRegionID }).first else {
+        guard let zone = zones.zoneForRegion(region) else {
             print("Zone ID \(region.identifier) doesn't exist in Realm, syncing monitored regions now")
             syncMonitoredRegions()
             return
@@ -99,8 +99,6 @@ class RegionManager: NSObject {
 
         let inRegion = (trig == .GPSRegionEnter || trig == .BeaconRegionEnter)
         guard zone.inRegion != inRegion else {
-            let message = "Not updating zone \(zone.ID) with trigger \(trig.rawValue), because the database says nothing has changed."
-            Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
             return
         }
 
@@ -196,7 +194,7 @@ extension RegionManager: CLLocationManagerDelegate {
         }
 
         let location = CLLocation(latitude: visit.coordinate.latitude, longitude: visit.coordinate.longitude)
-        api.submitLocation(updateType: .SignificantLocationUpdate, location: location,
+        api.submitLocation(updateType: .Visit, location: location,
                            zone: nil).catch { print("Error submitting location: \($0)" )}
     }
 
