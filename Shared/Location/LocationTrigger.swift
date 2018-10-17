@@ -32,7 +32,6 @@ public enum LocationUpdateTrigger: String {
     case Visit = "Visit"
     case Unknown = "Unknown"
 
-
     public func notificationOptionsFor(zoneName: String) -> NotificationOptions {
         let shouldNotify: Bool
         var identifier: String = ""

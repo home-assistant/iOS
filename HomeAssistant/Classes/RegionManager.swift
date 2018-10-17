@@ -97,7 +97,7 @@ class RegionManager: NSObject {
             self?.endBackgroundTask()
         }
 
-        let inRegion = (trig == .GPSRegionEnter || trig == .BeaconRegionEnter)
+        let inRegion = (trigger == .RegionEnter)
         guard zone.inRegion != inRegion else {
             return
         }

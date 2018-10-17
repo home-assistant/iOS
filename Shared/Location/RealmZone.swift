@@ -150,6 +150,7 @@ public class RLMZone: Object {
     }
 
     public override var debugDescription: String {
-        return "\(self.isBeaconRegion ? "Beacon " : "")Zone - ID: \(self.ID)"
+        return "\(self.isBeaconRegion ? "Beacon + GPS" : "GPS Only") Zone - ID: \(self.ID), state: " +
+            (self.inRegion ? "inside" : "outside")
     }
 }

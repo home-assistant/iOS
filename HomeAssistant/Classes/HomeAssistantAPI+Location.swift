@@ -81,10 +81,10 @@ extension HomeAssistantAPI {
                 Current.isPerformingSingleShotLocationQuery = true
                 firstly {
                     self.submitLocation(updateType: updateTrigger, location: location, zone: nil)
-                    }.done { _ in
-                        seal.fulfill(())
-                    }.catch { error in
-                        seal.reject(error)
+                }.done { _ in
+                    seal.fulfill(())
+                }.catch { error in
+                    seal.reject(error)
                 }
             }
         }

@@ -77,6 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             navController.topViewController?.present(controller, animated: true, completion: nil)
         }
+
         Current.signInRequiredCallback = {
             let alert = UIAlertController(title: "You must sign in to continue",
                                           message: "The server has rejected your credentials, "
@@ -178,17 +179,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") == false {
             completionHandler(UIBackgroundFetchResult.noData)
+            return
         }
+
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         print("Background fetch activated at \(timestamp)!")
         if Current.settingsStore.locationEnabled {
             api.getAndSendLocation(trigger: .BackgroundFetch).done { success in
                 print("Sending location via background fetch")
                 completionHandler(UIBackgroundFetchResult.newData)
-                }.catch {error in
-                    print("Error when attempting to submit location update during background fetch")
-                    Crashlytics.sharedInstance().recordError(error)
-                    completionHandler(UIBackgroundFetchResult.failed)
+            }.catch {error in
+                print("Error when attempting to submit location update during background fetch")
+                Crashlytics.sharedInstance().recordError(error)
+                completionHandler(UIBackgroundFetchResult.failed)
             }
         } else {
             api.identifyDevice().done { _ in
