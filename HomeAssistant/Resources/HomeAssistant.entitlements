@@ -8,6 +8,11 @@
 	</array>
 	<key>aps-environment</key>
 	<string>development</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:home-assistant.io</string>
+		<string>applinks:*.home-assistant.io</string>
+	</array>
 	<key>com.apple.developer.networking.wifi-info</key>
 	<true/>
 	<key>com.apple.developer.usernotifications.critical-alerts</key>

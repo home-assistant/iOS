@@ -85,13 +85,10 @@ public class HomeAssistantAPI {
 
         switch authenticationMethod {
         case .legacy(let apiPassword):
-            self.manager = self.configureSessionManager(withPassword: apiPassword)
-            self.authenticationMethodString = "legacy"
+            self.manager = HomeAssistantAPI.configureSessionManager(withPassword: apiPassword)
         case .modern(let tokenInfo):
-            // TODO: Take this into account when promoting to the main API.
-            // The one in Current is separate, which is bad.
             self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
-            let manager = self.configureSessionManager()
+            let manager = HomeAssistantAPI.configureSessionManager()
             manager.retrier = self.tokenManager
             manager.adapter = self.tokenManager
             self.manager = manager
@@ -109,6 +106,29 @@ public class HomeAssistantAPI {
             let notificationsAllowed = settings.authorizationStatus == UNAuthorizationStatus.authorized
             Current.settingsStore.notificationsEnabled = notificationsAllowed
         })
+    }
+
+    func authenticatedSessionManager() -> Alamofire.SessionManager? {
+        guard Current.settingsStore.connectionInfo != nil else {
+            return nil
+        }
+
+        if Current.settingsStore.tokenInfo != nil {
+            let manager = HomeAssistantAPI.configureSessionManager()
+            manager.retrier = self.tokenManager
+            manager.adapter = self.tokenManager
+            return manager
+        } else {
+            return HomeAssistantAPI.configureSessionManager(withPassword: keychain["apiPassword"])
+        }
+    }
+
+    public func videoStreamer() -> MJPEGStreamer? {
+        guard let newManager = self.authenticatedSessionManager() else {
+            return nil
+        }
+
+        return MJPEGStreamer(manager: newManager)
     }
 
     /// Configure global state of the app to use our newly validated credentials.
@@ -168,6 +188,8 @@ public class HomeAssistantAPI {
     }
 
     private static var sharedAPI: HomeAssistantAPI?
+//    public static func authenticatedManager() -> Alamofire.SessionManager? {
+//    }
     public static func authenticatedAPI() -> HomeAssistantAPI? {
         if let api = sharedAPI {
             return api
@@ -275,12 +297,50 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func downloadDataAt(url: URL) -> Promise<Data> {
+    private func getDownloadDataPath(_ downloadingURL: URL) -> URL? {
+        let fileManager = FileManager.default
+
+        let groupDirURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)?
+            .appendingPathComponent("downloadedData", isDirectory: true)
+
+        guard let directoryURL = groupDirURL else {
+            assertionFailure("Unable to get groupDirURL.")
+            return nil
+        }
+
+        return directoryURL.appendingPathComponent(downloadingURL.lastPathComponent, isDirectory: false)
+    }
+
+    public func downloadDataAt(url: URL, needsAuth: Bool) -> Promise<URL> {
         return Promise { seal in
-            self.manager.download(url).responseData { downloadResponse in
+
+            var finalURL = url
+
+            let dataManager: Alamofire.SessionManager = needsAuth ? self.manager : Alamofire.SessionManager.default
+
+            if needsAuth {
+                if !url.absoluteString.hasPrefix(self.connectionInfo.activeURL.absoluteString) {
+                    print("URL does not contain base URL, prepending base URL to", url.absoluteString)
+                    finalURL = self.connectionInfo.activeURL.appendingPathComponent(url.absoluteString)
+                }
+
+                print("Data download needs auth!")
+            }
+
+            guard let downloadPath = self.getDownloadDataPath(finalURL) else {
+                print("Unable to get download path!")
+                seal.reject(NSError(domain: "io.robbie.HomeAssistant", code: 500, userInfo: nil))
+                return
+            }
+
+            let destination: DownloadRequest.DownloadFileDestination = { _, _ in
+                return (downloadPath, [.removePreviousFile, .createIntermediateDirectories])
+            }
+
+            dataManager.download(finalURL, to: destination).responseData { downloadResponse in
                 switch downloadResponse.result {
-                case .success(let data):
-                    seal.fulfill(data)
+                case .success:
+                    seal.fulfill(downloadResponse.destinationURL!)
                 case .failure(let error):
                     seal.reject(error)
                 }
@@ -357,22 +417,28 @@ public class HomeAssistantAPI {
     public func GetCameraStream(cameraEntityID: String, completionHandler: @escaping (Image?, Error?) -> Void) {
         let apiURL = self.connectionInfo.activeAPIURL
         let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(cameraEntityID)", isDirectory: false)
-        DispatchQueue.global(qos: .background).async {
+//        DispatchQueue.global(qos: .background).async {
+        
             let res = self.manager.request(queryUrl, method: .get)
-                        .validate()
-                        .response(completionHandler: { (response) in
-                            if let error = response.error {
-                                completionHandler(nil, error)
-                                return
-                            }
-                        })
-            DispatchQueue.main.async {
-                res.streamImage(imageScale: 1.0, inflateResponseImage: true, completionHandler: { (image) in
-                    completionHandler(image, nil)
-                    return
+                .validate()
+                .response(completionHandler: { (response) in
+                    if let error = response.error {
+                        completionHandler(nil, error)
+                        return
+                    }
                 })
-            }
-        }
+//
+                res.streamImage(imageScale: 1.0, inflateResponseImage: false, completionHandler: { (image) in
+                    // Autorelease
+                    autoreleasepool {
+                        DispatchQueue.main.async {
+                            completionHandler(image, nil)
+                            return
+                        }
+                    }
+                })
+//            }
+//        }
     }
 
     public func getDiscoveryInfo(baseUrl: URL) -> Promise<DiscoveryInfoResponse> {
@@ -581,8 +647,17 @@ public class HomeAssistantAPI {
 
             if entity.Domain == "zone", let zone = entity as? Zone {
                 // swiftlint:disable:next force_try
-                try! realm.write {
-                    realm.add(RLMZone(zone: zone), update: true)
+                let realm = Current.realm()
+                if let existingZone = realm.object(ofType: RLMZone.self, forPrimaryKey: zone.ID) {
+                    // swiftlint:disable:next force_try
+                    try! realm.write {
+                        HomeAssistantAPI.updateZone(existingZone, withZoneEntity: zone)
+                    }
+                } else {
+                    // swiftlint:disable:next force_try
+                    try! realm.write {
+                        realm.add(RLMZone(zone: zone), update: true)
+                    }
                 }
             }
 
@@ -595,7 +670,17 @@ public class HomeAssistantAPI {
         }
     }
 
-    private func configureSessionManager(withPassword password: String? = nil) -> SessionManager {
+    private static func updateZone(_ storeableZone: RLMZone, withZoneEntity zone: Zone) {
+        storeableZone.Latitude = zone.Latitude
+        storeableZone.Longitude = zone.Longitude
+        storeableZone.Radius = zone.Radius
+        storeableZone.TrackingEnabled = zone.TrackingEnabled
+        storeableZone.BeaconUUID = zone.UUID
+        storeableZone.BeaconMajor.value = zone.Major
+        storeableZone.BeaconMinor.value = zone.Minor
+    }
+
+    private static func configureSessionManager(withPassword password: String? = nil) -> SessionManager {
         var headers = Alamofire.SessionManager.defaultHTTPHeaders
         if let password = password {
             headers["X-HA-Access"] = password

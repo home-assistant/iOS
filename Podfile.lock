@@ -126,7 +126,7 @@ CHECKOUT OPTIONS:
     :commit: 2f289a19c3ec41f835a9629fdbea4a89033f61a1
     :git: https://github.com/CocoaPods/CPDAcknowledgements
   Eureka:
-    :commit: 65704c99a5631e8064747f7855bb8f006c79ae13
+    :commit: acc6c0ce7ae08bdcf7a84ca4dd5685747da65c41
     :git: https://github.com/xmartlabs/Eureka.git
   Iconic:
     :commit: f984e1e7e0ded870a09f79d980e498b24427af9c

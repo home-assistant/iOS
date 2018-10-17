@@ -66,42 +66,65 @@ public class RLMZone: Object {
     }
 
     public func region() -> CLRegion? {
-        if let uuidString = self.BeaconUUID {
+        if self.BeaconUUID != nil {
             // iBeacon
-            guard let uuid = UUID(uuidString: uuidString) else {
-                print("Could create CLBeaconRegion because of invalid UUID")
-                return nil
-            }
-            var beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: uuidString)
-            if let major = self.BeaconMajor.value, let minor = self.BeaconMinor.value {
-                beaconRegion = CLBeaconRegion(
-                    proximityUUID: uuid,
-                    major: CLBeaconMajorValue(major),
-                    minor: CLBeaconMinorValue(minor),
-                    identifier: self.ID
-                )
-            } else if let major = self.BeaconMajor.value {
-                beaconRegion = CLBeaconRegion(
-                    proximityUUID: uuid,
-                    major: CLBeaconMajorValue(major),
-                    identifier: self.ID
-                )
-            }
-            beaconRegion.notifyEntryStateOnDisplay = true
-            beaconRegion.notifyOnEntry = true
-            beaconRegion.notifyOnExit = true
-            return beaconRegion
+            return self.beaconRegion
         } else {
             // Geofence / CircularRegion
             return self.circularRegion()
         }
     }
 
+    public var beaconRegionID: String {
+        return self.ID + "-Beacon"
+    }
+
+    public var gpsRegionID: String {
+        return self.ID + "-GPS"
+    }
+
+    public var beaconRegion: CLBeaconRegion? {
+        guard let uuidString = self.BeaconUUID else {
+            return nil
+        }
+
+        guard let uuid = UUID(uuidString: uuidString) else {
+            let event =
+                ClientEvent(text: "Unable to create beacon region due to invalid UUID: \(uuidString)",
+                    type: .locationUpdate)
+            Current.clientEventStore.addEvent(event)
+            print("Could create CLBeaconRegion because of invalid UUID")
+            return nil
+        }
+
+
+        var beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: uuidString)
+        if let major = self.BeaconMajor.value, let minor = self.BeaconMinor.value {
+            beaconRegion = CLBeaconRegion(
+                proximityUUID: uuid,
+                major: CLBeaconMajorValue(major),
+                minor: CLBeaconMinorValue(minor),
+                identifier: self.beaconRegionID
+            )
+        } else if let major = self.BeaconMajor.value {
+            beaconRegion = CLBeaconRegion(
+                proximityUUID: uuid,
+                major: CLBeaconMajorValue(major),
+                identifier: self.beaconRegionID
+            )
+        }
+        
+        beaconRegion.notifyEntryStateOnDisplay = true
+        beaconRegion.notifyOnEntry = true
+        beaconRegion.notifyOnExit = true
+        return beaconRegion
+    }
+
     public func circularRegion() -> CLCircularRegion {
         let region = CLCircularRegion(
             center: CLLocationCoordinate2DMake(self.Latitude, self.Longitude),
             radius: self.Radius,
-            identifier: self.ID
+            identifier: self.gpsRegionID
         )
         region.notifyOnEntry = true
         region.notifyOnExit = true
@@ -122,7 +145,12 @@ public class RLMZone: Object {
         return self.ID.components(separatedBy: ".")[0]
     }
 
-    public var IsBeaconRegion: Bool {
+    public var isBeaconRegion: Bool {
         return self.BeaconUUID != nil
+    }
+
+    public override var debugDescription: String {
+        return "\(self.isBeaconRegion ? "Beacon + GPS" : "GPS Only") Zone - ID: \(self.ID), state: " +
+            (self.inRegion ? "inside" : "outside")
     }
 }

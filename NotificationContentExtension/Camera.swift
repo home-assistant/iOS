@@ -20,9 +20,11 @@ class CameraViewController: UIView, NotificationCategory {
 
     let urlConfiguration: URLSessionConfiguration = URLSessionConfiguration.default
 
-    var streamingController: MjpegStreamingController?
-
     var parentView: UIView = UIView(frame: .zero)
+
+    var shouldPlay: Bool = true
+
+    var streamer: MJPEGStreamer?
 
     func didReceive(_ notification: UNNotification, view: UIView, extensionContext: NSExtensionContext?,
                     hud: MBProgressHUD, completionHandler: @escaping (String?) -> Void) {
@@ -51,7 +53,15 @@ class CameraViewController: UIView, NotificationCategory {
 
         var frameCount = 0
 
-        api.GetCameraStream(cameraEntityID: entityId) { (image, error) in
+        guard let streamer = api.videoStreamer() else {
+            return
+        }
+
+        self.streamer = streamer
+        let apiURL = api.connectionInfo.activeAPIURL
+        let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(entityId)", isDirectory: false)
+
+        streamer.streamImages(fromURL: queryUrl) { (image, error) in
             if let error = error, let afError = error as? AFError {
                 print("afError", afError)
                 var labelText = L10n.Extensions.NotificationContent.Error.Request.unknown
@@ -69,6 +79,10 @@ class CameraViewController: UIView, NotificationCategory {
             }
 
             if let image = image {
+                defer {
+                    frameCount += 1
+                    print("FRAME", frameCount)
+                }
                 if frameCount == 0 {
                     print("Got first frame!")
 
@@ -84,16 +98,11 @@ class CameraViewController: UIView, NotificationCategory {
                     extensionContext?.mediaPlayingStarted()
                 }
 
-                frameCount += 1
-
-                print("FRAME", frameCount)
-
-                DispatchQueue.main.async {
+                if self.shouldPlay {
                     image.accessibilityIdentifier = "camera_notification_image"
                     imageView.image = image
                     imageView.image?.accessibilityIdentifier = image.accessibilityIdentifier
                 }
-
             }
 
         }
@@ -119,11 +128,11 @@ class CameraViewController: UIView, NotificationCategory {
     }
 
     public func mediaPlay() {
-        streamingController?.play()
+        self.shouldPlay = true
     }
 
     public func mediaPause() {
-        streamingController?.stop()
+        self.shouldPlay = false
     }
 
 }

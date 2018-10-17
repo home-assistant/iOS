@@ -29,14 +29,20 @@ let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var safariVC: SFSafariViewController?
-    let regionManager = RegionManager()
 
-    // swiftlint:disable:next function_body_length
+    private(set) var regionManager: RegionManager!
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        let launchingForLocation = launchOptions?[.location] != nil
+        let launchMessage = "Application Starting" + (launchingForLocation ? " due to location change" : "")
+        let event = ClientEvent(text: launchMessage, type: .unknown)
+        Current.clientEventStore.addEvent(event)
         CheckPermissionsStatus()
+        Current.deviceIDProvider = { DeviceUID.uid() }
+        self.regionManager = RegionManager()
 
         Current.deviceIDProvider = { DeviceUID.uid() }
+
         Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
 
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
@@ -110,6 +116,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             navController.topViewController?.present(controller, animated: true, completion: nil)
         }
+
         Current.signInRequiredCallback = {
             let alert = UIAlertController(title: L10n.Alerts.AuthRequired.title,
                                           message: L10n.Alerts.AuthRequired.message,
@@ -201,6 +208,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             print("Background fetch failed because api was not authenticated")
             completionHandler(.failed)
+            return
+        }
+
+        if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") == false {
+            completionHandler(UIBackgroundFetchResult.noData)
             return
         }
 

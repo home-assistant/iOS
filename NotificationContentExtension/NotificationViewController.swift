@@ -10,11 +10,15 @@ import UIKit
 import UserNotifications
 import UserNotificationsUI
 import MBProgressHUD
+import KeychainAccess
+import Shared
+import Alamofire
 
 enum NotificationCategories: String {
     case map
     case camera
 }
+
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
 
@@ -88,7 +92,6 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             return controller!.mediaPause()
         }
     }
-
 }
 
 protocol NotificationCategory: NSObjectProtocol {

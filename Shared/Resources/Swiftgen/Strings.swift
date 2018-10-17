@@ -337,6 +337,11 @@ internal enum L10n {
       /// Location updated via URL Scheme
       internal static let body = L10n.tr("Localizable", "location_change_notification.url_scheme.body")
     }
+
+    internal enum Visit {
+      /// Location updated via Visit
+      internal static let body = L10n.tr("Localizable", "location_change_notification.visit.body")
+    }
   }
 
   internal enum ManualLocationUpdateFailedNotification {
@@ -893,6 +898,11 @@ internal enum L10n {
         internal enum UrlScheme {
           /// URL Scheme Location Notifications
           internal static let title = L10n.tr("Localizable", "settings_details.location.notifications.url_scheme.title")
+        }
+
+        internal enum Visit {
+          /// Visit Location Notifications
+          internal static let title = L10n.tr("Localizable", "settings_details.location.notifications.visit.title")
         }
       }
 

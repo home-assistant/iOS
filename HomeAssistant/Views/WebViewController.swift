@@ -414,7 +414,6 @@ extension WebViewController: WKScriptMessageHandler {
                     let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
                     if let jsonString = String(data: jsonData!, encoding: .utf8) {
                         let script = "\(callbackName)(true, \(jsonString))"
-
                         self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
                             if let error = error {
                                 print("We failed: \(error)")
@@ -484,7 +483,7 @@ extension ConnectionInfo {
             return nil
         }
 
-        if externalAuth {
+        if Current.settingsStore.tokenInfo != nil {
             let queryItem = URLQueryItem(name: "external_auth", value: "1")
             components.queryItems = [queryItem]
         }

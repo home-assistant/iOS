@@ -58,15 +58,7 @@ public class Environment {
     public var syncMonitoredRegions: (() -> Void)?
 
     public func updateWith(authenticatedAPI: HomeAssistantAPI) {
-        if authenticatedAPI.authenticationMethodString == "modern" {
-            guard let tokenManager = authenticatedAPI.tokenManager else {
-                assertionFailure("Should have had token manager")
-                return
-            }
-
-            self.tokenManager = tokenManager
-        }
-
+        self.tokenManager = authenticatedAPI.tokenManager
         self.settingsStore.connectionInfo = authenticatedAPI.connectionInfo
     }
 
