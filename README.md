@@ -1,6 +1,7 @@
 Home Assistant for iOS
 =================
 
+[![TestFlight Beta invite](https://img.shields.io/badge/TestFlight-Beta-blue.svg)](https://testflight.apple.com/join/XCUga7ko)
 [![Download on the App Store](https://img.shields.io/itunes/v/1099568401.svg)](https://itunes.apple.com/app/home-assistant-open-source-home-automation/id1099568401)
 [![Swift 3.0](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)](https://developer.apple.com/swift/)
 [![Platform iOS](https://img.shields.io/badge/Platforms-iOS-lightgray.svg?style=flat)](https://developer.apple.com/swift/)
