@@ -80,8 +80,7 @@ class RegionManager: NSObject {
                 trig = .BeaconRegionEnter
             }
             if trigger == .RegionExit {
-                let message = "Not sending update for beacon region exit. On Purpose."
-                Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
+                trig = .BeaconRegionExit
                 return
             }
         } else {
@@ -126,10 +125,10 @@ class RegionManager: NSObject {
     }
 
     func startMonitoring(zone: RLMZone) {
-        locationManager.startMonitoring(for: zone.circularRegion())
-
         if let beaconRegion = zone.beaconRegion {
             locationManager.startMonitoring(for: beaconRegion)
+        } else {
+            locationManager.startMonitoring(for: zone.circularRegion())
         }
 
         if Current.settingsStore.motionEnabled {
