@@ -113,7 +113,7 @@ public class RLMZone: Object {
                 identifier: self.beaconRegionID
             )
         }
-        
+
         beaconRegion.notifyEntryStateOnDisplay = true
         beaconRegion.notifyOnEntry = true
         beaconRegion.notifyOnExit = true

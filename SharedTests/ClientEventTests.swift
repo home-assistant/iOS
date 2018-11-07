@@ -43,7 +43,7 @@ class ClientEventTests: XCTestCase {
         let alert = "House mode changed to away"
         mutableContent.title = "Home Assistant Notification"
         mutableContent.subtitle = "Fake Sub"
-        mutableContent.userInfo = [ "aps" : ["alert": alert, "sound": "default:"]]
+        mutableContent.userInfo = [ "aps": ["alert": alert, "sound": "default:"]]
 
         let expectedTitle = "Received Notification: \(mutableContent.title) - \(mutableContent.subtitle)"
         let content = mutableContent as UNNotificationContent
@@ -52,13 +52,12 @@ class ClientEventTests: XCTestCase {
 
     func testUnknownNotification() {
         let mutableContent = UNMutableNotificationContent()
-        mutableContent.userInfo = [ "aps" : ["sound": "default:"]]
+        mutableContent.userInfo = [ "aps": ["sound": "default:"]]
 
         let expectedTitle = "Received a Push Notification"
         let content = mutableContent as UNNotificationContent
         XCTAssertEqual(content.clientEventTitle, expectedTitle)
     }
-
 
     func testCanWriteClientEvent() {
         let event = ClientEvent(text: "Yo", type: .notification)
