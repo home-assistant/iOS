@@ -41,7 +41,7 @@ public class DeviceTrackerSee: Mappable {
 
     public required init?(map: Map) {}
 
-    public convenience init(trigger: LocationUpdateTrigger, location: CLLocation?,  zone: RLMZone?) {
+    public convenience init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?) {
         self.init()
 
         self.Trigger = trigger

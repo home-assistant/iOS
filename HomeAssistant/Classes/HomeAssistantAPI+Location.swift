@@ -24,7 +24,7 @@ extension HomeAssistantAPI {
 
         let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
 
-        payload.Battery = UIDevice.current.batteryLevel
+        payload.Battery = Float.maximum(0, UIDevice.current.batteryLevel)
         payload.DeviceID = Current.settingsStore.deviceID
         payload.Hostname = UIDevice.current.name
         payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)

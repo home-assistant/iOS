@@ -75,14 +75,6 @@ public class RLMZone: Object {
         }
     }
 
-    public var beaconRegionID: String {
-        return self.ID + "-Beacon"
-    }
-
-    public var gpsRegionID: String {
-        return self.ID + "-GPS"
-    }
-
     public var beaconRegion: CLBeaconRegion? {
         guard let uuidString = self.BeaconUUID else {
             return nil
@@ -97,20 +89,19 @@ public class RLMZone: Object {
             return nil
         }
 
-
-        var beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: uuidString)
+        var beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: self.ID)
         if let major = self.BeaconMajor.value, let minor = self.BeaconMinor.value {
             beaconRegion = CLBeaconRegion(
                 proximityUUID: uuid,
                 major: CLBeaconMajorValue(major),
                 minor: CLBeaconMinorValue(minor),
-                identifier: self.beaconRegionID
+                identifier: self.ID
             )
         } else if let major = self.BeaconMajor.value {
             beaconRegion = CLBeaconRegion(
                 proximityUUID: uuid,
                 major: CLBeaconMajorValue(major),
-                identifier: self.beaconRegionID
+                identifier: self.ID
             )
         }
 
@@ -124,7 +115,7 @@ public class RLMZone: Object {
         let region = CLCircularRegion(
             center: CLLocationCoordinate2DMake(self.Latitude, self.Longitude),
             radius: self.Radius,
-            identifier: self.gpsRegionID
+            identifier: self.ID
         )
         region.notifyOnEntry = true
         region.notifyOnExit = true
@@ -150,7 +141,6 @@ public class RLMZone: Object {
     }
 
     public override var debugDescription: String {
-        return "\(self.isBeaconRegion ? "Beacon + GPS" : "GPS Only") Zone - ID: \(self.ID), state: " +
-            (self.inRegion ? "inside" : "outside")
+        return "Zone - ID: \(self.ID), state: " + (self.inRegion ? "inside" : "outside")
     }
 }
