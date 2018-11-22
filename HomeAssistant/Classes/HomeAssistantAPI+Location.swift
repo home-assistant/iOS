@@ -49,7 +49,7 @@ extension HomeAssistantAPI {
             self.identifyDevice()
             }.then {_ in
                 self.callService(domain: "device_tracker", service: "see", serviceData: payloadDict,
-                                 shouldLog: false)
+                                 shouldLog: true)
             }.done { _ in
                 print("Device seen!")
                 self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: payloadDict)
