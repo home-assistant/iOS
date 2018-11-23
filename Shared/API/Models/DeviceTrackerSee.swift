@@ -65,8 +65,19 @@ public class DeviceTrackerSee: Mappable {
                 self.LocationName = LocationNames.Home
             case .RegionExit, .GPSRegionExit:
                 self.LocationName =  LocationNames.NotHome
+                self.ClearLocation()
             case .BeaconRegionExit:
                 self.ConsiderHome = TimeInterval(exactly: 180)
+                self.ClearLocation()
+            default:
+                break
+            }
+        } else { // Other zones
+            switch self.Trigger {
+            case .RegionExit, .GPSRegionExit:
+                self.LocationName =  LocationNames.NotHome
+                self.ClearLocation()
+            case .BeaconRegionExit:
                 self.ClearLocation()
             default:
                 break
