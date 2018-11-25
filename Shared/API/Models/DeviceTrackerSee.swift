@@ -52,6 +52,9 @@ public class DeviceTrackerSee: Mappable {
             self.SetLocation(location: location)
         } else if let zone = zone {
             self.SetZone(zone: zone)
+            if let location = location, (trigger == .BeaconRegionExit || trigger == .GPSRegionExit) {
+               self.SetLocation(location: location)
+            }
         }
     }
 
