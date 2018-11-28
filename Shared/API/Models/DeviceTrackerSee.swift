@@ -20,7 +20,7 @@ public class DeviceTrackerSee: Mappable {
     public var Hostname: String?
     public var Location: CLLocationCoordinate2D?
     public var SourceType: UpdateTypes = .GlobalPositioningSystem
-    public var LocationName: LocationNames?
+    public var LocationName: String?
     public var ConsiderHome: TimeInterval?
 
     // Attributes
@@ -65,9 +65,19 @@ public class DeviceTrackerSee: Mappable {
         if zone.ID == "zone.home" {
             switch self.Trigger {
             case .RegionEnter, .GPSRegionEnter, .BeaconRegionEnter:
-                self.LocationName = LocationNames.Home
+                self.LocationName = LocationNames.Home.rawValue
             case .RegionExit, .GPSRegionExit:
-                self.LocationName =  LocationNames.NotHome
+                self.LocationName =  LocationNames.NotHome.rawValue
+            case .BeaconRegionExit:
+                self.ConsiderHome = TimeInterval(exactly: 180)
+                self.ClearLocation()
+            default:
+                break
+            }
+        } else {
+            switch self.Trigger {
+            case .BeaconRegionEnter:
+                self.LocationName = zone.Name
             case .BeaconRegionExit:
                 self.ConsiderHome = TimeInterval(exactly: 180)
                 self.ClearLocation()
