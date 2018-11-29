@@ -134,7 +134,7 @@ public class DeviceTrackerSee: Mappable {
         HorizontalAccuracy   <-  map["gps_accuracy"]
         Hostname             <-  map["host_name"]
         SourceType           <- (map["source_type"], EnumTransform<UpdateTypes>())
-        LocationName         <- (map["location_name"], EnumTransform<LocationNames>())
+        LocationName         <- map["location_name"]
         ConsiderHome         <- (map["consider_home"], TimeIntervalToString())
 
         Speed                <-  map["attributes.speed"]
