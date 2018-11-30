@@ -118,7 +118,7 @@ class RegionManager: NSObject {
 
         let message = "Submitting location for zone \(zone.ID) with trigger \(trig.rawValue)."
         Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
-        api.submitLocation(updateType: trig, location: self.locationManager.location, zone: zone).done {
+        api.submitLocation(updateType: trig, location: nil, zone: zone).done {
             let message = "Succeeded updating zone \(zone.ID) with trigger \(trig.rawValue)."
             Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
         }.ensure {
