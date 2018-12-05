@@ -48,7 +48,7 @@ public class DeviceTrackerSee: Mappable {
         self.SourceType = (self.Trigger == .BeaconRegionEnter || self.Trigger == .BeaconRegionExit
             ? .BluetoothLowEnergy : .GlobalPositioningSystem)
 
-        if let location = location {
+        if let location = location, (trigger != .BeaconRegionEnter && trigger != .BeaconRegionExit) {
             self.SetLocation(location: location)
         } else if let zone = zone {
             self.SetZone(zone: zone)
