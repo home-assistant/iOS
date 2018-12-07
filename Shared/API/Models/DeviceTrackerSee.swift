@@ -76,8 +76,7 @@ public class DeviceTrackerSee: Mappable {
             case .BeaconRegionEnter:
                 self.LocationName = zone.Name
             case .BeaconRegionExit:
-                self.ConsiderHome = TimeInterval(exactly: 180)
-                self.ClearLocation()
+                break
             default:
                 break
             }
