@@ -264,7 +264,7 @@ extension RegionManager: CLLocationManagerDelegate {
 
         let locationAge = Current.date().timeIntervalSince(last.timestamp)
         if locationAge > kLocationMaximumAge {
-            print("Location is older than threshhold.")
+            print("Location is older than threshold.")
             return
         }
 
