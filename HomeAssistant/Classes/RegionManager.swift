@@ -110,6 +110,12 @@ class RegionManager: NSObject {
             Current.clientEventStore.addEvent(ClientEvent(text: noChangeMessage, type: .locationUpdate))
             return
         }
+        guard trig != .BeaconRegionExit else {
+            let noChangeMessage = "Not updating \(zone.debugDescription) because iBeacon exits are ignored"
+            print(noChangeMessage)
+            Current.clientEventStore.addEvent(ClientEvent(text: noChangeMessage, type: .locationUpdate))
+            return
+        }
 
         // swiftlint:disable:next force_try
         try! zone.realm?.write {
