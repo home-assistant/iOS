@@ -104,8 +104,8 @@ class RegionManager: NSObject {
 
         let inRegion = (trigger == .RegionEnter)
         guard zone.inRegion != inRegion else {
-            let noChangeMessage = "Not updating \(zone.debugDescription) because  DB already believes state" +
-            "to be corrrect. (\(zone.inRegion ? "In" : "out")). Trigger: \(trigger)"
+            let noChangeMessage = "Not updating \(zone.debugDescription) because DB already believes state " +
+            "to be correct. (\(zone.inRegion ? "In" : "out")). Trigger: \(trigger)"
             print(noChangeMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: noChangeMessage, type: .locationUpdate))
             return
@@ -260,7 +260,7 @@ extension RegionManager: CLLocationManagerDelegate {
         }
 
         guard last.horizontalAccuracy <= 200 else {
-            let inaccurateLocationMessage = "Ignoring location with accurace over threshold." +
+            let inaccurateLocationMessage = "Ignoring location with accuracy over threshold." +
             "Accuracy: \(last.horizontalAccuracy)m"
             print(inaccurateLocationMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: inaccurateLocationMessage,
@@ -270,7 +270,7 @@ extension RegionManager: CLLocationManagerDelegate {
 
         let locationAge = Current.date().timeIntervalSince(last.timestamp)
         if locationAge > kLocationMaximumAge {
-            print("Location is older than threshhold. ")
+            print("Location is older than threshold.")
             return
         }
 
