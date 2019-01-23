@@ -118,7 +118,18 @@ func CheckPermissionsStatus() {
     }
 }
 
-func EnsurePermissions() {
+func EnsurePermissions(api: HomeAssistantAPI) {
+    if api.iosComponentLoaded {
+        if api.deviceTrackerComponentLoaded {
+            EnsureLocationPermission()
+        }
+        if api.iosNotifyPlatformLoaded {
+            EnsureNotificationPermission()
+        }
+    }
+}
+
+func EnsureLocationPermission() {
     LocationPermission().manage { (status) in
         print("Location status", status)
 
@@ -144,7 +155,9 @@ func EnsurePermissions() {
             }
         }
     }
+}
 
+func EnsureNotificationPermission() {
     NotificationPermission().manage { (status) in
         print("Notifications status", status)
 

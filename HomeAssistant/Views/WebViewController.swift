@@ -63,12 +63,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.webView.scrollView.bounces = false
 
-        EnsurePermissions()
-
         if let api = HomeAssistantAPI.authenticatedAPI(),
             let connectionInfo = Current.settingsStore.connectionInfo,
             let webviewURL = connectionInfo.webviewURL {
             api.Connect().done {_ in
+                EnsurePermissions(api: api)
                 if Current.settingsStore.notificationsEnabled {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
