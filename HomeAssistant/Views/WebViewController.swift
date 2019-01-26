@@ -296,6 +296,17 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.present(alertController, animated: true, completion: nil)
     }
 
+    func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String,
+                 initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
+
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Alert.ok, style: .default, handler: { (action) in
+            completionHandler()
+        }))
+
+        self.present(alertController, animated: true, completion: nil)
+    }
+
     @objc func loadActiveURLIfNeeded() {
         if HomeAssistantAPI.authenticatedAPI() != nil,
             let connectionInfo = Current.settingsStore.connectionInfo,

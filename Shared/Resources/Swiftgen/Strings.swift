@@ -93,6 +93,11 @@ internal enum L10n {
 
   internal enum Alerts {
 
+    internal enum Alert {
+      /// OK
+      internal static let ok = L10n.tr("Localizable", "alerts.alert.ok")
+    }
+
     internal enum AuthRequired {
       /// The server has rejected your credentials, and you must sign in again to continue.
       internal static let message = L10n.tr("Localizable", "alerts.auth_required.message")
