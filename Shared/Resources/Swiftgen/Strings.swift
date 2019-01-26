@@ -100,6 +100,13 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "alerts.auth_required.title")
     }
 
+    internal enum Confirm {
+      /// Cancel
+      internal static let cancel = L10n.tr("Localizable", "alerts.confirm.cancel")
+      /// OK
+      internal static let ok = L10n.tr("Localizable", "alerts.confirm.ok")
+    }
+
     internal enum OpenUrlFromNotification {
       /// Open URL (%@) found in notification?
       internal static func message(_ p1: String) -> String {

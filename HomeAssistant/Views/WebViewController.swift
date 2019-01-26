@@ -257,6 +257,22 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.setToolbarItems(items, animated: true)
     }
 
+    // WKUIDelegate
+    func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String,
+                 initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
+
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.ok, style: .default, handler: { (action) in
+            completionHandler(true)
+        }))
+
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.cancel, style: .cancel, handler: { (action) in
+            completionHandler(false)
+        }))
+
+        self.present(alertController, animated: true, completion: nil)
+    }
+
     @objc func loadActiveURLIfNeeded() {
         if HomeAssistantAPI.authenticatedAPI() != nil,
             let connectionInfo = Current.settingsStore.connectionInfo,
