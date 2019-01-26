@@ -154,6 +154,8 @@
 "alerts.auth_required.title" = "You must sign in to continue";
 "alerts.confirm.ok" = "OK";
 "alerts.confirm.cancel" = "Cancel";
+"alerts.prompt.ok" = "OK";
+"alerts.prompt.cancel" = "Cancel";
 "cl_error.description.deferred_accuracy_too_low" = "Deferred mode is not supported for the requested accuracy.";
 "cl_error.description.deferred_canceled" = "The request for deferred updates was canceled by your app or by the location manager.";
 "cl_error.description.deferred_distance_filtered" = "Deferred mode does not support distance filters.";

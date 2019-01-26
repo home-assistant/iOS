@@ -115,6 +115,13 @@ internal enum L10n {
       /// Open URL?
       internal static let title = L10n.tr("Localizable", "alerts.open_url_from_notification.title")
     }
+
+    internal enum Prompt {
+      /// Cancel
+      internal static let cancel = L10n.tr("Localizable", "alerts.prompt.cancel")
+      /// OK
+      internal static let ok = L10n.tr("Localizable", "alerts.prompt.ok")
+    }
   }
 
   internal enum ClError {
