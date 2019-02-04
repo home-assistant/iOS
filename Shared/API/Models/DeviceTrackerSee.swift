@@ -79,7 +79,7 @@ public class DeviceTrackerSee: Mappable {
             case .BeaconRegionEnter:
                 self.LocationName = zone.Name
             case .BeaconRegionExit:
-                break
+                self.ClearLocation()
             default:
                 break
             }
