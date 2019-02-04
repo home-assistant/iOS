@@ -93,11 +93,23 @@ internal enum L10n {
 
   internal enum Alerts {
 
+    internal enum Alert {
+      /// OK
+      internal static let ok = L10n.tr("Localizable", "alerts.alert.ok")
+    }
+
     internal enum AuthRequired {
       /// The server has rejected your credentials, and you must sign in again to continue.
       internal static let message = L10n.tr("Localizable", "alerts.auth_required.message")
       /// You must sign in to continue
       internal static let title = L10n.tr("Localizable", "alerts.auth_required.title")
+    }
+
+    internal enum Confirm {
+      /// Cancel
+      internal static let cancel = L10n.tr("Localizable", "alerts.confirm.cancel")
+      /// OK
+      internal static let ok = L10n.tr("Localizable", "alerts.confirm.ok")
     }
 
     internal enum OpenUrlFromNotification {
@@ -107,6 +119,13 @@ internal enum L10n {
       }
       /// Open URL?
       internal static let title = L10n.tr("Localizable", "alerts.open_url_from_notification.title")
+    }
+
+    internal enum Prompt {
+      /// Cancel
+      internal static let cancel = L10n.tr("Localizable", "alerts.prompt.cancel")
+      /// OK
+      internal static let ok = L10n.tr("Localizable", "alerts.prompt.ok")
     }
   }
 
