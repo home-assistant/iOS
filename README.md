@@ -26,7 +26,7 @@ The following commands will clone the repo and install all the required dependen
 git clone https://github.com/home-assistant/home-assistant-iOS.git
 cd home-assistant-iOS
 bundle install
-pod install
+pod install --repo-update
 bundle exec pod install
 ```
 
