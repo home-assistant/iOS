@@ -116,6 +116,14 @@ class RegionManager: NSObject {
             zone.inRegion = inRegion
         }
 
+        guard trig != .BeaconRegionExit else {
+            let noChangeMessage = "Not updating \(zone.debugDescription) because iBeacon exits are ignored"
+            print(noChangeMessage)
+            Current.clientEventStore.addEvent(ClientEvent(text: noChangeMessage, type: .locationUpdate))
+            self.endBackgroundTaskWithName(taskName)
+            return
+        }
+
         let message = "Submitting location for zone \(zone.ID) with trigger \(trig.rawValue)."
         Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
         api.submitLocation(updateType: trig, location: self.locationManager.location, zone: zone).done {
