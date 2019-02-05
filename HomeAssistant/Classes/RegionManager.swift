@@ -120,6 +120,7 @@ class RegionManager: NSObject {
             let noChangeMessage = "Not updating \(zone.debugDescription) because iBeacon exits are ignored"
             print(noChangeMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: noChangeMessage, type: .locationUpdate))
+            self.endBackgroundTaskWithName(taskName)
             return
         }
 
