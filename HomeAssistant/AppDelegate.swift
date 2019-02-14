@@ -230,7 +230,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let queryItems = url.queryItems {
             serviceData = queryItems
         }
-        switch url.host! {
+        guard let host = url.host else { return true }
+        switch host {
         case "call_service":
             callServiceURLHAndler(url, serviceData)
         case "fire_event":
