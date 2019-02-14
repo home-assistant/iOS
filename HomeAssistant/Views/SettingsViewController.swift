@@ -453,17 +453,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 })
             }
 
-            +++ ButtonRow("eventLog") {
-                $0.title = L10n.Settings.EventLog.title
-                let controllerProvider = ControllerProvider.storyBoard(storyboardId: "clientEventsList",
-                                                                       storyboardName: "ClientEvents",
-                                                                       bundle: Bundle.main)
-                $0.presentationMode = .show(controllerProvider: controllerProvider, onDismiss: { vc in
-                    _ = vc.navigationController?.popViewController(animated: true)
-                })
-            }
-
-        +++ ButtonRow {
+        +++ Section(header: "Integrations", footer: "")
+        <<< ButtonRow {
             $0.hidden = Condition(booleanLiteral: UIDevice.current.systemVersion == "12")
             $0.tag = "siriShortcuts"
             $0.title = L10n.Settings.DetailsSection.SiriShortcutsRow.title
@@ -476,7 +467,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             })
         }
 
-        +++ ButtonRow {
+        <<< ButtonRow {
             $0.tag = "watchSettings"
             $0.title = L10n.Settings.DetailsSection.WatchRow.title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
@@ -488,7 +479,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             })
         }
 
-        +++ ButtonRow {
+        <<< ButtonRow {
             $0.tag = "actions"
             $0.title = "Actions"
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
@@ -497,6 +488,16 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 return view
                 }, onDismiss: { vc in
                     _ = vc.navigationController?.popViewController(animated: true)
+            })
+        }
+
+        +++ ButtonRow("eventLog") {
+            $0.title = L10n.Settings.EventLog.title
+            let controllerProvider = ControllerProvider.storyBoard(storyboardId: "clientEventsList",
+                                                                   storyboardName: "ClientEvents",
+                                                                   bundle: Bundle.main)
+            $0.presentationMode = .show(controllerProvider: controllerProvider, onDismiss: { vc in
+                _ = vc.navigationController?.popViewController(animated: true)
             })
         }
 
