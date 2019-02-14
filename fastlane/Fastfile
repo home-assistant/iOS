@@ -199,12 +199,12 @@ platform :ios do
         app_ids = ["io.robbie.HomeAssistant", "io.robbie.HomeAssistant.APNSAttachmentService",
                  "io.robbie.HomeAssistant.NotificationContentExtension", "io.robbie.HomeAssistant.Intents",
                  "io.robbie.HomeAssistant.watchkitapp",
-                 "io.robbie.HomeAssistant.watchkitapp.watchkitextension"]
+                 "io.robbie.HomeAssistant.watchkitapp.watchkitextension", "io.robbie.HomeAssistant.TodayWidget"]
       elsif git_branch == "beta"
         app_ids = ["io.robbie.HomeAssistant.beta", "io.robbie.HomeAssistant.beta.APNSAttachmentService",
                    "io.robbie.HomeAssistant.beta.NotificationContentExtension",
                    "io.robbie.HomeAssistant.beta.Intents", "io.robbie.HomeAssistant.beta.watchkitapp",
-                   "io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension"]
+                   "io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension", "io.robbie.HomeAssistant.beta.TodayWidget"]
       end
 
       match(app_identifier: app_ids,
