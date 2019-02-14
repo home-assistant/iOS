@@ -3371,6 +3371,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "HomeAssistant/Resources/HomeAssistant Beta.entitlements";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				ENV_URL_HANDLER = "homeassistant-beta";
 				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
 				IS_SANDBOXED = false;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -3750,6 +3751,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "HomeAssistant/Resources/HomeAssistant Development.entitlements";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				ENV_URL_HANDLER = "homeassistant-dev";
 				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
 				IS_SANDBOXED = true;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -3793,6 +3795,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				ENV_URL_HANDLER = homeassistant;
 				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
 				IS_SANDBOXED = false;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
