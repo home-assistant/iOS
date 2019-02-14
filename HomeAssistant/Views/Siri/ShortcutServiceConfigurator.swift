@@ -1,5 +1,5 @@
 //
-//  SiriShortcutServiceConfigurator.swift
+//  ShortcutServiceConfigurator.swift
 //  HomeAssistant
 //
 //  Created by Robert Trencheny on 9/17/18.
@@ -18,7 +18,7 @@ import ViewRow
 
 @available(iOS 12, *)
 // swiftlint:disable:next type_body_length
-class SiriShortcutServiceConfigurator: FormViewController {
+class ShortcutServiceConfigurator: FormViewController {
 
     var domain: String = "homeassistant"
     var serviceName: String = "check_config"
@@ -362,7 +362,7 @@ class SiriShortcutServiceConfigurator: FormViewController {
 }
 
 @available (iOS 12, *)
-extension SiriShortcutServiceConfigurator: INUIAddVoiceShortcutViewControllerDelegate {
+extension ShortcutServiceConfigurator: INUIAddVoiceShortcutViewControllerDelegate {
 
     func addVoiceShortcutViewController(_ controller: INUIAddVoiceShortcutViewController,
                                         didFinishWith voiceShortcut: INVoiceShortcut?,
@@ -375,11 +375,11 @@ extension SiriShortcutServiceConfigurator: INUIAddVoiceShortcutViewControllerDel
         if let voiceShortcut = voiceShortcut {
             print("UPDATE SHORTCUTS 3")
 
-            let realm = Current.realm()
-            // swiftlint:disable:next force_try
-            try! realm.write {
-                realm.add(SiriShortcut(intent: "CallService", shortcut: voiceShortcut, jsonData: serviceDataJSON))
-            }
+//            let realm = Current.realm()
+//            // swiftlint:disable:next force_try
+//            try! realm.write {
+//                realm.add(SiriShortcut(intent: "CallService", shortcut: voiceShortcut, jsonData: serviceDataJSON))
+//            }
             dismiss(animated: true, completion: nil)
             self.dismiss(animated: true, completion: nil)
         }
@@ -393,7 +393,7 @@ extension SiriShortcutServiceConfigurator: INUIAddVoiceShortcutViewControllerDel
 // MARK: - INUIEditVoiceShortcutViewControllerDelegate
 
 @available (iOS 12, *)
-extension SiriShortcutServiceConfigurator: INUIEditVoiceShortcutViewControllerDelegate {
+extension ShortcutServiceConfigurator: INUIEditVoiceShortcutViewControllerDelegate {
 
     func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
                                          didUpdate voiceShortcut: INVoiceShortcut?,

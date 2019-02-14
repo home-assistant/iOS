@@ -12,7 +12,7 @@ import Intents
 @available(iOS 12, *)
 public class VoiceShortcutsManager {
 
-    private var voiceShortcuts: [INVoiceShortcut] = []
+    public var voiceShortcuts: [INVoiceShortcut] = []
 
     public init() {
         updateVoiceShortcuts(completion: nil)

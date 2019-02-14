@@ -23,8 +23,6 @@ class SettingsDetailViewController: FormViewController {
 
     var doneButton: Bool = false
 
-    var voiceShortcutManager: Any?
-
     private let realm = Current.realm()
 
     // swiftlint:disable:next function_body_length cyclomatic_complexity
@@ -37,10 +35,6 @@ class SettingsDetailViewController: FormViewController {
             let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
                                              action: closeSelector)
             self.navigationItem.setRightBarButton(doneButton, animated: true)
-        }
-
-        if #available(iOS 12.0, *) {
-            voiceShortcutManager = VoiceShortcutsManager.init()
         }
 
         switch detailGroup {
@@ -394,45 +388,18 @@ class SettingsDetailViewController: FormViewController {
             }
 
         case "siri":
-            INPreferences.requestSiriAuthorization { (status) in
-                print("Siri auth status", status.rawValue)
-            }
-
-            var entityIDs: [String] = []
-
-            _ = HomeAssistantAPI.authenticatedAPI()?.GetStates().done { entities in
-                for entity in entities {
-                    entityIDs.append(entity.ID)
-                }
-            }
-
             self.title = L10n.SettingsDetails.Siri.title
             if #available(iOS 12.0, *) {
-                let shortcuts = realm.objects(SiriShortcut.self).map { $0 }
-                if shortcuts.count > 0 {
-                    self.form
-                        +++ Section(header: "Existing Shortcuts", footer: "")
+                INPreferences.requestSiriAuthorization { (status) in
+                    print("Siri auth status", status.rawValue)
                 }
-                for shortcut in shortcuts {
-                self.form.last!
-                    <<< ButtonRow {
-                        $0.cellStyle = .subtitle
-                        $0.title = shortcut.InvocationPhrase
-                        $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
-                            if let identifier = shortcut.Identifier,
-                                let shortcutManager = self.voiceShortcutManager as? VoiceShortcutsManager,
-                                let shortcut = shortcutManager.voiceShortcut(for: identifier) {
-                                let viewController = INUIEditVoiceShortcutViewController(voiceShortcut: shortcut)
-                                viewController.delegate = self
-                                return viewController
-                            }
-                            return UIViewController()
-                        }, onDismiss: { vc in
-                            _ = vc.navigationController?.popViewController(animated: true)
-                        })
-                    }.cellUpdate({ cell, _ in
-                        cell.detailTextLabel?.text = shortcut.Data
-                    })
+
+                var entityIDs: [String] = []
+
+                _ = HomeAssistantAPI.authenticatedAPI()?.GetStates().done { entities in
+                    for entity in entities {
+                        entityIDs.append(entity.ID)
+                    }
                 }
 
                 self.form
@@ -451,11 +418,19 @@ class SettingsDetailViewController: FormViewController {
                         })
                     }
 
-                    self.form +++ Section(header: "Services", footer: "")
+                    <<< ButtonRow {
+                        $0.title = "Fire Event"
+                        $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                            return ShortcutEventConfigurator()
+                            }, onDismiss: { vc in
+                                _ = vc.navigationController?.popViewController(animated: true)
+                        })
+                    }
 
                 _ = HomeAssistantAPI.authenticatedAPIPromise.then { api in
                     api.GetServices()
                 }.done { serviceResp in
+                    let servicesSection = Section(header: "Services", footer: "")
                     for domainContainer in serviceResp.sorted(by: { (a, b) -> Bool in
                         return a.Domain < b.Domain
                     }) {
@@ -463,11 +438,11 @@ class SettingsDetailViewController: FormViewController {
                             return a.key < b.key
                         }) {
 
-                            self.form.last! <<< ButtonRow {
+                            let serviceRow = ButtonRow {
                                 $0.title = domainContainer.Domain + "." + service.key
                                 $0.cellStyle = .subtitle
                                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                                    let siriConfigurator = SiriShortcutServiceConfigurator()
+                                    let siriConfigurator = ShortcutServiceConfigurator()
                                     siriConfigurator.domain = domainContainer.Domain
                                     siriConfigurator.serviceName = service.key
                                     siriConfigurator.serviceData = service.value
@@ -481,7 +456,43 @@ class SettingsDetailViewController: FormViewController {
                                 cell.detailTextLabel?.numberOfLines = 0
                                 cell.detailTextLabel?.lineBreakMode = .byWordWrapping
                             })
+
+                            servicesSection.append(serviceRow)
                         }
+                    }
+                    self.form.append(servicesSection)
+                    self.tableView.reloadData()
+                }
+
+                INVoiceShortcutCenter.shared.getAllVoiceShortcuts { (voiceShortcutsFromCenter, error) in
+                    DispatchQueue.main.async {
+                        guard let voiceShortcutsFromCenter = voiceShortcutsFromCenter else {
+                            if let error = error {
+                                print("Failed to fetch voice shortcuts with error: \(error.localizedDescription)")
+                            }
+                            return
+                        }
+
+                        guard voiceShortcutsFromCenter.count > 0 else { return }
+
+                        let existingSection = Section(header: "Existing Shortcuts", footer: "")
+
+                        let sectionRows = voiceShortcutsFromCenter.map({ (shortcut: INVoiceShortcut) in
+                            return ButtonRow {
+                                $0.title = shortcut.invocationPhrase
+                                $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
+                                    let viewController = INUIEditVoiceShortcutViewController(voiceShortcut: shortcut)
+                                    viewController.delegate = self
+                                    return viewController
+                                    }, onDismiss: { vc in
+                                        _ = vc.navigationController?.popViewController(animated: true)
+                                })
+                                }
+                        })
+
+                        existingSection.append(contentsOf: sectionRows)
+                        self.form.insert(existingSection, at: 0)
+                        self.tableView.reloadData()
                     }
                 }
 

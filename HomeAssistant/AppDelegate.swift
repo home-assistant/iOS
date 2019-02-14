@@ -69,7 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
 
-//            suggestSiriShortcuts()
+            suggestSiriShortcuts()
 
         }
 
