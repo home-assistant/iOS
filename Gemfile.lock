@@ -107,7 +107,7 @@ GEM
       xcodeproj (>= 1.6.0, < 2.0.0)
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3)
-    fastlane-plugin-appicon (0.13.0)
+    fastlane-plugin-appicon (0.14.0)
       json
       mini_magick (~> 4.5.1)
     fastlane-plugin-synx (0.1.3)
@@ -194,7 +194,7 @@ GEM
     unf_ext (0.0.7.5)
     unicode-display_width (1.4.0)
     word_wrap (1.0.0)
-    xcodeproj (1.6.0)
+    xcodeproj (1.8.0)
       CFPropertyList (>= 2.3.3, < 4.0)
       atomos (~> 0.1.3)
       claide (>= 1.0.2, < 2.0)
