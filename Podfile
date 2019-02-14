@@ -22,7 +22,7 @@ def shared_pods
     pod 'Alamofire', '4.7.3'
     pod 'AlamofireImage', '3.4.1'
     pod 'AlamofireObjectMapper', '5.1.0'
-    pod 'DeviceKit', :path => '~/Repos/HomeAssistant/DeviceKit'
+    pod 'DeviceKit', '1.11.0'
     pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
     pod 'KeychainAccess', '3.1.1'
     pod 'ObjectMapper', '3.3.0'
