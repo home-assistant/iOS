@@ -334,6 +334,8 @@ public enum ComplicationGroupMember: String {
 
     #if os(watchOS)
     var errorTemplate: CLKComplicationTemplate? {
+        MaterialDesignIcons.register()
+
         let errorIcon = MaterialDesignIcons.alertCircleOutlineIcon
 
         switch self {
