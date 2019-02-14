@@ -58,6 +58,11 @@
 			<key>orderHint</key>
 			<integer>59</integer>
 		</dict>
+		<key>TodayWidget.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>59</integer>
+		</dict>
 		<key>WatchApp (Complication).xcscheme</key>
 		<dict>
 			<key>orderHint</key>
