@@ -19,7 +19,7 @@ public final class NotificationIdentifierRow: Row<NotificationIdentifierTextCell
 
         self.cell.textField.autocapitalizationType = .allCharacters
 
-        self.add(rule: RuleRegExp(regExpr: "[A-Z_]+"))
+        self.add(rule: RuleRegExp(regExpr: "[A-Z1-9_]+"))
         self.add(rule: RuleRequired())
     }
 }
