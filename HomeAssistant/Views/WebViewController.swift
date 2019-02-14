@@ -63,7 +63,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.webView.scrollView.bounces = false
 
-        EnsurePermissions()
+        CheckPermissionsStatus()
 
         if let api = HomeAssistantAPI.authenticatedAPI(),
             let connectionInfo = Current.settingsStore.connectionInfo,
