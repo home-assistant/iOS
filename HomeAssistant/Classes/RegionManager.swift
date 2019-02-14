@@ -108,6 +108,7 @@ class RegionManager: NSObject {
             "to be correct. (\(zone.inRegion ? "In" : "out")). Trigger: \(trigger)"
             print(noChangeMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: noChangeMessage, type: .locationUpdate))
+            self.endBackgroundTaskWithName(taskName)
             return
         }
 
