@@ -201,6 +201,26 @@
 		B66F9F2E216B1E61000CAA0F /* TodayWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66F9F22216B1E61000CAA0F /* TodayWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B66F9F36216B2C74000CAA0F /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
 		B66F9F37216B2D89000CAA0F /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
+		B672AB1122150ED600175465 /* green@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0322150ED500175465 /* green@2x.png */; };
+		B672AB1222150ED600175465 /* white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0422150ED500175465 /* white@2x.png */; };
+		B672AB1322150ED600175465 /* blue@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0522150ED500175465 /* blue@3x.png */; };
+		B672AB1422150ED600175465 /* purple@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0622150ED500175465 /* purple@2x.png */; };
+		B672AB1522150ED600175465 /* white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0722150ED500175465 /* white@3x.png */; };
+		B672AB1622150ED600175465 /* purple@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0822150ED500175465 /* purple@3x.png */; };
+		B672AB1722150ED600175465 /* green@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0922150ED500175465 /* green@3x.png */; };
+		B672AB1822150ED600175465 /* orange@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0A22150ED500175465 /* orange@3x.png */; };
+		B672AB1922150ED600175465 /* red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0B22150ED500175465 /* red@2x.png */; };
+		B672AB1A22150ED600175465 /* red@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0C22150ED500175465 /* red@3x.png */; };
+		B672AB1B22150ED600175465 /* blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0D22150ED600175465 /* blue@2x.png */; };
+		B672AB1C22150ED600175465 /* black@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0E22150ED600175465 /* black@3x.png */; };
+		B672AB1D22150ED600175465 /* black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0F22150ED600175465 /* black@2x.png */; };
+		B672AB1E22150ED600175465 /* orange@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB1022150ED600175465 /* orange@2x.png */; };
+		B672AB252215114A00175465 /* beta@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB1F2215114900175465 /* beta@2x.png */; };
+		B672AB262215114A00175465 /* beta@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB202215114900175465 /* beta@3x.png */; };
+		B672AB272215114A00175465 /* dev@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB212215114900175465 /* dev@3x.png */; };
+		B672AB282215114A00175465 /* release@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB222215114900175465 /* release@3x.png */; };
+		B672AB292215114A00175465 /* release@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB232215114900175465 /* release@2x.png */; };
+		B672AB2A2215114A00175465 /* dev@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB242215114A00175465 /* dev@2x.png */; };
 		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
 		B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */; };
 		B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */; };
@@ -729,6 +749,26 @@
 		B66F9F33216B208F000CAA0F /* TodayWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TodayWidget.entitlements; sourceTree = "<group>"; };
 		B66F9F34216B2119000CAA0F /* TodayWidget Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "TodayWidget Beta.entitlements"; sourceTree = "<group>"; };
 		B66F9F35216B2131000CAA0F /* TodayWidget Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "TodayWidget Development.entitlements"; sourceTree = "<group>"; };
+		B672AB0322150ED500175465 /* green@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "green@2x.png"; sourceTree = "<group>"; };
+		B672AB0422150ED500175465 /* white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white@2x.png"; sourceTree = "<group>"; };
+		B672AB0522150ED500175465 /* blue@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue@3x.png"; sourceTree = "<group>"; };
+		B672AB0622150ED500175465 /* purple@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple@2x.png"; sourceTree = "<group>"; };
+		B672AB0722150ED500175465 /* white@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white@3x.png"; sourceTree = "<group>"; };
+		B672AB0822150ED500175465 /* purple@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple@3x.png"; sourceTree = "<group>"; };
+		B672AB0922150ED500175465 /* green@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "green@3x.png"; sourceTree = "<group>"; };
+		B672AB0A22150ED500175465 /* orange@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "orange@3x.png"; sourceTree = "<group>"; };
+		B672AB0B22150ED500175465 /* red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "red@2x.png"; sourceTree = "<group>"; };
+		B672AB0C22150ED500175465 /* red@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "red@3x.png"; sourceTree = "<group>"; };
+		B672AB0D22150ED600175465 /* blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue@2x.png"; sourceTree = "<group>"; };
+		B672AB0E22150ED600175465 /* black@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black@3x.png"; sourceTree = "<group>"; };
+		B672AB0F22150ED600175465 /* black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black@2x.png"; sourceTree = "<group>"; };
+		B672AB1022150ED600175465 /* orange@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "orange@2x.png"; sourceTree = "<group>"; };
+		B672AB1F2215114900175465 /* beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beta@2x.png"; sourceTree = "<group>"; };
+		B672AB202215114900175465 /* beta@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beta@3x.png"; sourceTree = "<group>"; };
+		B672AB212215114900175465 /* dev@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dev@3x.png"; sourceTree = "<group>"; };
+		B672AB222215114900175465 /* release@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "release@3x.png"; sourceTree = "<group>"; };
+		B672AB232215114900175465 /* release@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "release@2x.png"; sourceTree = "<group>"; };
+		B672AB242215114A00175465 /* dev@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dev@2x.png"; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B678DB361EA9999C0045312F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotion+StringExtensions.swift"; sourceTree = "<group>"; };
@@ -1373,6 +1413,33 @@
 			path = TodayWidget;
 			sourceTree = "<group>";
 		};
+		B672AB022215057600175465 /* Alternate Icons */ = {
+			isa = PBXGroup;
+			children = (
+				B672AB1F2215114900175465 /* beta@2x.png */,
+				B672AB202215114900175465 /* beta@3x.png */,
+				B672AB242215114A00175465 /* dev@2x.png */,
+				B672AB212215114900175465 /* dev@3x.png */,
+				B672AB232215114900175465 /* release@2x.png */,
+				B672AB222215114900175465 /* release@3x.png */,
+				B672AB0F22150ED600175465 /* black@2x.png */,
+				B672AB0E22150ED600175465 /* black@3x.png */,
+				B672AB0D22150ED600175465 /* blue@2x.png */,
+				B672AB0522150ED500175465 /* blue@3x.png */,
+				B672AB0322150ED500175465 /* green@2x.png */,
+				B672AB0922150ED500175465 /* green@3x.png */,
+				B672AB1022150ED600175465 /* orange@2x.png */,
+				B672AB0A22150ED500175465 /* orange@3x.png */,
+				B672AB0622150ED500175465 /* purple@2x.png */,
+				B672AB0822150ED500175465 /* purple@3x.png */,
+				B672AB0B22150ED500175465 /* red@2x.png */,
+				B672AB0C22150ED500175465 /* red@3x.png */,
+				B672AB0422150ED500175465 /* white@2x.png */,
+				B672AB0722150ED500175465 /* white@3x.png */,
+			);
+			path = "Alternate Icons";
+			sourceTree = "<group>";
+		};
 		B679B1F91E1F3CFB0071D366 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -1415,6 +1482,7 @@
 		B69933961E232AF50054453D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B672AB022215057600175465 /* Alternate Icons */,
 				B657A8F21CA646EB00121384 /* Assets.xcassets */,
 				B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */,
 				B637243A21697AA7006B102A /* HomeAssistant Beta.entitlements */,
@@ -2204,30 +2272,38 @@
 				B60616B61D1F117800249C11 /* US-EN-Daisy-Laundry-Room-Leak.wav in Resources */,
 				B60616861D1F117700249C11 /* US-EN-Alexa-Good-Night.wav in Resources */,
 				B60616221D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-Detected.wav in Resources */,
+				B672AB1322150ED600175465 /* blue@3x.png in Resources */,
 				B606163B1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Party-Mode.wav in Resources */,
 				B606168B1D1F117700249C11 /* US-EN-Alexa-Motion-Detected-Generic.wav in Resources */,
 				B606168E1D1F117700249C11 /* US-EN-Alexa-Motion-In-Front-Yard.wav in Resources */,
 				B60616261D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Garage.wav in Resources */,
 				B60616941D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Garage.wav in Resources */,
+				B672AB272215114A00175465 /* dev@3x.png in Resources */,
 				B606163F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Bar-Lights.wav in Resources */,
 				B637243B21697AA7006B102A /* HomeAssistant Beta.entitlements in Resources */,
 				B606167B1D1F117700249C11 /* US-EN-Alexa-Back-Door-Opened.wav in Resources */,
+				B672AB1822150ED600175465 /* orange@3x.png in Resources */,
 				B60616481D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Air-Conditioner.wav in Resources */,
 				B60616911D1F117700249C11 /* US-EN-Alexa-Patio-Door-Unlocked.wav in Resources */,
 				B606164F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Lights.wav in Resources */,
+				B672AB1622150ED600175465 /* purple@3x.png in Resources */,
 				B606169C1D1F117800249C11 /* US-EN-Alexa-Wife-Is-Arriving.wav in Resources */,
 				B60616211D1F117700249C11 /* US-EN-Morgan-Freeman-Liquor-Cabinet-Opened.wav in Resources */,
 				B60616331D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav in Resources */,
 				B606164E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Light.wav in Resources */,
+				B672AB1422150ED600175465 /* purple@2x.png in Resources */,
+				B672AB1722150ED600175465 /* green@3x.png in Resources */,
 				B60616AD1D1F117800249C11 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */,
 				B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */,
 				B60616251D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Game-Room.wav in Resources */,
 				B60616891D1F117700249C11 /* US-EN-Alexa-Motion-At-Back-Door.wav in Resources */,
 				B60616561D1F117700249C11 /* US-EN-Morgan-Freeman-Welcome-Home.wav in Resources */,
 				B657A8F61CA646EB00121384 /* LaunchScreen.storyboard in Resources */,
+				B672AB1222150ED600175465 /* white@2x.png in Resources */,
 				B60616431D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Kitchen-Light.wav in Resources */,
 				B60616341D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Smoke.wav in Resources */,
 				B60616841D1F117700249C11 /* US-EN-Alexa-Girlfriend-Is-Arriving.wav in Resources */,
+				B672AB292215114A00175465 /* release@2x.png in Resources */,
 				B60616321D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-A-Flood.wav in Resources */,
 				B60616351D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Basement.wav in Resources */,
 				B606164B1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Family-Room-Lights.wav in Resources */,
@@ -2245,6 +2321,7 @@
 				B60616171D1F117700249C11 /* US-EN-Morgan-Freeman-Friend-Is-Arriving.wav in Resources */,
 				B606160C1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Opened.wav in Resources */,
 				B60616241D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Bedroom.wav in Resources */,
+				B672AB252215114A00175465 /* beta@2x.png in Resources */,
 				B60616531D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Basement.wav in Resources */,
 				B60616B11D1F117800249C11 /* US-EN-Daisy-Front-Window-Open.wav in Resources */,
 				B606161D1D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Opened.wav in Resources */,
@@ -2255,6 +2332,7 @@
 				B60616881D1F117700249C11 /* US-EN-Alexa-Mail-Has-Arrived.wav in Resources */,
 				B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */,
 				B60616801D1F117700249C11 /* US-EN-Alexa-Daughter-Is-Arriving.wav in Resources */,
+				B672AB1522150ED600175465 /* white@3x.png in Resources */,
 				B60616421D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Hallway-Lights.wav in Resources */,
 				B60616571D1F117700249C11 /* US-EN-Morgan-Freeman-Wife-Is-Arriving.wav in Resources */,
 				B60616391D1F117700249C11 /* US-EN-Morgan-Freeman-Son-Is-Arriving.wav in Resources */,
@@ -2268,9 +2346,12 @@
 				B60616921D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-Generic.wav in Resources */,
 				B60616301D1F117700249C11 /* US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav in Resources */,
 				B60616161D1F117700249C11 /* US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav in Resources */,
+				B672AB2A2215114A00175465 /* dev@2x.png in Resources */,
 				B606161A1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Opened.wav in Resources */,
 				B60616121D1F117700249C11 /* US-EN-Morgan-Freeman-Boss-Is-Arriving.wav in Resources */,
+				B672AB1B22150ED600175465 /* blue@2x.png in Resources */,
 				B60616281D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Living-Room.wav in Resources */,
+				B672AB1E22150ED600175465 /* orange@2x.png in Resources */,
 				B606167F1D1F117700249C11 /* US-EN-Alexa-Boyfriend-Is-Arriving.wav in Resources */,
 				B60616461D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Mood-Lights.wav in Resources */,
 				B60248001FBD343000998205 /* InfoPlist.strings in Resources */,
@@ -2285,6 +2366,7 @@
 				B606162D1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav in Resources */,
 				B60616991D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav in Resources */,
 				B60616411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav in Resources */,
+				B672AB1122150ED600175465 /* green@2x.png in Resources */,
 				B69933951E232AEA0054453D /* Localizable.strings in Resources */,
 				B60616851D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav in Resources */,
 				B606162B1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav in Resources */,
@@ -2312,9 +2394,11 @@
 				B60616381D1F117700249C11 /* US-EN-Morgan-Freeman-Someone-Is-Arriving.wav in Resources */,
 				B60616B01D1F117800249C11 /* US-EN-Daisy-Front-Door-Open.wav in Resources */,
 				B606162E1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav in Resources */,
+				B672AB1A22150ED600175465 /* red@3x.png in Resources */,
 				B60616441D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Light.wav in Resources */,
 				B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */,
 				B60616361D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav in Resources */,
+				B672AB1D22150ED600175465 /* black@2x.png in Resources */,
 				B60616511D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-TV.wav in Resources */,
 				B60616151D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav in Resources */,
 				B60616521D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav in Resources */,
@@ -2325,10 +2409,13 @@
 				B606167C1D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav in Resources */,
 				B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */,
 				B6D35C642169905400D1F86B /* HomeAssistant Development.entitlements in Resources */,
+				B672AB262215114A00175465 /* beta@3x.png in Resources */,
+				B672AB1C22150ED600175465 /* black@3x.png in Resources */,
 				B606160F1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Locked.wav in Resources */,
 				B606161B1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Unlocked.wav in Resources */,
 				B606169A1D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Kitchen.wav in Resources */,
 				B606168F1D1F117700249C11 /* US-EN-Alexa-Motion-In-Garage.wav in Resources */,
+				B672AB282215114A00175465 /* release@3x.png in Resources */,
 				B60616311D1F117700249C11 /* US-EN-Morgan-Freeman-Setting-The-Mood.wav in Resources */,
 				D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */,
 				B606162F1D1F117700249C11 /* US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav in Resources */,
@@ -2337,6 +2424,7 @@
 				B60616551D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Kitchen.wav in Resources */,
 				B60616871D1F117700249C11 /* US-EN-Alexa-Husband-Is-Arriving.wav in Resources */,
 				B60616501D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav in Resources */,
+				B672AB1922150ED600175465 /* red@2x.png in Resources */,
 				B42EC0201B3E045A771E909C /* Pods-HomeAssistant-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

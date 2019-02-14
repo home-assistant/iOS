@@ -54,7 +54,26 @@ class SettingsDetailViewController: FormViewController {
                     }.onChange { row in
                         prefs.setValue(row.value, forKey: "openInChrome")
                         prefs.synchronize()
-            }
+                }
+
+                +++ Section()
+                <<< PushRow<AppIcon>("appIcon") {
+                        $0.title = "Icon"
+                        $0.options = AppIcon.allCases
+                        $0.value = AppIcon.Release
+                        $0.selectorTitle = "App Icon"
+                    }.onPresent { _, to in
+                        to.selectableRowCellUpdate = { (cell, row) in
+                            guard let newIcon = row.selectableValue else { return }
+                            cell.imageView?.image = UIImage(named: newIcon.rawValue)
+                            cell.textLabel?.text = newIcon.title
+                        }
+                    }.onChange { row in
+                        guard let newAppIconName = row.value else { return }
+                        guard UIApplication.shared.alternateIconName != newAppIconName.rawValue else { return }
+
+                        UIApplication.shared.setAlternateIconName(newAppIconName.rawValue)
+                    }
         case "location":
             self.title = L10n.SettingsDetails.Location.title
             self.form
@@ -616,6 +635,44 @@ class SettingsDetailViewController: FormViewController {
                         }
                 })
             }
+    }
+}
+
+enum AppIcon: String, CaseIterable {
+    case Release = "release"
+    case Beta = "beta"
+    case Dev = "dev"
+    case Black = "black"
+    case Blue = "blue"
+    case Green = "green"
+    case Orange = "orange"
+    case Purple = "purple"
+    case Red = "red"
+    case White = "white"
+
+    var title: String {
+        switch self {
+        case .Beta:
+            return "Beta"
+        case .Dev:
+            return "Dev"
+        case .Release:
+            return "Release"
+        case .Black:
+            return "Black"
+        case .Blue:
+            return "Blue"
+        case .Green:
+            return "Green"
+        case .Orange:
+            return "Orange"
+        case .Purple:
+            return "Purple"
+        case .Red:
+            return "Red"
+        case .White:
+            return "White"
+        }
     }
 }
 
