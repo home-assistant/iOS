@@ -37,7 +37,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let launchMessage = "Application Starting" + (launchingForLocation ? " due to location change" : "")
         let event = ClientEvent(text: launchMessage, type: .unknown)
         Current.clientEventStore.addEvent(event)
-        CheckPermissionsStatus()
         Current.deviceIDProvider = { DeviceUID.uid() }
         self.regionManager = RegionManager()
 

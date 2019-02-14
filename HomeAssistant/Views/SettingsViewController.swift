@@ -52,6 +52,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
     var configured = false
     var connectionInfo: ConnectionInfo?
+    var tokenInfo: TokenInfo?
 
     let discovery = Bonjour()
 
@@ -86,6 +87,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         self.legacyPassword = keychain["apiPassword"]
         self.useLegacyAuth = Current.settingsStore.tokenInfo == nil && self.legacyPassword != nil
         self.connectionInfo = Current.settingsStore.connectionInfo
+        self.tokenInfo = Current.settingsStore.tokenInfo
 
         let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
                                           style: .plain,
@@ -609,7 +611,12 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         discoverySection.hidden = false
         discoverySection.evaluateHidden()
         if let userInfo = (notification as Notification).userInfo as? [String: Any] {
-            let discoveryInfo = DiscoveryInfoResponse(JSON: userInfo)!
+            guard let discoveryInfo = DiscoveryInfoResponse(JSON: userInfo) else {
+                Current.clientEventStore.addEvent(ClientEvent(text: "Unable to parse discovered HA Instance",
+                                                              type: .unknown, payload: userInfo))
+                return
+            }
+
             let needsPass = discoveryInfo.RequiresPassword ? " - "+L10n.Settings.DiscoverySection.requiresPassword : ""
             var url = "\(discoveryInfo.BaseURL!.host!)"
             if let port = discoveryInfo.BaseURL!.port {
@@ -626,6 +633,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                             cell.textLabel?.textColor = .black
                             cell.detailTextLabel?.text = detailTextLabel
                         }.onCellSelection({ _, _ in
+                            self.connectionInfo = nil
+                            self.tokenInfo = nil
                             self.baseURL = discoveryInfo.BaseURL
                             let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
                             urlRow.value = discoveryInfo.BaseURL
@@ -758,7 +767,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     /// Resolves to the connection info used to connect. As a side effect, the successful tokenInfo is stored.
     private func confirmConnection(with connectionInfo: ConnectionInfo) -> Promise<ConnectionInfo> {
         let tryExistingCredentials: () -> Promise<ConfigResponse> = {
-            if let existingTokenInfo = Current.settingsStore.tokenInfo {
+            if let existingTokenInfo = self.tokenInfo {
                 let api = HomeAssistantAPI(connectionInfo: connectionInfo,
                                            authenticationMethod: .modern(tokenInfo: existingTokenInfo))
                 return api.GetConfig()

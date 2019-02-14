@@ -76,7 +76,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.webView.scrollView.bounces = false
 
-        EnsurePermissions()
+        CheckPermissionsStatus()
 
         if let api = HomeAssistantAPI.authenticatedAPI() {
             self.modernAuth = (api.authenticationMethodString == "modern")
@@ -287,6 +287,56 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }
 
         updateWebViewSettings()
+    }
+
+    // WKUIDelegate
+    func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String,
+                 initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
+
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.ok, style: .default, handler: { (action) in
+            completionHandler(true)
+        }))
+
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.cancel, style: .cancel, handler: { (action) in
+            completionHandler(false)
+        }))
+
+        self.present(alertController, animated: true, completion: nil)
+    }
+
+    func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?,
+                 initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (String?) -> Void) {
+        let alertController = UIAlertController(title: nil, message: prompt, preferredStyle: .alert)
+
+        alertController.addTextField { (textField) in
+            textField.text = defaultText
+        }
+
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Prompt.ok, style: .default, handler: { (action) in
+            if let text = alertController.textFields?.first?.text {
+                completionHandler(text)
+            } else {
+                completionHandler(defaultText)
+            }
+        }))
+
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Prompt.cancel, style: .cancel, handler: { (action) in
+            completionHandler(nil)
+        }))
+
+        self.present(alertController, animated: true, completion: nil)
+    }
+
+    func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String,
+                 initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
+
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Alert.ok, style: .default, handler: { (action) in
+            completionHandler()
+        }))
+
+        self.present(alertController, animated: true, completion: nil)
     }
 
     @objc func loadActiveURLIfNeeded() {

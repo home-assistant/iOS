@@ -20,7 +20,7 @@ public class DeviceTrackerSee: Mappable {
     public var Hostname: String?
     public var Location: CLLocationCoordinate2D?
     public var SourceType: UpdateTypes = .GlobalPositioningSystem
-    public var LocationName: LocationNames?
+    public var LocationName: String?
     public var ConsiderHome: TimeInterval?
 
     // Attributes
@@ -47,8 +47,11 @@ public class DeviceTrackerSee: Mappable {
         self.Trigger = trigger
         self.SourceType = (self.Trigger == .BeaconRegionEnter || self.Trigger == .BeaconRegionExit
             ? .BluetoothLowEnergy : .GlobalPositioningSystem)
-
-        if let location = location {
+            
+        if let location = location, (
+            trigger != .BeaconRegionEnter 
+            && trigger != .BeaconRegionExit
+            && trigger != .GPSRegionEnter) {
             self.SetLocation(location: location)
         } else if let zone = zone {
             self.SetZone(zone: zone)
@@ -62,11 +65,20 @@ public class DeviceTrackerSee: Mappable {
         if zone.ID == "zone.home" {
             switch self.Trigger {
             case .RegionEnter, .GPSRegionEnter, .BeaconRegionEnter:
-                self.LocationName = LocationNames.Home
+                self.LocationName = LocationNames.Home.rawValue
             case .RegionExit, .GPSRegionExit:
-                self.LocationName =  LocationNames.NotHome
+                self.LocationName =  LocationNames.NotHome.rawValue
             case .BeaconRegionExit:
                 self.ConsiderHome = TimeInterval(exactly: 180)
+                self.ClearLocation()
+            default:
+                break
+            }
+        } else {
+            switch self.Trigger {
+            case .BeaconRegionEnter:
+                self.LocationName = zone.Name
+            case .BeaconRegionExit:
                 self.ClearLocation()
             default:
                 break
@@ -121,7 +133,7 @@ public class DeviceTrackerSee: Mappable {
         HorizontalAccuracy   <-  map["gps_accuracy"]
         Hostname             <-  map["host_name"]
         SourceType           <- (map["source_type"], EnumTransform<UpdateTypes>())
-        LocationName         <- (map["location_name"], EnumTransform<LocationNames>())
+        LocationName         <- map["location_name"]
         ConsiderHome         <- (map["consider_home"], TimeIntervalToString())
 
         Speed                <-  map["attributes.speed"]

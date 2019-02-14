@@ -91,11 +91,7 @@ func CheckPermissionsStatus() {
         print("Location status", status)
 
         if Current.settingsStore.locationEnabled != (status == .authorized) {
-            Current.settingsStore.locationEnabled = (status == .authorized)
-
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "permission_change"),
-                                            object: nil,
-                                            userInfo: ["location": Current.settingsStore.locationEnabled])
+            EnsureLocationPermission()
         }
     }
 
@@ -103,11 +99,7 @@ func CheckPermissionsStatus() {
         print("Motion status", status)
 
         if Current.settingsStore.motionEnabled != (status == .authorized) {
-            Current.settingsStore.motionEnabled = (status == .authorized)
-
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "permission_change"),
-                                            object: nil,
-                                            userInfo: ["motion": Current.settingsStore.motionEnabled])
+            EnsureMotionPermission()
         }
     }
 
@@ -115,16 +107,12 @@ func CheckPermissionsStatus() {
         print("Notifications status", status)
 
         if Current.settingsStore.notificationsEnabled != (status == .authorized) {
-            Current.settingsStore.notificationsEnabled = (status == .authorized)
-
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "permission_change"),
-                                            object: nil,
-                                            userInfo: ["notifications": Current.settingsStore.notificationsEnabled])
+            EnsureNotificationPermission()
         }
     }
 }
 
-func EnsurePermissions() {
+func EnsureLocationPermission() {
     LocationPermission().manage { (status) in
         print("Location status", status)
 
@@ -135,22 +123,24 @@ func EnsurePermissions() {
                                             object: nil,
                                             userInfo: ["location": Current.settingsStore.locationEnabled])
         }
+    }
+}
 
-        if status == .authorized {
-            MotionPermission().manage { (status) in
-                print("Motion status", status)
+func EnsureMotionPermission() {
+    MotionPermission().manage { (status) in
+        print("Motion status", status)
 
-                if Current.settingsStore.motionEnabled != (status == .authorized) {
-                    Current.settingsStore.motionEnabled = (status == .authorized)
+        if Current.settingsStore.motionEnabled != (status == .authorized) {
+            Current.settingsStore.motionEnabled = (status == .authorized)
 
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "permission_change"),
-                                                    object: nil,
-                                                    userInfo: ["motion": Current.settingsStore.motionEnabled])
-                }
-            }
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "permission_change"),
+                                            object: nil,
+                                            userInfo: ["motion": Current.settingsStore.motionEnabled])
         }
     }
+}
 
+func EnsureNotificationPermission() {
     NotificationPermission().manage { (status) in
         print("Notifications status", status)
 

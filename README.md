@@ -1,6 +1,8 @@
 Home Assistant for iOS
 =================
 
+[![TestFlight Beta invite](https://img.shields.io/badge/TestFlight-Beta-blue.svg)](https://testflight.apple.com/join/XCUga7ko)
+[![Download on the App Store](https://img.shields.io/itunes/v/1099568401.svg)](https://itunes.apple.com/app/home-assistant-open-source-home-automation/id1099568401)
 [![Swift 3.0](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)](https://developer.apple.com/swift/)
 [![Platform iOS](https://img.shields.io/badge/Platforms-iOS-lightgray.svg?style=flat)](https://developer.apple.com/swift/)
 [![Build Status](https://travis-ci.org/home-assistant/home-assistant-iOS.svg?branch=master)](https://travis-ci.org/home-assistant/home-assistant-iOS)
@@ -24,7 +26,7 @@ The following commands will clone the repo and install all the required dependen
 git clone https://github.com/home-assistant/home-assistant-iOS.git
 cd home-assistant-iOS
 bundle install
-pod install
+pod install --repo-update
 bundle exec pod install
 ```
 
@@ -124,7 +126,7 @@ bundle exec fastlane itc
 
 ## Contributing
 
-See CONTRIBUTING.md
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## LICENSE
 
