@@ -34,7 +34,16 @@
 			<key>UNNotificationExtensionCategory</key>
 			<array>
 				<string>camera</string>
-				<string>map</string>
+                <string>camera1</string>
+                <string>camera2</string>
+                <string>camera3</string>
+                <string>camera4</string>
+                <string>map</string>
+                <string>map1</string>
+                <string>map2</string>
+                <string>map3</string>
+                <string>map4</string>
+                <string>map5</string>
 			</array>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
 			<real>1</real>

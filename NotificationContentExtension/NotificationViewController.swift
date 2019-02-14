@@ -16,7 +16,15 @@ import Alamofire
 
 enum NotificationCategories: String {
     case map
+    case map1
+    case map2
+    case map3
+    case map4
     case camera
+    case camera1
+    case camera2
+    case camera3
+    case camera4
 }
 
 
@@ -37,9 +45,9 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             self.hud = hud
 
             switch category {
-            case .camera:
+            case .camera, .camera1, .camera2, .camera3, .camera4:
                 controller = CameraViewController()
-            case .map:
+            case .map, .map1, .map2, .map3, .map4:
                 controller = MapViewController()
             }
 
