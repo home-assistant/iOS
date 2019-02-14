@@ -359,7 +359,7 @@ extension RegionManager {
             return
         }
 
-        if task != UIBackgroundTaskInvalid {
+        if task != UIBackgroundTaskIdentifier.invalid {
             Current.clientEventStore.addEvent(ClientEvent(text: "EndBackgroundTask: \(name)",
                 type: .locationUpdate))
             UIApplication.shared.endBackgroundTask(task)
