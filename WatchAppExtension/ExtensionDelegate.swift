@@ -102,8 +102,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         print("active families", activeFamilies)
 
-//        let context = Context(content: ["activeComplications": activeFamilies, "model": getModelName()])
-//
+        let context = Context(content: ["activeComplications": activeFamilies, "model": getModelName()])
+
 //        let content = UNMutableNotificationContent()
 //        content.title = "Context"
 //        content.body = context.content.debugDescription
