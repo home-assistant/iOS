@@ -107,7 +107,8 @@ class ShortcutServiceConfigurator: FormViewController {
         if let service = serviceData {
             for (key, field) in service.Fields {
                 var footer = ""
-                var optionalField = false
+                // FIXME: Better way to determine if a field is actually optional than checking description for "optional"
+                var optionalField = true
                 if let desc = field.Description {
                     footer = desc
                     if desc.range(of: "optional", options: .caseInsensitive) != nil {
