@@ -26,6 +26,8 @@ extension HomeAssistantAPI {
                                             "sourceDeviceName": device.name,
                                             "sourceDeviceID": Current.settingsStore.deviceID]
 
+            print("Sending action payload", eventData)
+
             let eventType = "ios.action_fired"
             api.createEvent(eventType: eventType, eventData: eventData).done { _ -> Void in
                 seal.fulfill(true)

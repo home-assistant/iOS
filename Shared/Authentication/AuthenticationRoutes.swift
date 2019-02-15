@@ -37,17 +37,11 @@ enum AuthenticationRoute {
     // MARK: - Private helpers
 
     private var clientID: String {
-        guard let urlHandlerBase = Bundle.main.object(forInfoDictionaryKey: "ENV_URL_HANDLER"),
-            let urlHandlerBaseStr = urlHandlerBase as? String else {
-                print("Returning because ENV_URL_HANDLER isn't set!")
-                return "https://home-assistant.io/iOS"
-        }
-
         var clientID = "https://home-assistant.io/iOS"
 
-        if urlHandlerBaseStr == "homeassistant-dev" {
+        if Current.appConfiguration == .Debug {
             clientID = "https://home-assistant.io/iOS/dev-auth"
-        } else if urlHandlerBaseStr == "homeassistant-beta" {
+        } else if Current.appConfiguration == .Beta {
             clientID = "https://home-assistant.io/iOS/beta-auth"
         }
         return clientID

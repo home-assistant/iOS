@@ -80,16 +80,17 @@ target 'SiriIntents' do
 end
 
 target 'WatchApp' do
-    platform :watchos, '5.0'
+
 end
 
 target 'WatchAppExtension' do
     platform :watchos, '5.0'
 
-    shared_pods
-
     pod 'Communicator'
     pod 'EMTLoadingIndicator', '~> 4.0.0'
+    pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
+    pod 'ObjectMapper', '3.3.0'
+    pod 'RealmSwift', '3.11.0'
     pod 'UIColor_Hex_Swift'
 end
 
