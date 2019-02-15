@@ -148,13 +148,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                         }
                     }
                 }
-//                let realm = Realm.live()
-//
-//                for actionData in allData! {
-//                    if let action = try NSKeyedUnarchiver.unarchiveObject(with: actionData) as? Action {
-//                        print("ACTION", action)
-//                    }
-//                }
             }
         }
 

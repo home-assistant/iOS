@@ -1,0 +1,16 @@
+{
+  "supported complication families" : {
+    "7" : "9CAC410A-D3A6-4962-90C1-6D83DDC5CFC7.json",
+    "3" : "E0E9BDCA-E75C-4D5D-A2D5-21FC0FB01114.json",
+    "8" : "51672FCE-FD03-476C-B989-FBFBB1396516.json",
+    "11" : "C33FC009-8177-4926-B1B8-7C7BAA2075AB.json",
+    "0" : "A0EEEFFD-46FA-4640-BA72-63FA436521ED.json",
+    "4" : "2FF80A2A-8506-40D3-995B-6C47F271B1A1.json",
+    "9" : "BA13CB62-4AB0-4154-A7A4-4C7DA6E162C2.json",
+    "1" : "0A299010-464B-4C24-A29C-A0848619F288.json",
+    "6" : "C6A75FFC-8493-4B9E-AF41-F4F8B490C85C.json",
+    "10" : "553620E3-D637-4997-888B-C35B2A51E867.json",
+    "2" : "76A5978D-BE7A-45AC-A190-2A123F1F34EA.json"
+  },
+  "client ID" : "io.robbie.HomeAssistant.dev.watchkitapp.watchkitextension"
+}
