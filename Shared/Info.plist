@@ -20,5 +20,7 @@
 	<string>3</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
+	<key>ENV_URL_HANDLER</key>
+	<string>${ENV_URL_HANDLER}</string>
 </dict>
 </plist>

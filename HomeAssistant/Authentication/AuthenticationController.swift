@@ -16,6 +16,7 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
     enum AuthenticationControllerError: Error {
         case invalidURL
         case userCancelled
+        case cantFindURLHandler
     }
 
     private var promiseResolver: Resolver<String>?
@@ -31,12 +32,29 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
     func authenticateWithBrowser(at baseURL: URL) -> Promise<String> {
         return Promise { (resolver: Resolver<String>) in
             self.promiseResolver = resolver
+
+            guard let urlHandlerBase = Bundle.main.object(forInfoDictionaryKey: "ENV_URL_HANDLER"),
+                let urlHandlerBaseStr = urlHandlerBase as? String else {
+                print("Returning because ENV_URL_HANDLER isn't set!")
+                resolver.reject(AuthenticationControllerError.cantFindURLHandler)
+                return
+            }
+
+            let redirectURI = urlHandlerBaseStr + "://auth-callback"
+
+            var clientID = "https://home-assistant.io/iOS"
+
+            if urlHandlerBaseStr == "homeassistant-dev" {
+                clientID = "https://home-assistant.io/iOS/dev-auth"
+            } else if urlHandlerBaseStr == "homeassistant-beta" {
+                clientID = "https://home-assistant.io/iOS/beta-auth"
+            }
+
             var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
             components?.path = "/auth/authorize"
             let responseTypeQuery = URLQueryItem(name: "response_type", value: "code")
-            let clientIDQuery = URLQueryItem(name: "client_id",
-                                             value: "https://home-assistant.io/iOS")
-            let redirectQuery = URLQueryItem(name: "redirect_uri", value: "homeassistant://auth-callback")
+            let clientIDQuery = URLQueryItem(name: "client_id", value: clientID)
+            let redirectQuery = URLQueryItem(name: "redirect_uri", value: redirectURI)
             components?.queryItems = [responseTypeQuery, clientIDQuery, redirectQuery]
             if let newURL = try components?.asURL() {
                 let safariVC = SFSafariViewController(url: newURL)
