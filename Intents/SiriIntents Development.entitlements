@@ -8,7 +8,7 @@
 	</array>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)io.robbie.homeassistant.dev</string>
+		<string>$(AppIdentifierPrefix)io.robbie.HomeAssistant.dev</string>
 	</array>
 </dict>
 </plist>
