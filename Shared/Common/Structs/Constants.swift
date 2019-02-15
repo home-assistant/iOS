@@ -19,6 +19,7 @@ public struct Constants {
         var removeBundleSuffix = baseBundleID.replacingOccurrences(of: ".watchkitapp", with: "")
         removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".watchkitextension", with: "")
         removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".TodayWidget", with: "")
+        removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".Intents", with: "")
 
         return removeBundleSuffix
     }

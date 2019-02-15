@@ -14,8 +14,9 @@ import MapKit
 
 class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
     func confirm(intent: SendLocationIntent, completion: @escaping (SendLocationIntentResponse) -> Void) {
-        guard HomeAssistantAPI.authenticatedAPI() != nil else {
-            print("Can't get a authenticated API")
+
+        HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
+            print("Can't get a authenticated API", error)
             completion(SendLocationIntentResponse(code: .failureConnectivity, userActivity: nil))
             return
         }
