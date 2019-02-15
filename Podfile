@@ -81,8 +81,6 @@ end
 
 target 'WatchApp' do
     platform :watchos, '5.0'
-
-    pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
 end
 
 target 'WatchAppExtension' do
