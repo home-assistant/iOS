@@ -11,6 +11,10 @@ import RealmSwift
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
 
+    // Helpful resources
+    // https://github.com/LoopKit/Loop/issues/816
+    // https://crunchybagel.com/detecting-which-complication-was-tapped/
+
     // MARK: - Timeline Configuration
 
     func getSupportedTimeTravelDirections(for complication: CLKComplication, withHandler
@@ -33,12 +37,18 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
         let matchedFamily = ComplicationGroupMember(family: complication.family)
 
-        let realm = Realm.live()
+        guard let date = Date().encodedForComplication(family: complication.family) else {
+            print("Unable to generate complication family specific date, returning family specific error")
+            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: matchedFamily.errorTemplate!))
+            return
+        }
+
+        let fallback = CLKComplicationTimelineEntry(date: date, complicationTemplate: matchedFamily.errorTemplate!)
 
         let pred = NSPredicate(format: "rawFamily == %@", matchedFamily.rawValue)
-        guard let config = realm.objects(WatchComplication.self).filter(pred).first else {
+        guard let config = Realm.live().objects(WatchComplication.self).filter(pred).first else {
             print("No configured complication found for \(matchedFamily.rawValue), returning family specific error")
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: matchedFamily.errorTemplate!))
+            handler(fallback)
             return
         }
 
@@ -46,13 +56,13 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
         guard let template = config.CLKComplicationTemplate(family: complication.family) else {
             print("Unable to generate template for \(matchedFamily.rawValue), returning family specific error")
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: matchedFamily.errorTemplate!))
+            handler(fallback)
             return
         }
 
         print("Generated template for", complication.family.description, template)
 
-        handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template))
+        handler(CLKComplicationTimelineEntry(date: date, complicationTemplate: template))
     }
 
     // MARK: - Placeholder Templates

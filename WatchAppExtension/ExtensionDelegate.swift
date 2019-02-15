@@ -80,6 +80,17 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
     }
 
+    // Triggered when a complication is tapped
+    func handleUserActivity(_ userInfo: [AnyHashable : Any]?) {
+
+        if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date {
+
+            if let family = date.complicationFamilyFromEncodedDate {
+                print("\(family.description) complication opened app")
+            }
+        }
+    }
+
     func updateApplicationContext() {
         var activeFamilies: [String] = []
 

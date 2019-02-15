@@ -228,6 +228,7 @@
 		B672AB532216A1E200175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B672AB542216A1F100175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B672AB562216B07500175465 /* gallery.ckcomplication in Resources */ = {isa = PBXBuildFile; fileRef = B672AB552216B07500175465 /* gallery.ckcomplication */; };
+		B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */; };
 		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
 		B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */; };
 		B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */; };
@@ -775,6 +776,7 @@
 		B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeAssistantAPI+Actions.swift"; sourceTree = "<group>"; };
 		B672AB3A221664D200175465 /* TodayWidget-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TodayWidget-Bridging-Header.h"; sourceTree = "<group>"; };
 		B672AB552216B07500175465 /* gallery.ckcomplication */ = {isa = PBXFileReference; lastKnownFileType = folder; path = gallery.ckcomplication; sourceTree = "<group>"; };
+		B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+ComplicationDivination.swift"; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B678DB361EA9999C0045312F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotion+StringExtensions.swift"; sourceTree = "<group>"; };
@@ -1571,6 +1573,7 @@
 				B6CC5D972159D10E00833E5D /* ComplicationController.swift */,
 				B69769832162430300FFFAD6 /* WKInterfaceDevice+Size.swift */,
 				B6B2E69F216A940700D39A26 /* ActionRow.swift */,
+				B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */,
 			);
 			path = WatchAppExtension;
 			sourceTree = "<group>";
@@ -3042,6 +3045,7 @@
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
 				B63D28C1215DB72100F3B907 /* WatchComplication.swift in Sources */,
 				B65A38CA215DB9C9003BCD8E /* Strings.swift in Sources */,
+				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
 				B63D28C0215DB71800F3B907 /* Realm+Initialization.swift in Sources */,
 				B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */,
 				B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */,
