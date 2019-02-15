@@ -109,7 +109,7 @@ class TodayViewController: UIViewController, NCWidgetProviding,
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
-            api.handleAction(action: action, source: .Widget)
+            api.handleAction(actionName: action.Name, source: .Widget)
         }.ensure {
             cell.imageView.hideActivityIndicator()
         }.catch { err -> Void in

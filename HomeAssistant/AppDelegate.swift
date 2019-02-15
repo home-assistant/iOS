@@ -361,6 +361,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Communicator.shared.immediateMessageReceivedObservers.add { message in
             print("Received message: ", message.identifier)
+
+            if message.identifier == "ActionRowPressed" {
+                print("Received ActionRowPressed", message, message.content)
+
+                guard let actionName = message.content["ActionName"] as? String else {
+                    print("actionName either does not exist or is not a string in the payload")
+                    message.replyHandler?(["fired": false])
+                    return
+                }
+
+                HomeAssistantAPI.authenticatedAPIPromise.then { api in
+                    api.handleAction(actionName: actionName, source: .Watch)
+                }.done { _ in
+                    message.replyHandler?(["fired": true])
+                }.catch { err -> Void in
+                    print("Error during action event fire: \(err)")
+                    message.replyHandler?(["fired": false])
+                }
+            }
         }
 
         Communicator.shared.blobReceivedObservers.add { blob in

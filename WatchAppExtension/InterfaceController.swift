@@ -11,11 +11,12 @@ import WatchKit
 import Iconic
 import EMTLoadingIndicator
 import RealmSwift
+import Communicator
 
 class InterfaceController: WKInterfaceController {
     @IBOutlet weak var tableView: WKInterfaceTable!
 
-    let allIcons = MaterialDesignIcons.allCases.prefix(5)
+    var actions: Results<Action>?
     let color = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
 
     override func awake(withContext context: Any?) {
@@ -98,25 +99,51 @@ class InterfaceController: WKInterfaceController {
             }
         }
 
+        self.actions = actions
+
     }
 
     override func table(_ table: WKInterfaceTable, didSelectRowAt rowIndex: Int) {
-        let selectedIcon = allIcons[rowIndex]
+        let selectedAction = self.actions![rowIndex]
 
-        print("Selected row at index", rowIndex, selectedIcon.name)
+        print("Selected action row at index", rowIndex, selectedAction)
 
-        print("Show icon!")
+        guard let row = self.tableView.rowController(at: rowIndex) as? ActionRowType else {
+            print("Row at", rowIndex, "is not ActionRowType")
+            return
+        }
 
-        if let row = self.tableView.rowController(at: rowIndex) as? ActionRowType {
-            row.indicator?.prepareImagesForWait()
-            row.indicator?.showWait()
+        row.indicator?.prepareImagesForWait()
+        row.indicator?.showWait()
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                print("Hide!")
-                row.image.stopAnimating()
+        let actionMessage = ImmediateMessage(identifier: "ActionRowPressed",
+                                             content: ["ActionName": selectedAction.Name], replyHandler: { replyDict in
+                                                print("Received reply dictionary", replyDict)
 
-                row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24), color: .white))
-            }
+                                                row.image.stopAnimating()
+
+                                                row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24),
+                                                                                  color: .white))
+        }) { err in
+            print("Received error when sending immediate message", err)
+
+            row.image.stopAnimating()
+
+            row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24),
+                                              color: .white))
+        }
+
+        print("Sending ActionRowPressed message", actionMessage)
+
+        do {
+            try Communicator.shared.send(immediateMessage: actionMessage)
+        } catch let error {
+            print("Action notification send failed:", error)
+
+            row.image.stopAnimating()
+
+            row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24),
+                                              color: .white))
         }
     }
 }
