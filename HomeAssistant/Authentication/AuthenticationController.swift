@@ -33,21 +33,16 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
         return Promise { (resolver: Resolver<String>) in
             self.promiseResolver = resolver
 
-            guard let urlHandlerBase = Bundle.main.object(forInfoDictionaryKey: "ENV_URL_HANDLER"),
-                let urlHandlerBaseStr = urlHandlerBase as? String else {
-                print("Returning because ENV_URL_HANDLER isn't set!")
-                resolver.reject(AuthenticationControllerError.cantFindURLHandler)
-                return
-            }
-
-            let redirectURI = urlHandlerBaseStr + "://auth-callback"
+            var redirectURI = "homeassistant://auth-callback"
 
             var clientID = "https://home-assistant.io/iOS"
 
-            if urlHandlerBaseStr == "homeassistant-dev" {
+            if Current.appConfiguration == .Debug {
                 clientID = "https://home-assistant.io/iOS/dev-auth"
-            } else if urlHandlerBaseStr == "homeassistant-beta" {
+                redirectURI = "homeassistant-dev://auth-callback"
+            } else if Current.appConfiguration == .Beta {
                 clientID = "https://home-assistant.io/iOS/beta-auth"
+                redirectURI = "homeassistant-beta://auth-callback"
             }
 
             var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
