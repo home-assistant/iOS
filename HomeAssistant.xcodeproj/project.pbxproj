@@ -222,6 +222,9 @@
 		B672AB292215114A00175465 /* release@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB232215114900175465 /* release@2x.png */; };
 		B672AB2A2215114A00175465 /* dev@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB242215114A00175465 /* dev@2x.png */; };
 		B672AB2D2215341800175465 /* ShortcutEventConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB2C2215341800175465 /* ShortcutEventConfigurator.swift */; };
+		B672AB3522165A4900175465 /* HomeAssistantAPI+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */; };
+		B672AB3722165A6100175465 /* HomeAssistantAPI+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */; };
+		B672AB39221664A200175465 /* DeviceUID.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E991CBB47EC0027F6CA /* DeviceUID.m */; };
 		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
 		B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */; };
 		B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */; };
@@ -771,6 +774,8 @@
 		B672AB232215114900175465 /* release@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "release@2x.png"; sourceTree = "<group>"; };
 		B672AB242215114A00175465 /* dev@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dev@2x.png"; sourceTree = "<group>"; };
 		B672AB2C2215341800175465 /* ShortcutEventConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortcutEventConfigurator.swift; sourceTree = "<group>"; };
+		B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeAssistantAPI+Actions.swift"; sourceTree = "<group>"; };
+		B672AB3A221664D200175465 /* TodayWidget-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TodayWidget-Bridging-Header.h"; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B678DB361EA9999C0045312F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotion+StringExtensions.swift"; sourceTree = "<group>"; };
@@ -1354,6 +1359,7 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
+				B672AB3322165A3B00175465 /* Actions */,
 				D0EEF32F214E41CE00D1D360 /* Notifications */,
 				D0C8845E211ED0BA00CCB501 /* Authentication */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
@@ -1406,6 +1412,7 @@
 		B66F9F25216B1E61000CAA0F /* TodayWidget */ = {
 			isa = PBXGroup;
 			children = (
+				B672AB3A221664D200175465 /* TodayWidget-Bridging-Header.h */,
 				B66F9F33216B208F000CAA0F /* TodayWidget.entitlements */,
 				B66F9F34216B2119000CAA0F /* TodayWidget Beta.entitlements */,
 				B66F9F35216B2131000CAA0F /* TodayWidget Development.entitlements */,
@@ -1449,6 +1456,14 @@
 				B672AB2C2215341800175465 /* ShortcutEventConfigurator.swift */,
 			);
 			path = Siri;
+			sourceTree = "<group>";
+		};
+		B672AB3322165A3B00175465 /* Actions */ = {
+			isa = PBXGroup;
+			children = (
+				B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */,
+			);
+			path = Actions;
 			sourceTree = "<group>";
 		};
 		B679B1F91E1F3CFB0071D366 /* Views */ = {
@@ -2954,6 +2969,7 @@
 				B6DAC737215F06B100727D2A /* NotificationAction.swift in Sources */,
 				D0148DEF2172502B001842B1 /* DeviceUID.m in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
+				B672AB3522165A4900175465 /* HomeAssistantAPI+Actions.swift in Sources */,
 				B6B6B14C215B1E86003DE2DD /* CLKComplication+Strings.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
@@ -3021,7 +3037,9 @@
 			files = (
 				B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */,
 				B66F9F37216B2D89000CAA0F /* UIColor+CSS3+Hex.swift in Sources */,
+				B672AB3722165A6100175465 /* HomeAssistantAPI+Actions.swift in Sources */,
 				B66F9F36216B2C74000CAA0F /* Action.swift in Sources */,
+				B672AB39221664A200175465 /* DeviceUID.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3997,6 +4015,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.TodayWidget";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "TodayWidget/TodayWidget-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4025,6 +4044,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.TodayWidget";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "TodayWidget/TodayWidget-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4053,6 +4073,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.beta.TodayWidget";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "TodayWidget/TodayWidget-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

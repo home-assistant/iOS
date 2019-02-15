@@ -10,7 +10,7 @@ import Foundation
 import KeychainAccess
 
 public class SettingsStore {
-    let keychain = Keychain(service: Bundle.main.bundleIdentifier!)
+    let keychain = Constants.Keychain
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
     public var tokenInfo: TokenInfo? {
@@ -42,7 +42,6 @@ public class SettingsStore {
             if !self.hasMigratedConnection {
                 self.migrateConnectionInfo()
             }
-
             guard let connectionData = try? keychain.getData("connectionInfo"),
                 let unwrappedData = connectionData else {
                     return nil

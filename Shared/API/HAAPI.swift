@@ -19,7 +19,7 @@ import RealmSwift
 import UserNotifications
 import Intents
 
-private let keychain = Keychain(service: Bundle.main.bundleIdentifier!)
+private let keychain = Constants.Keychain
 
 // swiftlint:disable file_length
 

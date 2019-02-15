@@ -599,8 +599,6 @@ class SettingsDetailViewController: FormViewController {
                     }, onDismiss: { vc in
                         _ = vc.navigationController?.popViewController(animated: true)
 
-                        print("DISMISS")
-
                         if let vc = vc as? ActionConfigurator {
                             if vc.shouldSave == false {
                                 print("Not saving action to DB and returning early!")

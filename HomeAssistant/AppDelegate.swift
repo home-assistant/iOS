@@ -20,7 +20,7 @@ import Communicator
 import Iconic
 import arek
 
-let keychain = Keychain(service: Bundle.main.bundleIdentifier!)
+let keychain = Constants.Keychain
 
 let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 

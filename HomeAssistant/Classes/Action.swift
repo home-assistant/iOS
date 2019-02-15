@@ -7,11 +7,8 @@
 //
 
 import Foundation
-import UIKit
 import RealmSwift
 import ObjectMapper
-import Iconic
-import UIColor_Hex_Swift
 
 public class Action: Object, Mappable, NSCoding {
     @objc dynamic var Name: String = ""
@@ -47,8 +44,6 @@ public class Action: Object, Mappable, NSCoding {
         let isWriteRequired = realm.isInWriteTransaction == false
         isWriteRequired ? realm.beginWrite() : ()
 
-        print("HELLO")
-
         if map.mappingType == .toJSON {
             var name = self.Name
             name <- map["Name"]
@@ -65,5 +60,19 @@ public class Action: Object, Mappable, NSCoding {
         CreatedAt        <- map["CreatedAt"]
 
         isWriteRequired ? try? realm.commitWrite() : ()
+    }
+}
+
+public enum ActionSource: CaseIterable {
+    case Watch
+    case Widget
+
+    var description: String {
+        switch self {
+        case .Watch:
+            return "watch"
+        case .Widget:
+            return "widget"
+        }
     }
 }

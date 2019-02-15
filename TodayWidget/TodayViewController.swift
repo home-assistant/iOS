@@ -12,6 +12,7 @@ import Iconic
 import Shared
 import RealmSwift
 import UIColor_Hex_Swift
+import PromiseKit
 
 class TodayViewController: UIViewController, NCWidgetProviding,
                            UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
@@ -28,6 +29,13 @@ class TodayViewController: UIViewController, NCWidgetProviding,
         super.viewDidAppear(animated)
 
         MaterialDesignIcons.register()
+
+        Current.deviceIDProvider = { DeviceUID.uid() }
+
+        if let tokenInfo = Current.settingsStore.tokenInfo,
+            let connectionInfo = Current.settingsStore.connectionInfo {
+            Current.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
+        }
 
         actions = realm.objects(Action.self).sorted(byKeyPath: "Position")
 
@@ -123,5 +131,15 @@ class TodayViewController: UIViewController, NCWidgetProviding,
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("User tapped on item \(indexPath.row)")
+
+        let action = self.actions![indexPath.row]
+
+        firstly {
+            HomeAssistantAPI.authenticatedAPIPromise
+        }.then { api in
+            api.handleAction(action: action, source: .Widget)
+        }.catch { err -> Void in
+            print("Error: \(err)")
+        }
     }
 }

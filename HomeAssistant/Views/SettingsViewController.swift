@@ -83,7 +83,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         let api = HomeAssistantAPI.authenticatedAPI()
 
         // Initial state
-        let keychain = Keychain(service: Bundle.main.bundleIdentifier!)
+        let keychain = Constants.Keychain
         self.legacyPassword = keychain["apiPassword"]
         self.useLegacyAuth = Current.settingsStore.tokenInfo == nil && self.legacyPassword != nil
         self.connectionInfo = Current.settingsStore.connectionInfo
@@ -845,7 +845,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 }.then { confirmedConnectionInfo -> Promise<ConfigResponse> in
                     // At this point we are authenticated with modern auth. Clear legacy password.
                     print("Confirmed connection to server: " + connectionInfo.activeURL.absoluteString)
-                    let keychain = Keychain(service: Bundle.main.bundleIdentifier!)
+                    let keychain = Constants.Keychain
                     keychain["apiPassword"] = nil
                     Current.settingsStore.connectionInfo = confirmedConnectionInfo
                     guard let tokenInfo = Current.settingsStore.tokenInfo else {
