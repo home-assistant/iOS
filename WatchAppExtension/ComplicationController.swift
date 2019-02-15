@@ -11,6 +11,10 @@ import RealmSwift
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
 
+    // Helpful resources
+    // https://github.com/LoopKit/Loop/issues/816
+    // https://crunchybagel.com/detecting-which-complication-was-tapped/
+
     // MARK: - Timeline Configuration
 
     func getSupportedTimeTravelDirections(for complication: CLKComplication, withHandler
@@ -29,24 +33,36 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
                                  withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void) {
         // Call the handler with the current timeline entry
 
-        let realm = Realm.live()
+        print("Providing template for", complication.family.description)
 
         let matchedFamily = ComplicationGroupMember(family: complication.family)
 
-        let pred = NSPredicate(format: "rawFamily == %@", matchedFamily.rawValue)
-        guard let config = realm.objects(WatchComplication.self).filter(pred).first else {
-            print("No configured complication found for \(matchedFamily.rawValue), returning family specific error")
+        guard let date = Date().encodedForComplication(family: complication.family) else {
+            print("Unable to generate complication family specific date, returning family specific error")
             handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: matchedFamily.errorTemplate!))
+            return
+        }
+
+        let fallback = CLKComplicationTimelineEntry(date: date, complicationTemplate: matchedFamily.errorTemplate!)
+
+        let pred = NSPredicate(format: "rawFamily == %@", matchedFamily.rawValue)
+        guard let config = Realm.live().objects(WatchComplication.self).filter(pred).first else {
+            print("No configured complication found for \(matchedFamily.rawValue), returning family specific error")
+            handler(fallback)
             return
         }
 
         print("complicationObjects", config)
 
-        print("Providing template for", complication.family.description)
-
-        if let template = config.CLKComplicationTemplate(family: complication.family) {
-            handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template))
+        guard let template = config.CLKComplicationTemplate(family: complication.family) else {
+            print("Unable to generate template for \(matchedFamily.rawValue), returning family specific error")
+            handler(fallback)
+            return
         }
+
+        print("Generated template for", complication.family.description, template)
+
+        handler(CLKComplicationTimelineEntry(date: date, complicationTemplate: template))
     }
 
     // MARK: - Placeholder Templates
@@ -55,6 +71,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
                                       withHandler handler: @escaping (CLKComplicationTemplate?) -> Void) {
         // This method will be called once per supported complication, and the results will be cached
 
+        print("Get sample template!", ComplicationGroupMember(family: complication.family).description)
         handler(ComplicationGroupMember(family: complication.family).errorTemplate)
     }
 

@@ -1,0 +1,21 @@
+{
+  "tintColor" : {
+    "green" : 0.74000000953674316,
+    "red" : 0.25,
+    "alpha" : 1,
+    "blue" : 0.95999997854232788
+  },
+  "class" : "CLKComplicationTemplateModularSmallStackImage",
+  "line1ImageProvider" : {
+    "onePieceImage" : {
+      "file name" : "F34B74CE-2D1D-442B-8A53-F56610A6B3AC.png",
+      "scale" : 2
+    }
+  },
+  "line2TextProvider" : {
+    "class" : "CLKSimpleTextProvider",
+    "text" : "A template for displaying a single image with a short line of text below it. has not been configured in the app"
+  },
+  "highlightLine2" : false,
+  "version" : 30000
+}

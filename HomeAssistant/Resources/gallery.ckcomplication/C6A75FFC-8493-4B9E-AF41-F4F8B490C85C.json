@@ -1,0 +1,20 @@
+{
+  "tintColor" : {
+    "green" : 0.74000000953674316,
+    "red" : 0.25,
+    "alpha" : 1,
+    "blue" : 0.95999997854232788
+  },
+  "class" : "CLKComplicationTemplateUtilitarianSmallFlat",
+  "textProvider" : {
+    "class" : "CLKSimpleTextProvider",
+    "text" : "A template for displaying an image and text in a single line. has not been configured in the app"
+  },
+  "version" : 30000,
+  "imageProvider" : {
+    "onePieceImage" : {
+      "file name" : "1CF970AD-5B8C-471D-9626-4082F9F35D96.png",
+      "scale" : 2
+    }
+  }
+}

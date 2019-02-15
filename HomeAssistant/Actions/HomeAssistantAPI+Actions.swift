@@ -13,14 +13,14 @@ import Shared
 
 extension HomeAssistantAPI {
 
-    func handleAction(action: Action, source: ActionSource) -> Promise<Bool> {
+    func handleAction(actionName: String, source: ActionSource) -> Promise<Bool> {
         return Promise { seal in
             guard let api = HomeAssistantAPI.authenticatedAPI() else {
                 throw APIError.notConfigured
             }
 
             let device = Device()
-            let eventData: [String: Any] = ["actionName": action.Name,
+            let eventData: [String: Any] = ["actionName": actionName,
                                             "triggerSource": source.description,
                                             "sourceDevicePermanentID": Current.deviceIDProvider(),
                                             "sourceDeviceName": device.name,

@@ -336,113 +336,76 @@ public enum ComplicationGroupMember: String {
     var errorTemplate: CLKComplicationTemplate? {
         MaterialDesignIcons.register()
 
-        let errorIcon = MaterialDesignIcons.alertCircleOutlineIcon
+        let logoImage = UIImage(named: "RoundLogo")!
+        let templateImage = UIImage(named: "TemplateLogo")!
+        let hassColor = UIColor(red: 0.25, green: 0.74, blue: 0.96, alpha: 1.0)
 
         switch self {
         case .circularSmall:
-            let template = CLKComplicationTemplateCircularSmallStackImage()
-            if let imageSize = ComplicationTemplate.CircularSmallStackImage.imageSize {
-                template.line1ImageProvider = CLKImageProvider(onePieceImage: errorIcon.image(ofSize: imageSize,
-                                                                                              color: .clear))
-            }
-            template.line2TextProvider = CLKSimpleTextProvider(text: "??")
-            template.tintColor = .red
+            let template = CLKComplicationTemplateCircularSmallSimpleImage()
+            template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
+            template.tintColor = hassColor
             return template
         case .extraLarge:
-            let template = CLKComplicationTemplateExtraLargeStackImage()
-            if let imageSize = ComplicationTemplate.ExtraLargeStackImage.imageSize {
-                template.line1ImageProvider = CLKImageProvider(onePieceImage: errorIcon.image(ofSize: imageSize,
-                                                                                              color: .clear))
-            }
-            template.line2TextProvider = CLKSimpleTextProvider(text: "??")
-            template.tintColor = .red
+            let template = CLKComplicationTemplateExtraLargeSimpleImage()
+            template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
+            template.tintColor = hassColor
             return template
         case .graphicBezel:
             let template = CLKComplicationTemplateGraphicBezelCircularText()
             let imageTemplate = CLKComplicationTemplateGraphicCircularImage()
-            if let imageSize = ComplicationTemplate.GraphicCircularImage.imageSize {
-                let image = errorIcon.image(ofSize: imageSize, color: .red)
-                imageTemplate.imageProvider = CLKFullColorImageProvider(fullColorImage: image)
-            }
+            imageTemplate.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
             template.circularTemplate = imageTemplate
             template.textProvider = CLKSimpleTextProvider(text: "??")
-            template.tintColor = .red
             return template
         case .graphicCircular:
             let template = CLKComplicationTemplateGraphicCircularImage()
-            if let imageSize = ComplicationTemplate.GraphicCircularImage.imageSize {
-                let image = errorIcon.image(ofSize: imageSize, color: .red)
-                template.imageProvider = CLKFullColorImageProvider(fullColorImage: image)
-            }
-            template.tintColor = .red
+            template.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
             return template
         case .graphicCorner:
-            let template = CLKComplicationTemplateGraphicCornerTextImage()
-            if let imageSize = ComplicationTemplate.GraphicCornerTextImage.imageSize {
-                let image = errorIcon.image(ofSize: imageSize, color: .red)
-                template.imageProvider = CLKFullColorImageProvider(fullColorImage: image)
-            }
-            template.textProvider = CLKSimpleTextProvider(text: "??")
-            template.tintColor = .red
+            let template = CLKComplicationTemplateGraphicCornerCircularImage()
+            template.imageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
             return template
         case .graphicRectangular:
             let template = CLKComplicationTemplateGraphicRectangularStandardBody()
-            if let imageSize = ComplicationTemplate.GraphicRectangularStandardBody.imageSize {
-                let image = errorIcon.image(ofSize: imageSize, color: .red)
-                template.headerImageProvider = CLKFullColorImageProvider(fullColorImage: image)
-            }
+            template.headerImageProvider = CLKFullColorImageProvider(fullColorImage: logoImage)
             template.headerTextProvider = CLKSimpleTextProvider(text: "Not configured")
             let desc = ComplicationTemplate.GraphicRectangularStandardBody.description
             template.body1TextProvider = CLKSimpleTextProvider(text: desc)
             template.body2TextProvider = CLKSimpleTextProvider(text: "has not been configured")
-            template.tintColor = .red
             return template
         case .modularLarge:
             let template = CLKComplicationTemplateModularLargeTallBody()
             template.headerTextProvider = CLKSimpleTextProvider(text: "Not configured")
             let desc = ComplicationTemplate.GraphicRectangularStandardBody.description
             template.bodyTextProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
-            template.tintColor = .red
+            template.tintColor = hassColor
             return template
         case .modularSmall:
             let template = CLKComplicationTemplateModularSmallStackImage()
-            if let imageSize = ComplicationTemplate.ModularSmallStackImage.imageSize {
-                let image = errorIcon.image(ofSize: imageSize, color: .red)
-                template.line1ImageProvider = CLKImageProvider(onePieceImage: image)
-            }
+            template.line1ImageProvider = CLKImageProvider(onePieceImage: templateImage)
             let desc = ComplicationTemplate.ModularSmallStackImage.description
             template.line2TextProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
-            template.tintColor = .red
+            template.tintColor = hassColor
             return template
         case .utilitarianLarge:
             let template = CLKComplicationTemplateUtilitarianLargeFlat()
-            if let imageSize = ComplicationTemplate.UtilitarianLargeFlat.imageSize {
-                let image = errorIcon.image(ofSize: imageSize, color: .red)
-                template.imageProvider = CLKImageProvider(onePieceImage: image)
-            }
+            template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
             let desc = ComplicationTemplate.UtilitarianLargeFlat.description
             template.textProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
-            template.tintColor = .red
+            template.tintColor = hassColor
             return template
         case .utilitarianSmall:
             let template = CLKComplicationTemplateUtilitarianSmallSquare()
-            if let imageSize = ComplicationTemplate.UtilitarianSmallFlat.imageSize {
-                let image = errorIcon.image(ofSize: imageSize, color: .red)
-                template.imageProvider = CLKImageProvider(onePieceImage: image)
-            } else {
-                return nil
-            }
-            template.tintColor = .red
+            template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
+            template.tintColor = hassColor
             return template
         case .utilitarianSmallFlat:
             let template = CLKComplicationTemplateUtilitarianSmallFlat()
-            if let imageSize = ComplicationTemplate.UtilitarianSmallFlat.imageSize {
-                let image = errorIcon.image(ofSize: imageSize, color: .red)
-                template.imageProvider = CLKImageProvider(onePieceImage: image)
-            }
+            template.imageProvider = CLKImageProvider(onePieceImage: templateImage)
             let desc = ComplicationTemplate.UtilitarianSmallFlat.description
             template.textProvider = CLKSimpleTextProvider(text: "\(desc) has not been configured in the app")
-            template.tintColor = .red
+            template.tintColor = hassColor
             return template
         }
     }

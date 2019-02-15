@@ -80,6 +80,17 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
     }
 
+    // Triggered when a complication is tapped
+    func handleUserActivity(_ userInfo: [AnyHashable : Any]?) {
+
+        if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date {
+
+            if let family = date.complicationFamilyFromEncodedDate {
+                print("\(family.description) complication opened app")
+            }
+        }
+    }
+
     func updateApplicationContext() {
         var activeFamilies: [String] = []
 
@@ -148,13 +159,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                         }
                     }
                 }
-//                let realm = Realm.live()
-//
-//                for actionData in allData! {
-//                    if let action = try NSKeyedUnarchiver.unarchiveObject(with: actionData) as? Action {
-//                        print("ACTION", action)
-//                    }
-//                }
             }
         }
 
