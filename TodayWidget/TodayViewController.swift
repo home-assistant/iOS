@@ -49,8 +49,9 @@ class TodayViewController: UIViewController, NCWidgetProviding,
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cellId")
+        collectionView.register(ActionButtonCell.self, forCellWithReuseIdentifier: "actionCell")
         collectionView.backgroundColor = .clear
+
         view.addSubview(collectionView)
     }
 
@@ -69,44 +70,11 @@ class TodayViewController: UIViewController, NCWidgetProviding,
 
         let action = self.actions![indexPath.row]
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath)
-        cell.backgroundColor = UIColor(hex: action.BackgroundColor)
+        let cellID = "actionCell"
+        // swiftlint:disable:next force_cast
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! ActionButtonCell
 
-        cell.layer.cornerRadius = 5.0
-
-        cell.contentView.layer.cornerRadius = 2.0
-        cell.contentView.layer.borderWidth = 1.0
-        cell.contentView.layer.borderColor = UIColor.clear.cgColor
-        cell.contentView.layer.masksToBounds = true
-
-        cell.layer.shadowColor = UIColor.black.cgColor
-        cell.layer.shadowOffset = CGSize(width: 0, height: 2.0)
-        cell.layer.shadowRadius = 2.0
-        cell.layer.shadowOpacity = 0.5
-        cell.layer.masksToBounds = false
-        cell.layer.shadowPath = UIBezierPath(roundedRect: cell.bounds,
-                                             cornerRadius: cell.contentView.layer.cornerRadius).cgPath
-
-        let centerY = (cell.frame.size.height / 2) - 50
-
-        let title = UILabel(frame: CGRect(x: 60, y: centerY, width: 200, height: 100))
-
-        let size = CGRect(x: 15, y: 0, width: 44, height: 44)
-
-        let imageview: UIImageView = UIImageView(frame: size)
-        let icon = MaterialDesignIcons.init(named: action.IconName)
-        let image: UIImage = icon.image(ofSize: CGSize(width: 22, height: 22), color: UIColor(hex: action.IconColor))
-        imageview.image = image
-
-        title.textAlignment = .natural
-        title.clipsToBounds = true
-        title.numberOfLines = 1
-        title.font = title.font.withSize(UIFont.smallSystemFontSize)
-        title.text = action.Text
-        title.textColor = UIColor(hex: action.TextColor)
-
-        cell.contentView.addSubview(title)
-        cell.contentView.addSubview(imageview)
+        cell.setup(action)
 
         return cell
     }
@@ -132,14 +100,110 @@ class TodayViewController: UIViewController, NCWidgetProviding,
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("User tapped on item \(indexPath.row)")
 
+        guard let cell = collectionView.cellForItem(at: indexPath) as? ActionButtonCell else { return }
+
+        cell.imageView.showActivityIndicator()
+
         let action = self.actions![indexPath.row]
 
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
             api.handleAction(action: action, source: .Widget)
+        }.ensure {
+            cell.imageView.hideActivityIndicator()
         }.catch { err -> Void in
-            print("Error: \(err)")
+            print("Error during action event fire: \(err)")
         }
+    }
+}
+
+class ActionButtonCell: UICollectionViewCell {
+    var imageView = UIImageView(frame: CGRect(x: 15, y: 0, width: 44, height: 44))
+    var title = UILabel(frame: CGRect(x: 60, y: 60, width: 200, height: 100))
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        self.layer.cornerRadius = 5.0
+
+        self.contentView.layer.cornerRadius = 2.0
+        self.contentView.layer.borderWidth = 1.0
+        self.contentView.layer.borderColor = UIColor.clear.cgColor
+        self.contentView.layer.masksToBounds = true
+
+        self.layer.shadowColor = UIColor.black.cgColor
+        self.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+        self.layer.shadowRadius = 2.0
+        self.layer.shadowOpacity = 0.5
+        self.layer.masksToBounds = false
+        self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds,
+                                             cornerRadius: self.contentView.layer.cornerRadius).cgPath
+
+        let centerY = (self.frame.size.height / 2) - 50
+
+        self.title = UILabel(frame: CGRect(x: 60, y: centerY, width: 200, height: 100))
+
+        self.title.textAlignment = .natural
+        self.title.clipsToBounds = true
+        self.title.numberOfLines = 1
+        self.title.font = self.title.font.withSize(UIFont.smallSystemFontSize)
+
+        self.contentView.addSubview(self.title)
+        self.contentView.addSubview(self.imageView)
+    }
+
+    public func setup(_ action: Action) {
+        DispatchQueue.main.async {
+            self.backgroundColor = UIColor(hex: action.BackgroundColor)
+
+            let icon = MaterialDesignIcons.init(named: action.IconName)
+            self.imageView.image = icon.image(ofSize: CGSize(width: 22, height: 22),
+                                              color: UIColor(hex: action.IconColor))
+            self.title.text = action.Text
+            self.title.textColor = UIColor(hex: action.TextColor)
+        }
+    }
+}
+
+private var activityIndicatorAssociationKey: UInt8 = 0
+
+extension UIImageView {
+    var activityIndicator: UIActivityIndicatorView! {
+        get {
+            return objc_getAssociatedObject(self, &activityIndicatorAssociationKey) as? UIActivityIndicatorView
+        }
+        set(newValue) {
+            objc_setAssociatedObject(self, &activityIndicatorAssociationKey, newValue, .OBJC_ASSOCIATION_RETAIN)
+        }
+    }
+
+    func showActivityIndicator() {
+
+        if self.activityIndicator == nil {
+            self.activityIndicator = UIActivityIndicatorView(style: .gray)
+
+            self.activityIndicator.hidesWhenStopped = true
+            self.activityIndicator.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+            self.activityIndicator.style = UIActivityIndicatorView.Style.whiteLarge
+            self.activityIndicator.center = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)
+            self.activityIndicator.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin,
+                                                       .flexibleTopMargin, .flexibleBottomMargin]
+            self.activityIndicator.isUserInteractionEnabled = false
+
+            OperationQueue.main.addOperation({ () -> Void in
+                self.addSubview(self.activityIndicator)
+            })
+        }
+
+        OperationQueue.main.addOperation({ () -> Void in
+            self.activityIndicator.startAnimating()
+        })
+    }
+
+    func hideActivityIndicator() {
+        OperationQueue.main.addOperation({ () -> Void in
+            self.activityIndicator.stopAnimating()
+        })
     }
 }

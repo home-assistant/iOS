@@ -31,7 +31,7 @@
 			<key>isShown</key>
 			<true/>
 			<key>orderHint</key>
-			<integer>9</integer>
+			<integer>10</integer>
 		</dict>
 		<key>Intents.xcscheme</key>
 		<dict>
@@ -61,7 +61,7 @@
 		<key>TodayWidget.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>59</integer>
+			<integer>9</integer>
 		</dict>
 		<key>WatchApp (Complication).xcscheme</key>
 		<dict>
