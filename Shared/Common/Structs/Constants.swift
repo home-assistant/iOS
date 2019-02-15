@@ -7,7 +7,9 @@
 //
 
 import Foundation
+#if os(iOS)
 import KeychainAccess
+#endif
 
 /// Contains shared constants
 public struct Constants {
@@ -26,8 +28,10 @@ public struct Constants {
         return "group." + self.BundleID.lowercased()
     }
 
+    #if os(iOS)
     /// An initialized Keychain from KeychainAccess.
     public static var Keychain: KeychainAccess.Keychain {
         return KeychainAccess.Keychain(service: self.BundleID)
     }
+    #endif
 }
