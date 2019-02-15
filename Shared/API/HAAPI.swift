@@ -531,7 +531,7 @@ public class HomeAssistantAPI {
         ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
         ident.DeviceModel = deviceKitDevice.model
         ident.DeviceName = deviceKitDevice.name
-//        ident.DevicePermanentID = Current.deviceIDProvider()
+        ident.DevicePermanentID = Current.deviceIDProvider()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
@@ -584,7 +584,7 @@ public class HomeAssistantAPI {
         ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
         ident.DeviceID = Current.settingsStore.deviceID
         ident.DeviceName = deviceKitDevice.name
-//        ident.DevicePermanentID = Current.deviceIDProvider()
+        ident.DevicePermanentID = Current.deviceIDProvider()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
@@ -623,7 +623,7 @@ public class HomeAssistantAPI {
         ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
         ident.DeviceModel = deviceKitDevice.model
         ident.DeviceName = deviceKitDevice.name
-//        ident.DevicePermanentID = Current.deviceIDProvider()
+        ident.DevicePermanentID = Current.deviceIDProvider()
         ident.DeviceSystemName = deviceKitDevice.systemName
         ident.DeviceSystemVersion = deviceKitDevice.systemVersion
         ident.DeviceType = deviceKitDevice.description
