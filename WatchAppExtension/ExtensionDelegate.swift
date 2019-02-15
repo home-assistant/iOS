@@ -102,17 +102,17 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         print("active families", activeFamilies)
 
-        let context = Context(content: ["activeComplications": activeFamilies, "model": getModelName()])
-
-        let content = UNMutableNotificationContent()
-        content.title = "Context"
-        content.body = context.content.debugDescription
-        content.sound = UNNotificationSound.default
-
-        let notificationRequest =
-            UNNotificationRequest.init(identifier: "context",
-                                       content: content, trigger: nil)
-        UNUserNotificationCenter.current().add(notificationRequest)
+//        let context = Context(content: ["activeComplications": activeFamilies, "model": getModelName()])
+//
+//        let content = UNMutableNotificationContent()
+//        content.title = "Context"
+//        content.body = context.content.debugDescription
+//        content.sound = UNNotificationSound.default
+//
+//        let notificationRequest =
+//            UNNotificationRequest.init(identifier: "context",
+//                                       content: content, trigger: nil)
+//        UNUserNotificationCenter.current().add(notificationRequest)
 
         do {
             try Communicator.shared.sync(context: context)
