@@ -1454,6 +1454,15 @@
 			path = Actions;
 			sourceTree = "<group>";
 		};
+		B672AB592216C41000175465 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				B69769832162430300FFFAD6 /* WKInterfaceDevice+Size.swift */,
+				B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		B679B1F91E1F3CFB0071D366 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -1567,13 +1576,12 @@
 		B6CC5D922159D10E00833E5D /* WatchAppExtension */ = {
 			isa = PBXGroup;
 			children = (
+				B672AB592216C41000175465 /* Utilities */,
 				B6CC5DAA2159D60900833E5D /* Resources */,
 				B6CC5D932159D10E00833E5D /* InterfaceController.swift */,
 				B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */,
 				B6CC5D972159D10E00833E5D /* ComplicationController.swift */,
-				B69769832162430300FFFAD6 /* WKInterfaceDevice+Size.swift */,
 				B6B2E69F216A940700D39A26 /* ActionRow.swift */,
-				B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */,
 			);
 			path = WatchAppExtension;
 			sourceTree = "<group>";
