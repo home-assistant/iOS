@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>2.0.0</string>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>11</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -29,24 +29,24 @@
 	<dict>
 		<key>NSExtensionAttributes</key>
 		<dict>
-			<key>UNNotificationExtensionUserInteractionEnabled</key>
-			<true/>
 			<key>UNNotificationExtensionCategory</key>
 			<array>
 				<string>camera</string>
-                <string>camera1</string>
-                <string>camera2</string>
-                <string>camera3</string>
-                <string>camera4</string>
-                <string>map</string>
-                <string>map1</string>
-                <string>map2</string>
-                <string>map3</string>
-                <string>map4</string>
-                <string>map5</string>
+				<string>camera1</string>
+				<string>camera2</string>
+				<string>camera3</string>
+				<string>camera4</string>
+				<string>map</string>
+				<string>map1</string>
+				<string>map2</string>
+				<string>map3</string>
+				<string>map4</string>
+				<string>map5</string>
 			</array>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
 			<real>1</real>
+			<key>UNNotificationExtensionUserInteractionEnabled</key>
+			<true/>
 		</dict>
 		<key>NSExtensionMainStoryboard</key>
 		<string>MainInterface</string>
