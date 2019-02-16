@@ -185,6 +185,12 @@
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
 		B65A38CA215DB9C9003BCD8E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
+		B65BF9362217F497005745A4 /* old-beta@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9302217F496005745A4 /* old-beta@3x.png */; };
+		B65BF9372217F497005745A4 /* old-release@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9312217F497005745A4 /* old-release@2x.png */; };
+		B65BF9382217F497005745A4 /* old-beta@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9322217F497005745A4 /* old-beta@2x.png */; };
+		B65BF9392217F497005745A4 /* old-dev@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9332217F497005745A4 /* old-dev@2x.png */; };
+		B65BF93A2217F497005745A4 /* old-dev@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9342217F497005745A4 /* old-dev@3x.png */; };
+		B65BF93B2217F497005745A4 /* old-release@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9352217F497005745A4 /* old-release@3x.png */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
@@ -730,6 +736,12 @@
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
 		B657A90D1CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HAAPI.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		B65BF9302217F496005745A4 /* old-beta@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-beta@3x.png"; sourceTree = "<group>"; };
+		B65BF9312217F497005745A4 /* old-release@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-release@2x.png"; sourceTree = "<group>"; };
+		B65BF9322217F497005745A4 /* old-beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-beta@2x.png"; sourceTree = "<group>"; };
+		B65BF9332217F497005745A4 /* old-dev@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-dev@2x.png"; sourceTree = "<group>"; };
+		B65BF9342217F497005745A4 /* old-dev@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-dev@3x.png"; sourceTree = "<group>"; };
+		B65BF9352217F497005745A4 /* old-release@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-release@3x.png"; sourceTree = "<group>"; };
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
 		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
 		B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestJSON.swift; sourceTree = "<group>"; };
@@ -1422,6 +1434,12 @@
 				B672AB0C22150ED500175465 /* red@3x.png */,
 				B672AB0422150ED500175465 /* white@2x.png */,
 				B672AB0722150ED500175465 /* white@3x.png */,
+				B65BF9322217F497005745A4 /* old-beta@2x.png */,
+				B65BF9302217F496005745A4 /* old-beta@3x.png */,
+				B65BF9332217F497005745A4 /* old-dev@2x.png */,
+				B65BF9342217F497005745A4 /* old-dev@3x.png */,
+				B65BF9312217F497005745A4 /* old-release@2x.png */,
+				B65BF9352217F497005745A4 /* old-release@3x.png */,
 			);
 			path = "Alternate Icons";
 			sourceTree = "<group>";
@@ -2322,6 +2340,7 @@
 				B60616821D1F117700249C11 /* US-EN-Alexa-Front-Door-Unlocked.wav in Resources */,
 				B60616961D1F117800249C11 /* US-EN-Alexa-Son-Is-Arriving.wav in Resources */,
 				B60616581D1F117700249C11 /* AlexaSounds.csv in Resources */,
+				B65BF9372217F497005745A4 /* old-release@2x.png in Resources */,
 				B606164C1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Hallway-Lights.wav in Resources */,
 				B60616B81D1F117800249C11 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav in Resources */,
 				B606164D1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Kitchen-Light.wav in Resources */,
@@ -2332,10 +2351,13 @@
 				B60616B21D1F117800249C11 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */,
 				B60616171D1F117700249C11 /* US-EN-Morgan-Freeman-Friend-Is-Arriving.wav in Resources */,
 				B606160C1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Opened.wav in Resources */,
+				B65BF9362217F497005745A4 /* old-beta@3x.png in Resources */,
 				B60616241D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Bedroom.wav in Resources */,
+				B65BF93A2217F497005745A4 /* old-dev@3x.png in Resources */,
 				B672AB252215114A00175465 /* beta@2x.png in Resources */,
 				B60616531D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Basement.wav in Resources */,
 				B60616B11D1F117800249C11 /* US-EN-Daisy-Front-Window-Open.wav in Resources */,
+				B65BF93B2217F497005745A4 /* old-release@3x.png in Resources */,
 				B606161D1D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Opened.wav in Resources */,
 				B60616B51D1F117800249C11 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */,
 				B606161C1D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Closed.wav in Resources */,
@@ -2349,6 +2371,7 @@
 				B60616571D1F117700249C11 /* US-EN-Morgan-Freeman-Wife-Is-Arriving.wav in Resources */,
 				B60616391D1F117700249C11 /* US-EN-Morgan-Freeman-Son-Is-Arriving.wav in Resources */,
 				B60616B71D1F117800249C11 /* US-EN-Daisy-Master-Bath-Leak.wav in Resources */,
+				B65BF9382217F497005745A4 /* old-beta@2x.png in Resources */,
 				B60616901D1F117700249C11 /* US-EN-Alexa-Patio-Door-Opened.wav in Resources */,
 				B606161E1D1F117700249C11 /* US-EN-Morgan-Freeman-Girlfriend-Is-Arriving.wav in Resources */,
 				B60616191D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Locked.wav in Resources */,
@@ -2417,6 +2440,7 @@
 				B60616101D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav in Resources */,
 				B606167D1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav in Resources */,
 				B60616931D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Basement.wav in Resources */,
+				B65BF9392217F497005745A4 /* old-dev@2x.png in Resources */,
 				B60616271D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav in Resources */,
 				B606167C1D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav in Resources */,
 				B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */,

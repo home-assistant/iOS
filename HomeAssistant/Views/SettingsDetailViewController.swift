@@ -58,8 +58,12 @@ class SettingsDetailViewController: FormViewController {
                         $0.selectorTitle = "App Icon"
                     }.onPresent { _, to in
                         to.selectableRowCellUpdate = { (cell, row) in
+                            cell.height = { return 72 }
+                            cell.imageView?.layer.masksToBounds = true
+                            cell.imageView?.layer.cornerRadius = 12.63
                             guard let newIcon = row.selectableValue else { return }
                             cell.imageView?.image = UIImage(named: newIcon.rawValue)
+
                             cell.textLabel?.text = newIcon.title
                         }
                     }.onChange { row in
@@ -658,6 +662,9 @@ enum AppIcon: String, CaseIterable {
     case Purple = "purple"
     case Red = "red"
     case White = "white"
+    case OldRelease = "old-release"
+    case OldBeta = "old-beta"
+    case OldDev = "old-dev"
 
     var title: String {
         switch self {
@@ -681,6 +688,12 @@ enum AppIcon: String, CaseIterable {
             return "Red"
         case .White:
             return "White"
+        case .OldRelease:
+            return "Old Release"
+        case .OldBeta:
+            return "Old Beta"
+        case .OldDev:
+            return "Old Dev"
         }
     }
 }
