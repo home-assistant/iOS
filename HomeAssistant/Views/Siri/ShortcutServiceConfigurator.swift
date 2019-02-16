@@ -336,7 +336,11 @@ class ShortcutServiceConfigurator: FormViewController {
 
         let validationResult = self.form.validate()
         if validationResult.count == 0 {
-            let formData = form.values()
+            var formData = form.values()
+
+            formData.removeValue(forKey: "name")
+            formData.removeValue(forKey: "notifyOnRun")
+            formData.removeValue(forKey: "add_to_siri")
 
             let serviceIntent = CallServiceIntent(domain: domain, service: serviceName, payload: formData)
 
