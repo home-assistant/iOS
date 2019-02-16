@@ -94,7 +94,7 @@ class ShortcutServiceConfigurator: FormViewController {
             +++ Section(header: "Settings", footer: "") {
                 $0.tag = "settings"
             }
-            <<< TextRow("name") {
+            <<< TextRow("shortcutName") {
                 $0.title = L10n.SiriShortcuts.Configurator.Settings.Name.title
                 $0.add(rule: RuleRequired())
             }
@@ -339,7 +339,7 @@ class ShortcutServiceConfigurator: FormViewController {
         if validationResult.count == 0 {
             var formData = form.values().filter { $0.value != nil }
 
-            formData.removeValue(forKey: "name")
+            formData.removeValue(forKey: "shortcutName")
             formData.removeValue(forKey: "notifyOnRun")
             formData.removeValue(forKey: "add_to_siri")
 
