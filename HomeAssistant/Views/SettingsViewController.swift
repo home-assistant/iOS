@@ -361,7 +361,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 $0.hidden = Condition(booleanLiteral: !self.configured)
             }
             <<< ButtonRow("generalSettings") {
-                $0.hidden = Condition(booleanLiteral: !OpenInChromeController().isChromeInstalled())
                 $0.title = L10n.Settings.GeneralSettingsButton.title
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     let view = SettingsDetailViewController()
