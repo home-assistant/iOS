@@ -337,7 +337,7 @@ class ShortcutServiceConfigurator: FormViewController {
 
         let validationResult = self.form.validate()
         if validationResult.count == 0 {
-            var formData = form.values()
+            var formData = form.values().filter { $0.value != nil }
 
             formData.removeValue(forKey: "name")
             formData.removeValue(forKey: "notifyOnRun")
