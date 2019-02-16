@@ -46,32 +46,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Iconic.registerMaterialDesignIcons()
 
-        MaterialDesignIcons.register()
-
         NetworkActivityIndicatorManager.shared.isEnabled = true
 
         UNUserNotificationCenter.current().delegate = self
 
+        setDefaults()
+
         setupWatchCommunicator()
 
-        if #available(iOS 12.0, *) {
-            // Tell the system we have a app notification settings screen and want critical alerts
-            // This is effectively a migration
-
-            UNUserNotificationCenter.current().getNotificationSettings { (settings) in
-                guard settings.authorizationStatus == .authorized else {return}
-                let opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert,
-                                                    .providesAppNotificationSettings]
-                UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
-                    print("Requested critical alert access", granted, error.debugDescription)
-                }
-            }
-
-            suggestSiriShortcuts()
-
-        }
-
-        setDefaults()
+        if #available(iOS 12.0, *) { setupiOS12Features() }
 
         window = UIWindow.init(frame: UIScreen.main.bounds)
         window?.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
@@ -85,19 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window!.rootViewController = navController
         self.window!.makeKeyAndVisible()
 
-        if Current.appConfiguration == .FastlaneSnapshot {
-            let baseURL = URL(string: "https://privatedemo.home-assistant.io")!
-
-            keychain["apiPassword"] = "demoprivate"
-
-            let connectionInfo = ConnectionInfo(baseURL: baseURL, internalBaseURL: nil, internalSSID: nil,
-                                                basicAuthCredentials: nil)
-
-            let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-                                       authenticationMethod: .legacy(apiPassword: "demoprivate"))
-            Current.updateWith(authenticatedAPI: api)
-            Current.settingsStore.connectionInfo = connectionInfo
-        }
+        if Current.appConfiguration == .FastlaneSnapshot { setupFastlaneSnapshotConfiguration() }
 
         if let tokenInfo = Current.settingsStore.tokenInfo,
             let connectionInfo = Current.settingsStore.connectionInfo {
@@ -105,7 +76,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         Current.authenticationControllerPresenter = { controller in
-            print("presenter")
             if let presentedController = navController.topViewController?.presentedViewController {
                 presentedController.present(controller, animated: true, completion: nil)
                 return
@@ -438,6 +408,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
                 INVoiceShortcutCenter.shared.setShortcutSuggestions(shortcutsToSuggest)
         }
+    }
+
+    @available(iOS 12.0, *)
+    func setupiOS12Features() {
+        // Tell the system we have a app notification settings screen and want critical alerts
+        // This is effectively a migration
+
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+            guard settings.authorizationStatus == .authorized else {return}
+            let opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert,
+                                                .providesAppNotificationSettings]
+            UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
+                print("Requested critical alert access", granted, error.debugDescription)
+            }
+        }
+
+        suggestSiriShortcuts()
+    }
+
+    func setupFastlaneSnapshotConfiguration() {
+        let baseURL = URL(string: "https://privatedemo.home-assistant.io")!
+
+        keychain["apiPassword"] = "demoprivate"
+
+        let connectionInfo = ConnectionInfo(baseURL: baseURL, internalBaseURL: nil, internalSSID: nil,
+                                            basicAuthCredentials: nil)
+
+        let api = HomeAssistantAPI(connectionInfo: connectionInfo,
+                                   authenticationMethod: .legacy(apiPassword: "demoprivate"))
+        Current.updateWith(authenticatedAPI: api)
+        Current.settingsStore.connectionInfo = connectionInfo
     }
 }
 

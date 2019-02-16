@@ -181,7 +181,6 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
 
     @objc
     func getInfoAction(_ sender: Any) {
-        // FIXME: Actually open a modal window with docs!
         print("getInfoAction hit, open docs page!")
     }
 

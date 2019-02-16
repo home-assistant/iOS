@@ -234,8 +234,6 @@
 		B68EDD07215F215E00DD6B28 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD06215F215E00DD6B28 /* Notifications.swift */; };
 		B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */; };
 		B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
-		B696283E216D93120087D5E1 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
-		B696283F216D95740087D5E1 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B69769842162430300FFFAD6 /* WKInterfaceDevice+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69769832162430300FFFAD6 /* WKInterfaceDevice+Size.swift */; };
 		B6976985216243CC00FFFAD6 /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
 		B69933951E232AEA0054453D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
@@ -938,7 +936,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */,
-				B696283F216D95740087D5E1 /* Shared.framework in Frameworks */,
 				B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */,
 				B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */,
 				B28248018AD4202CBDAA9179 /* Pods_NotificationContentExtension.framework in Frameworks */,
@@ -2095,7 +2092,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1010;
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Robbie Trencheny";
 				TargetAttributes = {
 					B627CB061D83C87B0057173E = {
@@ -2933,7 +2930,6 @@
 				B63CCDCB216442C200123C50 /* Map.swift in Sources */,
 				B63CCDC9216442BB00123C50 /* Camera.swift in Sources */,
 				B6E42617215C761A007FEB7E /* Strings.swift in Sources */,
-				B696283E216D93120087D5E1 /* Strings.swift in Sources */,
 				B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3497,6 +3493,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 12;
 				DEFINES_MODULE = YES;
@@ -4225,6 +4222,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 12;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -4260,6 +4258,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 12;
 				DEFINES_MODULE = YES;

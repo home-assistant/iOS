@@ -56,6 +56,7 @@ class RegionManager: NSObject {
         self.syncMonitoredRegions()
     }
 
+    // swiftlint:disable:next function_body_length
     func triggerRegionEvent(_ manager: CLLocationManager, trigger: LocationUpdateTrigger, region: CLRegion) {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             let message = "Region update failed because client is not authenticated."
@@ -72,25 +73,14 @@ class RegionManager: NSObject {
         }
 
         // Do nothing in case we don't want to trigger an enter event
-        if zone.TrackingEnabled == false {
-            print("Tracking enabled is false")
-            return
-        }
+        if zone.TrackingEnabled == false { print("Tracking enabled is false"); return }
 
         if region is CLBeaconRegion {
-            if trigger == .RegionEnter {
-                trig = .BeaconRegionEnter
-            }
-            if trigger == .RegionExit {
-                trig = .BeaconRegionExit
-            }
+            if trigger == .RegionEnter { trig = .BeaconRegionEnter }
+            if trigger == .RegionExit { trig = .BeaconRegionExit }
         } else {
-            if trigger == .RegionEnter {
-                trig = .GPSRegionEnter
-            }
-            if trigger == .RegionExit {
-                trig = .GPSRegionExit
-            }
+            if trigger == .RegionEnter { trig = .GPSRegionEnter }
+            if trigger == .RegionExit { trig = .GPSRegionExit }
         }
 
         let taskName = "\(region.identifier)-\(trig)-\(Current.date())"

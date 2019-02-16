@@ -27,7 +27,6 @@ enum NotificationCategories: String {
     case camera4
 }
 
-
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
 
     var hud: MBProgressHUD?

@@ -115,15 +115,17 @@ public class TokenManager: RequestAdapter, RequestRetrier {
                 // If not, ahh well.
                 completion(false, 0)
             }
-        } else if let urlError = error as? NSError, urlError.domain == NSURLErrorDomain,
-            urlError.code == NSURLErrorTimedOut {
-            // Retry timeouts.
-            let message = "Retry #\(request.retryCount) request: \(self.loggableString(for: requestURL))"
-            let event = ClientEvent(text: message, type: .networkRequest)
-            Current.clientEventStore.addEvent(event)
-            completion(true, TimeInterval(2 * request.retryCount))
         } else {
-            completion(false, 0)
+            let urlError = error as NSError
+            if urlError.domain == NSURLErrorDomain, urlError.code == NSURLErrorTimedOut {
+                // Retry timeouts.
+                let message = "Retry #\(request.retryCount) request: \(self.loggableString(for: requestURL))"
+                let event = ClientEvent(text: message, type: .networkRequest)
+                Current.clientEventStore.addEvent(event)
+                completion(true, TimeInterval(2 * request.retryCount))
+            } else {
+                completion(false, 0)
+            }
         }
     }
 

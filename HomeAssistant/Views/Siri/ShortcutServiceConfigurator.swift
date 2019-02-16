@@ -107,7 +107,8 @@ class ShortcutServiceConfigurator: FormViewController {
         if let service = serviceData {
             for (key, field) in service.Fields {
                 var footer = ""
-                // FIXME: Better way to determine if a field is actually optional than checking description for "optional"
+                // Need a better way to determine if a field is actually optional than
+                // checking description for "optional"
                 var optionalField = true
                 if let desc = field.Description {
                     footer = desc
@@ -361,7 +362,6 @@ class ShortcutServiceConfigurator: FormViewController {
 
     @objc
     func getInfoAction(_ sender: Any) {
-        // FIXME: Actually open a modal window with docs!
         print("getInfoAction hit, open docs page!")
     }
 }
@@ -377,14 +377,9 @@ extension ShortcutServiceConfigurator: INUIAddVoiceShortcutViewControllerDelegat
             return
         }
 
-        if let voiceShortcut = voiceShortcut {
+        if voiceShortcut != nil {
             print("UPDATE SHORTCUTS 3")
 
-//            let realm = Current.realm()
-//            // swiftlint:disable:next force_try
-//            try! realm.write {
-//                realm.add(SiriShortcut(intent: "CallService", shortcut: voiceShortcut, jsonData: serviceDataJSON))
-//            }
             dismiss(animated: true, completion: nil)
             self.dismiss(animated: true, completion: nil)
         }

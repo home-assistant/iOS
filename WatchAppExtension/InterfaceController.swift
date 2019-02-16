@@ -85,14 +85,14 @@ class InterfaceController: WKInterfaceController {
 
                                                 row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24),
                                                                                   color: .white))
-        }) { err in
+        }, errorHandler: { err in
             print("Received error when sending immediate message", err)
 
             row.image.stopAnimating()
 
             row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24),
                                               color: .white))
-        }
+        })
 
         print("Sending ActionRowPressed message", actionMessage)
 

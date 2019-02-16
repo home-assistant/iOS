@@ -26,6 +26,7 @@ class CameraViewController: UIView, NotificationCategory {
 
     var streamer: MJPEGStreamer?
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func didReceive(_ notification: UNNotification, view: UIView, extensionContext: NSExtensionContext?,
                     hud: MBProgressHUD, completionHandler: @escaping (String?) -> Void) {
 

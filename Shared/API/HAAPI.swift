@@ -418,7 +418,6 @@ public class HomeAssistantAPI {
         let apiURL = self.connectionInfo.activeAPIURL
         let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(cameraEntityID)", isDirectory: false)
 //        DispatchQueue.global(qos: .background).async {
-        
             let res = self.manager.request(queryUrl, method: .get)
                 .validate()
                 .response(completionHandler: { (response) in
@@ -646,7 +645,6 @@ public class HomeAssistantAPI {
             // print("Storing \(entity.ID)")
 
             if entity.Domain == "zone", let zone = entity as? Zone {
-                // swiftlint:disable:next force_try
                 let realm = Current.realm()
                 if let existingZone = realm.object(ofType: RLMZone.self, forPrimaryKey: zone.ID) {
                     // swiftlint:disable:next force_try

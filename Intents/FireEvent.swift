@@ -26,7 +26,8 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
                 // Only service name was set, get data from clipboard
                 intent.eventData = pasteboardString
             } else {
-                // Nothing was set, hope there's a JSON object on clipboard containing valid JSON which we can use as event data.
+                // Nothing was set, hope there's a JSON object on clipboard containing valid JSON
+                // which we can use as event data.
                 let data = pasteboardString.data(using: .utf8)!
                 if JSONSerialization.isValidJSONObject(data) {
                     intent.eventData = String(data: data, encoding: .utf8)

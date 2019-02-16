@@ -17,10 +17,9 @@ import ObjectMapper
 import ViewRow
 
 @available(iOS 12, *)
-// swiftlint:disable:next type_body_length
 class ShortcutEventConfigurator: FormViewController {
 
-    // swiftlint:disable cyclomatic_complexity function_body_length
+    // swiftlint:disable function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -109,7 +108,7 @@ class ShortcutEventConfigurator: FormViewController {
 
             <<< TextAreaRow("event_payload") {
                 $0.title = "Event payload"
-                $0.placeholder = "Must be valid JSON. If no payload is provided, clipboard contents will be used if they contain valid JSON."
+                $0.placeholder = "Must be valid JSON. If no payload is provided, clipboard contents will be used."
             }
 
         self.form
@@ -172,7 +171,6 @@ class ShortcutEventConfigurator: FormViewController {
 
     @objc
     func getInfoAction(_ sender: Any) {
-        // FIXME: Actually open a modal window with docs!
         print("getInfoAction hit, open docs page!")
     }
 }
@@ -220,5 +218,4 @@ extension ShortcutEventConfigurator: INUIEditVoiceShortcutViewControllerDelegate
     func editVoiceShortcutViewControllerDidCancel(_ controller: INUIEditVoiceShortcutViewController) {
         dismiss(animated: true, completion: nil)
     }
-// swiftlint:disable:next file_length
 }

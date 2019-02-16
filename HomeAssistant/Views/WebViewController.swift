@@ -294,11 +294,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                  initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
 
-        alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.ok, style: .default, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.ok, style: .default, handler: { _ in
             completionHandler(true)
         }))
 
-        alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.cancel, style: .cancel, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.cancel, style: .cancel, handler: { _ in
             completionHandler(false)
         }))
 
@@ -313,7 +313,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             textField.text = defaultText
         }
 
-        alertController.addAction(UIAlertAction(title: L10n.Alerts.Prompt.ok, style: .default, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Prompt.ok, style: .default, handler: { _ in
             if let text = alertController.textFields?.first?.text {
                 completionHandler(text)
             } else {
@@ -321,7 +321,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             }
         }))
 
-        alertController.addAction(UIAlertAction(title: L10n.Alerts.Prompt.cancel, style: .cancel, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Prompt.cancel, style: .cancel, handler: { _ in
             completionHandler(nil)
         }))
 
@@ -332,7 +332,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                  initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
 
-        alertController.addAction(UIAlertAction(title: L10n.Alerts.Alert.ok, style: .default, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: L10n.Alerts.Alert.ok, style: .default, handler: { _ in
             completionHandler()
         }))
 
