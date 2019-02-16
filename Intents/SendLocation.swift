@@ -115,9 +115,12 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                 print("Not a lat,long, attempting geocode of string")
                 geocoder.geocodeAddressString(pasteboardString) { (placemarks, error) in
                     if let error = error {
-                        print("Error when geocoding string!", error)
-                        completion(SendLocationIntentResponse(code: .failureGeocoding, userActivity: nil,
-                                                              pasteboardContents: pasteboardString))
+                        print("Error when geocoding string, sending current location instead!", error)
+                        completion(SendLocationIntentResponse(code: .ready, userActivity: nil,
+                                                              place: nil, source: .unknown,
+                                                              pasteboardContents: nil))
+//                        completion(SendLocationIntentResponse(code: .failureGeocoding, userActivity: nil,
+//                                                              pasteboardContents: pasteboardString))
                         return
                     }
                     if let placemarks = placemarks {
