@@ -96,7 +96,7 @@ class Bonjour {
                 }
             }
         }
-        if let permanentID = DeviceUID.uid().data(using: .utf8) {
+        if let permanentID = Constants.PermanentID.data(using: .utf8) {
             publishDict["permanentID"] = permanentID
         }
         if let bundleIdentifier = Bundle.main.bundleIdentifier {

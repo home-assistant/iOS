@@ -185,7 +185,6 @@
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
 		B65A38CA215DB9C9003BCD8E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
-		B65BF92B22178AC4005745A4 /* DeviceUID.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E991CBB47EC0027F6CA /* DeviceUID.m */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
@@ -222,7 +221,6 @@
 		B672AB2D2215341800175465 /* ShortcutEventConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB2C2215341800175465 /* ShortcutEventConfigurator.swift */; };
 		B672AB3522165A4900175465 /* HomeAssistantAPI+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */; };
 		B672AB3722165A6100175465 /* HomeAssistantAPI+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */; };
-		B672AB39221664A200175465 /* DeviceUID.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E991CBB47EC0027F6CA /* DeviceUID.m */; };
 		B672AB502216883300175465 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
 		B672AB5122168B2900175465 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03D893A20E0B2E300D4F28D /* Constants.swift */; };
 		B672AB522216A1E200175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
@@ -296,7 +294,6 @@
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6E42617215C761A007FEB7E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		B6E42618215C761E007FEB7E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
-		D0148DEF2172502B001842B1 /* DeviceUID.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E991CBB47EC0027F6CA /* DeviceUID.m */; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
 		D03D892920E0A85300D4F28D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03D892D20E0A85300D4F28D /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -735,7 +732,6 @@
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
 		B657A90D1CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HAAPI.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		B65BF92C22178B0F005745A4 /* SiriIntents-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SiriIntents-Bridging-Header.h"; sourceTree = "<group>"; };
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
 		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
 		B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestJSON.swift; sourceTree = "<group>"; };
@@ -776,7 +772,6 @@
 		B672AB242215114A00175465 /* dev@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dev@2x.png"; sourceTree = "<group>"; };
 		B672AB2C2215341800175465 /* ShortcutEventConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortcutEventConfigurator.swift; sourceTree = "<group>"; };
 		B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeAssistantAPI+Actions.swift"; sourceTree = "<group>"; };
-		B672AB3A221664D200175465 /* TodayWidget-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TodayWidget-Bridging-Header.h"; sourceTree = "<group>"; };
 		B672AB552216B07500175465 /* gallery.ckcomplication */ = {isa = PBXFileReference; lastKnownFileType = folder; path = gallery.ckcomplication; sourceTree = "<group>"; };
 		B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+ComplicationDivination.swift"; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
@@ -859,9 +854,6 @@
 		B6DAC736215F06B100727D2A /* NotificationAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAction.swift; sourceTree = "<group>"; };
 		B6E47E871CBA01310027F6CA /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
 		B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceExecuted.swift; sourceTree = "<group>"; };
-		B6E47E981CBB47CC0027F6CA /* DeviceUID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeviceUID.h; sourceTree = "<group>"; };
-		B6E47E991CBB47EC0027F6CA /* DeviceUID.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = DeviceUID.m; sourceTree = "<group>"; };
-		B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HomeAssistant-Bridging-Header.h"; sourceTree = "<group>"; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		B6EE36A120CF593E001494E3 /* RealmZone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmZone.swift; sourceTree = "<group>"; };
 		B6F02BE81CB46AF40029ABE7 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Entity.swift; sourceTree = "<group>"; };
@@ -1359,7 +1351,6 @@
 				B679B1FA1E1F3D020071D366 /* Utilities */,
 				B679B1F91E1F3CFB0071D366 /* Views */,
 				B657A8E91CA646EB00121384 /* AppDelegate.swift */,
-				B6E8579B1CB0F37200F96925 /* HomeAssistant-Bridging-Header.h */,
 			);
 			path = HomeAssistant;
 			sourceTree = "<group>";
@@ -1395,7 +1386,6 @@
 				B66C58B02150891B004AB261 /* CallService.swift */,
 				B66C58B22150892A004AB261 /* FireEvent.swift */,
 				B66C58B42150898A004AB261 /* SendLocation.swift */,
-				B65BF92C22178B0F005745A4 /* SiriIntents-Bridging-Header.h */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -1403,7 +1393,6 @@
 		B66F9F25216B1E61000CAA0F /* TodayWidget */ = {
 			isa = PBXGroup;
 			children = (
-				B672AB3A221664D200175465 /* TodayWidget-Bridging-Header.h */,
 				B66F9F33216B208F000CAA0F /* TodayWidget.entitlements */,
 				B66F9F34216B2119000CAA0F /* TodayWidget Beta.entitlements */,
 				B66F9F35216B2131000CAA0F /* TodayWidget Development.entitlements */,
@@ -1488,8 +1477,6 @@
 		B679B1FA1E1F3D020071D366 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				B6E47E981CBB47CC0027F6CA /* DeviceUID.h */,
-				B6E47E991CBB47EC0027F6CA /* DeviceUID.m */,
 				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
@@ -2963,7 +2950,6 @@
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B6DAC737215F06B100727D2A /* NotificationAction.swift in Sources */,
-				D0148DEF2172502B001842B1 /* DeviceUID.m in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				B672AB3522165A4900175465 /* HomeAssistantAPI+Actions.swift in Sources */,
 				B6B6B14C215B1E86003DE2DD /* CLKComplication+Strings.swift in Sources */,
@@ -3021,7 +3007,6 @@
 			files = (
 				B66C58B52150898A004AB261 /* SendLocation.swift in Sources */,
 				B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */,
-				B65BF92B22178AC4005745A4 /* DeviceUID.m in Sources */,
 				B66C58B32150892A004AB261 /* FireEvent.swift in Sources */,
 				B63CCDCD2164714900123C50 /* Intents.intentdefinition in Sources */,
 				B66C58B12150891B004AB261 /* CallService.swift in Sources */,
@@ -3036,7 +3021,6 @@
 				B66F9F37216B2D89000CAA0F /* UIColor+CSS3+Hex.swift in Sources */,
 				B672AB3722165A6100175465 /* HomeAssistantAPI+Actions.swift in Sources */,
 				B66F9F36216B2C74000CAA0F /* Action.swift in Sources */,
-				B672AB39221664A200175465 /* DeviceUID.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3429,7 +3413,6 @@
 				PRODUCT_NAME = "Home Assistant β";
 				PROVISIONING_PROFILE = "3875637c-d045-4a07-879a-cf393f6a9f3e";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.beta";
-				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant/HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -3588,7 +3571,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.beta.Intents";
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Intents/SiriIntents-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3810,7 +3792,6 @@
 				PRODUCT_NAME = "Home Assistant Δ";
 				PROVISIONING_PROFILE = "0e23e0e0-51be-4afd-8f10-d4659e3af88e";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev";
-				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant/HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -3854,7 +3835,6 @@
 				PRODUCT_NAME = "Home Assistant";
 				PROVISIONING_PROFILE = "3875637c-d045-4a07-879a-cf393f6a9f3e";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant";
-				SWIFT_OBJC_BRIDGING_HEADER = "HomeAssistant/HomeAssistant-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -3950,7 +3930,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.Intents";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OBJC_BRIDGING_HEADER = "Intents/SiriIntents-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3985,7 +3964,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.Intents";
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Intents/SiriIntents-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4015,7 +3993,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.TodayWidget";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OBJC_BRIDGING_HEADER = "TodayWidget/TodayWidget-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4044,7 +4021,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.TodayWidget";
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "TodayWidget/TodayWidget-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4073,7 +4049,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.beta.TodayWidget";
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "TodayWidget/TodayWidget-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -22,7 +22,7 @@ extension HomeAssistantAPI {
             let device = Device()
             let eventData: [String: Any] = ["actionName": actionName,
                                             "triggerSource": source.description,
-                                            "sourceDevicePermanentID": Current.deviceIDProvider(),
+                                            "sourceDevicePermanentID": Constants.PermanentID,
                                             "sourceDeviceName": device.name,
                                             "sourceDeviceID": Current.settingsStore.deviceID]
 

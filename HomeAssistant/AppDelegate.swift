@@ -37,10 +37,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let launchMessage = "Application Starting" + (launchingForLocation ? " due to location change" : "")
         let event = ClientEvent(text: launchMessage, type: .unknown)
         Current.clientEventStore.addEvent(event)
-        Current.deviceIDProvider = { DeviceUID.uid() }
-        self.regionManager = RegionManager()
 
-        Current.deviceIDProvider = { DeviceUID.uid() }
+        self.regionManager = RegionManager()
 
         Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
 

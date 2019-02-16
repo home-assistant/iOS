@@ -30,8 +30,6 @@ class TodayViewController: UIViewController, NCWidgetProviding,
 
         MaterialDesignIcons.register()
 
-        Current.deviceIDProvider = { DeviceUID.uid() }
-
         if let tokenInfo = Current.settingsStore.tokenInfo,
             let connectionInfo = Current.settingsStore.connectionInfo {
             Current.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)

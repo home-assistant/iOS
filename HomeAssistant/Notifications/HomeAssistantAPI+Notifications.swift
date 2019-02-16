@@ -22,7 +22,7 @@ extension HomeAssistantAPI {
 
             let device = Device()
             var eventData: [String: Any] = ["actionName": identifier,
-                                            "sourceDevicePermanentID": Current.deviceIDProvider(),
+                                            "sourceDevicePermanentID": Constants.PermanentID,
                                             "sourceDeviceName": device.name,
                                             "sourceDeviceID": Current.settingsStore.deviceID]
             if let dataDict = userInfo["homeassistant"] {

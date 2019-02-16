@@ -51,8 +51,6 @@ public class Environment {
 
     public var signInRequiredCallback: (() -> Void)?
 
-    public var deviceIDProvider: (() -> String)!
-
     public var isPerformingSingleShotLocationQuery = false
 
     public var syncMonitoredRegions: (() -> Void)?

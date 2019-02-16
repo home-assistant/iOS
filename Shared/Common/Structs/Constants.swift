@@ -34,5 +34,32 @@ public struct Constants {
     public static var Keychain: KeychainAccess.Keychain {
         return KeychainAccess.Keychain(service: self.BundleID)
     }
+
+    /// A permanent ID stored in UserDefaults and Keychain.
+    public static var PermanentID: String {
+        let storageKey = "deviceUID"
+        let defaultsStore = UserDefaults(suiteName: Constants.AppGroupID)
+        let keychain = KeychainAccess.Keychain(service: storageKey)
+
+        if let keychainUID = keychain[storageKey] {
+            return keychainUID
+        }
+
+        if let userDefaultsUID = defaultsStore?.object(forKey: storageKey) as? String {
+            return userDefaultsUID
+        }
+
+        let newID = UUID().uuidString
+
+        if keychain[storageKey] == nil {
+            keychain[storageKey] = newID
+        }
+
+        if defaultsStore?.object(forKey: storageKey) == nil {
+            defaultsStore?.setValue(newID, forKey: storageKey)
+        }
+
+        return newID
+    }
     #endif
 }
