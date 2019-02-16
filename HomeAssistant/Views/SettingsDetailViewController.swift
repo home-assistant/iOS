@@ -55,6 +55,10 @@ class SettingsDetailViewController: FormViewController {
                         $0.title = "Icon"
                         $0.options = AppIcon.allCases
                         $0.value = AppIcon.Release
+                        if let altIconName = UIApplication.shared.alternateIconName,
+                            let icon = AppIcon(rawValue: altIconName) {
+                            $0.value = icon
+                        }
                         $0.selectorTitle = "App Icon"
                     }.onPresent { _, to in
                         to.selectableRowCellUpdate = { (cell, row) in
