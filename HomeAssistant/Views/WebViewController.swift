@@ -583,7 +583,6 @@ extension WebViewController: WKScriptMessageHandler {
 
     func handleThemeUpdate(_ messageBody: [String: Any]) {
         if let styles = messageBody["styles"] as? [String: String] {
-            _ = self.parseThemeStyle("paper-item-icon-color", styles)
             let iconColor = self.parseThemeStyle("sidebar-icon-color", styles)
             let headerColor = self.parseThemeStyle("primary-color", styles)
             var toolbarColor = self.parseThemeStyle("sidebar-background-color", styles)
