@@ -81,12 +81,16 @@ class InterfaceController: WKInterfaceController {
                                              content: ["ActionName": selectedAction.Name], replyHandler: { replyDict in
                                                 print("Received reply dictionary", replyDict)
 
+                                                WKInterfaceDevice.current().play(.success)
+
                                                 row.image.stopAnimating()
 
                                                 row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24),
                                                                                   color: .white))
         }, errorHandler: { err in
             print("Received error when sending immediate message", err)
+
+            WKInterfaceDevice.current().play(.failure)
 
             row.image.stopAnimating()
 
@@ -98,8 +102,11 @@ class InterfaceController: WKInterfaceController {
 
         do {
             try Communicator.shared.send(immediateMessage: actionMessage)
+            WKInterfaceDevice.current().play(.success)
         } catch let error {
             print("Action notification send failed:", error)
+
+            WKInterfaceDevice.current().play(.failure)
 
             row.image.stopAnimating()
 

@@ -98,6 +98,9 @@ class TodayViewController: UIViewController, NCWidgetProviding,
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("User tapped on item \(indexPath.row)")
 
+        let feedbackGenerator = UINotificationFeedbackGenerator()
+        feedbackGenerator.prepare()
+
         guard let cell = collectionView.cellForItem(at: indexPath) as? ActionButtonCell else { return }
 
         cell.imageView.showActivityIndicator()
@@ -108,10 +111,13 @@ class TodayViewController: UIViewController, NCWidgetProviding,
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
             api.handleAction(actionName: action.Name, source: .Widget)
+        }.done { _ in
+            feedbackGenerator.notificationOccurred(.success)
         }.ensure {
             cell.imageView.hideActivityIndicator()
         }.catch { err -> Void in
             print("Error during action event fire: \(err)")
+            feedbackGenerator.notificationOccurred(.error)
         }
     }
 }
