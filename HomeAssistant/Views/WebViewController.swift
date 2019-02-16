@@ -19,7 +19,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     var webView: FullScreenWKWebView!
     var shouldHideToolbar: Bool = Current.appConfiguration.rawValue > 1
     var waitingToHideToolbar: Bool = false
-    var themeColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
     var modernAuth: Bool = true
 
     // swiftlint:disable:next function_body_length
@@ -34,12 +33,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         let statusBarView: UIView = UIView(frame: UIApplication.shared.statusBarFrame)
         statusBarView.tag = 111
 
-        if let storedThemeColor = prefs.string(forKey: "themeColor") {
-            themeColor = UIColor.init(hex: storedThemeColor)
-        }
-
-        statusBarView.backgroundColor = themeColor
         view.addSubview(statusBarView)
+
+        self.styleUI()
 
         statusBarView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         statusBarView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
@@ -52,6 +48,34 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         let userContentController = WKUserContentController()
         userContentController.add(self, name: "getExternalAuth")
         userContentController.add(self, name: "revokeExternalAuth")
+        userContentController.add(self, name: "themesUpdated")
+
+        let themeScriptSource = """
+                               const handleThemeUpdate = (event) => {
+                                  var payload = event.data || event;
+                                  let themeName = payload.default_theme;
+                                  if(themeName === "default") {
+                                    window.webkit.messageHandlers.themesUpdated.postMessage({
+                                      "name": themeName
+                                    });
+                                  } else {
+                                    window.webkit.messageHandlers.themesUpdated.postMessage({
+                                      "name": themeName,
+                                      "styles": payload.themes[themeName]
+                                    });
+                                  }
+                                }
+
+                                window.hassConnection.then(({ conn }) => {
+                                  conn.sendMessagePromise({type: 'frontend/get_themes'}).then(handleThemeUpdate);
+                                  conn.subscribeEvents(handleThemeUpdate, "themes_updated");
+                                });
+                               """
+
+        let themeScript = WKUserScript(source: themeScriptSource, injectionTime: .atDocumentEnd,
+                                       forMainFrameOnly: false)
+        userContentController.addUserScript(themeScript)
+
         config.userContentController = userContentController
 
         self.webView = FullScreenWKWebView(frame: self.view!.frame, configuration: config)
@@ -119,21 +143,37 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        var barItems: [UIBarButtonItem] = []
+        if let connectionInfo = Current.settingsStore.connectionInfo,
+            let webviewURL = connectionInfo.webviewURL(externalAuth: self.modernAuth) {
+            let myRequest = URLRequest(url: webviewURL)
+            self.webView.load(myRequest)
+        }
+    }
 
-        if let storedThemeColor = prefs.string(forKey: "themeColor") {
-            themeColor = UIColor.init(hex: storedThemeColor)
+    func styleUI(_ icons: UIColor? = nil, _ header: UIColor? = nil, _ toolbar: UIColor? = nil) {
+        // Default blue color
+        var toolbarIconColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
+        if let iconColor = icons {
+            toolbarIconColor = iconColor
+        } else if let storedThemeColor = prefs.string(forKey: "themeColor") {
+            toolbarIconColor = UIColor.init(hex: storedThemeColor)
         }
 
+        var barItems: [UIBarButtonItem] = []
+
         if let statusBarView = self.view.viewWithTag(111) {
-            statusBarView.backgroundColor = themeColor
+            var headerColor = toolbarIconColor
+            if let header = header {
+                headerColor = header
+            }
+            statusBarView.backgroundColor = headerColor
         }
 
         if Current.settingsStore.locationEnabled {
 
             let uploadIcon = UIImage.iconForIdentifier("mdi:upload",
                                                        iconWidth: 30, iconHeight: 30,
-                                                       color: themeColor)
+                                                       color: toolbarIconColor)
 
             barItems.append(UIBarButtonItem(image: uploadIcon,
                                             style: .plain,
@@ -142,7 +182,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                 )
             )
 
-            let mapIcon = UIImage.iconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: themeColor)
+            let mapIcon = UIImage.iconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: toolbarIconColor)
 
             barItems.append(UIBarButtonItem(image: mapIcon,
                                             style: .plain,
@@ -156,7 +196,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                                         action: #selector(refreshWebView(_:))))
 
         let settingsIcon = UIImage.iconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30,
-                                                     color: themeColor)
+                                                     color: toolbarIconColor)
 
         barItems.append(UIBarButtonItem(image: settingsIcon,
                                         style: .plain,
@@ -164,13 +204,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                                         action: #selector(openSettingsView(_:))))
 
         self.setToolbarItems(barItems, animated: false)
-        self.navigationController?.toolbar.tintColor = themeColor
-
-        if let connectionInfo = Current.settingsStore.connectionInfo,
-            let webviewURL = connectionInfo.webviewURL(externalAuth: self.modernAuth) {
-            let myRequest = URLRequest(url: webviewURL)
-            self.webView.load(myRequest)
-        }
+        self.navigationController?.toolbar.tintColor = toolbarIconColor
+        self.navigationController?.toolbar.barTintColor = toolbar
     }
 
     func webView(_ webView: WKWebView,
@@ -452,12 +487,51 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.loadActiveURLIfNeeded()
     }
 
+    func parseThemeStyle(_ styleKey: String, _ allStyles: [String: String]) -> UIColor? {
+        guard let requestedStyle = allStyles[styleKey] else { return nil }
+
+        if !requestedStyle.hasPrefix("var") {
+            return UIColor(hex: requestedStyle)
+        }
+
+        // CSS variable like `var(--primary-text-color)` or `var(--primary-text-color, var(--secondary-text-color))`
+
+        let pattern = "var\\(--([a-zA-Z-]+)\\)*"
+
+        let styleKeys: [String] = requestedStyle.matchingStrings(regex: pattern).map { $0[1] }
+
+        for key in styleKeys {
+            if let color = self.parseThemeStyle(key, allStyles) {
+                return color
+            }
+        }
+
+        return nil
+    }
+}
+
+extension String {
+    func matchingStrings(regex: String) -> [[String]] {
+        guard let regex = try? NSRegularExpression(pattern: regex, options: []) else { return [] }
+        let nsString = self as NSString
+        let results = regex.matches(in: self, options: [], range: NSRange(location: 0, length: nsString.length))
+        return results.map { result in
+            (0..<result.numberOfRanges).map {
+                result.range(at: $0).location != NSNotFound
+                    ? nsString.substring(with: result.range(at: $0))
+                    : ""
+            }
+        }
+    }
 }
 
 extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if message.name == "getExternalAuth", let messageBody = message.body as? [String: Any],
-            let callbackName = messageBody["callback"] {
+        guard let messageBody = message.body as? [String: Any] else { return }
+
+        if message.name == "themesUpdated" {
+            self.handleThemeUpdate(messageBody)
+        } else if message.name == "getExternalAuth", let callbackName = messageBody["callback"] {
             if let tokenManager = Current.tokenManager {
                 print("Callback hit")
                 tokenManager.authDictionaryForWebView.done { dictionary in
@@ -480,8 +554,8 @@ extension WebViewController: WKScriptMessageHandler {
                 self.webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
                 print("Failed to authenticate webview. Token Unavailable")
             }
-        } else if message.name == "revokeExternalAuth", let messageBody = message.body as? [String: Any],
-            let callbackName = messageBody["callback"], let tokenManager = Current.tokenManager {
+        } else if message.name == "revokeExternalAuth", let callbackName = messageBody["callback"],
+            let tokenManager = Current.tokenManager {
 
             print("Time to revoke the access token!")
 
@@ -504,6 +578,26 @@ extension WebViewController: WKScriptMessageHandler {
             }.catch { error in
                 print("Failed to revoke token", error)
             }
+        }
+    }
+
+    func handleThemeUpdate(_ messageBody: [String: Any]) {
+        if let styles = messageBody["styles"] as? [String: String] {
+            _ = self.parseThemeStyle("paper-item-icon-color", styles)
+            let iconColor = self.parseThemeStyle("sidebar-icon-color", styles)
+            let headerColor = self.parseThemeStyle("primary-color", styles)
+            var toolbarColor = self.parseThemeStyle("sidebar-background-color", styles)
+            if toolbarColor == nil {
+                if let primaryBGC = self.parseThemeStyle("primary-background-color", styles) {
+                    toolbarColor = primaryBGC
+                } else if let plbc = self.parseThemeStyle("paper-listbox-background-color", styles) {
+                    toolbarColor = plbc
+                }
+            }
+            self.styleUI(iconColor, headerColor, toolbarColor)
+        } else {
+            // Assume default theme
+            self.styleUI()
         }
     }
 }
