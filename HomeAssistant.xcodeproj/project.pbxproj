@@ -185,6 +185,7 @@
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
 		B65A38CA215DB9C9003BCD8E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
+		B65BF92B22178AC4005745A4 /* DeviceUID.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E991CBB47EC0027F6CA /* DeviceUID.m */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
@@ -734,6 +735,7 @@
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
 		B657A90D1CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HAAPI.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		B65BF92C22178B0F005745A4 /* SiriIntents-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SiriIntents-Bridging-Header.h"; sourceTree = "<group>"; };
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
 		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
 		B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestJSON.swift; sourceTree = "<group>"; };
@@ -1393,6 +1395,7 @@
 				B66C58B02150891B004AB261 /* CallService.swift */,
 				B66C58B22150892A004AB261 /* FireEvent.swift */,
 				B66C58B42150898A004AB261 /* SendLocation.swift */,
+				B65BF92C22178B0F005745A4 /* SiriIntents-Bridging-Header.h */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -3018,6 +3021,7 @@
 			files = (
 				B66C58B52150898A004AB261 /* SendLocation.swift in Sources */,
 				B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */,
+				B65BF92B22178AC4005745A4 /* DeviceUID.m in Sources */,
 				B66C58B32150892A004AB261 /* FireEvent.swift in Sources */,
 				B63CCDCD2164714900123C50 /* Intents.intentdefinition in Sources */,
 				B66C58B12150891B004AB261 /* CallService.swift in Sources */,
@@ -3584,6 +3588,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.beta.Intents";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Intents/SiriIntents-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3945,6 +3950,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.Intents";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "Intents/SiriIntents-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3979,6 +3985,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.Intents";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Intents/SiriIntents-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

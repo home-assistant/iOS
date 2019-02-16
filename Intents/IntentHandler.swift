@@ -15,7 +15,7 @@ class IntentHandler: INExtension {
         // This is the default implementation.  If you want different objects to handle different intents,
         // you can override this and return the handler you want for that particular intent.
 
-        // Current.deviceIDProvider = { DeviceUID.uid() }
+        Current.deviceIDProvider = { DeviceUID.uid() }
 
         if let tokenInfo = Current.settingsStore.tokenInfo,
             let connectionInfo = Current.settingsStore.connectionInfo {
