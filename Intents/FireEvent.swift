@@ -59,12 +59,16 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
                             completion(FireEventIntentResponse(code: .success, userActivity: nil))
                         }.catch { error in
                             print("Error when firing event in shortcut", error)
-                            completion(FireEventIntentResponse(code: .failure, userActivity: nil))
+                            let resp = FireEventIntentResponse(code: .failure, userActivity: nil)
+                            resp.error = "Error when firing event in shortcut: \(error.localizedDescription)"
+                            completion(resp)
                     }
 
                 } else {
                     print("Unable to parse data to JSON during shortcut")
-                    completion(FireEventIntentResponse(code: .failure, userActivity: nil))
+                    let resp = FireEventIntentResponse(code: .failure, userActivity: nil)
+                    resp.error = "Unable to parse data to JSON during shortcut"
+                    completion(resp)
                 }
             } catch let error as NSError {
                 print("Error when parsing service data to JSON during FireEvent", error)
@@ -73,7 +77,9 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
 
         } else {
             print("Unable to unwrap intent.eventName and intent.eventData")
-            completion(FireEventIntentResponse(code: .failure, userActivity: nil))
+            let resp = FireEventIntentResponse(code: .failure, userActivity: nil)
+            resp.error = "Unable to unwrap intent.eventName and intent.eventData"
+            completion(resp)
         }
     }
 }

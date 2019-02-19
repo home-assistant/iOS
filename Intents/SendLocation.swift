@@ -60,7 +60,9 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                                 return
                 }.catch { error in
                     print("Error sending location during Siri Shortcut call: \(error)")
-                    completion(SendLocationIntentResponse(code: .failure, userActivity: nil))
+                    let resp = SendLocationIntentResponse(code: .failure, userActivity: nil)
+                    resp.error = "Error sending location during Siri Shortcut call: \(error.localizedDescription)"
+                    completion(resp)
                     return
             }
         }

@@ -76,12 +76,16 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
                         completion(CallServiceIntentResponse(code: .success, userActivity: nil))
                     }.catch { error in
                         print("Error when calling service in shortcut", error)
-                        completion(CallServiceIntentResponse(code: .failure, userActivity: nil))
+                        let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
+                        resp.error = "Error during api.callService: \(error.localizedDescription)"
+                        completion(resp)
                     }
 
                 } else {
                     print("Unable to parse data to JSON during shortcut")
-                    completion(CallServiceIntentResponse(code: .failure, userActivity: nil))
+                    let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
+                    resp.error = "Unable to parse data to JSON"
+                    completion(resp)
                 }
             } catch let error as NSError {
                 print("Error when parsing service data to JSON during CallService", error)
@@ -90,7 +94,9 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
 
         } else {
             print("Unable to unwrap intent.service and intent.data")
-            completion(CallServiceIntentResponse(code: .failure, userActivity: nil))
+            let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
+            resp.error = "Unable to unwrap intent.service and intent.data"
+            completion(resp)
         }
     }
 }

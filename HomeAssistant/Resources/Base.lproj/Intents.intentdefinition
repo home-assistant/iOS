@@ -57,11 +57,11 @@
 	<key>INIntentDefinitionModelVersion</key>
 	<string>1.0</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>17G65</string>
+	<string>18B75</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>10A254a</string>
+	<string>10B61</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>10.0</string>
+	<string>10.1</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -195,7 +195,7 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to call service</string>
+						<string>Failed to call service with error: ${error}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>qzje4k</string>
 						<key>INIntentResponseCodeName</key>
@@ -245,7 +245,7 @@
 					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
-				<integer>3</integer>
+				<integer>4</integer>
 				<key>INIntentResponseParameters</key>
 				<array>
 					<dict>
@@ -269,6 +269,18 @@
 						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>3</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>String</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>3</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>error</string>
+						<key>INIntentResponseParameterSupportsMultipleValues</key>
+						<false/>
+						<key>INIntentResponseParameterTag</key>
+						<integer>4</integer>
 						<key>INIntentResponseParameterType</key>
 						<string>String</string>
 					</dict>
@@ -352,7 +364,7 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to update location</string>
+						<string>Failed to update location with error: ${error}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>KJS2jk</string>
 						<key>INIntentResponseCodeName</key>
@@ -412,7 +424,7 @@
 					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
-				<integer>5</integer>
+				<integer>6</integer>
 				<key>INIntentResponseParameters</key>
 				<array>
 					<dict>
@@ -450,6 +462,18 @@
 						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>5</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>String</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>4</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>error</string>
+						<key>INIntentResponseParameterSupportsMultipleValues</key>
+						<false/>
+						<key>INIntentResponseParameterTag</key>
+						<integer>6</integer>
 						<key>INIntentResponseParameterType</key>
 						<string>String</string>
 					</dict>
@@ -560,7 +584,7 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to send ${eventName} to Home Assistant</string>
+						<string>Failed to send ${eventName} to Home Assistant with error: ${error}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>oIWFyR</string>
 						<key>INIntentResponseCodeName</key>
@@ -610,7 +634,7 @@
 					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
-				<integer>1</integer>
+				<integer>2</integer>
 				<key>INIntentResponseParameters</key>
 				<array>
 					<dict>
@@ -622,6 +646,18 @@
 						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>1</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>String</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>2</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>error</string>
+						<key>INIntentResponseParameterSupportsMultipleValues</key>
+						<false/>
+						<key>INIntentResponseParameterTag</key>
+						<integer>2</integer>
 						<key>INIntentResponseParameterType</key>
 						<string>String</string>
 					</dict>
