@@ -12,7 +12,7 @@
 "FBQiVD" = "在 Home Assistant 实例上调用服务";
 "GoLNMt" = "将 ${eventName} 事件发送到 Home Assistant 事件总线";
 "KHH48D" = "位置更新失败，Home Assistant 目前无法访问";
-"KJS2jk" = "位置更新失败";
+"KJS2jk" = "位置更新失败 with error: ${error}";
 "KU19Ap" = "发送事件失败，无法解析剪贴板内容";
 "MDmaRg" = "调用服务 ${serviceDomain}.${service}";
 "QFNpIx" = "向HomeAsssiant发送你的位置 ${location}";
@@ -27,10 +27,10 @@
 "lxHlyQ" = "触发事件";
 "nIl9ET" = "将名为$ {eventName}的事件触发到Home Assistant事件总线。将粘贴板内容作为事件数据发送。";
 "ntnbP2" = "调用服务";
-"oIWFyR" = "向 Home Assistant 发送 ${eventName} 失败";
+"oIWFyR" = "向 Home Assistant 发送 ${eventName} 失败 with error: ${error}";
 "qayMH6" = "调用服务";
 "qfHa79" = "成功将 ${eventName} 发送到 Home Assistant";
-"qzje4k" = "调用服务失败";
+"qzje4k" = "调用服务失败 with error: ${error}";
 "rFSNpu" = "${domain}.${service} 已调用";
 "ri4H1h" = "成功将带有剪贴板内容的 ${domain} .${service} 发送到 Home Assistant";
 "rwj6u7" = "向 Home Asssiant 报告你的当前位置 ${location}";

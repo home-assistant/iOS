@@ -12,7 +12,7 @@
 "FBQiVD" = "於 Home Assistant 物件執行事件";
 "GoLNMt" = "於 Home Assistant 事件系統匯流排中，以 ${eventData} 執行事件 ${eventName}";
 "KHH48D" = "更新座標失敗，目前無法連線至 Home Assistant";
-"KJS2jk" = "更新座標失敗";
+"KJS2jk" = "更新座標失敗 with error: ${error}";
 "KU19Ap" = "觸發事件失敗，剪貼簿內容無法解析";
 "MDmaRg" = "執行 ￼${serviceDomain}.${service} 服務";
 "QFNpIx" = "傳送 ${location} 至 Home Assistant";
@@ -27,10 +27,10 @@
 "lxHlyQ" = "觸發事件";
 "nIl9ET" = "於 Home Assistant 事件系統匯流排中執行事件 ${eventName}。將會以剪貼簿內容作為事件資料傳送。";
 "ntnbP2" = "執行服務";
-"oIWFyR" = "傳送 ${eventName} 至 Home Assistant 失敗";
+"oIWFyR" = "傳送 ${eventName} 至 Home Assistant 失敗 with error: ${error}";
 "qayMH6" = "執行服務";
 "qfHa79" = "傳送 ${eventName} 及剪貼簿內容至 Home Assistant 成功";
-"qzje4k" = "執行服務失敗";
+"qzje4k" = "執行服務失敗 with error: ${error}";
 "rFSNpu" = "${domain}.${service} 已執行";
 "ri4H1h" = "傳送 ${domain}.${service} 及剪貼簿內容至 Home Assistant 成功";
 "rwj6u7" = "以 ${location} 為目前座標回傳至 Home Assistant";

@@ -12,7 +12,7 @@
 "FBQiVD" = "Llamar a un servicio en la instancia de Home Assistant";
 "GoLNMt" = "Dispara un evento llamado ${eventName} al bus de eventos de Home Assistant con ${eventData} .";
 "KHH48D" = "Error al actualizar la ubicación, Home Assistant no es accesible actualmente";
-"KJS2jk" = "Error al actualizar la ubicación";
+"KJS2jk" = "Error al actualizar la ubicación with error: ${error}";
 "KU19Ap" = "Error al disparar el evento, el contenido del portapapeles no pudo ser analizado";
 "MDmaRg" = "Llama ￼ ${serviceDomain}.${service}";
 "QFNpIx" = "Enviar ${location} a Home Assistant";
@@ -27,10 +27,10 @@
 "lxHlyQ" = "Disparar evento";
 "nIl9ET" = "Dispara un evento llamado ${eventName} al bus de eventos de Home Assistant. Enviará los contenidos de la mesa de trabajo como datos del evento.";
 "ntnbP2" = "Llamar servicio";
-"oIWFyR" = "Error al enviar ${eventName} a Home Assistant";
+"oIWFyR" = "Error al enviar ${eventName} a Home Assistant with error: ${error}";
 "qayMH6" = "Llamar servicio";
 "qfHa79" = "Se envió con éxito ${domain}.${service} con contenido del portapapeles a Home Assistant";
-"qzje4k" = "Error al llamar al servicio";
+"qzje4k" = "Error al llamar al servicio with error: ${error}";
 "rFSNpu" = "Llamado ${domain}.${service}";
 "ri4H1h" = "Se envió con éxito ${domain}.${service} con contenido del portapapeles a Home Assistant";
 "rwj6u7" = "Reporta tu ubicación actual como ${location} a Home Assistant";

@@ -12,7 +12,7 @@
 "FBQiVD" = "Call a service on the Home Assistant instance";
 "GoLNMt" = "Fires an event named ${eventName} to the Home Assistant event bus with ${eventData}.";
 "KHH48D" = "Failed to update location, Home Assistant is not currently reachable";
-"KJS2jk" = "Failed to update location";
+"KJS2jk" = "Failed to update location with error: ${error}";
 "KU19Ap" = "Failed to fire event, the clipboard contents could not be parsed";
 "MDmaRg" = "Call service ￼${serviceDomain}.${service}";
 "QFNpIx" = "Send ${location} to Home Assistant";
@@ -27,10 +27,10 @@
 "lxHlyQ" = "Fire Event";
 "nIl9ET" = "Fires an event named ${eventName} to the Home Assistant event bus. Will send pasteboard contents as event data.";
 "ntnbP2" = "Call Service";
-"oIWFyR" = "Failed to send ${eventName} to Home Assistant";
+"oIWFyR" = "Failed to send ${eventName} to Home Assistant with error: ${error}";
 "qayMH6" = "Call Service";
 "qfHa79" = "Successfully sent ${eventName} with clipboard contents to Home Assistant";
-"qzje4k" = "Failed to call service";
+"qzje4k" = "Failed to call service with error: ${error}";
 "rFSNpu" = "Called ${domain}.${service}";
 "ri4H1h" = "Successfully sent ${domain}.${service} with clipboard contents to Home Assistant";
 "rwj6u7" = "Report your current location as ${location} to Home Assistant";
