@@ -187,11 +187,11 @@ extension ShortcutEventConfigurator: INUIAddVoiceShortcutViewControllerDelegate 
         }
 
         print("UPDATE SHORTCUTS 3")
-        self.dismiss(animated: true, completion: nil)
+        controller.dismiss(animated: true, completion: nil)
     }
 
     func addVoiceShortcutViewControllerDidCancel(_ controller: INUIAddVoiceShortcutViewController) {
-        dismiss(animated: true, completion: nil)
+        controller.dismiss(animated: true, completion: nil)
     }
 }
 
@@ -208,14 +208,16 @@ extension ShortcutEventConfigurator: INUIEditVoiceShortcutViewControllerDelegate
             return
         }
         print("UPDATE SHORTCUTS HERE 1")
+        controller.dismiss(animated: true, completion: nil)
     }
 
     func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
                                          didDeleteVoiceShortcutWithIdentifier deletedVoiceShortcutIdentifier: UUID) {
         print("UPDATE SHORTCUTS HERE 2")
+        controller.dismiss(animated: true, completion: nil)
     }
 
     func editVoiceShortcutViewControllerDidCancel(_ controller: INUIEditVoiceShortcutViewController) {
-        dismiss(animated: true, completion: nil)
+        controller.dismiss(animated: true, completion: nil)
     }
 }
