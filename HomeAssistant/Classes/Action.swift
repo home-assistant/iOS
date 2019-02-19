@@ -7,18 +7,20 @@
 //
 
 import Foundation
+import UIKit
 import RealmSwift
 import ObjectMapper
+import Iconic
 
 public class Action: Object, Mappable, NSCoding {
     @objc dynamic var ID: String = UUID().uuidString
     @objc dynamic var Name: String = ""
     @objc dynamic var Position: Int = 0
-    @objc dynamic var BackgroundColor: String = "FC2D49"
-    @objc dynamic var IconName: String = "upload"
-    @objc dynamic var IconColor: String = "FFFFFF"
+    @objc dynamic var BackgroundColor: String = UIColor.randomColor().hexString()
+    @objc dynamic var IconName: String = MaterialDesignIcons.allCases.randomElement()!.name
+    @objc dynamic var IconColor: String = UIColor.randomColor().hexString()
     @objc dynamic var Text: String = "Action"
-    @objc dynamic var TextColor: String = "FFFFFF"
+    @objc dynamic var TextColor: String = UIColor.randomColor().hexString()
     @objc dynamic var CreatedAt = Date()
 
     override public static func primaryKey() -> String? {
@@ -68,6 +70,7 @@ public class Action: Object, Mappable, NSCoding {
 public enum ActionSource: CaseIterable {
     case Watch
     case Widget
+    case Preview
 
     var description: String {
         switch self {
@@ -75,6 +78,15 @@ public enum ActionSource: CaseIterable {
             return "watch"
         case .Widget:
             return "widget"
+        case .Preview:
+            return "Preview"
         }
+    }
+}
+
+extension UIColor {
+    static func randomColor() -> UIColor {
+        let random = {CGFloat(arc4random_uniform(255)) / 255.0}
+        return UIColor(red: random(), green: random(), blue: random(), alpha: 1)
     }
 }

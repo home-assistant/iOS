@@ -13,15 +13,22 @@ import RealmSwift
 import Shared
 import Iconic
 import ColorPickerRow
+import ViewRow
+import PromiseKit
 
 class ActionConfigurator: FormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
 
-    var action: Action = Action()
+    var action: Action = Action() {
+        didSet {
+            self.preview.setup(self.action)
+        }
+    }
     var newAction: Bool = true
     var shouldSave: Bool = false
+    var preview = ActionPreview(frame: CGRect(x: 0, y: 0, width: 169, height: 44))
 
     convenience init(action: Action?) {
         self.init()
@@ -88,17 +95,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }.onChange { row in
                 if let value = row.value {
                     self.action.Name = value
-                }
-            }
-
-            <<< InlineColorPickerRow("background_color") {
-                $0.title = "Background Color"
-                $0.isCircular = true
-                $0.showsPaletteNames = true
-                $0.value = UIColor(hex: self.action.BackgroundColor)
-            }.onChange { row in
-                if let value = row.value {
-                    self.action.BackgroundColor = value.hexString()
+                    self.preview.setup(self.action)
                 }
             }
 
@@ -109,6 +106,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }.onChange { row in
                 if let value = row.value {
                     self.action.Text = value
+                    self.preview.setup(self.action)
                 }
             }
 
@@ -120,10 +118,22 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }.onChange { row in
                 if let value = row.value {
                     self.action.TextColor = value.hexString()
+                    self.preview.setup(self.action)
                 }
             }
 
-            +++ Section()
+            <<< InlineColorPickerRow("background_color") {
+                $0.title = "Background Color"
+                $0.isCircular = true
+                $0.showsPaletteNames = true
+                $0.value = UIColor(hex: self.action.BackgroundColor)
+                }.onChange { row in
+                    if let value = row.value {
+                        self.action.BackgroundColor = value.hexString()
+                        self.preview.setup(self.action)
+                    }
+            }
+
             <<< SearchPushRow<String> {
                     $0.options = MaterialDesignIcons.allCases.map({ $0.name })
                     $0.selectorTitle = "Icon"
@@ -154,6 +164,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                 }.onChange { row in
                     if let value = row.value {
                         self.action.IconName = value
+                        self.preview.setup(self.action)
                     }
             }
 
@@ -168,6 +179,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
                     self.action.IconColor = picker.value!.hexString()
 
+                    self.preview.setup(self.action)
                     if let iconRow = self.form.rowBy(tag: "icon") as? PushRow<String> {
                         if let value = iconRow.value {
                             let theIcon = MaterialDesignIcons(named: value)
@@ -177,6 +189,16 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                         }
                     }
             }
+
+            +++ Section()
+            <<< ViewRow<ActionPreview>("preview").cellSetup { (cell, _) in
+                cell.backgroundColor = UIColor.clear
+                cell.preservesSuperviewLayoutMargins = false
+                self.preview.setup(self.action)
+
+                cell.view = self.preview
+        }
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -211,4 +233,78 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
         onDismissCallback?(self)
     }
 
+}
+
+class ActionPreview: UIView {
+    var imageView = UIImageView(frame: CGRect(x: 15, y: 0, width: 44, height: 44))
+    var title = UILabel(frame: CGRect(x: 60, y: 60, width: 200, height: 100))
+    var action: Action?
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        self.layer.cornerRadius = 5.0
+
+        self.layer.cornerRadius = 2.0
+        self.layer.borderWidth = 1.0
+        self.layer.borderColor = UIColor.clear.cgColor
+        self.layer.masksToBounds = true
+
+        self.layer.shadowColor = UIColor.black.cgColor
+        self.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+        self.layer.shadowRadius = 2.0
+        self.layer.shadowOpacity = 0.5
+        self.layer.masksToBounds = false
+        self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius).cgPath
+
+        let centerY = (self.frame.size.height / 2) - 50
+
+        self.title = UILabel(frame: CGRect(x: 60, y: centerY, width: 200, height: 100))
+
+        self.title.textAlignment = .natural
+        self.title.clipsToBounds = true
+        self.title.numberOfLines = 1
+        self.title.font = self.title.font.withSize(UIFont.smallSystemFontSize)
+
+        self.addSubview(self.title)
+        self.addSubview(self.imageView)
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleGesture))
+        self.addGestureRecognizer(tap)
+    }
+
+    public func setup(_ action: Action) {
+        self.action = action
+        DispatchQueue.main.async {
+            self.backgroundColor = UIColor(hex: action.BackgroundColor)
+
+            let icon = MaterialDesignIcons.init(named: action.IconName)
+            self.imageView.image = icon.image(ofSize: CGSize(width: 22, height: 22),
+                                              color: UIColor(hex: action.IconColor))
+            self.title.text = action.Text
+            self.title.textColor = UIColor(hex: action.TextColor)
+        }
+    }
+
+    @objc func handleGesture(gesture: UITapGestureRecognizer) {
+        guard let action = action else { return }
+
+        let feedbackGenerator = UINotificationFeedbackGenerator()
+        feedbackGenerator.prepare()
+
+        self.imageView.showActivityIndicator()
+
+        firstly {
+            HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.handleAction(actionID: action.ID, actionName: action.Name, source: .Preview)
+            }.done { _ in
+                feedbackGenerator.notificationOccurred(.success)
+            }.ensure {
+                self.imageView.hideActivityIndicator()
+            }.catch { err -> Void in
+                print("Error during action event fire: \(err)")
+                feedbackGenerator.notificationOccurred(.error)
+        }
+    }
 }

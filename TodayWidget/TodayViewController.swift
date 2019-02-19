@@ -83,6 +83,8 @@ class TodayViewController: UIViewController, NCWidgetProviding,
         let availableWidth = view.frame.width - paddingSpace
         let widthPerItem = availableWidth / itemsPerRow
 
+        print("width", widthPerItem)
+
         return CGSize(width: widthPerItem, height: 44)
     }
 
@@ -167,47 +169,5 @@ class ActionButtonCell: UICollectionViewCell {
             self.title.text = action.Text
             self.title.textColor = UIColor(hex: action.TextColor)
         }
-    }
-}
-
-private var activityIndicatorAssociationKey: UInt8 = 0
-
-extension UIImageView {
-    var activityIndicator: UIActivityIndicatorView! {
-        get {
-            return objc_getAssociatedObject(self, &activityIndicatorAssociationKey) as? UIActivityIndicatorView
-        }
-        set(newValue) {
-            objc_setAssociatedObject(self, &activityIndicatorAssociationKey, newValue, .OBJC_ASSOCIATION_RETAIN)
-        }
-    }
-
-    func showActivityIndicator() {
-
-        if self.activityIndicator == nil {
-            self.activityIndicator = UIActivityIndicatorView(style: .gray)
-
-            self.activityIndicator.hidesWhenStopped = true
-            self.activityIndicator.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-            self.activityIndicator.style = UIActivityIndicatorView.Style.whiteLarge
-            self.activityIndicator.center = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)
-            self.activityIndicator.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin,
-                                                       .flexibleTopMargin, .flexibleBottomMargin]
-            self.activityIndicator.isUserInteractionEnabled = false
-
-            OperationQueue.main.addOperation({ () -> Void in
-                self.addSubview(self.activityIndicator)
-            })
-        }
-
-        OperationQueue.main.addOperation({ () -> Void in
-            self.activityIndicator.startAnimating()
-        })
-    }
-
-    func hideActivityIndicator() {
-        OperationQueue.main.addOperation({ () -> Void in
-            self.activityIndicator.stopAnimating()
-        })
     }
 }
