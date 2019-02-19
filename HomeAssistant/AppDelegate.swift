@@ -339,8 +339,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     return
                 }
 
+                guard let actionID = message.content["ActionID"] as? String else {
+                    print("ActionID either does not exist or is not a string in the payload")
+                    message.replyHandler?(["fired": false])
+                    return
+                }
+
                 HomeAssistantAPI.authenticatedAPIPromise.then { api in
-                    api.handleAction(actionName: actionName, source: .Watch)
+                    api.handleAction(actionID: actionID, actionName: actionName, source: .Watch)
                 }.done { _ in
                     message.replyHandler?(["fired": true])
                 }.catch { err -> Void in

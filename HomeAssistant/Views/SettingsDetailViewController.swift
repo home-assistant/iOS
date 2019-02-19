@@ -589,14 +589,14 @@ class SettingsDetailViewController: FormViewController {
         }
     }
 
-    func getActionRow(_ action: Action?) ->
-        ButtonRowWithPresent<ActionConfigurator> {
-            var identifier = "new_action_"+UUID().uuidString
+    func getActionRow(_ inputAction: Action?) -> ButtonRowWithPresent<ActionConfigurator> {
+            var identifier = UUID().uuidString
             var title = "New Action"
+            let action = inputAction
 
-            if let action = action {
-                identifier = action.Name
-                title = action.Name
+            if let passedAction = inputAction {
+                identifier = passedAction.Name
+                title = passedAction.Name
             }
 
             return ButtonRowWithPresent<ActionConfigurator> {
@@ -627,16 +627,6 @@ class SettingsDetailViewController: FormViewController {
                             } catch let error as NSError {
                                 print("Error while saving to Realm!", error)
                             }
-
-//                            let allActions = Array(realm.objects(Action.self)).map({
-//                                NSKeyedArchiver.archivedData(withRootObject: $0)
-//                            })
-//
-//                            let actionsData = NSKeyedArchiver.archivedData(withRootObject: allActions)
-//
-//                            let blob = Blob(identifier: "actions", content: actionsData)
-//
-//                            print("Sending blob!")
 
                             let data = Array(realm.objects(Action.self))
 

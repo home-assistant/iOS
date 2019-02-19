@@ -23,12 +23,10 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
     var newAction: Bool = true
     var shouldSave: Bool = false
 
-    private let realm = Current.realm()
-
     convenience init(action: Action?) {
         self.init()
         if let action = action {
-            self.action = action
+            self.action = Action(value: action)
             self.newAction = false
         }
     }
@@ -48,16 +46,16 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
                                                                  action: saveSelector)
 
-        let infoButton = UIButton(type: .infoLight)
-
-        infoButton.addTarget(self, action: #selector(ActionConfigurator.getInfoAction),
-                             for: .touchUpInside)
-
-        let infoButtonView = UIBarButtonItem(customView: infoButton)
-
-        self.setToolbarItems([infoButtonView], animated: false)
-
-        self.navigationController?.setToolbarHidden(false, animated: false)
+//        let infoButton = UIButton(type: .infoLight)
+//
+//        infoButton.addTarget(self, action: #selector(ActionConfigurator.getInfoAction),
+//                             for: .touchUpInside)
+//
+//        let infoButtonView = UIBarButtonItem(customView: infoButton)
+//
+//        self.setToolbarItems([infoButtonView], animated: false)
+//
+//        self.navigationController?.setToolbarHidden(false, animated: false)
 
         self.title = "New Action"
 
@@ -105,8 +103,13 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }
 
             +++ Section()
-            <<< TextRow {
+            <<< TextRow("text") {
                 $0.title = "Text"
+                $0.value = self.action.Text
+            }.onChange { row in
+                if let value = row.value {
+                    self.action.Text = value
+                }
             }
 
             <<< InlineColorPickerRow("text_color") {
@@ -121,11 +124,12 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }
 
             +++ Section()
-            <<< PushRow<String> {
+            <<< SearchPushRow<String> {
                     $0.options = MaterialDesignIcons.allCases.map({ $0.name })
                     $0.selectorTitle = "Icon"
                     $0.tag = "icon"
                     $0.title = "Icon"
+                    $0.value = self.action.IconName
                 }.cellUpdate({ (cell, row) in
                     if let value = row.value {
                         let theIcon = MaterialDesignIcons(named: value)

@@ -78,7 +78,8 @@ class InterfaceController: WKInterfaceController {
         row.indicator?.showWait()
 
         let actionMessage = ImmediateMessage(identifier: "ActionRowPressed",
-                                             content: ["ActionName": selectedAction.Name], replyHandler: { replyDict in
+                                             content: ["ActionID": selectedAction.ID,
+                                                       "ActionName": selectedAction.Name], replyHandler: { replyDict in
                                                 print("Received reply dictionary", replyDict)
 
                                                 WKInterfaceDevice.current().play(.success)

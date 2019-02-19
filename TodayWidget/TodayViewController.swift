@@ -110,7 +110,7 @@ class TodayViewController: UIViewController, NCWidgetProviding,
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
-            api.handleAction(actionName: action.Name, source: .Widget)
+            api.handleAction(actionID: action.ID, actionName: action.Name, source: .Widget)
         }.done { _ in
             feedbackGenerator.notificationOccurred(.success)
         }.ensure {

@@ -11,6 +11,7 @@ import RealmSwift
 import ObjectMapper
 
 public class Action: Object, Mappable, NSCoding {
+    @objc dynamic var ID: String = UUID().uuidString
     @objc dynamic var Name: String = ""
     @objc dynamic var Position: Int = 0
     @objc dynamic var BackgroundColor: String = "FC2D49"
@@ -21,7 +22,7 @@ public class Action: Object, Mappable, NSCoding {
     @objc dynamic var CreatedAt = Date()
 
     override public static func primaryKey() -> String? {
-        return "Name"
+        return "ID"
     }
 
     required convenience public init?(map: Map) {
@@ -45,12 +46,13 @@ public class Action: Object, Mappable, NSCoding {
         isWriteRequired ? realm.beginWrite() : ()
 
         if map.mappingType == .toJSON {
-            var name = self.Name
-            name <- map["Name"]
+            var id = self.ID
+            id <- map["ID"]
         } else {
-            Name <- map["Name"]
+            ID <- map["ID"]
         }
 
+        Name             <- map["Name"]
         Position         <- map["Position"]
         BackgroundColor  <- map["BackgroundColor"]
         IconName         <- map["IconName"]

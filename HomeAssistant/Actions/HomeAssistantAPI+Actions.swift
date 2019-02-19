@@ -13,7 +13,7 @@ import Shared
 
 extension HomeAssistantAPI {
 
-    func handleAction(actionName: String, source: ActionSource) -> Promise<Bool> {
+    func handleAction(actionID: String, actionName: String, source: ActionSource) -> Promise<Bool> {
         return Promise { seal in
             guard let api = HomeAssistantAPI.authenticatedAPI() else {
                 throw APIError.notConfigured
