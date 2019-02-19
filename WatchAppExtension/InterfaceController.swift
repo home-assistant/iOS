@@ -21,8 +21,6 @@ class InterfaceController: WKInterfaceController {
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
 
-        print("ONE")
-
         Iconic.registerMaterialDesignIcons()
 
         self.setupTable()

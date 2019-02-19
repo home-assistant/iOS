@@ -235,6 +235,8 @@
 		B672AB562216B07500175465 /* gallery.ckcomplication in Resources */ = {isa = PBXBuildFile; fileRef = B672AB552216B07500175465 /* gallery.ckcomplication */; };
 		B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */; };
 		B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */; };
+		B675ECC5221BD76300C65D31 /* Identify.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC4221BD76300C65D31 /* Identify.swift */; };
+		B675ECC7221BDF4500C65D31 /* BackgroundRefreshScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */; };
 		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
 		B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */; };
 		B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */; };
@@ -786,6 +788,8 @@
 		B672AB552216B07500175465 /* gallery.ckcomplication */ = {isa = PBXFileReference; lastKnownFileType = folder; path = gallery.ckcomplication; sourceTree = "<group>"; };
 		B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+ComplicationDivination.swift"; sourceTree = "<group>"; };
 		B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPushRow.swift; sourceTree = "<group>"; };
+		B675ECC4221BD76300C65D31 /* Identify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identify.swift; sourceTree = "<group>"; };
+		B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshScheduler.swift; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B678DB361EA9999C0045312F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotion+StringExtensions.swift"; sourceTree = "<group>"; };
@@ -1590,6 +1594,7 @@
 				B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */,
 				B6CC5D972159D10E00833E5D /* ComplicationController.swift */,
 				B6B2E69F216A940700D39A26 /* ActionRow.swift */,
+				B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */,
 			);
 			path = WatchAppExtension;
 			sourceTree = "<group>";
@@ -1634,6 +1639,7 @@
 				B6F02BFB1CB4800C0029ABE7 /* Services.swift */,
 				B6F02BED1CB46EB10029ABE7 /* Status.swift */,
 				B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */,
+				B675ECC4221BD76300C65D31 /* Identify.swift */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -3072,6 +3078,7 @@
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				B6976985216243CC00FFFAD6 /* UIColor+CSS3+Hex.swift in Sources */,
 				B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */,
+				B675ECC7221BDF4500C65D31 /* BackgroundRefreshScheduler.swift in Sources */,
 				B672AB5122168B2900175465 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3090,6 +3097,7 @@
 				D0EEF2D1214D8B6700D1D360 /* Entity.swift in Sources */,
 				B6C091402151F93D00A326DC /* Sensor.swift in Sources */,
 				D0EEF335214EB77100D1D360 /* CLLocation+ToDoubleArray.swift in Sources */,
+				B675ECC5221BD76300C65D31 /* Identify.swift in Sources */,
 				D0EEF318214DD7A400D1D360 /* Events.swift in Sources */,
 				B6C091492151F93D00A326DC /* Weblink.swift in Sources */,
 				D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */,

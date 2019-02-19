@@ -314,13 +314,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    func updateWatchContext() {
+        if let wID = Current.settingsStore.webhookID, let url = Current.settingsStore.connectionInfo?.activeAPIURL {
+            var content: JSONDictionary = Communicator.shared.mostRecentlyReceievedContext.content
+
+            // content["webhook_id"] = wID
+            // content["url"] = url
+            content["webhook_url"] = url.appendingPathComponent("webhook/\(wID)").absoluteString
+
+            let context = Context(content: content)
+
+            do {
+                try Communicator.shared.sync(context: context)
+            } catch let error as NSError {
+                print("Updating the context failed: ", error.localizedDescription)
+            }
+
+            print("Set the context to", context)
+        }
+    }
+
     func setupWatchCommunicator() {
         Communicator.shared.activationStateChangedObservers.add { state in
             print("Activation state changed: ", state)
+            self.updateWatchContext()
         }
 
         Communicator.shared.watchStateUpdatedObservers.add { watchState in
             print("Watch state changed: ", watchState)
+            self.updateWatchContext()
         }
 
         Communicator.shared.reachabilityChangedObservers.add { reachability in

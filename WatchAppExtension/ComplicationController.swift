@@ -71,7 +71,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
                                       withHandler handler: @escaping (CLKComplicationTemplate?) -> Void) {
         // This method will be called once per supported complication, and the results will be cached
 
-        print("Get sample template!", ComplicationGroupMember(family: complication.family).description)
+        // print("Get sample template!", ComplicationGroupMember(family: complication.family).description)
         handler(ComplicationGroupMember(family: complication.family).errorTemplate)
     }
 

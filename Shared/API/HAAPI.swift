@@ -444,9 +444,14 @@ public class HomeAssistantAPI {
         return self.request(path: "discover_info", callingFunctionName: "\(#function)")
     }
 
-    public func identifyDevice() -> Promise<String> {
-        return self.request(path: "ios/identify", callingFunctionName: "\(#function)", method: .post,
-                     parameters: buildIdentifyDict(), encoding: JSONEncoding.default)
+    public func identifyDevice() -> Promise<IdentifyResponse> {
+        return self.request(path: "ios/identify", callingFunctionName: "\(#function)",
+                            method: .post, parameters: buildIdentifyDict(),
+                            // swiftlint:disable:next line_length
+                            encoding: JSONEncoding.default).then { (resp: IdentifyResponse) -> Promise<IdentifyResponse> in
+                                Current.settingsStore.webhookID = resp.WebhookID
+                                return Promise.value(resp)
+        }
     }
 
     public func removeDevice() -> Promise<String> {
@@ -744,7 +749,7 @@ public class HomeAssistantAPI {
 
         let promise = firstly {
             self.identifyDevice()
-            }.then {_ in
+            }.then { _ in
                 self.callService(domain: "device_tracker", service: "see", serviceData: payloadDict,
                                  shouldLog: false)
             }.done { _ in

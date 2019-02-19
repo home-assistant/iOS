@@ -22,7 +22,7 @@ public class WatchComplication: Object, Mappable {
     @objc private dynamic var rawFamily: String = ""
     public var Family: ComplicationGroupMember {
         get {
-            print("GET Family for str '", rawFamily, "'")
+            // print("GET Family for str '", rawFamily, "'")
             if let f = ComplicationGroupMember(rawValue: rawFamily) {
                 return f
             }
@@ -35,7 +35,7 @@ public class WatchComplication: Object, Mappable {
     @objc private dynamic var rawTemplate: String = ""
     public var Template: ComplicationTemplate {
         get {
-            print("GET Template for str'", rawTemplate, "'")
+            // print("GET Template for str'", rawTemplate, "'")
             if let t = ComplicationTemplate(rawValue: rawTemplate) {
                 return t
             }
@@ -118,7 +118,10 @@ public class WatchComplication: Object, Mappable {
                     print("TextArea", key, "doesn't have a text color!")
                     continue
                 }
-                let provider = CLKSimpleTextProvider(text: text)
+                var provider = CLKSimpleTextProvider(text: text)
+                if let renderedText = textArea["renderedText"] as? String {
+                    provider = CLKSimpleTextProvider(text: renderedText)
+                }
                 provider.tintColor = UIColor(hex: color)
                 providers[key] = provider
             }
@@ -548,9 +551,11 @@ public class WatchComplication: Object, Mappable {
             if let gaugeProvider = self.gaugeProvider {
                 template.gaugeProvider = gaugeProvider
             }
-            if let textProvider = self.textDataProviders["Center"] {
-                template.centerTextProvider = textProvider
+            guard let textProvider = self.textDataProviders["Center"] else {
+                print("No center text set for GraphicCircularClosedGaugeText, returning nil!")
+                return nil
             }
+            template.centerTextProvider = textProvider
             return template
         case .GraphicCircularOpenGaugeSimpleText:
             let template = CLKComplicationTemplateGraphicCircularOpenGaugeSimpleText()
@@ -580,11 +585,13 @@ public class WatchComplication: Object, Mappable {
             }
             return template
         case .GraphicBezelCircularText:
-            let template = CLKComplicationTemplateGraphicBezelCircularText()
-            if let textProvider = self.textDataProviders["Center"] {
-                template.textProvider = textProvider
-            }
-            return template
+            // FIXME: need to implement CLKComplicationTemplateGraphicCircular
+            return nil
+//            let template = CLKComplicationTemplateGraphicBezelCircularText()
+//            if let textProvider = self.textDataProviders["Center"] {
+//                template.textProvider = textProvider
+//            }
+//            return template
         case .GraphicRectangularStandardBody:
             let template = CLKComplicationTemplateGraphicRectangularStandardBody()
             if let textProvider = self.textDataProviders["Header"] {

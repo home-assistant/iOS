@@ -127,6 +127,15 @@ public class SettingsStore {
         }
     }
 
+    public var webhookID: String? {
+        get {
+            return keychain["webhook_id"]
+        }
+        set {
+            keychain["webhook_id"] = newValue
+        }
+    }
+
     // MARK: - Private helpers
 
     private var hasMigratedConnection: Bool {
