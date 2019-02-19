@@ -510,10 +510,8 @@ class SettingsDetailViewController: FormViewController {
             let objs = realm.objects(Action.self)
             let actions = objs.sorted(byKeyPath: "Position")
 
-            let mvOpts: MultivaluedOptions = [.Insert, .Delete, .Reorder]
-
             self.form
-                +++ MultivaluedSection(multivaluedOptions: mvOpts,
+                +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete, .Reorder],
                                        header: "",
                                        footer: "Actions are used in the Today widget and Apple Watch app") { section in
                                         section.multivaluedRowToInsertAt = { index in
@@ -526,6 +524,18 @@ class SettingsDetailViewController: FormViewController {
             }
         default:
             print("Something went wrong, no settings detail group named \(detailGroup)")
+        }
+    }
+
+    override func rowsHaveBeenRemoved(_ rows: [BaseRow], at indexes: [IndexPath]) {
+        super.rowsHaveBeenRemoved(rows, at: indexes)
+
+        let deletedIDs = rows.compactMap { $0.tag }
+
+        let realm = Realm.live()
+        // swiftlint:disable:next force_try
+        try! realm.write {
+            realm.delete(realm.objects(Action.self).filter("ID IN %@", deletedIDs))
         }
     }
 
@@ -595,7 +605,7 @@ class SettingsDetailViewController: FormViewController {
             let action = inputAction
 
             if let passedAction = inputAction {
-                identifier = passedAction.Name
+                identifier = passedAction.ID
                 title = passedAction.Name
             }
 
