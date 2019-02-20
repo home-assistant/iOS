@@ -19,7 +19,7 @@ extension HomeAssistantAPI {
         case .success(let value):
             seal.fulfill(value)
         case .failure(let error):
-            print("Error on \(callingFunctionName)() request", error)
+            print("Error on \(callingFunctionName) request", error)
             seal.reject(error)
         }
     }
