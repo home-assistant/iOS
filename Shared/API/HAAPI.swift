@@ -758,8 +758,18 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func submitLocation(updateType: LocationUpdateTrigger, location: CLLocation?,
-                               zone: RLMZone?) -> Promise<Void> {
+    private func geocodeLocation(_ loc: CLLocation?) -> Promise<CLPlacemark?> {
+        guard let loc = loc else { return Promise.value(nil) }
+        return Promise { seal in
+            let geocoder = CLGeocoder()
+            geocoder.reverseGeocodeLocation(loc) { (placemark, _) in
+                seal.fulfill(placemark?.last)
+            }
+        }
+    }
+
+    private func buildLocationPayload(updateType: LocationUpdateTrigger, location: CLLocation?,
+                                      zone: RLMZone?) -> Promise<DeviceTrackerSee> {
 
         UIDevice.current.isBatteryMonitoringEnabled = true
 
@@ -776,23 +786,36 @@ public class HomeAssistantAPI {
         payload.SSID = ConnectionInfo.currentSSID()
         payload.ConnectionType = Reachability.getSimpleNetworkType().description
 
-        return self.getLatestMotionActivity().then { activity -> Promise<Void> in
-            if let activity = activity {
-                payload.SetActivity(activity: activity)
-            }
+        return firstly {
+                    when(fulfilled: self.getLatestMotionActivity(), self.geocodeLocation(location))
+                }.then { activity, placemark -> Promise<DeviceTrackerSee> in
+                    if let activity = activity {
+                        payload.SetActivity(activity: activity)
+                    }
+
+                    if let placemark = placemark {
+                        payload.SetPlacemark(placemark: placemark)
+                    }
+
+                    return Promise.value(payload)
+                }.ensure {
+                    UIDevice.current.isBatteryMonitoringEnabled = false
+                }
+
+    }
+
+    public func submitLocation(updateType: LocationUpdateTrigger, location: CLLocation?,
+                               zone: RLMZone?) -> Promise<Void> {
+
+        return self.buildLocationPayload(updateType: updateType, location: location,
+                                         zone: zone).then { payload -> Promise<Void> in
 
             var jsonPayload = "{\"missing\": \"payload\"}"
             if let p = payload.toJSONString(prettyPrint: false) {
                 jsonPayload = p
             }
 
-            print("jsonPayload", jsonPayload)
-
             let payloadDict: [String: Any] = Mapper<DeviceTrackerSee>().toJSON(payload)
-
-            print("payloadDict", payloadDict)
-
-            UIDevice.current.isBatteryMonitoringEnabled = false
 
             let realm = Current.realm()
             // swiftlint:disable:next force_try
