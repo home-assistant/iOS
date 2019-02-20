@@ -37,6 +37,9 @@ public class DeviceTrackerSee: Mappable {
     public var ActivityConfidence: String?
     public var ActivityStartDate: Date?
 
+    // Extra attributes
+    public var SSID: String?
+
     init() {}
 
     public required init?(map: Map) {}
@@ -145,6 +148,8 @@ public class DeviceTrackerSee: Mappable {
         ActivityType         <-  map["attributes.activity_type"]
         ActivityConfidence   <-  map["attributes.activity_confidence"]
         ActivityStartDate    <-  (map["attributes.activity_start_date"], HomeAssistantTimestampTransform())
+
+        SSID                 <- map["attributes.ssid"]
     }
 }
 

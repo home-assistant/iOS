@@ -772,6 +772,8 @@ public class HomeAssistantAPI {
         payload.Hostname = UIDevice.current.name
         payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
 
+        payload.SSID = ConnectionInfo.currentSSID()
+
         return self.getLatestMotionActivity().then { activity -> Promise<Void> in
             if let activity = activity {
                 payload.SetActivity(activity: activity)
