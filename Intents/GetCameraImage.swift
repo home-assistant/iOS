@@ -19,14 +19,11 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
             return
         }
 
-        if intent.serviceDomain != nil && intent.service != nil && intent.payload != nil {
-            // Service name and data was already set
+        if intent.cameraID != nil {
+            // Camera ID already set
             completion(GetCameraImageIntentResponse(code: .ready, userActivity: nil))
-        } else if let pasteboardString = UIPasteboard.general.string {
-            if intent.service != nil {
-                // Only service name was set, get data from clipboard
-                intent.payload = pasteboardString
-            }
+        } else if let pasteboardString = UIPasteboard.general.string, pasteboardString.hasPrefix("camera.") {
+            intent.cameraID = pasteboardString
             completion(GetCameraImageIntentResponse(code: .ready, userActivity: nil))
         } else {
             completion(GetCameraImageIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
@@ -39,40 +36,26 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
             return
         }
 
-        if let domain = intent.serviceDomain, let service = intent.service, let data = intent.payload {
-            print("Handling call service shortcut", service, data)
+        if let cameraID = intent.cameraID {
+            print("Getting camera frame for", cameraID)
 
-            let data = data.data(using: .utf8)!
-            do {
-                if let jsonArray = try JSONSerialization.jsonObject(with: data,
-                                                                    options: .allowFragments) as? [String: Any] {
+            api.GetCameraImage(cameraEntityID: cameraID).done { frame in
+                print("Successfully got camera image during shortcut")
 
-                    api.callService(domain: domain, service: service, serviceData: jsonArray,
-                                    shouldLog: true).done { _ in
-                                        print("Successfully called service during shortcut")
-                                        completion(CallServiceIntentResponse(code: .success, userActivity: nil))
-                        }.catch { error in
-                            print("Error when calling service in shortcut", error)
-                            let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
-                            resp.error = "Error during api.callService: \(error.localizedDescription)"
-                            completion(resp)
-                    }
+                UIPasteboard.general.image = frame
 
-                } else {
-                    print("Unable to parse data to JSON during shortcut")
-                    let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
-                    resp.error = "Unable to parse data to JSON"
-                    completion(resp)
-                }
-            } catch let error as NSError {
-                print("Error when parsing service data to JSON during CallService", error)
-                completion(CallServiceIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
+                completion(GetCameraImageIntentResponse(code: .success, userActivity: nil))
+            }.catch { error in
+                print("Error when getting camera image in shortcut", error)
+                let resp = GetCameraImageIntentResponse(code: .failure, userActivity: nil)
+                resp.error = "Error during api.GetCameraImage: \(error.localizedDescription)"
+                completion(resp)
             }
 
         } else {
-            print("Unable to unwrap intent.service and intent.data")
-            let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
-            resp.error = "Unable to unwrap intent.service and intent.data"
+            print("Unable to unwrap intent.cameraID")
+            let resp = GetCameraImageIntentResponse(code: .failure, userActivity: nil)
+            resp.error = "Unable to unwrap intent.cameraID"
             completion(resp)
         }
     }

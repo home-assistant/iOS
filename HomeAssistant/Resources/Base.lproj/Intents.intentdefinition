@@ -751,7 +751,7 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Camera image placed on clipboard</string>
+						<string>Latest still from ${cameraID} placed on clipboard</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>nzqmFA</string>
 						<key>INIntentResponseCodeName</key>
@@ -759,9 +759,29 @@
 						<key>INIntentResponseCodeSuccess</key>
 						<true/>
 					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to get camera image, the clipboard contents could not be parsed for a valid entity ID</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>4k18T7</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failureClipboardNotParseable</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to get camera image, Home Assistant is not currently reachable</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>mAibJP</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failureConnectivity</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
+					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
-				<integer>2</integer>
+				<integer>3</integer>
 				<key>INIntentResponseParameters</key>
 				<array>
 					<dict>
@@ -773,6 +793,18 @@
 						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>2</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>String</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>2</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>cameraID</string>
+						<key>INIntentResponseParameterSupportsMultipleValues</key>
+						<false/>
+						<key>INIntentResponseParameterTag</key>
+						<integer>3</integer>
 						<key>INIntentResponseParameterType</key>
 						<string>String</string>
 					</dict>

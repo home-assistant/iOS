@@ -403,6 +403,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             shortcutsToSuggest.append(shortcut)
         }
 
+        if let shortcut = INShortcut(intent: GetCameraImageIntent()) {
+            shortcutsToSuggest.append(shortcut)
+        }
+
         _ = HomeAssistantAPI.authenticatedAPIPromise.then { api in
             api.GetEvents()
             }.then { eventsResp -> Promise<HomeAssistantAPI> in
