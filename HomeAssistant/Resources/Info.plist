@@ -309,6 +309,7 @@
 		<string>fb</string>
 		<string>tweetbot</string>
 		<string>twitter</string>
+		<string>shortcuts</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -318,8 +319,8 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We suggest selecting "Always Allow" for the best location experience.
-            Selecting "Only While Using the App" will disable iBeacons, geofences, background location updates and accurate reporting.</string>
+	<string>We suggest selecting &quot;Always Allow&quot; for the best location experience.
+            Selecting &quot;Only While Using the App&quot; will disable iBeacons, geofences, background location updates and accurate reporting.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

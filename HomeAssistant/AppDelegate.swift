@@ -30,7 +30,6 @@ let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var safariVC: SFSafariViewController?
-    var callbackManager: Manager?
 
     private(set) var regionManager: RegionManager!
 
@@ -212,6 +211,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ app: UIApplication,
                      open url: URL,
                      options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        print("Received URL", url)
         var serviceData: [String: String] = [:]
         if let queryItems = url.queryItems {
             serviceData = queryItems
@@ -219,7 +219,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let host = url.host else { return true }
         switch host.lowercased() {
         case "x-callback-url":
-            return self.callbackManager!.handleOpen(url: url)
+            return Manager.shared.handleOpen(url: url)
         case "call_service":
             callServiceURLHandler(url, serviceData)
         case "fire_event":
@@ -241,9 +241,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // swiftlint:disable:next function_body_length
     private func registerCallbackURLKitHandlers() {
-        self.callbackManager = Manager(callbackURLScheme: Manager.urlSchemes?.first)
+        Manager.shared.callbackURLScheme = Manager.urlSchemes?.first
 
-        self.callbackManager?["fire_event"] = { parameters, success, failure, cancel in
+        Manager.shared["fire_event"] = { parameters, success, failure, cancel in
             guard let eventName = parameters["eventName"] else {
                 failure(XCallbackError.eventNameMissing)
                 return
@@ -265,7 +265,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        self.callbackManager?["call_service"] = { parameters, success, failure, cancel in
+        Manager.shared["call_service"] = { parameters, success, failure, cancel in
             guard let service = parameters["service"] else {
                 failure(XCallbackError.serviceMissing)
                 return
@@ -291,7 +291,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        self.callbackManager?["send_location"] = { parameters, success, failure, cancel in
+        Manager.shared["send_location"] = { parameters, success, failure, cancel in
             _ = firstly {
                 HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
@@ -304,7 +304,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        self.callbackManager?["render_template"] = { parameters, success, failure, cancel in
+        Manager.shared["render_template"] = { parameters, success, failure, cancel in
             guard let template = parameters["template"] else {
                 failure(XCallbackError.templateMissing)
                 return
@@ -553,6 +553,81 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.updateWith(authenticatedAPI: api)
         Current.settingsStore.connectionInfo = connectionInfo
     }
+
+    // swiftlint:disable:next function_body_length
+    func handleShortcutNotification(_ shortcutName: String, _ shortcutDict: [String: String]) {
+        var inputParams: CallbackURLKit.Parameters = shortcutDict
+        inputParams["name"] = shortcutName
+
+        print("Sending params in shortcut", inputParams)
+
+        let eventName: String = "ios.shortcut_run"
+        let deviceDict: [String: String] = [
+            "sourceDevicePermanentID": Constants.PermanentID, "sourceDeviceName": UIDevice.current.name,
+            "sourceDeviceID": Current.settingsStore.deviceID
+        ]
+        var eventData: [String: Any] = ["name": shortcutName, "input": shortcutDict, "device": deviceDict]
+
+        let successHandler: CallbackURLKit.SuccessCallback = { (params) in
+            print("Received params from shortcut run", params)
+            eventData["status"] = "success"
+            eventData["result"] = params?["result"]
+
+            print("Success, sending data", eventData)
+
+            _ = firstly {
+                HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.createEvent(eventType: eventName, eventData: eventData)
+            }.catch { error -> Void in
+                print("Received error from createEvent during shortcut run", error)
+            }
+        }
+
+        let failureHandler: CallbackURLKit.FailureCallback = { (error) in
+            eventData["status"] = "failure"
+            eventData["error"] = error.XCUErrorParameters
+
+            _ = firstly {
+                HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.createEvent(eventType: eventName, eventData: eventData)
+            }.catch { error -> Void in
+                print("Received error from createEvent during shortcut run", error)
+            }
+        }
+
+        let cancelHandler: CallbackURLKit.CancelCallback = {
+            eventData["status"] = "cancelled"
+
+            _ = firstly {
+                HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.createEvent(eventType: eventName, eventData: eventData)
+            }.catch { error -> Void in
+                print("Received error from createEvent during shortcut run", error)
+            }
+        }
+
+        do {
+            try Manager.shared.perform(action: "run-shortcut", urlScheme: "shortcuts",
+                                       parameters: inputParams, onSuccess: successHandler,
+                                       onFailure: failureHandler, onCancel: cancelHandler)
+        } catch let error as NSError {
+            print("Running shortcut failed", error)
+
+            eventData["status"] = "error"
+            eventData["error"] = error.localizedDescription
+
+            _ = firstly {
+                HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.createEvent(eventType: eventName, eventData: eventData)
+            }.catch { error -> Void in
+                print("Received error from CallbackURLKit perform", error)
+            }
+        }
+    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
@@ -564,6 +639,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             userText = textInput.userText
         }
         let userInfo = response.notification.request.content.userInfo
+
+        if let shortcutDict = userInfo["shortcut"] as? [String: String],
+            let shortcutName = shortcutDict["name"] {
+
+            self.handleShortcutNotification(shortcutName, shortcutDict)
+
+        }
+
         if let openUrl = userInfo["url"] as? String,
             let url = URL(string: openUrl) {
             if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
