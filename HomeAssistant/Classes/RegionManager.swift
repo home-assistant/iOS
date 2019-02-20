@@ -7,7 +7,6 @@
 //
 
 import CoreLocation
-import CoreMotion
 import Foundation
 import Shared
 import os
@@ -18,8 +17,6 @@ private let kLocationMaximumAge: TimeInterval = 10.0
 class RegionManager: NSObject {
     let locationManager = CLLocationManager()
     var backgroundTask: UIBackgroundTaskIdentifier?
-    let activityManager = CMMotionActivityManager()
-    var lastActivity: CMMotionActivity?
     var lastLocation: CLLocation?
     var oneShotLocationActive: Bool = false
     var lastLocationDate: Date = Current.date()
@@ -35,10 +32,6 @@ class RegionManager: NSObject {
         return realm.objects(RLMZone.self).filter(NSPredicate(format: "inRegion == %@",
                                                               NSNumber(value: true))).map { $0 }
     }
-
-    internal lazy var coreMotionQueue: OperationQueue = {
-        return OperationQueue()
-    }()
 
     override init() {
         super.init()
@@ -137,12 +130,6 @@ class RegionManager: NSObject {
             locationManager.startMonitoring(for: beaconRegion)
         } else {
             locationManager.startMonitoring(for: zone.circularRegion())
-        }
-
-        if Current.settingsStore.motionEnabled {
-            activityManager.startActivityUpdates(to: coreMotionQueue) { [weak self] activity in
-                self?.lastActivity = activity
-            }
         }
     }
 

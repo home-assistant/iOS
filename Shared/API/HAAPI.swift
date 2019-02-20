@@ -18,6 +18,7 @@ import ObjectMapper
 import RealmSwift
 import UserNotifications
 import Intents
+import CoreMotion
 
 private let keychain = Constants.Keychain
 
@@ -735,9 +736,30 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func submitLocation(updateType: LocationUpdateTrigger,
-                               location: CLLocation?,
+    private func getLatestMotionActivity() -> Promise<CMMotionActivity?> {
+        return Promise { seal in
+            let motionActivityManager = CMMotionActivityManager()
+
+            guard CMMotionActivityManager.isActivityAvailable() else {
+                return seal.fulfill(nil)
+            }
+
+            guard Current.settingsStore.motionEnabled else {
+                return seal.fulfill(nil)
+            }
+
+            let end = Date()
+            let start = Calendar.current.date(byAdding: .minute, value: -10, to: end)!
+            let queue = OperationQueue.main
+            motionActivityManager.queryActivityStarting(from: start, to: end, to: queue) { (activities, error) in
+                seal.resolve(activities?.last, error)
+            }
+        }
+    }
+
+    public func submitLocation(updateType: LocationUpdateTrigger, location: CLLocation?,
                                zone: RLMZone?) -> Promise<Void> {
+
         UIDevice.current.isBatteryMonitoringEnabled = true
 
         let payload = DeviceTrackerSee(trigger: updateType, location: location, zone: zone)
@@ -750,37 +772,46 @@ public class HomeAssistantAPI {
         payload.Hostname = UIDevice.current.name
         payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
 
-        var jsonPayload = "{\"missing\": \"payload\"}"
-        if let p = payload.toJSONString(prettyPrint: false) {
-            jsonPayload = p
+        return self.getLatestMotionActivity().then { activity -> Promise<Void> in
+            if let activity = activity {
+                payload.SetActivity(activity: activity)
+            }
+
+            var jsonPayload = "{\"missing\": \"payload\"}"
+            if let p = payload.toJSONString(prettyPrint: false) {
+                jsonPayload = p
+            }
+
+            let payloadDict: [String: Any] = Mapper<DeviceTrackerSee>().toJSON(payload)
+
+            print("payloadDict", payloadDict)
+
+            UIDevice.current.isBatteryMonitoringEnabled = false
+
+            let realm = Current.realm()
+            // swiftlint:disable:next force_try
+            try! realm.write {
+                realm.add(LocationHistoryEntry(updateType: updateType, location: payload.cllocation,
+                                               zone: zone, payload: jsonPayload))
+            }
+
+            let promise = firstly {
+                    self.identifyDevice()
+                }.then { _ in
+                    self.callService(domain: "device_tracker", service: "see", serviceData: payloadDict,
+                                     shouldLog: false)
+                }.done { _ in
+                    print("Device seen!")
+                    self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: payloadDict)
+            }
+
+            promise.catch { err in
+                print("Error when updating location!", err)
+            }
+
+            return promise
         }
 
-        let payloadDict: [String: Any] = Mapper<DeviceTrackerSee>().toJSON(payload)
-
-        UIDevice.current.isBatteryMonitoringEnabled = false
-
-        let realm = Current.realm()
-        // swiftlint:disable:next force_try
-        try! realm.write {
-            realm.add(LocationHistoryEntry(updateType: updateType, location: payload.cllocation,
-                                           zone: zone, payload: jsonPayload))
-        }
-
-        let promise = firstly {
-            self.identifyDevice()
-            }.then { _ in
-                self.callService(domain: "device_tracker", service: "see", serviceData: payloadDict,
-                                 shouldLog: false)
-            }.done { _ in
-                print("Device seen!")
-                self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: payloadDict)
-        }
-
-        promise.catch { err in
-            print("Error when updating location!", err)
-        }
-
-        return promise
     }
 
     public func getAndSendLocation(trigger: LocationUpdateTrigger?) -> Promise<Void> {
