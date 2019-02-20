@@ -18,6 +18,9 @@ PODS:
   - arek/Notifications (4.0.2):
     - arek/Core
     - PMAlertController (= 3.5.0)
+  - CallbackURLKit (2.2.0):
+    - CallbackURLKit/Core (= 2.2.0)
+  - CallbackURLKit/Core (2.2.0)
   - ColorPickerRow (1.2.1):
     - Eureka (>= 3.0.0)
     - UIColor_Hex_Swift (>= 3.0.0)
@@ -61,6 +64,7 @@ DEPENDENCIES:
   - arek/Location (= 4.0.2)
   - arek/Motion (= 4.0.2)
   - arek/Notifications (= 4.0.2)
+  - CallbackURLKit
   - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `master`)
   - Communicator
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
@@ -85,6 +89,7 @@ SPEC REPOS:
     - AlamofireNetworkActivityIndicator
     - AlamofireObjectMapper
     - arek
+    - CallbackURLKit
     - Communicator
     - DeviceKit
     - EMTLoadingIndicator
@@ -140,6 +145,7 @@ SPEC CHECKSUMS:
   AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
   AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
   arek: 59e81a83c8a6c4e70c3598f66d3f1092824d3170
+  CallbackURLKit: 63d4ce4c79a0344179d7d5fd9c38175b732b8a6f
   ColorPickerRow: 87dd091c54fff65cf554f79ca1556312ee66282f
   Communicator: 16a6743c9e7451f938406632b910ffb658339087
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
@@ -160,6 +166,6 @@ SPEC CHECKSUMS:
   UIColor_Hex_Swift: bc07fc197421ee896b9ed6dcfa2054b7fbf75145
   ViewRow: e278428ff53da5eab18b191d3e19a16f3e299fc1
 
-PODFILE CHECKSUM: 8e77508c538d2c54592d09cafdf4d481fb897cd5
+PODFILE CHECKSUM: c9339ec2d47da5b8c63a800feec1ab4e567a63d5
 
 COCOAPODS: 1.6.0.beta.1

@@ -37,6 +37,7 @@ target 'HomeAssistant' do
     pod 'arek/Location', '4.0.2'
     pod 'arek/Motion', '4.0.2'
     pod 'arek/Notifications', '4.0.2'
+    pod 'CallbackURLKit'
     pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
     pod 'Communicator'
     pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'

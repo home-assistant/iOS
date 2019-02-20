@@ -361,6 +361,11 @@ internal enum L10n {
       /// Location updated via Visit
       internal static let body = L10n.tr("Localizable", "location_change_notification.visit.body")
     }
+
+    internal enum XCallbackUrl {
+      /// Location updated via X-Callback-URL
+      internal static let body = L10n.tr("Localizable", "location_change_notification.x_callback_url.body")
+    }
   }
 
   internal enum ManualLocationUpdateFailedNotification {
@@ -922,6 +927,11 @@ internal enum L10n {
         internal enum Visit {
           /// Visit Location Notifications
           internal static let title = L10n.tr("Localizable", "settings_details.location.notifications.visit.title")
+        }
+
+        internal enum XCallbackUrl {
+          /// X-Callback-URL Location Notifications
+          internal static let title = L10n.tr("Localizable", "settings_details.location.notifications.x_callback_url.title")
         }
       }
 

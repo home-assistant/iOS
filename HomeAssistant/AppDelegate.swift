@@ -19,6 +19,7 @@ import Intents
 import Communicator
 import Iconic
 import arek
+import CallbackURLKit
 
 let keychain = Constants.Keychain
 
@@ -29,14 +30,19 @@ let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var safariVC: SFSafariViewController?
+    var callbackManager: Manager?
 
     private(set) var regionManager: RegionManager!
+
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
         let launchingForLocation = launchOptions?[.location] != nil
-        let launchMessage = "Application Starting" + (launchingForLocation ? " due to location change" : "")
-        let event = ClientEvent(text: launchMessage, type: .unknown)
+        let event = ClientEvent(text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
+                                type: .unknown)
         Current.clientEventStore.addEvent(event)
+
+        self.registerCallbackURLKitHandlers()
 
         self.regionManager = RegionManager()
 
@@ -70,8 +76,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if Current.appConfiguration == .FastlaneSnapshot { setupFastlaneSnapshotConfiguration() }
 
-        if let tokenInfo = Current.settingsStore.tokenInfo,
-            let connectionInfo = Current.settingsStore.connectionInfo {
+        if let tokenInfo = Current.settingsStore.tokenInfo, let connectionInfo = Current.settingsStore.connectionInfo {
             Current.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
         }
 
@@ -212,9 +217,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             serviceData = queryItems
         }
         guard let host = url.host else { return true }
-        switch host {
+        switch host.lowercased() {
+        case "x-callback-url":
+            return self.callbackManager!.handleOpen(url: url)
         case "call_service":
-            callServiceURLHAndler(url, serviceData)
+            callServiceURLHandler(url, serviceData)
         case "fire_event":
             fireEventURLHandler(url, serviceData)
         case "send_location":
@@ -231,6 +238,94 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // MARK: - Private helpers
+
+    // swiftlint:disable:next function_body_length
+    private func registerCallbackURLKitHandlers() {
+        self.callbackManager = Manager(callbackURLScheme: Manager.urlSchemes?.first)
+
+        self.callbackManager?["fire_event"] = { parameters, success, failure, cancel in
+            guard let eventName = parameters["eventName"] else {
+                failure(XCallbackError.eventNameMissing)
+                return
+            }
+
+            var cleanParamters = parameters
+            cleanParamters.removeValue(forKey: "eventName")
+            let eventData = cleanParamters
+
+            _ = firstly {
+                HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.createEvent(eventType: eventName, eventData: eventData)
+            }.done { _ in
+                success(nil)
+            }.catch { error -> Void in
+                print("Received error from createEvent during X-Callback-URL call", error)
+                failure(XCallbackError.generalError)
+            }
+        }
+
+        self.callbackManager?["call_service"] = { parameters, success, failure, cancel in
+            guard let service = parameters["service"] else {
+                failure(XCallbackError.serviceMissing)
+                return
+            }
+
+            let splitService = service.components(separatedBy: ".")
+            let serviceDomain = splitService[0]
+            let serviceName = splitService[1]
+
+            var cleanParamters = parameters
+            cleanParamters.removeValue(forKey: "service")
+            let serviceData = cleanParamters
+
+            _ = firstly {
+                HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.callService(domain: serviceDomain, service: serviceName, serviceData: serviceData)
+            }.done { _ in
+                success(nil)
+            }.catch { error in
+                print("Received error from callService during X-Callback-URL call", error)
+                failure(XCallbackError.generalError)
+            }
+        }
+
+        self.callbackManager?["send_location"] = { parameters, success, failure, cancel in
+            _ = firstly {
+                HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.getAndSendLocation(trigger: .XCallbackURL)
+            }.done { _ in
+                success(nil)
+            }.catch { error in
+                print("Received error from getAndSendLocation during X-Callback-URL call", error)
+                failure(XCallbackError.generalError)
+            }
+        }
+
+        self.callbackManager?["render_template"] = { parameters, success, failure, cancel in
+            guard let template = parameters["template"] else {
+                failure(XCallbackError.templateMissing)
+                return
+            }
+
+            var cleanParamters = parameters
+            cleanParamters.removeValue(forKey: "template")
+            let variablesDict = cleanParamters
+
+            _ = firstly {
+                HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.RenderTemplate(templateStr: template, variables: variablesDict)
+            }.done { rendered in
+                success(["rendered": rendered])
+            }.catch { error in
+                print("Received error from RenderTemplate during X-Callback-URL call", error)
+                failure(XCallbackError.generalError)
+            }
+        }
+    }
 
     private func fireEventURLHandler(_ url: URL, _ serviceData: [String: String]) {
         // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
@@ -264,7 +359,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    private func callServiceURLHAndler(_ url: URL, _ serviceData: [String: String]) {
+    private func callServiceURLHandler(_ url: URL, _ serviceData: [String: String]) {
         // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
         let domain = url.pathComponents[1].components(separatedBy: ".")[0]
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
@@ -559,6 +654,39 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         })
         let navController = UINavigationController(rootViewController: view)
         rootViewController?.present(navController, animated: true, completion: nil)
+    }
+}
+
+enum XCallbackError: FailureCallbackError {
+    case generalError
+    case eventNameMissing
+    case serviceMissing
+    case templateMissing
+
+    var code: Int {
+        switch self {
+        case .generalError:
+            return 0
+        case .eventNameMissing:
+            return 1
+        case .serviceMissing:
+            return 2
+        case .templateMissing:
+            return 2
+        }
+    }
+
+    var message: String {
+        switch self {
+        case .generalError:
+            return "A general error occurred"
+        case .eventNameMissing:
+            return "eventName must be defined"
+        case .serviceMissing:
+            return "service (e.g. homeassistant.turn_on) must be defined"
+        case .templateMissing:
+            return "A renderable template must be defined"
+        }
     }
 // swiftlint:disable:next file_length
 }

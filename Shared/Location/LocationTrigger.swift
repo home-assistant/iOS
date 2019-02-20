@@ -29,6 +29,7 @@ public enum LocationUpdateTrigger: String {
     case BackgroundFetch = "Background Fetch"
     case PushNotification = "Push Notification"
     case URLScheme = "URL Scheme"
+    case XCallbackURL = "X-Callback-URL"
     case Siri = "Siri"
     case Visit = "Visit"
     case Unknown = "Unknown"
@@ -73,6 +74,10 @@ public enum LocationUpdateTrigger: String {
             body = L10n.LocationChangeNotification.UrlScheme.body
             identifier = "url_scheme"
             shouldNotify = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
+        case .XCallbackURL:
+            body = L10n.LocationChangeNotification.XCallbackUrl.body
+            identifier = "x_callback_url"
+            shouldNotify = prefs.bool(forKey: "xCallbackURLLocationRequestNotifications")
         case .Visit:
             body = L10n.LocationChangeNotification.Visit.body
             shouldNotify = false

@@ -311,6 +311,14 @@ class SettingsDetailViewController: FormViewController {
                             prefs.set(val, forKey: "urlSchemeLocationRequestNotifications")
                         }
                     })
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.Notifications.XCallbackUrl.title
+                    $0.value = prefs.bool(forKey: "xCallbackURLLocationRequestNotifications")
+                    }.onChange({ (row) in
+                        if let val = row.value {
+                            prefs.set(val, forKey: "xCallbackURLLocationRequestNotifications")
+                        }
+                    })
 
         case "watchSettings":
             self.title = L10n.SettingsDetails.Watch.title
