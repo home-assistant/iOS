@@ -483,10 +483,13 @@ class SettingsDetailViewController: FormViewController {
 
                         guard voiceShortcutsFromCenter.count > 0 else { return }
 
-                        let existingSection = Section(header: "Existing Shortcuts", footer: "")
+                        let existingSection = Section(header: "Existing Shortcuts", footer: "") {
+                            $0.tag = "existing_shortcuts"
+                        }
 
                         let sectionRows = voiceShortcutsFromCenter.map({ (shortcut: INVoiceShortcut) in
                             return ButtonRow {
+                                $0.tag = shortcut.identifier.uuidString
                                 $0.title = shortcut.invocationPhrase
                                 $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
                                     let viewController = INUIEditVoiceShortcutViewController(voiceShortcut: shortcut)
@@ -495,7 +498,7 @@ class SettingsDetailViewController: FormViewController {
                                     }, onDismiss: { vc in
                                         _ = vc.navigationController?.popViewController(animated: true)
                                 })
-                                }
+                            }
                         })
 
                         existingSection.append(contentsOf: sectionRows)
@@ -708,13 +711,36 @@ extension SettingsDetailViewController: INUIAddVoiceShortcutViewControllerDelega
     func addVoiceShortcutViewController(_ controller: INUIAddVoiceShortcutViewController,
                                         didFinishWith voiceShortcut: INVoiceShortcut?,
                                         error: Error?) {
-        if let error = error {
-            print("error adding voice shortcut:\(error.localizedDescription)")
+        if let error = error as NSError? {
+            print("error adding voice shortcut:", error)
+            controller.dismiss(animated: true, completion: nil)
             return
         }
-        print("UPDATE SHORTCUTS 3")
+
+        if let voiceShortcut = voiceShortcut {
+            print("Shortcut with ID \(voiceShortcut.identifier.uuidString) added")
+
+            if let existingSection = self.form.sectionBy(tag: "existing_shortcuts") {
+                let newShortcut = ButtonRow {
+                    $0.tag = voiceShortcut.identifier.uuidString
+                    $0.title = voiceShortcut.invocationPhrase
+                    $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
+                        let viewController = INUIEditVoiceShortcutViewController(voiceShortcut: voiceShortcut)
+                        viewController.delegate = self
+                        return viewController
+                        }, onDismiss: { vc in
+                            _ = vc.navigationController?.popViewController(animated: true)
+                    })
+                }
+
+                existingSection.append(newShortcut)
+
+                self.tableView.reloadData()
+            }
+        }
 
         controller.dismiss(animated: true, completion: nil)
+
         return
     }
 
@@ -731,24 +757,39 @@ extension SettingsDetailViewController: INUIEditVoiceShortcutViewControllerDeleg
     func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
                                          didUpdate voiceShortcut: INVoiceShortcut?,
                                          error: Error?) {
-        if let error = error {
-            print("error adding voice shortcut:\(error.localizedDescription)")
+        if let error = error as NSError? {
+            print("error updating voice shortcut:", error)
+            controller.dismiss(animated: true, completion: nil)
             return
         }
-        print("UPDATE SHORTCUTS HERE 1")
+
+        if let voiceShortcut = voiceShortcut {
+            print("Shortcut with ID \(voiceShortcut.identifier.uuidString) updated")
+        }
 
         controller.dismiss(animated: true, completion: nil)
+
+        return
     }
 
     func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
                                          didDeleteVoiceShortcutWithIdentifier deletedVoiceShortcutIdentifier: UUID) {
-        print("UPDATE SHORTCUTS HERE 2")
+        print("Shortcut with ID \(deletedVoiceShortcutIdentifier.uuidString) deleted")
 
         controller.dismiss(animated: true, completion: nil)
+
+        if let rowToDelete = self.form.rowBy(tag: deletedVoiceShortcutIdentifier.uuidString) as? ButtonRow,
+            let section = rowToDelete.section, let path = rowToDelete.indexPath {
+            section.remove(at: path.row)
+        }
+
+        return
     }
 
     func editVoiceShortcutViewControllerDidCancel(_ controller: INUIEditVoiceShortcutViewController) {
         controller.dismiss(animated: true, completion: nil)
+
+        return
     }
 // swiftlint:disable:next file_length
 }

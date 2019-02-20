@@ -372,16 +372,17 @@ extension ShortcutServiceConfigurator: INUIAddVoiceShortcutViewControllerDelegat
     func addVoiceShortcutViewController(_ controller: INUIAddVoiceShortcutViewController,
                                         didFinishWith voiceShortcut: INVoiceShortcut?,
                                         error: Error?) {
-        if let error = error {
-            print("error adding voice shortcut:\(error.localizedDescription)")
+        if let error = error as NSError? {
+            print("error adding voice shortcut:", error)
+            controller.dismiss(animated: true, completion: nil)
             return
         }
 
-        if voiceShortcut != nil {
-            print("UPDATE SHORTCUTS 3")
-
-            controller.dismiss(animated: true, completion: nil)
+        if let voiceShortcut = voiceShortcut {
+            print("Shortcut with ID \(voiceShortcut.identifier.uuidString) added")
         }
+
+        controller.dismiss(animated: true, completion: nil)
     }
 
     func addVoiceShortcutViewControllerDidCancel(_ controller: INUIAddVoiceShortcutViewController) {
@@ -397,22 +398,28 @@ extension ShortcutServiceConfigurator: INUIEditVoiceShortcutViewControllerDelega
     func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
                                          didUpdate voiceShortcut: INVoiceShortcut?,
                                          error: Error?) {
-        if let error = error {
-            print("error adding voice shortcut:\(error.localizedDescription)")
+        if let error = error as NSError? {
+            print("error updating voice shortcut:", error)
+            controller.dismiss(animated: true, completion: nil)
             return
         }
-        print("UPDATE SHORTCUTS HERE 1")
+        if let voiceShortcut = voiceShortcut {
+            print("Shortcut with ID \(voiceShortcut.identifier.uuidString) updated")
+        }
         controller.dismiss(animated: true, completion: nil)
+        return
     }
 
     func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
                                          didDeleteVoiceShortcutWithIdentifier deletedVoiceShortcutIdentifier: UUID) {
-        print("UPDATE SHORTCUTS HERE 2")
+        print("Shortcut with ID \(deletedVoiceShortcutIdentifier.uuidString) deleted")
         controller.dismiss(animated: true, completion: nil)
+        return
     }
 
     func editVoiceShortcutViewControllerDidCancel(_ controller: INUIEditVoiceShortcutViewController) {
         controller.dismiss(animated: true, completion: nil)
+        return
     }
 // swiftlint:disable:next file_length
 }
