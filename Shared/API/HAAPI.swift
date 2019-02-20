@@ -414,6 +414,25 @@ public class HomeAssistantAPI {
         }
     }
 
+    public func GetCameraImage(cameraEntityID: String) -> Promise<Image> {
+        return Promise { seal in
+            let queryUrl = self.connectionInfo.activeAPIURL.appendingPathComponent("camera_proxy/\(cameraEntityID)")
+            _ = manager.request(queryUrl)
+                .validate()
+                .responseImage { response in
+                    switch response.result {
+                    case .success:
+                        if let imgResponse = response.result.value {
+                            seal.fulfill(imgResponse)
+                        }
+                    case .failure(let error):
+                        print("Error when attemping to GetCameraImage()", error)
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
+
     public func GetCameraStream(cameraEntityID: String, completionHandler: @escaping (Image?, Error?) -> Void) {
         let apiURL = self.connectionInfo.activeAPIURL
         let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(cameraEntityID)", isDirectory: false)

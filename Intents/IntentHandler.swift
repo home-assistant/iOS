@@ -31,6 +31,9 @@ class IntentHandler: INExtension {
         if intent is SendLocationIntent {
             return SendLocationIntentHandler()
         }
+        if intent is GetCameraImageIntent {
+            return GetCameraImageIntentHandler()
+        }
 
         return self
     }

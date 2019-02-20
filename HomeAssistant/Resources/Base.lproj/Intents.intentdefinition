@@ -676,6 +676,121 @@
 			<key>INIntentVerb</key>
 			<string>Do</string>
 		</dict>
+		<dict>
+			<key>INIntentCategory</key>
+			<string>generic</string>
+			<key>INIntentDescription</key>
+			<string>Get a single still frame from a camera and place it on the clipboard</string>
+			<key>INIntentDescriptionID</key>
+			<string>hsrlTY</string>
+			<key>INIntentLastParameterTag</key>
+			<integer>1</integer>
+			<key>INIntentName</key>
+			<string>GetCameraImage</string>
+			<key>INIntentParameterCombinations</key>
+			<dict>
+				<key></key>
+				<dict>
+					<key>INIntentParameterCombinationIsPrimary</key>
+					<true/>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>Get a single still frame from the entity ID found on the clipboard and place it on the clipboard</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>5rztv4</string>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Get Camera Image</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>q0SnlK</string>
+				</dict>
+				<key>cameraID</key>
+				<dict>
+					<key>INIntentParameterCombinationIsPrimary</key>
+					<false/>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>Get a single still frame from ${cameraID} and place it on the clipboard</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>FN8zqO</string>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Get Camera Image from ${cameraID}</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>VEQtEQ</string>
+				</dict>
+			</dict>
+			<key>INIntentParameters</key>
+			<array>
+				<dict>
+					<key>INIntentParameterDisplayPriority</key>
+					<integer>1</integer>
+					<key>INIntentParameterName</key>
+					<string>cameraID</string>
+					<key>INIntentParameterSupportsMultipleValues</key>
+					<false/>
+					<key>INIntentParameterTag</key>
+					<integer>1</integer>
+					<key>INIntentParameterType</key>
+					<string>String</string>
+				</dict>
+			</array>
+			<key>INIntentResponse</key>
+			<dict>
+				<key>INIntentResponseCodes</key>
+				<array>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to get camera image with error: ${error}</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>KzOHYA</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Camera image placed on clipboard</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>nzqmFA</string>
+						<key>INIntentResponseCodeName</key>
+						<string>success</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
+				</array>
+				<key>INIntentResponseLastParameterTag</key>
+				<integer>2</integer>
+				<key>INIntentResponseParameters</key>
+				<array>
+					<dict>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>1</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>error</string>
+						<key>INIntentResponseParameterSupportsMultipleValues</key>
+						<false/>
+						<key>INIntentResponseParameterTag</key>
+						<integer>2</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>String</string>
+					</dict>
+				</array>
+			</dict>
+			<key>INIntentRestrictions</key>
+			<integer>0</integer>
+			<key>INIntentTitle</key>
+			<string>Get Camera Image</string>
+			<key>INIntentTitleID</key>
+			<string>N9iJpK</string>
+			<key>INIntentType</key>
+			<string>Custom</string>
+			<key>INIntentUserConfirmationRequired</key>
+			<false/>
+			<key>INIntentVerb</key>
+			<string>Do</string>
+		</dict>
 	</array>
 </dict>
 </plist>

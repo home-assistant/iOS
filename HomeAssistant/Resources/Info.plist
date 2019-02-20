@@ -334,6 +334,7 @@
 	<array>
 		<string>CallServiceIntent</string>
 		<string>FireEventIntent</string>
+		<string>GetCameraImageIntent</string>
 		<string>SendLocationIntent</string>
 	</array>
 	<key>UIBackgroundModes</key>
