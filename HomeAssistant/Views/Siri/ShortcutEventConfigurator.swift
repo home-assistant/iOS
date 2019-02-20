@@ -90,9 +90,9 @@ class ShortcutEventConfigurator: FormViewController {
                 $0.title = L10n.SiriShortcuts.Configurator.Settings.Name.title
                 $0.add(rule: RuleRequired())
             }
-            <<< SwitchRow("notifyOnRun") {
+            /*<<< SwitchRow("notifyOnRun") {
                 $0.title = L10n.SiriShortcuts.Configurator.Settings.NotifyOnRun.title
-            }
+            }*/
 
             +++ Section(header: "Configuration", footer: "") {
                 $0.tag = "configuration"

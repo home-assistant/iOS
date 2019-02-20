@@ -98,9 +98,9 @@ class ShortcutServiceConfigurator: FormViewController {
                 $0.title = L10n.SiriShortcuts.Configurator.Settings.Name.title
                 $0.add(rule: RuleRequired())
             }
-            <<< SwitchRow("notifyOnRun") {
+            /*<<< SwitchRow("notifyOnRun") {
                 $0.title = L10n.SiriShortcuts.Configurator.Settings.NotifyOnRun.title
-            }
+            }*/
 
         var setFirstHeaderToFields = false
 
@@ -340,7 +340,7 @@ class ShortcutServiceConfigurator: FormViewController {
             var formData = form.values().filter { $0.value != nil }
 
             formData.removeValue(forKey: "shortcutName")
-            formData.removeValue(forKey: "notifyOnRun")
+            // formData.removeValue(forKey: "notifyOnRun")
             formData.removeValue(forKey: "add_to_siri")
 
             let serviceIntent = CallServiceIntent(domain: domain, service: serviceName, payload: formData)
