@@ -118,6 +118,7 @@ class ShortcutServiceConfigurator: FormViewController {
                 }
 
                 if let example = field.Example {
+                    footer += " "
                     footer += L10n.SiriShortcuts.Configurator.Fields.Section.footer("\(example)")
                 }
 
