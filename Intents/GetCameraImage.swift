@@ -19,20 +19,23 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
             return
         }
 
-        if intent.cameraID != nil {
-            // Camera ID already set
-            completion(GetCameraImageIntentResponse(code: .ready, userActivity: nil))
-        } else if let pasteboardString = UIPasteboard.general.string, pasteboardString.hasPrefix("camera.") {
-            intent.cameraID = pasteboardString
-            completion(GetCameraImageIntentResponse(code: .ready, userActivity: nil))
-        } else {
-            completion(GetCameraImageIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
-        }
+        completion(GetCameraImageIntentResponse(code: .ready, userActivity: nil))
     }
 
     func handle(intent: GetCameraImageIntent, completion: @escaping (GetCameraImageIntentResponse) -> Void) {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             completion(GetCameraImageIntentResponse(code: .failureConnectivity, userActivity: nil))
+            return
+        }
+
+        var successCode: GetCameraImageIntentResponseCode = .success
+
+        if intent.cameraID == nil, let pasteboardString = UIPasteboard.general.string,
+            pasteboardString.hasPrefix("camera.") {
+            intent.cameraID = pasteboardString
+            successCode = .successViaClipboard
+        } else {
+            completion(GetCameraImageIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
             return
         }
 
@@ -44,7 +47,7 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
 
                 UIPasteboard.general.image = frame
 
-                completion(GetCameraImageIntentResponse(code: .success, userActivity: nil))
+                completion(GetCameraImageIntentResponse(code: successCode, userActivity: nil))
             }.catch { error in
                 print("Error when getting camera image in shortcut", error)
                 let resp = GetCameraImageIntentResponse(code: .failure, userActivity: nil)

@@ -82,7 +82,7 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Call a service on Home Assistant. Expects a JSON object on the pasteboard like {"serviceDomain": "homeassistant", "service": "turn_on", "payload": {"foo": "bar"}}</string>
+					<string>Call a service on Home Assistant. Expects a JSON object on the pasteboard like {"service": "homeassistant.turn_on", "serviceData": {"foo": "bar"}}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>4wVIAN</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -778,6 +778,16 @@
 						<string>failureConnectivity</string>
 						<key>INIntentResponseCodeSuccess</key>
 						<false/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Latest still from camera entity found on clipboard,${cameraID}, placed on clipboard</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>mgspvx</string>
+						<key>INIntentResponseCodeName</key>
+						<string>successViaClipboard</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
 					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>

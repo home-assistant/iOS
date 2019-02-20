@@ -18,67 +18,69 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
             return
         }
 
-        if intent.eventName != nil && intent.eventData != nil {
-            // Event name and data was already set
-            completion(FireEventIntentResponse(code: .ready, userActivity: nil))
-        } else if let pasteboardString = UIPasteboard.general.string {
-            if intent.eventName != nil {
-                // Only service name was set, get data from clipboard
-                intent.eventData = pasteboardString
-            } else {
-                // Nothing was set, hope there's a JSON object on clipboard containing valid JSON
-                // which we can use as event data.
-                let data = pasteboardString.data(using: .utf8)!
-                if JSONSerialization.isValidJSONObject(data) {
-                    intent.eventData = String(data: data, encoding: .utf8)
-                } else {
-                    print("Error when parsing clipboard contents to JSON during FireEvent")
-                    completion(FireEventIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
-                }
-
-            }
-            completion(FireEventIntentResponse(code: .ready, userActivity: nil))
-        } else {
-            completion(FireEventIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
-        }
+        completion(FireEventIntentResponse(code: .ready, userActivity: nil))
     }
+
     func handle(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             completion(FireEventIntentResponse(code: .failureConnectivity, userActivity: nil))
             return
         }
 
-        if let eventName = intent.eventName, let eventData = intent.eventData {
-            print("Handling fire event shortcut", eventName, eventData)
-            let data = eventData.data(using: .utf8)!
+        print("Handling fire event shortcut", intent)
+
+        var successCode: FireEventIntentResponseCode = .success
+
+        if intent.eventData == nil, let boardStr = UIPasteboard.general.string,
+            let data = boardStr.data(using: .utf8), JSONSerialization.isValidJSONObject(data) {
+            intent.eventData = boardStr
+            successCode = .successViaClipboard
+        }
+
+        var eventDataDict: [String: Any] = [:]
+
+        if let storedData = intent.eventData, let data = storedData.data(using: .utf8) {
             do {
                 if let jsonArray = try JSONSerialization.jsonObject(with: data,
                                                                     options: .allowFragments) as? [String: Any] {
-                    api.createEvent(eventType: eventName, eventData: jsonArray).done { _ in
-                            print("Successfully fired event during shortcut")
-                            completion(FireEventIntentResponse(code: .success, userActivity: nil))
-                        }.catch { error in
-                            print("Error when firing event in shortcut", error)
-                            let resp = FireEventIntentResponse(code: .failure, userActivity: nil)
-                            resp.error = "Error when firing event in shortcut: \(error.localizedDescription)"
-                            completion(resp)
+
+                    var isGenericPayload: Bool = true
+
+                    if let eventName = jsonArray["eventName"] as? String {
+                        intent.eventName = eventName
+                        isGenericPayload = false
                     }
 
+                    if let innerEventData = jsonArray["eventData"] as? [String: Any] {
+                        eventDataDict = innerEventData
+                        isGenericPayload = false
+                    }
+
+                    if isGenericPayload {
+                        print("No known keys found, assuming generic payload")
+                        eventDataDict = jsonArray
+                    }
                 } else {
-                    print("Unable to parse data to JSON during shortcut")
+                    print("Unable to parse event data to JSON during shortcut")
                     let resp = FireEventIntentResponse(code: .failure, userActivity: nil)
-                    resp.error = "Unable to parse data to JSON during shortcut"
+                    resp.error = "Unable to parse event data to JSON during shortcut"
                     completion(resp)
+                    return
                 }
             } catch let error as NSError {
-                print("Error when parsing service data to JSON during FireEvent", error)
+                print("Error when parsing event data to JSON during FireEvent", error)
                 completion(FireEventIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
+                return
             }
+        }
 
-        } else {
-            print("Unable to unwrap intent.eventName and intent.eventData")
+        api.createEvent(eventType: intent.eventName!, eventData: eventDataDict).done { _ in
+            print("Successfully fired event during shortcut")
+            completion(FireEventIntentResponse(code: successCode, userActivity: nil))
+        }.catch { error in
+            print("Error when firing event in shortcut", error)
             let resp = FireEventIntentResponse(code: .failure, userActivity: nil)
-            resp.error = "Unable to unwrap intent.eventName and intent.eventData"
+            resp.error = "Error when firing event in shortcut: \(error.localizedDescription)"
             completion(resp)
         }
     }

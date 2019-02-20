@@ -45,25 +45,24 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                 return
             }
 
-            api.submitLocation(updateType: LocationUpdateTrigger.Siri, location: resp.location?.location,
-                               zone: nil).done {
-                                print("Successfully submitted location")
+            api.submitLocation(updateType: .Siri, location: resp.location?.location, zone: nil).done {
+                print("Successfully submitted location")
 
-                                var respCode = SendLocationIntentResponseCode.success
-                                if resp.source != .unknown && resp.source != .stored {
-                                    respCode = SendLocationIntentResponseCode.successViaClipboard
-                                }
+                var respCode = SendLocationIntentResponseCode.success
+                if resp.source != .unknown && resp.source != .stored {
+                    respCode = SendLocationIntentResponseCode.successViaClipboard
+                }
 
-                                completion(SendLocationIntentResponse(code: respCode, userActivity: resp.userActivity,
-                                                                      place: resp.location, source: resp.source,
-                                                                      pasteboardContents: resp.pasteboardContents))
-                                return
-                }.catch { error in
-                    print("Error sending location during Siri Shortcut call: \(error)")
-                    let resp = SendLocationIntentResponse(code: .failure, userActivity: nil)
-                    resp.error = "Error sending location during Siri Shortcut call: \(error.localizedDescription)"
-                    completion(resp)
-                    return
+                completion(SendLocationIntentResponse(code: respCode, userActivity: resp.userActivity,
+                                                      place: resp.location, source: resp.source,
+                                                      pasteboardContents: resp.pasteboardContents))
+                return
+            }.catch { error in
+                print("Error sending location during Siri Shortcut call: \(error)")
+                let resp = SendLocationIntentResponse(code: .failure, userActivity: nil)
+                resp.error = "Error sending location during Siri Shortcut call: \(error.localizedDescription)"
+                completion(resp)
+                return
             }
         }
 
