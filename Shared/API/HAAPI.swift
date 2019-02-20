@@ -19,6 +19,7 @@ import RealmSwift
 import UserNotifications
 import Intents
 import CoreMotion
+import Reachability
 
 private let keychain = Constants.Keychain
 
@@ -751,8 +752,8 @@ public class HomeAssistantAPI {
             let end = Date()
             let start = Calendar.current.date(byAdding: .minute, value: -10, to: end)!
             let queue = OperationQueue.main
-            motionActivityManager.queryActivityStarting(from: start, to: end, to: queue) { (activities, error) in
-                seal.resolve(activities?.last, error)
+            motionActivityManager.queryActivityStarting(from: start, to: end, to: queue) { (activities, _) in
+                seal.fulfill(activities?.last)
             }
         }
     }
@@ -773,6 +774,7 @@ public class HomeAssistantAPI {
         payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
 
         payload.SSID = ConnectionInfo.currentSSID()
+        payload.ConnectionType = Reachability.getSimpleNetworkType().description
 
         return self.getLatestMotionActivity().then { activity -> Promise<Void> in
             if let activity = activity {
@@ -783,6 +785,8 @@ public class HomeAssistantAPI {
             if let p = payload.toJSONString(prettyPrint: false) {
                 jsonPayload = p
             }
+
+            print("jsonPayload", jsonPayload)
 
             let payloadDict: [String: Any] = Mapper<DeviceTrackerSee>().toJSON(payload)
 

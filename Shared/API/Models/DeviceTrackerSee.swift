@@ -39,6 +39,7 @@ public class DeviceTrackerSee: Mappable {
 
     // Extra attributes
     public var SSID: String?
+    public var ConnectionType: String?
 
     init() {}
 
@@ -150,6 +151,7 @@ public class DeviceTrackerSee: Mappable {
         ActivityStartDate    <-  (map["attributes.activity_start_date"], HomeAssistantTimestampTransform())
 
         SSID                 <- map["attributes.ssid"]
+        ConnectionType       <- map["attributes.connection_type"]
     }
 }
 

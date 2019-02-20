@@ -27,6 +27,7 @@ def shared_pods
     pod 'KeychainAccess', '3.1.1'
     pod 'ObjectMapper', '3.3.0'
     pod 'PromiseKit', '6.4.1'
+    pod 'ReachabilitySwift'
     pod 'RealmSwift', '3.11.0'
 end
 

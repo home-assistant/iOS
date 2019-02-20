@@ -161,6 +161,7 @@
 		B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B627CB0D1D83C87B0057173E /* NotificationViewController.swift */; };
 		B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B62817F0221D269B000BA86A /* RenderTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817EF221D269B000BA86A /* RenderTemplate.swift */; };
+		B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */; };
 		B637242321695EDF006B102A /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B637242221695EDF006B102A /* Permissions.swift */; };
 		B637243B21697AA7006B102A /* HomeAssistant Beta.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = B637243A21697AA7006B102A /* HomeAssistant Beta.entitlements */; };
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
@@ -691,6 +692,7 @@
 		B627CB0D1D83C87B0057173E /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		B627CB121D83C87B0057173E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B62817EF221D269B000BA86A /* RenderTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderTemplate.swift; sourceTree = "<group>"; };
+		B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reachability+NetworkType.swift"; sourceTree = "<group>"; };
 		B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrationRequest.swift; sourceTree = "<group>"; };
 		B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyRequest.swift; sourceTree = "<group>"; };
 		B637242221695EDF006B102A /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
@@ -1726,6 +1728,7 @@
 				D0EEF302214D8F0300D1D360 /* String+HA.swift */,
 				D0EEF304214DD0D400D1D360 /* UIColor+HA.swift */,
 				D0EEF309214DD64C00D1D360 /* UIImage+Icons.swift */,
+				B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2736,6 +2739,7 @@
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper-iOS/ObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/PMAlertController/PMAlertController.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
+				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm-iOS/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift-iOS/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/TABObserverSet-iOS/TABObserverSet.framework",
@@ -2763,6 +2767,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PMAlertController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TABObserverSet.framework",
@@ -3105,6 +3110,7 @@
 				D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */,
 				D0EEF2D1214D8B6700D1D360 /* Entity.swift in Sources */,
 				B6C091402151F93D00A326DC /* Sensor.swift in Sources */,
+				B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */,
 				D0EEF335214EB77100D1D360 /* CLLocation+ToDoubleArray.swift in Sources */,
 				B675ECC5221BD76300C65D31 /* Identify.swift in Sources */,
 				D0EEF318214DD7A400D1D360 /* Events.swift in Sources */,

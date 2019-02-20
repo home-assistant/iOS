@@ -44,6 +44,7 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.4.1):
     - PromiseKit/CorePromise
+  - ReachabilitySwift (4.3.0)
   - Realm (3.11.0):
     - Realm/Headers (= 3.11.0)
   - Realm/Headers (3.11.0)
@@ -76,6 +77,7 @@ DEPENDENCIES:
   - MBProgressHUD (= 1.1.0)
   - ObjectMapper (= 3.3.0)
   - PromiseKit (= 6.4.1)
+  - ReachabilitySwift
   - RealmSwift (= 3.11.0)
   - SwiftGen (= 5.3.0)
   - SwiftLint (= 0.27.0)
@@ -98,6 +100,7 @@ SPEC REPOS:
     - ObjectMapper
     - PMAlertController
     - PromiseKit
+    - ReachabilitySwift
     - Realm
     - RealmSwift
     - SwiftGen
@@ -158,6 +161,7 @@ SPEC CHECKSUMS:
   ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
   PMAlertController: 06dab8160066fc4ce991c880e3722cd403e2926a
   PromiseKit: 4c76a6506638034e3d7bede97b2ff7743f7bd2dc
+  ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
   Realm: 92f09a102692b96a9a10e9617f214f15c5ab85fc
   RealmSwift: 5f0481cd658bb751c509314b964a35eaa264d2cf
   SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
@@ -166,6 +170,6 @@ SPEC CHECKSUMS:
   UIColor_Hex_Swift: bc07fc197421ee896b9ed6dcfa2054b7fbf75145
   ViewRow: e278428ff53da5eab18b191d3e19a16f3e299fc1
 
-PODFILE CHECKSUM: c9339ec2d47da5b8c63a800feec1ab4e567a63d5
+PODFILE CHECKSUM: 17fb79a413f655b830ad3d0a3b670e71bf4ce0da
 
 COCOAPODS: 1.6.0.beta.1
