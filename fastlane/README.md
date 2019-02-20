@@ -61,6 +61,11 @@ Bump build number
 fastlane ios bump_version
 ```
 Bump version number
+### ios set_beta_version
+```
+fastlane ios set_beta_version
+```
+
 ### ios ci
 ```
 fastlane ios ci

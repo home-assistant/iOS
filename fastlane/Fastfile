@@ -151,7 +151,7 @@ platform :ios do
     finalize_bump
   end
 
-  private_lane :set_beta_version do
+  lane :set_beta_version do
     increment_version_number(version_number: get_version_number(target: "HomeAssistant"))
     increment_build_number(build_number: latest_testflight_build_number(app_identifier: "io.robbie.HomeAssistant.beta", version: get_version_number(target: "HomeAssistant")) + 1)
   end
