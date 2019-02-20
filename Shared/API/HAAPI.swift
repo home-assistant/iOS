@@ -394,11 +394,11 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func RenderTemplate(templateStr: String) -> Promise<String> {
+    public func RenderTemplate(templateStr: String, variables: [String: Any] = [:]) -> Promise<String> {
         return Promise { seal in
             let queryUrl = self.connectionInfo.activeAPIURL.appendingPathComponent("template")
-            _ = manager.request(queryUrl, method: .post,
-                                parameters: ["template": templateStr], encoding: JSONEncoding.default)
+            _ = manager.request(queryUrl, method: .post, parameters: ["template": templateStr, "variables": variables],
+                                encoding: JSONEncoding.default)
                 .validate()
                 .responseString { response in
                     switch response.result {
