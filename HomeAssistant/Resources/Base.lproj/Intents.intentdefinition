@@ -833,6 +833,141 @@
 			<key>INIntentVerb</key>
 			<string>Do</string>
 		</dict>
+		<dict>
+			<key>INIntentCategory</key>
+			<string>generic</string>
+			<key>INIntentDescription</key>
+			<string>Renders the Home Assistant template</string>
+			<key>INIntentDescriptionID</key>
+			<string>NdG9Jz</string>
+			<key>INIntentLastParameterTag</key>
+			<integer>1</integer>
+			<key>INIntentName</key>
+			<string>RenderTemplate</string>
+			<key>INIntentParameterCombinations</key>
+			<dict>
+				<key></key>
+				<dict>
+					<key>INIntentParameterCombinationIsPrimary</key>
+					<true/>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>Renders the found text on the pasteboard</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>ZwJ0Xx</string>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Render text found on pasteboard</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>khd61N</string>
+				</dict>
+				<key>template</key>
+				<dict>
+					<key>INIntentParameterCombinationIsPrimary</key>
+					<false/>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>Renders ${template}</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>cnzI5h</string>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Render the provided template</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>P3EyZ7</string>
+				</dict>
+			</dict>
+			<key>INIntentParameters</key>
+			<array>
+				<dict>
+					<key>INIntentParameterDisplayPriority</key>
+					<integer>1</integer>
+					<key>INIntentParameterName</key>
+					<string>template</string>
+					<key>INIntentParameterSupportsMultipleValues</key>
+					<false/>
+					<key>INIntentParameterTag</key>
+					<integer>1</integer>
+					<key>INIntentParameterType</key>
+					<string>String</string>
+				</dict>
+			</array>
+			<key>INIntentResponse</key>
+			<dict>
+				<key>INIntentResponseCodes</key>
+				<array>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to render template with error: ${error}</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>cK9jdK</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Successfully rendered template</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>B4bXyc</string>
+						<key>INIntentResponseCodeName</key>
+						<string>success</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to render template, Home Assistant is not currently reachable</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>foI0Fv</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failureConnectivity</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Successfully rendered template from pasteboard</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>rlOS6H</string>
+						<key>INIntentResponseCodeName</key>
+						<string>successViaClipboard</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
+					</dict>
+				</array>
+				<key>INIntentResponseLastParameterTag</key>
+				<integer>1</integer>
+				<key>INIntentResponseParameters</key>
+				<array>
+					<dict>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>1</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>error</string>
+						<key>INIntentResponseParameterSupportsMultipleValues</key>
+						<false/>
+						<key>INIntentResponseParameterTag</key>
+						<integer>1</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>String</string>
+					</dict>
+				</array>
+			</dict>
+			<key>INIntentRestrictions</key>
+			<integer>0</integer>
+			<key>INIntentTitle</key>
+			<string>Render Template</string>
+			<key>INIntentTitleID</key>
+			<string>FZ9qkT</string>
+			<key>INIntentType</key>
+			<string>Custom</string>
+			<key>INIntentUserConfirmationRequired</key>
+			<false/>
+			<key>INIntentVerb</key>
+			<string>Do</string>
+		</dict>
 	</array>
 </dict>
 </plist>

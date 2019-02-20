@@ -449,6 +449,20 @@ class SettingsDetailViewController: FormViewController {
                         })
                     }
 
+                    <<< ButtonRow {
+                        $0.title = "Render Template"
+                        $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
+                            if let shortcut = INShortcut(intent: RenderTemplateIntent()) {
+                                let viewController = INUIAddVoiceShortcutViewController(shortcut: shortcut)
+                                viewController.delegate = self
+                                return viewController
+                            }
+                            return UIViewController()
+                            }, onDismiss: { vc in
+                                _ = vc.navigationController?.popViewController(animated: true)
+                        })
+                    }
+
                 _ = HomeAssistantAPI.authenticatedAPIPromise.then { api in
                     api.GetServices()
                 }.done { serviceResp in

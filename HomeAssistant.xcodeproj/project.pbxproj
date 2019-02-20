@@ -160,6 +160,7 @@
 		B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */; };
 		B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B627CB0D1D83C87B0057173E /* NotificationViewController.swift */; };
 		B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B62817F0221D269B000BA86A /* RenderTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817EF221D269B000BA86A /* RenderTemplate.swift */; };
 		B637242321695EDF006B102A /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B637242221695EDF006B102A /* Permissions.swift */; };
 		B637243B21697AA7006B102A /* HomeAssistant Beta.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = B637243A21697AA7006B102A /* HomeAssistant Beta.entitlements */; };
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
@@ -689,6 +690,7 @@
 		B627CB0A1D83C87B0057173E /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
 		B627CB0D1D83C87B0057173E /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		B627CB121D83C87B0057173E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B62817EF221D269B000BA86A /* RenderTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderTemplate.swift; sourceTree = "<group>"; };
 		B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrationRequest.swift; sourceTree = "<group>"; };
 		B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyRequest.swift; sourceTree = "<group>"; };
 		B637242221695EDF006B102A /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
@@ -1400,6 +1402,7 @@
 				B66C58B22150892A004AB261 /* FireEvent.swift */,
 				B66C58B42150898A004AB261 /* SendLocation.swift */,
 				B6DF8BC3221D047400370A59 /* GetCameraImage.swift */,
+				B62817EF221D269B000BA86A /* RenderTemplate.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -3038,6 +3041,7 @@
 			files = (
 				B66C58B52150898A004AB261 /* SendLocation.swift in Sources */,
 				B6DF8BC4221D047400370A59 /* GetCameraImage.swift in Sources */,
+				B62817F0221D269B000BA86A /* RenderTemplate.swift in Sources */,
 				B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */,
 				B66C58B32150892A004AB261 /* FireEvent.swift in Sources */,
 				B63CCDCD2164714900123C50 /* Intents.intentdefinition in Sources */,
