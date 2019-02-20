@@ -21,6 +21,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
         completion(FireEventIntentResponse(code: .ready, userActivity: nil))
     }
 
+    // swiftlint:disable:next function_body_length
     func handle(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             completion(FireEventIntentResponse(code: .failureConnectivity, userActivity: nil))

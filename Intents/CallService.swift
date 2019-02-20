@@ -22,6 +22,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         completion(CallServiceIntentResponse(code: .ready, userActivity: nil))
     }
 
+    // swiftlint:disable:next function_body_length
     func handle(intent: CallServiceIntent, completion: @escaping (CallServiceIntentResponse) -> Void) {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             completion(CallServiceIntentResponse(code: .failureConnectivity, userActivity: nil))

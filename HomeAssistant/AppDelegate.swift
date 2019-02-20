@@ -484,27 +484,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @available(iOS 12.0, *)
     func suggestSiriShortcuts() {
-        var shortcutsToSuggest: [INShortcut] = []
-
-        if let shortcut = INShortcut(intent: FireEventIntent()) {
-            shortcutsToSuggest.append(shortcut)
-        }
-
-        if let shortcut = INShortcut(intent: SendLocationIntent()) {
-            shortcutsToSuggest.append(shortcut)
-        }
-
-        if let shortcut = INShortcut(intent: CallServiceIntent()) {
-            shortcutsToSuggest.append(shortcut)
-        }
-
-        if let shortcut = INShortcut(intent: GetCameraImageIntent()) {
-            shortcutsToSuggest.append(shortcut)
-        }
-
-        if let shortcut = INShortcut(intent: RenderTemplateIntent()) {
-            shortcutsToSuggest.append(shortcut)
-        }
+        let generics: [INIntent] = [FireEventIntent(), SendLocationIntent(), CallServiceIntent(),
+                                    GetCameraImageIntent(), RenderTemplateIntent()]
+        var shortcutsToSuggest: [INShortcut] = generics.compactMap { INShortcut(intent: $0) }
 
         _ = HomeAssistantAPI.authenticatedAPIPromise.then { api in
             api.GetEvents()
