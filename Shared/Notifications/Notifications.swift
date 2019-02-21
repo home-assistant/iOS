@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CleanroomLogger
 
 final class Notifications {
     static func installedPushNotificationSounds() -> [String] {
@@ -20,7 +21,7 @@ final class Notifications {
                                               appropriateFor: nil,
                                               create: false)
         } catch let error as NSError {
-            print("Error when building URL for library directory", error)
+            Log.error?.message("Error when building URL for library directory \(error)")
             return [String]()
         }
 

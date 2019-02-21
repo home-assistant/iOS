@@ -9,12 +9,13 @@
 import Foundation
 import UIKit
 import Shared
+import CleanroomLogger
 
 class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
 
     func confirm(intent: GetCameraImageIntent, completion: @escaping (GetCameraImageIntentResponse) -> Void) {
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
-            print("Can't get a authenticated API", error)
+            Log.error?.message("Can't get a authenticated API \(error)")
             completion(GetCameraImageIntentResponse(code: .failureConnectivity, userActivity: nil))
             return
         }
@@ -40,23 +41,23 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         }
 
         if let cameraID = intent.cameraID {
-            print("Getting camera frame for", cameraID)
+            Log.verbose?.message("Getting camera frame for \(cameraID)")
 
             api.GetCameraImage(cameraEntityID: cameraID).done { frame in
-                print("Successfully got camera image during shortcut")
+                Log.verbose?.message("Successfully got camera image during shortcut")
 
                 UIPasteboard.general.image = frame
 
                 completion(GetCameraImageIntentResponse(code: successCode, userActivity: nil))
             }.catch { error in
-                print("Error when getting camera image in shortcut", error)
+                Log.error?.message("Error when getting camera image in shortcut \(error)")
                 let resp = GetCameraImageIntentResponse(code: .failure, userActivity: nil)
                 resp.error = "Error during api.GetCameraImage: \(error.localizedDescription)"
                 completion(resp)
             }
 
         } else {
-            print("Unable to unwrap intent.cameraID")
+            Log.error?.message("Unable to unwrap intent.cameraID")
             let resp = GetCameraImageIntentResponse(code: .failure, userActivity: nil)
             resp.error = "Unable to unwrap intent.cameraID"
             completion(resp)

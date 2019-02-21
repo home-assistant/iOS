@@ -8,6 +8,7 @@
 
 import Foundation
 import RealmSwift
+import CleanroomLogger
 
 public struct ClientEventStore {
     public var addEvent: (ClientEvent) -> Void = { event in
@@ -17,7 +18,7 @@ public struct ClientEventStore {
                 realm.add(event)
             }
         } catch {
-            print("Error writing client event: \(error)")
+            Log.error?.message("Error writing client event: \(error)")
         }
     }
 
@@ -34,7 +35,7 @@ public struct ClientEventStore {
                 realm.delete(realm.objects(ClientEvent.self))
             }
         } catch {
-            print("Error writing client event: \(error)")
+            Log.error?.message("Error writing client event: \(error)")
         }
     }
 }

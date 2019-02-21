@@ -9,12 +9,13 @@
 import Foundation
 import UIKit
 import Shared
+import CleanroomLogger
 
 class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
 
     func confirm(intent: RenderTemplateIntent, completion: @escaping (RenderTemplateIntentResponse) -> Void) {
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
-            print("Can't get a authenticated API", error)
+            Log.error?.message("Can't get a authenticated API \(error)")
             completion(RenderTemplateIntentResponse(code: .failureConnectivity, userActivity: nil))
             return
         }
@@ -39,23 +40,23 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
         }
 
         if let templateStr = intent.template {
-            print("Rendering template", templateStr)
+            Log.verbose?.message("Rendering template \(templateStr)")
 
             api.RenderTemplate(templateStr: templateStr).done { rendered in
-                print("Successfully renderedTemplate")
+                Log.verbose?.message("Successfully renderedTemplate")
 
                 UIPasteboard.general.string = rendered
 
                 completion(RenderTemplateIntentResponse(code: successCode, userActivity: nil))
             }.catch { error in
-                print("Error when rendering template in shortcut", error)
+                Log.error?.message("Error when rendering template in shortcut \(error)")
                 let resp = RenderTemplateIntentResponse(code: .failure, userActivity: nil)
                 resp.error = "Error during api.RenderTemplate: \(error.localizedDescription)"
                 completion(resp)
             }
 
         } else {
-            print("Unable to unwrap intent.template")
+            Log.error?.message("Unable to unwrap intent.template")
             let resp = RenderTemplateIntentResponse(code: .failure, userActivity: nil)
             resp.error = "Unable to unwrap intent.template"
             completion(resp)

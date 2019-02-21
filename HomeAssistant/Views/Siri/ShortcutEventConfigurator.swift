@@ -15,6 +15,7 @@ import IntentsUI
 import PromiseKit
 import ObjectMapper
 import ViewRow
+import CleanroomLogger
 
 @available(iOS 12, *)
 class ShortcutEventConfigurator: FormViewController {
@@ -171,7 +172,7 @@ class ShortcutEventConfigurator: FormViewController {
 
     @objc
     func getInfoAction(_ sender: Any) {
-        print("getInfoAction hit, open docs page!")
+        Log.verbose?.message("getInfoAction hit, open docs page!")
     }
 }
 
@@ -182,13 +183,13 @@ extension ShortcutEventConfigurator: INUIAddVoiceShortcutViewControllerDelegate 
                                         didFinishWith voiceShortcut: INVoiceShortcut?,
                                         error: Error?) {
         if let error = error as NSError? {
-            print("error adding voice shortcut:", error)
+            Log.error?.message("Error adding voice shortcut: \(error)")
             controller.dismiss(animated: true, completion: nil)
             return
         }
 
         if let voiceShortcut = voiceShortcut {
-            print("Shortcut with ID \(voiceShortcut.identifier.uuidString) added")
+            Log.verbose?.message("Shortcut with ID \(voiceShortcut.identifier.uuidString) added")
         }
 
         controller.dismiss(animated: true, completion: nil)
@@ -208,12 +209,12 @@ extension ShortcutEventConfigurator: INUIEditVoiceShortcutViewControllerDelegate
                                          didUpdate voiceShortcut: INVoiceShortcut?,
                                          error: Error?) {
         if let error = error as NSError? {
-            print("error updating voice shortcut:", error)
+            Log.error?.message("Error updating voice shortcut: \(error)")
             controller.dismiss(animated: true, completion: nil)
             return
         }
         if let voiceShortcut = voiceShortcut {
-            print("Shortcut with ID \(voiceShortcut.identifier.uuidString) updated")
+            Log.verbose?.message("Shortcut with ID \(voiceShortcut.identifier.uuidString) updated")
         }
         controller.dismiss(animated: true, completion: nil)
         return
@@ -221,7 +222,7 @@ extension ShortcutEventConfigurator: INUIEditVoiceShortcutViewControllerDelegate
 
     func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
                                          didDeleteVoiceShortcutWithIdentifier deletedVoiceShortcutIdentifier: UUID) {
-        print("Shortcut with ID \(deletedVoiceShortcutIdentifier.uuidString) deleted")
+        Log.verbose?.message("Shortcut with ID \(deletedVoiceShortcutIdentifier.uuidString) deleted")
         controller.dismiss(animated: true, completion: nil)
         return
     }

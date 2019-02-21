@@ -10,6 +10,7 @@ import Foundation
 import arek
 import Shared
 import UserNotifications
+import CleanroomLogger
 
 var arekConfig: ArekConfiguration {
     return ArekConfiguration(frequency: .Always, presentInitialPopup: true, presentReEnablePopup: true)
@@ -85,10 +86,10 @@ func NotificationPermission() -> ArekNotifications {
 }
 
 func CheckPermissionsStatus() {
-    print("Checking permissions status!")
+    Log.verbose?.message("Checking permissions status!")
 
     LocationPermission().status { (status) in
-        print("Location status", status)
+        Log.verbose?.message("Location status: \(status)")
 
         if Current.settingsStore.locationEnabled != (status == .authorized) {
             EnsureLocationPermission()
@@ -96,7 +97,7 @@ func CheckPermissionsStatus() {
     }
 
     MotionPermission().status { (status) in
-        print("Motion status", status)
+        Log.verbose?.message("Motion status: \(status)")
 
         if Current.settingsStore.motionEnabled != (status == .authorized) {
             EnsureMotionPermission()
@@ -104,7 +105,7 @@ func CheckPermissionsStatus() {
     }
 
     NotificationPermission().status { (status) in
-        print("Notifications status", status)
+        Log.verbose?.message("Notifications status: \(status)")
 
         if Current.settingsStore.notificationsEnabled != (status == .authorized) {
             EnsureNotificationPermission()
@@ -114,7 +115,7 @@ func CheckPermissionsStatus() {
 
 func EnsureLocationPermission() {
     LocationPermission().manage { (status) in
-        print("Location status", status)
+        Log.verbose?.message("Location status: \(status)")
 
         if Current.settingsStore.locationEnabled != (status == .authorized) {
             Current.settingsStore.locationEnabled = (status == .authorized)
@@ -128,7 +129,7 @@ func EnsureLocationPermission() {
 
 func EnsureMotionPermission() {
     MotionPermission().manage { (status) in
-        print("Motion status", status)
+        Log.verbose?.message("Motion status: \(status)")
 
         if Current.settingsStore.motionEnabled != (status == .authorized) {
             Current.settingsStore.motionEnabled = (status == .authorized)
@@ -142,7 +143,7 @@ func EnsureMotionPermission() {
 
 func EnsureNotificationPermission() {
     NotificationPermission().manage { (status) in
-        print("Notifications status", status)
+        Log.verbose?.message("Notifications status: \(status)")
 
         if Current.settingsStore.notificationsEnabled != (status == .authorized) {
             Current.settingsStore.notificationsEnabled = (status == .authorized)

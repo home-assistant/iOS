@@ -8,6 +8,7 @@
 
 import ClockKit
 import RealmSwift
+import CleanroomLogger
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
 
@@ -33,12 +34,13 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
                                  withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void) {
         // Call the handler with the current timeline entry
 
-        print("Providing template for", complication.family.description)
+        Log.verbose?.message("Providing template for \(complication.family.description)")
 
         let matchedFamily = ComplicationGroupMember(family: complication.family)
 
         guard let date = Date().encodedForComplication(family: complication.family) else {
-            print("Unable to generate complication family specific date, returning family specific error")
+            // swiftlint:disable:next line_length
+            Log.warning?.message("Unable to generate complication family specific date, returning family specific error")
             handler(CLKComplicationTimelineEntry(date: Date(), complicationTemplate: matchedFamily.errorTemplate!))
             return
         }
@@ -47,20 +49,22 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
         let pred = NSPredicate(format: "rawFamily == %@", matchedFamily.rawValue)
         guard let config = Realm.live().objects(WatchComplication.self).filter(pred).first else {
-            print("No configured complication found for \(matchedFamily.rawValue), returning family specific error")
+            // swiftlint:disable:next line_length
+            Log.warning?.message("No configured complication found for \(matchedFamily.rawValue), returning family specific error")
             handler(fallback)
             return
         }
 
-        print("complicationObjects", config)
+        Log.verbose?.message("complicationObjects \(config)")
 
         guard let template = config.CLKComplicationTemplate(family: complication.family) else {
-            print("Unable to generate template for \(matchedFamily.rawValue), returning family specific error")
+            // swiftlint:disable:next line_length
+            Log.warning?.message("Unable to generate template for \(matchedFamily.rawValue), returning family specific error")
             handler(fallback)
             return
         }
 
-        print("Generated template for", complication.family.description, template)
+        Log.verbose?.message("Generated template for \(complication.family), \(template)")
 
         handler(CLKComplicationTimelineEntry(date: date, complicationTemplate: template))
     }
@@ -71,7 +75,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
                                       withHandler handler: @escaping (CLKComplicationTemplate?) -> Void) {
         // This method will be called once per supported complication, and the results will be cached
 
-        // print("Get sample template!", ComplicationGroupMember(family: complication.family).description)
+        // Log.verbose?.message("Get sample template!", ComplicationGroupMember(family: complication.family))
         handler(ComplicationGroupMember(family: complication.family).errorTemplate)
     }
 

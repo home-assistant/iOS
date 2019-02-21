@@ -9,6 +9,7 @@
 import DeviceKit
 import Foundation
 import Shared
+import CleanroomLogger
 
 class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
 
@@ -20,14 +21,14 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
     func netServiceBrowser(_ netServiceBrowser: NetServiceBrowser,
                            didFind netService: NetService,
                            moreComing moreServicesComing: Bool) {
-        NSLog("BonjourDelegate.Browser.didFindService")
+        Log.verbose?.message("BonjourDelegate.Browser.didFindService")
         netService.delegate = self
         resolvingDict[netService.name] = netService
         netService.resolve(withTimeout: 0.0)
     }
 
     func netServiceDidResolveAddress(_ sender: NetService) {
-        NSLog("BonjourDelegate.Browser.netServiceDidResolveAddress")
+        Log.verbose?.message("BonjourDelegate.Browser.netServiceDidResolveAddress")
         if let txtRecord = sender.txtRecordData() {
             let serviceDict = NetService.dictionary(fromTXTRecord: txtRecord)
             let discoveryInfo = DiscoveryInfoFromDict(locationName: sender.name, netServiceDictionary: serviceDict)
@@ -40,7 +41,7 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
     func netServiceBrowser(_ netServiceBrowser: NetServiceBrowser,
                            didRemove netService: NetService,
                            moreComing moreServicesComing: Bool) {
-        NSLog("BonjourDelegate.Browser.didRemoveService")
+        Log.verbose?.message("BonjourDelegate.Browser.didRemoveService")
         let discoveryInfo: [NSObject: Any] = ["name" as NSObject: netService.name]
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.undiscovered"),
                                         object: nil,

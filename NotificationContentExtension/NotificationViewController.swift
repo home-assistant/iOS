@@ -13,6 +13,7 @@ import MBProgressHUD
 import KeychainAccess
 import Shared
 import Alamofire
+import CleanroomLogger
 
 enum NotificationCategories: String {
     case map
@@ -33,9 +34,14 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     var controller: NotificationCategory?
 
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        Current.configureLogging()
+    }
+
     func didReceive(_ notification: UNNotification) {
         if let category = NotificationCategories(rawValue: notification.request.content.categoryIdentifier) {
-            print("Received a", category, "notification with userInfo", notification.request.content.userInfo)
+            Log.verbose?.message("Received a \(category) notif with userInfo \(notification.request.content.userInfo)")
 
             let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
             let loadTxt = L10n.Extensions.NotificationContent.Hud.loading(category.rawValue)
@@ -57,7 +63,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                                      }
             })
         } else {
-            print("Unknown category!!!!!", notification.request.content.categoryIdentifier)
+            Log.warning?.message("Unknown category \(notification.request.content.categoryIdentifier)")
         }
     }
 

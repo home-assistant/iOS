@@ -10,6 +10,7 @@ import Foundation
 import ObjectMapper
 import CoreLocation
 import RealmSwift
+import CleanroomLogger
 
 public class RLMZone: Object {
 
@@ -85,7 +86,7 @@ public class RLMZone: Object {
                 ClientEvent(text: "Unable to create beacon region due to invalid UUID: \(uuidString)",
                     type: .locationUpdate)
             Current.clientEventStore.addEvent(event)
-            print("Could create CLBeaconRegion because of invalid UUID")
+            Log.error?.message("Couldn't create CLBeaconRegion (\(self.ID)) because of invalid UUID: \(uuidString)")
             return nil
         }
 

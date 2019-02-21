@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CleanroomLogger
 
 extension String {
     func dictionary() -> [String: Any]? {
@@ -14,7 +15,7 @@ extension String {
             do {
                 return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
             } catch {
-                print(error.localizedDescription)
+                Log.error?.message("Error serializing JSON string to dict: \(error)")
             }
         }
         return nil

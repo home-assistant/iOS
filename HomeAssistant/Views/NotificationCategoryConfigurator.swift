@@ -13,6 +13,7 @@ import UserNotifications
 import RealmSwift
 import Shared
 import Iconic
+import CleanroomLogger
 
 class NotificationCategoryConfigurator: FormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
@@ -253,7 +254,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                 if let vc = vc as? NotificationActionConfigurator {
                     vc.row.title = vc.action.Title
                     vc.row.updateCell()
-                    print("action", vc.action)
+                    Log.verbose?.message("action \(vc.action)")
 
                     // swiftlint:disable:next force_try
                     try! self.realm.write {
@@ -269,16 +270,16 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
     @objc
     func getInfoAction(_ sender: Any) {
-        print("getInfoAction hit, open docs page!")
+        Log.verbose?.message("getInfoAction hit, open docs page!")
     }
 
     @objc
     func save(_ sender: Any) {
-        print("Go back hit, check for validation")
+        Log.verbose?.message("Go back hit, check for validation")
 
-        print("Validate result", self.form.validate())
+        Log.verbose?.message("Validate result \(self.form.validate())")
         if self.form.validate().count == 0 {
-            print("Category form is valid, calling dismiss callback!")
+            Log.verbose?.message("Category form is valid, calling dismiss callback!")
 
             self.shouldSave = true
 
@@ -288,7 +289,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
     @objc
     func cancel(_ sender: Any) {
-        print("Cancel hit, calling dismiss")
+        Log.verbose?.message("Cancel hit, calling dismiss")
 
         self.shouldSave = false
 
@@ -297,10 +298,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
     @objc
     func preview(_ sender: Any) {
-        print("Preview hit")
-        UNUserNotificationCenter.current().getNotificationCategories { (cats) in
-            print("Current cats", cats)
-        }
+        Log.verbose?.message("Preview hit")
 
         let content = UNMutableNotificationContent()
         content.title = "Test notification"

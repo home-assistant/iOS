@@ -1,4 +1,5 @@
 
+
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -48,6 +49,8 @@ xcuserdata/
 *.moved-aside
 *.xccheckout
 *.xcscmblueprint
+
+Carthage/
 
 Pods/
 

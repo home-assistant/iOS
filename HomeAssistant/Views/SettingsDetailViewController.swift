@@ -15,6 +15,7 @@ import PromiseKit
 import RealmSwift
 import UserNotifications
 import Communicator
+import CleanroomLogger
 
 // swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController {
@@ -357,19 +358,19 @@ class SettingsDetailViewController: FormViewController {
                         var complications: [String: Any] = [String: Any]()
 
                         for config in self.realm.objects(WatchComplication.self) {
-                            print("Config", config)
-                            print("Running toJSON!", config.toJSON())
+                            Log.verbose?.message("Config \(config)")
+                            Log.verbose?.message("Running toJSON! \(config.toJSON())")
                             complications[config.Family.rawValue] = config.toJSON()
                         }
 
-                        print("Sending", complications)
+                        Log.verbose?.message("Sending \(complications)")
 
                         let complicationInfo = ComplicationInfo(content: complications)
 
                         do {
                             try Communicator.shared.transfer(complicationInfo: complicationInfo)
                         } catch let error as NSError {
-                            print("Error transferring complication info", error.description)
+                            Log.error?.message("Error transferring complication info: \(error)")
                         }
 
                         if let remainingRow = self.form.rowBy(tag: "remaining_complication_sends") as? LabelRow {
@@ -422,7 +423,7 @@ class SettingsDetailViewController: FormViewController {
             self.title = L10n.SettingsDetails.Siri.title
             if #available(iOS 12.0, *) {
                 INPreferences.requestSiriAuthorization { (status) in
-                    print("Siri auth status", status.rawValue)
+                    Log.verbose?.message("Siri auth status \(status.rawValue)")
                 }
 
                 var entityIDs: [String] = []
@@ -527,7 +528,7 @@ class SettingsDetailViewController: FormViewController {
                     DispatchQueue.main.async {
                         guard let voiceShortcutsFromCenter = voiceShortcutsFromCenter else {
                             if let error = error {
-                                print("Failed to fetch voice shortcuts with error: \(error.localizedDescription)")
+                                Log.error?.message("Failed to fetch voice shortcuts with error: \(error)")
                             }
                             return
                         }
@@ -577,7 +578,7 @@ class SettingsDetailViewController: FormViewController {
                                         }
             }
         default:
-            print("Something went wrong, no settings detail group named \(detailGroup)")
+            Log.warning?.message("Something went wrong, no settings detail group named \(detailGroup)")
         }
     }
 
@@ -622,14 +623,14 @@ class SettingsDetailViewController: FormViewController {
 
                 if let vc = vc as? NotificationCategoryConfigurator {
                     if vc.shouldSave == false {
-                        print("Not saving category to DB and returning early!")
+                        Log.verbose?.message("Not saving category to DB and returning early!")
                         return
                     }
 
                     vc.row.title = vc.category.Name
                     vc.row.updateCell()
 
-                    print("Saving category!", vc.category)
+                    Log.verbose?.message("Saving category! \(vc.category)")
 
                     // swiftlint:disable:next force_try
                     try! self.realm.write {
@@ -673,14 +674,14 @@ class SettingsDetailViewController: FormViewController {
 
                         if let vc = vc as? ActionConfigurator {
                             if vc.shouldSave == false {
-                                print("Not saving action to DB and returning early!")
+                                Log.verbose?.message("Not saving action to DB and returning early!")
                                 return
                             }
 
                             vc.row.title = vc.action.Name
                             vc.row.updateCell()
 
-                            print("Saving action!", vc.action)
+                            Log.verbose?.message("Saving action! \(vc.action)")
 
                             let realm = Current.realm()
 
@@ -689,19 +690,19 @@ class SettingsDetailViewController: FormViewController {
                                     realm.add(vc.action, update: true)
                                 }
                             } catch let error as NSError {
-                                print("Error while saving to Realm!", error)
+                                Log.error?.message("Error while saving to Realm!: \(error)")
                             }
 
                             let data = Array(realm.objects(Action.self))
 
                             let message = GuaranteedMessage(identifier: "actions", content: ["data": data.toJSON()])
 
-                            print("Sending message", message)
+                            Log.verbose?.message("Sending message \(message)")
 
                             do {
                                 try Communicator.shared.send(guaranteedMessage: message)
                             } catch let error as NSError {
-                                print("Sending actions failed: ", error.localizedDescription)
+                                Log.error?.message("Sending actions failed: \(error)")
                             }
                         }
                 })
@@ -763,13 +764,13 @@ extension SettingsDetailViewController: INUIAddVoiceShortcutViewControllerDelega
                                         didFinishWith voiceShortcut: INVoiceShortcut?,
                                         error: Error?) {
         if let error = error as NSError? {
-            print("error adding voice shortcut:", error)
+            Log.error?.message("Error adding voice shortcut: \(error)")
             controller.dismiss(animated: true, completion: nil)
             return
         }
 
         if let voiceShortcut = voiceShortcut {
-            print("Shortcut with ID \(voiceShortcut.identifier.uuidString) added")
+            Log.verbose?.message("Shortcut with ID \(voiceShortcut.identifier.uuidString) added")
 
             if let existingSection = self.form.sectionBy(tag: "existing_shortcuts") {
                 let newShortcut = ButtonRow {
@@ -809,13 +810,13 @@ extension SettingsDetailViewController: INUIEditVoiceShortcutViewControllerDeleg
                                          didUpdate voiceShortcut: INVoiceShortcut?,
                                          error: Error?) {
         if let error = error as NSError? {
-            print("error updating voice shortcut:", error)
+            Log.error?.message("Error updating voice shortcut: \(error)")
             controller.dismiss(animated: true, completion: nil)
             return
         }
 
         if let voiceShortcut = voiceShortcut {
-            print("Shortcut with ID \(voiceShortcut.identifier.uuidString) updated")
+            Log.verbose?.message("Shortcut with ID \(voiceShortcut.identifier.uuidString) updated")
         }
 
         controller.dismiss(animated: true, completion: nil)
@@ -825,7 +826,7 @@ extension SettingsDetailViewController: INUIEditVoiceShortcutViewControllerDeleg
 
     func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
                                          didDeleteVoiceShortcutWithIdentifier deletedVoiceShortcutIdentifier: UUID) {
-        print("Shortcut with ID \(deletedVoiceShortcutIdentifier.uuidString) deleted")
+        Log.verbose?.message("Shortcut with ID \(deletedVoiceShortcutIdentifier.uuidString) deleted")
 
         controller.dismiss(animated: true, completion: nil)
 

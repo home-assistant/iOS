@@ -14,6 +14,7 @@ import PromiseKit
 import ObjectMapper
 import ColorPickerRow
 import Iconic
+import CleanroomLogger
 
 // swiftlint:disable:next type_body_length
 class WatchComplicationConfigurator: FormViewController {
@@ -152,7 +153,7 @@ class WatchComplicationConfigurator: FormViewController {
                 $0.value = UIColor(hex: value)
             }
             }.onChange { (picker) in
-                print("gauge color: \(picker.value!.hexString(false))")
+                Log.verbose?.message("gauge color: \(picker.value!.hexString(false))")
         }
 
         <<< SegmentedRow<String> {
@@ -267,7 +268,7 @@ class WatchComplicationConfigurator: FormViewController {
                     $0.value = UIColor(hex: value)
                 }
             }.onChange { (picker) in
-                print("icon color: \(picker.value!.hexString(false))")
+                Log.verbose?.message("icon color: \(picker.value!.hexString(false))")
                 if let iconRow = self.form.rowBy(tag: "icon") as? PushRow<String> {
                     if let value = iconRow.value {
                         let theIcon = MaterialDesignIcons(named: value)
@@ -295,7 +296,7 @@ class WatchComplicationConfigurator: FormViewController {
             try! realm.write {
                 self.config.Data = getValuesGroupedBySection()
 
-                print("COMPLICATION", self.config, self.config.Data)
+                Log.verbose?.message("COMPLICATION \(self.config) \(self.config.Data)")
 
                 realm.add(self.config, update: true)
             }
@@ -304,12 +305,12 @@ class WatchComplicationConfigurator: FormViewController {
 
     @objc
     func getInfoAction(_ sender: Any) {
-        print("getInfoAction hit, open docs page!")
+        Log.verbose?.message("getInfoAction hit, open docs page!")
     }
 
     func renderTemplateForRow(rowTag: String) {
         if let row = self.form.rowBy(tag: rowTag) as? TextAreaRow, let value = row.value {
-            print("Render template from", value)
+            Log.verbose?.message("Render template from \(value)")
 
             renderTemplateValue(value)
         }
@@ -317,7 +318,7 @@ class WatchComplicationConfigurator: FormViewController {
 
     func renderTemplateForRow(row: BaseRow) {
         if let value = row.baseValue as? String {
-            print("Render template from", value)
+            Log.verbose?.message("Render template from \(value)")
 
             renderTemplateValue(value)
         }
@@ -325,7 +326,7 @@ class WatchComplicationConfigurator: FormViewController {
 
     func renderTemplateValue(_ value: String) {
         HomeAssistantAPI.authenticatedAPI()?.RenderTemplate(templateStr: value).done { val in
-            print("Rendered value is", val)
+            Log.verbose?.message("Rendered value is \(val)")
 
             let alert = UIAlertController(title: "Output Preview", message: val,
                                           preferredStyle: UIAlertController.Style.alert)
@@ -334,7 +335,7 @@ class WatchComplicationConfigurator: FormViewController {
             self.present(alert, animated: true, completion: nil)
 
             }.catch { renderErr in
-                print("Error rendering template!", renderErr.localizedDescription)
+                Log.error?.message("Error rendering template! \(renderErr)")
                 let alert = UIAlertController(title: L10n.errorLabel,
                                               message: renderErr.localizedDescription,
                                               preferredStyle: UIAlertController.Style.alert)
@@ -386,7 +387,7 @@ class WatchComplicationConfigurator: FormViewController {
                 $0.value = UIColor(hex: value)
             }
         }.onChange { (picker) in
-            print("color for "+location.rawValue+": \(picker.value!.hexString(false))")
+            Log.verbose?.message("color for "+location.rawValue+": \(picker.value!.hexString(false))")
         })
 
         return section
@@ -482,7 +483,7 @@ class WatchComplicationConfigurator: FormViewController {
 
         groupedVals["textAreas"] = textAreasDict
 
-        print("groupedVals", groupedVals)
+        Log.verbose?.message("groupedVals \(groupedVals)")
 
         return groupedVals
     }

@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Shared
+import CleanroomLogger
 
 /// View controller responsible for displaying the details of a client event. 
 class ClientEventPayloadViewController: UIViewController {
@@ -31,7 +32,7 @@ class ClientEventPayloadViewController: UIViewController {
                                                         options: .prettyPrinted)
             self.jsonString  = String(data: data, encoding: .utf8)
         } catch _ {
-            print("Error printing event")
+            Log.error?.message("Error printing event")
         }
     }
 }

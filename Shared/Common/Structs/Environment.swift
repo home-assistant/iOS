@@ -9,6 +9,7 @@
 import Foundation
 import PromiseKit
 import RealmSwift
+import CleanroomLogger
 
 public enum AppConfiguration: Int, CaseIterable {
     case FastlaneSnapshot
@@ -84,5 +85,44 @@ public class Environment {
         } else {
             return .Release
         }
+    }
+
+    public var logsDirectory: URL {
+        let fileManager = FileManager.default
+        let storeDirectoryURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)?
+            .appendingPathComponent("logs", isDirectory: true)
+
+        guard let directoryURL = storeDirectoryURL else {
+            fatalError("Unable to get datastoreURL for logger.")
+        }
+
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                fatalError("Error while attempting to create data store URL: \(error)")
+            }
+        }
+
+        return directoryURL
+    }
+
+    public func configureLogging() {
+        var configs = [LogConfiguration]()
+
+        let stderr = StandardStreamsLogRecorder(formatters: [XcodeLogFormatter()])
+        configs.append(BasicLogConfiguration(recorders: [stderr]))
+
+        if let osLog = OSLogRecorder(formatters: [ReadableLogFormatter()]) {
+            configs.append(BasicLogConfiguration(recorders: [osLog]))
+        }
+
+        let fileCfg = RotatingLogFileConfiguration(minimumSeverity: .verbose, daysToKeep: 15,
+                                                   directoryPath: self.logsDirectory.path,
+                                                   formatters: [ReadableLogFormatter()])
+
+        configs.append(fileCfg)
+
+        Log.enable(configuration: configs)
     }
 }

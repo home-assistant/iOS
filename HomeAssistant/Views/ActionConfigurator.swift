@@ -15,6 +15,7 @@ import Iconic
 import ColorPickerRow
 import ViewRow
 import PromiseKit
+import CleanroomLogger
 
 class ActionConfigurator: FormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
@@ -175,7 +176,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                     $0.value = UIColor.green
                     $0.value = UIColor(hex: self.action.IconColor)
                 }.onChange { (picker) in
-                    print("icon color: \(picker.value!.hexString(false))")
+                    Log.verbose?.message("icon color: \(picker.value!.hexString(false))")
 
                     self.action.IconColor = picker.value!.hexString()
 
@@ -208,15 +209,15 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
     @objc
     func getInfoAction(_ sender: Any) {
-        print("getInfoAction hit, open docs page!")
+        Log.verbose?.message("getInfoAction hit, open docs page!")
     }
 
     @objc
     func save(_ sender: Any) {
-        print("Go back hit, check for validation")
+        Log.verbose?.message("Go back hit, check for validation")
 
         if self.form.validate().count == 0 {
-            print("Category form is valid, calling dismiss callback!")
+            Log.verbose?.message("Category form is valid, calling dismiss callback!")
 
             self.shouldSave = true
 
@@ -226,7 +227,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
     @objc
     func cancel(_ sender: Any) {
-        print("Cancel hit, calling dismiss")
+        Log.verbose?.message("Cancel hit, calling dismiss")
 
         self.shouldSave = false
 
@@ -303,7 +304,7 @@ class ActionPreview: UIView {
             }.ensure {
                 self.imageView.hideActivityIndicator()
             }.catch { err -> Void in
-                print("Error during action event fire: \(err)")
+                Log.error?.message("Error during action event fire: \(err)")
                 feedbackGenerator.notificationOccurred(.error)
         }
     }

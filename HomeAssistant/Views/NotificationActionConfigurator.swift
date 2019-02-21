@@ -11,6 +11,7 @@ import UIKit
 import Shared
 import Eureka
 import RealmSwift
+import CleanroomLogger
 
 class NotificationActionConfigurator: FormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
@@ -181,15 +182,15 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
 
     @objc
     func getInfoAction(_ sender: Any) {
-        print("getInfoAction hit, open docs page!")
+        Log.verbose?.message("getInfoAction hit, open docs page!")
     }
 
     @objc
     func save(_ sender: Any) {
-        print("Go back hit, check for validation")
+        Log.verbose?.message("Go back hit, check for validation")
 
         if self.form.validate().count == 0 {
-            print("Action form is valid, saving Action")
+            Log.verbose?.message("Action form is valid, saving Action")
 
             let formVals = self.form.values(includeHidden: true)
 
@@ -224,15 +225,7 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
 
     @objc
     func preview(_ sender: Any) {
-        print("Preview hit")
-//        let content = UNMutableNotificationContent()
-//        content.title = "Test notification"
-//        content.body = "This is a test notification for the \(self.action.Title) notification action inside the \(self.action.Category) category"
-//        content.sound = .default
-//        content.categoryIdentifier = self.category.Identifier
-//
-//        UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: self.category.Identifier,
-//                                                                     content: content, trigger: nil))
+        Log.verbose?.message("Preview hit")
     }
 
 }

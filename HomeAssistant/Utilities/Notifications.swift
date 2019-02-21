@@ -10,12 +10,13 @@ import Foundation
 import Shared
 import RealmSwift
 import UserNotifications
+import CleanroomLogger
 
 func ProvideNotificationCategoriesToSystem() {
     let realm = Current.realm()
     let categories = Set<UNNotificationCategory>(realm.objects(NotificationCategory.self).map({ $0.category }))
 
-    print("Providing", categories.count, "categories to system", categories)
+    Log.verbose?.message("Providing \(categories.count) categories to system: \(categories)")
 
     UNUserNotificationCenter.current().setNotificationCategories(categories)
 }
@@ -27,13 +28,13 @@ func MigratePushSettingsToLocal() {
         if let categories = config.Categories {
             for remoteCategory in categories {
                 let localCategory = NotificationCategory()
-                print("Attempting import of category", remoteCategory.Identifier)
+                Log.verbose?.message("Attempting import of category \(remoteCategory.Identifier)")
                 localCategory.Identifier = remoteCategory.Identifier
                 localCategory.Name = remoteCategory.Name
 
                 if let catActions = remoteCategory.Actions {
                     for remoteAction in catActions {
-                        print("Attempting import of action", remoteAction.Identifier)
+                        Log.verbose?.message("Attempting import of action \(remoteAction.Identifier)")
                         let localAction = NotificationAction()
                         localAction.Title = remoteAction.Title
                         localAction.Identifier = remoteAction.Identifier
@@ -62,9 +63,9 @@ func MigratePushSettingsToLocal() {
                 }
             }
         } else {
-            print("Unable to unwrap push categories or none exist!")
+            Log.warning?.message("Unable to unwrap push categories or none exist! \(config)")
         }
     }.catch { error in
-        print("Error when importing push settings", error.localizedDescription)
+        Log.error?.message("Error when importing push settings: \(error)")
     }
 }

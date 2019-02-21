@@ -5,3 +5,4 @@ excluded:
   - HomeAssistantTests
   - HomeAssistantUITests
   - Pods
+  - Carthage

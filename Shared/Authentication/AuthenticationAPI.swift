@@ -11,6 +11,7 @@ import Alamofire
 import AlamofireObjectMapper
 import Foundation
 import ObjectMapper
+import CleanroomLogger
 
 typealias URLRequestConvertible = Alamofire.URLRequestConvertible
 
@@ -87,7 +88,7 @@ public class AuthenticationAPI {
                             return
                         }
                     } catch {
-                        print("Error deserializing failure json response: \(error)")
+                        Log.error?.message("Error deserializing failure json response: \(error)")
                     }
                 case .success(let value):
                     seal.fulfill(value)

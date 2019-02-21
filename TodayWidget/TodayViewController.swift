@@ -13,6 +13,7 @@ import Shared
 import RealmSwift
 import UIColor_Hex_Swift
 import PromiseKit
+import CleanroomLogger
 
 class TodayViewController: UIViewController, NCWidgetProviding,
                            UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
@@ -24,6 +25,11 @@ class TodayViewController: UIViewController, NCWidgetProviding,
     let realm = Current.realm()
 
     var actions: Results<Action>?
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        Current.configureLogging()
+    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -83,8 +89,6 @@ class TodayViewController: UIViewController, NCWidgetProviding,
         let availableWidth = view.frame.width - paddingSpace
         let widthPerItem = availableWidth / itemsPerRow
 
-        print("width", widthPerItem)
-
         return CGSize(width: widthPerItem, height: 44)
     }
 
@@ -98,8 +102,6 @@ class TodayViewController: UIViewController, NCWidgetProviding,
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("User tapped on item \(indexPath.row)")
-
         let feedbackGenerator = UINotificationFeedbackGenerator()
         feedbackGenerator.prepare()
 
@@ -118,7 +120,7 @@ class TodayViewController: UIViewController, NCWidgetProviding,
         }.ensure {
             cell.imageView.hideActivityIndicator()
         }.catch { err -> Void in
-            print("Error during action event fire: \(err)")
+            Log.error?.message("Error during action event fire: \(err)")
             feedbackGenerator.notificationOccurred(.error)
         }
     }

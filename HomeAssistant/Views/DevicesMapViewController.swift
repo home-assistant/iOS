@@ -89,8 +89,6 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             self.mapView.addAnnotations(devices)
             self.mapView.addOverlays(deviceCircles)
 
-            print("Fitting to bounds around", self.mapView.annotations.count, "points")
-
             var zoomRect: MKMapRect = MKMapRect.null
             for index in 0..<self.mapView.annotations.count {
                 let annotation = self.mapView.annotations[index]

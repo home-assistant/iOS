@@ -20,6 +20,7 @@ import Communicator
 import Iconic
 import arek
 import CallbackURLKit
+import CleanroomLogger
 
 let keychain = Constants.Keychain
 
@@ -32,6 +33,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var safariVC: SFSafariViewController?
 
     private(set) var regionManager: RegionManager!
+
+    override init() {
+        Log.verbose?.message("Configure logging")
+        Current.configureLogging()
+    }
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -123,11 +129,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         prefs.setValue(tokenString, forKey: "deviceToken")
 
-        print("Registering push with tokenString: \(tokenString)")
+        Log.verbose?.message("Registering push with tokenString: \(tokenString)")
 
         _ = api.registerDeviceForPush(deviceToken: tokenString).done { resp in
             if let pushId = resp.PushId {
-                print("Registered for push. Platform: \(resp.SNSPlatform ?? "MISSING"), PushID: \(pushId)")
+                Log.verbose?.message("Registered for push. Platform: \(resp.SNSPlatform ?? "??"), PushID: \(pushId)")
                 prefs.setValue(pushId, forKey: "pushID")
                 Current.settingsStore.pushID = pushId
                 _ = api.identifyDevice()
@@ -137,15 +143,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError error: Swift.Error) {
-        print("Error when trying to register for push", error)
+        Log.error?.message("Error when trying to register for push: \(error)")
     }
 
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        print("Received remote notification in completion handler!")
+        Log.verbose?.message("Received remote notification in completion handler!")
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            print("Remote notification handler failed because api was not authenticated")
+            Log.warning?.message("Remote notification handler failed because api was not authenticated")
             completionHandler(.failed)
             return
         }
@@ -157,16 +163,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         if prefs.bool(forKey: "locationUpdateOnNotification") == false {
                             completionHandler(.noData)
                         }
-                        print("Received remote request to provide a location update")
+                        Log.verbose?.message("Received remote request to provide a location update")
                         api.getAndSendLocation(trigger: .PushNotification).done { success in
-                            print("Did successfully send location when requested via APNS?", success)
+                            Log.verbose?.message("Did successfully send location when requested via APNS? \(success)")
                             completionHandler(.newData)
                         }.catch { error in
-                            print("Error when attempting to submit location update", error.localizedDescription)
+                            Log.error?.message("Error when attempting to submit location update: \(error)")
                             completionHandler(.failed)
                         }
                     default:
-                        print("Received unknown command via APNS!", userInfo)
+                        Log.warning?.message("Received unknown command via APNS! \(userInfo)")
                         completionHandler(.noData)
                     }
         } else {
@@ -177,7 +183,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            print("Background fetch failed because api was not authenticated")
+            Log.warning?.message("Background fetch failed because api was not authenticated")
             completionHandler(.failed)
             return
         }
@@ -188,21 +194,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
-        print("Background fetch activated at \(timestamp)!")
+        Log.verbose?.message("Background fetch activated at \(timestamp)!")
         if Current.settingsStore.locationEnabled && prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
             api.getAndSendLocation(trigger: .BackgroundFetch).done { _ in
-                print("Sending location via background fetch")
+                Log.verbose?.message("Sending location via background fetch")
                 completionHandler(UIBackgroundFetchResult.newData)
                 }.catch { error in
-                    print("Error when attempting to submit location update during background fetch",
-                          error.localizedDescription)
+                    Log.error?.message("Error attempting to submit location update during background fetch: \(error)")
                     completionHandler(UIBackgroundFetchResult.failed)
             }
         } else {
             api.identifyDevice().done { _ in
                 completionHandler(UIBackgroundFetchResult.newData)
             }.catch { error in
-                print("Error when attempting to identify device during background fetch", error.localizedDescription)
+                Log.error?.message("Error when attempting to identify device during background fetch: \(error)")
                 completionHandler(UIBackgroundFetchResult.failed)
             }
         }
@@ -211,7 +216,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ app: UIApplication,
                      open url: URL,
                      options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        print("Received URL", url)
+        Log.verbose?.message("Received URL: \(url)")
         var serviceData: [String: String] = [:]
         if let queryItems = url.queryItems {
             serviceData = queryItems
@@ -230,9 +235,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
            NotificationCenter.default.post(name: Notification.Name("AuthCallback"), object: nil,
                                            userInfo: ["url": url])
         default:
-            print("Can't route", url.host!)
-            showAlert(title: L10n.errorLabel,
-                      message: L10n.UrlHandler.NoService.message(url.host!))
+            Log.warning?.message("Can't route incoming URL: \(url)")
+            showAlert(title: L10n.errorLabel, message: L10n.UrlHandler.NoService.message(url.host!))
         }
         return true
     }
@@ -260,7 +264,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }.done { _ in
                 success(nil)
             }.catch { error -> Void in
-                print("Received error from createEvent during X-Callback-URL call", error)
+                Log.error?.message("Received error from createEvent during X-Callback-URL call: \(error)")
                 failure(XCallbackError.generalError)
             }
         }
@@ -286,7 +290,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }.done { _ in
                 success(nil)
             }.catch { error in
-                print("Received error from callService during X-Callback-URL call", error)
+                Log.error?.message("Received error from callService during X-Callback-URL call: \(error)")
                 failure(XCallbackError.generalError)
             }
         }
@@ -299,7 +303,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }.done { _ in
                 success(nil)
             }.catch { error in
-                print("Received error from getAndSendLocation during X-Callback-URL call", error)
+                Log.error?.message("Received error from getAndSendLocation during X-Callback-URL call: \(error)")
                 failure(XCallbackError.generalError)
             }
         }
@@ -321,7 +325,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }.done { rendered in
                 success(["rendered": rendered])
             }.catch { error in
-                print("Received error from RenderTemplate during X-Callback-URL call", error)
+                Log.error?.message("Received error from RenderTemplate during X-Callback-URL call: \(error)")
                 failure(XCallbackError.generalError)
             }
         }
@@ -337,9 +341,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             interaction.donate { (error) in
                 if error != nil {
                     if let error = error as NSError? {
-                        print("FireEvent Interaction donation failed: \(error)")
+                        Log.error?.message("FireEvent Interaction donation failed: \(error)")
                     } else {
-                        print("FireEvent Successfully donated interaction")
+                        Log.verbose?.message("FireEvent Successfully donated interaction")
                     }
                 }
             }
@@ -372,9 +376,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             interaction.donate { (error) in
                 if error != nil {
                     if let error = error as NSError? {
-                        print("CallService Interaction donation failed: \(error)")
+                        Log.error?.message("CallService Interaction donation failed: \(error)")
                     } else {
-                        print("CallService Successfully donated interaction")
+                        Log.verbose?.message("CallService Successfully donated interaction")
                     }
                 }
             }
@@ -422,42 +426,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             do {
                 try Communicator.shared.sync(context: context)
             } catch let error as NSError {
-                print("Updating the context failed: ", error.localizedDescription)
+                Log.error?.message("Updating the context failed: \(error)")
             }
 
-            print("Set the context to", context)
+            Log.verbose?.message("Set the context to \(context)")
         }
     }
 
     func setupWatchCommunicator() {
         Communicator.shared.activationStateChangedObservers.add { state in
-            print("Activation state changed: ", state)
+            Log.verbose?.message("Activation state changed: \(state)")
             self.updateWatchContext()
         }
 
         Communicator.shared.watchStateUpdatedObservers.add { watchState in
-            print("Watch state changed: ", watchState)
+            Log.verbose?.message("Watch state changed: \(watchState)")
             self.updateWatchContext()
         }
 
         Communicator.shared.reachabilityChangedObservers.add { reachability in
-            print("Reachability changed: ", reachability)
+            Log.verbose?.message("Reachability changed: \(reachability)")
         }
 
         Communicator.shared.immediateMessageReceivedObservers.add { message in
-            print("Received message: ", message.identifier)
+            Log.verbose?.message("Received message: \(message.identifier)")
 
             if message.identifier == "ActionRowPressed" {
-                print("Received ActionRowPressed", message, message.content)
+                Log.verbose?.message("Received ActionRowPressed \(message) \(message.content)")
 
                 guard let actionName = message.content["ActionName"] as? String else {
-                    print("actionName either does not exist or is not a string in the payload")
+                    Log.warning?.message("actionName either does not exist or is not a string in the payload")
                     message.replyHandler?(["fired": false])
                     return
                 }
 
                 guard let actionID = message.content["ActionID"] as? String else {
-                    print("ActionID either does not exist or is not a string in the payload")
+                    Log.warning?.message("ActionID either does not exist or is not a string in the payload")
                     message.replyHandler?(["fired": false])
                     return
                 }
@@ -467,18 +471,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }.done { _ in
                     message.replyHandler?(["fired": true])
                 }.catch { err -> Void in
-                    print("Error during action event fire: \(err)")
+                    Log.error?.message("Error during action event fire: \(err)")
                     message.replyHandler?(["fired": false])
                 }
             }
         }
 
         Communicator.shared.blobReceivedObservers.add { blob in
-            print("Received blob: ", blob.identifier)
+            Log.verbose?.message("Received blob: \(blob.identifier)")
         }
 
         Communicator.shared.contextUpdatedObservers.add { context in
-            print("Received context: ", context)
+            Log.verbose?.message("Received context: \(context)")
         }
     }
 
@@ -517,7 +521,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     }
                 }
 
-                print("Suggesting", shortcutsToSuggest.count, "shortcuts to Siri")
+                Log.verbose?.message("Suggesting \(shortcutsToSuggest.count) shortcuts to Siri")
 
                 INVoiceShortcutCenter.shared.setShortcutSuggestions(shortcutsToSuggest)
         }
@@ -533,7 +537,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert,
                                                 .providesAppNotificationSettings]
             UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
-                print("Requested critical alert access", granted, error.debugDescription)
+                Log.verbose?.message("Requested critical alert access \(granted), \(String(describing: error))")
             }
         }
 
@@ -559,7 +563,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var inputParams: CallbackURLKit.Parameters = shortcutDict
         inputParams["name"] = shortcutName
 
-        print("Sending params in shortcut", inputParams)
+        Log.verbose?.message("Sending params in shortcut \(inputParams)")
 
         let eventName: String = "ios.shortcut_run"
         let deviceDict: [String: String] = [
@@ -569,18 +573,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var eventData: [String: Any] = ["name": shortcutName, "input": shortcutDict, "device": deviceDict]
 
         let successHandler: CallbackURLKit.SuccessCallback = { (params) in
-            print("Received params from shortcut run", params)
+            Log.verbose?.message("Received params from shortcut run \(String(describing: params))")
             eventData["status"] = "success"
             eventData["result"] = params?["result"]
 
-            print("Success, sending data", eventData)
+            Log.verbose?.message("Success, sending data \(eventData)")
 
             _ = firstly {
                 HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
                 api.createEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
-                print("Received error from createEvent during shortcut run", error)
+                Log.error?.message("Received error from createEvent during shortcut run \(error)")
             }
         }
 
@@ -593,7 +597,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }.then { api in
                 api.createEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
-                print("Received error from createEvent during shortcut run", error)
+                Log.error?.message("Received error from createEvent during shortcut run \(error)")
             }
         }
 
@@ -605,7 +609,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }.then { api in
                 api.createEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
-                print("Received error from createEvent during shortcut run", error)
+                Log.error?.message("Received error from createEvent during shortcut run \(error)")
             }
         }
 
@@ -614,7 +618,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                        parameters: inputParams, onSuccess: successHandler,
                                        onFailure: failureHandler, onCancel: cancelHandler)
         } catch let error as NSError {
-            print("Running shortcut failed", error)
+            Log.error?.message("Running shortcut failed \(error)")
 
             eventData["status"] = "error"
             eventData["error"] = error.localizedDescription
@@ -624,7 +628,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }.then { api in
                 api.createEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
-                print("Received error from CallbackURLKit perform", error)
+                Log.error?.message("Received error from CallbackURLKit perform \(error)")
             }
         }
     }
@@ -680,7 +684,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }.ensure {
             completionHandler()
         }.catch { err -> Void in
-            print("Error: \(err)")
+            Log.error?.message("Error when handling push action: \(err)")
         }
     }
 

@@ -14,6 +14,7 @@ import KeychainAccess
 import Shared
 import Alamofire
 import AlamofireImage
+import CleanroomLogger
 
 class CameraViewController: UIView, NotificationCategory {
     private var baseURL: URL = Current.settingsStore.connectionInfo!.activeAPIURL
@@ -64,7 +65,7 @@ class CameraViewController: UIView, NotificationCategory {
 
         streamer.streamImages(fromURL: queryUrl) { (image, error) in
             if let error = error, let afError = error as? AFError {
-                print("afError", afError)
+                Log.error?.message("Streaming image AFError: \(afError)")
                 var labelText = L10n.Extensions.NotificationContent.Error.Request.unknown
                 if let responseCode = afError.responseCode {
                     switch responseCode {
@@ -82,12 +83,12 @@ class CameraViewController: UIView, NotificationCategory {
             if let image = image {
                 defer {
                     frameCount += 1
-                    print("FRAME", frameCount)
+                    Log.verbose?.message("FRAME \(frameCount)")
                 }
                 if frameCount == 0 {
-                    print("Got first frame!")
+                    Log.verbose?.message("Got first frame!")
 
-                    print("Finished loading")
+                    Log.verbose?.message("Finished loading")
 
                     DispatchQueue.main.async(execute: {
                         hud.hide(animated: true)

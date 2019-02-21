@@ -11,6 +11,7 @@ import Foundation
 import Shared
 import os
 import UIKit
+import CleanroomLogger
 
 private let kLocationMaximumAge: TimeInterval = 10.0
 
@@ -60,13 +61,13 @@ class RegionManager: NSObject {
         self.lastLocationDate = Current.date()
         var trig = trigger
         guard let zone = zones.zoneForRegion(region) else {
-            print("Zone ID \(region.identifier) doesn't exist in Realm, syncing monitored regions now")
+            Log.warning?.message("Zone ID \(region.identifier) doesn't exist in Realm, syncing monitored regions now")
             syncMonitoredRegions()
             return
         }
 
         // Do nothing in case we don't want to trigger an enter event
-        if zone.TrackingEnabled == false { print("Tracking enabled is false"); return }
+        if zone.TrackingEnabled == false { Log.verbose?.message("Tracking not enabled for \(zone.ID)"); return }
 
         if region is CLBeaconRegion {
             if trigger == .RegionEnter { trig = .BeaconRegionEnter }
@@ -89,7 +90,7 @@ class RegionManager: NSObject {
         guard zone.inRegion != inRegion else {
             let noChangeMessage = "Not updating \(zone.debugDescription) because DB already believes state " +
             "to be correct. (\(zone.inRegion ? "In" : "out")). Trigger: \(trigger)"
-            print(noChangeMessage)
+            Log.verbose?.message(noChangeMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: noChangeMessage, type: .locationUpdate))
             self.endBackgroundTaskWithName(taskName)
             return
@@ -102,7 +103,7 @@ class RegionManager: NSObject {
 
         guard trig != .BeaconRegionExit else {
             let noChangeMessage = "Not updating \(zone.debugDescription) because iBeacon exits are ignored"
-            print(noChangeMessage)
+            Log.verbose?.message(noChangeMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: noChangeMessage, type: .locationUpdate))
             self.endBackgroundTaskWithName(taskName)
             return
@@ -121,7 +122,7 @@ class RegionManager: NSObject {
             let event = ClientEvent(text: "Failed to send location after region \(eventName). SSID: \(SSID)",
                 type: .locationUpdate)
             Current.clientEventStore.addEvent(event)
-            print("Error sending location after region trigger event: \(error)")
+            Log.error?.message("Error sending location after region trigger event: \(error)")
         }
     }
 
@@ -139,7 +140,7 @@ class RegionManager: NSObject {
             let removeZone = {
                 let event = ClientEvent(text: "Stopping monitoring of region \(region.identifier)",
                     type: .locationUpdate)
-                print(event.text)
+                Log.verbose?.message(event.text)
                 Current.clientEventStore.addEvent(event)
                 self?.locationManager.stopMonitoring(for: region)
             }
@@ -178,7 +179,7 @@ class RegionManager: NSObject {
 
         // start monitoring for all existing regions
         unmonitoredZones.forEach { [weak self] zone in
-            print("Starting monitoring of zone \(zone)")
+            Log.verbose?.message("Starting monitoring of zone \(zone)")
             let event = ClientEvent(text: "Monitoring: \(zone.debugDescription)", type: .unknown)
             Current.clientEventStore.addEvent(event)
             self?.startMonitoring(zone: zone)
@@ -188,7 +189,7 @@ class RegionManager: NSObject {
     func checkIfInsideAnyRegions(location: CLLocationCoordinate2D) -> Set<CLRegion> {
         return self.locationManager.monitoredRegions.filter { (region) -> Bool in
             if let circRegion = region as? CLCircularRegion {
-                // print("Checking", circRegion.identifier)
+                // Log.verbose?.message("Checking", circRegion.identifier)
                 return circRegion.contains(location)
             }
             return false
@@ -214,13 +215,13 @@ extension RegionManager: CLLocationManagerDelegate {
         // Only process visit entrances (ignoring departures) that are recent enough.
         guard visit.departureDate == Date.distantFuture,
             abs(visit.arrivalDate.timeIntervalSinceNow) < kLocationMaximumAge else {
-            print("Ignoring stale visit")
+            Log.warning?.message("Ignoring stale visit")
             return
         }
 
         let location = CLLocation(latitude: visit.coordinate.latitude, longitude: visit.coordinate.longitude)
         api.submitLocation(updateType: .Visit, location: location,
-                           zone: nil).catch { print("Error submitting location: \($0)" )}
+                           zone: nil).catch { Log.error?.message("Error submitting location: \($0)" )}
         self.lastLocationDate = Current.date()
     }
 
@@ -230,19 +231,19 @@ extension RegionManager: CLLocationManagerDelegate {
         }
 
         if Current.isPerformingSingleShotLocationQuery {
-            print("NOT accepting region manager update as one shot location service is active")
+            Log.warning?.message("NOT accepting region manager update as one shot location service is active")
             return
         }
 
         guard let last = locations.last else {
-            print("Does not have a location")
+            Log.warning?.message("Does not have a location")
             return
         }
 
         guard last.horizontalAccuracy <= 200 else {
             let inaccurateLocationMessage = "Ignoring location with accuracy over threshold." +
             "Accuracy: \(last.horizontalAccuracy)m"
-            print(inaccurateLocationMessage)
+            Log.warning?.message(inaccurateLocationMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: inaccurateLocationMessage,
                                                           type: .locationUpdate))
             return
@@ -250,12 +251,12 @@ extension RegionManager: CLLocationManagerDelegate {
 
         let locationAge = Current.date().timeIntervalSince(last.timestamp)
         if locationAge > kLocationMaximumAge {
-            print("Location is older than threshold.")
+            Log.warning?.message("Location is older than threshold.")
             return
         }
 
         api.submitLocation(updateType: .SignificantLocationUpdate, location: last,
-                           zone: nil).catch { print("Error submitting location: \($0)" )}
+                           zone: nil).catch { Log.error?.message("Error submitting location: \($0)" )}
 
         self.lastLocation = last
         self.lastLocationDate = Current.date()
@@ -271,13 +272,13 @@ extension RegionManager: CLLocationManagerDelegate {
                 realm.add(locErr)
             }
 
-            print("Received CLError:", clErr.debugDescription)
+            Log.warning?.message("Received CLError: \(clErr)")
             if clErr.code == CLError.locationUnknown {
                 // locationUnknown just means that GPS may be taking an extra moment, so don't throw an error.
                 return
             }
         } else {
-            print("Received non-CLError when we only expected CLError:", error.localizedDescription)
+            Log.error?.message("Received non-CLError when we only expected CLError: \(error)")
         }
     }
 
@@ -287,6 +288,7 @@ extension RegionManager: CLLocationManagerDelegate {
         + "Error: \(error.localizedDescription)"
         let event = ClientEvent(text: errorText, type: .locationUpdate)
         Current.clientEventStore.addEvent(event)
+        Log.error?.message("Region monitoring failed: error: \(error), region: \(region.debugDescription)")
     }
 
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
@@ -294,13 +296,13 @@ extension RegionManager: CLLocationManagerDelegate {
             return
         }
 
-        print("Started monitoring region", region.identifier, zone)
+        Log.verbose?.message("Started monitoring region: \(region), zone: \(zone)")
         locationManager.requestState(for: region)
     }
 
     func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState,
                          for region: CLRegion) {
-        print("\(state.description) region", region.identifier)
+        Log.verbose?.message("\(state.description) region: \(region)")
         guard state != .unknown else {
             return
         }

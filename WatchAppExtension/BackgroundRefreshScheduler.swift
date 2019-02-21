@@ -10,6 +10,7 @@
 
 import Foundation
 import WatchKit
+import CleanroomLogger
 
 /// This class is responsible with scheduling the next background refreshes. It will trigger a
 /// background refresh as configured by the refreshRate property, the exact refresh moment will
@@ -43,11 +44,11 @@ class BackgroundRefreshScheduler {
                                                        userInfo: nil) { (error: Error?) in
 
             if logRefreshTime {
-                print("Scheduled next background refresh at \(self.formatted(scheduleTime: scheduleTime))")
+                Log.verbose?.message("Scheduled next background refresh at \(self.formatted(scheduleTime))")
             }
 
             if let error = error {
-                print("Error occurred while scheduling background refresh: \(error.localizedDescription)")
+                Log.error?.message("Error occurred while scheduling background refresh: \(error)")
             }
         }
     }
@@ -75,7 +76,7 @@ class BackgroundRefreshScheduler {
         return scheduleTime
     }
 
-    private func formatted(scheduleTime: Date) -> String {
+    private func formatted(_ scheduleTime: Date) -> String {
         let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "HH:mm"
         return timeFormatter.string(from: scheduleTime)

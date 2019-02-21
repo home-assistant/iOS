@@ -7,6 +7,7 @@
 //
 
 import RealmSwift
+import CleanroomLogger
 
 extension Realm {
     /// An in-memory data store, intended to be used in tests.
@@ -33,13 +34,15 @@ extension Realm {
                 try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true,
                                                 attributes: attributes)
             } catch {
-                print("Error while attempting to create data store URL: \(error)")
+                Log.error?.message("Error while attempting to create data store URL: \(error)")
             }
         }
 
         let storeURL =  directoryURL.appendingPathComponent("store.realm", isDirectory: false)
 
-        print("Realm is stored at", storeURL.description)
+        #if targetEnvironment(simulator)
+            Log.info?.message("Realm is stored at \(storeURL.description)")
+        #endif
 
         let config = Realm.Configuration(fileURL: storeURL, schemaVersion: 4,
                                          migrationBlock: nil, deleteRealmIfMigrationNeeded: true)

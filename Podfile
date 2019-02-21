@@ -29,6 +29,7 @@ def shared_pods
     pod 'PromiseKit', '6.4.1'
     pod 'ReachabilitySwift'
     pod 'RealmSwift', '3.11.0'
+    pod 'Reqres'
 end
 
 target 'HomeAssistant' do
@@ -48,6 +49,7 @@ target 'HomeAssistant' do
     pod 'SwiftLint', '0.27.0'
     pod 'UIColor_Hex_Swift'
     pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'Swift4.2'
+    pod 'ZIPFoundation', '~> 0.9'
 
     target 'HomeAssistantTests' do
       inherit! :search_paths

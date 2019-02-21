@@ -20,6 +20,8 @@ import UserNotifications
 import Intents
 import CoreMotion
 import Reachability
+import CleanroomLogger
+import Reqres
 
 private let keychain = Constants.Keychain
 
@@ -81,8 +83,10 @@ public class HomeAssistantAPI {
     var tokenManager: TokenManager?
     public var connectionInfo: ConnectionInfo
 
-    /// Initialzie an API object with an authenticated tokenManager.
+    /// Initialize an API object with an authenticated tokenManager.
     public init(connectionInfo: ConnectionInfo, authenticationMethod: AuthenticationMethod) {
+        Current.configureLogging()
+
         self.connectionInfo = connectionInfo
 
         switch authenticationMethod {
@@ -168,16 +172,16 @@ public class HomeAssistantAPI {
                 _ = self.GetStates().done { entities in
                         self.storeEntities(entities: entities)
                         if self.loadedComponents.contains("ios") {
-                            print("iOS component loaded, attempting identify")
+                            Log.verbose?.message("iOS component loaded, attempting identify")
                             _ = self.identifyDevice()
                         }
 
                         seal.fulfill(config)
                     }.catch({ (error) in
-                        print("Error when getting states!", error)
+                        Log.error?.message("Error when getting states! \(error)")
                     })
             }.catch {error in
-                print("Error at launch!", error)
+                Log.error?.message("Error at launch! \(error)")
                 seal.reject(error)
             }
 
@@ -239,7 +243,7 @@ public class HomeAssistantAPI {
                                 seal.reject(APIError.invalidResponse)
                             }
                         case .failure(let error):
-                            print("Error on GetManifestJSON() request", error)
+                            Log.error?.message("Error on GetManifestJSON() request: \(error)")
                             seal.reject(error)
                         }
                 }
@@ -292,7 +296,7 @@ public class HomeAssistantAPI {
                             seal.fulfill(msg)
                         }
                     case .failure(let error):
-                        print("Error when attemping to CreateEvent():", error)
+                        Log.error?.message("Error when attemping to CreateEvent(): \(error)")
                         seal.reject(error)
                     }
             }
@@ -322,15 +326,15 @@ public class HomeAssistantAPI {
 
             if needsAuth {
                 if !url.absoluteString.hasPrefix(self.connectionInfo.activeURL.absoluteString) {
-                    print("URL does not contain base URL, prepending base URL to", url.absoluteString)
+                    Log.verbose?.message("URL does not contain base URL, prepending base URL to \(url.absoluteString)")
                     finalURL = self.connectionInfo.activeURL.appendingPathComponent(url.absoluteString)
                 }
 
-                print("Data download needs auth!")
+                Log.verbose?.message("Data download needs auth!")
             }
 
             guard let downloadPath = self.getDownloadDataPath(finalURL) else {
-                print("Unable to get download path!")
+                Log.error?.message("Unable to get download path!")
                 seal.reject(NSError(domain: "io.robbie.HomeAssistant", code: 500, userInfo: nil))
                 return
             }
@@ -382,13 +386,13 @@ public class HomeAssistantAPI {
                                     errorUserInfo["errorMessage"] = errMessage
                                 }
                             }
-                            print("Error on CallService() request:", afError)
+                            Log.error?.message("Error on CallService() request: \(afError)")
                             let customError = NSError(domain: Bundle.main.bundleIdentifier!,
                                                       code: afError.responseCode!,
                                                       userInfo: errorUserInfo)
                             seal.reject(customError)
                         } else {
-                            print("Error on CallService() request", error)
+                            Log.error?.message("Error on CallService() request: \(error)")
                             seal.reject(error)
                         }
                     }
@@ -409,7 +413,7 @@ public class HomeAssistantAPI {
                             seal.fulfill(strResponse)
                         }
                     case .failure(let error):
-                        print("Error when attemping to RenderTemplate()", error)
+                        Log.error?.message("Error when attemping to RenderTemplate(): \(error)")
                         seal.reject(error)
                     }
             }
@@ -428,7 +432,7 @@ public class HomeAssistantAPI {
                             seal.fulfill(imgResponse)
                         }
                     case .failure(let error):
-                        print("Error when attemping to GetCameraImage()", error)
+                        Log.error?.message("Error when attemping to GetCameraImage(): \(error)")
                         seal.reject(error)
                     }
             }
@@ -496,12 +500,11 @@ public class HomeAssistantAPI {
                             let retErr = NSError(domain: Bundle.main.bundleIdentifier!,
                                                  code: 404,
                                                  userInfo: ["message": "json was nil!"])
-                            print("Error when attemping to registerDeviceForPush(), json was nil!:",
-                                  retErr.localizedDescription)
+                            Log.error?.message("Error during registerDeviceForPush(), json was nil!: \(retErr)")
                             seal.reject(retErr)
                         }
                     case .failure(let error):
-                        print("Error when attemping to registerDeviceForPush():", error)
+                        Log.error?.message("Error when attemping to registerDeviceForPush(): \(error)")
                         seal.reject(error)
                     }
             }
@@ -668,8 +671,6 @@ public class HomeAssistantAPI {
         let realm = Current.realm()
 
         for entity in storeableEntities {
-            // print("Storing \(entity.ID)")
-
             if entity.Domain == "zone", let zone = entity as? Zone {
                 let realm = Current.realm()
                 if let existingZone = realm.object(ofType: RLMZone.self, forPrimaryKey: zone.ID) {
@@ -710,24 +711,27 @@ public class HomeAssistantAPI {
             headers["X-HA-Access"] = password
         }
 
-        let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = headers
-        configuration.timeoutIntervalForRequest = 10 // seconds
-        return Alamofire.SessionManager(configuration: configuration)
+        let reqresConfig = Reqres.defaultSessionConfiguration()
+        reqresConfig.httpAdditionalHeaders = headers
+        reqresConfig.timeoutIntervalForRequest = 10 // seconds
+        let manager = Alamofire.SessionManager(configuration: reqresConfig)
+        Reqres.sessionDelegate = manager.delegate
+        Reqres.logger = ReqresCleanroom()
+        return manager
     }
 
     private func configureBasicAuthWithKeychain(_ basicAuthKeychain: Keychain) {
         if let basicUsername = basicAuthKeychain["basicAuthUsername"],
             let basicPassword = basicAuthKeychain["basicAuthPassword"] {
             self.manager.delegate.sessionDidReceiveChallenge = { session, challenge in
-                print("Received basic auth challenge")
+                Log.verbose?.message("Received basic auth challenge")
 
                 let authMethod = challenge.protectionSpace.authenticationMethod
 
                 guard authMethod == NSURLAuthenticationMethodDefault ||
                     authMethod == NSURLAuthenticationMethodHTTPBasic ||
                     authMethod == NSURLAuthenticationMethodHTTPDigest else {
-                        print("Not handling auth method", authMethod)
+                        Log.verbose?.message("Not handling auth method \(authMethod)")
                         return (.performDefaultHandling, nil)
                 }
 
@@ -830,12 +834,12 @@ public class HomeAssistantAPI {
                     self.callService(domain: "device_tracker", service: "see", serviceData: payloadDict,
                                      shouldLog: false)
                 }.done { _ in
-                    print("Device seen!")
+                    Log.verbose?.message("Device seen!")
                     self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: payloadDict)
             }
 
             promise.catch { err in
-                print("Error when updating location!", err)
+                Log.error?.message("Error when updating location! \(err)")
             }
 
             return promise
@@ -848,7 +852,7 @@ public class HomeAssistantAPI {
         if let trigger = trigger {
             updateTrigger = trigger
         }
-        print("getAndSendLocation called via", String(describing: updateTrigger))
+        Log.verbose?.message("getAndSendLocation called via \(String(describing: updateTrigger))")
 
         return Promise { seal in
             Current.isPerformingSingleShotLocationQuery = true

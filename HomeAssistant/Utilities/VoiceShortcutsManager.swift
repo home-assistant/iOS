@@ -8,6 +8,8 @@
 
 import Foundation
 import Intents
+import Shared
+import CleanroomLogger
 
 @available(iOS 12, *)
 public class VoiceShortcutsManager {
@@ -31,7 +33,7 @@ public class VoiceShortcutsManager {
         INVoiceShortcutCenter.shared.getAllVoiceShortcuts { (voiceShortcutsFromCenter, error) in
             guard let voiceShortcutsFromCenter = voiceShortcutsFromCenter else {
                 if let error = error {
-                    print("Failed to fetch voice shortcuts with error: \(error.localizedDescription)")
+                    Log.error?.message("Failed to fetch voice shortcuts with error: \(error)")
                 }
                 return
             }
