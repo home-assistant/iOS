@@ -297,7 +297,7 @@
 "watch.configurator.rows.style.title" = "Style";
 "watch.configurator.rows.template.selector_title" = "Choose a template";
 "watch.configurator.rows.template.title" = "Template";
-"watch.configurator.sections.gauge.footer" = "The gague to display in the complication.";
+"watch.configurator.sections.gauge.footer" = "The gauge to display in the complication.";
 "watch.configurator.sections.gauge.header" = "Gauge";
 "watch.configurator.sections.icon.footer" = "The image to display in the complication.";
 "watch.configurator.sections.icon.header" = "Icon";
@@ -429,7 +429,7 @@
 "watch.labels.complication_text_areas.inner.label" = "Inner";
 "watch.labels.complication_text_areas.inside_ring.description" = "The text to display in the ring of the complication.";
 "watch.labels.complication_text_areas.inside_ring.label" = "Inside Ring";
-"watch.labels.complication_text_areas.leading.description" = "The text to display on the leading edge of the gague.";
+"watch.labels.complication_text_areas.leading.description" = "The text to display on the leading edge of the gauge.";
 "watch.labels.complication_text_areas.leading.label" = "Leading";
 "watch.labels.complication_text_areas.line1.description" = "The text to display on the top line of the complication.";
 "watch.labels.complication_text_areas.line1.label" = "Line 1";
