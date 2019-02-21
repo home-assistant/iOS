@@ -1034,6 +1034,21 @@ internal enum L10n {
         internal static let header = L10n.tr("Localizable", "settings_details.notifications.categories.header")
       }
 
+      internal enum ImportLegacySettings {
+
+        internal enum Alert {
+          /// The legacy push notification categories and actions have been imported.
+          internal static let message = L10n.tr("Localizable", "settings_details.notifications.import_legacy_settings.alert.message")
+          /// Legacy settings imported
+          internal static let title = L10n.tr("Localizable", "settings_details.notifications.import_legacy_settings.alert.title")
+        }
+
+        internal enum Button {
+          /// Import legacy push settings
+          internal static let title = L10n.tr("Localizable", "settings_details.notifications.import_legacy_settings.button.title")
+        }
+      }
+
       internal enum NewCategory {
         /// New Category
         internal static let title = L10n.tr("Localizable", "settings_details.notifications.new_category.title")

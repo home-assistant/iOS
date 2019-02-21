@@ -89,6 +89,12 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
             }
         }
 
+        NotificationIdentifierRow.defaultCellUpdate = { cell, row in
+            if !row.isValid {
+                cell.textLabel?.textColor = .red
+            }
+        }
+
         let existingActions = realm.objects(NotificationAction.self)
 //        let existingActions = objs.sorted(byKeyPath: "Order")
 
@@ -270,6 +276,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
     func save(_ sender: Any) {
         print("Go back hit, check for validation")
 
+        print("Validate result", self.form.validate())
         if self.form.validate().count == 0 {
             print("Category form is valid, calling dismiss callback!")
 
@@ -291,6 +298,18 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
     @objc
     func preview(_ sender: Any) {
         print("Preview hit")
+        UNUserNotificationCenter.current().getNotificationCategories { (cats) in
+            print("Current cats", cats)
+        }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Test notification"
+        content.body = "This is a test notification for the \(self.category.Name) notification category"
+        content.sound = .default
+        content.categoryIdentifier = self.category.Identifier
+
+        UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: self.category.Identifier,
+                                                                     content: content, trigger: nil))
     }
 
 }

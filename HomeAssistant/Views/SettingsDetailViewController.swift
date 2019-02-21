@@ -216,6 +216,21 @@ class SettingsDetailViewController: FormViewController {
                         }
                 }
 
+                +++ Section()
+                <<< ButtonRow {
+                        $0.title = L10n.SettingsDetails.Notifications.ImportLegacySettings.Button.title
+                    }.onCellSelection {_, _ in
+                        MigratePushSettingsToLocal()
+                        // swiftlint:disable:next line_length
+                        let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.ImportLegacySettings.Alert.title,
+                                                      // swiftlint:disable:next line_length
+                                                      message: L10n.SettingsDetails.Notifications.ImportLegacySettings.Alert.message,
+                                                      preferredStyle: UIAlertController.Style.alert)
+                        alert.addAction(UIAlertAction(title: L10n.okLabel,
+                                                      style: UIAlertAction.Style.default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                    }
+
                 +++ Section(header: "", footer: L10n.SettingsDetails.Notifications.SoundsSection.footer)
                 <<< ButtonRow {
                     $0.title = L10n.SettingsDetails.Notifications.SoundsSection.Button.title

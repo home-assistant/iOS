@@ -225,6 +225,14 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
     @objc
     func preview(_ sender: Any) {
         print("Preview hit")
+//        let content = UNMutableNotificationContent()
+//        content.title = "Test notification"
+//        content.body = "This is a test notification for the \(self.action.Title) notification action inside the \(self.action.Category) category"
+//        content.sound = .default
+//        content.categoryIdentifier = self.category.Identifier
+//
+//        UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: self.category.Identifier,
+//                                                                     content: content, trigger: nil))
     }
 
 }

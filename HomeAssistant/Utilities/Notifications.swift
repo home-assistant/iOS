@@ -15,6 +15,8 @@ func ProvideNotificationCategoriesToSystem() {
     let realm = Current.realm()
     let categories = Set<UNNotificationCategory>(realm.objects(NotificationCategory.self).map({ $0.category }))
 
+    print("Providing", categories.count, "categories to system", categories)
+
     UNUserNotificationCenter.current().setNotificationCategories(categories)
 }
 
@@ -48,7 +50,7 @@ func MigratePushSettingsToLocal() {
 
                         // swiftlint:disable:next force_try
                         try! realm.write {
-                            realm.add(localAction)
+                            realm.add(localAction, update: true)
                             localCategory.Actions.append(localAction)
                         }
                     }
@@ -56,7 +58,7 @@ func MigratePushSettingsToLocal() {
 
                 // swiftlint:disable:next force_try
                 try! realm.write {
-                    realm.add(localCategory)
+                    realm.add(localCategory, update: true)
                 }
             }
         } else {
