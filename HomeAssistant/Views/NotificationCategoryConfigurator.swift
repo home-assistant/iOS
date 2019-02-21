@@ -20,23 +20,22 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
 
-    var settings: UNNotificationSettings?
     var category: NotificationCategory = NotificationCategory()
     var newCategory: Bool = true
-    var allActions: [String: NotificationAction] = [:]
     var shouldSave: Bool = false
 
-    // Notifications are allowed a max of 4 actions if using Alerts and 2 if using Banner
-    private var maxActionsForCategory = 4
-    private let defaultMultivalueOptions: MultivaluedOptions = [.Reorder, .Insert, .Delete]
+    private var maxActionsForCategory = 10
+    private var defaultMultivalueOptions: MultivaluedOptions = [.Reorder, .Insert, .Delete]
     private var addButtonRow: ButtonRow = ButtonRow()
     private let realm = Current.realm()
 
-    convenience init(category: NotificationCategory?, settings: UNNotificationSettings?) {
+    convenience init(category: NotificationCategory?) {
         self.init()
-        self.settings = settings
         if let category = category {
             self.category = category
+            if self.category.Actions.count >= maxActionsForCategory {
+                defaultMultivalueOptions = [.Reorder, .Delete]
+            }
             self.newCategory = false
         }
     }
@@ -95,9 +94,6 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                 cell.textLabel?.textColor = .red
             }
         }
-
-        let existingActions = realm.objects(NotificationAction.self)
-//        let existingActions = objs.sorted(byKeyPath: "Order")
 
         var settingsFooter = L10n.NotificationsConfigurator.Settings.footer
 
@@ -170,22 +166,10 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                 }
         }
 
-        // Default footer if we can't get Notification Settings for some reason
-        var footer = L10n.NotificationsConfigurator.Category.Rows.Actions.Footer.default
-
-        if let settings = self.settings {
-            if settings.alertStyle == .alert {
-                footer = L10n.NotificationsConfigurator.Category.Rows.Actions.Footer.Style.alert
-            } else if settings.alertStyle == .banner {
-                maxActionsForCategory = 2
-                footer = L10n.NotificationsConfigurator.Category.Rows.Actions.Footer.Style.banner
-            }
-        }
-
         self.form
             +++ MultivaluedSection(multivaluedOptions: defaultMultivalueOptions,
                                    header: L10n.NotificationsConfigurator.Category.Rows.Actions.header,
-                                   footer: footer) { section in
+                                   footer: L10n.NotificationsConfigurator.Category.Rows.Actions.footer) { section in
                     section.multivaluedRowToInsertAt = { index in
 
                         if index >= self.maxActionsForCategory - 1 {
@@ -211,7 +195,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                         return self.addButtonRow
                     }
 
-                    for action in existingActions {
+                    for action in self.category.Actions {
                         section <<< self.getActionRow(action)
                     }
                 }
@@ -225,9 +209,18 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at indexes: [IndexPath]) {
         super.rowsHaveBeenRemoved(rows, at: indexes)
         if let index = indexes.first?.section, let section = form.allSections[index] as? MultivaluedSection {
+
+            let deletedIDs = rows.compactMap { $0.tag }
+            let realm = Realm.live()
+
+            // swiftlint:disable:next force_try
+            try! realm.write {
+                realm.delete(realm.objects(NotificationAction.self).filter("Identifier IN %@", deletedIDs))
+            }
+
             if section.count < maxActionsForCategory {
                 section.multivaluedOptions = self.defaultMultivalueOptions
-                self.addButtonRow.hidden = false // or could
+                self.addButtonRow.hidden = false
                 self.addButtonRow.evaluateHidden()
             }
         }
@@ -259,9 +252,8 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                     // swiftlint:disable:next force_try
                     try! self.realm.write {
                         self.realm.add(vc.action, update: true)
+                        self.category.Actions.append(vc.action)
                     }
-
-                    self.category.Actions.append(vc.action)
                 }
 
             })
@@ -305,6 +297,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         content.body = "This is a test notification for the \(self.category.Name) notification category"
         content.sound = .default
         content.categoryIdentifier = self.category.Identifier
+        content.userInfo = ["preview": true]
 
         UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: self.category.Identifier,
                                                                      content: content, trigger: nil))

@@ -445,24 +445,14 @@ internal enum L10n {
       internal enum Rows {
 
         internal enum Actions {
+          /// Categories can have a maximum of 10 actions.
+          internal static let footer = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.footer")
           /// Actions
           internal static let header = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.header")
 
           internal enum AddRow {
             /// Add
             internal static let title = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.add_row.title")
-          }
-
-          internal enum Footer {
-            /// Categories can have a maximum of 4 actions. Banner notifications will only show 2. Change your notification settings to Alert in order to add up to 4.
-            internal static let `default` = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.footer.default")
-
-            internal enum Style {
-              /// Categories can have a maximum of 4 actions. You are currently using the Alert style which allows 4 actions.
-              internal static let alert = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.footer.style.alert")
-              /// Categories can have a maximum of 4 actions. You are currently using the Banner style which allows 2 actions. Change your notification settings to Alert in order to add up to 4.
-              internal static let banner = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.footer.style.banner")
-            }
           }
         }
 
@@ -1356,7 +1346,7 @@ internal enum L10n {
       internal enum Sections {
 
         internal enum Gauge {
-          /// The gague to display in the complication.
+          /// The gauge to display in the complication.
           internal static let footer = L10n.tr("Localizable", "watch.configurator.sections.gauge.footer")
           /// Gauge
           internal static let header = L10n.tr("Localizable", "watch.configurator.sections.gauge.header")
@@ -1848,7 +1838,7 @@ internal enum L10n {
         }
 
         internal enum Leading {
-          /// The text to display on the leading edge of the gague.
+          /// The text to display on the leading edge of the gauge.
           internal static let description = L10n.tr("Localizable", "watch.labels.complication_text_areas.leading.description")
           /// Leading
           internal static let label = L10n.tr("Localizable", "watch.labels.complication_text_areas.leading.label")

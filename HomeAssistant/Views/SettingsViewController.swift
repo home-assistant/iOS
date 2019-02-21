@@ -590,11 +590,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 self.present(alert, animated: true, completion: nil)
             }
         <<< ButtonRow {
-                $0.title = "Import legacy push settings"
-            }.onCellSelection {_, _ in
-                MigratePushSettingsToLocal()
-        }
-        <<< ButtonRow {
             $0.title = "Test Critical Alerts"
             }.onCellSelection {_, _ in
                 let content = UNMutableNotificationContent()

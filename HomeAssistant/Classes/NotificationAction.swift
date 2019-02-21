@@ -24,6 +24,9 @@ public class NotificationAction: Object {
     @objc dynamic var TextInputButtonTitle: String?
     @objc dynamic var TextInputPlaceholder: String?
 
+    let categories = LinkingObjects(fromType: NotificationCategory.self, property: "Actions")
+    var Category: NotificationCategory? { return categories.first }
+
     override public static func primaryKey() -> String? {
         return "Identifier"
     }

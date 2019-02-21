@@ -167,12 +167,6 @@ class SettingsDetailViewController: FormViewController {
         case "notifications":
             self.title = L10n.SettingsDetails.Notifications.title
 
-            var notificationSettings: UNNotificationSettings?
-
-            UNUserNotificationCenter.current().getNotificationSettings { settings in
-                notificationSettings = settings
-            }
-
             self.form
                 +++ Section()
                 <<< SwitchRow("confirmBeforeOpeningUrl") {
@@ -208,12 +202,13 @@ class SettingsDetailViewController: FormViewController {
                     +++ MultivaluedSection(multivaluedOptions: mvOpts,
                                            header: L10n.SettingsDetails.Notifications.Categories.header,
                                            footer: "") { section in
+                        section.tag = "notification_categories"
                         section.multivaluedRowToInsertAt = { index in
-                            return self.getNotificationCategoryRow(nil, notificationSettings)
+                            return self.getNotificationCategoryRow(nil)
                         }
 
                         for category in categories {
-                            section <<< getNotificationCategoryRow(category, notificationSettings)
+                            section <<< getNotificationCategoryRow(category)
                         }
                 }
 
@@ -569,6 +564,7 @@ class SettingsDetailViewController: FormViewController {
                 +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete, .Reorder],
                                        header: "",
                                        footer: "Actions are used in the Today widget and Apple Watch app") { section in
+                                        section.tag = "actions"
                                         section.multivaluedRowToInsertAt = { index in
                                             return self.getActionRow(nil)
                                         }
@@ -585,12 +581,21 @@ class SettingsDetailViewController: FormViewController {
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at indexes: [IndexPath]) {
         super.rowsHaveBeenRemoved(rows, at: indexes)
 
-        let deletedIDs = rows.compactMap { $0.tag }
+        Log.verbose?.message("Rows removed \(rows), \(rows.map { $0.section?.tag })")
 
+        let deletedIDs = rows.compactMap { $0.tag }
         let realm = Realm.live()
-        // swiftlint:disable:next force_try
-        try! realm.write {
-            realm.delete(realm.objects(Action.self).filter("ID IN %@", deletedIDs))
+
+        if (rows.first as? ButtonRowWithPresent<NotificationCategoryConfigurator>) != nil {
+            // swiftlint:disable:next force_try
+            try! realm.write {
+                realm.delete(realm.objects(NotificationCategory.self).filter("Identifier IN %@", deletedIDs))
+            }
+        } else if (rows.first as? ButtonRowWithPresent<ActionConfigurator>) != nil {
+            // swiftlint:disable:next force_try
+            try! realm.write {
+                realm.delete(realm.objects(Action.self).filter("ID IN %@", deletedIDs))
+            }
         }
     }
 
@@ -603,7 +608,7 @@ class SettingsDetailViewController: FormViewController {
         self.dismiss(animated: true, completion: nil)
     }
 
-    func getNotificationCategoryRow(_ category: NotificationCategory?, _ settings: UNNotificationSettings?) ->
+    func getNotificationCategoryRow(_ category: NotificationCategory?) ->
         ButtonRowWithPresent<NotificationCategoryConfigurator> {
         var identifier = "new_category_"+UUID().uuidString
         var title = L10n.SettingsDetails.Notifications.NewCategory.title
@@ -617,7 +622,7 @@ class SettingsDetailViewController: FormViewController {
             $0.tag = identifier
             $0.title = title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                return NotificationCategoryConfigurator(category: category, settings: settings)
+                return NotificationCategoryConfigurator(category: category)
             }, onDismiss: { vc in
                 _ = vc.navigationController?.popViewController(animated: true)
 

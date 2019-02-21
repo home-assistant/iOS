@@ -98,9 +98,7 @@
 "notifications_configurator.action.text_input.title" = "Text Input";
 "notifications_configurator.category.navigation_bar.title" = "Category Configurator";
 "notifications_configurator.category.rows.actions.add_row.title" = "Add";
-"notifications_configurator.category.rows.actions.footer.default" = "Categories can have a maximum of 4 actions. Banner notifications will only show 2. Change your notification settings to Alert in order to add up to 4.";
-"notifications_configurator.category.rows.actions.footer.style.alert" = "Categories can have a maximum of 4 actions. You are currently using the Alert style which allows 4 actions.";
-"notifications_configurator.category.rows.actions.footer.style.banner" = "Categories can have a maximum of 4 actions. You are currently using the Banner style which allows 2 actions. Change your notification settings to Alert in order to add up to 4.";
+"notifications_configurator.category.rows.actions.footer" = "Categories can have a maximum of 10 actions.";
 "notifications_configurator.category.rows.actions.header" = "Actions";
 "notifications_configurator.category.rows.category_summary.default" = "%%u notifications in %%@";
 "notifications_configurator.category.rows.category_summary.footer" = "A format string for the summary description used when the system groups the category’s notifications. You can optionally uses '%%u' to show the number of notifications in the group and '%%@' to show the summary argument provided in the push payload.";
