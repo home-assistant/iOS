@@ -89,7 +89,7 @@
 "notifications_configurator.action.rows.authentication_required.footer" = "When the user selects an action with this option, the system prompts the user to unlock the device. After unlocking, Home Assistant will be notified of the selected action.";
 "notifications_configurator.action.rows.authentication_required.title" = "Authentication Required";
 "notifications_configurator.action.rows.destructive.footer" = "When enabled, the action button is displayed with special highlighting to indicate that it performs a destructive task.";
-"notifications_configurator.action.rows.destructive.title" = "Desctructive";
+"notifications_configurator.action.rows.destructive.title" = "Destructive";
 "notifications_configurator.action.rows.foreground.footer" = "Enabling this will cause the app to launch if it's in the background when tapping a notification";
 "notifications_configurator.action.rows.foreground.title" = "Launch app";
 "notifications_configurator.action.rows.text_input_button_title.title" = "Button Title";

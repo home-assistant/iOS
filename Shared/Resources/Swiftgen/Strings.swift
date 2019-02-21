@@ -402,7 +402,7 @@ internal enum L10n {
         internal enum Destructive {
           /// When enabled, the action button is displayed with special highlighting to indicate that it performs a destructive task.
           internal static let footer = L10n.tr("Localizable", "notifications_configurator.action.rows.destructive.footer")
-          /// Desctructive
+          /// Destructive
           internal static let title = L10n.tr("Localizable", "notifications_configurator.action.rows.destructive.title")
         }
 
