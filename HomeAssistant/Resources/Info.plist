@@ -372,6 +372,17 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeMarkLocation</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>SEND_LOCATION_APP_SHORTCUT_TITLE</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>sendLocation</string>
+		</dict>
+	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

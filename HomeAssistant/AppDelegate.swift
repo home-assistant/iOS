@@ -235,6 +235,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem,
+                     completionHandler: @escaping (Bool) -> Void) {
+        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+            completionHandler(false)
+            return
+        }
+
+        let name = shortcutItem.localizedTitle
+        let actionPromise = api.handleAction(actionID: shortcutItem.type, actionName: name,
+                                             source: .AppShortcut)
+
+        var promises = [actionPromise]
+
+        if shortcutItem.type == "sendLocation" {
+            promises.append(api.getAndSendLocation(trigger: .AppShortcut))
+        }
+
+        print("promises", promises)
+
+        when(fulfilled: promises).done { worked in
+            completionHandler(worked[0])
+        }.catch { error in
+            Current.Log.error("Received error from handleAction during App Shortcut: \(error)")
+            completionHandler(false)
+        }
+    }
+
     // MARK: - Private helpers
 
     // swiftlint:disable:next function_body_length

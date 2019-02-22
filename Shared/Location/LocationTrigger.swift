@@ -32,6 +32,7 @@ public enum LocationUpdateTrigger: String {
     case XCallbackURL = "X-Callback-URL"
     case Siri = "Siri"
     case Visit = "Visit"
+    case AppShortcut = "App Shortcut"
     case Unknown = "Unknown"
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
@@ -78,6 +79,9 @@ public enum LocationUpdateTrigger: String {
             body = L10n.LocationChangeNotification.XCallbackUrl.body
             identifier = "x_callback_url"
             shouldNotify = prefs.bool(forKey: "xCallbackURLLocationRequestNotifications")
+        case .AppShortcut:
+            body = L10n.LocationChangeNotification.AppShortcut.body
+            shouldNotify = false
         case .Visit:
             body = L10n.LocationChangeNotification.Visit.body
             shouldNotify = false

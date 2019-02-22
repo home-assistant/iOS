@@ -810,10 +810,10 @@ public class HomeAssistantAPI {
     }
 
     public func submitLocation(updateType: LocationUpdateTrigger, location: CLLocation?,
-                               zone: RLMZone?) -> Promise<Void> {
+                               zone: RLMZone?) -> Promise<Bool> {
 
         return self.buildLocationPayload(updateType: updateType, location: location,
-                                         zone: zone).then { payload -> Promise<Void> in
+                                         zone: zone).then { payload -> Promise<Bool> in
 
             var jsonPayload = "{\"missing\": \"payload\"}"
             if let p = payload.toJSONString(prettyPrint: false) {
@@ -834,10 +834,11 @@ public class HomeAssistantAPI {
                 }.then { _ in
                     self.callService(domain: "device_tracker", service: "see", serviceData: payloadDict,
                                      shouldLog: false)
-                }.done { _ in
+                }.then { _ -> Promise<Bool> in
                     Current.Log.verbose("Device seen!")
                     self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: payloadDict)
-            }
+                    return Promise.value(true)
+                }
 
             promise.catch { err in
                 Current.Log.error("Error when updating location! \(err)")
@@ -848,7 +849,7 @@ public class HomeAssistantAPI {
 
     }
 
-    public func getAndSendLocation(trigger: LocationUpdateTrigger?) -> Promise<Void> {
+    public func getAndSendLocation(trigger: LocationUpdateTrigger?) -> Promise<Bool> {
         var updateTrigger: LocationUpdateTrigger = .Manual
         if let trigger = trigger {
             updateTrigger = trigger
@@ -867,8 +868,8 @@ public class HomeAssistantAPI {
                 firstly {
                     self.submitLocation(updateType: updateTrigger, location: location,
                                         zone: nil)
-                    }.done { _ in
-                        seal.fulfill(())
+                    }.done { worked in
+                        seal.fulfill(worked)
                     }.catch { error in
                         seal.reject(error)
                 }

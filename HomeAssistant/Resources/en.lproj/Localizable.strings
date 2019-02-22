@@ -452,6 +452,7 @@
 "alerts.prompt.ok" = "OK";
 "location_change_notification.visit.body" = "Location updated via Visit";
 "location_change_notification.x_callback_url.body" = "Location updated via X-Callback-URL";
+"location_change_notification.app_shortcut.body" = "Location updated via App Shortcut";
 "notifications_configurator.category.preview_notification.body" = "This is a test notification for the %@ notification category";
 "notifications_configurator.category.preview_notification.title" = "Test notification";
 "notifications_configurator.category.rows.actions.footer" = "Categories can have a maximum of 10 actions.";

@@ -300,6 +300,10 @@ internal enum L10n {
   internal enum LocationChangeNotification {
     /// Location change
     internal static let title = L10n.tr("Localizable", "location_change_notification.title")
+    internal enum AppShortcut {
+      /// Location updated via App Shortcut
+      internal static let body = L10n.tr("Localizable", "location_change_notification.app_shortcut.body")
+    }
     internal enum BackgroundFetch {
       /// Current location delivery triggered via background fetch
       internal static let body = L10n.tr("Localizable", "location_change_notification.background_fetch.body")

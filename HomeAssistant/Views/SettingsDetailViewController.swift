@@ -558,8 +558,7 @@ class SettingsDetailViewController: FormViewController {
 
         case "actions":
             self.title = L10n.SettingsDetails.Actions.title
-            let objs = realm.objects(Action.self)
-            let actions = objs.sorted(byKeyPath: "Position")
+            let actions = realm.objects(Action.self).sorted(byKeyPath: "Position")
 
             self.form
                 +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete, .Reorder],
@@ -596,6 +595,10 @@ class SettingsDetailViewController: FormViewController {
             // swiftlint:disable:next force_try
             try! realm.write {
                 realm.delete(realm.objects(Action.self).filter("ID IN %@", deletedIDs))
+            }
+
+            UIApplication.shared.shortcutItems = realm.objects(Action.self).sorted(byKeyPath: "Position").map {
+                return $0.uiShortcut
             }
         }
     }
@@ -699,11 +702,14 @@ class SettingsDetailViewController: FormViewController {
                                 Current.Log.error("Error while saving to Realm!: \(error)")
                             }
 
-                            let data = Array(realm.objects(Action.self))
+                            let allActions = Array(realm.objects(Action.self).sorted(byKeyPath: "Position"))
 
-                            let message = GuaranteedMessage(identifier: "actions", content: ["data": data.toJSON()])
+                            UIApplication.shared.shortcutItems = allActions.map { $0.uiShortcut }
 
-                            Current.Log.verbose("Sending message \(message)")
+                            let message = GuaranteedMessage(identifier: "actions",
+                                                            content: ["data": allActions.toJSON()])
+
+                            Current.Log.verbose("Sending actions message \(message)")
 
                             do {
                                 try Communicator.shared.send(guaranteedMessage: message)

@@ -65,11 +65,18 @@ public class Action: Object, Mappable, NSCoding {
 
         isWriteRequired ? try? realm.commitWrite() : ()
     }
+
+    #if os(iOS)
+    var uiShortcut: UIApplicationShortcutItem {
+        return UIApplicationShortcutItem(type: self.ID, localizedTitle: self.Text)
+    }
+    #endif
 }
 
 public enum ActionSource: CaseIterable {
     case Watch
     case Widget
+    case AppShortcut // UIApplicationShortcutItem
     case Preview
 
     var description: String {
@@ -78,8 +85,10 @@ public enum ActionSource: CaseIterable {
             return "watch"
         case .Widget:
             return "widget"
+        case .AppShortcut:
+            return "appShortcut"
         case .Preview:
-            return "Preview"
+            return "preview"
         }
     }
 }
