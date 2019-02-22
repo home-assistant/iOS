@@ -510,3 +510,4 @@
 "settings.developer.lokalise.alert.not_updated.message" = "No updates";
 "settings.developer.lokalise.alert.not_updated.title" = "No localization updates were available";
 "settings.developer.lokalise.title" = "Update translations from Lokalise";
+"settings.developer.debug_strings.title" = "Debug strings";

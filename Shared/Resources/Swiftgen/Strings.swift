@@ -732,6 +732,10 @@ internal enum L10n {
           internal static let title = L10n.tr("Localizable", "settings.developer.copy_realm.alert.title")
         }
       }
+      internal enum DebugStrings {
+        /// Debug strings
+        internal static let title = L10n.tr("Localizable", "settings.developer.debug_strings.title")
+      }
       internal enum ExportLogFiles {
         /// Export log files
         internal static let title = L10n.tr("Localizable", "settings.developer.export_log_files.title")

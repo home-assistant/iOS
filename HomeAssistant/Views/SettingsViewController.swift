@@ -615,6 +615,19 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }
         }
         <<< ButtonRow {
+            $0.title = L10n.Settings.Developer.DebugStrings.title
+        }.onCellSelection { _, _ in
+            prefs.set(!prefs.bool(forKey: "showTranslationKeys"), forKey: "showTranslationKeys")
+
+            Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
+
+            let alert = UIAlertController(title: L10n.okLabel, message: nil, preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+
+            self.present(alert, animated: true, completion: nil)
+        }
+        <<< ButtonRow {
             $0.title = L10n.Settings.Developer.CameraNotification.title
         }.onCellSelection { _, _ in
             self.showCameraContentExtension()

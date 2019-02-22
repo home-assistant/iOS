@@ -34,13 +34,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private(set) var regionManager: RegionManager!
 
-    // swiftlint:disable:next function_body_length
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        Lokalise.shared.setProjectID("834452985a05254348aee2.46389241",
-                                     token: "fe314d5c54f3000871ac18ccac8b62b20c143321")
-        Lokalise.shared.swizzleMainBundle()
+        self.configureLokalise()
 
         let launchingForLocation = launchOptions?[.location] != nil
         let event = ClientEvent(text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
@@ -665,6 +662,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }.catch { error -> Void in
                 Current.Log.error("Received error from CallbackURLKit perform \(error)")
             }
+        }
+    }
+
+    func configureLokalise() {
+        Lokalise.shared.setProjectID("834452985a05254348aee2.46389241",
+                                     token: "fe314d5c54f3000871ac18ccac8b62b20c143321")
+        Lokalise.shared.swizzleMainBundle()
+
+        Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
+    }
+}
+
+extension AppConfiguration {
+    var lokaliseEnv: LokaliseLocalizationType {
+        if prefs.bool(forKey: "showTranslationKeys") {
+            return .debug
+        }
+        switch self {
+        case .Release:
+            return .release
+        case .Beta:
+            return .prerelease
+        case .Debug, .FastlaneSnapshot:
+            return .local
         }
     }
 }
