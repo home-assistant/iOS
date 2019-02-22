@@ -1,5 +1,6 @@
 strings:
-  paths:
+  inputs:
     - HomeAssistant/Resources/en.lproj/Localizable.strings
-  templateName: structured-swift4
-  output: Shared/Resources/SwiftGen/Strings.swift
+  outputs:
+    - templateName: structured-swift4
+      output: Shared/Resources/SwiftGen/Strings.swift

@@ -54,7 +54,7 @@ PODS:
   - RealmSwift (3.13.1):
     - Realm (= 3.13.1)
   - Reqres (3.0.0)
-  - SwiftGen (5.3.0)
+  - SwiftGen (6.1.0)
   - SwiftLint (0.30.1)
   - TABObserverSet (2.1.0)
   - UIColor_Hex_Swift (4.2.0)
@@ -89,7 +89,7 @@ DEPENDENCIES:
   - ReachabilitySwift
   - RealmSwift (= 3.13.1)
   - Reqres
-  - SwiftGen (= 5.3.0)
+  - SwiftGen (= 6.1.0)
   - SwiftLint (= 0.30.1)
   - UIColor_Hex_Swift
   - ViewRow (from `https://github.com/EurekaCommunity/ViewRow`, branch `master`)
@@ -182,7 +182,7 @@ SPEC CHECKSUMS:
   Realm: 50071da38fe079e0735e47c9f2eae738c68c5996
   RealmSwift: 8a1e6a02b7a08cd17a31e3115143fb69fe5f3fb9
   Reqres: fb0714daf1b13dbafca25dd293d583cb4f73e420
-  SwiftGen: 4379bd3640b0a212a0f6ea3c494adba385513d10
+  SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
   SwiftLint: a54bf1fe12b55c68560eb2a7689dfc81458508f7
   TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
   UIColor_Hex_Swift: bc07fc197421ee896b9ed6dcfa2054b7fbf75145
@@ -190,6 +190,6 @@ SPEC CHECKSUMS:
   XCGLogger: 7f7f43f15dfe3a305fa1342b7dc29af656289abd
   ZIPFoundation: b1f07e4409baf1641f3fe5948b2a1c3f5c500cb1
 
-PODFILE CHECKSUM: 18bf5332854e49426a3a356916219788fe0e7ee8
+PODFILE CHECKSUM: cecba060058ee86c02f7163330172f32d376dd9a
 
-COCOAPODS: 1.6.0.beta.1
+COCOAPODS: 1.6.1

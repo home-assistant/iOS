@@ -47,7 +47,7 @@ target 'HomeAssistant' do
     pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
     pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
     pod 'MBProgressHUD', '1.1.0'
-    pod 'SwiftGen', '5.3.0'
+    pod 'SwiftGen', '6.1.0'
     pod 'SwiftLint', '0.30.1'
     pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
     pod 'ZIPFoundation', '~> 0.9'
