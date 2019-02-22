@@ -8,6 +8,7 @@
 
 import Foundation
 import KeychainAccess
+import DeviceKit
 
 public class SettingsStore {
     let keychain = Constants.Keychain
@@ -148,7 +149,7 @@ public class SettingsStore {
     }
 
     private var defaultDeviceID: String {
-        let baseID = self.removeSpecialCharsFromString(text: UIDevice.current.name)
+        let baseID = self.removeSpecialCharsFromString(text: Device().name)
             .replacingOccurrences(of: " ", with: "_")
             .lowercased()
 

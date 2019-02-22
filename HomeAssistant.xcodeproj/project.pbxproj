@@ -10,6 +10,7 @@
 		0C6645270B5B70DF1C404144 /* Pods-SiriIntents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */; };
 		1967E893F54245177C35DBE7 /* Pods_HomeAssistantTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73883E9DD3FD37E7DEEC7070 /* Pods_HomeAssistantTests.framework */; };
 		2A1C294E84E562DD8D9E8C9F /* Pods_SharedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 575D0792AB652B62F779FECB /* Pods_SharedTests.framework */; };
+		36D6C02C95DA3AA629947952 /* Pods_Shared_watchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76519B1977F02AC5D1309705 /* Pods_Shared_watchOS.framework */; };
 		3A9474676287819D0F5A8A37 /* Pods-TodayWidget-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F3D32AC650F6D7A0F3C3D08 /* Pods-TodayWidget-metadata.plist */; };
 		474AA46EC65ABB974EFC74A4 /* Pods-APNSAttachmentService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */; };
 		5487B2333FBD80B7ED0CFD47 /* Pods-NotificationContentExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */; };
@@ -17,8 +18,10 @@
 		6DFADFAFF2B1E4A5C7A00D10 /* Pods_SiriIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C43F9F3C9B007EC2C1DDD9 /* Pods_SiriIntents.framework */; };
 		6EDD98D41F2594F18D2F3E38 /* Pods-WatchAppExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */; };
 		7A06D3D7A5B4746FE6F5BFA6 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C23068FBA9B7BE1478936B11 /* Pods_HomeAssistant.framework */; };
-		8D5A6249330E190A24C670B2 /* Pods_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC05CEA3CD50ABEC2AE35BBB /* Pods_Shared.framework */; };
 		9E0BAD90B73333854D6D31E1 /* Pods_TodayWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3744F977190C345382928F90 /* Pods_TodayWidget.framework */; };
+		9EE703BEA1A769299E20ADBB /* Pods-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0CE51F0910A76C0B0D8B795E /* Pods-Shared-watchOS-metadata.plist */; };
+		A704AB29C110E538318CF129 /* Pods-Shared-iOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = BBABE84031827AE56C8043E8 /* Pods-Shared-iOS-metadata.plist */; };
+		AE8183AD1524FA72946974B8 /* Pods_Shared_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */; };
 		B1149EDF68A975EE7E24FC3A /* Pods_WatchAppExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFE8CD1D3AC8718C166E0F36 /* Pods_WatchAppExtension.framework */; };
 		B28248018AD4202CBDAA9179 /* Pods_NotificationContentExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94309E9FC28067C2D07463D7 /* Pods_NotificationContentExtension.framework */; };
 		B42EC0201B3E045A771E909C /* Pods-HomeAssistant-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */; };
@@ -185,7 +188,6 @@
 		B657A9011CA646EB00121384 /* HomeAssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9001CA646EB00121384 /* HomeAssistantTests.swift */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
-		B65A38CA215DB9C9003BCD8E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		B65BF9362217F497005745A4 /* old-beta@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9302217F496005745A4 /* old-beta@3x.png */; };
 		B65BF9372217F497005745A4 /* old-release@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9312217F497005745A4 /* old-release@2x.png */; };
 		B65BF9382217F497005745A4 /* old-beta@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9322217F497005745A4 /* old-beta@2x.png */; };
@@ -238,9 +240,84 @@
 		B675ECC5221BD76300C65D31 /* Identify.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC4221BD76300C65D31 /* Identify.swift */; };
 		B675ECC7221BDF4500C65D31 /* BackgroundRefreshScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */; };
 		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
-		B67CE7DF221F8BDD0034C1D0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03D893A20E0B2E300D4F28D /* Constants.swift */; };
-		B67CE7E1221F8C350034C1D0 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67CE7E0221F8C350034C1D0 /* Logger.swift */; };
-		B67CE7E2221F8C650034C1D0 /* Realm+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */; };
+		B67CE82822200D420034C1D0 /* Shared_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = B67CE82622200D420034C1D0 /* Shared_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE82422200D420034C1D0 /* Shared.framework */; };
+		B67CE82C22200D420034C1D0 /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE82422200D420034C1D0 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B67CE87622200F220034C1D0 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF326214DF31D00D1D360 /* Notifications.swift */; };
+		B67CE87722200F220034C1D0 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
+		B67CE87922200F220034C1D0 /* RealmZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EE36A120CF593E001494E3 /* RealmZone.swift */; };
+		B67CE87A22200F220034C1D0 /* LocationTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */; };
+		B67CE87B22200F220034C1D0 /* RealmDeviceTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A3EE612164B0550051A8A1 /* RealmDeviceTracker.swift */; };
+		B67CE87C22200F220034C1D0 /* PushRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */; };
+		B67CE87D22200F220034C1D0 /* IdentifyRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */; };
+		B67CE87E22200F220034C1D0 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091262151F93D00A326DC /* Scene.swift */; };
+		B67CE87F22200F220034C1D0 /* InputSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091272151F93D00A326DC /* InputSlider.swift */; };
+		B67CE88022200F220034C1D0 /* Automation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091282151F93D00A326DC /* Automation.swift */; };
+		B67CE88122200F220034C1D0 /* BinarySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091292151F93D00A326DC /* BinarySensor.swift */; };
+		B67CE88222200F220034C1D0 /* InputSelect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0912A2151F93D00A326DC /* InputSelect.swift */; };
+		B67CE88322200F220034C1D0 /* Sensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0912B2151F93D00A326DC /* Sensor.swift */; };
+		B67CE88422200F220034C1D0 /* Climate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0912C2151F93D00A326DC /* Climate.swift */; };
+		B67CE88522200F220034C1D0 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0912D2151F93D00A326DC /* Lock.swift */; };
+		B67CE88622200F220034C1D0 /* InputBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0912E2151F93D00A326DC /* InputBoolean.swift */; };
+		B67CE88722200F220034C1D0 /* Light.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0912F2151F93D00A326DC /* Light.swift */; };
+		B67CE88822200F220034C1D0 /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091302151F93D00A326DC /* Zone.swift */; };
+		B67CE88922200F220034C1D0 /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091312151F93D00A326DC /* Switch.swift */; };
+		B67CE88A22200F220034C1D0 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091322151F93D00A326DC /* Script.swift */; };
+		B67CE88B22200F220034C1D0 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091332151F93D00A326DC /* Group.swift */; };
+		B67CE88C22200F220034C1D0 /* Weblink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091342151F93D00A326DC /* Weblink.swift */; };
+		B67CE88D22200F220034C1D0 /* DeviceTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091352151F93D00A326DC /* DeviceTracker.swift */; };
+		B67CE88E22200F220034C1D0 /* Fan.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091362151F93D00A326DC /* Fan.swift */; };
+		B67CE88F22200F220034C1D0 /* Sun.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091372151F93D00A326DC /* Sun.swift */; };
+		B67CE89022200F220034C1D0 /* GarageDoor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091382151F93D00A326DC /* GarageDoor.swift */; };
+		B67CE89122200F220034C1D0 /* Thermostat.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C091392151F93D00A326DC /* Thermostat.swift */; };
+		B67CE89222200F220034C1D0 /* MediaPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0913A2151F93D00A326DC /* MediaPlayer.swift */; };
+		B67CE89322200F220034C1D0 /* DeviceTrackerSee.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0911A2151F90300A326DC /* DeviceTrackerSee.swift */; };
+		B67CE89422200F220034C1D0 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0911D2151F90300A326DC /* Entity.swift */; };
+		B67CE89522200F220034C1D0 /* LocationHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0911E2151F90300A326DC /* LocationHistory.swift */; };
+		B67CE89622200F220034C1D0 /* SwitchableEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0911B2151F90300A326DC /* SwitchableEntity.swift */; };
+		B67CE89722200F220034C1D0 /* PushRegistrationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */; };
+		B67CE89822200F220034C1D0 /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E871CBA01310027F6CA /* CallService.swift */; };
+		B67CE89922200F220034C1D0 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D047C1CB8916300B945C8 /* Event.swift */; };
+		B67CE89A22200F220034C1D0 /* ServiceExecuted.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E47E891CBA01DC0027F6CA /* ServiceExecuted.swift */; };
+		B67CE89B22200F220034C1D0 /* StateChanged.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D04791CB8908B00B945C8 /* StateChanged.swift */; };
+		B67CE89C22200F220034C1D0 /* Beacons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FBE3961D46A4E500EE0E36 /* Beacons.swift */; };
+		B67CE89D22200F220034C1D0 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF11CB470570029ABE7 /* Config.swift */; };
+		B67CE89E22200F220034C1D0 /* DiscoveryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */; };
+		B67CE89F22200F220034C1D0 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF91CB47F930029ABE7 /* Events.swift */; };
+		B67CE8A022200F220034C1D0 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF51CB4728D0029ABE7 /* History.swift */; };
+		B67CE8A122200F220034C1D0 /* PushConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66428111CF7A83200903804 /* PushConfiguration.swift */; };
+		B67CE8A222200F220034C1D0 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BFB1CB4800C0029ABE7 /* Services.swift */; };
+		B67CE8A322200F220034C1D0 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BED1CB46EB10029ABE7 /* Status.swift */; };
+		B67CE8A422200F220034C1D0 /* ManifestJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */; };
+		B67CE8A522200F220034C1D0 /* Identify.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC4221BD76300C65D31 /* Identify.swift */; };
+		B67CE8A622200F220034C1D0 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
+		B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */; };
+		B67CE8A822200F220034C1D0 /* MJPEGStreamer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05A4D31216DD206009FD1EB /* MJPEGStreamer.swift */; };
+		B67CE8A922200F220034C1D0 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884792122A65800CCB501 /* SettingsStore.swift */; };
+		B67CE8AA22200F220034C1D0 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
+		B67CE8AB22200F220034C1D0 /* TokenInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44092104224600C74314 /* TokenInfo.swift */; };
+		B67CE8AC22200F220034C1D0 /* AuthenticationRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE440D210437F900C74314 /* AuthenticationRoutes.swift */; };
+		B67CE8AD22200F220034C1D0 /* AuthenticationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44152104410D00C74314 /* AuthenticationAPI.swift */; };
+		B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88463211F33CE00CCB501 /* TokenManager.swift */; };
+		B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */; };
+		B67CE8B022200F220034C1D0 /* CLLocation+ToDoubleArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */; };
+		B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */; };
+		B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */; };
+		B67CE8B322200F220034C1D0 /* Realm+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */; };
+		B67CE8B422200F220034C1D0 /* URL+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DD2CED213BCA8900C3D9F7 /* URL+Extensions.swift */; };
+		B67CE8B522200F220034C1D0 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
+		B67CE8B622200F220034C1D0 /* UIColor+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF304214DD0D400D1D360 /* UIColor+HA.swift */; };
+		B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF309214DD64C00D1D360 /* UIImage+Icons.swift */; };
+		B67CE8B922200F220034C1D0 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00302BD20D4BEDB004C2CA9 /* Environment.swift */; };
+		B67CE8BA22200F220034C1D0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03D893A20E0B2E300D4F28D /* Constants.swift */; };
+		B67CE8BB22200F220034C1D0 /* UNNotificationContent+ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */; };
+		B67CE8BC22200F220034C1D0 /* ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79CB20D778B50034574D /* ClientEvent.swift */; };
+		B67CE8BD22200F220034C1D0 /* ClientEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */; };
+		B67CE8C4222011A60034C1D0 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
+		B67CE8C5222013B60034C1D0 /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BC82130CA0D00678C2C /* OneShotLocationManager.swift */; };
+		B67CE8C7222015E30034C1D0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE8C6222015E30034C1D0 /* CoreLocation.framework */; };
+		B67CE8C9222015E80034C1D0 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE8C8222015E80034C1D0 /* UserNotifications.framework */; };
+		B67CE8CD22201EFA0034C1D0 /* RegionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCA2130CA2D00678C2C /* RegionManager.swift */; };
 		B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */; };
 		B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */; };
 		B68EDD07215F215E00DD6B28 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD06215F215E00DD6B28 /* Notifications.swift */; };
@@ -344,7 +421,6 @@
 		D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
 		D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF304214DD0D400D1D360 /* UIColor+HA.swift */; };
 		D0EEF306214DD3CF00D1D360 /* ObjectMapperTransformers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */; };
-		D0EEF308214DD55300D1D360 /* RegionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCA2130CA2D00678C2C /* RegionManager.swift */; };
 		D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF309214DD64C00D1D360 /* UIImage+Icons.swift */; };
 		D0EEF30C214DD79100D1D360 /* ManifestJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */; };
 		D0EEF30D214DD79A00D1D360 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BED1CB46EB10029ABE7 /* Status.swift */; };
@@ -412,6 +488,13 @@
 			remoteGlobalIDString = B66F9F21216B1E61000CAA0F;
 			remoteInfo = TodayWidget;
 		};
+		B67CE82922200D420034C1D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B67CE82322200D420034C1D0;
+			remoteInfo = "Shared-watchOS";
+		};
 		B6AAD7A61D827DD40090B220 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
@@ -463,6 +546,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				B67CE82C22200D420034C1D0 /* Shared.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -517,23 +601,32 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		09D3A786745B7C6D0D364BF0 /* Pods-Shared-watchOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-watchOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-watchOS/Pods-Shared-watchOS.debug.xcconfig"; sourceTree = "<group>"; };
 		0B4D2BC91268D22D7A43EABB /* Pods-WatchApp-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-WatchApp-metadata.plist"; path = "Pods/Pods-WatchApp-metadata.plist"; sourceTree = "<group>"; };
+		0CE51F0910A76C0B0D8B795E /* Pods-Shared-watchOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-watchOS-metadata.plist"; path = "Pods/Pods-Shared-watchOS-metadata.plist"; sourceTree = "<group>"; };
+		1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C5332DAFA7CC79107B5429E /* Pods-Shared-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS/Pods-Shared-iOS.release.xcconfig"; sourceTree = "<group>"; };
 		1E42E3B8B9E9B8F7FC915A94 /* Pods-TodayWidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayWidget.release.xcconfig"; path = "Pods/Target Support Files/Pods-TodayWidget/Pods-TodayWidget.release.xcconfig"; sourceTree = "<group>"; };
 		25CF94434FED72A01C6A594B /* Pods-HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.release.xcconfig"; sourceTree = "<group>"; };
 		2E0AF070746A970041740865 /* Pods-NotificationContentExtension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.beta.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.beta.xcconfig"; sourceTree = "<group>"; };
 		342F03B5540A0B20637C7DCB /* Pods-NotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-HomeAssistant-metadata.plist"; path = "Pods/Pods-HomeAssistant-metadata.plist"; sourceTree = "<group>"; };
 		3744F977190C345382928F90 /* Pods_TodayWidget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodayWidget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3918C5ABB4F1EE588A623B53 /* Pods-Shared-iOS.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS/Pods-Shared-iOS.beta.xcconfig"; sourceTree = "<group>"; };
 		3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-APNSAttachmentService-metadata.plist"; path = "Pods/Pods-APNSAttachmentService-metadata.plist"; sourceTree = "<group>"; };
 		4008EB215F780E949CCD6956 /* Pods-WatchAppExtension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchAppExtension.beta.xcconfig"; path = "Pods/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension.beta.xcconfig"; sourceTree = "<group>"; };
 		4A8A2EDC1B82E759DCE5F6C8 /* Pods-APNSAttachmentService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.release.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.release.xcconfig"; sourceTree = "<group>"; };
+		4E6031DDE8EEF47E7A3DA817 /* Pods-Shared-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS/Pods-Shared-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		4F3D32AC650F6D7A0F3C3D08 /* Pods-TodayWidget-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-TodayWidget-metadata.plist"; path = "Pods/Pods-TodayWidget-metadata.plist"; sourceTree = "<group>"; };
 		514D3AC57D932CF15324A398 /* Pods-TodayWidget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayWidget.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TodayWidget/Pods-TodayWidget.debug.xcconfig"; sourceTree = "<group>"; };
 		55AB08080461913AC040C740 /* Pods-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.debug.xcconfig"; sourceTree = "<group>"; };
 		575D0792AB652B62F779FECB /* Pods_SharedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C94D4856B4E21CCEC8B8BFC /* Pods-SharedTests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.beta.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.beta.xcconfig"; sourceTree = "<group>"; };
 		6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-WatchAppExtension-metadata.plist"; path = "Pods/Pods-WatchAppExtension-metadata.plist"; sourceTree = "<group>"; };
+		6A0BD70C190D1F6E6756D486 /* Pods-Shared-watchOS.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-watchOS.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-watchOS/Pods-Shared-watchOS.beta.xcconfig"; sourceTree = "<group>"; };
+		7161D3C0FA0F09EF697C0AB1 /* Pods-Shared-watchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-watchOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-watchOS/Pods-Shared-watchOS.release.xcconfig"; sourceTree = "<group>"; };
 		73883E9DD3FD37E7DEEC7070 /* Pods_HomeAssistantTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		76519B1977F02AC5D1309705 /* Pods_Shared_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		799B3F55FAE1A57812B62339 /* Pods-SiriIntents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SiriIntents.release.xcconfig"; path = "Pods/Target Support Files/Pods-SiriIntents/Pods-SiriIntents.release.xcconfig"; sourceTree = "<group>"; };
 		7B3B20465CE9CCBBBA7D0414 /* Pods-APNSAttachmentService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.debug.xcconfig"; sourceTree = "<group>"; };
 		853E8BAABBA695FCD56D9685 /* Pods_WatchApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WatchApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -799,7 +892,6 @@
 		B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshScheduler.swift; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B678DB361EA9999C0045312F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
-		B67CE7E0221F8C350034C1D0 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		B67CE7F3221FAD1B0034C1D0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
 		B67CE7F5221FAD1C0034C1D0 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Intents.strings"; sourceTree = "<group>"; };
 		B67CE7F7221FAD1D0034C1D0 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Intents.strings"; sourceTree = "<group>"; };
@@ -813,6 +905,11 @@
 		B67CE818221FB1480034C1D0 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Intents.strings; sourceTree = "<group>"; };
 		B67CE819221FB1480034C1D0 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B67CE81A221FB1480034C1D0 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B67CE82422200D420034C1D0 /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B67CE82622200D420034C1D0 /* Shared_watchOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shared_watchOS.h; sourceTree = "<group>"; };
+		B67CE82722200D420034C1D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B67CE8C6222015E30034C1D0 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS5.1.sdk/System/Library/Frameworks/CoreLocation.framework; sourceTree = DEVELOPER_DIR; };
+		B67CE8C8222015E80034C1D0 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS5.1.sdk/System/Library/Frameworks/UserNotifications.framework; sourceTree = DEVELOPER_DIR; };
 		B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotion+StringExtensions.swift"; sourceTree = "<group>"; };
 		B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectMapperTransformers.swift; sourceTree = "<group>"; };
 		B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = APNSAttachmentService.entitlements; sourceTree = "<group>"; };
@@ -905,6 +1002,7 @@
 		B7A8B1C3DDCDA0CE667420BF /* Pods-SharedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B9C43F9F3C9B007EC2C1DDD9 /* Pods_SiriIntents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SiriIntents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA1CF6494DCB053F130AF00A /* Pods-APNSAttachmentService.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.beta.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.beta.xcconfig"; sourceTree = "<group>"; };
+		BBABE84031827AE56C8043E8 /* Pods-Shared-iOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-iOS-metadata.plist"; path = "Pods/Pods-Shared-iOS-metadata.plist"; sourceTree = "<group>"; };
 		C23068FBA9B7BE1478936B11 /* Pods_HomeAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2864615A73A92D659C0BD03 /* Pods-Shared.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.beta.xcconfig"; sourceTree = "<group>"; };
 		CCD706884B80054E107B89D5 /* Pods-HomeAssistantTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1027,6 +1125,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B67CE82122200D420034C1D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B67CE8C9222015E80034C1D0 /* UserNotifications.framework in Frameworks */,
+				B67CE8C7222015E30034C1D0 /* CoreLocation.framework in Frameworks */,
+				36D6C02C95DA3AA629947952 /* Pods_Shared_watchOS.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B6AAD79E1D827DD40090B220 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1041,6 +1149,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1149EDF68A975EE7E24FC3A /* Pods_WatchAppExtension.framework in Frameworks */,
+				B67CE82B22200D420034C1D0 /* Shared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1052,7 +1161,7 @@
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				B6CFF5DA2101984A00CC523F /* RealmSwift.framework in Frameworks */,
 				B6CFF5D82101984500CC523F /* Realm.framework in Frameworks */,
-				8D5A6249330E190A24C670B2 /* Pods_Shared.framework in Frameworks */,
+				AE8183AD1524FA72946974B8 /* Pods_Shared_iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1071,6 +1180,8 @@
 		29278BB24639BA945D3D86B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B67CE8C8222015E80034C1D0 /* UserNotifications.framework */,
+				B67CE8C6222015E30034C1D0 /* CoreLocation.framework */,
 				B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */,
 				B6C09151215206A800A326DC /* PromiseKit.framework */,
 				D0EEF300214D8EAB00D1D360 /* CoreLocation.framework */,
@@ -1094,6 +1205,8 @@
 				3744F977190C345382928F90 /* Pods_TodayWidget.framework */,
 				853E8BAABBA695FCD56D9685 /* Pods_WatchApp.framework */,
 				AFE8CD1D3AC8718C166E0F36 /* Pods_WatchAppExtension.framework */,
+				1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */,
+				76519B1977F02AC5D1309705 /* Pods_Shared_watchOS.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1139,6 +1252,14 @@
 				F95337CF20F43B41C78A66D0 /* Pods-WatchAppExtension.debug.xcconfig */,
 				F6263AE4EAC90E232CFCA4E7 /* Pods-WatchAppExtension.release.xcconfig */,
 				4008EB215F780E949CCD6956 /* Pods-WatchAppExtension.beta.xcconfig */,
+				4E6031DDE8EEF47E7A3DA817 /* Pods-Shared-iOS.debug.xcconfig */,
+				1C5332DAFA7CC79107B5429E /* Pods-Shared-iOS.release.xcconfig */,
+				3918C5ABB4F1EE588A623B53 /* Pods-Shared-iOS.beta.xcconfig */,
+				09D3A786745B7C6D0D364BF0 /* Pods-Shared-watchOS.debug.xcconfig */,
+				7161D3C0FA0F09EF697C0AB1 /* Pods-Shared-watchOS.release.xcconfig */,
+				6A0BD70C190D1F6E6756D486 /* Pods-Shared-watchOS.beta.xcconfig */,
+				BBABE84031827AE56C8043E8 /* Pods-Shared-iOS-metadata.plist */,
+				0CE51F0910A76C0B0D8B795E /* Pods-Shared-watchOS-metadata.plist */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1341,6 +1462,7 @@
 				B66F9F25216B1E61000CAA0F /* TodayWidget */,
 				B6CC5D832159D10D00833E5D /* WatchApp */,
 				B6CC5D922159D10E00833E5D /* WatchAppExtension */,
+				B67CE82522200D420034C1D0 /* Shared-watchOS */,
 				29278BB24639BA945D3D86B4 /* Frameworks */,
 				B657A8FF1CA646EB00121384 /* HomeAssistantTests */,
 				B657A90A1CA646EB00121384 /* HomeAssistantUITests */,
@@ -1364,6 +1486,7 @@
 				B6CC5D822159D10D00833E5D /* WatchApp.app */,
 				B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */,
 				B66F9F22216B1E61000CAA0F /* TodayWidget.appex */,
+				B67CE82422200D420034C1D0 /* Shared.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1489,7 +1612,6 @@
 			children = (
 				B69769832162430300FFFAD6 /* WKInterfaceDevice+Size.swift */,
 				B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */,
-				B67CE7E0221F8C350034C1D0 /* Logger.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1531,6 +1653,15 @@
 				B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		B67CE82522200D420034C1D0 /* Shared-watchOS */ = {
+			isa = PBXGroup;
+			children = (
+				B67CE82622200D420034C1D0 /* Shared_watchOS.h */,
+				B67CE82722200D420034C1D0 /* Info.plist */,
+			);
+			path = "Shared-watchOS";
 			sourceTree = "<group>";
 		};
 		B69933961E232AF50054453D /* Resources */ = {
@@ -1904,6 +2035,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		B67CE81F22200D420034C1D0 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B67CE82822200D420034C1D0 /* Shared_watchOS.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D03D891420E0A85200D4F28D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -2037,6 +2176,25 @@
 			productReference = B66F9F22216B1E61000CAA0F /* TodayWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		B67CE82322200D420034C1D0 /* Shared-watchOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B67CE82D22200D420034C1D0 /* Build configuration list for PBXNativeTarget "Shared-watchOS" */;
+			buildPhases = (
+				DA741AB7E2DB4FA2C025B66E /* [CP] Check Pods Manifest.lock */,
+				B67CE81F22200D420034C1D0 /* Headers */,
+				B67CE82022200D420034C1D0 /* Sources */,
+				B67CE82122200D420034C1D0 /* Frameworks */,
+				B67CE82222200D420034C1D0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Shared-watchOS";
+			productName = "Shared-watchOS";
+			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		B6AAD7A01D827DD40090B220 /* APNSAttachmentService */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B6AAD7A91D827DD40090B220 /* Build configuration list for PBXNativeTarget "APNSAttachmentService" */;
@@ -2087,15 +2245,16 @@
 			buildRules = (
 			);
 			dependencies = (
+				B67CE82A22200D420034C1D0 /* PBXTargetDependency */,
 			);
 			name = WatchAppExtension;
 			productName = "WatchApp Extension";
 			productReference = B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
 		};
-		D03D891620E0A85200D4F28D /* Shared */ = {
+		D03D891620E0A85200D4F28D /* Shared-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D03D892E20E0A85300D4F28D /* Build configuration list for PBXNativeTarget "Shared" */;
+			buildConfigurationList = D03D892E20E0A85300D4F28D /* Build configuration list for PBXNativeTarget "Shared-iOS" */;
 			buildPhases = (
 				F396C7F080362F87E8D0861E /* [CP] Check Pods Manifest.lock */,
 				D0EEF31D214DDD5E00D1D360 /* SwiftGen */,
@@ -2108,7 +2267,7 @@
 			);
 			dependencies = (
 			);
-			name = Shared;
+			name = "Shared-iOS";
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
 			productType = "com.apple.product-type.framework";
@@ -2225,6 +2384,11 @@
 							};
 						};
 					};
+					B67CE82322200D420034C1D0 = {
+						CreatedOnToolsVersion = 10.1;
+						DevelopmentTeam = UTQFCBPQRF;
+						ProvisioningStyle = Manual;
+					};
 					B6AAD7A01D827DD40090B220 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = UTQFCBPQRF;
@@ -2302,7 +2466,8 @@
 				B657A9061CA646EB00121384 /* HomeAssistantUITests */,
 				B6AAD7A01D827DD40090B220 /* APNSAttachmentService */,
 				B627CB061D83C87B0057173E /* NotificationContentExtension */,
-				D03D891620E0A85200D4F28D /* Shared */,
+				D03D891620E0A85200D4F28D /* Shared-iOS */,
+				B67CE82322200D420034C1D0 /* Shared-watchOS */,
 				D03D894120E0BC1800D4F28D /* SharedTests */,
 				B66C58A4215086F0004AB261 /* SiriIntents */,
 				B6CC5D812159D10D00833E5D /* WatchApp */,
@@ -2527,6 +2692,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B67CE82222200D420034C1D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9EE703BEA1A769299E20ADBB /* Pods-Shared-watchOS-metadata.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B6AAD79F1D827DD40090B220 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2562,6 +2735,7 @@
 			files = (
 				D18BB39F0BE75F5C3F086FE2 /* Pods-Shared-metadata.plist in Resources */,
 				B63D28BD215D9E3600F3B907 /* Localizable.strings in Resources */,
+				A704AB29C110E538318CF129 /* Pods-Shared-iOS-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2695,18 +2869,18 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
+				"${BUILT_PRODUCTS_DIR}/Alamofire-iOS/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireImage-iOS/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper-iOS/AlamofireObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/CPDAcknowledgements/CPDAcknowledgements.framework",
 				"${BUILT_PRODUCTS_DIR}/CallbackURLKit/CallbackURLKit.framework",
 				"${BUILT_PRODUCTS_DIR}/ColorPickerRow/ColorPickerRow.framework",
 				"${BUILT_PRODUCTS_DIR}/Communicator-iOS/Communicator.framework",
-				"${BUILT_PRODUCTS_DIR}/DeviceKit/DeviceKit.framework",
+				"${BUILT_PRODUCTS_DIR}/DeviceKit-iOS/DeviceKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
 				"${BUILT_PRODUCTS_DIR}/Iconic-iOS/Iconic.framework",
-				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
+				"${BUILT_PRODUCTS_DIR}/KeychainAccess-iOS/KeychainAccess.framework",
 				"${PODS_ROOT}/Lokalise/Lokalise.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjcExceptionBridging-iOS/ObjcExceptionBridging.framework",
@@ -2865,6 +3039,28 @@
 			shellPath = /bin/sh;
 			shellScript = "\"$PODS_ROOT\"/SwiftGen/bin/swiftgen config run --config ./swiftgen.yml\n";
 		};
+		DA741AB7E2DB4FA2C025B66E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Shared-watchOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		E8A710038DD9BF8F77365B02 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2902,7 +3098,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Shared-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Shared-iOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2918,10 +3114,16 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire-watchOS/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireImage-watchOS/AlamofireImage.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper-watchOS/AlamofireObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/Communicator-watchOS/Communicator.framework",
+				"${BUILT_PRODUCTS_DIR}/DeviceKit-watchOS/DeviceKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Iconic-watchOS/Iconic.framework",
+				"${BUILT_PRODUCTS_DIR}/KeychainAccess-watchOS/KeychainAccess.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjcExceptionBridging-watchOS/ObjcExceptionBridging.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper-watchOS/ObjectMapper.framework",
+				"${BUILT_PRODUCTS_DIR}/PromiseKit.root-CorePromise-Foundation/PromiseKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm-watchOS/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift-watchOS/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/TABObserverSet-watchOS/TABObserverSet.framework",
@@ -2933,10 +3135,16 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Communicator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Iconic.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjcExceptionBridging.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TABObserverSet.framework",
@@ -2988,7 +3196,6 @@
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
 				B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */,
 				B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */,
-				D0EEF308214DD55300D1D360 /* RegionManager.swift in Sources */,
 				B6B6B14A215B137C003DE2DD /* WatchComplicationConfigurator.swift in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				B66C58BD21509934004AB261 /* ShortcutServiceConfigurator.swift in Sources */,
@@ -3000,6 +3207,7 @@
 				D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */,
 				B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
+				B67CE8CD22201EFA0034C1D0 /* RegionManager.swift in Sources */,
 				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
 				B68EDD07215F215E00DD6B28 /* Notifications.swift in Sources */,
@@ -3054,6 +3262,84 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B67CE82022200D420034C1D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B67CE8C5222013B60034C1D0 /* OneShotLocationManager.swift in Sources */,
+				B67CE88F22200F220034C1D0 /* Sun.swift in Sources */,
+				B67CE88722200F220034C1D0 /* Light.swift in Sources */,
+				B67CE88A22200F220034C1D0 /* Script.swift in Sources */,
+				B67CE89622200F220034C1D0 /* SwitchableEntity.swift in Sources */,
+				B67CE88D22200F220034C1D0 /* DeviceTracker.swift in Sources */,
+				B67CE8AB22200F220034C1D0 /* TokenInfo.swift in Sources */,
+				B67CE87722200F220034C1D0 /* Strings.swift in Sources */,
+				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
+				B67CE89322200F220034C1D0 /* DeviceTrackerSee.swift in Sources */,
+				B67CE87A22200F220034C1D0 /* LocationTrigger.swift in Sources */,
+				B67CE87622200F220034C1D0 /* Notifications.swift in Sources */,
+				B67CE88E22200F220034C1D0 /* Fan.swift in Sources */,
+				B67CE88222200F220034C1D0 /* InputSelect.swift in Sources */,
+				B67CE89122200F220034C1D0 /* Thermostat.swift in Sources */,
+				B67CE87C22200F220034C1D0 /* PushRegistrationRequest.swift in Sources */,
+				B67CE89C22200F220034C1D0 /* Beacons.swift in Sources */,
+				B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */,
+				B67CE88822200F220034C1D0 /* Zone.swift in Sources */,
+				B67CE8A922200F220034C1D0 /* SettingsStore.swift in Sources */,
+				B67CE8B622200F220034C1D0 /* UIColor+HA.swift in Sources */,
+				B67CE89722200F220034C1D0 /* PushRegistrationResponse.swift in Sources */,
+				B67CE8B522200F220034C1D0 /* String+HA.swift in Sources */,
+				B67CE8A322200F220034C1D0 /* Status.swift in Sources */,
+				B67CE8B422200F220034C1D0 /* URL+Extensions.swift in Sources */,
+				B67CE88022200F220034C1D0 /* Automation.swift in Sources */,
+				B67CE89F22200F220034C1D0 /* Events.swift in Sources */,
+				B67CE88922200F220034C1D0 /* Switch.swift in Sources */,
+				B67CE8BA22200F220034C1D0 /* Constants.swift in Sources */,
+				B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */,
+				B67CE8A522200F220034C1D0 /* Identify.swift in Sources */,
+				B67CE88B22200F220034C1D0 /* Group.swift in Sources */,
+				B67CE87D22200F220034C1D0 /* IdentifyRequest.swift in Sources */,
+				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
+				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
+				B67CE8A122200F220034C1D0 /* PushConfiguration.swift in Sources */,
+				B67CE8B322200F220034C1D0 /* Realm+Initialization.swift in Sources */,
+				B67CE87B22200F220034C1D0 /* RealmDeviceTracker.swift in Sources */,
+				B67CE8AD22200F220034C1D0 /* AuthenticationAPI.swift in Sources */,
+				B67CE88122200F220034C1D0 /* BinarySensor.swift in Sources */,
+				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
+				B67CE8A222200F220034C1D0 /* Services.swift in Sources */,
+				B67CE89822200F220034C1D0 /* CallService.swift in Sources */,
+				B67CE89222200F220034C1D0 /* MediaPlayer.swift in Sources */,
+				B67CE89A22200F220034C1D0 /* ServiceExecuted.swift in Sources */,
+				B67CE87922200F220034C1D0 /* RealmZone.swift in Sources */,
+				B67CE8BD22200F220034C1D0 /* ClientEventStore.swift in Sources */,
+				B67CE87E22200F220034C1D0 /* Scene.swift in Sources */,
+				B67CE87F22200F220034C1D0 /* InputSlider.swift in Sources */,
+				B67CE8AC22200F220034C1D0 /* AuthenticationRoutes.swift in Sources */,
+				B67CE89B22200F220034C1D0 /* StateChanged.swift in Sources */,
+				B67CE89E22200F220034C1D0 /* DiscoveryInfo.swift in Sources */,
+				B67CE88422200F220034C1D0 /* Climate.swift in Sources */,
+				B67CE8A422200F220034C1D0 /* ManifestJSON.swift in Sources */,
+				B67CE89922200F220034C1D0 /* Event.swift in Sources */,
+				B67CE89422200F220034C1D0 /* Entity.swift in Sources */,
+				B67CE8A022200F220034C1D0 /* History.swift in Sources */,
+				B67CE8B022200F220034C1D0 /* CLLocation+ToDoubleArray.swift in Sources */,
+				B67CE8A822200F220034C1D0 /* MJPEGStreamer.swift in Sources */,
+				B67CE89022200F220034C1D0 /* GarageDoor.swift in Sources */,
+				B67CE89522200F220034C1D0 /* LocationHistory.swift in Sources */,
+				B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */,
+				B67CE8AA22200F220034C1D0 /* ConnectionInfo.swift in Sources */,
+				B67CE8BC22200F220034C1D0 /* ClientEvent.swift in Sources */,
+				B67CE88522200F220034C1D0 /* Lock.swift in Sources */,
+				B67CE88C22200F220034C1D0 /* Weblink.swift in Sources */,
+				B67CE8BB22200F220034C1D0 /* UNNotificationContent+ClientEvent.swift in Sources */,
+				B67CE89D22200F220034C1D0 /* Config.swift in Sources */,
+				B67CE88322200F220034C1D0 /* Sensor.swift in Sources */,
+				B67CE8A622200F220034C1D0 /* HAAPI.swift in Sources */,
+				B67CE88622200F220034C1D0 /* InputBoolean.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B6AAD79D1D827DD40090B220 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3070,15 +3356,12 @@
 				B672AB502216883300175465 /* Action.swift in Sources */,
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
 				B63D28C1215DB72100F3B907 /* WatchComplication.swift in Sources */,
-				B65A38CA215DB9C9003BCD8E /* Strings.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
 				B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */,
-				B67CE7DF221F8BDD0034C1D0 /* Constants.swift in Sources */,
 				B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */,
+				B67CE8C4222011A60034C1D0 /* Strings.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				B6976985216243CC00FFFAD6 /* UIColor+CSS3+Hex.swift in Sources */,
-				B67CE7E1221F8C350034C1D0 /* Logger.swift in Sources */,
-				B67CE7E2221F8C650034C1D0 /* Realm+Initialization.swift in Sources */,
 				B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */,
 				B675ECC7221BDF4500C65D31 /* BackgroundRefreshScheduler.swift in Sources */,
 			);
@@ -3201,6 +3484,11 @@
 			target = B66F9F21216B1E61000CAA0F /* TodayWidget */;
 			targetProxy = B66F9F2C216B1E61000CAA0F /* PBXContainerItemProxy */;
 		};
+		B67CE82A22200D420034C1D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B67CE82322200D420034C1D0 /* Shared-watchOS */;
+			targetProxy = B67CE82922200D420034C1D0 /* PBXContainerItemProxy */;
+		};
 		B6AAD7A71D827DD40090B220 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B6AAD7A01D827DD40090B220 /* APNSAttachmentService */;
@@ -3218,17 +3506,17 @@
 		};
 		D03D892B20E0A85300D4F28D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D03D891620E0A85200D4F28D /* Shared */;
+			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
 			targetProxy = D03D892A20E0A85300D4F28D /* PBXContainerItemProxy */;
 		};
 		D03D894920E0BC1800D4F28D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D03D891620E0A85200D4F28D /* Shared */;
+			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
 			targetProxy = D03D894820E0BC1800D4F28D /* PBXContainerItemProxy */;
 		};
 		D0EEF345214F15CA00D1D360 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D03D891620E0A85200D4F28D /* Shared */;
+			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
 			targetProxy = D0EEF344214F15CA00D1D360 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -3534,7 +3822,7 @@
 		};
 		B637243521697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C2864615A73A92D659C0BD03 /* Pods-Shared.beta.xcconfig */;
+			baseConfigurationReference = 3918C5ABB4F1EE588A623B53 /* Pods-Shared-iOS.beta.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -3556,7 +3844,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.Shared;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = Shared;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -4109,6 +4397,117 @@
 			};
 			name = Beta;
 		};
+		B67CE82E22200D420034C1D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 09D3A786745B7C6D0D364BF0 /* Pods-Shared-watchOS.debug.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Shared-watchOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.Shared;
+				PRODUCT_NAME = Shared;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 4;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 5.0;
+			};
+			name = Debug;
+		};
+		B67CE82F22200D420034C1D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7161D3C0FA0F09EF697C0AB1 /* Pods-Shared-watchOS.release.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Shared-watchOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.Shared;
+				PRODUCT_NAME = Shared;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 4;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 5.0;
+			};
+			name = Release;
+		};
+		B67CE83022200D420034C1D0 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6A0BD70C190D1F6E6756D486 /* Pods-Shared-watchOS.beta.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = UTQFCBPQRF;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "Shared-watchOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.Shared;
+				PRODUCT_NAME = Shared;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 4;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 5.0;
+			};
+			name = Beta;
+		};
 		B6AAD7AA1D827DD40090B220 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7B3B20465CE9CCBBBA7D0414 /* Pods-APNSAttachmentService.debug.xcconfig */;
@@ -4278,7 +4677,7 @@
 		};
 		D03D892F20E0A85300D4F28D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 55AB08080461913AC040C740 /* Pods-Shared.debug.xcconfig */;
+			baseConfigurationReference = 4E6031DDE8EEF47E7A3DA817 /* Pods-Shared-iOS.debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -4301,7 +4700,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.Shared;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = Shared;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -4315,7 +4714,7 @@
 		};
 		D03D893020E0A85300D4F28D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D679007C62C8EE4A1ADC17A5 /* Pods-Shared.release.xcconfig */;
+			baseConfigurationReference = 1C5332DAFA7CC79107B5429E /* Pods-Shared-iOS.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -4338,7 +4737,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistant.Shared;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = Shared;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -4467,6 +4866,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		B67CE82D22200D420034C1D0 /* Build configuration list for PBXNativeTarget "Shared-watchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B67CE82E22200D420034C1D0 /* Debug */,
+				B67CE82F22200D420034C1D0 /* Release */,
+				B67CE83022200D420034C1D0 /* Beta */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B6AAD7A91D827DD40090B220 /* Build configuration list for PBXNativeTarget "APNSAttachmentService" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -4497,7 +4906,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D03D892E20E0A85300D4F28D /* Build configuration list for PBXNativeTarget "Shared" */ = {
+		D03D892E20E0A85300D4F28D /* Build configuration list for PBXNativeTarget "Shared-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D03D892F20E0A85300D4F28D /* Debug */,

@@ -12,6 +12,7 @@ import Iconic
 import EMTLoadingIndicator
 import RealmSwift
 import Communicator
+import Shared
 
 class InterfaceController: WKInterfaceController {
     @IBOutlet weak var tableView: WKInterfaceTable!

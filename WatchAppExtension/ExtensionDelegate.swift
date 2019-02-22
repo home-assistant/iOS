@@ -12,6 +12,7 @@ import RealmSwift
 import Communicator
 import UserNotifications
 import XCGLogger
+import Shared
 
 // swiftlint:disable file_length
 class ExtensionDelegate: NSObject, WKExtensionDelegate {

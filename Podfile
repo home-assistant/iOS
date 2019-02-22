@@ -27,15 +27,20 @@ def shared_pods
     pod 'KeychainAccess', '3.1.2'
     pod 'ObjectMapper', '3.4.2'
     pod 'PromiseKit', '6.8.3'
-    pod 'ReachabilitySwift'
     pod 'RealmSwift', '3.13.1'
-    pod 'Reqres'
     pod 'UIColor_Hex_Swift'
     pod 'XCGLogger', '~> 6.1.0'
 end
 
-target 'HomeAssistant' do
+def ios_shared_pods
     shared_pods
+
+    pod 'ReachabilitySwift'
+    pod 'Reqres'
+end
+
+target 'HomeAssistant' do
+    ios_shared_pods
 
     pod 'AlamofireNetworkActivityIndicator', '2.3.0'
     pod 'arek/Location', '4.0.2'
@@ -58,42 +63,45 @@ target 'HomeAssistant' do
     end
 end
 
-target 'Shared' do
-    shared_pods
+target 'Shared-iOS' do
+    ios_shared_pods
 
     target 'SharedTests' do
       inherit! :search_paths
     end
 end
 
-target 'APNSAttachmentService' do
+target 'Shared-watchOS' do
+    platform :watchos, '5.0'
+
     shared_pods
 end
 
+target 'APNSAttachmentService' do
+    ios_shared_pods
+end
+
 target 'NotificationContentExtension' do
-    shared_pods
+    ios_shared_pods
 
     pod 'MBProgressHUD', '1.1.0'
 end
 
 target 'SiriIntents' do
-    shared_pods
+    ios_shared_pods
 end
 
 target 'WatchAppExtension' do
     platform :watchos, '5.0'
 
+    shared_pods
+
     pod 'Communicator'
     pod 'EMTLoadingIndicator', '~> 4.0.0'
-    pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
-    pod 'ObjectMapper', '3.4.2'
-    pod 'RealmSwift', '3.13.1'
-    pod 'XCGLogger', '~> 6.1.0'
-    pod 'UIColor_Hex_Swift'
 end
 
 target 'TodayWidget' do
-    shared_pods
+    ios_shared_pods
 end
 
 post_install do |installer|

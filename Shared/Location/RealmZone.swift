@@ -66,6 +66,7 @@ public class RLMZone: Object {
     }
 
     public func region() -> CLRegion? {
+        #if os(iOS)
         if self.BeaconUUID != nil {
             // iBeacon
             return self.beaconRegion
@@ -73,8 +74,12 @@ public class RLMZone: Object {
             // Geofence / CircularRegion
             return self.circularRegion()
         }
+        #else
+        return self.circularRegion()
+        #endif
     }
 
+    #if os(iOS)
     public var beaconRegion: CLBeaconRegion? {
         guard let uuidString = self.BeaconUUID else {
             return nil
@@ -110,6 +115,7 @@ public class RLMZone: Object {
         beaconRegion.notifyOnExit = true
         return beaconRegion
     }
+    #endif
 
     public func circularRegion() -> CLCircularRegion {
         let region = CLCircularRegion(

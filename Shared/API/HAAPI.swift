@@ -19,8 +19,8 @@ import RealmSwift
 import UserNotifications
 import Intents
 import CoreMotion
-import Reqres
 #if os(iOS)
+import Reqres
 import Reachability
 #endif
 
@@ -566,11 +566,7 @@ public class HomeAssistantAPI {
         ident.PushID = pushID
         ident.PushSounds = Notifications.installedPushNotificationSounds()
 
-        UIDevice.current.isBatteryMonitoringEnabled = true
-
-        switch UIDevice.current.batteryState {
-        case .unknown:
-            ident.BatteryState = "Unknown"
+        switch deviceKitDevice.batteryState {
         case .charging:
             ident.BatteryState = "Charging"
         case .unplugged:
@@ -579,12 +575,10 @@ public class HomeAssistantAPI {
             ident.BatteryState = "Full"
         }
 
-        ident.BatteryLevel = Int(UIDevice.current.batteryLevel*100)
+        ident.BatteryLevel = Int(deviceKitDevice.batteryLevel*100)
         if ident.BatteryLevel == -100 { // simulator fix
             ident.BatteryLevel = 100
         }
-
-        UIDevice.current.isBatteryMonitoringEnabled = false
 
         return Mapper().toJSON(ident)
     }
@@ -710,6 +704,7 @@ public class HomeAssistantAPI {
             headers["X-HA-Access"] = password
         }
 
+        #if os(iOS)
         let reqresConfig = Reqres.defaultSessionConfiguration()
         reqresConfig.httpAdditionalHeaders = headers
         reqresConfig.timeoutIntervalForRequest = 10 // seconds
@@ -717,6 +712,12 @@ public class HomeAssistantAPI {
         Reqres.sessionDelegate = manager.delegate
         Reqres.logger = ReqresXCGLogger()
         return manager
+        #else
+        let configuration = URLSessionConfiguration.default
+        configuration.httpAdditionalHeaders = headers
+        configuration.timeoutIntervalForRequest = 10 // seconds
+        return Alamofire.SessionManager(configuration: configuration)
+        #endif
     }
 
     private func configureBasicAuthWithKeychain(_ basicAuthKeychain: Keychain) {
@@ -774,20 +775,20 @@ public class HomeAssistantAPI {
     private func buildLocationPayload(updateType: LocationUpdateTrigger, location: CLLocation?,
                                       zone: RLMZone?) -> Promise<DeviceTrackerSee> {
 
-        UIDevice.current.isBatteryMonitoringEnabled = true
+        let device = Device()
 
         let payload = DeviceTrackerSee(trigger: updateType, location: location, zone: zone)
         payload.Trigger = updateType
 
         let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
 
-        payload.Battery = UIDevice.current.batteryLevel
+        payload.Battery = Float(exactly: device.batteryLevel)! / 100
         payload.DeviceID = Current.settingsStore.deviceID
-        payload.Hostname = UIDevice.current.name
+        payload.Hostname = device.name
         payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
 
-        payload.SSID = ConnectionInfo.currentSSID()
         #if os(iOS)
+        payload.SSID = ConnectionInfo.currentSSID()
         payload.ConnectionType = Reachability.getSimpleNetworkType().description
         #endif
 
@@ -803,8 +804,6 @@ public class HomeAssistantAPI {
                     }
 
                     return Promise.value(payload)
-                }.ensure {
-                    UIDevice.current.isBatteryMonitoringEnabled = false
                 }
 
     }

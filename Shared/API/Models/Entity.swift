@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+import CoreGraphics
 import ObjectMapper
 
 // swiftlint:disable:next type_body_length

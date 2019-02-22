@@ -48,7 +48,9 @@ public class Environment {
 
     public var settingsStore = SettingsStore()
 
+    #if os(iOS)
     public var authenticationControllerPresenter: ((UIViewController) -> Void)?
+    #endif
 
     public var signInRequiredCallback: (() -> Void)?
 
