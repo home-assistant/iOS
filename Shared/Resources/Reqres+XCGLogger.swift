@@ -1,5 +1,5 @@
 //
-//  Reqres+CleanroomLogger.swift
+//  Reqres+XCGLogger.swift
 //  Shared
 //
 //  Created by Robert Trencheny on 2/21/19.
@@ -7,18 +7,17 @@
 //
 
 import Reqres
-import CleanroomLogger
 
-class ReqresCleanroom: ReqresLogging {
+class ReqresXCGLogger: ReqresLogging {
     open var logLevel: LogLevel = .verbose
 
     func logVerbose(_ message: String) {
-        Log.verbose?.message(message)
+        Current.Log.verbose(message)
     }
     func logLight(_ message: String) {
-        Log.info?.message(message)
+        Current.Log.info(message)
     }
     func logError(_ message: String) {
-        Log.error?.message(message)
+        Current.Log.error(message)
     }
 }

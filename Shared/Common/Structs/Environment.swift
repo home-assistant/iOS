@@ -9,7 +9,7 @@
 import Foundation
 import PromiseKit
 import RealmSwift
-import CleanroomLogger
+import XCGLogger
 
 public enum AppConfiguration: Int, CaseIterable {
     case FastlaneSnapshot
@@ -87,42 +87,52 @@ public class Environment {
         }
     }
 
-    public var logsDirectory: URL {
-        let fileManager = FileManager.default
-        let storeDirectoryURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)?
-            .appendingPathComponent("logs", isDirectory: true)
+    public var Log: XCGLogger = {
+        // Create a logger object with no destinations
+        let log = XCGLogger(identifier: "advancedLogger", includeDefaultDestinations: false)
 
-        guard let directoryURL = storeDirectoryURL else {
-            fatalError("Unable to get datastoreURL for logger.")
-        }
+        // Create a destination for the system console log (via NSLog)
+        let systemDestination = AppleSystemLogDestination(identifier: "advancedLogger.systemDestination")
 
-        if !fileManager.fileExists(atPath: directoryURL.path) {
-            do {
-                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
-            } catch {
-                fatalError("Error while attempting to create data store URL: \(error)")
-            }
-        }
+        // Optionally set some configuration options
+        systemDestination.outputLevel = .debug
+        systemDestination.showLogIdentifier = false
+        systemDestination.showFunctionName = true
+        systemDestination.showThreadName = true
+        systemDestination.showLevel = true
+        systemDestination.showFileName = true
+        systemDestination.showLineNumber = true
+        systemDestination.showDate = true
 
-        return directoryURL
-    }
+        // Add the destination to the logger
+        log.add(destination: systemDestination)
 
-    public func configureLogging() {
-        var configs = [LogConfiguration]()
+        let logPath = Constants.LogsDirectory.appendingPathComponent("log.txt", isDirectory: false)
 
-        let stderr = StandardStreamsLogRecorder(formatters: [XcodeLogFormatter()])
-        configs.append(BasicLogConfiguration(recorders: [stderr]))
+        // Create a file log destination
+        let fileDestination = AutoRotatingFileDestination(writeToFile: logPath,
+                                                          identifier: "advancedLogger.fileDestination",
+                                                          shouldAppend: true)
 
-        if let osLog = OSLogRecorder(formatters: [ReadableLogFormatter()]) {
-            configs.append(BasicLogConfiguration(recorders: [osLog]))
-        }
+        // Optionally set some configuration options
+        fileDestination.outputLevel = .debug
+        fileDestination.showLogIdentifier = false
+        fileDestination.showFunctionName = true
+        fileDestination.showThreadName = true
+        fileDestination.showLevel = true
+        fileDestination.showFileName = true
+        fileDestination.showLineNumber = true
+        fileDestination.showDate = true
 
-        let fileCfg = RotatingLogFileConfiguration(minimumSeverity: .verbose, daysToKeep: 15,
-                                                   directoryPath: self.logsDirectory.path,
-                                                   formatters: [ReadableLogFormatter()])
+        // Process this destination in the background
+        fileDestination.logQueue = XCGLogger.logQueue
 
-        configs.append(fileCfg)
+        // Add the destination to the logger
+        log.add(destination: fileDestination)
 
-        Log.enable(configuration: configs)
-    }
+        // Add basic app info, version info etc, to the start of the logs
+        log.logAppDetails()
+
+        return log
+    }()
 }

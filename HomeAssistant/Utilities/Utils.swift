@@ -9,7 +9,6 @@
 import Foundation
 import KeychainAccess
 import Shared
-import CleanroomLogger
 
 // Thanks to http://stackoverflow.com/a/35624018/486182
 // Must reboot device after installing new push sounds (http://stackoverflow.com/q/34998278/486182)
@@ -27,17 +26,17 @@ func movePushNotificationSounds() -> Int {
                                           in: FileManager.SearchPathDomainMask.userDomainMask,
                                           appropriateFor: nil, create: false)
     } catch let error as NSError {
-        Log.error?.message("Error when building URL for library directory: \(error)")
+        Current.Log.error("Error when building URL for library directory: \(error)")
         return 0
     }
 
     let librarySoundsPath = libraryPath.appendingPathComponent("Sounds")
 
     do {
-        Log.verbose?.message("Creating sounds directory at \(librarySoundsPath)")
+        Current.Log.verbose("Creating sounds directory at \(librarySoundsPath)")
         try fileManager.createDirectory(at: librarySoundsPath, withIntermediateDirectories: true, attributes: nil)
     } catch let error as NSError {
-        Log.error?.message("Error creating /Library/Sounds directory: \(error)")
+        Current.Log.error("Error creating /Library/Sounds directory: \(error)")
         return 0
     }
 
@@ -49,7 +48,7 @@ func movePushNotificationSounds() -> Int {
                                             appropriateFor: nil,
                                             create: false)
     } catch let error as NSError {
-        Log.error?.message("Error building documents path URL: \(error)")
+        Current.Log.error("Error building documents path URL: \(error)")
         return 0
     }
 
@@ -60,24 +59,24 @@ func movePushNotificationSounds() -> Int {
                                                        includingPropertiesForKeys: nil,
                                                        options: FileManager.DirectoryEnumerationOptions())
     } catch let error as NSError {
-        Log.error?.message("Error getting contents of documents directory: \(error)")
+        Current.Log.error("Error getting contents of documents directory: \(error)")
         return 0
     }
 
     for file in fileList {
         let finalUrl = librarySoundsPath.appendingPathComponent(file.lastPathComponent)
-        Log.verbose?.message("Moving \(file) to \(finalUrl)")
+        Current.Log.verbose("Moving \(file) to \(finalUrl)")
         do {
-            Log.verbose?.message("Checking for existence of file at \(finalUrl)")
+            Current.Log.verbose("Checking for existence of file at \(finalUrl)")
             try fileManager.removeItem(at: finalUrl)
         } catch let rmError as NSError {
-            Log.error?.message("Error removing existing file: \(rmError)")
+            Current.Log.error("Error removing existing file: \(rmError)")
         }
         do {
             try fileManager.moveItem(at: file, to: finalUrl)
             movedFiles += 1
         } catch let error as NSError {
-            Log.error?.message("Error when attempting to move files: \(error)")
+            Current.Log.error("Error when attempting to move files: \(error)")
         }
     }
     return movedFiles
@@ -87,7 +86,7 @@ func resetStores() {
     do {
         try keychain.removeAll()
     } catch {
-        Log.error?.message("Error when trying to delete everything from Keychain!")
+        Current.Log.error("Error when trying to delete everything from Keychain!")
     }
 
     if let groupDefaults = UserDefaults(suiteName: Constants.AppGroupID) {
@@ -112,7 +111,7 @@ func convertToDictionary(text: String) -> [String: Any]? {
         do {
             return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
         } catch {
-            Log.error?.message("Error converting JSON string to dict: \(error)")
+            Current.Log.error("Error converting JSON string to dict: \(error)")
         }
     }
     return nil

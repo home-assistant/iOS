@@ -13,7 +13,6 @@ import Shared
 import RealmSwift
 import UIColor_Hex_Swift
 import PromiseKit
-import CleanroomLogger
 
 class TodayViewController: UIViewController, NCWidgetProviding,
                            UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
@@ -25,11 +24,6 @@ class TodayViewController: UIViewController, NCWidgetProviding,
     let realm = Current.realm()
 
     var actions: Results<Action>?
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        Current.configureLogging()
-    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -120,7 +114,7 @@ class TodayViewController: UIViewController, NCWidgetProviding,
         }.ensure {
             cell.imageView.hideActivityIndicator()
         }.catch { err -> Void in
-            Log.error?.message("Error during action event fire: \(err)")
+            Current.Log.error("Error during action event fire: \(err)")
             feedbackGenerator.notificationOccurred(.error)
         }
     }

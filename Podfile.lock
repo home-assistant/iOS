@@ -33,6 +33,9 @@ PODS:
   - Iconic (1.5)
   - KeychainAccess (3.1.1)
   - MBProgressHUD (1.1.0)
+  - ObjcExceptionBridging (1.0.1):
+    - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
+  - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
   - ObjectMapper (3.3.0)
   - PMAlertController (3.5.0)
   - PromiseKit (6.4.1):
@@ -57,6 +60,10 @@ PODS:
   - UIColor_Hex_Swift (4.2.0)
   - ViewRow (0.3.0):
     - Eureka (>= 4.0.0)
+  - XCGLogger (6.1.0):
+    - XCGLogger/Core (= 6.1.0)
+  - XCGLogger/Core (6.1.0):
+    - ObjcExceptionBridging
   - ZIPFoundation (0.9.8)
 
 DEPENDENCIES:
@@ -86,6 +93,7 @@ DEPENDENCIES:
   - SwiftLint (= 0.27.0)
   - UIColor_Hex_Swift
   - ViewRow (from `https://github.com/EurekaCommunity/ViewRow`, branch `Swift4.2`)
+  - XCGLogger (~> 6.1.0)
   - ZIPFoundation (~> 0.9)
 
 SPEC REPOS:
@@ -101,6 +109,7 @@ SPEC REPOS:
     - EMTLoadingIndicator
     - KeychainAccess
     - MBProgressHUD
+    - ObjcExceptionBridging
     - ObjectMapper
     - PMAlertController
     - PromiseKit
@@ -112,6 +121,7 @@ SPEC REPOS:
     - SwiftLint
     - TABObserverSet
     - UIColor_Hex_Swift
+    - XCGLogger
     - ZIPFoundation
 
 EXTERNAL SOURCES:
@@ -164,6 +174,7 @@ SPEC CHECKSUMS:
   Iconic: ee7252a3c892c74cc1175334e2c40f0260a19bd3
   KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
+  ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
   PMAlertController: 06dab8160066fc4ce991c880e3722cd403e2926a
   PromiseKit: 4c76a6506638034e3d7bede97b2ff7743f7bd2dc
@@ -176,8 +187,9 @@ SPEC CHECKSUMS:
   TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
   UIColor_Hex_Swift: bc07fc197421ee896b9ed6dcfa2054b7fbf75145
   ViewRow: e278428ff53da5eab18b191d3e19a16f3e299fc1
+  XCGLogger: 7f7f43f15dfe3a305fa1342b7dc29af656289abd
   ZIPFoundation: b1f07e4409baf1641f3fe5948b2a1c3f5c500cb1
 
-PODFILE CHECKSUM: ba9051c867f70492eba31fffab3122519cbe3749
+PODFILE CHECKSUM: 3e8f6e54c5e670f234b11ff752f4fcb50ed83c6d
 
 COCOAPODS: 1.6.0.beta.1

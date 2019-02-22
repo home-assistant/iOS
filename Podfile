@@ -30,6 +30,8 @@ def shared_pods
     pod 'ReachabilitySwift'
     pod 'RealmSwift', '3.11.0'
     pod 'Reqres'
+    pod 'UIColor_Hex_Swift'
+    pod 'XCGLogger', '~> 6.1.0'
 end
 
 target 'HomeAssistant' do
@@ -47,7 +49,6 @@ target 'HomeAssistant' do
     pod 'MBProgressHUD', '1.1.0'
     pod 'SwiftGen', '5.3.0'
     pod 'SwiftLint', '0.27.0'
-    pod 'UIColor_Hex_Swift'
     pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'Swift4.2'
     pod 'ZIPFoundation', '~> 0.9'
 
@@ -64,11 +65,6 @@ target 'Shared' do
     end
 end
 
-
-target 'HomeAssistantUITests' do
-
-end
-
 target 'APNSAttachmentService' do
     shared_pods
 end
@@ -80,11 +76,7 @@ target 'NotificationContentExtension' do
 end
 
 target 'SiriIntents' do
-    pod 'PromiseKit', '6.4.1'
-end
-
-target 'WatchApp' do
-
+    shared_pods
 end
 
 target 'WatchAppExtension' do
@@ -95,13 +87,12 @@ target 'WatchAppExtension' do
     pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
     pod 'ObjectMapper', '3.3.0'
     pod 'RealmSwift', '3.11.0'
+    pod 'XCGLogger', '~> 6.1.0'
     pod 'UIColor_Hex_Swift'
 end
 
 target 'TodayWidget' do
     shared_pods
-
-    pod 'UIColor_Hex_Swift'
 end
 
 post_install do |installer|

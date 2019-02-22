@@ -8,7 +8,6 @@
 
 import Foundation
 import ObjectMapper
-import CleanroomLogger
 
 // swiftlint:disable:next type_body_length
 public class Entity: StaticMappable {
@@ -208,7 +207,7 @@ public class Entity: StaticMappable {
         case "weblink":
             return "mdi:open-in-new"
         default:
-            Log.warning?.message("Unable to find icon for domain \(self.Domain) (\(self.State))")
+            Current.Log.warning("Unable to find icon for domain \(self.Domain) (\(self.State))")
             return "mdi:bookmark"
         }
     }

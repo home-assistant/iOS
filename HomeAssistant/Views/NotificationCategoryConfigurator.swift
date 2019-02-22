@@ -13,7 +13,6 @@ import UserNotifications
 import RealmSwift
 import Shared
 import Iconic
-import CleanroomLogger
 
 class NotificationCategoryConfigurator: FormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
@@ -247,7 +246,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                 if let vc = vc as? NotificationActionConfigurator {
                     vc.row.title = vc.action.Title
                     vc.row.updateCell()
-                    Log.verbose?.message("action \(vc.action)")
+                    Current.Log.verbose("action \(vc.action)")
 
                     // swiftlint:disable:next force_try
                     try! self.realm.write {
@@ -262,16 +261,16 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
     @objc
     func getInfoAction(_ sender: Any) {
-        Log.verbose?.message("getInfoAction hit, open docs page!")
+        Current.Log.verbose("getInfoAction hit, open docs page!")
     }
 
     @objc
     func save(_ sender: Any) {
-        Log.verbose?.message("Go back hit, check for validation")
+        Current.Log.verbose("Go back hit, check for validation")
 
-        Log.verbose?.message("Validate result \(self.form.validate())")
+        Current.Log.verbose("Validate result \(self.form.validate())")
         if self.form.validate().count == 0 {
-            Log.verbose?.message("Category form is valid, calling dismiss callback!")
+            Current.Log.verbose("Category form is valid, calling dismiss callback!")
 
             self.shouldSave = true
 
@@ -281,7 +280,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
     @objc
     func cancel(_ sender: Any) {
-        Log.verbose?.message("Cancel hit, calling dismiss")
+        Current.Log.verbose("Cancel hit, calling dismiss")
 
         self.shouldSave = false
 
@@ -290,7 +289,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
     @objc
     func preview(_ sender: Any) {
-        Log.verbose?.message("Preview hit")
+        Current.Log.verbose("Preview hit")
 
         let content = UNMutableNotificationContent()
         content.title = "Test notification"

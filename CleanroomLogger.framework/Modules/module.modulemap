@@ -1,4 +1,0 @@
-framework module CleanroomLogger {
-  header "CleanroomLogger-Swift.h"
-  requires objc
-}

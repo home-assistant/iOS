@@ -15,7 +15,6 @@ import IntentsUI
 import PromiseKit
 import ObjectMapper
 import ViewRow
-import CleanroomLogger
 
 @available(iOS 12, *)
 // swiftlint:disable:next type_body_length
@@ -177,10 +176,10 @@ class ShortcutServiceConfigurator: FormViewController {
                         $0.title = L10n.previewOutput
                     }.onCellSelection({ _, _ in
                         if let row = self.form.rowBy(tag: key) as? TextAreaRow, let value = row.value {
-                            Log.verbose?.message("Render template from \(value)")
+                            Current.Log.verbose("Render template from \(value)")
 
                             HomeAssistantAPI.authenticatedAPI()?.RenderTemplate(templateStr: value).done { val in
-                                Log.verbose?.message("Rendered value is \(val)")
+                                Current.Log.verbose("Rendered value is \(val)")
 
                                 let alert = UIAlertController(title: L10n.successLabel, message: val,
                                                               preferredStyle: UIAlertController.Style.alert)
@@ -189,7 +188,7 @@ class ShortcutServiceConfigurator: FormViewController {
                                 self.present(alert, animated: true, completion: nil)
 
                             }.catch { renderErr in
-                                Log.error?.message("Error rendering template! \(renderErr)")
+                                Current.Log.error("Error rendering template! \(renderErr)")
                                 let alert = UIAlertController(title: L10n.errorLabel,
                                                               message: renderErr.localizedDescription,
                                                               preferredStyle: UIAlertController.Style.alert)
@@ -364,7 +363,7 @@ class ShortcutServiceConfigurator: FormViewController {
 
     @objc
     func getInfoAction(_ sender: Any) {
-        Log.verbose?.message("getInfoAction hit, open docs page!")
+        Current.Log.verbose("getInfoAction hit, open docs page!")
     }
 }
 
@@ -375,13 +374,13 @@ extension ShortcutServiceConfigurator: INUIAddVoiceShortcutViewControllerDelegat
                                         didFinishWith voiceShortcut: INVoiceShortcut?,
                                         error: Error?) {
         if let error = error as NSError? {
-            Log.error?.message("Error adding voice shortcut: \(error)")
+            Current.Log.error("Error adding voice shortcut: \(error)")
             controller.dismiss(animated: true, completion: nil)
             return
         }
 
         if let voiceShortcut = voiceShortcut {
-            Log.verbose?.message("Shortcut with ID \(voiceShortcut.identifier.uuidString) added")
+            Current.Log.verbose("Shortcut with ID \(voiceShortcut.identifier.uuidString) added")
         }
 
         controller.dismiss(animated: true, completion: nil)
@@ -401,12 +400,12 @@ extension ShortcutServiceConfigurator: INUIEditVoiceShortcutViewControllerDelega
                                          didUpdate voiceShortcut: INVoiceShortcut?,
                                          error: Error?) {
         if let error = error as NSError? {
-            Log.error?.message("Error updating voice shortcut: \(error)")
+            Current.Log.error("Error updating voice shortcut: \(error)")
             controller.dismiss(animated: true, completion: nil)
             return
         }
         if let voiceShortcut = voiceShortcut {
-            Log.verbose?.message("Shortcut with ID \(voiceShortcut.identifier.uuidString) updated")
+            Current.Log.verbose("Shortcut with ID \(voiceShortcut.identifier.uuidString) updated")
         }
         controller.dismiss(animated: true, completion: nil)
         return
@@ -414,7 +413,7 @@ extension ShortcutServiceConfigurator: INUIEditVoiceShortcutViewControllerDelega
 
     func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
                                          didDeleteVoiceShortcutWithIdentifier deletedVoiceShortcutIdentifier: UUID) {
-        Log.verbose?.message("Shortcut with ID \(deletedVoiceShortcutIdentifier.uuidString) deleted")
+        Current.Log.verbose("Shortcut with ID \(deletedVoiceShortcutIdentifier.uuidString) deleted")
         controller.dismiss(animated: true, completion: nil)
         return
     }

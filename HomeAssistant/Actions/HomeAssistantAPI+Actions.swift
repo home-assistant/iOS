@@ -10,7 +10,6 @@ import Foundation
 import DeviceKit
 import PromiseKit
 import Shared
-import CleanroomLogger
 
 extension HomeAssistantAPI {
 
@@ -28,7 +27,7 @@ extension HomeAssistantAPI {
                                             "sourceDeviceName": device.name,
                                             "sourceDeviceID": Current.settingsStore.deviceID]
 
-            Log.verbose?.message("Sending action payload: \(eventData)")
+            Current.Log.verbose("Sending action payload: \(eventData)")
 
             let eventType = "ios.action_fired"
             api.createEvent(eventType: eventType, eventData: eventData).done { _ -> Void in

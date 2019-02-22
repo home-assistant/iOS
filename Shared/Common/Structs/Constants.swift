@@ -31,6 +31,33 @@ public struct Constants {
         return "group." + self.BundleID.lowercased()
     }
 
+    public static var AppGroupContainer: URL {
+        let fileManager = FileManager.default
+
+        let groupDir = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)
+
+        guard groupDir != nil else {
+            fatalError("Unable to get groupDir.")
+        }
+
+        return groupDir!
+    }
+
+    public static var LogsDirectory: URL {
+        let fileManager = FileManager.default
+        let directoryURL = self.AppGroupContainer.appendingPathComponent("logs", isDirectory: true)
+
+        if !fileManager.fileExists(atPath: directoryURL.path) {
+            do {
+                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                fatalError("Error while attempting to create data store URL: \(error)")
+            }
+        }
+
+        return directoryURL
+    }
+
     #if os(iOS)
     /// An initialized Keychain from KeychainAccess.
     public static var Keychain: KeychainAccess.Keychain {

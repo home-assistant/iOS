@@ -9,13 +9,12 @@
 import Foundation
 import UIKit
 import Shared
-import CleanroomLogger
 
 class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
 
     func confirm(intent: RenderTemplateIntent, completion: @escaping (RenderTemplateIntentResponse) -> Void) {
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
-            Log.error?.message("Can't get a authenticated API \(error)")
+            Current.Log.error("Can't get a authenticated API \(error)")
             completion(RenderTemplateIntentResponse(code: .failureConnectivity, userActivity: nil))
             return
         }
@@ -40,23 +39,23 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
         }
 
         if let templateStr = intent.template {
-            Log.verbose?.message("Rendering template \(templateStr)")
+            Current.Log.verbose("Rendering template \(templateStr)")
 
             api.RenderTemplate(templateStr: templateStr).done { rendered in
-                Log.verbose?.message("Successfully renderedTemplate")
+                Current.Log.verbose("Successfully renderedTemplate")
 
                 UIPasteboard.general.string = rendered
 
                 completion(RenderTemplateIntentResponse(code: successCode, userActivity: nil))
             }.catch { error in
-                Log.error?.message("Error when rendering template in shortcut \(error)")
+                Current.Log.error("Error when rendering template in shortcut \(error)")
                 let resp = RenderTemplateIntentResponse(code: .failure, userActivity: nil)
                 resp.error = "Error during api.RenderTemplate: \(error.localizedDescription)"
                 completion(resp)
             }
 
         } else {
-            Log.error?.message("Unable to unwrap intent.template")
+            Current.Log.error("Unable to unwrap intent.template")
             let resp = RenderTemplateIntentResponse(code: .failure, userActivity: nil)
             resp.error = "Unable to unwrap intent.template"
             completion(resp)

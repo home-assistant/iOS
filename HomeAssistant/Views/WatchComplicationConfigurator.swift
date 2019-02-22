@@ -14,7 +14,6 @@ import PromiseKit
 import ObjectMapper
 import ColorPickerRow
 import Iconic
-import CleanroomLogger
 
 // swiftlint:disable:next type_body_length
 class WatchComplicationConfigurator: FormViewController {
@@ -153,7 +152,7 @@ class WatchComplicationConfigurator: FormViewController {
                 $0.value = UIColor(hex: value)
             }
             }.onChange { (picker) in
-                Log.verbose?.message("gauge color: \(picker.value!.hexString(false))")
+                Current.Log.verbose("gauge color: \(picker.value!.hexString(false))")
         }
 
         <<< SegmentedRow<String> {
@@ -268,7 +267,7 @@ class WatchComplicationConfigurator: FormViewController {
                     $0.value = UIColor(hex: value)
                 }
             }.onChange { (picker) in
-                Log.verbose?.message("icon color: \(picker.value!.hexString(false))")
+                Current.Log.verbose("icon color: \(picker.value!.hexString(false))")
                 if let iconRow = self.form.rowBy(tag: "icon") as? PushRow<String> {
                     if let value = iconRow.value {
                         let theIcon = MaterialDesignIcons(named: value)
@@ -296,7 +295,7 @@ class WatchComplicationConfigurator: FormViewController {
             try! realm.write {
                 self.config.Data = getValuesGroupedBySection()
 
-                Log.verbose?.message("COMPLICATION \(self.config) \(self.config.Data)")
+                Current.Log.verbose("COMPLICATION \(self.config) \(self.config.Data)")
 
                 realm.add(self.config, update: true)
             }
@@ -305,12 +304,12 @@ class WatchComplicationConfigurator: FormViewController {
 
     @objc
     func getInfoAction(_ sender: Any) {
-        Log.verbose?.message("getInfoAction hit, open docs page!")
+        Current.Log.verbose("getInfoAction hit, open docs page!")
     }
 
     func renderTemplateForRow(rowTag: String) {
         if let row = self.form.rowBy(tag: rowTag) as? TextAreaRow, let value = row.value {
-            Log.verbose?.message("Render template from \(value)")
+            Current.Log.verbose("Render template from \(value)")
 
             renderTemplateValue(value)
         }
@@ -318,7 +317,7 @@ class WatchComplicationConfigurator: FormViewController {
 
     func renderTemplateForRow(row: BaseRow) {
         if let value = row.baseValue as? String {
-            Log.verbose?.message("Render template from \(value)")
+            Current.Log.verbose("Render template from \(value)")
 
             renderTemplateValue(value)
         }
@@ -326,7 +325,7 @@ class WatchComplicationConfigurator: FormViewController {
 
     func renderTemplateValue(_ value: String) {
         HomeAssistantAPI.authenticatedAPI()?.RenderTemplate(templateStr: value).done { val in
-            Log.verbose?.message("Rendered value is \(val)")
+            Current.Log.verbose("Rendered value is \(val)")
 
             let alert = UIAlertController(title: "Output Preview", message: val,
                                           preferredStyle: UIAlertController.Style.alert)
@@ -335,7 +334,7 @@ class WatchComplicationConfigurator: FormViewController {
             self.present(alert, animated: true, completion: nil)
 
             }.catch { renderErr in
-                Log.error?.message("Error rendering template! \(renderErr)")
+                Current.Log.error("Error rendering template! \(renderErr)")
                 let alert = UIAlertController(title: L10n.errorLabel,
                                               message: renderErr.localizedDescription,
                                               preferredStyle: UIAlertController.Style.alert)
@@ -387,7 +386,7 @@ class WatchComplicationConfigurator: FormViewController {
                 $0.value = UIColor(hex: value)
             }
         }.onChange { (picker) in
-            Log.verbose?.message("color for "+location.rawValue+": \(picker.value!.hexString(false))")
+            Current.Log.verbose("color for "+location.rawValue+": \(picker.value!.hexString(false))")
         })
 
         return section
@@ -483,7 +482,7 @@ class WatchComplicationConfigurator: FormViewController {
 
         groupedVals["textAreas"] = textAreasDict
 
-        Log.verbose?.message("groupedVals \(groupedVals)")
+        Current.Log.verbose("groupedVals \(groupedVals)")
 
         return groupedVals
     }

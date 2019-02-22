@@ -15,7 +15,6 @@ import Iconic
 import ColorPickerRow
 import ViewRow
 import PromiseKit
-import CleanroomLogger
 
 class ActionConfigurator: FormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
@@ -176,7 +175,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                     $0.value = UIColor.green
                     $0.value = UIColor(hex: self.action.IconColor)
                 }.onChange { (picker) in
-                    Log.verbose?.message("icon color: \(picker.value!.hexString(false))")
+                    Current.Log.verbose("icon color: \(picker.value!.hexString(false))")
 
                     self.action.IconColor = picker.value!.hexString()
 
@@ -209,15 +208,15 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
     @objc
     func getInfoAction(_ sender: Any) {
-        Log.verbose?.message("getInfoAction hit, open docs page!")
+        Current.Log.verbose("getInfoAction hit, open docs page!")
     }
 
     @objc
     func save(_ sender: Any) {
-        Log.verbose?.message("Go back hit, check for validation")
+        Current.Log.verbose("Go back hit, check for validation")
 
         if self.form.validate().count == 0 {
-            Log.verbose?.message("Category form is valid, calling dismiss callback!")
+            Current.Log.verbose("Category form is valid, calling dismiss callback!")
 
             self.shouldSave = true
 
@@ -227,7 +226,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
     @objc
     func cancel(_ sender: Any) {
-        Log.verbose?.message("Cancel hit, calling dismiss")
+        Current.Log.verbose("Cancel hit, calling dismiss")
 
         self.shouldSave = false
 
@@ -304,7 +303,7 @@ class ActionPreview: UIView {
             }.ensure {
                 self.imageView.hideActivityIndicator()
             }.catch { err -> Void in
-                Log.error?.message("Error during action event fire: \(err)")
+                Current.Log.error("Error during action event fire: \(err)")
                 feedbackGenerator.notificationOccurred(.error)
         }
     }

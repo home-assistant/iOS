@@ -11,7 +11,7 @@ import ClockKit
 import RealmSwift
 import Communicator
 import UserNotifications
-import CleanroomLogger
+import XCGLogger
 
 // swiftlint:disable file_length
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
@@ -32,47 +32,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
     }
 
-    override init() {
-        let fileManager = FileManager.default
-        let storeDirectoryURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)?
-            .appendingPathComponent("logs", isDirectory: true)
-
-        guard let directoryURL = storeDirectoryURL else {
-            fatalError("Unable to get datastoreURL for logger.")
-        }
-
-        if !fileManager.fileExists(atPath: directoryURL.path) {
-            do {
-                try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
-            } catch {
-                fatalError("Error while attempting to create data store URL: \(error)")
-            }
-        }
-
-        var configs = [LogConfiguration]()
-
-        let stderr = StandardStreamsLogRecorder(formatters: [XcodeLogFormatter()])
-        configs.append(BasicLogConfiguration(recorders: [stderr]))
-
-        if let osLog = OSLogRecorder(formatters: [ReadableLogFormatter()]) {
-            configs.append(BasicLogConfiguration(recorders: [osLog]))
-        }
-
-        let fileCfg = RotatingLogFileConfiguration(minimumSeverity: .verbose, daysToKeep: 15,
-                                                   directoryPath: directoryURL.path,
-                                                   formatters: [ReadableLogFormatter()])
-
-        configs.append(fileCfg)
-
-        Log.enable(configuration: configs)
-    }
-
     // MARK: - WKExtensionDelegate -
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
 
-        Log.verbose?.message("didFinishLaunching")
+        Current.Log.verbose("didFinishLaunching")
 
         setupWatchCommunicator()
 
@@ -84,7 +49,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // Restart any tasks that were paused (or not yet started) while the application was inactive.
         // If the application was previously in the background, optionally refresh the user interface.
 
-        Log.verbose?.message("didBecomeActive")
+        Current.Log.verbose("didBecomeActive")
     }
 
     func applicationWillResignActive() {
@@ -92,7 +57,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message)
         // or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, etc.
-        Log.verbose?.message("willResignActive")
+        Current.Log.verbose("willResignActive")
         BackgroundRefreshScheduler.shared.schedule()
     }
 
@@ -110,7 +75,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             switch task {
             case let backgroundTask as WKApplicationRefreshBackgroundTask:
                 // Be sure to complete the background task once you’re done.
-                Log.verbose?.message("WKWatchConnectivityRefreshBackgroundTask received")
+                Current.Log.verbose("WKWatchConnectivityRefreshBackgroundTask received")
                 scheduleURLSessionIfNeeded()
                 BackgroundRefreshScheduler.shared.schedule()
                 backgroundTask.setTaskCompletedWithSnapshot(false)
@@ -127,7 +92,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 let backgroundConfigObject = URLSessionConfiguration.background(withIdentifier: identifier)
                 let backgroundSession = URLSession(configuration: backgroundConfigObject, delegate: self,
                                                    delegateQueue: nil)
-                Log.verbose?.message("Rejoining session: \(backgroundSession)")
+                Current.Log.verbose("Rejoining session: \(backgroundSession)")
 
                 // keep the session background task, it will be ended later...
                 // https://stackoverflow.com/q/41156386/486182
@@ -152,40 +117,40 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         if let date = userInfo?[CLKLaunchedTimelineEntryDateKey] as? Date {
 
             if let family = date.complicationFamilyFromEncodedDate {
-                Log.verbose?.message("\(family.description) complication opened app")
+                Current.Log.verbose("\(family.description) complication opened app")
             }
         }
     }
 
     func updateApplicationContext() {
-        Log.verbose?.message("active families \(self.activeFamilies)")
+        Current.Log.verbose("active families \(self.activeFamilies)")
 
         let context = Context(content: ["activeComplications": self.activeFamilies, "model": getModelName()])
 
         do {
             try Communicator.shared.sync(context: context)
         } catch let error as NSError {
-            Log.error?.message("Updating the context failed: \(error)")
+            Current.Log.error("Updating the context failed: \(error)")
         }
 
-        Log.verbose?.message("Set the context")
+        Current.Log.verbose("Set the context")
     }
 
     func setupWatchCommunicator() {
         Communicator.shared.activationStateChangedObservers.add { state in
-            Log.verbose?.message("Activation state changed: \(state)")
+            Current.Log.verbose("Activation state changed: \(state)")
 
             // self.updateApplicationContext()
         }
 
         Communicator.shared.reachabilityChangedObservers.add { reachability in
-            Log.verbose?.message("Reachability changed: \(reachability)")
+            Current.Log.verbose("Reachability changed: \(reachability)")
 
             // self.updateApplicationContext()
         }
 
         Communicator.shared.immediateMessageReceivedObservers.add { message in
-            Log.verbose?.message("Received message: \(message.identifier)")
+            Current.Log.verbose("Received message: \(message.identifier)")
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
@@ -201,7 +166,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                     try! realm.write {
                         for actionJSON in actionJSONs {
                             if let action = Action(JSON: actionJSON) {
-                                Log.verbose?.message("ACTION \(action)")
+                                Current.Log.verbose("ACTION \(action)")
                                 realm.add(action, update: true)
                             }
                         }
@@ -211,31 +176,31 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
 
         Communicator.shared.blobReceivedObservers.add { blob in
-            Log.verbose?.message("Received blob: \(blob.identifier)")
+            Current.Log.verbose("Received blob: \(blob.identifier)")
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
         Communicator.shared.contextUpdatedObservers.add { context in
-            Log.verbose?.message("Received context: \(context)")
+            Current.Log.verbose("Received context: \(context)")
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
         Communicator.shared.complicationInfoReceivedObservers.add { complicationInfo in
-            Log.verbose?.message("Received complication info: \(complicationInfo)")
+            Current.Log.verbose("Received complication info: \(complicationInfo)")
 
             // self.updateApplicationContext()
 
             let realm = Realm.live()
 
             for (family, data) in complicationInfo.content {
-                Log.verbose?.message("Family \(family)")
-                Log.verbose?.message("Data \(data)")
+                Current.Log.verbose("Family \(family)")
+                Current.Log.verbose("Data \(data)")
 
                 if let dataDict = data as? [String: Any], let complicationConfig = WatchComplication(JSON: dataDict) {
                     // swiftlint:disable:next force_try
                     try! realm.write {
-                        Log.verbose?.message("Writing \(complicationConfig.Family)")
+                        Current.Log.verbose("Writing \(complicationConfig.Family)")
                         realm.add(complicationConfig, update: true)
                     }
                 }
@@ -263,25 +228,25 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                                                                                    to: sessionStartTime)! > Date() {
 
                 // URL session running.. we'll let it do its work!
-                Log.warning?.message("URL session already exists, cannot start a new one!")
+                Current.Log.warning("URL session already exists, cannot start a new one!")
                 return
             } else {
 
                 // timeout reached for URL session, we'll start a new one!
-                Log.warning?.message("URL session timeout exceeded, finishing current and starting a new one!")
+                Current.Log.warning("URL session timeout exceeded, finishing current and starting a new one!")
                 completePendingURLSessionTask()
             }
         }
 
         guard let (backgroundSession, downloadTask) = scheduleURLSession() else {
-            Log.warning?.message("URL session cannot be created, probably base uri is not configured!")
+            Current.Log.warning("URL session cannot be created, probably base uri is not configured!")
             return
         }
 
         self.sessionStartTime = Date()
         self.backgroundSession = backgroundSession
         self.downloadTask = downloadTask
-        Log.verbose?.message("URL session started")
+        Current.Log.verbose("URL session started")
     }
 
     var activeFamilies: [String] {
@@ -299,18 +264,18 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         let complications = realm.objects(WatchComplication.self)
 
-        // Log.verbose?.message("complications", complications)
+        // Current.Log.verbose("complications", complications)
 
-        // Log.verbose?.message("activeComplications", self.activeComplications)
+        // Current.Log.verbose("activeComplications", self.activeComplications)
 
         for complication in complications {
             if self.activeFamilies.contains(complication.Family.rawValue) {
-                // Log.verbose?.message("ACTIVE COMPLICATION!", complication, complication.Data)
+                // Current.Log.verbose("ACTIVE COMPLICATION!", complication, complication.Data)
                 if let textAreas = complication.Data["textAreas"] as? [String: [String: Any]] {
                     for (key, textArea) in textAreas {
-                        // Log.verbose?.message("Got textArea", key, textArea)
+                        // Current.Log.verbose("Got textArea", key, textArea)
                         if let needsRender = textArea["textNeedsRender"] as? Bool, needsRender {
-                            // Log.verbose?.message("TEXT NEEDS RENDER!", key)
+                            // Current.Log.verbose("TEXT NEEDS RENDER!", key)
                             if templates[complication.Template.rawValue] == nil {
                                 templates[complication.Template.rawValue] = [String: String]()
                             }
@@ -323,7 +288,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         json["templates"] = templates
 
-        Log.verbose?.message("JSON payload to send \(json)")
+        Current.Log.verbose("JSON payload to send \(json)")
 
         return try? JSONSerialization.data(withJSONObject: json, options: [])
     }
@@ -343,7 +308,7 @@ func getModelName() -> String {
 extension ExtensionDelegate: URLSessionDownloadDelegate {
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        Log.verbose?.message("Background download was finished, location is \(location)")
+        Current.Log.verbose("Background download was finished, location is \(location)")
 
         // reset the session error
         self.sessionError = nil
@@ -351,24 +316,24 @@ extension ExtensionDelegate: URLSessionDownloadDelegate {
         // extract data on main thead
         //DispatchQueue.main.async { [unowned self] in
 
-            Log.verbose?.message("extracting downloaded data")
+            Current.Log.verbose("extracting downloaded data")
             do {
                 let data = try Data(contentsOf: location)
                 let json = try JSONSerialization.jsonObject(with: data)
-                Log.verbose?.message("Got JSON \(json)")
+                Current.Log.verbose("Got JSON \(json)")
                 if let jsonDict = json as? [String: [String: String]] {
-                    Log.verbose?.message("JSON Dict1 \(jsonDict)")
+                    Current.Log.verbose("JSON Dict1 \(jsonDict)")
 
                     for (templateName, textAreas) in jsonDict {
                         let pred = NSPredicate(format: "rawTemplate == %@", templateName)
                         let realm = Realm.live()
                         guard let complication = realm.objects(WatchComplication.self).filter(pred).first else {
-                            Log.error?.message("Couldn't get complication from DB for \(templateName)")
+                            Current.Log.error("Couldn't get complication from DB for \(templateName)")
                             continue
                         }
 
                         guard var storedAreas = complication.Data["textAreas"] as? [String: [String: Any]] else {
-                            Log.error?.message("Couldn't cast stored areas")
+                            Current.Log.error("Couldn't cast stored areas")
                             continue
                         }
                         for (textAreaKey, renderedText) in textAreas {
@@ -380,7 +345,7 @@ extension ExtensionDelegate: URLSessionDownloadDelegate {
                             complication.Data["textAreas"] = storedAreas
                         }
 
-                        Log.verbose?.message("complication \(complication.Data)")
+                        Current.Log.verbose("complication \(complication.Data)")
                     }
                 }
 
@@ -389,7 +354,7 @@ extension ExtensionDelegate: URLSessionDownloadDelegate {
                 // Success
                 self.sessionError = nil
             } catch {
-                Log.error?.message("Error when parsing JSON \(error)")
+                Current.Log.error("Error when parsing JSON \(error)")
                 self.sessionError = error
             }
 
@@ -398,7 +363,7 @@ extension ExtensionDelegate: URLSessionDownloadDelegate {
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
-            Log.error?.message("URL session did complete with error: \(error)")
+            Current.Log.error("URL session did complete with error: \(error)")
             completePendingURLSessionTask()
         }
 
@@ -407,7 +372,7 @@ extension ExtensionDelegate: URLSessionDownloadDelegate {
     }
 
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        Log.verbose?.message("URL session did finish events")
+        Current.Log.verbose("URL session did finish events")
     }
 
     fileprivate func completePendingURLSessionTask() {
@@ -419,14 +384,14 @@ extension ExtensionDelegate: URLSessionDownloadDelegate {
         self.pendingBackgroundURLTask?.setTaskCompleted()
         self.pendingBackgroundURLTask = nil
 
-        Log.verbose?.message("URL session COMPLETED")
+        Current.Log.verbose("URL session COMPLETED")
     }
 
     func scheduleURLSession() -> (URLSession, URLSessionDownloadTask)? {
 
         guard let webhookURL = Communicator.shared.mostRecentlyReceievedContext.content["webhook_url"] as? String else {
             // swiftlint:disable:next line_length
-            Log.warning?.message("Didn't find webhook URL in context \(Communicator.shared.mostRecentlyReceievedContext)")
+            Current.Log.warning("Didn't find webhook URL in context \(Communicator.shared.mostRecentlyReceievedContext)")
             return nil
         }
 
@@ -440,7 +405,7 @@ extension ExtensionDelegate: URLSessionDownloadDelegate {
 
         let downloadURL = URL(string: webhookURL)!
 
-        Log.verbose?.message("Render template URL \(downloadURL)")
+        Current.Log.verbose("Render template URL \(downloadURL)")
 
         var request = URLRequest(url: downloadURL)
         request.httpMethod = "POST"
@@ -448,7 +413,7 @@ extension ExtensionDelegate: URLSessionDownloadDelegate {
         request.addValue("application/json", forHTTPHeaderField: "Accept")
 
         guard let payload = self.makeHTTPPayload() else {
-            Log.warning?.message("Unable to get HTTP payload")
+            Current.Log.warning("Unable to get HTTP payload")
             return nil
         }
 

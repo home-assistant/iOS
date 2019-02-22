@@ -9,12 +9,11 @@
 import Foundation
 import UIKit
 import Shared
-import CleanroomLogger
 
 class FireEventIntentHandler: NSObject, FireEventIntentHandling {
     func confirm(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
-            Log.error?.message("Can't get a authenticated API \(error)")
+            Current.Log.error("Can't get a authenticated API \(error)")
             completion(FireEventIntentResponse(code: .failureConnectivity, userActivity: nil))
             return
         }
@@ -29,7 +28,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
             return
         }
 
-        Log.verbose?.message("Handling fire event shortcut \(intent)")
+        Current.Log.verbose("Handling fire event shortcut \(intent)")
 
         var successCode: FireEventIntentResponseCode = .success
 
@@ -59,28 +58,28 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
                     }
 
                     if isGenericPayload {
-                        Log.verbose?.message("No known keys found, assuming generic payload")
+                        Current.Log.verbose("No known keys found, assuming generic payload")
                         eventDataDict = jsonArray
                     }
                 } else {
-                    Log.error?.message("Unable to parse event data to JSON during shortcut: \(storedData)")
+                    Current.Log.error("Unable to parse event data to JSON during shortcut: \(storedData)")
                     let resp = FireEventIntentResponse(code: .failure, userActivity: nil)
                     resp.error = "Unable to parse event data to JSON during shortcut"
                     completion(resp)
                     return
                 }
             } catch let error as NSError {
-                Log.error?.message("Error when parsing event data to JSON during FireEvent: \(error)")
+                Current.Log.error("Error when parsing event data to JSON during FireEvent: \(error)")
                 completion(FireEventIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
                 return
             }
         }
 
         api.createEvent(eventType: intent.eventName!, eventData: eventDataDict).done { _ in
-            Log.verbose?.message("Successfully fired event during shortcut")
+            Current.Log.verbose("Successfully fired event during shortcut")
             completion(FireEventIntentResponse(code: successCode, userActivity: nil))
         }.catch { error in
-            Log.error?.message("Error when firing event in shortcut \(error)")
+            Current.Log.error("Error when firing event in shortcut \(error)")
             let resp = FireEventIntentResponse(code: .failure, userActivity: nil)
             resp.error = "Error when firing event in shortcut: \(error.localizedDescription)"
             completion(resp)

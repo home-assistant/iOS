@@ -11,13 +11,12 @@ import UIKit
 import CoreLocation
 import Shared
 import MapKit
-import CleanroomLogger
 
 class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
     func confirm(intent: SendLocationIntent, completion: @escaping (SendLocationIntentResponse) -> Void) {
 
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
-            Log.error?.message("Can't get a authenticated API \(error)")
+            Current.Log.error("Can't get a authenticated API \(error)")
             completion(SendLocationIntentResponse(code: .failureConnectivity, userActivity: nil))
             return
         }
@@ -26,10 +25,10 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
     }
 
     func handle(intent: SendLocationIntent, completion: @escaping (SendLocationIntentResponse) -> Void) {
-        Log.verbose?.message("Handling send location")
+        Current.Log.verbose("Handling send location")
 
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            Log.error?.message("Failed to get Home Assistant API during handle of sendLocation")
+            Current.Log.error("Failed to get Home Assistant API during handle of sendLocation")
             completion(SendLocationIntentResponse(code: .failureConnectivity, userActivity: nil))
             return
         }
@@ -41,13 +40,13 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                 resp.code == SendLocationIntentResponseCode.failureConnectivity ||
                 resp.code == SendLocationIntentResponseCode.failureGeocoding {
 
-                Log.error?.message("Didn't receive success code \(resp.code), \(resp)")
+                Current.Log.error("Didn't receive success code \(resp.code), \(resp)")
                 completion(resp)
                 return
             }
 
             api.submitLocation(updateType: .Siri, location: resp.location?.location, zone: nil).done {
-                Log.verbose?.message("Successfully submitted location")
+                Current.Log.verbose("Successfully submitted location")
 
                 var respCode = SendLocationIntentResponseCode.success
                 if resp.source != .unknown && resp.source != .stored {
@@ -59,7 +58,7 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                                                       pasteboardContents: resp.pasteboardContents))
                 return
             }.catch { error in
-                Log.error?.message("Error sending location during Siri Shortcut call: \(error)")
+                Current.Log.error("Error sending location during Siri Shortcut call: \(error)")
                 let resp = SendLocationIntentResponse(code: .failure, userActivity: nil)
                 resp.error = "Error sending location during Siri Shortcut call: \(error.localizedDescription)"
                 completion(resp)
@@ -78,27 +77,27 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
         // If they don't have a string like that then we assume they have a address on pasteboard.
 
         if let place = intent.location {
-            Log.verbose?.message("Location already set, returning")
+            Current.Log.verbose("Location already set, returning")
             completion(SendLocationIntentResponse(code: .ready, userActivity: nil, place: place, source: .stored,
                                                   pasteboardContents: nil))
             return
         } else if let pasteboardString = UIPasteboard.general.string {
-            Log.verbose?.message("Pasteboard contains... \(pasteboardString)")
+            Current.Log.verbose("Pasteboard contains... \(pasteboardString)")
             let allowedLatLongChars = CharacterSet(charactersIn: "0123456789,-.")
             if pasteboardString.rangeOfCharacter(from: allowedLatLongChars.inverted) == nil {
-                Log.verbose?.message("Appears we have a lat,long formatted string")
+                Current.Log.verbose("Appears we have a lat,long formatted string")
                 let splitString = pasteboardString.components(separatedBy: ",")
                 if let latitude = CLLocationDegrees(splitString[0]), let longitude = CLLocationDegrees(splitString[1]) {
                     let coord = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
 
                     if !CLLocationCoordinate2DIsValid(coord) {
-                        Log.warning?.message("Invalid coords!! \(coord)")
+                        Current.Log.warning("Invalid coords!! \(coord)")
                         completion(SendLocationIntentResponse(code: .failureClipboardNotParseable, userActivity: nil,
                                                               pasteboardContents: pasteboardString))
                         return
                     }
 
-                    Log.verbose?.message("Successfully parsed pasteboard contents to lat,long, returning")
+                    Current.Log.verbose("Successfully parsed pasteboard contents to lat,long, returning")
 
                     // We use MKPlacemark so we can return a CLPlacemark without requiring use of the geocoder
                     completion(SendLocationIntentResponse(code: .ready, userActivity: nil,
@@ -106,7 +105,7 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                                                           pasteboardContents: pasteboardString))
                     return
                 } else {
-                    Log.warning?.message("Thought we found a lat,long on clipboard, but it wasn't parseable, returning")
+                    Current.Log.warning("Thought we found a lat,long on clipboard, but it wasn't parseable, returning")
                     completion(SendLocationIntentResponse(code: .failureClipboardNotParseable, userActivity: nil,
                                                           pasteboardContents: pasteboardString))
                     return
@@ -114,10 +113,10 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
             } else { // Fallback to assuming that there's an address on there
                 let geocoder = CLGeocoder()
 
-                Log.warning?.message("Not a lat,long, attempting geocode of string")
+                Current.Log.warning("Not a lat,long, attempting geocode of string")
                 geocoder.geocodeAddressString(pasteboardString) { (placemarks, error) in
                     if let error = error {
-                        Log.error?.message("Error when geocoding string, sending current location instead! \(error)")
+                        Current.Log.error("Error when geocoding string, sending current location instead! \(error)")
                         completion(SendLocationIntentResponse(code: .ready, userActivity: nil,
                                                               place: nil, source: .unknown,
                                                               pasteboardContents: nil))
@@ -126,7 +125,7 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                         return
                     }
                     if let placemarks = placemarks {
-                        Log.verbose?.message("Got a placemark! \(placemarks[0])")
+                        Current.Log.verbose("Got a placemark! \(placemarks[0])")
                         completion(SendLocationIntentResponse(code: .ready, userActivity: nil,
                                                               place: placemarks[0], source: .address,
                                                               pasteboardContents: pasteboardString))
@@ -135,7 +134,7 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                 }
             }
         } else {
-            Log.verbose?.message("Nothing on Clipboard and Placemark wasn't set, assuming user wants current location")
+            Current.Log.verbose("Nothing on Clipboard and Placemark wasn't set, assuming user wants current location")
             completion(SendLocationIntentResponse(code: .ready, userActivity: nil,
                                                   place: nil, source: .unknown,
                                                   pasteboardContents: nil))
@@ -148,7 +147,7 @@ extension SendLocationIntentResponse {
     convenience init(code: SendLocationIntentResponseCode, userActivity: NSUserActivity?, place: CLPlacemark?,
                      source: SendLocationClipboardLocationParsedAs, pasteboardContents: String?) {
         self.init(code: code, userActivity: userActivity, pasteboardContents: pasteboardContents)
-        Log.verbose?.message("Confirming send location as place \(place.debugDescription) derived via \(source)")
+        Current.Log.verbose("Confirming send location as place \(place.debugDescription) derived via \(source)")
 
         self.location = place
         self.source = source

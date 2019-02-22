@@ -12,7 +12,6 @@ import KeychainAccess
 import PromiseKit
 import Shared
 import arek
-import CleanroomLogger
 
 // swiftlint:disable:next type_body_length
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, ConnectionInfoChangedDelegate {
@@ -111,11 +110,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                     if Current.settingsStore.notificationsEnabled {
                         UIApplication.shared.registerForRemoteNotifications()
                     }
-                    Log.verbose?.message("Connected!")
+                    Current.Log.verbose("Connected!")
                     self.webView.load(URLRequest(url: webviewURL))
                     return
                 }.catch {err -> Void in
-                    Log.error?.message("Error on connect!!! \(err)")
+                    Current.Log.error("Error on connect!!! \(err)")
                     self.openSettingsWithError(error: err)
                 }
             }
@@ -222,7 +221,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         if let err = error as? URLError {
             if err.code != .cancelled {
-                Log.error?.message("Failure during nav: \(err)")
+                Current.Log.error("Failure during nav: \(err)")
             }
 
             if !error.isCancelled {
@@ -234,7 +233,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         if let err = error as? URLError {
             if err.code != .cancelled {
-                Log.error?.message("Failure during content load: \(error)")
+                Current.Log.error("Failure during content load: \(error)")
             }
 
             if !error.isCancelled {
@@ -267,7 +266,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         guard authMethod == NSURLAuthenticationMethodDefault ||
               authMethod == NSURLAuthenticationMethodHTTPBasic ||
               authMethod == NSURLAuthenticationMethodHTTPDigest else {
-            Log.verbose?.message("Not handling auth method \(authMethod)")
+            Current.Log.verbose("Not handling auth method \(authMethod)")
             completionHandler(.performDefaultHandling, nil)
             return
         }
@@ -380,7 +379,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             let connectionInfo = Current.settingsStore.connectionInfo,
             let webviewURL = connectionInfo.webviewURL(externalAuth: self.modernAuth) {
             if let currentURL = self.webView.url, !currentURL.baseIsEqual(to: webviewURL) {
-                Log.verbose?.message("Changing webview to current active URL!")
+                Current.Log.verbose("Changing webview to current active URL!")
                 let myRequest = URLRequest(url: webviewURL)
                 self.webView.load(myRequest)
             }
@@ -441,7 +440,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }.then { api in
             api.getAndSendLocation(trigger: .Manual)
         }.done {_ in
-            Log.verbose?.message("Sending current location via button press")
+            Current.Log.verbose("Sending current location via button press")
             let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
                                           message: L10n.ManualLocationUpdateNotification.message,
                                           preferredStyle: UIAlertController.Style.alert)
@@ -464,7 +463,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     func updateWebViewSettings() {
         if self.modernAuth {
-            Log.verbose?.message("Not injecting password into localStorage since we are using modern auth")
+            Current.Log.verbose("Not injecting password into localStorage since we are using modern auth")
             return
         }
         if let apiPass = keychain["apiPassword"] {
@@ -474,7 +473,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                     storedPass = resString
                 }
                 if error != nil || result == nil || storedPass != apiPass {
-                    Log.verbose?.message("Setting password into LocalStorage")
+                    Current.Log.verbose("Setting password into LocalStorage")
                     self.webView.evaluateJavaScript("localStorage.setItem(\"authToken\", \"\(apiPass)\")") { (_, _) in
                         self.webView.reload()
                     }
@@ -534,31 +533,31 @@ extension WebViewController: WKScriptMessageHandler {
             self.handleThemeUpdate(messageBody)
         } else if message.name == "getExternalAuth", let callbackName = messageBody["callback"] {
             if let tokenManager = Current.tokenManager {
-                Log.verbose?.message("getExternalAuth called")
+                Current.Log.verbose("getExternalAuth called")
                 tokenManager.authDictionaryForWebView.done { dictionary in
                     let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
                     if let jsonString = String(data: jsonData!, encoding: .utf8) {
                         let script = "\(callbackName)(true, \(jsonString))"
                         self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
                             if let error = error {
-                                Log.error?.message("Failed to trigger getExternalAuth callback: \(error)")
+                                Current.Log.error("Failed to trigger getExternalAuth callback: \(error)")
                             }
 
-                            Log.verbose?.message("Success on getExternalAuth callback: \(String(describing: result))")
+                            Current.Log.verbose("Success on getExternalAuth callback: \(String(describing: result))")
                         })
                     }
                 }.catch { error in
                     self.webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
-                    Log.error?.message("Failed to authenticate webview: \(error)")
+                    Current.Log.error("Failed to authenticate webview: \(error)")
                 }
             } else {
                 self.webView.evaluateJavaScript("\(callbackName)(false, 'Token unavailable')")
-                Log.error?.message("Failed to authenticate webview. Token Unavailable")
+                Current.Log.error("Failed to authenticate webview. Token Unavailable")
             }
         } else if message.name == "revokeExternalAuth", let callbackName = messageBody["callback"],
             let tokenManager = Current.tokenManager {
 
-            Log.warning?.message("Revoking access token")
+            Current.Log.warning("Revoking access token")
 
             tokenManager.revokeToken().done { _ in
                 Current.tokenManager = nil
@@ -567,17 +566,17 @@ extension WebViewController: WKScriptMessageHandler {
                 self.showSettingsViewController()
                 let script = "\(callbackName)(true)"
 
-                Log.verbose?.message("Running revoke external auth callback \(script)")
+                Current.Log.verbose("Running revoke external auth callback \(script)")
 
                 self.webView.evaluateJavaScript(script, completionHandler: { (_, error) in
                     if let error = error {
-                        Log.error?.message("Failed calling sign out callback: \(error)")
+                        Current.Log.error("Failed calling sign out callback: \(error)")
                     }
 
-                    Log.verbose?.message("Successfully informed web client of log out.")
+                    Current.Log.verbose("Successfully informed web client of log out.")
                 })
             }.catch { error in
-                Log.error?.message("Failed to revoke token: \(error)")
+                Current.Log.error("Failed to revoke token: \(error)")
             }
         }
     }
@@ -605,7 +604,7 @@ extension WebViewController: WKScriptMessageHandler {
 extension WebViewController: UIScrollViewDelegate {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint,
                                    targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        Log.verbose?.message("End dragging \(self.waitingToHideToolbar)")
+        Current.Log.verbose("End dragging \(self.waitingToHideToolbar)")
         if velocity.y>0 {
             self.waitingToHideToolbar = false
             self.navigationController?.setToolbarHidden(true, animated: true)

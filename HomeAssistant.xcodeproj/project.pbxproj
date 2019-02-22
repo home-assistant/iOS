@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0C6645270B5B70DF1C404144 /* Pods-SiriIntents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */; };
-		186CE5582B2C868F107A4E22 /* Pods_HomeAssistantUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E95807859A13BC3B0072E2 /* Pods_HomeAssistantUITests.framework */; };
 		1967E893F54245177C35DBE7 /* Pods_HomeAssistantTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73883E9DD3FD37E7DEEC7070 /* Pods_HomeAssistantTests.framework */; };
 		2A1C294E84E562DD8D9E8C9F /* Pods_SharedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 575D0792AB652B62F779FECB /* Pods_SharedTests.framework */; };
 		3A9474676287819D0F5A8A37 /* Pods-TodayWidget-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F3D32AC650F6D7A0F3C3D08 /* Pods-TodayWidget-metadata.plist */; };
@@ -154,16 +153,7 @@
 		B60616B91D1F117800249C11 /* US-EN-Daisy-Office-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B81D1F117700249C11 /* US-EN-Daisy-Office-Window-Open.wav */; };
 		B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
 		B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
-		B61DA28E221E75F400AADEDD /* CleanroomLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */; };
-		B61DA28F221E75F400AADEDD /* CleanroomLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B61DA290221E760400AADEDD /* CleanroomLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */; };
-		B61DA291221E761100AADEDD /* CleanroomLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */; };
-		B61DA292221E762300AADEDD /* CleanroomLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */; };
-		B61DA29D221E767100AADEDD /* CleanroomLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */; };
-		B61DA2A3221E8D6B00AADEDD /* CleanroomLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */; };
-		B61DA2AC221E931100AADEDD /* CleanroomLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B61DA2AB221E931100AADEDD /* CleanroomLogger.framework */; };
-		B61DA2AD221E931100AADEDD /* CleanroomLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B61DA2AB221E931100AADEDD /* CleanroomLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B61DA2AF221EA03700AADEDD /* Reqres+CleanroomLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61DA2AE221EA03700AADEDD /* Reqres+CleanroomLogger.swift */; };
+		B61DA2AF221EA03700AADEDD /* Reqres+XCGLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61DA2AE221EA03700AADEDD /* Reqres+XCGLogger.swift */; };
 		B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B624DE171CB8369200F413CE /* DevicesMapViewController.swift */; };
 		B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */; };
 		B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
@@ -183,7 +173,6 @@
 		B63CCDCC2164714900123C50 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; };
 		B63CCDCD2164714900123C50 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; };
 		B63D28BD215D9E3600F3B907 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
-		B63D28C0215DB71800F3B907 /* Realm+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */; };
 		B63D28C1215DB72100F3B907 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
 		B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */; };
 		B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */; };
@@ -240,7 +229,6 @@
 		B672AB3522165A4900175465 /* HomeAssistantAPI+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */; };
 		B672AB3722165A6100175465 /* HomeAssistantAPI+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */; };
 		B672AB502216883300175465 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
-		B672AB5122168B2900175465 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03D893A20E0B2E300D4F28D /* Constants.swift */; };
 		B672AB522216A1E200175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B672AB532216A1E200175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B672AB542216A1F100175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
@@ -250,6 +238,9 @@
 		B675ECC5221BD76300C65D31 /* Identify.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC4221BD76300C65D31 /* Identify.swift */; };
 		B675ECC7221BDF4500C65D31 /* BackgroundRefreshScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */; };
 		B678DB371EA9999C0045312F /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B678DB351EA9999C0045312F /* MainInterface.storyboard */; };
+		B67CE7DF221F8BDD0034C1D0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03D893A20E0B2E300D4F28D /* Constants.swift */; };
+		B67CE7E1221F8C350034C1D0 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67CE7E0221F8C350034C1D0 /* Logger.swift */; };
+		B67CE7E2221F8C650034C1D0 /* Realm+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */; };
 		B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */; };
 		B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */; };
 		B68EDD07215F215E00DD6B28 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD06215F215E00DD6B28 /* Notifications.swift */; };
@@ -343,7 +334,6 @@
 		D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88463211F33CE00CCB501 /* TokenManager.swift */; };
 		D0C8847A2122A65800CCB501 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884792122A65800CCB501 /* SettingsStore.swift */; };
 		D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DD2CED213BCA8900C3D9F7 /* URL+Extensions.swift */; };
-		D0E029DA6A1BB86ECE2A6AF6 /* Pods_WatchApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 853E8BAABBA695FCD56D9685 /* Pods_WatchApp.framework */; };
 		D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */; };
 		D0EEF2CA214D89AA00D1D360 /* HAAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9191CA647C500121384 /* HAAPI.swift */; };
 		D0EEF2CE214D8AE200D1D360 /* RealmZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EE36A120CF593E001494E3 /* RealmZone.swift */; };
@@ -473,7 +463,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B61DA2AD221E931100AADEDD /* CleanroomLogger.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -521,7 +510,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				D03D892D20E0A85300D4F28D /* Shared.framework in Embed Frameworks */,
-				B61DA28F221E75F400AADEDD /* CleanroomLogger.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -530,13 +518,9 @@
 
 /* Begin PBXFileReference section */
 		0B4D2BC91268D22D7A43EABB /* Pods-WatchApp-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-WatchApp-metadata.plist"; path = "Pods/Pods-WatchApp-metadata.plist"; sourceTree = "<group>"; };
-		168B1DECA7096DC6D4A6AD0B /* Pods-HomeAssistantUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		1E3A4516541F7B9338B42E6C /* Pods-WatchApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WatchApp/Pods-WatchApp.debug.xcconfig"; sourceTree = "<group>"; };
 		1E42E3B8B9E9B8F7FC915A94 /* Pods-TodayWidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayWidget.release.xcconfig"; path = "Pods/Target Support Files/Pods-TodayWidget/Pods-TodayWidget.release.xcconfig"; sourceTree = "<group>"; };
 		25CF94434FED72A01C6A594B /* Pods-HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.release.xcconfig"; sourceTree = "<group>"; };
-		26227BA77C4A10C07BBEAEAB /* Pods-HomeAssistantUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.release.xcconfig"; sourceTree = "<group>"; };
 		2E0AF070746A970041740865 /* Pods-NotificationContentExtension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.beta.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.beta.xcconfig"; sourceTree = "<group>"; };
-		335F0E337EA9F5D50AA837F2 /* Pods-WatchApp.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchApp.beta.xcconfig"; path = "Pods/Target Support Files/Pods-WatchApp/Pods-WatchApp.beta.xcconfig"; sourceTree = "<group>"; };
 		342F03B5540A0B20637C7DCB /* Pods-NotificationContentExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-HomeAssistant-metadata.plist"; path = "Pods/Pods-HomeAssistant-metadata.plist"; sourceTree = "<group>"; };
 		3744F977190C345382928F90 /* Pods_TodayWidget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodayWidget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -550,7 +534,6 @@
 		5C94D4856B4E21CCEC8B8BFC /* Pods-SharedTests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.beta.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.beta.xcconfig"; sourceTree = "<group>"; };
 		6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-WatchAppExtension-metadata.plist"; path = "Pods/Pods-WatchAppExtension-metadata.plist"; sourceTree = "<group>"; };
 		73883E9DD3FD37E7DEEC7070 /* Pods_HomeAssistantTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		757286CFFF9C47EDB02E3A6F /* Pods-HomeAssistantUITests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantUITests.beta.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantUITests/Pods-HomeAssistantUITests.beta.xcconfig"; sourceTree = "<group>"; };
 		799B3F55FAE1A57812B62339 /* Pods-SiriIntents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SiriIntents.release.xcconfig"; path = "Pods/Target Support Files/Pods-SiriIntents/Pods-SiriIntents.release.xcconfig"; sourceTree = "<group>"; };
 		7B3B20465CE9CCBBBA7D0414 /* Pods-APNSAttachmentService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.debug.xcconfig"; sourceTree = "<group>"; };
 		853E8BAABBA695FCD56D9685 /* Pods_WatchApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WatchApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -706,8 +689,7 @@
 		B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
 		B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrationResponse.swift; sourceTree = "<group>"; };
 		B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CleanroomLogger.framework; path = Carthage/Build/iOS/CleanroomLogger.framework; sourceTree = "<group>"; };
-		B61DA2AB221E931100AADEDD /* CleanroomLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CleanroomLogger.framework; path = Carthage/Build/watchOS/CleanroomLogger.framework; sourceTree = "<group>"; };
-		B61DA2AE221EA03700AADEDD /* Reqres+CleanroomLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reqres+CleanroomLogger.swift"; sourceTree = "<group>"; };
+		B61DA2AE221EA03700AADEDD /* Reqres+XCGLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reqres+XCGLogger.swift"; sourceTree = "<group>"; };
 		B624DE171CB8369200F413CE /* DevicesMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesMapViewController.swift; sourceTree = "<group>"; };
 		B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoveryInfo.swift; sourceTree = "<group>"; };
 		B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsDetailViewController.swift; sourceTree = "<group>"; };
@@ -817,6 +799,7 @@
 		B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefreshScheduler.swift; sourceTree = "<group>"; };
 		B6767A501D0234E700F2A08B /* SwitchableEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchableEntity.swift; sourceTree = "<group>"; };
 		B678DB361EA9999C0045312F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		B67CE7E0221F8C350034C1D0 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotion+StringExtensions.swift"; sourceTree = "<group>"; };
 		B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectMapperTransformers.swift; sourceTree = "<group>"; };
 		B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = APNSAttachmentService.entitlements; sourceTree = "<group>"; };
@@ -952,7 +935,6 @@
 		D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventStore.swift; sourceTree = "<group>"; };
 		D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTableViewController.swift; sourceTree = "<group>"; };
 		D0FF79D420D87DB10034574D /* ClientEvents.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ClientEvents.storyboard; sourceTree = "<group>"; };
-		D15B20B7364CEF7155A320D0 /* Pods-WatchApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-WatchApp/Pods-WatchApp.release.xcconfig"; sourceTree = "<group>"; };
 		D4F64E4C5F91DADFF4E9E368 /* Pods-NotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
 		D679007C62C8EE4A1ADC17A5 /* Pods-Shared.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.release.xcconfig"; sourceTree = "<group>"; };
 		DC05CEA3CD50ABEC2AE35BBB /* Pods_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -972,7 +954,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D0E029DA6A1BB86ECE2A6AF6 /* Pods_WatchApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -980,7 +961,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B61DA291221E761100AADEDD /* CleanroomLogger.framework in Frameworks */,
 				B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */,
 				B627CB0B1D83C87B0057173E /* UserNotificationsUI.framework in Frameworks */,
 				B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */,
@@ -995,7 +975,6 @@
 				D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */,
 				B6CFF5DC2101985200CC523F /* Realm.framework in Frameworks */,
 				B6CFF5DE2101985200CC523F /* RealmSwift.framework in Frameworks */,
-				B61DA28E221E75F400AADEDD /* CleanroomLogger.framework in Frameworks */,
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
 				7A06D3D7A5B4746FE6F5BFA6 /* Pods_HomeAssistant.framework in Frameworks */,
 			);
@@ -1013,7 +992,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				186CE5582B2C868F107A4E22 /* Pods_HomeAssistantUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1023,7 +1001,6 @@
 			files = (
 				B6C09153215206BB00A326DC /* Shared.framework in Frameworks */,
 				6DFADFAFF2B1E4A5C7A00D10 /* Pods_SiriIntents.framework in Frameworks */,
-				B61DA292221E762300AADEDD /* CleanroomLogger.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1031,7 +1008,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B61DA29D221E767100AADEDD /* CleanroomLogger.framework in Frameworks */,
 				B6BDBBC72177FFB10044E0B9 /* Shared.framework in Frameworks */,
 				B66F9F24216B1E61000CAA0F /* NotificationCenter.framework in Frameworks */,
 				9E0BAD90B73333854D6D31E1 /* Pods_TodayWidget.framework in Frameworks */,
@@ -1042,7 +1018,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B61DA290221E760400AADEDD /* CleanroomLogger.framework in Frameworks */,
 				D03D893420E0A8FE00D4F28D /* Shared.framework in Frameworks */,
 				E1FA731332EB8E4C346F56FA /* Pods_APNSAttachmentService.framework in Frameworks */,
 			);
@@ -1053,7 +1028,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1149EDF68A975EE7E24FC3A /* Pods_WatchAppExtension.framework in Frameworks */,
-				B61DA2AC221E931100AADEDD /* CleanroomLogger.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1061,7 +1035,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B61DA2A3221E8D6B00AADEDD /* CleanroomLogger.framework in Frameworks */,
 				D0EEF301214D8EAB00D1D360 /* CoreLocation.framework in Frameworks */,
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				B6CFF5DA2101984A00CC523F /* RealmSwift.framework in Frameworks */,
@@ -1135,9 +1108,6 @@
 				87A132CFD9E75BE5545C3491 /* Pods-HomeAssistantTests.debug.xcconfig */,
 				CCD706884B80054E107B89D5 /* Pods-HomeAssistantTests.release.xcconfig */,
 				A773539FA6CBDC538A9D2EDD /* Pods-HomeAssistantTests.beta.xcconfig */,
-				168B1DECA7096DC6D4A6AD0B /* Pods-HomeAssistantUITests.debug.xcconfig */,
-				26227BA77C4A10C07BBEAEAB /* Pods-HomeAssistantUITests.release.xcconfig */,
-				757286CFFF9C47EDB02E3A6F /* Pods-HomeAssistantUITests.beta.xcconfig */,
 				342F03B5540A0B20637C7DCB /* Pods-NotificationContentExtension.debug.xcconfig */,
 				D4F64E4C5F91DADFF4E9E368 /* Pods-NotificationContentExtension.release.xcconfig */,
 				2E0AF070746A970041740865 /* Pods-NotificationContentExtension.beta.xcconfig */,
@@ -1153,9 +1123,6 @@
 				514D3AC57D932CF15324A398 /* Pods-TodayWidget.debug.xcconfig */,
 				1E42E3B8B9E9B8F7FC915A94 /* Pods-TodayWidget.release.xcconfig */,
 				E46DEBD572E360E6FE1CBD43 /* Pods-TodayWidget.beta.xcconfig */,
-				1E3A4516541F7B9338B42E6C /* Pods-WatchApp.debug.xcconfig */,
-				D15B20B7364CEF7155A320D0 /* Pods-WatchApp.release.xcconfig */,
-				335F0E337EA9F5D50AA837F2 /* Pods-WatchApp.beta.xcconfig */,
 				F95337CF20F43B41C78A66D0 /* Pods-WatchAppExtension.debug.xcconfig */,
 				F6263AE4EAC90E232CFCA4E7 /* Pods-WatchAppExtension.release.xcconfig */,
 				4008EB215F780E949CCD6956 /* Pods-WatchAppExtension.beta.xcconfig */,
@@ -1353,7 +1320,6 @@
 		B657A8DD1CA646EB00121384 = {
 			isa = PBXGroup;
 			children = (
-				B61DA2AB221E931100AADEDD /* CleanroomLogger.framework */,
 				B657A8E81CA646EB00121384 /* HomeAssistant */,
 				D03D891820E0A85300D4F28D /* Shared */,
 				B6AAD7A21D827DD40090B220 /* APNSAttachmentService */,
@@ -1510,6 +1476,7 @@
 			children = (
 				B69769832162430300FFFAD6 /* WKInterfaceDevice+Size.swift */,
 				B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */,
+				B67CE7E0221F8C350034C1D0 /* Logger.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1847,7 +1814,7 @@
 			isa = PBXGroup;
 			children = (
 				D0EEF31E214DDD9B00D1D360 /* Swiftgen */,
-				B61DA2AE221EA03700AADEDD /* Reqres+CleanroomLogger.swift */,
+				B61DA2AE221EA03700AADEDD /* Reqres+XCGLogger.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -2007,7 +1974,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B657A9161CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistantUITests" */;
 			buildPhases = (
-				363538D8D0FC9F18C3462D4B /* [CP] Check Pods Manifest.lock */,
 				B657A9031CA646EB00121384 /* Sources */,
 				B657A9041CA646EB00121384 /* Frameworks */,
 				B657A9051CA646EB00121384 /* Resources */,
@@ -2080,7 +2046,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B6CC5DA52159D10F00833E5D /* Build configuration list for PBXNativeTarget "WatchApp" */;
 			buildPhases = (
-				7C989C3659A6357CB4DD7266 /* [CP] Check Pods Manifest.lock */,
 				B6CC5D802159D10D00833E5D /* Resources */,
 				B6CC5DA42159D10F00833E5D /* Embed App Extensions */,
 				93C44648FF2FAE89B2ED8FC9 /* Frameworks */,
@@ -2662,28 +2627,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		363538D8D0FC9F18C3462D4B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-HomeAssistantUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		59C2CF28F00F34975C1AC68B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2728,28 +2671,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7C989C3659A6357CB4DD7266 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WatchApp-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		8A763BD9E9F25F0704269545 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2772,6 +2693,7 @@
 				"${BUILT_PRODUCTS_DIR}/Iconic-iOS/Iconic.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/ObjcExceptionBridging-iOS/ObjcExceptionBridging.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper-iOS/ObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/PMAlertController/PMAlertController.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
@@ -2782,6 +2704,7 @@
 				"${BUILT_PRODUCTS_DIR}/TABObserverSet-iOS/TABObserverSet.framework",
 				"${BUILT_PRODUCTS_DIR}/UIColor_Hex_Swift-iOS/UIColor_Hex_Swift.framework",
 				"${BUILT_PRODUCTS_DIR}/ViewRow/ViewRow.framework",
+				"${BUILT_PRODUCTS_DIR}/XCGLogger-iOS/XCGLogger.framework",
 				"${BUILT_PRODUCTS_DIR}/ZIPFoundation/ZIPFoundation.framework",
 				"${BUILT_PRODUCTS_DIR}/arek/arek.framework",
 			);
@@ -2802,6 +2725,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Iconic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjcExceptionBridging.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PMAlertController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
@@ -2812,6 +2736,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TABObserverSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIColor_Hex_Swift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ViewRow.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XCGLogger.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZIPFoundation.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/arek.framework",
 			);
@@ -2978,11 +2903,13 @@
 				"${PODS_ROOT}/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Communicator-watchOS/Communicator.framework",
 				"${BUILT_PRODUCTS_DIR}/Iconic-watchOS/Iconic.framework",
+				"${BUILT_PRODUCTS_DIR}/ObjcExceptionBridging-watchOS/ObjcExceptionBridging.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper-watchOS/ObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm-watchOS/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift-watchOS/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/TABObserverSet-watchOS/TABObserverSet.framework",
 				"${BUILT_PRODUCTS_DIR}/UIColor_Hex_Swift-watchOS/UIColor_Hex_Swift.framework",
+				"${BUILT_PRODUCTS_DIR}/XCGLogger-watchOS/XCGLogger.framework",
 				"${BUILT_PRODUCTS_DIR}/EMTLoadingIndicator/EMTLoadingIndicator.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -2991,11 +2918,13 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Communicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Iconic.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjcExceptionBridging.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TABObserverSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIColor_Hex_Swift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XCGLogger.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EMTLoadingIndicator.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3126,14 +3055,15 @@
 				B63D28C1215DB72100F3B907 /* WatchComplication.swift in Sources */,
 				B65A38CA215DB9C9003BCD8E /* Strings.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
-				B63D28C0215DB71800F3B907 /* Realm+Initialization.swift in Sources */,
 				B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */,
+				B67CE7DF221F8BDD0034C1D0 /* Constants.swift in Sources */,
 				B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				B6976985216243CC00FFFAD6 /* UIColor+CSS3+Hex.swift in Sources */,
+				B67CE7E1221F8C350034C1D0 /* Logger.swift in Sources */,
+				B67CE7E2221F8C650034C1D0 /* Realm+Initialization.swift in Sources */,
 				B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */,
 				B675ECC7221BDF4500C65D31 /* BackgroundRefreshScheduler.swift in Sources */,
-				B672AB5122168B2900175465 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3183,7 +3113,7 @@
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
 				B6C0914A2151F93D00A326DC /* DeviceTracker.swift in Sources */,
 				D0EEF33F214EC76A00D1D360 /* Event.swift in Sources */,
-				B61DA2AF221EA03700AADEDD /* Reqres+CleanroomLogger.swift in Sources */,
+				B61DA2AF221EA03700AADEDD /* Reqres+XCGLogger.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,
 				D0EEF2CA214D89AA00D1D360 /* HAAPI.swift in Sources */,
 				D0EEF32C214DF83800D1D360 /* IdentifyRequest.swift in Sources */,
@@ -3367,10 +3297,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = "NotificationContentExtension/NotificationContentExtension Development.entitlements";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
@@ -3392,10 +3319,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = NotificationContentExtension/NotificationContentExtension.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
@@ -3473,10 +3397,7 @@
 				CODE_SIGN_ENTITLEMENTS = "HomeAssistant/Resources/HomeAssistant Beta.entitlements";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENV_URL_HANDLER = "homeassistant-beta";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
 				IS_SANDBOXED = false;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -3528,7 +3449,6 @@
 		};
 		B637243221697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 757286CFFF9C47EDB02E3A6F /* Pods-HomeAssistantUITests.beta.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = HomeAssistantUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -3548,10 +3468,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = "APNSAttachmentService/APNSAttachmentService Beta.entitlements";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
@@ -3572,10 +3489,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = "NotificationContentExtension/NotificationContentExtension Beta.entitlements";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NotificationContentExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
@@ -3605,10 +3519,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 27;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3660,10 +3571,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Intents/SiriIntents Beta.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Intents/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -3688,7 +3596,6 @@
 		};
 		B637243821697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 335F0E337EA9F5D50AA837F2 /* Pods-WatchApp.beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -3699,10 +3606,7 @@
 				CODE_SIGN_ENTITLEMENTS = "WatchApp/WatchApp Beta.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				IBSC_MODULE = WatchAppExtension;
 				INFOPLIST_FILE = WatchApp/Info.plist;
@@ -3732,10 +3636,7 @@
 				CODE_SIGN_ENTITLEMENTS = "WatchAppExtension/Resources/WatchAppExtension Beta.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/watchOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = WatchAppExtension/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
@@ -3882,10 +3783,7 @@
 				CODE_SIGN_ENTITLEMENTS = "HomeAssistant/Resources/HomeAssistant Development.entitlements";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENV_URL_HANDLER = "homeassistant-dev";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
 				IS_SANDBOXED = true;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -3929,10 +3827,7 @@
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENV_URL_HANDLER = homeassistant;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
 				IS_SANDBOXED = false;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -4000,7 +3895,6 @@
 		};
 		B657A9171CA646EB00121384 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 168B1DECA7096DC6D4A6AD0B /* Pods-HomeAssistantUITests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = HomeAssistantUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -4014,7 +3908,6 @@
 		};
 		B657A9181CA646EB00121384 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 26227BA77C4A10C07BBEAEAB /* Pods-HomeAssistantUITests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = HomeAssistantUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -4038,10 +3931,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Intents/SiriIntents Development.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Intents/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -4078,10 +3968,7 @@
 				CODE_SIGN_ENTITLEMENTS = Intents/SiriIntents.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Intents/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -4117,10 +4004,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = TodayWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -4151,10 +4035,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = TodayWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -4183,10 +4064,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = TodayWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -4209,10 +4087,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = "APNSAttachmentService/APNSAttachmentService Development.entitlements";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
@@ -4234,10 +4109,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = APNSAttachmentService/APNSAttachmentService.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
@@ -4252,7 +4124,6 @@
 		};
 		B6CC5D9F2159D10F00833E5D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1E3A4516541F7B9338B42E6C /* Pods-WatchApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -4263,10 +4134,7 @@
 				CODE_SIGN_ENTITLEMENTS = "WatchApp/WatchApp Development.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				IBSC_MODULE = WatchAppExtension;
 				INFOPLIST_FILE = WatchApp/Info.plist;
@@ -4287,7 +4155,6 @@
 		};
 		B6CC5DA02159D10F00833E5D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D15B20B7364CEF7155A320D0 /* Pods-WatchApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "WatchIcon${BUNDLE_ID_SUFFIX}";
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -4298,10 +4165,7 @@
 				CODE_SIGN_ENTITLEMENTS = WatchApp/WatchApp.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				IBSC_MODULE = WatchAppExtension;
 				INFOPLIST_FILE = WatchApp/Info.plist;
@@ -4331,10 +4195,7 @@
 				CODE_SIGN_ENTITLEMENTS = "WatchAppExtension/Resources/WatchAppExtension Development.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/watchOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = WatchAppExtension/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
@@ -4367,10 +4228,7 @@
 				CODE_SIGN_ENTITLEMENTS = WatchAppExtension/Resources/WatchAppExtension.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/watchOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = WatchAppExtension/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
@@ -4406,10 +4264,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 27;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -4446,10 +4301,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 27;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

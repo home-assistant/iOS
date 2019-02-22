@@ -9,7 +9,6 @@
 import Alamofire
 import Foundation
 import PromiseKit
-import CleanroomLogger
 
 public class TokenManager: RequestAdapter, RequestRetrier {
     public enum TokenError: Error {
@@ -93,7 +92,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
 
         if request.retryCount > 5 {
-            Log.warning?.message("Reached maximum retries for request: \(self.loggableString(for: requestURL))")
+            Current.Log.warning("Reached maximum retries for request: \(self.loggableString(for: requestURL))")
             let message = "Failed to make request: \(self.loggableString(for: requestURL)) after 3 tries"
             let event = ClientEvent(text: message, type: .networkRequest)
             Current.clientEventStore.addEvent(event)
@@ -105,7 +104,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             // If this is a call to our server, and we failed with not authorized, try to refresh the token.
             _ = self.refreshToken.done { _ in
                 guard self.tokenInfo != nil else {
-                    Log.warning?.message("Token Info not avaialble after refresh")
+                    Current.Log.warning("Token Info not avaialble after refresh")
                     completion(false, 0)
                     return
                 }

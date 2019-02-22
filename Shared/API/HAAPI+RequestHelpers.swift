@@ -10,7 +10,6 @@ import Alamofire
 import Foundation
 import PromiseKit
 import ObjectMapper
-import CleanroomLogger
 
 extension HomeAssistantAPI {
     // MARK: - Helper methods for reducing boilerplate.
@@ -20,7 +19,7 @@ extension HomeAssistantAPI {
         case .success(let value):
             seal.fulfill(value)
         case .failure(let error):
-            Log.error?.message("Error on \(callingFunctionName) request: \(error)")
+            Current.Log.error("Error on \(callingFunctionName) request: \(error)")
             seal.reject(error)
         }
     }

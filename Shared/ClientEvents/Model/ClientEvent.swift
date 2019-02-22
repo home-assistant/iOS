@@ -8,7 +8,6 @@
 
 import Foundation
 import RealmSwift
-import CleanroomLogger
 
 /// Contains data about an event that occured on the client, used for logging.
 public class ClientEvent: Object {
@@ -54,7 +53,7 @@ public class ClientEvent: Object {
             do {
                 jsonData = try JSONSerialization.data(withJSONObject: payload, options: .prettyPrinted)
             } catch {
-                Log.error?.message("Error serializing json payload: \(error)")
+                Current.Log.error("Error serializing json payload: \(error)")
             }
         }
 

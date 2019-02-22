@@ -12,7 +12,6 @@ import RealmSwift
 import ObjectMapper
 import Iconic
 import UIColor_Hex_Swift
-import CleanroomLogger
 #if os(watchOS)
 import ClockKit
 #endif
@@ -22,7 +21,7 @@ public class WatchComplication: Object, Mappable {
     @objc private dynamic var rawFamily: String = ""
     public var Family: ComplicationGroupMember {
         get {
-            // Log.verbose?.message("GET Family for str '\(rawFamily)'")
+            // Current.Log.verbose("GET Family for str '\(rawFamily)'")
             if let f = ComplicationGroupMember(rawValue: rawFamily) {
                 return f
             }
@@ -35,7 +34,7 @@ public class WatchComplication: Object, Mappable {
     @objc private dynamic var rawTemplate: String = ""
     public var Template: ComplicationTemplate {
         get {
-            // Log.verbose?.message("GET Template for str '\(rawTemplate)'")
+            // Current.Log.verbose("GET Template for str '\(rawTemplate)'")
             if let t = ComplicationTemplate(rawValue: rawTemplate) {
                 return t
             }
@@ -111,11 +110,11 @@ public class WatchComplication: Object, Mappable {
         if let textAreas = self.Data["textAreas"] as? [String: [String: Any]] {
             for (key, textArea) in textAreas {
                 guard let text = textArea["text"] as? String else {
-                    Log.warning?.message("TextArea \(key) doesn't have any text!")
+                    Current.Log.warning("TextArea \(key) doesn't have any text!")
                     continue
                 }
                 guard let color = textArea["color"] as? String else {
-                    Log.warning?.message("TextArea \(key) doesn't have a text color!")
+                    Current.Log.warning("TextArea \(key) doesn't have a text color!")
                     continue
                 }
                 var provider = CLKSimpleTextProvider(text: text)
@@ -172,7 +171,7 @@ public class WatchComplication: Object, Mappable {
         guard let ringDict = self.Data["ring"] as? [String: String], let ringValue = ringDict["ring"],
             let floatVal = Float(ringValue), let ringColor = ringDict["ring_color"],
             let ringStyle = ringDict["ring_style"] else {
-                Log.warning?.message("Unable to get ring data!")
+                Current.Log.warning("Unable to get ring data!")
                 return (0, .open, UIColor.black)
         }
 
@@ -184,7 +183,7 @@ public class WatchComplication: Object, Mappable {
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     func CLKComplicationTemplate(family: CLKComplicationFamily) -> CLKComplicationTemplate? {
         if self.Template.groupMember != ComplicationGroupMember(family: family) {
-            Log.warning?.message("Would have returned template (\(self.Template)) outside expected family (\(family)")
+            Current.Log.warning("Would have returned template (\(self.Template)) outside expected family (\(family)")
             return nil
         }
         switch self.Template {
@@ -552,7 +551,7 @@ public class WatchComplication: Object, Mappable {
                 template.gaugeProvider = gaugeProvider
             }
             guard let textProvider = self.textDataProviders["Center"] else {
-                Log.warning?.message("No center text set for GraphicCircularClosedGaugeText, returning nil!")
+                Current.Log.warning("No center text set for GraphicCircularClosedGaugeText, returning nil!")
                 return nil
             }
             template.centerTextProvider = textProvider

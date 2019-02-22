@@ -10,21 +10,16 @@ import UserNotifications
 import MobileCoreServices
 import Shared
 import Alamofire
-import CleanroomLogger
 
 final class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?
     private var bestAttemptContent: UNMutableNotificationContent?
 
-    override init() {
-        Current.configureLogging()
-    }
-
     // swiftlint:disable cyclomatic_complexity function_body_length
     override func didReceive(_ request: UNNotificationRequest,
                              withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
-        Log.verbose?.message("APNSAttachmentService started!")
-        Log.verbose?.message("Received userInfo \(request.content.userInfo)")
+        Current.Log.verbose("APNSAttachmentService started!")
+        Current.Log.verbose("Received userInfo \(request.content.userInfo)")
 
         let event = ClientEvent(text: request.content.clientEventTitle, type: .notification,
                                 payload: request.content.userInfo as? [String: Any])
@@ -98,7 +93,7 @@ final class NotificationService: UNNotificationServiceExtension {
                                                               options: attachmentOptions)
                 content.attachments.append(attachment)
             } catch let error {
-                Log.error?.message("Error when building UNNotificationAttachment: \(error)")
+                Current.Log.error("Error when building UNNotificationAttachment: \(error)")
 
                 return failEarly()
             }
@@ -120,9 +115,9 @@ final class NotificationService: UNNotificationServiceExtension {
         }.catch { error in
 
             if let error = error as? AFError {
-                Log.error?.message("Alamofire error while getting attachment data: \(error)")
+                Current.Log.error("Alamofire error while getting attachment data: \(error)")
             } else {
-                Log.error?.message("Error when getting attachment data! \(error)")
+                Current.Log.error("Error when getting attachment data! \(error)")
             }
 
             return failEarly()

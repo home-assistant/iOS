@@ -12,7 +12,6 @@ import Iconic
 import EMTLoadingIndicator
 import RealmSwift
 import Communicator
-import CleanroomLogger
 
 class InterfaceController: WKInterfaceController {
     @IBOutlet weak var tableView: WKInterfaceTable!
@@ -46,7 +45,7 @@ class InterfaceController: WKInterfaceController {
 
         for (i, action) in actions.enumerated() {
             if let row = self.tableView.rowController(at: i) as? ActionRowType {
-                Log.verbose?.message("Setup row \(i) with action \(action)")
+                Current.Log.verbose("Setup row \(i) with action \(action)")
                 row.group.setBackgroundColor(UIColor(hex: action.BackgroundColor))
                 row.indicator = EMTLoadingIndicator(interfaceController: self, interfaceImage: row.image,
                                                     width: 24, height: 24, style: .dot)
@@ -66,10 +65,10 @@ class InterfaceController: WKInterfaceController {
     override func table(_ table: WKInterfaceTable, didSelectRowAt rowIndex: Int) {
         let selectedAction = self.actions![rowIndex]
 
-        Log.verbose?.message("Selected action row at index \(rowIndex), \(selectedAction)")
+        Current.Log.verbose("Selected action row at index \(rowIndex), \(selectedAction)")
 
         guard let row = self.tableView.rowController(at: rowIndex) as? ActionRowType else {
-            Log.warning?.message("Row at \(rowIndex) is not ActionRowType")
+            Current.Log.warning("Row at \(rowIndex) is not ActionRowType")
             return
         }
 
@@ -79,7 +78,7 @@ class InterfaceController: WKInterfaceController {
         let actionMessage = ImmediateMessage(identifier: "ActionRowPressed",
                                              content: ["ActionID": selectedAction.ID,
                                                        "ActionName": selectedAction.Name], replyHandler: { replyDict in
-                                                Log.verbose?.message("Received reply dictionary \(replyDict)")
+                                                Current.Log.verbose("Received reply dictionary \(replyDict)")
 
                                                 WKInterfaceDevice.current().play(.success)
 
@@ -88,7 +87,7 @@ class InterfaceController: WKInterfaceController {
                                                 row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24),
                                                                                   color: .white))
         }, errorHandler: { err in
-            Log.error?.message("Received error when sending immediate message \(err)")
+            Current.Log.error("Received error when sending immediate message \(err)")
 
             WKInterfaceDevice.current().play(.failure)
 
@@ -98,13 +97,13 @@ class InterfaceController: WKInterfaceController {
                                               color: .white))
         })
 
-        Log.verbose?.message("Sending ActionRowPressed message \(actionMessage)")
+        Current.Log.verbose("Sending ActionRowPressed message \(actionMessage)")
 
         do {
             try Communicator.shared.send(immediateMessage: actionMessage)
             WKInterfaceDevice.current().play(.success)
         } catch let error {
-            Log.error?.message("Action notification send failed: \(error)")
+            Current.Log.error("Action notification send failed: \(error)")
 
             WKInterfaceDevice.current().play(.failure)
 

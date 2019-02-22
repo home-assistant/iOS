@@ -9,7 +9,6 @@
 import CoreLocation
 import Foundation
 import PromiseKit
-import CleanroomLogger
 
 public typealias OnLocationUpdated = ((CLLocation?, Error?) -> Void)
 
@@ -31,7 +30,7 @@ public class OneShotLocationManager: NSObject {
 
 extension OneShotLocationManager: CLLocationManagerDelegate {
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        Log.verbose?.message("LocationManager: Got \(locations.count) locations, stopping updates!")
+        Current.Log.verbose("LocationManager: Got \(locations.count) locations, stopping updates!")
         onLocationUpdated(locations.first, nil)
         manager.stopUpdatingLocation()
         manager.delegate = nil
@@ -45,14 +44,14 @@ extension OneShotLocationManager: CLLocationManagerDelegate {
                 let locErr = LocationError(err: clErr)
                 realm.add(locErr)
             }
-            Log.error?.message("Received CLError: \(clErr)")
+            Current.Log.error("Received CLError: \(clErr)")
             if clErr.code == CLError.locationUnknown {
                 // locationUnknown just means that GPS may be taking an extra moment, so don't throw an error.
                 return
             }
             onLocationUpdated(nil, clErr)
         } else {
-            Log.error?.message("Received non-CLError when we only expected CLError: \(error)")
+            Current.Log.error("Received non-CLError when we only expected CLError: \(error)")
             onLocationUpdated(nil, error)
         }
     }

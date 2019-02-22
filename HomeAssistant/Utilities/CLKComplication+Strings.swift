@@ -9,9 +9,11 @@
 import Foundation
 import UIKit
 import Iconic
-import CleanroomLogger
-#if os(watchOS)
 import WatchKit
+#if os(iOS)
+import Shared
+#endif
+#if os(watchOS)
 import ClockKit
 #endif
 
@@ -111,7 +113,7 @@ public enum ComplicationGroupMember: String {
         case "utilitarianSmallFlat":
             self = .utilitarianSmallFlat
         default:
-            Log.warning?.message("Unknown group member name \(name)")
+            Current.Log.warning("Unknown group member name \(name)")
             self = .circularSmall
         }
     }
@@ -142,7 +144,7 @@ public enum ComplicationGroupMember: String {
         case CLKComplicationFamily.utilitarianSmallFlat:
             self = .utilitarianSmallFlat
         default:
-            Log.warning?.message("Unknown group member name \(family.rawValue)")
+            Current.Log.warning("Unknown group member name \(family.rawValue)")
             self = .circularSmall
         }
     }
@@ -893,7 +895,7 @@ public enum ComplicationTemplate: String {
         case is CLKComplicationTemplateGraphicRectangularLargeImage:
             self = .GraphicRectangularLargeImage
         default:
-            Log.warning?.message("Unknown template \(template)")
+            Current.Log.warning("Unknown template \(template)")
             self = .ModularSmallStackText
         }
     }

@@ -10,13 +10,12 @@ import Foundation
 import Shared
 import RealmSwift
 import UserNotifications
-import CleanroomLogger
 
 func ProvideNotificationCategoriesToSystem() {
     let realm = Current.realm()
     let categories = Set<UNNotificationCategory>(realm.objects(NotificationCategory.self).map({ $0.category }))
 
-    Log.verbose?.message("Providing \(categories.count) categories to system: \(categories)")
+    Current.Log.verbose("Providing \(categories.count) categories to system: \(categories)")
 
     UNUserNotificationCenter.current().setNotificationCategories(categories)
 }
@@ -28,13 +27,13 @@ func MigratePushSettingsToLocal() {
         if let categories = config.Categories {
             for remoteCategory in categories {
                 let localCategory = NotificationCategory()
-                Log.verbose?.message("Attempting import of category \(remoteCategory.Identifier)")
+                Current.Log.verbose("Attempting import of category \(remoteCategory.Identifier)")
                 localCategory.Identifier = remoteCategory.Identifier
                 localCategory.Name = remoteCategory.Name
 
                 if let catActions = remoteCategory.Actions {
                     for remoteAction in catActions {
-                        Log.verbose?.message("Attempting import of action \(remoteAction.Identifier)")
+                        Current.Log.verbose("Attempting import of action \(remoteAction.Identifier)")
                         let localAction = NotificationAction()
                         localAction.Title = remoteAction.Title
                         localAction.Identifier = remoteAction.Identifier
@@ -63,9 +62,9 @@ func MigratePushSettingsToLocal() {
                 }
             }
         } else {
-            Log.warning?.message("Unable to unwrap push categories or none exist! \(config)")
+            Current.Log.warning("Unable to unwrap push categories or none exist! \(config)")
         }
     }.catch { error in
-        Log.error?.message("Error when importing push settings: \(error)")
+        Current.Log.error("Error when importing push settings: \(error)")
     }
 }

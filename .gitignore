@@ -50,8 +50,6 @@ xcuserdata/
 *.xccheckout
 *.xcscmblueprint
 
-Carthage/
-
 Pods/
 
 # fastlane specific

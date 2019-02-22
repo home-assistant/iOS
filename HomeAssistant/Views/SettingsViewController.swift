@@ -17,7 +17,6 @@ import Shared
 import RealmSwift
 import Communicator
 import arek
-import CleanroomLogger
 import ZIPFoundation
 
 // swiftlint:disable file_length
@@ -207,7 +206,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 $0.value = self.internalBaseURLEnabled
             }.onChange { row in
                 if let boolVal = row.value {
-                    Log.verbose?.message("Setting rows to val \(!boolVal)")
+                    Current.Log.verbose("Setting rows to val \(!boolVal)")
                     self.internalBaseURLEnabled = boolVal
                     let ssidRow: LabelRow = self.form.rowBy(tag: "ssid")!
                     ssidRow.hidden = Condition(booleanLiteral: !boolVal)
@@ -270,7 +269,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 $0.value = self.basicAuthEnabled
             }.onChange { row in
                 if let boolVal = row.value {
-                    Log.verbose?.message("Setting rows to val \(!boolVal)")
+                    Current.Log.verbose("Setting rows to val \(!boolVal)")
                     self.basicAuthEnabled = boolVal
                     let basicAuthUsername: TextRow = self.form.rowBy(tag: "basicAuthUsername")!
                     basicAuthUsername.hidden = Condition(booleanLiteral: !boolVal)
@@ -378,7 +377,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 let permission = LocationPermission()
 
                 permission.manage { status in
-                    Log.verbose?.message("Location status \(status)")
+                    Current.Log.verbose("Location status \(status)")
 
                     Current.settingsStore.locationEnabled = (status == .authorized)
 
@@ -421,7 +420,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     let permission = NotificationPermission()
 
                     permission.manage { status in
-                        Log.verbose?.message("Notification status \(status)")
+                        Current.Log.verbose("Notification status \(status)")
 
                         Current.settingsStore.notificationsEnabled = (status == .authorized)
 
@@ -528,7 +527,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         +++ ButtonRow {
                 $0.title = "Export log files"
             }.onCellSelection { cell, _ in
-                Log.verbose?.message("Logs directory is: \(Current.logsDirectory)")
+                Current.Log.verbose("Logs directory is: \(Constants.LogsDirectory)")
 
                 let fileManager = FileManager.default
 
@@ -537,9 +536,9 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
                     _ = try? fileManager.removeItem(at: zipDest)
                     do {
-                        try fileManager.zipItem(at: Current.logsDirectory, to: zipDest, shouldKeepParent: false)
+                        try fileManager.zipItem(at: Constants.LogsDirectory, to: zipDest, shouldKeepParent: false)
                     } catch {
-                        Log.error?.message("Creation of ZIP archive failed with error: \(error)")
+                        Current.Log.error("Creation of ZIP archive failed with error: \(error)")
                     }
 
                     let activityViewController = UIActivityViewController(activityItems: [zipDest],
@@ -562,13 +561,13 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 let appGroupRealmPath = Current.realm().configuration.fileURL!
                 let containerRealmPath = Realm.Configuration.defaultConfiguration.fileURL!
 
-                Log.verbose?.message("Would copy from \(appGroupRealmPath) to \(containerRealmPath)")
+                Current.Log.verbose("Would copy from \(appGroupRealmPath) to \(containerRealmPath)")
 
                 if FileManager.default.fileExists(atPath: containerRealmPath.path) {
                     do {
                         _ = try FileManager.default.removeItem(at: containerRealmPath)
                     } catch let error {
-                        Log.error?.message("Error occurred, here are the details:\n \(error)")
+                        Current.Log.error("Error occurred, here are the details:\n \(error)")
                     }
                 }
 
@@ -576,7 +575,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     _ = try FileManager.default.copyItem(at: appGroupRealmPath, to: containerRealmPath)
                 } catch let error as NSError {
                     // Catch fires here, with an NSError being thrown
-                    Log.error?.message("Error occurred, here are the details:\n \(error)")
+                    Current.Log.error("Error occurred, here are the details:\n \(error)")
                 }
 
                 let msg = "Copied Realm from \(appGroupRealmPath) to \(containerRealmPath)"
@@ -607,8 +606,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         <<< ButtonRow {
             $0.title = "Print Watch contexts to log"
         }.onCellSelection { _, _ in
-            Log.verbose?.message("Received context \(Communicator.shared.mostRecentlyReceievedContext.content)")
-            Log.verbose?.message("Sent context \(Communicator.shared.mostRecentlySentContext.content)")
+            Current.Log.verbose("Received context \(Communicator.shared.mostRecentlyReceievedContext.content)")
+            Current.Log.verbose("Sent context \(Communicator.shared.mostRecentlySentContext.content)")
         }
         <<< ButtonRow {
             $0.title = "Show map content extension"
@@ -716,7 +715,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     }
 
     func ResetApp() {
-        Log.verbose?.message("Resetting app!")
+        Current.Log.verbose("Resetting app!")
         resetStores()
         let bundleId = Bundle.main.bundleIdentifier!
         UserDefaults.standard.removePersistentDomain(forName: bundleId)
@@ -767,7 +766,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     }
 
     private func handleConnectionError(_ error: (Error)) {
-        Log.error?.message("Connection error: \(error)")
+        Current.Log.error("Connection error: \(error)")
         var errorMessage = error.localizedDescription
         if let error = error as? AFError {
             if error.responseCode == 401 {
@@ -831,15 +830,15 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
     private func authenticateThenConfirmConnection(with connectionInfo: ConnectionInfo) ->
         Promise<ConnectionInfo> {
-            Log.verbose?.message("Attempting browser auth to: \(connectionInfo.activeURL)")
+            Current.Log.verbose("Attempting browser auth to: \(connectionInfo.activeURL)")
             return firstly {
                 self.authenticationController.authenticateWithBrowser(at: connectionInfo.activeURL)
             }.then { (code: String) -> Promise<String> in
-                Log.verbose?.message("Browser auth succeeded, getting token")
+                Current.Log.verbose("Browser auth succeeded, getting token")
                 let tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: nil)
                 return tokenManager.initialTokenWithCode(code)
             }.then { _ -> Promise<ConnectionInfo> in
-                Log.verbose?.message("Token acquired")
+                Current.Log.verbose("Token acquired")
                 return Promise.value(connectionInfo)
             }
     }
@@ -865,12 +864,12 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     self.confirmConnection(with: connectionInfo)
                 }.then { confirmedConnectionInfo -> Promise<ConfigResponse> in
                     // At this point we are authenticated with modern auth. Clear legacy password.
-                    Log.info?.message("Confirmed connection to server: \(connectionInfo.activeURL)")
+                    Current.Log.info("Confirmed connection to server: \(connectionInfo.activeURL)")
                     let keychain = Constants.Keychain
                     keychain["apiPassword"] = nil
                     Current.settingsStore.connectionInfo = confirmedConnectionInfo
                     guard let tokenInfo = Current.settingsStore.tokenInfo else {
-                        Log.warning?.message("No token available when we think there should be")
+                        Current.Log.warning("No token available when we think there should be")
                         throw SettingsError.configurationFailed
                     }
 
@@ -879,7 +878,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     Current.updateWith(authenticatedAPI: api)
                     return api.Connect()
                 }.done { config in
-                    Log.verbose?.message("Getting current configuration successful. Updating UI")
+                    Current.Log.verbose("Getting current configuration successful. Updating UI")
                     self.configureUIWith(configResponse: config)
                 }.catch { error in
                     self.handleConnectionError(error)
@@ -931,7 +930,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                            object: nil)
     }
     private func configureUIWith(configResponse config: ConfigResponse) {
-        Log.verbose?.message("Connected!")
+        Current.Log.verbose("Connected!")
         self.form.setValues(["locationName": config.LocationName, "version": config.Version])
         let locationNameRow: LabelRow = self.form.rowBy(tag: "locationName")!
         locationNameRow.updateCell()
@@ -986,7 +985,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         if motion == .motionShake {
-            Log.verbose?.message("shake!")
+            Current.Log.verbose("shake!")
             if shakeCount >= maxShakeCount {
                 if let section = self.form.sectionBy(tag: "developerOptions") {
                     section.hidden = false
@@ -1038,7 +1037,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     @objc func PermissionDidChange(_ notification: Notification) {
         if let userInfo = (notification as Notification).userInfo as? [String: Any] {
             if let locationChange = userInfo["location"] as? Bool {
-                Log.verbose?.message("Location granted? \(locationChange)")
+                Current.Log.verbose("Location granted? \(locationChange)")
 
                 DispatchQueue.main.async {
                     let enableLocationRow: ButtonRow = self.form.rowBy(tag: "enableLocation")!
@@ -1061,7 +1060,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 }
             }
             if let notificationsChange = userInfo["notifications"] as? Bool {
-                Log.verbose?.message("Notifications granted? \(notificationsChange)")
+                Current.Log.verbose("Notifications granted? \(notificationsChange)")
 
                 DispatchQueue.main.async {
                     let enableNotificationsRow: ButtonRow = self.form.rowBy(tag: "enableNotifications")!
