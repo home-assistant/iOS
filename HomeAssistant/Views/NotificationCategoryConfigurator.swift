@@ -292,8 +292,8 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         Current.Log.verbose("Preview hit")
 
         let content = UNMutableNotificationContent()
-        content.title = "Test notification"
-        content.body = "This is a test notification for the \(self.category.Name) notification category"
+        content.title = L10n.NotificationsConfigurator.Category.PreviewNotification.title
+        content.body = L10n.NotificationsConfigurator.Category.PreviewNotification.body(self.category.Name)
         content.sound = .default
         content.categoryIdentifier = self.category.Identifier
         content.userInfo = ["preview": true]

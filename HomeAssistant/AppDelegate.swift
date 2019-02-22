@@ -742,13 +742,13 @@ enum XCallbackError: FailureCallbackError {
     var message: String {
         switch self {
         case .generalError:
-            return "A general error occurred"
+            return L10n.UrlHandler.XCallbackUrl.Error.general
         case .eventNameMissing:
-            return "eventName must be defined"
+            return L10n.UrlHandler.XCallbackUrl.Error.eventNameMissing
         case .serviceMissing:
-            return "service (e.g. homeassistant.turn_on) must be defined"
+            return L10n.UrlHandler.XCallbackUrl.Error.serviceMissing
         case .templateMissing:
-            return "A renderable template must be defined"
+            return L10n.UrlHandler.XCallbackUrl.Error.templateMissing
         }
     }
 // swiftlint:disable:next file_length

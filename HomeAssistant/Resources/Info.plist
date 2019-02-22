@@ -328,7 +328,9 @@
 	<key>NSMotionUsageDescription</key>
 	<string>Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Photo Library access is needed to be able to add photos to the library.</string>
+	<string>Photo Library access is needed to allow saving photos from the web view.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo Library access is needed to allow saving photos from the web view.</string>
 	<key>NSSiriUsageDescription</key>
 	<string>We use Siri to allow created shortcuts to interact with the app.</string>
 	<key>NSUserActivityTypes</key>

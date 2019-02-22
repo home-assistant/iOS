@@ -327,7 +327,7 @@ class WatchComplicationConfigurator: FormViewController {
         HomeAssistantAPI.authenticatedAPI()?.RenderTemplate(templateStr: value).done { val in
             Current.Log.verbose("Rendered value is \(val)")
 
-            let alert = UIAlertController(title: "Output Preview", message: val,
+            let alert = UIAlertController(title: L10n.previewOutput, message: val,
                                           preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                           handler: nil))
@@ -378,7 +378,7 @@ class WatchComplicationConfigurator: FormViewController {
 
         section.append(InlineColorPickerRow {
             $0.tag = key + "_color"
-            $0.title = "Color"
+            $0.title = L10n.Watch.Configurator.Rows.Color.title
             $0.isCircular = true
             $0.showsPaletteNames = true
             $0.value = UIColor.green

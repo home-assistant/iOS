@@ -36,7 +36,7 @@ class ShortcutEventConfigurator: FormViewController {
         // Use it as required
         self.navigationItem.rightBarButtonItem = infoBarButtonItem
 
-        self.title = "Fire Event"
+        self.title = L10n.SiriShortcuts.Intents.FireEvent.title
 
         PickerInlineRow<String>.defaultCellUpdate = { cell, row in
             if !row.isValid {
@@ -83,7 +83,7 @@ class ShortcutEventConfigurator: FormViewController {
         }
 
         self.form
-            +++ Section(header: "Settings", footer: "") {
+            +++ Section(header: L10n.SiriShortcuts.Configurator.Settings.header, footer: "") {
                 $0.tag = "settings"
             }
             <<< TextRow("name") {
@@ -94,12 +94,12 @@ class ShortcutEventConfigurator: FormViewController {
                 $0.title = L10n.SiriShortcuts.Configurator.Settings.NotifyOnRun.title
             }*/
 
-            +++ Section(header: "Configuration", footer: "") {
+            +++ Section(header: L10n.SiriShortcuts.Configurator.FireEvent.Configuration.header, footer: "") {
                 $0.tag = "configuration"
             }
 
             <<< TextRow("event_name") {
-                    $0.title = "Event name"
+                    $0.title = L10n.SiriShortcuts.Configurator.FireEvent.Rows.Name.title
                     $0.add(rule: RuleRequired())
                 }.cellUpdate { (cell, _) in
                     cell.textField.autocapitalizationType = .none
@@ -107,8 +107,8 @@ class ShortcutEventConfigurator: FormViewController {
                 }
 
             <<< TextAreaRow("event_payload") {
-                $0.title = "Event payload"
-                $0.placeholder = "Must be valid JSON. If no payload is provided, clipboard contents will be used."
+                $0.title = L10n.SiriShortcuts.Configurator.FireEvent.Rows.Payload.title
+                $0.placeholder = L10n.SiriShortcuts.Configurator.FireEvent.Rows.Payload.placeholder
             }
 
         self.form

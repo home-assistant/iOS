@@ -91,7 +91,7 @@ class ShortcutServiceConfigurator: FormViewController {
         }
 
         self.form
-            +++ Section(header: "Settings", footer: "") {
+            +++ Section(header: L10n.SiriShortcuts.Configurator.Settings.header, footer: "") {
                 $0.tag = "settings"
             }
             <<< TextRow("shortcutName") {
@@ -181,7 +181,7 @@ class ShortcutServiceConfigurator: FormViewController {
                             HomeAssistantAPI.authenticatedAPI()?.RenderTemplate(templateStr: value).done { val in
                                 Current.Log.verbose("Rendered value is \(val)")
 
-                                let alert = UIAlertController(title: L10n.successLabel, message: val,
+                                let alert = UIAlertController(title: L10n.previewOutput, message: val,
                                                               preferredStyle: UIAlertController.Style.alert)
                                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                                               handler: nil))

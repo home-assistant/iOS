@@ -52,14 +52,14 @@ class SettingsDetailViewController: FormViewController {
 
                 +++ Section()
                 <<< PushRow<AppIcon>("appIcon") {
-                        $0.title = "Icon"
+                        $0.title = L10n.SettingsDetails.General.AppIcon.title
+                        $0.selectorTitle = $0.title
                         $0.options = AppIcon.allCases
                         $0.value = AppIcon.Release
                         if let altIconName = UIApplication.shared.alternateIconName,
                             let icon = AppIcon(rawValue: altIconName) {
                             $0.value = icon
                         }
-                        $0.selectorTitle = "App Icon"
                     }.onPresent { _, to in
                         to.selectableRowCellUpdate = { (cell, row) in
                             cell.height = { return 72 }
@@ -429,9 +429,9 @@ class SettingsDetailViewController: FormViewController {
                 }
 
                 self.form
-                    +++ Section(header: "Generic Shortcuts", footer: "")
+                    +++ Section(header: L10n.SettingsDetails.Siri.Section.Generic.title, footer: "")
                     <<< ButtonRow {
-                        $0.title = "Send Location"
+                        $0.title = L10n.SiriShortcuts.Intents.SendLocation.title
                         $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
                             if let shortcut = INShortcut(intent: SendLocationIntent()) {
                                 let viewController = INUIAddVoiceShortcutViewController(shortcut: shortcut)
@@ -445,7 +445,7 @@ class SettingsDetailViewController: FormViewController {
                     }
 
                     <<< ButtonRow {
-                        $0.title = "Fire Event"
+                        $0.title = L10n.SiriShortcuts.Intents.FireEvent.title
                         $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                             return ShortcutEventConfigurator()
                             }, onDismiss: { vc in
@@ -454,7 +454,7 @@ class SettingsDetailViewController: FormViewController {
                     }
 
                     <<< ButtonRow {
-                        $0.title = "Get Camera Image"
+                        $0.title = L10n.SiriShortcuts.Intents.GetCameraImage.title
                         $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
                             if let shortcut = INShortcut(intent: GetCameraImageIntent()) {
                                 let viewController = INUIAddVoiceShortcutViewController(shortcut: shortcut)
@@ -468,7 +468,7 @@ class SettingsDetailViewController: FormViewController {
                     }
 
                     <<< ButtonRow {
-                        $0.title = "Render Template"
+                        $0.title = L10n.SiriShortcuts.Intents.RenderTemplate.title
                         $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
                             if let shortcut = INShortcut(intent: RenderTemplateIntent()) {
                                 let viewController = INUIAddVoiceShortcutViewController(shortcut: shortcut)
@@ -484,7 +484,7 @@ class SettingsDetailViewController: FormViewController {
                 _ = HomeAssistantAPI.authenticatedAPIPromise.then { api in
                     api.GetServices()
                 }.done { serviceResp in
-                    let servicesSection = Section(header: "Services", footer: "")
+                    let servicesSection = Section(header: L10n.SettingsDetails.Siri.Section.Services.title, footer: "")
                     for domainContainer in serviceResp.sorted(by: { (a, b) -> Bool in
                         return a.Domain < b.Domain
                     }) {
@@ -529,7 +529,8 @@ class SettingsDetailViewController: FormViewController {
 
                         guard voiceShortcutsFromCenter.count > 0 else { return }
 
-                        let existingSection = Section(header: "Existing Shortcuts", footer: "") {
+                        let existingSection = Section(header: L10n.SettingsDetails.Siri.Section.Existing.title,
+                                                      footer: "") {
                             $0.tag = "existing_shortcuts"
                         }
 
@@ -556,13 +557,14 @@ class SettingsDetailViewController: FormViewController {
             }
 
         case "actions":
+            self.title = L10n.SettingsDetails.Actions.title
             let objs = realm.objects(Action.self)
             let actions = objs.sorted(byKeyPath: "Position")
 
             self.form
                 +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete, .Reorder],
                                        header: "",
-                                       footer: "Actions are used in the Today widget and Apple Watch app") { section in
+                                       footer: L10n.SettingsDetails.Actions.footer) { section in
                                         section.tag = "actions"
                                         section.multivaluedRowToInsertAt = { index in
                                             return self.getActionRow(nil)
@@ -660,7 +662,7 @@ class SettingsDetailViewController: FormViewController {
 
     func getActionRow(_ inputAction: Action?) -> ButtonRowWithPresent<ActionConfigurator> {
             var identifier = UUID().uuidString
-            var title = "New Action"
+            var title = L10n.ActionsConfigurator.title
             let action = inputAction
 
             if let passedAction = inputAction {
@@ -732,31 +734,31 @@ enum AppIcon: String, CaseIterable {
     var title: String {
         switch self {
         case .Beta:
-            return "Beta"
+            return L10n.SettingsDetails.General.AppIcon.Enum.beta
         case .Dev:
-            return "Dev"
+            return L10n.SettingsDetails.General.AppIcon.Enum.dev
         case .Release:
-            return "Release"
+            return L10n.SettingsDetails.General.AppIcon.Enum.release
         case .Black:
-            return "Black"
+            return L10n.SettingsDetails.General.AppIcon.Enum.black
         case .Blue:
-            return "Blue"
+            return L10n.SettingsDetails.General.AppIcon.Enum.blue
         case .Green:
-            return "Green"
+            return L10n.SettingsDetails.General.AppIcon.Enum.green
         case .Orange:
-            return "Orange"
+            return L10n.SettingsDetails.General.AppIcon.Enum.orange
         case .Purple:
-            return "Purple"
+            return L10n.SettingsDetails.General.AppIcon.Enum.purple
         case .Red:
-            return "Red"
+            return L10n.SettingsDetails.General.AppIcon.Enum.red
         case .White:
-            return "White"
+            return L10n.SettingsDetails.General.AppIcon.Enum.white
         case .OldRelease:
-            return "Old Release"
+            return L10n.SettingsDetails.General.AppIcon.Enum.oldRelease
         case .OldBeta:
-            return "Old Beta"
+            return L10n.SettingsDetails.General.AppIcon.Enum.oldBeta
         case .OldDev:
-            return "Old Dev"
+            return L10n.SettingsDetails.General.AppIcon.Enum.oldDev
         }
     }
 }

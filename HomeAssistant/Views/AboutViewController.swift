@@ -187,8 +187,8 @@ class AboutViewController: FormViewController {
     }
 
     @objc func tapAbout(_ sender: Any) {
-        let alert = UIAlertController(title: "You found me!",
-                                      message: "i love you",
+        let alert = UIAlertController(title: L10n.About.EasterEgg.title,
+                                      message: L10n.About.EasterEgg.message,
                                       preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "<3",
                                       style: UIAlertAction.Style.default,

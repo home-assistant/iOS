@@ -48,6 +48,13 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "about.documentation.title")
     }
 
+    internal enum EasterEgg {
+      /// i love you
+      internal static let message = L10n.tr("Localizable", "about.easter_egg.message")
+      /// You found me!
+      internal static let title = L10n.tr("Localizable", "about.easter_egg.title")
+    }
+
     internal enum Forums {
       /// Forums
       internal static let title = L10n.tr("Localizable", "about.forums.title")
@@ -93,6 +100,44 @@ internal enum L10n {
     internal enum Website {
       /// Website
       internal static let title = L10n.tr("Localizable", "about.website.title")
+    }
+  }
+
+  internal enum ActionsConfigurator {
+    /// New Action
+    internal static let title = L10n.tr("Localizable", "actions_configurator.title")
+
+    internal enum Rows {
+
+      internal enum BackgroundColor {
+        /// Background Color
+        internal static let title = L10n.tr("Localizable", "actions_configurator.rows.background_color.title")
+      }
+
+      internal enum Icon {
+        /// Icon
+        internal static let title = L10n.tr("Localizable", "actions_configurator.rows.icon.title")
+      }
+
+      internal enum IconColor {
+        /// Icon Color
+        internal static let title = L10n.tr("Localizable", "actions_configurator.rows.icon_color.title")
+      }
+
+      internal enum Name {
+        /// Name
+        internal static let title = L10n.tr("Localizable", "actions_configurator.rows.name.title")
+      }
+
+      internal enum Text {
+        /// Text
+        internal static let title = L10n.tr("Localizable", "actions_configurator.rows.text.title")
+      }
+
+      internal enum TextColor {
+        /// Text Color
+        internal static let title = L10n.tr("Localizable", "actions_configurator.rows.text_color.title")
+      }
     }
   }
 
@@ -442,6 +487,15 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "notifications_configurator.category.navigation_bar.title")
       }
 
+      internal enum PreviewNotification {
+        /// This is a test notification for the %@ notification category
+        internal static func body(_ p1: String) -> String {
+          return L10n.tr("Localizable", "notifications_configurator.category.preview_notification.body", p1)
+        }
+        /// Test notification
+        internal static let title = L10n.tr("Localizable", "notifications_configurator.category.preview_notification.title")
+      }
+
       internal enum Rows {
 
         internal enum Actions {
@@ -741,6 +795,11 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings.details_section.enable_notification_row.title")
       }
 
+      internal enum Integrations {
+        /// Integrations
+        internal static let header = L10n.tr("Localizable", "settings.details_section.integrations.header")
+      }
+
       internal enum LocationSettingsRow {
         /// Location Settings
         internal static let title = L10n.tr("Localizable", "settings.details_section.location_settings_row.title")
@@ -759,6 +818,52 @@ internal enum L10n {
       internal enum WatchRow {
         /// Apple Watch
         internal static let title = L10n.tr("Localizable", "settings.details_section.watch_row.title")
+      }
+    }
+
+    internal enum Developer {
+      /// Don't use these if you don't know what you are doing!
+      internal static let footer = L10n.tr("Localizable", "settings.developer.footer")
+      /// Developer
+      internal static let header = L10n.tr("Localizable", "settings.developer.header")
+
+      internal enum CameraNotification {
+        /// Show camera notification content extension
+        internal static let title = L10n.tr("Localizable", "settings.developer.camera_notification.title")
+
+        internal enum Notification {
+          /// Expand this to show the camera content extension
+          internal static let body = L10n.tr("Localizable", "settings.developer.camera_notification.notification.body")
+        }
+      }
+
+      internal enum CopyRealm {
+        /// Copy Realm from app group to Documents
+        internal static let title = L10n.tr("Localizable", "settings.developer.copy_realm.title")
+
+        internal enum Alert {
+          /// Copied Realm from %@ to %@
+          internal static func message(_ p1: String, _ p2: String) -> String {
+            return L10n.tr("Localizable", "settings.developer.copy_realm.alert.message", p1, p2)
+          }
+          /// Copied Realm
+          internal static let title = L10n.tr("Localizable", "settings.developer.copy_realm.alert.title")
+        }
+      }
+
+      internal enum ExportLogFiles {
+        /// Export log files
+        internal static let title = L10n.tr("Localizable", "settings.developer.export_log_files.title")
+      }
+
+      internal enum MapNotification {
+        /// Show map notification content extension
+        internal static let title = L10n.tr("Localizable", "settings.developer.map_notification.title")
+
+        internal enum Notification {
+          /// Expand this to show the map content extension
+          internal static let body = L10n.tr("Localizable", "settings.developer.map_notification.notification.body")
+        }
       }
     }
 
@@ -856,9 +961,50 @@ internal enum L10n {
 
   internal enum SettingsDetails {
 
+    internal enum Actions {
+      /// Actions are used in the Apple Watch app, App Icon Actions and the Today widget
+      internal static let footer = L10n.tr("Localizable", "settings_details.actions.footer")
+      /// Actions
+      internal static let title = L10n.tr("Localizable", "settings_details.actions.title")
+    }
+
     internal enum General {
       /// General Settings
       internal static let title = L10n.tr("Localizable", "settings_details.general.title")
+
+      internal enum AppIcon {
+        /// App Icon
+        internal static let title = L10n.tr("Localizable", "settings_details.general.app_icon.title")
+
+        internal enum Enum {
+          /// Beta
+          internal static let beta = L10n.tr("Localizable", "settings_details.general.app_icon.enum.beta")
+          /// Black
+          internal static let black = L10n.tr("Localizable", "settings_details.general.app_icon.enum.black")
+          /// Blue
+          internal static let blue = L10n.tr("Localizable", "settings_details.general.app_icon.enum.blue")
+          /// Dev
+          internal static let dev = L10n.tr("Localizable", "settings_details.general.app_icon.enum.dev")
+          /// Green
+          internal static let green = L10n.tr("Localizable", "settings_details.general.app_icon.enum.green")
+          /// Old Beta
+          internal static let oldBeta = L10n.tr("Localizable", "settings_details.general.app_icon.enum.old_beta")
+          /// Old Dev
+          internal static let oldDev = L10n.tr("Localizable", "settings_details.general.app_icon.enum.old_dev")
+          /// Old Release
+          internal static let oldRelease = L10n.tr("Localizable", "settings_details.general.app_icon.enum.old_release")
+          /// Orange
+          internal static let orange = L10n.tr("Localizable", "settings_details.general.app_icon.enum.orange")
+          /// Purple
+          internal static let purple = L10n.tr("Localizable", "settings_details.general.app_icon.enum.purple")
+          /// Red
+          internal static let red = L10n.tr("Localizable", "settings_details.general.app_icon.enum.red")
+          /// Release
+          internal static let release = L10n.tr("Localizable", "settings_details.general.app_icon.enum.release")
+          /// White
+          internal static let white = L10n.tr("Localizable", "settings_details.general.app_icon.enum.white")
+        }
+      }
 
       internal enum Chrome {
         /// Open links in Chrome
@@ -1100,6 +1246,26 @@ internal enum L10n {
     internal enum Siri {
       /// Siri Shortcuts
       internal static let title = L10n.tr("Localizable", "settings_details.siri.title")
+
+      internal enum Section {
+        /// Generic Shortcuts
+        internal static let title = L10n.tr("Localizable", "settings_details.siri.section.title")
+
+        internal enum Existing {
+          /// Existing Shortcuts
+          internal static let title = L10n.tr("Localizable", "settings_details.siri.section.existing.title")
+        }
+
+        internal enum Generic {
+          /// Generic Shortcuts
+          internal static let title = L10n.tr("Localizable", "settings_details.siri.section.generic.title")
+        }
+
+        internal enum Services {
+          /// Services
+          internal static let title = L10n.tr("Localizable", "settings_details.siri.section.services.title")
+        }
+      }
     }
 
     internal enum Watch {
@@ -1138,7 +1304,32 @@ internal enum L10n {
         }
       }
 
+      internal enum FireEvent {
+
+        internal enum Configuration {
+          /// Configuration
+          internal static let header = L10n.tr("Localizable", "siri_shortcuts.configurator.fire_event.configuration.header")
+        }
+
+        internal enum Rows {
+
+          internal enum Name {
+            /// Event Name
+            internal static let title = L10n.tr("Localizable", "siri_shortcuts.configurator.fire_event.rows.name.title")
+          }
+
+          internal enum Payload {
+            /// Must be valid JSON. If no payload is provided, clipboard contents will be used.
+            internal static let placeholder = L10n.tr("Localizable", "siri_shortcuts.configurator.fire_event.rows.payload.placeholder")
+            /// Event Payload
+            internal static let title = L10n.tr("Localizable", "siri_shortcuts.configurator.fire_event.rows.payload.title")
+          }
+        }
+      }
+
       internal enum Settings {
+        /// Settings
+        internal static let header = L10n.tr("Localizable", "siri_shortcuts.configurator.settings.header")
 
         internal enum Name {
           /// Shortcut name
@@ -1149,6 +1340,29 @@ internal enum L10n {
           /// Send notification when run
           internal static let title = L10n.tr("Localizable", "siri_shortcuts.configurator.settings.notify_on_run.title")
         }
+      }
+    }
+
+    internal enum Intents {
+
+      internal enum FireEvent {
+        /// Fire Event
+        internal static let title = L10n.tr("Localizable", "siri_shortcuts.intents.fire_event.title")
+      }
+
+      internal enum GetCameraImage {
+        /// Get Camera Image
+        internal static let title = L10n.tr("Localizable", "siri_shortcuts.intents.get_camera_image.title")
+      }
+
+      internal enum RenderTemplate {
+        /// Render Template
+        internal static let title = L10n.tr("Localizable", "siri_shortcuts.intents.render_template.title")
+      }
+
+      internal enum SendLocation {
+        /// Send Location
+        internal static let title = L10n.tr("Localizable", "siri_shortcuts.intents.send_location.title")
       }
     }
   }
@@ -1221,6 +1435,20 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "url_handler.send_location.success.title")
       }
     }
+
+    internal enum XCallbackUrl {
+
+      internal enum Error {
+        /// eventName must be defined
+        internal static let eventNameMissing = L10n.tr("Localizable", "url_handler.x_callback_url.error.eventNameMissing")
+        /// A general error occurred
+        internal static let general = L10n.tr("Localizable", "url_handler.x_callback_url.error.general")
+        /// service (e.g. homeassistant.turn_on) must be defined
+        internal static let serviceMissing = L10n.tr("Localizable", "url_handler.x_callback_url.error.serviceMissing")
+        /// A renderable template must be defined
+        internal static let templateMissing = L10n.tr("Localizable", "url_handler.x_callback_url.error.templateMissing")
+      }
+    }
   }
 
   internal enum Watch {
@@ -1284,11 +1512,6 @@ internal enum L10n {
             /// Color
             internal static let title = L10n.tr("Localizable", "watch.configurator.rows.icon.color.title")
           }
-        }
-
-        internal enum PreviewOutput {
-          /// Preview Output
-          internal static let title = L10n.tr("Localizable", "watch.configurator.rows.preview_output.title")
         }
 
         internal enum Ring {

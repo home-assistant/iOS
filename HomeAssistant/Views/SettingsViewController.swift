@@ -451,7 +451,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 })
             }
 
-        +++ Section(header: "Integrations", footer: "")
+        +++ Section(header: L10n.Settings.DetailsSection.Integrations.header, footer: "")
         <<< ButtonRow {
             $0.hidden = Condition(booleanLiteral: UIDevice.current.systemVersion == "12")
             $0.tag = "siriShortcuts"
@@ -479,7 +479,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
         <<< ButtonRow {
             $0.tag = "actions"
-            $0.title = "Actions"
+            $0.title = L10n.SettingsDetails.Actions.title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 let view = SettingsDetailViewController()
                 view.detailGroup = "actions"
@@ -525,7 +525,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }
 
         +++ ButtonRow {
-                $0.title = "Export log files"
+                $0.title = L10n.Settings.Developer.ExportLogFiles.title
             }.onCellSelection { cell, _ in
                 Current.Log.verbose("Logs directory is: \(Constants.LogsDirectory)")
 
@@ -550,13 +550,13 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 }
         }
 
-        +++ Section(header: "Developer Options", footer: "Don't use these if you don't know what you are doing!") {
+        +++ Section(header: L10n.Settings.Developer.header, footer: L10n.Settings.Developer.footer) {
             $0.hidden = Condition(booleanLiteral: (Current.appConfiguration.rawValue > 1))
             $0.tag = "developerOptions"
         }
 
         <<< ButtonRow {
-                $0.title = "Copy Realm from group to container"
+                $0.title = L10n.Settings.Developer.CopyRealm.title
             }.onCellSelection { _, _ in
                 let appGroupRealmPath = Current.realm().configuration.fileURL!
                 let containerRealmPath = Realm.Configuration.defaultConfiguration.fileURL!
@@ -578,46 +578,26 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     Current.Log.error("Error occurred, here are the details:\n \(error)")
                 }
 
-                let msg = "Copied Realm from \(appGroupRealmPath) to \(containerRealmPath)"
+                let msg = L10n.Settings.Developer.CopyRealm.Alert.message(appGroupRealmPath.path,
+                                                                          containerRealmPath.path)
 
-                let alert = UIAlertController(title: "Copied Realm",
+                let alert = UIAlertController(title: L10n.Settings.Developer.CopyRealm.Alert.title,
                                               message: msg,
                                               preferredStyle: UIAlertController.Style.alert)
 
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
 
                 self.present(alert, animated: true, completion: nil)
             }
         <<< ButtonRow {
-            $0.title = "Test Critical Alerts"
-            }.onCellSelection {_, _ in
-                let content = UNMutableNotificationContent()
-                content.title = "Critical Alerts Test"
-                content.body = "This is a critical alert"
-                if #available(iOS 12.0, *) {
-                    content.sound = UNNotificationSound.defaultCriticalSound(withAudioVolume: 1)
-                }
-
-                let notificationRequest =
-                    UNNotificationRequest.init(identifier: "criticalAlertTest",
-                                               content: content, trigger: nil)
-                UNUserNotificationCenter.current().add(notificationRequest)
-        }
-        <<< ButtonRow {
-            $0.title = "Print Watch contexts to log"
+            $0.title = L10n.Settings.Developer.CameraNotification.title
         }.onCellSelection { _, _ in
-            Current.Log.verbose("Received context \(Communicator.shared.mostRecentlyReceievedContext.content)")
-            Current.Log.verbose("Sent context \(Communicator.shared.mostRecentlySentContext.content)")
+            self.showCameraContentExtension()
         }
         <<< ButtonRow {
-            $0.title = "Show map content extension"
+            $0.title = L10n.Settings.Developer.MapNotification.title
         }.onCellSelection { _, _ in
             self.showMapContentExtension()
-        }
-        <<< ButtonRow {
-            $0.title = "Show camera content extension"
-            }.onCellSelection { _, _ in
-                self.showCameraContentExtension()
         }
     }
 
@@ -1007,30 +987,25 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
     func showMapContentExtension() {
         let content = UNMutableNotificationContent()
-        content.title = "Roommate has arrived at home"
-        content.subtitle = "Robbie has arrived at home."
-        content.body = "Eddie, Katie and Robbie are home."
+        content.body = L10n.Settings.Developer.MapNotification.Notification.body
         content.sound = .default
         content.userInfo = ["homeassistant": ["latitude": "40.785091", "longitude": "-73.968285"]]
         content.categoryIdentifier = "map"
 
-        let notificationRequest =
-            UNNotificationRequest.init(identifier: "mapContentExtension",
-                                       content: content, trigger: nil)
+        let notificationRequest = UNNotificationRequest(identifier: "mapContentExtension", content: content,
+                                                        trigger: nil)
         UNUserNotificationCenter.current().add(notificationRequest)
     }
 
     func showCameraContentExtension() {
         let content = UNMutableNotificationContent()
-        content.title = "Motion detected"
-        content.body = "Motion has been detected outside"
+        content.body = L10n.Settings.Developer.CameraNotification.Notification.body
         content.sound = .default
         content.userInfo = ["entity_id": "camera.demo_camera"]
         content.categoryIdentifier = "camera"
 
-        let notificationRequest =
-            UNNotificationRequest.init(identifier: "cameraContentExtension",
-                                       content: content, trigger: nil)
+        let notificationRequest = UNNotificationRequest(identifier: "cameraContentExtension", content: content,
+                                                        trigger: nil)
         UNUserNotificationCenter.current().add(notificationRequest)
     }
 

@@ -64,7 +64,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 //
 //        self.navigationController?.setToolbarHidden(false, animated: false)
 
-        self.title = "New Action"
+        self.title = L10n.ActionsConfigurator.title
 
         if newAction == false {
             self.title = action.Name
@@ -87,7 +87,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
             <<< TextRow {
                     $0.tag = "name"
-                    $0.title = L10n.NotificationsConfigurator.Category.Rows.Name.title
+                    $0.title = L10n.ActionsConfigurator.Rows.Name.title
                     $0.add(rule: RuleRequired())
                     if !newAction {
                         $0.value = self.action.Name
@@ -101,7 +101,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
             +++ Section()
             <<< TextRow("text") {
-                $0.title = "Text"
+                $0.title = L10n.ActionsConfigurator.Rows.Text.title
                 $0.value = self.action.Text
             }.onChange { row in
                 if let value = row.value {
@@ -111,7 +111,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }
 
             <<< InlineColorPickerRow("text_color") {
-                    $0.title = "Text Color"
+                    $0.title = L10n.ActionsConfigurator.Rows.TextColor.title
                     $0.isCircular = true
                     $0.showsPaletteNames = true
                     $0.value = UIColor(hex: self.action.TextColor)
@@ -123,7 +123,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }
 
             <<< InlineColorPickerRow("background_color") {
-                $0.title = "Background Color"
+                $0.title = L10n.ActionsConfigurator.Rows.BackgroundColor.title
                 $0.isCircular = true
                 $0.showsPaletteNames = true
                 $0.value = UIColor(hex: self.action.BackgroundColor)
@@ -136,9 +136,9 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
             <<< SearchPushRow<String> {
                     $0.options = MaterialDesignIcons.allCases.map({ $0.name })
-                    $0.selectorTitle = "Icon"
+                    $0.selectorTitle = L10n.ActionsConfigurator.Rows.Icon.title
                     $0.tag = "icon"
-                    $0.title = "Icon"
+                    $0.title = L10n.ActionsConfigurator.Rows.Icon.title
                     $0.value = self.action.IconName
                 }.cellUpdate({ (cell, row) in
                     if let value = row.value {
@@ -169,7 +169,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }
 
             <<< InlineColorPickerRow("icon_color") {
-                    $0.title = "Icon Color"
+                    $0.title = L10n.ActionsConfigurator.Rows.IconColor.title
                     $0.isCircular = true
                     $0.showsPaletteNames = true
                     $0.value = UIColor.green
