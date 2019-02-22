@@ -1,3 +1,7 @@
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "我们建议选择“始终允许”以获得最佳位置体验。选择“使用应用期间”时，iBeacons，地理围栏，后台位置更新和准确性报告等功能将无法使用。";
 "NSLocationAlwaysUsageDescription" = "我们需要持续获取您的位置用于 iBeacons、地理围栏、后台位置更新和准确性报告等功能。";
 "NSLocationWhenInUseUsageDescription" = "只允许“使用应用期间”访问您的位置，将禁用 iBeacons、地理围栏、后台位置更新和准确性报告等功能。";
+"NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
+"NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
+"NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
+"NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";

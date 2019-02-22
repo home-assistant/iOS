@@ -1,3 +1,7 @@
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "We raden u aan 'Altijd toestaan' te selecteren voor de beste locatie-ervaring. Als u \"Alleen tijdens het gebruik van de app\" selecteert, worden iBeacons en geofences locatie voorzieningen/updates uitgeschakeld.";
 "NSLocationAlwaysUsageDescription" = "We hebben altijd toegang tot uw locatie nodig voor functies zoals iBeacons, geofences, locatie updates (op de achtergrond) voor een nauwkeurige locatie bepaling.";
 "NSLocationWhenInUseUsageDescription" = "Alleen locatie toegang toestaan ​​terwijl de app in gebruik is, zal iBeacons, geofences en locatie voorzieningen/updates uitschakelen.";
+"NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
+"NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
+"NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
+"NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";

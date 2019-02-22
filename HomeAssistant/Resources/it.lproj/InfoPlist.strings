@@ -1,3 +1,7 @@
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Ti consigliamo di selezionare \"Consenti sempre\" per la migliore esperienza di localizzazione. Selezionando \"Solo durante l'utilizzo dell'App\" disabiliterà iBeacons, i geofences, gli aggiornamenti di posizione in background e la segnalazione esatta.";
 "NSLocationAlwaysUsageDescription" = "Abbiamo sempre bisogno di accedere alla tua posizione per caratteristiche come iBeacons, Geofence, gli aggiornamenti in background e la segnalazione esatta.";
 "NSLocationWhenInUseUsageDescription" = "Consentire l'accesso alla posizione solo mentre l'app è in uso disabiliterà iBeacons, i geofences, gli aggiornamenti della posizione in background e la segnalazione esatta.";
+"NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
+"NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
+"NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
+"NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
