@@ -34,7 +34,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private(set) var regionManager: RegionManager!
 
-    // swiftlint:disable:next function_body_length
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
