@@ -237,8 +237,6 @@ platform :ios do
 
     cocoapods(repo_update: true)
 
-    carthage(command: "build")
-
     if is_ci
       slack(message: "Completed bump, clean and CocoaPods install, now beginning build")
     end
