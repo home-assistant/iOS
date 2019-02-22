@@ -81,7 +81,7 @@ class AboutViewController: FormViewController {
             <<< ButtonRow {
                 $0.title = L10n.About.HelpLocalize.title
                 }.onCellSelection { _, _  in
-                    let urlStr = "https://community.home-assistant.io/t/translations-ios-11-app/31913/4?u=robbiet480"
+                    let urlStr = "https://developers.home-assistant.io/docs/en/internationalization_translation.html"
                     openURLInBrowser(urlToOpen: URL(string: urlStr)!)
             }
 
