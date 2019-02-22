@@ -452,7 +452,6 @@
 "alerts.prompt.ok" = "OK";
 "location_change_notification.visit.body" = "Location updated via Visit";
 "location_change_notification.x_callback_url.body" = "Location updated via X-Callback-URL";
-"location_change_notification.app_shortcut.body" = "Location updated via App Shortcut";
 "notifications_configurator.category.preview_notification.body" = "This is a test notification for the %@ notification category";
 "notifications_configurator.category.preview_notification.title" = "Test notification";
 "notifications_configurator.category.rows.actions.footer" = "Categories can have a maximum of 10 actions.";
@@ -485,9 +484,9 @@
 "settings_details.general.app_icon.title" = "App Icon";
 "settings_details.location.notifications.visit.title" = "Visit Location Notifications";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL Location Notifications";
-"settings_details.notifications.import_legacy_settings.alert.message" = "The legacy push notification categories and actions have been imported.";
-"settings_details.notifications.import_legacy_settings.alert.title" = "Legacy settings imported";
-"settings_details.notifications.import_legacy_settings.button.title" = "Import legacy push settings";
+"settings_details.notifications.import_legacy_settings.alert.message" = "The push notification categories and actions have been imported from the server.";
+"settings_details.notifications.import_legacy_settings.alert.title" = "Server push configuration imported";
+"settings_details.notifications.import_legacy_settings.button.title" = "Import push configuration from server";
 "settings_details.siri.section.existing.title" = "Existing Shortcuts";
 "settings_details.siri.section.generic.title" = "Generic Shortcuts";
 "settings_details.siri.section.services.title" = "Services";
@@ -505,3 +504,4 @@
 "url_handler.x_callback_url.error.general" = "A general error occurred";
 "url_handler.x_callback_url.error.serviceMissing" = "service (e.g. homeassistant.turn_on) must be defined";
 "url_handler.x_callback_url.error.templateMissing" = "A renderable template must be defined";
+"location_change_notification.app_shortcut.body" = "Location updated via App Shortcut";

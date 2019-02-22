@@ -150,7 +150,7 @@
 "settings.connection_section.internal_base_url.title" = "Internal URL";
 "settings.connection_section.external_base_url.title" = "External URL";
 "settings.connection_section.basic_auth.username.title" = "Username";
-"settings.connection_section.basic_auth.password.title" = "Password";
+"settings.connection_section.basic_auth.password.title" = "Wachtwoord";
 "settings.connection_section.basic_auth.username.placeholder" = "iam";
 "settings.connection_section.basic_auth.password.placeholder" = "verysecure";
 "about.beta.title" = "Join Beta";
@@ -178,7 +178,7 @@
 "client_events.event_type.networkRequest" = "Network Request";
 "client_events.event_type.notification.title" = "Received a Push Notification: %@";
 "client_events.event_type.request.log" = "Request(SSID: %@ - %@)";
-"error_label" = "Error";
+"error_label" = "Fout";
 "extensions.map.location.new" = "New Location";
 "extensions.map.location.original" = "Original Location";
 "extensions.map.payload_missing_homeassistant.message" = "Payload didn't contain a homeassistant dictionary!";
@@ -202,7 +202,7 @@
 "notifications_configurator.action.rows.authentication_required.title" = "Authentication Required";
 "notifications_configurator.action.rows.authentication_required.footer" = "When the user selects an action with this option, the system prompts the user to unlock the device. After unlocking, Home Assistant will be notified of the selected action.";
 "notifications_configurator.category.navigation_bar.title" = "Category Configurator";
-"notifications_configurator.category.rows.name.title" = "Name";
+"notifications_configurator.category.rows.name.title" = "Naam";
 "notifications_configurator.category.rows.actions.header" = "Actions";
 "notifications_configurator.category.rows.actions.add_row.title" = "Add";
 "notifications_configurator.category.rows.category_summary.header" = "Category Summary";
@@ -213,7 +213,7 @@
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "This text is only displayed if you have notification previews hidden. Use '%%u' for the number of messages with the same thread identifier.";
 "notifications_configurator.identifier" = "Identifier";
 "notifications_configurator.new_action.title" = "New Action";
-"notifications_configurator.settings.header" = "Settings";
+"notifications_configurator.settings.header" = "Instellingen";
 "notifications_configurator.settings.footer" = "Identifier must contain only letters and underscores. It must be globally unique to the app.";
 "notifications_configurator.settings.footer.id_set" = "Identifier can not be changed after creation. You must delete and recreate the action to change the identifier.";
 "preview_output" = "Preview Output";
@@ -447,15 +447,15 @@
 "actions_configurator.rows.background_color.title" = "Background Color";
 "actions_configurator.rows.icon.title" = "Icon";
 "actions_configurator.rows.icon_color.title" = "Icon Color";
-"actions_configurator.rows.name.title" = "Name";
+"actions_configurator.rows.name.title" = "Naam";
 "actions_configurator.rows.text.title" = "Text";
 "actions_configurator.rows.text_color.title" = "Text Color";
 "actions_configurator.title" = "New Action";
-"alerts.alert.ok" = "OK";
+"alerts.alert.ok" = "Oké";
 "alerts.confirm.cancel" = "Cancel";
-"alerts.confirm.ok" = "OK";
+"alerts.confirm.ok" = "Oké";
 "alerts.prompt.cancel" = "Cancel";
-"alerts.prompt.ok" = "OK";
+"alerts.prompt.ok" = "Oké";
 "location_change_notification.visit.body" = "Location updated via Visit";
 "location_change_notification.x_callback_url.body" = "Location updated via X-Callback-URL";
 "notifications_configurator.category.preview_notification.body" = "This is a test notification for the %@ notification category";
@@ -490,9 +490,9 @@
 "settings_details.general.app_icon.title" = "App Icon";
 "settings_details.location.notifications.visit.title" = "Visit Location Notifications";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL Location Notifications";
-"settings_details.notifications.import_legacy_settings.alert.message" = "The legacy push notification categories and actions have been imported.";
-"settings_details.notifications.import_legacy_settings.alert.title" = "Legacy settings imported";
-"settings_details.notifications.import_legacy_settings.button.title" = "Import legacy push settings";
+"settings_details.notifications.import_legacy_settings.alert.message" = "The push notification categories and actions have been imported from the server.";
+"settings_details.notifications.import_legacy_settings.alert.title" = "Server push configuration imported";
+"settings_details.notifications.import_legacy_settings.button.title" = "Import push configuration from server";
 "settings_details.siri.section.existing.title" = "Existing Shortcuts";
 "settings_details.siri.section.generic.title" = "Generic Shortcuts";
 "settings_details.siri.section.services.title" = "Services";
@@ -501,7 +501,7 @@
 "siri_shortcuts.configurator.fire_event.rows.name.title" = "Event Name";
 "siri_shortcuts.configurator.fire_event.rows.payload.placeholder" = "Must be valid JSON. If no payload is provided, clipboard contents will be used.";
 "siri_shortcuts.configurator.fire_event.rows.payload.title" = "Event Payload";
-"siri_shortcuts.configurator.settings.header" = "Settings";
+"siri_shortcuts.configurator.settings.header" = "Instellingen";
 "siri_shortcuts.intents.fire_event.title" = "Fire Event";
 "siri_shortcuts.intents.get_camera_image.title" = "Get Camera Image";
 "siri_shortcuts.intents.render_template.title" = "Render Template";
@@ -510,3 +510,4 @@
 "url_handler.x_callback_url.error.general" = "A general error occurred";
 "url_handler.x_callback_url.error.serviceMissing" = "service (e.g. homeassistant.turn_on) must be defined";
 "url_handler.x_callback_url.error.templateMissing" = "A renderable template must be defined";
+"location_change_notification.app_shortcut.body" = "Location updated via App Shortcut";

@@ -21,7 +21,7 @@
 "KU19Ap" = "Failed to fire event, the clipboard contents could not be parsed";
 "KzOHYA" = "Failed to get camera image with error: ${error}";
 "MDmaRg" = "Call service ￼${serviceDomain}.${service}";
-"N9iJpK" = "Get Camera Image";
+"N9iJpK" = "Ottieni l'immagine della telecamera";
 "NdG9Jz" = "Renders the Home Assistant template";
 "P3EyZ7" = "Render the provided template";
 "QFNpIx" = "Send ${location} to Home Assistant";
@@ -31,7 +31,7 @@
 "VGzL7U" = "Failed to update location, the clipboard contents could not be parsed";
 "WXKbGy" = "Send a location to Home Assistant. Will attempt to use clipboard contents as location, otherwise will use current location.";
 "ZwJ0Xx" = "Renders the found text on the clipboard";
-"c00c45" = "Fire event";
+"c00c45" = "Lancia l'evento";
 "cK9jdK" = "Failed to render template with error: ${error}";
 "cnzI5h" = "Renders ${template}";
 "foI0Fv" = "Failed to render template, Home Assistant is not currently reachable";
@@ -47,7 +47,7 @@
 "ntnbP2" = "Call Service";
 "nzqmFA" = "Latest still from ${cameraID} placed on clipboard";
 "oIWFyR" = "Failed to send ${eventName} to Home Assistant with error: ${error}";
-"q0SnlK" = "Get Camera Image";
+"q0SnlK" = "Ottieni l'immagine della telecamera";
 "qayMH6" = "Call Service";
 "qfHa79" = "Successfully sent ${eventName} with clipboard contents to Home Assistant";
 "qzje4k" = "Failed to call service with error: ${error}";

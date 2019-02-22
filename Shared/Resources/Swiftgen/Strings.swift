@@ -997,13 +997,13 @@ internal enum L10n {
       }
       internal enum ImportLegacySettings {
         internal enum Alert {
-          /// The legacy push notification categories and actions have been imported.
+          /// The push notification categories and actions have been imported from the server.
           internal static let message = L10n.tr("Localizable", "settings_details.notifications.import_legacy_settings.alert.message")
-          /// Legacy settings imported
+          /// Server push configuration imported
           internal static let title = L10n.tr("Localizable", "settings_details.notifications.import_legacy_settings.alert.title")
         }
         internal enum Button {
-          /// Import legacy push settings
+          /// Import push configuration from server
           internal static let title = L10n.tr("Localizable", "settings_details.notifications.import_legacy_settings.button.title")
         }
       }

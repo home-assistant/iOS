@@ -47,7 +47,7 @@
 "ntnbP2" = "Call Service";
 "nzqmFA" = "Latest still from ${cameraID} placed on clipboard";
 "oIWFyR" = "Failed to send ${eventName} to Home Assistant with error: ${error}";
-"q0SnlK" = "Get Camera Image";
+"q0SnlK" = "Hent kamerabilde";
 "qayMH6" = "Call Service";
 "qfHa79" = "Successfully sent ${eventName} with clipboard contents to Home Assistant";
 "qzje4k" = "Failed to call service with error: ${error}";
