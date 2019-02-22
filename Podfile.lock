@@ -29,8 +29,8 @@ PODS:
   - CPDAcknowledgements (1.0.0)
   - DeviceKit (1.11.0)
   - EMTLoadingIndicator (4.0.0)
-  - Eureka (4.3.0)
-  - Iconic (1.5)
+  - Eureka (4.3.1)
+  - Iconic (1.5.1)
   - KeychainAccess (3.1.2)
   - MBProgressHUD (1.1.0)
   - ObjcExceptionBridging (1.0.1):
@@ -143,16 +143,16 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   ColorPickerRow:
-    :commit: 3c1be59fb9be7f6d81c985d2837b6d31e66889c5
+    :commit: 95cda5c0a6d793b687fb2c983235caccdabb7a87
     :git: https://github.com/EurekaCommunity/ColorPickerRow
   CPDAcknowledgements:
     :commit: 2f289a19c3ec41f835a9629fdbea4a89033f61a1
     :git: https://github.com/CocoaPods/CPDAcknowledgements
   Eureka:
-    :commit: acc6c0ce7ae08bdcf7a84ca4dd5685747da65c41
+    :commit: 5288c6205bc1b6b07c2a63e83641b6035bdffaf3
     :git: https://github.com/xmartlabs/Eureka.git
   Iconic:
-    :commit: f984e1e7e0ded870a09f79d980e498b24427af9c
+    :commit: d982c280bb76dafa3a1abe5e16ae88cbe910716d
     :git: https://github.com/robbiet480/Iconic.git
   ViewRow:
     :commit: 3a1d4a9d157f275ad3db12f6909974523ad564ee
@@ -170,8 +170,8 @@ SPEC CHECKSUMS:
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
   DeviceKit: a3a86f8dddbe1317a9a243cdf9646858bf135dce
   EMTLoadingIndicator: 84b875fbe500606bb9a5e411885bc152ae9a371f
-  Eureka: e2dd50c3d6e07d2d2501d4141e903ec64fa3724e
-  Iconic: ee7252a3c892c74cc1175334e2c40f0260a19bd3
+  Eureka: 28ea296f06710f6745266b71f17862048941a32d
+  Iconic: b2463d6ee236fc987e6737f9e3cc13a702a4c4d8
   KeychainAccess: b3816fddcf28aa29d94b10ec305cd52be14c472b
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
