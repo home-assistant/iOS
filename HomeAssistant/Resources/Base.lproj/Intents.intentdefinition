@@ -82,7 +82,7 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Call a service on Home Assistant. Expects a JSON object on the pasteboard like {"service": "homeassistant.turn_on", "serviceData": {"foo": "bar"}}</string>
+					<string>Call a service on Home Assistant. Expects a JSON object on the clipboard like {"service": "homeassistant.turn_on", "serviceData": {"foo": "bar"}}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>4wVIAN</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -118,7 +118,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Call service ${serviceDomain}.${service} with pasteboard data</string>
+					<string>Call service ${serviceDomain}.${service} with clipboard data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>CiB3s6</string>
 				</dict>
@@ -133,7 +133,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Call￼ ${serviceDomain}.${service} with pasteboard data</string>
+					<string>Call service ${serviceDomain}.${service} with clipboard data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>wKnW1P</string>
 				</dict>
@@ -317,7 +317,7 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Send a location to Home Assistant. Will attempt to use pasteboard contents as location, otherwise will use current location.</string>
+					<string>Send a location to Home Assistant. Will attempt to use clipboard contents as location, otherwise will use current location.</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>WXKbGy</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -404,7 +404,7 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Location updated to contents of pasteboard that were parsed as ${source}</string>
+						<string>Location updated to contents of clipboard that were parsed as ${source}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>7NpJ76</string>
 						<key>INIntentResponseCodeName</key>
@@ -414,7 +414,7 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to geocode ${pasteboardContents} to a valid location</string>
+						<string>Failed to geocode ${clipboardContents} to a valid location</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>sbkx4E</string>
 						<key>INIntentResponseCodeName</key>
@@ -457,7 +457,7 @@
 						<key>INIntentResponseParameterDisplayPriority</key>
 						<integer>3</integer>
 						<key>INIntentResponseParameterName</key>
-						<string>pasteboardContents</string>
+						<string>clipboardContents</string>
 						<key>INIntentResponseParameterSupportsMultipleValues</key>
 						<false/>
 						<key>INIntentResponseParameterTag</key>
@@ -510,7 +510,7 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Fire an event to the Home Assistant event bus. Expects a JSON object on the pasteboard like {"eventName": "my.event", "eventData": {"foo": "bar"}}</string>
+					<string>Fire an event to the Home Assistant event bus. Expects a JSON object on the clipboard like {"eventName": "my.event", "eventData": {"foo": "bar"}}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>47v44G</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -525,13 +525,13 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Fires an event named ${eventName} to the Home Assistant event bus. Will send pasteboard contents as event data.</string>
+					<string>Fires an event named ${eventName} to the Home Assistant event bus. Will send clipboard contents as event data.</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>nIl9ET</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Fire ${eventName} with pasteboard data</string>
+					<string>Fire ${eventName} with clipboard data</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>lnrohM</string>
 				</dict>
@@ -851,13 +851,13 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Renders the found text on the pasteboard</string>
+					<string>Renders the found text on the clipboard</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>ZwJ0Xx</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Render text found on pasteboard</string>
+					<string>Render text found on clipboard</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>khd61N</string>
 				</dict>
@@ -928,7 +928,7 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Successfully rendered template from pasteboard</string>
+						<string>Successfully rendered template from clipboard</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>rlOS6H</string>
 						<key>INIntentResponseCodeName</key>

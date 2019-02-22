@@ -55,7 +55,7 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
 
                 completion(SendLocationIntentResponse(code: respCode, userActivity: resp.userActivity,
                                                       place: resp.location, source: resp.source,
-                                                      pasteboardContents: resp.pasteboardContents))
+                                                      clipboardContents: resp.clipboardContents))
                 return
             }.catch { error in
                 Current.Log.error("Error sending location during Siri Shortcut call: \(error)")
@@ -79,7 +79,7 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
         if let place = intent.location {
             Current.Log.verbose("Location already set, returning")
             completion(SendLocationIntentResponse(code: .ready, userActivity: nil, place: place, source: .stored,
-                                                  pasteboardContents: nil))
+                                                  clipboardContents: nil))
             return
         } else if let pasteboardString = UIPasteboard.general.string {
             Current.Log.verbose("Pasteboard contains... \(pasteboardString)")
@@ -93,7 +93,7 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                     if !CLLocationCoordinate2DIsValid(coord) {
                         Current.Log.warning("Invalid coords!! \(coord)")
                         completion(SendLocationIntentResponse(code: .failureClipboardNotParseable, userActivity: nil,
-                                                              pasteboardContents: pasteboardString))
+                                                              clipboardContents: pasteboardString))
                         return
                     }
 
@@ -102,12 +102,12 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                     // We use MKPlacemark so we can return a CLPlacemark without requiring use of the geocoder
                     completion(SendLocationIntentResponse(code: .ready, userActivity: nil,
                                                           place: MKPlacemark(coordinate: coord), source: .latlong,
-                                                          pasteboardContents: pasteboardString))
+                                                          clipboardContents: pasteboardString))
                     return
                 } else {
                     Current.Log.warning("Thought we found a lat,long on clipboard, but it wasn't parseable, returning")
                     completion(SendLocationIntentResponse(code: .failureClipboardNotParseable, userActivity: nil,
-                                                          pasteboardContents: pasteboardString))
+                                                          clipboardContents: pasteboardString))
                     return
                 }
             } else { // Fallback to assuming that there's an address on there
@@ -119,16 +119,16 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                         Current.Log.error("Error when geocoding string, sending current location instead! \(error)")
                         completion(SendLocationIntentResponse(code: .ready, userActivity: nil,
                                                               place: nil, source: .unknown,
-                                                              pasteboardContents: nil))
+                                                              clipboardContents: nil))
 //                        completion(SendLocationIntentResponse(code: .failureGeocoding, userActivity: nil,
-//                                                              pasteboardContents: pasteboardString))
+//                                                              clipboardContents: pasteboardString))
                         return
                     }
                     if let placemarks = placemarks {
                         Current.Log.verbose("Got a placemark! \(placemarks[0])")
                         completion(SendLocationIntentResponse(code: .ready, userActivity: nil,
                                                               place: placemarks[0], source: .address,
-                                                              pasteboardContents: pasteboardString))
+                                                              clipboardContents: pasteboardString))
                         return
                     }
                 }
@@ -137,7 +137,7 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
             Current.Log.verbose("Nothing on Clipboard and Placemark wasn't set, assuming user wants current location")
             completion(SendLocationIntentResponse(code: .ready, userActivity: nil,
                                                   place: nil, source: .unknown,
-                                                  pasteboardContents: nil))
+                                                  clipboardContents: nil))
             return
         }
     }
@@ -145,8 +145,8 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
 
 extension SendLocationIntentResponse {
     convenience init(code: SendLocationIntentResponseCode, userActivity: NSUserActivity?, place: CLPlacemark?,
-                     source: SendLocationClipboardLocationParsedAs, pasteboardContents: String?) {
-        self.init(code: code, userActivity: userActivity, pasteboardContents: pasteboardContents)
+                     source: SendLocationClipboardLocationParsedAs, clipboardContents: String?) {
+        self.init(code: code, userActivity: userActivity, clipboardContents: clipboardContents)
         Current.Log.verbose("Confirming send location as place \(place.debugDescription) derived via \(source)")
 
         self.location = place
@@ -155,8 +155,8 @@ extension SendLocationIntentResponse {
         return
     }
 
-    convenience init(code: SendLocationIntentResponseCode, userActivity: NSUserActivity?, pasteboardContents: String?) {
+    convenience init(code: SendLocationIntentResponseCode, userActivity: NSUserActivity?, clipboardContents: String?) {
         self.init(code: code, userActivity: userActivity)
-        self.pasteboardContents = pasteboardContents
+        self.clipboardContents = clipboardContents
     }
 }
