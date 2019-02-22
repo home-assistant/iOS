@@ -46,6 +46,7 @@ target 'HomeAssistant' do
     pod 'Communicator'
     pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
     pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
+    pod 'Lokalise', '~> 0.10.0'
     pod 'MBProgressHUD', '1.1.0'
     pod 'SwiftGen', '6.1.0'
     pod 'SwiftLint', '0.30.1'

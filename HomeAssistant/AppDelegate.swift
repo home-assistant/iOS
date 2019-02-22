@@ -20,6 +20,7 @@ import Communicator
 import Iconic
 import arek
 import CallbackURLKit
+import Lokalise
 
 let keychain = Constants.Keychain
 
@@ -33,8 +34,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private(set) var regionManager: RegionManager!
 
+    // swiftlint:disable:next function_body_length
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        self.configureLokalise()
 
         let launchingForLocation = launchOptions?[.location] != nil
         let event = ClientEvent(text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
@@ -90,12 +94,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Current.signInRequiredCallback = {
             let alert = UIAlertController(title: L10n.Alerts.AuthRequired.title,
-                                          message: L10n.Alerts.AuthRequired.message,
-                                          preferredStyle: UIAlertController.Style.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
-                                          handler: { _ in
-                                            navController.popToViewController(webView, animated: true)
-                                            webView.showSettingsViewController()
+                                          message: L10n.Alerts.AuthRequired.message, preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: { _ in
+                navController.popToViewController(webView, animated: true)
+                webView.showSettingsViewController()
             }))
 
             navController.present(alert, animated: true, completion: nil)
@@ -110,7 +113,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {}
 
-    func applicationDidBecomeActive(_ application: UIApplication) { CheckPermissionsStatus() }
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        CheckPermissionsStatus()
+        Lokalise.shared.checkForUpdates { (updated, error) in
+            if let error = error {
+                Current.Log.error("Error when updating Lokalise: \(error)")
+                return
+            }
+            Current.Log.info("Lokalise updated? \(updated)")
+        }
+    }
 
     func applicationWillTerminate(_ application: UIApplication) {}
 
@@ -651,6 +663,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }.catch { error -> Void in
                 Current.Log.error("Received error from CallbackURLKit perform \(error)")
             }
+        }
+    }
+
+    func configureLokalise() {
+        Lokalise.shared.setProjectID("834452985a05254348aee2.46389241",
+                                     token: "fe314d5c54f3000871ac18ccac8b62b20c143321")
+        Lokalise.shared.swizzleMainBundle()
+
+        Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
+    }
+}
+
+extension AppConfiguration {
+    var lokaliseEnv: LokaliseLocalizationType {
+        if prefs.bool(forKey: "showTranslationKeys") {
+            return .debug
+        }
+        switch self {
+        case .Release:
+            return .release
+        case .Beta:
+            return .prerelease
+        case .Debug, .FastlaneSnapshot:
+            return .local
         }
     }
 }
