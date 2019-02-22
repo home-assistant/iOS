@@ -736,6 +736,24 @@ internal enum L10n {
         /// Export log files
         internal static let title = L10n.tr("Localizable", "settings.developer.export_log_files.title")
       }
+      internal enum Lokalise {
+        /// Update translations from Lokalise
+        internal static let title = L10n.tr("Localizable", "settings.developer.lokalise.title")
+        internal enum Alert {
+          internal enum NotUpdated {
+            /// No updates
+            internal static let message = L10n.tr("Localizable", "settings.developer.lokalise.alert.not_updated.message")
+            /// No localization updates were available
+            internal static let title = L10n.tr("Localizable", "settings.developer.lokalise.alert.not_updated.title")
+          }
+          internal enum Updated {
+            /// Localizations were updated
+            internal static let message = L10n.tr("Localizable", "settings.developer.lokalise.alert.updated.message")
+            /// Updated
+            internal static let title = L10n.tr("Localizable", "settings.developer.lokalise.alert.updated.title")
+          }
+        }
+      }
       internal enum MapNotification {
         /// Show map notification content extension
         internal static let title = L10n.tr("Localizable", "settings.developer.map_notification.title")

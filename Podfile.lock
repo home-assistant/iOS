@@ -32,6 +32,7 @@ PODS:
   - Eureka (4.3.1)
   - Iconic (1.5.1)
   - KeychainAccess (3.1.2)
+  - Lokalise (0.10.0)
   - MBProgressHUD (1.1.0)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
@@ -83,6 +84,7 @@ DEPENDENCIES:
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
   - Iconic (from `https://github.com/robbiet480/Iconic.git`, branch `swift-4.2`)
   - KeychainAccess (= 3.1.2)
+  - Lokalise (~> 0.10.0)
   - MBProgressHUD (= 1.1.0)
   - ObjectMapper (= 3.4.2)
   - PromiseKit (= 6.8.3)
@@ -108,6 +110,7 @@ SPEC REPOS:
     - DeviceKit
     - EMTLoadingIndicator
     - KeychainAccess
+    - Lokalise
     - MBProgressHUD
     - ObjcExceptionBridging
     - ObjectMapper
@@ -173,6 +176,7 @@ SPEC CHECKSUMS:
   Eureka: 28ea296f06710f6745266b71f17862048941a32d
   Iconic: b2463d6ee236fc987e6737f9e3cc13a702a4c4d8
   KeychainAccess: b3816fddcf28aa29d94b10ec305cd52be14c472b
+  Lokalise: bc42066e2dde59b43b46e88ecc0b92b7d593dc72
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: 0d4402610f4e468903ae64629eec4784531e5c51
@@ -190,6 +194,6 @@ SPEC CHECKSUMS:
   XCGLogger: 7f7f43f15dfe3a305fa1342b7dc29af656289abd
   ZIPFoundation: b1f07e4409baf1641f3fe5948b2a1c3f5c500cb1
 
-PODFILE CHECKSUM: cecba060058ee86c02f7163330172f32d376dd9a
+PODFILE CHECKSUM: 6a41a76a6971f0c266c6cb51cd9678b4d1a7d73e
 
 COCOAPODS: 1.6.1
