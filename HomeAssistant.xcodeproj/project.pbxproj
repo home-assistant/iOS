@@ -14,7 +14,6 @@
 		3A9474676287819D0F5A8A37 /* Pods-TodayWidget-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F3D32AC650F6D7A0F3C3D08 /* Pods-TodayWidget-metadata.plist */; };
 		474AA46EC65ABB974EFC74A4 /* Pods-APNSAttachmentService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */; };
 		5487B2333FBD80B7ED0CFD47 /* Pods-NotificationContentExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */; };
-		5731AE3FADDE686AA2749762 /* Pods-SharedTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = EF756F51509DAA0CBE8789BC /* Pods-SharedTests-metadata.plist */; };
 		6DFADFAFF2B1E4A5C7A00D10 /* Pods_SiriIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C43F9F3C9B007EC2C1DDD9 /* Pods_SiriIntents.framework */; };
 		6EDD98D41F2594F18D2F3E38 /* Pods-WatchAppExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */; };
 		7A06D3D7A5B4746FE6F5BFA6 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C23068FBA9B7BE1478936B11 /* Pods_HomeAssistant.framework */; };
@@ -448,7 +447,6 @@
 		D0EEF341214EC76A00D1D360 /* StateChanged.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D04791CB8908B00B945C8 /* StateChanged.swift */; };
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
-		D18BB39F0BE75F5C3F086FE2 /* Pods-Shared-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */; };
 		E1FA731332EB8E4C346F56FA /* Pods_APNSAttachmentService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0FB96476CD7553E34787A84 /* Pods_APNSAttachmentService.framework */; };
 /* End PBXBuildFile section */
 
@@ -602,7 +600,6 @@
 
 /* Begin PBXFileReference section */
 		09D3A786745B7C6D0D364BF0 /* Pods-Shared-watchOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-watchOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-watchOS/Pods-Shared-watchOS.debug.xcconfig"; sourceTree = "<group>"; };
-		0B4D2BC91268D22D7A43EABB /* Pods-WatchApp-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-WatchApp-metadata.plist"; path = "Pods/Pods-WatchApp-metadata.plist"; sourceTree = "<group>"; };
 		0CE51F0910A76C0B0D8B795E /* Pods-Shared-watchOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-watchOS-metadata.plist"; path = "Pods/Pods-Shared-watchOS-metadata.plist"; sourceTree = "<group>"; };
 		1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C5332DAFA7CC79107B5429E /* Pods-Shared-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS/Pods-Shared-iOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -619,7 +616,6 @@
 		4E6031DDE8EEF47E7A3DA817 /* Pods-Shared-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS/Pods-Shared-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		4F3D32AC650F6D7A0F3C3D08 /* Pods-TodayWidget-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-TodayWidget-metadata.plist"; path = "Pods/Pods-TodayWidget-metadata.plist"; sourceTree = "<group>"; };
 		514D3AC57D932CF15324A398 /* Pods-TodayWidget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayWidget.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TodayWidget/Pods-TodayWidget.debug.xcconfig"; sourceTree = "<group>"; };
-		55AB08080461913AC040C740 /* Pods-Shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.debug.xcconfig"; sourceTree = "<group>"; };
 		575D0792AB652B62F779FECB /* Pods_SharedTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C94D4856B4E21CCEC8B8BFC /* Pods-SharedTests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.beta.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.beta.xcconfig"; sourceTree = "<group>"; };
 		6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-WatchAppExtension-metadata.plist"; path = "Pods/Pods-WatchAppExtension-metadata.plist"; sourceTree = "<group>"; };
@@ -1004,9 +1000,7 @@
 		BA1CF6494DCB053F130AF00A /* Pods-APNSAttachmentService.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.beta.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.beta.xcconfig"; sourceTree = "<group>"; };
 		BBABE84031827AE56C8043E8 /* Pods-Shared-iOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-iOS-metadata.plist"; path = "Pods/Pods-Shared-iOS-metadata.plist"; sourceTree = "<group>"; };
 		C23068FBA9B7BE1478936B11 /* Pods_HomeAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2864615A73A92D659C0BD03 /* Pods-Shared.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.beta.xcconfig"; sourceTree = "<group>"; };
 		CCD706884B80054E107B89D5 /* Pods-HomeAssistantTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.release.xcconfig"; sourceTree = "<group>"; };
-		CF5CCD8B7AB112B7E77F8057 /* Pods-WatchApp Extension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-WatchApp Extension-metadata.plist"; path = "Pods/Pods-WatchApp Extension-metadata.plist"; sourceTree = "<group>"; };
 		D00302BD20D4BEDB004C2CA9 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfo.swift; sourceTree = "<group>"; };
 		D03D891720E0A85200D4F28D /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1047,13 +1041,10 @@
 		D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTableViewController.swift; sourceTree = "<group>"; };
 		D0FF79D420D87DB10034574D /* ClientEvents.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ClientEvents.storyboard; sourceTree = "<group>"; };
 		D4F64E4C5F91DADFF4E9E368 /* Pods-NotificationContentExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationContentExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-NotificationContentExtension/Pods-NotificationContentExtension.release.xcconfig"; sourceTree = "<group>"; };
-		D679007C62C8EE4A1ADC17A5 /* Pods-Shared.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.release.xcconfig"; sourceTree = "<group>"; };
 		DC05CEA3CD50ABEC2AE35BBB /* Pods_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-MapNotificationContentExtension-metadata.plist"; path = "Pods/Pods-MapNotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
 		E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-SiriIntents-metadata.plist"; path = "Pods/Pods-SiriIntents-metadata.plist"; sourceTree = "<group>"; };
 		E46DEBD572E360E6FE1CBD43 /* Pods-TodayWidget.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayWidget.beta.xcconfig"; path = "Pods/Target Support Files/Pods-TodayWidget/Pods-TodayWidget.beta.xcconfig"; sourceTree = "<group>"; };
 		E4E95807859A13BC3B0072E2 /* Pods_HomeAssistantUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EF756F51509DAA0CBE8789BC /* Pods-SharedTests-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-SharedTests-metadata.plist"; path = "Pods/Pods-SharedTests-metadata.plist"; sourceTree = "<group>"; };
 		F0FB96476CD7553E34787A84 /* Pods_APNSAttachmentService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_APNSAttachmentService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6263AE4EAC90E232CFCA4E7 /* Pods-WatchAppExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchAppExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension.release.xcconfig"; sourceTree = "<group>"; };
 		F95337CF20F43B41C78A66D0 /* Pods-WatchAppExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WatchAppExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1217,12 +1208,8 @@
 				34C5CC8974502E3DE3BB68B0 /* Pods-HomeAssistant-metadata.plist */,
 				93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */,
 				3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */,
-				DCC27AD4585C850F12A3F0D4 /* Pods-MapNotificationContentExtension-metadata.plist */,
 				932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */,
-				EF756F51509DAA0CBE8789BC /* Pods-SharedTests-metadata.plist */,
 				E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */,
-				CF5CCD8B7AB112B7E77F8057 /* Pods-WatchApp Extension-metadata.plist */,
-				0B4D2BC91268D22D7A43EABB /* Pods-WatchApp-metadata.plist */,
 				6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */,
 				4F3D32AC650F6D7A0F3C3D08 /* Pods-TodayWidget-metadata.plist */,
 				7B3B20465CE9CCBBBA7D0414 /* Pods-APNSAttachmentService.debug.xcconfig */,
@@ -1237,9 +1224,6 @@
 				342F03B5540A0B20637C7DCB /* Pods-NotificationContentExtension.debug.xcconfig */,
 				D4F64E4C5F91DADFF4E9E368 /* Pods-NotificationContentExtension.release.xcconfig */,
 				2E0AF070746A970041740865 /* Pods-NotificationContentExtension.beta.xcconfig */,
-				55AB08080461913AC040C740 /* Pods-Shared.debug.xcconfig */,
-				D679007C62C8EE4A1ADC17A5 /* Pods-Shared.release.xcconfig */,
-				C2864615A73A92D659C0BD03 /* Pods-Shared.beta.xcconfig */,
 				B7A8B1C3DDCDA0CE667420BF /* Pods-SharedTests.debug.xcconfig */,
 				93D2F302F08DECAAD2B9C307 /* Pods-SharedTests.release.xcconfig */,
 				5C94D4856B4E21CCEC8B8BFC /* Pods-SharedTests.beta.xcconfig */,
@@ -2733,7 +2717,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D18BB39F0BE75F5C3F086FE2 /* Pods-Shared-metadata.plist in Resources */,
 				B63D28BD215D9E3600F3B907 /* Localizable.strings in Resources */,
 				A704AB29C110E538318CF129 /* Pods-Shared-iOS-metadata.plist in Resources */,
 			);
@@ -2743,7 +2726,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5731AE3FADDE686AA2749762 /* Pods-SharedTests-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
