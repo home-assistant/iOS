@@ -592,30 +592,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
                 self.present(alert, animated: true, completion: nil)
             }
-        <<< ButtonRow {
-            $0.title = L10n.Settings.Developer.Lokalise.title
-        }.onCellSelection { _, _ in
-            Lokalise.shared.checkForUpdates { (updated, error) in
-                var alertTitle = L10n.Settings.Developer.Lokalise.Alert.Updated.title
-                var alertMessage = L10n.Settings.Developer.Lokalise.Alert.Updated.message
 
-                if let error = error {
-                    alertTitle = L10n.errorLabel
-                    alertMessage = (error as NSError).localizedDescription
-                }
-
-                if !updated {
-                    alertTitle = L10n.Settings.Developer.Lokalise.Alert.NotUpdated.title
-                    alertMessage = L10n.Settings.Developer.Lokalise.Alert.NotUpdated.message
-                }
-
-                let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
-
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-
-                self.present(alert, animated: true, completion: nil)
-            }
-        }
         <<< ButtonRow {
             $0.title = L10n.Settings.Developer.DebugStrings.title
         }.onCellSelection { _, _ in
