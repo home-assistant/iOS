@@ -99,10 +99,27 @@ public class HomeAssistantAPI {
             self.authenticationMethodString = "modern"
         }
 
-        let basicAuthKeychain = Keychain(server: self.connectionInfo.baseURL.absoluteString,
-                                         protocolType: .https,
-                                         authenticationType: .httpBasic)
-        self.configureBasicAuthWithKeychain(basicAuthKeychain)
+        self.manager.delegate.taskDidReceiveChallenge = { session, task, challenge in
+            Current.Log.verbose("HAAPI Manager received challenge")
+            let authMethod = challenge.protectionSpace.authenticationMethod
+
+            guard authMethod == NSURLAuthenticationMethodDefault ||
+                authMethod == NSURLAuthenticationMethodHTTPBasic ||
+                authMethod == NSURLAuthenticationMethodHTTPDigest else {
+                    Current.Log.verbose("Not handling auth method \(authMethod)")
+                    return (.performDefaultHandling, nil)
+            }
+
+            Current.Log.verbose("Received basic auth challenge")
+
+            guard let basicAuthCreds = Current.settingsStore.connectionInfo?.basicAuthCredentials else {
+                Current.Log.error("Unable to get basicAuthCreds, skipping auth challenge!")
+                return (.performDefaultHandling, nil)
+            }
+
+            return (.useCredential, URLCredential(user: basicAuthCreds.username, password: basicAuthCreds.password,
+                                                  persistence: .synchronizable))
+        }
 
         self.pushID = self.prefs.string(forKey: "pushID")
 
@@ -724,27 +741,6 @@ public class HomeAssistantAPI {
         configuration.httpAdditionalHeaders = headers
         configuration.timeoutIntervalForRequest = 10 // seconds
         return Alamofire.SessionManager(configuration: configuration)
-    }
-
-    private func configureBasicAuthWithKeychain(_ basicAuthKeychain: Keychain) {
-        if let basicUsername = basicAuthKeychain["basicAuthUsername"],
-            let basicPassword = basicAuthKeychain["basicAuthPassword"] {
-            self.manager.delegate.sessionDidReceiveChallenge = { session, challenge in
-                Current.Log.verbose("Received basic auth challenge")
-
-                let authMethod = challenge.protectionSpace.authenticationMethod
-
-                guard authMethod == NSURLAuthenticationMethodDefault ||
-                    authMethod == NSURLAuthenticationMethodHTTPBasic ||
-                    authMethod == NSURLAuthenticationMethodHTTPDigest else {
-                        Current.Log.verbose("Not handling auth method \(authMethod)")
-                        return (.performDefaultHandling, nil)
-                }
-
-                return (.useCredential, URLCredential(user: basicUsername, password: basicPassword,
-                                                      persistence: .synchronizable))
-            }
-        }
     }
 
     private func getLatestMotionActivity() -> Promise<CMMotionActivity?> {

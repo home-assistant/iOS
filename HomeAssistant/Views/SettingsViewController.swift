@@ -45,9 +45,15 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     var internalBaseURL: URL?
     var internalBaseURLSSID: String?
     var internalBaseURLEnabled: Bool = false
-    var basicAuthUsername: String?
-    var basicAuthPassword: String?
-    var basicAuthEnabled: Bool = false
+    var basicAuthUsername: String? {
+        return (self.form.rowBy(tag: "basicAuthUsername") as? TextRow)?.value
+    }
+    var basicAuthPassword: String? {
+        return (self.form.rowBy(tag: "basicAuthPassword") as? PasswordRow)?.value
+    }
+    var basicAuthEnabled: Bool {
+        return (self.form.rowBy(tag: "basicAuth") as? SwitchRow)?.value ?? false
+    }
     var useLegacyAuth: Bool = false
 
     var configured = false
@@ -267,16 +273,16 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
             <<< SwitchRow("basicAuth") {
                 $0.title = L10n.Settings.ConnectionSection.BasicAuth.title
-                $0.value = self.basicAuthEnabled
+                $0.value = (self.connectionInfo?.basicAuthCredentials != nil)
             }.onChange { row in
                 if let boolVal = row.value {
                     Current.Log.verbose("Setting rows to val \(!boolVal)")
-                    self.basicAuthEnabled = boolVal
+                    let cond = Condition(booleanLiteral: !boolVal)
                     let basicAuthUsername: TextRow = self.form.rowBy(tag: "basicAuthUsername")!
-                    basicAuthUsername.hidden = Condition(booleanLiteral: !boolVal)
+                    basicAuthUsername.hidden = cond
                     basicAuthUsername.evaluateHidden()
                     let basicAuthPassword: PasswordRow = self.form.rowBy(tag: "basicAuthPassword")!
-                    basicAuthPassword.hidden = Condition(booleanLiteral: !boolVal)
+                    basicAuthPassword.hidden = cond
                     basicAuthPassword.evaluateHidden()
                     self.tableView.reloadData()
                 }
@@ -284,20 +290,16 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
             <<< TextRow("basicAuthUsername") {
                 $0.title = L10n.Settings.ConnectionSection.BasicAuth.Username.title
-                $0.hidden = Condition(booleanLiteral: !self.basicAuthEnabled)
+                $0.hidden = Condition(booleanLiteral: (self.connectionInfo?.basicAuthCredentials == nil))
                 $0.value = self.connectionInfo?.basicAuthCredentials?.username ?? ""
                 $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Username.placeholder
-            }.onChange { row in
-                self.basicAuthUsername = row.value
             }
 
             <<< PasswordRow("basicAuthPassword") {
                 $0.title = L10n.Settings.ConnectionSection.BasicAuth.Password.title
                 $0.value = self.connectionInfo?.basicAuthCredentials?.password ?? ""
                 $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Password.placeholder
-                $0.hidden = Condition(booleanLiteral: !self.basicAuthEnabled)
-            }.onChange { row in
-                self.basicAuthPassword = row.value
+                $0.hidden = Condition(booleanLiteral: (self.connectionInfo?.basicAuthCredentials == nil))
             }.cellUpdate { cell, row in
                 if !row.isValid {
                     cell.titleLabel?.textColor = .red

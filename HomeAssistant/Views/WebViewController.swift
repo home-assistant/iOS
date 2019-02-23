@@ -271,6 +271,15 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             return
         }
 
+        if let connectionInfo = Current.settingsStore.connectionInfo,
+            let basicAuthCreds = connectionInfo.basicAuthCredentials {
+            Current.Log.verbose("WKWebView hit basic auth challenge")
+            completionHandler(.useCredential, URLCredential(user: basicAuthCreds.username,
+                                                            password: basicAuthCreds.password,
+                                                            persistence: .synchronizable))
+            return
+        }
+
         let space = challenge.protectionSpace
 
         let alert = UIAlertController(title: "\(space.`protocol`!)://\(space.host):\(space.port)",
