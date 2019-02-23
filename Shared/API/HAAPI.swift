@@ -20,7 +20,6 @@ import UserNotifications
 import Intents
 import CoreMotion
 #if os(iOS)
-import Reqres
 import Reachability
 #endif
 
@@ -704,20 +703,10 @@ public class HomeAssistantAPI {
             headers["X-HA-Access"] = password
         }
 
-        #if os(iOS)
-        let reqresConfig = Reqres.defaultSessionConfiguration()
-        reqresConfig.httpAdditionalHeaders = headers
-        reqresConfig.timeoutIntervalForRequest = 10 // seconds
-        let manager = Alamofire.SessionManager(configuration: reqresConfig)
-        Reqres.sessionDelegate = manager.delegate
-        Reqres.logger = ReqresXCGLogger()
-        return manager
-        #else
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = headers
         configuration.timeoutIntervalForRequest = 10 // seconds
         return Alamofire.SessionManager(configuration: configuration)
-        #endif
     }
 
     private func configureBasicAuthWithKeychain(_ basicAuthKeychain: Keychain) {

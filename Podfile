@@ -36,7 +36,6 @@ def ios_shared_pods
     shared_pods
 
     pod 'ReachabilitySwift'
-    pod 'Reqres'
 end
 
 target 'HomeAssistant' do

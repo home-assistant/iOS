@@ -54,7 +54,6 @@ PODS:
   - Realm/Headers (3.13.1)
   - RealmSwift (3.13.1):
     - Realm (= 3.13.1)
-  - Reqres (3.0.0)
   - SwiftGen (6.1.0)
   - SwiftLint (0.30.1)
   - TABObserverSet (2.1.0)
@@ -90,7 +89,6 @@ DEPENDENCIES:
   - PromiseKit (= 6.8.3)
   - ReachabilitySwift
   - RealmSwift (= 3.13.1)
-  - Reqres
   - SwiftGen (= 6.1.0)
   - SwiftLint (= 0.30.1)
   - UIColor_Hex_Swift
@@ -119,7 +117,6 @@ SPEC REPOS:
     - ReachabilitySwift
     - Realm
     - RealmSwift
-    - Reqres
     - SwiftGen
     - SwiftLint
     - TABObserverSet
@@ -185,7 +182,6 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
   Realm: 50071da38fe079e0735e47c9f2eae738c68c5996
   RealmSwift: 8a1e6a02b7a08cd17a31e3115143fb69fe5f3fb9
-  Reqres: fb0714daf1b13dbafca25dd293d583cb4f73e420
   SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
   SwiftLint: a54bf1fe12b55c68560eb2a7689dfc81458508f7
   TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
@@ -194,6 +190,6 @@ SPEC CHECKSUMS:
   XCGLogger: 7f7f43f15dfe3a305fa1342b7dc29af656289abd
   ZIPFoundation: b1f07e4409baf1641f3fe5948b2a1c3f5c500cb1
 
-PODFILE CHECKSUM: c8edf02800b1b8239aad030dc4a7e00a8d21c6a2
+PODFILE CHECKSUM: 8a0a1f8cf128701763b48be0937719e8f35aff3c
 
 COCOAPODS: 1.6.1
