@@ -2,7 +2,7 @@
 "NSLocationAlwaysUsageDescription" = "Abbiamo sempre bisogno di accedere alla tua posizione per caratteristiche come iBeacons, Geofence, gli aggiornamenti in background e la segnalazione esatta.";
 "NSLocationWhenInUseUsageDescription" = "Consentire l'accesso alla posizione solo mentre l'app è in uso disabiliterà iBeacons, i geofences, gli aggiornamenti della posizione in background e la segnalazione esatta.";
 "NSMotionUsageDescription" = "Il movimento viene utilizzato per migliorare gli aggiornamenti della posizione con il tipo di movimento corrente, oltre a fornire i dati base del contapassi.";
-"NSSiriUsageDescription" = "Usiamo Siri per consentire ai comandi creati diinteragire con l'app.";
+"NSSiriUsageDescription" = "Usiamo Siri per consentire ai comandi di interagire con l'app.";
 "NSPhotoLibraryAddUsageDescription" = "L'accesso al Rullino foto è necessario per consentire il salvataggio delle foto dalla visualizzazione Web.";
 "NSPhotoLibraryUsageDescription" = "L'accesso al Rullino foto è necessario per consentire il salvataggio delle foto dalla visualizzazione Web.";
-"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
+"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Invia posizione";

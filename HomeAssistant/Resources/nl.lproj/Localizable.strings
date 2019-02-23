@@ -10,7 +10,7 @@
 \
  %@";
 "settings.certificate_error_notification.title" = "Zelfondertekend of ongeldig certificaat gedetecteerd";
-"settings.certificate_error_notification.message" = "Een zelfondertekend of ongeldig SSL-certificaat is gedetecteerd. Dergelijke certificaten worden niet ondersteund door Home Assistant voor iOS. Tik op de knop Meer info voor meer informatie.";
+"settings.certificate_error_notification.message" = "Een zelfondertekend of ongeldig SSL-certificaat is gedetecteerd. Dergelijke certificaten worden niet ondersteund door Home Assistant Companion. Tik op de knop Meer info voor meer informatie.";
 "settings.discovery_section.header" = "Gevonden Home Assistenten";
 "settings.discovery_section.requiresPassword" = "Vereist wachtwoord";
 "settings.connection_section.header" = "Verbinding";
@@ -89,7 +89,7 @@
 "devices_map.battery_label" = "Batterij";
 "ok_label" = "Oké";
 "about.title" = "Over";
-"about.logo.app_title" = "Home Assistant voor iOS";
+"about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Awaken Your Home";
 "about.acknowledgements.title" = "Met dank aan";
 "about.website.title" = "Website";
@@ -204,7 +204,7 @@
 "notifications_configurator.category.navigation_bar.title" = "Category Configurator";
 "notifications_configurator.category.rows.name.title" = "Naam";
 "notifications_configurator.category.rows.actions.header" = "Actions";
-"notifications_configurator.category.rows.actions.add_row.title" = "Add";
+"addButtonLabel" = "Add";
 "notifications_configurator.category.rows.category_summary.header" = "Category Summary";
 "notifications_configurator.category.rows.category_summary.footer" = "A format string for the summary description used when the system groups the category’s notifications. You can optionally uses '%%u' to show the number of notifications in the group and '%%@' to show the summary argument provided in the push payload.";
 "notifications_configurator.category.rows.category_summary.default" = "%%u notifications in %%@";
@@ -511,3 +511,9 @@
 "url_handler.x_callback_url.error.serviceMissing" = "service (e.g. homeassistant.turn_on) must be defined";
 "url_handler.x_callback_url.error.templateMissing" = "A renderable template must be defined";
 "location_change_notification.app_shortcut.body" = "Location updated via App Shortcut";
+"settings.developer.lokalise.alert.updated.message" = "Localizations were updated";
+"settings.developer.lokalise.alert.updated.title" = "Updated";
+"settings.developer.lokalise.alert.not_updated.message" = "No updates";
+"settings.developer.lokalise.alert.not_updated.title" = "No localization updates were available";
+"settings.developer.lokalise.title" = "Update translations from Lokalise!";
+"settings.developer.debug_strings.title" = "Debug strings";

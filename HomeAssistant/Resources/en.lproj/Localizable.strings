@@ -8,7 +8,7 @@
 "settings.connection_error_notification.title" = "Connection Error";
 "settings.connection_error_notification.message" = "There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was: %@";
 "settings.certificate_error_notification.title" = "Self-signed or invalid certificate detected";
-"settings.certificate_error_notification.message" = "A self-signed or invalid SSL certificate has been detected. Certificates of this kind are not supported by Home Assistant for iOS. Please tap the More Info button for further information.";
+"settings.certificate_error_notification.message" = "A self-signed or invalid SSL certificate has been detected. Certificates of this kind are not supported by Home Assistant Companion. Please tap the More Info button for further information.";
 "settings.discovery_section.header" = "Discovered Home Assistants";
 "settings.discovery_section.requiresPassword" = "Requires password";
 "settings.connection_section.header" = "Connection";
@@ -86,7 +86,7 @@
 "devices_map.battery_label" = "Battery";
 "ok_label" = "OK";
 "about.title" = "About";
-"about.logo.app_title" = "Home Assistant for iOS";
+"about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Awaken Your Home";
 "about.acknowledgements.title" = "Acknowledgements";
 "about.website.title" = "Website";
@@ -198,7 +198,7 @@
 "notifications_configurator.category.navigation_bar.title" = "Category Configurator";
 "notifications_configurator.category.rows.name.title" = "Name";
 "notifications_configurator.category.rows.actions.header" = "Actions";
-"notifications_configurator.category.rows.actions.add_row.title" = "Add";
+"addButtonLabel" = "Add";
 "notifications_configurator.category.rows.category_summary.header" = "Category Summary";
 "notifications_configurator.category.rows.category_summary.footer" = "A format string for the summary description used when the system groups the category’s notifications. You can optionally uses '%%u' to show the number of notifications in the group and '%%@' to show the summary argument provided in the push payload.";
 "notifications_configurator.category.rows.category_summary.default" = "%%u notifications in %%@";
@@ -509,5 +509,5 @@
 "settings.developer.lokalise.alert.updated.title" = "Updated";
 "settings.developer.lokalise.alert.not_updated.message" = "No updates";
 "settings.developer.lokalise.alert.not_updated.title" = "No localization updates were available";
-"settings.developer.lokalise.title" = "Update translations from Lokalise";
+"settings.developer.lokalise.title" = "Update translations from Lokalise!";
 "settings.developer.debug_strings.title" = "Debug strings";
