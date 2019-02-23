@@ -97,7 +97,7 @@ public class Environment {
         let systemDestination = AppleSystemLogDestination(identifier: "advancedLogger.systemDestination")
 
         // Optionally set some configuration options
-        systemDestination.outputLevel = .debug
+        systemDestination.outputLevel = .verbose
         systemDestination.showLogIdentifier = false
         systemDestination.showFunctionName = true
         systemDestination.showThreadName = true
