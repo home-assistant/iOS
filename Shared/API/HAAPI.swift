@@ -662,9 +662,14 @@ public class HomeAssistantAPI {
 
         let realm = Current.realm()
 
+        let existingZoneIDs: [String] = realm.objects(RLMZone.self).map { $0.ID }
+
+        var seenZoneIDs: [String] = []
+
         for entity in storeableEntities {
             if entity.Domain == "zone", let zone = entity as? Zone {
                 let realm = Current.realm()
+                seenZoneIDs.append(zone.ID)
                 if let existingZone = realm.object(ofType: RLMZone.self, forPrimaryKey: zone.ID) {
                     // swiftlint:disable:next force_try
                     try! realm.write {
@@ -685,6 +690,18 @@ public class HomeAssistantAPI {
                 }
             }
         }
+
+        // Now remove zones that aren't in HA anymore
+        let zoneIDsToDelete = existingZoneIDs.filter { zoneID -> Bool in
+            return seenZoneIDs.contains(zoneID) == false
+        }
+
+        // swiftlint:disable:next force_try
+        try! realm.write {
+            realm.delete(realm.objects(RLMZone.self).filter("ID IN %@", zoneIDsToDelete))
+        }
+
+        Current.syncMonitoredRegions?()
     }
 
     private static func updateZone(_ storeableZone: RLMZone, withZoneEntity zone: Zone) {
