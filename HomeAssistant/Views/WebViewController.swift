@@ -17,7 +17,12 @@ import arek
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, ConnectionInfoChangedDelegate {
 
     var webView: FullScreenWKWebView!
-    var shouldHideToolbar: Bool = Current.appConfiguration.rawValue > 1
+    var shouldHideToolbar: Bool {
+        if Current.appConfiguration != .FastlaneSnapshot {
+            return prefs.bool(forKey: "autohideToolbar")
+        }
+        return false
+    }
     var waitingToHideToolbar: Bool = false
     var modernAuth: Bool = true
 

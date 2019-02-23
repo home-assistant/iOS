@@ -160,6 +160,10 @@ func setDefaults() {
         prefs.set(true, forKey: "locationUpdateOnNotification")
     }
 
+    if prefs.object(forKey: "autohideToolbar") == nil {
+        prefs.setValue(true, forKey: "autohideToolbar")
+    }
+
     prefs.synchronize()
 }
 
