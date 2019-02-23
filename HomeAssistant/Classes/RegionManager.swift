@@ -89,7 +89,6 @@ class RegionManager: NSObject {
         guard zone.inRegion != inRegion else {
             let noChangeMessage = "Not updating \(zone.debugDescription) because DB already believes state " +
             "to be correct. (\(zone.inRegion ? "In" : "out")). Trigger: \(trigger)"
-            Current.Log.verbose(noChangeMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: noChangeMessage, type: .locationUpdate))
             self.endBackgroundTaskWithName(taskName)
             return
@@ -102,7 +101,6 @@ class RegionManager: NSObject {
 
         guard trig != .BeaconRegionExit else {
             let noChangeMessage = "Not updating \(zone.debugDescription) because iBeacon exits are ignored"
-            Current.Log.verbose(noChangeMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: noChangeMessage, type: .locationUpdate))
             self.endBackgroundTaskWithName(taskName)
             return
@@ -139,7 +137,6 @@ class RegionManager: NSObject {
             let removeZone = {
                 let event = ClientEvent(text: "Stopping monitoring of region \(region.identifier)",
                     type: .locationUpdate)
-                Current.Log.verbose(event.text)
                 Current.clientEventStore.addEvent(event)
                 self?.locationManager.stopMonitoring(for: region)
             }
@@ -242,7 +239,6 @@ extension RegionManager: CLLocationManagerDelegate {
         guard last.horizontalAccuracy <= 200 else {
             let inaccurateLocationMessage = "Ignoring location with accuracy over threshold." +
             "Accuracy: \(last.horizontalAccuracy)m"
-            Current.Log.warning(inaccurateLocationMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: inaccurateLocationMessage,
                                                           type: .locationUpdate))
             return
