@@ -119,7 +119,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 Current.Log.error("Error when updating Lokalise: \(error)")
                 return
             }
-            Current.Log.info("Lokalise updated? \(updated)")
+            if updated {
+                Current.Log.info("Lokalise updated? \(updated)")
+            }
         }
     }
 
