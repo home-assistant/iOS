@@ -79,6 +79,14 @@ public class DeviceTrackerSee: Mappable {
         self.HorizontalAccuracy = zone.Radius
         self.Location = zone.locationCoordinates()
 
+        #if os(iOS)
+        // https://github.com/home-assistant/home-assistant-iOS/issues/32
+        if let currentSSID = ConnectionInfo.currentSSID(), zone.SSIDTrigger.contains(currentSSID) {
+            self.LocationName = zone.Name
+            return
+        }
+        #endif
+
         if zone.ID == "zone.home" {
             switch self.Trigger {
             case .RegionEnter, .GPSRegionEnter, .BeaconRegionEnter:

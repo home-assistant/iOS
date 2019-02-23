@@ -317,6 +317,7 @@
 		B67CE8C7222015E30034C1D0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE8C6222015E30034C1D0 /* CoreLocation.framework */; };
 		B67CE8C9222015E80034C1D0 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE8C8222015E80034C1D0 /* UserNotifications.framework */; };
 		B67CE8CD22201EFA0034C1D0 /* RegionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCA2130CA2D00678C2C /* RegionManager.swift */; };
+		B67CE8D02220EF1D0034C1D0 /* ObjectMapper+RealmList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67CE8CF2220EF1D0034C1D0 /* ObjectMapper+RealmList.swift */; };
 		B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */; };
 		B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */; };
 		B68EDD07215F215E00DD6B28 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD06215F215E00DD6B28 /* Notifications.swift */; };
@@ -908,6 +909,7 @@
 		B67CE82722200D420034C1D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B67CE8C6222015E30034C1D0 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS5.1.sdk/System/Library/Frameworks/CoreLocation.framework; sourceTree = DEVELOPER_DIR; };
 		B67CE8C8222015E80034C1D0 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS5.1.sdk/System/Library/Frameworks/UserNotifications.framework; sourceTree = DEVELOPER_DIR; };
+		B67CE8CF2220EF1D0034C1D0 /* ObjectMapper+RealmList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ObjectMapper+RealmList.swift"; sourceTree = "<group>"; };
 		B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMMotion+StringExtensions.swift"; sourceTree = "<group>"; };
 		B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectMapperTransformers.swift; sourceTree = "<group>"; };
 		B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = APNSAttachmentService.entitlements; sourceTree = "<group>"; };
@@ -1872,6 +1874,7 @@
 				D0EEF304214DD0D400D1D360 /* UIColor+HA.swift */,
 				D0EEF309214DD64C00D1D360 /* UIImage+Icons.swift */,
 				B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */,
+				B67CE8CF2220EF1D0034C1D0 /* ObjectMapper+RealmList.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3195,6 +3198,7 @@
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				B66C58BD21509934004AB261 /* ShortcutServiceConfigurator.swift in Sources */,
 				D0B25BCD2130CAB400678C2C /* Bonjour.swift in Sources */,
+				B67CE8D02220EF1D0034C1D0 /* ObjectMapper+RealmList.swift in Sources */,
 				B672AB2D2215341800175465 /* ShortcutEventConfigurator.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
 				D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */,

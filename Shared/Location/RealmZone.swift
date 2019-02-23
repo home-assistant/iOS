@@ -27,6 +27,10 @@ public class RLMZone: Object {
     public let BeaconMajor = RealmOptional<Int>()
     public let BeaconMinor = RealmOptional<Int>()
 
+    // SSID
+    public var SSIDTrigger = List<String>()
+    public var SSIDFilter = List<String>()
+
     public func mapping(map: Map) {
         ID                       <- map["entity_id"]
 
@@ -38,6 +42,9 @@ public class RLMZone: Object {
         BeaconUUID               <- map["attributes.beacon.uuid"]
         BeaconMajor.value        <- map["attributes.beacon.major"]
         BeaconMinor.value        <- map["attributes.beacon.minor"]
+
+        SSIDTrigger              <- map["attributes.ssid_trigger"]
+        SSIDFilter               <- map["attributes.ssid_filter"]
     }
 
     convenience init(zone: Zone) {
@@ -50,6 +57,12 @@ public class RLMZone: Object {
         self.BeaconUUID = zone.UUID
         self.BeaconMajor.value = zone.Major
         self.BeaconMinor.value = zone.Minor
+        if let ssidTrigger = zone.SSIDTrigger {
+            self.SSIDTrigger.append(objectsIn: ssidTrigger)
+        }
+        if let ssidFilter = zone.SSIDFilter {
+            self.SSIDFilter.append(objectsIn: ssidFilter)
+        }
     }
 
     public func locationCoordinates() -> CLLocationCoordinate2D {
