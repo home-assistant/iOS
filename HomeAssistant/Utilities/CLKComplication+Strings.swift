@@ -10,9 +10,7 @@ import Foundation
 import UIKit
 import Iconic
 import WatchKit
-#if os(iOS)
 import Shared
-#endif
 #if os(watchOS)
 import ClockKit
 #endif

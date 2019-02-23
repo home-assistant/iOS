@@ -7,7 +7,9 @@
 //
 
 import Foundation
+#if os(iOS)
 import SystemConfiguration.CaptiveNetwork
+#endif
 
 public struct ConnectionInfo: Codable {
     public struct BasicAuthCredentials: Codable {
@@ -34,12 +36,16 @@ public struct ConnectionInfo: Codable {
 
     /// Returns the url that should be used at this moment to access the home assistant instance.
     public var activeURL: URL {
+        #if os(iOS)
         if let internalSSID = self.internalSSID, internalSSID == ConnectionInfo.currentSSID(),
             let internalBaseURL = self.internalBaseURL {
             return internalBaseURL
         } else {
             return self.baseURL
         }
+        #else
+        return self.baseURL
+        #endif
     }
 
     public var activeAPIURL: URL {
@@ -47,6 +53,7 @@ public struct ConnectionInfo: Codable {
     }
 }
 
+#if os(iOS)
 public extension ConnectionInfo {
     public static func currentSSID() -> String? {
         var ssid: String?
@@ -62,3 +69,4 @@ public extension ConnectionInfo {
         return ssid
     }
 }
+#endif

@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+import CoreGraphics
 
 extension String {
     func dictionary() -> [String: Any]? {

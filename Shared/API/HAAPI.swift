@@ -19,7 +19,6 @@ import RealmSwift
 import UserNotifications
 import Intents
 import CoreMotion
-import Reqres
 #if os(iOS)
 import Reachability
 #endif
@@ -566,11 +565,7 @@ public class HomeAssistantAPI {
         ident.PushID = pushID
         ident.PushSounds = Notifications.installedPushNotificationSounds()
 
-        UIDevice.current.isBatteryMonitoringEnabled = true
-
-        switch UIDevice.current.batteryState {
-        case .unknown:
-            ident.BatteryState = "Unknown"
+        switch deviceKitDevice.batteryState {
         case .charging:
             ident.BatteryState = "Charging"
         case .unplugged:
@@ -579,12 +574,10 @@ public class HomeAssistantAPI {
             ident.BatteryState = "Full"
         }
 
-        ident.BatteryLevel = Int(UIDevice.current.batteryLevel*100)
+        ident.BatteryLevel = Int(deviceKitDevice.batteryLevel*100)
         if ident.BatteryLevel == -100 { // simulator fix
             ident.BatteryLevel = 100
         }
-
-        UIDevice.current.isBatteryMonitoringEnabled = false
 
         return Mapper().toJSON(ident)
     }
@@ -669,9 +662,14 @@ public class HomeAssistantAPI {
 
         let realm = Current.realm()
 
+        let existingZoneIDs: [String] = realm.objects(RLMZone.self).map { $0.ID }
+
+        var seenZoneIDs: [String] = []
+
         for entity in storeableEntities {
             if entity.Domain == "zone", let zone = entity as? Zone {
                 let realm = Current.realm()
+                seenZoneIDs.append(zone.ID)
                 if let existingZone = realm.object(ofType: RLMZone.self, forPrimaryKey: zone.ID) {
                     // swiftlint:disable:next force_try
                     try! realm.write {
@@ -692,6 +690,18 @@ public class HomeAssistantAPI {
                 }
             }
         }
+
+        // Now remove zones that aren't in HA anymore
+        let zoneIDsToDelete = existingZoneIDs.filter { zoneID -> Bool in
+            return seenZoneIDs.contains(zoneID) == false
+        }
+
+        // swiftlint:disable:next force_try
+        try! realm.write {
+            realm.delete(realm.objects(RLMZone.self).filter("ID IN %@", zoneIDsToDelete))
+        }
+
+        Current.syncMonitoredRegions?()
     }
 
     private static func updateZone(_ storeableZone: RLMZone, withZoneEntity zone: Zone) {
@@ -710,13 +720,10 @@ public class HomeAssistantAPI {
             headers["X-HA-Access"] = password
         }
 
-        let reqresConfig = Reqres.defaultSessionConfiguration()
-        reqresConfig.httpAdditionalHeaders = headers
-        reqresConfig.timeoutIntervalForRequest = 10 // seconds
-        let manager = Alamofire.SessionManager(configuration: reqresConfig)
-        Reqres.sessionDelegate = manager.delegate
-        Reqres.logger = ReqresXCGLogger()
-        return manager
+        let configuration = URLSessionConfiguration.default
+        configuration.httpAdditionalHeaders = headers
+        configuration.timeoutIntervalForRequest = 10 // seconds
+        return Alamofire.SessionManager(configuration: configuration)
     }
 
     private func configureBasicAuthWithKeychain(_ basicAuthKeychain: Keychain) {
@@ -774,20 +781,20 @@ public class HomeAssistantAPI {
     private func buildLocationPayload(updateType: LocationUpdateTrigger, location: CLLocation?,
                                       zone: RLMZone?) -> Promise<DeviceTrackerSee> {
 
-        UIDevice.current.isBatteryMonitoringEnabled = true
+        let device = Device()
 
         let payload = DeviceTrackerSee(trigger: updateType, location: location, zone: zone)
         payload.Trigger = updateType
 
         let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
 
-        payload.Battery = UIDevice.current.batteryLevel
+        payload.Battery = Float(exactly: device.batteryLevel)! / 100
         payload.DeviceID = Current.settingsStore.deviceID
-        payload.Hostname = UIDevice.current.name
+        payload.Hostname = device.name
         payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
 
-        payload.SSID = ConnectionInfo.currentSSID()
         #if os(iOS)
+        payload.SSID = ConnectionInfo.currentSSID()
         payload.ConnectionType = Reachability.getSimpleNetworkType().description
         #endif
 
@@ -803,8 +810,6 @@ public class HomeAssistantAPI {
                     }
 
                     return Promise.value(payload)
-                }.ensure {
-                    UIDevice.current.isBatteryMonitoringEnabled = false
                 }
 
     }

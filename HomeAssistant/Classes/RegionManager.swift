@@ -49,7 +49,7 @@ class RegionManager: NSObject {
         self.syncMonitoredRegions()
     }
 
-    // swiftlint:disable:next function_body_length
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     func triggerRegionEvent(_ manager: CLLocationManager, trigger: LocationUpdateTrigger, region: CLRegion) {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             let message = "Region update failed because client is not authenticated."
@@ -67,6 +67,14 @@ class RegionManager: NSObject {
 
         // Do nothing in case we don't want to trigger an enter event
         if zone.TrackingEnabled == false { Current.Log.verbose("Tracking not enabled for \(zone.ID)"); return }
+
+        // If current SSID is in the filter list stop processing region event. This is to cut down on false exits.
+        // https://github.com/home-assistant/home-assistant-iOS/issues/32
+        if let currentSSID = ConnectionInfo.currentSSID(), zone.SSIDFilter.contains(currentSSID) {
+            let inaccurateLocationMessage = "Ignoring region event due to current SSID being in zone SSID filter"
+            Current.clientEventStore.addEvent(ClientEvent(text: inaccurateLocationMessage, type: .locationUpdate))
+            return
+        }
 
         if region is CLBeaconRegion {
             if trigger == .RegionEnter { trig = .BeaconRegionEnter }
@@ -89,7 +97,6 @@ class RegionManager: NSObject {
         guard zone.inRegion != inRegion else {
             let noChangeMessage = "Not updating \(zone.debugDescription) because DB already believes state " +
             "to be correct. (\(zone.inRegion ? "In" : "out")). Trigger: \(trigger)"
-            Current.Log.verbose(noChangeMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: noChangeMessage, type: .locationUpdate))
             self.endBackgroundTaskWithName(taskName)
             return
@@ -102,7 +109,6 @@ class RegionManager: NSObject {
 
         guard trig != .BeaconRegionExit else {
             let noChangeMessage = "Not updating \(zone.debugDescription) because iBeacon exits are ignored"
-            Current.Log.verbose(noChangeMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: noChangeMessage, type: .locationUpdate))
             self.endBackgroundTaskWithName(taskName)
             return
@@ -139,7 +145,6 @@ class RegionManager: NSObject {
             let removeZone = {
                 let event = ClientEvent(text: "Stopping monitoring of region \(region.identifier)",
                     type: .locationUpdate)
-                Current.Log.verbose(event.text)
                 Current.clientEventStore.addEvent(event)
                 self?.locationManager.stopMonitoring(for: region)
             }
@@ -242,7 +247,6 @@ extension RegionManager: CLLocationManagerDelegate {
         guard last.horizontalAccuracy <= 200 else {
             let inaccurateLocationMessage = "Ignoring location with accuracy over threshold." +
             "Accuracy: \(last.horizontalAccuracy)m"
-            Current.Log.warning(inaccurateLocationMessage)
             Current.clientEventStore.addEvent(ClientEvent(text: inaccurateLocationMessage,
                                                           type: .locationUpdate))
             return

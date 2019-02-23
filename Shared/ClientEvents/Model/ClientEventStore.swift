@@ -19,6 +19,8 @@ public struct ClientEventStore {
         } catch {
             Current.Log.error("Error writing client event: \(error)")
         }
+
+        Current.Log.info(event)
     }
 
     public var getEvents: () -> Results<ClientEvent> = {

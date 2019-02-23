@@ -10,6 +10,7 @@
 
 import Foundation
 import WatchKit
+import Shared
 
 /// This class is responsible with scheduling the next background refreshes. It will trigger a
 /// background refresh as configured by the refreshRate property, the exact refresh moment will

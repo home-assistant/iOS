@@ -11,6 +11,8 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
 internal enum L10n {
+  /// Add
+  internal static let addButtonLabel = L10n.tr("Localizable", "addButtonLabel")
   /// Cancel
   internal static let cancelLabel = L10n.tr("Localizable", "cancel_label")
   /// Error
@@ -78,7 +80,7 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "about.home_assistant_on_twitter.title")
     }
     internal enum Logo {
-      /// Home Assistant for iOS
+      /// Home Assistant Companion
       internal static let appTitle = L10n.tr("Localizable", "about.logo.app_title")
       /// Awaken Your Home
       internal static let tagline = L10n.tr("Localizable", "about.logo.tagline")
@@ -442,10 +444,6 @@ internal enum L10n {
           internal static let footer = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.footer")
           /// Actions
           internal static let header = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.header")
-          internal enum AddRow {
-            /// Add
-            internal static let title = L10n.tr("Localizable", "notifications_configurator.category.rows.actions.add_row.title")
-          }
         }
         internal enum CategorySummary {
           /// %%u notifications in %%@
@@ -576,7 +574,7 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "settings.advanced_connection_settings_section.title")
     }
     internal enum CertificateErrorNotification {
-      /// A self-signed or invalid SSL certificate has been detected. Certificates of this kind are not supported by Home Assistant for iOS. Please tap the More Info button for further information.
+      /// A self-signed or invalid SSL certificate has been detected. Certificates of this kind are not supported by Home Assistant Companion. Please tap the More Info button for further information.
       internal static let message = L10n.tr("Localizable", "settings.certificate_error_notification.message")
       /// Self-signed or invalid certificate detected
       internal static let title = L10n.tr("Localizable", "settings.certificate_error_notification.title")
@@ -741,7 +739,7 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings.developer.export_log_files.title")
       }
       internal enum Lokalise {
-        /// Update translations from Lokalise
+        /// Update translations from Lokalise!
         internal static let title = L10n.tr("Localizable", "settings.developer.lokalise.title")
         internal enum Alert {
           internal enum NotUpdated {

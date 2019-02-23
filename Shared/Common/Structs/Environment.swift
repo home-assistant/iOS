@@ -48,7 +48,9 @@ public class Environment {
 
     public var settingsStore = SettingsStore()
 
+    #if os(iOS)
     public var authenticationControllerPresenter: ((UIViewController) -> Void)?
+    #endif
 
     public var signInRequiredCallback: (() -> Void)?
 
@@ -95,7 +97,7 @@ public class Environment {
         let systemDestination = AppleSystemLogDestination(identifier: "advancedLogger.systemDestination")
 
         // Optionally set some configuration options
-        systemDestination.outputLevel = .debug
+        systemDestination.outputLevel = .verbose
         systemDestination.showLogIdentifier = false
         systemDestination.showFunctionName = true
         systemDestination.showThreadName = true

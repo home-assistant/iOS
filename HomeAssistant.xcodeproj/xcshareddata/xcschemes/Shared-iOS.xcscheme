@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D03D891620E0A85200D4F28D"
                BuildableName = "Shared.framework"
-               BlueprintName = "Shared"
+               BlueprintName = "Shared-iOS"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,7 +47,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D03D891620E0A85200D4F28D"
             BuildableName = "Shared.framework"
-            BlueprintName = "Shared"
+            BlueprintName = "Shared-iOS"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -65,7 +65,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D03D891620E0A85200D4F28D"
             BuildableName = "Shared.framework"
-            BlueprintName = "Shared"
+            BlueprintName = "Shared-iOS"
             ReferencedContainer = "container:HomeAssistant.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

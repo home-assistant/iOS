@@ -8,6 +8,7 @@
 
 import ClockKit
 import RealmSwift
+import Shared
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
 
