@@ -205,6 +205,14 @@ class SettingsDetailViewController: FormViewController {
                         section.multivaluedRowToInsertAt = { index in
                             return self.getNotificationCategoryRow(nil)
                         }
+                        section.addButtonProvider = { section in
+                            return ButtonRow {
+                                    $0.title = L10n.addButtonLabel
+                                    $0.cellStyle = .value1
+                                }.cellUpdate { cell, _ in
+                                    cell.textLabel?.textAlignment = .left
+                            }
+                        }
 
                         for category in categories {
                             section <<< getNotificationCategoryRow(category)
@@ -567,6 +575,14 @@ class SettingsDetailViewController: FormViewController {
                                         section.tag = "actions"
                                         section.multivaluedRowToInsertAt = { index in
                                             return self.getActionRow(nil)
+                                        }
+                                        section.addButtonProvider = { section in
+                                            return ButtonRow {
+                                                $0.title = L10n.addButtonLabel
+                                                $0.cellStyle = .value1
+                                                }.cellUpdate { cell, _ in
+                                                    cell.textLabel?.textAlignment = .left
+                                            }
                                         }
 
                                         for action in actions {

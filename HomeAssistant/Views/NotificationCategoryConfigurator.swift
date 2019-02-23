@@ -186,7 +186,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
                     section.addButtonProvider = { section in
                         self.addButtonRow = ButtonRow {
-                            $0.title = L10n.NotificationsConfigurator.Category.Rows.Actions.AddRow.title
+                            $0.title = L10n.addButtonLabel
                             $0.cellStyle = .value1
                         }.cellUpdate { cell, _ in
                             cell.textLabel?.textAlignment = .left
