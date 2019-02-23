@@ -9,6 +9,7 @@
 import Foundation
 import PromiseKit
 import SafariServices
+import AuthenticationServices
 import Shared
 
 /// Manages browser verification to retrive an access code that can be exchanged for an authentication token.
@@ -21,7 +22,8 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
 
     private var promiseResolver: Resolver<String>?
     private var authenticationObserver: NSObjectProtocol?
-    private var authenticationViewController: SFSafariViewController?
+    private var authenticationViewController: Any?
+    private var authStyle: String = "SFSafariViewController"
 
     override init() {
         super.init()
@@ -29,6 +31,7 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
     }
 
     /// Opens a browser to the URL for obtaining an access code.
+    // swiftlint:disable:next function_body_length
     func authenticateWithBrowser(at baseURL: URL) -> Promise<String> {
         return Promise { (resolver: Resolver<String>) in
             self.promiseResolver = resolver
@@ -51,16 +54,46 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
             let clientIDQuery = URLQueryItem(name: "client_id", value: clientID)
             let redirectQuery = URLQueryItem(name: "redirect_uri", value: redirectURI)
             components?.queryItems = [responseTypeQuery, clientIDQuery, redirectQuery]
-            if let newURL = try components?.asURL() {
-                let safariVC = SFSafariViewController(url: newURL)
-                if #available(iOS 11.0, *) {
-                    safariVC.dismissButtonStyle = .cancel
-                } else {
-                    // Fallback on earlier versions
+            if let authURL = try components?.asURL() {
+
+                let newStyleAuthCallback = { (callbackURL: URL?, error: Error?) in
+                    if let authErr = error {
+                        Current.Log.error("Error during \(self.authStyle) authentication: \(authErr)")
+                        return
+                    }
+
+                    guard let successURL = callbackURL else {
+                        Current.Log.error("CallbackURL was empty during \(self.authStyle) authentication")
+                        return
+                    }
+
+                    self.handleSuccess(successURL)
                 }
-                safariVC.delegate = self
-                self.authenticationViewController = safariVC
-                Current.authenticationControllerPresenter?(safariVC)
+
+                if #available(iOS 12.0, *) {
+                    self.authStyle = "ASWebAuthenticationSession"
+                    let webAuthSession = ASWebAuthenticationSession(url: authURL, callbackURLScheme: redirectURI,
+                                                                    completionHandler: newStyleAuthCallback)
+
+                    webAuthSession.start()
+
+                    self.authenticationViewController = webAuthSession
+                } else if #available(iOS 11.0, *) {
+                    self.authStyle = "SFAuthenticationSession"
+                    let webAuthSession = SFAuthenticationSession(url: authURL, callbackURLScheme: redirectURI,
+                                                                 completionHandler: newStyleAuthCallback)
+
+                    webAuthSession.start()
+
+                    self.authenticationViewController = webAuthSession
+                } else {
+                    let safariVC = SFSafariViewController(url: authURL)
+                    if #available(iOS 11.0, *) { safariVC.dismissButtonStyle = .cancel }
+                    safariVC.delegate = self
+
+                    self.authenticationViewController = safariVC
+                    Current.authenticationControllerPresenter?(safariVC)
+                }
             } else {
                 resolver.reject(AuthenticationControllerError.invalidURL)
             }
@@ -70,7 +103,7 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
     // MARK: - SFSafariViewControllerDelegate
 
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        guard let resolver = self.promiseResolver  else {
+        guard let resolver = self.promiseResolver else {
             return
         }
 
@@ -86,21 +119,45 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
         let queue = OperationQueue.main
         self.authenticationObserver = notificationCenter.addObserver(forName: notificationName, object: nil,
                                                                      queue: queue) { notification in
-            self.authenticationViewController?.dismiss(animated: true, completion: nil)
-            guard let url = notification.userInfo?["url"] as? URL,
-                let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+            if #available(iOS 12.0, *) {
+                (self.authenticationViewController as? ASWebAuthenticationSession)?.cancel()
+            } else if #available(iOS 11.0, *) {
+                (self.authenticationViewController as? SFAuthenticationSession)?.cancel()
+            } else {
+                (self.authenticationViewController as? SFSafariViewController)?.dismiss(animated: true,
+                                                                                        completion: nil)
+            }
+            guard let url = notification.userInfo?["url"] as? URL else {
                     return
             }
 
-            let parameter = components.queryItems?.first(where: { (item) -> Bool in
-                item.name == "code"
-            })
+            self.handleSuccess(url)
 
-            if let codeParamter = parameter, let code = codeParamter.value {
-                self.promiseResolver?.fulfill(code)
+            if #available(iOS 12.0, *) {
+                (self.authenticationViewController as? ASWebAuthenticationSession)?.cancel()
+            } else if #available(iOS 11.0, *) {
+                (self.authenticationViewController as? SFAuthenticationSession)?.cancel()
+            } else {
+                (self.authenticationViewController as? SFSafariViewController)?.dismiss(animated: true,
+                                                                                        completion: nil)
             }
-            self.authenticationViewController?.dismiss(animated: true, completion: nil)
+
             self.cleanUp()
+        }
+    }
+
+    private func handleSuccess(_ url: URL) {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+            return
+        }
+
+        let parameter = components.queryItems?.first(where: { (item) -> Bool in
+            item.name == "code"
+        })
+
+        if let codeParamter = parameter, let code = codeParamter.value {
+            Current.Log.verbose("Returning from authentication with code \(code)")
+            self.promiseResolver?.fulfill(code)
         }
     }
 
