@@ -42,6 +42,17 @@
 				<string>map3</string>
 				<string>map4</string>
 				<string>map5</string>
+				<string>CAMERA</string>
+				<string>CAMERA1</string>
+				<string>CAMERA2</string>
+				<string>CAMERA3</string>
+				<string>CAMERA4</string>
+				<string>MAP</string>
+				<string>MAP1</string>
+				<string>MAP2</string>
+				<string>MAP3</string>
+				<string>MAP4</string>
+				<string>MAP5</string>
 			</array>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
 			<real>1</real>

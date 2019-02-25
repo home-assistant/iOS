@@ -34,7 +34,8 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     var controller: NotificationCategory?
 
     func didReceive(_ notification: UNNotification) {
-        if let category = NotificationCategories(rawValue: notification.request.content.categoryIdentifier) {
+        let catID = notification.request.content.categoryIdentifier.lowercased()
+        if let category = NotificationCategories(rawValue: catID) {
             Current.Log.verbose("Received a \(category) notif with userInfo \(notification.request.content.userInfo)")
 
             let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
