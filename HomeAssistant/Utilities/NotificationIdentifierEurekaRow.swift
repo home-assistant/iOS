@@ -10,6 +10,13 @@ import Foundation
 import Eureka
 
 public final class NotificationIdentifierRow: Row<NotificationIdentifierTextCell>, RowType {
+
+    public var uppercaseOnly: Bool = true {
+        didSet {
+            self.cell.uppercaseOnly = self.uppercaseOnly
+        }
+    }
+
     required public init(tag: String?) {
         super.init(tag: tag)
 
@@ -17,14 +24,21 @@ public final class NotificationIdentifierRow: Row<NotificationIdentifierTextCell
 
         self.cell.textField.tag = 999
 
-        self.cell.textField.autocapitalizationType = .allCharacters
+        if self.uppercaseOnly {
+            self.cell.textField.autocapitalizationType = .allCharacters
 
-        self.add(rule: RuleRegExp(regExpr: "[A-Za-z1-9_]+"))
+            self.add(rule: RuleRegExp(regExpr: "[A-Za-z1-9_]+"))
+        } else {
+            self.add(rule: RuleRegExp(regExpr: "[A-Z1-9_]+"))
+        }
+
         self.add(rule: RuleRequired())
     }
 }
 
 public class NotificationIdentifierTextCell: TextCell {
+    public var uppercaseOnly: Bool = true
+
     public override func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
                                    replacementString string: String) -> Bool {
 
@@ -35,7 +49,13 @@ public class NotificationIdentifierTextCell: TextCell {
         if string.isEmpty {
             return true
         }
-        let regex = "[A-Z_ ]+"
+
+        var regex = "[A-Za-z_ ]+"
+
+        if self.uppercaseOnly {
+            regex = "[A-Z_ ]+"
+        }
+
         return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: string)
     }
 

@@ -119,8 +119,10 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         <<< NotificationIdentifierRow {
             $0.tag = "identifier"
             $0.title = L10n.NotificationsConfigurator.identifier
+            $0.uppercaseOnly = false
             if !newCategory {
                 $0.value = self.category.Identifier
+                $0.disabled = true
             }
         }.onChange { row in
             if let value = row.value {

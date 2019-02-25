@@ -98,6 +98,7 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
         <<< NotificationIdentifierRow {
                 $0.tag = "identifier"
                 $0.title = L10n.NotificationsConfigurator.identifier
+                $0.uppercaseOnly = true
                 if !self.newAction {
                     $0.disabled = true
                     $0.value = self.action.Identifier
