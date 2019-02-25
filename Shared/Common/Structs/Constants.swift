@@ -13,15 +13,15 @@ import KeychainAccess
 public struct Constants {
     /// The Bundle ID used for the AppGroupID
     public static var BundleID: String {
-        let baseBundleID = Bundle.main.bundleIdentifier!
-        var removeBundleSuffix = baseBundleID.replacingOccurrences(of: ".APNSAttachmentService", with: "")
-        removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".Intents", with: "")
-        removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".NotificationContentExtension", with: "")
-        removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".TodayWidget", with: "")
-        removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".watchkitapp", with: "")
-        removeBundleSuffix = removeBundleSuffix.replacingOccurrences(of: ".watchkitapp.watchkitextension", with: "")
+        #if DEBUG
+        return "io.robbie.HomeAssistant.dev"
+        #endif
 
-        return removeBundleSuffix
+        #if BETA
+        return "io.robbie.HomeAssistant.beta"
+        #endif
+
+        return "io.robbie.HomeAssistant"
     }
 
     /// The App Group ID used by the app and extensions for sharing data.
