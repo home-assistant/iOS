@@ -90,7 +90,7 @@ func CheckPermissionsStatus() {
     LocationPermission().status { (status) in
         Current.Log.verbose("Location status: \(status)")
 
-        if Current.settingsStore.locationEnabled != (status == .authorized) {
+        if status == .notDetermined || Current.settingsStore.locationEnabled != (status == .authorized) {
             EnsureLocationPermission()
         }
     }
@@ -98,7 +98,7 @@ func CheckPermissionsStatus() {
     MotionPermission().status { (status) in
         Current.Log.verbose("Motion status: \(status)")
 
-        if Current.settingsStore.motionEnabled != (status == .authorized) {
+        if status == .notDetermined || Current.settingsStore.motionEnabled != (status == .authorized) {
             EnsureMotionPermission()
         }
     }
@@ -106,7 +106,7 @@ func CheckPermissionsStatus() {
     NotificationPermission().status { (status) in
         Current.Log.verbose("Notifications status: \(status)")
 
-        if Current.settingsStore.notificationsEnabled != (status == .authorized) {
+        if status == .notDetermined || Current.settingsStore.notificationsEnabled != (status == .authorized) {
             EnsureNotificationPermission()
         }
     }
