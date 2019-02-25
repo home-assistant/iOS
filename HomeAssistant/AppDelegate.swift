@@ -265,8 +265,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             promises.append(api.getAndSendLocation(trigger: .AppShortcut))
         }
 
-        print("promises", promises)
-
         when(fulfilled: promises).done { worked in
             completionHandler(worked[0])
         }.catch { error in
