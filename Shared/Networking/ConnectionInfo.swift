@@ -68,5 +68,19 @@ public extension ConnectionInfo {
         }
         return ssid
     }
+
+    public static func currentBSSID() -> String? {
+        var ssid: String?
+        if let interfaces = CNCopySupportedInterfaces() as NSArray? {
+            for interface in interfaces {
+                // swiftlint:disable:next force_cast
+                if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as! CFString) as NSDictionary? {
+                    ssid = interfaceInfo[kCNNetworkInfoKeyBSSID as String] as? String
+                    break
+                }
+            }
+        }
+        return ssid
+    }
 }
 #endif

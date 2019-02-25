@@ -791,6 +791,7 @@ public class HomeAssistantAPI {
 
         #if os(iOS)
         payload.SSID = ConnectionInfo.currentSSID()
+        payload.BSSID = ConnectionInfo.currentBSSID()
         payload.ConnectionType = Reachability.getSimpleNetworkType().description
         #endif
 

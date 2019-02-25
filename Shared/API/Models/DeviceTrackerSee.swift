@@ -53,6 +53,7 @@ public class DeviceTrackerSee: Mappable {
 
     // Extra attributes
     public var SSID: String?
+    public var BSSID: String?
     public var ConnectionType: String?
     public var Timezone: String = TimeZone.current.identifier
 
@@ -202,6 +203,7 @@ public class DeviceTrackerSee: Mappable {
         Ocean                 <-    map["attributes.location.ocean"]
 
         SSID                  <-    map["attributes.connection.ssid"]
+        BSSID                 <-    map["attributes.connection.bssid"]
         ConnectionType        <-    map["attributes.connection.type"]
         Timezone              <-    map["attributes.timezone"]
     }
