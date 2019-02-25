@@ -198,7 +198,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         barItems.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
 
         barItems.append(UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
-                                        action: #selector(refreshWebView(_:))))
+                                        action: #selector(refreshWebView(_:forEvent:))))
 
         let settingsIcon = UIImage.iconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30,
                                                      color: toolbarIconColor)
@@ -249,7 +249,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         let stop = UIBarButtonItem(barButtonSystemItem: .stop, target: self,
-                                   action: #selector(self.refreshWebView(_:)))
+                                   action: #selector(self.refreshWebView(_:forEvent:)))
         var removeAt = 2
         if self.toolbarItems?.count == 3 {
             removeAt = 1
@@ -323,7 +323,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             removeAt = 3
         }
         let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
-                                      action: #selector(self.refreshWebView(_:)))
+                                      action: #selector(self.refreshWebView(_:forEvent:)))
         var items = self.toolbarItems
         items?.remove(at: removeAt)
         items?.insert(refresh, at: removeAt)
@@ -400,14 +400,25 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }
     }
 
-    @objc func refreshWebView(_ sender: UIBarButtonItem) {
+    @objc func refreshWebView(_ sender: UIBarButtonItem, forEvent event: UIEvent) {
+        guard let touch = event.allTouches?.first else {
+            Current.Log.warning("Unable to get first touch on reload button!")
+            self.webView.reload()
+            return
+        }
+
+        // touch.tapCount == 0 = long press
+        // touch.tapCount == 1 = tap
+
         let redirectOrReload = {
             if self.webView.isLoading {
                 self.webView.stopLoading()
-            } else if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(externalAuth: self.modernAuth) {
+            } else if touch.tapCount == 0,
+                let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(externalAuth: self.modernAuth) {
                 self.webView.load(URLRequest(url: webviewURL))
-            } else {
-                self.webView.reload()
+            } else if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(externalAuth: self.modernAuth,
+                                                                                        reloadURL: self.webView.url) {
+                self.webView.load(URLRequest(url: webviewURL))
             }
         }
 
@@ -635,8 +646,13 @@ extension WebViewController: UIScrollViewDelegate {
 }
 
 extension ConnectionInfo {
-    func webviewURL(externalAuth: Bool = true) -> URL? {
-        guard var components = URLComponents(url: self.activeURL, resolvingAgainstBaseURL: false) else {
+    func webviewURL(externalAuth: Bool = true, reloadURL: URL? = nil) -> URL? {
+        var baseURL = self.activeURL
+        if let reloadURL = reloadURL {
+            baseURL = reloadURL
+        }
+
+        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
             return nil
         }
 
