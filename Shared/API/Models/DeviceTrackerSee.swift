@@ -37,6 +37,17 @@ public class DeviceTrackerSee: Mappable {
     public var ActivityConfidence: String?
     public var ActivityStartDate: Date?
 
+    // CMPedometerData
+    public var StartDate: Date?
+    public var EndDate: Date?
+    public var NumberOfSteps: Int?
+    public var Distance: Int?
+    public var AverageActivePace: Int?
+    public var CurrentPace: Int?
+    public var CurrentCadence: Int?
+    public var FloorsAscended: Int?
+    public var FloorsDescended: Int?
+
     // CLPlacemark
     public var PlacemarkName: String?
     public var ISOCountryCode: String?
@@ -129,6 +140,18 @@ public class DeviceTrackerSee: Mappable {
         self.ActivityStartDate = activity.startDate
     }
 
+    public func SetPedometerData(pedometerData: CMPedometerData) {
+        self.StartDate = pedometerData.startDate
+        self.EndDate = pedometerData.endDate
+        self.NumberOfSteps = pedometerData.numberOfSteps.intValue
+        self.Distance = pedometerData.distance?.intValue
+        self.AverageActivePace = pedometerData.averageActivePace?.intValue
+        self.CurrentPace = pedometerData.currentPace?.intValue
+        self.CurrentCadence = pedometerData.currentCadence?.intValue
+        self.FloorsAscended = pedometerData.floorsAscended?.intValue
+        self.FloorsDescended = pedometerData.floorsDescended?.intValue
+    }
+
     public func SetPlacemark(placemark: CLPlacemark) {
         self.PlacemarkName = placemark.name
         self.ISOCountryCode = placemark.isoCountryCode
@@ -166,6 +189,7 @@ public class DeviceTrackerSee: Mappable {
     }
 
     // Mappable
+    // swiftlint:disable:next function_body_length
     public func mapping(map: Map) {
         Attributes            <-    map["attributes"]
         Battery               <-    map["battery"]
@@ -188,6 +212,16 @@ public class DeviceTrackerSee: Mappable {
         ActivityType          <-    map["attributes.activity.type"]
         ActivityConfidence    <-    map["attributes.activity.confidence"]
         ActivityStartDate     <-   (map["attributes.activity.start_date"], HomeAssistantTimestampTransform())
+
+        StartDate             <-    (map["attributes.pedometer.start_date"], HomeAssistantTimestampTransform())
+        EndDate               <-    (map["attributes.pedometer.end_date"], HomeAssistantTimestampTransform())
+        NumberOfSteps         <-    map["attributes.pedometer.number_of_steps"]
+        Distance              <-    map["attributes.pedometer.distance"]
+        AverageActivePace     <-    map["attributes.pedometer.average_active_pace"]
+        CurrentPace           <-    map["attributes.pedometer.current_pace"]
+        CurrentCadence        <-    map["attributes.pedometer.current_cadence"]
+        FloorsAscended        <-    map["attributes.pedometer.floors_ascended"]
+        FloorsDescended       <-    map["attributes.pedometer.floors_descended"]
 
         PlacemarkName         <-    map["attributes.location.name"]
         ISOCountryCode        <-    map["attributes.location.iso_country_code"]

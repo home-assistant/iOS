@@ -83,6 +83,9 @@ public class HomeAssistantAPI {
     var tokenManager: TokenManager?
     public var connectionInfo: ConnectionInfo
 
+    public let pedometer = CMPedometer()
+    public let motionActivityManager = CMMotionActivityManager()
+
     /// Initialize an API object with an authenticated tokenManager.
     public init(connectionInfo: ConnectionInfo, authenticationMethod: AuthenticationMethod) {
         self.connectionInfo = connectionInfo
@@ -745,8 +748,6 @@ public class HomeAssistantAPI {
 
     private func getLatestMotionActivity() -> Promise<CMMotionActivity?> {
         return Promise { seal in
-            let motionActivityManager = CMMotionActivityManager()
-
             guard CMMotionActivityManager.isActivityAvailable() else {
                 return seal.fulfill(nil)
             }
@@ -758,8 +759,31 @@ public class HomeAssistantAPI {
             let end = Date()
             let start = Calendar.current.date(byAdding: .minute, value: -10, to: end)!
             let queue = OperationQueue.main
-            motionActivityManager.queryActivityStarting(from: start, to: end, to: queue) { (activities, _) in
+            self.motionActivityManager.queryActivityStarting(from: start, to: end, to: queue) { (activities, _) in
                 seal.fulfill(activities?.last)
+            }
+        }
+    }
+
+    private func getLatestPedometerData() -> Promise<CMPedometerData?> {
+        return Promise { seal in
+            guard CMPedometer.isStepCountingAvailable() else {
+                Current.Log.warning("Step counting is not available")
+                return seal.fulfill(nil)
+            }
+
+            guard Current.settingsStore.motionEnabled else {
+                return seal.fulfill(nil)
+            }
+
+            var startDate = Calendar.current.startOfDay(for: Date())
+
+            if let lastEntry = Current.realm().objects(LocationHistoryEntry.self).sorted(byKeyPath: "CreatedAt").last {
+                startDate = lastEntry.CreatedAt
+            }
+
+            self.pedometer.queryPedometerData(from: startDate, to: Date()) { (pedometerData, _) in
+                seal.fulfill(pedometerData)
             }
         }
     }
@@ -796,10 +820,15 @@ public class HomeAssistantAPI {
         #endif
 
         return firstly {
-                    when(fulfilled: self.getLatestMotionActivity(), self.geocodeLocation(location))
-                }.then { activity, placemark -> Promise<DeviceTrackerSee> in
-                    if let activity = activity {
+                    when(fulfilled: self.getLatestMotionActivity(), self.getLatestPedometerData(),
+                         self.geocodeLocation(location))
+                }.then { motion, pedometer, placemark -> Promise<DeviceTrackerSee> in
+                    if let activity = motion {
                         payload.SetActivity(activity: activity)
+                    }
+
+                    if let pedometerData = pedometer {
+                        payload.SetPedometerData(pedometerData: pedometerData)
                     }
 
                     if let placemark = placemark {
