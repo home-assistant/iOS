@@ -19,7 +19,7 @@ class MapViewController: UIView, NotificationCategory, MKMapViewDelegate {
     var mapView: MKMapView!
 
     // swiftlint:disable:next function_body_length
-    func didReceive(_ notification: UNNotification, view: UIView, extensionContext: NSExtensionContext?,
+    func didReceive(_ notification: UNNotification, vc: UIViewController, extensionContext: NSExtensionContext?,
                     hud: MBProgressHUD, completionHandler: @escaping (String?) -> Void) {
 
         guard let haDict = notification.request.content.userInfo["homeassistant"] as? [String: Any] else {
@@ -41,7 +41,7 @@ class MapViewController: UIView, NotificationCategory, MKMapViewDelegate {
 
         self.mapView.delegate = self
         self.mapView.mapType = .standard
-        self.mapView.frame = view.frame
+        self.mapView.frame = vc.view.frame
 
         self.mapView.showsUserLocation = (haDict["shows_user_location"] != nil)
         self.mapView.showsPointsOfInterest = (haDict["shows_points_of_interest"] != nil)
@@ -54,7 +54,7 @@ class MapViewController: UIView, NotificationCategory, MKMapViewDelegate {
         let span = MKCoordinateSpan.init(latitudeDelta: 0.1, longitudeDelta: 0.1)
         let region = MKCoordinateRegion(center: location, span: span)
         self.mapView.setRegion(region, animated: true)
-        view.addSubview(self.mapView)
+        vc.view.addSubview(self.mapView)
 
         let dropPin = MKPointAnnotation()
         dropPin.coordinate = location

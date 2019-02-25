@@ -51,7 +51,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                 controller = MapViewController()
             }
 
-            controller!.didReceive(notification, view: self.view!, extensionContext: self.extensionContext, hud: hud,
+            controller!.didReceive(notification, vc: self, extensionContext: self.extensionContext, hud: hud,
                                    completionHandler: { (errorText) in
                                      if let errorText = errorText {
                                          self.showErrorLabel(message: errorText)
@@ -108,7 +108,7 @@ protocol NotificationCategory: NSObjectProtocol {
     // the extension. If the extension is being displayed and more related
     // notifications arrive (eg. more messages for the same conversation)
     // the same method will be called for each new notification.
-    func didReceive(_ notification: UNNotification, view: UIView, extensionContext: NSExtensionContext?,
+    func didReceive(_ notification: UNNotification, vc: UIViewController, extensionContext: NSExtensionContext?,
                     hud: MBProgressHUD, completionHandler: @escaping (String?) -> Void)
 
 }

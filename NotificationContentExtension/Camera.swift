@@ -27,12 +27,12 @@ class CameraViewController: UIView, NotificationCategory {
     var streamer: MJPEGStreamer?
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
-    func didReceive(_ notification: UNNotification, view: UIView, extensionContext: NSExtensionContext?,
+    func didReceive(_ notification: UNNotification, vc: UIViewController, extensionContext: NSExtensionContext?,
                     hud: MBProgressHUD, completionHandler: @escaping (String?) -> Void) {
 
-        view.accessibilityIdentifier = "camera_notification"
+        vc.view.accessibilityIdentifier = "camera_notification"
 
-        parentView = view
+        parentView = vc.view
 
         guard let entityId = notification.request.content.userInfo["entity_id"] as? String else {
             completionHandler(L10n.Extensions.NotificationContent.Error.noEntityId)
@@ -49,7 +49,7 @@ class CameraViewController: UIView, NotificationCategory {
         }
 
         let imageView = UIImageView()
-        imageView.frame = view.frame
+        imageView.frame = vc.view.frame
         imageView.accessibilityIdentifier = "camera_notification_imageview"
 
         var frameCount = 0
@@ -93,7 +93,9 @@ class CameraViewController: UIView, NotificationCategory {
                         hud.hide(animated: true)
                     })
 
-                    view.addSubview(imageView)
+                    vc.preferredContentSize = image.size
+
+                    vc.view.addSubview(imageView)
 
                     //            streamingController?.play()
                     extensionContext?.mediaPlayingStarted()
