@@ -15,7 +15,7 @@ public class DeviceTrackerSee: Mappable {
 
     public var HorizontalAccuracy: CLLocationAccuracy?
     public var Attributes: [String: Any] = [:]
-    public var Battery: Float = 0.0
+    public var Battery: Int = 0
     public var DeviceID: String?
     public var Hostname: String?
     public var Location: CLLocationCoordinate2D?
@@ -168,7 +168,7 @@ public class DeviceTrackerSee: Mappable {
     // Mappable
     public func mapping(map: Map) {
         Attributes            <-    map["attributes"]
-        Battery               <-   (map["battery"], FloatToIntTransform())
+        Battery               <-    map["battery"]
         DeviceID              <-    map["dev_id"]
         Location              <-   (map["gps"], CLLocationCoordinate2DTransform())
         HorizontalAccuracy    <-    map["gps_accuracy"]

@@ -591,7 +591,7 @@ public class HomeAssistantAPI {
             ident.BatteryState = "Full"
         }
 
-        ident.BatteryLevel = Int(deviceKitDevice.batteryLevel*100)
+        ident.BatteryLevel = Int(deviceKitDevice.batteryLevel)
         if ident.BatteryLevel == -100 { // simulator fix
             ident.BatteryLevel = 100
         }
@@ -784,7 +784,7 @@ public class HomeAssistantAPI {
 
         let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
 
-        payload.Battery = Float(exactly: device.batteryLevel)! / 100
+        payload.Battery = device.batteryLevel
         payload.DeviceID = Current.settingsStore.deviceID
         payload.Hostname = device.name
         payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
