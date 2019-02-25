@@ -13,15 +13,17 @@ import KeychainAccess
 public struct Constants {
     /// The Bundle ID used for the AppGroupID
     public static var BundleID: String {
+        var bundleID = "io.robbie.HomeAssistant"
+
         #if DEBUG
-        return "io.robbie.HomeAssistant.dev"
+        bundleID = "io.robbie.HomeAssistant.dev"
         #endif
 
         #if BETA
-        return "io.robbie.HomeAssistant.beta"
+        bundleID = "io.robbie.HomeAssistant.beta"
         #endif
 
-        return "io.robbie.HomeAssistant"
+        return bundleID
     }
 
     /// The App Group ID used by the app and extensions for sharing data.
