@@ -72,3 +72,4 @@ env.sh
 push_certs/*
 Tools/*.py
 Tools/*.ttf
+dSYMs/
