@@ -20,7 +20,7 @@ extension HomeAssistantAPI {
                                  encoding: JSONEncoding.default)
     }
 
-    func webhook(_ type: String, payload: [String: Any], callingFunctionName: String) -> Promise<String> {
+    public func webhook(_ type: String, payload: [String: Any], callingFunctionName: String) -> Promise<String> {
         return Promise { seal in
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseString { (response: DataResponse<String>) in
@@ -31,7 +31,19 @@ extension HomeAssistantAPI {
         }
     }
 
-    func webhook<T: BaseMappable>(_ type: String, payload: [String: Any], callingFunctionName: String) -> Promise<T> {
+    public func webhook(_ type: String, payload: [String: Any], callingFunctionName: String) -> Promise<Any> {
+        return Promise { seal in
+            _ = self.buildWebhookRequest(type, payload: payload).validate()
+                .responseJSON { (response: DataResponse<Any>) in
+                    self.handleResponse(response: response, seal: seal,
+                                        callingFunctionName: callingFunctionName)
+            }
+
+        }
+    }
+
+    public func webhook<T: BaseMappable>(_ type: String, payload: [String: Any],
+                                         callingFunctionName: String) -> Promise<T> {
         return Promise { seal in
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseObject { (response: DataResponse<T>) in
@@ -42,7 +54,8 @@ extension HomeAssistantAPI {
         }
     }
 
-    func webhook<T: BaseMappable>(_ type: String, payload: [String: Any], callingFunctionName: String) -> Promise<[T]> {
+    public func webhook<T: BaseMappable>(_ type: String, payload: [String: Any],
+                                         callingFunctionName: String) -> Promise<[T]> {
         return Promise { seal in
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseArray { (response: DataResponse<[T]>) in
@@ -53,8 +66,8 @@ extension HomeAssistantAPI {
         }
     }
 
-    func webhook<T: ImmutableMappable>(_ type: String, payload: [String: Any],
-                                       callingFunctionName: String) -> Promise<[T]> {
+    public func webhook<T: ImmutableMappable>(_ type: String, payload: [String: Any],
+                                              callingFunctionName: String) -> Promise<[T]> {
         return Promise { seal in
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseArray { (response: DataResponse<[T]>) in
@@ -65,8 +78,8 @@ extension HomeAssistantAPI {
         }
     }
 
-    func webhook<T: ImmutableMappable>(_ type: String, payload: [String: Any],
-                                       callingFunctionName: String) -> Promise<T> {
+    public func webhook<T: ImmutableMappable>(_ type: String, payload: [String: Any],
+                                              callingFunctionName: String) -> Promise<T> {
         return Promise { seal in
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseObject { (response: DataResponse<T>) in

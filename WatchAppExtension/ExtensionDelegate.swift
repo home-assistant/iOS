@@ -13,17 +13,13 @@ import Communicator
 import UserNotifications
 import XCGLogger
 import Shared
+import PromiseKit
 
-// swiftlint:disable file_length
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
     // MARK: - Properties -
 
-    var pendingBackgroundURLTask: WKRefreshBackgroundTask?
-    var backgroundSession: URLSession?
-    var downloadTask: URLSessionDownloadTask?
-    var sessionError: Error?
-    var sessionStartTime: Date?
-    var userInfoAccess: NSSecureCoding?
+    var urlIdentifier: String?
+    var bgTask: WKRefreshBackgroundTask?
 
     // MARK: Fileprivate
 
@@ -66,20 +62,14 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // Sent when the system needs to launch the application in the background to process tasks.
         // Tasks arrive in a set, so loop through and process each one.
         for task in backgroundTasks {
-            // crash solving trick: acces the task user info to avoid a rare, but weird crash..
-            // (https://forums.developer.apple.com/thread/96504 and
-            // https://stackoverflow.com/q/46464660/486182
-
-            userInfoAccess = task.userInfo
-
             // Use a switch statement to check the task type
             switch task {
             case let backgroundTask as WKApplicationRefreshBackgroundTask:
                 // Be sure to complete the background task once you’re done.
                 Current.Log.verbose("WKWatchConnectivityRefreshBackgroundTask received")
-                scheduleURLSessionIfNeeded()
                 BackgroundRefreshScheduler.shared.schedule()
-                backgroundTask.setTaskCompletedWithSnapshot(false)
+                self.updateComplications()
+                self.bgTask = backgroundTask
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
                 snapshotTask.setTaskCompleted(restoredDefaultState: true,
@@ -89,16 +79,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 watchConnectivityTask = connectivityTask
             case let urlSessionTask as WKURLSessionRefreshBackgroundTask:
                 // Be sure to complete the URL session task once you’re done.
-                let identifier = urlSessionTask.sessionIdentifier
-                let backgroundConfigObject = URLSessionConfiguration.background(withIdentifier: identifier)
-                let backgroundSession = URLSession(configuration: backgroundConfigObject, delegate: self,
-                                                   delegateQueue: nil)
-                Current.Log.verbose("Rejoining session: \(backgroundSession)")
-
-                // keep the session background task, it will be ended later...
-                // https://stackoverflow.com/q/41156386/486182
-                self.pendingBackgroundURLTask = urlSessionTask
-                urlSessionTask.setTaskCompletedWithSnapshot(false)
+                Current.Log.verbose("Should rejoin URLSession! \(String(describing: urlIdentifier))")
+                self.bgTask = urlSessionTask
             case let relevantShortcutTask as WKRelevantShortcutRefreshBackgroundTask:
                 // Be sure to complete the relevant-shortcut task once you're done.
                 relevantShortcutTask.setTaskCompletedWithSnapshot(false)
@@ -137,6 +119,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         Current.Log.verbose("Set the context")
     }
 
+    // swiftlint:disable:next function_body_length
     func setupWatchCommunicator() {
         Communicator.shared.activationStateChangedObservers.add { state in
             Current.Log.verbose("Activation state changed: \(state)")
@@ -184,6 +167,26 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         Communicator.shared.contextUpdatedObservers.add { context in
             Current.Log.verbose("Received context: \(context)")
+
+            if let connInfoStr = context.content["connection_info"] as? String {
+                let connInfo = try? JSONDecoder().decode(ConnectionInfo.self, from: connInfoStr.data(using: .utf8)!)
+                Current.settingsStore.connectionInfo = connInfo
+
+                if let api = HomeAssistantAPI.authenticatedAPI() {
+                    Current.updateWith(authenticatedAPI: api)
+                } else {
+                    Current.Log.error("Failed to get authed API after context sync!")
+                }
+            }
+
+            if let webhookID = context.content["webhook_id"] as? String {
+                Current.settingsStore.webhookID = webhookID
+            }
+
+            if let webhookSecret = context.content["webhook_secret"] as? String {
+                Current.settingsStore.webhookSecret = webhookSecret
+            }
+
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
@@ -221,44 +224,14 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         self.watchConnectivityTask?.setTaskCompleted()
     }
 
-    func scheduleURLSessionIfNeeded() {
-
-        if self.backgroundSession != nil {
-
-            if let sessionStartTime = self.sessionStartTime, Calendar.current.date(byAdding: .minute, value: 10,
-                                                                                   to: sessionStartTime)! > Date() {
-
-                // URL session running.. we'll let it do its work!
-                Current.Log.warning("URL session already exists, cannot start a new one!")
-                return
-            } else {
-
-                // timeout reached for URL session, we'll start a new one!
-                Current.Log.warning("URL session timeout exceeded, finishing current and starting a new one!")
-                completePendingURLSessionTask()
-            }
-        }
-
-        guard let (backgroundSession, downloadTask) = scheduleURLSession() else {
-            Current.Log.warning("URL session cannot be created, probably base uri is not configured!")
-            return
-        }
-
-        self.sessionStartTime = Date()
-        self.backgroundSession = backgroundSession
-        self.downloadTask = downloadTask
-        Current.Log.verbose("URL session started")
-    }
-
     var activeFamilies: [String] {
         guard let activeComplications = CLKComplicationServer.sharedInstance().activeComplications else { return [] }
         return activeComplications.map { ComplicationGroupMember(family: $0.family).rawValue }
     }
 
-    func makeHTTPPayload() -> Data? {
+    func buildRenderTemplatePayload() -> [String: Any] {
         var json: [String: Any] = [:]
 
-        json["type"] = "render_complications"
         var templates = [String: [String: String]]()
 
         let realm = Realm.live()
@@ -291,7 +264,81 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         Current.Log.verbose("JSON payload to send \(json)")
 
-        return try? JSONSerialization.data(withJSONObject: json, options: [])
+        return json
+    }
+
+    func updateComplications() {
+
+        guard let wID = Current.settingsStore.webhookID, let connInfo = Current.settingsStore.connectionInfo else {
+            // swiftlint:disable:next line_length
+            Current.Log.warning("Didn't find webhook URL in context \(Communicator.shared.mostRecentlyReceievedContext)")
+            return
+        }
+
+        let downloadURL = connInfo.activeAPIURL.appendingPathComponent("webhook/\(wID)")
+
+        Current.Log.verbose("Render template URL \(downloadURL)")
+
+        let urlID = NSUUID().uuidString
+
+        self.urlIdentifier = urlID
+
+        let backgroundConfigObject = URLSessionConfiguration.background(withIdentifier: urlID)
+        backgroundConfigObject.sessionSendsLaunchEvents = true
+
+        guard let api = HomeAssistantAPI.authenticatedAPI(urlConfig: backgroundConfigObject) else {
+            fatalError("Couldn't get HAAPI instance")
+        }
+
+        _ = api.webhook("render_complications", payload: self.buildRenderTemplatePayload(),
+                        callingFunctionName: "renderComplications").done { (respJSON: Any) in
+
+            Current.Log.verbose("Got JSON \(respJSON)")
+            guard let jsonDict = respJSON as? [String: [String: String]] else {
+                Current.Log.error("Unable to cast JSON to [String: [String: String]]!")
+                return
+            }
+
+            Current.Log.verbose("JSON Dict1 \(jsonDict)")
+
+            var updatedComplications: [WatchComplication] = []
+
+            for (templateName, textAreas) in jsonDict {
+                let pred = NSPredicate(format: "rawTemplate == %@", templateName)
+                let realm = Realm.live()
+                guard let complication = realm.objects(WatchComplication.self).filter(pred).first else {
+                    Current.Log.error("Couldn't get complication from DB for \(templateName)")
+                    continue
+                }
+
+                guard var storedAreas = complication.Data["textAreas"] as? [String: [String: Any]] else {
+                    Current.Log.error("Couldn't cast stored areas")
+                    continue
+                }
+
+                for (textAreaKey, renderedText) in textAreas {
+                    storedAreas[textAreaKey]!["renderedText"] = renderedText
+                }
+
+                // swiftlint:disable:next force_try
+                try! realm.write {
+                    complication.Data["textAreas"] = storedAreas
+                }
+
+                updatedComplications.append(complication)
+
+                Current.Log.verbose("complication \(complication.Data)")
+            }
+
+            CLKComplicationServer.sharedInstance().activeComplications?.forEach {
+                CLKComplicationServer.sharedInstance().reloadTimeline(for: $0)
+            }
+
+        }.ensure {
+            self.bgTask?.setTaskCompleted()
+        }.catch { err in
+            Current.Log.error("Error when rendering complications: \(err)")
+        }
     }
 }
 
@@ -304,125 +351,4 @@ func getModelName() -> String {
         return identifier + String(UnicodeScalar(UInt8(value)))
     }
     return identifier
-}
-
-extension ExtensionDelegate: URLSessionDownloadDelegate {
-
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        Current.Log.verbose("Background download was finished, location is \(location)")
-
-        // reset the session error
-        self.sessionError = nil
-
-        // extract data on main thead
-        //DispatchQueue.main.async { [unowned self] in
-
-            Current.Log.verbose("extracting downloaded data")
-            do {
-                let data = try Data(contentsOf: location)
-                let json = try JSONSerialization.jsonObject(with: data)
-                Current.Log.verbose("Got JSON \(json)")
-                if let jsonDict = json as? [String: [String: String]] {
-                    Current.Log.verbose("JSON Dict1 \(jsonDict)")
-
-                    for (templateName, textAreas) in jsonDict {
-                        let pred = NSPredicate(format: "rawTemplate == %@", templateName)
-                        let realm = Realm.live()
-                        guard let complication = realm.objects(WatchComplication.self).filter(pred).first else {
-                            Current.Log.error("Couldn't get complication from DB for \(templateName)")
-                            continue
-                        }
-
-                        guard var storedAreas = complication.Data["textAreas"] as? [String: [String: Any]] else {
-                            Current.Log.error("Couldn't cast stored areas")
-                            continue
-                        }
-                        for (textAreaKey, renderedText) in textAreas {
-                            storedAreas[textAreaKey]!["renderedText"] = renderedText
-                        }
-
-                        // swiftlint:disable:next force_try
-                        try! realm.write {
-                            complication.Data["textAreas"] = storedAreas
-                        }
-
-                        Current.Log.verbose("complication \(complication.Data)")
-                    }
-                }
-
-                self.completePendingURLSessionTask()
-
-                // Success
-                self.sessionError = nil
-            } catch {
-                Current.Log.error("Error when parsing JSON \(error)")
-                self.sessionError = error
-            }
-
-        //}
-    }
-
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let error = error {
-            Current.Log.error("URL session did complete with error: \(error)")
-            completePendingURLSessionTask()
-        }
-
-        // keep the session error (if any!)
-        self.sessionError = error
-    }
-
-    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        Current.Log.verbose("URL session did finish events")
-    }
-
-    fileprivate func completePendingURLSessionTask() {
-
-        self.backgroundSession?.invalidateAndCancel()
-        self.backgroundSession = nil
-        self.downloadTask = nil
-        self.sessionStartTime = nil
-        self.pendingBackgroundURLTask?.setTaskCompleted()
-        self.pendingBackgroundURLTask = nil
-
-        Current.Log.verbose("URL session COMPLETED")
-    }
-
-    func scheduleURLSession() -> (URLSession, URLSessionDownloadTask)? {
-
-        guard let webhookURL = Communicator.shared.mostRecentlyReceievedContext.content["webhook_url"] as? String else {
-            // swiftlint:disable:next line_length
-            Current.Log.warning("Didn't find webhook URL in context \(Communicator.shared.mostRecentlyReceievedContext)")
-            return nil
-        }
-
-        let backgroundConfigObject = URLSessionConfiguration.background(withIdentifier: NSUUID().uuidString)
-        backgroundConfigObject.sessionSendsLaunchEvents = true
-        // 15 seconds timeout for request (after 15 seconds, the task is finished and a crash occurs, so...
-        // we have to stop it somehow!)
-        // backgroundConfigObject.timeoutIntervalForRequest = 15
-        // backgroundConfigObject.timeoutIntervalForResource = 15 // the same for retry interval (no retries!)
-        let backgroundSession = URLSession(configuration: backgroundConfigObject, delegate: self, delegateQueue: nil)
-
-        let downloadURL = URL(string: webhookURL)!
-
-        Current.Log.verbose("Render template URL \(downloadURL)")
-
-        var request = URLRequest(url: downloadURL)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-
-        guard let payload = self.makeHTTPPayload() else {
-            Current.Log.warning("Unable to get HTTP payload")
-            return nil
-        }
-
-        request.httpBody = payload
-
-        let downloadTask = backgroundSession.downloadTask(with: request)
-        downloadTask.resume()
-
-        return (backgroundSession, downloadTask)
-    }
 }

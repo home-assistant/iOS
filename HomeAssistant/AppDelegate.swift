@@ -446,23 +446,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func updateWatchContext() {
-        if let wID = Current.settingsStore.webhookID, let url = Current.settingsStore.connectionInfo?.activeAPIURL {
-            var content: JSONDictionary = Communicator.shared.mostRecentlyReceievedContext.content
+        var content: JSONDictionary = Communicator.shared.mostRecentlyReceievedContext.content
 
-            // content["webhook_id"] = wID
-            // content["url"] = url
-            content["webhook_url"] = url.appendingPathComponent("webhook/\(wID)").absoluteString
+        content["connection_info"] = Current.settingsStore.connectionInfo
+        content["webhook_id"] = Current.settingsStore.webhookID
+        content["webhook_secret"] = Current.settingsStore.webhookSecret
 
-            let context = Context(content: content)
+        let context = Context(content: content)
 
-            do {
-                try Communicator.shared.sync(context: context)
-            } catch let error as NSError {
-                Current.Log.error("Updating the context failed: \(error)")
-            }
-
-            Current.Log.verbose("Set the context to \(context)")
+        do {
+            try Communicator.shared.sync(context: context)
+        } catch let error as NSError {
+            Current.Log.error("Updating the context failed: \(error)")
         }
+
+        Current.Log.verbose("Set the context to \(context)")
     }
 
     func setupWatchCommunicator() {

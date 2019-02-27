@@ -76,42 +76,57 @@ class InterfaceController: WKInterfaceController {
         row.indicator?.prepareImagesForWait()
         row.indicator?.showWait()
 
-        let actionMessage = ImmediateMessage(identifier: "ActionRowPressed",
-                                             content: ["ActionID": selectedAction.ID,
-                                                       "ActionName": selectedAction.Name], replyHandler: { replyDict in
-                                                Current.Log.verbose("Received reply dictionary \(replyDict)")
+        if Communicator.shared.currentReachability == .immediateMessaging {
+            Current.Log.verbose("Signaling action pressed via phone")
+            let actionMessage = ImmediateMessage(identifier: "ActionRowPressed",
+                                                 content: ["ActionID": selectedAction.ID,
+                                                           "ActionName": selectedAction.Name],
+                                                 replyHandler: { replyDict in
+                                                    Current.Log.verbose("Received reply dictionary \(replyDict)")
 
-                                                WKInterfaceDevice.current().play(.success)
+                                                    self.handleActionSuccess(row)
+            }, errorHandler: { err in
+                Current.Log.error("Received error when sending immediate message \(err)")
 
-                                                row.image.stopAnimating()
+                self.handleActionFailure(row)
+            })
 
-                                                row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24),
-                                                                                  color: .white))
-        }, errorHandler: { err in
-            Current.Log.error("Received error when sending immediate message \(err)")
+            Current.Log.verbose("Sending ActionRowPressed message \(actionMessage)")
 
-            WKInterfaceDevice.current().play(.failure)
+            do {
+                try Communicator.shared.send(immediateMessage: actionMessage)
+                self.handleActionSuccess(row)
+            } catch let error {
+                Current.Log.error("Action notification send failed: \(error)")
 
-            row.image.stopAnimating()
-
-            row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24),
-                                              color: .white))
-        })
-
-        Current.Log.verbose("Sending ActionRowPressed message \(actionMessage)")
-
-        do {
-            try Communicator.shared.send(immediateMessage: actionMessage)
-            WKInterfaceDevice.current().play(.success)
-        } catch let error {
-            Current.Log.error("Action notification send failed: \(error)")
-
-            WKInterfaceDevice.current().play(.failure)
-
-            row.image.stopAnimating()
-
-            row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24),
-                                              color: .white))
+                self.handleActionFailure(row)
+            }
+        } else if Communicator.shared.currentReachability == .notReachable { // Phone isn't connected
+            Current.Log.verbose("Signaling action pressed via watch")
+            HomeAssistantAPI.authenticatedAPIPromise.then { api in
+                api.handleAction(actionID: selectedAction.ID, actionName: selectedAction.Name, source: .Watch)
+            }.done { _ in
+                self.handleActionSuccess(row)
+            }.catch { err -> Void in
+                Current.Log.error("Error during action event fire: \(err)")
+                self.handleActionFailure(row)
+            }
         }
+    }
+
+    func handleActionSuccess(_ row: ActionRowType) {
+        WKInterfaceDevice.current().play(.success)
+
+        row.image.stopAnimating()
+
+        row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24), color: .white))
+    }
+
+    func handleActionFailure(_ row: ActionRowType) {
+        WKInterfaceDevice.current().play(.failure)
+
+        row.image.stopAnimating()
+
+        row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24), color: .white))
     }
 }

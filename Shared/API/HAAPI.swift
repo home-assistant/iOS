@@ -51,7 +51,7 @@ public class HomeAssistantAPI {
 
     var apiPassword: String?
 
-    private(set) var manager: Alamofire.SessionManager!
+    public private(set) var manager: Alamofire.SessionManager!
 
     public var oneShotLocationManager: OneShotLocationManager?
 
@@ -87,15 +87,16 @@ public class HomeAssistantAPI {
     public let motionActivityManager = CMMotionActivityManager()
 
     /// Initialize an API object with an authenticated tokenManager.
-    public init(connectionInfo: ConnectionInfo, authenticationMethod: AuthenticationMethod) {
+    public init(connectionInfo: ConnectionInfo, authenticationMethod: AuthenticationMethod,
+                urlConfig: URLSessionConfiguration = .default) {
         self.connectionInfo = connectionInfo
 
         switch authenticationMethod {
         case .legacy(let apiPassword):
-            self.manager = HomeAssistantAPI.configureSessionManager(withPassword: apiPassword)
+            self.manager = HomeAssistantAPI.configureSessionManager(withPassword: apiPassword, urlConfig: urlConfig)
         case .modern(let tokenInfo):
             self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
-            let manager = HomeAssistantAPI.configureSessionManager()
+            let manager = HomeAssistantAPI.configureSessionManager(urlConfig: urlConfig)
             manager.retrier = self.tokenManager
             manager.adapter = self.tokenManager
             self.manager = manager
@@ -216,9 +217,8 @@ public class HomeAssistantAPI {
     }
 
     private static var sharedAPI: HomeAssistantAPI?
-//    public static func authenticatedManager() -> Alamofire.SessionManager? {
-//    }
-    public static func authenticatedAPI() -> HomeAssistantAPI? {
+
+    public static func authenticatedAPI(urlConfig: URLSessionConfiguration = .default) -> HomeAssistantAPI? {
         if let api = sharedAPI {
             return api
         }
@@ -229,11 +229,12 @@ public class HomeAssistantAPI {
 
         if let tokenInfo = Current.settingsStore.tokenInfo {
             let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-                                       authenticationMethod: .modern(tokenInfo: tokenInfo))
+                                       authenticationMethod: .modern(tokenInfo: tokenInfo), urlConfig: urlConfig)
             self.sharedAPI = api
         } else {
             let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-                                       authenticationMethod: .legacy(apiPassword: keychain["apiPassword"]))
+                                       authenticationMethod: .legacy(apiPassword: keychain["apiPassword"]),
+                                       urlConfig: urlConfig)
             self.sharedAPI = api
         }
 
@@ -789,13 +790,14 @@ public class HomeAssistantAPI {
         storeableZone.BeaconMinor.value = zone.Minor
     }
 
-    private static func configureSessionManager(withPassword password: String? = nil) -> SessionManager {
+    private static func configureSessionManager(withPassword password: String? = nil,
+                                                urlConfig: URLSessionConfiguration = .default) -> SessionManager {
         var headers = Alamofire.SessionManager.defaultHTTPHeaders
         if let password = password {
             headers["X-HA-Access"] = password
         }
 
-        let configuration = URLSessionConfiguration.default
+        let configuration = urlConfig
         configuration.httpAdditionalHeaders = headers
         configuration.timeoutIntervalForRequest = 10 // seconds
         return Alamofire.SessionManager(configuration: configuration)
@@ -928,7 +930,7 @@ public class HomeAssistantAPI {
 
             if Current.settingsStore.webhookID != nil {
                 promise = self.webhook("update_location", payload: payloadDict,
-                                       callingFunctionName: "submitLocation").then { _ -> Promise<Bool> in
+                                       callingFunctionName: "submitLocation").then { (_: String) -> Promise<Bool> in
                                         Current.Log.verbose("Device seen!")
                                         self.sendLocalNotification(withZone: zone, updateType: updateType,
                                                                    payloadDict: payloadDict)
@@ -992,4 +994,48 @@ public class HomeAssistantAPI {
         }
     }
 
+    public enum ActionSource: CaseIterable {
+        case Watch
+        case Widget
+        case AppShortcut // UIApplicationShortcutItem
+        case Preview
+
+        var description: String {
+            switch self {
+            case .Watch:
+                return "watch"
+            case .Widget:
+                return "widget"
+            case .AppShortcut:
+                return "appShortcut"
+            case .Preview:
+                return "preview"
+            }
+        }
+    }
+
+    public func handleAction(actionID: String, actionName: String, source: ActionSource) -> Promise<Bool> {
+        return Promise { seal in
+            guard let api = HomeAssistantAPI.authenticatedAPI() else {
+                throw APIError.notConfigured
+            }
+
+            let device = Device()
+            let eventData: [String: Any] = ["actionName": actionName,
+                                            "actionID": actionID,
+                                            "triggerSource": source.description,
+                                            "sourceDevicePermanentID": Constants.PermanentID,
+                                            "sourceDeviceName": device.name,
+                                            "sourceDeviceID": Current.settingsStore.deviceID]
+
+            Current.Log.verbose("Sending action payload: \(eventData)")
+
+            let eventType = "ios.action_fired"
+            api.createEvent(eventType: eventType, eventData: eventData).done { _ -> Void in
+                seal.fulfill(true)
+                }.catch {error in
+                    seal.reject(error)
+            }
+        }
+    }
 }

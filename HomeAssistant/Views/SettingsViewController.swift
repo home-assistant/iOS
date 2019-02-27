@@ -559,6 +559,36 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         }
 
         <<< ButtonRow {
+            $0.title = "Set Watch context"
+        }.onCellSelection { _, _ in
+            var content: JSONDictionary = Communicator.shared.mostRecentlyReceievedContext.content
+
+            let connInfo = try? JSONEncoder().encode(Current.settingsStore.connectionInfo)
+            let connInfoStr = String(data: connInfo!, encoding: .utf8)
+
+            content["connection_info"] = connInfoStr
+            content["webhook_id"] = Current.settingsStore.webhookID
+            content["webhook_secret"] = Current.settingsStore.webhookSecret
+
+            let context = Context(content: content)
+
+            do {
+                try Communicator.shared.sync(context: context)
+            } catch let error as NSError {
+                Current.Log.error("Updating the context failed: \(error)")
+                let alert = UIAlertController(title: "Error",
+                                              message: error.localizedDescription,
+                                              preferredStyle: .alert)
+
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+
+                self.present(alert, animated: true, completion: nil)
+            }
+
+            Current.Log.verbose("Set the context to \(context)")
+        }
+
+        <<< ButtonRow {
                 $0.title = L10n.Settings.Developer.CopyRealm.title
             }.onCellSelection { _, _ in
                 let appGroupRealmPath = Current.realm().configuration.fileURL!

@@ -73,26 +73,6 @@ public class Action: Object, Mappable, NSCoding {
     #endif
 }
 
-public enum ActionSource: CaseIterable {
-    case Watch
-    case Widget
-    case AppShortcut // UIApplicationShortcutItem
-    case Preview
-
-    var description: String {
-        switch self {
-        case .Watch:
-            return "watch"
-        case .Widget:
-            return "widget"
-        case .AppShortcut:
-            return "appShortcut"
-        case .Preview:
-            return "preview"
-        }
-    }
-}
-
 extension UIColor {
     static func randomColor() -> UIColor {
         let random = {CGFloat(arc4random_uniform(255)) / 255.0}

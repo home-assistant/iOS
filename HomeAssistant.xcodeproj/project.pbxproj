@@ -229,8 +229,6 @@
 		B672AB292215114A00175465 /* release@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB232215114900175465 /* release@2x.png */; };
 		B672AB2A2215114A00175465 /* dev@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB242215114A00175465 /* dev@2x.png */; };
 		B672AB2D2215341800175465 /* ShortcutEventConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB2C2215341800175465 /* ShortcutEventConfigurator.swift */; };
-		B672AB3522165A4900175465 /* HomeAssistantAPI+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */; };
-		B672AB3722165A6100175465 /* HomeAssistantAPI+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */; };
 		B672AB502216883300175465 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
 		B672AB522216A1E200175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B672AB532216A1E200175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
@@ -879,7 +877,6 @@
 		B672AB232215114900175465 /* release@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "release@2x.png"; sourceTree = "<group>"; };
 		B672AB242215114A00175465 /* dev@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dev@2x.png"; sourceTree = "<group>"; };
 		B672AB2C2215341800175465 /* ShortcutEventConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortcutEventConfigurator.swift; sourceTree = "<group>"; };
-		B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeAssistantAPI+Actions.swift"; sourceTree = "<group>"; };
 		B672AB552216B07500175465 /* gallery.ckcomplication */ = {isa = PBXFileReference; lastKnownFileType = folder; path = gallery.ckcomplication; sourceTree = "<group>"; };
 		B672AB572216B5E000175465 /* Date+ComplicationDivination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+ComplicationDivination.swift"; sourceTree = "<group>"; };
 		B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPushRow.swift; sourceTree = "<group>"; };
@@ -1467,7 +1464,6 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
-				B672AB3322165A3B00175465 /* Actions */,
 				D0EEF32F214E41CE00D1D360 /* Notifications */,
 				D0C8845E211ED0BA00CCB501 /* Authentication */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
@@ -1570,14 +1566,6 @@
 				B672AB2C2215341800175465 /* ShortcutEventConfigurator.swift */,
 			);
 			path = Siri;
-			sourceTree = "<group>";
-		};
-		B672AB3322165A3B00175465 /* Actions */ = {
-			isa = PBXGroup;
-			children = (
-				B672AB3422165A4900175465 /* HomeAssistantAPI+Actions.swift */,
-			);
-			path = Actions;
 			sourceTree = "<group>";
 		};
 		B672AB592216C41000175465 /* Utilities */ = {
@@ -3160,7 +3148,6 @@
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B6DAC737215F06B100727D2A /* NotificationAction.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
-				B672AB3522165A4900175465 /* HomeAssistantAPI+Actions.swift in Sources */,
 				B6B6B14C215B1E86003DE2DD /* CLKComplication+Strings.swift in Sources */,
 				B6DF8BC1221C890600370A59 /* UIImageView+UIActivityIndicator.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
@@ -3234,7 +3221,6 @@
 				B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */,
 				B66F9F37216B2D89000CAA0F /* UIColor+CSS3+Hex.swift in Sources */,
 				B6DF8BC2221C890F00370A59 /* UIImageView+UIActivityIndicator.swift in Sources */,
-				B672AB3722165A6100175465 /* HomeAssistantAPI+Actions.swift in Sources */,
 				B66F9F36216B2C74000CAA0F /* Action.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
