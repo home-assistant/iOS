@@ -54,6 +54,7 @@ PODS:
   - Realm/Headers (3.13.1)
   - RealmSwift (3.13.1):
     - Realm (= 3.13.1)
+  - Sodium (0.7.0)
   - SwiftGen (6.1.0)
   - SwiftLint (0.30.1)
   - TABObserverSet (2.1.0)
@@ -89,6 +90,7 @@ DEPENDENCIES:
   - PromiseKit (= 6.8.3)
   - ReachabilitySwift
   - RealmSwift (= 3.13.1)
+  - Sodium (from `https://github.com/robbiet480/swift-sodium.git`, branch `watchos-podspec`)
   - SwiftGen (= 6.1.0)
   - SwiftLint (= 0.30.1)
   - UIColor_Hex_Swift
@@ -137,6 +139,9 @@ EXTERNAL SOURCES:
   Iconic:
     :branch: swift-4.2
     :git: https://github.com/robbiet480/Iconic.git
+  Sodium:
+    :branch: watchos-podspec
+    :git: https://github.com/robbiet480/swift-sodium.git
   ViewRow:
     :branch: master
     :git: https://github.com/EurekaCommunity/ViewRow
@@ -154,6 +159,9 @@ CHECKOUT OPTIONS:
   Iconic:
     :commit: d982c280bb76dafa3a1abe5e16ae88cbe910716d
     :git: https://github.com/robbiet480/Iconic.git
+  Sodium:
+    :commit: 432bffd4a870693d79f2a8abb3dc52d2c284d00a
+    :git: https://github.com/robbiet480/swift-sodium.git
   ViewRow:
     :commit: 3a1d4a9d157f275ad3db12f6909974523ad564ee
     :git: https://github.com/EurekaCommunity/ViewRow
@@ -182,6 +190,7 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
   Realm: 50071da38fe079e0735e47c9f2eae738c68c5996
   RealmSwift: 8a1e6a02b7a08cd17a31e3115143fb69fe5f3fb9
+  Sodium: c9f8ec9fd5f1754f354f06dbbb32d44337f6661e
   SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
   SwiftLint: a54bf1fe12b55c68560eb2a7689dfc81458508f7
   TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
@@ -190,6 +199,6 @@ SPEC CHECKSUMS:
   XCGLogger: 7f7f43f15dfe3a305fa1342b7dc29af656289abd
   ZIPFoundation: b1f07e4409baf1641f3fe5948b2a1c3f5c500cb1
 
-PODFILE CHECKSUM: 8a0a1f8cf128701763b48be0937719e8f35aff3c
+PODFILE CHECKSUM: f80c5ee02c8319e1720b40622c35eb1da007b80a
 
 COCOAPODS: 1.6.1

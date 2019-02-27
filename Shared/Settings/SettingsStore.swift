@@ -137,6 +137,26 @@ public class SettingsStore {
         }
     }
 
+    public var webhookSecret: String? {
+        get {
+            return keychain["webhook_secret"]
+        }
+        set {
+            keychain["webhook_secret"] = newValue
+        }
+    }
+
+    public var webhookURL: URL? {
+        guard let wID = Current.settingsStore.webhookID,
+            let url = Current.settingsStore.connectionInfo?.activeAPIURL else {
+                Current.Log.error("Unable to build webhook URL!")
+
+                return nil
+        }
+
+        return url.appendingPathComponent("webhook/\(wID)")
+    }
+
     // MARK: - Private helpers
 
     private var hasMigratedConnection: Bool {

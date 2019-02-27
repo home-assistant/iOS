@@ -28,6 +28,7 @@ def shared_pods
     pod 'ObjectMapper', '3.4.2'
     pod 'PromiseKit', '6.8.3'
     pod 'RealmSwift', '3.13.1'
+    pod 'Sodium', :git => 'https://github.com/robbiet480/swift-sodium.git', :branch => 'watchos-podspec'
     pod 'UIColor_Hex_Swift'
     pod 'XCGLogger', '~> 6.1.0'
 end
