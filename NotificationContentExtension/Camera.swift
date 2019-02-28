@@ -38,10 +38,6 @@ class CameraViewController: UIView, NotificationCategory {
             completionHandler(L10n.Extensions.NotificationContent.Error.noEntityId)
             return
         }
-        //        guard let cameraProxyURL = baseURL.appendPathComponent("camera_proxy_stream/\(entityId)") else {
-        //            self.showErrorLabel(message: "Could not form a valid URL!")
-        //            return
-        //        }
 
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             completionHandler(HomeAssistantAPI.APIError.notConfigured.localizedDescription)
@@ -83,12 +79,9 @@ class CameraViewController: UIView, NotificationCategory {
             if let image = image {
                 defer {
                     frameCount += 1
-                    Current.Log.verbose("FRAME \(frameCount)")
                 }
                 if frameCount == 0 {
                     Current.Log.verbose("Got first frame!")
-
-                    Current.Log.verbose("Finished loading")
 
                     DispatchQueue.main.async(execute: {
                         hud.hide(animated: true)
@@ -96,7 +89,6 @@ class CameraViewController: UIView, NotificationCategory {
 
                     vc.view.addSubview(imageView)
 
-                    //            streamingController?.play()
                     extensionContext?.mediaPlayingStarted()
                 }
 
