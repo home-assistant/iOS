@@ -764,6 +764,10 @@ internal enum L10n {
           internal static let body = L10n.tr("Localizable", "settings.developer.map_notification.notification.body")
         }
       }
+      internal enum SyncWatchContext {
+        /// Sync Watch Context
+        internal static let title = L10n.tr("Localizable", "settings.developer.sync_watch_context.title")
+      }
     }
     internal enum DeviceIdSection {
       /// Device ID is the identifier used when sending location updates to Home Assistant, as well as the target to send push notifications to.

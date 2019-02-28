@@ -559,33 +559,17 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         }
 
         <<< ButtonRow {
-            $0.title = "Set Watch context"
+            $0.title = L10n.Settings.Developer.SyncWatchContext.title
         }.onCellSelection { _, _ in
-            var content: JSONDictionary = Communicator.shared.mostRecentlyReceievedContext.content
-
-            let connInfo = try? JSONEncoder().encode(Current.settingsStore.connectionInfo)
-            let connInfoStr = String(data: connInfo!, encoding: .utf8)
-
-            content["connection_info"] = connInfoStr
-            content["webhook_id"] = Current.settingsStore.webhookID
-            content["webhook_secret"] = Current.settingsStore.webhookSecret
-
-            let context = Context(content: content)
-
-            do {
-                try Communicator.shared.sync(context: context)
-            } catch let error as NSError {
-                Current.Log.error("Updating the context failed: \(error)")
-                let alert = UIAlertController(title: "Error",
-                                              message: error.localizedDescription,
+            if let syncError = HomeAssistantAPI.SyncWatchContext() {
+                let alert = UIAlertController(title: L10n.errorLabel,
+                                              message: syncError.localizedDescription,
                                               preferredStyle: .alert)
 
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
 
                 self.present(alert, animated: true, completion: nil)
             }
-
-            Current.Log.verbose("Set the context to \(context)")
         }
 
         <<< ButtonRow {
@@ -904,6 +888,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     let api = HomeAssistantAPI(connectionInfo: confirmedConnectionInfo,
                                                authenticationMethod: .modern(tokenInfo: tokenInfo))
                     Current.updateWith(authenticatedAPI: api)
+                    _ = HomeAssistantAPI.SyncWatchContext()
                     return api.Connect()
                 }.done { config in
                     Current.Log.verbose("Getting current configuration successful. Updating UI")
@@ -922,6 +907,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     keychain["apiPassword"] = password
                 }
                 Current.updateWith(authenticatedAPI: api)
+                _ = HomeAssistantAPI.SyncWatchContext()
                 self.configureUIWith(configResponse: config)
             }.catch { error in
                     self.handleConnectionError(error)
@@ -1037,11 +1023,14 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         let content = UNMutableNotificationContent()
         content.body = L10n.Settings.Developer.MapNotification.Notification.body
         content.sound = .default
-        content.userInfo = ["homeassistant": ["latitude": "40.785091", "longitude": "-73.968285"]]
+        content.userInfo = ["homeassistant": ["latitude": "40.785091", "longitude": "-73.968285",
+                                              "second_latitude": "40.758896", "second_longitude": "-73.985130"]]
         content.categoryIdentifier = "map"
 
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+
         let notificationRequest = UNNotificationRequest(identifier: "mapContentExtension", content: content,
-                                                        trigger: nil)
+                                                        trigger: trigger)
         UNUserNotificationCenter.current().add(notificationRequest)
     }
 
@@ -1049,11 +1038,13 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         let content = UNMutableNotificationContent()
         content.body = L10n.Settings.Developer.CameraNotification.Notification.body
         content.sound = .default
-        content.userInfo = ["entity_id": "camera.demo_camera"]
+        content.userInfo = ["entity_id": "camera.vstarcamera_one"]
         content.categoryIdentifier = "camera"
 
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+
         let notificationRequest = UNNotificationRequest(identifier: "cameraContentExtension", content: content,
-                                                        trigger: nil)
+                                                        trigger: trigger)
         UNUserNotificationCenter.current().add(notificationRequest)
     }
 

@@ -107,32 +107,16 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
     }
 
-    func updateApplicationContext() {
-        Current.Log.verbose("active families \(self.activeFamilies)")
-
-        let context = Context(content: ["activeComplications": self.activeFamilies, "model": getModelName()])
-
-        do {
-            try Communicator.shared.sync(context: context)
-        } catch let error as NSError {
-            Current.Log.error("Updating the context failed: \(error)")
-        }
-
-        Current.Log.verbose("Set the context")
-    }
-
-    // swiftlint:disable:next function_body_length
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     func setupWatchCommunicator() {
         Communicator.shared.activationStateChangedObservers.add { state in
             Current.Log.verbose("Activation state changed: \(state)")
 
-            // self.updateApplicationContext()
+            _ = HomeAssistantAPI.SyncWatchContext()
         }
 
         Communicator.shared.reachabilityChangedObservers.add { reachability in
             Current.Log.verbose("Reachability changed: \(reachability)")
-
-            // self.updateApplicationContext()
         }
 
         Communicator.shared.immediateMessageReceivedObservers.add { message in
@@ -210,7 +194,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         Communicator.shared.complicationInfoReceivedObservers.add { complicationInfo in
             Current.Log.verbose("Received complication info: \(complicationInfo)")
 
-            // self.updateApplicationContext()
+            _ = HomeAssistantAPI.SyncWatchContext()
 
             let realm = Realm.live()
 

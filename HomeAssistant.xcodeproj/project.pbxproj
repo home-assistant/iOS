@@ -205,6 +205,8 @@
 		B66C58BD21509934004AB261 /* ShortcutServiceConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58BC21509934004AB261 /* ShortcutServiceConfigurator.swift */; };
 		B66D6B1C222782BF009D8B90 /* MapNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1B222782BF009D8B90 /* MapNotificationController.swift */; };
 		B66D6B1E22279691009D8B90 /* CameraNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1D22279691009D8B90 /* CameraNotificationController.swift */; };
+		B66D6B222227A808009D8B90 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
+		B66D6B232227AC47009D8B90 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
 		B66F9F24216B1E61000CAA0F /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */; };
 		B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66F9F26216B1E61000CAA0F /* TodayViewController.swift */; };
 		B66F9F2E216B1E61000CAA0F /* TodayWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66F9F22216B1E61000CAA0F /* TodayWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -853,6 +855,7 @@
 		B66C58BF2150B410004AB261 /* SiriIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SiriIntents.entitlements; sourceTree = "<group>"; };
 		B66D6B1B222782BF009D8B90 /* MapNotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapNotificationController.swift; sourceTree = "<group>"; };
 		B66D6B1D22279691009D8B90 /* CameraNotificationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraNotificationController.swift; sourceTree = "<group>"; };
+		B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHelpers.swift; sourceTree = "<group>"; };
 		B66F9F22216B1E61000CAA0F /* TodayWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TodayWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		B66F9F26216B1E61000CAA0F /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
@@ -1616,6 +1619,7 @@
 				B637242221695EDF006B102A /* Permissions.swift */,
 				B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */,
 				B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */,
+				B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -3170,6 +3174,7 @@
 				B66C58BD21509934004AB261 /* ShortcutServiceConfigurator.swift in Sources */,
 				D0B25BCD2130CAB400678C2C /* Bonjour.swift in Sources */,
 				B67CE8D02220EF1D0034C1D0 /* ObjectMapper+RealmList.swift in Sources */,
+				B66D6B222227A808009D8B90 /* WatchHelpers.swift in Sources */,
 				B672AB2D2215341800175465 /* ShortcutEventConfigurator.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
 				D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */,
@@ -3331,6 +3336,7 @@
 				B67CE8C4222011A60034C1D0 /* Strings.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				B66D6B1C222782BF009D8B90 /* MapNotificationController.swift in Sources */,
+				B66D6B232227AC47009D8B90 /* WatchHelpers.swift in Sources */,
 				B6976985216243CC00FFFAD6 /* UIColor+CSS3+Hex.swift in Sources */,
 				B66D6B1E22279691009D8B90 /* CameraNotificationController.swift in Sources */,
 				B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */,

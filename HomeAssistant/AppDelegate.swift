@@ -445,33 +445,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func updateWatchContext() {
-        var content: JSONDictionary = Communicator.shared.mostRecentlyReceievedContext.content
-
-        content["connection_info"] = Current.settingsStore.connectionInfo
-        content["webhook_id"] = Current.settingsStore.webhookID
-        content["webhook_secret"] = Current.settingsStore.webhookSecret
-
-        let context = Context(content: content)
-
-        do {
-            try Communicator.shared.sync(context: context)
-        } catch let error as NSError {
-            Current.Log.error("Updating the context failed: \(error)")
-        }
-
-        Current.Log.verbose("Set the context to \(context)")
-    }
-
     func setupWatchCommunicator() {
         Communicator.shared.activationStateChangedObservers.add { state in
             Current.Log.verbose("Activation state changed: \(state)")
-            self.updateWatchContext()
+            _ = HomeAssistantAPI.SyncWatchContext()
         }
 
         Communicator.shared.watchStateUpdatedObservers.add { watchState in
             Current.Log.verbose("Watch state changed: \(watchState)")
-            self.updateWatchContext()
+            _ = HomeAssistantAPI.SyncWatchContext()
         }
 
         Communicator.shared.reachabilityChangedObservers.add { reachability in

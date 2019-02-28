@@ -462,6 +462,7 @@
 "settings.developer.copy_realm.alert.message" = "Copied Realm from %@ to %@";
 "settings.developer.copy_realm.alert.title" = "Copied Realm";
 "settings.developer.copy_realm.title" = "Copy Realm from app group to Documents";
+"settings.developer.sync_watch_context.title" = "Sync Watch Context";
 "settings.developer.export_log_files.title" = "Export log files";
 "settings.developer.footer" = "Don't use these if you don't know what you are doing!";
 "settings.developer.header" = "Developer";
