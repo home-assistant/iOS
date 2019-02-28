@@ -51,6 +51,7 @@ class CameraViewController: UIView, NotificationCategory {
         let imageView = UIImageView()
         imageView.frame = vc.view.frame
         imageView.accessibilityIdentifier = "camera_notification_imageview"
+        imageView.contentMode = .redraw
 
         var frameCount = 0
 
@@ -92,8 +93,6 @@ class CameraViewController: UIView, NotificationCategory {
                     DispatchQueue.main.async(execute: {
                         hud.hide(animated: true)
                     })
-
-                    vc.preferredContentSize = image.size
 
                     vc.view.addSubview(imageView)
 
