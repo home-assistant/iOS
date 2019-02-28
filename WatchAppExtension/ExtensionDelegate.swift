@@ -36,6 +36,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         Current.Log.verbose("didFinishLaunching")
 
+        UNUserNotificationCenter.current().delegate = self
+
         setupWatchCommunicator()
 
         // schedule the next background refresh
@@ -351,4 +353,12 @@ func getModelName() -> String {
         return identifier + String(UnicodeScalar(UInt8(value)))
     }
     return identifier
+}
+
+extension ExtensionDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification,
+                                // swiftlint:disable:next line_length
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .badge, .sound])
+    }
 }

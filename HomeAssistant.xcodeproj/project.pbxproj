@@ -203,6 +203,7 @@
 		B66C58B32150892A004AB261 /* FireEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B22150892A004AB261 /* FireEvent.swift */; };
 		B66C58B52150898A004AB261 /* SendLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58B42150898A004AB261 /* SendLocation.swift */; };
 		B66C58BD21509934004AB261 /* ShortcutServiceConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58BC21509934004AB261 /* ShortcutServiceConfigurator.swift */; };
+		B66D6B1C222782BF009D8B90 /* MapNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1B222782BF009D8B90 /* MapNotificationController.swift */; };
 		B66F9F24216B1E61000CAA0F /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */; };
 		B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66F9F26216B1E61000CAA0F /* TodayViewController.swift */; };
 		B66F9F2E216B1E61000CAA0F /* TodayWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66F9F22216B1E61000CAA0F /* TodayWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -849,6 +850,7 @@
 		B66C58B42150898A004AB261 /* SendLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendLocation.swift; sourceTree = "<group>"; };
 		B66C58BC21509934004AB261 /* ShortcutServiceConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutServiceConfigurator.swift; sourceTree = "<group>"; };
 		B66C58BF2150B410004AB261 /* SiriIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SiriIntents.entitlements; sourceTree = "<group>"; };
+		B66D6B1B222782BF009D8B90 /* MapNotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapNotificationController.swift; sourceTree = "<group>"; };
 		B66F9F22216B1E61000CAA0F /* TodayWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TodayWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		B66F9F26216B1E61000CAA0F /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
@@ -1706,6 +1708,7 @@
 				B6CC5D972159D10E00833E5D /* ComplicationController.swift */,
 				B6B2E69F216A940700D39A26 /* ActionRow.swift */,
 				B675ECC6221BDF4500C65D31 /* BackgroundRefreshScheduler.swift */,
+				B66D6B1B222782BF009D8B90 /* MapNotificationController.swift */,
 			);
 			path = WatchAppExtension;
 			sourceTree = "<group>";
@@ -3324,6 +3327,7 @@
 				B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */,
 				B67CE8C4222011A60034C1D0 /* Strings.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
+				B66D6B1C222782BF009D8B90 /* MapNotificationController.swift in Sources */,
 				B6976985216243CC00FFFAD6 /* UIColor+CSS3+Hex.swift in Sources */,
 				B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */,
 				B675ECC7221BDF4500C65D31 /* BackgroundRefreshScheduler.swift in Sources */,
