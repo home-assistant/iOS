@@ -90,7 +90,7 @@ DEPENDENCIES:
   - PromiseKit (= 6.8.3)
   - ReachabilitySwift
   - RealmSwift (= 3.13.1)
-  - Sodium (from `https://github.com/robbiet480/swift-sodium.git`, branch `watchos-podspec`)
+  - Sodium (from `https://github.com/jedisct1/swift-sodium.git`, branch `master`)
   - SwiftGen (= 6.1.0)
   - SwiftLint (= 0.30.1)
   - UIColor_Hex_Swift
@@ -140,8 +140,8 @@ EXTERNAL SOURCES:
     :branch: swift-4.2
     :git: https://github.com/robbiet480/Iconic.git
   Sodium:
-    :branch: watchos-podspec
-    :git: https://github.com/robbiet480/swift-sodium.git
+    :branch: master
+    :git: https://github.com/jedisct1/swift-sodium.git
   ViewRow:
     :branch: master
     :git: https://github.com/EurekaCommunity/ViewRow
@@ -160,8 +160,8 @@ CHECKOUT OPTIONS:
     :commit: d982c280bb76dafa3a1abe5e16ae88cbe910716d
     :git: https://github.com/robbiet480/Iconic.git
   Sodium:
-    :commit: 432bffd4a870693d79f2a8abb3dc52d2c284d00a
-    :git: https://github.com/robbiet480/swift-sodium.git
+    :commit: b81064aaf8d477019e7dc36f200685a57cb660eb
+    :git: https://github.com/jedisct1/swift-sodium.git
   ViewRow:
     :commit: 3a1d4a9d157f275ad3db12f6909974523ad564ee
     :git: https://github.com/EurekaCommunity/ViewRow
@@ -199,6 +199,6 @@ SPEC CHECKSUMS:
   XCGLogger: 7f7f43f15dfe3a305fa1342b7dc29af656289abd
   ZIPFoundation: b1f07e4409baf1641f3fe5948b2a1c3f5c500cb1
 
-PODFILE CHECKSUM: f80c5ee02c8319e1720b40622c35eb1da007b80a
+PODFILE CHECKSUM: 5bea566bfe84aff94b9c21103afdbbfc82f55e35
 
 COCOAPODS: 1.6.1
