@@ -38,10 +38,10 @@
             </objects>
             <point key="canvasLocation" x="34" y="30.5"/>
         </scene>
-        <!--Static Notification Interface Controller-->
+        <!--Map Static Notification Interface Controller-->
         <scene sceneID="68Y-yR-2I3">
             <objects>
-                <notificationController id="h4f-Hf-ll2">
+                <notificationController id="h4f-Hf-ll2" userLabel="Map Static Notification Interface Controller">
                     <items>
                         <label alignment="left" text="Alert Label" numberOfLines="3" id="H5r-Ru-Cy4"/>
                     </items>
@@ -52,7 +52,7 @@
                     </connections>
                 </notificationController>
             </objects>
-            <point key="canvasLocation" x="34" y="381"/>
+            <point key="canvasLocation" x="34" y="707"/>
         </scene>
         <!--Map Notification Controller-->
         <scene sceneID="Y1C-6b-E19">
@@ -69,7 +69,7 @@
                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
                         </label>
-                        <map height="100" alignment="left" id="Nsd-Pz-t9E"/>
+                        <map height="150" alignment="left" id="Nsd-Pz-t9E"/>
                     </items>
                     <connections>
                         <outlet property="mapView" destination="Nsd-Pz-t9E" id="1LK-sZ-iS5"/>
@@ -79,7 +79,50 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="335" y="381"/>
+            <point key="canvasLocation" x="335" y="707"/>
+        </scene>
+        <!--Camera Static Notification Interface Controller-->
+        <scene sceneID="jQk-Ce-YAw">
+            <objects>
+                <notificationController id="JOO-yq-9Md" userLabel="Camera Static Notification Interface Controller">
+                    <items>
+                        <label alignment="left" text="Alert Label" id="Imb-lE-NeQ"/>
+                    </items>
+                    <notificationCategory key="notificationCategory" identifier="camera" id="reZ-Qf-LhH"/>
+                    <connections>
+                        <outlet property="notificationAlertLabel" destination="Imb-lE-NeQ" id="xDD-YX-Cjw"/>
+                        <segue destination="R7r-up-oD1" kind="relationship" relationship="dynamicNotificationInterface" id="S2l-7Q-okt"/>
+                    </connections>
+                </notificationController>
+            </objects>
+            <point key="canvasLocation" x="34" y="330"/>
+        </scene>
+        <!--Camera Notification Controller-->
+        <scene sceneID="YvE-lN-xpN">
+            <objects>
+                <controller id="R7r-up-oD1" customClass="CameraNotificationController" customModule="WatchAppExtension">
+                    <items>
+                        <label alignment="left" text="Title" numberOfLines="2" id="3tx-pE-mk3">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <label alignment="left" text="Subtitle" id="Cnt-he-fjW">
+                            <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
+                        </label>
+                        <label alignment="left" text="Body" numberOfLines="4" id="g1t-FY-9bY">
+                            <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
+                        </label>
+                        <imageView alignment="center" id="abh-Pc-dOV"/>
+                    </items>
+                    <connections>
+                        <outlet property="imageView" destination="abh-Pc-dOV" id="In6-Pl-Ksu"/>
+                        <outlet property="notificationAlertLabel" destination="g1t-FY-9bY" id="epJ-dp-jBr"/>
+                        <outlet property="notificationSubtitleLabel" destination="Cnt-he-fjW" id="fe0-Rc-Avr"/>
+                        <outlet property="notificationTitleLabel" destination="3tx-pE-mk3" id="Qqb-3F-kCI"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="334" y="330"/>
         </scene>
     </scenes>
     <color key="tintColor" red="0.40000000000000002" green="0.78000000000000003" blue="0.95999999999999996" alpha="1" colorSpace="calibratedRGB"/>

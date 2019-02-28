@@ -181,6 +181,21 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 }
             }
 
+            if let tokenInfoStr = context.content["token_info"] as? String {
+                let tokenInfo = try? JSONDecoder().decode(TokenInfo.self, from: tokenInfoStr.data(using: .utf8)!)
+                Current.settingsStore.tokenInfo = tokenInfo
+
+                if let api = HomeAssistantAPI.authenticatedAPI() {
+                    Current.updateWith(authenticatedAPI: api)
+                } else {
+                    Current.Log.error("Failed to get authed API after context sync!")
+                }
+            }
+
+            if let apiPassword = context.content["apiPassword"] as? String {
+                Constants.Keychain["apiPassword"] = apiPassword
+            }
+
             if let webhookID = context.content["webhook_id"] as? String {
                 Current.settingsStore.webhookID = webhookID
             }
