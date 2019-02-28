@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="ipad9_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -23,25 +23,19 @@
                     </constraints>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Awaken Your Home" textAlignment="justified" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vmk-xi-0r6">
-                    <rect key="frame" x="108.5" y="168" width="158" height="21"/>
+                    <rect key="frame" x="108.5" y="167" width="158" height="21"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Home Assistant for iOS" textAlignment="justified" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bd2-me-S0Q">
-                    <rect key="frame" x="99" y="126" width="177" height="21"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="177" id="QQm-OY-bpk"/>
-                    </constraints>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="x.y" textAlignment="justified" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pcW-UY-tZO">
+                    <rect key="frame" x="177" y="147" width="21" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="x.y" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pcW-UY-tZO">
-                    <rect key="frame" x="99" y="147" width="177" height="21"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="177" id="auc-L0-565"/>
-                    </constraints>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Home Assistant Comapion" textAlignment="justified" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bd2-me-S0Q">
+                    <rect key="frame" x="86.5" y="127" width="202.5" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -49,11 +43,13 @@
             </subviews>
             <gestureRecognizers/>
             <constraints>
-                <constraint firstItem="pcW-UY-tZO" firstAttribute="top" secondItem="bd2-me-S0Q" secondAttribute="bottom" id="7wx-my-d5Z"/>
-                <constraint firstItem="vmk-xi-0r6" firstAttribute="top" secondItem="pcW-UY-tZO" secondAttribute="bottom" id="Gji-AQ-Hic"/>
-                <constraint firstItem="vmk-xi-0r6" firstAttribute="top" secondItem="SvT-RD-CiP" secondAttribute="bottom" constant="36" id="IUi-4e-izy"/>
+                <constraint firstItem="pcW-UY-tZO" firstAttribute="top" secondItem="bd2-me-S0Q" secondAttribute="bottom" constant="-1" id="7wx-my-d5Z"/>
+                <constraint firstItem="pcW-UY-tZO" firstAttribute="centerX" secondItem="bd2-me-S0Q" secondAttribute="centerX" id="Gce-78-djY"/>
+                <constraint firstItem="vmk-xi-0r6" firstAttribute="top" secondItem="pcW-UY-tZO" secondAttribute="bottom" constant="-1" id="Gji-AQ-Hic"/>
+                <constraint firstItem="vmk-xi-0r6" firstAttribute="top" secondItem="SvT-RD-CiP" secondAttribute="bottom" constant="35" id="IUi-4e-izy"/>
                 <constraint firstItem="SvT-RD-CiP" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Mc3-w9-5GM"/>
                 <constraint firstItem="SvT-RD-CiP" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="RPp-bn-iol"/>
+                <constraint firstItem="vmk-xi-0r6" firstAttribute="centerX" secondItem="pcW-UY-tZO" secondAttribute="centerX" id="TUk-hQ-hj5"/>
                 <constraint firstItem="pcW-UY-tZO" firstAttribute="centerX" secondItem="SvT-RD-CiP" secondAttribute="centerX" id="X1m-Ij-AQs"/>
                 <constraint firstItem="SvT-RD-CiP" firstAttribute="centerX" secondItem="bd2-me-S0Q" secondAttribute="centerX" id="dHG-Ef-uGh"/>
                 <constraint firstItem="SvT-RD-CiP" firstAttribute="centerX" secondItem="vmk-xi-0r6" secondAttribute="centerX" id="pof-tX-8dW"/>
@@ -68,7 +64,7 @@
                 <outlet property="Tagline" destination="vmk-xi-0r6" id="ina-0e-QV1"/>
                 <outlet property="Version" destination="pcW-UY-tZO" id="LtS-lY-cyL"/>
             </connections>
-            <point key="canvasLocation" x="-18.5" y="-228"/>
+            <point key="canvasLocation" x="-19.140625" y="-228.51562499999997"/>
         </view>
     </objects>
     <resources>
