@@ -33,7 +33,7 @@ public class DeviceTrackerSee: Mappable {
     public var Floor: Int?
 
     // CMMotionActivity
-    public var ActivityType: String?
+    public var ActivityTypes: [String] = []
     public var ActivityConfidence: String?
     public var ActivityStartDate: Date?
 
@@ -135,7 +135,7 @@ public class DeviceTrackerSee: Mappable {
     }
 
     public func SetActivity(activity: CMMotionActivity) {
-        self.ActivityType = activity.activityType
+        self.ActivityTypes = activity.activityTypes
         self.ActivityConfidence = activity.confidence.description
         self.ActivityStartDate = activity.startDate
     }
@@ -209,7 +209,7 @@ public class DeviceTrackerSee: Mappable {
         Timestamp             <-   (map["attributes.timestamp"], HomeAssistantTimestampTransform())
         Floor                 <-    map["attributes.floor"]
 
-        ActivityType          <-    map["attributes.activity.type"]
+        ActivityTypes         <-    map["attributes.activity.types"]
         ActivityConfidence    <-    map["attributes.activity.confidence"]
         ActivityStartDate     <-   (map["attributes.activity.start_date"], HomeAssistantTimestampTransform())
 

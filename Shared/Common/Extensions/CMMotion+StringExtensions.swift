@@ -13,20 +13,24 @@ import CoreMotion
 // automations expecting localized strings.
 
 extension CMMotionActivity {
-    var activityType: String {
+    var activityTypes: [String] {
+        var types: [String] = []
+
         if self.walking {
-            return "Walking"
+            types.append("Walking")
         } else if self.running {
-            return "Running"
+            types.append("Running")
         } else if self.automotive {
-            return "Automotive"
+            types.append("Automotive")
         } else if self.cycling {
-            return "Cycling"
+            types.append("Cycling")
         } else if self.stationary {
-            return "Stationary"
+            types.append("Stationary")
         } else {
-            return "Unknown"
+            types.append("Unknown")
         }
+
+        return types
     }
 }
 
