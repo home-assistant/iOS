@@ -10,9 +10,26 @@ import Alamofire
 import Foundation
 import PromiseKit
 import ObjectMapper
+import Sodium
 
 extension HomeAssistantAPI {
     // MARK: - Helper methods for reducing boilerplate.
+
+    func handleWebhookResponse<T>(response: DataResponse<T>, seal: Resolver<T>, callingFunctionName: String) {
+        Current.Log.verbose("\(callingFunctionName) response timeline: \(response.timeline)")
+
+        if let cloudURL = response.response?.allHeaderFields["X-Cloud-Hook-URL"] as? String {
+            Current.settingsStore.cloudhookURL = cloudURL
+        }
+
+        switch response.result {
+        case .success(let value):
+            seal.fulfill(value)
+        case .failure(let error):
+            Current.Log.error("Error on \(callingFunctionName) request: \(error)")
+            seal.reject(error)
+        }
+    }
 
     func buildWebhookRequest(_ type: String, payload: [String: Any]) -> DataRequest {
         return Alamofire.request(Current.settingsStore.webhookURL!, method: .post,
@@ -24,8 +41,8 @@ extension HomeAssistantAPI {
         return Promise { seal in
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseString { (response: DataResponse<String>) in
-                    self.handleResponse(response: response, seal: seal,
-                                        callingFunctionName: callingFunctionName)
+                    self.handleWebhookResponse(response: response, seal: seal,
+                                               callingFunctionName: callingFunctionName)
             }
 
         }
@@ -34,9 +51,9 @@ extension HomeAssistantAPI {
     public func webhook(_ type: String, payload: [String: Any], callingFunctionName: String) -> Promise<Any> {
         return Promise { seal in
             _ = self.buildWebhookRequest(type, payload: payload).validate()
-                .responseJSON { (response: DataResponse<Any>) in
-                    self.handleResponse(response: response, seal: seal,
-                                        callingFunctionName: callingFunctionName)
+                .responseEncryptedJSON { (response: DataResponse<Any>) in
+                    self.handleWebhookResponse(response: response, seal: seal,
+                                               callingFunctionName: callingFunctionName)
             }
 
         }
@@ -47,8 +64,8 @@ extension HomeAssistantAPI {
         return Promise { seal in
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseObject { (response: DataResponse<T>) in
-                    self.handleResponse(response: response, seal: seal,
-                                        callingFunctionName: callingFunctionName)
+                    self.handleWebhookResponse(response: response, seal: seal,
+                                               callingFunctionName: callingFunctionName)
             }
 
         }
@@ -59,8 +76,8 @@ extension HomeAssistantAPI {
         return Promise { seal in
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseArray { (response: DataResponse<[T]>) in
-                    self.handleResponse(response: response, seal: seal,
-                                        callingFunctionName: callingFunctionName)
+                    self.handleWebhookResponse(response: response, seal: seal,
+                                               callingFunctionName: callingFunctionName)
             }
 
         }
@@ -71,8 +88,8 @@ extension HomeAssistantAPI {
         return Promise { seal in
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseArray { (response: DataResponse<[T]>) in
-                    self.handleResponse(response: response, seal: seal,
-                                        callingFunctionName: callingFunctionName)
+                    self.handleWebhookResponse(response: response, seal: seal,
+                                               callingFunctionName: callingFunctionName)
             }
 
         }
@@ -83,8 +100,8 @@ extension HomeAssistantAPI {
         return Promise { seal in
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseObject { (response: DataResponse<T>) in
-                    self.handleResponse(response: response, seal: seal,
-                                        callingFunctionName: callingFunctionName)
+                    self.handleWebhookResponse(response: response, seal: seal,
+                                               callingFunctionName: callingFunctionName)
             }
 
         }

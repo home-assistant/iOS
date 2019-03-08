@@ -128,6 +128,24 @@ public class SettingsStore {
         }
     }
 
+    public var cloudhookID: String? {
+        get {
+            return keychain["cloudhook_id"]
+        }
+        set {
+            keychain["cloudhook_id"] = newValue
+        }
+    }
+
+    public var cloudhookURL: String? {
+        get {
+            return keychain["cloudhook_url"]
+        }
+        set {
+            keychain["cloudhook_url"] = newValue
+        }
+    }
+
     public var webhookID: String? {
         get {
             return keychain["webhook_id"]
@@ -147,6 +165,10 @@ public class SettingsStore {
     }
 
     public var webhookURL: URL? {
+        if let cloudURLStr = Current.settingsStore.cloudhookURL {
+            return URL(string: cloudURLStr)
+        }
+
         guard let wID = Current.settingsStore.webhookID,
             let url = Current.settingsStore.connectionInfo?.activeAPIURL else {
                 Current.Log.error("Unable to build webhook URL!")

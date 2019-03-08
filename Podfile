@@ -21,7 +21,6 @@ ENV['CUSTOM_FONT_NAME'] = 'MaterialDesignIcons'
 def shared_pods
     pod 'Alamofire', '4.8.1'
     pod 'AlamofireImage', '3.5.0'
-    pod 'AlamofireObjectMapper', '5.2.0'
     pod 'DeviceKit', '1.11.0'
     pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
     pod 'KeychainAccess', '3.1.2'

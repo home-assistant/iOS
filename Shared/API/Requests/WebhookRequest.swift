@@ -23,28 +23,37 @@ class WebhookRequest: Mappable {
     public convenience init(type: String, data: [String: Any]) {
         self.init()
         self.PayloadType = type
+        self.Data = data
 
         if let secret = Current.settingsStore.webhookSecret {
             let sodium = Sodium()
 
             guard let jsonData = try? JSONSerialization.data(withJSONObject: data, options: []) else {
-                fatalError("Unable to convert JSON dictionary to data!")
+                Current.Log.error("Unable to convert JSON dictionary to data!")
+                return
             }
 
             guard let jsonStr = String(data: jsonData, encoding: .utf8) else {
-                fatalError("Unable to convert JSON data to string!")
+                Current.Log.error("Unable to convert JSON data to string!")
+                return
             }
 
-            let encryptedDataBytes: Bytes = sodium.secretBox.seal(message: jsonStr.bytes, secretKey: secret.bytes)!
+            let key: Bytes = Array(secret.bytes[0..<sodium.secretBox.KeyBytes])
 
-            guard let b64payload = sodium.utils.bin2base64(encryptedDataBytes, variant: .ORIGINAL) else {
-                fatalError("Unable to encode encrypted payload to base64!")
+            guard let encryptedData: Bytes = sodium.secretBox.seal(message: jsonStr.bytes,
+                                                                   secretKey: key) else {
+                Current.Log.error("Unable to generate encrypted webhook payload! Secret: \(secret), JSON: \(jsonStr)")
+                return
+            }
+
+            guard let b64payload = sodium.utils.bin2base64(encryptedData, variant: .ORIGINAL) else {
+                Current.Log.error("Unable to encode encrypted payload to base64!")
+                return
             }
 
             self.EncryptedData = b64payload
             self.Encrypted = true
-        } else {
-            self.Data = data
+            self.Data = nil
         }
     }
 

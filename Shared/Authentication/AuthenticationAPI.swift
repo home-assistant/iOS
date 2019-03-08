@@ -8,7 +8,6 @@
 
 import PromiseKit
 import Alamofire
-import AlamofireObjectMapper
 import Foundation
 import ObjectMapper
 

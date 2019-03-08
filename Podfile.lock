@@ -4,9 +4,6 @@ PODS:
     - Alamofire (~> 4.8)
   - AlamofireNetworkActivityIndicator (2.3.0):
     - Alamofire (~> 4.7)
-  - AlamofireObjectMapper (5.2.0):
-    - Alamofire (~> 4.7)
-    - ObjectMapper (~> 3.4)
   - arek/Core (4.0.2):
     - PMAlertController (= 3.5.0)
   - arek/Location (4.0.2):
@@ -71,7 +68,6 @@ DEPENDENCIES:
   - Alamofire (= 4.8.1)
   - AlamofireImage (= 3.5.0)
   - AlamofireNetworkActivityIndicator (= 2.3.0)
-  - AlamofireObjectMapper (= 5.2.0)
   - arek/Location (= 4.0.2)
   - arek/Motion (= 4.0.2)
   - arek/Notifications (= 4.0.2)
@@ -103,7 +99,6 @@ SPEC REPOS:
     - Alamofire
     - AlamofireImage
     - AlamofireNetworkActivityIndicator
-    - AlamofireObjectMapper
     - arek
     - CallbackURLKit
     - Communicator
@@ -170,7 +165,6 @@ SPEC CHECKSUMS:
   Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
   AlamofireImage: 1aea346f4dda2f6c67622fa5a89fcbb80d79cc16
   AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
-  AlamofireObjectMapper: 92b6ce2423a9d159e686f6a1d514a009bf903ddc
   arek: 59e81a83c8a6c4e70c3598f66d3f1092824d3170
   CallbackURLKit: 63d4ce4c79a0344179d7d5fd9c38175b732b8a6f
   ColorPickerRow: 87dd091c54fff65cf554f79ca1556312ee66282f
@@ -199,6 +193,6 @@ SPEC CHECKSUMS:
   XCGLogger: 7f7f43f15dfe3a305fa1342b7dc29af656289abd
   ZIPFoundation: b1f07e4409baf1641f3fe5948b2a1c3f5c500cb1
 
-PODFILE CHECKSUM: 5bea566bfe84aff94b9c21103afdbbfc82f55e35
+PODFILE CHECKSUM: df996f6d7fa121cf425c6cfea4f6933e4e29fff3
 
 COCOAPODS: 1.6.1
