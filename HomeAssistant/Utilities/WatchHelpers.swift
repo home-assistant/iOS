@@ -19,12 +19,14 @@ extension HomeAssistantAPI {
         var content: JSONDictionary = Communicator.shared.mostRecentlyReceievedContext.content
 
         #if os(iOS)
-        let connInfo = try? JSONEncoder().encode(Current.settingsStore.connectionInfo)
+        if let connInfo = try? JSONEncoder().encode(Current.settingsStore.connectionInfo) {
+            content["connection_info"] = String(data: connInfo, encoding: .utf8)
+        }
 
-        let tokenInfo = try? JSONEncoder().encode(Current.settingsStore.tokenInfo)
+        if let tokenInfo = try? JSONEncoder().encode(Current.settingsStore.tokenInfo) {
+            content["token_info"] = String(data: tokenInfo, encoding: .utf8)
+        }
 
-        content["connection_info"] = String(data: connInfo!, encoding: .utf8)
-        content["token_info"] = String(data: tokenInfo!, encoding: .utf8)
         content["apiPassword"] = keychain["apiPassword"]
         content["webhook_id"] = Current.settingsStore.webhookID
         content["webhook_secret"] = Current.settingsStore.webhookSecret
