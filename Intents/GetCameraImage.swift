@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import MobileCoreServices
 import UIKit
 import Shared
 
@@ -45,7 +46,13 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
             api.GetCameraImage(cameraEntityID: cameraID).done { frame in
                 Current.Log.verbose("Successfully got camera image during shortcut")
 
-                UIPasteboard.general.image = frame
+                guard let pngData = frame.pngData() else {
+                    Current.Log.error("Image data could not be converted to PNG")
+                    completion(.failure(error: "Image could not be converted to PNG"))
+                    return
+                }
+
+                UIPasteboard.general.setData(pngData, forPasteboardType: kUTTypePNG as String)
 
                 completion(GetCameraImageIntentResponse(code: successCode, userActivity: nil))
             }.catch { error in
