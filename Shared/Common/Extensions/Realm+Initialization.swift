@@ -15,16 +15,23 @@ extension Realm {
         try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: "Memory"))
     }
 
-    /// The live data store, located in shared storage.
-    public static let live: () -> Realm = {
+    public static var storeDirectoryURL: URL {
         let fileManager = FileManager.default
         let storeDirectoryURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)?
             .appendingPathComponent("dataStore", isDirectory: true)
 
         guard let directoryURL = storeDirectoryURL else {
-            assertionFailure("Unable to get datastoreURL.")
-            return Realm.mock()
+            fatalError("Unable to get datastoreURL.")
         }
+
+        return directoryURL
+    }
+
+    /// The live data store, located in shared storage.
+    public static let live: () -> Realm = {
+        let fileManager = FileManager.default
+
+        let directoryURL = Realm.storeDirectoryURL
 
         if !fileManager.fileExists(atPath: directoryURL.path) {
             do {
@@ -47,5 +54,32 @@ extension Realm {
                                          migrationBlock: nil, deleteRealmIfMigrationNeeded: true)
         // swiftlint:disable:next force_try
         return try! Realm(configuration: config)
+    }
+
+    /// Backup the Realm database, returning the URL of the backup location.
+    public static func backup() -> URL? {
+        let backupURL = Realm.storeDirectoryURL.appendingPathComponent("backup.realm")
+
+        if FileManager.default.fileExists(atPath: backupURL.path) {
+            do {
+                _ = try FileManager.default.removeItem(at: backupURL)
+            } catch let error {
+                Current.Log.error("Error while removing existing Realm backup: \(error)")
+            }
+        }
+
+        let realm = Realm.live()
+        realm.beginWrite()
+
+        do {
+            try realm.writeCopy(toFile: backupURL)
+        } catch {
+            Current.Log.error("Error while writing copy of database to URL \(backupURL): \(error)")
+            return nil
+        }
+
+        realm.cancelWrite()
+
+        return backupURL
     }
 }

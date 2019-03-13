@@ -534,14 +534,41 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
                 let fileManager = FileManager.default
 
+                let fileName = DateFormatter(withFormat: "yyyy-MM-dd'T'HHmmssZ",
+                                             locale: "en_US_POSIX").string(from: Date()) + "_logs.zip"
+
+                Current.Log.debug("Exporting logs as filename \(fileName)")
+
                 if let zipDest = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)?
-                    .appendingPathComponent("logs.zip", isDirectory: false) {
+                    .appendingPathComponent(fileName, isDirectory: false) {
 
                     _ = try? fileManager.removeItem(at: zipDest)
+
+                    guard let archive = Archive(url: zipDest, accessMode: .create) else {
+                        fatalError("Unable to create ZIP archive!")
+                    }
+
+                    guard let backupURL = Realm.backup() else {
+                        fatalError("Unable to backup Realm!")
+                    }
+
                     do {
-                        try fileManager.zipItem(at: Constants.LogsDirectory, to: zipDest, shouldKeepParent: false)
+                        try archive.addEntry(with: backupURL.lastPathComponent,
+                                             relativeTo: backupURL.deletingLastPathComponent())
                     } catch {
-                        Current.Log.error("Creation of ZIP archive failed with error: \(error)")
+                        Current.Log.error("Error adding Realm backup to archive!")
+                    }
+
+                    if let logFiles = try? fileManager.contentsOfDirectory(at: Constants.LogsDirectory,
+                                                                           includingPropertiesForKeys: nil) {
+                        for logFile in logFiles {
+                            do {
+                                try archive.addEntry(with: logFile.lastPathComponent,
+                                                     relativeTo: logFile.deletingLastPathComponent())
+                            } catch {
+                                Current.Log.error("Error adding log \(logFile) to archive!")
+                            }
+                        }
                     }
 
                     let activityViewController = UIActivityViewController(activityItems: [zipDest],
@@ -575,10 +602,12 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         <<< ButtonRow {
                 $0.title = L10n.Settings.Developer.CopyRealm.title
             }.onCellSelection { _, _ in
-                let appGroupRealmPath = Current.realm().configuration.fileURL!
+                guard let backupURL = Realm.backup() else {
+                    fatalError("Unable to get Realm backup")
+                }
                 let containerRealmPath = Realm.Configuration.defaultConfiguration.fileURL!
 
-                Current.Log.verbose("Would copy from \(appGroupRealmPath) to \(containerRealmPath)")
+                Current.Log.verbose("Would copy from \(backupURL) to \(containerRealmPath)")
 
                 if FileManager.default.fileExists(atPath: containerRealmPath.path) {
                     do {
@@ -589,13 +618,13 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 }
 
                 do {
-                    _ = try FileManager.default.copyItem(at: appGroupRealmPath, to: containerRealmPath)
+                    _ = try FileManager.default.copyItem(at: backupURL, to: containerRealmPath)
                 } catch let error as NSError {
                     // Catch fires here, with an NSError being thrown
                     Current.Log.error("Error occurred, here are the details:\n \(error)")
                 }
 
-                let msg = L10n.Settings.Developer.CopyRealm.Alert.message(appGroupRealmPath.path,
+                let msg = L10n.Settings.Developer.CopyRealm.Alert.message(backupURL.path,
                                                                           containerRealmPath.path)
 
                 let alert = UIAlertController(title: L10n.Settings.Developer.CopyRealm.Alert.title,
