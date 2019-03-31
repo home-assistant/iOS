@@ -27,7 +27,13 @@ class MapNotificationController: WKUserNotificationInterfaceController {
         self.notificationSubtitleLabel.setText(notification.request.content.subtitle)
         self.notificationAlertLabel!.setText(notification.request.content.body)
 
-        guard let haDict = notification.request.content.userInfo["homeassistant"] as? [String: Any] else {
+        var userInfo = notification.request.content.userInfo
+
+        if let jsonStr = userInfo["homeassistant"] as? String {
+            userInfo["homeassistant"] = jsonStr.dictionary()
+        }
+
+        guard let haDict = userInfo["homeassistant"] as? [String: Any] else {
             Current.Log.error(L10n.Extensions.Map.PayloadMissingHomeassistant.message)
             return
         }

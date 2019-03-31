@@ -149,8 +149,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        if let userInfoDict = userInfo as? [String: Any],
-            let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
+        if var userInfoDict = userInfo as? [String: Any] {
+            if let jsonStr = userInfoDict["homeassistant"] as? String {
+                userInfoDict["homeassistant"] = jsonStr.dictionary()
+            }
+            if let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
                     switch command {
                     case "request_location_update":
                         if prefs.bool(forKey: "locationUpdateOnNotification") == false {
@@ -168,6 +171,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         Current.Log.warning("Received unknown command via APNS! \(userInfo)")
                         completionHandler(.noData)
                     }
+            }
         } else {
             completionHandler(.failed)
         }
@@ -679,7 +683,17 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         if let textInput = response as? UNTextInputNotificationResponse {
             userText = textInput.userText
         }
-        let userInfo = response.notification.request.content.userInfo
+        var userInfo = response.notification.request.content.userInfo
+
+        if let jsonStr = userInfo["homeassistant"] as? String {
+            userInfo["homeassistant"] = jsonStr.dictionary()
+        }
+
+        if let jsonStr = userInfo["shortcut"] as? String {
+            userInfo["shortcut"] = jsonStr.dictionary()
+        }
+
+        Current.Log.verbose("User info in incoming notification \(userInfo)")
 
         if let shortcutDict = userInfo["shortcut"] as? [String: String],
             let shortcutName = shortcutDict["name"] {
@@ -804,6 +818,13 @@ extension AppDelegate: MessagingDelegate {
         Current.settingsStore.pushID = fcmToken
 
         Current.Log.verbose("Registered for push. PushID: \(fcmToken)")
+
+        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+            Current.Log.warning("Could not get authenticated API")
+            return
+        }
+
+        _ = api.updateDevice()
     }
 // swiftlint:disable:next file_length
 }

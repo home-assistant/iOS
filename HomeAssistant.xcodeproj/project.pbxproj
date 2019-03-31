@@ -191,6 +191,12 @@
 		B658AA6F2250692F00C9BFE3 /* GoogleService-Info-Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */; };
 		B658AA7322506AD400C9BFE3 /* GoogleService-Info-Development.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA7222506AD400C9BFE3 /* GoogleService-Info-Development.plist */; };
 		B658AA7722506DAF00C9BFE3 /* GoogleService-Info-Beta.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */; };
+		B658AA782250AC8000C9BFE3 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
+		B658AA792250ACF200C9BFE3 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
+		B658AA7A2250ACFB00C9BFE3 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
+		B658AA7B2250AE4900C9BFE3 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
+		B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
+		B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
 		B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
 		B65BF9362217F497005745A4 /* old-beta@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9302217F496005745A4 /* old-beta@3x.png */; };
 		B65BF9372217F497005745A4 /* old-release@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9312217F497005745A4 /* old-release@2x.png */; };
@@ -846,6 +852,7 @@
 		B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Release.plist"; sourceTree = "<group>"; };
 		B658AA7222506AD400C9BFE3 /* GoogleService-Info-Development.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Development.plist"; sourceTree = "<group>"; };
 		B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Beta.plist"; sourceTree = "<group>"; };
+		B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobileAppUpdateRegistrationRequest.swift; sourceTree = "<group>"; };
 		B65BF9302217F496005745A4 /* old-beta@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-beta@3x.png"; sourceTree = "<group>"; };
 		B65BF9312217F497005745A4 /* old-release@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-release@2x.png"; sourceTree = "<group>"; };
 		B65BF9322217F497005745A4 /* old-beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-beta@2x.png"; sourceTree = "<group>"; };
@@ -1906,6 +1913,7 @@
 				B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */,
 				B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */,
 				B6872E612226837A00C475D1 /* MobileAppRegistrationRequest.swift */,
+				B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */,
 				B6221F6122266C4000502A30 /* WebhookRequest.swift */,
 			);
 			path = Requests;
@@ -3172,6 +3180,7 @@
 				B63CCDCB216442C200123C50 /* Map.swift in Sources */,
 				B63CCDC9216442BB00123C50 /* Camera.swift in Sources */,
 				B6E42617215C761A007FEB7E /* Strings.swift in Sources */,
+				B658AA7A2250ACFB00C9BFE3 /* String+HA.swift in Sources */,
 				B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3189,6 +3198,7 @@
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B6DAC737215F06B100727D2A /* NotificationAction.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
+				B658AA782250AC8000C9BFE3 /* String+HA.swift in Sources */,
 				B6B6B14C215B1E86003DE2DD /* CLKComplication+Strings.swift in Sources */,
 				B6DF8BC1221C890600370A59 /* UIImageView+UIActivityIndicator.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
@@ -3304,6 +3314,7 @@
 				B67CE88022200F220034C1D0 /* Automation.swift in Sources */,
 				B67CE89F22200F220034C1D0 /* Events.swift in Sources */,
 				B67CE88922200F220034C1D0 /* Switch.swift in Sources */,
+				B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				B67CE8BA22200F220034C1D0 /* Constants.swift in Sources */,
 				B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */,
 				B67CE8A522200F220034C1D0 /* Identify.swift in Sources */,
@@ -3352,6 +3363,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6AAD7A41D827DD40090B220 /* NotificationService.swift in Sources */,
+				B658AA792250ACF200C9BFE3 /* String+HA.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3364,6 +3376,7 @@
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
 				B63D28C1215DB72100F3B907 /* WatchComplication.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
+				B658AA7B2250AE4900C9BFE3 /* String+HA.swift in Sources */,
 				B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */,
 				B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */,
 				B67CE8C4222011A60034C1D0 /* Strings.swift in Sources */,
@@ -3438,6 +3451,7 @@
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				B6C0914C2151F93D00A326DC /* Sun.swift in Sources */,
 				B6C0913F2151F93D00A326DC /* InputSelect.swift in Sources */,
+				B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */,
 				D0C8847A2122A65800CCB501 /* SettingsStore.swift in Sources */,
 				B6C091472151F93D00A326DC /* Script.swift in Sources */,

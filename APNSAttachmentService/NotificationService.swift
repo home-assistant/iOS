@@ -38,6 +38,10 @@ final class NotificationService: UNNotificationServiceExtension {
 
         var incomingAttachment: [String: Any] = [:]
 
+        if let jsonStr = content.userInfo["attachment"] as? String {
+            content.userInfo["homeassistant"] = jsonStr.dictionary()
+        }
+
         if let iAttachment = content.userInfo["attachment"] as? [String: Any] {
             incomingAttachment = iAttachment
         }

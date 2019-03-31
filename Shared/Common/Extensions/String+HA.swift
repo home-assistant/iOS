@@ -16,7 +16,7 @@ extension String {
             do {
                 return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
             } catch {
-                Current.Log.error("Error serializing JSON string to dict: \(error)")
+                print("Error serializing JSON string to dict: \(error)")
             }
         }
         return nil

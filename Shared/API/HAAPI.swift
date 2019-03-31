@@ -541,7 +541,7 @@ public class HomeAssistantAPI {
     }
 
     public func registerDevice() -> Promise<MobileAppRegistrationResponse> {
-        return self.request(path: "mobile_app/devices", callingFunctionName: "\(#function)", method: .post,
+        return self.request(path: "mobile_app/registrations", callingFunctionName: "\(#function)", method: .post,
                             parameters: buildMobileAppRegistration(), encoding: JSONEncoding.default)
             .then { (resp: MobileAppRegistrationResponse) -> Promise<MobileAppRegistrationResponse> in
                 Current.settingsStore.cloudhookID = resp.CloudhookID
@@ -550,6 +550,11 @@ public class HomeAssistantAPI {
                 Current.settingsStore.webhookSecret = resp.WebhookSecret
                 return Promise.value(resp)
         }
+    }
+
+    public func updateDevice() -> Promise<MobileAppRegistrationResponse> {
+        return self.webhook("update_registration", payload: buildMobileAppUpdateRegistration(),
+                            callingFunctionName: "updateDevice")
     }
 
     public func turnOn(entityId: String) -> Promise<[Entity]> {
@@ -629,6 +634,10 @@ public class HomeAssistantAPI {
         let deviceKitDevice = Device()
 
         let ident = MobileAppRegistrationRequest()
+        ident.AppData = [
+            "push_url": "https://us-central1-home-assistant-mobile-apps.cloudfunctions.net/sendPushNotification",
+            "push_token": pushID
+        ]
         ident.AppIdentifier = Constants.BundleID
         ident.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
         ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
@@ -642,44 +651,19 @@ public class HomeAssistantAPI {
         return Mapper().toJSON(ident)
     }
 
-    private func buildPushRegistrationDict(deviceToken: String) -> [String: Any] {
+    private func buildMobileAppUpdateRegistration() -> [String: Any] {
         let deviceKitDevice = Device()
 
-        let ident = PushRegistrationRequest()
-        if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") {
-            if let stringedBundleVersion = bundleVersion as? String {
-                ident.AppBuildNumber = Int(stringedBundleVersion)
-            }
-        }
-        if let versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") {
-            if let stringedVersionNumber = versionNumber as? String {
-                ident.AppVersionNumber = stringedVersionNumber
-            }
-        }
-        if let isSandboxed = Bundle.main.object(forInfoDictionaryKey: "IS_SANDBOXED") {
-            if let stringedisSandboxed = isSandboxed as? String {
-                ident.APNSSandbox = (stringedisSandboxed == "true")
-            }
-        }
-        ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
-        ident.DeviceID = Current.settingsStore.deviceID
+        let ident = MobileAppUpdateRegistrationRequest()
+        ident.AppData = [
+            "push_url": "https://us-central1-home-assistant-mobile-apps.cloudfunctions.net/sendPushNotification",
+            "push_token": pushID
+        ]
+        ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = Constants.PermanentID
-        ident.DeviceSystemName = deviceKitDevice.systemName
-        ident.DeviceSystemVersion = deviceKitDevice.systemVersion
-        ident.DeviceType = deviceKitDevice.description
-        ident.DeviceTimezone = (NSTimeZone.local as NSTimeZone).name
-        ident.PushSounds = Notifications.installedPushNotificationSounds()
-        ident.PushToken = deviceToken
-        if let email = self.prefs.string(forKey: "userEmail") {
-            ident.UserEmail = email
-        }
-        if let version = self.prefs.string(forKey: "version") {
-            ident.HomeAssistantVersion = version
-        }
-        if let timeZone = self.prefs.string(forKey: "time_zone") {
-            ident.HomeAssistantTimezone = timeZone
-        }
+        ident.Manufacturer = "Apple"
+        ident.Model = deviceKitDevice.description
+        ident.OSVersion = deviceKitDevice.systemVersion
 
         return Mapper().toJSON(ident)
     }
