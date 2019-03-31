@@ -49,6 +49,8 @@ target 'HomeAssistant' do
     pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
     pod 'Communicator'
     pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
+    pod 'Firebase/Core'
+    pod 'Firebase/Messaging'
     pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
     pod 'Lokalise', '~> 0.10.0'
     pod 'MBProgressHUD', '1.1.0'

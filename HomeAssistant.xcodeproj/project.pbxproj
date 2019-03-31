@@ -188,6 +188,9 @@
 		B657A8F61CA646EB00121384 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */; };
 		B657A9011CA646EB00121384 /* HomeAssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9001CA646EB00121384 /* HomeAssistantTests.swift */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
+		B658AA6F2250692F00C9BFE3 /* GoogleService-Info-Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */; };
+		B658AA7322506AD400C9BFE3 /* GoogleService-Info-Development.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA7222506AD400C9BFE3 /* GoogleService-Info-Development.plist */; };
+		B658AA7722506DAF00C9BFE3 /* GoogleService-Info-Beta.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */; };
 		B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
 		B65BF9362217F497005745A4 /* old-beta@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9302217F496005745A4 /* old-beta@3x.png */; };
 		B65BF9372217F497005745A4 /* old-release@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9312217F497005745A4 /* old-release@2x.png */; };
@@ -840,6 +843,9 @@
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
 		B657A90D1CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A9191CA647C500121384 /* HAAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HAAPI.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Release.plist"; sourceTree = "<group>"; };
+		B658AA7222506AD400C9BFE3 /* GoogleService-Info-Development.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Development.plist"; sourceTree = "<group>"; };
+		B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Beta.plist"; sourceTree = "<group>"; };
 		B65BF9302217F496005745A4 /* old-beta@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-beta@3x.png"; sourceTree = "<group>"; };
 		B65BF9312217F497005745A4 /* old-release@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-release@2x.png"; sourceTree = "<group>"; };
 		B65BF9322217F497005745A4 /* old-beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-beta@2x.png"; sourceTree = "<group>"; };
@@ -1650,6 +1656,9 @@
 				B657A8F71CA646EB00121384 /* Info.plist */,
 				B60247FE1FBD343000998205 /* InfoPlist.strings */,
 				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
+				B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */,
+				B658AA7222506AD400C9BFE3 /* GoogleService-Info-Development.plist */,
+				B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */,
 				B69933931E232AEA0054453D /* Localizable.strings */,
 				B63CCDCF2164714900123C50 /* Intents.intentdefinition */,
 				B672AB552216B07500175465 /* gallery.ckcomplication */,
@@ -2435,6 +2444,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 				"zh-Hans",
@@ -2487,6 +2497,7 @@
 				B60616B61D1F117800249C11 /* US-EN-Daisy-Laundry-Room-Leak.wav in Resources */,
 				B60616861D1F117700249C11 /* US-EN-Alexa-Good-Night.wav in Resources */,
 				B672AB562216B07500175465 /* gallery.ckcomplication in Resources */,
+				B658AA6F2250692F00C9BFE3 /* GoogleService-Info-Release.plist in Resources */,
 				B60616221D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-Detected.wav in Resources */,
 				B672AB1322150ED600175465 /* blue@3x.png in Resources */,
 				B606163B1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Party-Mode.wav in Resources */,
@@ -2506,6 +2517,7 @@
 				B606169C1D1F117800249C11 /* US-EN-Alexa-Wife-Is-Arriving.wav in Resources */,
 				B60616211D1F117700249C11 /* US-EN-Morgan-Freeman-Liquor-Cabinet-Opened.wav in Resources */,
 				B60616331D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav in Resources */,
+				B658AA7322506AD400C9BFE3 /* GoogleService-Info-Development.plist in Resources */,
 				B606164E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Light.wav in Resources */,
 				B672AB1422150ED600175465 /* purple@2x.png in Resources */,
 				B672AB1722150ED600175465 /* green@3x.png in Resources */,
@@ -2630,6 +2642,7 @@
 				B60616271D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav in Resources */,
 				B606167C1D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav in Resources */,
 				B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */,
+				B658AA7722506DAF00C9BFE3 /* GoogleService-Info-Beta.plist in Resources */,
 				B6D35C642169905400D1F86B /* HomeAssistant Development.entitlements in Resources */,
 				B672AB262215114A00175465 /* beta@3x.png in Resources */,
 				B672AB1C22150ED600175465 /* black@3x.png in Resources */,
@@ -2866,6 +2879,7 @@
 				"${BUILT_PRODUCTS_DIR}/Communicator-iOS/Communicator.framework",
 				"${BUILT_PRODUCTS_DIR}/DeviceKit-iOS/DeviceKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/Iconic-iOS/Iconic.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainAccess-iOS/KeychainAccess.framework",
 				"${PODS_ROOT}/Lokalise/Lokalise.framework",
@@ -2874,6 +2888,7 @@
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper-iOS/ObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/PMAlertController/PMAlertController.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm-iOS/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift-iOS/RealmSwift.framework",
@@ -2884,6 +2899,7 @@
 				"${BUILT_PRODUCTS_DIR}/XCGLogger-iOS/XCGLogger.framework",
 				"${BUILT_PRODUCTS_DIR}/ZIPFoundation/ZIPFoundation.framework",
 				"${BUILT_PRODUCTS_DIR}/arek/arek.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
@@ -2898,6 +2914,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Communicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Iconic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lokalise.framework",
@@ -2906,6 +2923,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PMAlertController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
@@ -2916,6 +2934,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XCGLogger.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZIPFoundation.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/arek.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

@@ -6,21 +6,22 @@
 //  Copyright © 2016 Robbie Trencheny. All rights reserved.
 //
 
-import UIKit
-import PromiseKit
-import UserNotifications
-import AlamofireNetworkActivityIndicator
-import KeychainAccess
 import Alamofire
-import RealmSwift
-import Shared
-import SafariServices
-import Intents
-import Communicator
-import Iconic
+import AlamofireNetworkActivityIndicator
 import arek
 import CallbackURLKit
+import Communicator
+import Firebase
+import Iconic
+import Intents
+import KeychainAccess
 import Lokalise
+import PromiseKit
+import RealmSwift
+import SafariServices
+import Shared
+import UIKit
+import UserNotifications
 
 let keychain = Constants.Keychain
 
@@ -36,6 +37,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        self.setupFirebase()
 
         self.configureLokalise()
 
@@ -57,6 +60,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NetworkActivityIndicatorManager.shared.isEnabled = true
 
         UNUserNotificationCenter.current().delegate = self
+
+        UIApplication.shared.registerForRemoteNotifications()
+
+        Messaging.messaging().delegate = self
 
         setDefaults()
 
@@ -126,27 +133,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {}
-
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            return
-        }
-
-        let tokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
-
-        prefs.setValue(tokenString, forKey: "deviceToken")
-
-        Current.Log.verbose("Registering push with tokenString: \(tokenString)")
-
-        _ = api.registerDeviceForPush(deviceToken: tokenString).done { resp in
-            if let pushId = resp.PushId {
-                Current.Log.verbose("Registered for push. Platform: \(resp.SNSPlatform ?? "??"), PushID: \(pushId)")
-                prefs.setValue(pushId, forKey: "pushID")
-                Current.settingsStore.pushID = pushId
-                _ = api.identifyDevice()
-            }
-        }
-    }
 
     func application(_ application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError error: Swift.Error) {
@@ -652,6 +638,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
     }
+
+    func setupFirebase() {
+        var fileName = "GoogleService-Info-Development"
+
+        if Current.appConfiguration == .Beta {
+            fileName = "GoogleService-Info-Beta"
+        } else if Current.appConfiguration == .Release {
+            fileName = "GoogleService-Info-Release"
+        }
+
+        let filePath = Bundle.main.path(forResource: fileName, ofType: "plist")
+        guard let fileopts = FirebaseOptions(contentsOfFile: filePath!)
+            else { assert(false, "Couldn't load environment specific Firebase config file") }
+        FirebaseApp.configure(options: fileopts)
+    }
 }
 
 extension AppConfiguration {
@@ -792,6 +793,17 @@ enum XCallbackError: FailureCallbackError {
         case .templateMissing:
             return L10n.UrlHandler.XCallbackUrl.Error.templateMissing
         }
+    }
+}
+
+extension AppDelegate: MessagingDelegate {
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+        print("Firebase registration token: \(fcmToken)")
+
+        prefs.setValue(fcmToken, forKey: "pushID")
+        Current.settingsStore.pushID = fcmToken
+
+        Current.Log.verbose("Registered for push. PushID: \(fcmToken)")
     }
 // swiftlint:disable:next file_length
 }

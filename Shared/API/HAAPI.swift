@@ -552,33 +552,6 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func registerDeviceForPush(deviceToken: String) -> Promise<PushRegistrationResponse> {
-        let queryUrl = "https://ios-push.home-assistant.io/registrations"
-        return Promise { seal in
-            Alamofire.request(queryUrl,
-                              method: .post,
-                              parameters: buildPushRegistrationDict(deviceToken: deviceToken),
-                              encoding: JSONEncoding.default
-                ).validate().responseObject {(response: DataResponse<PushRegistrationResponse>) in
-                    switch response.result {
-                    case .success:
-                        if let json = response.result.value {
-                            seal.fulfill(json)
-                        } else {
-                            let retErr = NSError(domain: Bundle.main.bundleIdentifier!,
-                                                 code: 404,
-                                                 userInfo: ["message": "json was nil!"])
-                            Current.Log.error("Error during registerDeviceForPush(), json was nil!: \(retErr)")
-                            seal.reject(retErr)
-                        }
-                    case .failure(let error):
-                        Current.Log.error("Error when attemping to registerDeviceForPush(): \(error)")
-                        seal.reject(error)
-                    }
-            }
-        }
-    }
-
     public func turnOn(entityId: String) -> Promise<[Entity]> {
         return callService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
     }
