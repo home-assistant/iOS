@@ -231,7 +231,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
 
     func buildRenderTemplatePayload() -> [String: Any] {
-        var json: [String: Any] = [:]
+        //var json: [String: Any] = [:]
 
         var templates = [String: [String: String]]()
 
@@ -247,25 +247,22 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             if self.activeFamilies.contains(complication.Family.rawValue) {
                 // Current.Log.verbose("ACTIVE COMPLICATION!", complication, complication.Data)
                 if let textAreas = complication.Data["textAreas"] as? [String: [String: Any]] {
-                    for (key, textArea) in textAreas {
+                    for (textAreaKey, textArea) in textAreas {
+                        let key = "\(complication.Template.rawValue)|\(textAreaKey)"
                         // Current.Log.verbose("Got textArea", key, textArea)
-                        if let needsRender = textArea["textNeedsRender"] as? Bool, needsRender {
+                        if let needsRender = textArea["textNeedsRender"] as? Bool,
+                            let text = textArea["text"] as? String, needsRender {
                             // Current.Log.verbose("TEXT NEEDS RENDER!", key)
-                            if templates[complication.Template.rawValue] == nil {
-                                templates[complication.Template.rawValue] = [String: String]()
-                            }
-                            templates[complication.Template.rawValue]![key] = textArea["text"] as? String
+                            templates[key] = ["template": text]
                         }
                     }
                 }
             }
         }
 
-        json["templates"] = templates
+        Current.Log.verbose("JSON payload to send \(templates)")
 
-        Current.Log.verbose("JSON payload to send \(json)")
-
-        return json
+        return templates
     }
 
     func updateComplications() {
@@ -291,11 +288,11 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             fatalError("Couldn't get HAAPI instance")
         }
 
-        _ = api.webhook("render_complications", payload: self.buildRenderTemplatePayload(),
+        _ = api.webhook("render_template", payload: self.buildRenderTemplatePayload(),
                         callingFunctionName: "renderComplications").done { (respJSON: Any) in
 
             Current.Log.verbose("Got JSON \(respJSON)")
-            guard let jsonDict = respJSON as? [String: [String: String]] else {
+            guard let jsonDict = respJSON as? [String: String] else {
                 Current.Log.error("Unable to cast JSON to [String: [String: String]]!")
                 return
             }
@@ -304,11 +301,14 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
             var updatedComplications: [WatchComplication] = []
 
-            for (templateName, textAreas) in jsonDict {
-                let pred = NSPredicate(format: "rawTemplate == %@", templateName)
+            for (templateKey, renderedText) in jsonDict {
+                let components = templateKey.components(separatedBy: "|")
+                let rawTemplate = components[0]
+                let textAreaKey = components[1]
+                let pred = NSPredicate(format: "rawTemplate == %@", rawTemplate)
                 let realm = Realm.live()
                 guard let complication = realm.objects(WatchComplication.self).filter(pred).first else {
-                    Current.Log.error("Couldn't get complication from DB for \(templateName)")
+                    Current.Log.error("Couldn't get complication from DB for \(rawTemplate)")
                     continue
                 }
 
@@ -317,9 +317,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                     continue
                 }
 
-                for (textAreaKey, renderedText) in textAreas {
-                    storedAreas[textAreaKey]!["renderedText"] = renderedText
-                }
+                storedAreas[textAreaKey]!["renderedText"] = renderedText
 
                 // swiftlint:disable:next force_try
                 try! realm.write {
