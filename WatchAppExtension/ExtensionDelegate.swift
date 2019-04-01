@@ -188,6 +188,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 Current.settingsStore.webhookSecret = webhookSecret
             }
 
+            if let cloudhookURL = context.content["cloudhook_url"] as? String {
+                Current.settingsStore.cloudhookURL = cloudhookURL
+            }
+
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 

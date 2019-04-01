@@ -30,6 +30,7 @@ extension HomeAssistantAPI {
         content["apiPassword"] = keychain["apiPassword"]
         content["webhook_id"] = Current.settingsStore.webhookID
         content["webhook_secret"] = Current.settingsStore.webhookSecret
+        content["cloudhook_url"] = Current.settingsStore.cloudhookURL
         content["iphone_device_id"] = Current.settingsStore.deviceID
         content["iphone_permanent_id"] = Constants.PermanentID
         content["iphone_device_name"] = UIDevice.current.name

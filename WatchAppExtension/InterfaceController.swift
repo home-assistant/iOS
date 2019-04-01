@@ -16,6 +16,7 @@ import Shared
 
 class InterfaceController: WKInterfaceController {
     @IBOutlet weak var tableView: WKInterfaceTable!
+    @IBOutlet weak var noActionsLabel: WKInterfaceLabel!
 
     var actions: Results<Action>?
 
@@ -43,6 +44,9 @@ class InterfaceController: WKInterfaceController {
         let actions = realm.objects(Action.self).sorted(byKeyPath: "Position")
 
         self.tableView.setNumberOfRows(actions.count, withRowType: "actionRowType")
+
+        self.noActionsLabel.setText(L10n.Watch.Labels.noAction)
+        self.noActionsLabel.setHidden(actions.count > 0)
 
         for (i, action) in actions.enumerated() {
             if let row = self.tableView.rowController(at: i) as? ActionRowType {

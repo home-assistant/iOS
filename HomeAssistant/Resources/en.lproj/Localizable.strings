@@ -228,6 +228,7 @@
 "siri_shortcuts.configurator.settings.name.title" = "Shortcut name";
 "siri_shortcuts.configurator.settings.notify_on_run.title" = "Send notification when run";
 "success_label" = "Success";
+"watch.labels.no_action" = "No actions configured. Configure actions on your phone to dismiss this message.";
 "watch.labels.complication_group.circular_small.description" = "Use circular small complications to display content in the corners of the Color watch face.";
 "watch.labels.complication_group.circular_small.name" = "Circular Small";
 "watch.labels.complication_group.extra_large.description" = "Use the extra large complications to display content on the X-Large watch faces.";

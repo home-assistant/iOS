@@ -383,12 +383,12 @@
 		B6C09153215206BB00A326DC /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6CC5D862159D10D00833E5D /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D842159D10D00833E5D /* Interface.storyboard */; };
 		B6CC5D882159D10E00833E5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D872159D10E00833E5D /* Assets.xcassets */; };
-		B6CC5D8F2159D10E00833E5D /* WatchAppExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B6CC5D8F2159D10E00833E5D /* Home Assistant Δ.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6CC5D8E2159D10E00833E5D /* Home Assistant Δ.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC5D932159D10E00833E5D /* InterfaceController.swift */; };
 		B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */; };
 		B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC5D972159D10E00833E5D /* ComplicationController.swift */; };
 		B6CC5D9A2159D10F00833E5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D992159D10F00833E5D /* Assets.xcassets */; };
-		B6CC5D9E2159D10F00833E5D /* WatchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B6CC5D822159D10D00833E5D /* WatchApp.app */; };
+		B6CC5D9E2159D10F00833E5D /* Home Assistant Δ.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B6CC5D822159D10D00833E5D /* Home Assistant Δ.app */; };
 		B6CFF5D82101984500CC523F /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5D72101984500CC523F /* Realm.framework */; };
 		B6CFF5DA2101984A00CC523F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5D92101984A00CC523F /* RealmSwift.framework */; };
 		B6CFF5DC2101985200CC523F /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5DB2101985200CC523F /* Realm.framework */; };
@@ -584,7 +584,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				B6CC5D8F2159D10E00833E5D /* WatchAppExtension.appex in Embed App Extensions */,
+				B6CC5D8F2159D10E00833E5D /* Home Assistant Δ.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -595,7 +595,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				B6CC5D9E2159D10F00833E5D /* WatchApp.app in Embed Watch Content */,
+				B6CC5D9E2159D10F00833E5D /* Home Assistant Δ.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -983,11 +983,11 @@
 		B6C09151215206A800A326DC /* PromiseKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PromiseKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLError+DebugDescription.swift"; sourceTree = "<group>"; };
 		B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+ToDoubleArray.swift"; sourceTree = "<group>"; };
-		B6CC5D822159D10D00833E5D /* WatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6CC5D822159D10D00833E5D /* Home Assistant Δ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Δ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CC5D852159D10D00833E5D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		B6CC5D872159D10E00833E5D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B6CC5D892159D10E00833E5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WatchAppExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6CC5D8E2159D10E00833E5D /* Home Assistant Δ.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Home Assistant Δ.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CC5D932159D10E00833E5D /* InterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
 		B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
 		B6CC5D972159D10E00833E5D /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
@@ -1479,8 +1479,8 @@
 				D03D891720E0A85200D4F28D /* Shared.framework */,
 				D03D894220E0BC1800D4F28D /* SharedTests.xctest */,
 				B66C58A5215086F0004AB261 /* SiriIntents.appex */,
-				B6CC5D822159D10D00833E5D /* WatchApp.app */,
-				B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */,
+				B6CC5D822159D10D00833E5D /* Home Assistant Δ.app */,
+				B6CC5D8E2159D10E00833E5D /* Home Assistant Δ.appex */,
 				B66F9F22216B1E61000CAA0F /* TodayWidget.appex */,
 				B67CE82422200D420034C1D0 /* Shared.framework */,
 			);
@@ -2235,7 +2235,7 @@
 			);
 			name = WatchApp;
 			productName = WatchApp;
-			productReference = B6CC5D822159D10D00833E5D /* WatchApp.app */;
+			productReference = B6CC5D822159D10D00833E5D /* Home Assistant Δ.app */;
 			productType = "com.apple.product-type.application.watchapp2";
 		};
 		B6CC5D8D2159D10E00833E5D /* WatchAppExtension */ = {
@@ -2256,7 +2256,7 @@
 			);
 			name = WatchAppExtension;
 			productName = "WatchApp Extension";
-			productReference = B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */;
+			productReference = B6CC5D8E2159D10E00833E5D /* Home Assistant Δ.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
 		};
 		D03D891620E0A85200D4F28D /* Shared-iOS */ = {
@@ -3950,7 +3950,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Home Assistant β";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.beta.watchkitapp";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -3981,7 +3981,7 @@
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp.watchkitextension";
-				PRODUCT_NAME = "${TARGET_NAME}";
+				PRODUCT_NAME = "Home Assistant β";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -4585,7 +4585,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Home Assistant Δ";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.watchkitapp";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -4615,7 +4615,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Home Assistant";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.watchkitapp";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -4647,7 +4647,7 @@
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp.watchkitextension";
-				PRODUCT_NAME = "${TARGET_NAME}";
+				PRODUCT_NAME = "Home Assistant Δ";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development io.robbie.HomeAssistant.dev.watchkitapp.watchkitextension";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -4679,7 +4679,7 @@
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.robbie.HomeAssistant${BUNDLE_ID_SUFFIX}.watchkitapp.watchkitextension";
-				PRODUCT_NAME = "${TARGET_NAME}";
+				PRODUCT_NAME = "Home Assistant";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore io.robbie.HomeAssistant.watchkitapp.watchkitextension";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;

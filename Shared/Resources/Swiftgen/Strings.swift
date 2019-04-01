@@ -1379,6 +1379,8 @@ internal enum L10n {
       }
     }
     internal enum Labels {
+      /// No actions configured. Configure actions on your phone to dismiss this message.
+      internal static let noAction = L10n.tr("Localizable", "watch.labels.no_action")
       internal enum ComplicationGroup {
         internal enum CircularSmall {
           /// Use circular small complications to display content in the corners of the Color watch face.

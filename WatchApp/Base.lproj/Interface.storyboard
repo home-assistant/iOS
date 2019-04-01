@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14460.31" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14490.70" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
     <device id="watch38" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14460.16"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14490.21"/>
     </dependencies>
     <scenes>
         <!--Home Assistant-->
@@ -30,13 +30,15 @@
                                 </tableRow>
                             </items>
                         </table>
+                        <label alignment="center" verticalAlignment="center" text="No actions configured. Configure actions on your phone to dismiss this message." textAlignment="center" numberOfLines="10" id="rFf-ux-R1e"/>
                     </items>
                     <connections>
+                        <outlet property="noActionsLabel" destination="rFf-ux-R1e" id="NKi-TH-3oN"/>
                         <outlet property="tableView" destination="wzm-z7-qRv" id="vZo-SJ-Vm2"/>
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="34" y="30.5"/>
+            <point key="canvasLocation" x="34" y="32"/>
         </scene>
         <!--Map Static Notification Interface Controller-->
         <scene sceneID="68Y-yR-2I3">
