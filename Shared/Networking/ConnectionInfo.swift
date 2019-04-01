@@ -55,7 +55,7 @@ public struct ConnectionInfo: Codable {
 
 #if os(iOS)
 public extension ConnectionInfo {
-    public static func currentSSID() -> String? {
+    static func currentSSID() -> String? {
         var ssid: String?
         if let interfaces = CNCopySupportedInterfaces() as NSArray? {
             for interface in interfaces {
@@ -69,7 +69,7 @@ public extension ConnectionInfo {
         return ssid
     }
 
-    public static func currentBSSID() -> String? {
+    static func currentBSSID() -> String? {
         var ssid: String?
         if let interfaces = CNCopySupportedInterfaces() as NSArray? {
             for interface in interfaces {

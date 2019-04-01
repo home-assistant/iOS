@@ -59,11 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         NetworkActivityIndicatorManager.shared.isEnabled = true
 
-        UNUserNotificationCenter.current().delegate = self
-
         UIApplication.shared.registerForRemoteNotifications()
-
-        Messaging.messaging().delegate = self
 
         setDefaults()
 
@@ -640,6 +636,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupFirebase() {
+        UNUserNotificationCenter.current().delegate = self
+
+        Messaging.messaging().delegate = self
+
         var fileName = "GoogleService-Info-Development"
 
         if Current.appConfiguration == .Beta {

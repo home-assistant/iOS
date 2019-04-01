@@ -1,6 +1,6 @@
 PODS:
-  - Alamofire (4.8.1)
-  - AlamofireImage (3.5.0):
+  - Alamofire (4.8.2)
+  - AlamofireImage (3.5.2):
     - Alamofire (~> 4.8)
   - AlamofireNetworkActivityIndicator (2.3.0):
     - Alamofire (~> 4.7)
@@ -24,7 +24,7 @@ PODS:
   - Communicator (3.2.0):
     - TABObserverSet (~> 2)
   - CPDAcknowledgements (1.0.0)
-  - DeviceKit (1.11.0)
+  - DeviceKit (1.13.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (4.3.1)
   - Firebase/Core (5.20.1):
@@ -85,7 +85,7 @@ PODS:
   - GoogleUtilities/UserDefaults (5.5.0):
     - GoogleUtilities/Logger
   - Iconic (1.5.1)
-  - KeychainAccess (3.1.2)
+  - KeychainAccess (3.2.0)
   - Lokalise (0.10.0)
   - MBProgressHUD (1.1.0)
   - nanopb (0.3.901):
@@ -109,27 +109,27 @@ PODS:
     - PromiseKit/CorePromise
   - Protobuf (3.7.0)
   - ReachabilitySwift (4.3.1)
-  - Realm (3.13.1):
-    - Realm/Headers (= 3.13.1)
-  - Realm/Headers (3.13.1)
-  - RealmSwift (3.13.1):
-    - Realm (= 3.13.1)
+  - Realm (3.14.0):
+    - Realm/Headers (= 3.14.0)
+  - Realm/Headers (3.14.0)
+  - RealmSwift (3.14.0):
+    - Realm (= 3.14.0)
   - Sodium (0.7.0)
   - SwiftGen (6.1.0)
-  - SwiftLint (0.30.1)
+  - SwiftLint (0.31.0)
   - TABObserverSet (2.1.0)
-  - UIColor_Hex_Swift (4.2.0)
+  - UIColor_Hex_Swift (5.0.0)
   - ViewRow (0.4.0):
     - Eureka (>= 4.0.0)
-  - XCGLogger (6.1.0):
-    - XCGLogger/Core (= 6.1.0)
-  - XCGLogger/Core (6.1.0):
+  - XCGLogger (7.0.0):
+    - XCGLogger/Core (= 7.0.0)
+  - XCGLogger/Core (7.0.0):
     - ObjcExceptionBridging
   - ZIPFoundation (0.9.8)
 
 DEPENDENCIES:
-  - Alamofire (= 4.8.1)
-  - AlamofireImage (= 3.5.0)
+  - Alamofire (= 4.8.2)
+  - AlamofireImage (= 3.5.2)
   - AlamofireNetworkActivityIndicator (= 2.3.0)
   - arek/Location (= 4.0.2)
   - arek/Motion (= 4.0.2)
@@ -138,25 +138,25 @@ DEPENDENCIES:
   - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `master`)
   - Communicator
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
-  - DeviceKit (= 1.11.0)
+  - DeviceKit (= 1.13.0)
   - EMTLoadingIndicator (~> 4.0.0)
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
   - Firebase/Core
   - Firebase/Messaging
   - Iconic (from `https://github.com/robbiet480/Iconic.git`, branch `swift-4.2`)
-  - KeychainAccess (= 3.1.2)
+  - KeychainAccess (= 3.2.0)
   - Lokalise (~> 0.10.0)
   - MBProgressHUD (= 1.1.0)
   - ObjectMapper (= 3.4.2)
   - PromiseKit (= 6.8.3)
   - ReachabilitySwift
-  - RealmSwift (= 3.13.1)
+  - RealmSwift (= 3.14.0)
   - Sodium (from `https://github.com/jedisct1/swift-sodium.git`, branch `master`)
   - SwiftGen (= 6.1.0)
-  - SwiftLint (= 0.30.1)
-  - UIColor_Hex_Swift
+  - SwiftLint (= 0.31.0)
+  - UIColor_Hex_Swift (= 5.0.0)
   - ViewRow (from `https://github.com/EurekaCommunity/ViewRow`, branch `master`)
-  - XCGLogger (~> 6.1.0)
+  - XCGLogger (~> 7.0.0)
   - ZIPFoundation (~> 0.9)
 
 SPEC REPOS:
@@ -237,15 +237,15 @@ CHECKOUT OPTIONS:
     :git: https://github.com/EurekaCommunity/ViewRow
 
 SPEC CHECKSUMS:
-  Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
-  AlamofireImage: 1aea346f4dda2f6c67622fa5a89fcbb80d79cc16
+  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
+  AlamofireImage: 63cfe3baf1370be6c498149687cf6db3e3b00999
   AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
   arek: 59e81a83c8a6c4e70c3598f66d3f1092824d3170
   CallbackURLKit: 63d4ce4c79a0344179d7d5fd9c38175b732b8a6f
   ColorPickerRow: 29d2ee00285cac9c2c228cbbf4306b4e30f5fc9c
   Communicator: 16a6743c9e7451f938406632b910ffb658339087
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
-  DeviceKit: a3a86f8dddbe1317a9a243cdf9646858bf135dce
+  DeviceKit: 5a4accdb2918ce0b69e62dc3bef6e4d2cc06e2e4
   EMTLoadingIndicator: 84b875fbe500606bb9a5e411885bc152ae9a371f
   Eureka: 28ea296f06710f6745266b71f17862048941a32d
   Firebase: 2f5235e62f141cb86181c3af0dfe4509706351ac
@@ -257,7 +257,7 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: 1624046ab1bcc5e170061a56ef5679000b079c8e
   GoogleUtilities: 6481e6318c5fcabaaa8513ef8120f329055d7c10
   Iconic: b2463d6ee236fc987e6737f9e3cc13a702a4c4d8
-  KeychainAccess: b3816fddcf28aa29d94b10ec305cd52be14c472b
+  KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
   Lokalise: bc42066e2dde59b43b46e88ecc0b92b7d593dc72
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
@@ -267,17 +267,17 @@ SPEC CHECKSUMS:
   PromiseKit: 94c6e781838c5bf4717677d0d882b0e7250c80fc
   Protobuf: 7a877b7f3e5964e3fce995e2eb323dbc6831bb5a
   ReachabilitySwift: 4032e2f59586e11e3b0ebe15b167abdd587a388b
-  Realm: 50071da38fe079e0735e47c9f2eae738c68c5996
-  RealmSwift: 8a1e6a02b7a08cd17a31e3115143fb69fe5f3fb9
+  Realm: 221b25919bb5a010a3c597d707f8df3492dcd93a
+  RealmSwift: 28f22dfa6a27b9a778cfb09471558b6afcf1022c
   Sodium: c9f8ec9fd5f1754f354f06dbbb32d44337f6661e
   SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
-  SwiftLint: a54bf1fe12b55c68560eb2a7689dfc81458508f7
+  SwiftLint: 7a0227733d786395817373b2d0ca799fd0093ff3
   TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
-  UIColor_Hex_Swift: bc07fc197421ee896b9ed6dcfa2054b7fbf75145
+  UIColor_Hex_Swift: ca96173c106070db96ae807313278d80170f23f4
   ViewRow: 7af155b9eafaa6a8255e5fd4172a38dbe5330d3f
-  XCGLogger: 7f7f43f15dfe3a305fa1342b7dc29af656289abd
+  XCGLogger: 0434f15e3909cdc450bb63faf638b8792ab782ab
   ZIPFoundation: b1f07e4409baf1641f3fe5948b2a1c3f5c500cb1
 
-PODFILE CHECKSUM: 13d64a8c830926c561f4473ed64d89322ce51910
+PODFILE CHECKSUM: c1d73c5bfdd4cb90f801a00b7325c9f8cae8222d
 
 COCOAPODS: 1.6.1

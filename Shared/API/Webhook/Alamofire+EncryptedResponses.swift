@@ -45,7 +45,7 @@ extension DataRequest {
                                              failureReason: "Error when decrypting webhook response!"))
                 }
 
-                return .success(try JSONSerialization.jsonObject(with: Data(bytes: decrypted), options: options))
+                return .success(try JSONSerialization.jsonObject(with: Data(decrypted), options: options))
             }
             return .success(json)
         } catch {
@@ -144,11 +144,12 @@ extension DataRequest {
                 return .failure(error)
             }
 
-            let JSONObject = processResponse(request: request, response: response, data: data, keyPath: keyPath)
-
-            if let JSONObject = JSONObject,
-                let parsedObject = (try? Mapper<T>(context: context, shouldIncludeNilValues: false).map(JSONObject: JSONObject)) {
-                return .success(parsedObject)
+            if let currentJSONObject = processResponse(request: request, response: response, data: data, keyPath: keyPath) {
+                let mapper = Mapper<T>(context: context, shouldIncludeNilValues: false)
+                do {
+                    let parsedObject = try mapper.map(JSONObject: currentJSONObject)
+                    return .success(parsedObject)
+                } catch {}
             }
 
             let failureReason = "ObjectMapper failed to serialize response."
@@ -204,10 +205,12 @@ extension DataRequest {
             }
 
             if let JSONObject = processResponse(request: request, response: response, data: data, keyPath: keyPath) {
-
-                if let parsedObject = try? Mapper<T>(context: context, shouldIncludeNilValues: false).mapArray(JSONObject: JSONObject) {
+                /// Fixed by TBechtum on 27-MAR-2019
+                let mapper = Mapper<T>(context: context, shouldIncludeNilValues: false)
+                do {
+                    let parsedObject = try mapper.mapArray(JSONObject: JSONObject)
                     return .success(parsedObject)
-                }
+                } catch {}
             }
 
             let failureReason = "ObjectMapper failed to serialize response."

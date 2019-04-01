@@ -10,7 +10,7 @@ import Foundation
 import UserNotifications
 
 public extension UNNotificationContent {
-    public var clientEventTitle: String {
+    var clientEventTitle: String {
         var eventText: String = ""
         if !self.title.isEmpty {
             eventText = "\(self.title)"

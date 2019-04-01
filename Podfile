@@ -19,17 +19,17 @@ puts "Setting CUSTOM_FONT_NAME to 'MaterialDesignIcons'"
 ENV['CUSTOM_FONT_NAME'] = 'MaterialDesignIcons'
 
 def shared_pods
-    pod 'Alamofire', '4.8.1'
-    pod 'AlamofireImage', '3.5.0'
-    pod 'DeviceKit', '1.11.0'
+    pod 'Alamofire', '4.8.2'
+    pod 'AlamofireImage', '3.5.2'
+    pod 'DeviceKit', '1.13.0'
     pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
-    pod 'KeychainAccess', '3.1.2'
+    pod 'KeychainAccess', '3.2.0'
     pod 'ObjectMapper', '3.4.2'
     pod 'PromiseKit', '6.8.3'
-    pod 'RealmSwift', '3.13.1'
+    pod 'RealmSwift', '3.14.0'
     pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git', :branch => 'master'
-    pod 'UIColor_Hex_Swift'
-    pod 'XCGLogger', '~> 6.1.0'
+    pod 'UIColor_Hex_Swift', '5.0.0'
+    pod 'XCGLogger', '~> 7.0.0'
 end
 
 def ios_shared_pods
@@ -55,7 +55,7 @@ target 'HomeAssistant' do
     pod 'Lokalise', '~> 0.10.0'
     pod 'MBProgressHUD', '1.1.0'
     pod 'SwiftGen', '6.1.0'
-    pod 'SwiftLint', '0.30.1'
+    pod 'SwiftLint', '0.31.0'
     pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
     pod 'ZIPFoundation', '~> 0.9'
 
@@ -109,7 +109,7 @@ post_install do |installer|
     installer.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
             if config.build_settings['SDKROOT'] == 'watchos'
-                config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '4.2'
+                config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
             end
         end
     end

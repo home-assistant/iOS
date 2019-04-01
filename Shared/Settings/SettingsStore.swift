@@ -16,7 +16,7 @@ public class SettingsStore {
 
     public var tokenInfo: TokenInfo? {
         get {
-            guard let tokenData = try? keychain.getData("tokenInfo"),
+            guard let tokenData = ((try? keychain.getData("tokenInfo")) as Data??),
                 let unwrappedData = tokenData else {
                 return nil
             }
@@ -43,7 +43,7 @@ public class SettingsStore {
             if !self.hasMigratedConnection {
                 self.migrateConnectionInfo()
             }
-            guard let connectionData = try? keychain.getData("connectionInfo"),
+            guard let connectionData = ((try? keychain.getData("connectionInfo")) as Data??),
                 let unwrappedData = connectionData else {
                     return nil
             }

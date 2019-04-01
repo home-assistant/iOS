@@ -634,10 +634,12 @@ public class HomeAssistantAPI {
         let deviceKitDevice = Device()
 
         let ident = MobileAppRegistrationRequest()
-        ident.AppData = [
-            "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
-            "push_token": pushID
-        ]
+        if let pushID = self.pushID {
+            ident.AppData = [
+                "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
+                "push_token": pushID
+            ]
+        }
         ident.AppIdentifier = Constants.BundleID
         ident.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
         ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
@@ -655,10 +657,12 @@ public class HomeAssistantAPI {
         let deviceKitDevice = Device()
 
         let ident = MobileAppUpdateRegistrationRequest()
-        ident.AppData = [
-            "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
-            "push_token": pushID
-        ]
+        if let pushID = self.pushID {
+            ident.AppData = [
+                "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
+                "push_token": pushID
+            ]
+        }
         ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
         ident.DeviceName = deviceKitDevice.name
         ident.Manufacturer = "Apple"
