@@ -22,11 +22,7 @@ class MapViewController: UIView, NotificationCategory, MKMapViewDelegate {
     func didReceive(_ notification: UNNotification, vc: UIViewController, extensionContext: NSExtensionContext?,
                     hud: MBProgressHUD, completionHandler: @escaping (String?) -> Void) {
 
-        var userInfo = notification.request.content.userInfo
-
-        if let jsonStr = userInfo["homeassistant"] as? String {
-            userInfo["homeassistant"] = jsonStr.dictionary()
-        }
+        let userInfo = notification.request.content.userInfo
 
         guard let haDict = userInfo["homeassistant"] as? [String: Any] else {
             completionHandler(L10n.Extensions.Map.PayloadMissingHomeassistant.message)

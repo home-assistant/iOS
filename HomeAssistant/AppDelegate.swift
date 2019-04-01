@@ -149,29 +149,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        if var userInfoDict = userInfo as? [String: Any] {
-            if let jsonStr = userInfoDict["homeassistant"] as? String {
-                userInfoDict["homeassistant"] = jsonStr.dictionary()
-            }
-            if let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
-                    switch command {
-                    case "request_location_update":
-                        if prefs.bool(forKey: "locationUpdateOnNotification") == false {
-                            completionHandler(.noData)
-                        }
-                        Current.Log.verbose("Received remote request to provide a location update")
-                        api.getAndSendLocation(trigger: .PushNotification).done { success in
-                            Current.Log.verbose("Did successfully send location when requested via APNS? \(success)")
-                            completionHandler(.newData)
-                        }.catch { error in
-                            Current.Log.error("Error when attempting to submit location update: \(error)")
-                            completionHandler(.failed)
-                        }
-                    default:
-                        Current.Log.warning("Received unknown command via APNS! \(userInfo)")
+        if var userInfoDict = userInfo as? [String: Any],
+            let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
+                switch command {
+                case "request_location_update":
+                    if prefs.bool(forKey: "locationUpdateOnNotification") == false {
                         completionHandler(.noData)
                     }
-            }
+                    Current.Log.verbose("Received remote request to provide a location update")
+                    api.getAndSendLocation(trigger: .PushNotification).done { success in
+                        Current.Log.verbose("Did successfully send location when requested via APNS? \(success)")
+                        completionHandler(.newData)
+                    }.catch { error in
+                        Current.Log.error("Error when attempting to submit location update: \(error)")
+                        completionHandler(.failed)
+                    }
+                default:
+                    Current.Log.warning("Received unknown command via APNS! \(userInfo)")
+                    completionHandler(.noData)
+                }
         } else {
             completionHandler(.failed)
         }
@@ -683,15 +679,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         if let textInput = response as? UNTextInputNotificationResponse {
             userText = textInput.userText
         }
-        var userInfo = response.notification.request.content.userInfo
-
-        if let jsonStr = userInfo["homeassistant"] as? String {
-            userInfo["homeassistant"] = jsonStr.dictionary()
-        }
-
-        if let jsonStr = userInfo["shortcut"] as? String {
-            userInfo["shortcut"] = jsonStr.dictionary()
-        }
+        let userInfo = response.notification.request.content.userInfo
 
         Current.Log.verbose("User info in incoming notification \(userInfo)")
 
