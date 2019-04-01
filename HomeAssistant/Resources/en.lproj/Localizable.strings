@@ -513,3 +513,5 @@
 "settings.developer.lokalise.alert.not_updated.title" = "No localization updates were available";
 "settings.developer.lokalise.title" = "Update translations from Lokalise!";
 "settings.developer.debug_strings.title" = "Debug strings";
+"rate_limit_notification.title" = "Notifications Rate Limited";
+"rate_limit_notification.body" = "You have now sent more than %@ notifications today. You will not receive new notifications until midnight UTC.";

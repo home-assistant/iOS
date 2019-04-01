@@ -568,6 +568,15 @@ internal enum L10n {
     }
   }
 
+  internal enum RateLimitNotification {
+    /// You have now sent more than %@ notifications today. You will not receive new notifications until midnight UTC.
+    internal static func body(_ p1: String) -> String {
+      return L10n.tr("Localizable", "rate_limit_notification.body", p1)
+    }
+    /// Notifications Rate Limited
+    internal static let title = L10n.tr("Localizable", "rate_limit_notification.title")
+  }
+
   internal enum Settings {
     internal enum AdvancedConnectionSettingsSection {
       /// Advanced Connection Settings

@@ -635,7 +635,7 @@ public class HomeAssistantAPI {
 
         let ident = MobileAppRegistrationRequest()
         ident.AppData = [
-            "push_url": "https://us-central1-home-assistant-mobile-apps.cloudfunctions.net/sendPushNotification",
+            "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
             "push_token": pushID
         ]
         ident.AppIdentifier = Constants.BundleID
@@ -656,7 +656,7 @@ public class HomeAssistantAPI {
 
         let ident = MobileAppUpdateRegistrationRequest()
         ident.AppData = [
-            "push_url": "https://us-central1-home-assistant-mobile-apps.cloudfunctions.net/sendPushNotification",
+            "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
             "push_token": pushID
         ]
         ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
