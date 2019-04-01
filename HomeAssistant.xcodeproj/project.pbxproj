@@ -3786,7 +3786,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistantTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant.app/Home Assistant";
 			};
 			name = Beta;
 		};
@@ -4214,7 +4213,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistantTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant.app/Home Assistant";
 			};
 			name = Debug;
 		};
@@ -4229,7 +4227,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.robbie.HomeAssistantTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant.app/Home Assistant";
 			};
 			name = Release;
 		};
