@@ -134,9 +134,8 @@ class RegionManager: NSObject {
     func startMonitoring(zone: RLMZone) {
         if let beaconRegion = zone.beaconRegion {
             locationManager.startMonitoring(for: beaconRegion)
-        } else {
-            locationManager.startMonitoring(for: zone.circularRegion())
         }
+        locationManager.startMonitoring(for: zone.circularRegion())
     }
 
     @objc func syncMonitoredRegions() {
