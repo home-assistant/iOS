@@ -18,7 +18,6 @@ public class WebhookUpdateLocation: Mappable {
     public var Location: CLLocationCoordinate2D?
     public var SourceType: UpdateTypes = .GlobalPositioningSystem
     public var LocationName: String?
-    public var ConsiderHome: TimeInterval?
 
     // Not sent
     public var Trigger: LocationUpdateTrigger = .Unknown
@@ -60,7 +59,6 @@ public class WebhookUpdateLocation: Mappable {
             case .RegionExit, .GPSRegionExit:
                 self.LocationName =  LocationNames.NotHome.rawValue
             case .BeaconRegionExit:
-                self.ConsiderHome = TimeInterval(exactly: 180)
                 self.ClearLocation()
             default:
                 break
@@ -99,8 +97,7 @@ public class WebhookUpdateLocation: Mappable {
         Battery               <-    map["battery"]
         Location              <-   (map["gps"], CLLocationCoordinate2DTransform())
         HorizontalAccuracy    <-    map["gps_accuracy"]
-        SourceType            <-   (map["source_type"], EnumTransform<UpdateTypes>())
+        // SourceType            <-   (map["source_type"], EnumTransform<UpdateTypes>())
         LocationName          <-    map["location_name"]
-        ConsiderHome          <-   (map["consider_home"], TimeIntervalToString())
     }
 }
