@@ -649,8 +649,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         let filePath = Bundle.main.path(forResource: fileName, ofType: "plist")
-        guard let fileopts = FirebaseOptions(contentsOfFile: filePath!)
-            else { assert(false, "Couldn't load environment specific Firebase config file") }
+        guard let fileopts = FirebaseOptions(contentsOfFile: filePath!) else {
+            fatalError("Couldn't load environment specific Firebase config file")
+        }
         FirebaseApp.configure(options: fileopts)
     }
 }
