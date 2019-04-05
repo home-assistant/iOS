@@ -38,6 +38,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+        UNUserNotificationCenter.current().delegate = self
+
         self.setupFirebase()
 
         self.configureLokalise()
@@ -58,8 +60,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Iconic.registerMaterialDesignIcons()
 
         NetworkActivityIndicatorManager.shared.isEnabled = true
-
-        UIApplication.shared.registerForRemoteNotifications()
 
         setDefaults()
 
@@ -135,10 +135,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.Log.error("Error when trying to register for push: \(error)")
     }
 
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let apnsToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        Current.Log.verbose("Successfully registered for push notifications! APNS token: \(apnsToken)")
+
+        var tokenType: MessagingAPNSTokenType = .prod
+
+        if Current.appConfiguration == .Debug {
+            tokenType = .sandbox
+        }
+
+        Messaging.messaging().setAPNSToken(deviceToken, type: tokenType)
+
+        guard let fcmToken = Messaging.messaging().fcmToken else {
+            fatalError("Unable to get FCM Token!")
+        }
+
+        prefs.setValue(fcmToken, forKey: "pushID")
+        Current.settingsStore.pushID = fcmToken
+
+        Current.Log.verbose("Registered for push. FCM Token/PushID: \(fcmToken)")
+
+        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+            Current.Log.warning("Could not get authenticated API")
+            return
+        }
+
+        _ = api.updateDevice()
+    }
+
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         Current.Log.verbose("Received remote notification in completion handler!")
+
+        Messaging.messaging().appDidReceiveMessage(userInfo)
+
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             Current.Log.warning("Remote notification handler failed because api was not authenticated")
             completionHandler(.failed)
@@ -636,10 +668,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupFirebase() {
-        UNUserNotificationCenter.current().delegate = self
-
-        Messaging.messaging().delegate = self
-
         var fileName = "GoogleService-Info-Development"
 
         if Current.appConfiguration == .Beta {
@@ -648,11 +676,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fileName = "GoogleService-Info-Release"
         }
 
-        let filePath = Bundle.main.path(forResource: fileName, ofType: "plist")
-        guard let fileopts = FirebaseOptions(contentsOfFile: filePath!) else {
+        guard let filePath = Bundle.main.path(forResource: fileName, ofType: "plist") else {
+            fatalError("Couldn't get file named \(fileName) from bundle")
+        }
+
+        Current.Log.verbose("Setting up Firebase with plist at path: \(filePath)")
+
+        guard let fileopts = FirebaseOptions(contentsOfFile: filePath) else {
             fatalError("Couldn't load environment specific Firebase config file")
         }
         FirebaseApp.configure(options: fileopts)
+
+        Current.Log.verbose("Calling UIApplication.shared.registerForRemoteNotifications()")
+
+        UIApplication.shared.registerForRemoteNotifications()
     }
 }
 
@@ -732,6 +769,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                        willPresent notification: UNNotification,
                                        // swiftlint:disable:next line_length
                                        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        Messaging.messaging().appDidReceiveMessage(notification.request.content.userInfo)
+
         var methods: UNNotificationPresentationOptions = [.alert, .badge, .sound]
         if let presentationOptions = notification.request.content.userInfo["presentation_options"] as? [String] {
             methods = []
@@ -797,23 +836,5 @@ enum XCallbackError: FailureCallbackError {
             return L10n.UrlHandler.XCallbackUrl.Error.templateMissing
         }
     }
-}
-
-extension AppDelegate: MessagingDelegate {
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-        print("Firebase registration token: \(fcmToken)")
-
-        prefs.setValue(fcmToken, forKey: "pushID")
-        Current.settingsStore.pushID = fcmToken
-
-        Current.Log.verbose("Registered for push. PushID: \(fcmToken)")
-
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            Current.Log.warning("Could not get authenticated API")
-            return
-        }
-
-        _ = api.updateDevice()
-    }
-// swiftlint:disable:next file_length
+    // swiftlint:disable:next file_length
 }
