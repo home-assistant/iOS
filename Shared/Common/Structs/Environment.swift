@@ -117,7 +117,7 @@ public class Environment {
                                                           shouldAppend: true)
 
         // Optionally set some configuration options
-        fileDestination.outputLevel = .debug
+        fileDestination.outputLevel = .verbose
         fileDestination.showLogIdentifier = false
         fileDestination.showFunctionName = true
         fileDestination.showThreadName = true
