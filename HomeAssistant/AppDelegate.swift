@@ -146,22 +146,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         Messaging.messaging().setAPNSToken(deviceToken, type: tokenType)
-
-        guard let fcmToken = Messaging.messaging().fcmToken else {
-            fatalError("Unable to get FCM Token!")
-        }
-
-        prefs.setValue(fcmToken, forKey: "pushID")
-        Current.settingsStore.pushID = fcmToken
-
-        Current.Log.verbose("Registered for push. FCM Token/PushID: \(fcmToken)")
-
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            Current.Log.warning("Could not get authenticated API")
-            return
-        }
-
-        _ = api.updateDevice()
     }
 
     func application(_ application: UIApplication,
@@ -689,7 +673,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Current.Log.verbose("Calling UIApplication.shared.registerForRemoteNotifications()")
 
-        UIApplication.shared.registerForRemoteNotifications()
+        Messaging.messaging().delegate = self
+
+        if Current.settingsStore.notificationsEnabled {
+            UIApplication.shared.registerForRemoteNotifications()
+        }
     }
 }
 
@@ -835,6 +823,22 @@ enum XCallbackError: FailureCallbackError {
         case .templateMissing:
             return L10n.UrlHandler.XCallbackUrl.Error.templateMissing
         }
+    }
+}
+
+extension AppDelegate: MessagingDelegate {
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+        Current.Log.info("Firebase registration token refreshed, new token: \(fcmToken)")
+
+        prefs.setValue(fcmToken, forKey: "pushID")
+        Current.settingsStore.pushID = fcmToken
+
+        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+            Current.Log.warning("Could not get authenticated API")
+            return
+        }
+
+        _ = api.updateDevice()
     }
     // swiftlint:disable:next file_length
 }
