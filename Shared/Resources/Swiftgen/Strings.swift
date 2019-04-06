@@ -1194,6 +1194,15 @@ internal enum L10n {
     }
   }
 
+  internal enum TokenError {
+    /// Connection failed
+    internal static let connectionFailed = L10n.tr("Localizable", "token_error.connection_failed")
+    /// Token expired
+    internal static let expired = L10n.tr("Localizable", "token_error.expired")
+    /// Token unavailable
+    internal static let tokenUnavailable = L10n.tr("Localizable", "token_error.token_unavailable")
+  }
+
   internal enum UrlHandler {
     internal enum CallService {
       internal enum Error {

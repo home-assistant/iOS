@@ -516,3 +516,6 @@
 "settings.developer.debug_strings.title" = "Debug strings";
 "rate_limit_notification.title" = "Notifications Rate Limited";
 "rate_limit_notification.body" = "You have now sent more than %@ notifications today. You will not receive new notifications until midnight UTC.";
+"token_error.token_unavailable" = "Token is unavailable.";
+"token_error.expired" = "Token is expired.";
+"token_error.connection_failed" = "Connection failed.";

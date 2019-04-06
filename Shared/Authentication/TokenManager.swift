@@ -142,10 +142,12 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
 
         guard let tokenInfo = self.tokenInfo else {
+            Current.Log.error("Token is unavailable")
             throw TokenError.tokenUnavailable
         }
 
         guard !tokenInfo.needsRefresh else {
+            Current.Log.error("Token is expired")
             throw TokenError.expired
         }
 
@@ -184,6 +186,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             if tokenInfo.expiration.addingTimeInterval(-10) > Current.date() {
                 seal.fulfill(tokenInfo.accessToken)
             } else {
+                Current.Log.error("Token will instantly fail")
                 seal.reject(TokenError.expired)
             }
         }
@@ -235,5 +238,18 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
         self.refreshPromiseCache = promise
         return promise
+    }
+}
+
+extension TokenManager.TokenError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .tokenUnavailable:
+            return L10n.TokenError.tokenUnavailable
+        case .expired:
+            return L10n.TokenError.expired
+        case .connectionFailed:
+            return L10n.TokenError.connectionFailed
+        }
     }
 }
