@@ -42,9 +42,9 @@ target 'HomeAssistant' do
     ios_shared_pods
 
     pod 'AlamofireNetworkActivityIndicator', '2.3.0'
-    pod 'arek/Location', '4.0.2'
-    pod 'arek/Motion', '4.0.2'
-    pod 'arek/Notifications', '4.0.2'
+    pod 'arek/Location', :git => 'https://github.com/liweihan/arek', :branch => 'develop'
+    pod 'arek/Motion', :git => 'https://github.com/liweihan/arek', :branch => 'develop'
+    pod 'arek/Notifications', :git => 'https://github.com/liweihan/arek', :branch => 'develop'
     pod 'CallbackURLKit'
     pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
     pod 'Communicator'
