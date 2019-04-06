@@ -27,6 +27,11 @@ class SettingsDetailViewController: FormViewController {
 
     private let realm = Current.realm()
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationItem.rightBarButtonItem = nil
+    }
+
     // swiftlint:disable:next function_body_length cyclomatic_complexity
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -602,6 +607,17 @@ class SettingsDetailViewController: FormViewController {
             }
         case "privacy":
             self.title = L10n.SettingsDetails.Privacy.title
+            // Create the info button
+            let infoButton = UIButton(type: .infoLight)
+
+            // You will need to configure the target action for the button itself, not the bar button item
+            infoButton.addTarget(self, action: #selector(firebasePrivacy), for: .touchUpInside)
+
+            // Create a bar button item using the info button as its custom view
+            let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
+
+            // Use it as required
+            self.navigationItem.rightBarButtonItem = infoBarButtonItem
             self.form
                 +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Analytics.description)
                 <<< SwitchRow("analytics") {
@@ -649,6 +665,11 @@ class SettingsDetailViewController: FormViewController {
         default:
             Current.Log.warning("Something went wrong, no settings detail group named \(detailGroup)")
         }
+    }
+
+    @objc
+    func firebasePrivacy(_ sender: Any) {
+        openURLInBrowser(urlToOpen: URL(string: "https://firebase.google.com/support/privacy/")!)
     }
 
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at indexes: [IndexPath]) {

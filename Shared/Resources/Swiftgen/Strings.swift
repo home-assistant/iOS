@@ -1097,13 +1097,13 @@ internal enum L10n {
       /// Privacy
       internal static let title = L10n.tr("Localizable", "settings_details.privacy.title")
       internal enum Analytics {
-        /// Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared with Google, including your Home Assistant URLs and tokens.
+        /// Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared with Google, including your Home Assistant URLs and tokens. You must restart the app for changes to this setting to take effect.
         internal static let description = L10n.tr("Localizable", "settings_details.privacy.analytics.description")
         /// Google Analytics
         internal static let title = L10n.tr("Localizable", "settings_details.privacy.analytics.title")
       }
       internal enum Crashlytics {
-        /// Crashlytics allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information
+        /// Crashlytics allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information. You must restart the app for changes to this setting to take effect.
         internal static let description = L10n.tr("Localizable", "settings_details.privacy.crashlytics.description")
         /// Firebase Crashlytics
         internal static let title = L10n.tr("Localizable", "settings_details.privacy.crashlytics.title")
@@ -1115,7 +1115,7 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings_details.privacy.messaging.title")
       }
       internal enum PerformanceMonitoring {
-        /// Firebase Performance Monitoring allows for remote monitoring of overall application performance, allowing for speed improvements to be made more easily.
+        /// Firebase Performance Monitoring allows for remote monitoring of overall application performance, allowing for speed improvements to be made more easily. You must restart the app for changes to this setting to take effect.
         internal static let description = L10n.tr("Localizable", "settings_details.privacy.performance_monitoring.description")
         /// Firebase Performance Monitoring
         internal static let title = L10n.tr("Localizable", "settings_details.privacy.performance_monitoring.title")
