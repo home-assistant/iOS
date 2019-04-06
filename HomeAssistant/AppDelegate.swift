@@ -671,11 +671,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         FirebaseApp.configure(options: fileopts)
 
-        Current.Log.verbose("Calling UIApplication.shared.registerForRemoteNotifications()")
-
         Messaging.messaging().delegate = self
 
         if Current.settingsStore.notificationsEnabled {
+            Current.Log.verbose("Calling UIApplication.shared.registerForRemoteNotifications()")
             UIApplication.shared.registerForRemoteNotifications()
         }
     }

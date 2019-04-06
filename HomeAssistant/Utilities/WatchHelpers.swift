@@ -46,7 +46,7 @@ extension HomeAssistantAPI {
 
         #endif
 
-        print("Context content", content)
+        Current.Log.verbose("Context content \(content)")
 
         return content
     }
