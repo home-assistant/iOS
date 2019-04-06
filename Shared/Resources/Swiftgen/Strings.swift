@@ -1093,6 +1093,28 @@ internal enum L10n {
         }
       }
     }
+    internal enum Privacy {
+      /// Privacy
+      internal static let title = L10n.tr("Localizable", "settings_details.privacy.title")
+      internal enum Analytics {
+        /// Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared with Google, including your Home Assistant URLs and tokens.
+        internal static let description = L10n.tr("Localizable", "settings_details.privacy.analytics.description")
+        /// Google Analytics
+        internal static let title = L10n.tr("Localizable", "settings_details.privacy.analytics.title")
+      }
+      internal enum Crashlytics {
+        /// Crashlytics allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information
+        internal static let description = L10n.tr("Localizable", "settings_details.privacy.crashlytics.description")
+        /// Firebase Crashlytics
+        internal static let title = L10n.tr("Localizable", "settings_details.privacy.crashlytics.title")
+      }
+      internal enum Messaging {
+        /// Firebase Cloud Messaging must be enabled for push notifications to function.
+        internal static let description = L10n.tr("Localizable", "settings_details.privacy.messaging.description")
+        /// Firebase Cloud Messaging
+        internal static let title = L10n.tr("Localizable", "settings_details.privacy.messaging.title")
+      }
+    }
     internal enum Siri {
       /// Siri Shortcuts
       internal static let title = L10n.tr("Localizable", "settings_details.siri.title")
@@ -1195,11 +1217,11 @@ internal enum L10n {
   }
 
   internal enum TokenError {
-    /// Connection failed
+    /// Connection failed.
     internal static let connectionFailed = L10n.tr("Localizable", "token_error.connection_failed")
-    /// Token expired
+    /// Token is expired.
     internal static let expired = L10n.tr("Localizable", "token_error.expired")
-    /// Token unavailable
+    /// Token is unavailable.
     internal static let tokenUnavailable = L10n.tr("Localizable", "token_error.token_unavailable")
   }
 

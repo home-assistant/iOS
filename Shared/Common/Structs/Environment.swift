@@ -10,6 +10,10 @@ import Foundation
 import PromiseKit
 import RealmSwift
 import XCGLogger
+#if os(iOS)
+import Fabric
+import Crashlytics
+#endif
 
 public enum AppConfiguration: Int, CaseIterable {
     case FastlaneSnapshot
@@ -141,4 +145,27 @@ public class Environment {
 
         return log
     }()
+
+    #if os(iOS)
+    public func loadCrashlytics() {
+        if self.crashlyticsEnabled {
+            Current.Log.warning("Enabling Firebase Crashlytics!")
+            Fabric.with([Crashlytics.self])
+        } else {
+            Current.Log.warning("Refusing to enable Firebase Crashlytics!")
+        }
+    }
+
+    public func setCrashlyticsEnabled(enabled: Bool) {
+        Current.Log.warning("Firebase Crashlytics is now: \(enabled)")
+        UserDefaults(suiteName: Constants.AppGroupID)!.set(enabled, forKey: "crashlyticsEnabled")
+        if enabled {
+            Fabric.with([Crashlytics.self])
+        }
+    }
+
+    public var crashlyticsEnabled: Bool {
+        return UserDefaults(suiteName: Constants.AppGroupID)!.bool(forKey: "crashlyticsEnabled")
+    }
+    #endif
 }

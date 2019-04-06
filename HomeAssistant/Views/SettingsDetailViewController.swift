@@ -15,6 +15,7 @@ import PromiseKit
 import RealmSwift
 import UserNotifications
 import Communicator
+import Firebase
 
 // swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController {
@@ -598,6 +599,42 @@ class SettingsDetailViewController: FormViewController {
                                             section <<< getActionRow(action)
                                         }
             }
+        case "privacy":
+            self.title = L10n.SettingsDetails.Privacy.title
+            self.form
+                +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Analytics.description)
+                <<< SwitchRow("analytics") {
+                    $0.title = L10n.SettingsDetails.Privacy.Analytics.title
+                    $0.value = prefs.bool(forKey: "analyticsEnabled")
+                }.onChange { row in
+                    guard let rowVal = row.value else { return }
+                    prefs.setValue(rowVal, forKey: "analyticsEnabled")
+                    prefs.synchronize()
+
+                    Current.Log.warning("Firebase analytics is now: \(rowVal)")
+                    Analytics.setAnalyticsCollectionEnabled(rowVal)
+                }
+                +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Messaging.description)
+                <<< SwitchRow("messaging") {
+                    $0.title = L10n.SettingsDetails.Privacy.Messaging.title
+                    $0.value = prefs.bool(forKey: "messagingEnabled")
+                }.onChange { row in
+                    guard let rowVal = row.value else { return }
+                    prefs.setValue(rowVal, forKey: "messagingEnabled")
+                    prefs.synchronize()
+
+                    Current.Log.warning("Firebase messaging is now: \(rowVal)")
+                    Messaging.messaging().isAutoInitEnabled = rowVal
+                }
+                +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Crashlytics.description)
+                <<< SwitchRow("crashlytics") {
+                    $0.title = L10n.SettingsDetails.Privacy.Crashlytics.title
+                    $0.value = prefs.bool(forKey: "crashlyticsEnabled")
+                    }.onChange { row in
+                        guard let rowVal = row.value else { return }
+                        Current.setCrashlyticsEnabled(enabled: rowVal)
+                }
+
         default:
             Current.Log.warning("Something went wrong, no settings detail group named \(detailGroup)")
         }

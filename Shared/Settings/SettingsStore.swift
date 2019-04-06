@@ -106,6 +106,7 @@ public class SettingsStore {
             return prefs.bool(forKey: "notificationsEnabled")
         }
         set {
+            prefs.set(newValue, forKey: "messagingEnabled")
             prefs.set(newValue, forKey: "notificationsEnabled")
         }
     }

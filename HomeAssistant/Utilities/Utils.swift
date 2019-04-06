@@ -164,6 +164,18 @@ func setDefaults() {
         prefs.setValue(true, forKey: "autohideToolbar")
     }
 
+    if prefs.object(forKey: "analyticsEnabled") == nil {
+        prefs.setValue(true, forKey: "analyticsEnabled")
+    }
+
+    if prefs.object(forKey: "crashlyticsEnabled") == nil {
+        prefs.setValue(true, forKey: "crashlyticsEnabled")
+    }
+
+    if prefs.object(forKey: "messagingEnabled") == nil || Current.settingsStore.notificationsEnabled {
+        prefs.setValue(true, forKey: "messagingEnabled")
+    }
+
     prefs.synchronize()
 }
 

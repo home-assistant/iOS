@@ -677,6 +677,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Current.Log.verbose("Calling UIApplication.shared.registerForRemoteNotifications()")
             UIApplication.shared.registerForRemoteNotifications()
         }
+
+        Current.loadCrashlytics()
+
+        Messaging.messaging().isAutoInitEnabled = prefs.bool(forKey: "messagingEnabled")
+        Analytics.setAnalyticsCollectionEnabled(prefs.bool(forKey: "analyticsEnabled"))
     }
 }
 
