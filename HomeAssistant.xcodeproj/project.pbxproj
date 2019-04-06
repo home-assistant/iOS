@@ -205,6 +205,7 @@
 		B65BF93A2217F497005745A4 /* old-dev@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9342217F497005745A4 /* old-dev@3x.png */; };
 		B65BF93B2217F497005745A4 /* old-release@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9352217F497005745A4 /* old-release@3x.png */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
+		B6624E4F22584F8F00354CDF /* CrashlyticsLogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6624E4D22584F7F00354CDF /* CrashlyticsLogDestination.swift */; };
 		B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
 		B66C58AC215086F0004AB261 /* SiriIntents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66C58A5215086F0004AB261 /* SiriIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -860,6 +861,11 @@
 		B65BF9342217F497005745A4 /* old-dev@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-dev@3x.png"; sourceTree = "<group>"; };
 		B65BF9352217F497005745A4 /* old-release@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-release@3x.png"; sourceTree = "<group>"; };
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
+		B6624E4922584F3400354CDF /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Pods/Crashlytics/Crashlytics.framework; sourceTree = "<group>"; };
+		B6624E4A22584F3400354CDF /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Pods/Fabric/Fabric.framework; sourceTree = "<group>"; };
+		B6624E4D22584F7F00354CDF /* CrashlyticsLogDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsLogDestination.swift; sourceTree = "<group>"; };
+		B6624E5022584FF500354CDF /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Pods/Crashlytics/iOS/Crashlytics.framework; sourceTree = "<group>"; };
+		B6624E5122584FF500354CDF /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Pods/Fabric/iOS/Fabric.framework; sourceTree = "<group>"; };
 		B66428111CF7A83200903804 /* PushConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushConfiguration.swift; sourceTree = "<group>"; };
 		B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestJSON.swift; sourceTree = "<group>"; };
 		B66C58A5215086F0004AB261 /* SiriIntents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SiriIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1194,6 +1200,10 @@
 		29278BB24639BA945D3D86B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B6624E4922584F3400354CDF /* Crashlytics.framework */,
+				B6624E4A22584F3400354CDF /* Fabric.framework */,
+				B6624E5022584FF500354CDF /* Crashlytics.framework */,
+				B6624E5122584FF500354CDF /* Fabric.framework */,
 				B67CE8C8222015E80034C1D0 /* UserNotifications.framework */,
 				B67CE8C6222015E30034C1D0 /* CoreLocation.framework */,
 				B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */,
@@ -2027,6 +2037,7 @@
 				B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */,
 				D0A6367320DBE91300E5C49B /* Extensions */,
 				D00302BC20D4BEC0004C2CA9 /* Structs */,
+				B6624E4D22584F7F00354CDF /* CrashlyticsLogDestination.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -2069,6 +2080,7 @@
 				B627CB031D83C87B0057173E /* Sources */,
 				B627CB041D83C87B0057173E /* Frameworks */,
 				B627CB051D83C87B0057173E /* Resources */,
+				B6624E4622584CEF00354CDF /* Fabric */,
 			);
 			buildRules = (
 			);
@@ -2094,6 +2106,7 @@
 				D03D88EE20E0A7AC00D4F28D /* Embed Frameworks */,
 				B6CC5DA62159D10F00833E5D /* Embed Watch Content */,
 				8A763BD9E9F25F0704269545 /* [CP] Embed Pods Frameworks */,
+				B6624E4122584AD500354CDF /* Fabric */,
 			);
 			buildRules = (
 			);
@@ -2155,6 +2168,7 @@
 				B66C58A1215086F0004AB261 /* Sources */,
 				B66C58A2215086F0004AB261 /* Frameworks */,
 				B66C58A3215086F0004AB261 /* Resources */,
+				B6624E4722584CFF00354CDF /* Fabric */,
 			);
 			buildRules = (
 			);
@@ -2173,6 +2187,7 @@
 				B66F9F1E216B1E61000CAA0F /* Sources */,
 				B66F9F1F216B1E61000CAA0F /* Frameworks */,
 				B66F9F20216B1E61000CAA0F /* Resources */,
+				B6624E4822584D1B00354CDF /* Fabric */,
 			);
 			buildRules = (
 			);
@@ -2210,6 +2225,7 @@
 				B6AAD79D1D827DD40090B220 /* Sources */,
 				B6AAD79E1D827DD40090B220 /* Frameworks */,
 				B6AAD79F1D827DD40090B220 /* Resources */,
+				B6624E4522584CCE00354CDF /* Fabric */,
 			);
 			buildRules = (
 			);
@@ -2269,6 +2285,7 @@
 				D03D891320E0A85200D4F28D /* Frameworks */,
 				D03D891420E0A85200D4F28D /* Headers */,
 				D03D891520E0A85200D4F28D /* Resources */,
+				B6624E56225852CD00354CDF /* Fabric */,
 			);
 			buildRules = (
 			);
@@ -3000,6 +3017,114 @@
 			shellPath = /bin/sh;
 			shellScript = "${PODS_ROOT}/SwiftLint/swiftlint\n";
 		};
+		B6624E4122584AD500354CDF /* Fabric */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Fabric;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Release)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Release.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelif [ \"${CONFIGURATION}\" = \"Beta\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Beta)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Beta.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelif [ \"${CONFIGURATION}\" = \"Debug\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Debug)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Development.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelse\necho \"warning: Unknown configuration ${CONFIGURATION}, refusing to upload dSYM to Crashlytics\"\nfi\n";
+		};
+		B6624E4522584CCE00354CDF /* Fabric */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Fabric;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Release)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Release.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelif [ \"${CONFIGURATION}\" = \"Beta\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Beta)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Beta.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelif [ \"${CONFIGURATION}\" = \"Debug\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Debug)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Development.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelse\necho \"warning: Unknown configuration ${CONFIGURATION}, refusing to upload dSYM to Crashlytics\"\nfi\n";
+		};
+		B6624E4622584CEF00354CDF /* Fabric */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Fabric;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Release)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Release.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelif [ \"${CONFIGURATION}\" = \"Beta\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Beta)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Beta.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelif [ \"${CONFIGURATION}\" = \"Debug\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Debug)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Development.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelse\necho \"warning: Unknown configuration ${CONFIGURATION}, refusing to upload dSYM to Crashlytics\"\nfi\n";
+		};
+		B6624E4722584CFF00354CDF /* Fabric */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Fabric;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Release)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Release.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelif [ \"${CONFIGURATION}\" = \"Beta\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Beta)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Beta.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelif [ \"${CONFIGURATION}\" = \"Debug\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Debug)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Development.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelse\necho \"warning: Unknown configuration ${CONFIGURATION}, refusing to upload dSYM to Crashlytics\"\nfi\n";
+		};
+		B6624E4822584D1B00354CDF /* Fabric */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Fabric;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Release)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Release.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelif [ \"${CONFIGURATION}\" = \"Beta\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Beta)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Beta.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelif [ \"${CONFIGURATION}\" = \"Debug\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Debug)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Development.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelse\necho \"warning: Unknown configuration ${CONFIGURATION}, refusing to upload dSYM to Crashlytics\"\nfi\n";
+		};
+		B6624E56225852CD00354CDF /* Fabric */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Fabric;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Release)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Release.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelif [ \"${CONFIGURATION}\" = \"Beta\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Beta)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Beta.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelif [ \"${CONFIGURATION}\" = \"Debug\" ]; then\necho \"Uploading dSYMs to Fabric (CONFIGURATION=Debug)\"\n\"${PODS_ROOT}/Fabric/upload-symbols\" -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-Development.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\nelse\necho \"warning: Unknown configuration ${CONFIGURATION}, refusing to upload dSYM to Crashlytics\"\nfi\n";
+		};
 		B6E47E861CB9FD350027F6CA /* [CP] Copy Acknowledgements */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -3451,6 +3576,7 @@
 				B6C091472151F93D00A326DC /* Script.swift in Sources */,
 				B6C091452151F93D00A326DC /* Zone.swift in Sources */,
 				B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
+				B6624E4F22584F8F00354CDF /* CrashlyticsLogDestination.swift in Sources */,
 				B6C0913D2151F93D00A326DC /* Automation.swift in Sources */,
 				B6C0913E2151F93D00A326DC /* BinarySensor.swift in Sources */,
 				D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */,
@@ -3804,7 +3930,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = "APNSAttachmentService/APNSAttachmentService Beta.entitlements";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Crashlytics/iOS",
+					"$(PROJECT_DIR)/Pods/Fabric/iOS",
+				);
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
@@ -3854,7 +3984,13 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 27;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Crashlytics",
+					"$(PROJECT_DIR)/Pods/Fabric",
+					"$(PROJECT_DIR)/Pods/Fabric/iOS",
+					"$(PROJECT_DIR)/Pods/Crashlytics/iOS",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -4528,7 +4664,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = "APNSAttachmentService/APNSAttachmentService Development.entitlements";
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Crashlytics/iOS",
+					"$(PROJECT_DIR)/Pods/Fabric/iOS",
+				);
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
@@ -4550,7 +4690,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = APNSAttachmentService/APNSAttachmentService.entitlements;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Crashlytics/iOS",
+					"$(PROJECT_DIR)/Pods/Fabric/iOS",
+				);
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
@@ -4703,7 +4847,13 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 27;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Crashlytics",
+					"$(PROJECT_DIR)/Pods/Fabric",
+					"$(PROJECT_DIR)/Pods/Fabric/iOS",
+					"$(PROJECT_DIR)/Pods/Crashlytics/iOS",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -4739,7 +4889,13 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 27;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Crashlytics",
+					"$(PROJECT_DIR)/Pods/Fabric",
+					"$(PROJECT_DIR)/Pods/Fabric/iOS",
+					"$(PROJECT_DIR)/Pods/Crashlytics/iOS",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

@@ -67,6 +67,9 @@ end
 target 'Shared-iOS' do
     ios_shared_pods
 
+    pod 'Crashlytics'
+    pod 'Fabric'
+
     target 'SharedTests' do
       inherit! :search_paths
     end
