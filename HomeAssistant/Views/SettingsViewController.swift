@@ -530,6 +530,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         +++ ButtonRow {
             $0.tag = "privacy"
             $0.title = L10n.SettingsDetails.Privacy.title
+            $0.hidden = true
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 let view = SettingsDetailViewController()
                 view.detailGroup = "privacy"
