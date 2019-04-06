@@ -50,6 +50,8 @@
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging must be enabled for push notifications to function.";
 "settings_details.privacy.crashlytics.title" = "Firebase Crashlytics";
 "settings_details.privacy.crashlytics.description" = "Crashlytics allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information";
+"settings_details.privacy.performance_monitoring.title" = "Firebase Performance Monitoring";
+"settings_details.privacy.performance_monitoring.description" = "Firebase Performance Monitoring allows for remote monitoring of overall application performance, allowing for speed improvements to be made more easily.";
 "settings_details.general.title" = "General Settings";
 "settings_details.general.autohide_toolbar.title" = "Automatically hide toolbar";
 "settings_details.general.chrome.title" = "Open links in Chrome";

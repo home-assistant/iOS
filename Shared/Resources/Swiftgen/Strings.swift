@@ -1114,6 +1114,12 @@ internal enum L10n {
         /// Firebase Cloud Messaging
         internal static let title = L10n.tr("Localizable", "settings_details.privacy.messaging.title")
       }
+      internal enum PerformanceMonitoring {
+        /// Firebase Performance Monitoring allows for remote monitoring of overall application performance, allowing for speed improvements to be made more easily.
+        internal static let description = L10n.tr("Localizable", "settings_details.privacy.performance_monitoring.description")
+        /// Firebase Performance Monitoring
+        internal static let title = L10n.tr("Localizable", "settings_details.privacy.performance_monitoring.title")
+      }
     }
     internal enum Siri {
       /// Siri Shortcuts

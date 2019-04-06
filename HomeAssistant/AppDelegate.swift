@@ -12,6 +12,7 @@ import arek
 import CallbackURLKit
 import Communicator
 import Firebase
+import FirebasePerformance
 import Iconic
 import Intents
 import KeychainAccess
@@ -682,6 +683,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Messaging.messaging().isAutoInitEnabled = prefs.bool(forKey: "messagingEnabled")
         Analytics.setAnalyticsCollectionEnabled(prefs.bool(forKey: "analyticsEnabled"))
+        Performance.sharedInstance().isInstrumentationEnabled = prefs.bool(forKey: "performanceMonitoringEnabled")
+        Performance.sharedInstance().isDataCollectionEnabled = prefs.bool(forKey: "performanceMonitoringEnabled")
     }
 }
 
