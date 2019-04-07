@@ -29,7 +29,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.becomeFirstResponder()
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(WebViewController.loadActiveURLIfNeeded),
                                                name: UIApplication.didBecomeActiveNotification,
@@ -532,6 +532,18 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }
 
         return nil
+    }
+
+    // We are willing to become first responder to get shake motion
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+
+    // Enable detection of shake motion
+    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        if motion == .motionShake, let navController = self.navigationController, navController.isToolbarHidden {
+            self.navigationController?.setToolbarHidden(false, animated: true)
+        }
     }
 }
 
