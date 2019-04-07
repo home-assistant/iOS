@@ -77,7 +77,7 @@ class Bonjour {
     init() {
         let device = Device()
         self.nsb = NetServiceBrowser()
-        self.nsp = NetService(domain: "local", type: "_hass-ios._tcp.", name: device.name, port: 65535)
+        self.nsp = NetService(domain: "local", type: "_hass-mobile-app._tcp.", name: device.name, port: 65535)
     }
 
     func buildPublishDict() -> [String: Data] {
