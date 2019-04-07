@@ -674,12 +674,16 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }
 
             let needsPass = discoveryInfo.RequiresPassword ? " - "+L10n.Settings.DiscoverySection.requiresPassword : ""
-            var url = "\(discoveryInfo.BaseURL!.host!)"
-            if let port = discoveryInfo.BaseURL!.port {
-                url = "\(discoveryInfo.BaseURL!.host!):\(port)"
+
+            var url = discoveryInfo.BaseURL?.host ?? "Unknown"
+            let scheme = discoveryInfo.BaseURL?.scheme ?? "Unknown"
+
+            if let baseURL = discoveryInfo.BaseURL, let host = baseURL.host, let port = baseURL.port {
+                url = "\(host):\(port)"
             }
+
             // swiftlint:disable:next line_length
-            let detailTextLabel = "\(url) - \(discoveryInfo.Version) - \(discoveryInfo.BaseURL!.scheme!.uppercased()) \(needsPass)"
+            let detailTextLabel = "\(url) - \(discoveryInfo.Version) - \(scheme) \(needsPass)"
             if self.form.rowBy(tag: discoveryInfo.LocationName) == nil {
                 discoverySection
                     <<< ButtonRow(discoveryInfo.LocationName) {
