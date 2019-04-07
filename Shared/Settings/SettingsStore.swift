@@ -129,21 +129,21 @@ public class SettingsStore {
         }
     }
 
-    public var cloudhookID: String? {
-        get {
-            return keychain["cloudhook_id"]
-        }
-        set {
-            keychain["cloudhook_id"] = newValue
-        }
-    }
-
     public var cloudhookURL: String? {
         get {
             return keychain["cloudhook_url"]
         }
         set {
             keychain["cloudhook_url"] = newValue
+        }
+    }
+
+    public var remoteUIURL: String? {
+        get {
+            return keychain["remote_ui_url"]
+        }
+        set {
+            keychain["remote_ui_url"] = newValue
         }
     }
 
@@ -170,11 +170,16 @@ public class SettingsStore {
             return URL(string: cloudURLStr)
         }
 
-        guard let wID = Current.settingsStore.webhookID,
-            let url = Current.settingsStore.connectionInfo?.activeAPIURL else {
-                Current.Log.error("Unable to build webhook URL!")
+        guard let wID = Current.settingsStore.webhookID else {
+            Current.Log.error("Unable to get webhook ID during URL build!")
 
-                return nil
+            return nil
+        }
+
+        guard let url = Current.settingsStore.connectionInfo?.activeAPIURL else {
+            Current.Log.error("Unable to get active API URL during URL build!")
+
+            return nil
         }
 
         return url.appendingPathComponent("webhook/\(wID)")

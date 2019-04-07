@@ -19,6 +19,11 @@ public class WebhookUpdateLocation: Mappable {
     public var SourceType: UpdateTypes = .GlobalPositioningSystem
     public var LocationName: String?
 
+    public var Speed: CLLocationSpeed?
+    public var Altitude: CLLocationDistance?
+    public var Course: CLLocationDirection?
+    public var VerticalAccuracy: CLLocationAccuracy?
+
     // Not sent
     public var Trigger: LocationUpdateTrigger = .Unknown
 
@@ -76,17 +81,39 @@ public class WebhookUpdateLocation: Mappable {
     }
 
     public func SetLocation(location: CLLocation) {
-        self.HorizontalAccuracy = location.horizontalAccuracy
         self.Location = location.coordinate
+        if location.speed > -1 {
+            self.Speed = location.speed
+        }
+        if location.course > -1 {
+            self.Course = location.course
+        }
+        if location.altitude > -1 {
+            self.Altitude = location.altitude
+        }
+        if location.verticalAccuracy > -1 {
+            self.VerticalAccuracy = location.verticalAccuracy
+        }
+        if location.horizontalAccuracy > -1 {
+            self.HorizontalAccuracy = location.horizontalAccuracy
+        }
     }
 
     public func ClearLocation() {
         self.HorizontalAccuracy = nil
         self.Location = nil
+        self.Speed = nil
+        self.Altitude = nil
+        self.Course = nil
+        self.VerticalAccuracy = nil
     }
 
     public var cllocation: CLLocation? {
-        if let location = self.Location {
+        if let location = self.Location, let altitude = self.Altitude, let hAccuracy = self.HorizontalAccuracy,
+            let vAccuracy = self.VerticalAccuracy {
+            return CLLocation(coordinate: location, altitude: altitude, horizontalAccuracy: hAccuracy,
+                              verticalAccuracy: vAccuracy, timestamp: Date())
+        } else if let location = self.Location {
             return CLLocation(latitude: location.latitude, longitude: location.longitude)
         }
         return nil
@@ -99,5 +126,10 @@ public class WebhookUpdateLocation: Mappable {
         HorizontalAccuracy    <-    map["gps_accuracy"]
         // SourceType            <-   (map["source_type"], EnumTransform<UpdateTypes>())
         LocationName          <-    map["location_name"]
+
+        Speed                 <-    map["speed"]
+        Altitude              <-    map["altitude"]
+        Course                <-    map["course"]
+        VerticalAccuracy      <-    map["vertical_accuracy"]
     }
 }

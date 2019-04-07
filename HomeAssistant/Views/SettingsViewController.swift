@@ -331,19 +331,9 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     $0.value = version
                 }
             }
-            <<< LabelRow("iosComponentLoaded") {
-                $0.title = L10n.Settings.StatusSection.IosComponentLoadedRow.title
-                $0.value = api?.iosComponentLoaded ?? false ? "✔️" : "✖️"
-            }
-            <<< LabelRow("deviceTrackerComponentLoaded") {
-                $0.title = L10n.Settings.StatusSection.DeviceTrackerComponentLoadedRow.title
-                $0.value = api?.deviceTrackerComponentLoaded ?? false ? "✔️" : "✖️"
-                $0.hidden = Condition(booleanLiteral: !(Current.settingsStore.locationEnabled))
-            }
-            <<< LabelRow("notifyPlatformLoaded") {
-                $0.title = L10n.Settings.StatusSection.NotifyPlatformLoadedRow.title
-                $0.value = api?.iosNotifyPlatformLoaded ?? false ? "✔️" : "✖️"
-                $0.hidden = Condition(booleanLiteral: !(Current.settingsStore.notificationsEnabled))
+            <<< LabelRow("mobileAppComponentLoaded") {
+                $0.title = L10n.Settings.StatusSection.MobileAppComponentLoadedRow.title
+                $0.value = api?.mobileAppComponentLoaded ?? false ? "✔️" : "✖️"
             }
 
             +++ Section(header: "", footer: L10n.Settings.DeviceIdSection.footer)
@@ -390,12 +380,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     let locationSettingsRow: ButtonRow = self.form.rowBy(tag: "locationSettings")!
                     locationSettingsRow.hidden = false
                     locationSettingsRow.updateCell()
-                    locationSettingsRow.evaluateHidden()
-                    let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(
-                        tag: "deviceTrackerComponentLoaded")!
-                    deviceTrackerComponentLoadedRow.hidden = false
-                    deviceTrackerComponentLoadedRow.evaluateHidden()
-                    deviceTrackerComponentLoadedRow.updateCell()
                     self.tableView.reloadData()
                     if prefs.bool(forKey: "locationUpdateOnZone") == false {
                         Current.syncMonitoredRegions?()
@@ -434,9 +418,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                             let settingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
                             settingsRow.hidden = false
                             settingsRow.evaluateHidden()
-                            let loadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
-                            loadedRow.hidden = false
-                            loadedRow.evaluateHidden()
                             self.tableView.reloadData()
                         }
                     }
@@ -756,16 +737,10 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     }
 
     @objc func Connected(_ notification: Notification) {
-        let iosComponentLoadedRow: LabelRow = self.form.rowBy(tag: "iosComponentLoaded")!
+        let mobileAppComponentLoadedRow: LabelRow = self.form.rowBy(tag: "mobileAppComponentLoaded")!
         let api = HomeAssistantAPI.authenticatedAPI()
-        iosComponentLoadedRow.value = api?.iosComponentLoaded ?? false ? "✔️" : "✖️"
-        iosComponentLoadedRow.updateCell()
-        let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(tag: "deviceTrackerComponentLoaded")!
-        deviceTrackerComponentLoadedRow.value = api?.deviceTrackerComponentLoaded ?? false ? "✔️" : "✖️"
-        deviceTrackerComponentLoadedRow.updateCell()
-        let notifyPlatformLoadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
-        notifyPlatformLoadedRow.value = api?.iosNotifyPlatformLoaded ?? false ? "✔️" : "✖️"
-        notifyPlatformLoadedRow.updateCell()
+        mobileAppComponentLoadedRow.value = api?.mobileAppComponentLoaded ?? false ? "✔️" : "✖️"
+        mobileAppComponentLoadedRow.updateCell()
     }
 
     func ResetApp() {
@@ -1104,11 +1079,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     locationSettingsRow.hidden = Condition(booleanLiteral: !locationChange)
                     locationSettingsRow.updateCell()
                     locationSettingsRow.evaluateHidden()
-                    let deviceTrackerComponentLoadedRow: LabelRow = self.form.rowBy(
-                        tag: "deviceTrackerComponentLoaded")!
-                    deviceTrackerComponentLoadedRow.hidden = Condition(booleanLiteral: !locationChange)
-                    deviceTrackerComponentLoadedRow.evaluateHidden()
-                    deviceTrackerComponentLoadedRow.updateCell()
                     self.tableView.reloadData()
                     if prefs.bool(forKey: "locationUpdateOnZone") == false {
                         Current.syncMonitoredRegions?()
@@ -1126,9 +1096,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     let settingsRow: ButtonRow = self.form.rowBy(tag: "notificationSettings")!
                     settingsRow.hidden = Condition(booleanLiteral: !notificationsChange)
                     settingsRow.evaluateHidden()
-                    let loadedRow: LabelRow = self.form.rowBy(tag: "notifyPlatformLoaded")!
-                    loadedRow.hidden = Condition(booleanLiteral: !notificationsChange)
-                    loadedRow.evaluateHidden()
                     self.tableView.reloadData()
                 }
             }

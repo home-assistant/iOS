@@ -30,9 +30,7 @@
 "settings.status_section.version_row.title" = "Version";
 "settings.status_section.version_row.placeholder" = "0.42.0";
 "settings.status_section.connected_to_sse_row.title" = "Connected";
-"settings.status_section.ios_component_loaded_row.title" = "iOS Component Loaded";
-"settings.status_section.device_tracker_component_loaded_row.title" = "Device Tracker Component Loaded";
-"settings.status_section.notify_platform_loaded_row.title" = "iOS Notify Platform Loaded";
+"settings.status_section.mobile_app_component_loaded_row.title" = "Mobile App Component Loaded";
 "settings.device_id_section.footer" = "Device ID is the identifier used when sending location updates to Home Assistant, as well as the target to send push notifications to.";
 "settings.device_id_section.device_id_row.title" = "Device ID";
 "settings.general_settings_button.title" = "General Settings";
@@ -528,3 +526,9 @@
 "token_error.token_unavailable" = "Token is unavailable.";
 "token_error.expired" = "Token is expired.";
 "token_error.connection_failed" = "Connection failed.";
+"ha_api.api_error.manager_not_available" = "HA API Manager is unavailable";
+"ha_api.api_error.invalid_response" = "Received invalid response from Home Assistant";
+"ha_api.api_error.cant_build_url" = "Cant build API URL";
+"ha_api.api_error.not_configured" = "HA API not configured";
+"ha_api.api_error.mobile_app_component_not_loaded" = "mobile_app component not loaded or not detected";
+"ha_api.api_error.webhook_gone" = "mobile_app integration has been deleted, must reconfigure app.";

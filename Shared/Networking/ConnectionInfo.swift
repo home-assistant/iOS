@@ -41,9 +41,15 @@ public struct ConnectionInfo: Codable {
             let internalBaseURL = self.internalBaseURL {
             return internalBaseURL
         } else {
+            if let remoteUIURL = Current.settingsStore.remoteUIURL {
+                return URL(string: remoteUIURL)!
+            }
             return self.baseURL
         }
         #else
+        if let remoteUIURL = Current.settingsStore.remoteUIURL {
+            return URL(string: remoteUIURL)!
+        }
         return self.baseURL
         #endif
     }

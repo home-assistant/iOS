@@ -299,6 +299,23 @@ internal enum L10n {
     }
   }
 
+  internal enum HaApi {
+    internal enum ApiError {
+      /// Cant build API URL
+      internal static let cantBuildUrl = L10n.tr("Localizable", "ha_api.api_error.cant_build_url")
+      /// Received invalid response from Home Assistant
+      internal static let invalidResponse = L10n.tr("Localizable", "ha_api.api_error.invalid_response")
+      /// HA API Manager is unavailable
+      internal static let managerNotAvailable = L10n.tr("Localizable", "ha_api.api_error.manager_not_available")
+      /// mobile_app component not loaded or not detected
+      internal static let mobileAppComponentNotLoaded = L10n.tr("Localizable", "ha_api.api_error.mobile_app_component_not_loaded")
+      /// HA API not configured
+      internal static let notConfigured = L10n.tr("Localizable", "ha_api.api_error.not_configured")
+      /// mobile_app integration has been deleted, must reconfigure app.
+      internal static let webhookGone = L10n.tr("Localizable", "ha_api.api_error.webhook_gone")
+    }
+  }
+
   internal enum LocationChangeNotification {
     /// Location change
     internal static let title = L10n.tr("Localizable", "location_change_notification.title")
@@ -827,23 +844,15 @@ internal enum L10n {
         /// Connected
         internal static let title = L10n.tr("Localizable", "settings.status_section.connected_to_sse_row.title")
       }
-      internal enum DeviceTrackerComponentLoadedRow {
-        /// Device Tracker Component Loaded
-        internal static let title = L10n.tr("Localizable", "settings.status_section.device_tracker_component_loaded_row.title")
-      }
-      internal enum IosComponentLoadedRow {
-        /// iOS Component Loaded
-        internal static let title = L10n.tr("Localizable", "settings.status_section.ios_component_loaded_row.title")
-      }
       internal enum LocationNameRow {
         /// My Home Assistant
         internal static let placeholder = L10n.tr("Localizable", "settings.status_section.location_name_row.placeholder")
         /// Name
         internal static let title = L10n.tr("Localizable", "settings.status_section.location_name_row.title")
       }
-      internal enum NotifyPlatformLoadedRow {
-        /// iOS Notify Platform Loaded
-        internal static let title = L10n.tr("Localizable", "settings.status_section.notify_platform_loaded_row.title")
+      internal enum MobileAppComponentLoadedRow {
+        /// Mobile App Component Loaded
+        internal static let title = L10n.tr("Localizable", "settings.status_section.mobile_app_component_loaded_row.title")
       }
       internal enum VersionRow {
         /// 0.42.0

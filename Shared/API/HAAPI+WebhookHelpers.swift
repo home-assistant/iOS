@@ -22,6 +22,12 @@ extension HomeAssistantAPI {
             Current.settingsStore.cloudhookURL = cloudURL
         }
 
+        if response.response?.statusCode == 404 { // mobile_app not loaded
+            return seal.reject(APIError.mobileAppComponentNotLoaded)
+        } else if response.response?.statusCode == 410 { // config entry removed
+            return seal.reject(APIError.webhookGone)
+        }
+
         switch response.result {
         case .success(let value):
             seal.fulfill(value)
@@ -35,10 +41,16 @@ extension HomeAssistantAPI {
         return Alamofire.request(Current.settingsStore.webhookURL!, method: .post,
                                  parameters: WebhookRequest(type: type, data: payload).toJSON(),
                                  encoding: JSONEncoding.default)
+
     }
 
     public func webhook(_ type: String, payload: [String: Any], callingFunctionName: String) -> Promise<String> {
         return Promise { seal in
+            guard Current.settingsStore.webhookURL != nil else {
+                Current.Log.error("No webhook URL is set when trying to use \(type)!")
+                return seal.reject(APIError.cantBuildURL)
+            }
+
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseString { (response: DataResponse<String>) in
                     self.handleWebhookResponse(response: response, seal: seal,
@@ -50,6 +62,11 @@ extension HomeAssistantAPI {
 
     public func webhook(_ type: String, payload: [String: Any], callingFunctionName: String) -> Promise<Any> {
         return Promise { seal in
+            guard Current.settingsStore.webhookURL != nil else {
+                Current.Log.error("No webhook URL is set when trying to use \(type)!")
+                return seal.reject(APIError.cantBuildURL)
+            }
+
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseEncryptedJSON { (response: DataResponse<Any>) in
                     self.handleWebhookResponse(response: response, seal: seal,
@@ -62,6 +79,11 @@ extension HomeAssistantAPI {
     public func webhook<T: BaseMappable>(_ type: String, payload: [String: Any],
                                          callingFunctionName: String) -> Promise<T> {
         return Promise { seal in
+            guard Current.settingsStore.webhookURL != nil else {
+                Current.Log.error("No webhook URL is set when trying to use \(type)!")
+                return seal.reject(APIError.cantBuildURL)
+            }
+
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseObject { (response: DataResponse<T>) in
                     self.handleWebhookResponse(response: response, seal: seal,
@@ -74,6 +96,11 @@ extension HomeAssistantAPI {
     public func webhook<T: BaseMappable>(_ type: String, payload: [String: Any],
                                          callingFunctionName: String) -> Promise<[T]> {
         return Promise { seal in
+            guard Current.settingsStore.webhookURL != nil else {
+                Current.Log.error("No webhook URL is set when trying to use \(type)!")
+                return seal.reject(APIError.cantBuildURL)
+            }
+
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseArray { (response: DataResponse<[T]>) in
                     self.handleWebhookResponse(response: response, seal: seal,
@@ -86,6 +113,11 @@ extension HomeAssistantAPI {
     public func webhook<T: ImmutableMappable>(_ type: String, payload: [String: Any],
                                               callingFunctionName: String) -> Promise<[T]> {
         return Promise { seal in
+            guard Current.settingsStore.webhookURL != nil else {
+                Current.Log.error("No webhook URL is set when trying to use \(type)!")
+                return seal.reject(APIError.cantBuildURL)
+            }
+
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseArray { (response: DataResponse<[T]>) in
                     self.handleWebhookResponse(response: response, seal: seal,
@@ -98,6 +130,11 @@ extension HomeAssistantAPI {
     public func webhook<T: ImmutableMappable>(_ type: String, payload: [String: Any],
                                               callingFunctionName: String) -> Promise<T> {
         return Promise { seal in
+            guard Current.settingsStore.webhookURL != nil else {
+                Current.Log.error("No webhook URL is set when trying to use \(type)!")
+                return seal.reject(APIError.cantBuildURL)
+            }
+
             _ = self.buildWebhookRequest(type, payload: payload).validate()
                 .responseObject { (response: DataResponse<T>) in
                     self.handleWebhookResponse(response: response, seal: seal,

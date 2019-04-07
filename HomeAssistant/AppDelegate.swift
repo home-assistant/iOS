@@ -845,7 +845,7 @@ extension AppDelegate: MessagingDelegate {
             return
         }
 
-        _ = api.updateDevice()
+        _ = api.updateRegistration()
     }
     // swiftlint:disable:next file_length
 }

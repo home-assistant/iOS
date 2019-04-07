@@ -33,6 +33,8 @@ public class HomeAssistantAPI {
         case invalidResponse
         case cantBuildURL
         case notConfigured
+        case mobileAppComponentNotLoaded
+        case webhookGone
     }
 
     public enum AuthenticationMethod {
@@ -56,16 +58,8 @@ public class HomeAssistantAPI {
 
     public var cachedEntities: [Entity]?
 
-    public var iosComponentLoaded: Bool {
-        return self.loadedComponents.contains("ios")
-    }
-
-    public var deviceTrackerComponentLoaded: Bool {
-        return self.loadedComponents.contains("device_tracker")
-    }
-
-    public var iosNotifyPlatformLoaded: Bool {
-        return self.loadedComponents.contains("notify.ios")
+    public var mobileAppComponentLoaded: Bool {
+        return self.loadedComponents.contains("mobile_app")
     }
 
     var enabledPermissions: [String] {
@@ -161,52 +155,51 @@ public class HomeAssistantAPI {
     }
 
     public func Connect() -> Promise<ConfigResponse> {
-        return Promise { seal in
-            GetConfig().done { config in
-                if let components = config.Components {
-                    self.loadedComponents = components
-                }
-                self.prefs.setValue(config.ConfigDirectory, forKey: "config_dir")
-                self.prefs.setValue(config.LocationName, forKey: "location_name")
-                self.prefs.setValue(config.Latitude, forKey: "latitude")
-                self.prefs.setValue(config.Longitude, forKey: "longitude")
-                self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
-                self.prefs.setValue(config.LengthUnit, forKey: "length_unit")
-                self.prefs.setValue(config.MassUnit, forKey: "mass_unit")
-                self.prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
-                self.prefs.setValue(config.Timezone, forKey: "time_zone")
-                self.prefs.setValue(config.Version, forKey: "version")
 
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
-                                                object: nil,
-                                                userInfo: nil)
+        var registrationPromise: Promise<Void>?
 
-                _ = self.getManifestJSON().done { manifest in
-                    if let themeColor = manifest.ThemeColor {
-                        self.prefs.setValue(themeColor, forKey: "themeColor")
-                    }
-                }
+        if let webhookID = Current.settingsStore.webhookID {
+            Current.Log.warning("Device already registered with mobile_app, updating \(webhookID)")
+            registrationPromise = self.updateRegistration().asVoid()
+        } else {
+            registrationPromise = self.registerDevice().asVoid()
+        }
 
-                if self.loadedComponents.contains("mobile_app") && Current.settingsStore.webhookID == nil {
-                    _ = self.registerDevice()
-                }
-
-                _ = self.GetStates().done { entities in
-                        self.storeEntities(entities: entities)
-                        if self.loadedComponents.contains("ios") {
-                            Current.Log.verbose("iOS component loaded, attempting identify")
-                            _ = self.identifyDevice()
-                        }
-
-                        seal.fulfill(config)
-                    }.catch({ (error) in
-                        Current.Log.error("Error when getting states! \(error)")
-                    })
-            }.catch {error in
-                Current.Log.error("Error at launch! \(error)")
-                seal.reject(error)
+        return firstly {
+            registrationPromise!.asVoid()
+        }.then {
+            when(fulfilled: self.getManifestJSON(), self.GetConfig(), self.getZones())
+        }.map { manifest, config, zones in
+            if let components = config.Components {
+                self.loadedComponents = components
             }
 
+            guard self.mobileAppComponentLoaded else {
+                Current.Log.error("mobile_app component is not loaded!")
+                throw APIError.mobileAppComponentNotLoaded
+            }
+
+            if let themeColor = manifest.ThemeColor {
+                self.prefs.setValue(themeColor, forKey: "themeColor")
+            }
+
+            self.prefs.setValue(config.ConfigDirectory, forKey: "config_dir")
+            self.prefs.setValue(config.LocationName, forKey: "location_name")
+            self.prefs.setValue(config.Latitude, forKey: "latitude")
+            self.prefs.setValue(config.Longitude, forKey: "longitude")
+            self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
+            self.prefs.setValue(config.LengthUnit, forKey: "length_unit")
+            self.prefs.setValue(config.MassUnit, forKey: "mass_unit")
+            self.prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
+            self.prefs.setValue(config.Timezone, forKey: "time_zone")
+            self.prefs.setValue(config.Version, forKey: "version")
+
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
+                                            object: nil, userInfo: nil)
+
+            self.storeZones(zones: zones)
+
+            return config
         }
     }
 
@@ -544,17 +537,25 @@ public class HomeAssistantAPI {
         return self.request(path: "mobile_app/registrations", callingFunctionName: "\(#function)", method: .post,
                             parameters: buildMobileAppRegistration(), encoding: JSONEncoding.default)
             .then { (resp: MobileAppRegistrationResponse) -> Promise<MobileAppRegistrationResponse> in
-                Current.settingsStore.cloudhookID = resp.CloudhookID
                 Current.settingsStore.cloudhookURL = resp.CloudhookURL
+                Current.settingsStore.remoteUIURL = resp.RemoteUIURL
                 Current.settingsStore.webhookID = resp.WebhookID
                 Current.settingsStore.webhookSecret = resp.WebhookSecret
                 return Promise.value(resp)
         }
     }
 
-    public func updateDevice() -> Promise<MobileAppRegistrationResponse> {
+    public func updateRegistration() -> Promise<MobileAppRegistrationResponse> {
         return self.webhook("update_registration", payload: buildMobileAppUpdateRegistration(),
-                            callingFunctionName: "updateDevice")
+                            callingFunctionName: "updateRegistration")
+    }
+
+    public func getZones() -> Promise<[Zone]> {
+        return self.webhook("get_zones", payload: [:], callingFunctionName: "getZones")
+    }
+
+    public func getConfig() -> Promise<ConfigResponse> {
+        return self.webhook("get_config", payload: [:], callingFunctionName: "getConfig")
     }
 
     public func turnOn(entityId: String) -> Promise<[Entity]> {
@@ -752,6 +753,41 @@ public class HomeAssistantAPI {
         Current.syncMonitoredRegions?()
     }
 
+    func storeZones(zones: [Zone]) {
+        let realm = Current.realm()
+
+        let existingZoneIDs: [String] = realm.objects(RLMZone.self).map { $0.ID }
+
+        var seenZoneIDs: [String] = []
+
+        for zone in zones {
+            seenZoneIDs.append(zone.ID)
+            if let existingZone = realm.object(ofType: RLMZone.self, forPrimaryKey: zone.ID) {
+                // swiftlint:disable:next force_try
+                try! realm.write {
+                    HomeAssistantAPI.updateZone(existingZone, withZoneEntity: zone)
+                }
+            } else {
+                // swiftlint:disable:next force_try
+                try! realm.write {
+                    realm.add(RLMZone(zone: zone), update: true)
+                }
+            }
+        }
+
+        // Now remove zones that aren't in HA anymore
+        let zoneIDsToDelete = existingZoneIDs.filter { zoneID -> Bool in
+            return seenZoneIDs.contains(zoneID) == false
+        }
+
+        // swiftlint:disable:next force_try
+        try! realm.write {
+            realm.delete(realm.objects(RLMZone.self).filter("ID IN %@", zoneIDsToDelete))
+        }
+
+        Current.syncMonitoredRegions?()
+    }
+
     private static func updateZone(_ storeableZone: RLMZone, withZoneEntity zone: Zone) {
         storeableZone.Latitude = zone.Latitude
         storeableZone.Longitude = zone.Longitude
@@ -898,6 +934,7 @@ public class HomeAssistantAPI {
 
             let payloadDict: [String: Any] = Mapper<WebhookUpdateLocation>().toJSON(payload)
 
+            Current.Log.info("Location update payload: \(payloadDict)")
             let realm = Current.realm()
             // swiftlint:disable:next force_try
             try! realm.write {
@@ -1052,6 +1089,25 @@ public class HomeAssistantAPI {
                 }.catch {error in
                     seal.reject(error)
             }
+        }
+    }
+}
+
+extension HomeAssistantAPI.APIError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .managerNotAvailable:
+            return L10n.HaApi.ApiError.managerNotAvailable
+        case .invalidResponse:
+            return L10n.HaApi.ApiError.invalidResponse
+        case .cantBuildURL:
+            return L10n.HaApi.ApiError.cantBuildUrl
+        case .notConfigured:
+            return L10n.HaApi.ApiError.notConfigured
+        case .mobileAppComponentNotLoaded:
+            return L10n.HaApi.ApiError.mobileAppComponentNotLoaded
+        case .webhookGone:
+            return L10n.HaApi.ApiError.webhookGone
         }
     }
 }

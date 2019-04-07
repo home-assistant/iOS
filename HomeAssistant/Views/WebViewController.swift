@@ -187,12 +187,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                 )
             )
 
-            let mapIcon = UIImage.iconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: toolbarIconColor)
-
-            barItems.append(UIBarButtonItem(image: mapIcon,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(openMapView(_:))))
+            // WARNING: If you re-enable, check this file for presence of FIXMEs to fully re-enable
+//            let mapIcon = UIImage.iconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: toolbarIconColor)
+//
+//            barItems.append(UIBarButtonItem(image: mapIcon,
+//                                            style: .plain,
+//                                            target: self,
+//                                            action: #selector(openMapView(_:))))
         }
 
         barItems.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
@@ -253,8 +254,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         var removeAt = 2
         if self.toolbarItems?.count == 3 {
             removeAt = 1
-        } else if self.toolbarItems?.count == 5 {
-            removeAt = 3
+        } else if self.toolbarItems?.count == 4 {
+            // FIXME: Change this back to 5 if map gets re-added
+            removeAt = 2
         }
         var items = self.toolbarItems
         items?.remove(at: removeAt)
