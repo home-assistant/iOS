@@ -39,6 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+        setDefaults()
+
         UNUserNotificationCenter.current().delegate = self
 
         self.setupFirebase()
@@ -61,8 +63,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Iconic.registerMaterialDesignIcons()
 
         NetworkActivityIndicatorManager.shared.isEnabled = true
-
-        setDefaults()
 
         setupWatchCommunicator()
 
