@@ -157,19 +157,22 @@ public class HomeAssistantAPI {
     public func Connect() -> Promise<ConfigResponse> {
 
         var registrationPromise: Promise<Void>?
+        var sensorsPromise: Promise<Void>?
 
         if let webhookID = Current.settingsStore.webhookID {
             Current.Log.warning("Device already registered with mobile_app, updating \(webhookID)")
             registrationPromise = self.updateRegistration().asVoid()
+            sensorsPromise = self.updateSensors(trigger: .Unknown).asVoid()
         } else {
             registrationPromise = self.registerDevice().asVoid()
+            sensorsPromise = self.registerSensors().asVoid()
         }
 
         return firstly {
-            registrationPromise!.asVoid()
+            registrationPromise!
         }.then {
-            when(fulfilled: self.GetConfig(), self.GetZones())
-        }.map { config, zones in
+            when(fulfilled: self.GetConfig(), self.GetZones(), sensorsPromise!)
+        }.map { config, zones, _ in
             if let components = config.Components {
                 self.loadedComponents = components
             }
@@ -923,7 +926,8 @@ public class HomeAssistantAPI {
                                       location: CLLocation?, zone: RLMZone?) -> Promise<Bool> {
 
         return self.buildWebhookLocationPayload(updateType: updateType,
-                                                location: location, zone: zone).then { payload -> Promise<Bool> in
+                                                location: location, zone: zone).map { payload -> [String: Any] in
+
             var jsonPayload = "{\"missing\": \"payload\"}"
             if let p = payload.toJSONString(prettyPrint: false) {
                 jsonPayload = p
@@ -939,19 +943,15 @@ public class HomeAssistantAPI {
                                                zone: zone, payload: jsonPayload))
             }
 
-            let promise: Promise<Bool> = self.webhook("update_location", payload: payloadDict,
-                                                      // swiftlint:disable:next line_length
-                                                      callingFunctionName: "submitLocationWebhook").then { (_: Any) -> Promise<Bool> in
-                Current.Log.verbose("Device seen via webhook!")
-                self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: payloadDict)
-                return Promise.value(true)
-            }
-
-            promise.catch { err in
-                Current.Log.error("Error when updating location via webhook! \(err)")
-            }
-
-            return promise
+            return payloadDict
+        }.then { (payload: [String: Any]) -> Promise<([String: WebhookSensorResponse], Any, [String: Any])> in
+            let locUpdate: Promise<Any> = self.webhook("update_location",
+                                                       payload: payload, callingFunctionName: "\(#function)")
+            return when(fulfilled: self.updateSensors(trigger: updateType), locUpdate, Promise.value(payload))
+        }.then { (resp) -> Promise<Bool> in
+            Current.Log.verbose("Device seen via webhook!")
+            self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: resp.2)
+            return Promise.value(true)
         }
 
     }
@@ -1087,6 +1087,81 @@ public class HomeAssistantAPI {
                     seal.reject(error)
             }
         }
+    }
+
+    public func registerSensors() -> Promise<[WebhookSensorResponse]> {
+        return firstly {
+            WebhookSensors().AllSensors
+        }.then { (sensors: [WebhookSensor]) -> Promise<[WebhookSensorResponse]> in
+
+            var allSensors = sensors
+            allSensors.append(WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger"))
+
+            var promises: [Promise<WebhookSensorResponse>] = []
+
+            for sensor in allSensors {
+                promises.append(self.webhook("register_sensor",
+                                             payload: sensor.toJSON(), callingFunctionName: "\(#function)"))
+            }
+
+            return when(fulfilled: promises)
+        }
+    }
+
+    public func updateSensors(trigger: LocationUpdateTrigger = .Unknown) -> Promise<[String: WebhookSensorResponse]> {
+        return firstly {
+            return WebhookSensors().AllSensors
+        }.map { sensors in
+            let lastUpdateTriggerSensor = WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger")
+            if trigger != .Unknown {
+                lastUpdateTriggerSensor.State = trigger.rawValue
+            }
+
+            var allSensors = sensors
+            allSensors.append(lastUpdateTriggerSensor)
+
+            let mapper = Mapper<WebhookSensor>(context: WebhookSensorContext(update: true),
+                                               shouldIncludeNilValues: false)
+            let payload = mapper.toJSONArray(allSensors)
+
+            Current.Log.verbose("Update sensors payload: \(mapper.toJSONString(allSensors, prettyPrint: true)!)")
+
+            return payload
+        }.then { (payload) -> Promise<Any> in
+            return self.webhook("update_sensor_states", payload: payload, callingFunctionName: "updateSensors")
+        }.map { resp -> [String: WebhookSensorResponse] in
+
+            guard let castedResp = resp as? [String: [String: Any]] else {
+                throw APIError.invalidResponse
+            }
+
+            var out: [String: WebhookSensorResponse] = [:]
+
+            for (key, val) in castedResp {
+                guard let casted = WebhookSensorResponse(JSON: val) else {
+                    Current.Log.warning("Unexpected response during update of sensor \(key)")
+                    continue
+                }
+                out[key] = casted
+            }
+
+            return out
+        }.then { resps -> Promise<[String: WebhookSensorResponse]> in
+            // mobile_app could respond with error "not_registered". If we get _any_ responses that fail, let's
+            // re-register _all_ of the sensors.
+            let containsFailures = resps.contains { !$0.value.Success }
+
+            if !containsFailures {
+                return Promise.value(resps)
+            }
+
+            Current.Log.warning("Errors detected during sensor update, re-registering all sensors now")
+
+            return self.registerSensors().then { _ -> Promise<[String: WebhookSensorResponse]> in
+                return self.updateSensors(trigger: trigger)
+            }
+        }
+
     }
 }
 

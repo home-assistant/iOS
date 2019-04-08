@@ -30,6 +30,25 @@ public class WebhookSensor: Mappable {
         self.UniqueID = uniqueID
     }
 
+    convenience init(name: String, uniqueID: String, state: Any) {
+        self.init(name: name, uniqueID: uniqueID)
+        self.State = state
+    }
+
+    convenience init(name: String, uniqueID: String, icon: String, state: Any) {
+        self.init(name: name, uniqueID: uniqueID, state: state)
+        self.Icon = icon
+    }
+
+    convenience init(name: String, uniqueID: String, icon: MaterialDesignIcons, state: Any) {
+        self.init(name: name, uniqueID: uniqueID, icon: "mdi:\(icon.name)", state: state)
+    }
+
+    convenience init(name: String, uniqueID: String, icon: MaterialDesignIcons, deviceClass: DeviceClass, state: Any) {
+        self.init(name: name, uniqueID: uniqueID, state: state)
+        self.DeviceClass = deviceClass
+    }
+
     // Mappable
     public func mapping(map: Map) {
         Attributes        <-  map["attributes"]
@@ -85,5 +104,22 @@ public class WebhookSensorContext: MapContext {
     convenience init(update: Bool = false) {
         self.init()
         self.SensorUpdate = update
+    }
+}
+
+public class WebhookSensorResponse: Mappable {
+    public var Success: Bool = false
+    public var ErrorMessage: String?
+    public var ErrorCode: String?
+
+    init() {}
+
+    public required init?(map: Map) {}
+
+    // Mappable
+    public func mapping(map: Map) {
+        Success        <-  map["success"]
+        ErrorMessage   <-  map["error.message"]
+        ErrorCode      <-  map["error.code"]
     }
 }

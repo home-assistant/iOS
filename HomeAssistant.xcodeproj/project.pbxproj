@@ -166,6 +166,8 @@
 		B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B627CB071D83C87B0057173E /* NotificationContentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B62817F0221D269B000BA86A /* RenderTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817EF221D269B000BA86A /* RenderTemplate.swift */; };
 		B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */; };
+		B62CD2A5225B099D008DF3C5 /* WebhookSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */; };
+		B62CD2A6225B099D008DF3C5 /* WebhookSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */; };
 		B637242321695EDF006B102A /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B637242221695EDF006B102A /* Permissions.swift */; };
 		B637243B21697AA7006B102A /* HomeAssistant Beta.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = B637243A21697AA7006B102A /* HomeAssistant Beta.entitlements */; };
 		B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6393F851CB255F200503916 /* EurekaLocationRow.swift */; };
@@ -396,6 +398,8 @@
 		B6CFF5DE2101985200CC523F /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFF5DD2101985200CC523F /* RealmSwift.framework */; };
 		B6D35C642169905400D1F86B /* HomeAssistant Development.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = B6D35C632169905400D1F86B /* HomeAssistant Development.entitlements */; };
 		B6D35C662169906A00D1F86B /* APNSAttachmentService Development.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = B6D35C652169906A00D1F86B /* APNSAttachmentService Development.entitlements */; };
+		B6D3B4ED225B26900082BB4F /* WebhookSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* WebhookSensors.swift */; };
+		B6D3B4EE225B26910082BB4F /* WebhookSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* WebhookSensors.swift */; };
 		B6DAC735215F069300727D2A /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC734215F069300727D2A /* NotificationCategory.swift */; };
 		B6DAC737215F06B100727D2A /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
 		B6DF8BC1221C890600370A59 /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
@@ -808,6 +812,7 @@
 		B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reachability+NetworkType.swift"; sourceTree = "<group>"; };
 		B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrationRequest.swift; sourceTree = "<group>"; };
 		B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyRequest.swift; sourceTree = "<group>"; };
+		B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookSensor.swift; sourceTree = "<group>"; };
 		B637242221695EDF006B102A /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		B637243A21697AA7006B102A /* HomeAssistant Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant Beta.entitlements"; sourceTree = "<group>"; };
 		B637243C21697B06006B102A /* APNSAttachmentService Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "APNSAttachmentService Beta.entitlements"; sourceTree = "<group>"; };
@@ -1011,6 +1016,7 @@
 		B6D35C6A2169909C00D1F86B /* NotificationContentExtension Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "NotificationContentExtension Development.entitlements"; sourceTree = "<group>"; };
 		B6D35C6B216990A500D1F86B /* WatchApp Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "WatchApp Development.entitlements"; sourceTree = "<group>"; };
 		B6D35C6C216990B100D1F86B /* WatchAppExtension Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "WatchAppExtension Development.entitlements"; sourceTree = "<group>"; };
+		B6D3B4EB225B26300082BB4F /* WebhookSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensors.swift; sourceTree = "<group>"; };
 		B6DAC734215F069300727D2A /* NotificationCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategory.swift; sourceTree = "<group>"; };
 		B6DAC736215F06B100727D2A /* NotificationAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAction.swift; sourceTree = "<group>"; };
 		B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+UIActivityIndicator.swift"; sourceTree = "<group>"; };
@@ -1768,6 +1774,7 @@
 			isa = PBXGroup;
 			children = (
 				B6A258442232485300ADD202 /* Alamofire+EncryptedResponses.swift */,
+				B6D3B4EB225B26300082BB4F /* WebhookSensors.swift */,
 			);
 			path = Webhook;
 			sourceTree = "<group>";
@@ -1911,6 +1918,7 @@
 				B6C0911D2151F90300A326DC /* Entity.swift */,
 				B6C0911E2151F90300A326DC /* LocationHistory.swift */,
 				B6C0911B2151F90300A326DC /* SwitchableEntity.swift */,
+				B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */,
 				B6F02BE81CB46AF40029ABE7 /* Entity.swift */,
 				B6767A501D0234E700F2A08B /* SwitchableEntity.swift */,
 			);
@@ -3441,7 +3449,9 @@
 				B67CE87D22200F220034C1D0 /* IdentifyRequest.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
 				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
+				B62CD2A6225B099D008DF3C5 /* WebhookSensor.swift in Sources */,
 				B67CE8A122200F220034C1D0 /* PushConfiguration.swift in Sources */,
+				B6D3B4EE225B26910082BB4F /* WebhookSensors.swift in Sources */,
 				B67CE8B322200F220034C1D0 /* Realm+Initialization.swift in Sources */,
 				B67CE87B22200F220034C1D0 /* RealmDeviceTracker.swift in Sources */,
 				B67CE8AD22200F220034C1D0 /* AuthenticationAPI.swift in Sources */,
@@ -3564,7 +3574,9 @@
 				B6A258452232485300ADD202 /* Alamofire+EncryptedResponses.swift in Sources */,
 				D0EEF2FF214D8D4C00D1D360 /* CLError+DebugDescription.swift in Sources */,
 				D0EEF30C214DD79100D1D360 /* ManifestJSON.swift in Sources */,
+				B62CD2A5225B099D008DF3C5 /* WebhookSensor.swift in Sources */,
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
+				B6D3B4ED225B26900082BB4F /* WebhookSensors.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
 				B6C0914F2151F93D00A326DC /* MediaPlayer.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,

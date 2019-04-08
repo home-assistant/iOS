@@ -67,6 +67,25 @@ enum NetworkType {
             return 9
         }
     }
+
+    var icon: String {
+        switch self {
+        case .unknown, .unknownTechnology:
+            return "mdi:help-circle"
+        case .noConnection:
+            return "mdi:sim-off"
+        case .wifi:
+            return "mdi:wifi"
+        case .cellular:
+            return "mdi:signal"
+        case .wwan2g:
+            return "mdi:signal-2g"
+        case .wwan3g:
+            return "mdi:signal-3g"
+        case .wwan4g:
+            return "mdi:signal-4g"
+        }
+    }
 }
 
 extension Reachability {

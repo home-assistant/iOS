@@ -12,7 +12,7 @@ import Sodium
 
 class WebhookRequest: Mappable {
     var PayloadType: String?
-    var Data: [String: Any]?
+    var Data: Any?
     var Encrypted: Bool = false
     var EncryptedData: String?
 
@@ -20,7 +20,7 @@ class WebhookRequest: Mappable {
 
     required init?(map: Map) {}
 
-    public convenience init(type: String, data: [String: Any]) {
+    public convenience init(type: String, data: Any) {
         self.init()
         self.PayloadType = type
         self.Data = data

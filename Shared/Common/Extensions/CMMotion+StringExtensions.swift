@@ -32,6 +32,26 @@ extension CMMotionActivity {
 
         return types
     }
+
+    var icons: [String] {
+        var icons: [String] = []
+
+        if self.walking {
+            icons.append("mdi:walk")
+        } else if self.running {
+            icons.append("mdi:run")
+        } else if self.automotive {
+            icons.append("mdi:car")
+        } else if self.cycling {
+            icons.append("mdi:bike")
+        } else if self.stationary {
+            icons.append("mdi:human-male")
+        } else {
+            icons.append("mdi:help-circle")
+        }
+
+        return icons
+    }
 }
 
 extension CMMotionActivityConfidence {

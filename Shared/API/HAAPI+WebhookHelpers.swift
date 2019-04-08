@@ -16,7 +16,7 @@ extension HomeAssistantAPI {
     // MARK: - Helper methods for reducing boilerplate.
 
     func handleWebhookResponse<T>(response: DataResponse<T>, seal: Resolver<T>, callingFunctionName: String) {
-        Current.Log.verbose("\(callingFunctionName) response timeline: \(response.timeline)")
+        // Current.Log.verbose("\(callingFunctionName) response timeline: \(response.timeline)")
 
         if let cloudURL = response.response?.allHeaderFields["X-Cloud-Hook-URL"] as? String {
             Current.settingsStore.cloudhookURL = cloudURL
@@ -37,14 +37,14 @@ extension HomeAssistantAPI {
         }
     }
 
-    func buildWebhookRequest(_ type: String, payload: [String: Any]) -> DataRequest {
+    func buildWebhookRequest(_ type: String, payload: Any) -> DataRequest {
         return Alamofire.request(Current.settingsStore.webhookURL!, method: .post,
                                  parameters: WebhookRequest(type: type, data: payload).toJSON(),
                                  encoding: JSONEncoding.default)
 
     }
 
-    public func webhook(_ type: String, payload: [String: Any], callingFunctionName: String) -> Promise<String> {
+    public func webhook(_ type: String, payload: Any, callingFunctionName: String) -> Promise<String> {
         return Promise { seal in
             guard Current.settingsStore.webhookURL != nil else {
                 Current.Log.error("No webhook URL is set when trying to use \(type)!")
@@ -60,7 +60,7 @@ extension HomeAssistantAPI {
         }
     }
 
-    public func webhook(_ type: String, payload: [String: Any], callingFunctionName: String) -> Promise<Any> {
+    public func webhook(_ type: String, payload: Any, callingFunctionName: String) -> Promise<Any> {
         return Promise { seal in
             guard Current.settingsStore.webhookURL != nil else {
                 Current.Log.error("No webhook URL is set when trying to use \(type)!")
@@ -76,7 +76,7 @@ extension HomeAssistantAPI {
         }
     }
 
-    public func webhook<T: BaseMappable>(_ type: String, payload: [String: Any],
+    public func webhook<T: BaseMappable>(_ type: String, payload: Any,
                                          callingFunctionName: String) -> Promise<T> {
         return Promise { seal in
             guard Current.settingsStore.webhookURL != nil else {
@@ -93,7 +93,7 @@ extension HomeAssistantAPI {
         }
     }
 
-    public func webhook<T: BaseMappable>(_ type: String, payload: [String: Any],
+    public func webhook<T: BaseMappable>(_ type: String, payload: Any,
                                          callingFunctionName: String) -> Promise<[T]> {
         return Promise { seal in
             guard Current.settingsStore.webhookURL != nil else {
@@ -110,7 +110,7 @@ extension HomeAssistantAPI {
         }
     }
 
-    public func webhook<T: ImmutableMappable>(_ type: String, payload: [String: Any],
+    public func webhook<T: ImmutableMappable>(_ type: String, payload: Any,
                                               callingFunctionName: String) -> Promise<[T]> {
         return Promise { seal in
             guard Current.settingsStore.webhookURL != nil else {
@@ -127,7 +127,7 @@ extension HomeAssistantAPI {
         }
     }
 
-    public func webhook<T: ImmutableMappable>(_ type: String, payload: [String: Any],
+    public func webhook<T: ImmutableMappable>(_ type: String, payload: Any,
                                               callingFunctionName: String) -> Promise<T> {
         return Promise { seal in
             guard Current.settingsStore.webhookURL != nil else {
