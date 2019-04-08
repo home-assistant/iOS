@@ -51,7 +51,6 @@ target 'HomeAssistant' do
     pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
     pod 'Firebase/Core'
     pod 'Firebase/Messaging'
-    pod 'Firebase/Performance'
     pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
     pod 'Lokalise', '~> 0.10.0'
     pod 'MBProgressHUD', '1.1.0'

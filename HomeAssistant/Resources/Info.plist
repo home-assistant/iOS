@@ -396,8 +396,6 @@
 	<false/>
 	<key>firebase_crashlytics_collection_enabled</key>
 	<false/>
-	<key>firebase_performance_collection_enabled</key>
-	<false/>
 	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
 	<false/>
 </dict>

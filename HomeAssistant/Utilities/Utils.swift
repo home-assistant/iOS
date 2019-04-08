@@ -176,10 +176,6 @@ func setDefaults() {
         prefs.setValue(true, forKey: "messagingEnabled")
     }
 
-    if prefs.object(forKey: "performanceMonitoringEnabled") == nil {
-        prefs.setValue(true, forKey: "performanceMonitoringEnabled")
-    }
-
     prefs.synchronize()
 }
 

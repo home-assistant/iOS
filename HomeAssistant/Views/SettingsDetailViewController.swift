@@ -16,7 +16,6 @@ import RealmSwift
 import UserNotifications
 import Communicator
 import Firebase
-import FirebasePerformance
 
 // swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController {
@@ -650,16 +649,6 @@ class SettingsDetailViewController: FormViewController {
                     }.onChange { row in
                         guard let rowVal = row.value else { return }
                         Current.setCrashlyticsEnabled(enabled: rowVal)
-                }
-                +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.PerformanceMonitoring.description)
-                <<< SwitchRow("performanceMonitoring") {
-                    $0.title = L10n.SettingsDetails.Privacy.PerformanceMonitoring.title
-                    $0.value = prefs.bool(forKey: "performanceMonitoringEnabled")
-                }.onChange { row in
-                    guard let rowVal = row.value else { return }
-                    Current.Log.warning("Firebase performance monitoring is now: \(rowVal)")
-                    Performance.sharedInstance().isInstrumentationEnabled = rowVal
-                    Performance.sharedInstance().isDataCollectionEnabled = rowVal
                 }
 
         default:
