@@ -168,8 +168,8 @@ public class HomeAssistantAPI {
         return firstly {
             registrationPromise!.asVoid()
         }.then {
-            when(fulfilled: self.getManifestJSON(), self.GetConfig(), self.getZones())
-        }.map { manifest, config, zones in
+            when(fulfilled: self.GetConfig(), self.GetZones())
+        }.map { config, zones in
             if let components = config.Components {
                 self.loadedComponents = components
             }
@@ -179,20 +179,17 @@ public class HomeAssistantAPI {
                 throw APIError.mobileAppComponentNotLoaded
             }
 
-            if let themeColor = manifest.ThemeColor {
-                self.prefs.setValue(themeColor, forKey: "themeColor")
-            }
-
-            self.prefs.setValue(config.ConfigDirectory, forKey: "config_dir")
             self.prefs.setValue(config.LocationName, forKey: "location_name")
             self.prefs.setValue(config.Latitude, forKey: "latitude")
             self.prefs.setValue(config.Longitude, forKey: "longitude")
             self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
             self.prefs.setValue(config.LengthUnit, forKey: "length_unit")
             self.prefs.setValue(config.MassUnit, forKey: "mass_unit")
+            self.prefs.setValue(config.PressureUnit, forKey: "pressure_unit")
             self.prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
             self.prefs.setValue(config.Timezone, forKey: "time_zone")
             self.prefs.setValue(config.Version, forKey: "version")
+            self.prefs.setValue(config.ThemeColor, forKey: "themeColor")
 
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
                                             object: nil, userInfo: nil)
@@ -272,8 +269,12 @@ public class HomeAssistantAPI {
         return self.request(path: "", callingFunctionName: "\(#function)", method: .get)
     }
 
-    public func GetConfig() -> Promise<ConfigResponse> {
+    public func GetConfigRESTAPI() -> Promise<ConfigResponse> {
         return self.request(path: "config", callingFunctionName: "\(#function)")
+    }
+
+    public func GetConfig() -> Promise<ConfigResponse> {
+        return self.webhook("get_config", payload: [:], callingFunctionName: "getConfig")
     }
 
     public func GetServices() -> Promise<[ServicesResponse]> {
@@ -550,12 +551,8 @@ public class HomeAssistantAPI {
                             callingFunctionName: "updateRegistration")
     }
 
-    public func getZones() -> Promise<[Zone]> {
+    public func GetZones() -> Promise<[Zone]> {
         return self.webhook("get_zones", payload: [:], callingFunctionName: "getZones")
-    }
-
-    public func getConfig() -> Promise<ConfigResponse> {
-        return self.webhook("get_config", payload: [:], callingFunctionName: "getConfig")
     }
 
     public func turnOn(entityId: String) -> Promise<[Entity]> {
