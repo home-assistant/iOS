@@ -52,6 +52,7 @@ class AboutViewController: FormViewController {
                 }
 
                 $0.header = logoHeader
+                $0.tag = "logoView"
             }
 
             <<< ButtonRow {
@@ -194,6 +195,11 @@ class AboutViewController: FormViewController {
                                       style: UIAlertAction.Style.default,
                                       handler: nil))
         self.present(alert, animated: true, completion: nil)
+        if let popOver = alert.popoverPresentationController,
+            let sect = self.form.sectionBy(tag: "logoView"),
+                let logoView = sect.header?.viewForSection(sect, type: .header) {
+            popOver.sourceView = logoView
+        }
     }
 }
 

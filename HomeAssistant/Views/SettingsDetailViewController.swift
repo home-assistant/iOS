@@ -237,7 +237,7 @@ class SettingsDetailViewController: FormViewController {
                 +++ Section()
                 <<< ButtonRow {
                         $0.title = L10n.SettingsDetails.Notifications.ImportLegacySettings.Button.title
-                    }.onCellSelection {_, _ in
+                    }.onCellSelection { cell, _ in
                         MigratePushSettingsToLocal()
                         // swiftlint:disable:next line_length
                         let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.ImportLegacySettings.Alert.title,
@@ -247,12 +247,14 @@ class SettingsDetailViewController: FormViewController {
                         alert.addAction(UIAlertAction(title: L10n.okLabel,
                                                       style: UIAlertAction.Style.default, handler: nil))
                         self.present(alert, animated: true, completion: nil)
+
+                        alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
                     }
 
                 +++ Section(header: "", footer: L10n.SettingsDetails.Notifications.SoundsSection.footer)
                 <<< ButtonRow {
                     $0.title = L10n.SettingsDetails.Notifications.SoundsSection.Button.title
-                    }.onCellSelection {_, _ in
+                    }.onCellSelection { cell, _ in
                         let moved = movePushNotificationSounds()
                         // swiftlint:disable:next line_length
                         let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.SoundsSection.ImportedAlert.title,
@@ -262,12 +264,13 @@ class SettingsDetailViewController: FormViewController {
                         alert.addAction(UIAlertAction(title: L10n.okLabel,
                                                       style: UIAlertAction.Style.default, handler: nil))
                         self.present(alert, animated: true, completion: nil)
+                        alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
                 }
 
                 +++ Section(header: "", footer: "")
                 <<< ButtonRow {
                     $0.title = L10n.SettingsDetails.Notifications.BadgeSection.Button.title
-                }.onCellSelection {_, _ in
+                }.onCellSelection { cell, _ in
                     UIApplication.shared.applicationIconBadgeNumber = 0
                     // swiftlint:disable:next line_length
                     let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.BadgeSection.ResetAlert.title,
@@ -277,6 +280,7 @@ class SettingsDetailViewController: FormViewController {
                     alert.addAction(UIAlertAction(title: L10n.okLabel,
                                                   style: UIAlertAction.Style.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
+                    alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
                 }
 
                 +++ Section(header: L10n.SettingsDetails.Location.Notifications.header, footer: "")

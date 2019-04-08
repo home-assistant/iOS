@@ -311,7 +311,7 @@ class WatchComplicationConfigurator: FormViewController {
         if let row = self.form.rowBy(tag: rowTag) as? TextAreaRow, let value = row.value {
             Current.Log.verbose("Render template from \(value)")
 
-            renderTemplateValue(value)
+            renderTemplateValue(value, row)
         }
     }
 
@@ -319,11 +319,11 @@ class WatchComplicationConfigurator: FormViewController {
         if let value = row.baseValue as? String {
             Current.Log.verbose("Render template from \(value)")
 
-            renderTemplateValue(value)
+            renderTemplateValue(value, row)
         }
     }
 
-    func renderTemplateValue(_ value: String) {
+    func renderTemplateValue(_ value: String, _ row: BaseRow) {
         HomeAssistantAPI.authenticatedAPI()?.RenderTemplate(templateStr: value).done { val in
             Current.Log.verbose("Rendered value is \(val)")
 
@@ -333,6 +333,8 @@ class WatchComplicationConfigurator: FormViewController {
                                           handler: nil))
             self.present(alert, animated: true, completion: nil)
 
+            alert.popoverPresentationController?.sourceView = row.baseCell.formViewController()?.view
+
             }.catch { renderErr in
                 Current.Log.error("Error rendering template! \(renderErr)")
                 let alert = UIAlertController(title: L10n.errorLabel,
@@ -341,6 +343,8 @@ class WatchComplicationConfigurator: FormViewController {
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                               handler: nil))
                 self.present(alert, animated: true, completion: nil)
+
+                alert.popoverPresentationController?.sourceView = row.baseCell.formViewController()?.view
         }
     }
 

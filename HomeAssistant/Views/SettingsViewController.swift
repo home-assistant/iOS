@@ -132,6 +132,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                           handler: nil))
             self.present(alert, animated: true, completion: nil)
+
+            alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
         }
 
         self.configureDiscoveryObservers()
@@ -147,7 +149,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 $0.title = L10n.Settings.ConnectionSection.BaseUrl.title
                 $0.value = self.baseURL
                 $0.placeholder = L10n.Settings.ConnectionSection.BaseUrl.placeholder
-            }.onCellHighlightChanged({ (_, row) in
+            }.onCellHighlightChanged({ (cell, row) in
                 if row.isHighlighted == false {
                     if let url = row.value {
                         let cleanUrl = self.cleanBaseURL(baseUrl: url)
@@ -160,6 +162,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                                                           style: UIAlertAction.Style.default,
                                                           handler: nil))
                             self.present(alert, animated: true, completion: nil)
+                            alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
                         } else {
                             self.baseURL = cleanUrl.cleanedURL
                         }
@@ -252,7 +255,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 $0.value = self.internalBaseURL
                 $0.placeholder = "http://hassio.local:8123"
                 $0.hidden = Condition(booleanLiteral: !self.internalBaseURLEnabled)
-            }.onCellHighlightChanged({ (_, row) in
+            }.onCellHighlightChanged({ (cell, row) in
                 if row.isHighlighted == false {
                     if let url = row.value {
                         let cleanUrl = self.cleanBaseURL(baseUrl: url)
@@ -264,6 +267,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                                           handler: nil))
                             self.present(alert, animated: true, completion: nil)
+                            alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
                         } else {
                             self.internalBaseURL = cleanUrl.cleanedURL
                         }
@@ -491,7 +495,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             $0.title = L10n.Settings.ResetSection.ResetRow.title
             }.cellUpdate { cell, _ in
                 cell.textLabel?.textColor = .red
-            }.onCellSelection { _, row in
+            }.onCellSelection { cell, row in
                 let alert = UIAlertController(title: L10n.Settings.ResetSection.ResetAlert.title,
                                               message: L10n.Settings.ResetSection.ResetAlert.message,
                                               preferredStyle: UIAlertController.Style.alert)
@@ -506,6 +510,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 }))
 
                 self.present(alert, animated: true, completion: nil)
+                alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
             }
 
         +++ ButtonRow {
@@ -581,7 +586,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
         <<< ButtonRow {
             $0.title = L10n.Settings.Developer.SyncWatchContext.title
-        }.onCellSelection { _, _ in
+        }.onCellSelection { cell, _ in
             if let syncError = HomeAssistantAPI.SyncWatchContext() {
                 let alert = UIAlertController(title: L10n.errorLabel,
                                               message: syncError.localizedDescription,
@@ -590,12 +595,13 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
 
                 self.present(alert, animated: true, completion: nil)
+                alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
             }
         }
 
         <<< ButtonRow {
                 $0.title = L10n.Settings.Developer.CopyRealm.title
-            }.onCellSelection { _, _ in
+            }.onCellSelection { cell, _ in
                 guard let backupURL = Realm.backup() else {
                     fatalError("Unable to get Realm backup")
                 }
@@ -628,11 +634,13 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
 
                 self.present(alert, animated: true, completion: nil)
+
+                alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
             }
 
         <<< ButtonRow {
             $0.title = L10n.Settings.Developer.DebugStrings.title
-        }.onCellSelection { _, _ in
+        }.onCellSelection { cell, _ in
             prefs.set(!prefs.bool(forKey: "showTranslationKeys"), forKey: "showTranslationKeys")
 
             Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
@@ -642,6 +650,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
 
             self.present(alert, animated: true, completion: nil)
+
+            alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
         }
         <<< ButtonRow {
             $0.title = L10n.Settings.Developer.CameraNotification.title
@@ -682,7 +692,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 url = "\(host):\(port)"
             }
 
-            // swiftlint:disable:next line_length
             let detailTextLabel = "\(url) - \(discoveryInfo.Version) - \(scheme) \(needsPass)"
             if self.form.rowBy(tag: discoveryInfo.LocationName) == nil {
                 discoverySection
@@ -816,6 +825,8 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                                       style: UIAlertAction.Style.default,
                                       handler: nil))
         self.present(alert, animated: true, completion: nil)
+
+        alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
     }
 
     /// Resolves to the connection info used to connect. As a side effect, the successful tokenInfo is stored.
@@ -889,6 +900,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                                           style: UIAlertAction.Style.default,
                                           handler: nil))
             self.present(alert, animated: true, completion: nil)
+            alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
             return false
         }
 
@@ -1033,6 +1045,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                                   handler: nil))
                     self.present(alert, animated: true, completion: nil)
+                    alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
                 }
                 return
             }

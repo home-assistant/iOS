@@ -315,6 +315,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         present(alert, animated: true, completion: nil)
 
+        alert.popoverPresentationController?.barButtonItem = self.toolbarItems?.last
+
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -354,6 +356,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }))
 
         self.present(alertController, animated: true, completion: nil)
+
+        alertController.popoverPresentationController?.barButtonItem = self.toolbarItems?.last
     }
 
     func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?,
@@ -377,6 +381,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }))
 
         self.present(alertController, animated: true, completion: nil)
+
+        alertController.popoverPresentationController?.barButtonItem = self.toolbarItems?.last
     }
 
     func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String,
@@ -388,6 +394,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }))
 
         self.present(alertController, animated: true, completion: nil)
+
+        alertController.popoverPresentationController?.barButtonItem = self.toolbarItems?.last
     }
 
     @objc func loadActiveURLIfNeeded() {
@@ -473,6 +481,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                                           preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
+            alert.popoverPresentationController?.barButtonItem = self.toolbarItems?.first
         }.catch {error in
             let nserror = error as NSError
             let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
@@ -481,6 +490,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                                           preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
+            alert.popoverPresentationController?.barButtonItem = self.toolbarItems?.first
         }
     }
 

@@ -104,6 +104,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }))
 
             navController.present(alert, animated: true, completion: nil)
+
+            alert.popoverPresentationController?.barButtonItem = webView.toolbarItems?.last
         }
 
         return true
@@ -736,10 +738,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 if let navigationController = rootViewController as? UINavigationController {
                     rootViewController = navigationController.viewControllers.first
                 }
-                if let tabBarController = rootViewController as? UITabBarController {
-                    rootViewController = tabBarController.selectedViewController
-                }
                 rootViewController?.present(alert, animated: true, completion: nil)
+                alert.popoverPresentationController?.sourceView = rootViewController?.view
             } else {
                 UIApplication.shared.open(url, options: [:],
                                           completionHandler: nil)

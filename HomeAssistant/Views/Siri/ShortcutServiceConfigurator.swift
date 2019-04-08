@@ -174,7 +174,7 @@ class ShortcutServiceConfigurator: FormViewController {
                     rowsToAdd.append(ButtonRow {
                         $0.tag = key + "_render_template"
                         $0.title = L10n.previewOutput
-                    }.onCellSelection({ _, _ in
+                    }.onCellSelection({ cell, _ in
                         if let row = self.form.rowBy(tag: key) as? TextAreaRow, let value = row.value {
                             Current.Log.verbose("Render template from \(value)")
 
@@ -187,6 +187,8 @@ class ShortcutServiceConfigurator: FormViewController {
                                                               handler: nil))
                                 self.present(alert, animated: true, completion: nil)
 
+                                alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
+
                             }.catch { renderErr in
                                 Current.Log.error("Error rendering template! \(renderErr)")
                                 let alert = UIAlertController(title: L10n.errorLabel,
@@ -195,6 +197,7 @@ class ShortcutServiceConfigurator: FormViewController {
                                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                                               handler: nil))
                                 self.present(alert, animated: true, completion: nil)
+                                alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
                             }
                         }
                     }))
