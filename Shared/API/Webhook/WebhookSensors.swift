@@ -20,7 +20,7 @@ public class WebhookSensors {
         return firstly {
             when(fulfilled: self.Activity, self.Pedometer)
             }.then { activitySensor, pedometerSensors -> Promise<[WebhookSensor]> in
-                var allSensors: [WebhookSensor?] = [self.Battery]
+                var allSensors: [WebhookSensor?] = self.Battery
                 #if os(iOS)
                 allSensors.append(contentsOf: [self.BSSID, self.ConnectionType, self.SSID])
                 #endif
@@ -35,10 +35,10 @@ public class WebhookSensors {
         }
     }
 
-    public var Battery: WebhookSensor {
-        var batLevel = Int(Device().batteryLevel)
-        if batLevel == -100 { // simulator fix
-            batLevel = 100
+    public var Battery: [WebhookSensor] {
+        var level = Int(Device().batteryLevel)
+        if level == -100 { // simulator fix
+            level = 100
         }
 
         var state = "Unknown"
@@ -67,11 +67,16 @@ public class WebhookSensors {
             state = "Full"
         }
 
-        let sensor = WebhookSensor(name: "Battery", uniqueID: "battery", icon: .batteryIcon, deviceClass: .battery,
-                                   state: state)
-        sensor.Icon = icon
-        sensor.Attributes = ["State": state, "Level": batLevel]
-        return sensor
+        let levelSensor = WebhookSensor(name: "Battery Level", uniqueID: "battery_level", icon: .batteryIcon,
+                                        deviceClass: .battery, state: level)
+        levelSensor.Icon = icon
+        levelSensor.Attributes = ["State": state]
+
+        let stateSensor = WebhookSensor(name: "Battery State", uniqueID: "battery_state", icon: .batteryIcon,
+                                        deviceClass: .battery, state: state)
+        stateSensor.Icon = icon
+        stateSensor.Attributes = ["Level": level]
+        return [levelSensor, stateSensor]
     }
 
     #if os(iOS)
