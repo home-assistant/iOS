@@ -8,6 +8,7 @@
 
 import Foundation
 import Alamofire
+import PromiseKit
 
 // Order to use URLs in
 // 1. Internal URL if current SSID == previously stored SSID that confirms internal is available
@@ -36,13 +37,11 @@ class WebhookHandler: RequestAdapter, RequestRetrier {
     private var activeURLType: WebhookURLType
     private var activeURL: URL
 
-    private let lock = NSLock()
+    private let lock = NSRecursiveLock()
 
     private typealias URLWorksCompletion = (_ succeeded: Bool, _ url: URL?, _ urlType: WebhookURLType?) -> Void
 
     private var isTestingURL = false
-
-    private var requestsToRetry: [RequestRetryCompletion] = []
 
     // MARK: - Initialization
 
@@ -60,9 +59,10 @@ class WebhookHandler: RequestAdapter, RequestRetrier {
         }
 
         if let remoteURL = remoteUIURL {
-            self.remoteUIURL = remoteURL.appendingPathComponent(path, isDirectory: false)
+            let url = remoteURL.appendingPathComponent(path, isDirectory: false)
+            self.remoteUIURL = url
             self.activeURLType = .remoteUI
-            self.activeURL = remoteURL
+            self.activeURL = url
         }
 
         if let url = connectionInfo.internalBaseURL, let ssid = connectionInfo.internalSSID {
@@ -86,8 +86,13 @@ class WebhookHandler: RequestAdapter, RequestRetrier {
 
     // MARK: - RequestAdapter
     func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
+        let newURL = self.webhookURL
+        guard urlRequest.url != newURL else {
+            return urlRequest
+        }
+
         var urlRequest = urlRequest
-        urlRequest.url = self.webhookURL
+        urlRequest.url = newURL
         return urlRequest
     }
 
@@ -96,18 +101,22 @@ class WebhookHandler: RequestAdapter, RequestRetrier {
                 completion: @escaping RequestRetryCompletion) {
         lock.lock() ; defer { lock.unlock() }
 
-        requestsToRetry.append(completion)
-
-        self.testURLs { [weak self] succeeded, newURL, newURLType in
-            guard let strongSelf = self else { return }
-            strongSelf.lock.lock() ; defer { strongSelf.lock.unlock() }
-            if succeeded, let newURL = newURL, let newURLType = newURLType {
-                strongSelf.activeURL = newURL
-                strongSelf.activeURLType = newURLType
+        if !isTestingURL {
+            self.testURLs().done { (successes) in
+                self.lock.lock() ; defer { self.lock.unlock() }
+                guard let winner = successes.sorted(by: { (a, b) -> Bool in
+                    return a.1.rawValue > b.1.rawValue
+                }).first else {
+                    completion(false, 0.0)
+                    return
+                }
+                Current.Log.info("Webhook URL update \(self.activeURLType) -> \(winner.1)")
+                self.activeURL = winner.0
+                self.activeURLType = winner.1
+                completion(true, 0.0)
+            }.catch { _ in
+                completion(false, 0.0)
             }
-            strongSelf.requestsToRetry.forEach { $0(succeeded, 0.0) }
-            strongSelf.requestsToRetry.removeAll()
-            completion(succeeded, 0.0)
         }
     }
 
@@ -118,42 +127,50 @@ class WebhookHandler: RequestAdapter, RequestRetrier {
         return SessionManager(configuration: configuration)
     }()
 
-    private func testURLs(_ completion: @escaping URLWorksCompletion) {
-        guard !isTestingURL else { return }
-        isTestingURL = true
-
-        var urls: [WebhookURLType: URL] = [.external: self.externalURL]
-
-        if let url = self.internalURL {
-            urls[.internal] = url
-        }
-        if let url = self.cloudhookURL {
-            urls[.cloudhook] = url
-        }
-        if let url = self.remoteUIURL {
-            urls[.remoteUI] = url
-        }
-
-        for (urlType, url) in urls {
-            Current.Log.verbose("Testing \(urlType) URL \(url)")
-            if urlType == self.activeURLType {
-                Current.Log.verbose("Not testing URL type \(self.activeURLType) as its currently failing")
-                continue
-            }
-            let params = WebhookRequest(type: "get_config", data: [:]).toJSON()
-            let enc = JSONEncoding.default
-            let req = self.sessionManager.request(url, method: .post, parameters: params, encoding: enc)
+    private func testURL(_ urlType: WebhookURLType, _ url: URL) -> Promise<(URL, WebhookURLType)?> {
+        return Promise { seal in
+            Current.Log.verbose("Testing \(urlType) URL")
+            let req = self.sessionManager.request(url, method: .post,
+                                                  parameters: WebhookRequest(type: "get_config", data: [:]).toJSON(),
+                                                  encoding: JSONEncoding.default)
             req.validate().responseJSON { [weak self] response in
                 guard let strongSelf = self else { return }
                 if response.result.value != nil {
-                    Current.Log.info("Webhook URL update \(strongSelf.activeURLType) -> \(urlType)")
                     strongSelf.isTestingURL = false
-                    completion(true, url, urlType)
+                    seal.fulfill((url, urlType))
+                    return
                 }
+                seal.fulfill(nil)
+                return
             }
         }
+    }
 
-        completion(false, nil, nil)
+    private func testURLs() -> Promise<[(URL, WebhookURLType)]> {
+        isTestingURL = true
+
+        var urls: [WebhookURLType: URL] = [:]
+
+        if self.activeURLType != .internal, let url = self.internalURL {
+            urls[.internal] = url
+        }
+        if self.activeURLType != .cloudhook, let url = self.cloudhookURL {
+            urls[.cloudhook] = url
+        }
+        if self.activeURLType != .remoteUI, let url = self.remoteUIURL {
+            urls[.remoteUI] = url
+        }
+        if self.activeURLType != .external {
+            urls[.external] = self.externalURL
+        }
+
+        var promises: [Promise<(URL, WebhookURLType)?>] = []
+
+        for (urlType, url) in urls {
+            promises.append(testURL(urlType, url))
+        }
+
+        return when(fulfilled: promises).compactMapValues { $0 }
     }
 }
 
