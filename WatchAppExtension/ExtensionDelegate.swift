@@ -266,7 +266,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
 
     func updateComplications() {
-
         guard let wID = Current.settingsStore.webhookID, let connInfo = Current.settingsStore.connectionInfo else {
             // swiftlint:disable:next line_length
             Current.Log.warning("Didn't find webhook URL in context \(Communicator.shared.mostRecentlyReceievedContext)")
