@@ -155,6 +155,8 @@
 		B60616B91D1F117800249C11 /* US-EN-Daisy-Office-Window-Open.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B81D1F117700249C11 /* US-EN-Daisy-Office-Window-Open.wav */; };
 		B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */; };
 		B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
+		B60984CC225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60984CB225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift */; };
+		B60984CD225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60984CB225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift */; };
 		B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B6221F6C22267C9900502A30 /* HAAPI+WebhookHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F672226780E00502A30 /* HAAPI+WebhookHelpers.swift */; };
@@ -796,6 +798,7 @@
 		B60615B81D1F117700249C11 /* US-EN-Daisy-Office-Window-Open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Office-Window-Open.wav"; sourceTree = "<group>"; };
 		B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
 		B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
+		B60984CB225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAAPI+WebhookRequestRetrier.swift"; sourceTree = "<group>"; };
 		B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrationResponse.swift; sourceTree = "<group>"; };
 		B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CleanroomLogger.framework; path = Carthage/Build/iOS/CleanroomLogger.framework; sourceTree = "<group>"; };
 		B6221F6122266C4000502A30 /* WebhookRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRequest.swift; sourceTree = "<group>"; };
@@ -1775,6 +1778,7 @@
 			children = (
 				B6A258442232485300ADD202 /* Alamofire+EncryptedResponses.swift */,
 				B6D3B4EB225B26300082BB4F /* WebhookSensors.swift */,
+				B60984CB225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift */,
 			);
 			path = Webhook;
 			sourceTree = "<group>";
@@ -3465,6 +3469,7 @@
 				B67CE89222200F220034C1D0 /* MediaPlayer.swift in Sources */,
 				B67CE87922200F220034C1D0 /* RealmZone.swift in Sources */,
 				B67CE8BD22200F220034C1D0 /* ClientEventStore.swift in Sources */,
+				B60984CD225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift in Sources */,
 				B67CE87E22200F220034C1D0 /* Scene.swift in Sources */,
 				B67CE87F22200F220034C1D0 /* InputSlider.swift in Sources */,
 				B67CE8AC22200F220034C1D0 /* AuthenticationRoutes.swift in Sources */,
@@ -3551,6 +3556,7 @@
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
 				D0EEF31B214DD7A400D1D360 /* Services.swift in Sources */,
 				B6872E662226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
+				B60984CC225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift in Sources */,
 				D0EEF319214DD7A400D1D360 /* History.swift in Sources */,
 				B6C091412151F93D00A326DC /* Climate.swift in Sources */,
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,

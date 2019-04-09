@@ -185,11 +185,11 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             }
 
             if let cloudhookURL = context.content["cloudhook_url"] as? String {
-                Current.settingsStore.cloudhookURL = cloudhookURL
+                Current.settingsStore.cloudhookURL = URL(string: cloudhookURL)
             }
 
             if let remoteUIURL = context.content["remote_ui_url"] as? String {
-                Current.settingsStore.remoteUIURL = remoteUIURL
+                Current.settingsStore.remoteUIURL = URL(string: remoteUIURL)
             }
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()

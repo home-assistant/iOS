@@ -10,8 +10,8 @@ import Foundation
 import ObjectMapper
 
 public class MobileAppRegistrationResponse: Mappable {
-    public var CloudhookURL: String?
-    public var RemoteUIURL: String?
+    public var CloudhookURL: URL?
+    public var RemoteUIURL: URL?
     public var WebhookID: String?
     public var WebhookSecret: String?
 

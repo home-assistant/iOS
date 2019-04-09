@@ -49,9 +49,11 @@ public class HomeAssistantAPI {
 
     public private(set) var manager: Alamofire.SessionManager!
 
-    public var oneShotLocationManager: OneShotLocationManager?
+    public private(set) var webhookManager: Alamofire.SessionManager!
 
-    public var cachedEntities: [Entity]?
+    var webhookHandler: WebhookHandler!
+
+    public var oneShotLocationManager: OneShotLocationManager?
 
     public var mobileAppComponentLoaded: Bool {
         return self.loadedComponents.contains("mobile_app")
@@ -84,6 +86,17 @@ public class HomeAssistantAPI {
         manager.retrier = self.tokenManager
         manager.adapter = self.tokenManager
         self.manager = manager
+
+        if let webhookID = Current.settingsStore.webhookID {
+            let webhookManager = HomeAssistantAPI.configureSessionManager(urlConfig: urlConfig)
+            let handler = WebhookHandler(webhookID: webhookID, connectionInfo: connectionInfo,
+                                         remoteUIURL: Current.settingsStore.remoteUIURL,
+                                         cloudhookURL: Current.settingsStore.cloudhookURL)
+            webhookManager.adapter = handler
+            webhookManager.retrier = handler
+            self.webhookHandler = handler
+            self.webhookManager = webhookManager
+        }
 
         self.manager.delegate.taskDidReceiveChallenge = { session, task, challenge in
             Current.Log.verbose("HAAPI Manager received challenge")

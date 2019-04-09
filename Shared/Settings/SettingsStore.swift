@@ -129,21 +129,27 @@ public class SettingsStore {
         }
     }
 
-    public var cloudhookURL: String? {
+    public var cloudhookURL: URL? {
         get {
-            return keychain["cloudhook_url"]
+            guard let val = keychain["cloudhook_url"] else {
+                return nil
+            }
+            return URL(string: val)
         }
         set {
-            keychain["cloudhook_url"] = newValue
+            keychain["cloudhook_url"] = newValue?.absoluteString
         }
     }
 
-    public var remoteUIURL: String? {
+    public var remoteUIURL: URL? {
         get {
-            return keychain["remote_ui_url"]
+            guard let val = keychain["remote_ui_url"] else {
+                return nil
+            }
+            return URL(string: val)
         }
         set {
-            keychain["remote_ui_url"] = newValue
+            keychain["remote_ui_url"] = newValue?.absoluteString
         }
     }
 
@@ -166,8 +172,8 @@ public class SettingsStore {
     }
 
     public var webhookURL: URL? {
-        if let cloudURLStr = Current.settingsStore.cloudhookURL {
-            return URL(string: cloudURLStr)
+        if let cloudhookURL = Current.settingsStore.cloudhookURL {
+            return cloudhookURL
         }
 
         guard let wID = Current.settingsStore.webhookID else {

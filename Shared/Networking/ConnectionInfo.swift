@@ -40,18 +40,12 @@ public struct ConnectionInfo: Codable {
         if let internalSSID = self.internalSSID, internalSSID == ConnectionInfo.currentSSID(),
             let internalBaseURL = self.internalBaseURL {
             return internalBaseURL
-        } else {
-            if let remoteUIURL = Current.settingsStore.remoteUIURL {
-                return URL(string: remoteUIURL)!
-            }
-            return self.baseURL
         }
-        #else
-        if let remoteUIURL = Current.settingsStore.remoteUIURL {
-            return URL(string: remoteUIURL)!
-        }
-        return self.baseURL
         #endif
+        /*if let remoteUIURL = Current.settingsStore.remoteUIURL {
+            return remoteUIURL
+        }*/
+        return self.baseURL
     }
 
     public var activeAPIURL: URL {

@@ -19,7 +19,7 @@ extension HomeAssistantAPI {
         // Current.Log.verbose("\(callingFunctionName) response timeline: \(response.timeline)")
 
         if let cloudURL = response.response?.allHeaderFields["X-Cloud-Hook-URL"] as? String {
-            Current.settingsStore.cloudhookURL = cloudURL
+            Current.settingsStore.cloudhookURL = URL(string: cloudURL)
         }
 
         if response.response?.statusCode == 404 { // mobile_app not loaded
@@ -38,9 +38,9 @@ extension HomeAssistantAPI {
     }
 
     func buildWebhookRequest(_ type: String, payload: Any) -> DataRequest {
-        return Alamofire.request(Current.settingsStore.webhookURL!, method: .post,
-                                 parameters: WebhookRequest(type: type, data: payload).toJSON(),
-                                 encoding: JSONEncoding.default)
+        return self.webhookManager.request(self.webhookHandler.webhookURL, method: .post,
+                                           parameters: WebhookRequest(type: type, data: payload).toJSON(),
+                                           encoding: JSONEncoding.default)
 
     }
 
