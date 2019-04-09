@@ -18,6 +18,7 @@ import RealmSwift
 import UserNotifications
 import Intents
 import CoreMotion
+import Version
 #if os(iOS)
 import Reachability
 #endif
@@ -35,7 +36,10 @@ public class HomeAssistantAPI {
         case notConfigured
         case mobileAppComponentNotLoaded
         case webhookGone
+        case mustUpgradeHomeAssistant(Version)
     }
+
+    static let minimumRequiredVersion = Version(major: 0, minor: 91, patch: 2)
 
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
@@ -158,9 +162,11 @@ public class HomeAssistantAPI {
             }
             return when(fulfilled: self.GetConfig(), self.GetZones(), sensorsPromise!)
         }.map { config, zones, _ in
-            if let components = config.Components {
-                self.loadedComponents = components
+            if let oldHA = self.ensureVersion(config.Version) {
+                throw oldHA
             }
+
+            self.loadedComponents = config.Components
 
             guard self.mobileAppComponentLoaded else {
                 Current.Log.error("mobile_app component is not loaded!")
@@ -1136,6 +1142,14 @@ public class HomeAssistantAPI {
         }
 
     }
+
+    func ensureVersion(_ currentVersionStr: String) -> APIError? {
+        let currentVersion = Version(stringLiteral: currentVersionStr.replacingOccurrences(of: ".dev0", with: ""))
+        if HomeAssistantAPI.minimumRequiredVersion >= currentVersion {
+            return APIError.mustUpgradeHomeAssistant(currentVersion)
+        }
+        return nil
+    }
 }
 
 extension HomeAssistantAPI.APIError: LocalizedError {
@@ -1153,6 +1167,9 @@ extension HomeAssistantAPI.APIError: LocalizedError {
             return L10n.HaApi.ApiError.mobileAppComponentNotLoaded
         case .webhookGone:
             return L10n.HaApi.ApiError.webhookGone
+        case .mustUpgradeHomeAssistant(let current):
+            return L10n.HaApi.ApiError.mustUpgradeHomeAssistant(current.description,
+                                                                HomeAssistantAPI.minimumRequiredVersion.description)
         }
     }
 }

@@ -10,8 +10,8 @@ import Foundation
 import ObjectMapper
 
 public class ConfigResponse: Mappable {
-    public var Components: [String]?
-    public var Version: String?
+    public var Components: [String] = []
+    public var Version: String = ""
 
     public var TemperatureUnit: String?
     public var LengthUnit: String?

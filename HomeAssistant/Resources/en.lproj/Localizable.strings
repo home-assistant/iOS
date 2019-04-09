@@ -526,3 +526,4 @@
 "ha_api.api_error.not_configured" = "HA API not configured";
 "ha_api.api_error.mobile_app_component_not_loaded" = "mobile_app component not loaded or not detected";
 "ha_api.api_error.webhook_gone" = "mobile_app integration has been deleted, must reconfigure app.";
+"ha_api.api_error.must_upgrade_home_assistant" = "Your Home Assistant version (%@) is too old, you must upgrade to at least version %@ to use the app.";
