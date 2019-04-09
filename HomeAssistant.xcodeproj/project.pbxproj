@@ -2478,10 +2478,9 @@
 			};
 			buildConfigurationList = B657A8E11CA646EB00121384 /* Build configuration list for PBXProject "HomeAssistant" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 				"zh-Hans",
