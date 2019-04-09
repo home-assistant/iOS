@@ -67,6 +67,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if #available(iOS 12.0, *) { setupiOS12Features() }
 
+        self.setupView()
+
+        return true
+    }
+
+    func setupView() {
         window = UIWindow.init(frame: UIScreen.main.bounds)
         window?.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
 
@@ -107,8 +113,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             alert.popoverPresentationController?.barButtonItem = webView.toolbarItems?.last
         }
-
-        return true
     }
 
     func applicationWillResignActive(_ application: UIApplication) {}

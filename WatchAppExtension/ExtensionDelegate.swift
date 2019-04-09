@@ -188,6 +188,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 Current.settingsStore.cloudhookURL = cloudhookURL
             }
 
+            if let remoteUIURL = context.content["remote_ui_url"] as? String {
+                Current.settingsStore.remoteUIURL = remoteUIURL
+            }
+
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
@@ -266,16 +270,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
 
     func updateComplications() {
-        guard let wID = Current.settingsStore.webhookID, let connInfo = Current.settingsStore.connectionInfo else {
-            // swiftlint:disable:next line_length
-            Current.Log.warning("Didn't find webhook URL in context \(Communicator.shared.mostRecentlyReceievedContext)")
-            return
-        }
-
-        let downloadURL = connInfo.activeAPIURL.appendingPathComponent("webhook/\(wID)")
-
-        Current.Log.verbose("Render template URL \(downloadURL)")
-
         let urlID = NSUUID().uuidString
 
         self.urlIdentifier = urlID
