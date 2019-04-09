@@ -58,11 +58,19 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         } else if let pasteboardString = UIPasteboard.general.string {
             Current.Log.verbose("Intent is not configured, expecting all values on pasteboard")
 
-            // Nothing was set, hope there's a JSON object on clipboard containing service name and data.
+            // Nothing was set, hope there's a JSON object on pasteboard containing service name and data.
             // Alternatively, it could just be the payload to send if we don't find the keys that define a generic data.
             // JSON object should be same payload as we send to HA + a service key
-            Current.Log.verbose("Nothing was set, hope there's JSON on clipboard containing service name and data")
+            Current.Log.verbose("Nothing was set, hope there's JSON on pasteboard containing service name and data")
             let data = pasteboardString.data(using: .utf8)!
+
+            let validJSON = ((try? JSONSerialization.jsonObject(with: data, options: .allowFragments)) != nil)
+            if pasteboardString.prefix(1) == "{" && !validJSON {
+                Current.Log.error("Pasteboard has something that looks like JSON but it's invalid: \(pasteboardString)")
+                completion(CallServiceIntentResponse(code: .failureInvalidJSON, userActivity: nil))
+                return
+            }
+
             do {
                 if let jsonArray = try JSONSerialization.jsonObject(with: data,
                                                                     options: .allowFragments) as? [String: Any] {
@@ -85,15 +93,15 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
                         payloadDict = jsonArray
                     }
 
-                    successCode = .successViaClipboard
+                    successCode = .successViaPasteboard
                 } else {
                     Current.Log.error("Unable to parse pasteboard JSON: \(pasteboardString)")
-                    completion(CallServiceIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
+                    completion(CallServiceIntentResponse(code: .failurePasteboardNotParseable, userActivity: nil))
                     return
                 }
             } catch let error as NSError {
-                Current.Log.error("Error when parsing clipboard contents to JSON during CallService: \(error)")
-                completion(CallServiceIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
+                Current.Log.error("Error when parsing pasteboard contents to JSON during CallService: \(error)")
+                completion(CallServiceIntentResponse(code: .failurePasteboardNotParseable, userActivity: nil))
                 return
             }
         }

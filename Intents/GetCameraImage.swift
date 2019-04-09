@@ -34,9 +34,9 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         if intent.cameraID == nil, let pasteboardString = UIPasteboard.general.string,
             pasteboardString.hasPrefix("camera.") {
             intent.cameraID = pasteboardString
-            successCode = .successViaClipboard
+            successCode = .successViaPasteboard
         } else {
-            completion(GetCameraImageIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
+            completion(GetCameraImageIntentResponse(code: .failurePasteboardNotParseable, userActivity: nil))
             return
         }
 

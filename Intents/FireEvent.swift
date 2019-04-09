@@ -32,10 +32,15 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
 
         var successCode: FireEventIntentResponseCode = .success
 
-        if intent.eventData == nil, let boardStr = UIPasteboard.general.string,
-            let data = boardStr.data(using: .utf8), JSONSerialization.isValidJSONObject(data) {
+        if intent.eventData == nil, let boardStr = UIPasteboard.general.string, let data = boardStr.data(using: .utf8) {
+            let validJSON = ((try? JSONSerialization.jsonObject(with: data, options: .allowFragments)) != nil)
+            if boardStr.prefix(1) == "{" && !validJSON {
+                Current.Log.error("Pasteboard has something that looks like JSON but it's invalid: \(boardStr)")
+                completion(FireEventIntentResponse(code: .failureInvalidJSON, userActivity: nil))
+                return
+            }
             intent.eventData = boardStr
-            successCode = .successViaClipboard
+            successCode = .successViaPasteboard
         }
 
         var eventDataDict: [String: Any] = [:]
@@ -70,7 +75,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
                 }
             } catch let error as NSError {
                 Current.Log.error("Error when parsing event data to JSON during FireEvent: \(error)")
-                completion(FireEventIntentResponse(code: .failureClipboardNotParseable, userActivity: nil))
+                completion(FireEventIntentResponse(code: .failurePasteboardNotParseable, userActivity: nil))
                 return
             }
         }

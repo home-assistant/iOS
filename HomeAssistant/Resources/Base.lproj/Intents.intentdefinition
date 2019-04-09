@@ -6,7 +6,7 @@
 	<array>
 		<dict>
 			<key>INEnumName</key>
-			<string>ClipboardLocationParsedAs</string>
+			<string>PasteboardLocationParsedAs</string>
 			<key>INEnumType</key>
 			<string>Regular</string>
 			<key>INEnumValues</key>
@@ -57,11 +57,11 @@
 	<key>INIntentDefinitionModelVersion</key>
 	<string>1.0</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>18B75</string>
+	<string>18E226</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>10B61</string>
+	<string>10E125</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>10.1</string>
+	<string>10.2</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -219,7 +219,7 @@
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>30yAOG</string>
 						<key>INIntentResponseCodeName</key>
-						<string>failureClipboardNotParseable</string>
+						<string>failurePasteboardNotParseable</string>
 						<key>INIntentResponseCodeSuccess</key>
 						<false/>
 					</dict>
@@ -239,9 +239,19 @@
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>ri4H1h</string>
 						<key>INIntentResponseCodeName</key>
-						<string>successViaClipboard</string>
+						<string>successViaPasteboard</string>
 						<key>INIntentResponseCodeSuccess</key>
 						<true/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>JSON was found on the clipboard but was invalid.</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>YyQQL1</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failureInvalidJSON</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
 					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
@@ -388,7 +398,7 @@
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>VGzL7U</string>
 						<key>INIntentResponseCodeName</key>
-						<string>failureClipboardNotParseable</string>
+						<string>failurePasteboardNotParseable</string>
 						<key>INIntentResponseCodeSuccess</key>
 						<false/>
 					</dict>
@@ -408,13 +418,13 @@
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>7NpJ76</string>
 						<key>INIntentResponseCodeName</key>
-						<string>successViaClipboard</string>
+						<string>successViaPasteboard</string>
 						<key>INIntentResponseCodeSuccess</key>
 						<true/>
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to geocode ${clipboardContents} to a valid location</string>
+						<string>Failed to geocode ${pasteboardContents} to a valid location</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>sbkx4E</string>
 						<key>INIntentResponseCodeName</key>
@@ -443,7 +453,7 @@
 						<key>INIntentResponseParameterDisplayPriority</key>
 						<integer>2</integer>
 						<key>INIntentResponseParameterEnumType</key>
-						<string>ClipboardLocationParsedAs</string>
+						<string>PasteboardLocationParsedAs</string>
 						<key>INIntentResponseParameterName</key>
 						<string>source</string>
 						<key>INIntentResponseParameterSupportsMultipleValues</key>
@@ -457,7 +467,7 @@
 						<key>INIntentResponseParameterDisplayPriority</key>
 						<integer>3</integer>
 						<key>INIntentResponseParameterName</key>
-						<string>clipboardContents</string>
+						<string>pasteboardContents</string>
 						<key>INIntentResponseParameterSupportsMultipleValues</key>
 						<false/>
 						<key>INIntentResponseParameterTag</key>
@@ -608,7 +618,7 @@
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>KU19Ap</string>
 						<key>INIntentResponseCodeName</key>
-						<string>failureClipboardNotParseable</string>
+						<string>failurePasteboardNotParseable</string>
 						<key>INIntentResponseCodeSuccess</key>
 						<false/>
 					</dict>
@@ -628,9 +638,19 @@
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>qfHa79</string>
 						<key>INIntentResponseCodeName</key>
-						<string>successViaClipboard</string>
+						<string>successViaPasteboard</string>
 						<key>INIntentResponseCodeSuccess</key>
 						<true/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>JSON was found on the clipboard but was invalid.</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>boiLEw</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failureInvalidJSON</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<false/>
 					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
@@ -765,7 +785,7 @@
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>4k18T7</string>
 						<key>INIntentResponseCodeName</key>
-						<string>failureClipboardNotParseable</string>
+						<string>failurePasteboardNotParseable</string>
 						<key>INIntentResponseCodeSuccess</key>
 						<false/>
 					</dict>
@@ -785,7 +805,7 @@
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>mgspvx</string>
 						<key>INIntentResponseCodeName</key>
-						<string>successViaClipboard</string>
+						<string>successViaPasteboard</string>
 						<key>INIntentResponseCodeSuccess</key>
 						<true/>
 					</dict>
@@ -932,7 +952,7 @@
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>rlOS6H</string>
 						<key>INIntentResponseCodeName</key>
-						<string>successViaClipboard</string>
+						<string>successViaPasteboard</string>
 						<key>INIntentResponseCodeSuccess</key>
 						<true/>
 					</dict>

@@ -32,9 +32,9 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
 
         if intent.template == nil, let pasteboardString = UIPasteboard.general.string {
             intent.template = pasteboardString
-            successCode = .successViaClipboard
+            successCode = .successViaPasteboard
         } else {
-            completion(.failure(error: "Template not previously set and no template found on clipboard"))
+            completion(.failure(error: "Template not previously set and no template found on pasteboard"))
             return
         }
 
