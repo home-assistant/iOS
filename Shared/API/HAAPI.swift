@@ -157,21 +157,25 @@ public class HomeAssistantAPI {
     public func Connect() -> Promise<ConfigResponse> {
 
         var registrationPromise: Promise<Void>?
-        var sensorsPromise: Promise<Void>?
+        let initialRegistration = (Current.settingsStore.webhookID == nil)
 
-        if let webhookID = Current.settingsStore.webhookID {
-            Current.Log.warning("Device already registered with mobile_app, updating \(webhookID)")
-            registrationPromise = self.updateRegistration().asVoid()
-            sensorsPromise = self.updateSensors(trigger: .Unknown).asVoid()
-        } else {
+        if initialRegistration {
             registrationPromise = self.registerDevice().asVoid()
-            sensorsPromise = self.registerSensors().asVoid()
+        } else {
+            Current.Log.warning("Device already registered with mobile_app, updating registration")
+            registrationPromise = self.updateRegistration().asVoid()
         }
 
         return firstly {
             registrationPromise!
-        }.then {
-            when(fulfilled: self.GetConfig(), self.GetZones(), sensorsPromise!)
+        }.then { _ -> Promise<(ConfigResponse, [Zone], Void)> in
+            var sensorsPromise: Promise<Void>?
+            if initialRegistration {
+                sensorsPromise = self.registerSensors().asVoid()
+            } else {
+                sensorsPromise = self.updateSensors(trigger: .Unknown).asVoid()
+            }
+            return when(fulfilled: self.GetConfig(), self.GetZones(), sensorsPromise!)
         }.map { config, zones, _ in
             if let components = config.Components {
                 self.loadedComponents = components
