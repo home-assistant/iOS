@@ -176,10 +176,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 }
             }
 
-            if let apiPassword = context.content["apiPassword"] as? String {
-                Constants.Keychain["apiPassword"] = apiPassword
-            }
-
             if let webhookID = context.content["webhook_id"] as? String {
                 Current.settingsStore.webhookID = webhookID
             }

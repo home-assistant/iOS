@@ -24,7 +24,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         return false
     }
     var waitingToHideToolbar: Bool = false
-    var modernAuth: Bool = true
 
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
@@ -84,7 +83,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         config.userContentController = userContentController
 
         self.webView = FullScreenWKWebView(frame: self.view!.frame, configuration: config)
-        self.updateWebViewSettings()
         self.webView.isOpaque = true
         self.webView.scrollView.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
         self.view!.addSubview(webView)
@@ -108,9 +106,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         CheckPermissionsStatus()
 
         if let api = HomeAssistantAPI.authenticatedAPI() {
-            self.modernAuth = (api.authenticationMethodString == "modern")
             if let connectionInfo = Current.settingsStore.connectionInfo,
-                let webviewURL = connectionInfo.webviewURL(externalAuth: modernAuth) {
+                let webviewURL = connectionInfo.webviewURL() {
                 api.Connect().done {_ in
                     if Current.settingsStore.notificationsEnabled {
                         UIApplication.shared.registerForRemoteNotifications()
@@ -149,7 +146,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         super.viewWillAppear(animated)
 
         if let connectionInfo = Current.settingsStore.connectionInfo,
-            let webviewURL = connectionInfo.webviewURL(externalAuth: self.modernAuth) {
+            let webviewURL = connectionInfo.webviewURL() {
             let myRequest = URLRequest(url: webviewURL)
             self.webView.load(myRequest)
         }
@@ -297,7 +294,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }
 
         alert.addTextField {
-            $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.title
+            $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Password.title
             $0.isSecureTextEntry = true
         }
 
@@ -338,8 +335,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                 self.navigationController?.setToolbarHidden(true, animated: true)
             }
         }
-
-        updateWebViewSettings()
     }
 
     // WKUIDelegate
@@ -401,7 +396,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     @objc func loadActiveURLIfNeeded() {
         if HomeAssistantAPI.authenticatedAPI() != nil,
             let connectionInfo = Current.settingsStore.connectionInfo,
-            let webviewURL = connectionInfo.webviewURL(externalAuth: self.modernAuth) {
+            let webviewURL = connectionInfo.webviewURL() {
             if let currentURL = self.webView.url, !currentURL.baseIsEqual(to: webviewURL) {
                 Current.Log.verbose("Changing webview to current active URL!")
                 let myRequest = URLRequest(url: webviewURL)
@@ -424,10 +419,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             if self.webView.isLoading {
                 self.webView.stopLoading()
             } else if touch.tapCount == 0,
-                let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(externalAuth: self.modernAuth) {
+                let webviewURL = Current.settingsStore.connectionInfo?.webviewURL() {
                 self.webView.load(URLRequest(url: webviewURL))
-            } else if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(externalAuth: self.modernAuth,
-                                                                                        reloadURL: self.webView.url) {
+            } else if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(reloadURL: self.webView.url) {
                 self.webView.load(URLRequest(url: webviewURL))
             }
         }
@@ -498,29 +492,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         return .lightContent
     }
 
-    func updateWebViewSettings() {
-        if self.modernAuth {
-            Current.Log.verbose("Not injecting password into localStorage since we are using modern auth")
-            return
-        }
-        if let apiPass = keychain["apiPassword"] {
-            self.webView.evaluateJavaScript("localStorage.getItem(\"authToken\")") { (result, error) in
-                var storedPass = ""
-                if result != nil, let resString = result as? String {
-                    storedPass = resString
-                }
-                if error != nil || result == nil || storedPass != apiPass {
-                    Current.Log.verbose("Setting password into LocalStorage")
-                    self.webView.evaluateJavaScript("localStorage.setItem(\"authToken\", \"\(apiPass)\")") { (_, _) in
-                        self.webView.reload()
-                    }
-                }
-            }
-        }
-    }
-
     func userReconnected() {
-        self.updateWebViewSettings()
         self.loadActiveURLIfNeeded()
     }
 
@@ -670,7 +642,7 @@ extension WebViewController: UIScrollViewDelegate {
 }
 
 extension ConnectionInfo {
-    func webviewURL(externalAuth: Bool = true, reloadURL: URL? = nil) -> URL? {
+    func webviewURL(reloadURL: URL? = nil) -> URL? {
         var baseURL = self.activeURL
         if let reloadURL = reloadURL {
             baseURL = reloadURL

@@ -607,7 +607,7 @@ internal enum L10n {
     }
     internal enum ConnectionError {
       internal enum Forbidden {
-        /// The password was incorrect.
+        /// The authentication was incorrect.
         internal static let message = L10n.tr("Localizable", "settings.connection_error.forbidden.message")
       }
       internal enum InvalidUrl {
@@ -628,12 +628,6 @@ internal enum L10n {
     internal enum ConnectionSection {
       /// Connection
       internal static let header = L10n.tr("Localizable", "settings.connection_section.header")
-      internal enum ApiPasswordRow {
-        /// password
-        internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.api_password_row.placeholder")
-        /// Password
-        internal static let title = L10n.tr("Localizable", "settings.connection_section.api_password_row.title")
-      }
       internal enum BaseUrl {
         /// https://homeassistant.myhouse.com
         internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.base_url.placeholder")
@@ -695,10 +689,6 @@ internal enum L10n {
       internal enum UseInternalUrl {
         /// Use internal URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.use_internal_url.title")
-      }
-      internal enum UseLegacyAuth {
-        /// Use legacy authentication
-        internal static let title = L10n.tr("Localizable", "settings.connection_section.use_legacy_auth.title")
       }
     }
     internal enum DetailsSection {
@@ -806,8 +796,6 @@ internal enum L10n {
     internal enum DiscoverySection {
       /// Discovered Home Assistants
       internal static let header = L10n.tr("Localizable", "settings.discovery_section.header")
-      /// Requires password
-      internal static let requiresPassword = L10n.tr("Localizable", "settings.discovery_section.requiresPassword")
     }
     internal enum EventLog {
       /// Event Log

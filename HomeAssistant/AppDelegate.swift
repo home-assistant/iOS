@@ -557,17 +557,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupFastlaneSnapshotConfiguration() {
-        let baseURL = URL(string: "https://privatedemo.home-assistant.io")!
-
-        keychain["apiPassword"] = "demoprivate"
-
-        let connectionInfo = ConnectionInfo(baseURL: baseURL, internalBaseURL: nil, internalSSID: nil,
-                                            basicAuthCredentials: nil)
-
-        let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-                                   authenticationMethod: .legacy(apiPassword: "demoprivate"))
-        Current.updateWith(authenticatedAPI: api)
-        Current.settingsStore.connectionInfo = connectionInfo
+        // FIXME: Adapt to oAuth
+//        let baseURL = URL(string: "https://privatedemo.home-assistant.io")!
+//
+//        keychain["apiPassword"] = "demoprivate"
+//
+//        let connectionInfo = ConnectionInfo(baseURL: baseURL, internalBaseURL: nil, internalSSID: nil,
+//                                            basicAuthCredentials: nil)
+//
+//        let api = HomeAssistantAPI(connectionInfo: connectionInfo,
+//                                   authenticationMethod: .legacy(apiPassword: "demoprivate"))
+//        Current.updateWith(authenticatedAPI: api)
+//        Current.settingsStore.connectionInfo = connectionInfo
     }
 
     // swiftlint:disable:next function_body_length

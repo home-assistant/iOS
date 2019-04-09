@@ -41,7 +41,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     var showErrorConnectingMessageError: Error?
 
     var baseURL: URL?
-    var legacyPassword: String?
     var internalBaseURL: URL?
     var internalBaseURLSSID: String?
     var internalBaseURLEnabled: Bool = false
@@ -54,7 +53,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     var basicAuthEnabled: Bool {
         return (self.form.rowBy(tag: "basicAuth") as? SwitchRow)?.value ?? false
     }
-    var useLegacyAuth: Bool = false
 
     var configured = false
     var connectionInfo: ConnectionInfo?
@@ -90,8 +88,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
         // Initial state
         let keychain = Constants.Keychain
-        self.legacyPassword = keychain["apiPassword"]
-        self.useLegacyAuth = Current.settingsStore.tokenInfo == nil && self.legacyPassword != nil
         self.connectionInfo = Current.settingsStore.connectionInfo
         self.tokenInfo = Current.settingsStore.tokenInfo
 
@@ -169,31 +165,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                     }
                 }
             })
-            <<< SwitchRow("useLegacyAuth") {
-                $0.title = L10n.Settings.ConnectionSection.UseLegacyAuth.title
-                $0.value = self.useLegacyAuth
-                }.onChange { switchRow in
-                    guard let passwordRow = self.form.rowBy(tag: "apiPassword") else {
-                        return
-                    }
-
-                    self.useLegacyAuth = switchRow.value ?? false
-                    passwordRow.hidden = Condition(booleanLiteral: !(switchRow.value ?? false))
-                    passwordRow.evaluateHidden()
-                    self.tableView.reloadData()
-            }
-            <<< PasswordRow("apiPassword") {
-                $0.title = L10n.Settings.ConnectionSection.ApiPasswordRow.title
-                $0.value = self.legacyPassword
-                $0.placeholder = L10n.Settings.ConnectionSection.ApiPasswordRow.placeholder
-                $0.hidden = Condition(booleanLiteral: !self.useLegacyAuth)
-                }.onChange { row in
-                    self.legacyPassword = row.value
-                }.cellUpdate { cell, row in
-                    if !row.isValid {
-                        cell.titleLabel?.textColor = .red
-                    }
-            }
             <<< SwitchRow("showAdvancedConnectionSettings") {
                 $0.title = L10n.Settings.ConnectionSection.ShowAdvancedSettingsRow.title
                 $0.value = Current.settingsStore.showAdvancedConnectionSettings
@@ -683,8 +654,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 return
             }
 
-            let needsPass = discoveryInfo.RequiresPassword ? " - "+L10n.Settings.DiscoverySection.requiresPassword : ""
-
             var url = discoveryInfo.BaseURL?.host ?? "Unknown"
             let scheme = discoveryInfo.BaseURL?.scheme ?? "Unknown"
 
@@ -692,7 +661,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 url = "\(host):\(port)"
             }
 
-            let detailTextLabel = "\(url) - \(discoveryInfo.Version) - \(scheme) \(needsPass)"
+            let detailTextLabel = "\(url) - \(discoveryInfo.Version) - \(scheme.uppercased())"
             if self.form.rowBy(tag: discoveryInfo.LocationName) == nil {
                 discoverySection
                     <<< ButtonRow(discoveryInfo.LocationName) {
@@ -708,16 +677,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                             let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
                             urlRow.value = discoveryInfo.BaseURL
                             urlRow.updateCell()
-                            let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
-                            apiPasswordRow.value = ""
-                            apiPasswordRow.hidden = Condition(booleanLiteral: !self.useLegacyAuth ||
-                                !discoveryInfo.RequiresPassword)
-                            apiPasswordRow.evaluateHidden()
-                            if discoveryInfo.RequiresPassword {
-                                apiPasswordRow.add(rule: RuleRequired())
-                            } else {
-                                apiPasswordRow.removeAllRules()
-                            }
                             self.tableView?.reloadData()
                         })
                 self.tableView?.reloadData()
@@ -767,9 +726,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
         urlRow.value = nil
         urlRow.updateCell()
-        let apiPasswordRow: PasswordRow = self.form.rowBy(tag: "apiPassword")!
-        apiPasswordRow.value = ""
-        apiPasswordRow.updateCell()
         let statusSection: Section = self.form.sectionBy(tag: "status")!
         statusSection.hidden = true
         statusSection.evaluateHidden()
@@ -834,7 +790,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         let tryExistingCredentials: () -> Promise<ConfigResponse> = {
             if let existingTokenInfo = self.tokenInfo {
                 let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-                                           authenticationMethod: .modern(tokenInfo: existingTokenInfo))
+                                           tokenInfo: existingTokenInfo)
                 return api.GetConfig()
             } else {
                 return Promise(error: SettingsError.credentialsUnavailable)
@@ -904,47 +860,28 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             return false
         }
 
-        if !self.useLegacyAuth {
-            _ = firstly {
-                    self.confirmConnection(with: connectionInfo)
-                }.then { confirmedConnectionInfo -> Promise<ConfigResponse> in
-                    // At this point we are authenticated with modern auth. Clear legacy password.
-                    Current.Log.info("Confirmed connection to server: \(connectionInfo.activeURL)")
-                    let keychain = Constants.Keychain
-                    keychain["apiPassword"] = nil
-                    Current.settingsStore.connectionInfo = confirmedConnectionInfo
-                    guard let tokenInfo = Current.settingsStore.tokenInfo else {
-                        Current.Log.warning("No token available when we think there should be")
-                        throw SettingsError.configurationFailed
-                    }
-
-                    let api = HomeAssistantAPI(connectionInfo: confirmedConnectionInfo,
-                                               authenticationMethod: .modern(tokenInfo: tokenInfo))
-                    Current.updateWith(authenticatedAPI: api)
-                    _ = HomeAssistantAPI.SyncWatchContext()
-                    return api.Connect()
-                }.done { config in
-                    Current.Log.verbose("Getting current configuration successful. Updating UI")
-                    self.configureUIWith(configResponse: config)
-                }.catch { error in
-                    self.handleConnectionError(error)
+        _ = firstly {
+            self.confirmConnection(with: connectionInfo)
+        }.then { confirmedConnectionInfo -> Promise<ConfigResponse> in
+            // At this point we are authenticated with modern auth. Clear legacy password.
+            Current.Log.info("Confirmed connection to server: \(connectionInfo.activeURL)")
+            let keychain = Constants.Keychain
+            keychain["apiPassword"] = nil
+            Current.settingsStore.connectionInfo = confirmedConnectionInfo
+            guard let tokenInfo = Current.settingsStore.tokenInfo else {
+                Current.Log.warning("No token available when we think there should be")
+                throw SettingsError.configurationFailed
             }
-        } else {
-            let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-                                       authenticationMethod: .legacy(apiPassword: self.legacyPassword))
 
-            api.Connect().done { config in
-                /// Connected with legacy auth. Store credentials.
-                Current.settingsStore.connectionInfo = connectionInfo
-                if let password = self.legacyPassword {
-                    keychain["apiPassword"] = password
-                }
-                Current.updateWith(authenticatedAPI: api)
-                _ = HomeAssistantAPI.SyncWatchContext()
-                self.configureUIWith(configResponse: config)
-            }.catch { error in
-                    self.handleConnectionError(error)
-            }
+            let api = HomeAssistantAPI(connectionInfo: confirmedConnectionInfo, tokenInfo: tokenInfo)
+            Current.updateWith(authenticatedAPI: api)
+            _ = HomeAssistantAPI.SyncWatchContext()
+            return api.Connect()
+        }.done { config in
+            Current.Log.verbose("Getting current configuration successful. Updating UI")
+            self.configureUIWith(configResponse: config)
+        }.catch { error in
+            self.handleConnectionError(error)
         }
 
         return true

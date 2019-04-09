@@ -37,20 +37,11 @@ public class HomeAssistantAPI {
         case webhookGone
     }
 
-    public enum AuthenticationMethod {
-        case legacy(apiPassword: String?)
-        case modern(tokenInfo: TokenInfo)
-    }
-
-    public var authenticationMethodString = "unknown"
-
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
     public var pushID: String?
 
     public var loadedComponents = [String]()
-
-    var apiPassword: String?
 
     public private(set) var manager: Alamofire.SessionManager!
 
@@ -80,21 +71,15 @@ public class HomeAssistantAPI {
     public let motionActivityManager = CMMotionActivityManager()
 
     /// Initialize an API object with an authenticated tokenManager.
-    public init(connectionInfo: ConnectionInfo, authenticationMethod: AuthenticationMethod,
+    public init(connectionInfo: ConnectionInfo, tokenInfo: TokenInfo,
                 urlConfig: URLSessionConfiguration = .default) {
         self.connectionInfo = connectionInfo
 
-        switch authenticationMethod {
-        case .legacy(let apiPassword):
-            self.manager = HomeAssistantAPI.configureSessionManager(withPassword: apiPassword, urlConfig: urlConfig)
-        case .modern(let tokenInfo):
-            self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
-            let manager = HomeAssistantAPI.configureSessionManager(urlConfig: urlConfig)
-            manager.retrier = self.tokenManager
-            manager.adapter = self.tokenManager
-            self.manager = manager
-            self.authenticationMethodString = "modern"
-        }
+        self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
+        let manager = HomeAssistantAPI.configureSessionManager(urlConfig: urlConfig)
+        manager.retrier = self.tokenManager
+        manager.adapter = self.tokenManager
+        self.manager = manager
 
         self.manager.delegate.taskDidReceiveChallenge = { session, task, challenge in
             Current.Log.verbose("HAAPI Manager received challenge")
@@ -127,18 +112,14 @@ public class HomeAssistantAPI {
     }
 
     func authenticatedSessionManager() -> Alamofire.SessionManager? {
-        guard Current.settingsStore.connectionInfo != nil else {
+        guard Current.settingsStore.connectionInfo != nil && Current.settingsStore.tokenInfo != nil else {
             return nil
         }
 
-        if Current.settingsStore.tokenInfo != nil {
-            let manager = HomeAssistantAPI.configureSessionManager()
-            manager.retrier = self.tokenManager
-            manager.adapter = self.tokenManager
-            return manager
-        } else {
-            return HomeAssistantAPI.configureSessionManager(withPassword: keychain["apiPassword"])
-        }
+        let manager = HomeAssistantAPI.configureSessionManager()
+        manager.retrier = self.tokenManager
+        manager.adapter = self.tokenManager
+        return manager
     }
 
     public func videoStreamer() -> MJPEGStreamer? {
@@ -225,12 +206,7 @@ public class HomeAssistantAPI {
 
         if let tokenInfo = Current.settingsStore.tokenInfo {
             let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-                                       authenticationMethod: .modern(tokenInfo: tokenInfo), urlConfig: urlConfig)
-            self.sharedAPI = api
-        } else {
-            let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-                                       authenticationMethod: .legacy(apiPassword: keychain["apiPassword"]),
-                                       urlConfig: urlConfig)
+                                       tokenInfo: tokenInfo, urlConfig: urlConfig)
             self.sharedAPI = api
         }
 
@@ -802,15 +778,8 @@ public class HomeAssistantAPI {
         storeableZone.BeaconMinor.value = zone.Minor
     }
 
-    private static func configureSessionManager(withPassword password: String? = nil,
-                                                urlConfig: URLSessionConfiguration = .default) -> SessionManager {
-        var headers = Alamofire.SessionManager.defaultHTTPHeaders
-        if let password = password {
-            headers["X-HA-Access"] = password
-        }
-
+    private static func configureSessionManager(urlConfig: URLSessionConfiguration = .default) -> SessionManager {
         let configuration = urlConfig
-        configuration.httpAdditionalHeaders = headers
         configuration.timeoutIntervalForRequest = 10 // seconds
         return Alamofire.SessionManager(configuration: configuration)
     }

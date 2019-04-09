@@ -27,7 +27,6 @@ extension HomeAssistantAPI {
             content["token_info"] = String(data: tokenInfo, encoding: .utf8)
         }
 
-        content["apiPassword"] = keychain["apiPassword"]
         content["webhook_id"] = Current.settingsStore.webhookID
         content["webhook_secret"] = Current.settingsStore.webhookSecret
         content["cloudhook_url"] = Current.settingsStore.cloudhookURL

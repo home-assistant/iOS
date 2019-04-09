@@ -22,7 +22,6 @@ public class DiscoveryInfoResponse: Mappable {
     public var BaseURL: URL?
     public var BaseURLString: String = ""
     public var LocationName: String = ""
-    public var RequiresPassword: Bool = false
     public var Version: String = ""
     public var UsesSSL: Bool = false
 
@@ -34,7 +33,6 @@ public class DiscoveryInfoResponse: Mappable {
         BaseURL             <- (map["base_url"], URLTransform())
         BaseURLString       <- map["base_url"]
         LocationName        <- map["location_name"]
-        RequiresPassword    <- map["requires_api_password"]
         Version             <- map["version"]
 
         UsesSSL             <- (map["base_url"], usesSSL)
