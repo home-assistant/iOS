@@ -297,6 +297,12 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+	<false/>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<false/>
 	<key>IS_SANDBOXED</key>
 	<string>${IS_SANDBOXED}</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -319,8 +325,8 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We suggest selecting &quot;Always Allow&quot; for the best location experience.
-            Selecting &quot;Only While Using the App&quot; will disable iBeacons, geofences, background location updates and accurate reporting.</string>
+	<string>We suggest selecting "Always Allow" for the best location experience.
+            Selecting "Only While Using the App" will disable iBeacons, geofences, background location updates and accurate reporting.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -383,8 +389,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<false/>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -392,11 +396,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>FirebaseMessagingAutoInitEnabled</key>
-	<false/>
 	<key>firebase_crashlytics_collection_enabled</key>
-	<false/>
-	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
 	<false/>
 </dict>
 </plist>
