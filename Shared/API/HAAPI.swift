@@ -96,15 +96,15 @@ public class HomeAssistantAPI {
         manager.adapter = self.tokenManager
         self.manager = manager
 
+        self.webhookManager = HomeAssistantAPI.configureSessionManager(urlConfig: urlConfig)
+
         if let webhookID = Current.settingsStore.webhookID {
-            let webhookManager = HomeAssistantAPI.configureSessionManager(urlConfig: urlConfig)
             let handler = WebhookHandler(webhookID: webhookID, connectionInfo: connectionInfo,
                                          remoteUIURL: Current.settingsStore.remoteUIURL,
                                          cloudhookURL: Current.settingsStore.cloudhookURL)
-            webhookManager.adapter = handler
-            webhookManager.retrier = handler
+            self.webhookManager.adapter = handler
+            self.webhookManager.retrier = handler
             self.webhookHandler = handler
-            self.webhookManager = webhookManager
         }
 
         self.manager.delegate.taskDidReceiveChallenge = { session, task, challenge in
@@ -555,6 +555,13 @@ public class HomeAssistantAPI {
                 Current.settingsStore.remoteUIURL = resp.RemoteUIURL
                 Current.settingsStore.webhookID = resp.WebhookID
                 Current.settingsStore.webhookSecret = resp.WebhookSecret
+
+                let handler = WebhookHandler(webhookID: resp.WebhookID, connectionInfo: self.connectionInfo,
+                                             remoteUIURL: resp.RemoteUIURL, cloudhookURL: resp.CloudhookURL)
+                self.webhookManager.adapter = handler
+                self.webhookManager.retrier = handler
+                self.webhookHandler = handler
+
                 return Promise.value(resp)
         }
     }
