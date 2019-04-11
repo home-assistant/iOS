@@ -82,7 +82,8 @@ public class WebhookSensors {
     // MARK: Connectivity sensors
 
     public var BSSID: WebhookSensor? {
-        let sensor = WebhookSensor(name: "BSSID", uniqueID: "bssid", icon: "mdi:wifi-star", state: "Not Connected")
+        let sensor = WebhookSensor(name: "BSSID", uniqueID: "connectivity_bssid", icon: "mdi:wifi-star",
+                                   state: "Not Connected")
 
         if let bssid = ConnectionInfo.currentBSSID() {
             sensor.State = bssid
@@ -91,7 +92,8 @@ public class WebhookSensors {
     }
 
     public var SSID: WebhookSensor? {
-        let sensor = WebhookSensor(name: "SSID", uniqueID: "ssid", icon: "mdi:wifi", state: "Not Connected")
+        let sensor = WebhookSensor(name: "SSID", uniqueID: "connectivity_ssid", icon: "mdi:wifi",
+                                   state: "Not Connected")
         if let ssid = ConnectionInfo.currentSSID() {
             sensor.State = ssid
         }
@@ -101,7 +103,7 @@ public class WebhookSensors {
     public var ConnectionType: WebhookSensor {
         let state = Reachability.getSimpleNetworkType()
 
-        let sensor = WebhookSensor(name: "Connection Type", uniqueID: "connection_type", icon: state.icon,
+        let sensor = WebhookSensor(name: "Connection Type", uniqueID: "connectivity_connection_type", icon: state.icon,
                                    state: state.description)
 
         if state == .cellular {
@@ -127,12 +129,12 @@ public class WebhookSensors {
     private func makeCarrierSensor(_ carrier: CTCarrier,
                                    _ radioTech: String?,
                                    _ key: String? = nil) -> WebhookSensor {
-        var carrierSensor = WebhookSensor(name: "Cellular Provider", uniqueID: "cellular_provider",
+        var carrierSensor = WebhookSensor(name: "Cellular Provider", uniqueID: "connectivity_cellular_provider",
                                            icon: "mdi:signal", state: "Unknown")
 
         if let key = key {
-            carrierSensor = WebhookSensor(name: "Cellular Provider \(key)", uniqueID: "cellular_provider_\(key)",
-                icon: "mdi:signal", state: "Unknown")
+            carrierSensor = WebhookSensor(name: "Cellular Provider \(key)",
+                uniqueID: "connectivity_cellular_provider_\(key)", icon: "mdi:signal", state: "Unknown")
         }
 
         carrierSensor.State = carrier.carrierName
@@ -225,7 +227,7 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: "Distance", uniqueID: "distance", state: intVal)
+        return WebhookSensor(name: "Distance", uniqueID: "pedometer_distance", state: intVal)
     }
 
     private var floorsAscended: WebhookSensor? {
@@ -233,7 +235,7 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: "Floors Ascended", uniqueID: "floors_ascended",
+        return WebhookSensor(name: "Floors Ascended", uniqueID: "pedometer_floors_ascended",
                              icon: "mdi:slope-uphill", state: intVal)
     }
 
@@ -242,7 +244,7 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: "Floors Descended", uniqueID: "floors_descended",
+        return WebhookSensor(name: "Floors Descended", uniqueID: "pedometer_floors_descended",
                              icon: "mdi:slope-downhill", state: intVal)
     }
 
@@ -250,7 +252,7 @@ public class WebhookSensors {
         guard let intVal = self.pedometerData?.numberOfSteps.intValue else {
             return nil
         }
-        return WebhookSensor(name: "Steps", uniqueID: "steps", icon: "mdi:walk", state: intVal)
+        return WebhookSensor(name: "Steps", uniqueID: "pedometer_steps", icon: "mdi:walk", state: intVal)
     }
 
     private var averageActivePace: WebhookSensor? {
@@ -258,7 +260,7 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: "Avg. Active Pace", uniqueID: "avg_active_pace",
+        return WebhookSensor(name: "Avg. Active Pace", uniqueID: "pedometer_avg_active_pace",
                              icon: "mdi:speedometer", state: intVal)
     }
 
@@ -267,7 +269,8 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: "Current Pace", uniqueID: "current_pace", icon: "mdi:speedometer", state: intVal)
+        return WebhookSensor(name: "Current Pace", uniqueID: "pedometer_current_pace",
+                             icon: "mdi:speedometer", state: intVal)
     }
 
     private var currentCadence: WebhookSensor? {
@@ -275,7 +278,7 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: "Current Cadence", uniqueID: "current_cadence", state: intVal)
+        return WebhookSensor(name: "Current Cadence", uniqueID: "pedometer_current_cadence", state: intVal)
     }
 
     // MARK: CMMotionActivity sensors
