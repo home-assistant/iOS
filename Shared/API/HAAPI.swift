@@ -182,7 +182,7 @@ public class HomeAssistantAPI {
             if initialRegistration {
                 sensorsPromise = self.registerSensors().asVoid()
             } else {
-                sensorsPromise = self.updateSensors(trigger: .Unknown).asVoid()
+                sensorsPromise = self.updateSensors(.Unknown).asVoid()
             }
             return when(fulfilled: self.GetConfig(), self.GetZones(), sensorsPromise!)
         }.map { config, zones, _ in
@@ -950,7 +950,7 @@ public class HomeAssistantAPI {
         }.then { (payload: [String: Any]) -> Promise<([String: WebhookSensorResponse], Any, [String: Any])> in
             let locUpdate: Promise<Any> = self.webhook("update_location",
                                                        payload: payload, callingFunctionName: "\(#function)")
-            return when(fulfilled: self.updateSensors(trigger: updateType), locUpdate, Promise.value(payload))
+            return when(fulfilled: self.updateSensors(updateType, location), locUpdate, Promise.value(payload))
         }.then { (resp) -> Promise<Bool> in
             Current.Log.verbose("Device seen via webhook!")
             self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: resp.2)
@@ -1092,13 +1092,16 @@ public class HomeAssistantAPI {
         }
     }
 
+    private let sensorsConfig = WebhookSensors()
+
     public func registerSensors() -> Promise<[WebhookSensorResponse]> {
         return firstly {
-            WebhookSensors().AllSensors
+            self.sensorsConfig.AllSensors
         }.then { (sensors: [WebhookSensor]) -> Promise<[WebhookSensorResponse]> in
 
             var allSensors = sensors
             allSensors.append(WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger"))
+            allSensors.append(self.sensorsConfig.GeocodedLocationSensorConfig)
 
             var promises: [Promise<WebhookSensorResponse>] = []
 
@@ -1111,9 +1114,19 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func updateSensors(trigger: LocationUpdateTrigger = .Unknown) -> Promise<[String: WebhookSensorResponse]> {
+    public func updateSensors(_ trigger: LocationUpdateTrigger = .Unknown,
+                              _ location: CLLocation? = nil) -> Promise<[String: WebhookSensorResponse]> {
         return firstly {
-            return WebhookSensors().AllSensors
+            return self.sensorsConfig.AllSensors
+        }.then { sensors -> Promise<[WebhookSensor]> in
+            guard let location = location else {
+                return Promise.value(sensors)
+            }
+            return self.sensorsConfig.GeocodedLocationSensor(location).map { geoSensor in
+                var allSensors = sensors
+                allSensors.append(geoSensor)
+                return allSensors
+            }
         }.map { sensors in
             let lastUpdateTriggerSensor = WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger")
             if trigger != .Unknown {
@@ -1161,7 +1174,7 @@ public class HomeAssistantAPI {
             Current.Log.warning("Errors detected during sensor update, re-registering all sensors now")
 
             return self.registerSensors().then { _ -> Promise<[String: WebhookSensorResponse]> in
-                return self.updateSensors(trigger: trigger)
+                return self.updateSensors(trigger)
             }
         }
 

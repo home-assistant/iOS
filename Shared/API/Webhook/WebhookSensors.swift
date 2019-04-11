@@ -10,6 +10,8 @@ import Foundation
 import PromiseKit
 import DeviceKit
 import CoreMotion
+import CoreLocation
+import Contacts
 import Iconic
 #if os(iOS)
 import Reachability
@@ -80,6 +82,8 @@ public class WebhookSensors {
     }
 
     #if os(iOS)
+    // MARK: Connectivity sensors
+
     public var BSSID: WebhookSensor? {
         guard let bssid = ConnectionInfo.currentBSSID() else {
             return nil
@@ -102,6 +106,8 @@ public class WebhookSensors {
     }
     #endif
 
+    // MARK: CMPedometerData sensors
+
     public var Pedometer: Promise<[WebhookSensor]> {
         return firstly {
             self.getLatestPedometerData()
@@ -113,28 +119,7 @@ public class WebhookSensors {
 
     private var pedometerData: CMPedometerData?
 
-    private func getLatestMotionActivity() -> Promise<[CMMotionActivity]?> {
-        return Promise { seal in
-            guard CMMotionActivityManager.isActivityAvailable() else {
-                Current.Log.warning("Activity is not available")
-                return seal.fulfill(nil)
-            }
-
-            guard Current.settingsStore.motionEnabled else {
-                Current.Log.warning("Motion permission not enabled")
-                return seal.fulfill(nil)
-            }
-
-            let end = Date()
-            let start = Calendar.current.date(byAdding: .minute, value: -10, to: end)!
-            let queue = OperationQueue.main
-            self.activityManager.queryActivityStarting(from: start, to: end, to: queue, withHandler: seal.resolve)
-        }
-    }
-
     private var pedometer = CMPedometer()
-
-    private var activityManager = CMMotionActivityManager()
 
     private func getLatestPedometerData() -> Promise<CMPedometerData?> {
         return Promise { seal in
@@ -154,22 +139,6 @@ public class WebhookSensors {
                 startDate = lastEntry.CreatedAt
             }
             self.pedometer.queryPedometerData(from: startDate, to: Date(), withHandler: seal.resolve)
-        }
-    }
-
-    private var Activity: Promise<WebhookSensor?> {
-        return firstly {
-            self.getLatestMotionActivity()
-            }.then { motionActivity -> Promise<WebhookSensor?> in
-                guard let activity = motionActivity?.last else {
-                    return Promise.value(nil)
-                }
-                let activitySensor = WebhookSensor(name: "Activity", uniqueID: "activity")
-                activitySensor.State = activity.activityTypes.first
-                activitySensor.Attributes = ["Confidence": activity.confidence.description,
-                                             "Types": activity.activityTypes]
-                activitySensor.Icon = activity.icons.first
-                return Promise.value(activitySensor)
         }
     }
 
@@ -229,5 +198,122 @@ public class WebhookSensors {
         }
 
         return WebhookSensor(name: "Current Cadence", uniqueID: "current_cadence", state: intVal)
+    }
+
+    // MARK: CMMotionActivity sensors
+
+    private var activityManager = CMMotionActivityManager()
+
+    private func getLatestMotionActivity() -> Promise<[CMMotionActivity]?> {
+        return Promise { seal in
+            guard CMMotionActivityManager.isActivityAvailable() else {
+                Current.Log.warning("Activity is not available")
+                return seal.fulfill(nil)
+            }
+
+            guard Current.settingsStore.motionEnabled else {
+                Current.Log.warning("Motion permission not enabled")
+                return seal.fulfill(nil)
+            }
+
+            let end = Date()
+            let start = Calendar.current.date(byAdding: .minute, value: -10, to: end)!
+            let queue = OperationQueue.main
+            self.activityManager.queryActivityStarting(from: start, to: end, to: queue, withHandler: seal.resolve)
+        }
+    }
+
+    private var Activity: Promise<WebhookSensor?> {
+        return firstly {
+            self.getLatestMotionActivity()
+            }.then { motionActivity -> Promise<WebhookSensor?> in
+                guard let activity = motionActivity?.last else {
+                    return Promise.value(nil)
+                }
+                let activitySensor = WebhookSensor(name: "Activity", uniqueID: "activity")
+                activitySensor.State = activity.activityTypes.first
+                activitySensor.Attributes = ["Confidence": activity.confidence.description,
+                                             "Types": activity.activityTypes]
+                activitySensor.Icon = activity.icons.first
+                return Promise.value(activitySensor)
+        }
+    }
+
+    // MARK: CLPlacemark sensor
+
+    private let geocoder = CLGeocoder()
+
+    private func geocodeLocation(_ locationToGeocode: CLLocation) -> Promise<[CLPlacemark]?> {
+        return Promise {
+            geocoder.reverseGeocodeLocation(locationToGeocode, completionHandler: $0.resolve)
+        }
+    }
+
+    public var GeocodedLocationSensorConfig: WebhookSensor {
+        let locationSensor = WebhookSensor(name: "Geocoded Location", uniqueID: "geocoded_location")
+        locationSensor.State = "Unknown"
+        locationSensor.Icon = "mdi:\(MaterialDesignIcons.mapIcon.name)"
+        return locationSensor
+    }
+
+    public func GeocodedLocationSensor(_ locationToGeocode: CLLocation? = nil) -> Promise<WebhookSensor> {
+        let locationSensor = self.GeocodedLocationSensorConfig
+
+        guard let locationToGeocode = locationToGeocode else {
+            return Promise.value(locationSensor)
+        }
+
+        return firstly {
+            self.geocodeLocation(locationToGeocode)
+        }.then { results -> Promise<WebhookSensor> in
+            guard let placemark = results?.first else {
+                return Promise.value(locationSensor)
+            }
+
+            locationSensor.State = CNPostalAddressFormatter.string(from: self.parsePlacemarkToPostalAddress(placemark),
+                                                                   style: .mailingAddress)
+
+            locationSensor.Attributes = [
+                "AdministrativeArea": placemark.administrativeArea ?? "N/A",
+                "AreasOfInterest": placemark.areasOfInterest ?? "N/A",
+                "Country": placemark.country ?? "N/A",
+                "InlandWater": placemark.inlandWater ?? "N/A",
+                "ISOCountryCode": placemark.isoCountryCode ?? "N/A",
+                "Locality": placemark.locality ?? "N/A",
+                "Location": [placemark.location?.coordinate.latitude, placemark.location?.coordinate.longitude],
+                "Name": placemark.name ?? "N/A",
+                "Ocean": placemark.ocean ?? "N/A",
+                "PostalCode": placemark.postalCode ?? "N/A",
+                "SubAdministrativeArea": placemark.subAdministrativeArea ?? "N/A",
+                "SubLocality": placemark.subLocality ?? "N/A",
+                "SubThoroughfare": placemark.subThoroughfare ?? "N/A",
+                "Thoroughfare": placemark.thoroughfare ?? "N/A",
+                "TimeZone": placemark.timeZone?.identifier ?? TimeZone.current.identifier
+            ]
+
+            return Promise.value(locationSensor)
+        }
+    }
+
+    private func parsePlacemarkToPostalAddress(_ placemark: CLPlacemark) -> CNPostalAddress {
+        if #available(iOS 11.0, watchOS 4.0, *), let address = placemark.postalAddress {
+            return address
+        }
+
+        let postalAddress = CNMutablePostalAddress()
+        postalAddress.street = [placemark.subThoroughfare, placemark.thoroughfare]
+            .compactMap { $0 }           // remove nils, so that...
+            .joined(separator: " ")      // ...only if both != nil, add a space.
+        postalAddress.city = placemark.locality ?? ""
+        postalAddress.state = placemark.administrativeArea ?? ""
+        postalAddress.postalCode = placemark.postalCode ?? ""
+        postalAddress.country = placemark.country ?? ""
+        postalAddress.isoCountryCode = placemark.isoCountryCode ?? ""
+        if #available(iOS 10.3, *) {
+            postalAddress.subLocality = placemark.subLocality ?? ""
+            postalAddress.subAdministrativeArea = placemark.subAdministrativeArea ?? ""
+        }
+
+        return postalAddress
     }
 }
