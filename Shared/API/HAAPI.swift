@@ -19,6 +19,7 @@ import UserNotifications
 import Intents
 import CoreMotion
 import Version
+import Starscream
 #if os(iOS)
 import Reachability
 #endif
@@ -75,6 +76,14 @@ public class HomeAssistantAPI {
 
     public let pedometer = CMPedometer()
     public let motionActivityManager = CMMotionActivityManager()
+
+    public var socket: WebSocket?
+    weak var socketDelegate: WebsocketDelegate?
+    public static var socketMessageCounter: Int = 1
+    public static var socketMessageTypeMap: [Int: String] = [:]
+    static var socketMessages: [Int: WebSocketMessage] = [:]
+    public static var socketDispatchGroups: [Int: DispatchGroup] = [:]
+    public var socketAuthenticated: Bool = false
 
     /// Initialize an API object with an authenticated tokenManager.
     public init(connectionInfo: ConnectionInfo, tokenInfo: TokenInfo,
@@ -163,6 +172,8 @@ public class HomeAssistantAPI {
             Current.Log.warning("Device already registered with mobile_app, updating registration")
             registrationPromise = self.updateRegistration().asVoid()
         }
+
+        // self.startWebsockets()
 
         return firstly {
             registrationPromise!

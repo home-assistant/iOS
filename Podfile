@@ -28,6 +28,7 @@ def shared_pods
     pod 'PromiseKit', '6.8.3'
     pod 'RealmSwift', '3.14.0'
     pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git', :branch => 'master'
+    pod 'Starscream'
     pod 'UIColor_Hex_Swift', '5.0.0'
     pod 'Version', :git => 'https://github.com/guykogus/Version.git', :branch => 'master'
     pod 'XCGLogger', '~> 7.0.0'

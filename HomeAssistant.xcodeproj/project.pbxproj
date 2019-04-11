@@ -226,6 +226,20 @@
 		B66F9F2E216B1E61000CAA0F /* TodayWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66F9F22216B1E61000CAA0F /* TodayWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B66F9F36216B2C74000CAA0F /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
 		B66F9F37216B2D89000CAA0F /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
+		B6723338225DB2B50031D629 /* HAAPI+WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723336225DB2AD0031D629 /* HAAPI+WebSocket.swift */; };
+		B6723339225DB2B50031D629 /* HAAPI+WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723336225DB2AD0031D629 /* HAAPI+WebSocket.swift */; };
+		B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
+		B672333F225DB68B0031D629 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
+		B6723341225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */; };
+		B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */; };
+		B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723343225DBACF0031D629 /* AuthRequestMessage.swift */; };
+		B6723345225DBACF0031D629 /* AuthRequestMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723343225DBACF0031D629 /* AuthRequestMessage.swift */; };
+		B6723347225DC72A0031D629 /* AuthenticatedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723346225DC72A0031D629 /* AuthenticatedUser.swift */; };
+		B6723348225DC72A0031D629 /* AuthenticatedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723346225DC72A0031D629 /* AuthenticatedUser.swift */; };
+		B672334A225DDF410031D629 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723349225DDF410031D629 /* Event.swift */; };
+		B672334B225DDF410031D629 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6723349225DDF410031D629 /* Event.swift */; };
+		B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672334C225DE1490031D629 /* SubscribeEvents.swift */; };
+		B672334E225DE1490031D629 /* SubscribeEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672334C225DE1490031D629 /* SubscribeEvents.swift */; };
 		B672AB1122150ED600175465 /* green@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0322150ED500175465 /* green@2x.png */; };
 		B672AB1222150ED600175465 /* white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0422150ED500175465 /* white@2x.png */; };
 		B672AB1322150ED600175465 /* blue@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB0522150ED500175465 /* blue@3x.png */; };
@@ -894,6 +908,13 @@
 		B66F9F33216B208F000CAA0F /* TodayWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TodayWidget.entitlements; sourceTree = "<group>"; };
 		B66F9F34216B2119000CAA0F /* TodayWidget Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "TodayWidget Beta.entitlements"; sourceTree = "<group>"; };
 		B66F9F35216B2131000CAA0F /* TodayWidget Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "TodayWidget Development.entitlements"; sourceTree = "<group>"; };
+		B6723336225DB2AD0031D629 /* HAAPI+WebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAAPI+WebSocket.swift"; sourceTree = "<group>"; };
+		B672333D225DB68B0031D629 /* WebSocketMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketMessage.swift; sourceTree = "<group>"; };
+		B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+JSON.swift"; sourceTree = "<group>"; };
+		B6723343225DBACF0031D629 /* AuthRequestMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRequestMessage.swift; sourceTree = "<group>"; };
+		B6723346225DC72A0031D629 /* AuthenticatedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedUser.swift; sourceTree = "<group>"; };
+		B6723349225DDF410031D629 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		B672334C225DE1490031D629 /* SubscribeEvents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscribeEvents.swift; sourceTree = "<group>"; };
 		B672AB0322150ED500175465 /* green@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "green@2x.png"; sourceTree = "<group>"; };
 		B672AB0422150ED500175465 /* white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white@2x.png"; sourceTree = "<group>"; };
 		B672AB0522150ED500175465 /* blue@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue@3x.png"; sourceTree = "<group>"; };
@@ -1571,6 +1592,18 @@
 			path = TodayWidget;
 			sourceTree = "<group>";
 		};
+		B672333A225DB66A0031D629 /* WebSocket */ = {
+			isa = PBXGroup;
+			children = (
+				B672333D225DB68B0031D629 /* WebSocketMessage.swift */,
+				B6723343225DBACF0031D629 /* AuthRequestMessage.swift */,
+				B672334C225DE1490031D629 /* SubscribeEvents.swift */,
+				B6723346225DC72A0031D629 /* AuthenticatedUser.swift */,
+				B6723349225DDF410031D629 /* Event.swift */,
+			);
+			path = WebSocket;
+			sourceTree = "<group>";
+		};
 		B672AB022215057600175465 /* Alternate Icons */ = {
 			isa = PBXGroup;
 			children = (
@@ -1828,6 +1861,7 @@
 		D014EEAA212928EC008EA6F5 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				B672333A225DB66A0031D629 /* WebSocket */,
 				B6E91C212232482A0014CB8D /* Webhook */,
 				D0B25BD0213218B000678C2C /* Requests */,
 				D0B25BCF2132179900678C2C /* Models */,
@@ -1836,6 +1870,7 @@
 				D0C884692120EB8A00CCB501 /* HAAPI+RequestHelpers.swift */,
 				D05A4D31216DD206009FD1EB /* MJPEGStreamer.swift */,
 				B6221F672226780E00502A30 /* HAAPI+WebhookHelpers.swift */,
+				B6723336225DB2AD0031D629 /* HAAPI+WebSocket.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -1899,6 +1934,7 @@
 				D0EEF309214DD64C00D1D360 /* UIImage+Icons.swift */,
 				B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */,
 				B67CE8CF2220EF1D0034C1D0 /* ObjectMapper+RealmList.swift */,
+				B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2930,6 +2966,7 @@
 				"${BUILT_PRODUCTS_DIR}/Realm-iOS/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift-iOS/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Sodium-iOS/Sodium.framework",
+				"${BUILT_PRODUCTS_DIR}/Starscream-iOS/Starscream.framework",
 				"${BUILT_PRODUCTS_DIR}/TABObserverSet-iOS/TABObserverSet.framework",
 				"${BUILT_PRODUCTS_DIR}/UIColor_Hex_Swift-iOS/UIColor_Hex_Swift.framework",
 				"${BUILT_PRODUCTS_DIR}/Version-iOS/Version.framework",
@@ -2963,6 +3000,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sodium.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TABObserverSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIColor_Hex_Swift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Version.framework",
@@ -3273,6 +3311,7 @@
 				"${BUILT_PRODUCTS_DIR}/Realm-watchOS/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift-watchOS/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Sodium-watchOS/Sodium.framework",
+				"${BUILT_PRODUCTS_DIR}/Starscream-watchOS/Starscream.framework",
 				"${BUILT_PRODUCTS_DIR}/TABObserverSet-watchOS/TABObserverSet.framework",
 				"${BUILT_PRODUCTS_DIR}/UIColor_Hex_Swift-watchOS/UIColor_Hex_Swift.framework",
 				"${BUILT_PRODUCTS_DIR}/Version-watchOS/Version.framework",
@@ -3293,6 +3332,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sodium.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TABObserverSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIColor_Hex_Swift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Version.framework",
@@ -3425,8 +3465,10 @@
 				B67CE8AB22200F220034C1D0 /* TokenInfo.swift in Sources */,
 				B67CE87722200F220034C1D0 /* Strings.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
+				B6723348225DC72A0031D629 /* AuthenticatedUser.swift in Sources */,
 				B67CE89322200F220034C1D0 /* DeviceTrackerSee.swift in Sources */,
 				B67CE87A22200F220034C1D0 /* LocationTrigger.swift in Sources */,
+				B672333F225DB68B0031D629 /* WebSocketMessage.swift in Sources */,
 				B6A258462232485300ADD202 /* Alamofire+EncryptedResponses.swift in Sources */,
 				B67CE87622200F220034C1D0 /* Notifications.swift in Sources */,
 				B67CE88E22200F220034C1D0 /* Fan.swift in Sources */,
@@ -3442,6 +3484,7 @@
 				B67CE8B622200F220034C1D0 /* UIColor+HA.swift in Sources */,
 				B67CE89722200F220034C1D0 /* PushRegistrationResponse.swift in Sources */,
 				B67CE8B522200F220034C1D0 /* String+HA.swift in Sources */,
+				B672334B225DDF410031D629 /* Event.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
 				B67CE8A322200F220034C1D0 /* Status.swift in Sources */,
 				B67CE8B422200F220034C1D0 /* URL+Extensions.swift in Sources */,
@@ -3455,6 +3498,7 @@
 				B67CE88B22200F220034C1D0 /* Group.swift in Sources */,
 				B67CE87D22200F220034C1D0 /* IdentifyRequest.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
+				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
 				B62CD2A6225B099D008DF3C5 /* WebhookSensor.swift in Sources */,
 				B67CE8A122200F220034C1D0 /* PushConfiguration.swift in Sources */,
@@ -3470,7 +3514,9 @@
 				B67CE87922200F220034C1D0 /* RealmZone.swift in Sources */,
 				B67CE8BD22200F220034C1D0 /* ClientEventStore.swift in Sources */,
 				B60984CD225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift in Sources */,
+				B672334E225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				B67CE87E22200F220034C1D0 /* Scene.swift in Sources */,
+				B6723345225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
 				B67CE87F22200F220034C1D0 /* InputSlider.swift in Sources */,
 				B67CE8AC22200F220034C1D0 /* AuthenticationRoutes.swift in Sources */,
 				B67CE89E22200F220034C1D0 /* DiscoveryInfo.swift in Sources */,
@@ -3492,6 +3538,7 @@
 				B67CE88322200F220034C1D0 /* Sensor.swift in Sources */,
 				B67CE8A622200F220034C1D0 /* HAAPI.swift in Sources */,
 				B67CE88622200F220034C1D0 /* InputBoolean.swift in Sources */,
+				B6723339225DB2B50031D629 /* HAAPI+WebSocket.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3536,6 +3583,7 @@
 				D0EEF315214DD7A400D1D360 /* Beacons.swift in Sources */,
 				D0EEF332214EB2BC00D1D360 /* OneShotLocationManager.swift in Sources */,
 				D0EEF32E214DF99500D1D360 /* PushRegistrationRequest.swift in Sources */,
+				B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
 				B6C0914D2151F93D00A326DC /* GarageDoor.swift in Sources */,
 				D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */,
 				D0EEF2D1214D8B6700D1D360 /* Entity.swift in Sources */,
@@ -3544,7 +3592,9 @@
 				B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */,
 				D0EEF335214EB77100D1D360 /* CLLocation+ToDoubleArray.swift in Sources */,
 				B675ECC5221BD76300C65D31 /* Identify.swift in Sources */,
+				B6723341225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				D0EEF318214DD7A400D1D360 /* Events.swift in Sources */,
+				B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */,
 				B6C091492151F93D00A326DC /* Weblink.swift in Sources */,
 				D0BE44162104410D00C74314 /* AuthenticationAPI.swift in Sources */,
 				B6A3EE622164B0550051A8A1 /* RealmDeviceTracker.swift in Sources */,
@@ -3552,6 +3602,7 @@
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
 				B6C0914E2151F93D00A326DC /* Thermostat.swift in Sources */,
 				D0EEF31A214DD7A400D1D360 /* PushConfiguration.swift in Sources */,
+				B6723338225DB2B50031D629 /* HAAPI+WebSocket.swift in Sources */,
 				B6C091462151F93D00A326DC /* Switch.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
 				D0EEF31B214DD7A400D1D360 /* Services.swift in Sources */,
@@ -3574,6 +3625,7 @@
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
 				B6C0914A2151F93D00A326DC /* DeviceTracker.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,
+				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				D0EEF32C214DF83800D1D360 /* IdentifyRequest.swift in Sources */,
 				D03D893920E0AF8E00D4F28D /* ClientEvent.swift in Sources */,
 				B6C091482151F93D00A326DC /* Group.swift in Sources */,
@@ -3586,6 +3638,7 @@
 				B62CD2A5225B099D008DF3C5 /* WebhookSensor.swift in Sources */,
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* WebhookSensors.swift in Sources */,
+				B672334A225DDF410031D629 /* Event.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
 				B6C0914F2151F93D00A326DC /* MediaPlayer.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
@@ -3603,6 +3656,7 @@
 				D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */,
 				D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */,
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
+				B6723347225DC72A0031D629 /* AuthenticatedUser.swift in Sources */,
 				B6C0913C2151F93D00A326DC /* InputSlider.swift in Sources */,
 				D0EEF316214DD7A400D1D360 /* Config.swift in Sources */,
 				D0EEF32D214DF94900D1D360 /* PushRegistrationResponse.swift in Sources */,

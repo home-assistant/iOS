@@ -555,6 +555,12 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         }
 
         <<< ButtonRow {
+            $0.title = "Test WebSocket"
+            }.onCellSelection { _, _ in
+                HomeAssistantAPI.authenticatedAPI()?.GetAuthenticatedUser()
+        }
+
+        <<< ButtonRow {
             $0.title = L10n.Settings.Developer.SyncWatchContext.title
         }.onCellSelection { cell, _ in
             if let syncError = HomeAssistantAPI.SyncWatchContext() {
