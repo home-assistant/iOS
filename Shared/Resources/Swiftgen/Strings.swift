@@ -315,6 +315,8 @@ internal enum L10n {
       }
       /// HA API not configured
       internal static let notConfigured = L10n.tr("Localizable", "ha_api.api_error.not_configured")
+      /// An unknown error occurred.
+      internal static let unknown = L10n.tr("Localizable", "ha_api.api_error.unknown")
       /// mobile_app integration has been deleted, must reconfigure app.
       internal static let webhookGone = L10n.tr("Localizable", "ha_api.api_error.webhook_gone")
     }

@@ -85,7 +85,7 @@ final class NotificationService: UNNotificationServiceExtension {
             attachmentOptions[UNNotificationAttachmentOptionsThumbnailHiddenKey] = attachmentHideThumbnail
         }
 
-        _ = HomeAssistantAPI.authenticatedAPI()?.downloadDataAt(url: attachmentURL,
+        _ = HomeAssistantAPI.authenticatedAPI()?.DownloadDataAt(url: attachmentURL,
                                                                 needsAuth: needsAuth).done { fileURL in
 
             do {

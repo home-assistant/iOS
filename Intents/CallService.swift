@@ -111,7 +111,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         if let domain = intent.serviceDomain, let service = intent.service {
             Current.Log.verbose("Handling call service shortcut \(domain), \(service)")
 
-            api.callService(domain: domain, service: service, serviceData: payloadDict, shouldLog: true).done { _ in
+            api.CallService(domain: domain, service: service, serviceData: payloadDict, shouldLog: true).done { _ in
                 Current.Log.verbose("Successfully called service during shortcut")
                 completion(CallServiceIntentResponse(code: successCode, userActivity: nil))
             }.catch { error in

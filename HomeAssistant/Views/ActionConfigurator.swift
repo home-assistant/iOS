@@ -297,7 +297,7 @@ class ActionPreview: UIView {
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                api.handleAction(actionID: action.ID, actionName: action.Name, source: .Preview)
+                api.HandleAction(actionID: action.ID, actionName: action.Name, source: .Preview)
             }.done { _ in
                 feedbackGenerator.notificationOccurred(.success)
             }.ensure {

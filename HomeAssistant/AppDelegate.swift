@@ -175,7 +175,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         completionHandler(.noData)
                     }
                     Current.Log.verbose("Received remote request to provide a location update")
-                    api.getAndSendLocation(trigger: .PushNotification).done { success in
+                    api.GetAndSendLocation(trigger: .PushNotification).done { success in
                         Current.Log.verbose("Did successfully send location when requested via APNS? \(success)")
                         completionHandler(.newData)
                     }.catch { error in
@@ -207,7 +207,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
         if Current.settingsStore.locationEnabled && prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
-            api.getAndSendLocation(trigger: .BackgroundFetch).done { _ in
+            api.GetAndSendLocation(trigger: .BackgroundFetch).done { _ in
                 Current.Log.verbose("Sending location via background fetch")
                 completionHandler(UIBackgroundFetchResult.newData)
                 }.catch { error in
@@ -215,10 +215,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     completionHandler(UIBackgroundFetchResult.failed)
             }
         } else {
-            api.identifyDevice().done { _ in
+            api.UpdateSensors(.BackgroundFetch).done { _ in
                 completionHandler(UIBackgroundFetchResult.newData)
             }.catch { error in
-                Current.Log.error("Error when attempting to identify device during background fetch: \(error)")
+                Current.Log.error("Error when attempting to update sensors during background fetch: \(error)")
                 completionHandler(UIBackgroundFetchResult.failed)
             }
         }
@@ -260,13 +260,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         let name = shortcutItem.localizedTitle
-        let actionPromise = api.handleAction(actionID: shortcutItem.type, actionName: name,
+        let actionPromise = api.HandleAction(actionID: shortcutItem.type, actionName: name,
                                              source: .AppShortcut)
 
         var promises = [actionPromise]
 
         if shortcutItem.type == "sendLocation" {
-            promises.append(api.getAndSendLocation(trigger: .AppShortcut))
+            promises.append(api.GetAndSendLocation(trigger: .AppShortcut))
         }
 
         when(fulfilled: promises).done { worked in
@@ -296,7 +296,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = firstly {
                 HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                api.createEvent(eventType: eventName, eventData: eventData)
+                api.CreateEvent(eventType: eventName, eventData: eventData)
             }.done { _ in
                 success(nil)
             }.catch { error -> Void in
@@ -322,7 +322,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = firstly {
                 HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                api.callService(domain: serviceDomain, service: serviceName, serviceData: serviceData)
+                api.CallService(domain: serviceDomain, service: serviceName, serviceData: serviceData)
             }.done { _ in
                 success(nil)
             }.catch { error in
@@ -335,7 +335,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = firstly {
                 HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                api.getAndSendLocation(trigger: .XCallbackURL)
+                api.GetAndSendLocation(trigger: .XCallbackURL)
             }.done { _ in
                 success(nil)
             }.catch { error in
@@ -388,7 +388,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = firstly {
             HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                api.createEvent(eventType: url.pathComponents[1], eventData: serviceData)
+                api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
             }.done { _ in
                 showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
                           message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
@@ -423,7 +423,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = firstly {
             HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                api.callService(domain: domain, service: service, serviceData: serviceData)
+                api.CallService(domain: domain, service: service, serviceData: serviceData)
             }.done { _ in
                 showAlert(title: L10n.UrlHandler.CallService.Success.title,
                           message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
@@ -439,7 +439,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = firstly {
             HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                api.getAndSendLocation(trigger: .URLScheme)
+                api.GetAndSendLocation(trigger: .URLScheme)
             }.done { _ in
                 showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
                           message: L10n.UrlHandler.SendLocation.Success.message)
@@ -483,7 +483,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
 
                 HomeAssistantAPI.authenticatedAPIPromise.then { api in
-                    api.handleAction(actionID: actionID, actionName: actionName, source: .Watch)
+                    api.HandleAction(actionID: actionID, actionName: actionName, source: .Watch)
                 }.done { _ in
                     message.replyHandler?(["fired": true])
                 }.catch { err -> Void in
@@ -599,7 +599,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = firstly {
                 HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                api.createEvent(eventType: eventName, eventData: eventData)
+                api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
             }
@@ -612,7 +612,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = firstly {
                 HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                api.createEvent(eventType: eventName, eventData: eventData)
+                api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
             }
@@ -624,7 +624,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = firstly {
                 HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                api.createEvent(eventType: eventName, eventData: eventData)
+                api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
                 Current.Log.error("Received error from createEvent during shortcut run \(error)")
             }
@@ -643,7 +643,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = firstly {
                 HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                api.createEvent(eventType: eventName, eventData: eventData)
+                api.CreateEvent(eventType: eventName, eventData: eventData)
             }.catch { error -> Void in
                 Current.Log.error("Received error from CallbackURLKit perform \(error)")
             }
@@ -847,7 +847,7 @@ extension AppDelegate: MessagingDelegate {
             return
         }
 
-        _ = api.updateRegistration()
+        _ = api.UpdateRegistration()
     }
     // swiftlint:disable:next file_length
 }

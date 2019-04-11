@@ -130,18 +130,6 @@ public class Entity: StaticMappable {
 
     }
 
-    public func turnOn() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.turnOnEntity(entity: self)
-    }
-
-    public func turnOff() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.turnOffEntity(entity: self)
-    }
-
-    public func toggle() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.toggleEntity(entity: self)
-    }
-
     public var ComponentIcon: String {
         switch self.Domain {
         case "alarm_control_panel":

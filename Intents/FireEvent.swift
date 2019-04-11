@@ -80,7 +80,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
             }
         }
 
-        api.createEvent(eventType: intent.eventName!, eventData: eventDataDict).done { _ in
+        api.CreateEvent(eventType: intent.eventName!, eventData: eventDataDict).done { _ in
             Current.Log.verbose("Successfully fired event during shortcut")
             completion(FireEventIntentResponse(code: successCode, userActivity: nil))
         }.catch { error in

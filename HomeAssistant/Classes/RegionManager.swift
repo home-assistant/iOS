@@ -116,7 +116,7 @@ class RegionManager: NSObject {
 
         let message = "Submitting location for zone \(zone.ID) with trigger \(trig.rawValue)."
         Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
-        api.submitLocation(updateType: trig, location: self.locationManager.location, zone: zone).done { _ in
+        api.SubmitLocation(updateType: trig, location: self.locationManager.location, zone: zone).done { _ in
             let message = "Succeeded updating zone \(zone.ID) with trigger \(trig.rawValue)."
             Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
         }.ensure {
@@ -223,7 +223,7 @@ extension RegionManager: CLLocationManagerDelegate {
         }
 
         let location = CLLocation(latitude: visit.coordinate.latitude, longitude: visit.coordinate.longitude)
-        api.submitLocation(updateType: .Visit, location: location,
+        api.SubmitLocation(updateType: .Visit, location: location,
                            zone: nil).catch { Current.Log.error("Error submitting location: \($0)" )}
         self.lastLocationDate = Current.date()
     }
@@ -257,7 +257,7 @@ extension RegionManager: CLLocationManagerDelegate {
             return
         }
 
-        api.submitLocation(updateType: .SignificantLocationUpdate, location: last,
+        api.SubmitLocation(updateType: .SignificantLocationUpdate, location: last,
                            zone: nil).catch { Current.Log.error("Error submitting location: \($0)" )}
 
         self.lastLocation = last

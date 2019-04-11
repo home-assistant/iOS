@@ -467,7 +467,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
-            api.getAndSendLocation(trigger: .Manual)
+            api.GetAndSendLocation(trigger: .Manual)
         }.done {_ in
             Current.Log.verbose("Sending current location via button press")
             let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,

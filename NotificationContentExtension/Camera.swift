@@ -51,7 +51,7 @@ class CameraViewController: UIView, NotificationCategory {
 
         var frameCount = 0
 
-        guard let streamer = api.videoStreamer() else {
+        guard let streamer = api.VideoStreamer() else {
             return
         }
 

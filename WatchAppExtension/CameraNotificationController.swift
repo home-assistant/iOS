@@ -72,7 +72,7 @@ class CameraNotificationController: WKUserNotificationInterfaceController {
             return
         }
 
-        guard let streamer = api.videoStreamer() else {
+        guard let streamer = api.VideoStreamer() else {
             return
         }
 

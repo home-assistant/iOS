@@ -307,7 +307,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }
             <<< LabelRow("mobileAppComponentLoaded") {
                 $0.title = L10n.Settings.StatusSection.MobileAppComponentLoadedRow.title
-                $0.value = api?.mobileAppComponentLoaded ?? false ? "✔️" : "✖️"
+                $0.value = api?.MobileAppComponentLoaded ?? false ? "✔️" : "✖️"
             }
 
             +++ Section(header: "", footer: L10n.Settings.DeviceIdSection.footer)
@@ -715,7 +715,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     @objc func Connected(_ notification: Notification) {
         let mobileAppComponentLoadedRow: LabelRow = self.form.rowBy(tag: "mobileAppComponentLoaded")!
         let api = HomeAssistantAPI.authenticatedAPI()
-        mobileAppComponentLoadedRow.value = api?.mobileAppComponentLoaded ?? false ? "✔️" : "✖️"
+        mobileAppComponentLoadedRow.value = api?.MobileAppComponentLoaded ?? false ? "✔️" : "✖️"
         mobileAppComponentLoadedRow.updateCell()
     }
 

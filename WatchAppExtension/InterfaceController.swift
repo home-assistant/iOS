@@ -108,7 +108,7 @@ class InterfaceController: WKInterfaceController {
         } else if Communicator.shared.currentReachability == .notReachable { // Phone isn't connected
             Current.Log.verbose("Signaling action pressed via watch")
             HomeAssistantAPI.authenticatedAPIPromise.then { api in
-                api.handleAction(actionID: selectedAction.ID, actionName: selectedAction.Name, source: .Watch)
+                api.HandleAction(actionID: selectedAction.ID, actionName: selectedAction.Name, source: .Watch)
             }.done { _ in
                 self.handleActionSuccess(row)
             }.catch { err -> Void in

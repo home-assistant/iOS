@@ -34,7 +34,7 @@ extension HomeAssistantAPI {
             }
 
             let eventType = "ios.notification_action_fired"
-            api.createEvent(eventType: eventType, eventData: eventData).done { _ -> Void in
+            api.CreateEvent(eventType: eventType, eventData: eventData).done { _ -> Void in
                 seal.fulfill(true)
                 }.catch {error in
                     seal.reject(error)

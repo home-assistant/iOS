@@ -23,7 +23,7 @@ func ProvideNotificationCategoriesToSystem() {
 func MigratePushSettingsToLocal() {
     let realm = Current.realm()
 
-    HomeAssistantAPI.authenticatedAPI()?.getPushSettings().done { config in
+    HomeAssistantAPI.authenticatedAPI()?.GetPushSettings().done { config in
         if let categories = config.Categories {
             for remoteCategory in categories {
                 let localCategory = NotificationCategory()
