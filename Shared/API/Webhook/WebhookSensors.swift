@@ -85,24 +85,33 @@ public class WebhookSensors {
     // MARK: Connectivity sensors
 
     public var BSSID: WebhookSensor? {
-        guard let bssid = ConnectionInfo.currentBSSID() else {
-            return nil
+        let sensor = WebhookSensor(name: "BSSID", uniqueID: "bssid", icon: "mdi:wifi-star", state: "Not Connected")
+        
+        if let bssid = ConnectionInfo.currentBSSID() {
+            sensor.State = bssid
         }
-        return WebhookSensor(name: "BSSID", uniqueID: "bssid", icon: "mdi:wifi-star", state: bssid)
-    }
-
-    public var ConnectionType: WebhookSensor {
-        let state = Reachability.getNetworkType()
-
-        return WebhookSensor(name: "Connection Type", uniqueID: "connection_type",
-                             icon: state.icon, state: state.description)
+        return sensor
     }
 
     public var SSID: WebhookSensor? {
-        guard let ssid = ConnectionInfo.currentSSID() else {
-            return nil
+        let sensor = WebhookSensor(name: "SSID", uniqueID: "ssid", icon: "mdi:wifi", state: "Not Connected")
+        if let ssid = ConnectionInfo.currentSSID() {
+            sensor.State = ssid
         }
-        return WebhookSensor(name: "SSID", uniqueID: "ssid", icon: "mdi:wifi", state: ssid)
+        return sensor
+    }
+
+    public var ConnectionType: WebhookSensor {
+        let state = Reachability.getSimpleNetworkType()
+
+        let sensor = WebhookSensor(name: "Connection Type", uniqueID: "connection_type", icon: state.icon,
+                                   state: state.description)
+
+        if state == .cellular {
+            sensor.Attributes = ["Celluar Technology": Reachability.getNetworkType().description]
+        }
+
+        return sensor
     }
     #endif
 

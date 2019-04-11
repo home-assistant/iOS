@@ -12,7 +12,7 @@ import Foundation
 import Reachability
 import CoreTelephony
 
-enum NetworkType {
+enum NetworkType: Int, CaseIterable {
     case unknown
     case noConnection
     case wifi
