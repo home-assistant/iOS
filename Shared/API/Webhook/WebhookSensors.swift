@@ -70,7 +70,7 @@ public class WebhookSensors {
                                         deviceClass: .battery, state: level)
         levelSensor.Icon = icon
         levelSensor.Attributes = ["State": state]
-
+        levelSensor.UnitOfMeasurement = "%"
         let stateSensor = WebhookSensor(name: "Battery State", uniqueID: "battery_state", icon: .batteryIcon,
                                         deviceClass: .battery, state: state)
         stateSensor.Icon = icon
@@ -227,7 +227,7 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: "Distance", uniqueID: "pedometer_distance", state: intVal)
+        return WebhookSensor(name: "Distance", uniqueID: "pedometer_distance", state: intVal, unit: "m")
     }
 
     private var floorsAscended: WebhookSensor? {
@@ -261,7 +261,7 @@ public class WebhookSensors {
         }
 
         return WebhookSensor(name: "Avg. Active Pace", uniqueID: "pedometer_avg_active_pace",
-                             icon: "mdi:speedometer", state: intVal)
+                             icon: "mdi:speedometer", state: intVal, unit: "m/s")
     }
 
     private var currentPace: WebhookSensor? {
@@ -270,7 +270,7 @@ public class WebhookSensors {
         }
 
         return WebhookSensor(name: "Current Pace", uniqueID: "pedometer_current_pace",
-                             icon: "mdi:speedometer", state: intVal)
+                             icon: "mdi:speedometer", state: intVal, unit: "m/s")
     }
 
     private var currentCadence: WebhookSensor? {
@@ -278,7 +278,8 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: "Current Cadence", uniqueID: "pedometer_current_cadence", state: intVal)
+        return WebhookSensor(name: "Current Cadence", uniqueID: "pedometer_current_cadence", state: intVal,
+                             unit: "steps/s")
     }
 
     // MARK: CMMotionActivity sensors

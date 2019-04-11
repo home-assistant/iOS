@@ -30,22 +30,24 @@ public class WebhookSensor: Mappable {
         self.UniqueID = uniqueID
     }
 
-    convenience init(name: String, uniqueID: String, state: Any) {
+    convenience init(name: String, uniqueID: String, state: Any, unit: String? = nil) {
         self.init(name: name, uniqueID: uniqueID)
         self.State = state
+        self.UnitOfMeasurement = unit
     }
 
-    convenience init(name: String, uniqueID: String, icon: String, state: Any) {
-        self.init(name: name, uniqueID: uniqueID, state: state)
+    convenience init(name: String, uniqueID: String, icon: String, state: Any, unit: String? = nil) {
+        self.init(name: name, uniqueID: uniqueID, state: state, unit: unit)
         self.Icon = icon
     }
 
-    convenience init(name: String, uniqueID: String, icon: MaterialDesignIcons, state: Any) {
-        self.init(name: name, uniqueID: uniqueID, icon: "mdi:\(icon.name)", state: state)
+    convenience init(name: String, uniqueID: String, icon: MaterialDesignIcons, state: Any, unit: String? = nil) {
+        self.init(name: name, uniqueID: uniqueID, icon: "mdi:\(icon.name)", state: state, unit: unit)
     }
 
-    convenience init(name: String, uniqueID: String, icon: MaterialDesignIcons, deviceClass: DeviceClass, state: Any) {
-        self.init(name: name, uniqueID: uniqueID, state: state)
+    convenience init(name: String, uniqueID: String, icon: MaterialDesignIcons, deviceClass: DeviceClass,
+                     state: Any, unit: String? = nil) {
+        self.init(name: name, uniqueID: uniqueID, state: state, unit: unit)
         self.DeviceClass = deviceClass
     }
 
