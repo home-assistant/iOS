@@ -41,7 +41,7 @@ public class HomeAssistantAPI {
         case unknown
     }
 
-    static let minimumRequiredVersion = Version(major: 0, minor: 91, patch: 2)
+    static let minimumRequiredVersion = Version(major: 0, minor: 91, patch: 3)
 
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
