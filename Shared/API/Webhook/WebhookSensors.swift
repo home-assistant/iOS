@@ -14,9 +14,11 @@ import CoreLocation
 import Contacts
 import Iconic
 #if os(iOS)
+import CoreTelephony
 import Reachability
 #endif
 
+// swiftlint:disable:next type_body_length
 public class WebhookSensors {
     public var AllSensors: Promise<[WebhookSensor]> {
         return firstly {
@@ -24,7 +26,8 @@ public class WebhookSensors {
             }.then { activitySensor, pedometerSensors -> Promise<[WebhookSensor]> in
                 var allSensors: [WebhookSensor?] = self.Battery
                 #if os(iOS)
-                allSensors.append(contentsOf: [self.BSSID, self.ConnectionType, self.SSID])
+                let combinedArrays = [self.BSSID, self.ConnectionType, self.SSID] + self.CellularProviderSensors
+                allSensors.append(contentsOf: combinedArrays)
                 #endif
 
                 allSensors.append(contentsOf: pedometerSensors)
@@ -86,7 +89,7 @@ public class WebhookSensors {
 
     public var BSSID: WebhookSensor? {
         let sensor = WebhookSensor(name: "BSSID", uniqueID: "bssid", icon: "mdi:wifi-star", state: "Not Connected")
-        
+
         if let bssid = ConnectionInfo.currentBSSID() {
             sensor.State = bssid
         }
@@ -112,6 +115,77 @@ public class WebhookSensors {
         }
 
         return sensor
+    }
+
+    public var CellularProviderSensors: [WebhookSensor] {
+        let networkInfo = CTTelephonyNetworkInfo()
+
+        if #available(iOS 12.0, *), let providers = networkInfo.serviceSubscriberCellularProviders {
+            let radioTech = networkInfo.serviceCurrentRadioAccessTechnology
+            return providers.map { self.makeCarrierSensor($0.value, radioTech?[$0.key], $0.key) }
+        } else if let provider = networkInfo.subscriberCellularProvider {
+            return [self.makeCarrierSensor(provider, networkInfo.currentRadioAccessTechnology)]
+        }
+
+        return [WebhookSensor]()
+    }
+
+    private func makeCarrierSensor(_ carrier: CTCarrier,
+                                   _ radioTech: String?,
+                                   _ key: String? = nil) -> WebhookSensor {
+        var carrierSensor = WebhookSensor(name: "Cellular Provider", uniqueID: "cellular_provider",
+                                           icon: "mdi:signal", state: "Unknown")
+
+        if let key = key {
+            carrierSensor = WebhookSensor(name: "Cellular Provider \(key)", uniqueID: "cellular_provider_\(key)",
+                icon: "mdi:signal", state: "Unknown")
+        }
+
+        carrierSensor.State = carrier.carrierName
+        carrierSensor.Attributes = [
+            "Carrier ID": key ?? "N/A",
+            "Carrier Name": carrier.carrierName ?? "N/A",
+            "Mobile Country Code": carrier.mobileCountryCode ?? "N/A",
+            "Mobile Network Code": carrier.mobileNetworkCode ?? "N/A",
+            "ISO Country Code": carrier.isoCountryCode ?? "N/A",
+            "Allows VoIP": carrier.allowsVOIP
+        ]
+
+        if let radioTech = radioTech {
+            carrierSensor.Attributes?["Current Radio Technology"] = getRadioTechName(radioTech)
+        }
+
+        return carrierSensor
+    }
+
+    // swiftlint:disable:next cyclomatic_complexity
+    private func getRadioTechName(_ radioTech: String) -> String? {
+        switch radioTech {
+        case CTRadioAccessTechnologyGPRS:
+            return "General Packet Radio Service (GPRS)"
+        case CTRadioAccessTechnologyEdge:
+            return "Enhanced Data rates for GSM Evolution (EDGE)"
+        case CTRadioAccessTechnologyCDMA1x:
+            return "Code Division Multiple Access (CDMA 1X)"
+        case CTRadioAccessTechnologyWCDMA:
+            return "Wideband Code Division Multiple Access (WCDMA)"
+        case CTRadioAccessTechnologyHSDPA:
+            return "High Speed Downlink Packet Access (HSDPA)"
+        case CTRadioAccessTechnologyHSUPA:
+            return "High Speed Uplink Packet Access (HSUPA)"
+        case CTRadioAccessTechnologyCDMAEVDORev0:
+            return "Code Division Multiple Access Evolution-Data Optimized Revision 0 (CDMA EV-DO Rev. 0)"
+        case CTRadioAccessTechnologyCDMAEVDORevA:
+            return "Code Division Multiple Access Evolution-Data Optimized Revision A (CDMA EV-DO Rev. A)"
+        case CTRadioAccessTechnologyCDMAEVDORevB:
+            return "Code Division Multiple Access Evolution-Data Optimized Revision B (CDMA EV-DO Rev. B)"
+        case CTRadioAccessTechnologyeHRPD:
+            return "High Rate Packet Data (HRPD)"
+        case CTRadioAccessTechnologyLTE:
+            return "Long-Term Evolution (LTE)"
+        default:
+            return nil
+        }
     }
     #endif
 
@@ -325,4 +399,5 @@ public class WebhookSensors {
 
         return postalAddress
     }
+// swiftlint:disable:next file_length
 }

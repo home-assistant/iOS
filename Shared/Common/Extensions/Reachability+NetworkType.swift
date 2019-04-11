@@ -20,7 +20,7 @@ enum NetworkType: Int, CaseIterable {
     case wwan2g
     case wwan3g
     case wwan4g
-    case unknownTechnology(name: String)
+    case unknownTechnology
 
     var description: String {
         return self.trackingId
@@ -42,8 +42,8 @@ enum NetworkType: Int, CaseIterable {
             return "3G"
         case .wwan4g:
             return "4G"
-        case .unknownTechnology(let name):
-            return "Unknown Technology: \"\(name)\""
+        case .unknownTechnology:
+            return "Unknown Technology"
         }
     }
 
@@ -84,6 +84,28 @@ enum NetworkType: Int, CaseIterable {
             return "mdi:signal-3g"
         case .wwan4g:
             return "mdi:signal-4g"
+        }
+    }
+
+    init(_ radioTech: String) {
+        switch radioTech {
+        case CTRadioAccessTechnologyGPRS,
+             CTRadioAccessTechnologyEdge,
+             CTRadioAccessTechnologyCDMA1x:
+            self = .wwan2g
+        case CTRadioAccessTechnologyWCDMA,
+             CTRadioAccessTechnologyHSDPA,
+             CTRadioAccessTechnologyHSUPA,
+             CTRadioAccessTechnologyCDMAEVDORev0,
+             CTRadioAccessTechnologyCDMAEVDORevA,
+             CTRadioAccessTechnologyCDMAEVDORevB,
+             CTRadioAccessTechnologyeHRPD:
+            self = .wwan3g
+        case CTRadioAccessTechnologyLTE:
+            self = .wwan4g
+        default:
+            Current.Log.warning("Unknown connection technology: \(radioTech)")
+            self = .unknownTechnology
         }
     }
 }
@@ -130,24 +152,7 @@ extension Reachability {
         guard let currentRadioAccessTechnology = CTTelephonyNetworkInfo().currentRadioAccessTechnology else {
             return .unknown
         }
-        switch currentRadioAccessTechnology {
-        case CTRadioAccessTechnologyGPRS,
-             CTRadioAccessTechnologyEdge,
-             CTRadioAccessTechnologyCDMA1x:
-            return .wwan2g
-        case CTRadioAccessTechnologyWCDMA,
-             CTRadioAccessTechnologyHSDPA,
-             CTRadioAccessTechnologyHSUPA,
-             CTRadioAccessTechnologyCDMAEVDORev0,
-             CTRadioAccessTechnologyCDMAEVDORevA,
-             CTRadioAccessTechnologyCDMAEVDORevB,
-             CTRadioAccessTechnologyeHRPD:
-            return .wwan3g
-        case CTRadioAccessTechnologyLTE:
-            return .wwan4g
-        default:
-            return .unknownTechnology(name: currentRadioAccessTechnology)
-        }
+        return NetworkType(currentRadioAccessTechnology)
     }
 
 }
