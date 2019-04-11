@@ -24,17 +24,11 @@ public class WebhookSensors {
         return firstly {
             when(fulfilled: self.Activity, self.Pedometer)
             }.then { activitySensor, pedometerSensors -> Promise<[WebhookSensor]> in
-                var allSensors: [WebhookSensor?] = self.Battery
+                var allSensors: [WebhookSensor?] = [activitySensor] + self.Battery + pedometerSensors
                 #if os(iOS)
-                let combinedArrays = [self.BSSID, self.ConnectionType, self.SSID] + self.CellularProviderSensors
-                allSensors.append(contentsOf: combinedArrays)
+                allSensors.append(contentsOf: [self.BSSID, self.ConnectionType,
+                                               self.SSID] + self.CellularProviderSensors)
                 #endif
-
-                allSensors.append(contentsOf: pedometerSensors)
-
-                if let activity = activitySensor {
-                    allSensors.append(activity)
-                }
 
                 return Promise.value(allSensors.compactMap { $0 })
         }
@@ -194,7 +188,8 @@ public class WebhookSensors {
     public var Pedometer: Promise<[WebhookSensor]> {
         return firstly {
             self.getLatestPedometerData()
-            }.map { _ -> [WebhookSensor?] in
+            }.map { data -> [WebhookSensor?] in
+                self.pedometerData = data
                 return [self.averageActivePace, self.currentCadence, self.currentPace, self.distance,
                         self.floorsAscended, self.floorsDescended, self.steps]
             }.compactMapValues { $0 }
