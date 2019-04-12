@@ -722,6 +722,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
     func ResetApp() {
         Current.Log.verbose("Resetting app!")
         resetStores()
+        setDefaults()
         let bundleId = Bundle.main.bundleIdentifier!
         UserDefaults.standard.removePersistentDomain(forName: bundleId)
         UserDefaults.standard.synchronize()
@@ -737,11 +738,6 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         detailsSection.hidden = true
         detailsSection.evaluateHidden()
         self.tableView.reloadData()
-
-        let keys = keychain.allKeys()
-        for key in keys {
-            keychain[key] = nil
-        }
     }
 
     /// Grab the connection info from fields in the UI.
@@ -807,6 +803,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
             }.done { _ in
                 _ = seal.fulfill(connectionInfo)
             }.catch { innerError in
+                Current.Log.error("Received error during confirmConnection! \(innerError)")
                 let confirmWithBrowser = {
                     self.authenticateThenConfirmConnection(with: connectionInfo).done { connectionInfo in
                         seal.fulfill(connectionInfo)
@@ -876,6 +873,7 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
                 throw SettingsError.configurationFailed
             }
 
+            self.tokenInfo = tokenInfo
             let api = HomeAssistantAPI(connectionInfo: confirmedConnectionInfo, tokenInfo: tokenInfo)
             Current.updateWith(authenticatedAPI: api)
             _ = HomeAssistantAPI.SyncWatchContext()
