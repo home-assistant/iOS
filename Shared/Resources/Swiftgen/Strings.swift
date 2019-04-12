@@ -600,6 +600,185 @@ internal enum L10n {
     internal static let title = L10n.tr("Localizable", "rate_limit_notification.title")
   }
 
+  internal enum Sensors {
+    /// N/A
+    internal static let notAvailableState = L10n.tr("Localizable", "sensors.not_available_state")
+    /// Unknown
+    internal static let unknownState = L10n.tr("Localizable", "sensors.unknown_state")
+    internal enum Activity {
+      /// Activity
+      internal static let name = L10n.tr("Localizable", "sensors.activity.name")
+      internal enum Attributes {
+        /// Confidence
+        internal static let confidence = L10n.tr("Localizable", "sensors.activity.attributes.confidence")
+        /// Types
+        internal static let types = L10n.tr("Localizable", "sensors.activity.attributes.types")
+      }
+    }
+    internal enum Battery {
+      internal enum Attributes {
+        /// Level
+        internal static let level = L10n.tr("Localizable", "sensors.battery.attributes.level")
+        /// State
+        internal static let state = L10n.tr("Localizable", "sensors.battery.attributes.state")
+      }
+      internal enum State {
+        /// Charging
+        internal static let charging = L10n.tr("Localizable", "sensors.battery.state.charging")
+        /// Full
+        internal static let full = L10n.tr("Localizable", "sensors.battery.state.full")
+        /// Not Charging
+        internal static let notCharging = L10n.tr("Localizable", "sensors.battery.state.not_charging")
+      }
+    }
+    internal enum BatteryLevel {
+      /// Battery Level
+      internal static let name = L10n.tr("Localizable", "sensors.battery_level.name")
+    }
+    internal enum BatteryState {
+      /// Battery State
+      internal static let name = L10n.tr("Localizable", "sensors.battery_state.name")
+    }
+    internal enum Bssid {
+      /// BSSID
+      internal static let name = L10n.tr("Localizable", "sensors.bssid.name")
+    }
+    internal enum CellularProvider {
+      /// Cellular Provider%@
+      internal static func name(_ p1: String) -> String {
+        return L10n.tr("Localizable", "sensors.cellular_provider.name", p1)
+      }
+      internal enum Attributes {
+        /// Allows VoIP
+        internal static let allowsVoip = L10n.tr("Localizable", "sensors.cellular_provider.attributes.allows_voip")
+        /// Carrier ID
+        internal static let carrierId = L10n.tr("Localizable", "sensors.cellular_provider.attributes.carrier_id")
+        /// Carrier Name
+        internal static let carrierName = L10n.tr("Localizable", "sensors.cellular_provider.attributes.carrier_name")
+        /// ISO Country Code
+        internal static let isoCountryCode = L10n.tr("Localizable", "sensors.cellular_provider.attributes.iso_country_code")
+        /// Mobile Country Code
+        internal static let mobileCountryCode = L10n.tr("Localizable", "sensors.cellular_provider.attributes.mobile_country_code")
+        /// Mobile Network Code
+        internal static let mobileNetworkCode = L10n.tr("Localizable", "sensors.cellular_provider.attributes.mobile_network_code")
+        /// Current Radio Technology
+        internal static let radioTech = L10n.tr("Localizable", "sensors.cellular_provider.attributes.radio_tech")
+      }
+      internal enum RadioTech {
+        /// Code Division Multiple Access (CDMA 1X)
+        internal static let cdma1x = L10n.tr("Localizable", "sensors.cellular_provider.radio_tech.cdma_1x")
+        /// Code Division Multiple Access Evolution-Data Optimized Revision 0 (CDMA EV-DO Rev. 0)
+        internal static let cdmaEvdoRev0 = L10n.tr("Localizable", "sensors.cellular_provider.radio_tech.cdma_evdo_rev_0")
+        /// Code Division Multiple Access Evolution-Data Optimized Revision A (CDMA EV-DO Rev. A)
+        internal static let cdmaEvdoRevA = L10n.tr("Localizable", "sensors.cellular_provider.radio_tech.cdma_evdo_rev_a")
+        /// Code Division Multiple Access Evolution-Data Optimized Revision B (CDMA EV-DO Rev. B)
+        internal static let cdmaEvdoRevB = L10n.tr("Localizable", "sensors.cellular_provider.radio_tech.cdma_evdo_rev_b")
+        /// Enhanced Data rates for GSM Evolution (EDGE)
+        internal static let edge = L10n.tr("Localizable", "sensors.cellular_provider.radio_tech.edge")
+        /// High Rate Packet Data (HRPD)
+        internal static let ehrpd = L10n.tr("Localizable", "sensors.cellular_provider.radio_tech.ehrpd")
+        /// General Packet Radio Service (GPRS)
+        internal static let gprs = L10n.tr("Localizable", "sensors.cellular_provider.radio_tech.gprs")
+        /// High Speed Downlink Packet Access (HSDPA)
+        internal static let hsdpa = L10n.tr("Localizable", "sensors.cellular_provider.radio_tech.hsdpa")
+        /// High Speed Uplink Packet Access (HSUPA)
+        internal static let hsupa = L10n.tr("Localizable", "sensors.cellular_provider.radio_tech.hsupa")
+        /// Long-Term Evolution (LTE)
+        internal static let lte = L10n.tr("Localizable", "sensors.cellular_provider.radio_tech.lte")
+        /// Wideband Code Division Multiple Access (WCDMA)
+        internal static let wcdma = L10n.tr("Localizable", "sensors.cellular_provider.radio_tech.wcdma")
+      }
+    }
+    internal enum ConnectionType {
+      /// Connection Type
+      internal static let name = L10n.tr("Localizable", "sensors.connection_type.name")
+      internal enum Attributes {
+        /// Cellular Technology
+        internal static let cellTechType = L10n.tr("Localizable", "sensors.connection_type.attributes.cell_tech_type")
+      }
+    }
+    internal enum Connectivity {
+      /// Not Connected
+      internal static let notConnected = L10n.tr("Localizable", "sensors.connectivity.not_connected")
+    }
+    internal enum GeocodedLocation {
+      /// Geocoded Location
+      internal static let name = L10n.tr("Localizable", "sensors.geocoded_location.name")
+      internal enum Attributes {
+        /// AdministrativeArea
+        internal static let administrativeArea = L10n.tr("Localizable", "sensors.geocoded_location.attributes.administrative_area")
+        /// AreasOfInterest
+        internal static let areasOfInterest = L10n.tr("Localizable", "sensors.geocoded_location.attributes.areas_of_interest")
+        /// Country
+        internal static let country = L10n.tr("Localizable", "sensors.geocoded_location.attributes.country")
+        /// InlandWater
+        internal static let inlandWater = L10n.tr("Localizable", "sensors.geocoded_location.attributes.inland_water")
+        /// ISOCountryCode
+        internal static let isoCountryCode = L10n.tr("Localizable", "sensors.geocoded_location.attributes.iso_country_code")
+        /// Locality
+        internal static let locality = L10n.tr("Localizable", "sensors.geocoded_location.attributes.locality")
+        /// Location
+        internal static let location = L10n.tr("Localizable", "sensors.geocoded_location.attributes.location")
+        /// Name
+        internal static let name = L10n.tr("Localizable", "sensors.geocoded_location.attributes.name")
+        /// Ocean
+        internal static let ocean = L10n.tr("Localizable", "sensors.geocoded_location.attributes.ocean")
+        /// PostalCode
+        internal static let postalCode = L10n.tr("Localizable", "sensors.geocoded_location.attributes.postal_code")
+        /// SubAdministrativeArea
+        internal static let subAdministrativeArea = L10n.tr("Localizable", "sensors.geocoded_location.attributes.sub_administrative_area")
+        /// SubLocality
+        internal static let subLocality = L10n.tr("Localizable", "sensors.geocoded_location.attributes.sub_locality")
+        /// SubThoroughfare
+        internal static let subThoroughfare = L10n.tr("Localizable", "sensors.geocoded_location.attributes.sub_thoroughfare")
+        /// Thoroughfare
+        internal static let thoroughfare = L10n.tr("Localizable", "sensors.geocoded_location.attributes.thoroughfare")
+        /// TimeZone
+        internal static let timeZone = L10n.tr("Localizable", "sensors.geocoded_location.attributes.time_zone")
+      }
+    }
+    internal enum Pedometer {
+      internal enum AverageActivePace {
+        /// Average Active Pace
+        internal static let name = L10n.tr("Localizable", "sensors.pedometer.average_active_pace.name")
+      }
+      internal enum CurrentCadence {
+        /// Current Cadence
+        internal static let name = L10n.tr("Localizable", "sensors.pedometer.current_cadence.name")
+      }
+      internal enum CurrentPace {
+        /// Current Pace
+        internal static let name = L10n.tr("Localizable", "sensors.pedometer.current_pace.name")
+      }
+      internal enum Distance {
+        /// Distance
+        internal static let name = L10n.tr("Localizable", "sensors.pedometer.distance.name")
+      }
+      internal enum FloorsAscended {
+        /// Floors Ascended
+        internal static let name = L10n.tr("Localizable", "sensors.pedometer.floors_ascended.name")
+      }
+      internal enum FloorsDescended {
+        /// Floors Descended
+        internal static let name = L10n.tr("Localizable", "sensors.pedometer.floors_descended.name")
+      }
+      internal enum Steps {
+        /// Steps
+        internal static let name = L10n.tr("Localizable", "sensors.pedometer.steps.name")
+      }
+      internal enum Unit {
+        /// m/s
+        internal static let metersPerSecond = L10n.tr("Localizable", "sensors.pedometer.unit.meters_per_second")
+        /// steps/s
+        internal static let stepsPerSecond = L10n.tr("Localizable", "sensors.pedometer.unit.steps_per_second")
+      }
+    }
+    internal enum Ssid {
+      /// BSSID
+      internal static let name = L10n.tr("Localizable", "sensors.ssid.name")
+    }
+  }
+
   internal enum Settings {
     internal enum AdvancedConnectionSettingsSection {
       /// Advanced Connection Settings
