@@ -208,7 +208,7 @@ public class SettingsStore {
             .lowercased()
 
         if Current.appConfiguration != .Release {
-            return baseID+"_"+Current.appConfiguration.description.lowercased()
+            return "\(baseID)_\(Current.appConfiguration.description.lowercased())"
         }
 
         return baseID

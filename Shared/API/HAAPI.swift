@@ -416,6 +416,7 @@ public class HomeAssistantAPI {
         ident.AppIdentifier = Constants.BundleID
         ident.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
         ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
+        ident.DeviceID = Current.settingsStore.deviceID
         ident.DeviceName = deviceKitDevice.name
         ident.Manufacturer = "Apple"
         ident.Model = deviceKitDevice.description
@@ -437,6 +438,7 @@ public class HomeAssistantAPI {
             ]
         }
         ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
+        ident.DeviceID = Current.settingsStore.deviceID
         ident.DeviceName = deviceKitDevice.name
         ident.Manufacturer = "Apple"
         ident.Model = deviceKitDevice.description

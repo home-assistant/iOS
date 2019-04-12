@@ -27,6 +27,9 @@ public class ConfigResponse: Mappable {
 
     public var ThemeColor: String?
 
+    public var CloudhookURL: URL?
+    public var RemoteUIURL: URL?
+
     required public init?(map: Map) {}
 
     public func mapping(map: Map) {
@@ -46,5 +49,8 @@ public class ConfigResponse: Mappable {
         Elevation       <- map["elevation"]
 
         ThemeColor      <- map["theme_color"]
+
+        CloudhookURL    <- map["cloudhook_url"]
+        RemoteUIURL     <- map["remote_ui_url"]
     }
 }
