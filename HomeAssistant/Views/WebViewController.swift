@@ -49,6 +49,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         statusBarView.translatesAutoresizingMaskIntoConstraints = false
 
         let config = WKWebViewConfiguration()
+        config.allowsInlineMediaPlayback = true
+        config.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone
         let userContentController = WKUserContentController()
         userContentController.add(self, name: "getExternalAuth")
         userContentController.add(self, name: "revokeExternalAuth")
