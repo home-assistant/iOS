@@ -25,6 +25,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
     var waitingToHideToolbar: Bool = false
 
+    var urlObserver: NSKeyValueObservation? = nil
+
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,6 +92,17 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.webView.scrollView.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
         self.view!.addSubview(webView)
 
+        urlObserver = self.webView.observe(\.url) { (webView, _) in
+            if let currentURL = webView.url?.absoluteString.replacingOccurrences(of: "?external_auth=1", with: ""),
+                let cleanURL = URL(string: currentURL) {
+                Current.Log.verbose("Setting NSUserActivity to \(currentURL)")
+                self.userActivity = NSUserActivity(activityType: "io.robbie.HomeAssistant.frontend")
+                self.userActivity?.isEligibleForHandoff = true
+                self.userActivity?.webpageURL = cleanURL
+                self.userActivity?.becomeCurrent()
+            }
+        }
+
         self.webView.navigationDelegate = self
         self.webView.uiDelegate = self
         if self.shouldHideToolbar {
@@ -153,6 +166,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             let myRequest = URLRequest(url: webviewURL)
             self.webView.load(myRequest)
         }
+    }
+
+    deinit {
+        self.urlObserver = nil
     }
 
     func styleUI(_ icons: UIColor? = nil, _ header: UIColor? = nil, _ toolbar: UIColor? = nil) {
