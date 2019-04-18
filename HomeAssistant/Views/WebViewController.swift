@@ -55,6 +55,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         userContentController.add(self, name: "getExternalAuth")
         userContentController.add(self, name: "revokeExternalAuth")
         userContentController.add(self, name: "themesUpdated")
+        userContentController.add(self, name: "handleHaptic")
 
         let themeScriptSource = """
                                const handleThemeUpdate = (event) => {
@@ -552,7 +553,9 @@ extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let messageBody = message.body as? [String: Any] else { return }
 
-        if message.name == "themesUpdated" {
+        if message.name == "handleHaptic", let hapticType = messageBody["hapticType"] as? String {
+            self.handleHaptic(hapticType)
+        } else if message.name == "themesUpdated" {
             self.handleThemeUpdate(messageBody)
         } else if message.name == "getExternalAuth", let callbackName = messageBody["callback"] {
             if let tokenManager = Current.tokenManager {
@@ -620,6 +623,28 @@ extension WebViewController: WKScriptMessageHandler {
         } else {
             // Assume default theme
             self.styleUI()
+        }
+    }
+
+    func handleHaptic(_ hapticType: String) {
+        Current.Log.verbose("Handle haptic type \(hapticType)")
+        switch hapticType {
+        case "success":
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        case "error":
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+        case "warning":
+            UINotificationFeedbackGenerator().notificationOccurred(.warning)
+        case "light":
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        case "medium":
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        case "heavy":
+            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        case "selected":
+            UISelectionFeedbackGenerator().selectionChanged()
+        default:
+            Current.Log.verbose("Unknown haptic type \(hapticType)")
         }
     }
 }
