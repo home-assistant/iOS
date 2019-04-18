@@ -277,6 +277,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity,
+                     restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb, let url = userActivity.webpageURL,
+            let actualURLStr = url.queryItems?["url"], let actualURL = URL(string: actualURLStr) else {
+            return false
+        }
+
+        return self.application(application, open: actualURL)
+    }
+
     // MARK: - Private helpers
 
     // swiftlint:disable:next function_body_length
