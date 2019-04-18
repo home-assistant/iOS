@@ -50,7 +50,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
-        config.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone
+        config.mediaTypesRequiringUserActionForPlayback = []
         let userContentController = WKUserContentController()
         userContentController.add(self, name: "getExternalAuth")
         userContentController.add(self, name: "revokeExternalAuth")
