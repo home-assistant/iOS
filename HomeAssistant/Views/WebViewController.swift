@@ -25,7 +25,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
     var waitingToHideToolbar: Bool = false
 
-    var urlObserver: NSKeyValueObservation? = nil
+    var urlObserver: NSKeyValueObservation?
 
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
@@ -166,6 +166,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             let myRequest = URLRequest(url: webviewURL)
             self.webView.load(myRequest)
         }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        self.userActivity?.resignCurrent()
     }
 
     deinit {
