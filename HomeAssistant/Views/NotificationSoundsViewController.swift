@@ -1,0 +1,433 @@
+//
+//  NotificationSoundsViewController.swift
+//  HomeAssistant
+//
+//  Created by Robert Trencheny on 4/18/19.
+//  Copyright © 2019 Robbie Trencheny. All rights reserved.
+//
+
+import UIKit
+import AVFoundation
+import MobileCoreServices
+import Eureka
+import MBProgressHUD
+import PromiseKit
+import Shared
+
+// swiftlint:disable:next type_body_length
+class NotificationSoundsViewController: FormViewController, UIDocumentPickerDelegate {
+
+    public var onDismissCallback: ((UIViewController) -> Void)?
+
+    var audioPlayer: AVAudioPlayer?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        self.title = L10n.SettingsDetails.Notifications.Sounds.title
+
+        var importedFileSharingSounds: [URL] = []
+
+        do {
+            importedFileSharingSounds = try self.importedFilesWithSuffix(".wav")
+        } catch let error {
+            Current.Log.error("Error while getting imported file sharing sounds \(error)")
+        }
+
+        var importedSystemSounds: [URL] = []
+
+        do {
+            importedSystemSounds = try self.importedFilesWithSuffix(".caf")
+        } catch let error {
+            Current.Log.error("Error while getting imported system sounds \(error)")
+        }
+
+        form +++ SegmentedRow<String>("soundListChooser") {
+            $0.options = [
+                L10n.SettingsDetails.Notifications.Sounds.imported,
+                L10n.SettingsDetails.Notifications.Sounds.bundled,
+                L10n.SettingsDetails.Notifications.Sounds.system
+            ]
+            $0.value = L10n.SettingsDetails.Notifications.Sounds.imported
+        }
+
+        self.form.append(self.getSoundsSection("imported", L10n.SettingsDetails.Notifications.Sounds.imported,
+                                               fileURLs: importedFileSharingSounds))
+
+        if let urls = Bundle.main.urls(forResourcesWithExtension: "wav", subdirectory: nil) {
+            self.form.append(self.getSoundsSection("bundled", L10n.SettingsDetails.Notifications.Sounds.bundled,
+                                                   fileURLs: urls))
+        }
+
+        self.form.append(self.getSoundsSection("system", L10n.SettingsDetails.Notifications.Sounds.system,
+                                               fileURLs: importedSystemSounds))
+    }
+
+    // swiftlint:disable:next function_body_length
+    func getSoundsSection(_ tag: String, _ header: String, fileURLs: [URL]) -> Section {
+        let sortedURLs = fileURLs.sorted(by: { $0.lastPathComponent < $1.lastPathComponent })
+        let section = Section()
+        section.tag = tag
+        section.hidden = Condition.predicate(NSPredicate(format: "$soundListChooser != %@", header))
+
+        let isImportedSection = header == L10n.SettingsDetails.Notifications.Sounds.imported
+
+        for sound in sortedURLs {
+            section.append(getSoundRow(sound, isImportedSection))
+        }
+
+        if isImportedSection {
+            section
+                <<< ButtonRow {
+                    $0.tag = "import_custom_sound"
+                    $0.title = L10n.SettingsDetails.Notifications.Sounds.importCustom
+                }.onCellSelection { _, _ in
+                    self.importTapped()
+                }
+                <<< ButtonRow {
+                    $0.title = L10n.SettingsDetails.Notifications.Sounds.importFileSharing
+                }.onCellSelection { cell, _ in
+                    MBProgressHUD.showAdded(to: self.view, animated: true)
+
+                    firstly {
+                        return self.fileSharingPath()
+                    }.then { path -> Promise<[URL]> in
+                        let sounds: [URL] = self.soundsInDirectory(path) ?? []
+                        return self.copySounds(sounds, "imported")
+                    }.done { copied in
+                        let title = L10n.SettingsDetails.Notifications.Sounds.ImportedAlert.title
+                        let message = L10n.SettingsDetails.Notifications.Sounds.ImportedAlert.message(copied.count)
+                        self.showAlert(message, title, popoverView: cell.contentView)
+                    }.catch { error in
+                        self.showAlert(error.localizedDescription, nil, popoverView: cell.contentView)
+                    }.finally {
+                        MBProgressHUD.hide(for: self.view, animated: true)
+                    }
+                }
+        }
+
+        if header == L10n.SettingsDetails.Notifications.Sounds.system {
+            section
+                <<< ButtonRow {
+                    $0.title = L10n.SettingsDetails.Notifications.Sounds.importSystem
+                }.onCellSelection { cell, _ in
+                    MBProgressHUD.showAdded(to: self.view, animated: true)
+
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        let soundsPath = URL(fileURLWithPath: "/System/Library/Audio/UISounds", isDirectory: true)
+                        let systemSounds: [URL] = self.soundsInDirectory(soundsPath) ?? []
+                        self.copySounds(systemSounds, "system").done { copied in
+                            let title = L10n.SettingsDetails.Notifications.Sounds.ImportedAlert.title
+                            let message = L10n.SettingsDetails.Notifications.Sounds.ImportedAlert.message(copied.count)
+                            self.showAlert(message, title, popoverView: cell.contentView)
+                        }.catch { error in
+                            self.showAlert(error.localizedDescription, nil, popoverView: cell.contentView)
+                        }.finally {
+                            MBProgressHUD.hide(for: self.view, animated: true)
+                        }
+                    }
+                }
+        }
+
+        return section
+    }
+
+    func getSoundRow(_ fileURL: URL, _ enableDelete: Bool = false) -> ButtonRowOf<URL> {
+        return ButtonRowOf<URL> {
+            $0.value = fileURL
+            $0.tag = fileURL.lastPathComponent
+            $0.title = fileURL.lastPathComponent
+            if enableDelete {
+                $0.trailingSwipe.actions = [SwipeAction(style: .destructive, title: L10n.delete,
+                                                        handler: self.handleSwipeDelete)]
+                $0.trailingSwipe.performsFirstActionWithFullSwipe = true
+            }
+        }.cellUpdate { cell, _ in
+            cell.textLabel?.textAlignment = .left
+            cell.textLabel?.textColor = nil
+        }.onCellSelection { cell, _ in
+            do {
+                self.audioPlayer = try AVAudioPlayer(contentsOf: fileURL)
+                self.audioPlayer?.play()
+            } catch let error {
+                Current.Log.error("Error when playing sound \(fileURL.lastPathComponent): \(error)")
+                self.showAlert(error.localizedDescription, nil, popoverView: cell.contentView)
+            }
+        }
+    }
+
+    func handleSwipeDelete(action: SwipeAction, row: BaseRow, completionHandler: ((Bool) -> Void)?) {
+        guard let urlRow = row as? ButtonRowOf<URL>, let url = urlRow.value else { completionHandler?(false); return }
+
+        do {
+            try self.deleteSound(url)
+        } catch let error {
+            Current.Log.error("Error when deleting sound \(url): \(error)")
+            self.showAlert(error.localizedDescription, nil, popoverView: row.baseCell.contentView)
+            completionHandler?(false)
+            return
+        }
+
+        if let section = row.section, let indexPath = row.indexPath {
+            section.remove(at: indexPath.row)
+        }
+
+        completionHandler?(true)
+    }
+
+    @objc func importTapped() {
+        let picker = UIDocumentPickerViewController(documentTypes: [String(kUTTypeAudio),
+                                                                    String(kUTTypeData)], in: .import)
+        picker.delegate = self
+        picker.modalPresentationStyle = .fullScreen
+        if #available(iOS 11.0, *) {
+            picker.allowsMultipleSelection = true
+        }
+        self.present(picker, animated: true, completion: nil)
+    }
+
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        Current.Log.verbose("Did pick sounds at \(urls)")
+        for pickedURL in urls {
+            Current.Log.verbose("Processing picked sound at \(pickedURL)")
+            var options = AKConverter.Options()
+            options.format = "wav"
+            options.sampleRate = 48000
+            options.bitDepth = 32
+            options.eraseFile = true
+
+            let librarySoundsURL: URL
+            do {
+                librarySoundsURL = try self.librarySoundsURL()
+            } catch let error {
+                Current.Log.error("Error when getting library sounds URL \(error)")
+                self.showAlert(error.localizedDescription)
+                return
+            }
+
+            let fileName = pickedURL.deletingPathExtension().lastPathComponent
+            let newSoundPath = librarySoundsURL.appendingPathComponent("\(fileName).wav")
+
+            Current.Log.verbose("New sound path is \(newSoundPath)")
+
+            AKConverter(inputURL: pickedURL, outputURL: newSoundPath, options: options).start { (error) in
+                if let error = error {
+                    let sError = SoundError(soundURL: newSoundPath, kind: .conversionFailed, underlying: error)
+                    Current.Log.error("Experienced error during convert \(sError) (\(error))")
+                    self.showAlert(sError.localizedDescription)
+                    return
+                }
+
+                if self.form.rowBy(tag: newSoundPath.lastPathComponent) == nil,
+                    var section = self.form.sectionBy(tag: "imported") {
+                    section.insert(self.getSoundRow(newSoundPath, true), at: section.count - 1)
+                }
+            }
+        }
+    }
+
+    func librarySoundsURL() throws -> URL {
+        do {
+            let librarySoundsPath = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask,
+                                                                appropriateFor: nil,
+                                                                create: false).appendingPathComponent("Sounds")
+            Current.Log.verbose("Creating sounds directory at \(librarySoundsPath)")
+            try FileManager.default.createDirectory(at: librarySoundsPath, withIntermediateDirectories: true,
+                                                    attributes: nil)
+            return librarySoundsPath
+        } catch let error {
+            throw SoundError(soundURL: nil, kind: .cantBuildLibrarySoundsPath, underlying: error)
+        }
+    }
+
+    func importedFilesWithSuffix(_ suffix: String) throws -> [URL] {
+        do {
+            let files = try FileManager.default.contentsOfDirectory(at: try self.librarySoundsURL(),
+                                                                    includingPropertiesForKeys: nil, options: [])
+            return files.filter({ $0.lastPathComponent.hasSuffix(suffix) })
+        } catch let error {
+            throw SoundError(soundURL: nil, kind: .cantGetDirectoryContents, underlying: error)
+        }
+    }
+
+    func soundsInDirectory(_ path: URL) -> [URL]? {
+        guard let enu = FileManager.default.enumerator(at: path, includingPropertiesForKeys: [.isDirectoryKey]) else {
+            Current.Log.error("Unable to get enumerator!")
+            return nil
+        }
+
+        var foundURLs: [URL] = []
+
+        while let fileURL = enu.nextObject() as? URL {
+            if FileManager.default.isDirectory(fileURL) == false && self.ensureDuration(fileURL) {
+                foundURLs.append(fileURL)
+            }
+        }
+
+        return foundURLs
+    }
+
+    func fileSharingPath() -> Promise<URL> {
+        return Promise { seal in
+            do {
+                seal.fulfill(try FileManager.default.url(for: .documentDirectory, in: .userDomainMask,
+                                                         appropriateFor: nil, create: false))
+            } catch let error {
+                seal.reject(SoundError(soundURL: nil, kind: .cantGetFileSharingPath, underlying: error))
+            }
+        }
+    }
+
+    // Thanks to http://stackoverflow.com/a/35624018/486182
+    // Must reboot device after installing new push sounds (http://stackoverflow.com/q/34998278/486182)
+    func copySounds(_ soundURLs: [URL], _ formSectionTag: String) throws -> [URL] {
+
+        guard !soundURLs.isEmpty else { return [URL]() }
+
+        let librarySoundsURL = try self.librarySoundsURL()
+
+        var copiedSounds: [URL] = []
+
+        for soundURL in soundURLs {
+            let soundName = soundURL.lastPathComponent
+
+            let newURL = librarySoundsURL.appendingPathComponent(soundName)
+
+            Current.Log.verbose("Copying sound \(soundName) from \(soundURL) to \(newURL)")
+
+            if FileManager.default.fileExists(atPath: newURL.path) {
+                Current.Log.verbose("Sound \(soundName) already exists in ~/Library/Sounds, removing")
+                try self.deleteSound(newURL)
+            }
+
+            do {
+                try FileManager.default.copyItem(at: soundURL, to: newURL)
+            } catch let error {
+                throw SoundError(soundURL: nil, kind: .copyError, underlying: error)
+            }
+
+            copiedSounds.append(newURL)
+
+            if self.form.rowBy(tag: newURL.lastPathComponent) == nil,
+                var section = self.form.sectionBy(tag: formSectionTag) {
+                section.insert(self.getSoundRow(newURL),
+                               at: (formSectionTag == "system" ? section.count - 1 : section.count))
+            }
+        }
+
+        return copiedSounds
+    }
+
+    func deleteSound(_ soundURL: URL) throws {
+        Current.Log.verbose("Deleting sound at \(soundURL)")
+        do {
+            try FileManager.default.removeItem(at: soundURL)
+        } catch let error {
+            throw SoundError(soundURL: nil, kind: .deleteError, underlying: error)
+        }
+    }
+
+    func copySounds(_ soundURLs: [URL], _ formSectionTag: String) -> Promise<[URL]> {
+        guard !soundURLs.isEmpty else { return Promise.value([URL]()) }
+
+        do {
+            let librarySoundsURL = try self.librarySoundsURL()
+
+            let promises: [Promise<URL>] = soundURLs.map { self.copySound(librarySoundsURL, $0, formSectionTag) }
+
+            return when(fulfilled: promises)
+        } catch let error {
+            return Promise(error: error)
+        }
+    }
+
+    func copySound(_ librarySoundsURL: URL, _ soundURL: URL, _ formSectionTag: String) -> Promise<URL> {
+        return Promise { seal in
+            let soundName = soundURL.lastPathComponent
+
+            let newURL = librarySoundsURL.appendingPathComponent(soundName)
+
+            Current.Log.verbose("Copying sound \(soundName) from \(soundURL) to \(newURL)")
+
+            if FileManager.default.fileExists(atPath: newURL.path) {
+                Current.Log.verbose("Sound \(soundName) already exists in ~/Library/Sounds, removing")
+                do {
+                    try FileManager.default.removeItem(at: newURL)
+                } catch let error {
+                    seal.reject(SoundError(soundURL: nil, kind: .deleteError, underlying: error))
+                }
+            }
+
+            do {
+                try FileManager.default.copyItem(at: soundURL, to: newURL)
+            } catch let error {
+                seal.reject(SoundError(soundURL: nil, kind: .copyError, underlying: error))
+            }
+
+            if self.form.rowBy(tag: newURL.lastPathComponent) === nil,
+                let section = self.form.sectionBy(tag: formSectionTag) {
+                section.append(self.getSoundRow(newURL))
+            }
+
+            seal.fulfill(newURL)
+        }
+    }
+
+    func ensureDuration(_ soundURL: URL) -> Bool {
+        let duration = Double(CMTimeGetSeconds(AVURLAsset(url: soundURL).duration))
+        return duration > 0.0 && duration <= 30.0
+    }
+
+    func showAlert(_ message: String, _ title: String? = L10n.errorLabel, popoverView: UIView? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        if let view = popoverView {
+            alert.popoverPresentationController?.sourceView = view
+        }
+    }
+}
+
+extension FileManager {
+    func isDirectory(_ url: URL) -> Bool? {
+        var isDir: ObjCBool = ObjCBool(false)
+        if fileExists(atPath: url.path, isDirectory: &isDir) {
+            return isDir.boolValue
+        }
+        return nil
+    }
+}
+
+private struct SoundError: LocalizedError {
+    enum ErrorKind {
+        case cantBuildLibrarySoundsPath
+        case cantGetFileSharingPath
+        case cantGetDirectoryContents
+        case conversionFailed
+        case copyError
+        case deleteError
+    }
+
+    let soundURL: URL?
+    let kind: ErrorKind
+    let underlying: Error
+
+    public var errorDescription: String? {
+        let description = self.underlying.localizedDescription
+        switch self.kind {
+        case .cantBuildLibrarySoundsPath:
+            return L10n.SettingsDetails.Notifications.Sounds.Error.cantBuildLibrarySoundsPath(description)
+        case .cantGetFileSharingPath:
+            return L10n.SettingsDetails.Notifications.Sounds.Error.cantGetFileSharingPath(description)
+        case .cantGetDirectoryContents:
+            return L10n.SettingsDetails.Notifications.Sounds.Error.cantGetDirectoryContents(description)
+        case .conversionFailed:
+            return L10n.SettingsDetails.Notifications.Sounds.Error.conversionFailed(description)
+        case .copyError:
+            return L10n.SettingsDetails.Notifications.Sounds.Error.copyError(description)
+        case .deleteError:
+            return L10n.SettingsDetails.Notifications.Sounds.Error.deleteError(description)
+        }
+    }
+    // swiftlint:disable:next file_length
+}

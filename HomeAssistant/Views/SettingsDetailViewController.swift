@@ -251,20 +251,13 @@ class SettingsDetailViewController: FormViewController {
                         alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
                     }
 
-                +++ Section(header: "", footer: L10n.SettingsDetails.Notifications.SoundsSection.footer)
-                <<< ButtonRow {
-                    $0.title = L10n.SettingsDetails.Notifications.SoundsSection.Button.title
-                    }.onCellSelection { cell, _ in
-                        let moved = movePushNotificationSounds()
-                        // swiftlint:disable:next line_length
-                        let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.SoundsSection.ImportedAlert.title,
-                                                      // swiftlint:disable:next line_length
-                                                      message: L10n.SettingsDetails.Notifications.SoundsSection.ImportedAlert.message(moved),
-                                                      preferredStyle: UIAlertController.Style.alert)
-                        alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                                      style: UIAlertAction.Style.default, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
-                        alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
+                +++ ButtonRow {
+                    $0.title = L10n.SettingsDetails.Notifications.Sounds.title
+                    $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                        return NotificationSoundsViewController()
+                        }, onDismiss: { vc in
+                            _ = vc.navigationController?.popViewController(animated: true)
+                    })
                 }
 
                 +++ Section(header: "", footer: "")

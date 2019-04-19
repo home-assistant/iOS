@@ -15,6 +15,8 @@ internal enum L10n {
   internal static let addButtonLabel = L10n.tr("Localizable", "addButtonLabel")
   /// Cancel
   internal static let cancelLabel = L10n.tr("Localizable", "cancel_label")
+  /// Delete
+  internal static let delete = L10n.tr("Localizable", "delete")
   /// Error
   internal static let errorLabel = L10n.tr("Localizable", "error_label")
   /// No
@@ -1244,20 +1246,54 @@ internal enum L10n {
         /// Push ID
         internal static let placeholder = L10n.tr("Localizable", "settings_details.notifications.push_id_section.placeholder")
       }
-      internal enum SoundsSection {
-        /// Custom push notification sounds can be added via iTunes.
-        internal static let footer = L10n.tr("Localizable", "settings_details.notifications.sounds_section.footer")
-        internal enum Button {
-          /// Import Sounds
-          internal static let title = L10n.tr("Localizable", "settings_details.notifications.sounds_section.button.title")
+      internal enum Sounds {
+        /// Bundled
+        internal static let bundled = L10n.tr("Localizable", "settings_details.notifications.sounds.bundled")
+        /// Import custom sound
+        internal static let importCustom = L10n.tr("Localizable", "settings_details.notifications.sounds.import_custom")
+        /// Import sounds from iTunes File Sharing
+        internal static let importFileSharing = L10n.tr("Localizable", "settings_details.notifications.sounds.import_file_sharing")
+        /// Import system sounds
+        internal static let importSystem = L10n.tr("Localizable", "settings_details.notifications.sounds.import_system")
+        /// Imported
+        internal static let imported = L10n.tr("Localizable", "settings_details.notifications.sounds.imported")
+        /// System
+        internal static let system = L10n.tr("Localizable", "settings_details.notifications.sounds.system")
+        /// Sounds
+        internal static let title = L10n.tr("Localizable", "settings_details.notifications.sounds.title")
+        internal enum Error {
+          /// Can't build ~/Library/Sounds path: %@
+          internal static func cantBuildLibrarySoundsPath(_ p1: String) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.cant_build_library_sounds_path", p1)
+          }
+          /// Can't list directory contents: %@
+          internal static func cantGetDirectoryContents(_ p1: String) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.cant_get_directory_contents", p1)
+          }
+          /// Can't access file sharing sounds directory: %@
+          internal static func cantGetFileSharingPath(_ p1: String) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.cant_get_file_sharing_path", p1)
+          }
+          /// Failed to convert audio to PCM 32 bit 48khz: %@
+          internal static func conversionFailed(_ p1: String) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.conversion_failed", p1)
+          }
+          /// Failed to copy file: %@
+          internal static func copyError(_ p1: String) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.copy_error", p1)
+          }
+          /// Failed to delete file: %@
+          internal static func deleteError(_ p1: String) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.delete_error", p1)
+          }
         }
         internal enum ImportedAlert {
           /// %d sounds were imported. Please restart your phone to complete the import.
           internal static func message(_ p1: Int) -> String {
-            return L10n.tr("Localizable", "settings_details.notifications.sounds_section.imported_alert.message", p1)
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.imported_alert.message", p1)
           }
           /// Sounds Imported
-          internal static let title = L10n.tr("Localizable", "settings_details.notifications.sounds_section.imported_alert.title")
+          internal static let title = L10n.tr("Localizable", "settings_details.notifications.sounds.imported_alert.title")
         }
       }
       internal enum UpdateSection {
