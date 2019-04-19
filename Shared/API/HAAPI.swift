@@ -17,7 +17,6 @@ import ObjectMapper
 import RealmSwift
 import UserNotifications
 import Intents
-import CoreMotion
 import Version
 import Starscream
 #if os(iOS)
@@ -63,9 +62,6 @@ public class HomeAssistantAPI {
 
     var tokenManager: TokenManager?
     public var connectionInfo: ConnectionInfo
-
-    public let pedometer = CMPedometer()
-    public let motionActivityManager = CMMotionActivityManager()
 
     public var socket: WebSocket?
     weak var socketDelegate: WebsocketDelegate?

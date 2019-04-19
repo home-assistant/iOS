@@ -295,8 +295,6 @@ public class WebhookSensors {
 
     // MARK: CMMotionActivity sensors
 
-    private var activityManager = CMMotionActivityManager()
-
     private func getLatestMotionActivity() -> Promise<[CMMotionActivity]?> {
         return Promise { seal in
             guard CMMotionActivityManager.isActivityAvailable() else {
@@ -312,7 +310,8 @@ public class WebhookSensors {
             let end = Date()
             let start = Calendar.current.date(byAdding: .minute, value: -10, to: end)!
             let queue = OperationQueue.main
-            self.activityManager.queryActivityStarting(from: start, to: end, to: queue, withHandler: seal.resolve)
+            let manager = CMMotionActivityManager()
+            manager.queryActivityStarting(from: start, to: end, to: queue, withHandler: seal.resolve)
         }
     }
 
