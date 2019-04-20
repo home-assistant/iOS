@@ -35,7 +35,7 @@ public class WebhookSensors {
     }
 
     public var Battery: [WebhookSensor] {
-        var level = Int(Device().batteryLevel)
+        var level = Int(Device.current.batteryLevel ?? 0)
         if level == -100 { // simulator fix
             level = 100
         }
@@ -43,7 +43,7 @@ public class WebhookSensors {
         var state = L10n.Sensors.unknownState
         var icon = "mdi:battery"
 
-        let batState = Device().batteryState
+        let batState = Device.current.batteryState ?? Device.BatteryState.full
 
         switch batState {
         case .charging(let level):

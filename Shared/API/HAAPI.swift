@@ -400,7 +400,7 @@ public class HomeAssistantAPI {
     }
 
     private func buildMobileAppRegistration() -> [String: Any] {
-        let deviceKitDevice = Device()
+        let deviceKitDevice = Device.current
 
         let ident = MobileAppRegistrationRequest()
         if let pushID = self.pushID {
@@ -424,7 +424,7 @@ public class HomeAssistantAPI {
     }
 
     private func buildMobileAppUpdateRegistration() -> [String: Any] {
-        let deviceKitDevice = Device()
+        let deviceKitDevice = Device.current
 
         let ident = MobileAppUpdateRegistrationRequest()
         if let pushID = self.pushID {
@@ -491,14 +491,14 @@ public class HomeAssistantAPI {
     private func buildWebhookLocationPayload(updateType: LocationUpdateTrigger,
                                              location: CLLocation?, zone: RLMZone?) -> Promise<WebhookUpdateLocation> {
 
-        let device = Device()
+        let device = Device.current
 
         let payload = WebhookUpdateLocation(trigger: updateType, location: location, zone: zone)
         payload.Trigger = updateType
 
         let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
 
-        payload.Battery = device.batteryLevel
+        payload.Battery = device.batteryLevel ?? 0
         payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
 
         return Promise.value(payload)
@@ -612,12 +612,12 @@ public class HomeAssistantAPI {
                 throw APIError.notConfigured
             }
 
-            let device = Device()
+            let device = Device.current
             let eventData: [String: Any] = ["actionName": actionName,
                                             "actionID": actionID,
                                             "triggerSource": source.description,
                                             "sourceDevicePermanentID": Constants.PermanentID,
-                                            "sourceDeviceName": device.name,
+                                            "sourceDeviceName": device.name ?? "Unknown",
                                             "sourceDeviceID": Current.settingsStore.deviceID]
 
             Current.Log.verbose("Sending action payload: \(eventData)")

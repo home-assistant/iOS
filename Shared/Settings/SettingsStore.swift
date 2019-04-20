@@ -203,7 +203,7 @@ public class SettingsStore {
     }
 
     private var defaultDeviceID: String {
-        let baseID = self.removeSpecialCharsFromString(text: Device().name)
+        let baseID = self.removeSpecialCharsFromString(text: Device.current.name ?? "Unknown")
             .replacingOccurrences(of: " ", with: "_")
             .lowercased()
 

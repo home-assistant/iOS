@@ -19,17 +19,17 @@ puts "Setting CUSTOM_FONT_NAME to 'MaterialDesignIcons'"
 ENV['CUSTOM_FONT_NAME'] = 'MaterialDesignIcons'
 
 def shared_pods
-    pod 'Alamofire', '4.8.2'
-    pod 'AlamofireImage', '3.5.2'
-    pod 'DeviceKit', '1.13.0'
+    pod 'Alamofire', '~> 4.8.2'
+    pod 'AlamofireImage', '~> 3.5.2'
+    pod 'DeviceKit', '~> 2.0'
     pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
-    pod 'KeychainAccess', '3.2.0'
-    pod 'ObjectMapper', '3.4.2'
-    pod 'PromiseKit', '6.8.3'
-    pod 'RealmSwift', '3.14.0'
-    pod 'Sodium', :git => 'https://github.com/jedisct1/swift-sodium.git', :branch => 'master'
+    pod 'KeychainAccess', '~> 3.2.0'
+    pod 'ObjectMapper', :git => 'https://github.com/tristanhimmelman/ObjectMapper.git', :branch => 'master'
+    pod 'PromiseKit', '~> 6.8.4'
+    pod 'RealmSwift', '~> 3.14.1'
+    pod 'Sodium'
     pod 'Starscream'
-    pod 'UIColor_Hex_Swift', '5.0.0'
+    pod 'UIColor_Hex_Swift', '~> 5.1.0'
     pod 'Version', :git => 'https://github.com/guykogus/Version.git', :branch => 'master'
     pod 'XCGLogger', '~> 7.0.0'
 end
@@ -43,7 +43,7 @@ end
 target 'HomeAssistant' do
     ios_shared_pods
 
-    pod 'AlamofireNetworkActivityIndicator', '2.3.0'
+    pod 'AlamofireNetworkActivityIndicator', '~> 2.3.0'
     pod 'arek/Location', :git => 'https://github.com/liweihan/arek', :branch => 'develop'
     pod 'arek/Motion', :git => 'https://github.com/liweihan/arek', :branch => 'develop'
     pod 'arek/Notifications', :git => 'https://github.com/liweihan/arek', :branch => 'develop'
@@ -55,9 +55,9 @@ target 'HomeAssistant' do
     pod 'Firebase/Messaging'
     pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
     pod 'Lokalise', '~> 0.10.0'
-    pod 'MBProgressHUD', '1.1.0'
-    pod 'SwiftGen', '6.1.0'
-    pod 'SwiftLint', '0.31.0'
+    pod 'MBProgressHUD', '~> 1.1.0'
+    pod 'SwiftGen', '~> 6.1.0'
+    pod 'SwiftLint', '~> 0.31.0'
     pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
     pod 'ZIPFoundation', '~> 0.9'
 
@@ -90,7 +90,7 @@ end
 target 'NotificationContentExtension' do
     ios_shared_pods
 
-    pod 'MBProgressHUD', '1.1.0'
+    pod 'MBProgressHUD', '~> 1.1.0'
 end
 
 target 'SiriIntents' do

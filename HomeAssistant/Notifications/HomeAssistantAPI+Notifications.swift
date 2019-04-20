@@ -20,10 +20,10 @@ extension HomeAssistantAPI {
                 throw APIError.notConfigured
             }
 
-            let device = Device()
+            let device = Device.current
             var eventData: [String: Any] = ["actionName": identifier,
                                             "sourceDevicePermanentID": Constants.PermanentID,
-                                            "sourceDeviceName": device.name,
+                                            "sourceDeviceName": device.name ?? "Unknown",
                                             "sourceDeviceID": Current.settingsStore.deviceID]
             if let dataDict = userInfo["homeassistant"] {
                 eventData["action_data"] = dataDict
