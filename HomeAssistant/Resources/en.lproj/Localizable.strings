@@ -46,7 +46,6 @@
 "settings_details.privacy.crashlytics.title" = "Firebase Crashlytics";
 "settings_details.privacy.crashlytics.description" = "Crashlytics allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information. You must restart the app for changes to this setting to take effect.";
 "settings_details.general.title" = "General Settings";
-"settings_details.general.autohide_toolbar.title" = "Automatically hide toolbar";
 "settings_details.general.chrome.title" = "Open links in Chrome";
 "settings_details.location.title" = "Location Settings";
 "settings_details.location.notifications.header" = "Location Notifications";

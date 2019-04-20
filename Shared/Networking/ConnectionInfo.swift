@@ -19,6 +19,10 @@ public struct ConnectionInfo: Codable {
             self.username = username
             self.password = password
         }
+
+        public var urlCredential: URLCredential {
+            return URLCredential(user: self.username, password: self.password, persistence: .synchronizable)
+        }
     }
 
     public let baseURL: URL

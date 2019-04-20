@@ -79,7 +79,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let webView = WebViewController()
 
         let navController = UINavigationController(rootViewController: webView)
-        navController.setToolbarHidden(false, animated: false)
         navController.setNavigationBarHidden(true, animated: false)
 
         self.window!.rootViewController = navController
@@ -111,7 +110,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             navController.present(alert, animated: true, completion: nil)
 
-            alert.popoverPresentationController?.barButtonItem = webView.toolbarItems?.last
+            alert.popoverPresentationController?.sourceView = webView.view
         }
     }
 

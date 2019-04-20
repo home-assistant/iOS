@@ -11,6 +11,10 @@ const forwardEventToScriptMessage = (eventName) => {
 forwardEventToScriptMessage('haptic_event');
 forwardEventToScriptMessage('open-external-app-configuration');
 
+forwardEventToScriptMessage('auth-invalid');
+forwardEventToScriptMessage('connected');
+forwardEventToScriptMessage('disconnected');
+
 const handleThemeUpdate = (event) => {
   var payload = event.data || event;
   let themeName = payload.default_theme;

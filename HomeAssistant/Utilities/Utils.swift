@@ -53,7 +53,6 @@ func showAlert(title: String, message: String) {
                                                                 completion: nil)
 }
 
-// swiftlint:disable:next cyclomatic_complexity
 func setDefaults() {
     if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion"),
         let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString"),
@@ -87,10 +86,6 @@ func setDefaults() {
 
     if prefs.object(forKey: "locationUpdateOnNotification") == nil {
         prefs.set(true, forKey: "locationUpdateOnNotification")
-    }
-
-    if prefs.object(forKey: "autohideToolbar") == nil {
-        prefs.setValue(true, forKey: "autohideToolbar")
     }
 
     if prefs.object(forKey: "analyticsEnabled") == nil {

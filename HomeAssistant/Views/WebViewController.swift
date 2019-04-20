@@ -10,22 +10,31 @@ import UIKit
 import WebKit
 import KeychainAccess
 import PromiseKit
+import MaterialComponents.MaterialButtons
+import Iconic
 import Shared
-import arek
 
 // swiftlint:disable:next type_body_length
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, ConnectionInfoChangedDelegate {
 
-    var webView: FullScreenWKWebView!
-    var shouldHideToolbar: Bool {
-        if Current.appConfiguration != .FastlaneSnapshot {
-            return prefs.bool(forKey: "autohideToolbar")
-        }
-        return false
-    }
-    var waitingToHideToolbar: Bool = false
+    var webView: WKWebView!
 
     var urlObserver: NSKeyValueObservation?
+
+    let refreshControl = UIRefreshControl()
+
+    let settingsButton: MDCFloatingButton! = {
+        let button = MDCFloatingButton()
+        button.setImage(MaterialDesignIcons.settingsIcon.image(ofSize: CGSize(width: 36, height: 36), color: .white),
+                        for: .normal)
+        button.accessibilityLabel = L10n.Settings.NavigationBar.title
+        button.minimumSize = CGSize(width: 64, height: 48)
+        button.frame = CGRect(x: 0, y: 0, width: 64, height: 48)
+        // #ff9800 orange
+        button.backgroundColor = UIColor(red: 1.00, green: 0.60, blue: 0.00, alpha: 1.0)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
 
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
@@ -59,26 +68,35 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         userContentController.add(self, name: "themesUpdated")
         userContentController.add(self, name: "haptic")
         userContentController.add(self, name: "open-external-app-configuration")
+        userContentController.add(self, name: "auth-invalid")
+        userContentController.add(self, name: "connected")
+        userContentController.add(self, name: "disconnected")
 
-        guard let injectedJSPath = Bundle.main.path(forResource: "InjectedToWebView", ofType: "js"),
-            let injectedJS = try? String(contentsOfFile: injectedJSPath) else {
-            fatalError("Couldn't load JavaScript file for injection to WKWebView!")
+        guard let messageBridgeJSPath = Bundle.main.path(forResource: "ScriptMessageBridge", ofType: "js"),
+            let messageBridgeJS = try? String(contentsOfFile: messageBridgeJSPath) else {
+            fatalError("Couldn't load ScriptMessageBridge.js file for injection to WKWebView!")
         }
 
-        let themeScript = WKUserScript(source: injectedJS, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
-        userContentController.addUserScript(themeScript)
+        userContentController.addUserScript(WKUserScript(source: messageBridgeJS, injectionTime: .atDocumentStart,
+                                                         forMainFrameOnly: false))
+
+        guard let wsBridgeJSPath = Bundle.main.path(forResource: "WebSocketBridge", ofType: "js"),
+            let wsBridgeJS = try? String(contentsOfFile: wsBridgeJSPath) else {
+                fatalError("Couldn't load WebSocketBridge.js for injection to WKWebView!")
+        }
+
+        userContentController.addUserScript(WKUserScript(source: wsBridgeJS, injectionTime: .atDocumentEnd,
+                                                         forMainFrameOnly: false))
 
         config.userContentController = userContentController
 
-        self.webView = FullScreenWKWebView(frame: self.view!.frame, configuration: config)
-        self.webView.isOpaque = true
-        self.webView.scrollView.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
+        self.webView = WKWebView(frame: self.view!.frame, configuration: config)
+        self.webView.isOpaque = false
         self.view!.addSubview(webView)
 
         urlObserver = self.webView.observe(\.url) { (webView, _) in
             if let currentURL = webView.url?.absoluteString.replacingOccurrences(of: "?external_auth=1", with: ""),
                 let cleanURL = URL(string: currentURL) {
-                Current.Log.verbose("Setting NSUserActivity to \(currentURL)")
                 self.userActivity = NSUserActivity(activityType: "io.robbie.HomeAssistant.frontend")
                 self.userActivity?.isEligibleForHandoff = true
                 self.userActivity?.webpageURL = cleanURL
@@ -88,9 +106,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         self.webView.navigationDelegate = self
         self.webView.uiDelegate = self
-        if self.shouldHideToolbar {
-            self.webView.scrollView.delegate = self
-        }
 
         self.webView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -100,7 +115,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.webView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
 
         self.webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        self.webView.scrollView.bounces = false
+        refreshControl.addTarget(self, action: #selector(self.pullToRefresh(_:)), for: .valueChanged)
+        webView.scrollView.addSubview(refreshControl)
+        webView.scrollView.bounces = true
 
         CheckPermissionsStatus()
 
@@ -122,6 +139,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         } else {
             self.showSettingsViewController()
         }
+
+        self.settingsButton.addTarget(self, action: #selector(self.openSettingsView(_:)), for: .touchDown)
+
+        self.view.addSubview(self.settingsButton)
+
+        self.view.bottomAnchor.constraint(equalTo: self.settingsButton.bottomAnchor, constant: 16.0).isActive = true
+        self.view.rightAnchor.constraint(equalTo: self.settingsButton.rightAnchor, constant: 16.0).isActive = true
     }
 
     public func showSettingsViewController() {
@@ -160,69 +184,22 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.urlObserver = nil
     }
 
-    func styleUI(_ icons: UIColor? = nil, _ header: UIColor? = nil, _ toolbar: UIColor? = nil) {
-        // Default blue color
-        var toolbarIconColor = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
-        if let iconColor = icons {
-            toolbarIconColor = iconColor
-        } else if let storedThemeColor = prefs.string(forKey: "themeColor") {
-            toolbarIconColor = UIColor.init(hex: storedThemeColor)
-        }
+    func styleUI(_ backgroundColor: UIColor? = UIColor(red: 0.98, green: 0.98, blue: 0.98, alpha: 1.0),
+                 _ headerColor: UIColor? = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0),
+                 _ refreshTintColor: UIColor? = UIColor.white) {
 
-        var barItems: [UIBarButtonItem] = []
+        self.webView?.backgroundColor = backgroundColor
+        self.webView?.scrollView.backgroundColor = backgroundColor
 
         if let statusBarView = self.view.viewWithTag(111) {
-            var headerColor = toolbarIconColor
-            if let header = header {
-                headerColor = header
-            }
             statusBarView.backgroundColor = headerColor
         }
 
-        if Current.settingsStore.locationEnabled {
-
-            let uploadIcon = UIImage.iconForIdentifier("mdi:upload",
-                                                       iconWidth: 30, iconHeight: 30,
-                                                       color: toolbarIconColor)
-
-            barItems.append(UIBarButtonItem(image: uploadIcon,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(sendCurrentLocation(_:))
-                )
-            )
-
-            // WARNING: If you re-enable, check this file for presence of FIXMEs to fully re-enable
-//            let mapIcon = UIImage.iconForIdentifier("mdi:map", iconWidth: 30, iconHeight: 30, color: toolbarIconColor)
-//
-//            barItems.append(UIBarButtonItem(image: mapIcon,
-//                                            style: .plain,
-//                                            target: self,
-//                                            action: #selector(openMapView(_:))))
-        }
-
-        barItems.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
-
-        barItems.append(UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
-                                        action: #selector(refreshWebView(_:forEvent:))))
-
-        let settingsIcon = UIImage.iconForIdentifier("mdi:settings", iconWidth: 30, iconHeight: 30,
-                                                     color: toolbarIconColor)
-
-        barItems.append(UIBarButtonItem(image: settingsIcon,
-                                        style: .plain,
-                                        target: self,
-                                        action: #selector(openSettingsView(_:))))
-
-        self.setToolbarItems(barItems, animated: false)
-        self.navigationController?.toolbar.tintColor = toolbarIconColor
-        self.navigationController?.toolbar.barTintColor = toolbar
+        self.refreshControl.tintColor = refreshTintColor
     }
 
-    func webView(_ webView: WKWebView,
-                 createWebViewWith configuration: WKWebViewConfiguration,
-                 for navigationAction: WKNavigationAction,
-                 windowFeatures: WKWindowFeatures) -> WKWebView? {
+    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration,
+                 for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
         if navigationAction.targetFrame == nil {
             openURLInBrowser(urlToOpen: navigationAction.request.url!)
         }
@@ -230,6 +207,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        self.refreshControl.endRefreshing()
         if let err = error as? URLError {
             if err.code != .cancelled {
                 Current.Log.error("Failure during nav: \(err)")
@@ -242,6 +220,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        self.refreshControl.endRefreshing()
         if let err = error as? URLError {
             if err.code != .cancelled {
                 Current.Log.error("Failure during content load: \(error)")
@@ -253,20 +232,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }
     }
 
-    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        let stop = UIBarButtonItem(barButtonSystemItem: .stop, target: self,
-                                   action: #selector(self.refreshWebView(_:forEvent:)))
-        var removeAt = 2
-        if self.toolbarItems?.count == 3 {
-            removeAt = 1
-        } else if self.toolbarItems?.count == 4 {
-            // FIXME: Change this back to 5 if map gets re-added
-            removeAt = 2
-        }
-        var items = self.toolbarItems
-        items?.remove(at: removeAt)
-        items?.insert(stop, at: removeAt)
-        self.setToolbarItems(items, animated: true)
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        self.refreshControl.endRefreshing()
     }
 
     // for basic auth, fixes #95
@@ -286,9 +253,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         if let connectionInfo = Current.settingsStore.connectionInfo,
             let basicAuthCreds = connectionInfo.basicAuthCredentials {
             Current.Log.verbose("WKWebView hit basic auth challenge")
-            completionHandler(.useCredential, URLCredential(user: basicAuthCreds.username,
-                                                            password: basicAuthCreds.password,
-                                                            persistence: .synchronizable))
+            completionHandler(.useCredential, basicAuthCreds.urlCredential)
             return
         }
 
@@ -312,37 +277,15 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default) { _ in
             let textFields = alert.textFields!
-            let credential = URLCredential(user: textFields[0].text!,
-                                           password: textFields[1].text!,
+            let credential = URLCredential(user: textFields[0].text!, password: textFields[1].text!,
                                            persistence: .forSession)
             completionHandler(.useCredential, credential)
         })
 
         present(alert, animated: true, completion: nil)
 
-        alert.popoverPresentationController?.barButtonItem = self.toolbarItems?.last
+        alert.popoverPresentationController?.sourceView = self.webView
 
-    }
-
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        var removeAt = 2
-        if self.toolbarItems?.count == 3 {
-            removeAt = 1
-        } else if self.toolbarItems?.count == 5 {
-            removeAt = 3
-        }
-        let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
-                                      action: #selector(self.refreshWebView(_:forEvent:)))
-        var items = self.toolbarItems
-        items?.remove(at: removeAt)
-        items?.insert(refresh, at: removeAt)
-        self.setToolbarItems(items, animated: true)
-
-        if self.shouldHideToolbar {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                self.navigationController?.setToolbarHidden(true, animated: true)
-            }
-        }
     }
 
     // WKUIDelegate
@@ -360,7 +303,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         self.present(alertController, animated: true, completion: nil)
 
-        alertController.popoverPresentationController?.barButtonItem = self.toolbarItems?.last
+        alertController.popoverPresentationController?.sourceView = self.webView
     }
 
     func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?,
@@ -385,7 +328,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         self.present(alertController, animated: true, completion: nil)
 
-        alertController.popoverPresentationController?.barButtonItem = self.toolbarItems?.last
+        alertController.popoverPresentationController?.sourceView = self.webView
     }
 
     func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String,
@@ -398,7 +341,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         self.present(alertController, animated: true, completion: nil)
 
-        alertController.popoverPresentationController?.barButtonItem = self.toolbarItems?.last
+        alertController.popoverPresentationController?.sourceView = self.webView
     }
 
     @objc func loadActiveURLIfNeeded() {
@@ -413,34 +356,24 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }
     }
 
-    @objc func refreshWebView(_ sender: UIBarButtonItem, forEvent event: UIEvent) {
-        guard let touch = event.allTouches?.first else {
-            Current.Log.warning("Unable to get first touch on reload button!")
-            self.webView.reload()
-            return
+    @objc func pullToRefresh(_ sender: UIRefreshControl) {
+        if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL() {
+            self.webView.load(URLRequest(url: webviewURL))
         }
-
-        // touch.tapCount == 0 = long press
-        // touch.tapCount == 1 = tap
-
-        let redirectOrReload = {
-            if self.webView.isLoading {
-                self.webView.stopLoading()
-            } else if touch.tapCount == 0,
-                let webviewURL = Current.settingsStore.connectionInfo?.webviewURL() {
-                self.webView.load(URLRequest(url: webviewURL))
-            } else if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(reloadURL: self.webView.url) {
-                self.webView.load(URLRequest(url: webviewURL))
-            }
-        }
-
-        let websiteDataTypes = NSSet(array: [WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
-        let date = Date(timeIntervalSince1970: 0)
-        if let typeSet = websiteDataTypes as? Set<String> {
-            WKWebsiteDataStore.default().removeData(ofTypes: typeSet, modifiedSince: date,
-                                                    completionHandler: redirectOrReload)
-        } else {
-            redirectOrReload()
+        firstly {
+            HomeAssistantAPI.authenticatedAPIPromise
+        }.then { api in
+            api.GetAndSendLocation(trigger: .Manual)
+        }.done {_ in
+            Current.Log.verbose("Sending current location via button press")
+        }.catch {error in
+            let nserror = error as NSError
+            let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
+            let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
+                                          message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            alert.popoverPresentationController?.sourceView = self.webView
         }
     }
 
@@ -456,38 +389,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     @objc func openSettingsView(_ sender: UIButton) {
         self.showSettingsViewController()
-    }
-
-    @objc func openMapView(_ sender: UIButton) {
-        let devicesMapView = DevicesMapViewController()
-
-        let navController = UINavigationController(rootViewController: devicesMapView)
-        self.present(navController, animated: true, completion: nil)
-    }
-
-    @objc func sendCurrentLocation(_ sender: UIButton) {
-        firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
-        }.then { api in
-            api.GetAndSendLocation(trigger: .Manual)
-        }.done {_ in
-            Current.Log.verbose("Sending current location via button press")
-            let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
-                                          message: L10n.ManualLocationUpdateNotification.message,
-                                          preferredStyle: UIAlertController.Style.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-            alert.popoverPresentationController?.barButtonItem = self.toolbarItems?.first
-        }.catch {error in
-            let nserror = error as NSError
-            let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
-            let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
-                                          message: message,
-                                          preferredStyle: UIAlertController.Style.alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-            alert.popoverPresentationController?.barButtonItem = self.toolbarItems?.first
-        }
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -519,18 +420,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
         return nil
     }
-
-    // We are willing to become first responder to get shake motion
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
-
-    // Enable detection of shake motion
-    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        if motion == .motionShake, let navController = self.navigationController, navController.isToolbarHidden {
-            self.navigationController?.setToolbarHidden(false, animated: true)
-        }
-    }
 }
 
 extension String {
@@ -549,10 +438,21 @@ extension String {
 }
 
 extension WebViewController: WKScriptMessageHandler {
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let messageBody = message.body as? [String: Any] else { return }
 
-        if message.name == "open-external-app-configuration" {
+        Current.Log.verbose("Received script message \(message.name)")
+
+        if message.name == "connected" {
+            UIView.animate(withDuration: 1.0, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
+                 self.settingsButton.alpha = 0.0
+            }, completion: nil)
+        } else if message.name == "disconnected" || message.name == "auth-invalid" {
+            UIView.animate(withDuration: 1.0, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
+                self.settingsButton.alpha = 1.0
+            }, completion: nil)
+        } else if message.name == "open-external-app-configuration" {
             self.showSettingsViewController()
         } else if message.name == "haptic", let hapticType = messageBody["hapticType"] as? String {
             self.handleHaptic(hapticType)
@@ -610,17 +510,11 @@ extension WebViewController: WKScriptMessageHandler {
 
     func handleThemeUpdate(_ messageBody: [String: Any]) {
         if let styles = messageBody["styles"] as? [String: String] {
-            let iconColor = self.parseThemeStyle("sidebar-icon-color", styles)
+            Current.Log.verbose("Styles \(styles)")
+            let backgroundColor = self.parseThemeStyle("primary-background-color", styles)
             let headerColor = self.parseThemeStyle("primary-color", styles)
-            var toolbarColor = self.parseThemeStyle("sidebar-background-color", styles)
-            if toolbarColor == nil {
-                if let primaryBGC = self.parseThemeStyle("primary-background-color", styles) {
-                    toolbarColor = primaryBGC
-                } else if let plbc = self.parseThemeStyle("paper-listbox-background-color", styles) {
-                    toolbarColor = plbc
-                }
-            }
-            self.styleUI(iconColor, headerColor, toolbarColor)
+            let refreshTintColor = self.parseThemeStyle("text-primary-color", styles)
+            self.styleUI(backgroundColor, headerColor, refreshTintColor)
         } else {
             // Assume default theme
             self.styleUI()
@@ -651,20 +545,9 @@ extension WebViewController: WKScriptMessageHandler {
 }
 
 extension WebViewController: UIScrollViewDelegate {
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint,
-                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        Current.Log.verbose("End dragging \(self.waitingToHideToolbar)")
-        if velocity.y>0 {
-            self.waitingToHideToolbar = false
-            self.navigationController?.setToolbarHidden(true, animated: true)
-        } else {
-            self.navigationController?.setToolbarHidden(false, animated: true)
-            self.waitingToHideToolbar = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                if self.waitingToHideToolbar {
-                    self.navigationController?.setToolbarHidden(true, animated: true)
-                }
-            }
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.bounds.height {
+            scrollView.contentOffset.y = scrollView.contentSize.height - scrollView.bounds.height
         }
     }
 }
@@ -689,8 +572,8 @@ extension ConnectionInfo {
     }
 }
 
-class FullScreenWKWebView: WKWebView {
-    override var safeAreaInsets: UIEdgeInsets {
+extension WKWebView {
+    override open var safeAreaInsets: UIEdgeInsets {
         return .zero
     }
 // swiftlint:disable:next file_length

@@ -86,7 +86,36 @@ PODS:
   - Iconic (1.5.1)
   - KeychainAccess (3.2.0)
   - Lokalise (0.10.0)
+  - MaterialComponents/AnimationTiming (82.0.0)
+  - MaterialComponents/Buttons (82.0.0):
+    - MaterialComponents/Ink
+    - MaterialComponents/private/Math
+    - MaterialComponents/Ripple
+    - MaterialComponents/ShadowElevations
+    - MaterialComponents/ShadowLayer
+    - MaterialComponents/Shapes
+    - MaterialComponents/Typography
+    - MDFInternationalization
+    - MDFTextAccessibility
+  - MaterialComponents/Ink (82.0.0):
+    - MaterialComponents/private/Math
+  - MaterialComponents/private/Application (82.0.0)
+  - MaterialComponents/private/Math (82.0.0)
+  - MaterialComponents/Ripple (82.0.0):
+    - MaterialComponents/AnimationTiming
+    - MaterialComponents/private/Math
+  - MaterialComponents/ShadowElevations (82.0.0)
+  - MaterialComponents/ShadowLayer (82.0.0):
+    - MaterialComponents/ShadowElevations
+  - MaterialComponents/Shapes (82.0.0):
+    - MaterialComponents/private/Math
+    - MaterialComponents/ShadowLayer
+  - MaterialComponents/Typography (82.0.0):
+    - MaterialComponents/private/Application
+    - MaterialComponents/private/Math
   - MBProgressHUD (1.1.0)
+  - MDFInternationalization (2.0.0)
+  - MDFTextAccessibility (2.0.0)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
     - nanopb/encode (= 0.3.901)
@@ -148,6 +177,7 @@ DEPENDENCIES:
   - Iconic (from `https://github.com/robbiet480/Iconic.git`, branch `swift-4.2`)
   - KeychainAccess (~> 3.2.0)
   - Lokalise (~> 0.10.0)
+  - MaterialComponents/Buttons
   - MBProgressHUD (~> 1.1.0)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - PromiseKit (~> 6.8.4)
@@ -184,7 +214,10 @@ SPEC REPOS:
     - GoogleUtilities
     - KeychainAccess
     - Lokalise
+    - MaterialComponents
     - MBProgressHUD
+    - MDFInternationalization
+    - MDFTextAccessibility
     - nanopb
     - ObjcExceptionBridging
     - PromiseKit
@@ -278,7 +311,10 @@ SPEC CHECKSUMS:
   Iconic: b2463d6ee236fc987e6737f9e3cc13a702a4c4d8
   KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
   Lokalise: bc42066e2dde59b43b46e88ecc0b92b7d593dc72
+  MaterialComponents: 716ab39b84350c755dfd4f8bc9ca168f377af504
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
+  MDFInternationalization: 010097556d6b09d2c4ea38e0820ea6d37be6a314
+  MDFTextAccessibility: 85c09a1bd9c321f494348e632a25063bcda35a53
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: f60313a187a73f2749f34afa8782df5cda97b19f
@@ -298,6 +334,6 @@ SPEC CHECKSUMS:
   XCGLogger: 0434f15e3909cdc450bb63faf638b8792ab782ab
   ZIPFoundation: b1f07e4409baf1641f3fe5948b2a1c3f5c500cb1
 
-PODFILE CHECKSUM: b289040c268176ca6c70d4834aeed39cbc742512
+PODFILE CHECKSUM: 8cb7f7276a68d1ad6d7c28935cfa5249e06d60a0
 
 COCOAPODS: 1.7.0.beta.3

@@ -1080,10 +1080,6 @@ internal enum L10n {
           internal static let white = L10n.tr("Localizable", "settings_details.general.app_icon.enum.white")
         }
       }
-      internal enum AutohideToolbar {
-        /// Automatically hide toolbar
-        internal static let title = L10n.tr("Localizable", "settings_details.general.autohide_toolbar.title")
-      }
       internal enum Chrome {
         /// Open links in Chrome
         internal static let title = L10n.tr("Localizable", "settings_details.general.chrome.title")

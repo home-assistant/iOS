@@ -411,15 +411,14 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
 
         +++ Section(header: L10n.Settings.DetailsSection.Integrations.header, footer: "")
         <<< ButtonRow {
-            $0.hidden = Condition(booleanLiteral: UIDevice.current.systemVersion == "12")
-            $0.tag = "siriShortcuts"
-            $0.title = L10n.Settings.DetailsSection.SiriShortcutsRow.title
+            $0.tag = "actions"
+            $0.title = L10n.SettingsDetails.Actions.title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 let view = SettingsDetailViewController()
-                view.detailGroup = "siri"
+                view.detailGroup = "actions"
                 return view
-                }, onDismiss: { vc in
-                    _ = vc.navigationController?.popViewController(animated: true)
+            }, onDismiss: { vc in
+                _ = vc.navigationController?.popViewController(animated: true)
             })
         }
 
@@ -436,11 +435,12 @@ class SettingsViewController: FormViewController, CLLocationManagerDelegate, SFS
         }
 
         <<< ButtonRow {
-            $0.tag = "actions"
-            $0.title = L10n.SettingsDetails.Actions.title
+            $0.hidden = Condition(booleanLiteral: UIDevice.current.systemVersion == "12")
+            $0.tag = "siriShortcuts"
+            $0.title = L10n.Settings.DetailsSection.SiriShortcutsRow.title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 let view = SettingsDetailViewController()
-                view.detailGroup = "actions"
+                view.detailGroup = "siri"
                 return view
                 }, onDismiss: { vc in
                     _ = vc.navigationController?.popViewController(animated: true)

@@ -83,14 +83,6 @@ class SettingsDetailViewController: FormViewController {
                         UIApplication.shared.setAlternateIconName(newAppIconName.rawValue)
                     }
 
-                +++ Section()
-                <<< SwitchRow("autohideToolbar") {
-                        $0.title = L10n.SettingsDetails.General.AutohideToolbar.title
-                        $0.value = prefs.bool(forKey: "autohideToolbar")
-                    }.onChange { row in
-                        prefs.setValue(row.value, forKey: "autohideToolbar")
-                        prefs.synchronize()
-                    }
         case "location":
             self.title = L10n.SettingsDetails.Location.title
             self.form

@@ -209,6 +209,7 @@
 		B65BF93A2217F497005745A4 /* old-dev@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9342217F497005745A4 /* old-dev@3x.png */; };
 		B65BF93B2217F497005745A4 /* old-release@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9352217F497005745A4 /* old-release@3x.png */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
+		B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B661FB67226B961400E541DD /* WebSocketBridge.js */; };
 		B6624E4F22584F8F00354CDF /* CrashlyticsLogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6624E4D22584F7F00354CDF /* CrashlyticsLogDestination.swift */; };
 		B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = B665281F1F9D870C00EBE6D4 /* ManifestJSON.swift */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
@@ -426,7 +427,7 @@
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6E42617215C761A007FEB7E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		B6E42618215C761E007FEB7E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
-		B6EDBBBD226AEFB2001FBCFE /* InjectedToWebView.js in Resources */ = {isa = PBXBuildFile; fileRef = B6EDBBBC226AEFB2001FBCFE /* InjectedToWebView.js */; };
+		B6EDBBBD226AEFB2001FBCFE /* ScriptMessageBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B6EDBBBC226AEFB2001FBCFE /* ScriptMessageBridge.js */; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
 		D03D892920E0A85300D4F28D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03D892D20E0A85300D4F28D /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -886,6 +887,7 @@
 		B65BF9342217F497005745A4 /* old-dev@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-dev@3x.png"; sourceTree = "<group>"; };
 		B65BF9352217F497005745A4 /* old-release@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-release@3x.png"; sourceTree = "<group>"; };
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
+		B661FB67226B961400E541DD /* WebSocketBridge.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = WebSocketBridge.js; sourceTree = "<group>"; };
 		B6624E4922584F3400354CDF /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Pods/Crashlytics/Crashlytics.framework; sourceTree = "<group>"; };
 		B6624E4A22584F3400354CDF /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Pods/Fabric/Fabric.framework; sourceTree = "<group>"; };
 		B6624E4D22584F7F00354CDF /* CrashlyticsLogDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsLogDestination.swift; sourceTree = "<group>"; };
@@ -1051,7 +1053,7 @@
 		B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+UIActivityIndicator.swift"; sourceTree = "<group>"; };
 		B6DF8BC3221D047400370A59 /* GetCameraImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCameraImage.swift; sourceTree = "<group>"; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		B6EDBBBC226AEFB2001FBCFE /* InjectedToWebView.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = InjectedToWebView.js; sourceTree = "<group>"; };
+		B6EDBBBC226AEFB2001FBCFE /* ScriptMessageBridge.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = ScriptMessageBridge.js; sourceTree = "<group>"; };
 		B6EE36A120CF593E001494E3 /* RealmZone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmZone.swift; sourceTree = "<group>"; };
 		B6F02BE81CB46AF40029ABE7 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Entity.swift; sourceTree = "<group>"; };
 		B6F02BED1CB46EB10029ABE7 /* Status.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
@@ -1729,7 +1731,8 @@
 				B69933931E232AEA0054453D /* Localizable.strings */,
 				B63CCDCF2164714900123C50 /* Intents.intentdefinition */,
 				B672AB552216B07500175465 /* gallery.ckcomplication */,
-				B6EDBBBC226AEFB2001FBCFE /* InjectedToWebView.js */,
+				B6EDBBBC226AEFB2001FBCFE /* ScriptMessageBridge.js */,
+				B661FB67226B961400E541DD /* WebSocketBridge.js */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -2680,6 +2683,7 @@
 				B606163D1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-All-The-Lights.wav in Resources */,
 				B606167E1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Unlocked.wav in Resources */,
 				B606163C1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Romance-Mode.wav in Resources */,
+				B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */,
 				B60616541D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Garage.wav in Resources */,
 				B606162D1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav in Resources */,
 				B60616991D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav in Resources */,
@@ -2721,7 +2725,7 @@
 				B60616151D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav in Resources */,
 				B60616521D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav in Resources */,
 				B60616101D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav in Resources */,
-				B6EDBBBD226AEFB2001FBCFE /* InjectedToWebView.js in Resources */,
+				B6EDBBBD226AEFB2001FBCFE /* ScriptMessageBridge.js in Resources */,
 				B606167D1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav in Resources */,
 				B60616931D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Basement.wav in Resources */,
 				B65BF9392217F497005745A4 /* old-dev@2x.png in Resources */,
@@ -2968,6 +2972,9 @@
 				"${BUILT_PRODUCTS_DIR}/KeychainAccess-iOS/KeychainAccess.framework",
 				"${PODS_ROOT}/Lokalise/Lokalise.framework",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/MDFInternationalization/MDFInternationalization.framework",
+				"${BUILT_PRODUCTS_DIR}/MDFTextAccessibility/MDFTextAccessibility.framework",
+				"${BUILT_PRODUCTS_DIR}/MaterialComponents/MaterialComponents.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjcExceptionBridging-iOS/ObjcExceptionBridging.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper-iOS/ObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
@@ -3002,6 +3009,9 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lokalise.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MDFInternationalization.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MDFTextAccessibility.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MaterialComponents.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjcExceptionBridging.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
