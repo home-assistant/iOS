@@ -57,32 +57,15 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         userContentController.add(self, name: "getExternalAuth")
         userContentController.add(self, name: "revokeExternalAuth")
         userContentController.add(self, name: "themesUpdated")
-        userContentController.add(self, name: "handleHaptic")
+        userContentController.add(self, name: "haptic")
+        userContentController.add(self, name: "open-external-app-configuration")
 
-        let themeScriptSource = """
-                               const handleThemeUpdate = (event) => {
-                                  var payload = event.data || event;
-                                  let themeName = payload.default_theme;
-                                  if(themeName === "default") {
-                                    window.webkit.messageHandlers.themesUpdated.postMessage({
-                                      "name": themeName
-                                    });
-                                  } else {
-                                    window.webkit.messageHandlers.themesUpdated.postMessage({
-                                      "name": themeName,
-                                      "styles": payload.themes[themeName]
-                                    });
-                                  }
-                                }
+        guard let injectedJSPath = Bundle.main.path(forResource: "InjectedToWebView", ofType: "js"),
+            let injectedJS = try? String(contentsOfFile: injectedJSPath) else {
+            fatalError("Couldn't load JavaScript file for injection to WKWebView!")
+        }
 
-                                window.hassConnection.then(({ conn }) => {
-                                  conn.sendMessagePromise({type: 'frontend/get_themes'}).then(handleThemeUpdate);
-                                  conn.subscribeEvents(handleThemeUpdate, "themes_updated");
-                                });
-                               """
-
-        let themeScript = WKUserScript(source: themeScriptSource, injectionTime: .atDocumentEnd,
-                                       forMainFrameOnly: false)
+        let themeScript = WKUserScript(source: injectedJS, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
         userContentController.addUserScript(themeScript)
 
         config.userContentController = userContentController
@@ -145,6 +128,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         let settingsView = SettingsViewController()
         settingsView.doneButton = true
         settingsView.delegate = self
+        settingsView.hidesBottomBarWhenPushed = true
         let navController = UINavigationController(rootViewController: settingsView)
         self.present(navController, animated: true, completion: nil)
     }
@@ -471,13 +455,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     @objc func openSettingsView(_ sender: UIButton) {
-        let settingsView = SettingsViewController()
-        settingsView.doneButton = true
-        settingsView.hidesBottomBarWhenPushed = true
-        settingsView.delegate = self
-
-        let navController = UINavigationController(rootViewController: settingsView)
-        self.present(navController, animated: true, completion: nil)
+        self.showSettingsViewController()
     }
 
     @objc func openMapView(_ sender: UIButton) {
@@ -574,7 +552,9 @@ extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let messageBody = message.body as? [String: Any] else { return }
 
-        if message.name == "handleHaptic", let hapticType = messageBody["hapticType"] as? String {
+        if message.name == "open-external-app-configuration" {
+            self.showSettingsViewController()
+        } else if message.name == "haptic", let hapticType = messageBody["hapticType"] as? String {
             self.handleHaptic(hapticType)
         } else if message.name == "themesUpdated" {
             self.handleThemeUpdate(messageBody)
