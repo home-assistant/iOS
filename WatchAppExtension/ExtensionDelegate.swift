@@ -38,6 +38,11 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         UNUserNotificationCenter.current().delegate = self
 
+        let opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
+        UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
+            Current.Log.verbose("Requested notifications access \(granted), \(String(describing: error))")
+        }
+
         setupWatchCommunicator()
 
         // schedule the next background refresh
