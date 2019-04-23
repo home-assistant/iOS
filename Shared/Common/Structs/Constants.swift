@@ -7,10 +7,16 @@
 //
 
 import Foundation
+import UIKit
 import KeychainAccess
 
 /// Contains shared constants
 public struct Constants {
+    /// Home Assistant Blue
+    public static var blue: UIColor {
+        return UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
+    }
+
     /// The Bundle ID used for the AppGroupID
     public static var BundleID: String {
         let baseBundleID = Bundle.main.bundleIdentifier!

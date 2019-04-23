@@ -70,7 +70,7 @@ class RegionManager: NSObject {
 
         // If current SSID is in the filter list stop processing region event. This is to cut down on false exits.
         // https://github.com/home-assistant/home-assistant-iOS/issues/32
-        if let currentSSID = ConnectionInfo.currentSSID(), zone.SSIDFilter.contains(currentSSID) {
+        if let currentSSID = ConnectionInfo.CurrentWiFiSSID, zone.SSIDFilter.contains(currentSSID) {
             let inaccurateLocationMessage = "Ignoring region event due to current SSID being in zone SSID filter"
             Current.clientEventStore.addEvent(ClientEvent(text: inaccurateLocationMessage, type: .locationUpdate))
             return
@@ -123,7 +123,7 @@ class RegionManager: NSObject {
             self.endBackgroundTaskWithName(taskName)
         }.catch { error in
             let eventName = trigger == .RegionEnter ? "Enter" : "Exit"
-            let SSID = "SSID: \(ConnectionInfo.currentSSID() ?? "Unavailable")"
+            let SSID = "SSID: \(ConnectionInfo.CurrentWiFiSSID ?? "Unavailable")"
             let event = ClientEvent(text: "Failed to send location after region \(eventName). SSID: \(SSID)",
                 type: .locationUpdate)
             Current.clientEventStore.addEvent(event)

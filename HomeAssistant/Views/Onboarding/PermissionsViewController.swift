@@ -1,0 +1,34 @@
+//
+//  PermissionsViewController.swift
+//  HomeAssistant
+//
+//  Created by Robert Trencheny on 4/20/19.
+//  Copyright © 2019 Robbie Trencheny. All rights reserved.
+//
+
+import UIKit
+import Shared
+
+class PermissionsViewController: UIViewController, PermissionViewChangeDelegate {
+    @IBOutlet weak var locationPermissionView: PermissionLineItemView!
+    @IBOutlet weak var motionPermissionView: PermissionLineItemView!
+    @IBOutlet weak var notificationsPermissionView: PermissionLineItemView!
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        self.locationPermissionView.delegate = self
+        self.motionPermissionView.delegate = self
+        self.notificationsPermissionView.delegate = self
+    }
+
+    @IBAction func closeButton(_ sender: UIButton) {
+        if let navVC = self.navigationController as? OnboardingNavigationViewController {
+            print("Dismissing from permissions")
+            navVC.dismiss()
+        }
+    }
+
+    func statusChanged(_ forPermission: PermissionType, _ toStatus: PermissionStatus) {
+        Current.Log.verbose("Permission \(forPermission.title) status changed to \(toStatus.description)")
+    }
+}

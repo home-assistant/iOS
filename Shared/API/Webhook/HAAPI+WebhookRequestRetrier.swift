@@ -19,17 +19,12 @@ class WebhookHandler: RequestAdapter, RequestRetrier {
     private var webhookID: String
     private var externalURL: URL
     private var internalURLRaw: URL?
-    private var internalSSID: String?
+    private var internalSSIDs: [String]?
     private var internalURL: URL? {
-        guard internalURLRaw != nil && internalSSID != nil else {
+        guard internalURLRaw != nil && internalSSIDs != nil && ConnectionInfo.CurrentWiFiSSID != nil else {
             return nil
         }
-        #if os(iOS)
-        if let internalSSID = self.internalSSID, internalSSID == ConnectionInfo.currentSSID() {
-            return internalURLRaw
-        }
-        #endif
-        return nil
+        return internalURLRaw
     }
     private var remoteUIURL: URL?
     private var cloudhookURL: URL?
@@ -48,7 +43,7 @@ class WebhookHandler: RequestAdapter, RequestRetrier {
     public init(webhookID: String, connectionInfo: ConnectionInfo, remoteUIURL: URL?, cloudhookURL: URL?) {
         self.webhookID = webhookID
         let path = "api/webhook/\(self.webhookID)"
-        self.externalURL = connectionInfo.baseURL.appendingPathComponent(path, isDirectory: false)
+        self.externalURL = connectionInfo.externalBaseURL.appendingPathComponent(path, isDirectory: false)
         self.activeURL = self.externalURL
         self.activeURLType = .external
 
@@ -65,10 +60,10 @@ class WebhookHandler: RequestAdapter, RequestRetrier {
             self.activeURL = url
         }
 
-        if let url = connectionInfo.internalBaseURL, let ssid = connectionInfo.internalSSID {
+        if let url = connectionInfo.internalBaseURL, let ssids = connectionInfo.internalSSIDs {
             let builtURL = url.appendingPathComponent(path, isDirectory: false)
             self.internalURLRaw = builtURL
-            self.internalSSID = ssid
+            self.internalSSIDs = ssids
             if let url = self.internalURL {
                 self.activeURL = url
             }

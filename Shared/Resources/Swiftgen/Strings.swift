@@ -816,8 +816,6 @@ internal enum L10n {
       /// Connection
       internal static let header = L10n.tr("Localizable", "settings.connection_section.header")
       internal enum BaseUrl {
-        /// https://homeassistant.myhouse.com
-        internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.base_url.placeholder")
         /// URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.base_url.title")
       }
@@ -848,12 +846,30 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings.connection_section.error_enabling_notifications.title")
       }
       internal enum ExternalBaseUrl {
+        /// https://homeassistant.myhouse.com
+        internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.external_base_url.placeholder")
         /// External URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.external_base_url.title")
       }
       internal enum InternalBaseUrl {
+        /// http://hassio.local:8123/
+        internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.internal_base_url.placeholder")
         /// Internal URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.internal_base_url.title")
+      }
+      internal enum InternalUrlSsids {
+        /// Add current SSID %@
+        internal static func addCurrentSsid(_ p1: String) -> String {
+          return L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.add_current_ssid", p1)
+        }
+        /// Add new SSID
+        internal static let addNewSsid = L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.add_new_ssid")
+        /// Internal URL will be used when connected to listed SSIDs
+        internal static let footer = L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.footer")
+        /// SSIDs
+        internal static let header = L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.header")
+        /// MyFunnyNetworkName
+        internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.placeholder")
       }
       internal enum InvalidUrlSchemeNotification {
         /// The URL must begin with either http:// or https://.
@@ -892,11 +908,11 @@ internal enum L10n {
         internal static let header = L10n.tr("Localizable", "settings.details_section.integrations.header")
       }
       internal enum LocationSettingsRow {
-        /// Location Settings
+        /// Location
         internal static let title = L10n.tr("Localizable", "settings.details_section.location_settings_row.title")
       }
       internal enum NotificationSettingsRow {
-        /// Notification Settings
+        /// Notifications
         internal static let title = L10n.tr("Localizable", "settings.details_section.notification_settings_row.title")
       }
       internal enum SiriShortcutsRow {
@@ -989,7 +1005,7 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "settings.event_log.title")
     }
     internal enum GeneralSettingsButton {
-      /// General Settings
+      /// General
       internal static let title = L10n.tr("Localizable", "settings.general_settings_button.title")
     }
     internal enum NavigationBar {
@@ -1030,7 +1046,7 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings.status_section.mobile_app_component_loaded_row.title")
       }
       internal enum VersionRow {
-        /// 0.42.0
+        /// 0.92.0
         internal static let placeholder = L10n.tr("Localizable", "settings.status_section.version_row.placeholder")
         /// Version
         internal static let title = L10n.tr("Localizable", "settings.status_section.version_row.title")
@@ -1046,7 +1062,7 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "settings_details.actions.title")
     }
     internal enum General {
-      /// General Settings
+      /// General
       internal static let title = L10n.tr("Localizable", "settings_details.general.title")
       internal enum AppIcon {
         /// App Icon
@@ -1086,7 +1102,7 @@ internal enum L10n {
       }
     }
     internal enum Location {
-      /// Location Settings
+      /// Location
       internal static let title = L10n.tr("Localizable", "settings_details.location.title")
       internal enum Notifications {
         /// Location Notifications
@@ -1194,7 +1210,7 @@ internal enum L10n {
       }
     }
     internal enum Notifications {
-      /// Notification Settings
+      /// Notification
       internal static let title = L10n.tr("Localizable", "settings_details.notifications.title")
       internal enum BadgeSection {
         internal enum Button {

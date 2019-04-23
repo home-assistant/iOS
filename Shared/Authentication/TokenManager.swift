@@ -163,7 +163,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
     private func loggableString(for url: URL) -> String {
         let urlText: String
-        if self.url(url, matchesPrefixOf: self.connectionInfo.baseURL) {
+        if self.url(url, matchesPrefixOf: self.connectionInfo.externalBaseURL) {
             urlText = self.connectionInfo.internalBaseURL == nil ? "HASS URL" : "External HASS URL"
         } else if let internalBaseURL = self.connectionInfo.internalBaseURL,
             self.url(url, matchesPrefixOf: internalBaseURL) {
@@ -193,7 +193,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     }
 
     private func isURLValid(_ url: URL, for connectionInfo: ConnectionInfo) -> Bool {
-        if self.url(url, matchesPrefixOf: connectionInfo.baseURL) {
+        if self.url(url, matchesPrefixOf: connectionInfo.externalBaseURL) {
             return true
         } else if let internalURL = connectionInfo.internalBaseURL {
             return self.url(url, matchesPrefixOf: internalURL)

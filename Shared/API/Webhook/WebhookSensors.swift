@@ -87,7 +87,7 @@ public class WebhookSensors {
         let sensor = WebhookSensor(name: L10n.Sensors.Bssid.name, uniqueID: "connectivity_bssid", icon: "mdi:wifi-star",
                                    state: L10n.Sensors.Connectivity.notConnected)
 
-        if let bssid = ConnectionInfo.currentBSSID() {
+        if let bssid = ConnectionInfo.CurrentWiFiBSSID {
             sensor.State = bssid
         }
         return sensor
@@ -96,7 +96,7 @@ public class WebhookSensors {
     public var SSID: WebhookSensor? {
         let sensor = WebhookSensor(name: L10n.Sensors.Ssid.name, uniqueID: "connectivity_ssid", icon: "mdi:wifi",
                                    state: L10n.Sensors.Connectivity.notConnected)
-        if let ssid = ConnectionInfo.currentSSID() {
+        if let ssid = ConnectionInfo.CurrentWiFiSSID {
             sensor.State = ssid
         }
         return sensor

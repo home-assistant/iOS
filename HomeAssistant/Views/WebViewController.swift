@@ -150,8 +150,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
 
     public func showSettingsViewController() {
         let settingsView = SettingsViewController()
-        settingsView.doneButton = true
-        settingsView.delegate = self
+        // settingsView.doneButton = true
+        // settingsView.delegate = self
         settingsView.hidesBottomBarWhenPushed = true
         let navController = UINavigationController(rootViewController: settingsView)
         self.present(navController, animated: true, completion: nil)
@@ -378,7 +378,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     func openSettingsWithError(error: Error) {
-        let settingsView = SettingsViewController()
+        let settingsView = OldSettingsViewController()
         settingsView.showErrorConnectingMessage = true
         settingsView.showErrorConnectingMessageError = error
         settingsView.doneButton = true

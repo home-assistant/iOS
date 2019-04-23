@@ -51,7 +51,7 @@ public class WebhookUpdateLocation: Mappable {
 
         #if os(iOS)
         // https://github.com/home-assistant/home-assistant-iOS/issues/32
-        if let currentSSID = ConnectionInfo.currentSSID(), zone.SSIDTrigger.contains(currentSSID) {
+        if let currentSSID = ConnectionInfo.CurrentWiFiSSID, zone.SSIDTrigger.contains(currentSSID) {
             self.LocationName = zone.Name
             return
         }

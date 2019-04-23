@@ -238,10 +238,12 @@ public class SettingsStore {
                 internalURL = parsedURL
             }
 
-            let info = ConnectionInfo(baseURL: baseURL,
-                                      internalBaseURL: internalURL,
-                                      internalSSID: keychain["internalBaseURLSSID"],
+            var info = ConnectionInfo(baseURL: baseURL, internalBaseURL: internalURL,
+                                      internalSSIDs: nil, basicAuthCredentials: credentials)
+            if let ssid = keychain["internalBaseURLSSID"] {
+                info = ConnectionInfo(baseURL: baseURL, internalBaseURL: internalURL, internalSSIDs: [ssid],
                                       basicAuthCredentials: credentials)
+            }
             self.connectionInfo = info
             self.hasMigratedConnection = true
         }

@@ -25,66 +25,63 @@ public struct ConnectionInfo: Codable {
         }
     }
 
-    public let baseURL: URL
+    public let externalBaseURL: URL
     public let internalBaseURL: URL?
-    public let internalSSID: String?
+    public let internalSSIDs: [String]?
     public let basicAuthCredentials: BasicAuthCredentials?
 
-    public init(baseURL: URL, internalBaseURL: URL?, internalSSID: String?,
+    public init(baseURL: URL, internalBaseURL: URL?, internalSSIDs: [String]?,
                 basicAuthCredentials: BasicAuthCredentials?) {
-        self.baseURL = baseURL
+        self.externalBaseURL = baseURL
         self.internalBaseURL = internalBaseURL
-        self.internalSSID = internalSSID
+        self.internalSSIDs = internalSSIDs
         self.basicAuthCredentials = basicAuthCredentials
     }
 
     /// Returns the url that should be used at this moment to access the home assistant instance.
     public var activeURL: URL {
-        #if os(iOS)
-        if let internalSSID = self.internalSSID, internalSSID == ConnectionInfo.currentSSID(),
-            let internalBaseURL = self.internalBaseURL {
+        if let internalBaseURL = self.internalBaseURL, self.isOnInternalNetwork {
             return internalBaseURL
         }
-        #endif
         /*if let remoteUIURL = Current.settingsStore.remoteUIURL {
             return remoteUIURL
         }*/
-        return self.baseURL
+        return self.externalBaseURL
     }
 
     public var activeAPIURL: URL {
         return self.activeURL.appendingPathComponent("api", isDirectory: false)
     }
-}
 
-#if os(iOS)
-public extension ConnectionInfo {
-    static func currentSSID() -> String? {
-        var ssid: String?
-        if let interfaces = CNCopySupportedInterfaces() as NSArray? {
-            for interface in interfaces {
-                // swiftlint:disable:next force_cast
-                if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as! CFString) as NSDictionary? {
-                    ssid = interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
-                    break
-                }
-            }
+    /// Returns true if current SSID is SSID marked for internal URL use.
+    public var isOnInternalNetwork: Bool {
+        guard let internalSSIDs = self.internalSSIDs, let currentSSID = ConnectionInfo.CurrentWiFiSSID else {
+            return false
         }
-        return ssid
+        return internalSSIDs.contains(currentSSID)
     }
 
-    static func currentBSSID() -> String? {
-        var ssid: String?
-        if let interfaces = CNCopySupportedInterfaces() as NSArray? {
-            for interface in interfaces {
-                // swiftlint:disable:next force_cast
-                if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as! CFString) as NSDictionary? {
-                    ssid = interfaceInfo[kCNNetworkInfoKeyBSSID as String] as? String
-                    break
-                }
-            }
+    /// Returns the current SSID if it exists and the platform supports it.
+    public static var CurrentWiFiSSID: String? {
+        #if os(iOS)
+        guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
+        for interface in interfaces {
+            guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else { continue }
+            return interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
         }
-        return ssid
+        #endif
+        return nil
+    }
+
+    /// Returns the current BSSID if it exists and the platform supports it.
+    public static var CurrentWiFiBSSID: String? {
+        #if os(iOS)
+        guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
+        for interface in interfaces {
+            guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else { continue }
+            return interfaceInfo[kCNNetworkInfoKeyBSSID as String] as? String
+        }
+        #endif
+        return nil
     }
 }
-#endif

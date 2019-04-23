@@ -325,8 +325,8 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We suggest selecting "Always Allow" for the best location experience.
-            Selecting "Only While Using the App" will disable iBeacons, geofences, background location updates and accurate reporting.</string>
+	<string>We suggest selecting &quot;Always Allow&quot; for the best location experience.
+            Selecting &quot;Only While Using the App&quot; will disable iBeacons, geofences, background location updates and accurate reporting.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -398,5 +398,20 @@
 	</array>
 	<key>firebase_crashlytics_collection_enabled</key>
 	<false/>
+    <key>UIAppFonts</key>
+    <array>
+        <string>Roboto-Black.ttf</string>
+        <string>Roboto-BlackItalic.ttf</string>
+        <string>Roboto-Bold.ttf</string>
+        <string>Roboto-BoldItalic.ttf</string>
+        <string>Roboto-Italic.ttf</string>
+        <string>Roboto-Light.ttf</string>
+        <string>Roboto-LightItalic.ttf</string>
+        <string>Roboto-Medium.ttf</string>
+        <string>Roboto-MediumItalic.ttf</string>
+        <string>Roboto-Regular.ttf</string>
+        <string>Roboto-Thin.ttf</string>
+        <string>Roboto-ThinItalic.ttf</string>
+    </array>
 </dict>
 </plist>
