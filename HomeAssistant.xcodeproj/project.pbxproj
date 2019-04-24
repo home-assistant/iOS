@@ -215,7 +215,7 @@
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
 		B657A8EE1CA646EB00121384 /* OldSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8ED1CA646EB00121384 /* OldSettingsViewController.swift */; };
 		B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F21CA646EB00121384 /* Assets.xcassets */; };
-		B657A8F61CA646EB00121384 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */; };
+		B657A8F61CA646EB00121384 /* Release LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F41CA646EB00121384 /* Release LaunchScreen.storyboard */; };
 		B657A9011CA646EB00121384 /* HomeAssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9001CA646EB00121384 /* HomeAssistantTests.swift */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B658AA6F2250692F00C9BFE3 /* GoogleService-Info-Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */; };
@@ -465,6 +465,8 @@
 		B6DF8BC1221C890600370A59 /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
 		B6DF8BC2221C890F00370A59 /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
 		B6DF8BC4221D047400370A59 /* GetCameraImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC3221D047400370A59 /* GetCameraImage.swift */; };
+		B6E2D4B82270406B00446DFA /* Beta LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6E2D4BA2270406B00446DFA /* Beta LaunchScreen.storyboard */; };
+		B6E2D4BB2270407500446DFA /* Debug LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6E2D4BD2270407500446DFA /* Debug LaunchScreen.storyboard */; };
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6E42617215C761A007FEB7E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		B6E42618215C761E007FEB7E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
@@ -933,7 +935,7 @@
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B657A8ED1CA646EB00121384 /* OldSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldSettingsViewController.swift; sourceTree = "<group>"; };
 		B657A8F21CA646EB00121384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B657A8F51CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B657A8F51CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/Release LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		B657A8F71CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A8FC1CA646EB00121384 /* HomeAssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HomeAssistantTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A9001CA646EB00121384 /* HomeAssistantTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantTests.swift; sourceTree = "<group>"; };
@@ -1133,6 +1135,8 @@
 		B6DAC736215F06B100727D2A /* NotificationAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAction.swift; sourceTree = "<group>"; };
 		B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+UIActivityIndicator.swift"; sourceTree = "<group>"; };
 		B6DF8BC3221D047400370A59 /* GetCameraImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCameraImage.swift; sourceTree = "<group>"; };
+		B6E2D4B92270406B00446DFA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/Beta LaunchScreen.storyboard"; sourceTree = "<group>"; };
+		B6E2D4BC2270407500446DFA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/Debug LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		B6EE36A120CF593E001494E3 /* RealmZone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmZone.swift; sourceTree = "<group>"; };
 		B6F02BE81CB46AF40029ABE7 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Entity.swift; sourceTree = "<group>"; };
@@ -1877,7 +1881,9 @@
 				B6D35C632169905400D1F86B /* HomeAssistant Development.entitlements */,
 				B657A8F71CA646EB00121384 /* Info.plist */,
 				B60247FE1FBD343000998205 /* InfoPlist.strings */,
-				B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */,
+				B657A8F41CA646EB00121384 /* Release LaunchScreen.storyboard */,
+				B6E2D4BA2270406B00446DFA /* Beta LaunchScreen.storyboard */,
+				B6E2D4BD2270407500446DFA /* Debug LaunchScreen.storyboard */,
 				B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */,
 				B658AA7222506AD400C9BFE3 /* GoogleService-Info-Development.plist */,
 				B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */,
@@ -2780,8 +2786,9 @@
 				B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */,
 				B60616251D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Game-Room.wav in Resources */,
 				B60616891D1F117700249C11 /* US-EN-Alexa-Motion-At-Back-Door.wav in Resources */,
+				B6E2D4B82270406B00446DFA /* Beta LaunchScreen.storyboard in Resources */,
 				B60616561D1F117700249C11 /* US-EN-Morgan-Freeman-Welcome-Home.wav in Resources */,
-				B657A8F61CA646EB00121384 /* LaunchScreen.storyboard in Resources */,
+				B657A8F61CA646EB00121384 /* Release LaunchScreen.storyboard in Resources */,
 				B672AB1222150ED600175465 /* white@2x.png in Resources */,
 				B60616431D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Kitchen-Light.wav in Resources */,
 				B60616341D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Smoke.wav in Resources */,
@@ -2871,6 +2878,7 @@
 				B60616811D1F117700249C11 /* US-EN-Alexa-Front-Door-Opened.wav in Resources */,
 				B606163A1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Movie-Mode.wav in Resources */,
 				B60616201D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Night.wav in Resources */,
+				B6E2D4BB2270407500446DFA /* Debug LaunchScreen.storyboard in Resources */,
 				B606168D1D1F117700249C11 /* US-EN-Alexa-Motion-In-Basement.wav in Resources */,
 				B606169D1D1F117800249C11 /* GenericSounds.csv in Resources */,
 				B606160A1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav in Resources */,
@@ -3992,12 +4000,12 @@
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
 		};
-		B657A8F41CA646EB00121384 /* LaunchScreen.storyboard */ = {
+		B657A8F41CA646EB00121384 /* Release LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				B657A8F51CA646EB00121384 /* Base */,
 			);
-			name = LaunchScreen.storyboard;
+			name = "Release LaunchScreen.storyboard";
 			path = .;
 			sourceTree = "<group>";
 		};
@@ -4038,6 +4046,22 @@
 				B6CC5D852159D10D00833E5D /* Base */,
 			);
 			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
+		B6E2D4BA2270406B00446DFA /* Beta LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B6E2D4B92270406B00446DFA /* Base */,
+			);
+			name = "Beta LaunchScreen.storyboard";
+			sourceTree = "<group>";
+		};
+		B6E2D4BD2270407500446DFA /* Debug LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B6E2D4BC2270407500446DFA /* Base */,
+			);
+			name = "Debug LaunchScreen.storyboard";
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -4153,6 +4177,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
 				IS_SANDBOXED = false;
+				LAUNCHSCREEN_STORYBOARD = "Beta LaunchScreen";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -4544,6 +4569,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
 				IS_SANDBOXED = true;
+				LAUNCHSCREEN_STORYBOARD = "Debug LaunchScreen";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -4587,6 +4613,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = HomeAssistant/Resources/Info.plist;
 				IS_SANDBOXED = false;
+				LAUNCHSCREEN_STORYBOARD = "Release LaunchScreen";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
