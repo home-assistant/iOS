@@ -35,15 +35,59 @@ public class WebSocketMessage: Codable {
         HAVersion = try? values.decode(String.self, forKey: .HAVersion)
     }
 
+    public init?(_ dictionary: [String: Any]) {
+        guard let mType = dictionary["type"] as? String else {
+            return nil
+        }
+        self.MessageType = mType
+        self.ID = dictionary["id"] as? Int
+        self.Result = dictionary["result"] as? [String: Any]
+        self.Success = dictionary["success"] as? Bool
+    }
+
+    public init(_ incomingMessage: WebSocketMessage, _ result: [String: Any]) {
+        self.ID = incomingMessage.ID
+        self.MessageType = "result"
+        self.Result = result
+        self.Success = true
+    }
+
+    public init(id: Int, type: String, payload: [String: Any], success: Bool = true) {
+        self.ID = id
+        self.MessageType = type
+        self.Result = payload
+        self.Success = success
+    }
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(MessageType, forKey: .MessageType)
         if let ID = ID {
             try container.encode(ID, forKey: .ID)
         }
+        if let Success = Success {
+            try container.encode(Success, forKey: .Success)
+        }
+        if let Message = Message {
+            try container.encode(Message, forKey: .Message)
+        }
+        if let Result = Result {
+            try container.encode(Result, forKey: .Result)
+        }
     }
 
     init(_ messageType: String) {
         self.MessageType = messageType
+    }
+}
+
+extension WebSocketMessage: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        // swiftlint:disable:next line_length
+        return "WebSocketMessage(type: \(self.MessageType), id: \(self.ID), payload: \(self.Result), success: \(self.Success))"
+    }
+
+    public var debugDescription: String {
+        return self.description
     }
 }
