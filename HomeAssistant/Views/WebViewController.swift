@@ -143,7 +143,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         // settingsView.delegate = self
         settingsView.hidesBottomBarWhenPushed = true
         let navController = UINavigationController(rootViewController: settingsView)
-        self.present(navController, animated: true, completion: nil)
+        self.navigationController?.present(navController, animated: true, completion: nil)
     }
 
     // Workaround for webview rotation issues: https://github.com/Telerik-Verified-Plugins/WKWebView/pull/263
@@ -158,6 +158,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+
         if let connectionInfo = Current.settingsStore.connectionInfo,
             let webviewURL = connectionInfo.webviewURL() {
             let myRequest = URLRequest(url: webviewURL)
@@ -166,6 +168,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     override func viewWillDisappear(_ animated: Bool) {
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.userActivity?.resignCurrent()
     }
 
@@ -290,7 +293,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             completionHandler(false)
         }))
 
-        self.present(alertController, animated: true, completion: nil)
+        self.navigationController?.present(alertController, animated: true, completion: nil)
 
         alertController.popoverPresentationController?.sourceView = self.webView
     }
@@ -315,7 +318,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             completionHandler(nil)
         }))
 
-        self.present(alertController, animated: true, completion: nil)
+        self.navigationController?.present(alertController, animated: true, completion: nil)
 
         alertController.popoverPresentationController?.sourceView = self.webView
     }
@@ -328,7 +331,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             completionHandler()
         }))
 
-        self.present(alertController, animated: true, completion: nil)
+        self.navigationController?.present(alertController, animated: true, completion: nil)
 
         alertController.popoverPresentationController?.sourceView = self.webView
     }
@@ -361,7 +364,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
                                           message: message, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+            self.navigationController?.present(alert, animated: true, completion: nil)
             alert.popoverPresentationController?.sourceView = self.webView
         }
     }
@@ -373,7 +376,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         settingsView.doneButton = true
         settingsView.delegate = self
         let navController = UINavigationController(rootViewController: settingsView)
-        self.present(navController, animated: true, completion: nil)
+        self.navigationController?.present(navController, animated: true, completion: nil)
     }
 
     @objc func openSettingsView(_ sender: UIButton) {

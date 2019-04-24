@@ -84,7 +84,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let webView = WebViewController()
 
         let navController = UINavigationController(rootViewController: webView)
-        navController.setNavigationBarHidden(true, animated: false)
 
         self.window!.rootViewController = navController
         self.window!.makeKeyAndVisible()
