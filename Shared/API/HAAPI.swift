@@ -297,8 +297,12 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func GetConfig() -> Promise<ConfigResponse> {
-        return self.webhook("get_config", payload: [:], callingFunctionName: "\(#function)")
+    public func GetConfig(_ useWebhook: Bool = true) -> Promise<ConfigResponse> {
+        if useWebhook {
+            return self.webhook("get_config", payload: [:], callingFunctionName: "\(#function)")
+        }
+
+        return self.request(path: "config", callingFunctionName: "\(#function)")
     }
 
     public func GetEvents() -> Promise<[EventsResponse]> {
