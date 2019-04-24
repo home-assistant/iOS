@@ -33,14 +33,6 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4h-WC-wIw" customClass="MDCButton">
-                                <rect key="frame" x="0.0" y="635" width="375" height="32"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
-                                <state key="normal" title="Continue"/>
-                                <connections>
-                                    <action selector="continueButton:" destination="Cpw-N3-yji" eventType="touchUpInside" id="OmS-1m-BYe"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="wD9-TR-rVF" userLabel="Animation View" customClass="AnimationView" customModule="Lottie">
                                 <rect key="frame" x="67.5" y="223.5" width="240" height="240"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -52,23 +44,29 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="animationName" value="ha-loading"/>
                                 </userDefinedRuntimeAttributes>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4h-WC-wIw" customClass="MDCButton">
+                                <rect key="frame" x="154.5" y="635" width="66" height="32"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <state key="normal" title="Continue"/>
+                                <connections>
+                                    <action selector="continueButton:" destination="Cpw-N3-yji" eventType="touchUpInside" id="OmS-1m-BYe"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="N4h-WC-wIw" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="7jc-nn-Bf0"/>
+                            <constraint firstItem="Dgm-KS-yJa" firstAttribute="bottom" secondItem="N4h-WC-wIw" secondAttribute="bottom" id="Hbo-CP-wA6"/>
                             <constraint firstItem="mse-YA-DiV" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="S7j-SS-3r5"/>
                             <constraint firstItem="5td-Yc-nnx" firstAttribute="leading" secondItem="Dgm-KS-yJa" secondAttribute="leading" constant="50" id="SFm-HS-moK"/>
                             <constraint firstItem="wD9-TR-rVF" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="YJn-5u-0ZE"/>
                             <constraint firstItem="wD9-TR-rVF" firstAttribute="centerY" secondItem="Dgm-KS-yJa" secondAttribute="centerY" id="dyS-lr-6jI"/>
-                            <constraint firstItem="Dgm-KS-yJa" firstAttribute="trailing" secondItem="N4h-WC-wIw" secondAttribute="trailing" id="pjm-tl-cs0"/>
-                            <constraint firstItem="Dgm-KS-yJa" firstAttribute="bottom" secondItem="N4h-WC-wIw" secondAttribute="bottom" id="pz8-xT-F3N"/>
                             <constraint firstAttribute="trailingMargin" secondItem="mse-YA-DiV" secondAttribute="trailing" id="qAH-H0-r9f"/>
                             <constraint firstItem="Dgm-KS-yJa" firstAttribute="trailing" secondItem="5td-Yc-nnx" secondAttribute="trailing" constant="50" id="w4B-oX-Tlp"/>
                             <constraint firstItem="5td-Yc-nnx" firstAttribute="top" secondItem="mse-YA-DiV" secondAttribute="bottom" id="xjd-Mr-N2j"/>
                             <constraint firstItem="mse-YA-DiV" firstAttribute="top" secondItem="Dgm-KS-yJa" secondAttribute="top" id="yDL-8w-3OP"/>
                             <constraint firstItem="mse-YA-DiV" firstAttribute="leading" secondItem="FZO-9W-RiW" secondAttribute="leadingMargin" id="yWr-Dc-c25"/>
-                            <constraint firstItem="N4h-WC-wIw" firstAttribute="leading" secondItem="Dgm-KS-yJa" secondAttribute="leading" id="ykf-9w-DaF"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Dgm-KS-yJa"/>
                     </view>
