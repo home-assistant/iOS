@@ -24,13 +24,9 @@ class WelcomeViewController: UIViewController {
         }
 
         self.animationView.animation = Animation.named("ha-loading")
-
         self.animationView.backgroundBehavior = .pauseAndRestore
-
         self.animationView.loopMode = .loop
-        self.animationView.contentMode = .scaleAspectFill
         self.animationView.play()
-        self.animationView.logHierarchyKeypaths()
     }
 
     @IBAction func continueButton(_ sender: UIButton) {
