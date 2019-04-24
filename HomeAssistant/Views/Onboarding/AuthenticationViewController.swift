@@ -68,9 +68,15 @@ class AuthenticationViewController: UIViewController {
             let tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: nil)
             self.tokenManager = tokenManager
             return tokenManager.initialTokenWithCode(code)
-        }.done { (token: String) in
+        }.then { (token: String) -> Promise<ConfigResponse> in
             Current.Log.verbose("Got confirmed token \(token)")
-            // self.token = token
+
+            Current.tokenManager = self.tokenManager
+
+            return HomeAssistantAPI(connectionInfo: connectionInfo,
+                                    tokenInfo: Current.settingsStore.tokenInfo!).GetConfig(false)
+        }.done { _ in
+            Current.settingsStore.connectionInfo = self.connectionInfo
             self.performSegue(withIdentifier: "setupInstance", sender: nil)
         }.catch { error in
             Current.Log.error("Error during auth \(error.localizedDescription)")
