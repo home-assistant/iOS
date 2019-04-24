@@ -186,7 +186,13 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             if tokenInfo.expiration.addingTimeInterval(-10) > Current.date() {
                 seal.fulfill(tokenInfo.accessToken)
             } else {
-                Current.Log.error("Token will instantly fail")
+                if let expirationAmount = Calendar.current.dateComponents([.second], from: tokenInfo.expiration,
+                                                                          to: Current.date()).second {
+                    Current.Log.error("Token is expired by \(expirationAmount) seconds: \(tokenInfo.accessToken)")
+                } else {
+                    Current.Log.error("Token is expired by an unknown amount of time: \(tokenInfo.accessToken)")
+                }
+
                 seal.reject(TokenError.expired)
             }
         }
