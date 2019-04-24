@@ -49,7 +49,7 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
     }
 
     private func DiscoveryInfoFromDict(locationName: String,
-                                       netServiceDictionary: [String: Data]) -> DiscoveryInfoResponse {
+                                       netServiceDictionary: [String: Data]) -> DiscoveredHomeAssistant {
         var outputDict: [String: Any] = [:]
         for (key, value) in netServiceDictionary {
             outputDict[key] = String(data: value, encoding: .utf8)
@@ -65,7 +65,7 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
                 outputDict["base_url"] = baseURL[..<baseURL.index(before: baseURL.endIndex)]
             }
         }
-        return DiscoveryInfoResponse(JSON: outputDict)!
+        return DiscoveredHomeAssistant(JSON: outputDict)!
     }
 }
 

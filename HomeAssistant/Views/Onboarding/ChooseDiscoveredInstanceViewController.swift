@@ -8,19 +8,25 @@
 
 import UIKit
 import Shared
+import MaterialComponents
 
 class ChooseDiscoveredInstanceViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
     @IBOutlet weak var statusLabel: UILabel!
+    @IBOutlet weak var manualButton: MDCButton!
 
-    var instances: [DiscoveryInfoResponse] = []
+    var instances: [DiscoveredHomeAssistant] = []
 
-    var selectedInstance: DiscoveryInfoResponse?
+    var selectedInstance: DiscoveredHomeAssistant?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if let navVC = self.navigationController as? OnboardingNavigationViewController {
+            navVC.styleButton(self.manualButton)
+        }
 
         print("Received instances", self.instances)
 
@@ -33,7 +39,7 @@ class ChooseDiscoveredInstanceViewController: UIViewController {
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "setupDiscoveredInstance", let vc = segue.destination as? ConnectInstanceViewController {
+        if segue.identifier == "setupDiscoveredInstance", let vc = segue.destination as? AuthenticationViewController {
             vc.instance = self.selectedInstance
         }
     }

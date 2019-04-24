@@ -9,18 +9,36 @@
 import UIKit
 import Shared
 import Lottie
+import MaterialComponents
 
 class DiscoverInstancesViewController: UIViewController {
 
     let discovery = Bonjour()
 
     @IBOutlet weak var animationView: AnimationView!
-    @IBOutlet weak var manualButton: UIButton!
+    @IBOutlet weak var manualButton: MDCButton!
 
-    var discoveredInstances: [DiscoveryInfoResponse] = []
+    var discoveredInstances: [DiscoveredHomeAssistant] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if let navVC = self.navigationController as? OnboardingNavigationViewController {
+            navVC.styleButton(self.manualButton)
+        }
+
+        if Current.appConfiguration == .Debug {
+            discoveredInstances = [
+                DiscoveredHomeAssistant(baseURL: URL(string: "https://jigsaw.w3.org/HTTP/Basic/api/discovery_info")!,
+                                        name: "Basic Auth", version: "0.92.0", ssl: true),
+                DiscoveredHomeAssistant(baseURL: URL(string: "https://self-signed.badssl.com/")!,
+                                        name: "Self signed SSL", version: "0.92.0", ssl: true),
+                DiscoveredHomeAssistant(baseURL: URL(string: "https://client.badssl.com/")!, name: "Client Cert",
+                                        version: "0.92.0", ssl: true),
+                DiscoveredHomeAssistant(baseURL: URL(string: "http://http.badssl.com/")!, name: "HTTP",
+                                        version: "0.92.0", ssl: false)
+            ]
+        }
 
         // let animation = Animation.named("home")
         let animation = Animation.named("5401-loading-19-satellite-dish")
@@ -63,7 +81,7 @@ class DiscoverInstancesViewController: UIViewController {
 
     @objc func HomeAssistantDiscovered(_ notification: Notification) {
         if let userInfo = (notification as Notification).userInfo as? [String: Any] {
-            guard let discoveryInfo = DiscoveryInfoResponse(JSON: userInfo) else {
+            guard let discoveryInfo = DiscoveredHomeAssistant(JSON: userInfo) else {
                 Current.clientEventStore.addEvent(ClientEvent(text: "Unable to parse discovered HA Instance",
                                                               type: .unknown, payload: userInfo))
                 return

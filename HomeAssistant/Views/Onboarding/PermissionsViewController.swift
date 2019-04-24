@@ -8,13 +8,19 @@
 
 import UIKit
 import Shared
+import MaterialComponents
 
 class PermissionsViewController: UIViewController, PermissionViewChangeDelegate {
+    @IBOutlet weak var closeButton: MDCButton!
     @IBOutlet weak var locationPermissionView: PermissionLineItemView!
     @IBOutlet weak var motionPermissionView: PermissionLineItemView!
     @IBOutlet weak var notificationsPermissionView: PermissionLineItemView!
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if let navVC = self.navigationController as? OnboardingNavigationViewController {
+            navVC.styleButton(self.closeButton)
+        }
 
         self.locationPermissionView.delegate = self
         self.motionPermissionView.delegate = self

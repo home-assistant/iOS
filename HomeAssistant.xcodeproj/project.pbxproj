@@ -149,6 +149,7 @@
 		B605C88E226E984500EF46DD /* ha-loading-7.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C82A226E984500EF46DD /* ha-loading-7.png */; };
 		B605C88F226E984500EF46DD /* ha-loading-20.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C82B226E984500EF46DD /* ha-loading-20.png */; };
 		B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C890226E9DAC00EF46DD /* Permissions.swift */; };
+		B605C893226EC25800EF46DD /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C892226EC25800EF46DD /* AuthenticationViewController.swift */; };
 		B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */; };
 		B606160A1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615051D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav */; };
 		B606160B1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615061D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav */; };
@@ -949,6 +950,7 @@
 		B605C82A226E984500EF46DD /* ha-loading-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-7.png"; sourceTree = "<group>"; };
 		B605C82B226E984500EF46DD /* ha-loading-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-20.png"; sourceTree = "<group>"; };
 		B605C890226E9DAC00EF46DD /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
+		B605C892226EC25800EF46DD /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MorganFreemanSounds.csv; sourceTree = "<group>"; };
 		B60615051D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Back-Door-Closed.wav"; sourceTree = "<group>"; };
 		B60615061D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Morgan-Freeman-Back-Door-Locked.wav"; sourceTree = "<group>"; };
@@ -1994,6 +1996,7 @@
 				B661FB79226C197900E541DD /* ManualSetupViewController.swift */,
 				B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */,
 				B661FC89226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift */,
+				B605C892226EC25800EF46DD /* AuthenticationViewController.swift */,
 				B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */,
 				B661FB7B226C199200E541DD /* PermissionsViewController.swift */,
 				B60221F7226D9AEE00E8DBFE /* PermissionButton.swift */,
@@ -4019,6 +4022,7 @@
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
 				B661FB7C226C199200E541DD /* PermissionsViewController.swift in Sources */,
+				B605C893226EC25800EF46DD /* AuthenticationViewController.swift in Sources */,
 				B661FB74226C110A00E541DD /* WelcomeViewController.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
 				B63CCDCC2164714900123C50 /* Intents.intentdefinition in Sources */,

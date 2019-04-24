@@ -9,14 +9,20 @@
 import UIKit
 import Shared
 import Eureka
+import MaterialComponents.MaterialButtons
 
 class WelcomeViewController: UIViewController {
 
     @IBOutlet weak var animatedLogoView: UIImageView!
+    @IBOutlet weak var continueButton: MDCButton!
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // self.animatedLogoView.image = UIImage.animatedImageNamed("ha-loading-", duration: 5.0)
+        if let navVC = self.navigationController as? OnboardingNavigationViewController {
+            navVC.styleButton(self.continueButton)
+        }
+
+        self.animatedLogoView.image = UIImage.animatedImageNamed("ha-loading-", duration: 5.0)
     }
 
     @IBAction func continueButton(_ sender: UIButton) {

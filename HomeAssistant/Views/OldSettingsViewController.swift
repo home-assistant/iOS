@@ -28,10 +28,6 @@ class OldSettingsViewController: FormViewController, CLLocationManagerDelegate, 
         case credentialsUnavailable
     }
     var authenticationController: AuthenticationController = AuthenticationController()
-    func showAuthenticationViewController(_ viewController: SFSafariViewController) {
-        viewController.delegate = self
-        self.present(viewController, animated: true, completion: nil)
-    }
 
     weak var delegate: ConnectionInfoChangedDelegate?
 
@@ -652,7 +648,7 @@ class OldSettingsViewController: FormViewController, CLLocationManagerDelegate, 
         discoverySection.hidden = false
         discoverySection.evaluateHidden()
         if let userInfo = (notification as Notification).userInfo as? [String: Any] {
-            guard let discoveryInfo = DiscoveryInfoResponse(JSON: userInfo) else {
+            guard let discoveryInfo = DiscoveredHomeAssistant(JSON: userInfo) else {
                 Current.clientEventStore.addEvent(ClientEvent(text: "Unable to parse discovered HA Instance",
                                                               type: .unknown, payload: userInfo))
                 return

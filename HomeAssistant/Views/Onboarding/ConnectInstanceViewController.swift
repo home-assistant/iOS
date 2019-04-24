@@ -12,11 +12,14 @@ import Shared
 
 class ConnectInstanceViewController: UIViewController {
 
-    var instance: DiscoveryInfoResponse!
+    var instance: DiscoveredHomeAssistant!
+    var connectionInfo: ConnectionInfo!
+    var tokenManager: TokenManager!
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var overallProgress: AnimationView!
     @IBOutlet weak var connectionStatus: AnimationView!
+    @IBOutlet weak var authenticated: AnimationView!
     @IBOutlet weak var integrationCreated: AnimationView!
     @IBOutlet weak var cloudStatus: AnimationView!
     @IBOutlet weak var encrypted: AnimationView!
@@ -30,10 +33,12 @@ class ConnectInstanceViewController: UIViewController {
         super.viewDidLoad()
         self.becomeFirstResponder()
 
-        self.animationViews.append(contentsOf: [connectionStatus, integrationCreated, cloudStatus, encrypted,
-                                                sensorsConfigured])
+        self.animationViews.append(contentsOf: [integrationCreated, cloudStatus, encrypted, sensorsConfigured])
 
         self.titleLabel.text = "Connecting to \(self.instance.LocationName)"
+
+        self.configureAnimation(connectionStatus, .success)
+        self.configureAnimation(authenticated, .success)
 
         self.overallProgress.loopMode = .loop
         self.overallProgress.contentMode = .scaleAspectFill
@@ -69,11 +74,11 @@ class ConnectInstanceViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
 
-    private func configureAnimation(_ animationView: AnimationView) {
+    private func configureAnimation(_ animationView: AnimationView, _ state: AnimationState = .loading) {
         animationView.loopMode = .loop
         animationView.contentMode = .scaleAspectFill
         animationView.animation = Animation.named("loader-success-failed")
-        self.setAnimationStatus(animationView, state: .loading)
+        self.setAnimationStatus(animationView, state: state)
     }
 
     private func setAnimationStatus(_ animationView: AnimationView, state: AnimationState) {

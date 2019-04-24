@@ -57,6 +57,7 @@ target 'HomeAssistant' do
     pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
     pod 'MaterialComponents/Buttons'
+    pod 'MaterialComponents/Buttons+ButtonThemer'
     pod 'MBProgressHUD', '~> 1.1.0'
     pod 'SwiftGen', '~> 6.1.0'
     pod 'SwiftLint', '~> 0.31.0'

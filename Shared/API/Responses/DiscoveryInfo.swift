@@ -18,15 +18,26 @@ let usesSSL = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
     return nil
 })
 
-public class DiscoveryInfoResponse: Mappable {
+public class DiscoveredHomeAssistant: Mappable {
     public var BaseURL: URL?
     public var LocationName: String = ""
     public var Version: String = ""
     public var UsesSSL: Bool = false
 
-    required public init?(map: Map) {
+    // If false, this class was manually constructed
+    public var Discovered: Bool = true
 
+    public init() {}
+
+    public convenience init(baseURL: URL, name: String, version: String, ssl: Bool) {
+        self.init()
+        self.BaseURL = baseURL
+        self.LocationName = name
+        self.Version = version
+        self.UsesSSL = ssl
     }
+
+    required public init?(map: Map) { }
 
     public func mapping(map: Map) {
         BaseURL             <- (map["base_url"], URLTransform())

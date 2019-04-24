@@ -8,6 +8,11 @@
 
 import UIKit
 import Eureka
+import Shared
+import MaterialComponents.MaterialButtons
+import MaterialComponents.MaterialButtons_ButtonThemer
+import MaterialComponents.MaterialButtons_ColorThemer
+import MaterialComponents.MDCContainedButtonThemer
 
 class OnboardingNavigationViewController: UINavigationController, RowControllerType {
 
@@ -35,4 +40,15 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
     }
     */
 
+    func styleButton(_ button: MDCButton) {
+        let buttonScheme = MDCButtonScheme()
+        MDCContainedButtonThemer.applyScheme(buttonScheme, to: button)
+
+        let containerScheme = MDCSemanticColorScheme(defaults: .material201804)
+        containerScheme.primaryColor = .white
+        containerScheme.secondaryColor = Constants.blue
+        MDCContainedButtonColorThemer.applySemanticColorScheme(containerScheme, to: button)
+
+        button.setTitleColor(Constants.blue, for: .normal)
+    }
 }
