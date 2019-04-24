@@ -48,106 +48,6 @@
 		B6022221226DB21900E8DBFE /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B602220A226DABD800E8DBFE /* Roboto-ThinItalic.ttf */; };
 		B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */; };
 		B60248001FBD343000998205 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
-		B605C82C226E984500EF46DD /* ha-loading-8.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7C8226E983500EF46DD /* ha-loading-8.png */; };
-		B605C82D226E984500EF46DD /* ha-loading-9.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7C9226E983500EF46DD /* ha-loading-9.png */; };
-		B605C82E226E984500EF46DD /* ha-loading-60.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7CA226E983500EF46DD /* ha-loading-60.png */; };
-		B605C82F226E984500EF46DD /* ha-loading-15.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7CB226E983500EF46DD /* ha-loading-15.png */; };
-		B605C830226E984500EF46DD /* ha-loading-44.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7CC226E983600EF46DD /* ha-loading-44.png */; };
-		B605C831226E984500EF46DD /* ha-loading-67.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7CD226E983600EF46DD /* ha-loading-67.png */; };
-		B605C832226E984500EF46DD /* ha-loading-97.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7CE226E983600EF46DD /* ha-loading-97.png */; };
-		B605C833226E984500EF46DD /* ha-loading-13.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7CF226E983600EF46DD /* ha-loading-13.png */; };
-		B605C834226E984500EF46DD /* ha-loading-47.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7D0226E983600EF46DD /* ha-loading-47.png */; };
-		B605C835226E984500EF46DD /* ha-loading-49.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7D1226E983600EF46DD /* ha-loading-49.png */; };
-		B605C836226E984500EF46DD /* ha-loading-66.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7D2226E983600EF46DD /* ha-loading-66.png */; };
-		B605C837226E984500EF46DD /* ha-loading-71.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7D3226E983600EF46DD /* ha-loading-71.png */; };
-		B605C838226E984500EF46DD /* ha-loading-46.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7D4226E983700EF46DD /* ha-loading-46.png */; };
-		B605C839226E984500EF46DD /* ha-loading-18.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7D5226E983700EF46DD /* ha-loading-18.png */; };
-		B605C83A226E984500EF46DD /* ha-loading-52.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7D6226E983700EF46DD /* ha-loading-52.png */; };
-		B605C83B226E984500EF46DD /* ha-loading-56.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7D7226E983700EF46DD /* ha-loading-56.png */; };
-		B605C83C226E984500EF46DD /* ha-loading-72.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7D8226E983700EF46DD /* ha-loading-72.png */; };
-		B605C83D226E984500EF46DD /* ha-loading-24.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7D9226E983700EF46DD /* ha-loading-24.png */; };
-		B605C83E226E984500EF46DD /* ha-loading-79.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7DA226E983700EF46DD /* ha-loading-79.png */; };
-		B605C83F226E984500EF46DD /* ha-loading-88.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7DB226E983700EF46DD /* ha-loading-88.png */; };
-		B605C840226E984500EF46DD /* ha-loading-92.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7DC226E983800EF46DD /* ha-loading-92.png */; };
-		B605C841226E984500EF46DD /* ha-loading-41.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7DD226E983800EF46DD /* ha-loading-41.png */; };
-		B605C842226E984500EF46DD /* ha-loading-64.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7DE226E983800EF46DD /* ha-loading-64.png */; };
-		B605C843226E984500EF46DD /* ha-loading-21.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7DF226E983800EF46DD /* ha-loading-21.png */; };
-		B605C844226E984500EF46DD /* ha-loading-0.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7E0226E983800EF46DD /* ha-loading-0.png */; };
-		B605C845226E984500EF46DD /* ha-loading-2.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7E1226E983800EF46DD /* ha-loading-2.png */; };
-		B605C846226E984500EF46DD /* ha-loading-6.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7E2226E983800EF46DD /* ha-loading-6.png */; };
-		B605C847226E984500EF46DD /* ha-loading-76.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7E3226E983900EF46DD /* ha-loading-76.png */; };
-		B605C848226E984500EF46DD /* ha-loading-93.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7E4226E983900EF46DD /* ha-loading-93.png */; };
-		B605C849226E984500EF46DD /* ha-loading-65.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7E5226E983900EF46DD /* ha-loading-65.png */; };
-		B605C84A226E984500EF46DD /* ha-loading-77.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7E6226E983900EF46DD /* ha-loading-77.png */; };
-		B605C84B226E984500EF46DD /* ha-loading-51.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7E7226E983900EF46DD /* ha-loading-51.png */; };
-		B605C84C226E984500EF46DD /* ha-loading-90.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7E8226E983900EF46DD /* ha-loading-90.png */; };
-		B605C84D226E984500EF46DD /* ha-loading-34.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7E9226E983A00EF46DD /* ha-loading-34.png */; };
-		B605C84E226E984500EF46DD /* ha-loading-82.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7EA226E983A00EF46DD /* ha-loading-82.png */; };
-		B605C84F226E984500EF46DD /* ha-loading-50.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7EB226E983A00EF46DD /* ha-loading-50.png */; };
-		B605C850226E984500EF46DD /* ha-loading-95.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7EC226E983A00EF46DD /* ha-loading-95.png */; };
-		B605C851226E984500EF46DD /* ha-loading-99.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7ED226E983A00EF46DD /* ha-loading-99.png */; };
-		B605C852226E984500EF46DD /* ha-loading-59.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7EE226E983B00EF46DD /* ha-loading-59.png */; };
-		B605C853226E984500EF46DD /* ha-loading-37.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7EF226E983B00EF46DD /* ha-loading-37.png */; };
-		B605C854226E984500EF46DD /* ha-loading-14.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7F0226E983B00EF46DD /* ha-loading-14.png */; };
-		B605C855226E984500EF46DD /* ha-loading-86.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7F1226E983B00EF46DD /* ha-loading-86.png */; };
-		B605C856226E984500EF46DD /* ha-loading-43.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7F2226E983B00EF46DD /* ha-loading-43.png */; };
-		B605C857226E984500EF46DD /* ha-loading-96.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7F3226E983C00EF46DD /* ha-loading-96.png */; };
-		B605C858226E984500EF46DD /* ha-loading-83.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7F4226E983C00EF46DD /* ha-loading-83.png */; };
-		B605C859226E984500EF46DD /* ha-loading-29.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7F5226E983C00EF46DD /* ha-loading-29.png */; };
-		B605C85A226E984500EF46DD /* ha-loading-81.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7F6226E983C00EF46DD /* ha-loading-81.png */; };
-		B605C85B226E984500EF46DD /* ha-loading-94.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7F7226E983C00EF46DD /* ha-loading-94.png */; };
-		B605C85C226E984500EF46DD /* ha-loading-63.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7F8226E983C00EF46DD /* ha-loading-63.png */; };
-		B605C85D226E984500EF46DD /* ha-loading-78.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7F9226E983D00EF46DD /* ha-loading-78.png */; };
-		B605C85E226E984500EF46DD /* ha-loading-5.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7FA226E983D00EF46DD /* ha-loading-5.png */; };
-		B605C85F226E984500EF46DD /* ha-loading-58.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7FB226E983D00EF46DD /* ha-loading-58.png */; };
-		B605C860226E984500EF46DD /* ha-loading-31.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7FC226E983D00EF46DD /* ha-loading-31.png */; };
-		B605C861226E984500EF46DD /* ha-loading-75.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7FD226E983D00EF46DD /* ha-loading-75.png */; };
-		B605C862226E984500EF46DD /* ha-loading-39.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7FE226E983E00EF46DD /* ha-loading-39.png */; };
-		B605C863226E984500EF46DD /* ha-loading-19.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C7FF226E983E00EF46DD /* ha-loading-19.png */; };
-		B605C864226E984500EF46DD /* ha-loading-3.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C800226E983E00EF46DD /* ha-loading-3.png */; };
-		B605C865226E984500EF46DD /* ha-loading-26.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C801226E983E00EF46DD /* ha-loading-26.png */; };
-		B605C866226E984500EF46DD /* ha-loading-55.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C802226E983E00EF46DD /* ha-loading-55.png */; };
-		B605C867226E984500EF46DD /* ha-loading-84.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C803226E983E00EF46DD /* ha-loading-84.png */; };
-		B605C868226E984500EF46DD /* ha-loading-30.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C804226E983F00EF46DD /* ha-loading-30.png */; };
-		B605C869226E984500EF46DD /* ha-loading-61.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C805226E983F00EF46DD /* ha-loading-61.png */; };
-		B605C86A226E984500EF46DD /* ha-loading-25.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C806226E983F00EF46DD /* ha-loading-25.png */; };
-		B605C86B226E984500EF46DD /* ha-loading-38.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C807226E983F00EF46DD /* ha-loading-38.png */; };
-		B605C86C226E984500EF46DD /* ha-loading-98.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C808226E983F00EF46DD /* ha-loading-98.png */; };
-		B605C86D226E984500EF46DD /* ha-loading-68.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C809226E984000EF46DD /* ha-loading-68.png */; };
-		B605C86E226E984500EF46DD /* ha-loading-4.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C80A226E984000EF46DD /* ha-loading-4.png */; };
-		B605C86F226E984500EF46DD /* ha-loading-62.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C80B226E984000EF46DD /* ha-loading-62.png */; };
-		B605C870226E984500EF46DD /* ha-loading-32.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C80C226E984000EF46DD /* ha-loading-32.png */; };
-		B605C871226E984500EF46DD /* ha-loading-40.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C80D226E984000EF46DD /* ha-loading-40.png */; };
-		B605C872226E984500EF46DD /* ha-loading-80.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C80E226E984000EF46DD /* ha-loading-80.png */; };
-		B605C873226E984500EF46DD /* ha-loading-57.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C80F226E984100EF46DD /* ha-loading-57.png */; };
-		B605C874226E984500EF46DD /* ha-loading-87.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C810226E984100EF46DD /* ha-loading-87.png */; };
-		B605C875226E984500EF46DD /* ha-loading-53.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C811226E984100EF46DD /* ha-loading-53.png */; };
-		B605C876226E984500EF46DD /* ha-loading-27.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C812226E984100EF46DD /* ha-loading-27.png */; };
-		B605C877226E984500EF46DD /* ha-loading-10.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C813226E984100EF46DD /* ha-loading-10.png */; };
-		B605C878226E984500EF46DD /* ha-loading-1.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C814226E984200EF46DD /* ha-loading-1.png */; };
-		B605C879226E984500EF46DD /* ha-loading-11.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C815226E984200EF46DD /* ha-loading-11.png */; };
-		B605C87A226E984500EF46DD /* ha-loading-17.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C816226E984200EF46DD /* ha-loading-17.png */; };
-		B605C87B226E984500EF46DD /* ha-loading-45.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C817226E984200EF46DD /* ha-loading-45.png */; };
-		B605C87C226E984500EF46DD /* ha-loading-70.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C818226E984200EF46DD /* ha-loading-70.png */; };
-		B605C87D226E984500EF46DD /* ha-loading-22.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C819226E984300EF46DD /* ha-loading-22.png */; };
-		B605C87E226E984500EF46DD /* ha-loading-74.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C81A226E984300EF46DD /* ha-loading-74.png */; };
-		B605C87F226E984500EF46DD /* ha-loading-35.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C81B226E984300EF46DD /* ha-loading-35.png */; };
-		B605C880226E984500EF46DD /* ha-loading-23.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C81C226E984300EF46DD /* ha-loading-23.png */; };
-		B605C881226E984500EF46DD /* ha-loading-42.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C81D226E984300EF46DD /* ha-loading-42.png */; };
-		B605C882226E984500EF46DD /* ha-loading-28.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C81E226E984300EF46DD /* ha-loading-28.png */; };
-		B605C883226E984500EF46DD /* ha-loading-16.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C81F226E984300EF46DD /* ha-loading-16.png */; };
-		B605C884226E984500EF46DD /* ha-loading-12.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C820226E984400EF46DD /* ha-loading-12.png */; };
-		B605C885226E984500EF46DD /* ha-loading-33.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C821226E984400EF46DD /* ha-loading-33.png */; };
-		B605C886226E984500EF46DD /* ha-loading-69.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C822226E984400EF46DD /* ha-loading-69.png */; };
-		B605C887226E984500EF46DD /* ha-loading-85.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C823226E984400EF46DD /* ha-loading-85.png */; };
-		B605C888226E984500EF46DD /* ha-loading-36.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C824226E984400EF46DD /* ha-loading-36.png */; };
-		B605C889226E984500EF46DD /* ha-loading-89.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C825226E984400EF46DD /* ha-loading-89.png */; };
-		B605C88A226E984500EF46DD /* ha-loading-73.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C826226E984400EF46DD /* ha-loading-73.png */; };
-		B605C88B226E984500EF46DD /* ha-loading-91.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C827226E984400EF46DD /* ha-loading-91.png */; };
-		B605C88C226E984500EF46DD /* ha-loading-48.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C828226E984400EF46DD /* ha-loading-48.png */; };
-		B605C88D226E984500EF46DD /* ha-loading-54.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C829226E984500EF46DD /* ha-loading-54.png */; };
-		B605C88E226E984500EF46DD /* ha-loading-7.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C82A226E984500EF46DD /* ha-loading-7.png */; };
-		B605C88F226E984500EF46DD /* ha-loading-20.png in Resources */ = {isa = PBXBuildFile; fileRef = B605C82B226E984500EF46DD /* ha-loading-20.png */; };
 		B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C890226E9DAC00EF46DD /* Permissions.swift */; };
 		B605C893226EC25800EF46DD /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B605C892226EC25800EF46DD /* AuthenticationViewController.swift */; };
 		B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */ = {isa = PBXBuildFile; fileRef = B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */; };
@@ -285,6 +185,7 @@
 		B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B6221F6C22267C9900502A30 /* HAAPI+WebhookHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F672226780E00502A30 /* HAAPI+WebhookHelpers.swift */; };
+		B622BB052270145A001B7839 /* ha-loading.json in Resources */ = {isa = PBXBuildFile; fileRef = B622BB042270145A001B7839 /* ha-loading.json */; };
 		B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B624DE171CB8369200F413CE /* DevicesMapViewController.swift */; };
 		B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */; };
 		B627CB091D83C87B0057173E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
@@ -849,106 +750,6 @@
 		B60248051FBD36A400998205 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B60248061FBD36A600998205 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B60248071FBD36A800998205 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		B605C7C8226E983500EF46DD /* ha-loading-8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-8.png"; sourceTree = "<group>"; };
-		B605C7C9226E983500EF46DD /* ha-loading-9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-9.png"; sourceTree = "<group>"; };
-		B605C7CA226E983500EF46DD /* ha-loading-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-60.png"; sourceTree = "<group>"; };
-		B605C7CB226E983500EF46DD /* ha-loading-15.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-15.png"; sourceTree = "<group>"; };
-		B605C7CC226E983600EF46DD /* ha-loading-44.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-44.png"; sourceTree = "<group>"; };
-		B605C7CD226E983600EF46DD /* ha-loading-67.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-67.png"; sourceTree = "<group>"; };
-		B605C7CE226E983600EF46DD /* ha-loading-97.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-97.png"; sourceTree = "<group>"; };
-		B605C7CF226E983600EF46DD /* ha-loading-13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-13.png"; sourceTree = "<group>"; };
-		B605C7D0226E983600EF46DD /* ha-loading-47.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-47.png"; sourceTree = "<group>"; };
-		B605C7D1226E983600EF46DD /* ha-loading-49.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-49.png"; sourceTree = "<group>"; };
-		B605C7D2226E983600EF46DD /* ha-loading-66.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-66.png"; sourceTree = "<group>"; };
-		B605C7D3226E983600EF46DD /* ha-loading-71.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-71.png"; sourceTree = "<group>"; };
-		B605C7D4226E983700EF46DD /* ha-loading-46.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-46.png"; sourceTree = "<group>"; };
-		B605C7D5226E983700EF46DD /* ha-loading-18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-18.png"; sourceTree = "<group>"; };
-		B605C7D6226E983700EF46DD /* ha-loading-52.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-52.png"; sourceTree = "<group>"; };
-		B605C7D7226E983700EF46DD /* ha-loading-56.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-56.png"; sourceTree = "<group>"; };
-		B605C7D8226E983700EF46DD /* ha-loading-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-72.png"; sourceTree = "<group>"; };
-		B605C7D9226E983700EF46DD /* ha-loading-24.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-24.png"; sourceTree = "<group>"; };
-		B605C7DA226E983700EF46DD /* ha-loading-79.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-79.png"; sourceTree = "<group>"; };
-		B605C7DB226E983700EF46DD /* ha-loading-88.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-88.png"; sourceTree = "<group>"; };
-		B605C7DC226E983800EF46DD /* ha-loading-92.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-92.png"; sourceTree = "<group>"; };
-		B605C7DD226E983800EF46DD /* ha-loading-41.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-41.png"; sourceTree = "<group>"; };
-		B605C7DE226E983800EF46DD /* ha-loading-64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-64.png"; sourceTree = "<group>"; };
-		B605C7DF226E983800EF46DD /* ha-loading-21.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-21.png"; sourceTree = "<group>"; };
-		B605C7E0226E983800EF46DD /* ha-loading-0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-0.png"; sourceTree = "<group>"; };
-		B605C7E1226E983800EF46DD /* ha-loading-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-2.png"; sourceTree = "<group>"; };
-		B605C7E2226E983800EF46DD /* ha-loading-6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-6.png"; sourceTree = "<group>"; };
-		B605C7E3226E983900EF46DD /* ha-loading-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-76.png"; sourceTree = "<group>"; };
-		B605C7E4226E983900EF46DD /* ha-loading-93.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-93.png"; sourceTree = "<group>"; };
-		B605C7E5226E983900EF46DD /* ha-loading-65.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-65.png"; sourceTree = "<group>"; };
-		B605C7E6226E983900EF46DD /* ha-loading-77.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-77.png"; sourceTree = "<group>"; };
-		B605C7E7226E983900EF46DD /* ha-loading-51.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-51.png"; sourceTree = "<group>"; };
-		B605C7E8226E983900EF46DD /* ha-loading-90.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-90.png"; sourceTree = "<group>"; };
-		B605C7E9226E983A00EF46DD /* ha-loading-34.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-34.png"; sourceTree = "<group>"; };
-		B605C7EA226E983A00EF46DD /* ha-loading-82.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-82.png"; sourceTree = "<group>"; };
-		B605C7EB226E983A00EF46DD /* ha-loading-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-50.png"; sourceTree = "<group>"; };
-		B605C7EC226E983A00EF46DD /* ha-loading-95.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-95.png"; sourceTree = "<group>"; };
-		B605C7ED226E983A00EF46DD /* ha-loading-99.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-99.png"; sourceTree = "<group>"; };
-		B605C7EE226E983B00EF46DD /* ha-loading-59.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-59.png"; sourceTree = "<group>"; };
-		B605C7EF226E983B00EF46DD /* ha-loading-37.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-37.png"; sourceTree = "<group>"; };
-		B605C7F0226E983B00EF46DD /* ha-loading-14.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-14.png"; sourceTree = "<group>"; };
-		B605C7F1226E983B00EF46DD /* ha-loading-86.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-86.png"; sourceTree = "<group>"; };
-		B605C7F2226E983B00EF46DD /* ha-loading-43.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-43.png"; sourceTree = "<group>"; };
-		B605C7F3226E983C00EF46DD /* ha-loading-96.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-96.png"; sourceTree = "<group>"; };
-		B605C7F4226E983C00EF46DD /* ha-loading-83.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-83.png"; sourceTree = "<group>"; };
-		B605C7F5226E983C00EF46DD /* ha-loading-29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-29.png"; sourceTree = "<group>"; };
-		B605C7F6226E983C00EF46DD /* ha-loading-81.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-81.png"; sourceTree = "<group>"; };
-		B605C7F7226E983C00EF46DD /* ha-loading-94.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-94.png"; sourceTree = "<group>"; };
-		B605C7F8226E983C00EF46DD /* ha-loading-63.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-63.png"; sourceTree = "<group>"; };
-		B605C7F9226E983D00EF46DD /* ha-loading-78.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-78.png"; sourceTree = "<group>"; };
-		B605C7FA226E983D00EF46DD /* ha-loading-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-5.png"; sourceTree = "<group>"; };
-		B605C7FB226E983D00EF46DD /* ha-loading-58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-58.png"; sourceTree = "<group>"; };
-		B605C7FC226E983D00EF46DD /* ha-loading-31.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-31.png"; sourceTree = "<group>"; };
-		B605C7FD226E983D00EF46DD /* ha-loading-75.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-75.png"; sourceTree = "<group>"; };
-		B605C7FE226E983E00EF46DD /* ha-loading-39.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-39.png"; sourceTree = "<group>"; };
-		B605C7FF226E983E00EF46DD /* ha-loading-19.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-19.png"; sourceTree = "<group>"; };
-		B605C800226E983E00EF46DD /* ha-loading-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-3.png"; sourceTree = "<group>"; };
-		B605C801226E983E00EF46DD /* ha-loading-26.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-26.png"; sourceTree = "<group>"; };
-		B605C802226E983E00EF46DD /* ha-loading-55.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-55.png"; sourceTree = "<group>"; };
-		B605C803226E983E00EF46DD /* ha-loading-84.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-84.png"; sourceTree = "<group>"; };
-		B605C804226E983F00EF46DD /* ha-loading-30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-30.png"; sourceTree = "<group>"; };
-		B605C805226E983F00EF46DD /* ha-loading-61.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-61.png"; sourceTree = "<group>"; };
-		B605C806226E983F00EF46DD /* ha-loading-25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-25.png"; sourceTree = "<group>"; };
-		B605C807226E983F00EF46DD /* ha-loading-38.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-38.png"; sourceTree = "<group>"; };
-		B605C808226E983F00EF46DD /* ha-loading-98.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-98.png"; sourceTree = "<group>"; };
-		B605C809226E984000EF46DD /* ha-loading-68.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-68.png"; sourceTree = "<group>"; };
-		B605C80A226E984000EF46DD /* ha-loading-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-4.png"; sourceTree = "<group>"; };
-		B605C80B226E984000EF46DD /* ha-loading-62.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-62.png"; sourceTree = "<group>"; };
-		B605C80C226E984000EF46DD /* ha-loading-32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-32.png"; sourceTree = "<group>"; };
-		B605C80D226E984000EF46DD /* ha-loading-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-40.png"; sourceTree = "<group>"; };
-		B605C80E226E984000EF46DD /* ha-loading-80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-80.png"; sourceTree = "<group>"; };
-		B605C80F226E984100EF46DD /* ha-loading-57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-57.png"; sourceTree = "<group>"; };
-		B605C810226E984100EF46DD /* ha-loading-87.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-87.png"; sourceTree = "<group>"; };
-		B605C811226E984100EF46DD /* ha-loading-53.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-53.png"; sourceTree = "<group>"; };
-		B605C812226E984100EF46DD /* ha-loading-27.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-27.png"; sourceTree = "<group>"; };
-		B605C813226E984100EF46DD /* ha-loading-10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-10.png"; sourceTree = "<group>"; };
-		B605C814226E984200EF46DD /* ha-loading-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-1.png"; sourceTree = "<group>"; };
-		B605C815226E984200EF46DD /* ha-loading-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-11.png"; sourceTree = "<group>"; };
-		B605C816226E984200EF46DD /* ha-loading-17.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-17.png"; sourceTree = "<group>"; };
-		B605C817226E984200EF46DD /* ha-loading-45.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-45.png"; sourceTree = "<group>"; };
-		B605C818226E984200EF46DD /* ha-loading-70.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-70.png"; sourceTree = "<group>"; };
-		B605C819226E984300EF46DD /* ha-loading-22.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-22.png"; sourceTree = "<group>"; };
-		B605C81A226E984300EF46DD /* ha-loading-74.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-74.png"; sourceTree = "<group>"; };
-		B605C81B226E984300EF46DD /* ha-loading-35.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-35.png"; sourceTree = "<group>"; };
-		B605C81C226E984300EF46DD /* ha-loading-23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-23.png"; sourceTree = "<group>"; };
-		B605C81D226E984300EF46DD /* ha-loading-42.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-42.png"; sourceTree = "<group>"; };
-		B605C81E226E984300EF46DD /* ha-loading-28.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-28.png"; sourceTree = "<group>"; };
-		B605C81F226E984300EF46DD /* ha-loading-16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-16.png"; sourceTree = "<group>"; };
-		B605C820226E984400EF46DD /* ha-loading-12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-12.png"; sourceTree = "<group>"; };
-		B605C821226E984400EF46DD /* ha-loading-33.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-33.png"; sourceTree = "<group>"; };
-		B605C822226E984400EF46DD /* ha-loading-69.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-69.png"; sourceTree = "<group>"; };
-		B605C823226E984400EF46DD /* ha-loading-85.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-85.png"; sourceTree = "<group>"; };
-		B605C824226E984400EF46DD /* ha-loading-36.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-36.png"; sourceTree = "<group>"; };
-		B605C825226E984400EF46DD /* ha-loading-89.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-89.png"; sourceTree = "<group>"; };
-		B605C826226E984400EF46DD /* ha-loading-73.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-73.png"; sourceTree = "<group>"; };
-		B605C827226E984400EF46DD /* ha-loading-91.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-91.png"; sourceTree = "<group>"; };
-		B605C828226E984400EF46DD /* ha-loading-48.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-48.png"; sourceTree = "<group>"; };
-		B605C829226E984500EF46DD /* ha-loading-54.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-54.png"; sourceTree = "<group>"; };
-		B605C82A226E984500EF46DD /* ha-loading-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-7.png"; sourceTree = "<group>"; };
-		B605C82B226E984500EF46DD /* ha-loading-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ha-loading-20.png"; sourceTree = "<group>"; };
 		B605C890226E9DAC00EF46DD /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		B605C892226EC25800EF46DD /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		B60614B51D1F117700249C11 /* MorganFreemanSounds.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MorganFreemanSounds.csv; sourceTree = "<group>"; };
@@ -1086,6 +887,7 @@
 		B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CleanroomLogger.framework; path = Carthage/Build/iOS/CleanroomLogger.framework; sourceTree = "<group>"; };
 		B6221F6122266C4000502A30 /* WebhookRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRequest.swift; sourceTree = "<group>"; };
 		B6221F672226780E00502A30 /* HAAPI+WebhookHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAAPI+WebhookHelpers.swift"; sourceTree = "<group>"; };
+		B622BB042270145A001B7839 /* ha-loading.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "ha-loading.json"; sourceTree = "<group>"; };
 		B624DE171CB8369200F413CE /* DevicesMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DevicesMapViewController.swift; sourceTree = "<group>"; };
 		B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoveryInfo.swift; sourceTree = "<group>"; };
 		B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsDetailViewController.swift; sourceTree = "<group>"; };
@@ -1620,113 +1422,6 @@
 			path = Roboto;
 			sourceTree = "<group>";
 		};
-		B6028DC2226E80F2003DA717 /* HA Loading */ = {
-			isa = PBXGroup;
-			children = (
-				B605C7E0226E983800EF46DD /* ha-loading-0.png */,
-				B605C814226E984200EF46DD /* ha-loading-1.png */,
-				B605C7E1226E983800EF46DD /* ha-loading-2.png */,
-				B605C800226E983E00EF46DD /* ha-loading-3.png */,
-				B605C80A226E984000EF46DD /* ha-loading-4.png */,
-				B605C7FA226E983D00EF46DD /* ha-loading-5.png */,
-				B605C7E2226E983800EF46DD /* ha-loading-6.png */,
-				B605C82A226E984500EF46DD /* ha-loading-7.png */,
-				B605C7C8226E983500EF46DD /* ha-loading-8.png */,
-				B605C7C9226E983500EF46DD /* ha-loading-9.png */,
-				B605C813226E984100EF46DD /* ha-loading-10.png */,
-				B605C815226E984200EF46DD /* ha-loading-11.png */,
-				B605C820226E984400EF46DD /* ha-loading-12.png */,
-				B605C7CF226E983600EF46DD /* ha-loading-13.png */,
-				B605C7F0226E983B00EF46DD /* ha-loading-14.png */,
-				B605C7CB226E983500EF46DD /* ha-loading-15.png */,
-				B605C81F226E984300EF46DD /* ha-loading-16.png */,
-				B605C816226E984200EF46DD /* ha-loading-17.png */,
-				B605C7D5226E983700EF46DD /* ha-loading-18.png */,
-				B605C7FF226E983E00EF46DD /* ha-loading-19.png */,
-				B605C82B226E984500EF46DD /* ha-loading-20.png */,
-				B605C7DF226E983800EF46DD /* ha-loading-21.png */,
-				B605C819226E984300EF46DD /* ha-loading-22.png */,
-				B605C81C226E984300EF46DD /* ha-loading-23.png */,
-				B605C7D9226E983700EF46DD /* ha-loading-24.png */,
-				B605C806226E983F00EF46DD /* ha-loading-25.png */,
-				B605C801226E983E00EF46DD /* ha-loading-26.png */,
-				B605C812226E984100EF46DD /* ha-loading-27.png */,
-				B605C81E226E984300EF46DD /* ha-loading-28.png */,
-				B605C7F5226E983C00EF46DD /* ha-loading-29.png */,
-				B605C804226E983F00EF46DD /* ha-loading-30.png */,
-				B605C7FC226E983D00EF46DD /* ha-loading-31.png */,
-				B605C80C226E984000EF46DD /* ha-loading-32.png */,
-				B605C821226E984400EF46DD /* ha-loading-33.png */,
-				B605C7E9226E983A00EF46DD /* ha-loading-34.png */,
-				B605C81B226E984300EF46DD /* ha-loading-35.png */,
-				B605C824226E984400EF46DD /* ha-loading-36.png */,
-				B605C7EF226E983B00EF46DD /* ha-loading-37.png */,
-				B605C807226E983F00EF46DD /* ha-loading-38.png */,
-				B605C7FE226E983E00EF46DD /* ha-loading-39.png */,
-				B605C80D226E984000EF46DD /* ha-loading-40.png */,
-				B605C7DD226E983800EF46DD /* ha-loading-41.png */,
-				B605C81D226E984300EF46DD /* ha-loading-42.png */,
-				B605C7F2226E983B00EF46DD /* ha-loading-43.png */,
-				B605C7CC226E983600EF46DD /* ha-loading-44.png */,
-				B605C817226E984200EF46DD /* ha-loading-45.png */,
-				B605C7D4226E983700EF46DD /* ha-loading-46.png */,
-				B605C7D0226E983600EF46DD /* ha-loading-47.png */,
-				B605C828226E984400EF46DD /* ha-loading-48.png */,
-				B605C7D1226E983600EF46DD /* ha-loading-49.png */,
-				B605C7EB226E983A00EF46DD /* ha-loading-50.png */,
-				B605C7E7226E983900EF46DD /* ha-loading-51.png */,
-				B605C7D6226E983700EF46DD /* ha-loading-52.png */,
-				B605C811226E984100EF46DD /* ha-loading-53.png */,
-				B605C829226E984500EF46DD /* ha-loading-54.png */,
-				B605C802226E983E00EF46DD /* ha-loading-55.png */,
-				B605C7D7226E983700EF46DD /* ha-loading-56.png */,
-				B605C80F226E984100EF46DD /* ha-loading-57.png */,
-				B605C7FB226E983D00EF46DD /* ha-loading-58.png */,
-				B605C7EE226E983B00EF46DD /* ha-loading-59.png */,
-				B605C7CA226E983500EF46DD /* ha-loading-60.png */,
-				B605C805226E983F00EF46DD /* ha-loading-61.png */,
-				B605C80B226E984000EF46DD /* ha-loading-62.png */,
-				B605C7F8226E983C00EF46DD /* ha-loading-63.png */,
-				B605C7DE226E983800EF46DD /* ha-loading-64.png */,
-				B605C7E5226E983900EF46DD /* ha-loading-65.png */,
-				B605C7D2226E983600EF46DD /* ha-loading-66.png */,
-				B605C7CD226E983600EF46DD /* ha-loading-67.png */,
-				B605C809226E984000EF46DD /* ha-loading-68.png */,
-				B605C822226E984400EF46DD /* ha-loading-69.png */,
-				B605C818226E984200EF46DD /* ha-loading-70.png */,
-				B605C7D3226E983600EF46DD /* ha-loading-71.png */,
-				B605C7D8226E983700EF46DD /* ha-loading-72.png */,
-				B605C826226E984400EF46DD /* ha-loading-73.png */,
-				B605C81A226E984300EF46DD /* ha-loading-74.png */,
-				B605C7FD226E983D00EF46DD /* ha-loading-75.png */,
-				B605C7E3226E983900EF46DD /* ha-loading-76.png */,
-				B605C7E6226E983900EF46DD /* ha-loading-77.png */,
-				B605C7F9226E983D00EF46DD /* ha-loading-78.png */,
-				B605C7DA226E983700EF46DD /* ha-loading-79.png */,
-				B605C80E226E984000EF46DD /* ha-loading-80.png */,
-				B605C7F6226E983C00EF46DD /* ha-loading-81.png */,
-				B605C7EA226E983A00EF46DD /* ha-loading-82.png */,
-				B605C7F4226E983C00EF46DD /* ha-loading-83.png */,
-				B605C803226E983E00EF46DD /* ha-loading-84.png */,
-				B605C823226E984400EF46DD /* ha-loading-85.png */,
-				B605C7F1226E983B00EF46DD /* ha-loading-86.png */,
-				B605C810226E984100EF46DD /* ha-loading-87.png */,
-				B605C7DB226E983700EF46DD /* ha-loading-88.png */,
-				B605C825226E984400EF46DD /* ha-loading-89.png */,
-				B605C7E8226E983900EF46DD /* ha-loading-90.png */,
-				B605C827226E984400EF46DD /* ha-loading-91.png */,
-				B605C7DC226E983800EF46DD /* ha-loading-92.png */,
-				B605C7E4226E983900EF46DD /* ha-loading-93.png */,
-				B605C7F7226E983C00EF46DD /* ha-loading-94.png */,
-				B605C7EC226E983A00EF46DD /* ha-loading-95.png */,
-				B605C7F3226E983C00EF46DD /* ha-loading-96.png */,
-				B605C7CE226E983600EF46DD /* ha-loading-97.png */,
-				B605C808226E983F00EF46DD /* ha-loading-98.png */,
-				B605C7ED226E983A00EF46DD /* ha-loading-99.png */,
-			);
-			path = "HA Loading";
-			sourceTree = "<group>";
-		};
 		B60614B31D1F116D00249C11 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
@@ -2018,6 +1713,7 @@
 				B60221FB226D9FB800E8DBFE /* notification.json */,
 				B60221FD226DA01C00E8DBFE /* location.json */,
 				B60221FF226DA16A00E8DBFE /* motion.json */,
+				B622BB042270145A001B7839 /* ha-loading.json */,
 			);
 			path = "Lottie Files";
 			sourceTree = "<group>";
@@ -2174,7 +1870,6 @@
 		B69933961E232AF50054453D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B6028DC2226E80F2003DA717 /* HA Loading */,
 				B6022201226DABB400E8DBFE /* Roboto */,
 				B661FC74226C792000E541DD /* Lottie Files */,
 				B672AB022215057600175465 /* Alternate Icons */,
@@ -3042,86 +2737,53 @@
 			files = (
 				B6022216226DB21900E8DBFE /* Roboto-Black.ttf in Resources */,
 				B6022217226DB21900E8DBFE /* Roboto-BlackItalic.ttf in Resources */,
-				B605C84A226E984500EF46DD /* ha-loading-77.png in Resources */,
 				B6022218226DB21900E8DBFE /* Roboto-Bold.ttf in Resources */,
-				B605C870226E984500EF46DD /* ha-loading-32.png in Resources */,
 				B6022219226DB21900E8DBFE /* Roboto-BoldItalic.ttf in Resources */,
 				B602221A226DB21900E8DBFE /* Roboto-Italic.ttf in Resources */,
 				B602221B226DB21900E8DBFE /* Roboto-Light.ttf in Resources */,
 				B602221C226DB21900E8DBFE /* Roboto-LightItalic.ttf in Resources */,
 				B602221D226DB21900E8DBFE /* Roboto-Medium.ttf in Resources */,
-				B605C844226E984500EF46DD /* ha-loading-0.png in Resources */,
 				B602221E226DB21900E8DBFE /* Roboto-MediumItalic.ttf in Resources */,
-				B605C880226E984500EF46DD /* ha-loading-23.png in Resources */,
 				B602221F226DB21900E8DBFE /* Roboto-Regular.ttf in Resources */,
 				B6022220226DB21900E8DBFE /* Roboto-Thin.ttf in Resources */,
 				B6022221226DB21900E8DBFE /* Roboto-ThinItalic.ttf in Resources */,
-				B605C872226E984500EF46DD /* ha-loading-80.png in Resources */,
 				B606162C1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Locked.wav in Resources */,
-				B605C860226E984500EF46DD /* ha-loading-31.png in Resources */,
-				B605C84B226E984500EF46DD /* ha-loading-51.png in Resources */,
 				B606160E1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Closed.wav in Resources */,
 				B60616B61D1F117800249C11 /* US-EN-Daisy-Laundry-Room-Leak.wav in Resources */,
-				B605C873226E984500EF46DD /* ha-loading-57.png in Resources */,
 				B60616861D1F117700249C11 /* US-EN-Alexa-Good-Night.wav in Resources */,
-				B605C884226E984500EF46DD /* ha-loading-12.png in Resources */,
 				B672AB562216B07500175465 /* gallery.ckcomplication in Resources */,
 				B658AA6F2250692F00C9BFE3 /* GoogleService-Info-Release.plist in Resources */,
 				B60616221D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-Detected.wav in Resources */,
 				B672AB1322150ED600175465 /* blue@3x.png in Resources */,
-				B605C875226E984500EF46DD /* ha-loading-53.png in Resources */,
-				B605C83E226E984500EF46DD /* ha-loading-79.png in Resources */,
 				B606163B1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Party-Mode.wav in Resources */,
 				B606168B1D1F117700249C11 /* US-EN-Alexa-Motion-Detected-Generic.wav in Resources */,
 				B606168E1D1F117700249C11 /* US-EN-Alexa-Motion-In-Front-Yard.wav in Resources */,
-				B605C832226E984500EF46DD /* ha-loading-97.png in Resources */,
-				B605C87E226E984500EF46DD /* ha-loading-74.png in Resources */,
 				B60616261D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Garage.wav in Resources */,
-				B605C831226E984500EF46DD /* ha-loading-67.png in Resources */,
 				B60616941D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Garage.wav in Resources */,
 				B672AB272215114A00175465 /* dev@3x.png in Resources */,
 				B60221FE226DA01C00E8DBFE /* location.json in Resources */,
-				B605C83A226E984500EF46DD /* ha-loading-52.png in Resources */,
 				B606163F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Bar-Lights.wav in Resources */,
 				B637243B21697AA7006B102A /* HomeAssistant Beta.entitlements in Resources */,
-				B605C857226E984500EF46DD /* ha-loading-96.png in Resources */,
-				B605C88A226E984500EF46DD /* ha-loading-73.png in Resources */,
 				B606167B1D1F117700249C11 /* US-EN-Alexa-Back-Door-Opened.wav in Resources */,
-				B605C835226E984500EF46DD /* ha-loading-49.png in Resources */,
 				B661FC8F226D606600E541DD /* 5401-loading-19-satellite-dish.json in Resources */,
-				B605C843226E984500EF46DD /* ha-loading-21.png in Resources */,
 				B672AB1822150ED600175465 /* orange@3x.png in Resources */,
-				B605C861226E984500EF46DD /* ha-loading-75.png in Resources */,
-				B605C85C226E984500EF46DD /* ha-loading-63.png in Resources */,
 				B60616481D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Air-Conditioner.wav in Resources */,
-				B605C84F226E984500EF46DD /* ha-loading-50.png in Resources */,
-				B605C82D226E984500EF46DD /* ha-loading-9.png in Resources */,
-				B605C866226E984500EF46DD /* ha-loading-55.png in Resources */,
 				B60616911D1F117700249C11 /* US-EN-Alexa-Patio-Door-Unlocked.wav in Resources */,
 				B606164F1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Lights.wav in Resources */,
 				B672AB1622150ED600175465 /* purple@3x.png in Resources */,
 				B606169C1D1F117800249C11 /* US-EN-Alexa-Wife-Is-Arriving.wav in Resources */,
-				B605C879226E984500EF46DD /* ha-loading-11.png in Resources */,
 				B60616211D1F117700249C11 /* US-EN-Morgan-Freeman-Liquor-Cabinet-Opened.wav in Resources */,
-				B605C841226E984500EF46DD /* ha-loading-41.png in Resources */,
-				B605C842226E984500EF46DD /* ha-loading-64.png in Resources */,
 				B60616331D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav in Resources */,
 				B658AA7322506AD400C9BFE3 /* GoogleService-Info-Development.plist in Resources */,
-				B605C847226E984500EF46DD /* ha-loading-76.png in Resources */,
 				B60221FC226D9FB800E8DBFE /* notification.json in Resources */,
 				B606164E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Light.wav in Resources */,
 				B672AB1422150ED600175465 /* purple@2x.png in Resources */,
-				B605C871226E984500EF46DD /* ha-loading-40.png in Resources */,
 				B672AB1722150ED600175465 /* green@3x.png in Resources */,
 				B60616AD1D1F117800249C11 /* US-EN-Daisy-Back-Door-Motion.wav in Resources */,
-				B605C853226E984500EF46DD /* ha-loading-37.png in Resources */,
 				B60616BA1D1F117800249C11 /* US-EN-Daisy-Refrigerator-Leak.wav in Resources */,
-				B605C834226E984500EF46DD /* ha-loading-47.png in Resources */,
 				B60616251D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Game-Room.wav in Resources */,
 				B60616891D1F117700249C11 /* US-EN-Alexa-Motion-At-Back-Door.wav in Resources */,
 				B60616561D1F117700249C11 /* US-EN-Morgan-Freeman-Welcome-Home.wav in Resources */,
-				B605C878226E984500EF46DD /* ha-loading-1.png in Resources */,
-				B605C865226E984500EF46DD /* ha-loading-26.png in Resources */,
 				B657A8F61CA646EB00121384 /* LaunchScreen.storyboard in Resources */,
 				B672AB1222150ED600175465 /* white@2x.png in Resources */,
 				B60616431D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Kitchen-Light.wav in Resources */,
@@ -3130,31 +2792,18 @@
 				B672AB292215114A00175465 /* release@2x.png in Resources */,
 				B60616321D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-A-Flood.wav in Resources */,
 				B60616351D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Basement.wav in Resources */,
-				B605C840226E984500EF46DD /* ha-loading-92.png in Resources */,
-				B605C88E226E984500EF46DD /* ha-loading-7.png in Resources */,
 				B606164B1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Family-Room-Lights.wav in Resources */,
-				B605C846226E984500EF46DD /* ha-loading-6.png in Resources */,
-				B605C852226E984500EF46DD /* ha-loading-59.png in Resources */,
-				B605C855226E984500EF46DD /* ha-loading-86.png in Resources */,
-				B605C83B226E984500EF46DD /* ha-loading-56.png in Resources */,
-				B605C87F226E984500EF46DD /* ha-loading-35.png in Resources */,
 				B60616821D1F117700249C11 /* US-EN-Alexa-Front-Door-Unlocked.wav in Resources */,
-				B605C845226E984500EF46DD /* ha-loading-2.png in Resources */,
 				B60616961D1F117800249C11 /* US-EN-Alexa-Son-Is-Arriving.wav in Resources */,
-				B605C874226E984500EF46DD /* ha-loading-87.png in Resources */,
-				B605C85D226E984500EF46DD /* ha-loading-78.png in Resources */,
 				B60616581D1F117700249C11 /* AlexaSounds.csv in Resources */,
 				B65BF9372217F497005745A4 /* old-release@2x.png in Resources */,
 				B606164C1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Hallway-Lights.wav in Resources */,
-				B605C85B226E984500EF46DD /* ha-loading-94.png in Resources */,
 				B60616B81D1F117800249C11 /* US-EN-Daisy-Master-Bedroom-Window-Open.wav in Resources */,
-				B605C87B226E984500EF46DD /* ha-loading-45.png in Resources */,
 				B606164D1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Kitchen-Light.wav in Resources */,
 				B60616831D1F117700249C11 /* US-EN-Alexa-Garage-Door-Opened.wav in Resources */,
 				B60616401D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Chandelier.wav in Resources */,
 				B60616981D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Basement.wav in Resources */,
 				B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */,
-				B605C881226E984500EF46DD /* ha-loading-42.png in Resources */,
 				B60616B21D1F117800249C11 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */,
 				B60616171D1F117700249C11 /* US-EN-Morgan-Freeman-Friend-Is-Arriving.wav in Resources */,
 				B606160C1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Opened.wav in Resources */,
@@ -3170,11 +2819,8 @@
 				B60616B51D1F117800249C11 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */,
 				B606161C1D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Closed.wav in Resources */,
 				B60616291D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Theater.wav in Resources */,
-				B605C869226E984500EF46DD /* ha-loading-61.png in Resources */,
 				B60616141D1F117700249C11 /* US-EN-Morgan-Freeman-Cleaning-Supplies-Closet-Opened.wav in Resources */,
-				B605C889226E984500EF46DD /* ha-loading-89.png in Resources */,
 				B60616881D1F117700249C11 /* US-EN-Alexa-Mail-Has-Arrived.wav in Resources */,
-				B605C830226E984500EF46DD /* ha-loading-44.png in Resources */,
 				B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */,
 				B60616801D1F117700249C11 /* US-EN-Alexa-Daughter-Is-Arriving.wav in Resources */,
 				B672AB1522150ED600175465 /* white@3x.png in Resources */,
@@ -3183,7 +2829,6 @@
 				B60616571D1F117700249C11 /* US-EN-Morgan-Freeman-Wife-Is-Arriving.wav in Resources */,
 				B602220F226DABF200E8DBFE /* Roboto.plist in Resources */,
 				B60616391D1F117700249C11 /* US-EN-Morgan-Freeman-Son-Is-Arriving.wav in Resources */,
-				B605C859226E984500EF46DD /* ha-loading-29.png in Resources */,
 				B60616B71D1F117800249C11 /* US-EN-Daisy-Master-Bath-Leak.wav in Resources */,
 				B65BF9382217F497005745A4 /* old-beta@2x.png in Resources */,
 				B60616901D1F117700249C11 /* US-EN-Alexa-Patio-Door-Opened.wav in Resources */,
@@ -3194,58 +2839,35 @@
 				B606169B1D1F117800249C11 /* US-EN-Alexa-Welcome-Home.wav in Resources */,
 				B60616971D1F117800249C11 /* US-EN-Alexa-Water-Detected-Generic.wav in Resources */,
 				B60616921D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-Generic.wav in Resources */,
-				B605C87C226E984500EF46DD /* ha-loading-70.png in Resources */,
-				B605C862226E984500EF46DD /* ha-loading-39.png in Resources */,
-				B605C883226E984500EF46DD /* ha-loading-16.png in Resources */,
-				B605C888226E984500EF46DD /* ha-loading-36.png in Resources */,
-				B605C863226E984500EF46DD /* ha-loading-19.png in Resources */,
-				B605C87D226E984500EF46DD /* ha-loading-22.png in Resources */,
 				B60616301D1F117700249C11 /* US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav in Resources */,
 				B60616161D1F117700249C11 /* US-EN-Morgan-Freeman-Daughter-Is-Arriving.wav in Resources */,
-				B605C86F226E984500EF46DD /* ha-loading-62.png in Resources */,
 				B672AB2A2215114A00175465 /* dev@2x.png in Resources */,
 				B606161A1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Opened.wav in Resources */,
 				B60616121D1F117700249C11 /* US-EN-Morgan-Freeman-Boss-Is-Arriving.wav in Resources */,
 				B672AB1B22150ED600175465 /* blue@2x.png in Resources */,
 				B60616281D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Living-Room.wav in Resources */,
 				B672AB1E22150ED600175465 /* orange@2x.png in Resources */,
-				B605C83C226E984500EF46DD /* ha-loading-72.png in Resources */,
 				B606167F1D1F117700249C11 /* US-EN-Alexa-Boyfriend-Is-Arriving.wav in Resources */,
 				B60616461D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Mood-Lights.wav in Resources */,
 				B60248001FBD343000998205 /* InfoPlist.strings in Resources */,
 				B606168C1D1F117700249C11 /* US-EN-Alexa-Motion-In-Back-Yard.wav in Resources */,
 				B60616B91D1F117800249C11 /* US-EN-Daisy-Office-Window-Open.wav in Resources */,
 				B60616B31D1F117800249C11 /* US-EN-Daisy-Guest-Bath-Leak.wav in Resources */,
-				B605C856226E984500EF46DD /* ha-loading-43.png in Resources */,
-				B605C885226E984500EF46DD /* ha-loading-33.png in Resources */,
-				B605C85E226E984500EF46DD /* ha-loading-5.png in Resources */,
 				B606161F1D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Morning.wav in Resources */,
-				B605C86D226E984500EF46DD /* ha-loading-68.png in Resources */,
 				B606163D1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-All-The-Lights.wav in Resources */,
 				B6022211226DAC3600E8DBFE /* LICENSE.txt in Resources */,
 				B606167E1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Unlocked.wav in Resources */,
 				B606163C1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Romance-Mode.wav in Resources */,
 				B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */,
 				B60616541D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Garage.wav in Resources */,
-				B605C88D226E984500EF46DD /* ha-loading-54.png in Resources */,
 				B606162D1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Opened.wav in Resources */,
-				B605C849226E984500EF46DD /* ha-loading-65.png in Resources */,
-				B605C839226E984500EF46DD /* ha-loading-18.png in Resources */,
-				B605C876226E984500EF46DD /* ha-loading-27.png in Resources */,
 				B60616991D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav in Resources */,
-				B605C82C226E984500EF46DD /* ha-loading-8.png in Resources */,
-				B605C82E226E984500EF46DD /* ha-loading-60.png in Resources */,
 				B60616411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav in Resources */,
-				B605C838226E984500EF46DD /* ha-loading-46.png in Resources */,
 				B672AB1122150ED600175465 /* green@2x.png in Resources */,
 				B69933951E232AEA0054453D /* Localizable.strings in Resources */,
 				B60616851D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav in Resources */,
-				B605C88C226E984500EF46DD /* ha-loading-48.png in Resources */,
-				B605C86C226E984500EF46DD /* ha-loading-98.png in Resources */,
 				B606162B1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav in Resources */,
 				B60616371D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav in Resources */,
-				B605C86E226E984500EF46DD /* ha-loading-4.png in Resources */,
-				B605C837226E984500EF46DD /* ha-loading-71.png in Resources */,
 				B60616471D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-TV.wav in Resources */,
 				B60616181D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Closed.wav in Resources */,
 				B606162A1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav in Resources */,
@@ -3255,80 +2877,54 @@
 				B606168D1D1F117700249C11 /* US-EN-Alexa-Motion-In-Basement.wav in Resources */,
 				B606169D1D1F117800249C11 /* GenericSounds.csv in Resources */,
 				B606160A1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Closed.wav in Resources */,
-				B605C868226E984500EF46DD /* ha-loading-30.png in Resources */,
-				B605C887226E984500EF46DD /* ha-loading-85.png in Resources */,
 				B60616111D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Unlocked.wav in Resources */,
-				B605C84C226E984500EF46DD /* ha-loading-90.png in Resources */,
-				B605C851226E984500EF46DD /* ha-loading-99.png in Resources */,
 				B60616AE1D1F117800249C11 /* US-EN-Daisy-Back-Door-Open.wav in Resources */,
 				B60616951D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Kitchen.wav in Resources */,
 				B60616451D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Lights.wav in Resources */,
-				B605C854226E984500EF46DD /* ha-loading-14.png in Resources */,
 				B606160B1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav in Resources */,
-				B605C833226E984500EF46DD /* ha-loading-13.png in Resources */,
 				B606164A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Chandelier.wav in Resources */,
 				B60616AF1D1F117800249C11 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */,
-				B605C83F226E984500EF46DD /* ha-loading-88.png in Resources */,
 				B661FC78226C794400E541DD /* 345-home.json in Resources */,
 				B606160D1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Unlocked.wav in Resources */,
-				B605C88F226E984500EF46DD /* ha-loading-20.png in Resources */,
 				B606168A1D1F117700249C11 /* US-EN-Alexa-Motion-At-Front-Door.wav in Resources */,
-				B605C83D226E984500EF46DD /* ha-loading-24.png in Resources */,
 				B661FC7A226C794400E541DD /* 1653-home-icon.json in Resources */,
 				B60616231D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Basement.wav in Resources */,
 				B60616491D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Bar-Lights.wav in Resources */,
 				B60616381D1F117700249C11 /* US-EN-Morgan-Freeman-Someone-Is-Arriving.wav in Resources */,
-				B605C864226E984500EF46DD /* ha-loading-3.png in Resources */,
 				B60616B01D1F117800249C11 /* US-EN-Daisy-Front-Door-Open.wav in Resources */,
 				B60221F6226D84B500E8DBFE /* loader-success-failed.json in Resources */,
 				B606162E1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav in Resources */,
-				B605C85F226E984500EF46DD /* ha-loading-58.png in Resources */,
 				B672AB1A22150ED600175465 /* red@3x.png in Resources */,
-				B605C82F226E984500EF46DD /* ha-loading-15.png in Resources */,
 				B60616441D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Light.wav in Resources */,
-				B605C836226E984500EF46DD /* ha-loading-66.png in Resources */,
 				B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */,
 				B60616361D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav in Resources */,
-				B605C85A226E984500EF46DD /* ha-loading-81.png in Resources */,
-				B605C877226E984500EF46DD /* ha-loading-10.png in Resources */,
 				B672AB1D22150ED600175465 /* black@2x.png in Resources */,
-				B605C87A226E984500EF46DD /* ha-loading-17.png in Resources */,
 				B60616511D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-TV.wav in Resources */,
 				B60616151D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav in Resources */,
-				B605C84E226E984500EF46DD /* ha-loading-82.png in Resources */,
 				B60616521D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav in Resources */,
-				B605C858226E984500EF46DD /* ha-loading-83.png in Resources */,
 				B60616101D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav in Resources */,
-				B605C84D226E984500EF46DD /* ha-loading-34.png in Resources */,
 				B661FC79226C794400E541DD /* 4389-pt-white-house.json in Resources */,
-				B605C850226E984500EF46DD /* ha-loading-95.png in Resources */,
 				B6EDBBBD226AEFB2001FBCFE /* ScriptMessageBridge.js in Resources */,
-				B605C88B226E984500EF46DD /* ha-loading-91.png in Resources */,
 				B606167D1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav in Resources */,
-				B605C886226E984500EF46DD /* ha-loading-69.png in Resources */,
 				B60616931D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Basement.wav in Resources */,
 				B661FC7E226C87BB00E541DD /* home.json in Resources */,
 				B65BF9392217F497005745A4 /* old-dev@2x.png in Resources */,
-				B605C86A226E984500EF46DD /* ha-loading-25.png in Resources */,
 				B60616271D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Kitchen.wav in Resources */,
 				B606167C1D1F117700249C11 /* US-EN-Alexa-Back-Door-Unlocked.wav in Resources */,
 				B60615BB1D1F117700249C11 /* MorganFreemanSounds.csv in Resources */,
 				B658AA7722506DAF00C9BFE3 /* GoogleService-Info-Beta.plist in Resources */,
 				B6D35C642169905400D1F86B /* HomeAssistant Development.entitlements in Resources */,
-				B605C882226E984500EF46DD /* ha-loading-28.png in Resources */,
-				B605C848226E984500EF46DD /* ha-loading-93.png in Resources */,
 				B672AB262215114A00175465 /* beta@3x.png in Resources */,
 				B672AB1C22150ED600175465 /* black@3x.png in Resources */,
 				B606160F1D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Locked.wav in Resources */,
-				B605C867226E984500EF46DD /* ha-loading-84.png in Resources */,
 				B606161B1D1F117700249C11 /* US-EN-Morgan-Freeman-Front-Door-Unlocked.wav in Resources */,
 				B606169A1D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Kitchen.wav in Resources */,
 				B606168F1D1F117700249C11 /* US-EN-Alexa-Motion-In-Garage.wav in Resources */,
 				B672AB282215114A00175465 /* release@3x.png in Resources */,
 				B60616311D1F117700249C11 /* US-EN-Morgan-Freeman-Setting-The-Mood.wav in Resources */,
+				B622BB052270145A001B7839 /* ha-loading.json in Resources */,
 				D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */,
 				B606162F1D1F117700249C11 /* US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav in Resources */,
-				B605C86B226E984500EF46DD /* ha-loading-38.png in Resources */,
 				B60616131D1F117700249C11 /* US-EN-Morgan-Freeman-Boyfriend-Is-Arriving.wav in Resources */,
 				B606163E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Air-Conditioner.wav in Resources */,
 				B60616551D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Kitchen.wav in Resources */,

@@ -33,13 +33,6 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ha-loading-30.png" translatesAutoresizingMaskIntoConstraints="NO" id="bv9-S3-0sz">
-                                <rect key="frame" x="67.5" y="223.5" width="240" height="240"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="240" id="duO-lh-z5s"/>
-                                    <constraint firstAttribute="height" constant="240" id="uZR-A9-gN5"/>
-                                </constraints>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4h-WC-wIw" customClass="MDCButton">
                                 <rect key="frame" x="0.0" y="635" width="375" height="32"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
@@ -48,15 +41,26 @@
                                     <action selector="continueButton:" destination="Cpw-N3-yji" eventType="touchUpInside" id="OmS-1m-BYe"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wD9-TR-rVF" userLabel="Animation View" customClass="AnimationView" customModule="Lottie">
+                                <rect key="frame" x="67.5" y="223.5" width="240" height="240"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="240" id="gcY-WU-qo5"/>
+                                    <constraint firstAttribute="width" constant="240" id="iUi-Vq-OTN"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="animationName" value="ha-loading"/>
+                                </userDefinedRuntimeAttributes>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="N4h-WC-wIw" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="7jc-nn-Bf0"/>
-                            <constraint firstItem="bv9-S3-0sz" firstAttribute="centerY" secondItem="Dgm-KS-yJa" secondAttribute="centerY" id="BvX-Qw-8Wx"/>
                             <constraint firstItem="mse-YA-DiV" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="S7j-SS-3r5"/>
                             <constraint firstItem="5td-Yc-nnx" firstAttribute="leading" secondItem="Dgm-KS-yJa" secondAttribute="leading" constant="50" id="SFm-HS-moK"/>
-                            <constraint firstItem="bv9-S3-0sz" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="n1U-PI-vjj"/>
+                            <constraint firstItem="wD9-TR-rVF" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="YJn-5u-0ZE"/>
+                            <constraint firstItem="wD9-TR-rVF" firstAttribute="centerY" secondItem="Dgm-KS-yJa" secondAttribute="centerY" id="dyS-lr-6jI"/>
                             <constraint firstItem="Dgm-KS-yJa" firstAttribute="trailing" secondItem="N4h-WC-wIw" secondAttribute="trailing" id="pjm-tl-cs0"/>
                             <constraint firstItem="Dgm-KS-yJa" firstAttribute="bottom" secondItem="N4h-WC-wIw" secondAttribute="bottom" id="pz8-xT-F3N"/>
                             <constraint firstAttribute="trailingMargin" secondItem="mse-YA-DiV" secondAttribute="trailing" id="qAH-H0-r9f"/>
@@ -70,7 +74,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="Na6-FR-EXQ"/>
                     <connections>
-                        <outlet property="animatedLogoView" destination="bv9-S3-0sz" id="UjO-FO-kUR"/>
+                        <outlet property="animationView" destination="wD9-TR-rVF" id="uqF-bQ-kl5"/>
                         <outlet property="continueButton" destination="N4h-WC-wIw" id="6pm-aL-tIf"/>
                         <segue destination="zQf-lI-ZmB" kind="show" identifier="discoverInstances" id="sQB-9m-V5O"/>
                         <segue destination="sGi-y7-DOI" kind="show" identifier="manuallyConnectInstance" id="Ywb-4q-gPS"/>
@@ -663,9 +667,6 @@
             <point key="canvasLocation" x="-4386.3999999999996" y="-1343.4782608695652"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="ha-loading-30.png" width="1158" height="1158"/>
-    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Nmk-e0-aiM"/>
         <segue reference="Ywb-4q-gPS"/>
