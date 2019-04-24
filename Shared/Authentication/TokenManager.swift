@@ -58,6 +58,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }.recover { error -> Promise<String> in
             guard let tokenError = error as? TokenError, tokenError == TokenError.expired,
                 self.tokenInfo != nil else {
+                Current.Log.verbose("Unable to recover from token error! \(error)")
                 throw error
             }
 
