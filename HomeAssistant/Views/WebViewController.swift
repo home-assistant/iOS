@@ -65,20 +65,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         let userContentController = WKUserContentController()
         userContentController.add(self, name: "getExternalAuth")
         userContentController.add(self, name: "revokeExternalAuth")
+        userContentController.add(self, name: "externalBus")
         userContentController.add(self, name: "themesUpdated")
-        userContentController.add(self, name: "haptic")
-        userContentController.add(self, name: "open-external-app-configuration")
-        userContentController.add(self, name: "auth-invalid")
-        userContentController.add(self, name: "connected")
-        userContentController.add(self, name: "disconnected")
-
-        guard let messageBridgeJSPath = Bundle.main.path(forResource: "ScriptMessageBridge", ofType: "js"),
-            let messageBridgeJS = try? String(contentsOfFile: messageBridgeJSPath) else {
-            fatalError("Couldn't load ScriptMessageBridge.js file for injection to WKWebView!")
-        }
-
-        userContentController.addUserScript(WKUserScript(source: messageBridgeJS, injectionTime: .atDocumentStart,
-                                                         forMainFrameOnly: false))
 
         guard let wsBridgeJSPath = Bundle.main.path(forResource: "WebSocketBridge", ofType: "js"),
             let wsBridgeJS = try? String(contentsOfFile: wsBridgeJSPath) else {
@@ -137,6 +125,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
                 }
             }
         } else {
+            Current.Log.error("Couldn't get authenticated API, showing settings")
             self.showSettingsViewController()
         }
 
@@ -442,20 +431,10 @@ extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let messageBody = message.body as? [String: Any] else { return }
 
-        Current.Log.verbose("Received script message \(message.name)")
+        Current.Log.verbose("Received script message \(message.name) \(message.body)")
 
-        if message.name == "connected" {
-            UIView.animate(withDuration: 1.0, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
-                 self.settingsButton.alpha = 0.0
-            }, completion: nil)
-        } else if message.name == "disconnected" || message.name == "auth-invalid" {
-            UIView.animate(withDuration: 1.0, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
-                self.settingsButton.alpha = 1.0
-            }, completion: nil)
-        } else if message.name == "open-external-app-configuration" {
-            self.showSettingsViewController()
-        } else if message.name == "haptic", let hapticType = messageBody["hapticType"] as? String {
-            self.handleHaptic(hapticType)
+        if message.name == "externalBus" {
+            self.handleExternalMessage(messageBody)
         } else if message.name == "themesUpdated" {
             self.handleThemeUpdate(messageBody)
         } else if message.name == "getExternalAuth", let callbackName = messageBody["callback"] {
@@ -541,6 +520,75 @@ extension WebViewController: WKScriptMessageHandler {
         default:
             Current.Log.verbose("Unknown haptic type \(hapticType)")
         }
+    }
+
+    func handleExternalMessage(_ dictionary: [String: Any]) {
+        guard let incomingMessage = WebSocketMessage(dictionary) else {
+            Current.Log.error("Received invalid external message \(dictionary)")
+            return
+        }
+
+        Current.Log.verbose("Received external bus message \(incomingMessage)")
+
+        var response: WebSocketMessage?
+
+        switch incomingMessage.MessageType {
+        case "config/get":
+            response = WebSocketMessage(id: incomingMessage.ID!, type: "result", payload: ["hasSettingsScreen": true])
+        case "config_screen/show":
+            self.showSettingsViewController()
+        case "haptic":
+            guard let hapticType = incomingMessage.Result?["hapticType"] as? String else {
+                Current.Log.error("Received haptic via bus but hapticType was not string! \(incomingMessage)")
+                return
+            }
+            self.handleHaptic(hapticType)
+        case "connection-status":
+            guard let connEvt = incomingMessage.Result?["event"] as? String else {
+                Current.Log.error("Received connection-status via bus but event was not string! \(incomingMessage)")
+                return
+            }
+            // Possible values: connected, disconnected, auth-invalid
+            UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
+                self.settingsButton.alpha = connEvt == "connected" ? 0.0 : 1.0
+            }, completion: nil)
+        default:
+            Current.Log.error("Received unknown external message \(incomingMessage)")
+            return
+        }
+
+        if let outgoing = response {
+            Current.Log.verbose("Sending response to \(outgoing)")
+
+            var encodedMsg: Data?
+
+            do {
+                encodedMsg = try JSONEncoder().encode(outgoing)
+            } catch let error as NSError {
+                Current.Log.error("Unable to encode outgoing message! \(error)")
+                return
+            }
+
+            guard let jsonString = String(data: encodedMsg!, encoding: .utf8) else {
+                Current.Log.error("Could not convert JSON Data to JSON String")
+                return
+            }
+
+            let script = "window.externalBus(\(jsonString))"
+            Current.Log.verbose("Sending message to externalBus \(script)")
+            self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
+                if let error = error {
+                    Current.Log.error("Failed to fire message to externalBus: \(error)")
+                }
+
+                if let result = result {
+                    Current.Log.verbose("Success on firing message to externalBus: \(String(describing: result))")
+                } else {
+                    Current.Log.verbose("Sent message to externalBus")
+                }
+            })
+        }
+
     }
 }
 

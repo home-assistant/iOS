@@ -468,7 +468,6 @@
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6E42617215C761A007FEB7E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		B6E42618215C761E007FEB7E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
-		B6EDBBBD226AEFB2001FBCFE /* ScriptMessageBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B6EDBBBC226AEFB2001FBCFE /* ScriptMessageBridge.js */; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
 		D03D892920E0A85300D4F28D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03D892D20E0A85300D4F28D /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -1135,7 +1134,6 @@
 		B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+UIActivityIndicator.swift"; sourceTree = "<group>"; };
 		B6DF8BC3221D047400370A59 /* GetCameraImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCameraImage.swift; sourceTree = "<group>"; };
 		B6E857A11CB1CCCC00F96925 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		B6EDBBBC226AEFB2001FBCFE /* ScriptMessageBridge.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = ScriptMessageBridge.js; sourceTree = "<group>"; };
 		B6EE36A120CF593E001494E3 /* RealmZone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmZone.swift; sourceTree = "<group>"; };
 		B6F02BE81CB46AF40029ABE7 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Entity.swift; sourceTree = "<group>"; };
 		B6F02BED1CB46EB10029ABE7 /* Status.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
@@ -1886,7 +1884,6 @@
 				B69933931E232AEA0054453D /* Localizable.strings */,
 				B63CCDCF2164714900123C50 /* Intents.intentdefinition */,
 				B672AB552216B07500175465 /* gallery.ckcomplication */,
-				B6EDBBBC226AEFB2001FBCFE /* ScriptMessageBridge.js */,
 				B661FB67226B961400E541DD /* WebSocketBridge.js */,
 			);
 			path = Resources;
@@ -2904,7 +2901,6 @@
 				B60616521D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav in Resources */,
 				B60616101D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav in Resources */,
 				B661FC79226C794400E541DD /* 4389-pt-white-house.json in Resources */,
-				B6EDBBBD226AEFB2001FBCFE /* ScriptMessageBridge.js in Resources */,
 				B606167D1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav in Resources */,
 				B60616931D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Basement.wav in Resources */,
 				B661FC7E226C87BB00E541DD /* home.json in Resources */,
