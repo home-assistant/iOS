@@ -430,7 +430,6 @@ extension String {
 }
 
 extension WebViewController: WKScriptMessageHandler {
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let messageBody = message.body as? [String: Any] else { return }
 
@@ -525,6 +524,7 @@ extension WebViewController: WKScriptMessageHandler {
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let incomingMessage = WebSocketMessage(dictionary) else {
             Current.Log.error("Received invalid external message \(dictionary)")
