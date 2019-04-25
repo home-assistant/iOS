@@ -537,17 +537,17 @@ extension WebViewController: WKScriptMessageHandler {
 
         switch incomingMessage.MessageType {
         case "config/get":
-            response = WebSocketMessage(id: incomingMessage.ID!, type: "result", payload: ["hasSettingsScreen": true])
+            response = WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["hasSettingsScreen": true])
         case "config_screen/show":
             self.showSettingsViewController()
         case "haptic":
-            guard let hapticType = incomingMessage.Result?["hapticType"] as? String else {
+            guard let hapticType = incomingMessage.Payload?["hapticType"] as? String else {
                 Current.Log.error("Received haptic via bus but hapticType was not string! \(incomingMessage)")
                 return
             }
             self.handleHaptic(hapticType)
         case "connection-status":
-            guard let connEvt = incomingMessage.Result?["event"] as? String else {
+            guard let connEvt = incomingMessage.Payload?["event"] as? String else {
                 Current.Log.error("Received connection-status via bus but event was not string! \(incomingMessage)")
                 return
             }

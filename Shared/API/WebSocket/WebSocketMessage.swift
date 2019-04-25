@@ -12,6 +12,7 @@ public class WebSocketMessage: Codable {
     public let MessageType: String
     public var ID: Int?
     public var Success: Bool?
+    public var Payload: [String: Any]?
     public var Result: [String: Any]?
     public var Message: String?
     public var HAVersion: String?
@@ -20,6 +21,7 @@ public class WebSocketMessage: Codable {
         case MessageType = "type"
         case ID = "id"
         case Success = "success"
+        case Payload = "payload"
         case Result = "result"
         case Message = "message"
         case HAVersion = "ha_version"
@@ -30,6 +32,7 @@ public class WebSocketMessage: Codable {
         MessageType = try values.decode(String.self, forKey: .MessageType)
         ID = try? values.decode(Int.self, forKey: .ID)
         Success = try? values.decode(Bool.self, forKey: .Success)
+        Payload = try? values.decode([String: Any].self, forKey: .Payload)
         Result = try? values.decode([String: Any].self, forKey: .Result)
         Message = try? values.decode(String.self, forKey: .Message)
         HAVersion = try? values.decode(String.self, forKey: .HAVersion)
@@ -41,6 +44,7 @@ public class WebSocketMessage: Codable {
         }
         self.MessageType = mType
         self.ID = dictionary["id"] as? Int
+        self.Payload = dictionary["payload"] as? [String: Any]
         self.Result = dictionary["result"] as? [String: Any]
         self.Success = dictionary["success"] as? Bool
     }
@@ -52,10 +56,10 @@ public class WebSocketMessage: Codable {
         self.Success = true
     }
 
-    public init(id: Int, type: String, payload: [String: Any], success: Bool = true) {
+    public init(id: Int, type: String, result: [String: Any], success: Bool = true) {
         self.ID = id
         self.MessageType = type
-        self.Result = payload
+        self.Result = result
         self.Success = success
     }
 
@@ -84,7 +88,7 @@ public class WebSocketMessage: Codable {
 extension WebSocketMessage: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         // swiftlint:disable:next line_length
-        return "WebSocketMessage(type: \(self.MessageType), id: \(self.ID), payload: \(self.Result), success: \(self.Success))"
+        return "WebSocketMessage(type: \(self.MessageType), id: \(self.ID), payload: \(self.Payload), result: \(self.Result), success: \(self.Success))"
     }
 
     public var debugDescription: String {
