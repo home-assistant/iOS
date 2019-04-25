@@ -240,10 +240,6 @@
 		B661FB74226C110A00E541DD /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB73226C110A00E541DD /* WelcomeViewController.swift */; };
 		B661FB7A226C197900E541DD /* ManualSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB79226C197900E541DD /* ManualSetupViewController.swift */; };
 		B661FB7C226C199200E541DD /* PermissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB7B226C199200E541DD /* PermissionsViewController.swift */; };
-		B661FC78226C794400E541DD /* 345-home.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC75226C794300E541DD /* 345-home.json */; };
-		B661FC79226C794400E541DD /* 4389-pt-white-house.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC76226C794300E541DD /* 4389-pt-white-house.json */; };
-		B661FC7A226C794400E541DD /* 1653-home-icon.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC77226C794400E541DD /* 1653-home-icon.json */; };
-		B661FC7C226C7F9B00E541DD /* 1064-radar-scanning.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC7B226C7F9B00E541DD /* 1064-radar-scanning.json */; };
 		B661FC7E226C87BB00E541DD /* home.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC7D226C87BB00E541DD /* home.json */; };
 		B661FC88226D478300E541DD /* DiscoverInstancesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */; };
 		B661FC8A226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC89226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift */; };
@@ -960,10 +956,6 @@
 		B661FB73226C110A00E541DD /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		B661FB79226C197900E541DD /* ManualSetupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSetupViewController.swift; sourceTree = "<group>"; };
 		B661FB7B226C199200E541DD /* PermissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsViewController.swift; sourceTree = "<group>"; };
-		B661FC75226C794300E541DD /* 345-home.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "345-home.json"; sourceTree = "<group>"; };
-		B661FC76226C794300E541DD /* 4389-pt-white-house.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "4389-pt-white-house.json"; sourceTree = "<group>"; };
-		B661FC77226C794400E541DD /* 1653-home-icon.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "1653-home-icon.json"; sourceTree = "<group>"; };
-		B661FC7B226C7F9B00E541DD /* 1064-radar-scanning.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "1064-radar-scanning.json"; sourceTree = "<group>"; };
 		B661FC7D226C87BB00E541DD /* home.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = home.json; sourceTree = "<group>"; };
 		B661FC85226D3E9900E541DD /* Onboarding.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Onboarding.storyboard; sourceTree = "<group>"; };
 		B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverInstancesViewController.swift; sourceTree = "<group>"; };
@@ -1705,10 +1697,6 @@
 		B661FC74226C792000E541DD /* Lottie Files */ = {
 			isa = PBXGroup;
 			children = (
-				B661FC75226C794300E541DD /* 345-home.json */,
-				B661FC77226C794400E541DD /* 1653-home-icon.json */,
-				B661FC76226C794300E541DD /* 4389-pt-white-house.json */,
-				B661FC7B226C7F9B00E541DD /* 1064-radar-scanning.json */,
 				B661FC7D226C87BB00E541DD /* home.json */,
 				B661FC8E226D606600E541DD /* 5401-loading-19-satellite-dish.json */,
 				B60221F5226D84B500E8DBFE /* loader-success-failed.json */,
@@ -2829,7 +2817,6 @@
 				B60616801D1F117700249C11 /* US-EN-Alexa-Daughter-Is-Arriving.wav in Resources */,
 				B672AB1522150ED600175465 /* white@3x.png in Resources */,
 				B60616421D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Hallway-Lights.wav in Resources */,
-				B661FC7C226C7F9B00E541DD /* 1064-radar-scanning.json in Resources */,
 				B60616571D1F117700249C11 /* US-EN-Morgan-Freeman-Wife-Is-Arriving.wav in Resources */,
 				B602220F226DABF200E8DBFE /* Roboto.plist in Resources */,
 				B60616391D1F117700249C11 /* US-EN-Morgan-Freeman-Son-Is-Arriving.wav in Resources */,
@@ -2890,10 +2877,8 @@
 				B606160B1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Locked.wav in Resources */,
 				B606164A1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Chandelier.wav in Resources */,
 				B60616AF1D1F117800249C11 /* US-EN-Daisy-Front-Door-Motion.wav in Resources */,
-				B661FC78226C794400E541DD /* 345-home.json in Resources */,
 				B606160D1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Unlocked.wav in Resources */,
 				B606168A1D1F117700249C11 /* US-EN-Alexa-Motion-At-Front-Door.wav in Resources */,
-				B661FC7A226C794400E541DD /* 1653-home-icon.json in Resources */,
 				B60616231D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Basement.wav in Resources */,
 				B60616491D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Bar-Lights.wav in Resources */,
 				B60616381D1F117700249C11 /* US-EN-Morgan-Freeman-Someone-Is-Arriving.wav in Resources */,
@@ -2909,7 +2894,6 @@
 				B60616151D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav in Resources */,
 				B60616521D1F117700249C11 /* US-EN-Morgan-Freeman-Vacate-The-Premises.wav in Resources */,
 				B60616101D1F117700249C11 /* US-EN-Morgan-Freeman-Basement-Door-Opened.wav in Resources */,
-				B661FC79226C794400E541DD /* 4389-pt-white-house.json in Resources */,
 				B606167D1D1F117700249C11 /* US-EN-Alexa-Basement-Door-Opened.wav in Resources */,
 				B60616931D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-In-Basement.wav in Resources */,
 				B661FC7E226C87BB00E541DD /* home.json in Resources */,
