@@ -508,7 +508,7 @@ extension WebViewController: WKScriptMessageHandler {
         switch hapticType {
         case "success":
             UINotificationFeedbackGenerator().notificationOccurred(.success)
-        case "error":
+        case "error", "failure":
             UINotificationFeedbackGenerator().notificationOccurred(.error)
         case "warning":
             UINotificationFeedbackGenerator().notificationOccurred(.warning)
@@ -518,7 +518,7 @@ extension WebViewController: WKScriptMessageHandler {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         case "heavy":
             UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
-        case "selected":
+        case "selection":
             UISelectionFeedbackGenerator().selectionChanged()
         default:
             Current.Log.verbose("Unknown haptic type \(hapticType)")
