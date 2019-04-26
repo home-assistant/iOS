@@ -11,3 +11,18 @@ ib:
       output: HomeAssistant/Views/Onboarding/Onboarding Scenes.swift
     - templateName: segues-swift4
       output: HomeAssistant/Views/Onboarding/Onboarding Segues.swift
+xcassets:
+  inputs: HomeAssistant/Resources/Assets.xcassets
+  outputs:
+    templateName: swift4
+    output: HomeAssistant/Resources/Assets.swift
+colors:
+  inputs: HomeAssistant/Resources/Colors.json
+  outputs:
+    templateName: swift4
+    output: HomeAssistant/Resources/Colors.swift
+fonts:
+  inputs: HomeAssistant/Resources/Roboto/
+  outputs:
+    templateName: swift4
+    output: HomeAssistant/Resources/Roboto/Roboto.swift
