@@ -52,16 +52,17 @@ class WelcomeViewController: UIViewController {
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "manuallyConnectInstance", let vc = segue.destination as? ManualSetupViewController {
+        guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
+        if segueType == .manuallyConnectInstance, let vc = segue.destination as? ManualSetupViewController {
             vc.notOnWifi = false
         }
     }
 
     @IBAction func continueButton(_ sender: UIButton) {
         if self.wifiWarningLabel.isHidden {
-            self.performSegue(withIdentifier: "discoverInstances", sender: nil)
+            self.perform(segue: StoryboardSegue.Onboarding.discoverInstances, sender: nil)
         } else {
-            self.performSegue(withIdentifier: "manuallyConnectInstance", sender: nil)
+            self.perform(segue: StoryboardSegue.Onboarding.manuallyConnectInstance, sender: nil)
         }
     }
 

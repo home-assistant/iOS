@@ -35,11 +35,12 @@ class ChooseDiscoveredInstanceViewController: UIViewController {
 
     @IBAction func continueManually(_ sender: Any) {
         print("User wants to continue manually")
-        self.performSegue(withIdentifier: "continueManually", sender: nil)
+        self.perform(segue: StoryboardSegue.Onboarding.continueManually, sender: nil)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "setupDiscoveredInstance", let vc = segue.destination as? AuthenticationViewController {
+        guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
+        if segueType == .setupDiscoveredInstance, let vc = segue.destination as? AuthenticationViewController {
             vc.instance = self.selectedInstance
         }
     }
@@ -49,7 +50,7 @@ extension ChooseDiscoveredInstanceViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedInstance = self.instances[indexPath.row]
         print("Selected row at \(indexPath.row) \(self.selectedInstance)")
-        self.performSegue(withIdentifier: "setupDiscoveredInstance", sender: self.selectedInstance)
+        self.perform(segue: StoryboardSegue.Onboarding.setupDiscoveredInstance, sender: self.selectedInstance)
     }
 }
 

@@ -5,6 +5,7 @@ strings:
     - templateName: structured-swift4
       output: Shared/Resources/SwiftGen/Strings.swift
 ib:
+  ignoreTargetModule: true
   inputs: HomeAssistant/Views/Onboarding/Base.lproj/
   outputs:
     - templateName: scenes-swift4

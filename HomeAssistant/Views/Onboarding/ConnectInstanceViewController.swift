@@ -67,13 +67,6 @@ class ConnectInstanceViewController: UIViewController {
         }
     }
 
-    // MARK: - Navigation
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-
     private func configureAnimation(_ animationView: AnimationView, _ state: AnimationState = .loading) {
         animationView.loopMode = .loop
         animationView.contentMode = .scaleAspectFill

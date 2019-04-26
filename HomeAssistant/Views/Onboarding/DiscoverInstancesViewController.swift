@@ -58,7 +58,7 @@ class DiscoverInstancesViewController: UIViewController {
                 self.discovery.stopDiscovery()
                 self.discovery.stopPublish()
 
-                self.performSegue(withIdentifier: "chooseDiscoveredInstance", sender: nil)
+                self.perform(segue: StoryboardSegue.Onboarding.chooseDiscoveredInstance, sender: nil)
             })
         }
 
@@ -97,11 +97,12 @@ class DiscoverInstancesViewController: UIViewController {
 
     @IBAction func continueManually(_ sender: Any) {
         print("User wants to continue manually")
-        self.performSegue(withIdentifier: "continueManually", sender: self)
+        self.perform(segue: StoryboardSegue.Onboarding.continueManually, sender: nil)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "chooseDiscoveredInstance",
+        guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
+        if segueType == .chooseDiscoveredInstance,
             let vc = segue.destination as? ChooseDiscoveredInstanceViewController {
             vc.instances = self.discoveredInstances.sorted(by: { (a, b) -> Bool in
                 return a.LocationName < b.LocationName
