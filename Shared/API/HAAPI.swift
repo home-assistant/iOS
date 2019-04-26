@@ -52,7 +52,7 @@ public class HomeAssistantAPI {
 
     public private(set) var webhookManager: Alamofire.SessionManager!
 
-    var webhookHandler: WebhookHandler!
+    public private(set) var webhookHandler: WebhookHandler!
 
     public var oneShotLocationManager: OneShotLocationManager?
 

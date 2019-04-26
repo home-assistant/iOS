@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class AuthenticatedUser: Codable {
+public class AuthenticatedUser: Codable, CustomStringConvertible {
     public let ID: String
     public let Name: String
     public let IsOwner: Bool
@@ -21,10 +21,17 @@ public class AuthenticatedUser: Codable {
         case IsAdmin = "is_admin"
     }
 
-    init(_ dictionary: [String: Any]) {
-        self.ID = dictionary["id"] as? String ?? "Unknown"
-        self.Name = dictionary["name"] as? String ?? "Unknown"
+    public init?(_ dictionary: [String: Any]) {
+        guard let id = dictionary["id"] as? String, let name = dictionary["name"] as? String else {
+            return nil
+        }
+        self.ID = id
+        self.Name = name
         self.IsOwner = dictionary["is_owner"] as? Bool ?? false
         self.IsAdmin = dictionary["is_admin"] as? Bool ?? false
+    }
+
+    public var description: String {
+        return "AuthenticatedUser(id: \(self.ID), name: \(self.Name), owner: \(self.IsOwner), admin: \(self.IsAdmin)"
     }
 }

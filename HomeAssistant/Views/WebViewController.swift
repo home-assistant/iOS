@@ -67,6 +67,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         userContentController.add(self, name: "revokeExternalAuth")
         userContentController.add(self, name: "externalBus")
         userContentController.add(self, name: "themesUpdated")
+        userContentController.add(self, name: "currentUser")
 
         guard let wsBridgeJSPath = Bundle.main.path(forResource: "WebSocketBridge", ofType: "js"),
             let wsBridgeJS = try? String(contentsOfFile: wsBridgeJSPath) else {
@@ -437,6 +438,8 @@ extension WebViewController: WKScriptMessageHandler {
 
         if message.name == "externalBus" {
             self.handleExternalMessage(messageBody)
+        } else if message.name == "currentUser", let user = AuthenticatedUser(messageBody) {
+            Current.settingsStore.authenticatedUser = user
         } else if message.name == "themesUpdated" {
             self.handleThemeUpdate(messageBody)
         } else if message.name == "getExternalAuth", let callbackName = messageBody["callback"] {

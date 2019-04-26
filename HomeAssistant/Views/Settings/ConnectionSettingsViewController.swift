@@ -41,13 +41,13 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
 
             <<< LabelRow("currentUser") {
                 $0.title = "Logged in as"
-                $0.value = "robbiet480"
+                $0.value = Current.settingsStore.authenticatedUser?.Name
             }
 
             +++ Section("Details")
             <<< LabelRow("connectionPath") {
                 $0.title = "Connecting via"
-                $0.value = "Nabu Casa Remote UI"
+                $0.value = HomeAssistantAPI.authenticatedAPI()?.webhookHandler.activeURLType.description
             }
 
             <<< LabelRow("externalURL") {
@@ -92,12 +92,12 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
 
             <<< LabelRow("cloudhookAvailable") {
                 $0.title = "Cloudhook Available"
-                $0.value = "✔️"
+                $0.value = Current.settingsStore.cloudhookURL != nil ? "✔️" : "✖️"
             }
 
             <<< LabelRow("remoteUIAvailable") {
                 $0.title = "Remote UI Available"
-                $0.value = "✔️"
+                $0.value = Current.settingsStore.remoteUIURL != nil ? "✔️" : "✖️"
             }
 
             +++ ButtonRow("logout") {

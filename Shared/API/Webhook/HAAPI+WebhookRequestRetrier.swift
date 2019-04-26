@@ -15,7 +15,7 @@ import PromiseKit
 // 2. Cloudhook
 // 3. Remote UI (may require turning it on via REST API if available)
 // 4. External URL
-class WebhookHandler: RequestAdapter, RequestRetrier {
+public class WebhookHandler: RequestAdapter, RequestRetrier {
     private var webhookID: String
     private var externalURL: URL
     private var internalURLRaw: URL?
@@ -29,7 +29,7 @@ class WebhookHandler: RequestAdapter, RequestRetrier {
     private var remoteUIURL: URL?
     private var cloudhookURL: URL?
 
-    private var activeURLType: WebhookURLType
+    public var activeURLType: WebhookURLType
     private var activeURL: URL
 
     private let lock = NSRecursiveLock()
@@ -80,7 +80,7 @@ class WebhookHandler: RequestAdapter, RequestRetrier {
     }
 
     // MARK: - RequestAdapter
-    func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
+    public func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
         let newURL = self.webhookURL
         guard urlRequest.url != newURL else {
             return urlRequest
@@ -92,8 +92,8 @@ class WebhookHandler: RequestAdapter, RequestRetrier {
     }
 
     // MARK: - RequestRetrier
-    func should(_ manager: SessionManager, retry request: Request, with error: Error,
-                completion: @escaping RequestRetryCompletion) {
+    public func should(_ manager: SessionManager, retry request: Request, with error: Error,
+                       completion: @escaping RequestRetryCompletion) {
         lock.lock() ; defer { lock.unlock() }
 
         if !isTestingURL {
@@ -169,9 +169,22 @@ class WebhookHandler: RequestAdapter, RequestRetrier {
     }
 }
 
-enum WebhookURLType: Int, CaseIterable {
+public enum WebhookURLType: Int, CaseIterable, CustomStringConvertible {
     case `internal`
     case cloudhook
     case remoteUI
     case external
+
+    public var description: String {
+        switch self {
+        case .internal:
+            return "Internal URL"
+        case .cloudhook:
+            return "Cloudhook"
+        case .remoteUI:
+            return "Remote UI"
+        case .external:
+            return "External URL"
+        }
+    }
 }
