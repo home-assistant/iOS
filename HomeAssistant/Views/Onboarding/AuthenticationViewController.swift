@@ -83,57 +83,7 @@ class AuthenticationViewController: UIViewController {
         }
     }
 
-    private struct ConnectionTestResult: LocalizedError {
-        // swiftlint:disable:next nesting
-        enum ErrorKind {
-            case basicAuth
-            case authenticationUnsupported
-            case sslUntrusted
-            case sslExpired
-            case sslUnknownError
-            case clientCertificateRequired
-            case connectionError
-            case serverError
-            case tooOld
-            case httpOnly
-            case unknownError
-        }
-
-        let kind: ErrorKind
-        let underlying: Error?
-
-        public var errorDescription: String? {
-            var description = "No underlying error"
-            if let desc = self.underlying?.localizedDescription {
-                description = desc
-            }
-            switch self.kind {
-            case .sslUntrusted:
-                return "Untrusted SSL certificate \(description)"
-            case .basicAuth:
-                return "HTTP Basic auth required"
-            case .authenticationUnsupported:
-                return "Authentication type is unsupported \(description)"
-            case .sslExpired:
-                return "SSL certificate is expired"
-            case .sslUnknownError:
-                return "Unknown SSL error \(description)"
-            case .clientCertificateRequired:
-                return "Client Certificate Authentication is not supported"
-            case .connectionError:
-                return "General connection error \(description)"
-            case .serverError:
-                return "Server error \(description)"
-            case .tooOld:
-                return "HA Version too old"
-            case .httpOnly:
-                return "HTTP only instances not supported anymore"
-            default:
-                return "Unknown error \(description)"
-            }
-        }
-    }
-
+    // swiftlint:disable:next function_body_length
     private func testConnection(_ baseURL: URL) -> Promise<Void> {
         let discoveryInfoURL = baseURL.appendingPathComponent("api/discovery_info")
         return Promise { seal in
@@ -189,5 +139,56 @@ class AuthenticationViewController: UIViewController {
                 seal.fulfill_()
             }
         }
+    }
+}
+
+public struct ConnectionTestResult: LocalizedError {
+    enum ErrorKind: String {
+        case basicAuth = "basic_auth"
+        case authenticationUnsupported = "authentication_unsupported"
+        case sslUntrusted = "ssl_untrusted"
+        case sslExpired = "ssl_expired"
+        case sslUnknownError = "ssl_unknown_error"
+        case clientCertificateRequired = "client_certificate"
+        case connectionError = "connection_error"
+        case serverError = "server_error"
+        case tooOld = "too_old"
+        case unknownError = "unknown_error"
+    }
+
+    let kind: ErrorKind
+    let underlying: Error?
+
+    public var errorDescription: String? {
+        var description = "No underlying error"
+        if let desc = self.underlying?.localizedDescription {
+            description = desc
+        }
+        switch self.kind {
+        case .sslUntrusted:
+            return "Untrusted SSL certificate \(description)"
+        case .basicAuth:
+            return "HTTP Basic auth required"
+        case .authenticationUnsupported:
+            return "Authentication type is unsupported \(description)"
+        case .sslExpired:
+            return "SSL certificate is expired"
+        case .sslUnknownError:
+            return "Unknown SSL error \(description)"
+        case .clientCertificateRequired:
+            return "Client Certificate Authentication is not supported"
+        case .connectionError:
+            return "General connection error \(description)"
+        case .serverError:
+            return "Server error \(description)"
+        case .tooOld:
+            return "HA Version too old"
+        default:
+            return "Unknown error \(description)"
+        }
+    }
+
+    public var DocumentationURL: URL {
+        return URL(string: "https://companion.home-assistant.io/en/misc/errors#\(self.kind.rawValue)")!
     }
 }

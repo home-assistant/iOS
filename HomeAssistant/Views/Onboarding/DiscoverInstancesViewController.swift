@@ -40,11 +40,9 @@ class DiscoverInstancesViewController: UIViewController {
             ]
         }
 
-        // let animation = Animation.named("home")
-        let animation = Animation.named("5401-loading-19-satellite-dish")
-
         self.animationView.contentMode = .scaleAspectFill
-        self.animationView.animation = animation
+        self.animationView.backgroundBehavior = .pauseAndRestore
+        self.animationView.animation = Animation.named("ha-loading")
         self.animationView.loopMode = .loop
         self.animationView.play()
 

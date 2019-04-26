@@ -13,15 +13,31 @@ import MaterialComponents.MaterialButtons
 import MaterialComponents.MaterialButtons_ButtonThemer
 import MaterialComponents.MaterialButtons_ColorThemer
 import MaterialComponents.MDCContainedButtonThemer
+import Reachability
 
 class OnboardingNavigationViewController: UINavigationController, RowControllerType {
 
     public var onDismissCallback: ((UIViewController) -> Void)?
 
+    let reachability = Reachability()!
+
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
 
-        // Do any additional setup after loading the view.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        do {
+            try reachability.startNotifier()
+        } catch let error {
+            Current.Log.error("Unable to start Reachability notifier: \(error)")
+        }
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.reachability.stopNotifier()
     }
 
     func dismiss() {

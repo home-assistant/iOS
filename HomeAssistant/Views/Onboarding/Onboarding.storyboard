@@ -52,17 +52,29 @@
                                     <action selector="continueButton:" destination="Cpw-N3-yji" eventType="touchUpInside" id="OmS-1m-BYe"/>
                                 </connections>
                             </button>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="To continue with automatic setup, please connect to your home Wi-Fi network" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="djx-xj-AwF" userLabel="Wifi Disconnected">
+                                <rect key="frame" x="50" y="145" width="275" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="azK-p9-4gx"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="djx-xj-AwF" firstAttribute="firstBaseline" secondItem="5td-Yc-nnx" secondAttribute="baseline" id="682-ol-Moz"/>
                             <constraint firstItem="N4h-WC-wIw" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="7jc-nn-Bf0"/>
                             <constraint firstItem="Dgm-KS-yJa" firstAttribute="bottom" secondItem="N4h-WC-wIw" secondAttribute="bottom" id="Hbo-CP-wA6"/>
                             <constraint firstItem="mse-YA-DiV" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="S7j-SS-3r5"/>
                             <constraint firstItem="5td-Yc-nnx" firstAttribute="leading" secondItem="Dgm-KS-yJa" secondAttribute="leading" constant="50" id="SFm-HS-moK"/>
                             <constraint firstItem="wD9-TR-rVF" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="YJn-5u-0ZE"/>
+                            <constraint firstItem="djx-xj-AwF" firstAttribute="trailing" secondItem="5td-Yc-nnx" secondAttribute="trailing" id="bY3-fM-MgO"/>
                             <constraint firstItem="wD9-TR-rVF" firstAttribute="centerY" secondItem="Dgm-KS-yJa" secondAttribute="centerY" id="dyS-lr-6jI"/>
                             <constraint firstAttribute="trailingMargin" secondItem="mse-YA-DiV" secondAttribute="trailing" id="qAH-H0-r9f"/>
+                            <constraint firstItem="djx-xj-AwF" firstAttribute="leading" secondItem="5td-Yc-nnx" secondAttribute="leading" id="uli-5n-vOS"/>
                             <constraint firstItem="Dgm-KS-yJa" firstAttribute="trailing" secondItem="5td-Yc-nnx" secondAttribute="trailing" constant="50" id="w4B-oX-Tlp"/>
                             <constraint firstItem="5td-Yc-nnx" firstAttribute="top" secondItem="mse-YA-DiV" secondAttribute="bottom" id="xjd-Mr-N2j"/>
                             <constraint firstItem="mse-YA-DiV" firstAttribute="top" secondItem="Dgm-KS-yJa" secondAttribute="top" id="yDL-8w-3OP"/>
@@ -74,6 +86,7 @@
                     <connections>
                         <outlet property="animationView" destination="wD9-TR-rVF" id="uqF-bQ-kl5"/>
                         <outlet property="continueButton" destination="N4h-WC-wIw" id="6pm-aL-tIf"/>
+                        <outlet property="wifiWarningLabel" destination="djx-xj-AwF" id="bFq-To-JiJ"/>
                         <segue destination="zQf-lI-ZmB" kind="show" identifier="discoverInstances" id="sQB-9m-V5O"/>
                         <segue destination="sGi-y7-DOI" kind="show" identifier="manuallyConnectInstance" id="Ywb-4q-gPS"/>
                     </connections>
@@ -286,6 +299,71 @@
             </objects>
             <point key="canvasLocation" x="-2473" y="-582"/>
         </scene>
+        <!--Connection Error View Controller-->
+        <scene sceneID="B9D-Wv-cp8">
+            <objects>
+                <viewController id="MOD-3L-omt" customClass="ConnectionErrorViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="1MN-NN-6Ip">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Uh Oh!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CIS-8C-niN" userLabel="Title">
+                                <rect key="frame" x="16" y="20" width="343" height="75"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="75" id="Abf-1J-NPD"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ge3-1c-5KC" customClass="AnimationView" customModule="Lottie">
+                                <rect key="frame" x="67" y="95" width="241" height="240"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="241" id="4aO-yx-T4x"/>
+                                    <constraint firstAttribute="height" constant="240" id="l77-iF-i3D"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UKm-Ju-0Yr" userLabel="Error Description">
+                                <rect key="frame" x="16" y="335" width="343" height="174"/>
+                                <string key="text">We encountered an error while connecting to your instance. Your SSL certificate is invalid. Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.</string>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tqw-iY-A2S" customClass="MDCButton">
+                                <rect key="frame" x="155" y="617" width="65" height="30"/>
+                                <state key="normal" title="More Info"/>
+                                <connections>
+                                    <action selector="moreInfoTapped:" destination="MOD-3L-omt" eventType="touchUpInside" id="ehl-fN-ffb"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.65683549640000005" blue="0.96857291459999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="CIS-8C-niN" firstAttribute="leading" secondItem="1MN-NN-6Ip" secondAttribute="leadingMargin" id="1e3-c6-FKM"/>
+                            <constraint firstItem="CIS-8C-niN" firstAttribute="top" secondItem="OqO-iB-GQA" secondAttribute="top" id="CFF-tT-vO2"/>
+                            <constraint firstItem="OqO-iB-GQA" firstAttribute="trailing" secondItem="UKm-Ju-0Yr" secondAttribute="trailing" constant="16" id="Czk-Ze-QiK"/>
+                            <constraint firstItem="OqO-iB-GQA" firstAttribute="centerX" secondItem="Ge3-1c-5KC" secondAttribute="centerX" id="D1A-WW-rVC"/>
+                            <constraint firstItem="UKm-Ju-0Yr" firstAttribute="leading" secondItem="OqO-iB-GQA" secondAttribute="leading" constant="16" id="Iv8-dl-PHx"/>
+                            <constraint firstItem="Ge3-1c-5KC" firstAttribute="bottom" secondItem="UKm-Ju-0Yr" secondAttribute="top" id="Jtf-7v-KwW"/>
+                            <constraint firstItem="CIS-8C-niN" firstAttribute="centerX" secondItem="OqO-iB-GQA" secondAttribute="centerX" id="S2E-bj-cip"/>
+                            <constraint firstItem="Ge3-1c-5KC" firstAttribute="top" secondItem="CIS-8C-niN" secondAttribute="bottom" id="haw-oD-9o7"/>
+                            <constraint firstItem="Tqw-iY-A2S" firstAttribute="centerX" secondItem="OqO-iB-GQA" secondAttribute="centerX" id="n1s-dd-9Wu"/>
+                            <constraint firstItem="OqO-iB-GQA" firstAttribute="bottom" secondItem="Tqw-iY-A2S" secondAttribute="bottom" constant="20" id="vYk-ql-har"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="OqO-iB-GQA"/>
+                    </view>
+                    <connections>
+                        <outlet property="animationView" destination="Ge3-1c-5KC" id="dqm-oP-ONh"/>
+                        <outlet property="moreInfoButton" destination="Tqw-iY-A2S" id="nON-jY-zmz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="p2O-ln-8Lh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1444" y="-582.45877061469275"/>
+        </scene>
         <!--Authentication View Controller-->
         <scene sceneID="kcK-Ui-ndY">
             <objects>
@@ -350,6 +428,14 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="87t-Ca-ZJb">
+                                <rect key="frame" x="171" y="392" width="34" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Error"/>
+                                <connections>
+                                    <segue destination="MOD-3L-omt" kind="show" id="FGG-0l-HeR"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -373,6 +459,7 @@
                         <outlet property="connectButton" destination="f1j-Ol-pW5" id="VLr-HQ-06q"/>
                         <outlet property="goBackButton" destination="RSW-l5-eRA" id="dFO-Zv-18Q"/>
                         <segue destination="KCa-bc-FXT" kind="show" identifier="setupInstance" id="c0h-3R-A7O"/>
+                        <segue destination="MOD-3L-omt" kind="show" identifier="showError" id="Zm8-Bf-HW3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fzm-f2-VYy" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -667,6 +754,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="KPp-1J-npF"/>
-        <segue reference="Ywb-4q-gPS"/>
+        <segue reference="Zm8-Bf-HW3"/>
+        <segue reference="tfQ-DV-bBL"/>
     </inferredMetricsTieBreakers>
 </document>

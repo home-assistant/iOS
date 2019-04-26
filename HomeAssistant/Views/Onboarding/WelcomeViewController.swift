@@ -11,13 +11,19 @@ import Shared
 import Eureka
 import MaterialComponents.MaterialButtons
 import Lottie
+import Reachability
 
 class WelcomeViewController: UIViewController {
 
     @IBOutlet weak var animationView: AnimationView!
     @IBOutlet weak var continueButton: MDCButton!
+    @IBOutlet weak var wifiWarningLabel: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let reachability = (self.navigationController as? OnboardingNavigationViewController)?.reachability
+        self.wifiWarningLabel.isHidden = reachability?.connection == .wifi
 
         if let navVC = self.navigationController as? OnboardingNavigationViewController {
             navVC.styleButton(self.continueButton)
@@ -29,7 +35,43 @@ class WelcomeViewController: UIViewController {
         self.animationView.play()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        let reachability = (self.navigationController as? OnboardingNavigationViewController)?.reachability
+
+        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(_:)),
+                                               name: .reachabilityChanged, object: reachability)
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        let reachability = (self.navigationController as? OnboardingNavigationViewController)?.reachability
+        NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: reachability)
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "manuallyConnectInstance", let vc = segue.destination as? ManualSetupViewController {
+            vc.notOnWifi = false
+        }
+    }
+
     @IBAction func continueButton(_ sender: UIButton) {
-        self.performSegue(withIdentifier: "discoverInstances", sender: nil)
+        if self.wifiWarningLabel.isHidden {
+            self.performSegue(withIdentifier: "discoverInstances", sender: nil)
+        } else {
+            self.performSegue(withIdentifier: "manuallyConnectInstance", sender: nil)
+        }
+    }
+
+    @objc func reachabilityChanged(_ note: Notification) {
+        guard let reachability = note.object as? Reachability else {
+            Current.Log.warning("Couldn't cast notification object as Reachability")
+            return
+        }
+
+        Current.Log.verbose("Reachability changed to \(reachability.connection.description)")
+        self.wifiWarningLabel.isHidden = (reachability.connection == .wifi)
     }
 }

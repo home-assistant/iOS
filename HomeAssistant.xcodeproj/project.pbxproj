@@ -453,6 +453,9 @@
 		B6D35C662169906A00D1F86B /* APNSAttachmentService Development.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = B6D35C652169906A00D1F86B /* APNSAttachmentService Development.entitlements */; };
 		B6D3B4ED225B26900082BB4F /* WebhookSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* WebhookSensors.swift */; };
 		B6D3B4EE225B26910082BB4F /* WebhookSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* WebhookSensors.swift */; };
+		B6D8A3262271448900FA765D /* empty-list.json in Resources */ = {isa = PBXBuildFile; fileRef = B6D8A3252271448900FA765D /* empty-list.json */; };
+		B6D8A3282271448E00FA765D /* error.json in Resources */ = {isa = PBXBuildFile; fileRef = B6D8A3272271448D00FA765D /* error.json */; };
+		B6D8A32A2271455300FA765D /* ConnectionErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D8A3292271455300FA765D /* ConnectionErrorViewController.swift */; };
 		B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */; };
 		B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA3C7222691A5000DE811C /* AKConverter.swift */; };
 		B6DAC735215F069300727D2A /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC734215F069300727D2A /* NotificationCategory.swift */; };
@@ -1120,6 +1123,9 @@
 		B6D35C6B216990A500D1F86B /* WatchApp Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "WatchApp Development.entitlements"; sourceTree = "<group>"; };
 		B6D35C6C216990B100D1F86B /* WatchAppExtension Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "WatchAppExtension Development.entitlements"; sourceTree = "<group>"; };
 		B6D3B4EB225B26300082BB4F /* WebhookSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSensors.swift; sourceTree = "<group>"; };
+		B6D8A3252271448900FA765D /* empty-list.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "empty-list.json"; sourceTree = "<group>"; };
+		B6D8A3272271448D00FA765D /* error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = error.json; sourceTree = "<group>"; };
+		B6D8A3292271455300FA765D /* ConnectionErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionErrorViewController.swift; sourceTree = "<group>"; };
 		B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSoundsViewController.swift; sourceTree = "<group>"; };
 		B6DA3C7222691A5000DE811C /* AKConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKConverter.swift; sourceTree = "<group>"; };
 		B6DAC734215F069300727D2A /* NotificationCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategory.swift; sourceTree = "<group>"; };
@@ -1682,14 +1688,15 @@
 				B661FC85226D3E9900E541DD /* Onboarding.storyboard */,
 				B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */,
 				B661FB73226C110A00E541DD /* WelcomeViewController.swift */,
-				B661FB79226C197900E541DD /* ManualSetupViewController.swift */,
 				B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */,
+				B661FB79226C197900E541DD /* ManualSetupViewController.swift */,
 				B661FC89226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift */,
 				B605C892226EC25800EF46DD /* AuthenticationViewController.swift */,
 				B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */,
 				B661FB7B226C199200E541DD /* PermissionsViewController.swift */,
 				B60221F7226D9AEE00E8DBFE /* PermissionButton.swift */,
 				B60221F9226D9BC200E8DBFE /* PermissionLineItemView.swift */,
+				B6D8A3292271455300FA765D /* ConnectionErrorViewController.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -1704,6 +1711,8 @@
 				B60221FD226DA01C00E8DBFE /* location.json */,
 				B60221FF226DA16A00E8DBFE /* motion.json */,
 				B6E2D4D42270706200446DFA /* ha-loading.json */,
+				B6D8A3252271448900FA765D /* empty-list.json */,
+				B6D8A3272271448D00FA765D /* error.json */,
 			);
 			path = "Lottie Files";
 			sourceTree = "<group>";
@@ -2864,6 +2873,7 @@
 				B606162A1D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Wine-Cellar.wav in Resources */,
 				B6E2D4D52270706300446DFA /* ha-loading.json in Resources */,
 				B60616811D1F117700249C11 /* US-EN-Alexa-Front-Door-Opened.wav in Resources */,
+				B6D8A3262271448900FA765D /* empty-list.json in Resources */,
 				B606163A1D1F117700249C11 /* US-EN-Morgan-Freeman-Starting-Movie-Mode.wav in Resources */,
 				B60616201D1F117700249C11 /* US-EN-Morgan-Freeman-Good-Night.wav in Resources */,
 				B6E2D4BB2270407500446DFA /* Debug LaunchScreen.storyboard in Resources */,
@@ -2889,6 +2899,7 @@
 				B60616441D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Light.wav in Resources */,
 				B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */,
 				B60616361D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav in Resources */,
+				B6D8A3282271448E00FA765D /* error.json in Resources */,
 				B672AB1D22150ED600175465 /* black@2x.png in Resources */,
 				B60616511D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-TV.wav in Resources */,
 				B60616151D1F117700249C11 /* US-EN-Morgan-Freeman-Coworker-Is-Arriving.wav in Resources */,
@@ -3593,6 +3604,7 @@
 				B6DAC735215F069300727D2A /* NotificationCategory.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
 				D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */,
+				B6D8A32A2271455300FA765D /* ConnectionErrorViewController.swift in Sources */,
 				B6022215226DB0E500E8DBFE /* UIFontOverride.swift in Sources */,
 				B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,

@@ -12,6 +12,8 @@ class ManualSetupViewController: UIViewController {
 
     @IBOutlet weak var urlField: UITextField!
 
+    public var notOnWifi: Bool = true
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }
