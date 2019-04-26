@@ -4,3 +4,10 @@ strings:
   outputs:
     - templateName: structured-swift4
       output: Shared/Resources/SwiftGen/Strings.swift
+ib:
+  inputs: HomeAssistant/Views/Onboarding/Base.lproj/
+  outputs:
+    - templateName: scenes-swift4
+      output: HomeAssistant/Views/Onboarding/Onboarding Scenes.swift
+    - templateName: segues-swift4
+      output: HomeAssistant/Views/Onboarding/Onboarding Segues.swift

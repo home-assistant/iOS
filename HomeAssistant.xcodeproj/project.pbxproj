@@ -227,6 +227,9 @@
 		B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
 		B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
 		B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
+		B65B14E52273157A00635D5C /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B65B14E72273157A00635D5C /* Onboarding.storyboard */; };
+		B65B14FC2273173300635D5C /* Onboarding Segues.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B14FA2273173300635D5C /* Onboarding Segues.swift */; };
+		B65B14FD2273173300635D5C /* Onboarding Scenes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B14FB2273173300635D5C /* Onboarding Scenes.swift */; };
 		B65BF9362217F497005745A4 /* old-beta@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9302217F496005745A4 /* old-beta@3x.png */; };
 		B65BF9372217F497005745A4 /* old-release@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9312217F497005745A4 /* old-release@2x.png */; };
 		B65BF9382217F497005745A4 /* old-beta@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9322217F497005745A4 /* old-beta@2x.png */; };
@@ -243,7 +246,6 @@
 		B661FC7E226C87BB00E541DD /* home.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC7D226C87BB00E541DD /* home.json */; };
 		B661FC88226D478300E541DD /* DiscoverInstancesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */; };
 		B661FC8A226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC89226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift */; };
-		B661FC8B226D540E00E541DD /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B661FC85226D3E9900E541DD /* Onboarding.storyboard */; };
 		B661FC8D226D5A0700E541DD /* ConnectInstanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */; };
 		B661FC8F226D606600E541DD /* 5401-loading-19-satellite-dish.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC8E226D606600E541DD /* 5401-loading-19-satellite-dish.json */; };
 		B6624E4F22584F8F00354CDF /* CrashlyticsLogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6624E4D22584F7F00354CDF /* CrashlyticsLogDestination.swift */; };
@@ -946,6 +948,18 @@
 		B658AA7222506AD400C9BFE3 /* GoogleService-Info-Development.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Development.plist"; sourceTree = "<group>"; };
 		B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Beta.plist"; sourceTree = "<group>"; };
 		B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobileAppUpdateRegistrationRequest.swift; sourceTree = "<group>"; };
+		B65B14E62273157A00635D5C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Onboarding.storyboard; sourceTree = "<group>"; };
+		B65B14E9227315C500635D5C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B65B14EB227315CA00635D5C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		B65B14ED227315D200635D5C /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		B65B14EF227315D900635D5C /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B65B14F1227315DC00635D5C /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B65B14F3227315F400635D5C /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B65B14F52273160F00635D5C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B65B14F72273161600635D5C /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B65B14F92273162300635D5C /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B65B14FA2273173300635D5C /* Onboarding Segues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Onboarding Segues.swift"; sourceTree = "<group>"; };
+		B65B14FB2273173300635D5C /* Onboarding Scenes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Onboarding Scenes.swift"; sourceTree = "<group>"; };
 		B65BF9302217F496005745A4 /* old-beta@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-beta@3x.png"; sourceTree = "<group>"; };
 		B65BF9312217F497005745A4 /* old-release@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-release@2x.png"; sourceTree = "<group>"; };
 		B65BF9322217F497005745A4 /* old-beta@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-beta@2x.png"; sourceTree = "<group>"; };
@@ -960,7 +974,6 @@
 		B661FB79226C197900E541DD /* ManualSetupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSetupViewController.swift; sourceTree = "<group>"; };
 		B661FB7B226C199200E541DD /* PermissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsViewController.swift; sourceTree = "<group>"; };
 		B661FC7D226C87BB00E541DD /* home.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = home.json; sourceTree = "<group>"; };
-		B661FC85226D3E9900E541DD /* Onboarding.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Onboarding.storyboard; sourceTree = "<group>"; };
 		B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverInstancesViewController.swift; sourceTree = "<group>"; };
 		B661FC89226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseDiscoveredInstanceViewController.swift; sourceTree = "<group>"; };
 		B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectInstanceViewController.swift; sourceTree = "<group>"; };
@@ -1685,7 +1698,9 @@
 		B661FB72226C10AE00E541DD /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				B661FC85226D3E9900E541DD /* Onboarding.storyboard */,
+				B65B14FB2273173300635D5C /* Onboarding Scenes.swift */,
+				B65B14FA2273173300635D5C /* Onboarding Segues.swift */,
+				B65B14E72273157A00635D5C /* Onboarding.storyboard */,
 				B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */,
 				B661FB73226C110A00E541DD /* WelcomeViewController.swift */,
 				B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */,
@@ -2811,7 +2826,7 @@
 				B65BF9362217F497005745A4 /* old-beta@3x.png in Resources */,
 				B60616241D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Bedroom.wav in Resources */,
 				B65BF93A2217F497005745A4 /* old-dev@3x.png in Resources */,
-				B661FC8B226D540E00E541DD /* Onboarding.storyboard in Resources */,
+				B65B14E52273157A00635D5C /* Onboarding.storyboard in Resources */,
 				B672AB252215114A00175465 /* beta@2x.png in Resources */,
 				B60616531D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Basement.wav in Resources */,
 				B60616B11D1F117800249C11 /* US-EN-Daisy-Front-Window-Open.wav in Resources */,
@@ -3579,6 +3594,7 @@
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				B658AA782250AC8000C9BFE3 /* String+HA.swift in Sources */,
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
+				B65B14FD2273173300635D5C /* Onboarding Scenes.swift in Sources */,
 				B6B6B14C215B1E86003DE2DD /* CLKComplication+Strings.swift in Sources */,
 				B6DF8BC1221C890600370A59 /* UIImageView+UIActivityIndicator.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
@@ -3590,6 +3606,7 @@
 				B6A5D9F5215233EC0013963F /* SiriIntents+ConvenienceInits.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
 				B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */,
+				B65B14FC2273173300635D5C /* Onboarding Segues.swift in Sources */,
 				B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */,
 				B6B6B14A215B137C003DE2DD /* WatchComplicationConfigurator.swift in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
@@ -4003,6 +4020,23 @@
 			);
 			name = "Release LaunchScreen.storyboard";
 			path = .;
+			sourceTree = "<group>";
+		};
+		B65B14E72273157A00635D5C /* Onboarding.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B65B14E62273157A00635D5C /* Base */,
+				B65B14E9227315C500635D5C /* en */,
+				B65B14EB227315CA00635D5C /* zh-Hans */,
+				B65B14ED227315D200635D5C /* zh-Hant */,
+				B65B14EF227315D900635D5C /* es */,
+				B65B14F1227315DC00635D5C /* it */,
+				B65B14F3227315F400635D5C /* nl */,
+				B65B14F52273160F00635D5C /* de */,
+				B65B14F72273161600635D5C /* fr */,
+				B65B14F92273162300635D5C /* nb */,
+			);
+			name = Onboarding.storyboard;
 			sourceTree = "<group>";
 		};
 		B678DB351EA9999C0045312F /* MainInterface.storyboard */ = {
