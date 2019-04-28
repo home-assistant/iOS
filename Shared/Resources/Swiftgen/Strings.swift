@@ -553,7 +553,7 @@ internal enum L10n {
         internal static let description = L10n.tr("Localizable", "onboarding.connection_test_result.ssl_expired.description")
       }
       internal enum SslUntrusted {
-        /// Your SSL SSL certificate is untrusted. %@.
+        /// Your SSL certificate is untrusted. %@.
         internal static func description(_ p1: String) -> String {
           return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_untrusted.description", p1)
         }
@@ -890,9 +890,33 @@ internal enum L10n {
     internal enum ConnectionSection {
       /// Connection
       internal static let header = L10n.tr("Localizable", "settings.connection_section.header")
+      internal enum ApiPasswordRow {
+        /// password
+        internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.api_password_row.placeholder")
+        /// Password
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.api_password_row.title")
+      }
       internal enum BaseUrl {
+        /// https://homeassistant.myhouse.com
+        internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.base_url.placeholder")
         /// URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.base_url.title")
+      }
+      internal enum BasicAuth {
+        /// HTTP Basic Authentication
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.basic_auth.title")
+        internal enum Password {
+          /// verysecure
+          internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.basic_auth.password.placeholder")
+          /// Password
+          internal static let title = L10n.tr("Localizable", "settings.connection_section.basic_auth.password.title")
+        }
+        internal enum Username {
+          /// iam
+          internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.basic_auth.username.placeholder")
+          /// Username
+          internal static let title = L10n.tr("Localizable", "settings.connection_section.basic_auth.username.title")
+        }
       }
       internal enum ConnectRow {
         /// Connect
@@ -951,6 +975,10 @@ internal enum L10n {
       internal enum UseInternalUrl {
         /// Use internal URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.use_internal_url.title")
+      }
+      internal enum UseLegacyAuth {
+        /// Use legacy authentication
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.use_legacy_auth.title")
       }
     }
     internal enum DetailsSection {
@@ -1058,6 +1086,8 @@ internal enum L10n {
     internal enum DiscoverySection {
       /// Discovered Home Assistants
       internal static let header = L10n.tr("Localizable", "settings.discovery_section.header")
+      /// Requires password
+      internal static let requiresPassword = L10n.tr("Localizable", "settings.discovery_section.requiresPassword")
     }
     internal enum EventLog {
       /// Event Log
@@ -1094,6 +1124,14 @@ internal enum L10n {
         /// Connected
         internal static let title = L10n.tr("Localizable", "settings.status_section.connected_to_sse_row.title")
       }
+      internal enum DeviceTrackerComponentLoadedRow {
+        /// Device Tracker Component Loaded
+        internal static let title = L10n.tr("Localizable", "settings.status_section.device_tracker_component_loaded_row.title")
+      }
+      internal enum IosComponentLoadedRow {
+        /// iOS Component Loaded
+        internal static let title = L10n.tr("Localizable", "settings.status_section.ios_component_loaded_row.title")
+      }
       internal enum LocationNameRow {
         /// My Home Assistant
         internal static let placeholder = L10n.tr("Localizable", "settings.status_section.location_name_row.placeholder")
@@ -1103,6 +1141,10 @@ internal enum L10n {
       internal enum MobileAppComponentLoadedRow {
         /// Mobile App Component Loaded
         internal static let title = L10n.tr("Localizable", "settings.status_section.mobile_app_component_loaded_row.title")
+      }
+      internal enum NotifyPlatformLoadedRow {
+        /// iOS Notify Platform Loaded
+        internal static let title = L10n.tr("Localizable", "settings.status_section.notify_platform_loaded_row.title")
       }
       internal enum VersionRow {
         /// 0.92.0
@@ -1154,6 +1196,10 @@ internal enum L10n {
           /// White
           internal static let white = L10n.tr("Localizable", "settings_details.general.app_icon.enum.white")
         }
+      }
+      internal enum AutohideToolbar {
+        /// Automatically hide toolbar
+        internal static let title = L10n.tr("Localizable", "settings_details.general.autohide_toolbar.title")
       }
       internal enum Chrome {
         /// Open links in Chrome
@@ -1367,6 +1413,22 @@ internal enum L10n {
           internal static let title = L10n.tr("Localizable", "settings_details.notifications.sounds.imported_alert.title")
         }
       }
+      internal enum SoundsSection {
+        /// Custom push notification sounds can be added via iTunes.
+        internal static let footer = L10n.tr("Localizable", "settings_details.notifications.sounds_section.footer")
+        internal enum Button {
+          /// Import Sounds
+          internal static let title = L10n.tr("Localizable", "settings_details.notifications.sounds_section.button.title")
+        }
+        internal enum ImportedAlert {
+          /// %d sounds were imported. Please restart your phone to complete the import.
+          internal static func message(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds_section.imported_alert.message", p1)
+          }
+          /// Sounds Imported
+          internal static let title = L10n.tr("Localizable", "settings_details.notifications.sounds_section.imported_alert.title")
+        }
+      }
       internal enum UpdateSection {
         /// Updating push settings will request the latest push actions and categories from Home Assistant.
         internal static let footer = L10n.tr("Localizable", "settings_details.notifications.update_section.footer")
@@ -1402,6 +1464,12 @@ internal enum L10n {
         internal static let description = L10n.tr("Localizable", "settings_details.privacy.messaging.description")
         /// Firebase Cloud Messaging
         internal static let title = L10n.tr("Localizable", "settings_details.privacy.messaging.title")
+      }
+      internal enum PerformanceMonitoring {
+        /// Firebase Performance Monitoring allows for remote monitoring of overall application performance, allowing for speed improvements to be made more easily. You must restart the app for changes to this setting to take effect.
+        internal static let description = L10n.tr("Localizable", "settings_details.privacy.performance_monitoring.description")
+        /// Firebase Performance Monitoring
+        internal static let title = L10n.tr("Localizable", "settings_details.privacy.performance_monitoring.title")
       }
     }
     internal enum Siri {

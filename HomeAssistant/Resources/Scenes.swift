@@ -12,6 +12,16 @@ import UIKit
 
 // swiftlint:disable explicit_type_interface identifier_name line_length type_body_length type_name
 internal enum StoryboardScene {
+  internal enum BetaLaunchScreen: StoryboardType {
+    internal static let storyboardName = "Beta LaunchScreen"
+
+    internal static let initialScene = InitialSceneType<UIKit.UIViewController>(storyboard: BetaLaunchScreen.self)
+  }
+  internal enum DebugLaunchScreen: StoryboardType {
+    internal static let storyboardName = "Debug LaunchScreen"
+
+    internal static let initialScene = InitialSceneType<UIKit.UIViewController>(storyboard: DebugLaunchScreen.self)
+  }
   internal enum Onboarding: StoryboardType {
     internal static let storyboardName = "Onboarding"
 
@@ -28,6 +38,11 @@ internal enum StoryboardScene {
     internal static let permissions = SceneType<HomeAssistant.PermissionsViewController>(storyboard: Onboarding.self, identifier: "permissions")
 
     internal static let welcome = SceneType<HomeAssistant.WelcomeViewController>(storyboard: Onboarding.self, identifier: "welcome")
+  }
+  internal enum ReleaseLaunchScreen: StoryboardType {
+    internal static let storyboardName = "Release LaunchScreen"
+
+    internal static let initialScene = InitialSceneType<UIKit.UIViewController>(storyboard: ReleaseLaunchScreen.self)
   }
 }
 // swiftlint:enable explicit_type_interface identifier_name line_length type_body_length type_name

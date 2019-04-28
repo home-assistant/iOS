@@ -6,12 +6,12 @@ strings:
       output: Shared/Resources/SwiftGen/Strings.swift
 ib:
   ignoreTargetModule: true
-  inputs: HomeAssistant/Views/Onboarding/Base.lproj/
+  inputs: HomeAssistant/Resources/Base.lproj/
   outputs:
     - templateName: scenes-swift4
-      output: HomeAssistant/Views/Onboarding/Onboarding Scenes.swift
+      output: HomeAssistant/Resources/Scenes.swift
     - templateName: segues-swift4
-      output: HomeAssistant/Views/Onboarding/Onboarding Segues.swift
+      output: HomeAssistant/Resources/Segues.swift
 xcassets:
   inputs: HomeAssistant/Resources/Assets.xcassets
   outputs:

@@ -1,6 +1,6 @@
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Wir empfehlen \"immer erlauben\" auszuwählen für die beste Standortbestimmung. Bei Auswahl von \"Nur bei benutzung der App\" werden iBeacons, Geofences und Hintergrundstandortaktualisierungen sowie akkurates reporting deaktiviert.";
 "NSLocationAlwaysUsageDescription" = "Für Features wie iBeacons, Geofences, Hintergrundstandortaktualisierungen und akkurates Reporting benötigen wir immer Zugriff auf deinen Standort.";
-"NSLocationWhenInUseUsageDescription" = "Wenn der Zugriff auf den Standort nur bei Benutzung der App erlaubt ist werden iBeacons, Geofences, Hintergrundstandortaktualisierungen und akkurates Reporting deaktiviert.";
+"NSLocationWhenInUseUsageDescription" = "Wenn der Zugriff auf den Standort nur bei Benutzung der App erlaubt ist, werden iBeacons, Geofences, Hintergrundstandortaktualisierungen und akkurates Reporting deaktiviert.";
 "NSMotionUsageDescription" = "Bewegung wird verwendet, um Standortaktualisierungen mit dem aktuellen Bewegungstyp zu verbessern und grundlegende Pedometerdaten bereitzustellen.";
 "NSSiriUsageDescription" = "Wir verwenden Siri, um erstellten Verknüpfungen die Interaktion mit der App zu ermöglichen.";
 "NSPhotoLibraryAddUsageDescription" = "Der Zugriff auf die Fotobibliothek ist erforderlich, um das Speichern von Fotos aus der Webansicht zu ermöglichen.";

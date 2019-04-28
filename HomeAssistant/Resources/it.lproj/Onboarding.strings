@@ -1,84 +1,31 @@
-
-/* Class = "UILabel"; text = "Scanning your network for Home Assistant"; ObjectID = "4qQ-ND-WGB"; */
-"4qQ-ND-WGB.text" = "Scanning your network for Home Assistant";
-
-/* Class = "UILabel"; text = "The most advanced Home Automation app on iOS"; ObjectID = "5td-Yc-nnx"; */
-"5td-Yc-nnx.text" = "The most advanced Home Automation app on iOS";
-
-/* Class = "UILabel"; text = "http://hassio.local:8123"; ObjectID = "8JC-7Y-FvP"; */
+"4qQ-ND-WGB.text" = "Sto cercando Home Assistant nella tua rete";
+"5td-Yc-nnx.text" = "La più avanzata app per la Domotica su iOS";
+"87t-Ca-ZJb.normalTitle" = "Errore";
 "8JC-7Y-FvP.text" = "http://hassio.local:8123";
-
-/* Class = "UILabel"; text = "Uh Oh!"; ObjectID = "CIS-8C-niN"; */
 "CIS-8C-niN.text" = "Uh Oh!";
-
-/* Class = "UILabel"; text = "Connecting to My Home Assistant"; ObjectID = "Kj7-hM-8gN"; */
-"Kj7-hM-8gN.text" = "Connecting to My Home Assistant";
-
-/* Class = "UIButton"; normalTitle = "Continue"; ObjectID = "N4h-WC-wIw"; */
-"N4h-WC-wIw.normalTitle" = "Continue";
-
-/* Class = "UILabel"; text = "We found 1 Home Assistant"; ObjectID = "NJM-pS-Fuc"; */
-"NJM-pS-Fuc.text" = "We found 1 Home Assistant";
-
-/* Class = "UILabel"; text = "Nabu Casa Cloud Detected"; ObjectID = "O7a-0s-trd"; */
-"O7a-0s-trd.text" = "Nabu Casa Cloud Detected";
-
-/* Class = "UIButton"; normalTitle = "Go Back"; ObjectID = "RSW-l5-eRA"; */
-"RSW-l5-eRA.normalTitle" = "Go Back";
-
-/* Class = "UIButton"; normalTitle = "Enter Address Manually"; ObjectID = "Re7-IX-23x"; */
-"Re7-IX-23x.normalTitle" = "Enter Address Manually";
-
-/* Class = "UILabel"; text = "Sensors Configured"; ObjectID = "Rle-jZ-AWa"; */
-"Rle-jZ-AWa.text" = "Sensors Configured";
-
-/* Class = "UILabel"; text = "My Home Assistant"; ObjectID = "SnL-y3-0HP"; */
-"SnL-y3-0HP.text" = "My Home Assistant";
-
-/* Class = "UILabel"; text = "For the best experience while using Home Assistant Companion, please grant the following permissions:"; ObjectID = "TEX-zW-Byk"; */
-"TEX-zW-Byk.text" = "For the best experience while using Home Assistant Companion, please grant the following permissions:";
-
-/* Class = "UIButton"; normalTitle = "More Info"; ObjectID = "Tqw-iY-A2S"; */
-"Tqw-iY-A2S.normalTitle" = "More Info";
-
-/* Class = "UILabel"; text = "We encountered an error while connecting to your instance. Your SSL certificate is invalid. Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI."; ObjectID = "UKm-Ju-0Yr"; */
-"UKm-Ju-0Yr.text" = "We encountered an error while connecting to your instance. Your SSL certificate is invalid. Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.";
-
-/* Class = "UILabel"; text = "Connected"; ObjectID = "XyQ-gy-yHY"; */
-"XyQ-gy-yHY.text" = "Connected";
-
-/* Class = "UILabel"; text = "Integration Created"; ObjectID = "bP1-C8-fgs"; */
-"bP1-C8-fgs.text" = "Integration Created";
-
-/* Class = "UILabel"; text = "Encrypted Communications Established"; ObjectID = "d97-7H-RBe"; */
-"d97-7H-RBe.text" = "Encrypted Communications Established";
-
-/* Class = "UILabel"; text = "To continue with automatic setup, please connect to your home Wi-Fi network"; ObjectID = "djx-xj-AwF"; */
-"djx-xj-AwF.text" = "To continue with automatic setup, please connect to your home Wi-Fi network";
-
-/* Class = "UIButton"; normalTitle = "Connect"; ObjectID = "f1j-Ol-pW5"; */
-"f1j-Ol-pW5.normalTitle" = "Connect";
-
-/* Class = "UIButton"; normalTitle = "Enter Address Manually"; ObjectID = "fqx-lo-wDB"; */
-"fqx-lo-wDB.normalTitle" = "Enter Address Manually";
-
-/* Class = "UIButton"; normalTitle = "Connect"; ObjectID = "gld-QQ-oTD"; */
-"gld-QQ-oTD.normalTitle" = "Connect";
-
-/* Class = "UIButton"; normalTitle = "Close"; ObjectID = "jrL-9x-fFX"; */
-"jrL-9x-fFX.normalTitle" = "Close";
-
-/* Class = "UILabel"; text = "Authentication"; ObjectID = "lM3-aA-jqO"; */
-"lM3-aA-jqO.text" = "Authentication";
-
-/* Class = "UILabel"; text = "Welcome to Home Assistant Companion!"; ObjectID = "mse-YA-DiV"; */
-"mse-YA-DiV.text" = "Welcome to Home Assistant Companion!";
-
-/* Class = "UILabel"; text = "Authenticated"; ObjectID = "nJr-sw-A9l"; */
-"nJr-sw-A9l.text" = "Authenticated";
-
-/* Class = "UIButton"; normalTitle = "Start Over"; ObjectID = "suf-pJ-Nle"; */
+"Kj7-hM-8gN.text" = "Mi sto connettendo a Home Assistant";
+"Kwy-Pt-nws.text" = "Nome utente di base HTTP";
+"LCc-oP-eTO.text" = "Password di base HTTP";
+"N4h-WC-wIw.normalTitle" = "Continua";
+"NJM-pS-Fuc.text" = "Abbiamo trovato 1 Home Assistant";
+"O7a-0s-trd.text" = "Nabu Casa Cloud rilevato";
+"RSW-l5-eRA.normalTitle" = "Torna indietro";
+"Re7-IX-23x.normalTitle" = "Inserisci manualmente l'indirizzo";
+"Rle-jZ-AWa.text" = "Sensori configurati";
+"SnL-y3-0HP.text" = "Il mio Home Assistant";
+"TEX-zW-Byk.text" = "Per una migliore esperienza durante l'utilizzo di Home Assistant Companion, puoi concedere le seguenti autorizzazioni:";
+"Tqw-iY-A2S.normalTitle" = "Più info";
+"UKm-Ju-0Yr.text" = "Si è verificato un errore durante la connessione alla tua istanza di Home Assistant. Il certificato SSL non è valido. A causa di limitazioni di iOS, non sarà possibile continuare con l'installazione fino a quando non viene installato un certificato SSL valido. Si consiglia di utilizzare Lets Encrypt o Nabu casa Remote UI.";
+"XyQ-gy-yHY.text" = "Connesso";
+"bP1-C8-fgs.text" = "Integrazione creata";
+"d97-7H-RBe.text" = "Comunicazioni crittografate stabilite";
+"djx-xj-AwF.text" = "Per continuare con la configurazione automatica, connettiti alla tua rete Wi-Fi";
+"f1j-Ol-pW5.normalTitle" = "Connetti";
+"fqx-lo-wDB.normalTitle" = "Inserire l'indirizzo manualmente";
+"gld-QQ-oTD.normalTitle" = "Connetti";
+"jrL-9x-fFX.normalTitle" = "Chiudi";
+"lM3-aA-jqO.text" = "Autenticazione";
+"mse-YA-DiV.text" = "Benvenuto ad Home Assistant Companion!";
+"nJr-sw-A9l.text" = "Autenticato";
+"wsC-f5-jbO.text" = "Ora siamo pronti per la connessione al tuo Home Assistant e fare l'autenticazione iniziale. Toccando il pulsante Connetti qui sotto, si aprirà una pagina per farti effettuare l'accesso.";
 "suf-pJ-Nle.normalTitle" = "Start Over";
-
-/* Class = "UILabel"; text = "We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. "; ObjectID = "wsC-f5-jbO"; */
-"wsC-f5-jbO.text" = "We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. ";
