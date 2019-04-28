@@ -888,8 +888,24 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "settings.connection_error_notification.title")
     }
     internal enum ConnectionSection {
+      /// Cloud Available
+      internal static let cloudAvailable = L10n.tr("Localizable", "settings.connection_section.cloud_available")
+      /// Cloudhook Available
+      internal static let cloudhookAvailable = L10n.tr("Localizable", "settings.connection_section.cloudhook_available")
+      /// Connecting Via
+      internal static let connectingVia = L10n.tr("Localizable", "settings.connection_section.connecting_via")
+      /// Details
+      internal static let details = L10n.tr("Localizable", "settings.connection_section.details")
       /// Connection
       internal static let header = L10n.tr("Localizable", "settings.connection_section.header")
+      /// Log out
+      internal static let logOut = L10n.tr("Localizable", "settings.connection_section.log_out")
+      /// Logged in as
+      internal static let loggedInAs = L10n.tr("Localizable", "settings.connection_section.logged_in_as")
+      /// Nabu Casa Cloud
+      internal static let nabuCasaCloud = L10n.tr("Localizable", "settings.connection_section.nabu_casa_cloud")
+      /// Remote UI Available
+      internal static let remoteUiAvailable = L10n.tr("Localizable", "settings.connection_section.remote_ui_available")
       internal enum ApiPasswordRow {
         /// password
         internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.api_password_row.placeholder")

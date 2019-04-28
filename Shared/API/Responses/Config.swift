@@ -50,7 +50,7 @@ public class ConfigResponse: Mappable {
 
         ThemeColor      <- map["theme_color"]
 
-        CloudhookURL    <- map["cloudhook_url"]
-        RemoteUIURL     <- map["remote_ui_url"]
+        CloudhookURL    <- (map["cloudhook_url"], URLTransform())
+        RemoteUIURL     <- (map["remote_ui_url"], URLTransform())
     }
 }

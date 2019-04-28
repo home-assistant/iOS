@@ -18,8 +18,8 @@ public class MobileAppRegistrationResponse: Mappable {
     public required init?(map: Map) {}
 
     public func mapping(map: Map) {
-        CloudhookURL        <- map["cloudhook_id"]
-        RemoteUIURL         <- map["remote_ui_url"]
+        CloudhookURL        <- (map["cloudhook_url"], URLTransform())
+        RemoteUIURL         <- (map["remote_ui_url"], URLTransform())
         WebhookID           <- map["webhook_id"]
         WebhookSecret       <- map["secret"]
     }

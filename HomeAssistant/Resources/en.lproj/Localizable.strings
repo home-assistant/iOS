@@ -621,6 +621,14 @@
 "settings.connection_section.internal_url_ssids.footer" = "Internal URL will be used when connected to listed SSIDs";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Add new SSID";
 "settings.connection_section.internal_url_ssids.add_current_ssid" = "Add current SSID %@";
+"settings.connection_section.details" = "Details";
+"settings.connection_section.connecting_via" = "Connecting Via";
+"settings.connection_section.logged_in_as" = "Logged in as";
+"settings.connection_section.nabu_casa_cloud" = "Nabu Casa Cloud";
+"settings.connection_section.cloud_available" = "Cloud Available";
+"settings.connection_section.cloudhook_available" = "Cloudhook Available";
+"settings.connection_section.remote_ui_available" = "Remote UI Available";
+"settings.connection_section.log_out" = "Log out";
 "onboarding.connection_test_result.ssl_container.description" = "We encountered an error while connecting to your instance. %@ Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP Basic Authentication is unsupported.";
 "onboarding.connection_test_result.authentication_unsupported.description" = "Authentication type is unsupported%@.";

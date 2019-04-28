@@ -155,12 +155,14 @@ public class SettingsStore {
 
     public var cloudhookURL: URL? {
         get {
+            // print("KEYCHAIN ITEMS \(keychain)")
             guard let val = keychain["cloudhook_url"] else {
                 return nil
             }
             return URL(string: val)
         }
         set {
+            print("SET CLOUDHOOK", newValue)
             keychain["cloudhook_url"] = newValue?.absoluteString
         }
     }

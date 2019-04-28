@@ -173,6 +173,9 @@ public class HomeAssistantAPI {
                 throw APIError.mobileAppComponentNotLoaded
             }
 
+            Current.settingsStore.cloudhookURL = config.CloudhookURL
+            Current.settingsStore.remoteUIURL = config.RemoteUIURL
+
             self.prefs.setValue(config.LocationName, forKey: "location_name")
             self.prefs.setValue(config.Latitude, forKey: "latitude")
             self.prefs.setValue(config.Longitude, forKey: "longitude")
@@ -329,6 +332,7 @@ public class HomeAssistantAPI {
         return self.request(path: "mobile_app/registrations", callingFunctionName: "\(#function)", method: .post,
                             parameters: buildMobileAppRegistration(), encoding: JSONEncoding.default)
             .then { (resp: MobileAppRegistrationResponse) -> Promise<MobileAppRegistrationResponse> in
+                Current.Log.verbose("Registration response \(resp)")
                 Current.settingsStore.cloudhookURL = resp.CloudhookURL
                 Current.settingsStore.remoteUIURL = resp.RemoteUIURL
                 Current.settingsStore.webhookID = resp.WebhookID

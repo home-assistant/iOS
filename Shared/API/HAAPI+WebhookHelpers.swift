@@ -18,10 +18,6 @@ extension HomeAssistantAPI {
     func handleWebhookResponse<T>(response: DataResponse<T>, seal: Resolver<T>, callingFunctionName: String) {
         // Current.Log.verbose("\(callingFunctionName) response timeline: \(response.timeline)")
 
-        if let cloudURL = response.response?.allHeaderFields["X-Cloud-Hook-URL"] as? String {
-            Current.settingsStore.cloudhookURL = URL(string: cloudURL)
-        }
-
         if response.response?.statusCode == 404 { // mobile_app not loaded
             return seal.reject(APIError.mobileAppComponentNotLoaded)
         } else if response.response?.statusCode == 410 { // config entry removed

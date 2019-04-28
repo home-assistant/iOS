@@ -13,7 +13,7 @@ import SystemConfiguration.CaptiveNetwork
 
 public struct ConnectionInfo: Codable {
     public let externalBaseURL: URL
-    public let internalBaseURL: URL?
+    public var internalBaseURL: URL?
     public let internalSSIDs: [String]?
 
     public init(baseURL: URL, internalBaseURL: URL?, internalSSIDs: [String]?) {

@@ -38,13 +38,19 @@ class AuthenticationViewController: UIViewController {
         }
 
         guard let baseURL = self.instance.BaseURL else {
-            fatalError("No base URL is set in discovery, this should not be possible!")
+            let errMsg = "No base URL is set in discovery, this should not be possible!"
+            Current.Log.error(errMsg)
+            fatalError(errMsg)
         }
 
         firstly {
             return self.testConnection(baseURL)
         }.done {
-            self.connectionInfo = ConnectionInfo(baseURL: baseURL, internalBaseURL: nil, internalSSIDs: nil)
+            var ssids: [String] = []
+            if let currentSSID = ConnectionInfo.CurrentWiFiSSID {
+                ssids.append(currentSSID)
+            }
+            self.connectionInfo = ConnectionInfo(baseURL: baseURL, internalBaseURL: nil, internalSSIDs: ssids)
             self.whatsAboutToHappenLabel.isHidden = false
             self.connectButton.isHidden = false
         }.ensure {

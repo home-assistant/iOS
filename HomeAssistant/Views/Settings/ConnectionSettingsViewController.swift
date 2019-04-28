@@ -9,6 +9,8 @@
 import UIKit
 import Eureka
 import Shared
+import PromiseKit
+import Alamofire
 
 class ConnectionSettingsViewController: FormViewController, RowControllerType {
 
@@ -44,20 +46,60 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 $0.value = Current.settingsStore.authenticatedUser?.Name
             }
 
-            +++ Section("Details")
+            +++ Section(L10n.Settings.ConnectionSection.details)
             <<< LabelRow("connectionPath") {
-                $0.title = "Connecting via"
+                $0.title = L10n.Settings.ConnectionSection.connectingVia
                 $0.value = HomeAssistantAPI.authenticatedAPI()?.webhookHandler.activeURLType.description
             }
 
-            <<< LabelRow("externalURL") {
+            <<< URLRow("externalURL") {
                 $0.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
-                $0.value = Current.settingsStore.connectionInfo?.externalBaseURL.absoluteString
+                $0.value = Current.settingsStore.connectionInfo?.externalBaseURL
+            }.onCellHighlightChanged { (cell, row) in
+                if !row.isHighlighted {
+                    guard let newURL = row.value else { return }
+                    self.confirmURL(newURL).done { _ in
+                        guard let connInfo = Current.settingsStore.connectionInfo else {
+                            return
+                        }
+                        Current.settingsStore.connectionInfo = ConnectionInfo(baseURL: newURL,
+                                                                              internalBaseURL: connInfo.internalBaseURL,
+                                                                              internalSSIDs: connInfo.internalSSIDs)
+                        }.catch { error in
+                            row.value = Current.settingsStore.connectionInfo?.externalBaseURL
+                            row.updateCell()
+                            let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
+                                                          preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                            alert.popoverPresentationController?.sourceView = cell.contentView
+                    }
+                }
             }
 
-            <<< LabelRow("internalURL") {
+            <<< URLRow("internalURL") {
                 $0.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
-                $0.value = Current.settingsStore.connectionInfo?.internalBaseURL?.absoluteString
+                $0.value = Current.settingsStore.connectionInfo?.internalBaseURL
+            }.onCellHighlightChanged { (cell, row) in
+                if !row.isHighlighted {
+                    guard let newURL = row.value else { return }
+                    self.confirmURL(newURL).done { _ in
+                        guard let connInfo = Current.settingsStore.connectionInfo else {
+                            return
+                        }
+                        Current.settingsStore.connectionInfo = ConnectionInfo(baseURL: connInfo.externalBaseURL,
+                                                                              internalBaseURL: newURL,
+                                                                              internalSSIDs: connInfo.internalSSIDs)
+                    }.catch { error in
+                        row.value = Current.settingsStore.connectionInfo?.internalBaseURL
+                        row.updateCell()
+                        let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
+                                                      preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                        alert.popoverPresentationController?.sourceView = cell.contentView
+                    }
+                }
             }
 
             +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete],
@@ -84,24 +126,24 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 } ?? [TextRow]())
             }
 
-            +++ Section("Nabu Casa Cloud")
+            +++ Section(L10n.Settings.ConnectionSection.nabuCasaCloud)
             <<< LabelRow("cloudAvailable") {
-                $0.title = "Cloud Available"
-                $0.value = "✔️"
+                $0.title = L10n.Settings.ConnectionSection.cloudAvailable
+                $0.value = HomeAssistantAPI.LoadedComponents.contains("cloud") ? "✔️" : "✖️"
             }
 
             <<< LabelRow("cloudhookAvailable") {
-                $0.title = "Cloudhook Available"
+                $0.title = L10n.Settings.ConnectionSection.cloudhookAvailable
                 $0.value = Current.settingsStore.cloudhookURL != nil ? "✔️" : "✖️"
             }
 
             <<< LabelRow("remoteUIAvailable") {
-                $0.title = "Remote UI Available"
+                $0.title = L10n.Settings.ConnectionSection.remoteUiAvailable
                 $0.value = Current.settingsStore.remoteUIURL != nil ? "✔️" : "✖️"
             }
 
             +++ ButtonRow("logout") {
-                $0.title = "Log out"
+                $0.title = L10n.Settings.ConnectionSection.logOut
             }.cellUpdate { cell, _ in
                 cell.textLabel?.textColor = .red
             }
@@ -137,9 +179,31 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
     }
 
     func storeSSIDs() {
-        // FIXME: Need to actually store SSIDs
-        /* if let section = self.form.sectionBy(tag: "internalSSIDs") as? MultivaluedSection {
-            Current.settingsStore.connectionInfo?.internalSSIDs = section.values() as? [String]
-        } */
+        if let section = self.form.sectionBy(tag: "internalSSIDs") as? MultivaluedSection {
+            let ssids = section.values().compactMap { $0 as? String }
+            guard let connInfo = Current.settingsStore.connectionInfo else {
+                return
+            }
+            Current.settingsStore.connectionInfo = ConnectionInfo(baseURL: connInfo.externalBaseURL,
+                                                                  internalBaseURL: connInfo.internalBaseURL,
+                                                                  internalSSIDs: ssids)
+        }
+    }
+
+    func confirmURL(_ connectionURL: URL) -> Promise<Void> {
+        return Promise { seal in
+            let webhookID = Current.settingsStore.webhookID!
+            let url = connectionURL.appendingPathComponent("api/webhook/\(webhookID)")
+            Current.Log.verbose("Confirming URL at \(url)")
+
+            Alamofire.request(url, method: .post).validate().responseJSON { resp in
+                switch resp.result {
+                case .success:
+                    seal.fulfill_()
+                case .failure(let error):
+                    seal.reject(error)
+                }
+            }
+        }
     }
 }
