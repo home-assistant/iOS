@@ -1707,7 +1707,6 @@
 		B661FB72226C10AE00E541DD /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				B65B14E72273157A00635D5C /* Onboarding.storyboard */,
 				B65B14FB2273173300635D5C /* Onboarding Scenes.swift */,
 				B65B14FA2273173300635D5C /* Onboarding Segues.swift */,
 				B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */,
@@ -1915,6 +1914,7 @@
 				B661FB67226B961400E541DD /* WebSocketBridge.js */,
 				B65B14FE227317D700635D5C /* Colors.json */,
 				B65B15022273184F00635D5C /* Colors.swift */,
+				B65B14E72273157A00635D5C /* Onboarding.storyboard */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
