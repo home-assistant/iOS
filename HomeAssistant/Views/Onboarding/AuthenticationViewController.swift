@@ -11,18 +11,26 @@ import Shared
 import PromiseKit
 import Alamofire
 import MaterialComponents.MaterialButtons
+import MBProgressHUD
 
 class AuthenticationViewController: UIViewController {
+
+    let authenticationController: AuthenticationController = AuthenticationController()
 
     var instance: DiscoveredHomeAssistant!
     var connectionInfo: ConnectionInfo?
     var tokenManager: TokenManager?
 
+    var testResult: ConnectionTestResult?
+
+    @IBOutlet weak var whatsAboutToHappenLabel: UILabel!
     @IBOutlet weak var connectButton: MDCButton!
     @IBOutlet weak var goBackButton: MDCButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        MBProgressHUD.showAdded(to: self.view, animated: true)
 
         if let navVC = self.navigationController as? OnboardingNavigationViewController {
             navVC.styleButton(self.connectButton)
@@ -36,10 +44,19 @@ class AuthenticationViewController: UIViewController {
         firstly {
             return self.testConnection(baseURL)
         }.done {
-            self.connectionInfo = ConnectionInfo(baseURL: baseURL, internalBaseURL: nil, internalSSIDs: nil,
-                                                 basicAuthCredentials: nil)
+            self.connectionInfo = ConnectionInfo(baseURL: baseURL, internalBaseURL: nil, internalSSIDs: nil)
+            self.whatsAboutToHappenLabel.isHidden = false
+            self.connectButton.isHidden = false
+        }.ensure {
+            MBProgressHUD.hide(for: self.view, animated: true)
         }.catch { error in
-            Current.Log.error("Error during connection test \(error.localizedDescription)")
+            guard let result = error as? ConnectionTestResult else {
+                Current.Log.error("Received non-ConnectionTestResult error! \(error)")
+                return
+            }
+            self.testResult = result
+            Current.Log.error("Error during connection test \(result.localizedDescription)")
+            self.perform(segue: StoryboardSegue.Onboarding.showError)
         }
     }
 
@@ -52,6 +69,8 @@ class AuthenticationViewController: UIViewController {
             vc.instance = self.instance
             vc.connectionInfo = self.connectionInfo
             vc.tokenManager = self.tokenManager
+        } else if segueType == .showError, let vc = segue.destination as? ConnectionErrorViewController {
+            vc.error = self.testResult
         }
     }
 
@@ -62,20 +81,20 @@ class AuthenticationViewController: UIViewController {
         }
         Current.Log.verbose("Attempting browser auth to: \(connectionInfo.activeURL)")
         let url = connectionInfo.activeURL
-        AuthenticationController().authenticateWithBrowser(at: url).then { (code: String) -> Promise<String> in
+        let tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: nil)
+        self.authenticationController.authenticateWithBrowser(at: url).then { (code: String) -> Promise<TokenInfo> in
             Current.Log.verbose("Browser auth succeeded, getting token")
-            let tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: nil)
-            self.tokenManager = tokenManager
             return tokenManager.initialTokenWithCode(code)
-        }.then { (token: String) -> Promise<ConfigResponse> in
-            Current.Log.verbose("Got confirmed token \(token)")
+        }.then { tokenInfo -> Promise<ConfigResponse> in
+            Current.Log.verbose("Got token info \(tokenInfo)")
 
-            Current.tokenManager = self.tokenManager
+            self.tokenManager = tokenManager
+            Current.tokenManager = tokenManager
 
-            return HomeAssistantAPI(connectionInfo: connectionInfo,
-                                    tokenInfo: Current.settingsStore.tokenInfo!).GetConfig(false)
-        }.done { _ in
             Current.settingsStore.connectionInfo = self.connectionInfo
+
+            return HomeAssistantAPI(connectionInfo: connectionInfo, tokenInfo: tokenInfo).GetConfig(false)
+        }.done { _ in
             self.perform(segue: StoryboardSegue.Onboarding.setupInstance, sender: nil)
         }.catch { error in
             Current.Log.error("Error during auth \(error.localizedDescription)")
@@ -88,24 +107,23 @@ class AuthenticationViewController: UIViewController {
         return Promise { seal in
             let sessionManager = Alamofire.SessionManager.default
             let delegate: Alamofire.SessionDelegate = sessionManager.delegate
-            delegate.taskDidReceiveChallenge = { session, task, challenge in
+            delegate.taskDidReceiveChallengeWithCompletion = { session, task, challenge, completion in
                 let method = challenge.protectionSpace.authenticationMethod
                 Current.Log.verbose("Handling challenge \(method)")
                 if method == NSURLAuthenticationMethodServerTrust {
                     Current.Log.verbose("Allowing challenge \(method)")
-                    return (.performDefaultHandling, nil)
+                    completion(.performDefaultHandling, nil)
                 } else if method == NSURLAuthenticationMethodHTTPBasic {
-                    Current.Log.warning("HTTP Basic auth encountered")
                     seal.reject(ConnectionTestResult(kind: .basicAuth, underlying: nil))
-                    return (.cancelAuthenticationChallenge, nil)
+                    completion(.cancelAuthenticationChallenge, nil)
                 } else if method == NSURLAuthenticationMethodClientCertificate {
                     Current.Log.warning("HTTP client certificate encountered")
                     seal.reject(ConnectionTestResult(kind: .clientCertificateRequired, underlying: nil))
-                    return (.cancelAuthenticationChallenge, nil)
+                    completion(.cancelAuthenticationChallenge, nil)
                 } else {
                     Current.Log.warning("Refusing to handle challenge \(challenge)")
                     seal.reject(ConnectionTestResult(kind: .authenticationUnsupported, underlying: nil))
-                    return (.cancelAuthenticationChallenge, nil)
+                    completion(.cancelAuthenticationChallenge, nil)
                 }
             }
             sessionManager.request(discoveryInfoURL).validate().responseJSON { response in
@@ -116,13 +134,13 @@ class AuthenticationViewController: UIViewController {
 
                 if let error = response.error {
                     let errorCode = (error as NSError).code
-                    if errorCode == NSURLErrorServerCertificateUntrusted {
+                    if errorCode == NSURLErrorServerCertificateUntrusted ||
+                        errorCode == NSURLErrorServerCertificateHasUnknownRoot {
                         seal.reject(ConnectionTestResult(kind: .sslUntrusted, underlying: error))
                         return
                     } else if errorCode == NSURLErrorServerCertificateHasBadDate ||
-                        errorCode == NSURLErrorServerCertificateHasUnknownRoot ||
                         errorCode == NSURLErrorServerCertificateNotYetValid {
-                        seal.reject(ConnectionTestResult(kind: .sslUnknownError, underlying: error))
+                        seal.reject(ConnectionTestResult(kind: .sslExpired, underlying: error))
                         return
                     }
 
@@ -147,7 +165,6 @@ public struct ConnectionTestResult: LocalizedError {
         case authenticationUnsupported = "authentication_unsupported"
         case sslUntrusted = "ssl_untrusted"
         case sslExpired = "ssl_expired"
-        case sslUnknownError = "ssl_unknown_error"
         case clientCertificateRequired = "client_certificate"
         case connectionError = "connection_error"
         case serverError = "server_error"
@@ -159,31 +176,26 @@ public struct ConnectionTestResult: LocalizedError {
     let underlying: Error?
 
     public var errorDescription: String? {
-        var description = "No underlying error"
-        if let desc = self.underlying?.localizedDescription {
-            description = desc
-        }
+        let description = self.underlying?.localizedDescription ?? ""
         switch self.kind {
         case .sslUntrusted:
-            return "Untrusted SSL certificate \(description)"
+            return L10n.Onboarding.ConnectionTestResult.SslUntrusted.description(description)
         case .basicAuth:
-            return "HTTP Basic auth required"
+            return L10n.Onboarding.ConnectionTestResult.BasicAuth.description
         case .authenticationUnsupported:
-            return "Authentication type is unsupported \(description)"
+            return L10n.Onboarding.ConnectionTestResult.AuthenticationUnsupported.description(description)
         case .sslExpired:
-            return "SSL certificate is expired"
-        case .sslUnknownError:
-            return "Unknown SSL error \(description)"
+            return L10n.Onboarding.ConnectionTestResult.SslExpired.description
         case .clientCertificateRequired:
-            return "Client Certificate Authentication is not supported"
+            return L10n.Onboarding.ConnectionTestResult.ClientCertificate.description
         case .connectionError:
-            return "General connection error \(description)"
+            return L10n.Onboarding.ConnectionTestResult.ConnectionError.description(description)
         case .serverError:
-            return "Server error \(description)"
+            return L10n.Onboarding.ConnectionTestResult.ServerError.description(description)
         case .tooOld:
-            return "HA Version too old"
+            return L10n.Onboarding.ConnectionTestResult.TooOld.description
         default:
-            return "Unknown error \(description)"
+            return L10n.Onboarding.ConnectionTestResult.UnknownError.description(description)
         }
     }
 

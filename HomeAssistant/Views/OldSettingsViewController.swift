@@ -40,15 +40,6 @@ class OldSettingsViewController: FormViewController, CLLocationManagerDelegate, 
     var internalBaseURL: URL?
     var internalBaseURLSSIDs: [String]?
     var internalBaseURLEnabled: Bool = false
-    var basicAuthUsername: String? {
-        return (self.form.rowBy(tag: "basicAuthUsername") as? TextRow)?.value
-    }
-    var basicAuthPassword: String? {
-        return (self.form.rowBy(tag: "basicAuthPassword") as? PasswordRow)?.value
-    }
-    var basicAuthEnabled: Bool {
-        return (self.form.rowBy(tag: "basicAuth") as? SwitchRow)?.value ?? false
-    }
 
     var configured = false
     var connectionInfo: ConnectionInfo?
@@ -241,40 +232,6 @@ class OldSettingsViewController: FormViewController, CLLocationManagerDelegate, 
                 }
             })
 
-            <<< SwitchRow("basicAuth") {
-                $0.title = L10n.Settings.ConnectionSection.BasicAuth.title
-                $0.value = (self.connectionInfo?.basicAuthCredentials != nil)
-            }.onChange { row in
-                if let boolVal = row.value {
-                    Current.Log.verbose("Setting rows to val \(!boolVal)")
-                    let cond = Condition(booleanLiteral: !boolVal)
-                    let basicAuthUsername: TextRow = self.form.rowBy(tag: "basicAuthUsername")!
-                    basicAuthUsername.hidden = cond
-                    basicAuthUsername.evaluateHidden()
-                    let basicAuthPassword: PasswordRow = self.form.rowBy(tag: "basicAuthPassword")!
-                    basicAuthPassword.hidden = cond
-                    basicAuthPassword.evaluateHidden()
-                    self.tableView.reloadData()
-                }
-            }
-
-            <<< TextRow("basicAuthUsername") {
-                $0.title = L10n.Settings.ConnectionSection.BasicAuth.Username.title
-                $0.hidden = Condition(booleanLiteral: (self.connectionInfo?.basicAuthCredentials == nil))
-                $0.value = self.connectionInfo?.basicAuthCredentials?.username ?? ""
-                $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Username.placeholder
-            }
-
-            <<< PasswordRow("basicAuthPassword") {
-                $0.title = L10n.Settings.ConnectionSection.BasicAuth.Password.title
-                $0.value = self.connectionInfo?.basicAuthCredentials?.password ?? ""
-                $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Password.placeholder
-                $0.hidden = Condition(booleanLiteral: (self.connectionInfo?.basicAuthCredentials == nil))
-            }.cellUpdate { cell, row in
-                if !row.isValid {
-                    cell.titleLabel?.textColor = .red
-                }
-            }
             +++ Section(header: "", footer: "")
             <<< ButtonRow("connect") {
                     $0.title = L10n.Settings.ConnectionSection.SaveButton.title
@@ -739,21 +696,10 @@ class OldSettingsViewController: FormViewController, CLLocationManagerDelegate, 
     /// Grab the connection info from fields in the UI.
     private func connectionInfoFromUI() -> ConnectionInfo? {
         if let baseURL = self.baseURL {
-            let credentials: ConnectionInfo.BasicAuthCredentials?
-            if self.basicAuthEnabled, let username = self.basicAuthUsername,
-                let password = self.basicAuthPassword {
-                credentials = ConnectionInfo.BasicAuthCredentials(username: username, password: password)
-            } else {
-                credentials = nil
-            }
 
             let internalURL = self.internalBaseURLEnabled ? self.internalBaseURL : nil
             let internalSSIDs = self.internalBaseURLEnabled ? self.internalBaseURLSSIDs : []
-            let connectionInfo = ConnectionInfo(baseURL: baseURL,
-                                                internalBaseURL: internalURL,
-                                                internalSSIDs: internalSSIDs,
-                                                basicAuthCredentials: credentials)
-            return connectionInfo
+            return ConnectionInfo(baseURL: baseURL, internalBaseURL: internalURL, internalSSIDs: internalSSIDs)
         }
 
         return nil
@@ -830,10 +776,9 @@ class OldSettingsViewController: FormViewController, CLLocationManagerDelegate, 
             Current.Log.verbose("Attempting browser auth to: \(connectionInfo.activeURL)")
             return firstly {
                 self.authenticationController.authenticateWithBrowser(at: connectionInfo.activeURL)
-            }.then { (code: String) -> Promise<String> in
+            }.then { (code: String) -> Promise<TokenInfo> in
                 Current.Log.verbose("Browser auth succeeded, getting token")
-                let tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: nil)
-                return tokenManager.initialTokenWithCode(code)
+                return TokenManager(connectionInfo: connectionInfo, tokenInfo: nil).initialTokenWithCode(code)
             }.then { _ -> Promise<ConnectionInfo> in
                 Current.Log.verbose("Token acquired")
                 return Promise.value(connectionInfo)

@@ -72,8 +72,7 @@ public class HomeAssistantAPI {
     public var socketAuthenticated: Bool = false
 
     /// Initialize an API object with an authenticated tokenManager.
-    public init(connectionInfo: ConnectionInfo, tokenInfo: TokenInfo,
-                urlConfig: URLSessionConfiguration = .default) {
+    public init(connectionInfo: ConnectionInfo, tokenInfo: TokenInfo, urlConfig: URLSessionConfiguration = .default) {
         self.connectionInfo = connectionInfo
 
         self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
@@ -91,28 +90,6 @@ public class HomeAssistantAPI {
             self.webhookManager.adapter = handler
             self.webhookManager.retrier = handler
             self.webhookHandler = handler
-        }
-
-        self.manager.delegate.taskDidReceiveChallenge = { session, task, challenge in
-            Current.Log.verbose("HAAPI Manager received challenge")
-            let authMethod = challenge.protectionSpace.authenticationMethod
-
-            guard authMethod == NSURLAuthenticationMethodDefault ||
-                authMethod == NSURLAuthenticationMethodHTTPBasic ||
-                authMethod == NSURLAuthenticationMethodHTTPDigest else {
-                    Current.Log.verbose("Not handling auth method \(authMethod)")
-                    return (.performDefaultHandling, nil)
-            }
-
-            Current.Log.verbose("Received basic auth challenge")
-
-            guard let basicAuthCreds = Current.settingsStore.connectionInfo?.basicAuthCredentials else {
-                Current.Log.error("Unable to get basicAuthCreds, skipping auth challenge!")
-                return (.performDefaultHandling, nil)
-            }
-
-            return (.useCredential, URLCredential(user: basicAuthCreds.username, password: basicAuthCreds.password,
-                                                  persistence: .synchronizable))
         }
 
         self.pushID = self.prefs.string(forKey: "pushID")

@@ -508,6 +508,81 @@ internal enum L10n {
     }
   }
 
+  internal enum Onboarding {
+    internal enum Connect {
+      /// Connecting to %@
+      internal static func title(_ p1: String) -> String {
+        return L10n.tr("Localizable", "onboarding.connect.title", p1)
+      }
+    }
+    internal enum ConnectionTestResult {
+      internal enum AuthenticationUnsupported {
+        /// Authentication type is unsupported%@.
+        internal static func description(_ p1: String) -> String {
+          return L10n.tr("Localizable", "onboarding.connection_test_result.authentication_unsupported.description", p1)
+        }
+      }
+      internal enum BasicAuth {
+        /// HTTP Basic Authentication is unsupported.
+        internal static let description = L10n.tr("Localizable", "onboarding.connection_test_result.basic_auth.description")
+      }
+      internal enum ClientCertificate {
+        /// Client Certificate Authentication is not supported.
+        internal static let description = L10n.tr("Localizable", "onboarding.connection_test_result.client_certificate.description")
+      }
+      internal enum ConnectionError {
+        /// General connection error%@.
+        internal static func description(_ p1: String) -> String {
+          return L10n.tr("Localizable", "onboarding.connection_test_result.connection_error.description", p1)
+        }
+      }
+      internal enum ServerError {
+        /// Server error%@.
+        internal static func description(_ p1: String) -> String {
+          return L10n.tr("Localizable", "onboarding.connection_test_result.server_error.description", p1)
+        }
+      }
+      internal enum SslContainer {
+        /// We encountered an error while connecting to your instance. %@ Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.
+        internal static func description(_ p1: String) -> String {
+          return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_container.description", p1)
+        }
+      }
+      internal enum SslExpired {
+        /// Your SSL certificate is expired.
+        internal static let description = L10n.tr("Localizable", "onboarding.connection_test_result.ssl_expired.description")
+      }
+      internal enum SslUntrusted {
+        /// Your SSL SSL certificate is untrusted. %@.
+        internal static func description(_ p1: String) -> String {
+          return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_untrusted.description", p1)
+        }
+      }
+      internal enum TooOld {
+        /// You must upgrade your Home Assistant version.
+        internal static let description = L10n.tr("Localizable", "onboarding.connection_test_result.too_old.description")
+      }
+      internal enum UnknownError {
+        /// Unknown error%@.
+        internal static func description(_ p1: String) -> String {
+          return L10n.tr("Localizable", "onboarding.connection_test_result.unknown_error.description", p1)
+        }
+      }
+    }
+    internal enum Discovery {
+      internal enum ResultsLabel {
+        /// We found %d Home Assistants on your network.
+        internal static func plural(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "onboarding.discovery.results_label.plural", p1)
+        }
+        /// We found %d Home Assistant on your network.
+        internal static func singular(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "onboarding.discovery.results_label.singular", p1)
+        }
+      }
+    }
+  }
+
   internal enum Permissions {
     internal enum Location {
       /// We use this to inform\rHome Assistant of your device location and state.
@@ -818,22 +893,6 @@ internal enum L10n {
       internal enum BaseUrl {
         /// URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.base_url.title")
-      }
-      internal enum BasicAuth {
-        /// HTTP Basic Authentication
-        internal static let title = L10n.tr("Localizable", "settings.connection_section.basic_auth.title")
-        internal enum Password {
-          /// verysecure
-          internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.basic_auth.password.placeholder")
-          /// Password
-          internal static let title = L10n.tr("Localizable", "settings.connection_section.basic_auth.password.title")
-        }
-        internal enum Username {
-          /// iam
-          internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.basic_auth.username.placeholder")
-          /// Username
-          internal static let title = L10n.tr("Localizable", "settings.connection_section.basic_auth.username.title")
-        }
       }
       internal enum ConnectRow {
         /// Connect

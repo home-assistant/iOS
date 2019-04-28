@@ -43,8 +43,8 @@ class DiscoverInstancesViewController: UIViewController {
         self.animationView.contentMode = .scaleAspectFill
         self.animationView.backgroundBehavior = .pauseAndRestore
         self.animationView.animation = Animation.named("ha-loading")
-        self.animationView.loopMode = .loop
-        self.animationView.play()
+        self.animationView.play(fromMarker: "Circle Fill Begins", toMarker: "Deform Begins", loopMode: .loop,
+                                completion: nil)
 
         let queue = DispatchQueue(label: Bundle.main.bundleIdentifier!, attributes: [])
         queue.async {

@@ -30,7 +30,11 @@ class ChooseDiscoveredInstanceViewController: UIViewController {
 
         print("Received instances", self.instances)
 
-        self.statusLabel.text = "We found \(self.instances.count) Home Assistants on your network"
+        var label = L10n.Onboarding.Discovery.ResultsLabel.singular(self.instances.count)
+        if self.instances.count > 1 {
+            label = L10n.Onboarding.Discovery.ResultsLabel.plural(self.instances.count)
+        }
+        self.statusLabel.text = label
     }
 
     @IBAction func continueManually(_ sender: Any) {

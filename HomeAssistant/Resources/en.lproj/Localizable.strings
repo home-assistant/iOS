@@ -157,10 +157,6 @@
 "settings.connection_section.network_name.title" = "Current Network Name";
 "settings.connection_section.internal_base_url.title" = "Internal URL";
 "settings.connection_section.external_base_url.title" = "External URL";
-"settings.connection_section.basic_auth.username.title" = "Username";
-"settings.connection_section.basic_auth.password.title" = "Password";
-"settings.connection_section.basic_auth.username.placeholder" = "iam";
-"settings.connection_section.basic_auth.password.placeholder" = "verysecure";
 "about.beta.title" = "Join Beta";
 "alerts.auth_required.message" = "The server has rejected your credentials, and you must sign in again to continue.";
 "alerts.auth_required.title" = "You must sign in to continue";
@@ -228,7 +224,6 @@
 "settings.advanced_connection_settings_section.title" = "Advanced Connection Settings";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
 "settings.connection_section.internal_base_url.placeholder" = "http://hassio.local:8123/";
-"settings.connection_section.basic_auth.title" = "HTTP Basic Authentication";
 "settings.connection_section.show_advanced_settings_row.title" = "Show advanced settings";
 "settings.connection_section.use_internal_url.title" = "Use internal URL";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
@@ -606,3 +601,16 @@
 "sensors.geocoded_location.attributes.sub_thoroughfare" = "SubThoroughfare";
 "sensors.geocoded_location.attributes.thoroughfare" = "Thoroughfare";
 "sensors.geocoded_location.attributes.time_zone" = "TimeZone";
+"onboarding.connection_test_result.ssl_container.description" = "We encountered an error while connecting to your instance. %@ Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.";
+"onboarding.connection_test_result.basic_auth.description" = "HTTP Basic Authentication is unsupported.";
+"onboarding.connection_test_result.authentication_unsupported.description" = "Authentication type is unsupported%@.";
+"onboarding.connection_test_result.ssl_untrusted.description" = "Your SSL SSL certificate is untrusted. %@.";
+"onboarding.connection_test_result.ssl_expired.description" = "Your SSL certificate is expired.";
+"onboarding.connection_test_result.client_certificate.description" = "Client Certificate Authentication is not supported.";
+"onboarding.connection_test_result.connection_error.description" = "General connection error%@.";
+"onboarding.connection_test_result.server_error.description" = "Server error%@.";
+"onboarding.connection_test_result.too_old.description" = "You must upgrade your Home Assistant version.";
+"onboarding.connection_test_result.unknown_error.description" = "Unknown error%@.";
+"onboarding.discovery.results_label.plural" = "We found %d Home Assistants on your network.";
+"onboarding.discovery.results_label.singular" = "We found %d Home Assistant on your network.";
+"onboarding.connect.title" = "Connecting to %@";

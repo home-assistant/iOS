@@ -246,28 +246,17 @@ public class SettingsStore {
 
     private func migrateConnectionInfo() {
         if let baseURLString = keychain["baseURL"], let baseURL = URL(string: baseURLString) {
-            let basicAuthKeychain = Keychain(server: baseURLString, protocolType: .https,
-                                             authenticationType: .httpBasic)
-            let credentials: ConnectionInfo.BasicAuthCredentials?
-            if let username = basicAuthKeychain["basicAuthUsername"],
-                let password = basicAuthKeychain["basicAuthPassword"] {
-                credentials = ConnectionInfo.BasicAuthCredentials(username: username, password: password)
-            } else {
-                credentials = nil
-            }
-
             var internalURL: URL?
             if let internalURLString = keychain["internalBaseURL"],
                 let parsedURL = URL(string: internalURLString) {
                 internalURL = parsedURL
             }
 
-            var info = ConnectionInfo(baseURL: baseURL, internalBaseURL: internalURL,
-                                      internalSSIDs: nil, basicAuthCredentials: credentials)
+            var info = ConnectionInfo(baseURL: baseURL, internalBaseURL: internalURL, internalSSIDs: nil)
             if let ssid = keychain["internalBaseURLSSID"] {
-                info = ConnectionInfo(baseURL: baseURL, internalBaseURL: internalURL, internalSSIDs: [ssid],
-                                      basicAuthCredentials: credentials)
+                info = ConnectionInfo(baseURL: baseURL, internalBaseURL: internalURL, internalSSIDs: [ssid])
             }
+
             self.connectionInfo = info
             self.hasMigratedConnection = true
         }

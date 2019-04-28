@@ -934,6 +934,15 @@
 		B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AboutViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeAssistantLogoView.xib; sourceTree = "<group>"; };
 		B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInChromeController.swift; sourceTree = "<group>"; };
+		B648AE1222758DD0006972AF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		B648AE1422758E03006972AF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B648AE1622758E10006972AF /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		B648AE1822758E17006972AF /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B648AE1A22758E1C006972AF /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B648AE1C22758E24006972AF /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B648AE1E22758E29006972AF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B648AE2022758E32006972AF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B648AE2222758E38006972AF /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		B64BB3A71E9C6551001E8B46 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		B657A8E61CA646EB00121384 /* Home Assistant Δ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Δ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -953,15 +962,6 @@
 		B658AA7622506DAF00C9BFE3 /* GoogleService-Info-Beta.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Beta.plist"; sourceTree = "<group>"; };
 		B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobileAppUpdateRegistrationRequest.swift; sourceTree = "<group>"; };
 		B65B14E62273157A00635D5C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Onboarding.storyboard; sourceTree = "<group>"; };
-		B65B14E9227315C500635D5C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Onboarding.strings; sourceTree = "<group>"; };
-		B65B14EB227315CA00635D5C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Onboarding.strings"; sourceTree = "<group>"; };
-		B65B14ED227315D200635D5C /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Onboarding.strings"; sourceTree = "<group>"; };
-		B65B14EF227315D900635D5C /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Onboarding.strings; sourceTree = "<group>"; };
-		B65B14F1227315DC00635D5C /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Onboarding.strings; sourceTree = "<group>"; };
-		B65B14F3227315F400635D5C /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Onboarding.strings; sourceTree = "<group>"; };
-		B65B14F52273160F00635D5C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Onboarding.strings; sourceTree = "<group>"; };
-		B65B14F72273161600635D5C /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Onboarding.strings; sourceTree = "<group>"; };
-		B65B14F92273162300635D5C /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		B65B14FA2273173300635D5C /* Onboarding Segues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Onboarding Segues.swift"; sourceTree = "<group>"; };
 		B65B14FB2273173300635D5C /* Onboarding Scenes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Onboarding Scenes.swift"; sourceTree = "<group>"; };
 		B65B14FE227317D700635D5C /* Colors.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Colors.json; sourceTree = "<group>"; };
@@ -1707,9 +1707,9 @@
 		B661FB72226C10AE00E541DD /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				B65B14E72273157A00635D5C /* Onboarding.storyboard */,
 				B65B14FB2273173300635D5C /* Onboarding Scenes.swift */,
 				B65B14FA2273173300635D5C /* Onboarding Segues.swift */,
-				B65B14E72273157A00635D5C /* Onboarding.storyboard */,
 				B6022222226DBA3800E8DBFE /* OnboardingNavigationViewController.swift */,
 				B661FB73226C110A00E541DD /* WelcomeViewController.swift */,
 				B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */,
@@ -4046,15 +4046,15 @@
 			isa = PBXVariantGroup;
 			children = (
 				B65B14E62273157A00635D5C /* Base */,
-				B65B14E9227315C500635D5C /* en */,
-				B65B14EB227315CA00635D5C /* zh-Hans */,
-				B65B14ED227315D200635D5C /* zh-Hant */,
-				B65B14EF227315D900635D5C /* es */,
-				B65B14F1227315DC00635D5C /* it */,
-				B65B14F3227315F400635D5C /* nl */,
-				B65B14F52273160F00635D5C /* de */,
-				B65B14F72273161600635D5C /* fr */,
-				B65B14F92273162300635D5C /* nb */,
+				B648AE1222758DD0006972AF /* zh-Hans */,
+				B648AE1422758E03006972AF /* en */,
+				B648AE1622758E10006972AF /* zh-Hant */,
+				B648AE1822758E17006972AF /* es */,
+				B648AE1A22758E1C006972AF /* it */,
+				B648AE1C22758E24006972AF /* nl */,
+				B648AE1E22758E29006972AF /* de */,
+				B648AE2022758E32006972AF /* fr */,
+				B648AE2222758E38006972AF /* nb */,
 			);
 			name = Onboarding.storyboard;
 			sourceTree = "<group>";

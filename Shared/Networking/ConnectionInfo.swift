@@ -12,30 +12,14 @@ import SystemConfiguration.CaptiveNetwork
 #endif
 
 public struct ConnectionInfo: Codable {
-    public struct BasicAuthCredentials: Codable {
-        public let username: String
-        public let password: String
-        public init(username: String, password: String) {
-            self.username = username
-            self.password = password
-        }
-
-        public var urlCredential: URLCredential {
-            return URLCredential(user: self.username, password: self.password, persistence: .synchronizable)
-        }
-    }
-
     public let externalBaseURL: URL
     public let internalBaseURL: URL?
     public let internalSSIDs: [String]?
-    public let basicAuthCredentials: BasicAuthCredentials?
 
-    public init(baseURL: URL, internalBaseURL: URL?, internalSSIDs: [String]?,
-                basicAuthCredentials: BasicAuthCredentials?) {
+    public init(baseURL: URL, internalBaseURL: URL?, internalSSIDs: [String]?) {
         self.externalBaseURL = baseURL
         self.internalBaseURL = internalBaseURL
         self.internalSSIDs = internalSSIDs
-        self.basicAuthCredentials = basicAuthCredentials
     }
 
     /// Returns the url that should be used at this moment to access the home assistant instance.

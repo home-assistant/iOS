@@ -25,17 +25,12 @@ class ConnectInstanceViewController: UIViewController {
     @IBOutlet weak var encrypted: AnimationView!
     @IBOutlet weak var sensorsConfigured: AnimationView!
 
-    var animationViews: [AnimationView] = []
-
     private var wantedAnimationStates: [AnimationView: AnimationState] = [:]
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.becomeFirstResponder()
 
-        self.animationViews.append(contentsOf: [integrationCreated, cloudStatus, encrypted, sensorsConfigured])
-
-        self.titleLabel.text = "Connecting to \(self.instance.LocationName)"
+        self.titleLabel.text = L10n.Onboarding.Connect.title(self.instance.LocationName)
 
         self.configureAnimation(connectionStatus, .success)
         self.configureAnimation(authenticated, .success)
@@ -49,21 +44,21 @@ class ConnectInstanceViewController: UIViewController {
             self.overallProgress.loopMode = .playOnce
         }
 
-        for (idx, aView) in animationViews.enumerated() {
-            self.configureAnimation(aView)
+        let completedSteps: [AnimationView] = [connectionStatus, authenticated]
+        for animationView in completedSteps {
+            animationView.loopMode = .playOnce
+            animationView.contentMode = .scaleAspectFill
+            animationView.animation = Animation.named("loader-success-failed")
+            animationView.play(fromFrame: AnimationState.success.startFrame, toFrame: AnimationState.success.endFrame)
+        }
 
-            let time = 2.5 * Double(idx)
-            DispatchQueue.main.asyncAfter(deadline: .now() + time) {
-                if idx % 2 == 0 {
-                    self.setAnimationStatus(aView, state: .success)
-                } else {
-                    self.setAnimationStatus(aView, state: .failed)
-                }
-            }
+        let pendingViews: [AnimationView] = [integrationCreated, cloudStatus, encrypted, sensorsConfigured]
+        for aView in pendingViews {
+            self.configureAnimation(aView)
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 15.0) {
-            self.performSegue(withIdentifier: "permissions", sender: nil)
+            self.perform(segue: StoryboardSegue.Onboarding.permissions)
         }
     }
 
@@ -118,29 +113,6 @@ class ConnectInstanceViewController: UIViewController {
                 return 400
             case .failed:
                 return 820
-            }
-        }
-    }
-
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
-
-    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        self.resetForDemo()
-    }
-
-    private func resetForDemo() {
-        for (idx, aView) in animationViews.enumerated() {
-            self.setAnimationStatus(aView, state: .loading)
-
-            let time = 2.5 * Double(idx)
-            DispatchQueue.main.asyncAfter(deadline: .now() + time) {
-                if idx % 2 == 0 {
-                    self.setAnimationStatus(aView, state: .success)
-                } else {
-                    self.setAnimationStatus(aView, state: .failed)
-                }
             }
         }
     }

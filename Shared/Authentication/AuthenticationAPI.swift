@@ -30,11 +30,7 @@ public class AuthenticationAPI {
             let token = tokenInfo.refreshToken
             let routeInfo = RouteInfo(route: AuthenticationRoute.refreshToken(token: token),
                                       baseURL: self.connectionInfo.activeURL)
-            var request = Alamofire.request(routeInfo)
-
-            if let basicAuthCreds = self.connectionInfo.basicAuthCredentials {
-                request = request.authenticate(user: basicAuthCreds.username, password: basicAuthCreds.password)
-            }
+            let request = Alamofire.request(routeInfo)
 
             let context = TokenInfo.TokenInfoContext(oldTokenInfo: tokenInfo)
             request.validate().responseObject(context: context) { (dataresponse: DataResponse<TokenInfo>) in
@@ -54,11 +50,7 @@ public class AuthenticationAPI {
             let token = tokenInfo.accessToken
             let routeInfo = RouteInfo(route: AuthenticationRoute.revokeToken(token: token),
                                       baseURL: self.connectionInfo.activeURL)
-            var request = Alamofire.request(routeInfo)
-
-            if let basicAuthCreds = self.connectionInfo.basicAuthCredentials {
-                request = request.authenticate(user: basicAuthCreds.username, password: basicAuthCreds.password)
-            }
+            let request = Alamofire.request(routeInfo)
 
             request.validate().response { _ in
                 // https://developers.home-assistant.io/docs/en/auth_api.html#revoking-a-refresh-token says:
@@ -75,11 +67,7 @@ public class AuthenticationAPI {
         return Promise { seal in
             let routeInfo = RouteInfo(route: AuthenticationRoute.token(authorizationCode: authorizationCode),
                                       baseURL: self.connectionInfo.activeURL)
-            var request = Alamofire.request(routeInfo)
-
-            if let basicAuthCreds = self.connectionInfo.basicAuthCredentials {
-                request = request.authenticate(user: basicAuthCreds.username, password: basicAuthCreds.password)
-            }
+            let request = Alamofire.request(routeInfo)
 
             request.validate().responseObject { (dataresponse: DataResponse<TokenInfo>) in
                 switch dataresponse.result {

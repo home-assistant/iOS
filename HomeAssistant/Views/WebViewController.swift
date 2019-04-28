@@ -229,58 +229,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         self.refreshControl.endRefreshing()
     }
 
-    // for basic auth, fixes #95
-    func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge,
-                 completionHandler: @escaping(URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-
-        let authMethod = challenge.protectionSpace.authenticationMethod
-
-        guard authMethod == NSURLAuthenticationMethodDefault ||
-              authMethod == NSURLAuthenticationMethodHTTPBasic ||
-              authMethod == NSURLAuthenticationMethodHTTPDigest else {
-            Current.Log.verbose("Not handling auth method \(authMethod)")
-            completionHandler(.performDefaultHandling, nil)
-            return
-        }
-
-        if let connectionInfo = Current.settingsStore.connectionInfo,
-            let basicAuthCreds = connectionInfo.basicAuthCredentials {
-            Current.Log.verbose("WKWebView hit basic auth challenge")
-            completionHandler(.useCredential, basicAuthCreds.urlCredential)
-            return
-        }
-
-        let space = challenge.protectionSpace
-
-        let alert = UIAlertController(title: "\(space.`protocol`!)://\(space.host):\(space.port)",
-            message: space.realm, preferredStyle: .alert)
-
-        alert.addTextField {
-            $0.placeholder = L10n.usernameLabel
-        }
-
-        alert.addTextField {
-            $0.placeholder = L10n.Settings.ConnectionSection.BasicAuth.Password.title
-            $0.isSecureTextEntry = true
-        }
-
-        alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel) { _ in
-            completionHandler(.cancelAuthenticationChallenge, nil)
-        })
-
-        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default) { _ in
-            let textFields = alert.textFields!
-            let credential = URLCredential(user: textFields[0].text!, password: textFields[1].text!,
-                                           persistence: .forSession)
-            completionHandler(.useCredential, credential)
-        })
-
-        present(alert, animated: true, completion: nil)
-
-        alert.popoverPresentationController?.sourceView = self.webView
-
-    }
-
     // WKUIDelegate
     func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String,
                  initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
@@ -371,11 +319,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     func openSettingsWithError(error: Error) {
-        let settingsView = OldSettingsViewController()
-        settingsView.showErrorConnectingMessage = true
-        settingsView.showErrorConnectingMessageError = error
-        settingsView.doneButton = true
-        settingsView.delegate = self
+        let settingsView = SettingsViewController()
+//        settingsView.showErrorConnectingMessage = true
+//        settingsView.showErrorConnectingMessageError = error
+//        settingsView.doneButton = true
+//        settingsView.delegate = self
         let navController = UINavigationController(rootViewController: settingsView)
         self.navigationController?.present(navController, animated: true, completion: nil)
     }

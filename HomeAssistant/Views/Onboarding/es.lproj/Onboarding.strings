@@ -5,9 +5,6 @@
 /* Class = "UILabel"; text = "The most advanced Home Automation app on iOS"; ObjectID = "5td-Yc-nnx"; */
 "5td-Yc-nnx.text" = "The most advanced Home Automation app on iOS";
 
-/* Class = "UIButton"; normalTitle = "Error"; ObjectID = "87t-Ca-ZJb"; */
-"87t-Ca-ZJb.normalTitle" = "Error";
-
 /* Class = "UILabel"; text = "http://hassio.local:8123"; ObjectID = "8JC-7Y-FvP"; */
 "8JC-7Y-FvP.text" = "http://hassio.local:8123";
 
@@ -16,12 +13,6 @@
 
 /* Class = "UILabel"; text = "Connecting to My Home Assistant"; ObjectID = "Kj7-hM-8gN"; */
 "Kj7-hM-8gN.text" = "Connecting to My Home Assistant";
-
-/* Class = "UILabel"; text = "HTTP Basic Username"; ObjectID = "Kwy-Pt-nws"; */
-"Kwy-Pt-nws.text" = "HTTP Basic Username";
-
-/* Class = "UILabel"; text = "HTTP Basic Password"; ObjectID = "LCc-oP-eTO"; */
-"LCc-oP-eTO.text" = "HTTP Basic Password";
 
 /* Class = "UIButton"; normalTitle = "Continue"; ObjectID = "N4h-WC-wIw"; */
 "N4h-WC-wIw.normalTitle" = "Continue";
@@ -85,6 +76,9 @@
 
 /* Class = "UILabel"; text = "Authenticated"; ObjectID = "nJr-sw-A9l"; */
 "nJr-sw-A9l.text" = "Authenticated";
+
+/* Class = "UIButton"; normalTitle = "Start Over"; ObjectID = "suf-pJ-Nle"; */
+"suf-pJ-Nle.normalTitle" = "Start Over";
 
 /* Class = "UILabel"; text = "We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. "; ObjectID = "wsC-f5-jbO"; */
 "wsC-f5-jbO.text" = "We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. ";

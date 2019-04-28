@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Home Assistant Companion!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mse-YA-DiV">
-                                <rect key="frame" x="16" y="20" width="343" height="49"/>
+                                <rect key="frame" x="92" y="20" width="191" height="49"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -45,7 +45,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4h-WC-wIw" customClass="MDCButton">
-                                <rect key="frame" x="154.5" y="635" width="66" height="32"/>
+                                <rect key="frame" x="154.5" y="615" width="66" height="32"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Continue"/>
                                 <connections>
@@ -67,18 +67,18 @@
                         <constraints>
                             <constraint firstItem="djx-xj-AwF" firstAttribute="firstBaseline" secondItem="5td-Yc-nnx" secondAttribute="baseline" id="682-ol-Moz"/>
                             <constraint firstItem="N4h-WC-wIw" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="7jc-nn-Bf0"/>
-                            <constraint firstItem="Dgm-KS-yJa" firstAttribute="bottom" secondItem="N4h-WC-wIw" secondAttribute="bottom" id="Hbo-CP-wA6"/>
+                            <constraint firstItem="Dgm-KS-yJa" firstAttribute="bottom" secondItem="N4h-WC-wIw" secondAttribute="bottom" constant="20" id="Hbo-CP-wA6"/>
                             <constraint firstItem="mse-YA-DiV" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="S7j-SS-3r5"/>
                             <constraint firstItem="5td-Yc-nnx" firstAttribute="leading" secondItem="Dgm-KS-yJa" secondAttribute="leading" constant="50" id="SFm-HS-moK"/>
                             <constraint firstItem="wD9-TR-rVF" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="YJn-5u-0ZE"/>
                             <constraint firstItem="djx-xj-AwF" firstAttribute="trailing" secondItem="5td-Yc-nnx" secondAttribute="trailing" id="bY3-fM-MgO"/>
                             <constraint firstItem="wD9-TR-rVF" firstAttribute="centerY" secondItem="Dgm-KS-yJa" secondAttribute="centerY" id="dyS-lr-6jI"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="mse-YA-DiV" secondAttribute="trailing" id="qAH-H0-r9f"/>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="mse-YA-DiV" secondAttribute="trailing" id="qAH-H0-r9f"/>
                             <constraint firstItem="djx-xj-AwF" firstAttribute="leading" secondItem="5td-Yc-nnx" secondAttribute="leading" id="uli-5n-vOS"/>
                             <constraint firstItem="Dgm-KS-yJa" firstAttribute="trailing" secondItem="5td-Yc-nnx" secondAttribute="trailing" constant="50" id="w4B-oX-Tlp"/>
                             <constraint firstItem="5td-Yc-nnx" firstAttribute="top" secondItem="mse-YA-DiV" secondAttribute="bottom" id="xjd-Mr-N2j"/>
                             <constraint firstItem="mse-YA-DiV" firstAttribute="top" secondItem="Dgm-KS-yJa" secondAttribute="top" id="yDL-8w-3OP"/>
-                            <constraint firstItem="mse-YA-DiV" firstAttribute="leading" secondItem="FZO-9W-RiW" secondAttribute="leadingMargin" id="yWr-Dc-c25"/>
+                            <constraint firstItem="mse-YA-DiV" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="FZO-9W-RiW" secondAttribute="leadingMargin" id="yWr-Dc-c25"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Dgm-KS-yJa"/>
                     </view>
@@ -104,14 +104,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vze-fN-mpk" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="62.5" y="208.5" width="250" height="250"/>
+                                <rect key="frame" x="67.5" y="213.5" width="240" height="240"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="250" id="nlE-8B-p0u"/>
-                                    <constraint firstAttribute="height" constant="250" id="yGo-6N-mP6"/>
+                                    <constraint firstAttribute="width" constant="240" id="nlE-8B-p0u"/>
+                                    <constraint firstAttribute="height" constant="240" id="yGo-6N-mP6"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fqx-lo-wDB" customClass="MDCButton">
-                                <rect key="frame" x="102" y="635" width="171" height="32"/>
+                                <rect key="frame" x="102" y="615" width="171" height="32"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Enter Address Manually">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -134,7 +134,7 @@
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="fqx-lo-wDB" firstAttribute="bottom" secondItem="YYn-sj-8lm" secondAttribute="bottom" id="DZy-ti-TVy"/>
+                            <constraint firstItem="YYn-sj-8lm" firstAttribute="bottom" secondItem="fqx-lo-wDB" secondAttribute="bottom" constant="20" id="DZy-ti-TVy"/>
                             <constraint firstItem="Vze-fN-mpk" firstAttribute="centerY" secondItem="lXu-nc-gsX" secondAttribute="centerY" id="NpJ-ts-QT2"/>
                             <constraint firstItem="Vze-fN-mpk" firstAttribute="centerX" secondItem="YYn-sj-8lm" secondAttribute="centerX" id="Qgu-vg-Lij"/>
                             <constraint firstItem="4qQ-ND-WGB" firstAttribute="trailing" secondItem="lXu-nc-gsX" secondAttribute="trailingMargin" id="U2v-Rt-Ysm"/>
@@ -170,8 +170,8 @@
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="URL" returnKeyType="continue" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="url"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gld-QQ-oTD" userLabel="Connect Button">
-                                <rect key="frame" x="155" y="388.5" width="65" height="33"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <rect key="frame" x="156.5" y="388.5" width="62" height="32"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Connect"/>
                                 <connections>
                                     <action selector="connectButtonTapped:" destination="sGi-y7-DOI" eventType="touchUpInside" id="lw7-fv-9pS"/>
@@ -261,7 +261,7 @@
                                 </connections>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Re7-IX-23x" userLabel="Manual Button" customClass="MDCButton">
-                                <rect key="frame" x="102" y="635" width="171" height="32"/>
+                                <rect key="frame" x="102" y="615" width="171" height="32"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Enter Address Manually">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -283,7 +283,7 @@
                             <constraint firstItem="NJM-pS-Fuc" firstAttribute="leading" secondItem="mQY-ah-0sc" secondAttribute="leadingMargin" id="gS7-aP-pTp"/>
                             <constraint firstItem="xcD-7Q-tXz" firstAttribute="leading" secondItem="mQY-ah-0sc" secondAttribute="leadingMargin" id="jSj-Pk-5Ps"/>
                             <constraint firstItem="xcD-7Q-tXz" firstAttribute="trailing" secondItem="mQY-ah-0sc" secondAttribute="trailingMargin" id="rpg-lA-pKY"/>
-                            <constraint firstItem="Re7-IX-23x" firstAttribute="bottom" secondItem="MrN-V0-Pgp" secondAttribute="bottom" id="xE9-aI-GLR"/>
+                            <constraint firstItem="MrN-V0-Pgp" firstAttribute="bottom" secondItem="Re7-IX-23x" secondAttribute="bottom" constant="20" id="xE9-aI-GLR"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="MrN-V0-Pgp"/>
                     </view>
@@ -317,10 +317,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ge3-1c-5KC" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="67" y="95" width="241" height="240"/>
+                                <rect key="frame" x="67.5" y="95" width="240" height="240"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="241" id="4aO-yx-T4x"/>
+                                    <constraint firstAttribute="width" constant="240" id="4aO-yx-T4x"/>
                                     <constraint firstAttribute="height" constant="240" id="l77-iF-i3D"/>
                                 </constraints>
                             </view>
@@ -331,11 +331,21 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tqw-iY-A2S" customClass="MDCButton">
-                                <rect key="frame" x="155" y="617" width="65" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tqw-iY-A2S" customClass="MDCButton">
+                                <rect key="frame" x="153" y="575" width="69" height="32"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="More Info"/>
                                 <connections>
                                     <action selector="moreInfoTapped:" destination="MOD-3L-omt" eventType="touchUpInside" id="ehl-fN-ffb"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="suf-pJ-Nle" customClass="MDCButton">
+                                <rect key="frame" x="150" y="615" width="75" height="32"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <state key="normal" title="Start Over"/>
+                                <connections>
+                                    <action selector="connectButtonTapped:" destination="jkw-3v-pbb" eventType="touchUpInside" id="ZUd-tI-c7g"/>
+                                    <segue destination="Cpw-N3-yji" kind="show" id="Cox-Jc-BY9"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -351,12 +361,16 @@
                             <constraint firstItem="CIS-8C-niN" firstAttribute="centerX" secondItem="OqO-iB-GQA" secondAttribute="centerX" id="S2E-bj-cip"/>
                             <constraint firstItem="Ge3-1c-5KC" firstAttribute="top" secondItem="CIS-8C-niN" secondAttribute="bottom" id="haw-oD-9o7"/>
                             <constraint firstItem="Tqw-iY-A2S" firstAttribute="centerX" secondItem="OqO-iB-GQA" secondAttribute="centerX" id="n1s-dd-9Wu"/>
-                            <constraint firstItem="OqO-iB-GQA" firstAttribute="bottom" secondItem="Tqw-iY-A2S" secondAttribute="bottom" constant="20" id="vYk-ql-har"/>
+                            <constraint firstItem="OqO-iB-GQA" firstAttribute="bottom" secondItem="Tqw-iY-A2S" secondAttribute="bottom" constant="60" id="vYk-ql-har"/>
+                            <constraint firstItem="suf-pJ-Nle" firstAttribute="centerX" secondItem="OqO-iB-GQA" secondAttribute="centerX" id="wc6-h8-gS0"/>
+                            <constraint firstItem="OqO-iB-GQA" firstAttribute="bottom" secondItem="suf-pJ-Nle" secondAttribute="bottom" constant="20" id="zJ0-ex-FIA"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="OqO-iB-GQA"/>
                     </view>
                     <connections>
                         <outlet property="animationView" destination="Ge3-1c-5KC" id="dqm-oP-ONh"/>
+                        <outlet property="errorLabel" destination="UKm-Ju-0Yr" id="ukr-s7-dSj"/>
+                        <outlet property="goBackButton" destination="suf-pJ-Nle" id="Vhh-ku-5Wv"/>
                         <outlet property="moreInfoButton" destination="Tqw-iY-A2S" id="nON-jY-zmz"/>
                     </connections>
                 </viewController>
@@ -373,67 +387,32 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Authentication" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lM3-aA-jqO">
-                                <rect key="frame" x="16" y="20" width="343" height="31.5"/>
+                                <rect key="frame" x="106" y="20" width="163.5" height="31.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wsC-f5-jbO">
-                                <rect key="frame" x="16" y="220" width="343" height="86.5"/>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wsC-f5-jbO">
+                                <rect key="frame" x="16" y="221" width="343" height="86.5"/>
                                 <string key="text">We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. </string>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RSW-l5-eRA" customClass="MDCButton">
-                                <rect key="frame" x="158" y="616" width="61" height="32"/>
+                                <rect key="frame" x="158" y="615" width="61" height="32"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Go Back"/>
                                 <connections>
                                     <action selector="connectButtonTapped:" destination="jkw-3v-pbb" eventType="touchUpInside" id="hb4-DT-HSv"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f1j-Ol-pW5" customClass="MDCButton">
-                                <rect key="frame" x="153" y="326.5" width="69" height="34"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f1j-Ol-pW5" customClass="MDCButton">
+                                <rect key="frame" x="156.5" y="327.5" width="62" height="32"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Connect"/>
                                 <connections>
                                     <action selector="connectButtonTapped:" destination="jkw-3v-pbb" eventType="touchUpInside" id="omV-gf-Uil"/>
-                                </connections>
-                            </button>
-                            <textField hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KIn-Ha-9oZ">
-                                <rect key="frame" x="16" y="476" width="343" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                <textInputTraits key="textInputTraits" textContentType="username"/>
-                            </textField>
-                            <textField hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3hL-h9-jfW">
-                                <rect key="frame" x="16" y="539" width="343" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
-                            </textField>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="HTTP Basic Username" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kwy-Pt-nws">
-                                <rect key="frame" x="16" y="447" width="154" height="18"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="HTTP Basic Password" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LCc-oP-eTO">
-                                <rect key="frame" x="16" y="514" width="150" height="18"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="87t-Ca-ZJb">
-                                <rect key="frame" x="171" y="392" width="34" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Error"/>
-                                <connections>
-                                    <segue destination="MOD-3L-omt" kind="show" id="FGG-0l-HeR"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -441,9 +420,9 @@
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="lM3-aA-jqO" firstAttribute="top" secondItem="rqB-n3-MmV" secondAttribute="top" id="4vn-fB-duB"/>
-                            <constraint firstItem="lM3-aA-jqO" firstAttribute="leading" secondItem="rqB-n3-MmV" secondAttribute="leading" constant="16" id="8mV-N1-KVQ"/>
-                            <constraint firstItem="rqB-n3-MmV" firstAttribute="trailing" secondItem="lM3-aA-jqO" secondAttribute="trailing" constant="16" id="IAW-ZT-VGq"/>
-                            <constraint firstItem="rqB-n3-MmV" firstAttribute="bottom" secondItem="RSW-l5-eRA" secondAttribute="bottom" constant="19" id="TM2-OF-jlE"/>
+                            <constraint firstItem="lM3-aA-jqO" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="rqB-n3-MmV" secondAttribute="leading" id="8mV-N1-KVQ"/>
+                            <constraint firstItem="rqB-n3-MmV" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="lM3-aA-jqO" secondAttribute="trailing" id="IAW-ZT-VGq"/>
+                            <constraint firstItem="rqB-n3-MmV" firstAttribute="bottom" secondItem="RSW-l5-eRA" secondAttribute="bottom" constant="20" id="TM2-OF-jlE"/>
                             <constraint firstItem="f1j-Ol-pW5" firstAttribute="centerY" secondItem="rqB-n3-MmV" secondAttribute="centerY" id="VY0-c4-tdo"/>
                             <constraint firstItem="f1j-Ol-pW5" firstAttribute="top" secondItem="wsC-f5-jbO" secondAttribute="bottom" constant="20" id="W2b-0Y-X0D"/>
                             <constraint firstItem="RSW-l5-eRA" firstAttribute="leading" secondItem="rqB-n3-MmV" secondAttribute="leading" constant="158" id="ZIW-sN-1kl"/>
@@ -458,6 +437,7 @@
                     <connections>
                         <outlet property="connectButton" destination="f1j-Ol-pW5" id="VLr-HQ-06q"/>
                         <outlet property="goBackButton" destination="RSW-l5-eRA" id="dFO-Zv-18Q"/>
+                        <outlet property="whatsAboutToHappenLabel" destination="wsC-f5-jbO" id="Qcs-AD-PKE"/>
                         <segue destination="KCa-bc-FXT" kind="show" identifier="setupInstance" id="c0h-3R-A7O"/>
                         <segue destination="MOD-3L-omt" kind="show" identifier="showError" id="Zm8-Bf-HW3"/>
                     </connections>
@@ -475,18 +455,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="bTD-eO-lC0" userLabel="Animation View" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="125" y="281" width="125" height="125"/>
+                                <rect key="frame" x="67.5" y="223.5" width="240" height="240"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="125" id="7kB-nb-FCG"/>
-                                    <constraint firstAttribute="width" constant="125" id="uOK-eq-vbQ"/>
+                                    <constraint firstAttribute="height" constant="240" id="7kB-nb-FCG"/>
+                                    <constraint firstAttribute="width" constant="240" id="uOK-eq-vbQ"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="animationName" value="home"/>
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="eaY-cI-FSy" userLabel="Statuses Stack View">
-                                <rect key="frame" x="16" y="406" width="343" height="192"/>
+                                <rect key="frame" x="16" y="463.5" width="343" height="192"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="wLi-zh-ZCi" userLabel="Connection Stack View">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="32"/>
@@ -606,7 +586,7 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting to My Home Assistant" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kj7-hM-8gN">
-                                <rect key="frame" x="16" y="257" width="343" height="24"/>
+                                <rect key="frame" x="16" y="199.5" width="343" height="24"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -660,7 +640,8 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jrL-9x-fFX" customClass="MDCButton">
-                                <rect key="frame" x="164.5" y="633" width="46" height="34"/>
+                                <rect key="frame" x="167" y="615" width="41" height="32"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Close"/>
                                 <connections>
                                     <action selector="closeButton:" destination="XKw-m3-Nah" eventType="touchUpInside" id="6gg-m1-GCT"/>
@@ -706,7 +687,7 @@
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="jrL-9x-fFX" firstAttribute="bottom" secondItem="a9V-In-2AW" secondAttribute="bottom" id="5lj-PK-dP5"/>
+                            <constraint firstItem="a9V-In-2AW" firstAttribute="bottom" secondItem="jrL-9x-fFX" secondAttribute="bottom" constant="20" id="5lj-PK-dP5"/>
                             <constraint firstItem="YDH-nq-m24" firstAttribute="leading" secondItem="a9V-In-2AW" secondAttribute="leading" constant="16" id="9Pa-gp-dRF"/>
                             <constraint firstItem="a9V-In-2AW" firstAttribute="trailing" secondItem="tox-sk-7fZ" secondAttribute="trailing" constant="16" id="A8I-5y-qXW"/>
                             <constraint firstItem="a9V-In-2AW" firstAttribute="trailing" secondItem="YDH-nq-m24" secondAttribute="trailing" constant="16" id="BWt-UO-Ym6"/>
@@ -754,7 +735,8 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="KPp-1J-npF"/>
-        <segue reference="Zm8-Bf-HW3"/>
         <segue reference="tfQ-DV-bBL"/>
+        <segue reference="Cox-Jc-BY9"/>
     </inferredMetricsTieBreakers>
+    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
 </document>

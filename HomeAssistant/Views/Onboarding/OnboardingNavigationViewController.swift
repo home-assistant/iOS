@@ -66,5 +66,12 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
         MDCContainedButtonColorThemer.applySemanticColorScheme(containerScheme, to: button)
 
         button.setTitleColor(Constants.blue, for: .normal)
+
+        button.isUppercaseTitle = true
+
+        if let text = button.titleLabel?.text {
+            button.titleLabel?.text = text.uppercased()
+            button.setTitle(text.uppercased(), for: .normal)
+        }
     }
 }

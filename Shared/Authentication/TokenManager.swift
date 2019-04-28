@@ -35,11 +35,11 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     /// After authenticating with the server and getting a code, call this method to exchange the code for
     /// an auth token.
     /// - Parameter code: Code acquired by authenticating with an authenticaiton provider.
-    public func initialTokenWithCode(_ code: String) -> Promise<String> {
-        return self.authenticationAPI.fetchTokenWithCode(code).then { tokenInfo -> Promise<String> in
+    public func initialTokenWithCode(_ code: String) -> Promise<TokenInfo> {
+        return self.authenticationAPI.fetchTokenWithCode(code).then { tokenInfo -> Promise<TokenInfo> in
             self.tokenInfo = tokenInfo
             Current.settingsStore.tokenInfo = tokenInfo
-            return self.bearerToken
+            return Promise.value(tokenInfo)
         }
     }
 
