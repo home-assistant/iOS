@@ -30,7 +30,6 @@ class WelcomeViewController: UIViewController {
         }
 
         self.animationView.animation = Animation.named("ha-loading")
-        self.animationView.backgroundBehavior = .pauseAndRestore
         self.animationView.loopMode = .playOnce
         self.animationView.play(toMarker: "Circles Formed")
     }

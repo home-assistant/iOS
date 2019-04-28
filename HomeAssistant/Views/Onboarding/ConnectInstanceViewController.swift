@@ -9,6 +9,7 @@
 import UIKit
 import Lottie
 import Shared
+import PromiseKit
 
 class ConnectInstanceViewController: UIViewController {
 
@@ -40,10 +41,6 @@ class ConnectInstanceViewController: UIViewController {
         self.overallProgress.animation = Animation.named("home")
         self.overallProgress.play()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 12.5) {
-            self.overallProgress.loopMode = .playOnce
-        }
-
         let completedSteps: [AnimationView] = [connectionStatus, authenticated]
         for animationView in completedSteps {
             animationView.loopMode = .playOnce
@@ -57,8 +54,19 @@ class ConnectInstanceViewController: UIViewController {
             self.configureAnimation(aView)
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 15.0) {
-            self.perform(segue: StoryboardSegue.Onboarding.permissions)
+        self.Connect().done { _ in
+            Current.Log.verbose("Done with setup, continuing!")
+
+            self.overallProgress.loopMode = .playOnce
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
+                self.perform(segue: StoryboardSegue.Onboarding.permissions)
+            }
+        }.catch { error in
+            let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
 
@@ -114,6 +122,68 @@ class ConnectInstanceViewController: UIViewController {
             case .failed:
                 return 820
             }
+        }
+    }
+
+    enum ConnectionError: Error {
+        case noAuthenticatedAPI
+    }
+
+    public func Connect() -> Promise<ConfigResponse> {
+        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+            Current.Log.error("Couldn't get authenticated API!")
+            return Promise(error: ConnectionError.noAuthenticatedAPI)
+        }
+
+        return firstly {
+            api.Register()
+        }.then { regResponse -> Promise<MobileAppRegistrationResponse> in
+            self.setAnimationStatus(self.integrationCreated, state: .success)
+
+            let cloudAvailable = (regResponse.CloudhookURL != nil || regResponse.RemoteUIURL != nil)
+            let cloudState: AnimationState = cloudAvailable ? .success : .failed
+            self.setAnimationStatus(self.cloudStatus, state: cloudState)
+
+            let encryptState: AnimationState = regResponse.WebhookSecret != nil ? .success : .failed
+            self.setAnimationStatus(self.encrypted, state: encryptState)
+
+            return Promise.value(regResponse)
+        }.then { _ -> Promise<(ConfigResponse, [Zone], [WebhookSensorResponse])> in
+            return when(fulfilled: api.GetConfig(), api.GetZones(), api.RegisterSensors())
+        }.map { config, zones, _ in
+            if let oldHA = api.ensureVersion(config.Version) {
+                throw oldHA
+            }
+
+            HomeAssistantAPI.LoadedComponents = config.Components
+
+            guard api.MobileAppComponentLoaded else {
+                Current.Log.error("mobile_app component is not loaded!")
+                throw HomeAssistantAPI.APIError.mobileAppComponentNotLoaded
+            }
+
+            let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
+
+            prefs.setValue(config.LocationName, forKey: "location_name")
+            prefs.setValue(config.Latitude, forKey: "latitude")
+            prefs.setValue(config.Longitude, forKey: "longitude")
+            prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
+            prefs.setValue(config.LengthUnit, forKey: "length_unit")
+            prefs.setValue(config.MassUnit, forKey: "mass_unit")
+            prefs.setValue(config.PressureUnit, forKey: "pressure_unit")
+            prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
+            prefs.setValue(config.Timezone, forKey: "time_zone")
+            prefs.setValue(config.Version, forKey: "version")
+            prefs.setValue(config.ThemeColor, forKey: "themeColor")
+
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
+                                            object: nil, userInfo: nil)
+
+            api.storeZones(zones: zones)
+
+            self.setAnimationStatus(self.sensorsConfigured, state: .success)
+
+            return config
         }
     }
 }

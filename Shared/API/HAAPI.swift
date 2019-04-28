@@ -155,35 +155,12 @@ public class HomeAssistantAPI {
         return MJPEGStreamer(manager: newManager)
     }
 
-    /// Configure global state of the app to use our newly validated credentials.
-    func confirmAPI() {
-        Current.tokenManager = self.tokenManager
-    }
-
     public func Connect() -> Promise<ConfigResponse> {
 
-        var registrationPromise: Promise<Void>?
-        let initialRegistration = (Current.settingsStore.webhookID == nil)
-
-        if initialRegistration {
-            registrationPromise = self.Register().asVoid()
-        } else {
-            Current.Log.warning("Device already registered with mobile_app, updating registration")
-            registrationPromise = self.UpdateRegistration().asVoid()
-        }
-
-        // self.startWebsockets()
-
         return firstly {
-            registrationPromise!
+            self.UpdateRegistration()
         }.then { _ -> Promise<(ConfigResponse, [Zone], Void)> in
-            var sensorsPromise: Promise<Void>?
-            if initialRegistration {
-                sensorsPromise = self.RegisterSensors().asVoid()
-            } else {
-                sensorsPromise = self.UpdateSensors(.Unknown).asVoid()
-            }
-            return when(fulfilled: self.GetConfig(), self.GetZones(), sensorsPromise!)
+            return when(fulfilled: self.GetConfig(), self.GetZones(), self.UpdateSensors(.Unknown).asVoid())
         }.map { config, zones, _ in
             if let oldHA = self.ensureVersion(config.Version) {
                 throw oldHA
@@ -424,7 +401,7 @@ public class HomeAssistantAPI {
         return Mapper().toJSON(ident)
     }
 
-    private func storeZones(zones: [Zone]) {
+    public func storeZones(zones: [Zone]) {
         let realm = Current.realm()
 
         let existingZoneIDs: [String] = realm.objects(RLMZone.self).map { $0.ID }
@@ -700,7 +677,7 @@ public class HomeAssistantAPI {
 
     }
 
-    private func ensureVersion(_ currentVersionStr: String) -> APIError? {
+    public func ensureVersion(_ currentVersionStr: String) -> APIError? {
         let currentVersion = Version(stringLiteral: currentVersionStr.replacingOccurrences(of: ".dev0", with: ""))
         if HomeAssistantAPI.minimumRequiredVersion >= currentVersion {
             return APIError.mustUpgradeHomeAssistant(currentVersion)
