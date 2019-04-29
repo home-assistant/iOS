@@ -344,16 +344,6 @@ class SettingsViewController: FormViewController {
         UserDefaults.standard.synchronize()
         prefs.removePersistentDomain(forName: bundleId)
         prefs.synchronize()
-        let urlRow: URLRow = self.form.rowBy(tag: "baseURL")!
-        urlRow.value = nil
-        urlRow.updateCell()
-        let statusSection: Section = self.form.sectionBy(tag: "status")!
-        statusSection.hidden = true
-        statusSection.evaluateHidden()
-        let detailsSection: Section = self.form.sectionBy(tag: "details")!
-        detailsSection.hidden = true
-        detailsSection.evaluateHidden()
-        self.tableView.reloadData()
     }
 
     override var canBecomeFirstResponder: Bool {
