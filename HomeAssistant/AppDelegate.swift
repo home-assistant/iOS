@@ -133,7 +133,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillEnterForeground(_ application: UIApplication) {}
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        CheckPermissionsStatus()
         Lokalise.shared.checkForUpdates { (updated, error) in
             if let error = error {
                 Current.Log.error("Error when updating Lokalise: \(error)")

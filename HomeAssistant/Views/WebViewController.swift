@@ -108,8 +108,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         webView.scrollView.addSubview(refreshControl)
         webView.scrollView.bounces = true
 
-        CheckPermissionsStatus()
-
         if let api = HomeAssistantAPI.authenticatedAPI() {
             if let connectionInfo = Current.settingsStore.connectionInfo,
                 let webviewURL = connectionInfo.webviewURL() {
