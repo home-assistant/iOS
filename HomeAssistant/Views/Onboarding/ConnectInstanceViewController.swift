@@ -155,27 +155,6 @@ class ConnectInstanceViewController: UIViewController {
                 throw oldHA
             }
 
-            HomeAssistantAPI.LoadedComponents = config.Components
-
-            guard api.MobileAppComponentLoaded else {
-                Current.Log.error("mobile_app component is not loaded!")
-                throw HomeAssistantAPI.APIError.mobileAppComponentNotLoaded
-            }
-
-            let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
-
-            prefs.setValue(config.LocationName, forKey: "location_name")
-            prefs.setValue(config.Latitude, forKey: "latitude")
-            prefs.setValue(config.Longitude, forKey: "longitude")
-            prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
-            prefs.setValue(config.LengthUnit, forKey: "length_unit")
-            prefs.setValue(config.MassUnit, forKey: "mass_unit")
-            prefs.setValue(config.PressureUnit, forKey: "pressure_unit")
-            prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
-            prefs.setValue(config.Timezone, forKey: "time_zone")
-            prefs.setValue(config.Version, forKey: "version")
-            prefs.setValue(config.ThemeColor, forKey: "themeColor")
-
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
                                             object: nil, userInfo: nil)
 

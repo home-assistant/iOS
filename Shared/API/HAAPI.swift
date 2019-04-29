@@ -19,6 +19,7 @@ import UserNotifications
 import Intents
 import Version
 import Starscream
+import Crashlytics
 #if os(iOS)
 import Reachability
 #endif
@@ -166,28 +167,6 @@ public class HomeAssistantAPI {
                 throw oldHA
             }
 
-            HomeAssistantAPI.LoadedComponents = config.Components
-
-            guard self.MobileAppComponentLoaded else {
-                Current.Log.error("mobile_app component is not loaded!")
-                throw APIError.mobileAppComponentNotLoaded
-            }
-
-            Current.settingsStore.cloudhookURL = config.CloudhookURL
-            Current.settingsStore.remoteUIURL = config.RemoteUIURL
-
-            self.prefs.setValue(config.LocationName, forKey: "location_name")
-            self.prefs.setValue(config.Latitude, forKey: "latitude")
-            self.prefs.setValue(config.Longitude, forKey: "longitude")
-            self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
-            self.prefs.setValue(config.LengthUnit, forKey: "length_unit")
-            self.prefs.setValue(config.MassUnit, forKey: "mass_unit")
-            self.prefs.setValue(config.PressureUnit, forKey: "pressure_unit")
-            self.prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
-            self.prefs.setValue(config.Timezone, forKey: "time_zone")
-            self.prefs.setValue(config.Version, forKey: "version")
-            self.prefs.setValue(config.ThemeColor, forKey: "themeColor")
-
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
                                             object: nil, userInfo: nil)
 
@@ -255,11 +234,39 @@ public class HomeAssistantAPI {
     }
 
     public func GetConfig(_ useWebhook: Bool = true) -> Promise<ConfigResponse> {
+        var promise: Promise<ConfigResponse> = self.request(path: "config", callingFunctionName: "\(#function)")
+
         if useWebhook {
-            return self.webhook("get_config", payload: [:], callingFunctionName: "\(#function)")
+            promise = self.webhook("get_config", payload: [:], callingFunctionName: "\(#function)")
         }
 
-        return self.request(path: "config", callingFunctionName: "\(#function)")
+        return promise.then { config -> Promise<ConfigResponse> in
+            HomeAssistantAPI.LoadedComponents = config.Components
+
+            guard self.MobileAppComponentLoaded else {
+                Current.Log.error("mobile_app component is not loaded!")
+                throw HomeAssistantAPI.APIError.mobileAppComponentNotLoaded
+            }
+
+            Current.settingsStore.cloudhookURL = config.CloudhookURL
+            Current.settingsStore.remoteUIURL = config.RemoteUIURL
+
+            self.prefs.setValue(config.LocationName, forKey: "location_name")
+            self.prefs.setValue(config.Latitude, forKey: "latitude")
+            self.prefs.setValue(config.Longitude, forKey: "longitude")
+            self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
+            self.prefs.setValue(config.LengthUnit, forKey: "length_unit")
+            self.prefs.setValue(config.MassUnit, forKey: "mass_unit")
+            self.prefs.setValue(config.PressureUnit, forKey: "pressure_unit")
+            self.prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
+            self.prefs.setValue(config.Timezone, forKey: "time_zone")
+            self.prefs.setValue(config.Version, forKey: "version")
+            self.prefs.setValue(config.ThemeColor, forKey: "themeColor")
+
+            Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "HA_Version")
+
+            return Promise.value(config)
+        }
     }
 
     public func GetEvents() -> Promise<[EventsResponse]> {
