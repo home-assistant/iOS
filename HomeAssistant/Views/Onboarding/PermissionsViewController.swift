@@ -28,8 +28,10 @@ class PermissionsViewController: UIViewController, PermissionViewChangeDelegate 
     }
 
     @IBAction func closeButton(_ sender: UIButton) {
+        UserDefaults(suiteName: Constants.AppGroupID)?.set(true, forKey: "onboarding_complete")
+        Current.onboardingComplete?()
         if let navVC = self.navigationController as? OnboardingNavigationViewController {
-            print("Dismissing from permissions")
+            Current.Log.verbose("Dismissing from permissions")
             navVC.dismiss()
         }
     }

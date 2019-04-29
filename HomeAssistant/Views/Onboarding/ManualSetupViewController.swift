@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Shared
 
 class ManualSetupViewController: UIViewController {
 
@@ -19,7 +20,7 @@ class ManualSetupViewController: UIViewController {
     }
 
     @IBAction func connectButtonTapped(_ sender: UIButton) {
-        print("Connect button tapped")
+        Current.Log.verbose("Connect button tapped")
     }
 
 }

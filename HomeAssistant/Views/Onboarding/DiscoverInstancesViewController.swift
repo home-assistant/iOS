@@ -91,12 +91,12 @@ class DiscoverInstancesViewController: UIViewController {
 
     @objc func HomeAssistantUndiscovered(_ notification: Notification) {
         if let userInfo = (notification as Notification).userInfo, let name = userInfo["name"] as? String {
-            print("Remove discovered instance \(name)")
+            Current.Log.verbose("Remove discovered instance \(name)")
         }
     }
 
     @IBAction func continueManually(_ sender: Any) {
-        print("User wants to continue manually")
+        Current.Log.verbose("User wants to continue manually")
         self.perform(segue: StoryboardSegue.Onboarding.continueManually, sender: nil)
     }
 

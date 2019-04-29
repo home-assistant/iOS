@@ -58,6 +58,8 @@ public class Environment {
 
     public var signInRequiredCallback: (() -> Void)?
 
+    public var onboardingComplete: (() -> Void)?
+
     public var isPerformingSingleShotLocationQuery = false
 
     public var syncMonitoredRegions: (() -> Void)?

@@ -28,7 +28,7 @@ class ChooseDiscoveredInstanceViewController: UIViewController {
             navVC.styleButton(self.manualButton)
         }
 
-        print("Received instances", self.instances)
+        Current.Log.verbose("Received instances \(self.instances)")
 
         var label = L10n.Onboarding.Discovery.ResultsLabel.singular(self.instances.count)
         if self.instances.count > 1 {
@@ -38,7 +38,7 @@ class ChooseDiscoveredInstanceViewController: UIViewController {
     }
 
     @IBAction func continueManually(_ sender: Any) {
-        print("User wants to continue manually")
+        Current.Log.verbose("User wants to continue manually")
         self.perform(segue: StoryboardSegue.Onboarding.continueManually, sender: nil)
     }
 
@@ -53,7 +53,7 @@ class ChooseDiscoveredInstanceViewController: UIViewController {
 extension ChooseDiscoveredInstanceViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedInstance = self.instances[indexPath.row]
-        print("Selected row at \(indexPath.row) \(self.selectedInstance)")
+        Current.Log.verbose("Selected row at \(indexPath.row) \(self.selectedInstance)")
         self.perform(segue: StoryboardSegue.Onboarding.setupDiscoveredInstance, sender: self.selectedInstance)
     }
 }

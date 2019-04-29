@@ -41,7 +41,6 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
     }
 
     func dismiss() {
-        print("dismissing!")
         self.dismiss(animated: true, completion: nil)
         onDismissCallback?(self)
     }

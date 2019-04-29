@@ -133,10 +133,10 @@ class AuthenticationViewController: UIViewController {
                 }
             }
             sessionManager.request(discoveryInfoURL).validate().responseJSON { response in
-                print("Request: \(String(describing: response.request))")   // original url request
-                print("Response: \(String(describing: response.response))") // http url response
-                print("Result: \(response.result)")                         // response serialization result
-                print("Error: \(response.error)")
+                Current.Log.verbose("Request: \(String(describing: response.request))")
+                Current.Log.verbose("Response: \(String(describing: response.response))")
+                Current.Log.verbose("Result: \(response.result)")
+                Current.Log.error("Error: \(response.error)")
 
                 if let error = response.error {
                     let errorCode = (error as NSError).code

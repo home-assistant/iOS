@@ -83,7 +83,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let webView = WebViewController()
 
-        let navController = UINavigationController(rootViewController: webView)
+        var navController = UINavigationController(rootViewController: webView)
+
+        if prefs.object(forKey: "onboarding_complete") == nil {
+            navController = StoryboardScene.Onboarding.navController.instantiate()
+        }
 
         self.window!.rootViewController = navController
         self.window!.makeKeyAndVisible()
@@ -115,6 +119,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             navController.present(alert, animated: true, completion: nil)
 
             alert.popoverPresentationController?.sourceView = webView.view
+        }
+
+        Current.onboardingComplete = {
+            self.window!.rootViewController = UINavigationController(rootViewController: webView)
         }
     }
 
