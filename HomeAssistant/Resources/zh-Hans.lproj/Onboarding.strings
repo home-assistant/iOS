@@ -5,6 +5,9 @@
 /* Class = "UILabel"; text = "The most advanced Home Automation app on iOS"; ObjectID = "5td-Yc-nnx"; */
 "5td-Yc-nnx.text" = "The most advanced Home Automation app on iOS";
 
+/* Class = "UILabel"; text = "Manual Configuration"; ObjectID = "7iT-bd-cdY"; */
+"7iT-bd-cdY.text" = "Manual Configuration";
+
 /* Class = "UILabel"; text = "http://hassio.local:8123"; ObjectID = "8JC-7Y-FvP"; */
 "8JC-7Y-FvP.text" = "http://hassio.local:8123";
 
@@ -22,6 +25,9 @@
 
 /* Class = "UILabel"; text = "Nabu Casa Cloud Detected"; ObjectID = "O7a-0s-trd"; */
 "O7a-0s-trd.text" = "Nabu Casa Cloud Detected";
+
+/* Class = "UILabel"; text = "Please enter your Home Assistant URL to continue. It must be a fully formed URL of the format \"http://hassio.local:8123\" (that is, containing a scheme/protocol, hostname and port)."; ObjectID = "PIW-dY-j0P"; */
+"PIW-dY-j0P.text" = "Please enter your Home Assistant URL to continue. It must be a fully formed URL of the format \"http://hassio.local:8123\" (that is, containing a scheme/protocol, hostname and port).";
 
 /* Class = "UIButton"; normalTitle = "Go Back"; ObjectID = "RSW-l5-eRA"; */
 "RSW-l5-eRA.normalTitle" = "Go Back";

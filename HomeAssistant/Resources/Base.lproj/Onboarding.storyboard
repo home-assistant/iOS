@@ -117,7 +117,6 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <action selector="continueManually:" destination="zQf-lI-ZmB" eventType="touchUpInside" id="ZFs-tB-rgK"/>
                                     <segue destination="sGi-y7-DOI" kind="show" identifier="continueManually" id="tfQ-DV-bBL"/>
                                 </connections>
                             </button>
@@ -163,8 +162,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xO0-K1-GJX">
-                                <rect key="frame" x="50" y="328.5" width="275" height="30"/>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="http://hassio.local:8123" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xO0-K1-GJX">
+                                <rect key="frame" x="16" y="328.5" width="343" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="URL" returnKeyType="continue" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="url"/>
@@ -175,19 +174,37 @@
                                 <state key="normal" title="Connect"/>
                                 <connections>
                                     <action selector="connectButtonTapped:" destination="sGi-y7-DOI" eventType="touchUpInside" id="lw7-fv-9pS"/>
-                                    <segue destination="k1J-B5-uSb" kind="show" id="Ud8-Jo-ceo"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manual Configuration" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7iT-bd-cdY">
+                                <rect key="frame" x="16" y="20" width="343" height="32"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PIW-dY-j0P" userLabel="Instructions">
+                                <rect key="frame" x="16" y="60" width="343" height="103.5"/>
+                                <string key="text">Please enter your Home Assistant URL to continue. It must be a fully formed URL of the format "http://hassio.local:8123" (that is, containing a scheme/protocol, hostname and port).</string>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="xO0-K1-GJX" firstAttribute="leading" secondItem="qpd-6g-qfw" secondAttribute="leading" constant="50" id="4rJ-zE-nZa"/>
+                            <constraint firstItem="xO0-K1-GJX" firstAttribute="leading" secondItem="qpd-6g-qfw" secondAttribute="leading" constant="16" id="4rJ-zE-nZa"/>
+                            <constraint firstItem="7iT-bd-cdY" firstAttribute="centerX" secondItem="gld-QQ-oTD" secondAttribute="centerX" id="CxS-9v-Nze"/>
+                            <constraint firstItem="PIW-dY-j0P" firstAttribute="leading" secondItem="qpd-6g-qfw" secondAttribute="leading" constant="16" id="FBS-wt-D1F"/>
                             <constraint firstItem="xO0-K1-GJX" firstAttribute="centerY" secondItem="qpd-6g-qfw" secondAttribute="centerY" id="Hz0-kj-LCV"/>
                             <constraint firstItem="gld-QQ-oTD" firstAttribute="top" secondItem="xO0-K1-GJX" secondAttribute="bottom" constant="30" id="J3S-0X-fVg"/>
+                            <constraint firstItem="PIW-dY-j0P" firstAttribute="top" secondItem="7iT-bd-cdY" secondAttribute="bottom" constant="8" id="THH-rE-Ndy"/>
+                            <constraint firstItem="qpd-6g-qfw" firstAttribute="trailing" secondItem="PIW-dY-j0P" secondAttribute="trailing" constant="16" id="fxU-0O-DTF"/>
                             <constraint firstItem="gld-QQ-oTD" firstAttribute="centerX" secondItem="qpd-6g-qfw" secondAttribute="centerX" id="gZJ-nI-8A9"/>
-                            <constraint firstItem="xO0-K1-GJX" firstAttribute="trailing" secondItem="qpd-6g-qfw" secondAttribute="trailing" constant="-50" id="hbr-Lg-ib9"/>
+                            <constraint firstItem="qpd-6g-qfw" firstAttribute="trailing" secondItem="xO0-K1-GJX" secondAttribute="trailing" constant="16" id="hbr-Lg-ib9"/>
+                            <constraint firstItem="7iT-bd-cdY" firstAttribute="top" secondItem="qpd-6g-qfw" secondAttribute="top" id="qb8-of-U2s"/>
                             <constraint firstItem="xO0-K1-GJX" firstAttribute="centerX" secondItem="qpd-6g-qfw" secondAttribute="centerX" id="si4-53-5Kn"/>
+                            <constraint firstItem="7iT-bd-cdY" firstAttribute="leading" secondItem="qpd-6g-qfw" secondAttribute="leading" constant="16" id="yt7-nX-lPb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="qpd-6g-qfw"/>
                     </view>
@@ -199,7 +216,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ccG-Tb-Y1L" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2474" y="-1343"/>
+            <point key="canvasLocation" x="-2474.4000000000001" y="-1343.4782608695652"/>
         </scene>
         <!--Choose Discovered Instance Controller-->
         <scene sceneID="Ftc-mS-ShN">
@@ -267,7 +284,6 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <action selector="continueManually:" destination="aAK-PP-uhk" eventType="touchUpInside" id="fb5-Df-3Af"/>
                                     <segue destination="sGi-y7-DOI" kind="show" identifier="continueManually" id="age-hj-Hrf"/>
                                 </connections>
                             </button>
@@ -288,7 +304,7 @@
                         <viewLayoutGuide key="safeArea" id="MrN-V0-Pgp"/>
                     </view>
                     <connections>
-                        <outlet property="manualButton" destination="Re7-IX-23x" id="apB-xi-9g6"/>
+                        <outlet property="manualButton" destination="Re7-IX-23x" id="ymw-0i-M7Q"/>
                         <outlet property="statusLabel" destination="NJM-pS-Fuc" id="FZC-mA-1bm"/>
                         <outlet property="tableView" destination="xcD-7Q-tXz" id="MJi-3f-v6a"/>
                         <outlet property="view" destination="mQY-ah-0sc" id="c54-CT-8mP"/>

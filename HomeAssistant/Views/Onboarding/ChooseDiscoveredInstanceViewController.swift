@@ -37,11 +37,6 @@ class ChooseDiscoveredInstanceViewController: UIViewController {
         self.statusLabel.text = label
     }
 
-    @IBAction func continueManually(_ sender: Any) {
-        Current.Log.verbose("User wants to continue manually")
-        self.perform(segue: StoryboardSegue.Onboarding.continueManually, sender: nil)
-    }
-
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
         if segueType == .setupDiscoveredInstance, let vc = segue.destination as? AuthenticationViewController {

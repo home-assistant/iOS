@@ -19,8 +19,8 @@ import UserNotifications
 import Intents
 import Version
 import Starscream
-import Crashlytics
 #if os(iOS)
+import Crashlytics
 import Reachability
 #endif
 
@@ -263,7 +263,9 @@ public class HomeAssistantAPI {
             self.prefs.setValue(config.Version, forKey: "version")
             self.prefs.setValue(config.ThemeColor, forKey: "themeColor")
 
+            #if os(iOS)
             Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "HA_Version")
+            #endif
 
             return Promise.value(config)
         }

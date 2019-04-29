@@ -21,6 +21,17 @@ class ManualSetupViewController: UIViewController {
 
     @IBAction func connectButtonTapped(_ sender: UIButton) {
         Current.Log.verbose("Connect button tapped")
+        self.perform(segue: StoryboardSegue.Onboarding.setupManualInstance)
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
+        if segueType == .setupManualInstance, let vc = segue.destination as? AuthenticationViewController {
+            guard let fieldVal = self.urlField.text, let url = URL(string: fieldVal) else { return }
+
+            let isSSL = url.scheme == "https"
+            vc.instance = DiscoveredHomeAssistant(baseURL: url, name: "Manual", version: "0.92.0", ssl: isSSL)
+        }
     }
 
 }
