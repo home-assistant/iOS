@@ -70,13 +70,13 @@ public class WebhookSensors {
                                         uniqueID: "battery_level", icon: .batteryIcon,
                                         deviceClass: .battery, state: level)
         levelSensor.Icon = icon
-        levelSensor.Attributes = ["State": state]
+        levelSensor.Attributes = ["Battery State": state]
         levelSensor.UnitOfMeasurement = "%"
         let stateSensor = WebhookSensor(name: "Battery State",
                                         uniqueID: "battery_state", icon: .batteryIcon,
                                         deviceClass: .battery, state: state)
         stateSensor.Icon = icon
-        stateSensor.Attributes = ["Level": level]
+        stateSensor.Attributes = ["Battery Level": level]
         return [levelSensor, stateSensor]
     }
 
