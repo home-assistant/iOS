@@ -74,6 +74,9 @@ class Bonjour {
     var nsp: NetService
     var nsdel: BonjourDelegate?
 
+    public var browserIsRunning: Bool = false
+    public var publishIsRunning: Bool = false
+
     init() {
         let device = Device.current
         self.nsb = NetServiceBrowser()
@@ -109,23 +112,27 @@ class Bonjour {
     }
 
     func startDiscovery() {
+        self.browserIsRunning = true
         self.nsdel = BonjourDelegate()
         nsb.delegate = nsdel
         nsb.searchForServices(ofType: "_home-assistant._tcp.", inDomain: "local.")
     }
 
     func stopDiscovery() {
+        self.browserIsRunning = false
         nsb.stop()
     }
 
     func startPublish() {
         //        self.nsdel = BonjourDelegate()
         //        nsp.delegate = nsdel
+        self.publishIsRunning = true
         nsp.setTXTRecord(NetService.data(fromTXTRecord: buildPublishDict()))
         nsp.publish()
     }
 
     func stopPublish() {
+        self.publishIsRunning = false
         nsp.stop()
     }
 

@@ -55,10 +55,12 @@ class DiscoverInstancesViewController: UIViewController {
             self.discovery.startPublish()
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+                if self.discovery.browserIsRunning && self.discovery.publishIsRunning {
+                    self.perform(segue: StoryboardSegue.Onboarding.chooseDiscoveredInstance, sender: nil)
+                }
+
                 self.discovery.stopDiscovery()
                 self.discovery.stopPublish()
-
-                self.perform(segue: StoryboardSegue.Onboarding.chooseDiscoveredInstance, sender: nil)
             })
         }
 
@@ -70,9 +72,14 @@ class DiscoverInstancesViewController: UIViewController {
                            name: NSNotification.Name(rawValue: "homeassistant.undiscovered"), object: nil)
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
 
+        self.discovery.stopDiscovery()
+        self.discovery.stopPublish()
+    }
+
+    deinit {
         self.discovery.stopDiscovery()
         self.discovery.stopPublish()
     }
