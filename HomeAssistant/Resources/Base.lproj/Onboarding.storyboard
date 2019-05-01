@@ -45,7 +45,10 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4h-WC-wIw" customClass="MDCButton">
-                                <rect key="frame" x="154.5" y="615" width="66" height="32"/>
+                                <rect key="frame" x="154.5" y="599" width="66" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="1d3-Wv-yWY"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Continue"/>
                                 <connections>
@@ -111,7 +114,10 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fqx-lo-wDB" customClass="MDCButton">
-                                <rect key="frame" x="102" y="615" width="171" height="32"/>
+                                <rect key="frame" x="102" y="599" width="171" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="RL2-4Z-fBu"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Enter Address Manually">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -169,7 +175,10 @@
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="URL" returnKeyType="continue" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="url"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gld-QQ-oTD" userLabel="Connect Button">
-                                <rect key="frame" x="156.5" y="388.5" width="62" height="32"/>
+                                <rect key="frame" x="156.5" y="388.5" width="62" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="ony-Dh-Fz1"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Connect"/>
                                 <connections>
@@ -193,8 +202,7 @@
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="xO0-K1-GJX" firstAttribute="leading" secondItem="qpd-6g-qfw" secondAttribute="leading" constant="16" id="4rJ-zE-nZa"/>
-                            <constraint firstItem="7iT-bd-cdY" firstAttribute="centerX" secondItem="gld-QQ-oTD" secondAttribute="centerX" id="CxS-9v-Nze"/>
+                            <constraint firstItem="7iT-bd-cdY" firstAttribute="centerX" secondItem="qpd-6g-qfw" secondAttribute="centerX" id="CxS-9v-Nze"/>
                             <constraint firstItem="PIW-dY-j0P" firstAttribute="leading" secondItem="qpd-6g-qfw" secondAttribute="leading" constant="16" id="FBS-wt-D1F"/>
                             <constraint firstItem="xO0-K1-GJX" firstAttribute="centerY" secondItem="qpd-6g-qfw" secondAttribute="centerY" id="Hz0-kj-LCV"/>
                             <constraint firstItem="gld-QQ-oTD" firstAttribute="top" secondItem="xO0-K1-GJX" secondAttribute="bottom" constant="30" id="J3S-0X-fVg"/>
@@ -278,7 +286,10 @@
                                 </connections>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Re7-IX-23x" userLabel="Manual Button" customClass="MDCButton">
-                                <rect key="frame" x="102" y="615" width="171" height="32"/>
+                                <rect key="frame" x="102" y="599" width="171" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="Wbe-aT-sLp"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Enter Address Manually">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -348,7 +359,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tqw-iY-A2S" customClass="MDCButton">
-                                <rect key="frame" x="153" y="575" width="69" height="32"/>
+                                <rect key="frame" x="153" y="539" width="69" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="n0k-es-6p0"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="More Info"/>
                                 <connections>
@@ -356,7 +370,10 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="suf-pJ-Nle" customClass="MDCButton">
-                                <rect key="frame" x="150" y="615" width="75" height="32"/>
+                                <rect key="frame" x="150" y="599" width="75" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="jRH-LG-4f8"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Start Over"/>
                                 <connections>
@@ -377,7 +394,7 @@
                             <constraint firstItem="CIS-8C-niN" firstAttribute="centerX" secondItem="OqO-iB-GQA" secondAttribute="centerX" id="S2E-bj-cip"/>
                             <constraint firstItem="Ge3-1c-5KC" firstAttribute="top" secondItem="CIS-8C-niN" secondAttribute="bottom" id="haw-oD-9o7"/>
                             <constraint firstItem="Tqw-iY-A2S" firstAttribute="centerX" secondItem="OqO-iB-GQA" secondAttribute="centerX" id="n1s-dd-9Wu"/>
-                            <constraint firstItem="OqO-iB-GQA" firstAttribute="bottom" secondItem="Tqw-iY-A2S" secondAttribute="bottom" constant="60" id="vYk-ql-har"/>
+                            <constraint firstItem="OqO-iB-GQA" firstAttribute="bottom" secondItem="Tqw-iY-A2S" secondAttribute="bottom" constant="80" id="vYk-ql-har"/>
                             <constraint firstItem="suf-pJ-Nle" firstAttribute="centerX" secondItem="OqO-iB-GQA" secondAttribute="centerX" id="wc6-h8-gS0"/>
                             <constraint firstItem="OqO-iB-GQA" firstAttribute="bottom" secondItem="suf-pJ-Nle" secondAttribute="bottom" constant="20" id="zJ0-ex-FIA"/>
                         </constraints>
@@ -408,27 +425,30 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wsC-f5-jbO">
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wsC-f5-jbO">
                                 <rect key="frame" x="16" y="221" width="343" height="86.5"/>
                                 <string key="text">We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. </string>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RSW-l5-eRA" customClass="MDCButton">
-                                <rect key="frame" x="158" y="615" width="61" height="32"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
-                                <state key="normal" title="Go Back"/>
-                                <connections>
-                                    <action selector="connectButtonTapped:" destination="jkw-3v-pbb" eventType="touchUpInside" id="hb4-DT-HSv"/>
-                                </connections>
-                            </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f1j-Ol-pW5" customClass="MDCButton">
                                 <rect key="frame" x="156.5" y="327.5" width="62" height="32"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Connect"/>
                                 <connections>
                                     <action selector="connectButtonTapped:" destination="jkw-3v-pbb" eventType="touchUpInside" id="omV-gf-Uil"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RSW-l5-eRA" customClass="MDCButton">
+                                <rect key="frame" x="150" y="599" width="75" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="UDb-3K-qkT"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <state key="normal" title="Start Over"/>
+                                <connections>
+                                    <segue destination="Cpw-N3-yji" kind="show" id="Fz4-Qa-34b"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -438,13 +458,12 @@
                             <constraint firstItem="lM3-aA-jqO" firstAttribute="top" secondItem="rqB-n3-MmV" secondAttribute="top" id="4vn-fB-duB"/>
                             <constraint firstItem="lM3-aA-jqO" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="rqB-n3-MmV" secondAttribute="leading" id="8mV-N1-KVQ"/>
                             <constraint firstItem="rqB-n3-MmV" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="lM3-aA-jqO" secondAttribute="trailing" id="IAW-ZT-VGq"/>
+                            <constraint firstItem="RSW-l5-eRA" firstAttribute="centerX" secondItem="rqB-n3-MmV" secondAttribute="centerX" id="PFp-UW-11f"/>
                             <constraint firstItem="rqB-n3-MmV" firstAttribute="bottom" secondItem="RSW-l5-eRA" secondAttribute="bottom" constant="20" id="TM2-OF-jlE"/>
                             <constraint firstItem="f1j-Ol-pW5" firstAttribute="centerY" secondItem="rqB-n3-MmV" secondAttribute="centerY" id="VY0-c4-tdo"/>
                             <constraint firstItem="f1j-Ol-pW5" firstAttribute="top" secondItem="wsC-f5-jbO" secondAttribute="bottom" constant="20" id="W2b-0Y-X0D"/>
-                            <constraint firstItem="RSW-l5-eRA" firstAttribute="leading" secondItem="rqB-n3-MmV" secondAttribute="leading" constant="158" id="ZIW-sN-1kl"/>
                             <constraint firstItem="lM3-aA-jqO" firstAttribute="centerX" secondItem="rqB-n3-MmV" secondAttribute="centerX" id="cFq-EZ-ePk"/>
                             <constraint firstItem="f1j-Ol-pW5" firstAttribute="centerX" secondItem="rqB-n3-MmV" secondAttribute="centerX" id="iWY-Xa-DuW"/>
-                            <constraint firstItem="rqB-n3-MmV" firstAttribute="trailing" secondItem="RSW-l5-eRA" secondAttribute="trailing" constant="156" id="oMw-yw-zh7"/>
                             <constraint firstItem="wsC-f5-jbO" firstAttribute="leading" secondItem="rqB-n3-MmV" secondAttribute="leading" constant="16" id="t7s-xE-sTN"/>
                             <constraint firstItem="rqB-n3-MmV" firstAttribute="trailing" secondItem="wsC-f5-jbO" secondAttribute="trailing" constant="16" id="utY-40-dLq"/>
                         </constraints>
@@ -656,7 +675,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jrL-9x-fFX" customClass="MDCButton">
-                                <rect key="frame" x="167" y="615" width="41" height="32"/>
+                                <rect key="frame" x="167" y="599" width="41" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="P7h-vB-eVY"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Close"/>
                                 <connections>
@@ -750,7 +772,8 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="KPp-1J-npF"/>
+        <segue reference="fgm-KO-Tdk"/>
+        <segue reference="Nmk-e0-aiM"/>
         <segue reference="tfQ-DV-bBL"/>
         <segue reference="Cox-Jc-BY9"/>
     </inferredMetricsTieBreakers>
