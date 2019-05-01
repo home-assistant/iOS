@@ -69,7 +69,7 @@ class SettingsViewController: FormViewController {
         }
 
         <<< ButtonRow {
-            $0.title = "Connection"
+            $0.title = L10n.Settings.ConnectionSection.header
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 return ConnectionSettingsViewController()
             }, onDismiss: { vc in
