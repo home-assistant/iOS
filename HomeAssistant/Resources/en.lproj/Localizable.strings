@@ -548,7 +548,7 @@
 "sensors.battery_level.name" = "Battery Level";
 "sensors.connectivity.not_connected" = "Not Connected";
 "sensors.bssid.name" = "BSSID";
-"sensors.ssid.name" = "BSSID";
+"sensors.ssid.name" = "SSID";
 "sensors.connection_type.name" = "Connection Type";
 "sensors.connection_type.attributes.cell_tech_type" = "Cellular Technology";
 "sensors.cellular_provider.name" = "Cellular Provider%@";

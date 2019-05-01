@@ -539,8 +539,8 @@
 "ha_api.api_error.invalid_response" = "Received invalid response from Home Assistant";
 "ha_api.api_error.cant_build_url" = "Cant build API URL";
 "ha_api.api_error.not_configured" = "HA API not configured";
-"ha_api.api_error.mobile_app_component_not_loaded" = "mobile_app component not loaded or not detected";
-"ha_api.api_error.webhook_gone" = "mobile_app integration has been deleted, must reconfigure app.";
+"ha_api.api_error.mobile_app_component_not_loaded" = "The mobile_app component is not loaded. Please add it to your configuration, restart Home Assistant, and try again.";
+"ha_api.api_error.webhook_gone" = "mobile_app integration has been deleted, you must reconfigure the app.";
 "ha_api.api_error.must_upgrade_home_assistant" = "Your Home Assistant version (%@) is too old, you must upgrade to at least version %@ to use the app.";
 "ha_api.api_error.unknown" = "An unknown error occurred.";
 "sensors.unknown_state" = "Unknown";
@@ -554,7 +554,7 @@
 "sensors.battery_level.name" = "Battery Level";
 "sensors.connectivity.not_connected" = "Not Connected";
 "sensors.bssid.name" = "BSSID";
-"sensors.ssid.name" = "BSSID";
+"sensors.ssid.name" = "SSID";
 "sensors.connection_type.name" = "Connection Type";
 "sensors.connection_type.attributes.cell_tech_type" = "Cellular Technology";
 "sensors.cellular_provider.name" = "Cellular Provider%@";

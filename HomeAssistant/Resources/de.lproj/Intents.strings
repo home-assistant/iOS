@@ -14,7 +14,7 @@
 "CiB3s6" = "Service ￼${serviceDomain}.${service} mit Daten aus der Zwischenablage aufrufen";
 "FBQiVD" = "Rufe einen Dienst in der Home Assistant-Instanz auf";
 "FN8zqO" = "Letztes Standbild von ${camera} in die Zwischenablage kopieren";
-"FZ9qkT" = "Vorlage rendern";
+"FZ9qkT" = "Zwischenablage übernehmen";
 "GoLNMt" = "Sendet ein Ereignis namens ${EventName} an den Home Assistant Event Bus mit ${EventData}.";
 "KHH48D" = "Standort konnte nicht aktualisiert werden, Home Assistant ist derzeit nicht erreichbar";
 "KJS2jk" = "Fehler beim Aktualisieren des Standorts. Fehler: ${error}";

@@ -851,7 +851,7 @@ internal enum L10n {
       }
     }
     internal enum Ssid {
-      /// BSSID
+      /// SSID
       internal static let name = L10n.tr("Localizable", "sensors.ssid.name")
     }
   }
