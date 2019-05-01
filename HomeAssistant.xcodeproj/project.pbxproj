@@ -1713,10 +1713,10 @@
 				B661FB79226C197900E541DD /* ManualSetupViewController.swift */,
 				B661FC89226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift */,
 				B605C892226EC25800EF46DD /* AuthenticationViewController.swift */,
-				B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */,
 				B661FB7B226C199200E541DD /* PermissionsViewController.swift */,
 				B60221F7226D9AEE00E8DBFE /* PermissionButton.swift */,
 				B60221F9226D9BC200E8DBFE /* PermissionLineItemView.swift */,
+				B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */,
 				B6D8A3292271455300FA765D /* ConnectionErrorViewController.swift */,
 			);
 			path = Onboarding;

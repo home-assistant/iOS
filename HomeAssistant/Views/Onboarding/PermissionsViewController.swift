@@ -11,7 +11,11 @@ import Shared
 import MaterialComponents
 
 class PermissionsViewController: UIViewController, PermissionViewChangeDelegate {
-    @IBOutlet weak var closeButton: MDCButton!
+    var instance: DiscoveredHomeAssistant!
+    var connectionInfo: ConnectionInfo!
+    var tokenManager: TokenManager!
+
+    @IBOutlet weak var continueButton: MDCButton!
     @IBOutlet weak var locationPermissionView: PermissionLineItemView!
     @IBOutlet weak var motionPermissionView: PermissionLineItemView!
     @IBOutlet weak var notificationsPermissionView: PermissionLineItemView!
@@ -19,7 +23,7 @@ class PermissionsViewController: UIViewController, PermissionViewChangeDelegate 
         super.viewDidLoad()
 
         if let navVC = self.navigationController as? OnboardingNavigationViewController {
-            navVC.styleButton(self.closeButton)
+            navVC.styleButton(self.continueButton)
         }
 
         self.locationPermissionView.delegate = self
@@ -27,12 +31,11 @@ class PermissionsViewController: UIViewController, PermissionViewChangeDelegate 
         self.notificationsPermissionView.delegate = self
     }
 
-    @IBAction func closeButton(_ sender: UIButton) {
-        UserDefaults(suiteName: Constants.AppGroupID)?.set(true, forKey: "onboarding_complete")
-        Current.onboardingComplete?()
-        if let navVC = self.navigationController as? OnboardingNavigationViewController {
-            Current.Log.verbose("Dismissing from permissions")
-            navVC.dismiss()
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let vc = segue.destination as? ConnectInstanceViewController {
+            vc.instance = self.instance
+            vc.connectionInfo = self.connectionInfo
+            vc.tokenManager = self.tokenManager
         }
     }
 

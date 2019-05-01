@@ -60,7 +60,12 @@ class ConnectInstanceViewController: UIViewController {
             self.overallProgress.loopMode = .playOnce
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
-                self.perform(segue: StoryboardSegue.Onboarding.permissions)
+                UserDefaults(suiteName: Constants.AppGroupID)?.set(true, forKey: "onboarding_complete")
+                Current.onboardingComplete?()
+                if let navVC = self.navigationController as? OnboardingNavigationViewController {
+                    Current.Log.verbose("Dismissing from permissions")
+                    navVC.dismiss()
+                }
             }
         }.catch { error in
             let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,

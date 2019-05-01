@@ -476,8 +476,8 @@
                         <outlet property="connectButton" destination="f1j-Ol-pW5" id="VLr-HQ-06q"/>
                         <outlet property="goBackButton" destination="RSW-l5-eRA" id="dFO-Zv-18Q"/>
                         <outlet property="whatsAboutToHappenLabel" destination="wsC-f5-jbO" id="Qcs-AD-PKE"/>
-                        <segue destination="KCa-bc-FXT" kind="show" identifier="setupInstance" id="c0h-3R-A7O"/>
                         <segue destination="MOD-3L-omt" kind="show" identifier="showError" id="Zm8-Bf-HW3"/>
+                        <segue destination="XKw-m3-Nah" kind="show" identifier="permissions" id="l74-5C-19T"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fzm-f2-VYy" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -653,12 +653,11 @@
                         <outlet property="overallProgress" destination="bTD-eO-lC0" id="yd9-to-nUS"/>
                         <outlet property="sensorsConfigured" destination="N1e-YD-nWs" id="V0m-uJ-3kO"/>
                         <outlet property="titleLabel" destination="Kj7-hM-8gN" id="uuU-yq-Ncg"/>
-                        <segue destination="XKw-m3-Nah" kind="show" identifier="permissions" id="Keo-f5-6mS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2cs-FC-Sgv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-602" y="-1343"/>
+            <point key="canvasLocation" x="188" y="-1343"/>
         </scene>
         <!--Permissions View Controller-->
         <scene sceneID="WFF-Aq-cFs">
@@ -677,15 +676,15 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jrL-9x-fFX" customClass="MDCButton">
-                                <rect key="frame" x="167" y="599" width="41" height="48"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jrL-9x-fFX" userLabel="Continue Button" customClass="MDCButton">
+                                <rect key="frame" x="154.5" y="599" width="66" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="P7h-vB-eVY"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
-                                <state key="normal" title="Close"/>
+                                <state key="normal" title="Continue"/>
                                 <connections>
-                                    <action selector="closeButton:" destination="XKw-m3-Nah" eventType="touchUpInside" id="6gg-m1-GCT"/>
+                                    <segue destination="KCa-bc-FXT" kind="show" id="TXR-MD-wbi"/>
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tox-sk-7fZ" userLabel="Location Permission Line Item View" customClass="PermissionLineItemView" customModule="HomeAssistant" customModuleProvider="target">
@@ -746,7 +745,7 @@
                         <viewLayoutGuide key="safeArea" id="a9V-In-2AW"/>
                     </view>
                     <connections>
-                        <outlet property="closeButton" destination="jrL-9x-fFX" id="a0u-br-HaE"/>
+                        <outlet property="continueButton" destination="jrL-9x-fFX" id="0JI-v4-BDo"/>
                         <outlet property="locationPermissionView" destination="tox-sk-7fZ" id="2uD-iO-QNd"/>
                         <outlet property="motionPermissionView" destination="kJc-Fh-WIp" id="kIX-eD-8rx"/>
                         <outlet property="notificationsPermissionView" destination="YDH-nq-m24" id="2cO-w9-gXu"/>
@@ -754,7 +753,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0RS-wL-M18" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="260" y="-1343"/>
+            <point key="canvasLocation" x="-617" y="-1343"/>
         </scene>
         <!--Onboarding Navigation View Controller-->
         <scene sceneID="qL5-eq-CzD">

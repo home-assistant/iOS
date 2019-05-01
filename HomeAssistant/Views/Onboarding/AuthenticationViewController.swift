@@ -71,7 +71,7 @@ class AuthenticationViewController: UIViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
-        if segueType == .setupInstance, let vc = segue.destination as? ConnectInstanceViewController {
+        if segueType == .permissions, let vc = segue.destination as? PermissionsViewController {
             vc.instance = self.instance
             vc.connectionInfo = self.connectionInfo
             vc.tokenManager = self.tokenManager
@@ -101,7 +101,7 @@ class AuthenticationViewController: UIViewController {
 
             return HomeAssistantAPI(connectionInfo: connectionInfo, tokenInfo: tokenInfo).GetConfig(false)
         }.done { _ in
-            self.perform(segue: StoryboardSegue.Onboarding.setupInstance, sender: nil)
+            self.perform(segue: StoryboardSegue.Onboarding.permissions, sender: nil)
         }.catch { error in
             Current.Log.error("Error during auth \(error.localizedDescription)")
             let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,

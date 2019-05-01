@@ -19,7 +19,6 @@ internal enum StoryboardSegue {
     case manuallyConnectInstance
     case permissions
     case setupDiscoveredInstance
-    case setupInstance
     case setupManualInstance
     case showError
   }
