@@ -125,7 +125,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
             }
         } else {
             Current.Log.error("Couldn't get authenticated API, showing settings")
-            self.showSettingsViewController()
+            self.openSettingsWithError(error: HomeAssistantAPI.APIError.managerNotAvailable)
         }
 
         self.settingsButton.addTarget(self, action: #selector(self.openSettingsView(_:)), for: .touchDown)
@@ -317,13 +317,19 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
     }
 
     func openSettingsWithError(error: Error) {
-        let settingsView = SettingsViewController()
-//        settingsView.showErrorConnectingMessage = true
-//        settingsView.showErrorConnectingMessageError = error
-//        settingsView.doneButton = true
-//        settingsView.delegate = self
+        let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
+        self.navigationController?.present(alert, animated: true, completion: nil)
+        alert.popoverPresentationController?.sourceView = self.webView
+
+        /* let settingsView = SettingsViewController()
+        settingsView.showErrorConnectingMessage = true
+        settingsView.showErrorConnectingMessageError = error
+        settingsView.doneButton = true
+        settingsView.delegate = self
         let navController = UINavigationController(rootViewController: settingsView)
-        self.navigationController?.present(navController, animated: true, completion: nil)
+        self.navigationController?.present(navController, animated: true, completion: nil) */
     }
 
     @objc func openSettingsView(_ sender: UIButton) {
