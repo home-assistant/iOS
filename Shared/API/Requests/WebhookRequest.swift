@@ -10,7 +10,7 @@ import Foundation
 import ObjectMapper
 import Sodium
 
-class WebhookRequest: Mappable {
+public class WebhookRequest: Mappable {
     var PayloadType: String?
     var Data: Any?
     var Encrypted: Bool = false
@@ -18,7 +18,7 @@ class WebhookRequest: Mappable {
 
     init() {}
 
-    required init?(map: Map) {}
+    required public init?(map: Map) {}
 
     public convenience init(type: String, data: Any) {
         self.init()
@@ -57,7 +57,7 @@ class WebhookRequest: Mappable {
         }
     }
 
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         PayloadType           <- map["type"]
         Data                  <- map["data"]
         Encrypted             <- map["encrypted"]

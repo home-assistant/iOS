@@ -196,7 +196,8 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
             let url = connectionURL.appendingPathComponent("api/webhook/\(webhookID)")
             Current.Log.verbose("Confirming URL at \(url)")
 
-            Alamofire.request(url, method: .post).validate().responseJSON { resp in
+            Alamofire.request(url, method: .post, parameters: WebhookRequest(type: "get_config", data: [:]).toJSON(),
+                              encoding: JSONEncoding.default).validate().responseJSON { resp in
                 switch resp.result {
                 case .success:
                     seal.fulfill_()
