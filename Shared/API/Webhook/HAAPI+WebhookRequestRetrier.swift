@@ -8,7 +8,6 @@
 
 import Foundation
 import Alamofire
-import PromiseKit
 
 // Order to use URLs in
 // 1. Internal URL if current SSID == previously stored SSID that confirms internal is available
@@ -29,14 +28,48 @@ public class WebhookHandler: RequestAdapter, RequestRetrier {
     private var remoteUIURL: URL?
     private var cloudhookURL: URL?
 
-    public var activeURLType: WebhookURLType
-    private var activeURL: URL
+    public var activeURLType: WebhookURLType = .external {
+        didSet {
+            guard oldValue != self.activeURLType else { return }
+            var oldURL: String = "Unknown URL"
+            switch oldValue {
+            case .internal:
+                oldURL = self.internalURL?.absoluteString ?? oldURL
+            case .cloudhook:
+                oldURL = self.cloudhookURL?.absoluteString ?? oldURL
+            case .remoteUI:
+                oldURL = self.remoteUIURL?.absoluteString ?? oldURL
+            case .external:
+                oldURL = self.externalURL.absoluteString
+            }
+            Current.Log.verbose("Updated URL from \(oldValue) (\(oldURL)) to \(activeURLType) \(self.activeURL)")
+        }
+    }
 
-    private let lock = NSRecursiveLock()
-
-    private typealias URLWorksCompletion = (_ succeeded: Bool, _ url: URL?, _ urlType: WebhookURLType?) -> Void
-
-    private var isTestingURL = false
+    private var activeURL: URL {
+        switch self.activeURLType {
+        case .internal:
+            guard let url = self.internalURL else {
+                Current.Log.warning("Unable to get \(self.activeURLType), returning external!")
+                return self.externalURL
+            }
+            return url
+        case .cloudhook:
+            guard let url = self.cloudhookURL else {
+                Current.Log.warning("Unable to get \(self.activeURLType), returning external!")
+                return self.externalURL
+            }
+            return url
+        case .remoteUI:
+            guard let url = self.remoteUIURL else {
+                Current.Log.warning("Unable to get \(self.activeURLType), returning external!")
+                return self.externalURL
+            }
+            return url
+        case .external:
+            return self.externalURL
+        }
+    }
 
     // MARK: - Initialization
 
@@ -44,29 +77,21 @@ public class WebhookHandler: RequestAdapter, RequestRetrier {
         self.webhookID = webhookID
         let path = "api/webhook/\(self.webhookID)"
         self.externalURL = connectionInfo.externalBaseURL.appendingPathComponent(path, isDirectory: false)
-        self.activeURL = self.externalURL
-        self.activeURLType = .external
 
         if let cloudhookURL = cloudhookURL {
             self.cloudhookURL = cloudhookURL
             self.activeURLType = .cloudhook
-            self.activeURL = cloudhookURL
         }
 
         if let remoteURL = remoteUIURL {
-            let url = remoteURL.appendingPathComponent(path, isDirectory: false)
-            self.remoteUIURL = url
+            self.remoteUIURL = remoteURL.appendingPathComponent(path, isDirectory: false)
             self.activeURLType = .remoteUI
-            self.activeURL = url
         }
 
         if let url = connectionInfo.internalBaseURL, let ssids = connectionInfo.internalSSIDs {
-            let builtURL = url.appendingPathComponent(path, isDirectory: false)
-            self.internalURLRaw = builtURL
+            self.internalURLRaw = url.appendingPathComponent(path, isDirectory: false)
             self.internalSSIDs = ssids
-            if let url = self.internalURL {
-                self.activeURL = url
-            }
+            self.activeURLType = .internal
         }
     }
 
@@ -81,91 +106,59 @@ public class WebhookHandler: RequestAdapter, RequestRetrier {
 
     // MARK: - RequestAdapter
     public func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
-        let newURL = self.webhookURL
-        guard urlRequest.url != newURL else {
+        guard let currentURL = urlRequest.url else { return urlRequest }
+
+        guard currentURL != self.activeURL else {
+            Current.Log.verbose("No need to change request URL from \(currentURL) to \(self.activeURL)")
             return urlRequest
         }
 
+        Current.Log.verbose("Changing request URL from \(currentURL) to \(self.activeURL)")
+
         var urlRequest = urlRequest
-        urlRequest.url = newURL
+        urlRequest.url = self.activeURL
         return urlRequest
     }
 
     // MARK: - RequestRetrier
     public func should(_ manager: SessionManager, retry request: Request, with error: Error,
                        completion: @escaping RequestRetryCompletion) {
-        lock.lock() ; defer { lock.unlock() }
+        // There's only two situations in which we should attempt to change the URL to a point where we may
+        // be able to get working again:
+        // 1. If remote UI is active and failure is low level (NSURLErrorDomain) which means snitun is down
+        // 2. If internal URL is active but SSID doesn't match
+        guard let url = request.request?.url else {
+            Current.Log.error("Couldn't get URL from request!")
+            completion(false, 0.0)
+            return
+        }
 
-        if !isTestingURL {
-            self.testURLs().done { (successes) in
-                self.lock.lock() ; defer { self.lock.unlock() }
-                guard let winner = successes.sorted(by: { (a, b) -> Bool in
-                    return a.1.rawValue > b.1.rawValue
-                }).first else {
-                    completion(false, 0.0)
-                    return
-                }
-                Current.Log.info("Webhook URL update \(self.activeURLType) -> \(winner.1)")
-                self.activeURL = winner.0
-                self.activeURLType = winner.1
-                completion(true, 0.0)
-            }.catch { _ in
-                completion(false, 0.0)
+        let isRemoteUIFailure = url == self.remoteUIURL && (error as NSError).domain == NSURLErrorDomain
+
+        let isInternalURLFailure = url == self.internalURLRaw
+
+        if isRemoteUIFailure {
+            if self.internalURL != nil {
+                self.activeURLType = .internal
+            } else {
+                self.activeURLType = .external
             }
-        }
-    }
-
-    private let sessionManager: SessionManager = {
-        let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
-
-        return SessionManager(configuration: configuration)
-    }()
-
-    private func testURL(_ urlType: WebhookURLType, _ url: URL) -> Promise<(URL, WebhookURLType)?> {
-        return Promise { seal in
-            Current.Log.verbose("Testing \(urlType) URL")
-            let req = self.sessionManager.request(url, method: .post,
-                                                  parameters: WebhookRequest(type: "get_config", data: [:]).toJSON(),
-                                                  encoding: JSONEncoding.default)
-            req.validate().responseJSON { [weak self] response in
-                guard let strongSelf = self else { return }
-                if response.result.value != nil {
-                    strongSelf.isTestingURL = false
-                    seal.fulfill((url, urlType))
-                    return
-                }
-                seal.fulfill(nil)
-                return
+            completion(true, 0.0)
+        } else if isInternalURLFailure {
+            if self.cloudhookURL != nil {
+                self.activeURLType = .cloudhook
+            } else if self.remoteUIURL != nil {
+                self.activeURLType = .remoteUI
+            } else {
+                self.activeURLType = .external
             }
-        }
-    }
-
-    private func testURLs() -> Promise<[(URL, WebhookURLType)]> {
-        isTestingURL = true
-
-        var urls: [WebhookURLType: URL] = [:]
-
-        if self.activeURLType != .internal, let url = self.internalURL {
-            urls[.internal] = url
-        }
-        if self.activeURLType != .cloudhook, let url = self.cloudhookURL {
-            urls[.cloudhook] = url
-        }
-        if self.activeURLType != .remoteUI, let url = self.remoteUIURL {
-            urls[.remoteUI] = url
-        }
-        if self.activeURLType != .external {
-            urls[.external] = self.externalURL
+            completion(true, 0.0)
+        } else {
+            Current.Log.warning("Not retrying a failure other than remote UI down or internal URL no longer valid")
+            completion(false, 0.0)
+            return
         }
 
-        var promises: [Promise<(URL, WebhookURLType)?>] = []
-
-        for (urlType, url) in urls {
-            promises.append(testURL(urlType, url))
-        }
-
-        return when(fulfilled: promises).compactMapValues { $0 }
     }
 }
 
