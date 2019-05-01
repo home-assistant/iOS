@@ -593,7 +593,7 @@ public class HomeAssistantAPI {
 
             Current.Log.verbose("Sending action payload: \(eventData)")
 
-            let eventType = "ios.action_fired"
+            let eventType = "mobile_app.action_fired"
             api.CreateEvent(eventType: eventType, eventData: eventData).done { _ -> Void in
                 seal.fulfill(true)
                 }.catch {error in

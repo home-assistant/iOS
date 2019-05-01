@@ -33,7 +33,7 @@ extension HomeAssistantAPI {
                 eventData["textInput"] = textInput
             }
 
-            let eventType = "ios.notification_action_fired"
+            let eventType = "mobile_app.notification_action_fired"
             api.CreateEvent(eventType: eventType, eventData: eventData).done { _ -> Void in
                 seal.fulfill(true)
                 }.catch {error in
