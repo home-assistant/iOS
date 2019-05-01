@@ -38,7 +38,7 @@ class AuthenticationViewController: UIViewController {
         }
 
         guard let baseURL = self.instance.BaseURL else {
-            let errMsg = "No base URL is set in discovery, this should not be possible!"
+            let errMsg = "No base URL is set in discovery, this should not be possible! \(self.instance)"
             Current.Log.error(errMsg)
             fatalError(errMsg)
         }
@@ -104,6 +104,10 @@ class AuthenticationViewController: UIViewController {
             self.perform(segue: StoryboardSegue.Onboarding.setupInstance, sender: nil)
         }.catch { error in
             Current.Log.error("Error during auth \(error.localizedDescription)")
+            let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
 

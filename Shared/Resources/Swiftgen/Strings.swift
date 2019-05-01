@@ -309,7 +309,7 @@ internal enum L10n {
       internal static let invalidResponse = L10n.tr("Localizable", "ha_api.api_error.invalid_response")
       /// HA API Manager is unavailable
       internal static let managerNotAvailable = L10n.tr("Localizable", "ha_api.api_error.manager_not_available")
-      /// mobile_app component not loaded or not detected
+      /// The mobile_app component is not loaded. Please add it to your configuration, restart Home Assistant, and try again.
       internal static let mobileAppComponentNotLoaded = L10n.tr("Localizable", "ha_api.api_error.mobile_app_component_not_loaded")
       /// Your Home Assistant version (%@) is too old, you must upgrade to at least version %@ to use the app.
       internal static func mustUpgradeHomeAssistant(_ p1: String, _ p2: String) -> String {
@@ -319,7 +319,7 @@ internal enum L10n {
       internal static let notConfigured = L10n.tr("Localizable", "ha_api.api_error.not_configured")
       /// An unknown error occurred.
       internal static let unknown = L10n.tr("Localizable", "ha_api.api_error.unknown")
-      /// mobile_app integration has been deleted, must reconfigure app.
+      /// mobile_app integration has been deleted, you must reconfigure the app.
       internal static let webhookGone = L10n.tr("Localizable", "ha_api.api_error.webhook_gone")
     }
   }
