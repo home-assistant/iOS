@@ -178,9 +178,14 @@ public enum PermissionType: Int {
     func request(_ completionHandler: @escaping (Bool, PermissionStatus) -> Void) {
         switch self {
         case .location:
-            PermissionsLocationDelegate().requestPermission { (status) in
+            if PermissionsLocationDelegate.shared == nil {
+                PermissionsLocationDelegate.shared = PermissionsLocationDelegate()
+            }
+
+            PermissionsLocationDelegate.shared!.requestPermission { (status) in
                 DispatchQueue.main.async {
                     completionHandler(status == .authorized, status)
+                    PermissionsLocationDelegate.shared = nil
                 }
             }
         case .motion:
@@ -216,6 +221,8 @@ public enum PermissionType: Int {
 
 private class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
 
+    static var shared: PermissionsLocationDelegate?
+
     lazy var locationManager: CLLocationManager = {
         return CLLocationManager()
     }()
@@ -223,7 +230,15 @@ private class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
     typealias LocationPermissionCompletionBlock = (PermissionStatus) -> Void
     var completionHandler: LocationPermissionCompletionBlock?
 
+    override init() {
+        super.init()
+    }
+
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .notDetermined {
+            return
+        }
+
         completionHandler?(status.genericStatus)
     }
 
