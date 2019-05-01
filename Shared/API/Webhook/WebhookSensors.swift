@@ -135,9 +135,9 @@ public class WebhookSensors {
         var carrierSensor = WebhookSensor(name: "Cellular Provider", uniqueID: "connectivity_cellular_provider",
                                           icon: "mdi:signal", state: "Unknown")
 
-        if let key = key {
-            carrierSensor = WebhookSensor(name: "Cellular Provider \(key)",
-                uniqueID: "connectivity_cellular_provider_\(key)", icon: "mdi:signal", state: "Unknown")
+        if let key = key, let id = key.last {
+            carrierSensor = WebhookSensor(name: "Cellular Provider \(id)",
+                uniqueID: "connectivity_cellular_provider_\(id)", icon: "mdi:signal", state: "Unknown")
         }
 
         carrierSensor.State = carrier.carrierName
