@@ -40,14 +40,14 @@ public class WebhookSensors {
             level = 100
         }
 
-        var state = L10n.Sensors.unknownState
+        var state = "Unknown"
         var icon = "mdi:battery"
 
         let batState = Device.current.batteryState ?? Device.BatteryState.full
 
         switch batState {
         case .charging(let level):
-            state = L10n.Sensors.Battery.State.charging
+            state = "Charging"
             if level > 10 {
                 let rounded = Int(round(Double(level / 20) - 0.01)) * 20
                 icon = "mdi:battery-charging-\(rounded)"
@@ -55,7 +55,7 @@ public class WebhookSensors {
                 icon = "mdi:battery-outline"
             }
         case .unplugged(let level):
-            state = L10n.Sensors.Battery.State.notCharging
+            state = "Not Charging"
             if level <= 5 {
                 icon = "mdi:battery-alert"
             } else if level > 5 && level < 95 {
@@ -63,20 +63,20 @@ public class WebhookSensors {
                 icon = "mdi:battery-\(rounded)"
             }
         case .full:
-            state = L10n.Sensors.Battery.State.full
+            state = "Full"
         }
 
-        let levelSensor = WebhookSensor(name: L10n.Sensors.BatteryLevel.name,
+        let levelSensor = WebhookSensor(name: "Battery Level",
                                         uniqueID: "battery_level", icon: .batteryIcon,
                                         deviceClass: .battery, state: level)
         levelSensor.Icon = icon
-        levelSensor.Attributes = [L10n.Sensors.Battery.Attributes.state: state]
+        levelSensor.Attributes = ["State": state]
         levelSensor.UnitOfMeasurement = "%"
-        let stateSensor = WebhookSensor(name: L10n.Sensors.BatteryState.name,
+        let stateSensor = WebhookSensor(name: "Battery State",
                                         uniqueID: "battery_state", icon: .batteryIcon,
                                         deviceClass: .battery, state: state)
         stateSensor.Icon = icon
-        stateSensor.Attributes = [L10n.Sensors.Battery.Attributes.level: level]
+        stateSensor.Attributes = ["Level": level]
         return [levelSensor, stateSensor]
     }
 
@@ -84,8 +84,8 @@ public class WebhookSensors {
     // MARK: Connectivity sensors
 
     public var BSSID: WebhookSensor? {
-        let sensor = WebhookSensor(name: L10n.Sensors.Bssid.name, uniqueID: "connectivity_bssid", icon: "mdi:wifi-star",
-                                   state: L10n.Sensors.Connectivity.notConnected)
+        let sensor = WebhookSensor(name: "BSSID", uniqueID: "connectivity_bssid", icon: "mdi:wifi-star",
+                                   state: "Not Connected")
 
         if let bssid = ConnectionInfo.CurrentWiFiBSSID {
             sensor.State = bssid
@@ -94,8 +94,8 @@ public class WebhookSensors {
     }
 
     public var SSID: WebhookSensor? {
-        let sensor = WebhookSensor(name: L10n.Sensors.Ssid.name, uniqueID: "connectivity_ssid", icon: "mdi:wifi",
-                                   state: L10n.Sensors.Connectivity.notConnected)
+        let sensor = WebhookSensor(name: "SSID", uniqueID: "connectivity_ssid", icon: "mdi:wifi",
+                                   state: "Not Connected")
         if let ssid = ConnectionInfo.CurrentWiFiSSID {
             sensor.State = ssid
         }
@@ -105,13 +105,13 @@ public class WebhookSensors {
     public var ConnectionType: WebhookSensor {
         let state = Reachability.getSimpleNetworkType()
 
-        let sensor = WebhookSensor(name: L10n.Sensors.ConnectionType.name,
+        let sensor = WebhookSensor(name: "Connection Type",
                                    uniqueID: "connectivity_connection_type", icon: state.icon,
                                    state: state.description)
 
         if state == .cellular {
             sensor.Attributes = [
-                L10n.Sensors.ConnectionType.Attributes.cellTechType: Reachability.getNetworkType().description
+                "Cellular Technology": Reachability.getNetworkType().description
             ]
         }
 
@@ -131,32 +131,27 @@ public class WebhookSensors {
         return [WebhookSensor]()
     }
 
-    private func makeCarrierSensor(_ carrier: CTCarrier,
-                                   _ radioTech: String?,
-                                   _ key: String? = nil) -> WebhookSensor {
-        var carrierSensor = WebhookSensor(name: L10n.Sensors.CellularProvider.name(""),
-                                          uniqueID: "connectivity_cellular_provider",
-                                          icon: "mdi:signal", state: L10n.Sensors.unknownState)
+    private func makeCarrierSensor(_ carrier: CTCarrier, _ radioTech: String?, _ key: String? = nil) -> WebhookSensor {
+        var carrierSensor = WebhookSensor(name: "Cellular Provider", uniqueID: "connectivity_cellular_provider",
+                                          icon: "mdi:signal", state: "Unknown")
 
         if let key = key {
-            carrierSensor = WebhookSensor(name: L10n.Sensors.CellularProvider.name(" \(key)"),
-                uniqueID: "connectivity_cellular_provider_\(key)", icon: "mdi:signal", state: L10n.Sensors.unknownState)
+            carrierSensor = WebhookSensor(name: "Cellular Provider \(key)",
+                uniqueID: "connectivity_cellular_provider_\(key)", icon: "mdi:signal", state: "Unknown")
         }
 
         carrierSensor.State = carrier.carrierName
         carrierSensor.Attributes = [
-            L10n.Sensors.CellularProvider.Attributes.carrierId: key ?? L10n.Sensors.notAvailableState,
-            // swiftlint:disable line_length
-            L10n.Sensors.CellularProvider.Attributes.carrierName: carrier.carrierName ?? L10n.Sensors.notAvailableState,
-            L10n.Sensors.CellularProvider.Attributes.mobileCountryCode: carrier.mobileCountryCode ?? L10n.Sensors.notAvailableState,
-            L10n.Sensors.CellularProvider.Attributes.mobileNetworkCode: carrier.mobileNetworkCode ?? L10n.Sensors.notAvailableState,
-            L10n.Sensors.CellularProvider.Attributes.isoCountryCode: carrier.isoCountryCode ?? L10n.Sensors.notAvailableState,
-            // swiftlint:enable line_length
-            L10n.Sensors.CellularProvider.Attributes.allowsVoip: carrier.allowsVOIP
+            "Carrier ID": key ?? "N/A",
+            "Carrier Name": carrier.carrierName ?? "N/A",
+            "Mobile Country Code": carrier.mobileCountryCode ?? "N/A",
+            "Mobile Network Code": carrier.mobileNetworkCode ?? "N/A",
+            "ISO Country Code": carrier.isoCountryCode ?? "N/A",
+            "Allows VoIP": carrier.allowsVOIP
         ]
 
         if let radioTech = radioTech {
-            carrierSensor.Attributes?[L10n.Sensors.CellularProvider.Attributes.radioTech] = getRadioTechName(radioTech)
+            carrierSensor.Attributes?["Current Radio Technology"] = getRadioTechName(radioTech)
         }
 
         return carrierSensor
@@ -166,27 +161,27 @@ public class WebhookSensors {
     private func getRadioTechName(_ radioTech: String) -> String? {
         switch radioTech {
         case CTRadioAccessTechnologyGPRS:
-            return L10n.Sensors.CellularProvider.RadioTech.gprs
+            return "General Packet Radio Service (GPRS)"
         case CTRadioAccessTechnologyEdge:
-            return L10n.Sensors.CellularProvider.RadioTech.edge
+            return "Enhanced Data rates for GSM Evolution (EDGE)"
         case CTRadioAccessTechnologyCDMA1x:
-            return L10n.Sensors.CellularProvider.RadioTech.cdma1x
+            return "Code Division Multiple Access (CDMA 1X)"
         case CTRadioAccessTechnologyWCDMA:
-            return L10n.Sensors.CellularProvider.RadioTech.wcdma
+            return "Wideband Code Division Multiple Access (WCDMA)"
         case CTRadioAccessTechnologyHSDPA:
-            return L10n.Sensors.CellularProvider.RadioTech.hsdpa
+            return "High Speed Downlink Packet Access (HSDPA)"
         case CTRadioAccessTechnologyHSUPA:
-            return L10n.Sensors.CellularProvider.RadioTech.hsupa
+            return "High Speed Uplink Packet Access (HSUPA)"
         case CTRadioAccessTechnologyCDMAEVDORev0:
-            return L10n.Sensors.CellularProvider.RadioTech.cdmaEvdoRev0
+            return "Code Division Multiple Access Evolution-Data Optimized Revision 0 (CDMA EV-DO Rev. 0)"
         case CTRadioAccessTechnologyCDMAEVDORevA:
-            return L10n.Sensors.CellularProvider.RadioTech.cdmaEvdoRevA
+            return "Code Division Multiple Access Evolution-Data Optimized Revision A (CDMA EV-DO Rev. A)"
         case CTRadioAccessTechnologyCDMAEVDORevB:
-            return L10n.Sensors.CellularProvider.RadioTech.cdmaEvdoRevB
+            return "Code Division Multiple Access Evolution-Data Optimized Revision B (CDMA EV-DO Rev. B)"
         case CTRadioAccessTechnologyeHRPD:
-            return L10n.Sensors.CellularProvider.RadioTech.ehrpd
+            return "High Rate Packet Data (HRPD)"
         case CTRadioAccessTechnologyLTE:
-            return L10n.Sensors.CellularProvider.RadioTech.lte
+            return "Long-Term Evolution (LTE)"
         default:
             return nil
         }
@@ -235,8 +230,7 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: L10n.Sensors.Pedometer.Distance.name,
-                             uniqueID: "pedometer_distance", state: intVal, unit: "m")
+        return WebhookSensor(name: "Distance", uniqueID: "pedometer_distance", state: intVal, unit: "m")
     }
 
     private var floorsAscended: WebhookSensor? {
@@ -244,8 +238,8 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: L10n.Sensors.Pedometer.FloorsAscended.name, uniqueID: "pedometer_floors_ascended",
-                             icon: "mdi:slope-uphill", state: intVal)
+        return WebhookSensor(name: "Floors Ascended", uniqueID: "pedometer_floors_ascended", icon: "mdi:slope-uphill",
+                             state: intVal)
     }
 
     private var floorsDescended: WebhookSensor? {
@@ -253,7 +247,7 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: L10n.Sensors.Pedometer.FloorsDescended.name, uniqueID: "pedometer_floors_descended",
+        return WebhookSensor(name: "Floors Descended", uniqueID: "pedometer_floors_descended",
                              icon: "mdi:slope-downhill", state: intVal)
     }
 
@@ -261,8 +255,7 @@ public class WebhookSensors {
         guard let intVal = self.pedometerData?.numberOfSteps.intValue else {
             return nil
         }
-        return WebhookSensor(name: L10n.Sensors.Pedometer.Steps.name,
-                             uniqueID: "pedometer_steps", icon: "mdi:walk", state: intVal)
+        return WebhookSensor(name: "Steps", uniqueID: "pedometer_steps", icon: "mdi:walk", state: intVal)
     }
 
     private var averageActivePace: WebhookSensor? {
@@ -270,8 +263,8 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: L10n.Sensors.Pedometer.AverageActivePace.name, uniqueID: "pedometer_avg_active_pace",
-                             icon: "mdi:speedometer", state: intVal, unit: L10n.Sensors.Pedometer.Unit.metersPerSecond)
+        return WebhookSensor(name: "Average Active Pace", uniqueID: "pedometer_avg_active_pace",
+                             icon: "mdi:speedometer", state: intVal, unit: "m/s")
     }
 
     private var currentPace: WebhookSensor? {
@@ -279,8 +272,8 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: L10n.Sensors.Pedometer.CurrentPace.name, uniqueID: "pedometer_current_pace",
-                             icon: "mdi:speedometer", state: intVal, unit: L10n.Sensors.Pedometer.Unit.metersPerSecond)
+        return WebhookSensor(name: "Current Pace", uniqueID: "pedometer_current_pace",
+                             icon: "mdi:speedometer", state: intVal, unit: "m/s")
     }
 
     private var currentCadence: WebhookSensor? {
@@ -288,9 +281,8 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: L10n.Sensors.Pedometer.CurrentCadence.name,
-                             uniqueID: "pedometer_current_cadence", state: intVal,
-                             unit: L10n.Sensors.Pedometer.Unit.stepsPerSecond)
+        return WebhookSensor(name: "Current Cadence", uniqueID: "pedometer_current_cadence", state: intVal,
+                             unit: "steps/s")
     }
 
     // MARK: CMMotionActivity sensors
@@ -322,11 +314,11 @@ public class WebhookSensors {
                 guard let activity = motionActivity?.last else {
                     return Promise.value(nil)
                 }
-                let activitySensor = WebhookSensor(name: L10n.Sensors.Activity.name, uniqueID: "activity")
+                let activitySensor = WebhookSensor(name: "Activity", uniqueID: "activity")
                 activitySensor.State = activity.activityTypes.first
                 activitySensor.Attributes = [
-                    L10n.Sensors.Activity.Attributes.confidence: activity.confidence.description,
-                    L10n.Sensors.Activity.Attributes.types: activity.activityTypes
+                    "Confidence": activity.confidence.description,
+                    "Types": activity.activityTypes
                 ]
                 activitySensor.Icon = activity.icons.first
                 return Promise.value(activitySensor)
@@ -344,8 +336,8 @@ public class WebhookSensors {
     }
 
     public var GeocodedLocationSensorConfig: WebhookSensor {
-        let locationSensor = WebhookSensor(name: L10n.Sensors.GeocodedLocation.name, uniqueID: "geocoded_location")
-        locationSensor.State = L10n.Sensors.unknownState
+        let locationSensor = WebhookSensor(name: "Geocoded Location", uniqueID: "geocoded_location")
+        locationSensor.State = "Unknown"
         locationSensor.Icon = "mdi:\(MaterialDesignIcons.mapIcon.name)"
         return locationSensor
     }
@@ -368,23 +360,21 @@ public class WebhookSensors {
                                                                    style: .mailingAddress)
 
             locationSensor.Attributes = [
-                // swiftlint:disable line_length
-                L10n.Sensors.GeocodedLocation.Attributes.administrativeArea: placemark.administrativeArea ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.areasOfInterest: placemark.areasOfInterest ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.country: placemark.country ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.inlandWater: placemark.inlandWater ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.isoCountryCode: placemark.isoCountryCode ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.locality: placemark.locality ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.location: [placemark.location?.coordinate.latitude, placemark.location?.coordinate.longitude],
-                L10n.Sensors.GeocodedLocation.Attributes.name: placemark.name ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.ocean: placemark.ocean ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.postalCode: placemark.postalCode ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.subAdministrativeArea: placemark.subAdministrativeArea ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.subLocality: placemark.subLocality ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.subThoroughfare: placemark.subThoroughfare ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.thoroughfare: placemark.thoroughfare ?? L10n.Sensors.notAvailableState,
-                L10n.Sensors.GeocodedLocation.Attributes.timeZone: placemark.timeZone?.identifier ?? TimeZone.current.identifier
-                // swiftlint:enable line_length
+                "Administrative Area": placemark.administrativeArea ?? "N/A",
+                "Areas Of Interest": placemark.areasOfInterest ?? "N/A",
+                "Country": placemark.country ?? "N/A",
+                "Inland Water": placemark.inlandWater ?? "N/A",
+                "ISO Country Code": placemark.isoCountryCode ?? "N/A",
+                "Locality": placemark.locality ?? "N/A",
+                "Location": [placemark.location?.coordinate.latitude, placemark.location?.coordinate.longitude],
+                "Name": placemark.name ?? "N/A",
+                "Ocean": placemark.ocean ?? "N/A",
+                "Postal Code": placemark.postalCode ?? "N/A",
+                "Sub Administrative Area": placemark.subAdministrativeArea ?? "N/A",
+                "Sub Locality": placemark.subLocality ?? "N/A",
+                "Sub Thoroughfare": placemark.subThoroughfare ?? "N/A",
+                "Thoroughfare": placemark.thoroughfare ?? "N/A",
+                "Time Zone": placemark.timeZone?.identifier ?? TimeZone.current.identifier
             ]
 
             return Promise.value(locationSensor)
