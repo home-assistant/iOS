@@ -8,15 +8,21 @@
 
 import UIKit
 import Shared
+import MaterialComponents.MaterialButtons
 
 class ManualSetupViewController: UIViewController {
 
+    @IBOutlet weak var connectButton: MDCButton!
     @IBOutlet weak var urlField: UITextField!
 
     public var notOnWifi: Bool = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if let navVC = self.navigationController as? OnboardingNavigationViewController {
+            navVC.styleButton(self.connectButton)
+        }
     }
 
     @IBAction func connectButtonTapped(_ sender: UIButton) {

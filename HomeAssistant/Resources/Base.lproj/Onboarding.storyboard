@@ -174,12 +174,11 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="URL" returnKeyType="continue" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="url"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gld-QQ-oTD" userLabel="Connect Button">
-                                <rect key="frame" x="156.5" y="388.5" width="62" height="48"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gld-QQ-oTD" userLabel="Connect Button" customClass="MDCButton">
+                                <rect key="frame" x="153" y="388.5" width="69" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="ony-Dh-Fz1"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                 <state key="normal" title="Connect"/>
                                 <connections>
                                     <action selector="connectButtonTapped:" destination="sGi-y7-DOI" eventType="touchUpInside" id="lw7-fv-9pS"/>
@@ -217,6 +216,7 @@
                         <viewLayoutGuide key="safeArea" id="qpd-6g-qfw"/>
                     </view>
                     <connections>
+                        <outlet property="connectButton" destination="gld-QQ-oTD" id="KZc-77-YyW"/>
                         <outlet property="urlField" destination="xO0-K1-GJX" id="9pq-ib-uAd"/>
                         <outlet property="view" destination="uHB-Lo-ehZ" id="c1L-g8-Eo8"/>
                         <segue destination="jkw-3v-pbb" kind="show" identifier="setupManualInstance" id="KPp-1J-npF"/>
@@ -772,10 +772,9 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="fgm-KO-Tdk"/>
-        <segue reference="Nmk-e0-aiM"/>
-        <segue reference="tfQ-DV-bBL"/>
-        <segue reference="Cox-Jc-BY9"/>
+        <segue reference="KPp-1J-npF"/>
+        <segue reference="Ywb-4q-gPS"/>
+        <segue reference="Fz4-Qa-34b"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
 </document>
