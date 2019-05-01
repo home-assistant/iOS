@@ -96,7 +96,7 @@ func setDefaults() {
         prefs.setValue(true, forKey: "crashlyticsEnabled")
     }
 
-    if prefs.object(forKey: "messagingEnabled") == nil || Current.settingsStore.notificationsEnabled {
+    if prefs.object(forKey: "messagingEnabled") == nil {
         prefs.setValue(true, forKey: "messagingEnabled")
     }
 
