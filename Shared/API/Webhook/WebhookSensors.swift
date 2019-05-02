@@ -232,7 +232,8 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: "Distance", uniqueID: "pedometer_distance", state: intVal, unit: "m")
+        return WebhookSensor(name: "Distance", uniqueID: "pedometer_distance", icon: "mdi:hiking", state: intVal,
+                             unit: "m")
     }
 
     private var floorsAscended: WebhookSensor? {
