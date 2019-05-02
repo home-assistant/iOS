@@ -299,8 +299,6 @@ class OldSettingsViewController: FormViewController, CLLocationManagerDelegate, 
                 permission.manage { status in
                     Current.Log.verbose("Location status \(status)")
 
-                    Current.settingsStore.locationEnabled = (status == .authorized)
-
                     row.hidden = true
                     row.updateCell()
                     row.evaluateHidden()

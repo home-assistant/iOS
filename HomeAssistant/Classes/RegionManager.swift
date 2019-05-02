@@ -203,13 +203,6 @@ class RegionManager: NSObject {
 // MARK: CLLocationManagerDelegate
 
 extension RegionManager: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager,
-                         didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedAlways {
-            Current.settingsStore.locationEnabled = status == .authorizedAlways
-        }
-    }
-
     func locationManager(_ manager: CLLocationManager, didVisit visit: CLVisit) {
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             return

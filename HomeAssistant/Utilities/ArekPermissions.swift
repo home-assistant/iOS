@@ -117,8 +117,6 @@ func EnsureLocationPermission() {
         Current.Log.verbose("Location status: \(status)")
 
         if Current.settingsStore.locationEnabled != (status == .authorized) {
-            Current.settingsStore.locationEnabled = (status == .authorized)
-
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "permission_change"),
                                             object: nil,
                                             userInfo: ["location": Current.settingsStore.locationEnabled])
