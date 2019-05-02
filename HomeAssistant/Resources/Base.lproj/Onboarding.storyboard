@@ -234,22 +234,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We found 1 Home Assistant" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NJM-pS-Fuc" userLabel="Status Label">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We found 1 Home Assistant" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NJM-pS-Fuc" userLabel="Status Label">
                                 <rect key="frame" x="16" y="20" width="343" height="100"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="100" id="XNP-Il-c3g"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="100" id="XNP-Il-c3g"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="xcD-7Q-tXz">
-                                <rect key="frame" x="16" y="183.5" width="343" height="300"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="xcD-7Q-tXz">
+                                <rect key="frame" x="16" y="130" width="343" height="407"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="300" id="ogR-jj-s9R"/>
-                                </constraints>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="discoveredInstanceCell" textLabel="SnL-y3-0HP" detailTextLabel="8JC-7Y-FvP" style="IBUITableViewCellStyleSubtitle" id="nz7-cL-3VB">
                                         <rect key="frame" x="0.0" y="28" width="343" height="44"/>
@@ -308,6 +305,7 @@
                             <constraint firstItem="NJM-pS-Fuc" firstAttribute="top" secondItem="MrN-V0-Pgp" secondAttribute="top" id="QMl-Na-qA9"/>
                             <constraint firstItem="xcD-7Q-tXz" firstAttribute="centerY" secondItem="mQY-ah-0sc" secondAttribute="centerY" id="Sxp-hw-utQ"/>
                             <constraint firstItem="NJM-pS-Fuc" firstAttribute="leading" secondItem="mQY-ah-0sc" secondAttribute="leadingMargin" id="gS7-aP-pTp"/>
+                            <constraint firstItem="xcD-7Q-tXz" firstAttribute="top" secondItem="NJM-pS-Fuc" secondAttribute="bottom" constant="10" id="ihU-fi-Xgs"/>
                             <constraint firstItem="xcD-7Q-tXz" firstAttribute="leading" secondItem="mQY-ah-0sc" secondAttribute="leadingMargin" id="jSj-Pk-5Ps"/>
                             <constraint firstItem="xcD-7Q-tXz" firstAttribute="trailing" secondItem="mQY-ah-0sc" secondAttribute="trailingMargin" id="rpg-lA-pKY"/>
                             <constraint firstItem="MrN-V0-Pgp" firstAttribute="bottom" secondItem="Re7-IX-23x" secondAttribute="bottom" constant="20" id="xE9-aI-GLR"/>
@@ -492,24 +490,33 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting to My Home Assistant" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kj7-hM-8gN">
+                                <rect key="frame" x="16" y="20" width="343" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="wch-nD-0pL"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="bTD-eO-lC0" userLabel="Animation View" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="67.5" y="223.5" width="240" height="240"/>
+                                <rect key="frame" x="67.5" y="50" width="240" height="240"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="240" id="7kB-nb-FCG"/>
-                                    <constraint firstAttribute="width" constant="240" id="uOK-eq-vbQ"/>
+                                    <constraint firstAttribute="height" constant="240" id="DKN-DB-cJv"/>
+                                    <constraint firstAttribute="width" constant="240" id="ReF-MR-K0J"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="animationName" value="home"/>
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="eaY-cI-FSy" userLabel="Statuses Stack View">
-                                <rect key="frame" x="16" y="463.5" width="343" height="192"/>
+                                <rect key="frame" x="16" y="290" width="343" height="192"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="wLi-zh-ZCi" userLabel="Connection Stack View">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="32"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connected" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XyQ-gy-yHY" userLabel="Connected">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connected" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XyQ-gy-yHY" userLabel="Connected">
                                                 <rect key="frame" x="0.0" y="0.0" width="80" height="32"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -528,7 +535,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="TU2-8P-H0M" userLabel="Authenticated Stack View">
                                         <rect key="frame" x="0.0" y="32" width="343" height="32"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Authenticated" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nJr-sw-A9l" userLabel="Authenticated">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Authenticated" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nJr-sw-A9l" userLabel="Authenticated">
                                                 <rect key="frame" x="0.0" y="0.0" width="102" height="32"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -548,7 +555,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="1aw-Q3-bzS" userLabel="Integration Created Stack View">
                                         <rect key="frame" x="0.0" y="64" width="343" height="32"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Integration Created" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bP1-C8-fgs" userLabel="Integration Created">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Integration Created" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bP1-C8-fgs" userLabel="Integration Created">
                                                 <rect key="frame" x="0.0" y="0.0" width="140.5" height="32"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -567,7 +574,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="jQn-gp-cPY" userLabel="Nabu Casa Cloud Enabled Stack View">
                                         <rect key="frame" x="0.0" y="96" width="343" height="32"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nabu Casa Cloud Detected" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O7a-0s-trd" userLabel="Nabu Casa Cloud Detected">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nabu Casa Cloud Detected" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O7a-0s-trd" userLabel="Nabu Casa Cloud Detected">
                                                 <rect key="frame" x="0.0" y="0.0" width="197" height="32"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -586,7 +593,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="XII-35-krr" userLabel="Encrypted Communications Established Stack View">
                                         <rect key="frame" x="0.0" y="128" width="343" height="32"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Encrypted Communications Established" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d97-7H-RBe" userLabel="Remote UI Detected">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Encrypted Communications Established" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d97-7H-RBe" userLabel="Remote UI Detected">
                                                 <rect key="frame" x="0.0" y="0.0" width="288" height="32"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -605,7 +612,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="unp-oV-i5b" userLabel="Sensors Configured Stack View">
                                         <rect key="frame" x="0.0" y="160" width="343" height="32"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sensors Configured" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rle-jZ-AWa" userLabel="Sensors Configured">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sensors Configured" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rle-jZ-AWa" userLabel="Sensors Configured">
                                                 <rect key="frame" x="0.0" y="0.0" width="144" height="32"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -623,22 +630,16 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting to My Home Assistant" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kj7-hM-8gN">
-                                <rect key="frame" x="16" y="199.5" width="343" height="24"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="bTD-eO-lC0" firstAttribute="top" secondItem="Kj7-hM-8gN" secondAttribute="bottom" id="2v1-Iz-5Hm"/>
+                            <constraint firstItem="Kj7-hM-8gN" firstAttribute="bottom" secondItem="bTD-eO-lC0" secondAttribute="top" constant="20" id="2v1-Iz-5Hm"/>
                             <constraint firstItem="Kj7-hM-8gN" firstAttribute="leading" secondItem="pvD-0u-p2i" secondAttribute="leadingMargin" id="36g-rA-ZZL"/>
                             <constraint firstItem="bTD-eO-lC0" firstAttribute="centerX" secondItem="0MA-9n-Q0c" secondAttribute="centerX" id="C8C-e4-lh7"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Kj7-hM-8gN" secondAttribute="trailing" id="Gi0-ly-seC"/>
-                            <constraint firstItem="bTD-eO-lC0" firstAttribute="centerY" secondItem="0MA-9n-Q0c" secondAttribute="centerY" id="Q9I-lM-ymU"/>
                             <constraint firstAttribute="trailingMargin" secondItem="eaY-cI-FSy" secondAttribute="trailing" id="RGp-oM-1Z8"/>
+                            <constraint firstItem="Kj7-hM-8gN" firstAttribute="top" secondItem="0MA-9n-Q0c" secondAttribute="top" id="Xhb-8n-1lr"/>
                             <constraint firstItem="eaY-cI-FSy" firstAttribute="leading" secondItem="pvD-0u-p2i" secondAttribute="leadingMargin" id="mvW-HI-oNQ"/>
                             <constraint firstItem="eaY-cI-FSy" firstAttribute="top" secondItem="bTD-eO-lC0" secondAttribute="bottom" id="qCf-kO-EAQ"/>
                         </constraints>
@@ -657,7 +658,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2cs-FC-Sgv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="188" y="-1343"/>
+            <point key="canvasLocation" x="188" y="-1343.4782608695652"/>
         </scene>
         <!--Permissions View Controller-->
         <scene sceneID="WFF-Aq-cFs">
@@ -667,7 +668,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="For the best experience while using Home Assistant Companion, please grant the following permissions:" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TEX-zW-Byk" userLabel="Title">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="For the best experience while using Home Assistant Companion, please grant the following permissions:" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TEX-zW-Byk" userLabel="Title">
                                 <rect key="frame" x="16" y="20" width="343" height="120"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="120" id="dAn-JD-inK"/>
@@ -676,8 +677,61 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jTp-eG-rL8">
+                                <rect key="frame" x="20" y="140" width="335" height="467"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="YlM-SI-sh2">
+                                        <rect key="frame" x="0.0" y="0.0" width="335" height="360"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tox-sk-7fZ" userLabel="Location Permission Line Item View" customClass="PermissionLineItemView" customModule="HomeAssistant" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="335" height="120"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="120" id="iUj-9u-5IR"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="permissionInt">
+                                                        <integer key="value" value="0"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kJc-Fh-WIp" userLabel="Motion Permission Line Item View" customClass="PermissionLineItemView" customModule="HomeAssistant" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="120" width="335" height="120"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="120" id="p10-IE-97q"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="permissionInt">
+                                                        <integer key="value" value="1"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YDH-nq-m24" userLabel="Notifications Permission Line Item View" customClass="PermissionLineItemView" customModule="HomeAssistant" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="240" width="335" height="120"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="120" id="Ao6-a2-zsK"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="permissionInt">
+                                                        <integer key="value" value="2"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="YlM-SI-sh2" firstAttribute="leading" secondItem="jTp-eG-rL8" secondAttribute="leading" id="4Oa-ga-rWq"/>
+                                    <constraint firstAttribute="trailing" secondItem="YlM-SI-sh2" secondAttribute="trailing" id="DN7-dc-Sva"/>
+                                    <constraint firstItem="YlM-SI-sh2" firstAttribute="top" secondItem="jTp-eG-rL8" secondAttribute="top" id="G4e-HT-I62"/>
+                                    <constraint firstAttribute="bottom" secondItem="YlM-SI-sh2" secondAttribute="bottom" id="eIK-aQ-0xF"/>
+                                    <constraint firstItem="YlM-SI-sh2" firstAttribute="width" secondItem="jTp-eG-rL8" secondAttribute="width" id="geg-0d-uSj"/>
+                                </constraints>
+                            </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jrL-9x-fFX" userLabel="Continue Button" customClass="MDCButton">
-                                <rect key="frame" x="154.5" y="599" width="66" height="48"/>
+                                <rect key="frame" x="154.5" y="607" width="66" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="P7h-vB-eVY"/>
                                 </constraints>
@@ -687,60 +741,19 @@
                                     <segue destination="KCa-bc-FXT" kind="show" id="TXR-MD-wbi"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tox-sk-7fZ" userLabel="Location Permission Line Item View" customClass="PermissionLineItemView" customModule="HomeAssistant" customModuleProvider="target">
-                                <rect key="frame" x="16" y="190" width="343" height="120"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="120" id="iUj-9u-5IR"/>
-                                </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="permissionInt">
-                                        <integer key="value" value="0"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kJc-Fh-WIp" userLabel="Motion Permission Line Item View" customClass="PermissionLineItemView" customModule="HomeAssistant" customModuleProvider="target">
-                                <rect key="frame" x="16" y="310" width="343" height="120"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="120" id="p10-IE-97q"/>
-                                </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="permissionInt">
-                                        <integer key="value" value="1"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YDH-nq-m24" userLabel="Notifications Permission Line Item View" customClass="PermissionLineItemView" customModule="HomeAssistant" customModuleProvider="target">
-                                <rect key="frame" x="16" y="430" width="343" height="120"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="120" id="Ao6-a2-zsK"/>
-                                </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="permissionInt">
-                                        <integer key="value" value="2"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="a9V-In-2AW" firstAttribute="bottom" secondItem="jrL-9x-fFX" secondAttribute="bottom" constant="20" id="5lj-PK-dP5"/>
-                            <constraint firstItem="YDH-nq-m24" firstAttribute="leading" secondItem="a9V-In-2AW" secondAttribute="leading" constant="16" id="9Pa-gp-dRF"/>
-                            <constraint firstItem="a9V-In-2AW" firstAttribute="trailing" secondItem="tox-sk-7fZ" secondAttribute="trailing" constant="16" id="A8I-5y-qXW"/>
-                            <constraint firstItem="a9V-In-2AW" firstAttribute="trailing" secondItem="YDH-nq-m24" secondAttribute="trailing" constant="16" id="BWt-UO-Ym6"/>
-                            <constraint firstItem="kJc-Fh-WIp" firstAttribute="leading" secondItem="a9V-In-2AW" secondAttribute="leading" constant="16" id="EJf-Os-DAx"/>
-                            <constraint firstItem="kJc-Fh-WIp" firstAttribute="top" secondItem="tox-sk-7fZ" secondAttribute="bottom" id="IxM-Th-CBW"/>
-                            <constraint firstItem="a9V-In-2AW" firstAttribute="trailing" secondItem="kJc-Fh-WIp" secondAttribute="trailing" constant="16" id="Jvk-Cl-wvN"/>
-                            <constraint firstItem="tox-sk-7fZ" firstAttribute="leading" secondItem="a9V-In-2AW" secondAttribute="leading" constant="16" id="LUE-Ol-gnF"/>
-                            <constraint firstItem="tox-sk-7fZ" firstAttribute="top" secondItem="TEX-zW-Byk" secondAttribute="bottom" constant="50" id="MD9-lO-Qp8"/>
-                            <constraint firstItem="YDH-nq-m24" firstAttribute="top" secondItem="kJc-Fh-WIp" secondAttribute="bottom" id="QrL-zI-7w2"/>
+                            <constraint firstItem="jTp-eG-rL8" firstAttribute="top" secondItem="TEX-zW-Byk" secondAttribute="bottom" id="3Ox-m9-nAC"/>
+                            <constraint firstItem="a9V-In-2AW" firstAttribute="bottom" secondItem="jrL-9x-fFX" secondAttribute="bottomMargin" constant="20" id="5lj-PK-dP5"/>
+                            <constraint firstItem="a9V-In-2AW" firstAttribute="trailing" secondItem="jTp-eG-rL8" secondAttribute="trailing" constant="20" id="8OW-dU-vVy"/>
                             <constraint firstItem="TEX-zW-Byk" firstAttribute="leading" secondItem="a9V-In-2AW" secondAttribute="leading" constant="16" id="Ukj-Rq-Yjg"/>
+                            <constraint firstItem="jrL-9x-fFX" firstAttribute="centerX" secondItem="a9V-In-2AW" secondAttribute="centerX" id="Y2o-bB-QwE"/>
                             <constraint firstItem="TEX-zW-Byk" firstAttribute="top" secondItem="a9V-In-2AW" secondAttribute="top" id="Yia-Vb-VfI"/>
-                            <constraint firstItem="TEX-zW-Byk" firstAttribute="trailing" secondItem="a9V-In-2AW" secondAttribute="trailing" constant="-16" id="chC-yZ-xx1"/>
-                            <constraint firstItem="YDH-nq-m24" firstAttribute="centerX" secondItem="jrL-9x-fFX" secondAttribute="centerX" id="z51-LP-dqK"/>
+                            <constraint firstItem="a9V-In-2AW" firstAttribute="trailing" secondItem="TEX-zW-Byk" secondAttribute="trailing" constant="16" id="chC-yZ-xx1"/>
+                            <constraint firstItem="jTp-eG-rL8" firstAttribute="leading" secondItem="a9V-In-2AW" secondAttribute="leading" constant="20" id="dfa-cF-oWS"/>
+                            <constraint firstItem="jTp-eG-rL8" firstAttribute="bottom" secondItem="jrL-9x-fFX" secondAttribute="top" id="rlR-mp-oVb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="a9V-In-2AW"/>
                     </view>
@@ -753,7 +766,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0RS-wL-M18" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-617" y="-1343"/>
+            <point key="canvasLocation" x="-618.39999999999998" y="-1343.4782608695652"/>
         </scene>
         <!--Onboarding Navigation View Controller-->
         <scene sceneID="qL5-eq-CzD">
@@ -774,8 +787,8 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="KPp-1J-npF"/>
-        <segue reference="Ywb-4q-gPS"/>
+        <segue reference="Nmk-e0-aiM"/>
+        <segue reference="age-hj-Hrf"/>
         <segue reference="Fz4-Qa-34b"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
