@@ -84,20 +84,22 @@ public class WebhookSensors {
     // MARK: Connectivity sensors
 
     public var BSSID: WebhookSensor? {
-        let sensor = WebhookSensor(name: "BSSID", uniqueID: "connectivity_bssid", icon: "mdi:wifi-star",
+        let sensor = WebhookSensor(name: "BSSID", uniqueID: "connectivity_bssid", icon: "mdi:wifi-off",
                                    state: "Not Connected")
 
         if let bssid = ConnectionInfo.CurrentWiFiBSSID {
             sensor.State = bssid
+            sensor.Icon = "mdi:wifi-star"
         }
         return sensor
     }
 
     public var SSID: WebhookSensor? {
-        let sensor = WebhookSensor(name: "SSID", uniqueID: "connectivity_ssid", icon: "mdi:wifi",
+        let sensor = WebhookSensor(name: "SSID", uniqueID: "connectivity_ssid", icon: "mdi:wifi-off",
                                    state: "Not Connected")
         if let ssid = ConnectionInfo.CurrentWiFiSSID {
             sensor.State = ssid
+            sensor.Icon = "mdi:wifi"
         }
         return sensor
     }
@@ -133,10 +135,10 @@ public class WebhookSensors {
 
     private func makeCarrierSensor(_ carrier: CTCarrier, _ radioTech: String?, _ key: String? = nil) -> WebhookSensor {
         var carrierSensor = WebhookSensor(name: "Cellular Provider", uniqueID: "connectivity_cellular_provider",
-                                          icon: "mdi:signal", state: "Unknown")
+                                          icon: "mdi:sim", state: "Unknown")
 
         if let key = key, let id = key.last {
-            carrierSensor = WebhookSensor(name: "SIM \(id)", uniqueID: "connectivity_sim_\(id)", icon: "mdi:signal",
+            carrierSensor = WebhookSensor(name: "SIM \(id)", uniqueID: "connectivity_sim_\(id)", icon: "mdi:sim",
                                           state: "Unknown")
         }
 

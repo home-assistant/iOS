@@ -610,7 +610,9 @@ public class HomeAssistantAPI {
         }.then { (sensors: [WebhookSensor]) -> Promise<[WebhookSensorResponse]> in
 
             var allSensors = sensors
-            allSensors.append(WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger"))
+            let triggerSensor = WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger")
+            triggerSensor.Icon = "mdi:cellphone-wireless"
+            allSensors.append(triggerSensor)
             allSensors.append(self.sensorsConfig.GeocodedLocationSensorConfig)
 
             // swiftlint:disable:next line_length
@@ -647,6 +649,7 @@ public class HomeAssistantAPI {
             }
         }.map { sensors in
             let lastUpdateTriggerSensor = WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger")
+            lastUpdateTriggerSensor.Icon = "mdi:cellphone-wireless"
             if trigger != .Unknown {
                 lastUpdateTriggerSensor.State = trigger.rawValue
             }
