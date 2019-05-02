@@ -8,7 +8,6 @@
 
 import Alamofire
 import AlamofireNetworkActivityIndicator
-import arek
 import CallbackURLKit
 import Communicator
 import Firebase

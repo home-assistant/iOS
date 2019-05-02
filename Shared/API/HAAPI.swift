@@ -18,7 +18,6 @@ import RealmSwift
 import UserNotifications
 import Intents
 import Version
-import Starscream
 #if os(iOS)
 import Crashlytics
 import Reachability
@@ -63,14 +62,6 @@ public class HomeAssistantAPI {
 
     var tokenManager: TokenManager?
     public var connectionInfo: ConnectionInfo
-
-    public var socket: WebSocket?
-    weak var socketDelegate: WebsocketDelegate?
-    public static var socketMessageCounter: Int = 1
-    public static var socketMessageTypeMap: [Int: String] = [:]
-    static var socketMessages: [Int: WebSocketMessage] = [:]
-    public static var socketDispatchGroups: [Int: DispatchGroup] = [:]
-    public var socketAuthenticated: Bool = false
 
     /// Initialize an API object with an authenticated tokenManager.
     public init(connectionInfo: ConnectionInfo, tokenInfo: TokenInfo, urlConfig: URLSessionConfiguration = .default) {

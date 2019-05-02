@@ -16,7 +16,6 @@ import UserNotifications
 import Shared
 import RealmSwift
 import Communicator
-import arek
 import ZIPFoundation
 import Lokalise
 
@@ -294,7 +293,7 @@ class OldSettingsViewController: FormViewController, CLLocationManagerDelegate, 
                 $0.title = L10n.Settings.DetailsSection.EnableLocationRow.title
                 $0.hidden = Condition(booleanLiteral: Current.settingsStore.locationEnabled)
             }.onCellSelection { _, row in
-                let permission = LocationPermission()
+                /* let permission = LocationPermission()
 
                 permission.manage { status in
                     Current.Log.verbose("Location status \(status)")
@@ -310,7 +309,7 @@ class OldSettingsViewController: FormViewController, CLLocationManagerDelegate, 
                         Current.syncMonitoredRegions?()
                     }
                     //            _ = HomeAssistantAPI.sharedInstance.getAndSendLocation(trigger: .Manual)
-                }
+                } */
             }
 
             <<< ButtonRow("locationSettings") {
@@ -329,7 +328,7 @@ class OldSettingsViewController: FormViewController, CLLocationManagerDelegate, 
                 $0.title = L10n.Settings.DetailsSection.EnableNotificationRow.title
                 $0.hidden = Condition(booleanLiteral: Current.settingsStore.notificationsEnabled)
                 }.onCellSelection { _, row in
-                    let permission = NotificationPermission()
+                    /* let permission = NotificationPermission()
 
                     permission.manage { status in
                         Current.Log.verbose("Notification status \(status)")
@@ -345,7 +344,7 @@ class OldSettingsViewController: FormViewController, CLLocationManagerDelegate, 
                             settingsRow.evaluateHidden()
                             self.tableView.reloadData()
                         }
-                    }
+                    } */
             }
 
             <<< ButtonRow("notificationSettings") {
@@ -503,12 +502,6 @@ class OldSettingsViewController: FormViewController, CLLocationManagerDelegate, 
         +++ Section(header: L10n.Settings.Developer.header, footer: L10n.Settings.Developer.footer) {
             $0.hidden = Condition(booleanLiteral: (Current.appConfiguration.rawValue > 1))
             $0.tag = "developerOptions"
-        }
-
-        <<< ButtonRow {
-            $0.title = "Test WebSocket"
-            }.onCellSelection { _, _ in
-                HomeAssistantAPI.authenticatedAPI()?.GetAuthenticatedUser()
         }
 
         <<< ButtonRow {

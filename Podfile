@@ -28,7 +28,6 @@ def shared_pods
     pod 'PromiseKit', '~> 6.8.4'
     pod 'RealmSwift', '~> 3.14.1'
     pod 'Sodium'
-    pod 'Starscream'
     pod 'UIColor_Hex_Swift', '~> 5.1.0'
     pod 'Version', :git => 'https://github.com/guykogus/Version.git', :branch => 'master'
     pod 'XCGLogger', '~> 7.0.0'
@@ -44,9 +43,6 @@ target 'HomeAssistant' do
     ios_shared_pods
 
     pod 'AlamofireNetworkActivityIndicator', '~> 2.3.0'
-    pod 'arek/Location', :git => 'https://github.com/liweihan/arek', :branch => 'develop'
-    pod 'arek/Motion', :git => 'https://github.com/liweihan/arek', :branch => 'develop'
-    pod 'arek/Notifications', :git => 'https://github.com/liweihan/arek', :branch => 'develop'
     pod 'CallbackURLKit'
     pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
     pod 'Communicator'
