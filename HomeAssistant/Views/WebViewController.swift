@@ -12,6 +12,7 @@ import KeychainAccess
 import PromiseKit
 import MaterialComponents.MaterialButtons
 import Iconic
+import SwiftMessages
 import Shared
 
 // swiftlint:disable:next type_body_length
@@ -306,22 +307,39 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, C
         }.done {_ in
             Current.Log.verbose("Sending current location via button press")
         }.catch {error in
-            let nserror = error as NSError
-            let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
-            let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
-                                          message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-            self.navigationController?.present(alert, animated: true, completion: nil)
-            alert.popoverPresentationController?.sourceView = self.webView
+            self.showSwiftMessageError((error as NSError).localizedDescription)
+//            let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
+//            let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
+//                                          message: message, preferredStyle: .alert)
+//            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+//            self.navigationController?.present(alert, animated: true, completion: nil)
+//            alert.popoverPresentationController?.sourceView = self.webView
         }
     }
 
+    func showSwiftMessageError(_ body: String, duration: SwiftMessages.Duration = .automatic) {
+        var config = SwiftMessages.Config()
+
+        config.presentationContext = .window(windowLevel: .statusBar)
+        config.duration = duration
+
+        let view = MessageView.viewFromNib(layout: .statusLine)
+        view.configureTheme(.error)
+        view.configureContent(body: body)
+
+        SwiftMessages.show(config: config, view: view)
+
+    }
+
     func openSettingsWithError(error: Error) {
-        let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
-                                      preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
-        self.navigationController?.present(alert, animated: true, completion: nil)
-        alert.popoverPresentationController?.sourceView = self.webView
+        self.showSwiftMessageError(error.localizedDescription, duration: SwiftMessages.Duration.seconds(seconds: 10))
+        self.showSwiftMessageError(error.localizedDescription)
+
+//        let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
+//                                      preferredStyle: .alert)
+//        alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
+//        self.navigationController?.present(alert, animated: true, completion: nil)
+//        alert.popoverPresentationController?.sourceView = self.webView
 
         /* let settingsView = SettingsViewController()
         settingsView.showErrorConnectingMessage = true

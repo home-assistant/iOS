@@ -163,6 +163,9 @@ PODS:
   - Sodium (0.8.0)
   - SwiftGen (6.1.0)
   - SwiftLint (0.31.0)
+  - SwiftMessages (6.0.3):
+    - SwiftMessages/App (= 6.0.3)
+  - SwiftMessages/App (6.0.3)
   - TABObserverSet (2.1.0)
   - UIColor_Hex_Swift (5.1.0)
   - Version (0.6.3)
@@ -203,6 +206,7 @@ DEPENDENCIES:
   - Sodium
   - SwiftGen (~> 6.1.0)
   - SwiftLint (~> 0.31.0)
+  - SwiftMessages (from `https://github.com/SwiftKickMobile/SwiftMessages.git`, branch `master`)
   - UIColor_Hex_Swift (~> 5.1.0)
   - Version (from `https://github.com/guykogus/Version.git`, branch `master`)
   - ViewRow (from `https://github.com/EurekaCommunity/ViewRow`, branch `master`)
@@ -266,6 +270,9 @@ EXTERNAL SOURCES:
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
+  SwiftMessages:
+    :branch: master
+    :git: https://github.com/SwiftKickMobile/SwiftMessages.git
   Version:
     :branch: master
     :git: https://github.com/guykogus/Version.git
@@ -289,6 +296,9 @@ CHECKOUT OPTIONS:
   ObjectMapper:
     :commit: 57ef73f696dc53182db661bb969db32b4b989d97
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
+  SwiftMessages:
+    :commit: 6b348edcc4b1a167f2961f3f921d274792272c77
+    :git: https://github.com/SwiftKickMobile/SwiftMessages.git
   Version:
     :commit: 4c7377234ca33fa4020730d42b8500ff60946da0
     :git: https://github.com/guykogus/Version.git
@@ -336,6 +346,7 @@ SPEC CHECKSUMS:
   Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
   SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
   SwiftLint: 7a0227733d786395817373b2d0ca799fd0093ff3
+  SwiftMessages: 662a0e16035f576fd4c0c5d63e007843a230a75f
   TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
   UIColor_Hex_Swift: 8be7432edacb7fa91c78aa05ef3c30b66e4f9415
   Version: 6d06bec3852da71325fe67f681ec6230fff83afa
@@ -343,6 +354,6 @@ SPEC CHECKSUMS:
   XCGLogger: 0434f15e3909cdc450bb63faf638b8792ab782ab
   ZIPFoundation: b1f07e4409baf1641f3fe5948b2a1c3f5c500cb1
 
-PODFILE CHECKSUM: 474a99b9a660c19ee9c0328fbd5e98411e34cccd
+PODFILE CHECKSUM: 53c5d61ff911f02149290337c0a6358fca21eea6
 
 COCOAPODS: 1.7.0.beta.3

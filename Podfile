@@ -57,6 +57,7 @@ target 'HomeAssistant' do
     pod 'MBProgressHUD', '~> 1.1.0'
     pod 'SwiftGen', '~> 6.1.0'
     pod 'SwiftLint', '~> 0.31.0'
+    pod 'SwiftMessages', :git => 'https://github.com/SwiftKickMobile/SwiftMessages.git', :branch => 'master'
     pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
     pod 'ZIPFoundation', '~> 0.9'
 
