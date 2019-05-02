@@ -23,6 +23,17 @@ class ManualSetupViewController: UIViewController {
         if let navVC = self.navigationController as? OnboardingNavigationViewController {
             navVC.styleButton(self.connectButton)
         }
+
+        // Keyboard avoidance adapted from https://stackoverflow.com/a/27135992/486182
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)),
+                                               name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)),
+                                               name: UIResponder.keyboardWillHideNotification, object: nil)
+
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     @IBAction func connectButtonTapped(_ sender: UIButton) {
@@ -37,6 +48,22 @@ class ManualSetupViewController: UIViewController {
 
             let isSSL = url.scheme == "https"
             vc.instance = DiscoveredHomeAssistant(baseURL: url, name: "Manual", version: "0.92.0", ssl: isSSL)
+        }
+    }
+
+    @objc func keyboardWillShow(notification: NSNotification) {
+        guard let userInfo = notification.userInfo else { return }
+        guard let keyboardSize = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        if self.view.frame.origin.y == 0 {
+            self.view.frame.origin.y -= keyboardSize.cgRectValue.height / 2
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        guard let userInfo = notification.userInfo else { return }
+        guard let keyboardSize = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y += keyboardSize.cgRectValue.height / 2
         }
     }
 
