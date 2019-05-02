@@ -601,7 +601,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Current.Log.verbose("Sending params in shortcut \(inputParams)")
 
-        let eventName: String = "mobile_app.shortcut_run"
+        let eventName: String = "ios.shortcut_run"
         let deviceDict: [String: String] = [
             "sourceDevicePermanentID": Constants.PermanentID, "sourceDeviceName": UIDevice.current.name,
             "sourceDeviceID": Current.settingsStore.deviceID
