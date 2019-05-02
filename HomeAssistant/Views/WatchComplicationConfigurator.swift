@@ -223,7 +223,7 @@ class WatchComplicationConfigurator: FormViewController {
             $0.hidden = true
         }
 
-        <<< PushRow<String> {
+        <<< SearchPushRow<String> {
                 $0.options = MaterialDesignIcons.allCases.map({ $0.name })
                 $0.value = $0.options?.first
                 $0.selectorTitle = L10n.Watch.Configurator.Rows.Icon.Choose.title
