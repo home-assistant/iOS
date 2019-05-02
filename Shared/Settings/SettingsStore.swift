@@ -9,6 +9,8 @@
 import Foundation
 import KeychainAccess
 import DeviceKit
+import CoreLocation
+import CoreMotion
 
 public class SettingsStore {
     let keychain = Constants.Keychain
@@ -108,20 +110,23 @@ public class SettingsStore {
     }
 
     public var locationEnabled: Bool {
-        get {
-            return prefs.bool(forKey: "locationEnabled")
-        }
-        set {
-            prefs.set(newValue, forKey: "locationEnabled")
-        }
+        return CLLocationManager.authorizationStatus() == .authorizedAlways
     }
 
     public var motionEnabled: Bool {
         get {
-            return prefs.bool(forKey: "motionEnabled")
+            if #available(iOS 11.0, *) {
+                return CMPedometer.authorizationStatus() == .authorized
+            } else {
+                return prefs.bool(forKey: "motionEnabled")
+            }
         }
         set {
-            prefs.set(newValue, forKey: "motionEnabled")
+            if #available(iOS 11.0, *) {
+                return
+            } else {
+                prefs.set(newValue, forKey: "motionEnabled")
+            }
         }
     }
 
