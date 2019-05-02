@@ -4469,7 +4469,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4008EB215F780E949CCD6956 /* Pods-WatchAppExtension.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -5153,7 +5152,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F95337CF20F43B41C78A66D0 /* Pods-WatchAppExtension.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -5187,7 +5185,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F6263AE4EAC90E232CFCA4E7 /* Pods-WatchAppExtension.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
