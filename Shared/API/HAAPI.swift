@@ -604,7 +604,7 @@ public class HomeAssistantAPI {
 
     private let sensorsConfig = WebhookSensors()
 
-    public func RegisterSensors() -> Promise<[WebhookSensorResponse]> {
+    public func RegisterSensors(_ limitSensors: [String]? = nil) -> Promise<[WebhookSensorResponse]> {
         return firstly {
             self.sensorsConfig.AllSensors
         }.then { (sensors: [WebhookSensor]) -> Promise<[WebhookSensorResponse]> in
@@ -613,12 +613,20 @@ public class HomeAssistantAPI {
             allSensors.append(WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger"))
             allSensors.append(self.sensorsConfig.GeocodedLocationSensorConfig)
 
-            var promises: [Promise<WebhookSensorResponse>] = []
-
-            for sensor in allSensors {
-                promises.append(self.webhook("register_sensor",
-                                             payload: sensor.toJSON(), callingFunctionName: "\(#function)"))
+            // swiftlint:disable:next line_length
+            let promises: [Promise<WebhookSensorResponse>] = allSensors.compactMap { sensor -> Promise<WebhookSensorResponse>? in
+                let promise: Promise<WebhookSensorResponse> = self.webhook("register_sensor", payload: sensor.toJSON(),
+                                                                           callingFunctionName: "\(#function)")
+                if let limit = limitSensors {
+                    if let uniqID = sensor.UniqueID, limit.contains(uniqID) {
+                        return promise
+                    }
+                    return nil
+                }
+                return promise
             }
+
+            Current.Log.verbose("Registering sensors \(promises)")
 
             return when(fulfilled: promises)
         }
@@ -673,17 +681,18 @@ public class HomeAssistantAPI {
 
             return out
         }.then { resps -> Promise<[String: WebhookSensorResponse]> in
-            // mobile_app could respond with error "not_registered". If we get _any_ responses that fail, let's
-            // re-register _all_ of the sensors.
-            let containsFailures = resps.contains { !$0.value.Success }
+            // Need to register any sensors that weren't previously registered.
+            let failures = resps.compactMap({ (elem) -> String? in
+                guard elem.value.Success == false && elem.value.ErrorCode == "not_registered" else { return nil }
 
-            if !containsFailures {
-                return Promise.value(resps)
-            }
+                return elem.key
+            })
 
-            Current.Log.warning("Errors detected during sensor update, re-registering all sensors now")
+            if failures.count == 0 { return Promise.value(resps) }
 
-            return self.RegisterSensors().then { _ -> Promise<[String: WebhookSensorResponse]> in
+            Current.Log.warning("Errors detected during sensor update, re-registering sensors \(failures) now")
+
+            return self.RegisterSensors(failures).then { _ -> Promise<[String: WebhookSensorResponse]> in
                 return self.UpdateSensors(trigger)
             }
         }
