@@ -230,17 +230,19 @@ class SettingsDetailViewController: FormViewController {
                 <<< ButtonRow {
                         $0.title = L10n.SettingsDetails.Notifications.ImportLegacySettings.Button.title
                     }.onCellSelection { cell, _ in
-                        MigratePushSettingsToLocal()
-                        // swiftlint:disable:next line_length
-                        let alert = UIAlertController(title: L10n.SettingsDetails.Notifications.ImportLegacySettings.Alert.title,
-                                                      // swiftlint:disable:next line_length
-                                                      message: L10n.SettingsDetails.Notifications.ImportLegacySettings.Alert.message,
-                                                      preferredStyle: UIAlertController.Style.alert)
-                        alert.addAction(UIAlertAction(title: L10n.okLabel,
-                                                      style: UIAlertAction.Style.default, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
+                        _ = HomeAssistantAPI.authenticatedAPI()?.MigratePushSettingsToLocal().done { cats in
+                            let title = L10n.SettingsDetails.Notifications.ImportLegacySettings.Alert.title
+                            let message = L10n.SettingsDetails.Notifications.ImportLegacySettings.Alert.message
+                            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
 
-                        alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
+                            alert.popoverPresentationController?.sourceView = cell.contentView
+
+                            let rows = cats.map { self.getNotificationCategoryRow($0) }
+                            var section = self.form.sectionBy(tag: "notification_categories")
+                            section?.insert(contentsOf: rows, at: 0)
+                        }
                     }
 
                 +++ ButtonRow {
@@ -719,7 +721,7 @@ class SettingsDetailViewController: FormViewController {
                     }
                 }
 
-                ProvideNotificationCategoriesToSystem()
+                HomeAssistantAPI.ProvideNotificationCategoriesToSystem()
             })
         }
     }

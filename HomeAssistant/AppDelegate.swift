@@ -69,6 +69,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setupWatchCommunicator()
 
+        HomeAssistantAPI.ProvideNotificationCategoriesToSystem()
+
         if #available(iOS 12.0, *) { setupiOS12Features() }
 
         self.setupView()

@@ -10,21 +10,29 @@ import Foundation
 import Shared
 import RealmSwift
 import UserNotifications
+import PromiseKit
 
-func ProvideNotificationCategoriesToSystem() {
-    let realm = Current.realm()
-    let categories = Set<UNNotificationCategory>(realm.objects(NotificationCategory.self).map({ $0.category }))
+extension HomeAssistantAPI {
+    public static func ProvideNotificationCategoriesToSystem() {
+        let realm = Current.realm()
+        let categories = Set<UNNotificationCategory>(realm.objects(NotificationCategory.self).map({ $0.category }))
 
-    Current.Log.verbose("Providing \(categories.count) categories to system: \(categories)")
+        Current.Log.verbose("Providing \(categories.count) categories to system: \(categories)")
 
-    UNUserNotificationCenter.current().setNotificationCategories(categories)
-}
+        UNUserNotificationCenter.current().setNotificationCategories(categories)
+    }
 
-func MigratePushSettingsToLocal() {
-    let realm = Current.realm()
+    public func MigratePushSettingsToLocal() -> Promise<[NotificationCategory]> {
+        return firstly {
+            self.GetPushSettings()
+        }.compactMap { settings -> [NotificationCategory] in
+            var cats: [NotificationCategory] = []
+            guard let categories = settings.Categories else {
+                Current.Log.warning("Unable to unwrap push categories or none exist! \(settings)")
+                return cats
+            }
 
-    HomeAssistantAPI.authenticatedAPI()?.GetPushSettings().done { config in
-        if let categories = config.Categories {
+            let realm = Current.realm()
             for remoteCategory in categories {
                 let localCategory = NotificationCategory()
                 Current.Log.verbose("Attempting import of category \(remoteCategory.Identifier)")
@@ -60,11 +68,10 @@ func MigratePushSettingsToLocal() {
                 try! realm.write {
                     realm.add(localCategory, update: true)
                 }
+                cats.append(localCategory)
             }
-        } else {
-            Current.Log.warning("Unable to unwrap push categories or none exist! \(config)")
+            HomeAssistantAPI.ProvideNotificationCategoriesToSystem()
+            return cats
         }
-    }.catch { error in
-        Current.Log.error("Error when importing push settings: \(error)")
     }
 }
