@@ -897,7 +897,7 @@ internal enum L10n {
       internal static let cloudAvailable = L10n.tr("Localizable", "settings.connection_section.cloud_available")
       /// Cloudhook Available
       internal static let cloudhookAvailable = L10n.tr("Localizable", "settings.connection_section.cloudhook_available")
-      /// Connecting Via
+      /// Connected via
       internal static let connectingVia = L10n.tr("Localizable", "settings.connection_section.connecting_via")
       /// Details
       internal static let details = L10n.tr("Localizable", "settings.connection_section.details")

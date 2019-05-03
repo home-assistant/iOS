@@ -641,7 +641,7 @@
 "onboarding.discovery.results_label.singular" = "We found %d Home Assistant on your network.";
 "onboarding.connect.title" = "Connecting to %@";
 "settings.connection_section.details" = "Details";
-"settings.connection_section.connecting_via" = "Connecting Via";
+"settings.connection_section.connecting_via" = "Connected via";
 "settings.connection_section.logged_in_as" = "Logged in as";
 "settings.connection_section.nabu_casa_cloud" = "Nabu Casa Cloud";
 "settings.connection_section.cloud_available" = "Cloud Available";
