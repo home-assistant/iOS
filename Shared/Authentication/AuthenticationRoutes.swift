@@ -48,14 +48,7 @@ enum AuthenticationRoute {
     }
 
     private var method: HTTPMethod {
-        switch self {
-        case .token:
-            return .post
-        case .refreshToken:
-            return .post
-        case .revokeToken:
-            return .post
-        }
+        return .post
     }
 
     private var parameters: Parameters? {
