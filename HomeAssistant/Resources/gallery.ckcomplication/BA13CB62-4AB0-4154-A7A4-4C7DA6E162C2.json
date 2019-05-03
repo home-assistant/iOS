@@ -1,0 +1,8 @@
+{
+  "textProvider" : {
+    "class" : "CLKSimpleTextProvider",
+    "text" : "??"
+  },
+  "class" : "CLKComplicationTemplateGraphicBezelCircularText",
+  "version" : 30000
+}

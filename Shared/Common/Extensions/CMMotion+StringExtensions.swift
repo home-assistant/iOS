@@ -9,21 +9,48 @@
 import Foundation
 import CoreMotion
 
+// Don't translate these strings as they are sent to HA and we don't want to cause people to have to write
+// automations expecting localized strings.
+
 extension CMMotionActivity {
-    var activityType: String {
+    var activityTypes: [String] {
+        var types: [String] = []
+
         if self.walking {
-            return "Walking"
+            types.append("Walking")
         } else if self.running {
-            return "Running"
+            types.append("Running")
         } else if self.automotive {
-            return "Automotive"
+            types.append("Automotive")
         } else if self.cycling {
-            return "Cycling"
+            types.append("Cycling")
         } else if self.stationary {
-            return "Stationary"
+            types.append("Stationary")
         } else {
-            return "Unknown"
+            types.append("Unknown")
         }
+
+        return types
+    }
+
+    var icons: [String] {
+        var icons: [String] = []
+
+        if self.walking {
+            icons.append("mdi:walk")
+        } else if self.running {
+            icons.append("mdi:run")
+        } else if self.automotive {
+            icons.append("mdi:car")
+        } else if self.cycling {
+            icons.append("mdi:bike")
+        } else if self.stationary {
+            icons.append("mdi:human-male")
+        } else {
+            icons.append("mdi:help-circle")
+        }
+
+        return icons
     }
 }
 

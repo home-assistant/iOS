@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="14490.70" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+    <device id="watch38" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="14490.21"/>
+    </dependencies>
+    <scenes>
+        <!--Home Assistant-->
+        <scene sceneID="aou-V4-d1y">
+            <objects>
+                <controller title="Home Assistant" id="AgC-eL-Hgc" customClass="InterfaceController" customModule="WatchApp" customModuleProvider="target">
+                    <items>
+                        <table alignment="left" id="wzm-z7-qRv">
+                            <items>
+                                <tableRow identifier="actionRowType" id="Kqb-lS-KNT" customClass="ActionRowType" customModule="WatchAppExtension">
+                                    <group key="rootItem" width="1" height="42" alignment="left" id="bW2-9l-fJW">
+                                        <items>
+                                            <imageView width="24" height="24" alignment="left" verticalAlignment="center" id="YLy-LH-2Xz"/>
+                                            <label width="0.84999999999999998" height="1" alignment="left" text="Label" textAlignment="left" id="sVJ-HO-sLu"/>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="group" destination="bW2-9l-fJW" id="Gyh-bC-dVq"/>
+                                        <outlet property="image" destination="YLy-LH-2Xz" id="wsC-6W-roZ"/>
+                                        <outlet property="label" destination="sVJ-HO-sLu" id="VvI-Ig-iNo"/>
+                                    </connections>
+                                </tableRow>
+                            </items>
+                        </table>
+                        <label alignment="center" verticalAlignment="center" text="No actions configured. Configure actions on your phone to dismiss this message." textAlignment="center" numberOfLines="10" id="rFf-ux-R1e"/>
+                    </items>
+                    <connections>
+                        <outlet property="noActionsLabel" destination="rFf-ux-R1e" id="NKi-TH-3oN"/>
+                        <outlet property="tableView" destination="wzm-z7-qRv" id="vZo-SJ-Vm2"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="34" y="32"/>
+        </scene>
+        <!--Map Static Notification Interface Controller-->
+        <scene sceneID="68Y-yR-2I3">
+            <objects>
+                <notificationController id="h4f-Hf-ll2" userLabel="Map Static Notification Interface Controller">
+                    <items>
+                        <label alignment="left" text="Alert Label" numberOfLines="3" id="H5r-Ru-Cy4"/>
+                    </items>
+                    <notificationCategory key="notificationCategory" identifier="map" id="PaD-pF-3Yk"/>
+                    <connections>
+                        <outlet property="notificationAlertLabel" destination="H5r-Ru-Cy4" id="ui9-mA-ht9"/>
+                        <segue destination="LrQ-kJ-7bY" kind="relationship" relationship="dynamicNotificationInterface" id="Mj2-HI-URj"/>
+                    </connections>
+                </notificationController>
+            </objects>
+            <point key="canvasLocation" x="34" y="707"/>
+        </scene>
+        <!--Map Notification Controller-->
+        <scene sceneID="Y1C-6b-E19">
+            <objects>
+                <controller id="LrQ-kJ-7bY" customClass="MapNotificationController" customModule="WatchAppExtension">
+                    <items>
+                        <label alignment="left" text="Title" numberOfLines="2" id="vyJ-v3-IgR">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <label alignment="left" text="Subtitle" id="jKU-zr-KKu">
+                            <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
+                        </label>
+                        <label alignment="left" text="Body" numberOfLines="4" id="1Hj-Yc-sZU">
+                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
+                        </label>
+                        <map height="150" alignment="left" id="Nsd-Pz-t9E"/>
+                    </items>
+                    <connections>
+                        <outlet property="mapView" destination="Nsd-Pz-t9E" id="1LK-sZ-iS5"/>
+                        <outlet property="notificationAlertLabel" destination="1Hj-Yc-sZU" id="PdZ-MY-anT"/>
+                        <outlet property="notificationSubtitleLabel" destination="jKU-zr-KKu" id="ifs-Vq-9iq"/>
+                        <outlet property="notificationTitleLabel" destination="vyJ-v3-IgR" id="zuP-jS-xWO"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="335" y="707"/>
+        </scene>
+        <!--Camera Static Notification Interface Controller-->
+        <scene sceneID="jQk-Ce-YAw">
+            <objects>
+                <notificationController id="JOO-yq-9Md" userLabel="Camera Static Notification Interface Controller">
+                    <items>
+                        <label alignment="left" text="Alert Label" id="Imb-lE-NeQ"/>
+                    </items>
+                    <notificationCategory key="notificationCategory" identifier="camera" id="reZ-Qf-LhH"/>
+                    <connections>
+                        <outlet property="notificationAlertLabel" destination="Imb-lE-NeQ" id="xDD-YX-Cjw"/>
+                        <segue destination="R7r-up-oD1" kind="relationship" relationship="dynamicNotificationInterface" id="S2l-7Q-okt"/>
+                    </connections>
+                </notificationController>
+            </objects>
+            <point key="canvasLocation" x="34" y="330"/>
+        </scene>
+        <!--Camera Notification Controller-->
+        <scene sceneID="YvE-lN-xpN">
+            <objects>
+                <controller id="R7r-up-oD1" customClass="CameraNotificationController" customModule="WatchAppExtension">
+                    <items>
+                        <label alignment="left" text="Title" numberOfLines="2" id="3tx-pE-mk3">
+                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                        </label>
+                        <label alignment="left" text="Subtitle" id="Cnt-he-fjW">
+                            <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
+                        </label>
+                        <label alignment="left" text="Body" numberOfLines="4" id="g1t-FY-9bY">
+                            <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
+                        </label>
+                        <imageView alignment="center" id="abh-Pc-dOV"/>
+                    </items>
+                    <connections>
+                        <outlet property="imageView" destination="abh-Pc-dOV" id="In6-Pl-Ksu"/>
+                        <outlet property="notificationAlertLabel" destination="g1t-FY-9bY" id="epJ-dp-jBr"/>
+                        <outlet property="notificationSubtitleLabel" destination="Cnt-he-fjW" id="fe0-Rc-Avr"/>
+                        <outlet property="notificationTitleLabel" destination="3tx-pE-mk3" id="Qqb-3F-kCI"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="334" y="330"/>
+        </scene>
+    </scenes>
+    <color key="tintColor" red="0.40000000000000002" green="0.78000000000000003" blue="0.95999999999999996" alpha="1" colorSpace="calibratedRGB"/>
+</document>

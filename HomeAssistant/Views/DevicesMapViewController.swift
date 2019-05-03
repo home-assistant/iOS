@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import PromiseKit
 import Shared
 
 enum MapType: Int {
@@ -17,7 +18,16 @@ enum MapType: Int {
 }
 
 class DeviceAnnotation: MKPointAnnotation {
-    var device: DeviceTracker?
+    var device: RLMDeviceTracker?
+}
+
+// This is really just needed for UI Testing
+class HAAnnotationView: MKPinAnnotationView {
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+
+        self.accessibilityIdentifier = self.reuseIdentifier
+    }
 }
 
 class HACircle: MKCircle {
@@ -67,64 +77,35 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         let locateMeButton = MKUserTrackingBarButtonItem(mapView: self.mapView)
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         let segmentedControlButtonItem = UIBarButtonItem(customView: typeController)
-        //        let bookmarksButton = UIBarButtonItem(barButtonSystemItem: .Bookmarks, target: self, action: nil)
 
         self.setToolbarItems([locateMeButton, flexibleSpace, segmentedControlButtonItem, flexibleSpace], animated: true)
 
-        if let api = HomeAssistantAPI.authenticatedAPI(), let cachedEntities = api.cachedEntities {
-            if let zoneEntities: [Zone] = cachedEntities.filter({ (entity) -> Bool in
-                return entity.Domain == "zone"
-            }) as? [Zone] {
-                for zone in zoneEntities {
-                    let circle = HACircle.init(center: zone.locationCoordinates(),
-                                               radius: CLLocationDistance(zone.Radius))
-                    circle.type = "zone"
-                    mapView.add(circle)
-                }
+        let zonesP = getZoneAnnotations()
+        let devicesAP = getDeviceAnnotations()
+        let devicesCP = getDeviceCircles()
+
+        _ = when(fulfilled: zonesP, devicesAP, devicesCP).done { (zones, devices, deviceCircles) in
+            self.mapView.addOverlays(zones)
+            self.mapView.addAnnotations(devices)
+            self.mapView.addOverlays(deviceCircles)
+
+            var zoomRect: MKMapRect = MKMapRect.null
+            for index in 0..<self.mapView.annotations.count {
+                let annotation = self.mapView.annotations[index]
+                let aPoint: MKMapPoint = MKMapPoint.init(annotation.coordinate)
+                let rect: MKMapRect = MKMapRect.init(x: aPoint.x, y: aPoint.y, width: 0.1, height: 0.1)
+
+                zoomRect = zoomRect.union(rect)
             }
 
-            if let deviceEntities: [DeviceTracker] = cachedEntities.filter({ (entity) -> Bool in
-                return entity.Domain == "device_tracker"
-            }) as? [DeviceTracker] {
-                for device in deviceEntities {
-                    if device.Latitude == nil || device.Longitude == nil {
-                        continue
-                    }
-                    let dropPin = DeviceAnnotation()
-                    dropPin.coordinate = device.locationCoordinates()
-                    dropPin.title = device.Name
-                    var subtitlePieces: [String] = []
-                    if let battery = device.Battery {
-                        subtitlePieces.append(L10n.DevicesMap.batteryLabel+": "+String(battery)+"%")
-                    }
-                    dropPin.subtitle = subtitlePieces.joined(separator: " / ")
-                    dropPin.device = device
-                    mapView.addAnnotation(dropPin)
+            if let firstOverlay = self.mapView.overlays.first {
+                let rect = self.mapView.overlays.reduce(firstOverlay.boundingMapRect, {$0.union($1.boundingMapRect)})
 
-                    if let radius = device.GPSAccuracy {
-                        let circle = HACircle.init(center: device.locationCoordinates(), radius: radius)
-                        circle.type = "device"
-                        mapView.add(circle)
-                    }
-                }
+                self.mapView.setVisibleMapRect(zoomRect.union(rect),
+                                          edgePadding: UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0),
+                                          animated: true)
             }
-        }
 
-        var zoomRect: MKMapRect = MKMapRectNull
-        for index in 0..<mapView.annotations.count {
-            let annotation = mapView.annotations[index]
-            let aPoint: MKMapPoint = MKMapPointForCoordinate(annotation.coordinate)
-            let rect: MKMapRect = MKMapRectMake(aPoint.x, aPoint.y, 0.1, 0.1)
-
-            zoomRect = MKMapRectUnion(zoomRect, rect)
-        }
-
-        if let firstOverlay = mapView.overlays.first {
-            let rect = mapView.overlays.reduce(firstOverlay.boundingMapRect, {MKMapRectUnion($0, $1.boundingMapRect)})
-
-            mapView.setVisibleMapRect(MKMapRectUnion(zoomRect, rect),
-                                      edgePadding: UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0),
-                                      animated: true)
         }
 
     }
@@ -148,14 +129,10 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? DeviceAnnotation {
-            let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: annotation.device?.ID)
+            let annotationView = HAAnnotationView(annotation: annotation, reuseIdentifier: annotation.device?.ID)
             annotationView.animatesDrop = true
             annotationView.canShowCallout = true
-            if let picture = annotation.device?.DownloadedPicture {
-                annotationView.leftCalloutAccessoryView = UIImageView(image: picture)
-            } else {
-                annotationView.leftCalloutAccessoryView = UIImageView(image: annotation.device!.EntityIcon)
-            }
+            annotationView.leftCalloutAccessoryView = UIImageView(image: annotation.device!.EntityIcon)
             //            annotationView.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
             return annotationView
         } else {
@@ -188,12 +165,12 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
 
     @objc func sendCurrentLocation(_ sender: UIBarButtonItem) {
         HomeAssistantAPI.authenticatedAPIPromise.then { api in
-            api.getAndSendLocation(trigger: .Manual)
+            api.GetAndSendLocation(trigger: .Manual)
             }.done { _ in
                 let alert = UIAlertController(title: L10n.ManualLocationUpdateNotification.title,
                                               message: L10n.ManualLocationUpdateNotification.message,
-                                              preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                              preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                               handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }.catch {error in
@@ -201,10 +178,60 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
                 let errorDescription = nserror.localizedDescription
                 let message = L10n.ManualLocationUpdateFailedNotification.message(errorDescription)
                 let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
-                                              message: message, preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default,
+                                              message: message, preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default,
                                               handler: nil))
                 self.present(alert, animated: true, completion: nil)
+        }
+    }
+
+    func getDeviceAnnotations() -> Promise<[DeviceAnnotation]> {
+        return Promise { seal in
+            let realm = Current.realm()
+            let devices = Array(realm.objects(RLMDeviceTracker.self).map { $0 }).map({ device -> DeviceAnnotation in
+                let dropPin = DeviceAnnotation()
+                dropPin.coordinate = device.locationCoordinates()
+                dropPin.title = device.Name
+                var subtitlePieces: [String] = []
+                if device.Battery > -1 {
+                    subtitlePieces.append(L10n.DevicesMap.batteryLabel+": "+String(device.Battery)+"%")
+                }
+                dropPin.subtitle = subtitlePieces.joined(separator: " / ")
+                dropPin.device = device
+                return dropPin
+            })
+            seal.fulfill(devices)
+        }
+    }
+
+    func getDeviceCircles() -> Promise<[HACircle]> {
+        return Promise { seal in
+            let realm = Current.realm()
+            let devices = Array(realm.objects(RLMDeviceTracker.self).map { $0 }).compactMap({ device -> HACircle? in
+                if device.GPSAccuracy > -1 {
+                    let circle = HACircle.init(center: device.locationCoordinates(), radius: device.GPSAccuracy)
+                    circle.type = "device"
+                    return circle
+                }
+                return nil
+            })
+            seal.fulfill(devices)
+        }
+    }
+
+    func getZoneAnnotations() -> Promise<[HACircle]> {
+        return Promise { seal in
+            let realm = Current.realm()
+            let zones = Array(realm.objects(RLMZone.self).map { $0 })
+
+            let zoneOverlays = zones.map({ zone -> HACircle in
+                let circle = HACircle.init(center: zone.locationCoordinates(),
+                                           radius: CLLocationDistance(zone.Radius))
+                circle.type = "zone"
+                return circle
+            })
+
+            seal.fulfill(zoneOverlays)
         }
     }
 

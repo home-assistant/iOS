@@ -8,9 +8,7 @@
 
 import Alamofire
 import AlamofireImage
-import AlamofireObjectMapper
 import PromiseKit
-import Crashlytics
 import CoreLocation
 import DeviceKit
 import Foundation
@@ -18,8 +16,14 @@ import KeychainAccess
 import ObjectMapper
 import RealmSwift
 import UserNotifications
+import Intents
+import Version
+#if os(iOS)
+import Crashlytics
+import Reachability
+#endif
 
-private let keychain = Keychain(service: "io.robbie.homeassistant")
+private let keychain = Constants.Keychain
 
 // swiftlint:disable file_length
 
@@ -30,172 +34,84 @@ public class HomeAssistantAPI {
         case invalidResponse
         case cantBuildURL
         case notConfigured
+        case mobileAppComponentNotLoaded
+        case webhookGone
+        case mustUpgradeHomeAssistant(Version)
+        case unknown
     }
 
-    public enum AuthenticationMethod {
-        case legacy(apiPassword: String?)
-        case modern(tokenInfo: TokenInfo)
-    }
+    static let minimumRequiredVersion = Version(major: 0, minor: 91, patch: 3)
 
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
     public var pushID: String?
 
-    public var loadedComponents = [String]()
+    public static var LoadedComponents = [String]()
 
-    var apiPassword: String?
+    public private(set) var manager: Alamofire.SessionManager!
 
-    private(set) var manager: Alamofire.SessionManager!
+    public private(set) var webhookManager: Alamofire.SessionManager!
+
+    public private(set) var webhookHandler: WebhookHandler!
 
     public var oneShotLocationManager: OneShotLocationManager?
 
-    public var cachedEntities: [Entity]?
-
-    public var iosComponentLoaded: Bool {
-        return self.loadedComponents.contains("ios")
-    }
-
-    public var deviceTrackerComponentLoaded: Bool {
-        return self.loadedComponents.contains("device_tracker")
-    }
-
-    public var iosNotifyPlatformLoaded: Bool {
-        return self.loadedComponents.contains("notify.ios")
-    }
-
-    var enabledPermissions: [String] {
-        var permissionsContainer: [String] = []
-        if Current.settingsStore.notificationsEnabled {
-            permissionsContainer.append("notifications")
-        }
-        if Current.settingsStore.locationEnabled {
-            permissionsContainer.append("location")
-        }
-        return permissionsContainer
+    public var MobileAppComponentLoaded: Bool {
+        return HomeAssistantAPI.LoadedComponents.contains("mobile_app")
     }
 
     var tokenManager: TokenManager?
     public var connectionInfo: ConnectionInfo
 
-    /// Initialzie an API object with an authenticated tokenManager.
-    public init(connectionInfo: ConnectionInfo, authenticationMethod: AuthenticationMethod) {
+    /// Initialize an API object with an authenticated tokenManager.
+    public init(connectionInfo: ConnectionInfo, tokenInfo: TokenInfo, urlConfig: URLSessionConfiguration = .default) {
         self.connectionInfo = connectionInfo
 
-        switch authenticationMethod {
-        case .legacy(let apiPassword):
-            self.manager = HomeAssistantAPI.configureSessionManager(withPassword: apiPassword)
-        case .modern(let tokenInfo):
-            self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
-            let manager = HomeAssistantAPI.configureSessionManager()
-            manager.retrier = self.tokenManager
-            manager.adapter = self.tokenManager
-            self.manager = manager
-        }
+        self.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
+        let manager = HomeAssistantAPI.configureSessionManager(urlConfig: urlConfig)
+        manager.retrier = self.tokenManager
+        manager.adapter = self.tokenManager
+        self.manager = manager
 
-        let basicAuthKeychain = Keychain(server: self.connectionInfo.baseURL.absoluteString,
-                                         protocolType: .https,
-                                         authenticationType: .httpBasic)
-        self.configureBasicAuthWithKeychain(basicAuthKeychain)
+        self.webhookManager = HomeAssistantAPI.configureSessionManager(urlConfig: urlConfig)
+
+        if let webhookID = Current.settingsStore.webhookID {
+            let handler = WebhookHandler(webhookID: webhookID, connectionInfo: connectionInfo,
+                                         remoteUIURL: Current.settingsStore.remoteUIURL,
+                                         cloudhookURL: Current.settingsStore.cloudhookURL)
+            self.webhookManager.adapter = handler
+            self.webhookManager.retrier = handler
+            self.webhookHandler = handler
+        }
 
         self.pushID = self.prefs.string(forKey: "pushID")
 
-        if #available(iOS 10, *) {
-            UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
-                let notificationsAllowed = settings.authorizationStatus == UNAuthorizationStatus.authorized
-                Current.settingsStore.notificationsEnabled = notificationsAllowed
-            })
-        }
+        UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
+            let notificationsAllowed = settings.authorizationStatus == UNAuthorizationStatus.authorized
+            Current.settingsStore.notificationsEnabled = notificationsAllowed
+        })
+    }
+
+    private static func configureSessionManager(urlConfig: URLSessionConfiguration = .default) -> SessionManager {
+        let configuration = urlConfig
+        configuration.timeoutIntervalForRequest = 10 // seconds
+        return Alamofire.SessionManager(configuration: configuration)
     }
 
     func authenticatedSessionManager() -> Alamofire.SessionManager? {
-        guard Current.settingsStore.connectionInfo != nil else {
+        guard Current.settingsStore.connectionInfo != nil && Current.settingsStore.tokenInfo != nil else {
             return nil
         }
 
-        if Current.settingsStore.tokenInfo != nil {
-            let manager = HomeAssistantAPI.configureSessionManager()
-            manager.retrier = self.tokenManager
-            manager.adapter = self.tokenManager
-            return manager
-        } else {
-            return HomeAssistantAPI.configureSessionManager(withPassword: keychain["apiPassword"])
-        }
-    }
-
-    public func videoStreamer() -> MJPEGStreamer? {
-        guard let newManager = self.authenticatedSessionManager() else {
-            return nil
-        }
-
-        return MJPEGStreamer(manager: newManager)
-    }
-
-    /// Configure global state of the app to use our newly validated credentials.
-    func confirmAPI() {
-        Current.tokenManager = self.tokenManager
-    }
-
-    public func Connect() -> Promise<ConfigResponse> {
-        return Promise { seal in
-            GetConfig().done { config in
-                if let components = config.Components {
-                    self.loadedComponents = components
-                }
-                self.prefs.setValue(config.ConfigDirectory, forKey: "config_dir")
-                self.prefs.setValue(config.LocationName, forKey: "location_name")
-                self.prefs.setValue(config.Latitude, forKey: "latitude")
-                self.prefs.setValue(config.Longitude, forKey: "longitude")
-                self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
-                self.prefs.setValue(config.LengthUnit, forKey: "length_unit")
-                self.prefs.setValue(config.MassUnit, forKey: "mass_unit")
-                self.prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
-                self.prefs.setValue(config.Timezone, forKey: "time_zone")
-                self.prefs.setValue(config.Version, forKey: "version")
-
-                Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "hass_version")
-                Crashlytics.sharedInstance().setObjectValue(self.loadedComponents.joined(separator: ","),
-                                                            forKey: "loadedComponents")
-                Crashlytics.sharedInstance().setObjectValue(self.enabledPermissions.joined(separator: ","),
-                                                            forKey: "allowedPermissions")
-
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
-                                                object: nil,
-                                                userInfo: nil)
-
-                _ = self.getManifestJSON().done { manifest in
-                    if let themeColor = manifest.ThemeColor {
-                        self.prefs.setValue(themeColor, forKey: "themeColor")
-                    }
-                }
-
-                _ = self.GetStates().done { entities in
-                    self.cachedEntities = entities
-                    self.storeEntities(entities: entities)
-                    if self.loadedComponents.contains("ios") {
-                        CLSLogv("iOS component loaded, attempting identify", getVaList([]))
-                        _ = self.identifyDevice()
-                    }
-
-                    seal.fulfill(config)
-                }
-            }.catch {error in
-                print("Error at launch!", error)
-                Crashlytics.sharedInstance().recordError(error)
-                seal.reject(error)
-            }
-
-        }
-    }
-
-    public enum HomeAssistantAPIError: Error {
-        case notAuthenticated
-        case unknown
+        let manager = HomeAssistantAPI.configureSessionManager()
+        manager.retrier = self.tokenManager
+        manager.adapter = self.tokenManager
+        return manager
     }
 
     private static var sharedAPI: HomeAssistantAPI?
-//    public static func authenticatedManager() -> Alamofire.SessionManager? {
-//    }
-    public static func authenticatedAPI() -> HomeAssistantAPI? {
+
+    public static func authenticatedAPI(urlConfig: URLSessionConfiguration = .default) -> HomeAssistantAPI? {
         if let api = sharedAPI {
             return api
         }
@@ -206,11 +122,7 @@ public class HomeAssistantAPI {
 
         if let tokenInfo = Current.settingsStore.tokenInfo {
             let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-                                       authenticationMethod: .modern(tokenInfo: tokenInfo))
-            self.sharedAPI = api
-        } else {
-            let api = HomeAssistantAPI(connectionInfo: connectionInfo,
-                                       authenticationMethod: .legacy(apiPassword: keychain["apiPassword"]))
+                                       tokenInfo: tokenInfo, urlConfig: urlConfig)
             self.sharedAPI = api
         }
 
@@ -227,79 +139,38 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func getManifestJSON() -> Promise<ManifestJSON> {
-        return Promise { seal in
-            if let manager = self.manager {
-                let queryUrl = self.connectionInfo.activeURL.appendingPathComponent("manifest.json")
-                _ = manager.request(queryUrl, method: .get)
-                    .validate()
-                    .responseObject { (response: DataResponse<ManifestJSON>) in
-                        switch response.result {
-                        case .success:
-                            if let resVal = response.result.value {
-                                seal.fulfill(resVal)
-                            } else {
-                                seal.reject(APIError.invalidResponse)
-                            }
-                        case .failure(let error):
-                            CLSLogv("Error on GetManifestJSON() request: %@",
-                                    getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
-                            seal.reject(error)
-                        }
-                }
-            } else {
-                seal.reject(APIError.managerNotAvailable)
+    public func VideoStreamer() -> MJPEGStreamer? {
+        guard let newManager = self.authenticatedSessionManager() else {
+            return nil
+        }
+
+        return MJPEGStreamer(manager: newManager)
+    }
+
+    public func Connect() -> Promise<ConfigResponse> {
+
+        return firstly {
+            self.UpdateRegistration()
+        }.then { _ -> Promise<(ConfigResponse, [Zone], Void)> in
+            return when(fulfilled: self.GetConfig(), self.GetZones(), self.UpdateSensors(.Unknown).asVoid())
+        }.map { config, zones, _ in
+            if let oldHA = self.ensureVersion(config.Version) {
+                throw oldHA
             }
+
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
+                                            object: nil, userInfo: nil)
+
+            self.storeZones(zones: zones)
+
+            return config
         }
     }
 
-    public func GetStatus() -> Promise<StatusResponse> {
-        return self.request(path: "", callingFunctionName: "\(#function)", method: .get)
-    }
-
-    public func GetConfig() -> Promise<ConfigResponse> {
-        return self.request(path: "config", callingFunctionName: "\(#function)")
-    }
-
-    public func GetServices() -> Promise<[ServicesResponse]> {
-        return self.request(path: "services", callingFunctionName: "\(#function)")
-    }
-
-    public func GetStates() -> Promise<[Entity]> {
-        return self.request(path: "states", callingFunctionName: "\(#function)")
-    }
-
-    public func GetEntityState(entityId: String) -> Promise<Entity> {
-        return self.request(path: "states/\(entityId)", callingFunctionName: "\(#function)")
-    }
-
-    public func SetState(entityId: String, state: String) -> Promise<Entity> {
-        return self.request(path: "states/\(entityId)", callingFunctionName: "\(#function)", method: .post,
-                            parameters: ["state": state], encoding: JSONEncoding.default)
-    }
-
-    public func createEvent(eventType: String, eventData: [String: Any]) -> Promise<String> {
-        return Promise { seal in
-            let queryUrl = self.connectionInfo.activeAPIURL.appendingPathComponent("events/\(eventType)")
-            _ = manager.request(queryUrl, method: .post,
-                                parameters: eventData, encoding: JSONEncoding.default)
-                .validate()
-                .responseJSON { response in
-                    switch response.result {
-                    case .success:
-                        if let jsonDict = response.result.value as? [String: String],
-                            let msg = jsonDict["message"] {
-                            seal.fulfill(msg)
-                        }
-                    case .failure(let error):
-                        CLSLogv("Error when attemping to CreateEvent(): %@",
-                                getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
-                        seal.reject(error)
-                    }
-            }
-        }
+    public func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<String> {
+        return self.webhook("fire_event",
+                            payload: ["event_type": eventType, "event_data": eventData],
+                            callingFunctionName: "\(#function)")
     }
 
     private func getDownloadDataPath(_ downloadingURL: URL) -> URL? {
@@ -316,7 +187,7 @@ public class HomeAssistantAPI {
         return directoryURL.appendingPathComponent(downloadingURL.lastPathComponent, isDirectory: false)
     }
 
-    public func downloadDataAt(url: URL, needsAuth: Bool) -> Promise<URL> {
+    public func DownloadDataAt(url: URL, needsAuth: Bool) -> Promise<URL> {
         return Promise { seal in
 
             var finalURL = url
@@ -325,15 +196,15 @@ public class HomeAssistantAPI {
 
             if needsAuth {
                 if !url.absoluteString.hasPrefix(self.connectionInfo.activeURL.absoluteString) {
-                    print("URL does not contain base URL, prepending base URL to", url.absoluteString)
+                    Current.Log.verbose("URL does not contain base URL, prepending base URL to \(url.absoluteString)")
                     finalURL = self.connectionInfo.activeURL.appendingPathComponent(url.absoluteString)
                 }
 
-                print("Data download needs auth!")
+                Current.Log.verbose("Data download needs auth!")
             }
 
             guard let downloadPath = self.getDownloadDataPath(finalURL) else {
-                print("Unable to get download path!")
+                Current.Log.error("Unable to get download path!")
                 seal.reject(NSError(domain: "io.robbie.HomeAssistant", code: 500, userInfo: nil))
                 return
             }
@@ -353,300 +224,220 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func callService(domain: String, service: String, serviceData: [String: Any],
-                            shouldLog: Bool = true)
-        -> Promise<[Entity]> {
-        return Promise { seal in
-            let queryUrl =
-                self.connectionInfo.activeAPIURL.appendingPathComponent("services/\(domain)/\(service)")
-            _ = manager.request(queryUrl, method: .post,
-                                parameters: serviceData, encoding: JSONEncoding.default)
-                .validate()
-                .responseArray { (response: DataResponse<[Entity]>) in
-                    switch response.result {
-                    case .success:
-                        if let resVal = response.result.value {
-                            if shouldLog {
-                                let event = ClientEvent(text: "Calling service: \(domain) - \(service)",
-                                    type: .serviceCall, payload: serviceData)
-                                Current.clientEventStore.addEvent(event)
-                            }
-                            seal.fulfill(resVal)
-                        } else {
-                            seal.reject(APIError.invalidResponse)
-                        }
-                    case .failure(let error):
-                        if let afError = error as? AFError {
-                            var errorUserInfo: [String: Any] = [:]
-                            if let data = response.data, let utf8Text = String(data: data, encoding: .utf8) {
-                                if let errorJSON = utf8Text.dictionary(),
-                                    let errMessage = errorJSON["message"] as? String {
-                                    errorUserInfo["errorMessage"] = errMessage
-                                }
-                            }
-                            CLSLogv("Error on CallService() request: %@", getVaList([afError.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(afError)
-                            let customError = NSError(domain: "io.robbie.HomeAssistant",
-                                                      code: afError.responseCode!,
-                                                      userInfo: errorUserInfo)
-                            seal.reject(customError)
-                        } else {
-                            CLSLogv("Error on CallService() request: %@", getVaList([error.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(error)
-                            seal.reject(error)
-                        }
-                    }
+    public func GetConfig(_ useWebhook: Bool = true) -> Promise<ConfigResponse> {
+        var promise: Promise<ConfigResponse> = self.request(path: "config", callingFunctionName: "\(#function)")
+
+        if useWebhook {
+            promise = self.webhook("get_config", payload: [:], callingFunctionName: "\(#function)")
+        }
+
+        return promise.then { config -> Promise<ConfigResponse> in
+            HomeAssistantAPI.LoadedComponents = config.Components
+
+            guard self.MobileAppComponentLoaded else {
+                Current.Log.error("mobile_app component is not loaded!")
+                throw HomeAssistantAPI.APIError.mobileAppComponentNotLoaded
             }
+
+            Current.settingsStore.cloudhookURL = config.CloudhookURL
+            Current.settingsStore.remoteUIURL = config.RemoteUIURL
+
+            self.prefs.setValue(config.LocationName, forKey: "location_name")
+            self.prefs.setValue(config.Latitude, forKey: "latitude")
+            self.prefs.setValue(config.Longitude, forKey: "longitude")
+            self.prefs.setValue(config.TemperatureUnit, forKey: "temperature_unit")
+            self.prefs.setValue(config.LengthUnit, forKey: "length_unit")
+            self.prefs.setValue(config.MassUnit, forKey: "mass_unit")
+            self.prefs.setValue(config.PressureUnit, forKey: "pressure_unit")
+            self.prefs.setValue(config.VolumeUnit, forKey: "volume_unit")
+            self.prefs.setValue(config.Timezone, forKey: "time_zone")
+            self.prefs.setValue(config.Version, forKey: "version")
+            self.prefs.setValue(config.ThemeColor, forKey: "themeColor")
+
+            #if os(iOS)
+            Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "HA_Version")
+            #endif
+
+            return Promise.value(config)
         }
     }
 
-    public func GetCameraStream(cameraEntityID: String, completionHandler: @escaping (Image?, Error?) -> Void) {
-        let apiURL = self.connectionInfo.activeAPIURL
-        let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(cameraEntityID)", isDirectory: false)
-//        DispatchQueue.global(qos: .background).async {
-        
-            let res = self.manager.request(queryUrl, method: .get)
-                .validate()
-                .response(completionHandler: { (response) in
-                    if let error = response.error {
-                        completionHandler(nil, error)
-                        return
-                    }
-                })
-//
-                res.streamImage(imageScale: 1.0, inflateResponseImage: false, completionHandler: { (image) in
-                    // Autorelease
-                    autoreleasepool {
-                        DispatchQueue.main.async {
-                            completionHandler(image, nil)
-                            return
-                        }
-                    }
-                })
-//            }
-//        }
+    public func GetEvents() -> Promise<[EventsResponse]> {
+        return self.request(path: "events", callingFunctionName: "\(#function)")
     }
 
-    public func getDiscoveryInfo(baseUrl: URL) -> Promise<DiscoveryInfoResponse> {
-        return self.request(path: "discover_info", callingFunctionName: "\(#function)")
+    public func GetStates() -> Promise<[Entity]> {
+        return self.request(path: "states", callingFunctionName: "\(#function)")
     }
 
-    public func identifyDevice() -> Promise<String> {
-        return self.request(path: "ios/identify", callingFunctionName: "\(#function)", method: .post,
-                     parameters: buildIdentifyDict(), encoding: JSONEncoding.default)
+    public func GetServices() -> Promise<[ServicesResponse]> {
+        return self.request(path: "services", callingFunctionName: "\(#function)")
     }
 
-    public func removeDevice() -> Promise<String> {
-        return self.request(path: "ios/identify", callingFunctionName: "\(#function)", method: .delete,
-                            parameters: buildRemovalDict(), encoding: JSONEncoding.default)
+    public func CallService(domain: String, service: String, serviceData: [String: Any],
+                            shouldLog: Bool = true) -> Promise<[Entity]> {
+
+        let hookPayload: [String: Any] = ["domain": domain, "service": service, "service_data": serviceData]
+        let promise: Promise<[Entity]> = self.webhook("call_service", payload: hookPayload,
+                                                      callingFunctionName: "\(#function)")
+        if shouldLog {
+            _ = promise.then { resp -> Promise<[Entity]> in
+                let event = ClientEvent(text: "Calling service: \(domain) - \(service)", type: .serviceCall,
+                                        payload: serviceData)
+                Current.clientEventStore.addEvent(event)
+
+                return Promise.value(resp)
+            }
+        }
+        return promise
     }
 
-    public func registerDeviceForPush(deviceToken: String) -> Promise<PushRegistrationResponse> {
-        let queryUrl = "https://ios-push.home-assistant.io/registrations"
+    public func RenderTemplate(templateStr: String, variables: [String: Any] = [:]) -> Promise<String> {
+        let hookPayload: [String: [String: Any]] = ["tpl": ["template": templateStr, "variables": variables]]
+        let req: Promise<Any> = self.webhook("render_template", payload: hookPayload,
+                                             callingFunctionName: "RenderTemplate")
+        return req.then { (resp: Any) -> Promise<String> in
+            guard let jsonDict = resp as? [String: String] else {
+                return Promise.value("Error")
+            }
+
+            guard let rendered = jsonDict["tpl"] else {
+                return Promise.value("Error")
+            }
+
+            return Promise.value(rendered)
+        }
+    }
+
+    public func GetCameraImage(cameraEntityID: String) -> Promise<Image> {
         return Promise { seal in
-            Alamofire.request(queryUrl,
-                              method: .post,
-                              parameters: buildPushRegistrationDict(deviceToken: deviceToken),
-                              encoding: JSONEncoding.default
-                ).validate().responseObject {(response: DataResponse<PushRegistrationResponse>) in
+            let queryUrl = self.connectionInfo.activeAPIURL.appendingPathComponent("camera_proxy/\(cameraEntityID)")
+            _ = manager.request(queryUrl)
+                .validate()
+                .responseImage { response in
                     switch response.result {
                     case .success:
-                        if let json = response.result.value {
-                            seal.fulfill(json)
-                        } else {
-                            let retErr = NSError(domain: "io.robbie.HomeAssistant",
-                                                 code: 404,
-                                                 userInfo: ["message": "json was nil!"])
-                            CLSLogv("Error when attemping to registerDeviceForPush(), json was nil!: %@",
-                                    getVaList([retErr.localizedDescription]))
-                            Crashlytics.sharedInstance().recordError(retErr)
-                            seal.reject(retErr)
+                        if let imgResponse = response.result.value {
+                            seal.fulfill(imgResponse)
                         }
                     case .failure(let error):
-                        CLSLogv("Error when attemping to registerDeviceForPush(): %@",
-                                getVaList([error.localizedDescription]))
-                        Crashlytics.sharedInstance().recordError(error)
+                        Current.Log.error("Error when attemping to GetCameraImage(): \(error)")
                         seal.reject(error)
                     }
             }
         }
     }
 
-    public func turnOn(entityId: String) -> Promise<[Entity]> {
-        return callService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entityId])
+    public func Register() -> Promise<MobileAppRegistrationResponse> {
+        return self.request(path: "mobile_app/registrations", callingFunctionName: "\(#function)", method: .post,
+                            parameters: buildMobileAppRegistration(), encoding: JSONEncoding.default)
+            .then { (resp: MobileAppRegistrationResponse) -> Promise<MobileAppRegistrationResponse> in
+                Current.Log.verbose("Registration response \(resp)")
+                Current.settingsStore.cloudhookURL = resp.CloudhookURL
+                Current.settingsStore.remoteUIURL = resp.RemoteUIURL
+                Current.settingsStore.webhookID = resp.WebhookID
+                Current.settingsStore.webhookSecret = resp.WebhookSecret
+
+                let handler = WebhookHandler(webhookID: resp.WebhookID, connectionInfo: self.connectionInfo,
+                                             remoteUIURL: resp.RemoteUIURL, cloudhookURL: resp.CloudhookURL)
+                self.webhookManager.adapter = handler
+                self.webhookManager.retrier = handler
+                self.webhookHandler = handler
+
+                return Promise.value(resp)
+        }
     }
 
-    public func turnOnEntity(entity: Entity) -> Promise<[Entity]> {
-        return callService(domain: "homeassistant", service: "turn_on", serviceData: ["entity_id": entity.ID])
+    public func UpdateRegistration() -> Promise<MobileAppRegistrationResponse> {
+        return self.webhook("update_registration", payload: buildMobileAppUpdateRegistration(),
+                            callingFunctionName: "updateRegistration")
     }
 
-    public func turnOff(entityId: String) -> Promise<[Entity]> {
-        return callService(domain: "homeassistant", service: "turn_off", serviceData: ["entity_id": entityId])
+    public func GetZones() -> Promise<[Zone]> {
+        return self.webhook("get_zones", payload: [:], callingFunctionName: "getZones")
     }
 
-    public func turnOffEntity(entity: Entity) -> Promise<[Entity]> {
-        return callService(domain: "homeassistant", service: "turn_off",
-                           serviceData: ["entity_id": entity.ID])
-    }
-
-    public func toggle(entityId: String) -> Promise<[Entity]> {
-        return callService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entityId])
-    }
-
-    public func toggleEntity(entity: Entity) -> Promise<[Entity]> {
-        return callService(domain: "homeassistant", service: "toggle", serviceData: ["entity_id": entity.ID])
-    }
-
-    public func getPushSettings() -> Promise<PushConfiguration> {
+    public func GetPushSettings() -> Promise<PushConfiguration> {
         return self.request(path: "ios/push", callingFunctionName: "\(#function)")
     }
 
-    private func buildIdentifyDict() -> [String: Any] {
-        let deviceKitDevice = Device()
+    private func buildMobileAppRegistration() -> [String: Any] {
+        let deviceKitDevice = Device.current
 
-        let ident = IdentifyRequest()
-        if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") {
-            if let stringedBundleVersion = bundleVersion as? String {
-                ident.AppBuildNumber = Int(stringedBundleVersion)
-            }
+        let ident = MobileAppRegistrationRequest()
+        if let pushID = self.pushID {
+            ident.AppData = [
+                "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
+                "push_token": pushID
+            ]
         }
-        if let versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") {
-            if let stringedVersionNumber = versionNumber as? String {
-                ident.AppVersionNumber = stringedVersionNumber
-            }
-        }
-        ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
-        ident.DeviceID = Current.settingsStore.deviceID
-        ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
-        ident.DeviceModel = deviceKitDevice.model
+        ident.AppIdentifier = Constants.BundleID
+        ident.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
+        ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
+        // ident.DeviceID = Current.settingsStore.deviceID
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = Current.deviceIDProvider()
-        ident.DeviceSystemName = deviceKitDevice.systemName
-        ident.DeviceSystemVersion = deviceKitDevice.systemVersion
-        ident.DeviceType = deviceKitDevice.description
-        ident.Permissions = self.enabledPermissions
-        ident.PushID = pushID
-        ident.PushSounds = Notifications.installedPushNotificationSounds()
-
-        UIDevice.current.isBatteryMonitoringEnabled = true
-
-        switch UIDevice.current.batteryState {
-        case .unknown:
-            ident.BatteryState = "Unknown"
-        case .charging:
-            ident.BatteryState = "Charging"
-        case .unplugged:
-            ident.BatteryState = "Unplugged"
-        case .full:
-            ident.BatteryState = "Full"
-        }
-
-        ident.BatteryLevel = Int(UIDevice.current.batteryLevel*100)
-        if ident.BatteryLevel == -100 { // simulator fix
-            ident.BatteryLevel = 100
-        }
-
-        UIDevice.current.isBatteryMonitoringEnabled = false
+        ident.Manufacturer = "Apple"
+        ident.Model = deviceKitDevice.description
+        ident.OSName = deviceKitDevice.systemName
+        ident.OSVersion = deviceKitDevice.systemVersion
+        ident.SupportsEncryption = true
 
         return Mapper().toJSON(ident)
     }
 
-    private func buildPushRegistrationDict(deviceToken: String) -> [String: Any] {
-        let deviceKitDevice = Device()
+    private func buildMobileAppUpdateRegistration() -> [String: Any] {
+        let deviceKitDevice = Device.current
 
-        let ident = PushRegistrationRequest()
-        if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") {
-            if let stringedBundleVersion = bundleVersion as? String {
-                ident.AppBuildNumber = Int(stringedBundleVersion)
-            }
+        let ident = MobileAppUpdateRegistrationRequest()
+        if let pushID = self.pushID {
+            ident.AppData = [
+                "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
+                "push_token": pushID
+            ]
         }
-        if let versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") {
-            if let stringedVersionNumber = versionNumber as? String {
-                ident.AppVersionNumber = stringedVersionNumber
-            }
-        }
-        if let isSandboxed = Bundle.main.object(forInfoDictionaryKey: "IS_SANDBOXED") {
-            if let stringedisSandboxed = isSandboxed as? String {
-                ident.APNSSandbox = (stringedisSandboxed == "true")
-            }
-        }
-        ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
-        ident.DeviceID = Current.settingsStore.deviceID
+        ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
+        // ident.DeviceID = Current.settingsStore.deviceID
         ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = Current.deviceIDProvider()
-        ident.DeviceSystemName = deviceKitDevice.systemName
-        ident.DeviceSystemVersion = deviceKitDevice.systemVersion
-        ident.DeviceType = deviceKitDevice.description
-        ident.DeviceTimezone = (NSTimeZone.local as NSTimeZone).name
-        ident.PushSounds = Notifications.installedPushNotificationSounds()
-        ident.PushToken = deviceToken
-        if let email = self.prefs.string(forKey: "userEmail") {
-            ident.UserEmail = email
-        }
-        if let version = self.prefs.string(forKey: "version") {
-            ident.HomeAssistantVersion = version
-        }
-        if let timeZone = self.prefs.string(forKey: "time_zone") {
-            ident.HomeAssistantTimezone = timeZone
-        }
+        ident.Manufacturer = "Apple"
+        ident.Model = deviceKitDevice.description
+        ident.OSVersion = deviceKitDevice.systemVersion
 
         return Mapper().toJSON(ident)
     }
 
-    private func buildRemovalDict() -> [String: Any] {
-        let deviceKitDevice = Device()
+    public func storeZones(zones: [Zone]) {
+        let realm = Current.realm()
 
-        let ident = IdentifyRequest()
-        if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") {
-            if let stringedBundleVersion = bundleVersion as? String {
-                ident.AppBuildNumber = Int(stringedBundleVersion)
-            }
-        }
-        if let versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") {
-            if let stringedVersionNumber = versionNumber as? String {
-                ident.AppVersionNumber = stringedVersionNumber
-            }
-        }
-        ident.AppBundleIdentifer = Bundle.main.bundleIdentifier
-        ident.DeviceID = Current.settingsStore.deviceID
-        ident.DeviceLocalizedModel = deviceKitDevice.localizedModel
-        ident.DeviceModel = deviceKitDevice.model
-        ident.DeviceName = deviceKitDevice.name
-        ident.DevicePermanentID = Current.deviceIDProvider()
-        ident.DeviceSystemName = deviceKitDevice.systemName
-        ident.DeviceSystemVersion = deviceKitDevice.systemVersion
-        ident.DeviceType = deviceKitDevice.description
-        ident.Permissions = self.enabledPermissions
-        ident.PushID = pushID
-        ident.PushSounds = Notifications.installedPushNotificationSounds()
+        let existingZoneIDs: [String] = realm.objects(RLMZone.self).map { $0.ID }
 
-        return Mapper().toJSON(ident)
-    }
+        var seenZoneIDs: [String] = []
 
-    func storeEntities(entities: [Entity]) {
-        let storeableComponents = ["zone"]
-        let storeableEntities = entities.filter { (entity) -> Bool in
-            return storeableComponents.contains(entity.Domain)
-        }
-
-        for entity in storeableEntities {
-            // print("Storing \(entity.ID)")
-
-            if entity.Domain == "zone", let zone = entity as? Zone {
-                let realm = Current.realm()
-                if let existingZone = realm.object(ofType: RLMZone.self, forPrimaryKey: zone.ID) {
-                    // swiftlint:disable:next force_try
-                    try! realm.write {
-                        HomeAssistantAPI.updateZone(existingZone, withZoneEntity: zone)
-                    }
-                } else {
-                    // swiftlint:disable:next force_try
-                    try! realm.write {
-                        realm.add(RLMZone(zone: zone), update: true)
-                    }
+        for zone in zones {
+            seenZoneIDs.append(zone.ID)
+            if let existingZone = realm.object(ofType: RLMZone.self, forPrimaryKey: zone.ID) {
+                // swiftlint:disable:next force_try
+                try! realm.write {
+                    HomeAssistantAPI.updateZone(existingZone, withZoneEntity: zone)
+                }
+            } else {
+                // swiftlint:disable:next force_try
+                try! realm.write {
+                    realm.add(RLMZone(zone: zone), update: true)
                 }
             }
         }
+
+        // Now remove zones that aren't in HA anymore
+        let zoneIDsToDelete = existingZoneIDs.filter { zoneID -> Bool in
+            return seenZoneIDs.contains(zoneID) == false
+        }
+
+        // swiftlint:disable:next force_try
+        try! realm.write {
+            realm.delete(realm.objects(RLMZone.self).filter("ID IN %@", zoneIDsToDelete))
+        }
+
+        Current.syncMonitoredRegions?()
     }
 
     private static func updateZone(_ storeableZone: RLMZone, withZoneEntity zone: Zone) {
@@ -659,37 +450,278 @@ public class HomeAssistantAPI {
         storeableZone.BeaconMinor.value = zone.Minor
     }
 
-    private static func configureSessionManager(withPassword password: String? = nil) -> SessionManager {
-        var headers = Alamofire.SessionManager.defaultHTTPHeaders
-        if let password = password {
-            headers["X-HA-Access"] = password
-        }
+    private func buildWebhookLocationPayload(updateType: LocationUpdateTrigger,
+                                             location: CLLocation?, zone: RLMZone?) -> Promise<WebhookUpdateLocation> {
 
-        let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = headers
-        configuration.timeoutIntervalForRequest = 10 // seconds
-        return Alamofire.SessionManager(configuration: configuration)
+        let device = Device.current
+
+        let payload = WebhookUpdateLocation(trigger: updateType, location: location, zone: zone)
+        payload.Trigger = updateType
+
+        let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
+
+        payload.Battery = device.batteryLevel ?? 0
+        payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
+
+        return Promise.value(payload)
+
     }
 
-    private func configureBasicAuthWithKeychain(_ basicAuthKeychain: Keychain) {
-        if let basicUsername = basicAuthKeychain["basicAuthUsername"],
-            let basicPassword = basicAuthKeychain["basicAuthPassword"] {
-            self.manager.delegate.sessionDidReceiveChallenge = { session, challenge in
-                print("Received basic auth challenge")
+    public func SubmitLocation(updateType: LocationUpdateTrigger,
+                               location: CLLocation?, zone: RLMZone?) -> Promise<Bool> {
 
-                let authMethod = challenge.protectionSpace.authenticationMethod
+        return self.buildWebhookLocationPayload(updateType: updateType,
+                                                location: location, zone: zone).map { payload -> [String: Any] in
 
-                guard authMethod == NSURLAuthenticationMethodDefault ||
-                    authMethod == NSURLAuthenticationMethodHTTPBasic ||
-                    authMethod == NSURLAuthenticationMethodHTTPDigest else {
-                        print("Not handling auth method", authMethod)
-                        return (.performDefaultHandling, nil)
+            var jsonPayload = "{\"missing\": \"payload\"}"
+            if let p = payload.toJSONString(prettyPrint: false) {
+                jsonPayload = p
+            }
+
+            let payloadDict: [String: Any] = Mapper<WebhookUpdateLocation>().toJSON(payload)
+
+            Current.Log.info("Location update payload: \(payloadDict)")
+            let realm = Current.realm()
+            // swiftlint:disable:next force_try
+            try! realm.write {
+                realm.add(LocationHistoryEntry(updateType: updateType, location: payload.cllocation,
+                                               zone: zone, payload: jsonPayload))
+            }
+
+            return payloadDict
+        }.then { (payload: [String: Any]) -> Promise<([String: WebhookSensorResponse], Any, [String: Any])> in
+            let locUpdate: Promise<Any> = self.webhook("update_location",
+                                                       payload: payload, callingFunctionName: "\(#function)")
+            return when(fulfilled: self.UpdateSensors(updateType, location), locUpdate, Promise.value(payload))
+        }.then { (resp) -> Promise<Bool> in
+            Current.Log.verbose("Device seen via webhook!")
+            self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: resp.2)
+            return Promise.value(true)
+        }
+
+    }
+
+    public func GetAndSendLocation(trigger: LocationUpdateTrigger?) -> Promise<Bool> {
+        var updateTrigger: LocationUpdateTrigger = .Manual
+        if let trigger = trigger {
+            updateTrigger = trigger
+        }
+        Current.Log.verbose("getAndSendLocation called via \(String(describing: updateTrigger))")
+
+        return Promise { seal in
+            Current.isPerformingSingleShotLocationQuery = true
+            self.oneShotLocationManager = OneShotLocationManager { location, error in
+                guard let location = location else {
+                    seal.reject(error ?? APIError.unknown)
+                    return
                 }
 
-                return (.useCredential, URLCredential(user: basicUsername, password: basicPassword,
-                                                      persistence: .synchronizable))
+                Current.isPerformingSingleShotLocationQuery = true
+                firstly {
+                    self.SubmitLocation(updateType: updateTrigger, location: location,
+                                        zone: nil)
+                    }.done { worked in
+                        seal.fulfill(worked)
+                    }.catch { error in
+                        seal.reject(error)
+                }
             }
         }
     }
 
+    private func sendLocalNotification(withZone: RLMZone?, updateType: LocationUpdateTrigger,
+                                       payloadDict: [String: Any]) {
+        let zoneName = withZone?.Name ?? "Unknown zone"
+        let notificationOptions = updateType.notificationOptionsFor(zoneName: zoneName)
+        Current.clientEventStore.addEvent(ClientEvent(text: notificationOptions.body, type: .locationUpdate,
+                                                      payload: payloadDict))
+        if notificationOptions.shouldNotify {
+            let content = UNMutableNotificationContent()
+            content.title = notificationOptions.title
+            content.body = notificationOptions.body
+            content.sound = UNNotificationSound.default
+
+            let notificationRequest =
+                UNNotificationRequest.init(identifier: notificationOptions.identifier ?? "",
+                                           content: content, trigger: nil)
+            UNUserNotificationCenter.current().add(notificationRequest)
+        }
+    }
+
+    public enum ActionSource: CaseIterable {
+        case Watch
+        case Widget
+        case AppShortcut // UIApplicationShortcutItem
+        case Preview
+
+        var description: String {
+            switch self {
+            case .Watch:
+                return "watch"
+            case .Widget:
+                return "widget"
+            case .AppShortcut:
+                return "appShortcut"
+            case .Preview:
+                return "preview"
+            }
+        }
+    }
+
+    public func HandleAction(actionID: String, actionName: String, source: ActionSource) -> Promise<Bool> {
+        return Promise { seal in
+            guard let api = HomeAssistantAPI.authenticatedAPI() else {
+                throw APIError.notConfigured
+            }
+
+            let device = Device.current
+            let eventData: [String: Any] = ["actionName": actionName,
+                                            "actionID": actionID,
+                                            "triggerSource": source.description,
+                                            "sourceDevicePermanentID": Constants.PermanentID,
+                                            "sourceDeviceName": device.name ?? "Unknown",
+                                            "sourceDeviceID": Current.settingsStore.deviceID]
+
+            Current.Log.verbose("Sending action payload: \(eventData)")
+
+            let eventType = "ios.action_fired"
+            api.CreateEvent(eventType: eventType, eventData: eventData).done { _ -> Void in
+                seal.fulfill(true)
+                }.catch {error in
+                    seal.reject(error)
+            }
+        }
+    }
+
+    private let sensorsConfig = WebhookSensors()
+
+    public func RegisterSensors(_ limitSensors: [String]? = nil) -> Promise<[WebhookSensorResponse]> {
+        return firstly {
+            self.sensorsConfig.AllSensors
+        }.then { (sensors: [WebhookSensor]) -> Promise<[WebhookSensorResponse]> in
+
+            var allSensors = sensors
+            let triggerSensor = WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger")
+            triggerSensor.Icon = "mdi:cellphone-wireless"
+            allSensors.append(triggerSensor)
+            allSensors.append(self.sensorsConfig.GeocodedLocationSensorConfig)
+
+            // swiftlint:disable:next line_length
+            let promises: [Promise<WebhookSensorResponse>] = allSensors.compactMap { sensor -> Promise<WebhookSensorResponse>? in
+                let promise: Promise<WebhookSensorResponse> = self.webhook("register_sensor", payload: sensor.toJSON(),
+                                                                           callingFunctionName: "\(#function)")
+                if let limit = limitSensors {
+                    if let uniqID = sensor.UniqueID, limit.contains(uniqID) {
+                        return promise
+                    }
+                    return nil
+                }
+                return promise
+            }
+
+            Current.Log.verbose("Registering sensors \(promises)")
+
+            return when(fulfilled: promises)
+        }
+    }
+
+    public func UpdateSensors(_ trigger: LocationUpdateTrigger = .Unknown,
+                              _ location: CLLocation? = nil) -> Promise<[String: WebhookSensorResponse]> {
+        return firstly {
+            return self.sensorsConfig.AllSensors
+        }.then { sensors -> Promise<[WebhookSensor]> in
+            guard let location = location else {
+                return Promise.value(sensors)
+            }
+            return self.sensorsConfig.GeocodedLocationSensor(location).map { geoSensor in
+                var allSensors = sensors
+                allSensors.append(geoSensor)
+                return allSensors
+            }
+        }.map { sensors in
+            let lastUpdateTriggerSensor = WebhookSensor(name: "Last Update Trigger", uniqueID: "last_update_trigger")
+            lastUpdateTriggerSensor.Icon = "mdi:cellphone-wireless"
+            if trigger != .Unknown {
+                lastUpdateTriggerSensor.State = trigger.rawValue
+            }
+
+            var allSensors = sensors
+            allSensors.append(lastUpdateTriggerSensor)
+
+            let mapper = Mapper<WebhookSensor>(context: WebhookSensorContext(update: true),
+                                               shouldIncludeNilValues: false)
+            let payload = mapper.toJSONArray(allSensors)
+
+            Current.Log.verbose("Update sensors payload: \(mapper.toJSONString(allSensors, prettyPrint: true)!)")
+
+            return payload
+        }.then { (payload) -> Promise<Any> in
+            return self.webhook("update_sensor_states", payload: payload, callingFunctionName: "updateSensors")
+        }.map { resp -> [String: WebhookSensorResponse] in
+
+            guard let castedResp = resp as? [String: [String: Any]] else {
+                throw APIError.invalidResponse
+            }
+
+            var out: [String: WebhookSensorResponse] = [:]
+
+            for (key, val) in castedResp {
+                guard let casted = WebhookSensorResponse(JSON: val) else {
+                    Current.Log.warning("Unexpected response during update of sensor \(key)")
+                    continue
+                }
+                out[key] = casted
+            }
+
+            return out
+        }.then { resps -> Promise<[String: WebhookSensorResponse]> in
+            // Need to register any sensors that weren't previously registered.
+            let failures = resps.compactMap({ (elem) -> String? in
+                guard elem.value.Success == false && elem.value.ErrorCode == "not_registered" else { return nil }
+
+                return elem.key
+            })
+
+            if failures.count == 0 { return Promise.value(resps) }
+
+            Current.Log.warning("Errors detected during sensor update, re-registering sensors \(failures) now")
+
+            return self.RegisterSensors(failures).then { _ -> Promise<[String: WebhookSensorResponse]> in
+                return self.UpdateSensors(trigger)
+            }
+        }
+
+    }
+
+    public func ensureVersion(_ currentVersionStr: String) -> APIError? {
+        let currentVersion = Version(stringLiteral: currentVersionStr.replacingOccurrences(of: ".dev0", with: ""))
+        if HomeAssistantAPI.minimumRequiredVersion >= currentVersion {
+            return APIError.mustUpgradeHomeAssistant(currentVersion)
+        }
+        return nil
+    }
+}
+
+extension HomeAssistantAPI.APIError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .managerNotAvailable:
+            return L10n.HaApi.ApiError.managerNotAvailable
+        case .invalidResponse:
+            return L10n.HaApi.ApiError.invalidResponse
+        case .cantBuildURL:
+            return L10n.HaApi.ApiError.cantBuildUrl
+        case .notConfigured:
+            return L10n.HaApi.ApiError.notConfigured
+        case .mobileAppComponentNotLoaded:
+            return L10n.HaApi.ApiError.mobileAppComponentNotLoaded
+        case .webhookGone:
+            return L10n.HaApi.ApiError.webhookGone
+        case .mustUpgradeHomeAssistant(let current):
+            return L10n.HaApi.ApiError.mustUpgradeHomeAssistant(current.description,
+                                                                HomeAssistantAPI.minimumRequiredVersion.description)
+        case .unknown:
+            return L10n.HaApi.ApiError.unknown
+        }
+    }
 }

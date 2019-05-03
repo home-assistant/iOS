@@ -31,7 +31,7 @@ class ClientEventPayloadViewController: UIViewController {
                                                         options: .prettyPrinted)
             self.jsonString  = String(data: data, encoding: .utf8)
         } catch _ {
-            print("Error printing event")
+            Current.Log.error("Error printing event")
         }
     }
 }

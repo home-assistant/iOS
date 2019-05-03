@@ -15,7 +15,7 @@ public class DeviceTrackerSee: Mappable {
 
     public var HorizontalAccuracy: CLLocationAccuracy?
     public var Attributes: [String: Any] = [:]
-    public var Battery: Float = 0.0
+    public var Battery: Int = 0
     public var DeviceID: String?
     public var Hostname: String?
     public var Location: CLLocationCoordinate2D?
@@ -33,9 +33,40 @@ public class DeviceTrackerSee: Mappable {
     public var Floor: Int?
 
     // CMMotionActivity
-    public var ActivityType: String?
+    public var ActivityTypes: [String] = []
     public var ActivityConfidence: String?
     public var ActivityStartDate: Date?
+
+    // CMPedometerData
+    public var StartDate: Date?
+    public var EndDate: Date?
+    public var NumberOfSteps: Int?
+    public var Distance: Int?
+    public var AverageActivePace: Int?
+    public var CurrentPace: Int?
+    public var CurrentCadence: Int?
+    public var FloorsAscended: Int?
+    public var FloorsDescended: Int?
+
+    // CLPlacemark
+    public var PlacemarkName: String?
+    public var ISOCountryCode: String?
+    public var Country: String?
+    public var PostalCode: String?
+    public var AdministrativeArea: String?
+    public var SubAdministrativeArea: String?
+    public var Locality: String?
+    public var SubLocality: String?
+    public var Thoroughfare: String?
+    public var SubThoroughfare: String?
+    public var InlandWater: String?
+    public var Ocean: String?
+
+    // Extra attributes
+    public var SSID: String?
+    public var BSSID: String?
+    public var ConnectionType: String?
+    public var Timezone: String = TimeZone.current.identifier
 
     init() {}
 
@@ -47,11 +78,9 @@ public class DeviceTrackerSee: Mappable {
         self.Trigger = trigger
         self.SourceType = (self.Trigger == .BeaconRegionEnter || self.Trigger == .BeaconRegionExit
             ? .BluetoothLowEnergy : .GlobalPositioningSystem)
-            
+
         if let location = location, (
-            trigger != .BeaconRegionEnter 
-            && trigger != .BeaconRegionExit
-            && trigger != .GPSRegionEnter) {
+            trigger != .BeaconRegionEnter && trigger != .BeaconRegionExit && trigger != .GPSRegionEnter) {
             self.SetLocation(location: location)
         } else if let zone = zone {
             self.SetZone(zone: zone)
@@ -61,6 +90,14 @@ public class DeviceTrackerSee: Mappable {
     public func SetZone(zone: RLMZone) {
         self.HorizontalAccuracy = zone.Radius
         self.Location = zone.locationCoordinates()
+
+        #if os(iOS)
+        // https://github.com/home-assistant/home-assistant-iOS/issues/32
+        if let currentSSID = ConnectionInfo.CurrentWiFiSSID, zone.SSIDTrigger.contains(currentSSID) {
+            self.LocationName = zone.Name
+            return
+        }
+        #endif
 
         if zone.ID == "zone.home" {
             switch self.Trigger {
@@ -98,9 +135,36 @@ public class DeviceTrackerSee: Mappable {
     }
 
     public func SetActivity(activity: CMMotionActivity) {
-        self.ActivityType = activity.activityType
+        self.ActivityTypes = activity.activityTypes
         self.ActivityConfidence = activity.confidence.description
         self.ActivityStartDate = activity.startDate
+    }
+
+    public func SetPedometerData(pedometerData: CMPedometerData) {
+        self.StartDate = pedometerData.startDate
+        self.EndDate = pedometerData.endDate
+        self.NumberOfSteps = pedometerData.numberOfSteps.intValue
+        self.Distance = pedometerData.distance?.intValue
+        self.AverageActivePace = pedometerData.averageActivePace?.intValue
+        self.CurrentPace = pedometerData.currentPace?.intValue
+        self.CurrentCadence = pedometerData.currentCadence?.intValue
+        self.FloorsAscended = pedometerData.floorsAscended?.intValue
+        self.FloorsDescended = pedometerData.floorsDescended?.intValue
+    }
+
+    public func SetPlacemark(placemark: CLPlacemark) {
+        self.PlacemarkName = placemark.name
+        self.ISOCountryCode = placemark.isoCountryCode
+        self.Country = placemark.country
+        self.PostalCode = placemark.postalCode
+        self.AdministrativeArea = placemark.administrativeArea
+        self.SubAdministrativeArea = placemark.subAdministrativeArea
+        self.Locality = placemark.locality
+        self.SubLocality = placemark.subLocality
+        self.Thoroughfare = placemark.thoroughfare
+        self.SubThoroughfare = placemark.subThoroughfare
+        self.InlandWater = placemark.inlandWater
+        self.Ocean = placemark.ocean
     }
 
     public func ClearLocation() {
@@ -125,28 +189,57 @@ public class DeviceTrackerSee: Mappable {
     }
 
     // Mappable
+    // swiftlint:disable:next function_body_length
     public func mapping(map: Map) {
-        Attributes           <-  map["attributes"]
-        Battery              <- (map["battery"], FloatToIntTransform())
-        DeviceID             <-  map["dev_id"]
-        Location             <- (map["gps"], CLLocationCoordinate2DTransform())
-        HorizontalAccuracy   <-  map["gps_accuracy"]
-        Hostname             <-  map["host_name"]
-        SourceType           <- (map["source_type"], EnumTransform<UpdateTypes>())
-        LocationName         <- map["location_name"]
-        ConsiderHome         <- (map["consider_home"], TimeIntervalToString())
+        Attributes            <-    map["attributes"]
+        Battery               <-    map["battery"]
+        DeviceID              <-    map["dev_id"]
+        Location              <-   (map["gps"], CLLocationCoordinate2DTransform())
+        HorizontalAccuracy    <-    map["gps_accuracy"]
+        Hostname              <-    map["host_name"]
+        SourceType            <-   (map["source_type"], EnumTransform<UpdateTypes>())
+        LocationName          <-    map["location_name"]
+        ConsiderHome          <-   (map["consider_home"], TimeIntervalToString())
 
-        Speed                <-  map["attributes.speed"]
-        Altitude             <-  map["attributes.altitude"]
-        Course               <-  map["attributes.course"]
-        VerticalAccuracy     <-  map["attributes.vertical_accuracy"]
-        Trigger              <- (map["attributes.trigger"], EnumTransform<LocationUpdateTrigger>())
-        Timestamp            <- (map["attributes.timestamp"], HomeAssistantTimestampTransform())
-        Floor                <-  map["attributes.floor"]
+        Speed                 <-    map["attributes.speed"]
+        Altitude              <-    map["attributes.altitude"]
+        Course                <-    map["attributes.course"]
+        VerticalAccuracy      <-    map["attributes.vertical_accuracy"]
+        Trigger               <-   (map["attributes.trigger"], EnumTransform<LocationUpdateTrigger>())
+        Timestamp             <-   (map["attributes.timestamp"], HomeAssistantTimestampTransform())
+        Floor                 <-    map["attributes.floor"]
 
-        ActivityType         <-  map["attributes.activity_type"]
-        ActivityConfidence   <-  map["attributes.activity_confidence"]
-        ActivityStartDate    <-  (map["attributes.activity_start_date"], HomeAssistantTimestampTransform())
+        ActivityTypes         <-    map["attributes.activity.types"]
+        ActivityConfidence    <-    map["attributes.activity.confidence"]
+        ActivityStartDate     <-   (map["attributes.activity.start_date"], HomeAssistantTimestampTransform())
+
+        StartDate             <-    (map["attributes.pedometer.start_date"], HomeAssistantTimestampTransform())
+        EndDate               <-    (map["attributes.pedometer.end_date"], HomeAssistantTimestampTransform())
+        NumberOfSteps         <-    map["attributes.pedometer.number_of_steps"]
+        Distance              <-    map["attributes.pedometer.distance"]
+        AverageActivePace     <-    map["attributes.pedometer.average_active_pace"]
+        CurrentPace           <-    map["attributes.pedometer.current_pace"]
+        CurrentCadence        <-    map["attributes.pedometer.current_cadence"]
+        FloorsAscended        <-    map["attributes.pedometer.floors_ascended"]
+        FloorsDescended       <-    map["attributes.pedometer.floors_descended"]
+
+        PlacemarkName         <-    map["attributes.location.name"]
+        ISOCountryCode        <-    map["attributes.location.iso_country_code"]
+        Country               <-    map["attributes.location.country"]
+        PostalCode            <-    map["attributes.location.postal_code"]
+        AdministrativeArea    <-    map["attributes.location.administrative_area"]
+        SubAdministrativeArea <-    map["attributes.location.sub_administrative_area"]
+        Locality              <-    map["attributes.location.locality"]
+        SubLocality           <-    map["attributes.location.sub_locality"]
+        Thoroughfare          <-    map["attributes.location.thoroughfare"]
+        SubThoroughfare       <-    map["attributes.location.sub_thoroughfare"]
+        InlandWater           <-    map["attributes.location.inland_water"]
+        Ocean                 <-    map["attributes.location.ocean"]
+
+        SSID                  <-    map["attributes.connection.ssid"]
+        BSSID                 <-    map["attributes.connection.bssid"]
+        ConnectionType        <-    map["attributes.connection.type"]
+        Timezone              <-    map["attributes.timezone"]
     }
 }
 

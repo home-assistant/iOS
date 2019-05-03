@@ -10,127 +10,148 @@ import UIKit
 import UserNotifications
 import UserNotificationsUI
 import MBProgressHUD
+import KeychainAccess
 import Shared
 import Alamofire
+
+enum NotificationCategories: String {
+    case map
+    case map1
+    case map2
+    case map3
+    case map4
+    case camera
+    case camera1
+    case camera2
+    case camera3
+    case camera4
+}
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
 
     var hud: MBProgressHUD?
 
-    var shouldPlay: Bool = true
-
-    var streamer: MJPEGStreamer?
+    var controller: NotificationCategory?
 
     func didReceive(_ notification: UNNotification) {
-        print("Received a \(notification.request.content.categoryIdentifier) notification type")
+        let catID = notification.request.content.categoryIdentifier.lowercased()
+        if let category = NotificationCategories(rawValue: catID) {
+            Current.Log.verbose("Received a \(category) notif with userInfo \(notification.request.content.userInfo)")
 
-        let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        hud.detailsLabel.text = "Loading \(notification.request.content.categoryIdentifier)..."
-        hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
-        self.hud = hud
+            let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+            let loadTxt = L10n.Extensions.NotificationContent.Hud.loading(category.rawValue)
+            hud.detailsLabel.text = loadTxt
+            hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
+            self.hud = hud
 
-        guard let entityId = notification.request.content.userInfo["entity_id"] as? String else {
-            self.showErrorLabel(message: L10n.Extensions.NotificationContent.Error.noEntityId)
-            return
-        }
-
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            self.showErrorLabel(message: HomeAssistantAPI.APIError.notConfigured.localizedDescription)
-            return
-        }
-
-        let imageView = UIImageView()
-        imageView.frame = self.view.frame
-        // Needed for UI Automation w/ Fastlane Snapshot
-        imageView.accessibilityIdentifier = "camera_notification_imageview"
-
-        var frameCount = 0
-
-        guard let streamer = api.videoStreamer() else {
-            return
-        }
-
-        self.streamer = streamer
-        let apiURL = api.connectionInfo.activeAPIURL
-        let queryUrl = apiURL.appendingPathComponent("camera_proxy_stream/\(entityId)", isDirectory: false)
-
-        streamer.streamImages(fromURL: queryUrl) { (image, error) in
-            if let error = error, let afError = error as? AFError {
-                var labelText = L10n.Extensions.NotificationContent.Error.Request.unknown
-                if let responseCode = afError.responseCode {
-                    switch responseCode {
-                    case 401:
-                        labelText = L10n.Extensions.NotificationContent.Error.Request.authFailed
-                    case 404:
-                        labelText = L10n.Extensions.NotificationContent.Error.Request.entityNotFound(entityId)
-                    default:
-                        labelText = L10n.Extensions.NotificationContent.Error.Request.other(responseCode)
-                    }
-                }
-                self.showErrorLabel(message: labelText)
+            switch category {
+            case .camera, .camera1, .camera2, .camera3, .camera4:
+                controller = CameraViewController()
+            case .map, .map1, .map2, .map3, .map4:
+                controller = MapViewController()
             }
 
-            if let image = image {
-                defer {
-                    frameCount += 1
-                    print("FRAME", frameCount)
-                }
-
-                if frameCount == 0 {
-                    print("Got first frame!")
-
-                    print("Finished loading")
-
-                    DispatchQueue.main.async(execute: {
-                        hud.hide(animated: true)
-                    })
-
-                    self.view.addSubview(imageView)
-                    self.extensionContext?.mediaPlayingStarted()
-                }
-
-                if self.shouldPlay {
-                    image.accessibilityIdentifier = "camera_notification_image"
-                    imageView.image = image
-                    imageView.image?.accessibilityIdentifier = image.accessibilityIdentifier
-                }
-
-            }
-
+            controller!.didReceive(notification, vc: self, extensionContext: self.extensionContext, hud: hud,
+                                   completionHandler: { (errorText) in
+                                     if let errorText = errorText {
+                                         self.showErrorLabel(message: errorText)
+                                     }
+            })
+        } else {
+            Current.Log.warning("Unknown category \(notification.request.content.categoryIdentifier)")
         }
-    }
-
-    var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType {
-        return .overlay
-    }
-
-    var mediaPlayPauseButtonFrame: CGRect {
-        let centerX = Double(view.frame.width) / 2.0
-        let centerY = Double(view.frame.height) / 2.0
-        let buttonWidth = 50.0
-        let buttonHeight = 50.0
-        return CGRect(x: centerX - buttonWidth/2.0, y: centerY - buttonHeight/2.0,
-                      width: buttonWidth, height: buttonHeight)
-    }
-
-    public func mediaPlay() {
-        self.shouldPlay = true
-    }
-
-    public func mediaPause() {
-        self.shouldPlay = false
     }
 
     func showErrorLabel(message: String) {
-        print("Error while showing camera!", message)
-        self.extensionContext?.mediaPlayingStarted()
         self.hud?.hide(animated: true)
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 21))
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 60))
         label.center.y = self.view.center.y
         label.textAlignment = .center
         label.textColor = .red
         label.text = message
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
         self.view.addSubview(label)
     }
 
+    var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType {
+        if let buttonType = controller?.mediaPlayPauseButtonType {
+            return buttonType
+        }
+        return .none
+    }
+
+    var mediaPlayPauseButtonFrame: CGRect {
+        if let frame = controller?.mediaPlayPauseButtonFrame {
+            return frame
+        }
+
+        return CGRect(x: 0, y: 0, width: 0, height: 0)
+    }
+
+    public func mediaPlay() {
+        if let isMediaExtension = controller?.isMediaExtension, isMediaExtension {
+            return controller!.mediaPlay()
+        }
+    }
+
+    public func mediaPause() {
+        if let isMediaExtension = controller?.isMediaExtension, isMediaExtension {
+            return controller!.mediaPause()
+        }
+    }
+}
+
+protocol NotificationCategory: NSObjectProtocol {
+
+    // This will be called to send the notification to be displayed by
+    // the extension. If the extension is being displayed and more related
+    // notifications arrive (eg. more messages for the same conversation)
+    // the same method will be called for each new notification.
+    func didReceive(_ notification: UNNotification, vc: UIViewController, extensionContext: NSExtensionContext?,
+                    hud: MBProgressHUD, completionHandler: @escaping (String?) -> Void)
+
+}
+
+extension NotificationCategory {
+    var isMediaExtension: Bool {
+        return false
+    }
+
+    // If implemented, the method will be called when the user taps on one
+    // of the notification actions. The completion handler can be called
+    // after handling the action to dismiss the notification and forward the
+    // action to the app if necessary.
+    func didReceive(_ response: UNNotificationResponse,
+                    completionHandler completion: @escaping (UNNotificationContentExtensionResponseOption) -> Void) {
+
+    }
+
+    // Implementing this method and returning a button type other that "None" will
+    // make the notification attempt to draw a play/pause button correctly styled
+    // for that type.
+    var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType? {
+        return nil
+    }
+
+    // Implementing this method and returning a non-empty frame will make
+    // the notification draw a button that allows the user to play and pause
+    // media content embedded in the notification.
+    var mediaPlayPauseButtonFrame: CGRect? {
+        return nil
+    }
+
+    // The tint color to use for the button.
+    var mediaPlayPauseButtonTintColor: UIColor? {
+        return nil
+    }
+
+    // Called when the user taps the play or pause button.
+    func mediaPlay() {
+
+    }
+
+    func mediaPause() {
+
+    }
 }

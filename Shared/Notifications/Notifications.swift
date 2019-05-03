@@ -20,7 +20,7 @@ final class Notifications {
                                               appropriateFor: nil,
                                               create: false)
         } catch let error as NSError {
-            print("Error when building URL for library directory", error)
+            Current.Log.error("Error when building URL for library directory \(error)")
             return [String]()
         }
 

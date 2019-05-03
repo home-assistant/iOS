@@ -1,0 +1,28 @@
+strings:
+  inputs:
+    - HomeAssistant/Resources/en.lproj/Localizable.strings
+  outputs:
+    - templateName: structured-swift4
+      output: Shared/Resources/SwiftGen/Strings.swift
+ib:
+  inputs: HomeAssistant/Resources/Base.lproj/
+  outputs:
+    - templateName: scenes-swift4
+      output: HomeAssistant/Resources/Scenes.swift
+    - templateName: segues-swift4
+      output: HomeAssistant/Resources/Segues.swift
+xcassets:
+  inputs: HomeAssistant/Resources/Assets.xcassets
+  outputs:
+    templateName: swift4
+    output: HomeAssistant/Resources/Assets.swift
+colors:
+  inputs: HomeAssistant/Resources/Colors.json
+  outputs:
+    templateName: swift4
+    output: HomeAssistant/Resources/Colors.swift
+fonts:
+  inputs: HomeAssistant/Resources/Roboto/
+  outputs:
+    templateName: swift4
+    output: HomeAssistant/Resources/Roboto/Roboto.swift

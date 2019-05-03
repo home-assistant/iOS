@@ -53,7 +53,7 @@ public class ClientEvent: Object {
             do {
                 jsonData = try JSONSerialization.data(withJSONObject: payload, options: .prettyPrinted)
             } catch {
-                print("Error serializing json payload: \(error)")
+                Current.Log.error("Error serializing json payload: \(error)")
             }
         }
 

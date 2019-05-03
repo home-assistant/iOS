@@ -8,7 +8,6 @@
 
 import PromiseKit
 import Alamofire
-import AlamofireObjectMapper
 import Foundation
 import ObjectMapper
 
@@ -32,6 +31,7 @@ public class AuthenticationAPI {
             let routeInfo = RouteInfo(route: AuthenticationRoute.refreshToken(token: token),
                                       baseURL: self.connectionInfo.activeURL)
             let request = Alamofire.request(routeInfo)
+
             let context = TokenInfo.TokenInfoContext(oldTokenInfo: tokenInfo)
             request.validate().responseObject(context: context) { (dataresponse: DataResponse<TokenInfo>) in
                 switch dataresponse.result {
@@ -51,7 +51,8 @@ public class AuthenticationAPI {
             let routeInfo = RouteInfo(route: AuthenticationRoute.revokeToken(token: token),
                                       baseURL: self.connectionInfo.activeURL)
             let request = Alamofire.request(routeInfo)
-            request.validate().response { response in
+
+            request.validate().response { _ in
                 // https://developers.home-assistant.io/docs/en/auth_api.html#revoking-a-refresh-token says:
                 //
                 // The request will always respond with an empty body and HTTP status 200,
@@ -67,6 +68,7 @@ public class AuthenticationAPI {
             let routeInfo = RouteInfo(route: AuthenticationRoute.token(authorizationCode: authorizationCode),
                                       baseURL: self.connectionInfo.activeURL)
             let request = Alamofire.request(routeInfo)
+
             request.validate().responseObject { (dataresponse: DataResponse<TokenInfo>) in
                 switch dataresponse.result {
                 case .failure(let networkError):
@@ -87,7 +89,7 @@ public class AuthenticationAPI {
                             return
                         }
                     } catch {
-                        print("Error deserializing failure json response: \(error)")
+                        Current.Log.error("Error deserializing failure json response: \(error)")
                     }
                 case .success(let value):
                     seal.fulfill(value)

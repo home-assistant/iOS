@@ -24,6 +24,10 @@ public class Zone: Entity {
     public var Major: Int?
     public var Minor: Int?
 
+    // SSID
+    public var SSIDTrigger: [String]?
+    public var SSIDFilter: [String]?
+
     public override func mapping(map: Map) {
         super.mapping(map: map)
 
@@ -34,6 +38,8 @@ public class Zone: Entity {
         UUID               <- map["attributes.beacon.uuid"]
         Major              <- map["attributes.beacon.major"]
         Minor              <- map["attributes.beacon.minor"]
+        SSIDTrigger        <- map["attributes.ssid_trigger"]
+        SSIDFilter         <- map["attributes.ssid_filter"]
     }
 
     public func locationCoordinates() -> CLLocationCoordinate2D {

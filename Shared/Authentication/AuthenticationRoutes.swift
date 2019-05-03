@@ -9,7 +9,6 @@
 import Alamofire
 import Foundation
 
-let kClientId = "https://home-assistant.io/iOS"
 struct RouteInfo: Alamofire.URLRequestConvertible {
     let route: AuthenticationRoute
     let baseURL: URL
@@ -37,6 +36,17 @@ enum AuthenticationRoute {
 
     // MARK: - Private helpers
 
+    private var clientID: String {
+        var clientID = "https://home-assistant.io/iOS"
+
+        if Current.appConfiguration == .Debug {
+            clientID = "https://home-assistant.io/iOS/dev-auth"
+        } else if Current.appConfiguration == .Beta {
+            clientID = "https://home-assistant.io/iOS/beta-auth"
+        }
+        return clientID
+    }
+
     private var method: HTTPMethod {
         switch self {
         case .token:
@@ -51,9 +61,9 @@ enum AuthenticationRoute {
     private var parameters: Parameters? {
         switch self {
         case .token(let authorizationCode):
-            return ["client_id": kClientId, "grant_type": "authorization_code", "code": authorizationCode]
+            return ["client_id": self.clientID, "grant_type": "authorization_code", "code": authorizationCode]
         case .refreshToken(let token):
-            return ["client_id": kClientId, "grant_type": "refresh_token", "refresh_token": token]
+            return ["client_id": self.clientID, "grant_type": "refresh_token", "refresh_token": token]
         case .revokeToken(let token):
             return ["action": "revoke", "token": token]
         }

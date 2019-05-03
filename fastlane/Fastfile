@@ -11,8 +11,8 @@
 
 # This is the minimum version number required.
 # Update this, if you use features of a newer version
-fastlane_version "2.101.1"
-REQUIRED_XCODE_VERSION = "9.4"
+fastlane_version "2.116.1"
+REQUIRED_XCODE_VERSION = "10.1"
 default_platform :ios
 
 platform :ios do
@@ -52,33 +52,73 @@ platform :ios do
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
   lane :certs do
     match(app_identifier: [
-            "io.robbie.HomeAssistant.dev",
+            "io.robbie.HomeAssistant",
+            "io.robbie.HomeAssistant.beta"],
+          type: "appstore",
+          template_name: "Critical Alerts iOS (Dist)")
+    match(app_identifier: "io.robbie.HomeAssistant.dev",
+          type: "development",
+          template_name: "Critical Alerts iOS (Dev)")
+
+    match(app_identifier: [
+            "io.robbie.HomeAssistant.APNSAttachmentService",
+            "io.robbie.HomeAssistant.NotificationContentExtension",
+            "io.robbie.HomeAssistant.Intents",
+            "io.robbie.HomeAssistant.TodayWidget",
+            "io.robbie.HomeAssistant.watchkitapp",
+            "io.robbie.HomeAssistant.watchkitapp.watchkitextension",
+            "io.robbie.HomeAssistant.beta.APNSAttachmentService",
+            "io.robbie.HomeAssistant.beta.NotificationContentExtension",
+            "io.robbie.HomeAssistant.beta.Intents",
+            "io.robbie.HomeAssistant.beta.TodayWidget",
+            "io.robbie.HomeAssistant.beta.watchkitapp",
+            "io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension"],
+          type: "appstore")
+    match(app_identifier: [
             "io.robbie.HomeAssistant.dev.APNSAttachmentService",
             "io.robbie.HomeAssistant.dev.NotificationContentExtension",
-            "io.robbie.HomeAssistant.dev.MapNotificationContentExtension"],
-          type: "development",
-          readonly: true)
+            "io.robbie.HomeAssistant.dev.Intents",
+            "io.robbie.HomeAssistant.dev.TodayWidget",
+            "io.robbie.HomeAssistant.dev.watchkitapp",
+            "io.robbie.HomeAssistant.dev.watchkitapp.watchkitextension"],
+          type: "development")
+  end
+
+  lane :refresh_dsyms do
+    FileUtils.mkdir_p '../dSYMs'
+    download_dsyms(output_directory: "./dSYMs", app_identifier: "io.robbie.homeassistant")
+    dir = "../dSYMS"
+    files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
+    upload_symbols_to_crashlytics(api_token: ENV["FABRIC_API_KEY"],
+                                  dsym_paths: files, dsym_worker_threads: 6)
+    clean_build_artifacts
   end
 
   desc "Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password."
   lane :push_certs do
-    pem(output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
-    pem(development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+    pem(app_identifier: "io.robbie.HomeAssistant", output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+    pem(app_identifier: "io.robbie.HomeAssistant", development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
 
-    pem(app_identifier: "io.robbie.HomeAssistant.dev", output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+    pem(app_identifier: "io.robbie.HomeAssistant.beta", output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+
     pem(app_identifier: "io.robbie.HomeAssistant.dev", development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
   end
 
   desc "Generate proper icons for all build trains"
   lane :icons do
-    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "AppIcon.dev.appiconset", appicon_devices: [:ipad, :iphone])
-    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "AppIcon.beta.appiconset", appicon_devices: [:ipad, :iphone])
-    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_devices: [:ipad, :iphone])
+    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "AppIcon.dev.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing])
+    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "AppIcon.beta.appiconset", appicon_devices: [:ipad, :iphone, :ios_marketing])
+    appicon(appicon_path: "HomeAssistant/Resources/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_devices: [:ipad, :iphone, :ios_marketing])
+
+    appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/dev.png", appicon_name: "WatchIcon.dev.appiconset", appicon_devices: [:watch, :watch_marketing])
+    appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/beta.png", appicon_name: "WatchIcon.beta.appiconset", appicon_devices: [:watch, :watch_marketing])
+    appicon(appicon_path: "WatchApp/Assets.xcassets", appicon_image_file: "icons/release.png", appicon_name: "WatchIcon.appiconset", appicon_devices: [:watch, :watch_marketing])
   end
 
   desc "Download latest localization files from Lokalize"
   lane :update_strings do
-    lokalise(destination: "HomeAssistant/Resources/", use_original: true)
+    lokalise(destination: "HomeAssistant/Resources/", use_original: true, languages: ['de', 'en', 'es', 'fr', 'it', 'nb', 'nl', 'zh-Hans', 'zh-Hant'])
+    sh("cd ../ && ./Pods/SwiftGen/bin/swiftgen")
   end
 
   desc "Upload iTunes Connect metadata to Lokalise"
@@ -111,6 +151,11 @@ platform :ios do
     finalize_bump
   end
 
+  lane :set_beta_version do
+    increment_version_number(version_number: get_version_number(target: "HomeAssistant"))
+    increment_build_number(build_number: latest_testflight_build_number(app_identifier: "io.robbie.HomeAssistant.beta", version: get_version_number(target: "HomeAssistant")) + 1)
+  end
+
   private_lane :finalize_bump do
     # Needed so that the changelog doesn"t include the version bump commit
     change_log = change_log_since_last_tag
@@ -123,7 +168,7 @@ platform :ios do
 
     commit_version_bump(message: commit_message, xcodeproj: "HomeAssistant.xcodeproj")
 
-    push_to_git_remote(remote_branch: "master")
+    push_to_git_remote(remote_branch: git_branch)
 
     set_github_release(
       repository_name: "home-assistant/home-assistant-iOS",
@@ -137,7 +182,7 @@ platform :ios do
 
   desc "Runs build when on Travis"
   lane :ci do
-    if is_ci && ENV["TRAVIS_PULL_REQUEST"] == "false" && git_branch == "master"
+    if is_ci && ENV["TRAVIS_PULL_REQUEST"] == "false" && (git_branch == "master" || git_branch == "beta")
       ENV["FASTLANE_PASSWORD"] = ENV["HOMEASSISTANT_ITUNES_PASSWORD"]
 
       slack(message: "Beginning Travis CI build")
@@ -148,13 +193,24 @@ platform :ios do
         default_keychain: true,
       )
 
-      match(app_identifier: [
-              "io.robbie.HomeAssistant",
-              "io.robbie.HomeAssistant.APNSAttachmentService",
-              "io.robbie.HomeAssistant.NotificationContentExtension",
-              "io.robbie.HomeAssistant.MapNotificationContentExtension"],
+      app_ids = []
+
+      if git_branch == "master"
+        app_ids = ["io.robbie.HomeAssistant", "io.robbie.HomeAssistant.APNSAttachmentService",
+                 "io.robbie.HomeAssistant.NotificationContentExtension", "io.robbie.HomeAssistant.Intents",
+                 "io.robbie.HomeAssistant.watchkitapp",
+                 "io.robbie.HomeAssistant.watchkitapp.watchkitextension", "io.robbie.HomeAssistant.TodayWidget"]
+      elsif git_branch == "beta"
+        app_ids = ["io.robbie.HomeAssistant.beta", "io.robbie.HomeAssistant.beta.APNSAttachmentService",
+                   "io.robbie.HomeAssistant.beta.NotificationContentExtension",
+                   "io.robbie.HomeAssistant.beta.Intents", "io.robbie.HomeAssistant.beta.watchkitapp",
+                   "io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension", "io.robbie.HomeAssistant.beta.TodayWidget"]
+      end
+
+      match(app_identifier: app_ids,
             type: "appstore",
             readonly: true,
+            template_name: "Critical Alerts iOS (Dist)",
             keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
             keychain_password: ENV["MATCH_PASSWORD"])
 
@@ -170,7 +226,11 @@ platform :ios do
     # Needed so that the changelog doesn"t include the version bump commit
     change_log = change_log_since_last_tag
 
-    bump_build
+    if git_branch == "master"
+      bump_build
+    elsif git_branch == "beta"
+      set_beta_version
+    end
 
     clean_build_artifacts
     clear_derived_data
@@ -181,13 +241,39 @@ platform :ios do
       slack(message: "Completed bump, clean and CocoaPods install, now beginning build")
     end
 
-    gym(scheme: "Release", export_options: {
-      provisioningProfiles: {
+    scheme = nil
+    config = nil
+    app_id = nil
+    provisioningProfiles = {}
+
+    if git_branch == "master"
+      scheme = "Release"
+      config = "Release"
+      app_id = "io.robbie.HomeAssistant"
+      provisioningProfiles = {
         "io.robbie.HomeAssistant" => "match AppStore io.robbie.HomeAssistant",
         "io.robbie.HomeAssistant.APNSAttachmentService" => "match AppStore io.robbie.HomeAssistant.APNSAttachmentService",
         "io.robbie.HomeAssistant.NotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.NotificationContentExtension",
-        "io.robbie.HomeAssistant.MapNotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.MapNotificationContentExtension"
+        "io.robbie.HomeAssistant.Intents" => "match AppStore io.robbie.HomeAssistant.Intents",
+        "io.robbie.HomeAssistant.watchkitapp" => "match AppStore io.robbie.HomeAssistant.watchkitapp",
+        "io.robbie.HomeAssistant.watchkitapp.watchkitextension" => "match AppStore io.robbie.HomeAssistant.watchkitapp.watchkitextension",
       }
+    elsif git_branch == "beta"
+      scheme = "Beta"
+      config = "Beta"
+      app_id = "io.robbie.HomeAssistant.beta"
+      provisioningProfiles = {
+        "io.robbie.HomeAssistant.beta" => "match AppStore io.robbie.HomeAssistant.beta",
+        "io.robbie.HomeAssistant.beta.APNSAttachmentService" => "match AppStore io.robbie.HomeAssistant.beta.APNSAttachmentService",
+        "io.robbie.HomeAssistant.beta.NotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.beta.NotificationContentExtension",
+        "io.robbie.HomeAssistant.beta.Intents" => "match AppStore io.robbie.HomeAssistant.beta.Intents",
+        "io.robbie.HomeAssistant.beta.watchkitapp" => "match AppStore io.robbie.HomeAssistant.beta.watchkitapp",
+        "io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension" => "match AppStore io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension",
+      }
+    end
+
+    gym(scheme: scheme, configuration: config, export_options: {
+      provisioningProfiles: provisioningProfiles
     })
 
     if is_ci
@@ -195,10 +281,10 @@ platform :ios do
     end
 
     pilot(
+      app_identifier: app_id,
       changelog: change_log,
-      skip_submission: true,
       distribute_external: false,
-      skip_waiting_for_build_processing: true
+      wait_for_uploaded_build: false
     )
 
     rocket

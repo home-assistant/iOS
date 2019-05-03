@@ -17,8 +17,10 @@ public struct ClientEventStore {
                 realm.add(event)
             }
         } catch {
-            print("Error writing client event: \(error)")
+            Current.Log.error("Error writing client event: \(error)")
         }
+
+        Current.Log.info(event)
     }
 
     public var getEvents: () -> Results<ClientEvent> = {
@@ -34,7 +36,7 @@ public struct ClientEventStore {
                 realm.delete(realm.objects(ClientEvent.self))
             }
         } catch {
-            print("Error writing client event: \(error)")
+            Current.Log.error("Error writing client event: \(error)")
         }
     }
 }

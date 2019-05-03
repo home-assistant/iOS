@@ -1,5 +1,3 @@
 workspace "HomeAssistant.xcworkspace"
-scheme "HomeAssistant"
-configuration "Release"
 clean true
 output_directory "./build"

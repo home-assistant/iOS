@@ -7,91 +7,17 @@
 //
 
 import Foundation
-import FontAwesomeKit
-import Crashlytics
 import KeychainAccess
 import Shared
-
-// Thanks to http://stackoverflow.com/a/35624018/486182
-// Must reboot device after installing new push sounds (http://stackoverflow.com/q/34998278/486182)
-
-// swiftlint:disable:next function_body_length
-func movePushNotificationSounds() -> Int {
-    var movedFiles = 0
-
-    let fileManager: FileManager = FileManager()
-
-    let libraryPath: URL
-
-    do {
-        libraryPath = try fileManager.url(for: .libraryDirectory,
-                                          in: FileManager.SearchPathDomainMask.userDomainMask,
-                                          appropriateFor: nil, create: false)
-    } catch let error as NSError {
-        print("Error when building URL for library directory", error)
-        return 0
-    }
-
-    let librarySoundsPath = libraryPath.appendingPathComponent("Sounds")
-
-    do {
-        print("Creating sounds directory at", librarySoundsPath)
-        try fileManager.createDirectory(at: librarySoundsPath, withIntermediateDirectories: true, attributes: nil)
-    } catch let error as NSError {
-        print("Error creating /Library/Sounds directory", error)
-        return 0
-    }
-
-    let documentsPath: URL
-
-    do {
-        documentsPath = try fileManager.url(for: .documentDirectory,
-                                            in: .userDomainMask,
-                                            appropriateFor: nil,
-                                            create: false)
-    } catch let error as NSError {
-        print("Error building documents path URL", error)
-        return 0
-    }
-
-    let fileList: [URL]
-
-    do {
-        fileList = try fileManager.contentsOfDirectory(at: documentsPath,
-                                                       includingPropertiesForKeys: nil,
-                                                       options: FileManager.DirectoryEnumerationOptions())
-    } catch let error as NSError {
-        print("Error getting contents of documents directory", error)
-        return 0
-    }
-
-    for file in fileList {
-        let finalUrl = librarySoundsPath.appendingPathComponent(file.lastPathComponent)
-        print("Moving", file, "to", finalUrl)
-        do {
-            print("Checking for existence of file")
-            try fileManager.removeItem(at: finalUrl)
-        } catch let rmError as NSError {
-            print("Error removing existing file", rmError)
-        }
-        do {
-            try fileManager.moveItem(at: file, to: finalUrl)
-            movedFiles += 1
-        } catch let error as NSError {
-            print("Error when attempting to move files", error)
-        }
-    }
-    return movedFiles
-}
 
 func resetStores() {
     do {
         try keychain.removeAll()
     } catch {
-        print("Error when trying to delete everything from Keychain!")
+        Current.Log.error("Error when trying to delete everything from Keychain!")
     }
 
-    if let groupDefaults = UserDefaults(suiteName: "group.io.robbie.homeassistant") {
+    if let groupDefaults = UserDefaults(suiteName: Constants.AppGroupID) {
         for key in groupDefaults.dictionaryRepresentation().keys {
             groupDefaults.removeObject(forKey: key)
         }
@@ -99,19 +25,12 @@ func resetStores() {
     }
 }
 
-func openURLStringInBrowser(url: String) {
-    openURLInBrowser(urlToOpen: URL(string: url)!)
-}
-
 func openURLInBrowser(urlToOpen: URL) {
     if OpenInChromeController.sharedInstance.isChromeInstalled() && prefs.bool(forKey: "openInChrome") {
         _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
     } else {
-        if #available(iOS 10, *) {
-            UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
-        } else {
-            _ = UIApplication.shared.openURL(urlToOpen)
-        }
+        UIApplication.shared.open(urlToOpen, options: [:],
+                                  completionHandler: nil)
     }
 }
 
@@ -120,7 +39,7 @@ func convertToDictionary(text: String) -> [String: Any]? {
         do {
             return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
         } catch {
-            print(error.localizedDescription)
+            Current.Log.error("Error converting JSON string to dict: \(error)")
         }
     }
     return nil
@@ -128,19 +47,13 @@ func convertToDictionary(text: String) -> [String: Any]? {
 
 func showAlert(title: String, message: String) {
     let alert = UIAlertController(title: title, message: message,
-                                  preferredStyle: UIAlertControllerStyle.alert)
-    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertActionStyle.default, handler: nil))
+                                  preferredStyle: UIAlertController.Style.alert)
+    alert.addAction(UIAlertAction(title: L10n.okLabel, style: UIAlertAction.Style.default, handler: nil))
     UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true,
                                                                 completion: nil)
 }
 
 func setDefaults() {
-    Crashlytics.sharedInstance().setObjectValue(prefs.string(forKey: "lastInstalledVersion"),
-                                                forKey: "lastInstalledVersion")
-    Crashlytics.sharedInstance().setObjectValue(prefs.integer(forKey: "lastInstalledBundleVersion"),
-                                                forKey: "lastInstalledBundleVersion")
-    Crashlytics.sharedInstance().setObjectValue(prefs.string(forKey: "lastInstalledShortVersion"),
-                                                forKey: "lastInstalledShortVersion")
     if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion"),
         let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString"),
         let stringedShortVersion = shortVersion as? String,
@@ -173,6 +86,18 @@ func setDefaults() {
 
     if prefs.object(forKey: "locationUpdateOnNotification") == nil {
         prefs.set(true, forKey: "locationUpdateOnNotification")
+    }
+
+    if prefs.object(forKey: "analyticsEnabled") == nil {
+        prefs.setValue(true, forKey: "analyticsEnabled")
+    }
+
+    if prefs.object(forKey: "crashlyticsEnabled") == nil {
+        prefs.setValue(true, forKey: "crashlyticsEnabled")
+    }
+
+    if prefs.object(forKey: "messagingEnabled") == nil {
+        prefs.setValue(true, forKey: "messagingEnabled")
     }
 
     prefs.synchronize()

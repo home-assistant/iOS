@@ -7,7 +7,6 @@
 //
 
 import Alamofire
-import Crashlytics
 import Foundation
 import PromiseKit
 import ObjectMapper
@@ -16,13 +15,12 @@ extension HomeAssistantAPI {
     // MARK: - Helper methods for reducing boilerplate.
 
     func handleResponse<T>(response: DataResponse<T>, seal: Resolver<T>, callingFunctionName: String) {
+        // Current.Log.verbose("\(callingFunctionName) response timeline: \(response.timeline)")
         switch response.result {
         case .success(let value):
             seal.fulfill(value)
         case .failure(let error):
-            CLSLogv("Error on \(callingFunctionName)() request: %@",
-                getVaList([error.localizedDescription]))
-            Crashlytics.sharedInstance().recordError(error)
+            Current.Log.error("Error on \(callingFunctionName) request: \(error)")
             seal.reject(error)
         }
     }

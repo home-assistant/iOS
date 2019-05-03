@@ -9,15 +9,15 @@
 import Foundation
 import ObjectMapper
 
-class EventsResponse: Mappable {
-    var Event: String?
-    var ListenerCount: Int?
+public class EventsResponse: Mappable {
+    public var Event: String?
+    public var ListenerCount: Int?
 
-    required init?(map: Map) {
+    public required init?(map: Map) {
 
     }
 
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         Event          <- map["event"]
         ListenerCount  <- map["listener_count"]
     }

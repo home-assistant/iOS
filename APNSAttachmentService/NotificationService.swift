@@ -15,12 +15,11 @@ final class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?
     private var bestAttemptContent: UNMutableNotificationContent?
 
-    // swiftlint:disable cyclomatic_complexity
-    // swiftlint:disable function_body_length
+    // swiftlint:disable cyclomatic_complexity function_body_length
     override func didReceive(_ request: UNNotificationRequest,
                              withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
-        print("APNSAttachmentService started!")
-        print("Received userInfo", request.content.userInfo)
+        Current.Log.verbose("APNSAttachmentService started!")
+        Current.Log.verbose("Received userInfo \(request.content.userInfo)")
 
         let event = ClientEvent(text: request.content.clientEventTitle, type: .notification,
                                 payload: request.content.userInfo as? [String: Any])
@@ -86,7 +85,7 @@ final class NotificationService: UNNotificationServiceExtension {
             attachmentOptions[UNNotificationAttachmentOptionsThumbnailHiddenKey] = attachmentHideThumbnail
         }
 
-        _ = HomeAssistantAPI.authenticatedAPI()?.downloadDataAt(url: attachmentURL,
+        _ = HomeAssistantAPI.authenticatedAPI()?.DownloadDataAt(url: attachmentURL,
                                                                 needsAuth: needsAuth).done { fileURL in
 
             do {
@@ -94,9 +93,20 @@ final class NotificationService: UNNotificationServiceExtension {
                                                               options: attachmentOptions)
                 content.attachments.append(attachment)
             } catch let error {
-                print("Error when building UNNotificationAttachment: \(error)")
+                Current.Log.error("Error when building UNNotificationAttachment: \(error)")
 
                 return failEarly()
+            }
+
+            // Attempt to fill in the summary argument with the thread or category ID if it doesn't exist in payload.
+            if #available(iOS 12.0, *) {
+                if content.summaryArgument == "" {
+                    if content.threadIdentifier != "" {
+                        content.summaryArgument = content.threadIdentifier
+                    } else if content.categoryIdentifier != "" {
+                        content.summaryArgument = content.categoryIdentifier
+                    }
+                }
             }
 
             if let copiedContent = content.copy() as? UNNotificationContent {
@@ -104,10 +114,10 @@ final class NotificationService: UNNotificationServiceExtension {
             }
         }.catch { error in
 
-            if let error = error as? AFError, let desc = error.errorDescription {
-                print("Alamofire error while getting attachment data", desc)
+            if let error = error as? AFError {
+                Current.Log.error("Alamofire error while getting attachment data: \(error)")
             } else {
-                print("Error when getting attachment data!", error.localizedDescription)
+                Current.Log.error("Error when getting attachment data! \(error)")
             }
 
             return failEarly()

@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+import CoreGraphics
 
 extension String {
     func dictionary() -> [String: Any]? {
@@ -14,7 +16,7 @@ extension String {
             do {
                 return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
             } catch {
-                print(error.localizedDescription)
+                print("Error serializing JSON string to dict: \(error)")
             }
         }
         return nil
@@ -44,5 +46,4 @@ extension String {
         return hexInt
     }
 
-    
 }

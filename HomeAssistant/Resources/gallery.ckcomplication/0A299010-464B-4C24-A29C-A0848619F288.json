@@ -1,0 +1,18 @@
+{
+  "tintColor" : {
+    "green" : 0.74000000953674316,
+    "red" : 0.25,
+    "alpha" : 1,
+    "blue" : 0.95999997854232788
+  },
+  "class" : "CLKComplicationTemplateModularLargeTallBody",
+  "bodyTextProvider" : {
+    "class" : "CLKSimpleTextProvider",
+    "text" : "A template for displaying a large rectangle containing text. has not been configured in the app"
+  },
+  "version" : 30000,
+  "headerTextProvider" : {
+    "class" : "CLKSimpleTextProvider",
+    "text" : "Not configured"
+  }
+}

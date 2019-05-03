@@ -1,0 +1,8 @@
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Nous vous suggérons de sélectionner \"Toujours autoriser\" pour une meilleure expérience de localisation. La sélection de \"Seulement lors de l'utilisation de l'application\" désactive les iBeacons, le géorepérage, les mises à jour d'emplacement d'arrière-plan et la génération de rapports précis.";
+"NSLocationAlwaysUsageDescription" = "Nous avons toujours besoin d’accéder à votre emplacement pour des fonctionnalités telles que les balises iBeacons, le géorepérage, les mises à jour d’emplacement en arrière-plan et les rapports précis.";
+"NSLocationWhenInUseUsageDescription" = "Autoriser l'accès à la localisation uniquement lorsque l'application est en cours d'utilisation désactivera les iBeacons, le géorepérage, les mises à jour d'emplacement en arrière-plan et la génération de rapports précis.";
+"NSMotionUsageDescription" = "Le mouvement est utilisé pour améliorer les mises à jour d'emplacement avec le type de mouvement actuel, ainsi que des données de base au podomètre.";
+"NSSiriUsageDescription" = "Nous utilisons Siri pour permettre aux raccourcis créés d’interagir avec l’application.";
+"NSPhotoLibraryAddUsageDescription" = "L'accès à la photothèque est nécessaire pour permettre la sauvegarde de photos à partir de la vue Web.";
+"NSPhotoLibraryUsageDescription" = "L'accès à la photothèque est nécessaire pour permettre la sauvegarde de photos à partir de la vue Web.";
+"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Envoyer l'emplacement";

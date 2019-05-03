@@ -1,0 +1,23 @@
+{
+  "headerImageProvider" : {
+    "applyScalingAndCircularMask" : true,
+    "fullColorImage" : {
+      "file name" : "8B61C016-4967-4DA6-A5A8-7F889655EEF6.png",
+      "scale" : 2
+    }
+  },
+  "class" : "CLKComplicationTemplateGraphicRectangularStandardBody",
+  "body2TextProvider" : {
+    "class" : "CLKSimpleTextProvider",
+    "text" : "has not been configured"
+  },
+  "body1TextProvider" : {
+    "class" : "CLKSimpleTextProvider",
+    "text" : "A template for displaying a large rectangle containing text."
+  },
+  "version" : 30000,
+  "headerTextProvider" : {
+    "class" : "CLKSimpleTextProvider",
+    "text" : "Not configured"
+  }
+}

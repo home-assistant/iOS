@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="k1J-B5-uSb">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Welcome View Controller-->
+        <scene sceneID="Y2A-D7-TjO">
+            <objects>
+                <viewController storyboardIdentifier="welcome" id="Cpw-N3-yji" customClass="WelcomeViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="FZO-9W-RiW" userLabel="Welcome View">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Home Assistant Companion!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mse-YA-DiV">
+                                <rect key="frame" x="92" y="20" width="191" height="49"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The most advanced Home Automation app on iOS" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5td-Yc-nnx">
+                                <rect key="frame" x="50" y="69" width="275" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="BGn-Ud-dKC"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="wD9-TR-rVF" userLabel="Animation View" customClass="AnimationView" customModule="Lottie">
+                                <rect key="frame" x="67.5" y="223.5" width="240" height="240"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="240" id="gcY-WU-qo5"/>
+                                    <constraint firstAttribute="width" constant="240" id="iUi-Vq-OTN"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="animationName" value="ha-loading"/>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4h-WC-wIw" customClass="MDCButton">
+                                <rect key="frame" x="154.5" y="599" width="66" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="1d3-Wv-yWY"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <state key="normal" title="Continue"/>
+                                <connections>
+                                    <action selector="continueButton:" destination="Cpw-N3-yji" eventType="touchUpInside" id="OmS-1m-BYe"/>
+                                </connections>
+                            </button>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="To continue with automatic setup, please connect to your home Wi-Fi network" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="djx-xj-AwF" userLabel="Wifi Disconnected">
+                                <rect key="frame" x="50" y="145" width="275" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="azK-p9-4gx"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="djx-xj-AwF" firstAttribute="firstBaseline" secondItem="5td-Yc-nnx" secondAttribute="baseline" id="682-ol-Moz"/>
+                            <constraint firstItem="N4h-WC-wIw" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="7jc-nn-Bf0"/>
+                            <constraint firstItem="Dgm-KS-yJa" firstAttribute="bottom" secondItem="N4h-WC-wIw" secondAttribute="bottom" constant="20" id="Hbo-CP-wA6"/>
+                            <constraint firstItem="mse-YA-DiV" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="S7j-SS-3r5"/>
+                            <constraint firstItem="5td-Yc-nnx" firstAttribute="leading" secondItem="Dgm-KS-yJa" secondAttribute="leading" constant="50" id="SFm-HS-moK"/>
+                            <constraint firstItem="wD9-TR-rVF" firstAttribute="centerX" secondItem="Dgm-KS-yJa" secondAttribute="centerX" id="YJn-5u-0ZE"/>
+                            <constraint firstItem="djx-xj-AwF" firstAttribute="trailing" secondItem="5td-Yc-nnx" secondAttribute="trailing" id="bY3-fM-MgO"/>
+                            <constraint firstItem="wD9-TR-rVF" firstAttribute="centerY" secondItem="Dgm-KS-yJa" secondAttribute="centerY" id="dyS-lr-6jI"/>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="mse-YA-DiV" secondAttribute="trailing" id="qAH-H0-r9f"/>
+                            <constraint firstItem="djx-xj-AwF" firstAttribute="leading" secondItem="5td-Yc-nnx" secondAttribute="leading" id="uli-5n-vOS"/>
+                            <constraint firstItem="Dgm-KS-yJa" firstAttribute="trailing" secondItem="5td-Yc-nnx" secondAttribute="trailing" constant="50" id="w4B-oX-Tlp"/>
+                            <constraint firstItem="5td-Yc-nnx" firstAttribute="top" secondItem="mse-YA-DiV" secondAttribute="bottom" id="xjd-Mr-N2j"/>
+                            <constraint firstItem="mse-YA-DiV" firstAttribute="top" secondItem="Dgm-KS-yJa" secondAttribute="top" id="yDL-8w-3OP"/>
+                            <constraint firstItem="mse-YA-DiV" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="FZO-9W-RiW" secondAttribute="leadingMargin" id="yWr-Dc-c25"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Dgm-KS-yJa"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Na6-FR-EXQ"/>
+                    <connections>
+                        <outlet property="animationView" destination="wD9-TR-rVF" id="uqF-bQ-kl5"/>
+                        <outlet property="continueButton" destination="N4h-WC-wIw" id="6pm-aL-tIf"/>
+                        <outlet property="wifiWarningLabel" destination="djx-xj-AwF" id="bFq-To-JiJ"/>
+                        <segue destination="zQf-lI-ZmB" kind="show" identifier="discoverInstances" id="sQB-9m-V5O"/>
+                        <segue destination="sGi-y7-DOI" kind="show" identifier="manuallyConnectInstance" id="Ywb-4q-gPS"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oJ1-GF-kpe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3447.1999999999998" y="-1343.4782608695652"/>
+        </scene>
+        <!--Discover Instances-->
+        <scene sceneID="zhb-Qm-Nke">
+            <objects>
+                <viewController storyboardIdentifier="discoverInstances" id="zQf-lI-ZmB" userLabel="Discover Instances" customClass="DiscoverInstancesViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="lXu-nc-gsX" userLabel="Discover Instances View">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vze-fN-mpk" customClass="AnimationView" customModule="Lottie">
+                                <rect key="frame" x="67.5" y="213.5" width="240" height="240"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="nlE-8B-p0u"/>
+                                    <constraint firstAttribute="height" constant="240" id="yGo-6N-mP6"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fqx-lo-wDB" customClass="MDCButton">
+                                <rect key="frame" x="102" y="599" width="171" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="RL2-4Z-fBu"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <state key="normal" title="Enter Address Manually">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <segue destination="sGi-y7-DOI" kind="show" identifier="continueManually" id="tfQ-DV-bBL"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scanning your network for Home Assistant" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4qQ-ND-WGB">
+                                <rect key="frame" x="16" y="20" width="343" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="5Up-Ky-2bc"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="YYn-sj-8lm" firstAttribute="bottom" secondItem="fqx-lo-wDB" secondAttribute="bottom" constant="20" id="DZy-ti-TVy"/>
+                            <constraint firstItem="Vze-fN-mpk" firstAttribute="centerY" secondItem="lXu-nc-gsX" secondAttribute="centerY" id="NpJ-ts-QT2"/>
+                            <constraint firstItem="Vze-fN-mpk" firstAttribute="centerX" secondItem="YYn-sj-8lm" secondAttribute="centerX" id="Qgu-vg-Lij"/>
+                            <constraint firstItem="4qQ-ND-WGB" firstAttribute="trailing" secondItem="lXu-nc-gsX" secondAttribute="trailingMargin" id="U2v-Rt-Ysm"/>
+                            <constraint firstItem="4qQ-ND-WGB" firstAttribute="top" secondItem="YYn-sj-8lm" secondAttribute="top" id="WFk-Ul-VpE"/>
+                            <constraint firstItem="fqx-lo-wDB" firstAttribute="centerX" secondItem="YYn-sj-8lm" secondAttribute="centerX" id="XuF-rJ-OEd"/>
+                            <constraint firstItem="4qQ-ND-WGB" firstAttribute="leading" secondItem="lXu-nc-gsX" secondAttribute="leadingMargin" id="Z25-5w-LXc"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="YYn-sj-8lm"/>
+                    </view>
+                    <connections>
+                        <outlet property="animationView" destination="Vze-fN-mpk" id="67q-zx-NOn"/>
+                        <outlet property="manualButton" destination="fqx-lo-wDB" id="1vV-p7-IkK"/>
+                        <outlet property="view" destination="lXu-nc-gsX" id="1BU-Zp-9aL"/>
+                        <segue destination="aAK-PP-uhk" kind="show" identifier="chooseDiscoveredInstance" id="fgm-KO-Tdk"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="thh-Bc-uAU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3447" y="-582"/>
+        </scene>
+        <!--Manual Instance Configuration Controller-->
+        <scene sceneID="Ins-8y-neb">
+            <objects>
+                <viewController storyboardIdentifier="manualSetup" id="sGi-y7-DOI" userLabel="Manual Instance Configuration Controller" customClass="ManualSetupViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="uHB-Lo-ehZ" userLabel="Manual Configuration View">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="http://hassio.local:8123" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xO0-K1-GJX">
+                                <rect key="frame" x="16" y="328.5" width="343" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="URL" returnKeyType="continue" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="url"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gld-QQ-oTD" userLabel="Connect Button" customClass="MDCButton">
+                                <rect key="frame" x="153" y="388.5" width="69" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="ony-Dh-Fz1"/>
+                                </constraints>
+                                <state key="normal" title="Connect"/>
+                                <connections>
+                                    <action selector="connectButtonTapped:" destination="sGi-y7-DOI" eventType="touchUpInside" id="lw7-fv-9pS"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manual Configuration" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7iT-bd-cdY">
+                                <rect key="frame" x="16" y="20" width="343" height="32"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PIW-dY-j0P" userLabel="Instructions">
+                                <rect key="frame" x="16" y="60" width="343" height="103.5"/>
+                                <string key="text">Please enter your Home Assistant URL to continue. It must be a fully formed URL of the format "http://hassio.local:8123" (that is, containing a scheme/protocol, hostname and port).</string>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="7iT-bd-cdY" firstAttribute="centerX" secondItem="qpd-6g-qfw" secondAttribute="centerX" id="CxS-9v-Nze"/>
+                            <constraint firstItem="PIW-dY-j0P" firstAttribute="leading" secondItem="qpd-6g-qfw" secondAttribute="leading" constant="16" id="FBS-wt-D1F"/>
+                            <constraint firstItem="xO0-K1-GJX" firstAttribute="centerY" secondItem="qpd-6g-qfw" secondAttribute="centerY" id="Hz0-kj-LCV"/>
+                            <constraint firstItem="gld-QQ-oTD" firstAttribute="top" secondItem="xO0-K1-GJX" secondAttribute="bottom" constant="30" id="J3S-0X-fVg"/>
+                            <constraint firstItem="PIW-dY-j0P" firstAttribute="top" secondItem="7iT-bd-cdY" secondAttribute="bottom" constant="8" id="THH-rE-Ndy"/>
+                            <constraint firstItem="qpd-6g-qfw" firstAttribute="trailing" secondItem="PIW-dY-j0P" secondAttribute="trailing" constant="16" id="fxU-0O-DTF"/>
+                            <constraint firstItem="gld-QQ-oTD" firstAttribute="centerX" secondItem="qpd-6g-qfw" secondAttribute="centerX" id="gZJ-nI-8A9"/>
+                            <constraint firstItem="qpd-6g-qfw" firstAttribute="trailing" secondItem="xO0-K1-GJX" secondAttribute="trailing" constant="16" id="hbr-Lg-ib9"/>
+                            <constraint firstItem="7iT-bd-cdY" firstAttribute="top" secondItem="qpd-6g-qfw" secondAttribute="top" id="qb8-of-U2s"/>
+                            <constraint firstItem="xO0-K1-GJX" firstAttribute="centerX" secondItem="qpd-6g-qfw" secondAttribute="centerX" id="si4-53-5Kn"/>
+                            <constraint firstItem="7iT-bd-cdY" firstAttribute="leading" secondItem="qpd-6g-qfw" secondAttribute="leading" constant="16" id="yt7-nX-lPb"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="qpd-6g-qfw"/>
+                    </view>
+                    <connections>
+                        <outlet property="connectButton" destination="gld-QQ-oTD" id="KZc-77-YyW"/>
+                        <outlet property="urlField" destination="xO0-K1-GJX" id="9pq-ib-uAd"/>
+                        <outlet property="view" destination="uHB-Lo-ehZ" id="c1L-g8-Eo8"/>
+                        <segue destination="jkw-3v-pbb" kind="show" identifier="setupManualInstance" id="KPp-1J-npF"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ccG-Tb-Y1L" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2474.4000000000001" y="-1343.4782608695652"/>
+        </scene>
+        <!--Choose Discovered Instance Controller-->
+        <scene sceneID="Ftc-mS-ShN">
+            <objects>
+                <viewController storyboardIdentifier="chooseDiscoveredInstance" id="aAK-PP-uhk" userLabel="Choose Discovered Instance Controller" customClass="ChooseDiscoveredInstanceViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="mQY-ah-0sc" userLabel="Choose Discovered Instance View">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We found 1 Home Assistant" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NJM-pS-Fuc" userLabel="Status Label">
+                                <rect key="frame" x="16" y="20" width="343" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="100" id="XNP-Il-c3g"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="xcD-7Q-tXz">
+                                <rect key="frame" x="16" y="130" width="343" height="407"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="discoveredInstanceCell" textLabel="SnL-y3-0HP" detailTextLabel="8JC-7Y-FvP" style="IBUITableViewCellStyleSubtitle" id="nz7-cL-3VB">
+                                        <rect key="frame" x="0.0" y="28" width="343" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nz7-cL-3VB" id="AGo-c7-RG0">
+                                            <rect key="frame" x="0.0" y="0.0" width="310" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="My Home Assistant" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="SnL-y3-0HP">
+                                                    <rect key="frame" x="15" y="3" width="154.5" height="20.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="http://hassio.local:8123" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="8JC-7Y-FvP">
+                                                    <rect key="frame" x="15" y="23.5" width="160" height="18"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="aAK-PP-uhk" id="383-gl-fET"/>
+                                    <outlet property="delegate" destination="aAK-PP-uhk" id="RxH-tt-MoR"/>
+                                </connections>
+                            </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Re7-IX-23x" userLabel="Manual Button" customClass="MDCButton">
+                                <rect key="frame" x="102" y="599" width="171" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="Wbe-aT-sLp"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <state key="normal" title="Enter Address Manually">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <segue destination="sGi-y7-DOI" kind="show" identifier="continueManually" id="age-hj-Hrf"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Re7-IX-23x" firstAttribute="centerX" secondItem="MrN-V0-Pgp" secondAttribute="centerX" id="3Hk-ov-X9k"/>
+                            <constraint firstItem="NJM-pS-Fuc" firstAttribute="trailing" secondItem="mQY-ah-0sc" secondAttribute="trailingMargin" id="M35-WZ-keB"/>
+                            <constraint firstItem="xcD-7Q-tXz" firstAttribute="centerX" secondItem="MrN-V0-Pgp" secondAttribute="centerX" id="O7p-ft-7p6"/>
+                            <constraint firstItem="NJM-pS-Fuc" firstAttribute="top" secondItem="MrN-V0-Pgp" secondAttribute="top" id="QMl-Na-qA9"/>
+                            <constraint firstItem="xcD-7Q-tXz" firstAttribute="centerY" secondItem="mQY-ah-0sc" secondAttribute="centerY" id="Sxp-hw-utQ"/>
+                            <constraint firstItem="NJM-pS-Fuc" firstAttribute="leading" secondItem="mQY-ah-0sc" secondAttribute="leadingMargin" id="gS7-aP-pTp"/>
+                            <constraint firstItem="xcD-7Q-tXz" firstAttribute="top" secondItem="NJM-pS-Fuc" secondAttribute="bottom" constant="10" id="ihU-fi-Xgs"/>
+                            <constraint firstItem="xcD-7Q-tXz" firstAttribute="leading" secondItem="mQY-ah-0sc" secondAttribute="leadingMargin" id="jSj-Pk-5Ps"/>
+                            <constraint firstItem="xcD-7Q-tXz" firstAttribute="trailing" secondItem="mQY-ah-0sc" secondAttribute="trailingMargin" id="rpg-lA-pKY"/>
+                            <constraint firstItem="MrN-V0-Pgp" firstAttribute="bottom" secondItem="Re7-IX-23x" secondAttribute="bottom" constant="20" id="xE9-aI-GLR"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="MrN-V0-Pgp"/>
+                    </view>
+                    <connections>
+                        <outlet property="manualButton" destination="Re7-IX-23x" id="ymw-0i-M7Q"/>
+                        <outlet property="statusLabel" destination="NJM-pS-Fuc" id="FZC-mA-1bm"/>
+                        <outlet property="tableView" destination="xcD-7Q-tXz" id="MJi-3f-v6a"/>
+                        <outlet property="view" destination="mQY-ah-0sc" id="c54-CT-8mP"/>
+                        <segue destination="jkw-3v-pbb" kind="show" identifier="setupDiscoveredInstance" id="Nmk-e0-aiM"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ocs-Ry-1hI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2473" y="-582"/>
+        </scene>
+        <!--Connection Error View Controller-->
+        <scene sceneID="B9D-Wv-cp8">
+            <objects>
+                <viewController id="MOD-3L-omt" customClass="ConnectionErrorViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="1MN-NN-6Ip">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Uh Oh!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CIS-8C-niN" userLabel="Title">
+                                <rect key="frame" x="16" y="20" width="343" height="75"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="75" id="Abf-1J-NPD"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ge3-1c-5KC" customClass="AnimationView" customModule="Lottie">
+                                <rect key="frame" x="67.5" y="95" width="240" height="240"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="4aO-yx-T4x"/>
+                                    <constraint firstAttribute="height" constant="240" id="l77-iF-i3D"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UKm-Ju-0Yr" userLabel="Error Description">
+                                <rect key="frame" x="16" y="335" width="343" height="174"/>
+                                <string key="text">We encountered an error while connecting to your instance. Your SSL certificate is invalid. Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.</string>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tqw-iY-A2S" customClass="MDCButton">
+                                <rect key="frame" x="153" y="539" width="69" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="n0k-es-6p0"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <state key="normal" title="More Info"/>
+                                <connections>
+                                    <action selector="moreInfoTapped:" destination="MOD-3L-omt" eventType="touchUpInside" id="ehl-fN-ffb"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="suf-pJ-Nle" customClass="MDCButton">
+                                <rect key="frame" x="150" y="599" width="75" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="jRH-LG-4f8"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <state key="normal" title="Start Over"/>
+                                <connections>
+                                    <action selector="connectButtonTapped:" destination="jkw-3v-pbb" eventType="touchUpInside" id="ZUd-tI-c7g"/>
+                                    <segue destination="Cpw-N3-yji" kind="show" id="Cox-Jc-BY9"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.65683549640000005" blue="0.96857291459999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="CIS-8C-niN" firstAttribute="leading" secondItem="1MN-NN-6Ip" secondAttribute="leadingMargin" id="1e3-c6-FKM"/>
+                            <constraint firstItem="CIS-8C-niN" firstAttribute="top" secondItem="OqO-iB-GQA" secondAttribute="top" id="CFF-tT-vO2"/>
+                            <constraint firstItem="OqO-iB-GQA" firstAttribute="trailing" secondItem="UKm-Ju-0Yr" secondAttribute="trailing" constant="16" id="Czk-Ze-QiK"/>
+                            <constraint firstItem="OqO-iB-GQA" firstAttribute="centerX" secondItem="Ge3-1c-5KC" secondAttribute="centerX" id="D1A-WW-rVC"/>
+                            <constraint firstItem="UKm-Ju-0Yr" firstAttribute="leading" secondItem="OqO-iB-GQA" secondAttribute="leading" constant="16" id="Iv8-dl-PHx"/>
+                            <constraint firstItem="Ge3-1c-5KC" firstAttribute="bottom" secondItem="UKm-Ju-0Yr" secondAttribute="top" id="Jtf-7v-KwW"/>
+                            <constraint firstItem="CIS-8C-niN" firstAttribute="centerX" secondItem="OqO-iB-GQA" secondAttribute="centerX" id="S2E-bj-cip"/>
+                            <constraint firstItem="Ge3-1c-5KC" firstAttribute="top" secondItem="CIS-8C-niN" secondAttribute="bottom" id="haw-oD-9o7"/>
+                            <constraint firstItem="Tqw-iY-A2S" firstAttribute="centerX" secondItem="OqO-iB-GQA" secondAttribute="centerX" id="n1s-dd-9Wu"/>
+                            <constraint firstItem="OqO-iB-GQA" firstAttribute="bottom" secondItem="Tqw-iY-A2S" secondAttribute="bottom" constant="80" id="vYk-ql-har"/>
+                            <constraint firstItem="suf-pJ-Nle" firstAttribute="centerX" secondItem="OqO-iB-GQA" secondAttribute="centerX" id="wc6-h8-gS0"/>
+                            <constraint firstItem="OqO-iB-GQA" firstAttribute="bottom" secondItem="suf-pJ-Nle" secondAttribute="bottom" constant="20" id="zJ0-ex-FIA"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="OqO-iB-GQA"/>
+                    </view>
+                    <connections>
+                        <outlet property="animationView" destination="Ge3-1c-5KC" id="dqm-oP-ONh"/>
+                        <outlet property="errorLabel" destination="UKm-Ju-0Yr" id="ukr-s7-dSj"/>
+                        <outlet property="goBackButton" destination="suf-pJ-Nle" id="Vhh-ku-5Wv"/>
+                        <outlet property="moreInfoButton" destination="Tqw-iY-A2S" id="nON-jY-zmz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="p2O-ln-8Lh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1444" y="-582.45877061469275"/>
+        </scene>
+        <!--Authentication View Controller-->
+        <scene sceneID="kcK-Ui-ndY">
+            <objects>
+                <viewController id="jkw-3v-pbb" customClass="AuthenticationViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Tgk-Fz-LIY">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Authentication" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lM3-aA-jqO">
+                                <rect key="frame" x="106" y="20" width="163.5" height="31.5"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wsC-f5-jbO">
+                                <rect key="frame" x="16" y="213" width="343" height="86.5"/>
+                                <string key="text">We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. </string>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f1j-Ol-pW5" customClass="MDCButton">
+                                <rect key="frame" x="156.5" y="319.5" width="62" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="FXM-qV-KcU"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <state key="normal" title="Connect"/>
+                                <connections>
+                                    <action selector="connectButtonTapped:" destination="jkw-3v-pbb" eventType="touchUpInside" id="omV-gf-Uil"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RSW-l5-eRA" customClass="MDCButton">
+                                <rect key="frame" x="150" y="599" width="75" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="UDb-3K-qkT"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <state key="normal" title="Start Over"/>
+                                <connections>
+                                    <segue destination="Cpw-N3-yji" kind="show" id="Fz4-Qa-34b"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="lM3-aA-jqO" firstAttribute="top" secondItem="rqB-n3-MmV" secondAttribute="top" id="4vn-fB-duB"/>
+                            <constraint firstItem="lM3-aA-jqO" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="rqB-n3-MmV" secondAttribute="leading" id="8mV-N1-KVQ"/>
+                            <constraint firstItem="rqB-n3-MmV" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="lM3-aA-jqO" secondAttribute="trailing" id="IAW-ZT-VGq"/>
+                            <constraint firstItem="RSW-l5-eRA" firstAttribute="centerX" secondItem="rqB-n3-MmV" secondAttribute="centerX" id="PFp-UW-11f"/>
+                            <constraint firstItem="rqB-n3-MmV" firstAttribute="bottom" secondItem="RSW-l5-eRA" secondAttribute="bottom" constant="20" id="TM2-OF-jlE"/>
+                            <constraint firstItem="f1j-Ol-pW5" firstAttribute="centerY" secondItem="rqB-n3-MmV" secondAttribute="centerY" id="VY0-c4-tdo"/>
+                            <constraint firstItem="f1j-Ol-pW5" firstAttribute="top" secondItem="wsC-f5-jbO" secondAttribute="bottom" constant="20" id="W2b-0Y-X0D"/>
+                            <constraint firstItem="lM3-aA-jqO" firstAttribute="centerX" secondItem="rqB-n3-MmV" secondAttribute="centerX" id="cFq-EZ-ePk"/>
+                            <constraint firstItem="f1j-Ol-pW5" firstAttribute="centerX" secondItem="rqB-n3-MmV" secondAttribute="centerX" id="iWY-Xa-DuW"/>
+                            <constraint firstItem="wsC-f5-jbO" firstAttribute="leading" secondItem="rqB-n3-MmV" secondAttribute="leading" constant="16" id="t7s-xE-sTN"/>
+                            <constraint firstItem="rqB-n3-MmV" firstAttribute="trailing" secondItem="wsC-f5-jbO" secondAttribute="trailing" constant="16" id="utY-40-dLq"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="rqB-n3-MmV"/>
+                    </view>
+                    <connections>
+                        <outlet property="connectButton" destination="f1j-Ol-pW5" id="VLr-HQ-06q"/>
+                        <outlet property="goBackButton" destination="RSW-l5-eRA" id="dFO-Zv-18Q"/>
+                        <outlet property="whatsAboutToHappenLabel" destination="wsC-f5-jbO" id="Qcs-AD-PKE"/>
+                        <segue destination="MOD-3L-omt" kind="show" identifier="showError" id="Zm8-Bf-HW3"/>
+                        <segue destination="XKw-m3-Nah" kind="show" identifier="permissions" id="l74-5C-19T"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Fzm-f2-VYy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1444" y="-1343"/>
+        </scene>
+        <!--Connect Instance View Controller-->
+        <scene sceneID="1Nw-I3-CmV">
+            <objects>
+                <viewController id="KCa-bc-FXT" userLabel="Connect Instance View Controller" customClass="ConnectInstanceViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="pvD-0u-p2i" userLabel="Connect Instance View">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting to My Home Assistant" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kj7-hM-8gN">
+                                <rect key="frame" x="16" y="20" width="343" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="wch-nD-0pL"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="bTD-eO-lC0" userLabel="Animation View" customClass="AnimationView" customModule="Lottie">
+                                <rect key="frame" x="67.5" y="50" width="240" height="240"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="240" id="DKN-DB-cJv"/>
+                                    <constraint firstAttribute="width" constant="240" id="ReF-MR-K0J"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="animationName" value="home"/>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="eaY-cI-FSy" userLabel="Statuses Stack View">
+                                <rect key="frame" x="16" y="290" width="343" height="192"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="wLi-zh-ZCi" userLabel="Connection Stack View">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="32"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connected" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XyQ-gy-yHY" userLabel="Connected">
+                                                <rect key="frame" x="0.0" y="0.0" width="80" height="32"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Buq-eK-7U7" userLabel="Status" customClass="AnimationView" customModule="Lottie">
+                                                <rect key="frame" x="311" y="0.0" width="32" height="32"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="32" id="0yI-FZ-KLL"/>
+                                                    <constraint firstAttribute="height" constant="32" id="13S-Jz-hi4"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="TU2-8P-H0M" userLabel="Authenticated Stack View">
+                                        <rect key="frame" x="0.0" y="32" width="343" height="32"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Authenticated" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nJr-sw-A9l" userLabel="Authenticated">
+                                                <rect key="frame" x="0.0" y="0.0" width="102" height="32"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xaH-oE-knW" userLabel="Status" customClass="AnimationView" customModule="Lottie">
+                                                <rect key="frame" x="311" y="0.0" width="32" height="32"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="32" id="IqI-aZ-24l"/>
+                                                    <constraint firstAttribute="height" constant="32" id="azB-DZ-paH"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                        <viewLayoutGuide key="safeArea" id="F4j-qi-Lu2"/>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="1aw-Q3-bzS" userLabel="Integration Created Stack View">
+                                        <rect key="frame" x="0.0" y="64" width="343" height="32"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Integration Created" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bP1-C8-fgs" userLabel="Integration Created">
+                                                <rect key="frame" x="0.0" y="0.0" width="140.5" height="32"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d6V-o8-w1L" userLabel="Status" customClass="AnimationView" customModule="Lottie">
+                                                <rect key="frame" x="311" y="0.0" width="32" height="32"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="32" id="coN-Ex-spc"/>
+                                                    <constraint firstAttribute="width" constant="32" id="k1b-Ve-gSr"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="jQn-gp-cPY" userLabel="Nabu Casa Cloud Enabled Stack View">
+                                        <rect key="frame" x="0.0" y="96" width="343" height="32"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nabu Casa Cloud Detected" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O7a-0s-trd" userLabel="Nabu Casa Cloud Detected">
+                                                <rect key="frame" x="0.0" y="0.0" width="197" height="32"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gw7-lF-3Zc" userLabel="Status" customClass="AnimationView" customModule="Lottie">
+                                                <rect key="frame" x="311" y="0.0" width="32" height="32"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="32" id="YyV-zj-smt"/>
+                                                    <constraint firstAttribute="width" constant="32" id="pur-5L-PHW"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="XII-35-krr" userLabel="Encrypted Communications Established Stack View">
+                                        <rect key="frame" x="0.0" y="128" width="343" height="32"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Encrypted Communications Established" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d97-7H-RBe" userLabel="Remote UI Detected">
+                                                <rect key="frame" x="0.0" y="0.0" width="288" height="32"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XO8-eU-wSO" userLabel="Status" customClass="AnimationView" customModule="Lottie">
+                                                <rect key="frame" x="311" y="0.0" width="32" height="32"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="32" id="1vJ-K5-MJt"/>
+                                                    <constraint firstAttribute="height" constant="32" id="FXw-bm-Glg"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="unp-oV-i5b" userLabel="Sensors Configured Stack View">
+                                        <rect key="frame" x="0.0" y="160" width="343" height="32"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sensors Configured" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rle-jZ-AWa" userLabel="Sensors Configured">
+                                                <rect key="frame" x="0.0" y="0.0" width="144" height="32"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N1e-YD-nWs" userLabel="Status" customClass="AnimationView" customModule="Lottie">
+                                                <rect key="frame" x="311" y="0.0" width="32" height="32"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="32" id="G3m-BW-jA9"/>
+                                                    <constraint firstAttribute="width" constant="32" id="c3B-VB-bEA"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Kj7-hM-8gN" firstAttribute="bottom" secondItem="bTD-eO-lC0" secondAttribute="top" constant="20" id="2v1-Iz-5Hm"/>
+                            <constraint firstItem="Kj7-hM-8gN" firstAttribute="leading" secondItem="pvD-0u-p2i" secondAttribute="leadingMargin" id="36g-rA-ZZL"/>
+                            <constraint firstItem="bTD-eO-lC0" firstAttribute="centerX" secondItem="0MA-9n-Q0c" secondAttribute="centerX" id="C8C-e4-lh7"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Kj7-hM-8gN" secondAttribute="trailing" id="Gi0-ly-seC"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="eaY-cI-FSy" secondAttribute="trailing" id="RGp-oM-1Z8"/>
+                            <constraint firstItem="Kj7-hM-8gN" firstAttribute="top" secondItem="0MA-9n-Q0c" secondAttribute="top" id="Xhb-8n-1lr"/>
+                            <constraint firstItem="eaY-cI-FSy" firstAttribute="leading" secondItem="pvD-0u-p2i" secondAttribute="leadingMargin" id="mvW-HI-oNQ"/>
+                            <constraint firstItem="eaY-cI-FSy" firstAttribute="top" secondItem="bTD-eO-lC0" secondAttribute="bottom" id="qCf-kO-EAQ"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="0MA-9n-Q0c"/>
+                    </view>
+                    <connections>
+                        <outlet property="authenticated" destination="xaH-oE-knW" id="y7X-hK-zNI"/>
+                        <outlet property="cloudStatus" destination="gw7-lF-3Zc" id="X7q-zu-DVv"/>
+                        <outlet property="connectionStatus" destination="Buq-eK-7U7" id="g5W-lq-BKp"/>
+                        <outlet property="encrypted" destination="XO8-eU-wSO" id="b4k-PI-n7H"/>
+                        <outlet property="integrationCreated" destination="d6V-o8-w1L" id="J1d-NM-BOs"/>
+                        <outlet property="overallProgress" destination="bTD-eO-lC0" id="yd9-to-nUS"/>
+                        <outlet property="sensorsConfigured" destination="N1e-YD-nWs" id="V0m-uJ-3kO"/>
+                        <outlet property="titleLabel" destination="Kj7-hM-8gN" id="uuU-yq-Ncg"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2cs-FC-Sgv" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="188" y="-1343.4782608695652"/>
+        </scene>
+        <!--Permissions View Controller-->
+        <scene sceneID="WFF-Aq-cFs">
+            <objects>
+                <viewController storyboardIdentifier="permissions" id="XKw-m3-Nah" customClass="PermissionsViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Lle-dh-SMb">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="For the best experience while using Home Assistant Companion, please grant the following permissions:" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TEX-zW-Byk" userLabel="Title">
+                                <rect key="frame" x="16" y="20" width="343" height="120"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="120" id="dAn-JD-inK"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jTp-eG-rL8">
+                                <rect key="frame" x="20" y="140" width="335" height="467"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="YlM-SI-sh2">
+                                        <rect key="frame" x="0.0" y="0.0" width="335" height="360"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tox-sk-7fZ" userLabel="Location Permission Line Item View" customClass="PermissionLineItemView" customModule="HomeAssistant" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="335" height="120"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="120" id="iUj-9u-5IR"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="permissionInt">
+                                                        <integer key="value" value="0"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kJc-Fh-WIp" userLabel="Motion Permission Line Item View" customClass="PermissionLineItemView" customModule="HomeAssistant" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="120" width="335" height="120"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="120" id="p10-IE-97q"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="permissionInt">
+                                                        <integer key="value" value="1"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YDH-nq-m24" userLabel="Notifications Permission Line Item View" customClass="PermissionLineItemView" customModule="HomeAssistant" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="240" width="335" height="120"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="120" id="Ao6-a2-zsK"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="permissionInt">
+                                                        <integer key="value" value="2"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="YlM-SI-sh2" firstAttribute="leading" secondItem="jTp-eG-rL8" secondAttribute="leading" id="4Oa-ga-rWq"/>
+                                    <constraint firstAttribute="trailing" secondItem="YlM-SI-sh2" secondAttribute="trailing" id="DN7-dc-Sva"/>
+                                    <constraint firstItem="YlM-SI-sh2" firstAttribute="top" secondItem="jTp-eG-rL8" secondAttribute="top" id="G4e-HT-I62"/>
+                                    <constraint firstAttribute="bottom" secondItem="YlM-SI-sh2" secondAttribute="bottom" id="eIK-aQ-0xF"/>
+                                    <constraint firstItem="YlM-SI-sh2" firstAttribute="width" secondItem="jTp-eG-rL8" secondAttribute="width" id="geg-0d-uSj"/>
+                                </constraints>
+                            </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jrL-9x-fFX" userLabel="Continue Button" customClass="MDCButton">
+                                <rect key="frame" x="154.5" y="607" width="66" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="P7h-vB-eVY"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                <state key="normal" title="Continue"/>
+                                <connections>
+                                    <segue destination="KCa-bc-FXT" kind="show" id="TXR-MD-wbi"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="jTp-eG-rL8" firstAttribute="top" secondItem="TEX-zW-Byk" secondAttribute="bottom" id="3Ox-m9-nAC"/>
+                            <constraint firstItem="a9V-In-2AW" firstAttribute="bottom" secondItem="jrL-9x-fFX" secondAttribute="bottomMargin" constant="20" id="5lj-PK-dP5"/>
+                            <constraint firstItem="a9V-In-2AW" firstAttribute="trailing" secondItem="jTp-eG-rL8" secondAttribute="trailing" constant="20" id="8OW-dU-vVy"/>
+                            <constraint firstItem="TEX-zW-Byk" firstAttribute="leading" secondItem="a9V-In-2AW" secondAttribute="leading" constant="16" id="Ukj-Rq-Yjg"/>
+                            <constraint firstItem="jrL-9x-fFX" firstAttribute="centerX" secondItem="a9V-In-2AW" secondAttribute="centerX" id="Y2o-bB-QwE"/>
+                            <constraint firstItem="TEX-zW-Byk" firstAttribute="top" secondItem="a9V-In-2AW" secondAttribute="top" id="Yia-Vb-VfI"/>
+                            <constraint firstItem="a9V-In-2AW" firstAttribute="trailing" secondItem="TEX-zW-Byk" secondAttribute="trailing" constant="16" id="chC-yZ-xx1"/>
+                            <constraint firstItem="jTp-eG-rL8" firstAttribute="leading" secondItem="a9V-In-2AW" secondAttribute="leading" constant="20" id="dfa-cF-oWS"/>
+                            <constraint firstItem="jTp-eG-rL8" firstAttribute="bottom" secondItem="jrL-9x-fFX" secondAttribute="top" id="rlR-mp-oVb"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="a9V-In-2AW"/>
+                    </view>
+                    <connections>
+                        <outlet property="continueButton" destination="jrL-9x-fFX" id="0JI-v4-BDo"/>
+                        <outlet property="locationPermissionView" destination="tox-sk-7fZ" id="2uD-iO-QNd"/>
+                        <outlet property="motionPermissionView" destination="kJc-Fh-WIp" id="kIX-eD-8rx"/>
+                        <outlet property="notificationsPermissionView" destination="YDH-nq-m24" id="2cO-w9-gXu"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0RS-wL-M18" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-618.39999999999998" y="-1343.4782608695652"/>
+        </scene>
+        <!--Onboarding Navigation View Controller-->
+        <scene sceneID="qL5-eq-CzD">
+            <objects>
+                <navigationController storyboardIdentifier="navController" automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="k1J-B5-uSb" customClass="OnboardingNavigationViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="ATm-S0-lLd">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Cpw-N3-yji" kind="relationship" relationship="rootViewController" id="ZAG-P6-gFU"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Zaj-z7-sxI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4386.3999999999996" y="-1343.4782608695652"/>
+        </scene>
+    </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="Nmk-e0-aiM"/>
+        <segue reference="age-hj-Hrf"/>
+        <segue reference="Fz4-Qa-34b"/>
+    </inferredMetricsTieBreakers>
+    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+</document>

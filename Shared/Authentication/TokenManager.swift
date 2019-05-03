@@ -35,11 +35,11 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     /// After authenticating with the server and getting a code, call this method to exchange the code for
     /// an auth token.
     /// - Parameter code: Code acquired by authenticating with an authenticaiton provider.
-    public func initialTokenWithCode(_ code: String) -> Promise<String> {
-        return self.authenticationAPI.fetchTokenWithCode(code).then { tokenInfo -> Promise<String> in
+    public func initialTokenWithCode(_ code: String) -> Promise<TokenInfo> {
+        return self.authenticationAPI.fetchTokenWithCode(code).then { tokenInfo -> Promise<TokenInfo> in
             self.tokenInfo = tokenInfo
             Current.settingsStore.tokenInfo = tokenInfo
-            return self.bearerToken
+            return Promise.value(tokenInfo)
         }
     }
 
@@ -58,6 +58,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }.recover { error -> Promise<String> in
             guard let tokenError = error as? TokenError, tokenError == TokenError.expired,
                 self.tokenInfo != nil else {
+                Current.Log.verbose("Unable to recover from token error! \(error)")
                 throw error
             }
 
@@ -92,7 +93,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
 
         if request.retryCount > 5 {
-            print("Reached maximum retries for request: \(self.loggableString(for: requestURL))")
+            Current.Log.warning("Reached maximum retries for request: \(self.loggableString(for: requestURL))")
             let message = "Failed to make request: \(self.loggableString(for: requestURL)) after 3 tries"
             let event = ClientEvent(text: message, type: .networkRequest)
             Current.clientEventStore.addEvent(event)
@@ -104,7 +105,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             // If this is a call to our server, and we failed with not authorized, try to refresh the token.
             _ = self.refreshToken.done { _ in
                 guard self.tokenInfo != nil else {
-                    print("Token Info not avaialble after refresh")
+                    Current.Log.warning("Token Info not avaialble after refresh")
                     completion(false, 0)
                     return
                 }
@@ -115,15 +116,17 @@ public class TokenManager: RequestAdapter, RequestRetrier {
                 // If not, ahh well.
                 completion(false, 0)
             }
-        } else if let urlError = error as? NSError, urlError.domain == NSURLErrorDomain,
-            urlError.code == NSURLErrorTimedOut {
-            // Retry timeouts.
-            let message = "Retry #\(request.retryCount) request: \(self.loggableString(for: requestURL))"
-            let event = ClientEvent(text: message, type: .networkRequest)
-            Current.clientEventStore.addEvent(event)
-            completion(true, TimeInterval(2 * request.retryCount))
         } else {
-            completion(false, 0)
+            let urlError = error as NSError
+            if urlError.domain == NSURLErrorDomain, urlError.code == NSURLErrorTimedOut {
+                // Retry timeouts.
+                let message = "Retry #\(request.retryCount) request: \(self.loggableString(for: requestURL))"
+                let event = ClientEvent(text: message, type: .networkRequest)
+                Current.clientEventStore.addEvent(event)
+                completion(true, TimeInterval(2 * request.retryCount))
+            } else {
+                completion(false, 0)
+            }
         }
     }
 
@@ -140,10 +143,12 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
 
         guard let tokenInfo = self.tokenInfo else {
+            Current.Log.error("Token is unavailable")
             throw TokenError.tokenUnavailable
         }
 
         guard !tokenInfo.needsRefresh else {
+            Current.Log.error("Token is expired")
             throw TokenError.expired
         }
 
@@ -159,7 +164,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
     private func loggableString(for url: URL) -> String {
         let urlText: String
-        if self.url(url, matchesPrefixOf: self.connectionInfo.baseURL) {
+        if self.url(url, matchesPrefixOf: self.connectionInfo.externalBaseURL) {
             urlText = self.connectionInfo.internalBaseURL == nil ? "HASS URL" : "External HASS URL"
         } else if let internalBaseURL = self.connectionInfo.internalBaseURL,
             self.url(url, matchesPrefixOf: internalBaseURL) {
@@ -182,13 +187,20 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             if tokenInfo.expiration.addingTimeInterval(-10) > Current.date() {
                 seal.fulfill(tokenInfo.accessToken)
             } else {
+                if let expirationAmount = Calendar.current.dateComponents([.second], from: tokenInfo.expiration,
+                                                                          to: Current.date()).second {
+                    Current.Log.error("Token is expired by \(expirationAmount) seconds: \(tokenInfo.accessToken)")
+                } else {
+                    Current.Log.error("Token is expired by an unknown amount of time: \(tokenInfo.accessToken)")
+                }
+
                 seal.reject(TokenError.expired)
             }
         }
     }
 
     private func isURLValid(_ url: URL, for connectionInfo: ConnectionInfo) -> Bool {
-        if self.url(url, matchesPrefixOf: connectionInfo.baseURL) {
+        if self.url(url, matchesPrefixOf: connectionInfo.externalBaseURL) {
             return true
         } else if let internalURL = connectionInfo.internalBaseURL {
             return self.url(url, matchesPrefixOf: internalURL)
@@ -233,5 +245,18 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
         self.refreshPromiseCache = promise
         return promise
+    }
+}
+
+extension TokenManager.TokenError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .tokenUnavailable:
+            return L10n.TokenError.tokenUnavailable
+        case .expired:
+            return L10n.TokenError.expired
+        case .connectionFailed:
+            return L10n.TokenError.connectionFailed
+        }
     }
 }

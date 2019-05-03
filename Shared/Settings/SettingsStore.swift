@@ -8,14 +8,17 @@
 
 import Foundation
 import KeychainAccess
+import DeviceKit
+import CoreLocation
+import CoreMotion
 
 public class SettingsStore {
-    let keychain = Keychain(service: "io.robbie.homeassistant")
+    let keychain = Constants.Keychain
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
     public var tokenInfo: TokenInfo? {
         get {
-            guard let tokenData = try? keychain.getData("tokenInfo"),
+            guard let tokenData = ((try? keychain.getData("tokenInfo")) as Data??),
                 let unwrappedData = tokenData else {
                 return nil
             }
@@ -42,8 +45,7 @@ public class SettingsStore {
             if !self.hasMigratedConnection {
                 self.migrateConnectionInfo()
             }
-
-            guard let connectionData = try? keychain.getData("connectionInfo"),
+            guard let connectionData = ((try? keychain.getData("connectionInfo")) as Data??),
                 let unwrappedData = connectionData else {
                     return nil
             }
@@ -61,6 +63,30 @@ public class SettingsStore {
                 try keychain.set(data, key: "connectionInfo")
             } catch {
                 assertionFailure("Error while saving token info: \(error)")
+            }
+        }
+    }
+
+    public var authenticatedUser: AuthenticatedUser? {
+        get {
+            guard let userData = ((try? keychain.getData("authenticatedUser")) as Data??),
+                let unwrappedData = userData else {
+                    return nil
+            }
+
+            return try? JSONDecoder().decode(AuthenticatedUser.self, from: unwrappedData)
+        }
+        set {
+            guard let info = newValue else {
+                keychain["authenticatedUser"] = nil
+                return
+            }
+
+            do {
+                let data = try JSONEncoder().encode(info)
+                try keychain.set(data, key: "authenticatedUser")
+            } catch {
+                assertionFailure("Error while saving authenticated user info: \(error)")
             }
         }
     }
@@ -84,20 +110,23 @@ public class SettingsStore {
     }
 
     public var locationEnabled: Bool {
-        get {
-            return prefs.bool(forKey: "locationEnabled")
-        }
-        set {
-            prefs.set(newValue, forKey: "locationEnabled")
-        }
+        return CLLocationManager.authorizationStatus() == .authorizedAlways
     }
 
     public var motionEnabled: Bool {
         get {
-            return prefs.bool(forKey: "motionEnabled")
+            if #available(iOS 11.0, *) {
+                return CMPedometer.authorizationStatus() == .authorized
+            } else {
+                return prefs.bool(forKey: "motionEnabled")
+            }
         }
         set {
-            prefs.set(newValue, forKey: "motionEnabled")
+            if #available(iOS 11.0, *) {
+                return
+            } else {
+                prefs.set(newValue, forKey: "motionEnabled")
+            }
         }
     }
 
@@ -106,6 +135,7 @@ public class SettingsStore {
             return prefs.bool(forKey: "notificationsEnabled")
         }
         set {
+            prefs.set(newValue, forKey: "messagingEnabled")
             prefs.set(newValue, forKey: "notificationsEnabled")
         }
     }
@@ -128,6 +158,68 @@ public class SettingsStore {
         }
     }
 
+    public var cloudhookURL: URL? {
+        get {
+            guard let val = keychain["cloudhook_url"] else {
+                return nil
+            }
+            return URL(string: val)
+        }
+        set {
+            keychain["cloudhook_url"] = newValue?.absoluteString
+        }
+    }
+
+    public var remoteUIURL: URL? {
+        get {
+            guard let val = keychain["remote_ui_url"] else {
+                return nil
+            }
+            return URL(string: val)
+        }
+        set {
+            keychain["remote_ui_url"] = newValue?.absoluteString
+        }
+    }
+
+    public var webhookID: String? {
+        get {
+            return keychain["webhook_id"]
+        }
+        set {
+            keychain["webhook_id"] = newValue
+        }
+    }
+
+    public var webhookSecret: String? {
+        get {
+            return keychain["webhook_secret"]
+        }
+        set {
+            keychain["webhook_secret"] = newValue
+        }
+    }
+
+    public var webhookURL: URL? {
+        if let cloudhookURL = Current.settingsStore.cloudhookURL {
+            return cloudhookURL
+        }
+
+        guard let wID = Current.settingsStore.webhookID else {
+            Current.Log.error("Unable to get webhook ID during URL build!")
+
+            return nil
+        }
+
+        guard let url = Current.settingsStore.connectionInfo?.activeAPIURL else {
+            Current.Log.error("Unable to get active API URL during URL build!")
+
+            return nil
+        }
+
+        return url.appendingPathComponent("webhook/\(wID)")
+    }
+
     // MARK: - Private helpers
 
     private var hasMigratedConnection: Bool {
@@ -140,9 +232,15 @@ public class SettingsStore {
     }
 
     private var defaultDeviceID: String {
-        return self.removeSpecialCharsFromString(text: UIDevice.current.name)
+        let baseID = self.removeSpecialCharsFromString(text: Device.current.name ?? "Unknown")
             .replacingOccurrences(of: " ", with: "_")
             .lowercased()
+
+        if Current.appConfiguration != .Release {
+            return "\(baseID)_\(Current.appConfiguration.description.lowercased())"
+        }
+
+        return baseID
     }
 
     private func removeSpecialCharsFromString(text: String) -> String {
@@ -153,26 +251,17 @@ public class SettingsStore {
 
     private func migrateConnectionInfo() {
         if let baseURLString = keychain["baseURL"], let baseURL = URL(string: baseURLString) {
-            let basicAuthKeychain = Keychain(server: baseURLString, protocolType: .https,
-                                             authenticationType: .httpBasic)
-            let credentials: ConnectionInfo.BasicAuthCredentials?
-            if let username = basicAuthKeychain["basicAuthUsername"],
-                let password = basicAuthKeychain["basicAuthPassword"] {
-                credentials = ConnectionInfo.BasicAuthCredentials(username: username, password: password)
-            } else {
-                credentials = nil
-            }
-
-            var internalURL: URL? = nil
+            var internalURL: URL?
             if let internalURLString = keychain["internalBaseURL"],
                 let parsedURL = URL(string: internalURLString) {
                 internalURL = parsedURL
             }
 
-            let info = ConnectionInfo(baseURL: baseURL,
-                                      internalBaseURL: internalURL,
-                                      internalSSID: keychain["internalBaseURLSSID"],
-                                      basicAuthCredentials: credentials)
+            var info = ConnectionInfo(baseURL: baseURL, internalBaseURL: internalURL, internalSSIDs: nil)
+            if let ssid = keychain["internalBaseURLSSID"] {
+                info = ConnectionInfo(baseURL: baseURL, internalBaseURL: internalURL, internalSSIDs: [ssid])
+            }
+
             self.connectionInfo = info
             self.hasMigratedConnection = true
         }

@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+import CoreGraphics
 import ObjectMapper
 
 // swiftlint:disable:next type_body_length
@@ -102,7 +104,6 @@ public class Entity: StaticMappable {
             case "zone":
                 return Zone()
             default:
-                //print("No class found for:", entityType)
                 return Entity()
             }
         }
@@ -127,18 +128,6 @@ public class Entity: StaticMappable {
         Location          <- map["attributes.location"]
         BatteryLevel      <- map["attributes.battery_level"]
 
-    }
-
-    public func turnOn() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.turnOnEntity(entity: self)
-    }
-
-    public func turnOff() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.turnOffEntity(entity: self)
-    }
-
-    public func toggle() {
-        _ = HomeAssistantAPI.authenticatedAPI()?.toggleEntity(entity: self)
     }
 
     public var ComponentIcon: String {
@@ -208,7 +197,7 @@ public class Entity: StaticMappable {
         case "weblink":
             return "mdi:open-in-new"
         default:
-            print("Unable to find icon for domain \(self.Domain) (\(self.State))")
+            Current.Log.warning("Unable to find icon for domain \(self.Domain) (\(self.State))")
             return "mdi:bookmark"
         }
     }

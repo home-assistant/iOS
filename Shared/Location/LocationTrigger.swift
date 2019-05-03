@@ -29,14 +29,18 @@ public enum LocationUpdateTrigger: String {
     case BackgroundFetch = "Background Fetch"
     case PushNotification = "Push Notification"
     case URLScheme = "URL Scheme"
+    case XCallbackURL = "X-Callback-URL"
+    case Siri = "Siri"
     case Visit = "Visit"
+    case AppShortcut = "App Shortcut"
     case Unknown = "Unknown"
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     public func notificationOptionsFor(zoneName: String) -> NotificationOptions {
         let shouldNotify: Bool
         var identifier: String = ""
         let body: String
-        let title = "Location change"
+        let title = L10n.LocationChangeNotification.title
 
         switch self {
         case .BeaconRegionEnter:
@@ -71,11 +75,21 @@ public enum LocationUpdateTrigger: String {
             body = L10n.LocationChangeNotification.UrlScheme.body
             identifier = "url_scheme"
             shouldNotify = prefs.bool(forKey: "urlSchemeLocationRequestNotifications")
+        case .XCallbackURL:
+            body = L10n.LocationChangeNotification.XCallbackUrl.body
+            identifier = "x_callback_url"
+            shouldNotify = prefs.bool(forKey: "xCallbackURLLocationRequestNotifications")
+        case .AppShortcut:
+            body = L10n.LocationChangeNotification.AppShortcut.body
+            shouldNotify = false
         case .Visit:
             body = L10n.LocationChangeNotification.Visit.body
             shouldNotify = false
         case .Manual:
             body = L10n.LocationChangeNotification.Manual.body
+            shouldNotify = false
+        case .Siri:
+            body = L10n.LocationChangeNotification.Siri.body
             shouldNotify = false
         case .RegionExit, .RegionEnter, .Unknown:
             body = L10n.LocationChangeNotification.Unknown.body

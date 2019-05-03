@@ -57,7 +57,7 @@ open class OpenInChromeController {
     }
 
     // swiftlint:disable:next cyclomatic_complexity
-    open func openInChrome(_ url: URL, callbackURL: URL?, createNewTab: Bool = false) -> Bool {
+    open func openInChrome(_ url: URL, callbackURL: URL?, createNewTab: Bool = false) {
         if let chromeSimpleURL = URL(string: googleChromeHTTPScheme),
             let chromeCallbackURL = URL(string: googleChromeCallbackScheme) {
             if UIApplication.shared.canOpenURL(chromeCallbackURL) {
@@ -79,7 +79,7 @@ open class OpenInChromeController {
                         chromeURLString += "&create-new-tab"
                     }
                     if let chromeURL = URL(string: chromeURLString) {
-                        return UIApplication.shared.openURL(chromeURL)
+                        UIApplication.shared.open(chromeURL, options: [:], completionHandler: nil)
                     }
                 }
             } else if UIApplication.shared.canOpenURL(chromeSimpleURL) {
@@ -94,10 +94,9 @@ open class OpenInChromeController {
                     let absoluteURLString = url.absoluteString
                     let lowerBound = absoluteURLString.range(of: ":")!.lowerBound
                     let chromeURLString = chromeScheme + absoluteURLString.suffix(from: lowerBound)
-                    return UIApplication.shared.openURL(URL(string: chromeURLString)!)
+                    UIApplication.shared.open(URL(string: chromeURLString)!, options: [:], completionHandler: nil)
                 }
             }
         }
-        return false
     }
 }
