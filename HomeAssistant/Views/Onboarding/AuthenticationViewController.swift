@@ -50,7 +50,9 @@ class AuthenticationViewController: UIViewController {
             if let currentSSID = ConnectionInfo.CurrentWiFiSSID {
                 ssids.append(currentSSID)
             }
-            self.connectionInfo = ConnectionInfo(baseURL: baseURL, internalBaseURL: nil, internalSSIDs: ssids)
+            self.connectionInfo = ConnectionInfo(externalURL: baseURL, internalURL: nil, cloudhookURL: nil,
+                                                 remoteUIURL: nil, webhookID: "", webhookSecret: nil,
+                                                 internalSSIDs: ssids)
             self.whatsAboutToHappenLabel.isHidden = false
             self.connectButton.isHidden = false
         }.ensure {

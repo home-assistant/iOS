@@ -25,7 +25,7 @@ public class WebhookRequest: Mappable {
         self.PayloadType = type
         self.Data = data
 
-        if let secret = Current.settingsStore.webhookSecret {
+        if let secret = Current.settingsStore.connectionInfo?.webhookSecret {
             let sodium = Sodium()
 
             guard let jsonData = try? JSONSerialization.data(withJSONObject: data, options: []) else {

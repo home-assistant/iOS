@@ -30,7 +30,7 @@ extension DataRequest {
             let json = try JSONSerialization.jsonObject(with: validData, options: options)
 
             if let obj = json as? [String: Any], let encryptedData = obj["encrypted_data"] as? String,
-                let secret = Current.settingsStore.webhookSecret {
+                let secret = Current.settingsStore.connectionInfo?.webhookSecret {
 
                 let sodium = Sodium()
 

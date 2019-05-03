@@ -75,14 +75,10 @@ public class HomeAssistantAPI {
 
         self.webhookManager = HomeAssistantAPI.configureSessionManager(urlConfig: urlConfig)
 
-        if let webhookID = Current.settingsStore.webhookID {
-            let handler = WebhookHandler(webhookID: webhookID, connectionInfo: connectionInfo,
-                                         remoteUIURL: Current.settingsStore.remoteUIURL,
-                                         cloudhookURL: Current.settingsStore.cloudhookURL)
-            self.webhookManager.adapter = handler
-            self.webhookManager.retrier = handler
-            self.webhookHandler = handler
-        }
+        let handler = WebhookHandler()
+        self.webhookManager.adapter = handler
+        self.webhookManager.retrier = handler
+        self.webhookHandler = handler
 
         self.pushID = self.prefs.string(forKey: "pushID")
 
@@ -239,8 +235,9 @@ public class HomeAssistantAPI {
                 throw HomeAssistantAPI.APIError.mobileAppComponentNotLoaded
             }
 
-            Current.settingsStore.cloudhookURL = config.CloudhookURL
-            Current.settingsStore.remoteUIURL = config.RemoteUIURL
+            self.connectionInfo.cloudhookURL = config.CloudhookURL
+            self.connectionInfo.remoteUIURL = config.RemoteUIURL
+            Current.settingsStore.connectionInfo = self.connectionInfo
 
             self.prefs.setValue(config.LocationName, forKey: "location_name")
             self.prefs.setValue(config.Latitude, forKey: "latitude")
@@ -333,13 +330,14 @@ public class HomeAssistantAPI {
                             parameters: buildMobileAppRegistration(), encoding: JSONEncoding.default)
             .then { (resp: MobileAppRegistrationResponse) -> Promise<MobileAppRegistrationResponse> in
                 Current.Log.verbose("Registration response \(resp)")
-                Current.settingsStore.cloudhookURL = resp.CloudhookURL
-                Current.settingsStore.remoteUIURL = resp.RemoteUIURL
-                Current.settingsStore.webhookID = resp.WebhookID
-                Current.settingsStore.webhookSecret = resp.WebhookSecret
+                self.connectionInfo.cloudhookURL = resp.CloudhookURL
+                self.connectionInfo.remoteUIURL = resp.RemoteUIURL
+                self.connectionInfo.webhookID = resp.WebhookID
+                self.connectionInfo.webhookSecret = resp.WebhookSecret
 
-                let handler = WebhookHandler(webhookID: resp.WebhookID, connectionInfo: self.connectionInfo,
-                                             remoteUIURL: resp.RemoteUIURL, cloudhookURL: resp.CloudhookURL)
+                Current.settingsStore.connectionInfo = self.connectionInfo
+
+                let handler = WebhookHandler()
                 self.webhookManager.adapter = handler
                 self.webhookManager.retrier = handler
                 self.webhookHandler = handler

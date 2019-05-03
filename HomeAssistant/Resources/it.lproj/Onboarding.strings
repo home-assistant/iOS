@@ -27,7 +27,7 @@
 "lM3-aA-jqO.text" = "Autenticazione";
 "mse-YA-DiV.text" = "Benvenuto ad Home Assistant Companion!";
 "nJr-sw-A9l.text" = "Autenticato";
-"wsC-f5-jbO.text" = "Ora siamo pronti per la connessione al tuo Home Assistant e fare l'autenticazione iniziale. Toccando il pulsante Connetti qui sotto, si aprirà una pagina per farti effettuare l'accesso.";
+"wsC-f5-jbO.text" = "Siamo pronti per la connessione al tuo Home Assistant e l'autenticazione iniziale. Toccando il pulsante Connetti qui sotto, si aprirà una pagina per farti effettuare l'accesso.";
 "suf-pJ-Nle.normalTitle" = "Ricomincia";
 "7iT-bd-cdY.text" = "Configurazione manuale";
 "PIW-dY-j0P.text" = "Inserisci l'URL di Home Assistant per continuare. Deve essere un URL completo del formato \"http: //hassio.local:8123\" (e cioè schema/protocollo, nome host e porta).";

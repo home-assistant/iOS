@@ -213,7 +213,6 @@
 		B648AE262275918F006972AF /* Scenes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B648AE242275918E006972AF /* Scenes.swift */; };
 		B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64BB3A71E9C6551001E8B46 /* WebViewController.swift */; };
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
-		B657A8EE1CA646EB00121384 /* OldSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8ED1CA646EB00121384 /* OldSettingsViewController.swift */; };
 		B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F21CA646EB00121384 /* Assets.xcassets */; };
 		B657A8F61CA646EB00121384 /* Release LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F41CA646EB00121384 /* Release LaunchScreen.storyboard */; };
 		B657A9011CA646EB00121384 /* HomeAssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9001CA646EB00121384 /* HomeAssistantTests.swift */; };
@@ -935,7 +934,6 @@
 		B64BB3A71E9C6551001E8B46 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		B657A8E61CA646EB00121384 /* Home Assistant Δ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Home Assistant Δ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A8E91CA646EB00121384 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		B657A8ED1CA646EB00121384 /* OldSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldSettingsViewController.swift; sourceTree = "<group>"; };
 		B657A8F21CA646EB00121384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B657A8F51CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/Release LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		B657A8F71CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1833,7 +1831,6 @@
 				B6393F851CB255F200503916 /* EurekaLocationRow.swift */,
 				B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */,
 				B626AAF01D8F972800A0D225 /* SettingsDetailViewController.swift */,
-				B657A8ED1CA646EB00121384 /* OldSettingsViewController.swift */,
 				B64BB3A71E9C6551001E8B46 /* WebViewController.swift */,
 				B6B6B149215B137C003DE2DD /* WatchComplicationConfigurator.swift */,
 				B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */,
@@ -3608,7 +3605,6 @@
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				D0EEF336214EB7B800D1D360 /* Strings.swift in Sources */,
 				B65B15032273184F00635D5C /* Colors.swift in Sources */,
-				B657A8EE1CA646EB00121384 /* OldSettingsViewController.swift in Sources */,
 				B6B2E6A2216AC21400D39A26 /* Action.swift in Sources */,
 				B6A5D9F5215233EC0013963F /* SiriIntents+ConvenienceInits.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,

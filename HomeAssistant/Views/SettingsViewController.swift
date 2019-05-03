@@ -32,7 +32,7 @@ class SettingsViewController: FormViewController {
 
         self.navigationItem.setLeftBarButton(aboutButton, animated: true)
 
-        let closeSelector = #selector(OldSettingsViewController.closeSettings(_:))
+        let closeSelector = #selector(SettingsViewController.closeSettings(_:))
         let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
                                          action: closeSelector)
 

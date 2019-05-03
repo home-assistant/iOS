@@ -27,10 +27,10 @@ extension HomeAssistantAPI {
             content["token_info"] = String(data: tokenInfo, encoding: .utf8)
         }
 
-        content["webhook_id"] = Current.settingsStore.webhookID
-        content["webhook_secret"] = Current.settingsStore.webhookSecret
-        content["cloudhook_url"] = Current.settingsStore.cloudhookURL
-        content["remote_ui_url"] = Current.settingsStore.remoteUIURL
+        content["webhook_id"] = Current.settingsStore.connectionInfo?.webhookID
+        content["webhook_secret"] = Current.settingsStore.connectionInfo?.webhookSecret
+        content["cloudhook_url"] = Current.settingsStore.connectionInfo?.cloudhookURL
+        content["remote_ui_url"] = Current.settingsStore.connectionInfo?.remoteUIURL
         content["iphone_device_id"] = Current.settingsStore.deviceID
         content["iphone_permanent_id"] = Constants.PermanentID
         content["iphone_device_name"] = UIDevice.current.name

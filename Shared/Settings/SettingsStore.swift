@@ -158,68 +158,6 @@ public class SettingsStore {
         }
     }
 
-    public var cloudhookURL: URL? {
-        get {
-            guard let val = keychain["cloudhook_url"] else {
-                return nil
-            }
-            return URL(string: val)
-        }
-        set {
-            keychain["cloudhook_url"] = newValue?.absoluteString
-        }
-    }
-
-    public var remoteUIURL: URL? {
-        get {
-            guard let val = keychain["remote_ui_url"] else {
-                return nil
-            }
-            return URL(string: val)
-        }
-        set {
-            keychain["remote_ui_url"] = newValue?.absoluteString
-        }
-    }
-
-    public var webhookID: String? {
-        get {
-            return keychain["webhook_id"]
-        }
-        set {
-            keychain["webhook_id"] = newValue
-        }
-    }
-
-    public var webhookSecret: String? {
-        get {
-            return keychain["webhook_secret"]
-        }
-        set {
-            keychain["webhook_secret"] = newValue
-        }
-    }
-
-    public var webhookURL: URL? {
-        if let cloudhookURL = Current.settingsStore.cloudhookURL {
-            return cloudhookURL
-        }
-
-        guard let wID = Current.settingsStore.webhookID else {
-            Current.Log.error("Unable to get webhook ID during URL build!")
-
-            return nil
-        }
-
-        guard let url = Current.settingsStore.connectionInfo?.activeAPIURL else {
-            Current.Log.error("Unable to get active API URL during URL build!")
-
-            return nil
-        }
-
-        return url.appendingPathComponent("webhook/\(wID)")
-    }
-
     // MARK: - Private helpers
 
     private var hasMigratedConnection: Bool {
@@ -257,12 +195,14 @@ public class SettingsStore {
                 internalURL = parsedURL
             }
 
-            var info = ConnectionInfo(baseURL: baseURL, internalBaseURL: internalURL, internalSSIDs: nil)
+            var ssids: [String] = []
             if let ssid = keychain["internalBaseURLSSID"] {
-                info = ConnectionInfo(baseURL: baseURL, internalBaseURL: internalURL, internalSSIDs: [ssid])
+                ssids = [ssid]
             }
 
-            self.connectionInfo = info
+            self.connectionInfo = ConnectionInfo(externalURL: baseURL, internalURL: internalURL, cloudhookURL: nil,
+                                                 remoteUIURL: nil, webhookID: "", webhookSecret: nil,
+                                                 internalSSIDs: ssids)
             self.hasMigratedConnection = true
         }
 

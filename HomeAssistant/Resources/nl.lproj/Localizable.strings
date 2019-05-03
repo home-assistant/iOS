@@ -648,3 +648,7 @@
 "settings.connection_section.cloudhook_available" = "Cloudhook Available";
 "settings.connection_section.remote_ui_available" = "Remote UI Available";
 "settings.connection_section.log_out" = "Log out";
+"errors.no_remote_ui_url" = "The app will automatically detect your Nabu Casa Remote UI, you can not manually enter it.";
+"settings.connection_section.cloudhook_url.title" = "Cloudhook URL";
+"settings.connection_section.remote_ui.title" = "Home Assistant Cloud";
+"settings.connection_section.remote_ui_url.title" = "Remote UI URL";

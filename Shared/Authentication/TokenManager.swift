@@ -86,7 +86,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
     public func should(_ manager: SessionManager, retry request: Request, with error: Error,
                        completion: @escaping RequestRetryCompletion) {
-        guard let connectionInfo = Current.settingsStore.connectionInfo,
+        guard var connectionInfo = Current.settingsStore.connectionInfo,
             let requestURL = request.request?.url else {
             completion(false, 0)
             return
@@ -116,6 +116,8 @@ public class TokenManager: RequestAdapter, RequestRetrier {
                 // If not, ahh well.
                 completion(false, 0)
             }
+        } else if connectionInfo.should(manager, retry: request, with: error) {
+            completion(true, 0)
         } else {
             let urlError = error as NSError
             if urlError.domain == NSURLErrorDomain, urlError.code == NSURLErrorTimedOut {
@@ -137,6 +139,14 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             return urlRequest
         }
 
+        var newRequest = urlRequest
+
+        let adaptedURL = Current.settingsStore.connectionInfo?.adaptAPIURL(url)
+
+        if newRequest.url != adaptedURL {
+            newRequest.url = adaptedURL
+        }
+
         let isTokenRequest = url.path == "/auth/token"
         guard !isTokenRequest else {
             return urlRequest
@@ -155,7 +165,6 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         let urlText = self.loggableString(for: url)
         let networkEvent = ClientEvent(text: urlText, type: .networkRequest)
         Current.clientEventStore.addEvent(networkEvent)
-        var newRequest = urlRequest
         newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
         return newRequest
     }
@@ -163,14 +172,19 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     // MARK: - Private helpers
 
     private func loggableString(for url: URL) -> String {
+        guard let urlType = Current.settingsStore.connectionInfo?.getURLType(url) else {
+            return "[Non-HASS URL]\(url.path)"
+        }
+
         let urlText: String
-        if self.url(url, matchesPrefixOf: self.connectionInfo.externalBaseURL) {
-            urlText = self.connectionInfo.internalBaseURL == nil ? "HASS URL" : "External HASS URL"
-        } else if let internalBaseURL = self.connectionInfo.internalBaseURL,
-            self.url(url, matchesPrefixOf: internalBaseURL) {
-            urlText = "Internal HASS URL"
-        } else {
-            urlText = "Non-HASS URL"
+
+        switch urlType {
+        case .internal:
+            urlText = L10n.Settings.ConnectionSection.InternalBaseUrl.title
+        case .external:
+            urlText = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
+        case .remoteUI:
+            urlText = L10n.Settings.ConnectionSection.RemoteUiUrl.title
         }
 
         return "[\(urlText)]\(url.path)"
@@ -200,17 +214,12 @@ public class TokenManager: RequestAdapter, RequestRetrier {
     }
 
     private func isURLValid(_ url: URL, for connectionInfo: ConnectionInfo) -> Bool {
-        if self.url(url, matchesPrefixOf: connectionInfo.externalBaseURL) {
-            return true
-        } else if let internalURL = connectionInfo.internalBaseURL {
-            return self.url(url, matchesPrefixOf: internalURL)
-        }
-
-        return false
+        return Current.settingsStore.connectionInfo?.checkURLMatches(url) ?? false
     }
 
     private func url(_ url: URL, matchesPrefixOf referenceURL: URL) -> Bool {
-        return url.host == referenceURL.host && url.scheme == referenceURL.scheme
+        guard let connectionInfo = Current.settingsStore.connectionInfo else { return false }
+        return connectionInfo.checkURLMatches(url)
     }
 
     private var newCodePromise: Promise<Void>?

@@ -16,7 +16,7 @@ import SwiftMessages
 import Shared
 
 // swiftlint:disable:next type_body_length
-class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, ConnectionInfoChangedDelegate {
+class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     var webView: WKWebView!
 
@@ -404,7 +404,7 @@ extension WebViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let messageBody = message.body as? [String: Any] else { return }
 
-        Current.Log.verbose("Received script message \(message.name) \(message.body)")
+        // Current.Log.verbose("Received script message \(message.name) \(message.body)")
 
         if message.name == "externalBus" {
             self.handleExternalMessage(messageBody)
@@ -577,13 +577,8 @@ extension WebViewController: UIScrollViewDelegate {
 }
 
 extension ConnectionInfo {
-    func webviewURL(reloadURL: URL? = nil) -> URL? {
-        var baseURL = self.activeURL
-        if let reloadURL = reloadURL {
-            baseURL = reloadURL
-        }
-
-        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
+    func webviewURL() -> URL? {
+        guard var components = URLComponents(url: self.activeURL, resolvingAgainstBaseURL: false) else {
             return nil
         }
 

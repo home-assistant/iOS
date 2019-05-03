@@ -112,7 +112,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
     }
 
-    // swiftlint:disable:next function_body_length cyclomatic_complexity
+    // swiftlint:disable:next function_body_length
     func setupWatchCommunicator() {
         Communicator.shared.activationStateChangedObservers.add { state in
             Current.Log.verbose("Activation state changed: \(state)")
@@ -179,22 +179,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 } else {
                     Current.Log.error("Failed to get authed API after context sync!")
                 }
-            }
-
-            if let webhookID = context.content["webhook_id"] as? String {
-                Current.settingsStore.webhookID = webhookID
-            }
-
-            if let webhookSecret = context.content["webhook_secret"] as? String {
-                Current.settingsStore.webhookSecret = webhookSecret
-            }
-
-            if let cloudhookURL = context.content["cloudhook_url"] as? String {
-                Current.settingsStore.cloudhookURL = URL(string: cloudhookURL)
-            }
-
-            if let remoteUIURL = context.content["remote_ui_url"] as? String {
-                Current.settingsStore.remoteUIURL = URL(string: remoteUIURL)
             }
 
             self.endWatchConnectivityBackgroundTaskIfNecessary()

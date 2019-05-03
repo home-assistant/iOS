@@ -250,6 +250,11 @@ internal enum L10n {
     }
   }
 
+  internal enum Errors {
+    /// The app will automatically detect your Nabu Casa Remote UI, you can not manually enter it.
+    internal static let noRemoteUiUrl = L10n.tr("Localizable", "errors.no_remote_ui_url")
+  }
+
   internal enum Extensions {
     internal enum Map {
       internal enum Location {
@@ -934,6 +939,10 @@ internal enum L10n {
           internal static let title = L10n.tr("Localizable", "settings.connection_section.basic_auth.username.title")
         }
       }
+      internal enum CloudhookUrl {
+        /// Cloudhook URL
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.cloudhook_url.title")
+      }
       internal enum ConnectRow {
         /// Connect
         internal static let title = L10n.tr("Localizable", "settings.connection_section.connect_row.title")
@@ -979,6 +988,14 @@ internal enum L10n {
       internal enum NetworkName {
         /// Current Network Name
         internal static let title = L10n.tr("Localizable", "settings.connection_section.network_name.title")
+      }
+      internal enum RemoteUi {
+        /// Home Assistant Cloud
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.remote_ui.title")
+      }
+      internal enum RemoteUiUrl {
+        /// Remote UI URL
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.remote_ui_url.title")
       }
       internal enum SaveButton {
         /// Validate and Save Connection Settings
