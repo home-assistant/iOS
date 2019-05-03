@@ -119,7 +119,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             navController.present(alert, animated: true, completion: nil)
 
-            alert.popoverPresentationController?.sourceView = webView.view
+            alert.popoverPresentationController?.sourceView = self.window?.rootViewController?.view
         }
 
         Current.onboardingComplete = {
