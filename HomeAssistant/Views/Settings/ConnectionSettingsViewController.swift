@@ -202,6 +202,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 case .success:
                     seal.fulfill_()
                 case .failure(let error):
+                    Current.Log.error("Received error \(error)")
                     seal.reject(error)
                 }
             }
