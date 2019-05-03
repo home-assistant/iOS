@@ -218,12 +218,8 @@ public class WebhookSensors {
                 return seal.fulfill(nil)
             }
 
-            var startDate = Calendar.current.startOfDay(for: Date())
-
-            if let lastEntry = Current.realm().objects(LocationHistoryEntry.self).sorted(byKeyPath: "CreatedAt").last {
-                startDate = lastEntry.CreatedAt
-            }
-            self.pedometer.queryPedometerData(from: startDate, to: Date(), withHandler: seal.resolve)
+            self.pedometer.queryPedometerData(from: Calendar.current.startOfDay(for: Date()),
+                                              to: Date(), withHandler: seal.resolve)
         }
     }
 
