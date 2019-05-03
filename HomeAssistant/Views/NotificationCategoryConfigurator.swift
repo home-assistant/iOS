@@ -111,8 +111,11 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                 $0.value = self.category.Name
             }
         }.onChange { row in
-            if let value = row.value {
-                self.category.Name = value
+            // swiftlint:disable:next force_try
+            try! self.realm.write {
+                if let value = row.value {
+                    self.category.Name = value
+                }
             }
         }
 
@@ -125,8 +128,11 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                 $0.disabled = true
             }
         }.onChange { row in
-            if let value = row.value {
-                self.category.Identifier = value
+            // swiftlint:disable:next force_try
+            try! self.realm.write {
+                if let value = row.value {
+                    self.category.Identifier = value
+                }
             }
         }
 
@@ -143,8 +149,11 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                     $0.value = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
                 }
             }.onChange { row in
-                if let value = row.value {
-                    self.category.HiddenPreviewsBodyPlaceholder = value
+                // swiftlint:disable:next force_try
+                try! self.realm.write {
+                    if let value = row.value {
+                        self.category.HiddenPreviewsBodyPlaceholder = value
+                    }
                 }
             }
         }
@@ -161,8 +170,11 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                         $0.value = L10n.NotificationsConfigurator.Category.Rows.CategorySummary.default
                     }
                 }.onChange { row in
-                    if let value = row.value {
-                        self.category.CategorySummaryFormat = value
+                    // swiftlint:disable:next force_try
+                    try! self.realm.write {
+                        if let value = row.value {
+                            self.category.CategorySummaryFormat = value
+                        }
                     }
                 }
         }
@@ -212,11 +224,10 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         if let index = indexes.first?.section, let section = form.allSections[index] as? MultivaluedSection {
 
             let deletedIDs = rows.compactMap { $0.tag }
-            let realm = Realm.live()
 
             // swiftlint:disable:next force_try
-            try! realm.write {
-                realm.delete(realm.objects(NotificationAction.self).filter("Identifier IN %@", deletedIDs))
+            try! self.realm.write {
+                self.realm.delete(realm.objects(NotificationAction.self).filter("Identifier IN %@", deletedIDs))
             }
 
             if section.count < maxActionsForCategory {
