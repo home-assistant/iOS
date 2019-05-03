@@ -272,18 +272,18 @@ public class HomeAssistantAPI {
     }
 
     public func CallService(domain: String, service: String, serviceData: [String: Any],
-                            shouldLog: Bool = true) -> Promise<[Entity]> {
+                            shouldLog: Bool = true) -> Promise<Void> {
 
         let hookPayload: [String: Any] = ["domain": domain, "service": service, "service_data": serviceData]
-        let promise: Promise<[Entity]> = self.webhook("call_service", payload: hookPayload,
-                                                      callingFunctionName: "\(#function)")
+        let promise: Promise<Void> = self.webhook("call_service", payload: hookPayload,
+                                                  callingFunctionName: "\(#function)")
         if shouldLog {
-            _ = promise.then { resp -> Promise<[Entity]> in
+            _ = promise.then { _ -> Promise<Void> in
                 let event = ClientEvent(text: "Calling service: \(domain) - \(service)", type: .serviceCall,
                                         payload: serviceData)
                 Current.clientEventStore.addEvent(event)
 
-                return Promise.value(resp)
+                return Promise.value(())
             }
         }
         return promise

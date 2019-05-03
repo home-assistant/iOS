@@ -51,6 +51,21 @@ extension HomeAssistantAPI {
         }
     }
 
+    public func webhook(_ type: String, payload: Any, callingFunctionName: String) -> Promise<Void> {
+        return Promise { seal in
+            _ = self.buildWebhookRequest(type, payload: payload).validate().response { (response) in
+                if response.response?.statusCode == 404 { // mobile_app not loaded
+                    return seal.reject(APIError.mobileAppComponentNotLoaded)
+                } else if response.response?.statusCode == 410 { // config entry removed
+                    return seal.reject(APIError.webhookGone)
+                }
+
+                seal.resolve(response.error)
+            }
+
+        }
+    }
+
     public func webhook(_ type: String, payload: Any, callingFunctionName: String) -> Promise<Any> {
         return Promise { seal in
             _ = self.buildWebhookRequest(type, payload: payload).validate()
