@@ -6,13 +6,20 @@
 //  Copyright © 2018 Robbie Trencheny. All rights reserved.
 //
 
+import Foundation
 import RealmSwift
+#if os(iOS)
+import UIKit
+#endif
 
 extension Realm {
     /// An in-memory data store, intended to be used in tests.
-    public static let mock = {
-        // swiftlint:disable:next force_try
-        try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: "Memory"))
+    public static let mock: () -> Realm = {
+        do {
+            return try Realm(configuration: Realm.Configuration(inMemoryIdentifier: "Memory"))
+        } catch let error {
+            fatalError("Error setting up Realm.mock! \(error)")
+        }
     }
 
     public static var storeDirectoryURL: URL {
@@ -39,8 +46,8 @@ extension Realm {
                     [FileAttributeKey.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication]
                 try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true,
                                                 attributes: attributes)
-            } catch {
-                Current.Log.error("Error while attempting to create data store URL: \(error)")
+            } catch let error as NSError {
+                Realm.handleFatalError("Error while attempting to create data store URL", error)
             }
         }
 
@@ -52,8 +59,13 @@ extension Realm {
 
         let config = Realm.Configuration(fileURL: storeURL, schemaVersion: 4,
                                          migrationBlock: nil, deleteRealmIfMigrationNeeded: true)
-        // swiftlint:disable:next force_try
-        return try! Realm(configuration: config)
+        var configuredRealm: Realm!
+        do {
+            configuredRealm = try Realm(configuration: config)
+        } catch let error as NSError {
+            Realm.handleFatalError("Error while attempting to create Realm", error)
+        }
+        return configuredRealm
     }
 
     /// Backup the Realm database, returning the URL of the backup location.
@@ -81,5 +93,26 @@ extension Realm {
         realm.cancelWrite()
 
         return backupURL
+    }
+
+    private static func handleFatalError(_ message: String, _ error: NSError) {
+        let errMsg = "\(message): \(error)"
+        Current.Log.error(errMsg)
+        #if os(iOS)
+        let alert = UIAlertController(title: "Realm Error!",
+                                      message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Quit App", style: .destructive, handler: { _ in exit(1) }))
+
+        let win = UIWindow(frame: UIScreen.main.bounds)
+        let vc = UIViewController()
+        vc.view.backgroundColor = .clear
+        win.rootViewController = vc
+        win.windowLevel = UIWindow.Level.alert + 1
+        win.makeKeyAndVisible()
+        vc.present(alert, animated: true, completion: nil)
+
+        #else
+        fatalError(errMsg)
+        #endif
     }
 }
