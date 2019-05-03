@@ -17,7 +17,7 @@ class ConnectionErrorViewController: UIViewController {
     @IBOutlet weak var errorLabel: UILabel!
     @IBOutlet weak var goBackButton: MDCButton!
 
-    var error: ConnectionTestResult!
+    var error: Error!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,9 +34,13 @@ class ConnectionErrorViewController: UIViewController {
 
         self.errorLabel.text = error.localizedDescription
 
-        if self.error.kind == .sslExpired || self.error.kind == .sslUntrusted {
-            let text = L10n.Onboarding.ConnectionTestResult.SslContainer.description(self.error.localizedDescription)
-            self.errorLabel.text = text
+        if let error = error as? ConnectionTestResult {
+            if error.kind == .sslExpired || error.kind == .sslUntrusted {
+                let text = L10n.Onboarding.ConnectionTestResult.SslContainer.description(error.localizedDescription)
+                self.errorLabel.text = text
+            }
+        } else {
+            self.moreInfoButton.isHidden = true
         }
     }
 
@@ -51,6 +55,7 @@ class ConnectionErrorViewController: UIViewController {
     */
 
     @IBAction func moreInfoTapped(_ sender: UIButton) {
-        openURLInBrowser(urlToOpen: self.error.DocumentationURL)
+        guard let error = self.error as? ConnectionTestResult else { return }
+        openURLInBrowser(urlToOpen: error.DocumentationURL)
     }
 }

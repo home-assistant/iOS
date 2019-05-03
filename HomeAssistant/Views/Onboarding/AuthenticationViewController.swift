@@ -21,7 +21,7 @@ class AuthenticationViewController: UIViewController {
     var connectionInfo: ConnectionInfo?
     var tokenManager: TokenManager?
 
-    var testResult: ConnectionTestResult?
+    var testResult: Error?
 
     @IBOutlet weak var whatsAboutToHappenLabel: UILabel!
     @IBOutlet weak var connectButton: MDCButton!
@@ -38,9 +38,13 @@ class AuthenticationViewController: UIViewController {
         }
 
         guard let baseURL = self.instance.BaseURL else {
-            let errMsg = "No base URL is set in discovery, this should not be possible! \(self.instance)"
+            let instanceDesc = String(describing: self.instance)
+            let errMsg = "No base URL is set in discovery, this should not be possible! \(instanceDesc)"
             Current.Log.error(errMsg)
-            fatalError(errMsg)
+
+            self.testResult = ConnectionTestResult(kind: .noBaseURLDiscovered, underlying: nil)
+            self.perform(segue: StoryboardSegue.Onboarding.showError)
+            return
         }
 
         firstly {
@@ -58,12 +62,13 @@ class AuthenticationViewController: UIViewController {
         }.ensure {
             MBProgressHUD.hide(for: self.view, animated: true)
         }.catch { error in
-            guard let result = error as? ConnectionTestResult else {
+            if let result = error as? ConnectionTestResult {
+                Current.Log.error("Received ConnectionTestResult! \(result)")
+            } else {
                 Current.Log.error("Received non-ConnectionTestResult error! \(error)")
-                return
             }
-            self.testResult = result
-            Current.Log.error("Error during connection test \(result.localizedDescription)")
+            self.testResult = error
+            Current.Log.error("Error during connection test \(error.localizedDescription)")
             self.perform(segue: StoryboardSegue.Onboarding.showError)
         }
     }
@@ -181,6 +186,7 @@ public struct ConnectionTestResult: LocalizedError {
         case connectionError = "connection_error"
         case serverError = "server_error"
         case tooOld = "too_old"
+        case noBaseURLDiscovered = "no_base_url_discovered"
         case unknownError = "unknown_error"
     }
 
@@ -206,6 +212,8 @@ public struct ConnectionTestResult: LocalizedError {
             return L10n.Onboarding.ConnectionTestResult.ServerError.description(description)
         case .tooOld:
             return L10n.Onboarding.ConnectionTestResult.TooOld.description
+        case .noBaseURLDiscovered:
+            return L10n.Onboarding.ConnectionTestResult.NoBaseUrlDiscovered.description
         default:
             return L10n.Onboarding.ConnectionTestResult.UnknownError.description(description)
         }
