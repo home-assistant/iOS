@@ -53,11 +53,10 @@ extension ClientEventTableViewController {
         return self.results?.count ?? 0
     }
 
-    override public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
-        -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell",
-                                                 for: indexPath) as UITableViewCell
-        if let item = self.results?[indexPath.item], let eventCell = cell as? ClientEventCell {
+    override public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as UITableViewCell
+        if let results = self.results, results.count > indexPath.item, let eventCell = cell as? ClientEventCell {
+            let item = results[indexPath.item]
             eventCell.titleLabel.text = item.text
             eventCell.dateLabel.text = self.dateFormatter.string(from: item.date)
             eventCell.typeLabel.text = item.type.displayText
