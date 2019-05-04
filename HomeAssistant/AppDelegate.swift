@@ -86,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         var navController = UINavigationController(rootViewController: webView)
 
-        if prefs.object(forKey: "onboarding_complete") == nil {
+        if prefs.object(forKey: "onboarding_complete_newconninfo") == nil {
             navController = StoryboardScene.Onboarding.navController.instantiate()
         }
 
