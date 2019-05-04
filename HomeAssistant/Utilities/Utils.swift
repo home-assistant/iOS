@@ -9,6 +9,7 @@
 import Foundation
 import KeychainAccess
 import Shared
+import RealmSwift
 
 func resetStores() {
     do {
@@ -23,6 +24,8 @@ func resetStores() {
         }
         groupDefaults.synchronize()
     }
+
+    Realm.reset()
 }
 
 func openURLInBrowser(urlToOpen: URL) {

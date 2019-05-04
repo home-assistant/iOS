@@ -95,6 +95,14 @@ extension Realm {
         return backupURL
     }
 
+    /// Deletes all Realm objects
+    public static func reset() {
+        let realm = Realm.live()
+        realm.beginWrite()
+        realm.deleteAll()
+        realm.cancelWrite()
+    }
+
     private static func handleFatalError(_ message: String, _ error: NSError) {
         let errMsg = "\(message): \(error)"
         Current.Log.error(errMsg)
