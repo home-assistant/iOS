@@ -146,16 +146,18 @@ public class RLMZone: Object {
     }
 
     public var Name: String {
+        if self.isInvalidated { return "Deleted" }
         return self.ID.replacingOccurrences(of: "\(self.Domain).",
                                             with: "").replacingOccurrences(of: "_",
                                                                            with: " ").capitalized
     }
 
     public var Domain: String {
-        return self.ID.components(separatedBy: ".")[0]
+        return "zone"
     }
 
     public var isBeaconRegion: Bool {
+        if self.isInvalidated { return false }
         return self.BeaconUUID != nil
     }
 
