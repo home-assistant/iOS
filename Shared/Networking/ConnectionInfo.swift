@@ -13,12 +13,12 @@ import SystemConfiguration.CaptiveNetwork
 #endif
 
 public struct ConnectionInfo: Codable {
-    public var externalURL: URL?
-    public var internalURL: URL?
-    public var cloudhookURL: URL?
-    public var remoteUIURL: URL?
+    public private(set) var externalURL: URL?
+    public private(set) var internalURL: URL?
+    public private(set) var remoteUIURL: URL?
     public var webhookID: String
     public var webhookSecret: String?
+    public var cloudhookURL: URL?
     public var internalSSIDs: [String]?
 
     public var activeURLType: URLType = .external {
@@ -113,6 +113,30 @@ public struct ConnectionInfo: Codable {
         }*/
 
         return baseURL.appendingPathComponent("api/webhook/\(self.webhookID)", isDirectory: false)
+    }
+
+    /// Updates the stored address for the given addressType.
+    public mutating func setAddress(_ address: URL?, _ addressType: URLType) {
+        guard let address = address else { return }
+        switch addressType {
+        case .internal:
+            self.internalURL = address
+            if self.isOnInternalNetwork {
+                self.activeURLType = .internal
+            }
+        case .external:
+            self.externalURL = address
+            self.remoteUIURL = nil
+            if self.activeURLType != .internal {
+                self.activeURLType = .external
+            }
+        case .remoteUI:
+            self.remoteUIURL = address
+            self.externalURL = nil
+            if self.activeURLType != .internal {
+                self.activeURLType = .remoteUI
+            }
+        }
     }
 
     /// Returns true if current SSID is SSID marked for internal URL use.

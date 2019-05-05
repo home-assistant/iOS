@@ -546,7 +546,7 @@ internal enum L10n {
         internal static let description = L10n.tr("Localizable", "onboarding.connection_test_result.no_base_url_discovered.description")
       }
       internal enum ServerError {
-        /// Server error%@.
+        /// Server error: %@
         internal static func description(_ p1: String) -> String {
           return L10n.tr("Localizable", "onboarding.connection_test_result.server_error.description", p1)
         }

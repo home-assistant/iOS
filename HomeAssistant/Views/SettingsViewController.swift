@@ -147,33 +147,7 @@ class SettingsViewController: FormViewController {
             })
         }
 
-        +++ Section {
-            $0.tag = "reset"
-            // $0.hidden = Condition(booleanLiteral: !self.configured)
-        }
-        <<< ButtonRow("resetApp") {
-                $0.title = L10n.Settings.ResetSection.ResetRow.title
-            }.cellUpdate { cell, _ in
-                cell.textLabel?.textColor = .red
-            }.onCellSelection { cell, row in
-                let alert = UIAlertController(title: L10n.Settings.ResetSection.ResetAlert.title,
-                                              message: L10n.Settings.ResetSection.ResetAlert.message,
-                                              preferredStyle: UIAlertController.Style.alert)
-
-                alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
-
-                alert.addAction(UIAlertAction(title: L10n.Settings.ResetSection.ResetAlert.title,
-                                              style: .destructive, handler: { (_) in
-                                                row.hidden = true
-                                                row.evaluateHidden()
-                                                self.ResetApp()
-                }))
-
-                self.present(alert, animated: true, completion: nil)
-                alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
-        }
-
-        +++ ButtonRow {
+        <<< ButtonRow {
             $0.title = L10n.Settings.Developer.ExportLogFiles.title
         }.onCellSelection { cell, _ in
             Current.Log.verbose("Logs directory is: \(Constants.LogsDirectory)")
@@ -224,6 +198,32 @@ class SettingsViewController: FormViewController {
                     popOver.sourceView = cell
                 }
             }
+        }
+
+        +++ Section {
+            $0.tag = "reset"
+            // $0.hidden = Condition(booleanLiteral: !self.configured)
+        }
+        <<< ButtonRow("resetApp") {
+                $0.title = L10n.Settings.ResetSection.ResetRow.title
+            }.cellUpdate { cell, _ in
+                cell.textLabel?.textColor = .red
+            }.onCellSelection { cell, row in
+                let alert = UIAlertController(title: L10n.Settings.ResetSection.ResetAlert.title,
+                                              message: L10n.Settings.ResetSection.ResetAlert.message,
+                                              preferredStyle: UIAlertController.Style.alert)
+
+                alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
+
+                alert.addAction(UIAlertAction(title: L10n.Settings.ResetSection.ResetAlert.title,
+                                              style: .destructive, handler: { (_) in
+                                                row.hidden = true
+                                                row.evaluateHidden()
+                                                self.ResetApp()
+                }))
+
+                self.present(alert, animated: true, completion: nil)
+                alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
         }
 
         +++ Section(header: L10n.Settings.Developer.header, footer: L10n.Settings.Developer.footer) {

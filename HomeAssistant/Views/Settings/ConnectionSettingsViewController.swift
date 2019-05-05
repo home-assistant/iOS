@@ -67,23 +67,25 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 }.onCellHighlightChanged { (cell, row) in
                     if !row.isHighlighted {
                         guard let newURL = row.value else { return }
+
                         if let host = newURL.host, host.contains("nabu.casa") {
                             let alert = UIAlertController(title: L10n.errorLabel, message: L10n.Errors.noRemoteUiUrl,
                                                           preferredStyle: .alert)
                             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
                             self.present(alert, animated: true, completion: nil)
                             alert.popoverPresentationController?.sourceView = cell.contentView
+                            return
                         }
                         self.confirmURL(newURL).done { _ in
-                            Current.settingsStore.connectionInfo?.internalURL = newURL
-                            }.catch { error in
-                                row.value = Current.settingsStore.connectionInfo?.internalURL
-                                row.updateCell()
-                                let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
-                                                              preferredStyle: .alert)
-                                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-                                self.present(alert, animated: true, completion: nil)
-                                alert.popoverPresentationController?.sourceView = cell.contentView
+                            Current.settingsStore.connectionInfo?.setAddress(newURL, .internal)
+                        }.catch { error in
+                            row.value = Current.settingsStore.connectionInfo?.internalURL
+                            row.updateCell()
+                            let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
+                                                          preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                            alert.popoverPresentationController?.sourceView = cell.contentView
                         }
                     }
             }
@@ -116,7 +118,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                         alert.popoverPresentationController?.sourceView = cell.contentView
                     }
                     self.confirmURL(newURL).done { _ in
-                        Current.settingsStore.connectionInfo?.externalURL = newURL
+                        Current.settingsStore.connectionInfo?.setAddress(newURL, .external)
                     }.catch { error in
                         row.value = Current.settingsStore.connectionInfo?.externalURL
                         row.updateCell()

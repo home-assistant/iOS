@@ -237,7 +237,7 @@ public class HomeAssistantAPI {
             }
 
             self.connectionInfo.cloudhookURL = config.CloudhookURL
-            self.connectionInfo.remoteUIURL = config.RemoteUIURL
+            self.connectionInfo.setAddress(config.RemoteUIURL, .remoteUI)
             Current.settingsStore.connectionInfo = self.connectionInfo
 
             self.prefs.setValue(config.LocationName, forKey: "location_name")
@@ -331,8 +331,10 @@ public class HomeAssistantAPI {
                             parameters: buildMobileAppRegistration(), encoding: JSONEncoding.default)
             .then { (resp: MobileAppRegistrationResponse) -> Promise<MobileAppRegistrationResponse> in
                 Current.Log.verbose("Registration response \(resp)")
+
+                self.connectionInfo.setAddress(resp.RemoteUIURL, .remoteUI)
+
                 self.connectionInfo.cloudhookURL = resp.CloudhookURL
-                self.connectionInfo.remoteUIURL = resp.RemoteUIURL
                 self.connectionInfo.webhookID = resp.WebhookID
                 self.connectionInfo.webhookSecret = resp.WebhookSecret
 

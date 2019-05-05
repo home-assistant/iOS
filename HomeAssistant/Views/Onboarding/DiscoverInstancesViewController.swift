@@ -30,13 +30,13 @@ class DiscoverInstancesViewController: UIViewController {
         if Current.appConfiguration == .Debug {
             discoveredInstances = [
                 DiscoveredHomeAssistant(baseURL: URL(string: "https://jigsaw.w3.org/HTTP/Basic/api/discovery_info")!,
-                                        name: "Basic Auth", version: "0.92.0", ssl: true),
+                                        name: "Basic Auth", version: "0.92.0"),
                 DiscoveredHomeAssistant(baseURL: URL(string: "https://self-signed.badssl.com/")!,
-                                        name: "Self signed SSL", version: "0.92.0", ssl: true),
+                                        name: "Self signed SSL", version: "0.92.0"),
                 DiscoveredHomeAssistant(baseURL: URL(string: "https://client.badssl.com/")!, name: "Client Cert",
-                                        version: "0.92.0", ssl: true),
+                                        version: "0.92.0"),
                 DiscoveredHomeAssistant(baseURL: URL(string: "http://http.badssl.com/")!, name: "HTTP",
-                                        version: "0.92.0", ssl: false)
+                                        version: "0.92.0")
             ]
         }
 
@@ -87,8 +87,7 @@ class DiscoverInstancesViewController: UIViewController {
     @objc func HomeAssistantDiscovered(_ notification: Notification) {
         if let userInfo = (notification as Notification).userInfo as? [String: Any] {
             guard let discoveryInfo = DiscoveredHomeAssistant(JSON: userInfo) else {
-                Current.clientEventStore.addEvent(ClientEvent(text: "Unable to parse discovered HA Instance",
-                                                              type: .unknown, payload: userInfo))
+                Current.Log.error("Unable to parse discovered HA Instance")
                 return
             }
 

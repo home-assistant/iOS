@@ -182,6 +182,10 @@
 		B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
 		B60984CC225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60984CB225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift */; };
 		B60984CD225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60984CB225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift */; };
+		B616B293227EB2B800828165 /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
+		B616B295227EB2B800828165 /* InternetAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B616B28F227EAFFB00828165 /* InternetAddress.swift */; };
+		B616B296227EB2B800828165 /* InternetAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B616B28F227EAFFB00828165 /* InternetAddress.swift */; };
+		B616B297227EB2B800828165 /* DNSResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B616B291227EB00D00828165 /* DNSResolver.swift */; };
 		B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B6221F6C22267C9900502A30 /* HAAPI+WebhookHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F672226780E00502A30 /* HAAPI+WebhookHelpers.swift */; };
@@ -484,7 +488,6 @@
 		D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A6367120DB7D1100E5C49B /* ClientEventTests.swift */; };
 		D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05A4D31216DD206009FD1EB /* MJPEGStreamer.swift */; };
 		D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D06C750F20D87FAF00E9DB7F /* ClientEventCell.swift */; };
-		D0B25BCD2130CAB400678C2C /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
 		D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD121323CA600678C2C /* ClientEventPayloadViewController.swift */; };
 		D0B25BD62133128800678C2C /* UNNotificationContent+ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BD52133128800678C2C /* UNNotificationContent+ClientEvent.swift */; };
 		D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B627CB081D83C87B0057173E /* UserNotifications.framework */; };
@@ -886,6 +889,8 @@
 		B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
 		B60984CB225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAAPI+WebhookRequestRetrier.swift"; sourceTree = "<group>"; };
 		B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrationResponse.swift; sourceTree = "<group>"; };
+		B616B28F227EAFFB00828165 /* InternetAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetAddress.swift; sourceTree = "<group>"; };
+		B616B291227EB00D00828165 /* DNSResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DNSResolver.swift; sourceTree = "<group>"; };
 		B61DA28C221E753A00AADEDD /* CleanroomLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CleanroomLogger.framework; path = Carthage/Build/iOS/CleanroomLogger.framework; sourceTree = "<group>"; };
 		B6221F6122266C4000502A30 /* WebhookRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRequest.swift; sourceTree = "<group>"; };
 		B6221F672226780E00502A30 /* HAAPI+WebhookHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HAAPI+WebhookHelpers.swift"; sourceTree = "<group>"; };
@@ -1857,7 +1862,6 @@
 				B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */,
 				B68EDD06215F215E00DD6B28 /* Notifications.swift */,
 				B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */,
-				D0B25BCC2130CAB400678C2C /* Bonjour.swift */,
 				B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */,
 				B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */,
 				B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */,
@@ -2192,6 +2196,9 @@
 			isa = PBXGroup;
 			children = (
 				D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */,
+				D0B25BCC2130CAB400678C2C /* Bonjour.swift */,
+				B616B28F227EAFFB00828165 /* InternetAddress.swift */,
+				B616B291227EB00D00828165 /* DNSResolver.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -3626,7 +3633,6 @@
 				B6B6B14A215B137C003DE2DD /* WatchComplicationConfigurator.swift in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				B66C58BD21509934004AB261 /* ShortcutServiceConfigurator.swift in Sources */,
-				D0B25BCD2130CAB400678C2C /* Bonjour.swift in Sources */,
 				B67CE8D02220EF1D0034C1D0 /* ObjectMapper+RealmList.swift in Sources */,
 				B66D6B222227A808009D8B90 /* WatchHelpers.swift in Sources */,
 				B672AB2D2215341800175465 /* ShortcutEventConfigurator.swift in Sources */,
@@ -3784,6 +3790,7 @@
 				B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */,
 				B67CE8AA22200F220034C1D0 /* ConnectionInfo.swift in Sources */,
 				B67CE8BC22200F220034C1D0 /* ClientEvent.swift in Sources */,
+				B616B296227EB2B800828165 /* InternetAddress.swift in Sources */,
 				B67CE88522200F220034C1D0 /* Lock.swift in Sources */,
 				B67CE88C22200F220034C1D0 /* Weblink.swift in Sources */,
 				B67CE8BB22200F220034C1D0 /* UNNotificationContent+ClientEvent.swift in Sources */,
@@ -3841,6 +3848,7 @@
 				D0EEF2D1214D8B6700D1D360 /* Entity.swift in Sources */,
 				B6872E6022267EE800C475D1 /* HAAPI.swift in Sources */,
 				B6C091402151F93D00A326DC /* Sensor.swift in Sources */,
+				B616B297227EB2B800828165 /* DNSResolver.swift in Sources */,
 				B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */,
 				D0EEF335214EB77100D1D360 /* CLLocation+ToDoubleArray.swift in Sources */,
 				B675ECC5221BD76300C65D31 /* Identify.swift in Sources */,
@@ -3891,6 +3899,7 @@
 				B6D3B4ED225B26900082BB4F /* WebhookSensors.swift in Sources */,
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
+				B616B293227EB2B800828165 /* Bonjour.swift in Sources */,
 				B6C0914F2151F93D00A326DC /* MediaPlayer.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				B6C0914C2151F93D00A326DC /* Sun.swift in Sources */,
@@ -3900,6 +3909,7 @@
 				D0C8847A2122A65800CCB501 /* SettingsStore.swift in Sources */,
 				B6C091472151F93D00A326DC /* Script.swift in Sources */,
 				B6C091452151F93D00A326DC /* Zone.swift in Sources */,
+				B616B295227EB2B800828165 /* InternetAddress.swift in Sources */,
 				B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				B6624E4F22584F8F00354CDF /* CrashlyticsLogDestination.swift in Sources */,
 				B6C0913D2151F93D00A326DC /* Automation.swift in Sources */,
@@ -4189,7 +4199,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 48;
+				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -4524,7 +4534,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 48;
+				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -4586,7 +4596,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 48;
+				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

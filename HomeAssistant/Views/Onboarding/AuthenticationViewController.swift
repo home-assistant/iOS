@@ -12,6 +12,7 @@ import PromiseKit
 import Alamofire
 import MaterialComponents.MaterialButtons
 import MBProgressHUD
+import ObjectMapper
 
 class AuthenticationViewController: UIViewController {
 
@@ -49,14 +50,26 @@ class AuthenticationViewController: UIViewController {
 
         firstly {
             return self.testConnection(baseURL)
-        }.done {
+        }.then { foundInstance -> Promise<Bool> in
+            self.instance = foundInstance
+
+            return foundInstance.checkIfBaseURLIsInternal()
+        }.done { baseURLIsInternal in
             var ssids: [String] = []
             if let currentSSID = ConnectionInfo.CurrentWiFiSSID {
                 ssids.append(currentSSID)
             }
-            self.connectionInfo = ConnectionInfo(externalURL: baseURL, internalURL: nil, cloudhookURL: nil,
-                                                 remoteUIURL: nil, webhookID: "", webhookSecret: nil,
-                                                 internalSSIDs: ssids)
+            Current.Log.verbose("URL \(baseURL) resolves to internal? \(baseURLIsInternal)")
+            var connInfo = ConnectionInfo(externalURL: baseURL, internalURL: nil, cloudhookURL: nil,
+                                          remoteUIURL: nil, webhookID: "", webhookSecret: nil, internalSSIDs: ssids)
+
+            if baseURLIsInternal {
+                connInfo = ConnectionInfo(externalURL: nil, internalURL: baseURL, cloudhookURL: nil,
+                                          remoteUIURL: nil, webhookID: "", webhookSecret: nil, internalSSIDs: ssids)
+            }
+
+            self.connectionInfo = connInfo
+
             self.whatsAboutToHappenLabel.isHidden = false
             self.connectButton.isHidden = false
         }.ensure {
@@ -118,8 +131,10 @@ class AuthenticationViewController: UIViewController {
         }
     }
 
+    fileprivate typealias ErrorReason = AFError.ResponseValidationFailureReason
+
     // swiftlint:disable:next function_body_length
-    private func testConnection(_ baseURL: URL) -> Promise<Void> {
+    private func testConnection(_ baseURL: URL) -> Promise<DiscoveredHomeAssistant> {
         let discoveryInfoURL = baseURL.appendingPathComponent("api/discovery_info")
         return Promise { seal in
             let sessionManager = Alamofire.SessionManager.default
@@ -143,7 +158,7 @@ class AuthenticationViewController: UIViewController {
                     completion(.cancelAuthenticationChallenge, nil)
                 }
             }
-            sessionManager.request(discoveryInfoURL).validate().responseJSON { response in
+            sessionManager.request(discoveryInfoURL).responseObject { (response: DataResponse<DiscoveredHomeAssistant>) in
                 Current.Log.verbose("Request: \(String(describing: response.request))")
                 Current.Log.verbose("Response: \(String(describing: response.response))")
                 Current.Log.verbose("Result: \(response.result)")
@@ -165,12 +180,14 @@ class AuthenticationViewController: UIViewController {
                     return
                 }
 
-                if let statusCode = response.response?.statusCode, statusCode > 500 {
-                    seal.reject(ConnectionTestResult(kind: .serverError, underlying: nil))
+                if let statusCode = response.response?.statusCode, statusCode >= 400 {
+                    let reason: ErrorReason = .unacceptableStatusCode(code: statusCode)
+                    seal.reject(ConnectionTestResult(kind: .serverError,
+                                                     underlying: AFError.responseValidationFailed(reason: reason)))
                     return
                 }
 
-                seal.fulfill_()
+                seal.resolve(response.result.value, nil)
             }
         }
     }

@@ -8,38 +8,36 @@
 
 import DeviceKit
 import Foundation
-import Shared
 
-class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
+public class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
 
     var resolving = [NetService]()
     var resolvingDict = [String: NetService]()
 
     // Browser methods
 
-    func netServiceBrowser(_ netServiceBrowser: NetServiceBrowser,
-                           didFind netService: NetService,
-                           moreComing moreServicesComing: Bool) {
+    public func netServiceBrowser(_ netServiceBrowser: NetServiceBrowser, didFind netService: NetService,
+                                  moreComing moreServicesComing: Bool) {
         Current.Log.verbose("BonjourDelegate.Browser.didFindService")
         netService.delegate = self
         resolvingDict[netService.name] = netService
         netService.resolve(withTimeout: 0.0)
     }
 
-    func netServiceDidResolveAddress(_ sender: NetService) {
+    public func netServiceDidResolveAddress(_ sender: NetService) {
         Current.Log.verbose("BonjourDelegate.Browser.netServiceDidResolveAddress")
         if let txtRecord = sender.txtRecordData() {
             let serviceDict = NetService.dictionary(fromTXTRecord: txtRecord)
             let discoveryInfo = DiscoveryInfoFromDict(locationName: sender.name, netServiceDictionary: serviceDict)
+            discoveryInfo.AnnouncedFrom = sender.addresses?.compactMap { InternetAddress(data: $0)?.host } ?? []
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.discovered"),
                                             object: nil,
                                             userInfo: discoveryInfo.toJSON())
         }
     }
 
-    func netServiceBrowser(_ netServiceBrowser: NetServiceBrowser,
-                           didRemove netService: NetService,
-                           moreComing moreServicesComing: Bool) {
+    public func netServiceBrowser(_ netServiceBrowser: NetServiceBrowser, didRemove netService: NetService,
+                                  moreComing moreServicesComing: Bool) {
         Current.Log.verbose("BonjourDelegate.Browser.didRemoveService")
         let discoveryInfo: [NSObject: Any] = ["name" as NSObject: netService.name]
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.undiscovered"),
@@ -60,31 +58,26 @@ class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
             }
         }
         outputDict["location_name"] = locationName
-        if let baseURL = outputDict["base_url"] as? String {
-            if baseURL.hasSuffix("/") {
-                outputDict["base_url"] = baseURL[..<baseURL.index(before: baseURL.endIndex)]
-            }
-        }
         return DiscoveredHomeAssistant(JSON: outputDict)!
     }
 }
 
-class Bonjour {
-    var nsb: NetServiceBrowser
-    var nsp: NetService
-    var nsdel: BonjourDelegate?
+public class Bonjour {
+    private var nsb: NetServiceBrowser
+    private var nsp: NetService
+    private var nsdel: BonjourDelegate?
 
     public var browserIsRunning: Bool = false
     public var publishIsRunning: Bool = false
 
-    init() {
+    public init() {
         let device = Device.current
         self.nsb = NetServiceBrowser()
         self.nsp = NetService(domain: "local", type: "_hass-mobile-app._tcp.", name: device.name ?? "Unknown",
                               port: 65535)
     }
 
-    func buildPublishDict() -> [String: Data] {
+    private func buildPublishDict() -> [String: Data] {
         var publishDict: [String: Data] = [:]
         if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") {
             if let stringedBundleVersion = bundleVersion as? String {
@@ -111,19 +104,19 @@ class Bonjour {
         return publishDict
     }
 
-    func startDiscovery() {
+    public func startDiscovery() {
         self.browserIsRunning = true
         self.nsdel = BonjourDelegate()
         nsb.delegate = nsdel
         nsb.searchForServices(ofType: "_home-assistant._tcp.", inDomain: "local.")
     }
 
-    func stopDiscovery() {
+    public func stopDiscovery() {
         self.browserIsRunning = false
         nsb.stop()
     }
 
-    func startPublish() {
+    public func startPublish() {
         //        self.nsdel = BonjourDelegate()
         //        nsp.delegate = nsdel
         self.publishIsRunning = true
@@ -131,7 +124,7 @@ class Bonjour {
         nsp.publish()
     }
 
-    func stopPublish() {
+    public func stopPublish() {
         self.publishIsRunning = false
         nsp.stop()
     }

@@ -8,42 +8,49 @@
 
 import Foundation
 import ObjectMapper
-
-let usesSSL = TransformOf<Bool, String>(fromJSON: { (value: String?) -> Bool? in
-    if let url = value {
-        return Bool(url.hasPrefix("https://"))
-    }
-    return false
-}, toJSON: { (_: Bool?) -> String? in
-    return nil
-})
+import PromiseKit
 
 public class DiscoveredHomeAssistant: Mappable {
     public var BaseURL: URL?
     public var LocationName: String = ""
     public var Version: String = ""
-    public var UsesSSL: Bool = false
 
     // If false, this class was manually constructed
     public var Discovered: Bool = true
 
+    public var AnnouncedFrom: [String] = []
+
     public init() {}
 
-    public convenience init(baseURL: URL, name: String, version: String, ssl: Bool) {
+    required public init?(map: Map) { }
+
+    public convenience init(baseURL: URL, name: String, version: String, announcedFrom: [String] = []) {
         self.init()
         self.BaseURL = baseURL
         self.LocationName = name
         self.Version = version
-        self.UsesSSL = ssl
+        self.AnnouncedFrom = announcedFrom
+        self.Discovered = false
     }
-
-    required public init?(map: Map) { }
 
     public func mapping(map: Map) {
         BaseURL             <- (map["base_url"], URLTransform())
         LocationName        <- map["location_name"]
         Version             <- map["version"]
+    }
 
-        UsesSSL             <- (map["base_url"], usesSSL)
+    /// Returns true if host of baseURL matches one of the AnnouncedFrom addresses.
+    public func checkIfBaseURLIsInternal() -> Promise<Bool> {
+        #if os(iOS)
+        guard let host = self.BaseURL?.host else { return Promise.value(false) }
+        if self.AnnouncedFrom.contains(host) == true { return Promise.value(true) }
+
+        return Promise { seal in
+            DNSResolver.resolve(host: host, completion: { (addresses) in
+                seal.fulfill(addresses.contains(where: { $0.isPrivateNetwork }))
+            })
+        }
+        #endif
+        return Promise.value(false)
     }
 }
