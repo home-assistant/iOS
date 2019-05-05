@@ -28,7 +28,7 @@ public class WebhookHandler: RequestAdapter, RequestRetrier {
         // be able to get working again:
         // 1. If remote UI is active and failure is low level (NSURLErrorDomain) which means snitun is down
         // 2. If internal URL is active but SSID doesn't match
-        guard var connectionInfo = Current.settingsStore.connectionInfo else {
+        guard let connectionInfo = Current.settingsStore.connectionInfo else {
             Current.Log.error("Couldn't get Current.settingsStore.connectionInfo!")
             completion(false, 0)
             return

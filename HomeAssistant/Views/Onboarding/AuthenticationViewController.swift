@@ -240,3 +240,18 @@ public struct ConnectionTestResult: LocalizedError {
         return URL(string: "https://companion.home-assistant.io/en/misc/errors#\(self.kind.rawValue)")!
     }
 }
+
+extension DiscoveredHomeAssistant {
+    /// Returns true if host of baseURL matches one of the AnnouncedFrom addresses.
+    public func checkIfBaseURLIsInternal() -> Promise<Bool> {
+        guard let host = self.BaseURL?.host else { return Promise.value(false) }
+        if self.AnnouncedFrom.contains(host) == true { return Promise.value(true) }
+
+        return Promise { seal in
+            DNSResolver.resolve(host: host, completion: { (addresses) in
+                seal.fulfill(addresses.contains(where: { $0.isPrivateNetwork }))
+            })
+        }
+    }
+
+}

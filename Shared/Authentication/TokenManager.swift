@@ -86,7 +86,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
     public func should(_ manager: SessionManager, retry request: Request, with error: Error,
                        completion: @escaping RequestRetryCompletion) {
-        guard var connectionInfo = Current.settingsStore.connectionInfo,
+        guard let connectionInfo = Current.settingsStore.connectionInfo,
             let requestURL = request.request?.url else {
             completion(false, 0)
             return

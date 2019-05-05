@@ -38,19 +38,4 @@ public class DiscoveredHomeAssistant: Mappable {
         LocationName        <- map["location_name"]
         Version             <- map["version"]
     }
-
-    /// Returns true if host of baseURL matches one of the AnnouncedFrom addresses.
-    public func checkIfBaseURLIsInternal() -> Promise<Bool> {
-        #if os(iOS)
-        guard let host = self.BaseURL?.host else { return Promise.value(false) }
-        if self.AnnouncedFrom.contains(host) == true { return Promise.value(true) }
-
-        return Promise { seal in
-            DNSResolver.resolve(host: host, completion: { (addresses) in
-                seal.fulfill(addresses.contains(where: { $0.isPrivateNetwork }))
-            })
-        }
-        #endif
-        return Promise.value(false)
-    }
 }

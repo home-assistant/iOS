@@ -182,10 +182,9 @@
 		B60616BB1D1F117800249C11 /* US-EN-Daisy-Water-Heater-Leak.wav in Resources */ = {isa = PBXBuildFile; fileRef = B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */; };
 		B60984CC225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60984CB225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift */; };
 		B60984CD225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60984CB225C4F65004D017C /* HAAPI+WebhookRequestRetrier.swift */; };
-		B616B293227EB2B800828165 /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
-		B616B295227EB2B800828165 /* InternetAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B616B28F227EAFFB00828165 /* InternetAddress.swift */; };
-		B616B296227EB2B800828165 /* InternetAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B616B28F227EAFFB00828165 /* InternetAddress.swift */; };
-		B616B297227EB2B800828165 /* DNSResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B616B291227EB00D00828165 /* DNSResolver.swift */; };
+		B616B299227ED68E00828165 /* Bonjour.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCC2130CAB400678C2C /* Bonjour.swift */; };
+		B616B29A227ED69300828165 /* InternetAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B616B28F227EAFFB00828165 /* InternetAddress.swift */; };
+		B616B29B227ED69500828165 /* DNSResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B616B291227EB00D00828165 /* DNSResolver.swift */; };
 		B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B6221F6622266FA000502A30 /* WebhookRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F6122266C4000502A30 /* WebhookRequest.swift */; };
 		B6221F6C22267C9900502A30 /* HAAPI+WebhookHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6221F672226780E00502A30 /* HAAPI+WebhookHelpers.swift */; };
@@ -1869,6 +1868,9 @@
 				B6022212226DAC9D00E8DBFE /* ScaledFont.swift */,
 				B6022214226DB0E500E8DBFE /* UIFontOverride.swift */,
 				B605C890226E9DAC00EF46DD /* Permissions.swift */,
+				D0B25BCC2130CAB400678C2C /* Bonjour.swift */,
+				B616B28F227EAFFB00828165 /* InternetAddress.swift */,
+				B616B291227EB00D00828165 /* DNSResolver.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -2196,9 +2198,6 @@
 			isa = PBXGroup;
 			children = (
 				D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */,
-				D0B25BCC2130CAB400678C2C /* Bonjour.swift */,
-				B616B28F227EAFFB00828165 /* InternetAddress.swift */,
-				B616B291227EB00D00828165 /* DNSResolver.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -3609,6 +3608,7 @@
 				B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */,
 				B63CAE692150CE5100A68AFB /* SiriShortcut.swift in Sources */,
 				B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */,
+				B616B299227ED68E00828165 /* Bonjour.swift in Sources */,
 				B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */,
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
@@ -3618,6 +3618,7 @@
 				B658AA782250AC8000C9BFE3 /* String+HA.swift in Sources */,
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
 				B6B6B14C215B1E86003DE2DD /* CLKComplication+Strings.swift in Sources */,
+				B616B29A227ED69300828165 /* InternetAddress.swift in Sources */,
 				B6DF8BC1221C890600370A59 /* UIImageView+UIActivityIndicator.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
@@ -3655,6 +3656,7 @@
 				B60221F8226D9AEE00E8DBFE /* PermissionButton.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
+				B616B29B227ED69500828165 /* DNSResolver.swift in Sources */,
 				B65B15052273188300635D5C /* Assets.swift in Sources */,
 				B661FB7C226C199200E541DD /* PermissionsViewController.swift in Sources */,
 				B605C893226EC25800EF46DD /* AuthenticationViewController.swift in Sources */,
@@ -3790,7 +3792,6 @@
 				B67CE8A722200F220034C1D0 /* HAAPI+RequestHelpers.swift in Sources */,
 				B67CE8AA22200F220034C1D0 /* ConnectionInfo.swift in Sources */,
 				B67CE8BC22200F220034C1D0 /* ClientEvent.swift in Sources */,
-				B616B296227EB2B800828165 /* InternetAddress.swift in Sources */,
 				B67CE88522200F220034C1D0 /* Lock.swift in Sources */,
 				B67CE88C22200F220034C1D0 /* Weblink.swift in Sources */,
 				B67CE8BB22200F220034C1D0 /* UNNotificationContent+ClientEvent.swift in Sources */,
@@ -3848,7 +3849,6 @@
 				D0EEF2D1214D8B6700D1D360 /* Entity.swift in Sources */,
 				B6872E6022267EE800C475D1 /* HAAPI.swift in Sources */,
 				B6C091402151F93D00A326DC /* Sensor.swift in Sources */,
-				B616B297227EB2B800828165 /* DNSResolver.swift in Sources */,
 				B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */,
 				D0EEF335214EB77100D1D360 /* CLLocation+ToDoubleArray.swift in Sources */,
 				B675ECC5221BD76300C65D31 /* Identify.swift in Sources */,
@@ -3899,7 +3899,6 @@
 				B6D3B4ED225B26900082BB4F /* WebhookSensors.swift in Sources */,
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
 				B6C091232151F90300A326DC /* LocationHistory.swift in Sources */,
-				B616B293227EB2B800828165 /* Bonjour.swift in Sources */,
 				B6C0914F2151F93D00A326DC /* MediaPlayer.swift in Sources */,
 				D0BE440A2104224600C74314 /* TokenInfo.swift in Sources */,
 				B6C0914C2151F93D00A326DC /* Sun.swift in Sources */,
@@ -3909,7 +3908,6 @@
 				D0C8847A2122A65800CCB501 /* SettingsStore.swift in Sources */,
 				B6C091472151F93D00A326DC /* Script.swift in Sources */,
 				B6C091452151F93D00A326DC /* Zone.swift in Sources */,
-				B616B295227EB2B800828165 /* InternetAddress.swift in Sources */,
 				B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				B6624E4F22584F8F00354CDF /* CrashlyticsLogDestination.swift in Sources */,
 				B6C0913D2151F93D00A326DC /* Automation.swift in Sources */,
@@ -4199,7 +4197,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 49;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -4534,7 +4532,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 49;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -4596,7 +4594,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 49;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = UTQFCBPQRF;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

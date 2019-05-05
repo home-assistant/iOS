@@ -12,7 +12,7 @@ import Alamofire
 import SystemConfiguration.CaptiveNetwork
 #endif
 
-public struct ConnectionInfo: Codable {
+public class ConnectionInfo: Codable {
     public private(set) var externalURL: URL?
     public private(set) var internalURL: URL?
     public private(set) var remoteUIURL: URL?
@@ -77,15 +77,31 @@ public struct ConnectionInfo: Codable {
     public var activeURL: URL {
         switch self.activeURLType {
         case .internal:
-            if let url = self.internalURL, self.isOnInternalNetwork {
+            if let url = self.internalURL {
+                guard self.isOnInternalNetwork else {
+                    if self.remoteUIURL != nil {
+                        self.activeURLType = .remoteUI
+                    } else {
+                        self.activeURLType = .external
+                    }
+                    return self.activeURL
+                }
                 return url
             }
         case .remoteUI:
             if let url = self.remoteUIURL {
+                if let internalURL = self.internalURL, self.isOnInternalNetwork {
+                    self.activeURLType = .internal
+                    return internalURL
+                }
                 return url
             }
         case .external:
             if let url = self.externalURL {
+                if let internalURL = self.internalURL, self.isOnInternalNetwork {
+                    self.activeURLType = .internal
+                    return internalURL
+                }
                 return url
             }
         }
@@ -100,7 +116,6 @@ public struct ConnectionInfo: Codable {
         return self.activeURL.appendingPathComponent("api", isDirectory: false)
     }
 
-    /// Returns the active URL to the webhook.
     public var webhookURL: URL {
         var baseURL: URL = self.activeURL
 
@@ -116,7 +131,7 @@ public struct ConnectionInfo: Codable {
     }
 
     /// Updates the stored address for the given addressType.
-    public mutating func setAddress(_ address: URL?, _ addressType: URLType) {
+    public func setAddress(_ address: URL?, _ addressType: URLType) {
         guard let address = address else { return }
         switch addressType {
         case .internal:
@@ -210,7 +225,7 @@ public struct ConnectionInfo: Codable {
     }
 
     // MARK: - RequestRetrier
-    public mutating func should(_ manager: SessionManager, retry request: Request, with error: Error) -> Bool {
+    public func should(_ manager: SessionManager, retry request: Request, with error: Error) -> Bool {
         // There's only two situations in which we should attempt to change the URL to a point where we may
         // be able to get working again:
         // 1. If remote UI is active and failure is low level (NSURLErrorDomain) which means snitun is down
