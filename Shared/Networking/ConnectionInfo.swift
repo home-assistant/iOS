@@ -107,7 +107,7 @@ public struct ConnectionInfo: Codable {
         if self.activeURLType == .internal {
             baseURL = self.internalURL!
         } else if let cloudURL = self.cloudhookURL {
-            baseURL = cloudURL
+            return cloudURL
         }
 
         return baseURL.appendingPathComponent("api/webhook/\(self.webhookID)", isDirectory: false)
