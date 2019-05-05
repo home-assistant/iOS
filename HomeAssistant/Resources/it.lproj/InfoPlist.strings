@@ -4,5 +4,5 @@
 "NSMotionUsageDescription" = "Il movimento viene utilizzato per migliorare gli aggiornamenti della posizione con il tipo di movimento corrente, oltre a fornire i dati base del contapassi.";
 "NSSiriUsageDescription" = "Usiamo Siri per consentire ai comandi di interagire con l'app.";
 "NSPhotoLibraryAddUsageDescription" = "E' necessario l'accesso al Rullino foto per consentire il salvataggio delle foto.";
-"NSPhotoLibraryUsageDescription" = "E' necessario l'accesso al Rullino foto per consentire il salvataggio delle foto.";
+"NSPhotoLibraryUsageDescription" = "L'accesso al Rullino foto è necessario per consentire il salvataggio delle foto dalla visualizzazione Web.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Invia posizione";

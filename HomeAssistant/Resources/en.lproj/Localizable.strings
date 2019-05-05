@@ -630,8 +630,7 @@
 "onboarding.connection_test_result.connection_error.description" = "General connection error%@.";
 "onboarding.connection_test_result.server_error.description" = "Server error%@.";
 "onboarding.connection_test_result.too_old.description" = "You must upgrade your Home Assistant version.";
-"onboarding.connection_test_result.no_base_url_discovered.description" = "No base_url was found during discovery! Please check your http.base_url and retry automatic setup or restart with manual setup.";
-"onboarding.connection_test_result.unknown_error.description" = "Unknown error%@.";
+"onboarding.connection_test_result.unknown_error.description" = "Unknown error: %@";
 "onboarding.discovery.results_label.plural" = "We found %d Home Assistants on your network.";
 "onboarding.discovery.results_label.singular" = "We found %d Home Assistant on your network.";
 "onboarding.connect.title" = "Connecting to %@";

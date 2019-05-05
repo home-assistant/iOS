@@ -541,10 +541,6 @@ internal enum L10n {
           return L10n.tr("Localizable", "onboarding.connection_test_result.connection_error.description", p1)
         }
       }
-      internal enum NoBaseUrlDiscovered {
-        /// No base_url was found during discovery! Please check your http.base_url and retry automatic setup or restart with manual setup.
-        internal static let description = L10n.tr("Localizable", "onboarding.connection_test_result.no_base_url_discovered.description")
-      }
       internal enum ServerError {
         /// Server error%@.
         internal static func description(_ p1: String) -> String {
@@ -572,7 +568,7 @@ internal enum L10n {
         internal static let description = L10n.tr("Localizable", "onboarding.connection_test_result.too_old.description")
       }
       internal enum UnknownError {
-        /// Unknown error%@.
+        /// Unknown error: %@
         internal static func description(_ p1: String) -> String {
           return L10n.tr("Localizable", "onboarding.connection_test_result.unknown_error.description", p1)
         }

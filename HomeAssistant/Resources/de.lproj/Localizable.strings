@@ -638,7 +638,7 @@ an dieses Gerät gesschickt.";
 "onboarding.connection_test_result.connection_error.description" = "Allgemeiner Verbindungsfehler %@.";
 "onboarding.connection_test_result.server_error.description" = "Serverfehler %@.";
 "onboarding.connection_test_result.too_old.description" = "Du musst deine Home Assistant-Version aktualisieren.";
-"onboarding.connection_test_result.unknown_error.description" = "Unbekannter Fehler %@ .";
+"onboarding.connection_test_result.unknown_error.description" = "Unbekannter Fehler: %@";
 "onboarding.discovery.results_label.plural" = "Wir haben %d Home Assistants in Ihrem Netzwerk gefunden.";
 "onboarding.discovery.results_label.singular" = "Wir haben %d Home Assistant in Ihrem Netzwerk gefunden.";
 "onboarding.connect.title" = "Verbinde zu %@";

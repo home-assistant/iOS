@@ -630,7 +630,7 @@
 "onboarding.connection_test_result.connection_error.description" = "Erreur de connexion générale %@ .";
 "onboarding.connection_test_result.server_error.description" = "Erreur serveur%@.";
 "onboarding.connection_test_result.too_old.description" = "You must upgrade your Home Assistant version.";
-"onboarding.connection_test_result.unknown_error.description" = "Erreur inconnue %@.";
+"onboarding.connection_test_result.unknown_error.description" = "Erreur inconnue: %@";
 "onboarding.discovery.results_label.plural" = "Nous avons trouvé %d Home Assistants sur votre réseau.";
 "onboarding.discovery.results_label.singular" = "Nous avons trouvé %d Home Assistant sur votre réseau.";
 "onboarding.connect.title" = "Connexion à %@";
