@@ -864,7 +864,6 @@ extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
         Current.Log.info("Firebase registration token refreshed, new token: \(fcmToken)")
 
-        prefs.setValue(fcmToken, forKey: "pushID")
         Current.settingsStore.pushID = fcmToken
 
         guard let api = HomeAssistantAPI.authenticatedAPI() else {

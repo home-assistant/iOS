@@ -44,8 +44,6 @@ public class HomeAssistantAPI {
 
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
-    public var pushID: String?
-
     public static var LoadedComponents = [String]()
 
     public private(set) var manager: Alamofire.SessionManager!
@@ -79,8 +77,6 @@ public class HomeAssistantAPI {
         self.webhookManager.adapter = handler
         self.webhookManager.retrier = handler
         self.webhookHandler = handler
-
-        self.pushID = self.prefs.string(forKey: "pushID")
 
         UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
             let notificationsAllowed = settings.authorizationStatus == UNAuthorizationStatus.authorized
@@ -366,7 +362,7 @@ public class HomeAssistantAPI {
         let deviceKitDevice = Device.current
 
         let ident = MobileAppRegistrationRequest()
-        if let pushID = self.pushID {
+        if let pushID = Current.settingsStore.pushID {
             ident.AppData = [
                 "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
                 "push_token": pushID
@@ -390,7 +386,7 @@ public class HomeAssistantAPI {
         let deviceKitDevice = Device.current
 
         let ident = MobileAppUpdateRegistrationRequest()
-        if let pushID = self.pushID {
+        if let pushID = Current.settingsStore.pushID {
             ident.AppData = [
                 "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
                 "push_token": pushID

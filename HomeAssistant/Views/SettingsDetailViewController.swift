@@ -187,7 +187,7 @@ class SettingsDetailViewController: FormViewController {
                 <<< TextAreaRow {
                     $0.tag = "pushID"
                     $0.placeholder = L10n.SettingsDetails.Notifications.PushIdSection.placeholder
-                    if let pushID = prefs.string(forKey: "pushID") {
+                    if let pushID = Current.settingsStore.pushID {
                         $0.value = pushID
                     } else {
                         $0.value = L10n.SettingsDetails.Notifications.PushIdSection.notRegistered
