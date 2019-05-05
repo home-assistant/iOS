@@ -541,6 +541,10 @@ internal enum L10n {
           return L10n.tr("Localizable", "onboarding.connection_test_result.connection_error.description", p1)
         }
       }
+      internal enum NoBaseUrlDiscovered {
+        /// No http.base_url was found in the discovery information. Please add a valid http.base_url to your configuration.yaml and restart Home Assistant to continue with automatic setup or setup manually.
+        internal static let description = L10n.tr("Localizable", "onboarding.connection_test_result.no_base_url_discovered.description")
+      }
       internal enum ServerError {
         /// Server error%@.
         internal static func description(_ p1: String) -> String {
