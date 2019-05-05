@@ -107,8 +107,9 @@ public class HomeAssistantAPI {
 
     private static var sharedAPI: HomeAssistantAPI?
 
-    public static func authenticatedAPI(urlConfig: URLSessionConfiguration = .default) -> HomeAssistantAPI? {
-        if let api = sharedAPI {
+    public static func authenticatedAPI(urlConfig: URLSessionConfiguration = .default,
+                                        forceInit: Bool = false) -> HomeAssistantAPI? {
+        if let api = sharedAPI, forceInit == false {
             return api
         }
 

@@ -135,7 +135,7 @@ class ConnectInstanceViewController: UIViewController {
     }
 
     public func Connect() -> Promise<ConfigResponse> {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+        guard let api = HomeAssistantAPI.authenticatedAPI(urlConfig: .default, forceInit: true) else {
             Current.Log.error("Couldn't get authenticated API!")
             return Promise(error: ConnectionError.noAuthenticatedAPI)
         }
