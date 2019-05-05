@@ -610,19 +610,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ]
         var eventData: [String: Any] = ["name": shortcutName, "input": shortcutDict, "device": deviceDict]
 
-        let successHandler: CallbackURLKit.SuccessCallback = { (params) in
-            Current.Log.verbose("Received params from shortcut run \(String(describing: params))")
-            eventData["status"] = "success"
-            eventData["result"] = params?["result"]
+        var successHandler: CallbackURLKit.SuccessCallback?
 
-            Current.Log.verbose("Success, sending data \(eventData)")
+        if shortcutDict["ignore_result"] == nil {
+            successHandler = { (params) in
+                Current.Log.verbose("Received params from shortcut run \(String(describing: params))")
+                eventData["status"] = "success"
+                eventData["result"] = params?["result"]
 
-            _ = firstly {
-                HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.CreateEvent(eventType: eventName, eventData: eventData)
-            }.catch { error -> Void in
-                Current.Log.error("Received error from createEvent during shortcut run \(error)")
+                Current.Log.verbose("Success, sending data \(eventData)")
+
+                _ = firstly {
+                    HomeAssistantAPI.authenticatedAPIPromise
+                    }.then { api in
+                        api.CreateEvent(eventType: eventName, eventData: eventData)
+                    }.catch { error -> Void in
+                        Current.Log.error("Received error from createEvent during shortcut run \(error)")
+                }
             }
         }
 
