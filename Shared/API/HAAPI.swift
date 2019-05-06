@@ -124,7 +124,11 @@ public class HomeAssistantAPI {
 
     public static var authenticatedAPIPromise: Promise<HomeAssistantAPI> {
         return Promise { seal in
-            seal.resolve(self.authenticatedAPI(), APIError.notConfigured)
+            if let api = self.authenticatedAPI() {
+                seal.fulfill(api)
+                return
+            }
+            seal.reject(APIError.notConfigured)
         }
     }
 
