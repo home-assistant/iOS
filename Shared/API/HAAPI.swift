@@ -234,7 +234,6 @@ public class HomeAssistantAPI {
 
             self.connectionInfo.cloudhookURL = config.CloudhookURL
             self.connectionInfo.setAddress(config.RemoteUIURL, .remoteUI)
-            Current.settingsStore.connectionInfo = self.connectionInfo
 
             self.prefs.setValue(config.LocationName, forKey: "location_name")
             self.prefs.setValue(config.Latitude, forKey: "latitude")
@@ -333,8 +332,6 @@ public class HomeAssistantAPI {
                 self.connectionInfo.cloudhookURL = resp.CloudhookURL
                 self.connectionInfo.webhookID = resp.WebhookID
                 self.connectionInfo.webhookSecret = resp.WebhookSecret
-
-                Current.settingsStore.connectionInfo = self.connectionInfo
 
                 let handler = WebhookHandler()
                 self.webhookManager.adapter = handler

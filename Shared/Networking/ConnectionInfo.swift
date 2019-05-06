@@ -15,21 +15,43 @@ import SystemConfiguration.CaptiveNetwork
 public class ConnectionInfo: Codable {
     public private(set) var externalURL: URL? {
         didSet {
+            Current.settingsStore.connectionInfo = self
             guard self.externalURL != nil else { return }
             Current.setUserProperty?("externalURL", "RemoteConnectionMethod")
         }
     }
-    public private(set) var internalURL: URL?
+    public private(set) var internalURL: URL? {
+        didSet {
+            Current.settingsStore.connectionInfo = self
+        }
+    }
     public private(set) var remoteUIURL: URL? {
         didSet {
+            Current.settingsStore.connectionInfo = self
             guard self.remoteUIURL != nil else { return }
             Current.setUserProperty?("remoteUI", "RemoteConnectionMethod")
         }
     }
-    public var webhookID: String
-    public var webhookSecret: String?
-    public var cloudhookURL: URL?
-    public var internalSSIDs: [String]?
+    public var webhookID: String {
+        didSet {
+            Current.settingsStore.connectionInfo = self
+        }
+    }
+    public var webhookSecret: String? {
+        didSet {
+            Current.settingsStore.connectionInfo = self
+        }
+    }
+    public var cloudhookURL: URL? {
+        didSet {
+            Current.settingsStore.connectionInfo = self
+        }
+    }
+    public var internalSSIDs: [String]? {
+        didSet {
+            Current.settingsStore.connectionInfo = self
+        }
+    }
 
     public var activeURLType: URLType = .external {
         didSet {
