@@ -96,7 +96,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
         var settingsFooter = L10n.NotificationsConfigurator.Settings.footer
 
-        if self.newCategory {
+        if !self.newCategory {
             settingsFooter = L10n.NotificationsConfigurator.Settings.Footer.idSet
         }
 
