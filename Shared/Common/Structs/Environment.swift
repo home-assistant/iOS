@@ -64,6 +64,10 @@ public class Environment {
 
     public var syncMonitoredRegions: (() -> Void)?
 
+    public var logEvent: ((String, [String: Any]?) -> Void)?
+
+    public var setUserProperty: ((String?, String) -> Void)?
+
     public func updateWith(authenticatedAPI: HomeAssistantAPI) {
         self.tokenManager = authenticatedAPI.tokenManager
         self.settingsStore.connectionInfo = authenticatedAPI.connectionInfo

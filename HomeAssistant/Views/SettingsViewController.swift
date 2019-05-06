@@ -14,6 +14,7 @@ import RealmSwift
 import Lokalise
 import ZIPFoundation
 import UserNotifications
+import Firebase
 
 // swiftlint:disable:next type_body_length
 class SettingsViewController: FormViewController {
@@ -337,6 +338,7 @@ class SettingsViewController: FormViewController {
 
     func ResetApp() {
         Current.Log.verbose("Resetting app!")
+        Analytics.resetAnalyticsData()
         resetStores()
         setDefaults()
         let bundleId = Bundle.main.bundleIdentifier!

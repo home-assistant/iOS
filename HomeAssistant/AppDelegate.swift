@@ -520,6 +520,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Communicator.shared.contextUpdatedObservers.add { context in
             Current.Log.verbose("Received context: \(context)")
+
+            if let modelIdentifier = context.content["watchModel"] as? String {
+                Current.setUserProperty?(modelIdentifier, "PairedAppleWatch")
+            }
         }
     }
 
@@ -714,6 +718,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Messaging.messaging().isAutoInitEnabled = prefs.bool(forKey: "messagingEnabled")
         Analytics.setAnalyticsCollectionEnabled(prefs.bool(forKey: "analyticsEnabled"))
+
+        Current.logEvent = { (eventName: String, params: [String: Any]?) -> Void in
+            Current.Log.verbose("Logging event \(eventName) to analytics")
+            Analytics.logEvent(eventName, parameters: params)
+        }
+
+        Current.setUserProperty = { (value: String?, name: String) -> Void in
+            Current.Log.verbose("Setting user property \(name) to \(value)")
+            Analytics.setUserProperty(value, forName: name)
+        }
     }
 }
 

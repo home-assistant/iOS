@@ -493,6 +493,7 @@ public class HomeAssistantAPI {
         }.then { (resp) -> Promise<Bool> in
             Current.Log.verbose("Device seen via webhook!")
             self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: resp.2)
+            Current.logEvent?("location_update", ["trigger": updateType.rawValue as String])
             return Promise.value(true)
         }
 
