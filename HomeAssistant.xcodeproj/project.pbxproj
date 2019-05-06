@@ -215,6 +215,7 @@
 		B648AE252275918F006972AF /* Segues.swift in Sources */ = {isa = PBXBuildFile; fileRef = B648AE232275918E006972AF /* Segues.swift */; };
 		B648AE262275918F006972AF /* Scenes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B648AE242275918E006972AF /* Scenes.swift */; };
 		B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64BB3A71E9C6551001E8B46 /* WebViewController.swift */; };
+		B655E915227FE88A00CFDC94 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B60247FE1FBD343000998205 /* InfoPlist.strings */; };
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
 		B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F21CA646EB00121384 /* Assets.xcassets */; };
 		B657A8F61CA646EB00121384 /* Release LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F41CA646EB00121384 /* Release LaunchScreen.storyboard */; };
@@ -2989,6 +2990,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C6645270B5B70DF1C404144 /* Pods-SiriIntents-metadata.plist in Resources */,
+				B655E915227FE88A00CFDC94 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

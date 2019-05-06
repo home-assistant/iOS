@@ -48,9 +48,11 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
             api.SubmitLocation(updateType: .Siri, location: resp.location?.location, zone: nil).done { _ in
                 Current.Log.verbose("Successfully submitted location")
 
-                var respCode = SendLocationIntentResponseCode.success
-                if resp.source != .unknown && resp.source != .stored {
-                    respCode = SendLocationIntentResponseCode.successViaPasteboard
+                var respCode: SendLocationIntentResponseCode = .success
+                if resp.source == .currentLocation {
+                    respCode = .successViaCurrentLocation
+                } else if resp.source != .unknown && resp.source != .stored {
+                    respCode = .successViaPasteboard
                 }
 
                 completion(SendLocationIntentResponse(code: respCode, userActivity: resp.userActivity,
@@ -117,11 +119,23 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
                 geocoder.geocodeAddressString(pasteboardString) { (placemarks, error) in
                     if let error = error {
                         Current.Log.error("Error when geocoding string, sending current location instead! \(error)")
-                        completion(SendLocationIntentResponse(code: .ready, userActivity: nil,
-                                                              place: nil, source: .unknown,
-                                                              pasteboardContents: nil))
-//                        completion(SendLocationIntentResponse(code: .failureGeocoding, userActivity: nil,
-//                                                              pasteboardContents: pasteboardString))
+
+                        Current.isPerformingSingleShotLocationQuery = true
+                        _ = OneShotLocationManager { location, _ in
+                            guard let location = location else {
+                                completion(SendLocationIntentResponse(code: .failure, userActivity: nil,
+                                                                      pasteboardContents: nil))
+                                return
+                            }
+
+                            Current.isPerformingSingleShotLocationQuery = false
+
+                            let place = MKPlacemark(location: location, name: nil, postalAddress: nil)
+                            completion(SendLocationIntentResponse(code: .ready, userActivity: nil,
+                                                                  place: place, source: .currentLocation,
+                                                                  pasteboardContents: nil))
+                        }
+
                         return
                     }
                     if let placemarks = placemarks {

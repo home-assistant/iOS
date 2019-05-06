@@ -514,7 +514,7 @@ public class HomeAssistantAPI {
                     return
                 }
 
-                Current.isPerformingSingleShotLocationQuery = true
+                Current.isPerformingSingleShotLocationQuery = false
                 firstly {
                     self.SubmitLocation(updateType: updateTrigger, location: location,
                                         zone: nil)

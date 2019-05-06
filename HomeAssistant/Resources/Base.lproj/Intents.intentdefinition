@@ -51,6 +51,16 @@
 					<key>INEnumValueName</key>
 					<string>stored</string>
 				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Current Location</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>F708zM</string>
+					<key>INEnumValueIndex</key>
+					<integer>4</integer>
+					<key>INEnumValueName</key>
+					<string>currentLocation</string>
+				</dict>
 			</array>
 		</dict>
 	</array>
@@ -59,9 +69,9 @@
 	<key>INIntentDefinitionSystemVersion</key>
 	<string>18E226</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>10E125</string>
+	<string>10E1001</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>10.2</string>
+	<string>10.2.1</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -431,6 +441,16 @@
 						<string>failureGeocoding</string>
 						<key>INIntentResponseCodeSuccess</key>
 						<false/>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
+						<string>Location updated to your current location</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>tHPm96</string>
+						<key>INIntentResponseCodeName</key>
+						<string>successViaCurrentLocation</string>
+						<key>INIntentResponseCodeSuccess</key>
+						<true/>
 					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
