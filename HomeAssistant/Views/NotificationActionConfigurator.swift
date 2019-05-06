@@ -46,19 +46,12 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
                                                                  action: saveSelector)
 
-        let infoButton = UIButton(type: .infoLight)
-
-        infoButton.addTarget(self, action: #selector(NotificationActionConfigurator.getInfoAction),
-                             for: .touchUpInside)
-
-        let infoButtonView = UIBarButtonItem(customView: infoButton)
-
         let previewButton = UIBarButtonItem(withIcon: .eyeIcon, size: CGSize(width: 25, height: 25), target: self,
                                             action: #selector(NotificationActionConfigurator.preview))
 
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
 
-        self.setToolbarItems([infoButtonView, flexibleSpace, previewButton], animated: false)
+        self.setToolbarItems([flexibleSpace, previewButton], animated: false)
 
         self.navigationController?.setToolbarHidden(false, animated: false)
 
@@ -178,11 +171,6 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-
-    @objc
-    func getInfoAction(_ sender: Any) {
-        Current.Log.verbose("getInfoAction hit, open docs page!")
     }
 
     @objc
