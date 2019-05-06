@@ -28,7 +28,9 @@ class SettingsDetailViewController: FormViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationItem.rightBarButtonItem = nil
+        if !self.doneButton {
+            self.navigationItem.rightBarButtonItem = nil
+        }
     }
 
     // swiftlint:disable:next function_body_length cyclomatic_complexity
