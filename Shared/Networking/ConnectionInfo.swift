@@ -106,9 +106,29 @@ public class ConnectionInfo: Codable {
             }
         }
 
-        Current.Log.warning("Unable to get \(self.activeURLType), even though its active!")
+        let errMsg = "Unable to get \(self.activeURLType), even though its active!"
+        Current.Log.error(errMsg)
 
-        fatalError("Unable to get activeURL! This should not be possible!")
+        #if os(iOS)
+        let alert = UIAlertController(title: "URL Unavailable",
+                                      // swiftlint:disable:next line_length
+                                      message: "Expected to have a \(self.activeURLType) but none available! Check settings and try again",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Quit App", style: .destructive, handler: { _ in exit(1) }))
+
+        let win = UIWindow(frame: UIScreen.main.bounds)
+        let vc = UIViewController()
+        vc.view.backgroundColor = .clear
+        win.rootViewController = vc
+        win.windowLevel = UIWindow.Level.alert + 1
+        win.makeKeyAndVisible()
+        vc.present(alert, animated: true, completion: nil)
+
+        #else
+        fatalError(errMsg)
+        #endif
+
+        return URL(string: "http://somethingbroke.fake")!
     }
 
     /// Returns the activeURL with /api appended.
