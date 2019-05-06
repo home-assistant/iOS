@@ -634,7 +634,7 @@
 "onboarding.connection_test_result.ssl_expired.description" = "Your SSL certificate is expired.";
 "onboarding.connection_test_result.client_certificate.description" = "Client Certificate Authentication is not supported.";
 "onboarding.connection_test_result.connection_error.description" = "General connection error%@.";
-"onboarding.connection_test_result.server_error.description" = "Server error%@.";
+"onboarding.connection_test_result.server_error.description" = "Server error: %@";
 "onboarding.connection_test_result.too_old.description" = "You must upgrade your Home Assistant version.";
 "onboarding.connection_test_result.unknown_error.description" = "Unknown error: %@";
 "onboarding.discovery.results_label.plural" = "We found %d Home Assistants on your network.";
@@ -652,3 +652,4 @@
 "settings.connection_section.cloudhook_url.title" = "Cloudhook URL";
 "settings.connection_section.remote_ui.title" = "Home Assistant Cloud";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
+"onboarding.connection_test_result.no_base_url_discovered.description" = "No http.base_url was found in the discovery information. Please add a valid http.base_url to your configuration.yaml and restart Home Assistant to continue with automatic setup or setup manually.";

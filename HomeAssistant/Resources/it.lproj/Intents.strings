@@ -61,3 +61,7 @@
 "wKnW1P" = "Chiama il servizio ${serviceDomain}.$ {service} con i dati degli appunti";
 "wfPQQQ" = "Lancia un evento sul bus eventi Home Assistant";
 "yS9QV0" = "Lancia ${eventName} con dati";
+"7NpJ76-F708zM" = "Location updated to contents of clipboard that were parsed as Current Location";
+"YyQQL1" = "JSON was found on the clipboard but was invalid.";
+"boiLEw" = "JSON was found on the clipboard but was invalid.";
+"tHPm96" = "Location updated to your current location";

@@ -61,3 +61,7 @@
 "wKnW1P" = "Service ￼${serviceDomain}.${service} mit Daten aus der Zwischenablage aufrufen";
 "wfPQQQ" = "Sende ein Ereignis an den Home Assistant Event Bus";
 "yS9QV0" = "Ereignis ${eventName} mit Daten auslösen";
+"7NpJ76-F708zM" = "Location updated to contents of clipboard that were parsed as Current Location";
+"YyQQL1" = "JSON was found on the clipboard but was invalid.";
+"boiLEw" = "JSON was found on the clipboard but was invalid.";
+"tHPm96" = "Location updated to your current location";

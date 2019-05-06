@@ -55,9 +55,13 @@
 "ri4H1h" = "Successfully sent ${domain}.${service} with clipboard contents to Home Assistant";
 "rlOS6H" = "Successfully rendered template from clipboard";
 "rwj6u7" = "Report your current location as ${location} to Home Assistant";
-"sbkx4E" = "Failed to geocode ${clipboardContents} to a valid location";
+"sbkx4E" = "Failed to geocode ${pasteboardContents} to a valid location";
 "uUk5RX" = "Call ${serviceDomain}.${service} with data";
 "v7TSD5" = "Send Location";
 "wKnW1P" = "Call service ${serviceDomain}.${service} with clipboard data";
 "wfPQQQ" = "Fire an event to the Home Assistant event bus";
 "yS9QV0" = "Fire ${eventName} with data";
+"7NpJ76-F708zM" = "Location updated to contents of clipboard that were parsed as Current Location";
+"YyQQL1" = "JSON was found on the clipboard but was invalid.";
+"boiLEw" = "JSON was found on the clipboard but was invalid.";
+"tHPm96" = "Location updated to your current location";
