@@ -54,9 +54,5 @@
 	<string>We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>location</string>
-	</array>
 </dict>
 </plist>
