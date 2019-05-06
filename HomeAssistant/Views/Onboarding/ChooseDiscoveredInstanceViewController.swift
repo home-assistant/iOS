@@ -31,7 +31,7 @@ class ChooseDiscoveredInstanceViewController: UIViewController {
         Current.Log.verbose("Received instances \(self.instances)")
 
         var label = L10n.Onboarding.Discovery.ResultsLabel.singular(self.instances.count)
-        if self.instances.count > 1 {
+        if self.instances.count == 0 || self.instances.count > 1 {
             label = L10n.Onboarding.Discovery.ResultsLabel.plural(self.instances.count)
         }
         self.statusLabel.text = label
