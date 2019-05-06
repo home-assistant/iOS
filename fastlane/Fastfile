@@ -284,7 +284,7 @@ platform :ios do
       app_identifier: app_id,
       changelog: change_log,
       distribute_external: true,
-      wait_for_uploaded_build: true
+      groups: ["App Store Connect Users", "Friendly Testers Link", "Public Signup Link", "Website redirect"]
     )
 
     rocket
