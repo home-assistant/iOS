@@ -86,10 +86,20 @@ platform :ios do
 
   lane :refresh_dsyms do
     FileUtils.mkdir_p '../dSYMs'
-    download_dsyms(output_directory: "./dSYMs", app_identifier: "io.robbie.homeassistant")
+    download_dsyms(output_directory: "./dSYMs", app_identifier: "io.robbie.HomeAssistant")
     dir = "../dSYMS"
     files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
-    upload_symbols_to_crashlytics(api_token: ENV["FABRIC_API_KEY"],
+    upload_symbols_to_crashlytics(gsp_path: "./HomeAssistant/Resources/GoogleService-Info-Release.plist",
+                                  dsym_paths: files, dsym_worker_threads: 6)
+    clean_build_artifacts
+  end
+
+  lane :refresh_beta_dsyms do
+    FileUtils.mkdir_p '../dSYMs'
+    download_dsyms(output_directory: "./dSYMs", app_identifier: "io.robbie.HomeAssistant.beta")
+    dir = "../dSYMS"
+    files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
+    upload_symbols_to_crashlytics(gsp_path: "./HomeAssistant/Resources/GoogleService-Info-Beta.plist",
                                   dsym_paths: files, dsym_worker_threads: 6)
     clean_build_artifacts
   end

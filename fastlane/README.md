@@ -26,6 +26,11 @@ Fetches the provisioning profiles so you can build locally and deploy to your de
 fastlane ios refresh_dsyms
 ```
 
+### ios refresh_beta_dsyms
+```
+fastlane ios refresh_beta_dsyms
+```
+
 ### ios push_certs
 ```
 fastlane ios push_certs
