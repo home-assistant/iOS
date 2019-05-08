@@ -647,3 +647,10 @@
 "settings.connection_section.remote_ui.title" = "Home Assistant Cloud";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "Non è stato possibile individuare il corretto http.base_url. Si prega di aggiungere http.base_url nel tuo file configuration.yaml e di riavviare Home Assistant per continuare con il setup automatico o, in alternativa, di procedere con la configurazione manuale.";
+"settings_details.notifications.rate_limits.header" = "Rate Limits";
+"settings_details.notifications.rate_limits.footer" = "Rate limits reset at midnight UTC.";
+"settings_details.notifications.rate_limits.attempts" = "Attempts";
+"settings_details.notifications.rate_limits.delivered" = "Delivered";
+"settings_details.notifications.rate_limits.errors" = "Errors";
+"settings_details.notifications.rate_limits.total" = "Total";
+"settings_details.notifications.rate_limits.resets_in" = "Resets In";

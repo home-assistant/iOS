@@ -61,7 +61,7 @@
 "settings_details.location.zones.beacon_major.title" = "iBeacon Major";
 "settings_details.location.zones.beacon_minor.title" = "iBeacon Minor";
 "settings_details.location.zones.footer" = "To disable location tracking add track_ios: false to each zones settings or under customize.";
-"settings_details.notifications.title" = "Notification";
+"settings_details.notifications.title" = "Notifications";
 "settings_details.notifications.push_id_section.header" = "Push ID";
 "settings_details.notifications.push_id_section.footer" = "This is the target to use in your Home Assistant configuration. Tap to copy or share.";
 "settings_details.notifications.push_id_section.placeholder" = "Push ID";

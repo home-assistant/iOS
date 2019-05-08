@@ -1352,7 +1352,7 @@ internal enum L10n {
       }
     }
     internal enum Notifications {
-      /// Notification
+      /// Notifications
       internal static let title = L10n.tr("Localizable", "settings_details.notifications.title")
       internal enum BadgeSection {
         internal enum Button {
