@@ -24,7 +24,6 @@ class IntentHandler: INExtension {
         if intent is FireEventIntent {
             return FireEventIntentHandler()
         }
-
         if intent is CallServiceIntent {
             return CallServiceIntentHandler()
         }
@@ -33,6 +32,9 @@ class IntentHandler: INExtension {
         }
         if intent is GetCameraImageIntent {
             return GetCameraImageIntentHandler()
+        }
+        if intent is RenderTemplateIntent {
+            return RenderTemplateIntentHandler()
         }
 
         return self
