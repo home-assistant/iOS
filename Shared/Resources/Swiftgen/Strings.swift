@@ -1400,6 +1400,22 @@ internal enum L10n {
         /// Push ID
         internal static let placeholder = L10n.tr("Localizable", "settings_details.notifications.push_id_section.placeholder")
       }
+      internal enum RateLimits {
+        /// Attempts
+        internal static let attempts = L10n.tr("Localizable", "settings_details.notifications.rate_limits.attempts")
+        /// Delivered
+        internal static let delivered = L10n.tr("Localizable", "settings_details.notifications.rate_limits.delivered")
+        /// Errors
+        internal static let errors = L10n.tr("Localizable", "settings_details.notifications.rate_limits.errors")
+        /// Rate limits reset at midnight UTC.
+        internal static let footer = L10n.tr("Localizable", "settings_details.notifications.rate_limits.footer")
+        /// Rate Limits
+        internal static let header = L10n.tr("Localizable", "settings_details.notifications.rate_limits.header")
+        /// Resets In
+        internal static let resetsIn = L10n.tr("Localizable", "settings_details.notifications.rate_limits.resets_in")
+        /// Total
+        internal static let total = L10n.tr("Localizable", "settings_details.notifications.rate_limits.total")
+      }
       internal enum Sounds {
         /// Bundled
         internal static let bundled = L10n.tr("Localizable", "settings_details.notifications.sounds.bundled")

@@ -10,10 +10,14 @@ import UIKit
 import Eureka
 import Shared
 import Realm
+import Firebase
 
+// swiftlint:disable:next type_body_length
 class NotificationSettingsViewController: FormViewController {
 
     var doneButton: Bool = false
+
+    let utc = TimeZone(identifier: "UTC")!
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -26,6 +30,11 @@ class NotificationSettingsViewController: FormViewController {
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateTimer), userInfo: nil,
+                             repeats: true)
+
+        self.setupFirestoreRateLimits()
 
         if doneButton {
             let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
@@ -195,6 +204,83 @@ class NotificationSettingsViewController: FormViewController {
                     prefs.set(val, forKey: "xCallbackURLLocationRequestNotifications")
                 }
             })
+
+            +++ Section(header: L10n.SettingsDetails.Notifications.RateLimits.header,
+                        footer: L10n.SettingsDetails.Notifications.RateLimits.footer)
+            <<< LabelRow {
+                $0.tag = "attemptsCount"
+                $0.title = L10n.SettingsDetails.Notifications.RateLimits.attempts
+            }
+            <<< LabelRow {
+                $0.tag = "deliveredCount"
+                $0.title = L10n.SettingsDetails.Notifications.RateLimits.delivered
+            }
+            <<< LabelRow {
+                $0.tag = "errorCount"
+                $0.title = L10n.SettingsDetails.Notifications.RateLimits.errors
+            }
+            <<< LabelRow {
+                $0.tag = "totalCount"
+                $0.title = L10n.SettingsDetails.Notifications.RateLimits.total
+            }
+            <<< LabelRow {
+                $0.tag = "resetsIn"
+                $0.title = L10n.SettingsDetails.Notifications.RateLimits.resetsIn
+            }
+    }
+
+    func setupFirestoreRateLimits() {
+        guard let pushID = Current.settingsStore.pushID else { return }
+        let db = Firestore.firestore()
+
+        let date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "yyyyMMdd"
+        dateFormatter.timeZone = self.utc
+        let dateStr = dateFormatter.string(from: date)
+
+        let path = "/rateLimits/\(dateStr)/tokens/\(pushID)"
+
+        Current.Log.verbose("Getting rate limit document at \(path)")
+
+        db.document(path).addSnapshotListener { documentSnapshot, error in
+            guard let document = documentSnapshot else {
+                Current.Log.error("Error fetching document: \(error!)")
+                return
+            }
+
+            guard let data = document.data() else {
+                Current.Log.warning("Rate limit document was empty.")
+                return
+            }
+
+            for (key, val) in data {
+                guard let iVal = val as? Int else { continue }
+                guard let row = self.form.rowBy(tag: key) as? LabelRow else { continue }
+                row.value = String(iVal)
+                row.updateCell()
+            }
+        }
+    }
+
+    @objc func updateTimer() {
+        var calendar = Calendar.current
+        calendar.timeZone = self.utc
+
+        guard let startOfNextDay = calendar.nextDate(after: Date(),
+                                                     matching: DateComponents(hour: 0, minute: 0),
+                                                     matchingPolicy: .nextTimePreservingSmallerComponents) else {
+            return
+        }
+        guard let row = self.form.rowBy(tag: "resetsIn") as? LabelRow else { return }
+
+        let formatter = DateComponentsFormatter()
+        formatter.zeroFormattingBehavior = .pad
+        formatter.allowedUnits = [.hour, .minute, .second]
+
+        row.value = formatter.string(from: Date(), to: startOfNextDay)
+        row.updateCell()
     }
 
     @objc func closeSettingsDetailView(_ sender: UIButton) {

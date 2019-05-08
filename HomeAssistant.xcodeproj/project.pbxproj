@@ -242,6 +242,7 @@
 		B65BF9392217F497005745A4 /* old-dev@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9332217F497005745A4 /* old-dev@2x.png */; };
 		B65BF93A2217F497005745A4 /* old-dev@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9342217F497005745A4 /* old-dev@3x.png */; };
 		B65BF93B2217F497005745A4 /* old-release@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B65BF9352217F497005745A4 /* old-release@3x.png */; };
+		B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */; };
 		B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */; };
 		B661FB68226B961400E541DD /* WebSocketBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B661FB67226B961400E541DD /* WebSocketBridge.js */; };
 		B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB69226BBDA900E541DD /* SettingsViewController.swift */; };
@@ -973,6 +974,7 @@
 		B65BF9332217F497005745A4 /* old-dev@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-dev@2x.png"; sourceTree = "<group>"; };
 		B65BF9342217F497005745A4 /* old-dev@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-dev@3x.png"; sourceTree = "<group>"; };
 		B65BF9352217F497005745A4 /* old-release@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "old-release@3x.png"; sourceTree = "<group>"; };
+		B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsViewController.swift; sourceTree = "<group>"; };
 		B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+QueryDictionary.swift"; sourceTree = "<group>"; };
 		B661FB67226B961400E541DD /* WebSocketBridge.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = WebSocketBridge.js; sourceTree = "<group>"; };
 		B661FB69226BBDA900E541DD /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -1698,6 +1700,7 @@
 			isa = PBXGroup;
 			children = (
 				B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */,
+				B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -3179,6 +3182,7 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire-iOS/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage-iOS/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
+				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
 				"${BUILT_PRODUCTS_DIR}/CPDAcknowledgements/CPDAcknowledgements.framework",
 				"${BUILT_PRODUCTS_DIR}/CallbackURLKit/CallbackURLKit.framework",
 				"${BUILT_PRODUCTS_DIR}/ColorPickerRow/ColorPickerRow.framework",
@@ -3208,6 +3212,9 @@
 				"${BUILT_PRODUCTS_DIR}/ViewRow/ViewRow.framework",
 				"${BUILT_PRODUCTS_DIR}/XCGLogger-iOS/XCGLogger.framework",
 				"${BUILT_PRODUCTS_DIR}/ZIPFoundation/ZIPFoundation.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/lottie-ios/Lottie.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -3216,6 +3223,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityIndicator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CPDAcknowledgements.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CallbackURLKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ColorPickerRow.framework",
@@ -3245,6 +3253,9 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ViewRow.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XCGLogger.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZIPFoundation.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpcpp.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lottie.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
@@ -3666,6 +3677,7 @@
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
 				B63CCDCC2164714900123C50 /* Intents.intentdefinition in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
+				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				B661FB7A226C197900E541DD /* ManualSetupViewController.swift in Sources */,
 				B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */,
 				B661FC8A226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift in Sources */,
