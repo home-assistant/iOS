@@ -464,7 +464,7 @@ extension WebViewController: WKScriptMessageHandler {
 
     func handleThemeUpdate(_ messageBody: [String: Any]) {
         if let styles = messageBody["styles"] as? [String: String] {
-            Current.Log.verbose("Styles \(styles)")
+            // Current.Log.verbose("Styles \(styles)")
             let backgroundColor = self.parseThemeStyle("primary-background-color", styles)
             let headerColor = self.parseThemeStyle("primary-color", styles)
             let refreshTintColor = self.parseThemeStyle("text-primary-color", styles)
@@ -504,7 +504,7 @@ extension WebViewController: WKScriptMessageHandler {
             return
         }
 
-        Current.Log.verbose("Received external bus message \(incomingMessage)")
+        // Current.Log.verbose("Received external bus message \(incomingMessage)")
 
         var response: WebSocketMessage?
 
@@ -534,7 +534,7 @@ extension WebViewController: WKScriptMessageHandler {
         }
 
         if let outgoing = response {
-            Current.Log.verbose("Sending response to \(outgoing)")
+            // Current.Log.verbose("Sending response to \(outgoing)")
 
             var encodedMsg: Data?
 
@@ -551,17 +551,17 @@ extension WebViewController: WKScriptMessageHandler {
             }
 
             let script = "window.externalBus(\(jsonString))"
-            Current.Log.verbose("Sending message to externalBus \(script)")
+            // Current.Log.verbose("Sending message to externalBus \(script)")
             self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
                 if let error = error {
                     Current.Log.error("Failed to fire message to externalBus: \(error)")
                 }
 
-                if let result = result {
+                /* if let result = result {
                     Current.Log.verbose("Success on firing message to externalBus: \(String(describing: result))")
                 } else {
                     Current.Log.verbose("Sent message to externalBus")
-                }
+                } */
             })
         }
 
