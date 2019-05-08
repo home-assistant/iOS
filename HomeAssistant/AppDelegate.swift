@@ -75,6 +75,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         self.setupView()
 
+        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
+
         return true
     }
 
@@ -129,11 +131,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillResignActive(_ application: UIApplication) {}
 
-    func applicationDidEnterBackground(_ application: UIApplication) {}
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.entered_background", eventData: [:])
+    }
 
     func applicationWillEnterForeground(_ application: UIApplication) {}
 
     func applicationDidBecomeActive(_ application: UIApplication) {
+        _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.became_active", eventData: [:])
         Lokalise.shared.checkForUpdates { (updated, error) in
             if let error = error {
                 Current.Log.error("Error when updating Lokalise: \(error)")
