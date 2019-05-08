@@ -15,7 +15,7 @@ import Firebase
 // swiftlint:disable:next type_body_length
 class NotificationSettingsViewController: FormViewController {
 
-    var doneButton: Bool = false
+    public var doneButton: Bool = false
 
     let utc = TimeZone(identifier: "UTC")!
 
