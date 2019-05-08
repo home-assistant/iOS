@@ -144,10 +144,23 @@ public class ConnectionInfo: Codable {
         #if os(iOS)
         let alert = UIAlertController(title: "URL Unavailable",
                                       // swiftlint:disable:next line_length
-                                      message: "Expected to have a \(self.activeURLType) but none available! Check settings and try again",
+                                      message: "Expected to have a \(self.activeURLType) but none available! Please enter the URL. App will exit after entry, please reopen.",
                                       preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Quit App", style: .destructive, handler: { _ in exit(1) }))
 
+        var textField: UITextField?
+
+        alert.addTextField { (pTextField) in
+            pTextField.placeholder = self.activeURLType.description
+            pTextField.clearButtonMode = .whileEditing
+            pTextField.borderStyle = .none
+            textField = pTextField
+        }
+
+        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: { _ in
+            guard let urlStr = textField?.text, let url = URL(string: urlStr) else { return }
+            self.setAddress(url, self.activeURLType)
+            exit(1)
+        }))
         let win = UIWindow(frame: UIScreen.main.bounds)
         let vc = UIViewController()
         vc.view.backgroundColor = .clear
