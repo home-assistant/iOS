@@ -238,7 +238,7 @@ public class WebhookSensors {
         }
 
         return WebhookSensor(name: "Floors Ascended", uniqueID: "pedometer_floors_ascended", icon: "mdi:slope-uphill",
-                             state: intVal)
+                             state: intVal, unit: "floors")
     }
 
     private var floorsDescended: WebhookSensor? {
@@ -247,14 +247,14 @@ public class WebhookSensors {
         }
 
         return WebhookSensor(name: "Floors Descended", uniqueID: "pedometer_floors_descended",
-                             icon: "mdi:slope-downhill", state: intVal)
+                             icon: "mdi:slope-downhill", state: intVal, unit: "floors")
     }
 
     private var steps: WebhookSensor? {
         guard let intVal = self.pedometerData?.numberOfSteps.intValue else {
             return nil
         }
-        return WebhookSensor(name: "Steps", uniqueID: "pedometer_steps", icon: "mdi:walk", state: intVal)
+        return WebhookSensor(name: "Steps", uniqueID: "pedometer_steps", icon: "mdi:walk", state: intVal, unit: "steps")
     }
 
     private var averageActivePace: WebhookSensor? {
