@@ -21,8 +21,12 @@ internal enum L10n {
   internal static let errorLabel = L10n.tr("Localizable", "error_label")
   /// No
   internal static let noLabel = L10n.tr("Localizable", "no_label")
+  /// Off
+  internal static let offLabel = L10n.tr("Localizable", "off_label")
   /// OK
   internal static let okLabel = L10n.tr("Localizable", "ok_label")
+  /// On
+  internal static let onLabel = L10n.tr("Localizable", "on_label")
   /// Preview Output
   internal static let previewOutput = L10n.tr("Localizable", "preview_output")
   /// Success

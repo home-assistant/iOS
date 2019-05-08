@@ -13,9 +13,7 @@ public class ServicesResponse: Mappable {
     public var Domain: String = ""
     public var Services: [String: ServiceDefinition] = [:]
 
-    required public init?(map: Map) {
-
-    }
+    required public init?(map: Map) { }
 
     public func mapping(map: Map) {
         Domain    <- map["domain"]
@@ -27,9 +25,7 @@ public class ServiceDefinition: Mappable {
     public var Description: String?
     public var Fields: [String: ServiceField] = [:]
 
-    required public init?(map: Map) {
-
-    }
+    required public init?(map: Map) { }
 
     public func mapping(map: Map) {
         Description  <- map["description"]
@@ -39,13 +35,11 @@ public class ServiceDefinition: Mappable {
 
 public class ServiceField: Mappable {
     public var Description: String?
-    public var Example: AnyObject?
-    public var Default: AnyObject?
-    public var Values: [AnyObject]?
+    public var Example: Any?
+    public var Default: Any?
+    public var Values: [Any]?
 
-    required public init?(map: Map) {
-
-    }
+    required public init?(map: Map) {}
 
     public func mapping(map: Map) {
         Description  <- map["description"]

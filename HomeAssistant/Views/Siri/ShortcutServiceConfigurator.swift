@@ -117,10 +117,13 @@ class ShortcutServiceConfigurator: FormViewController {
                     }
                 }
 
-                if let example = field.Example {
-                    footer += " "
-                    footer += L10n.SiriShortcuts.Configurator.Fields.Section.footer("\(example)")
+                var exampleValue = field.Example ?? "N/A"
+
+                if let example = field.Example as? Bool {
+                    exampleValue = example ? L10n.onLabel : L10n.offLabel
                 }
+
+                footer += " \(L10n.SiriShortcuts.Configurator.Fields.Section.footer("\(exampleValue)"))"
 
                 let supportsTemplates = (key.range(of: "template", options: .caseInsensitive) != nil ||
                                          footer.range(of: "template", options: .caseInsensitive) != nil)
@@ -201,28 +204,17 @@ class ShortcutServiceConfigurator: FormViewController {
                             }
                         }
                     }))
-                } else if let example = field.Example as? String {
-                    rowsToAdd.append(TextRow {
+                } else if let example = field.Example as? Bool {
+                    rowsToAdd.append(SwitchRow {
                         $0.tag = key
                         $0.title = key
                         if !optionalField {
                             $0.add(rule: RuleRequired())
                         }
-                        $0.placeholder = example
-                        if let defaultValue = field.Default, let defaultValueStr = defaultValue as? String {
-                            $0.value = defaultValueStr
-                        }
-                    })
-                } else if let example = field.Example as? Int {
-                    rowsToAdd.append(IntRow {
-                        $0.tag = key
-                        $0.title = key
-                        if !optionalField {
-                            $0.add(rule: RuleRequired())
-                        }
-                        $0.placeholder = example.description
-                        if let defaultValue = field.Default, let defaultValueInt = defaultValue as? Int {
-                            $0.value = defaultValueInt
+                        if let defaultValue = field.Default, let defaultValueBool = defaultValue as? Bool {
+                            $0.value = defaultValueBool
+                        } else {
+                            $0.value = example
                         }
                     })
                 } else if let example = field.Example as? Double {
@@ -237,17 +229,28 @@ class ShortcutServiceConfigurator: FormViewController {
                             $0.value = defaultValueDouble
                         }
                     })
-                } else if let example = field.Example as? Bool {
-                    rowsToAdd.append(SwitchRow {
+                } else if let example = field.Example as? Int {
+                    rowsToAdd.append(IntRow {
                         $0.tag = key
                         $0.title = key
                         if !optionalField {
                             $0.add(rule: RuleRequired())
                         }
-                        if let defaultValue = field.Default, let defaultValueBool = defaultValue as? Bool {
-                            $0.value = defaultValueBool
-                        } else {
-                            $0.value = example
+                        $0.placeholder = example.description
+                        if let defaultValue = field.Default, let defaultValueInt = defaultValue as? Int {
+                            $0.value = defaultValueInt
+                        }
+                    })
+                } else if let example = field.Example as? String {
+                    rowsToAdd.append(TextRow {
+                        $0.tag = key
+                        $0.title = key
+                        if !optionalField {
+                            $0.add(rule: RuleRequired())
+                        }
+                        $0.placeholder = example
+                        if let defaultValue = field.Default, let defaultValueStr = defaultValue as? String {
+                            $0.value = defaultValueStr
                         }
                     })
                 } else {
