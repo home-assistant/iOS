@@ -278,7 +278,7 @@ public class ConnectionInfo: Codable {
         guard let expectedURL: URL = apiURL ? self.adaptAPIURL(currentURL) : self.webhookURL else { return urlRequest }
 
         guard currentURL != expectedURL else {
-            Current.Log.verbose("No need to change request URL from \(currentURL) to \(expectedURL)")
+            // Current.Log.verbose("No need to change request URL from \(currentURL) to \(expectedURL)")
             return urlRequest
         }
 
