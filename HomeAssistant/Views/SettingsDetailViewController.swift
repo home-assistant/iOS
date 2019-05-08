@@ -28,10 +28,11 @@ class SettingsDetailViewController: FormViewController {
 
     private var reorderingRows: [String: BaseRow] = [:]
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if !self.doneButton {
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if self.doneButton {
             self.navigationItem.rightBarButtonItem = nil
+            self.doneButton = false
         }
     }
 
@@ -578,6 +579,14 @@ class SettingsDetailViewController: FormViewController {
             self.title = L10n.SettingsDetails.Actions.title
             let actions = realm.objects(Action.self).sorted(byKeyPath: "Position")
 
+            let infoButton = UIButton(type: .infoLight)
+
+            infoButton.addTarget(self, action: #selector(actionsHelp), for: .touchUpInside)
+
+            let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
+
+            self.navigationItem.rightBarButtonItem = infoBarButtonItem
+
             self.form
                 // swiftlint:disable:next line_length
                 +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "", footer: L10n.SettingsDetails.Actions.footer) { section in
@@ -601,17 +610,14 @@ class SettingsDetailViewController: FormViewController {
             }
         case "privacy":
             self.title = L10n.SettingsDetails.Privacy.title
-            // Create the info button
             let infoButton = UIButton(type: .infoLight)
 
-            // You will need to configure the target action for the button itself, not the bar button item
             infoButton.addTarget(self, action: #selector(firebasePrivacy), for: .touchUpInside)
 
-            // Create a bar button item using the info button as its custom view
             let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
 
-            // Use it as required
             self.navigationItem.rightBarButtonItem = infoBarButtonItem
+
             self.form
                 +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Analytics.description)
                 <<< SwitchRow("analytics") {
@@ -651,9 +657,12 @@ class SettingsDetailViewController: FormViewController {
         }
     }
 
-    @objc
-    func firebasePrivacy(_ sender: Any) {
+    @objc func firebasePrivacy(_ sender: Any) {
         openURLInBrowser(urlToOpen: URL(string: "https://firebase.google.com/support/privacy/")!)
+    }
+
+    @objc func actionsHelp(_ sender: Any) {
+        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/next/integrations/actions")!)
     }
 
     override func tableView(_ tableView: UITableView, willBeginReorderingRowAtIndexPath indexPath: IndexPath) {
