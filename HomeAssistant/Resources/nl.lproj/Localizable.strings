@@ -660,3 +660,5 @@
 "settings_details.notifications.rate_limits.errors" = "Errors";
 "settings_details.notifications.rate_limits.total" = "Total";
 "settings_details.notifications.rate_limits.resets_in" = "Resets In";
+"on_label" = "On";
+"off_label" = "Off";

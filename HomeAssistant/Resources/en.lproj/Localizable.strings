@@ -85,8 +85,6 @@
 "devices_map.map_types.satellite" = "Satellite";
 "devices_map.battery_label" = "Battery";
 "ok_label" = "OK";
-"on_label" = "On";
-"off_label" = "Off";
 "about.title" = "About";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Awaken Your Home";
@@ -656,3 +654,5 @@
 "settings_details.notifications.rate_limits.errors" = "Errors";
 "settings_details.notifications.rate_limits.total" = "Total";
 "settings_details.notifications.rate_limits.resets_in" = "Resets In";
+"on_label" = "On";
+"off_label" = "Off";
