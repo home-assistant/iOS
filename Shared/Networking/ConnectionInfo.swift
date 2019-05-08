@@ -221,10 +221,14 @@ public class ConnectionInfo: Codable {
 
     /// Returns true if current SSID is SSID marked for internal URL use.
     public var isOnInternalNetwork: Bool {
+        #if targetEnvironment(simulator)
+        return true
+        #else
         guard let internalSSIDs = self.internalSSIDs, let currentSSID = ConnectionInfo.CurrentWiFiSSID else {
             return false
         }
         return internalSSIDs.contains(currentSSID)
+        #endif
     }
 
     /// Returns the current SSID if it exists and the platform supports it.
