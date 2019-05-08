@@ -100,7 +100,7 @@ extension Realm {
         let realm = Realm.live()
         realm.beginWrite()
         realm.deleteAll()
-        realm.cancelWrite()
+        try? realm.commitWrite()
     }
 
     private static func handleFatalError(_ message: String, _ error: NSError) {
