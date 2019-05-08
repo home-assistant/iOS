@@ -26,6 +26,8 @@ class SettingsDetailViewController: FormViewController {
 
     private let realm = Current.realm()
 
+    private var reorderingRows: [String: BaseRow] = [:]
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if !self.doneButton {
@@ -577,25 +579,25 @@ class SettingsDetailViewController: FormViewController {
             let actions = realm.objects(Action.self).sorted(byKeyPath: "Position")
 
             self.form
-                +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete, .Reorder],
-                                       header: "",
-                                       footer: L10n.SettingsDetails.Actions.footer) { section in
-                                        section.tag = "actions"
-                                        section.multivaluedRowToInsertAt = { index in
-                                            return self.getActionRow(nil)
-                                        }
-                                        section.addButtonProvider = { section in
-                                            return ButtonRow {
-                                                $0.title = L10n.addButtonLabel
-                                                $0.cellStyle = .value1
-                                                }.cellUpdate { cell, _ in
-                                                    cell.textLabel?.textAlignment = .left
-                                            }
-                                        }
+                // swiftlint:disable:next line_length
+                +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "", footer: L10n.SettingsDetails.Actions.footer) { section in
+                        section.tag = "actions"
+                        section.multivaluedRowToInsertAt = { _ -> ButtonRowWithPresent<ActionConfigurator> in
+                            return self.getActionRow(nil)
+                        }
+                        section.addButtonProvider = { section in
+                            return ButtonRow {
+                                $0.title = L10n.addButtonLabel
+                                $0.cellStyle = .value1
+                                $0.tag = "add_action"
+                            }.cellUpdate { cell, _ in
+                                cell.textLabel?.textAlignment = .left
+                            }
+                        }
 
-                                        for action in actions {
-                                            section <<< getActionRow(action)
-                                        }
+                        for action in actions {
+                            section <<< getActionRow(action)
+                        }
             }
         case "privacy":
             self.title = L10n.SettingsDetails.Privacy.title
@@ -654,12 +656,59 @@ class SettingsDetailViewController: FormViewController {
         openURLInBrowser(urlToOpen: URL(string: "https://firebase.google.com/support/privacy/")!)
     }
 
+    override func tableView(_ tableView: UITableView, willBeginReorderingRowAtIndexPath indexPath: IndexPath) {
+        let row = form[indexPath]
+        guard let rowTag = row.tag else { return }
+        reorderingRows[rowTag] = row
+
+        super.tableView(tableView, willBeginReorderingRowAtIndexPath: indexPath)
+    }
+
+    @objc public func tableView(_ tableView: UITableView, didEndReorderingRowAtIndexPath indexPath: IndexPath) {
+        guard let rowTag = form[indexPath].tag, let row = reorderingRows[rowTag],
+            let actionsSection = row.section as? MultivaluedSection else { return }
+
+        Current.Log.verbose("Setting action \(row) to position \(indexPath.row)")
+
+        let rowsDict = actionsSection.allRows.enumerated().compactMap { (entry) -> (String, Int)? in
+            // Current.Log.verbose("Map \(entry.element.indexPath) \(entry.element.tag)")
+            guard let tag = entry.element.tag else { return nil }
+
+            return (tag, entry.offset)
+        }
+
+        let rowPositions = Dictionary(uniqueKeysWithValues: rowsDict)
+
+        realm.beginWrite()
+
+        for storedAction in realm.objects(Action.self).sorted(byKeyPath: "Position") {
+            guard let newPos = rowPositions[storedAction.ID] else { continue }
+            storedAction.Position = newPos
+            // Current.Log.verbose("Update action \(storedAction.ID) to pos \(newPos)")
+        }
+
+        try? realm.commitWrite()
+
+        reorderingRows[rowTag] = nil
+    }
+
+    @objc func tableView(_ tableView: UITableView, didCancelReorderingRowAtIndexPath indexPath: IndexPath) {
+        guard let rowTag = form[indexPath].tag else { return }
+        reorderingRows[rowTag] = nil
+    }
+
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at indexes: [IndexPath]) {
         super.rowsHaveBeenRemoved(rows, at: indexes)
 
-        Current.Log.verbose("Rows removed \(rows), \(rows.map { $0.section?.tag })")
+        let deletedIDs = rows.filter {
+            guard let tag = $0.tag else { return false }
+            return reorderingRows[tag] == nil
+        }.compactMap { $0.tag }
 
-        let deletedIDs = rows.compactMap { $0.tag }
+        if deletedIDs.count == 0 { return }
+
+        Current.Log.verbose("Rows removed \(rows), \(deletedIDs)")
+
         let realm = Realm.live()
 
         if (rows.first as? ButtonRowWithPresent<NotificationCategoryConfigurator>) != nil {
@@ -668,6 +717,7 @@ class SettingsDetailViewController: FormViewController {
                 realm.delete(realm.objects(NotificationCategory.self).filter("Identifier IN %@", deletedIDs))
             }
         } else if (rows.first as? ButtonRowWithPresent<ActionConfigurator>) != nil {
+            Current.Log.verbose("Removed row is ActionConfiguration \(deletedIDs)")
             // swiftlint:disable:next force_try
             try! realm.write {
                 realm.delete(realm.objects(Action.self).filter("ID IN %@", deletedIDs))
@@ -754,45 +804,45 @@ class SettingsDetailViewController: FormViewController {
                 $0.title = title
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     return ActionConfigurator(action: action)
-                    }, onDismiss: { vc in
-                        _ = vc.navigationController?.popViewController(animated: true)
+                }, onDismiss: { vc in
+                    _ = vc.navigationController?.popViewController(animated: true)
 
-                        if let vc = vc as? ActionConfigurator {
-                            if vc.shouldSave == false {
-                                Current.Log.verbose("Not saving action to DB and returning early!")
-                                return
-                            }
-
-                            vc.row.title = vc.action.Name
-                            vc.row.updateCell()
-
-                            Current.Log.verbose("Saving action! \(vc.action)")
-
-                            let realm = Current.realm()
-
-                            do {
-                                try realm.write {
-                                    realm.add(vc.action, update: true)
-                                }
-                            } catch let error as NSError {
-                                Current.Log.error("Error while saving to Realm!: \(error)")
-                            }
-
-                            let allActions = Array(realm.objects(Action.self).sorted(byKeyPath: "Position"))
-
-                            UIApplication.shared.shortcutItems = allActions.map { $0.uiShortcut }
-
-                            let message = GuaranteedMessage(identifier: "actions",
-                                                            content: ["data": allActions.toJSON()])
-
-                            Current.Log.verbose("Sending actions message \(message)")
-
-                            do {
-                                try Communicator.shared.send(guaranteedMessage: message)
-                            } catch let error as NSError {
-                                Current.Log.error("Sending actions failed: \(error)")
-                            }
+                    if let vc = vc as? ActionConfigurator {
+                        if vc.shouldSave == false {
+                            Current.Log.verbose("Not saving action to DB and returning early!")
+                            return
                         }
+
+                        vc.row.title = vc.action.Name
+                        vc.row.updateCell()
+
+                        Current.Log.verbose("Saving action! \(vc.action)")
+
+                        let realm = Current.realm()
+
+                        do {
+                            try realm.write {
+                                realm.add(vc.action, update: true)
+                            }
+                        } catch let error as NSError {
+                            Current.Log.error("Error while saving to Realm!: \(error)")
+                        }
+
+                        let allActions = Array(realm.objects(Action.self).sorted(byKeyPath: "Position"))
+
+                        UIApplication.shared.shortcutItems = allActions.map { $0.uiShortcut }
+
+                        let message = GuaranteedMessage(identifier: "actions",
+                                                        content: ["data": allActions.toJSON()])
+
+                        Current.Log.verbose("Sending actions message \(message)")
+
+                        do {
+                            try Communicator.shared.send(guaranteedMessage: message)
+                        } catch let error as NSError {
+                            Current.Log.error("Sending actions failed: \(error)")
+                        }
+                    }
                 })
             }
     }
