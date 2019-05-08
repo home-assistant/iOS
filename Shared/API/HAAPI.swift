@@ -647,7 +647,7 @@ public class HomeAssistantAPI {
                                                shouldIncludeNilValues: false)
             let payload = mapper.toJSONArray(allSensors)
 
-            Current.Log.verbose("Update sensors payload: \(mapper.toJSONString(allSensors, prettyPrint: true)!)")
+            // Current.Log.verbose("Update sensors payload: \(mapper.toJSONString(allSensors, prettyPrint: true)!)")
 
             return payload
         }.then { (payload) -> Promise<Any> in
