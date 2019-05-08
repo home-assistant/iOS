@@ -825,8 +825,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
     public func userNotificationCenter(_ center: UNUserNotificationCenter,
                                        openSettingsFor notification: UNNotification?) {
-        let view = SettingsDetailViewController()
-        view.detailGroup = "notifications"
+        let view = NotificationSettingsViewController()
         view.doneButton = true
         var rootViewController = self.window?.rootViewController
         if let navigationController = rootViewController as? UINavigationController {

@@ -85,10 +85,8 @@ class SettingsViewController: FormViewController {
 
         <<< ButtonRow("notificationSettings") {
             $0.title = L10n.Settings.DetailsSection.NotificationSettingsRow.title
-            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                let view = SettingsDetailViewController()
-                view.detailGroup = "notifications"
-                return view
+            $0.presentationMode = .show(controllerProvider: .callback {
+                return NotificationSettingsViewController()
             }, onDismiss: nil)
         }
 
