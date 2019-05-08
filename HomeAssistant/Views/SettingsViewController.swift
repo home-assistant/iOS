@@ -64,18 +64,14 @@ class SettingsViewController: FormViewController {
                 let view = SettingsDetailViewController()
                 view.detailGroup = "general"
                 return view
-                }, onDismiss: { vc in
-                    _ = vc.navigationController?.popViewController(animated: true)
-            })
+            }, onDismiss: nil)
         }
 
         <<< ButtonRow {
             $0.title = L10n.Settings.ConnectionSection.header
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 return ConnectionSettingsViewController()
-            }, onDismiss: { vc in
-                _ = vc.navigationController?.popViewController(animated: true)
-            })
+            }, onDismiss: nil)
         }
 
         <<< ButtonRow("locationSettings") {
@@ -84,9 +80,7 @@ class SettingsViewController: FormViewController {
                 let view = SettingsDetailViewController()
                 view.detailGroup = "location"
                 return view
-                }, onDismiss: { vc in
-                    _ = vc.navigationController?.popViewController(animated: true)
-            })
+            }, onDismiss: nil)
         }
 
         <<< ButtonRow("notificationSettings") {
@@ -95,9 +89,7 @@ class SettingsViewController: FormViewController {
                 let view = SettingsDetailViewController()
                 view.detailGroup = "notifications"
                 return view
-                }, onDismiss: { vc in
-                    _ = vc.navigationController?.popViewController(animated: true)
-            })
+            }, onDismiss: nil)
         }
 
         +++ Section(L10n.Settings.DetailsSection.Integrations.header)
@@ -108,20 +100,24 @@ class SettingsViewController: FormViewController {
                 let view = SettingsDetailViewController()
                 view.detailGroup = "actions"
                 return view
-                }, onDismiss: { vc in
-                    _ = vc.navigationController?.popViewController(animated: true)
+            }, onDismiss: { _ in
+                _ = HomeAssistantAPI.SyncWatchContext()
+
+                let storedActions = Realm.live().objects(Action.self).sorted(byKeyPath: "Position")
+
+                UIApplication.shared.shortcutItems = storedActions.map { $0.uiShortcut }
             })
         }
 
         <<< ButtonRow {
-            $0.tag = "watchSettings"
+            $0.tag = "watch"
             $0.title = L10n.Settings.DetailsSection.WatchRow.title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 let view = SettingsDetailViewController()
-                view.detailGroup = "watchSettings"
+                view.detailGroup = "watch"
                 return view
-                }, onDismiss: { vc in
-                    _ = vc.navigationController?.popViewController(animated: true)
+            }, onDismiss: { _ in
+                _ = HomeAssistantAPI.SyncWatchContext()
             })
         }
 
@@ -133,9 +129,7 @@ class SettingsViewController: FormViewController {
                 let view = SettingsDetailViewController()
                 view.detailGroup = "siri"
                 return view
-                }, onDismiss: { vc in
-                    _ = vc.navigationController?.popViewController(animated: true)
-            })
+            }, onDismiss: nil)
         }
 
         +++ ButtonRow("eventLog") {

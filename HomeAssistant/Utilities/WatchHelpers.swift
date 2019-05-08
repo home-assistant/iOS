@@ -10,30 +10,32 @@ import Foundation
 import Communicator
 import Shared
 import DeviceKit
+import ObjectMapper
 #if os(watchOS)
 import ClockKit
 #endif
 
 extension HomeAssistantAPI {
+    // Be mindful of 262.1kb maximum size for context - https://stackoverflow.com/a/35076706/486182
     public static var watchContext: JSONDictionary {
         var content: JSONDictionary = Communicator.shared.mostRecentlyReceievedContext.content
 
+        if content["iphone_permanent_id"] != nil {
+            content = [:]
+        }
+
         #if os(iOS)
         if let connInfo = try? JSONEncoder().encode(Current.settingsStore.connectionInfo) {
-            content["connection_info"] = String(data: connInfo, encoding: .utf8)
+            content["connection_info"] = connInfo
         }
 
         if let tokenInfo = try? JSONEncoder().encode(Current.settingsStore.tokenInfo) {
-            content["token_info"] = String(data: tokenInfo, encoding: .utf8)
+            content["token_info"] = tokenInfo
         }
 
-        content["webhook_id"] = Current.settingsStore.connectionInfo?.webhookID
-        content["webhook_secret"] = Current.settingsStore.connectionInfo?.webhookSecret
-        content["cloudhook_url"] = Current.settingsStore.connectionInfo?.cloudhookURL
-        content["remote_ui_url"] = Current.settingsStore.connectionInfo?.remoteUIURL
-        content["iphone_device_id"] = Current.settingsStore.deviceID
-        content["iphone_permanent_id"] = Constants.PermanentID
-        content["iphone_device_name"] = UIDevice.current.name
+        content["actions"] = Array(Current.realm().objects(Action.self)).toJSON()
+
+        content["complications"] = Array(Current.realm().objects(WatchComplication.self)).toJSON()
 
         #elseif os(watchOS)
 

@@ -131,23 +131,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
 
         Communicator.shared.guaranteedMessageReceivedObservers.add { message in
-            let realm = Realm.live()
-
-            if message.identifier == "actions" {
-                let content = message.content
-
-                if let actionJSONs = content["data"]! as? [[String: Any]] {
-                    // swiftlint:disable:next force_try
-                    try! realm.write {
-                        for actionJSON in actionJSONs {
-                            if let action = Action(JSON: actionJSON) {
-                                Current.Log.verbose("ACTION \(action)")
-                                realm.add(action, update: true)
-                            }
-                        }
-                    }
-                }
-            }
+            Current.Log.verbose("Received guaranteed message! \(message)")
         }
 
         Communicator.shared.blobReceivedObservers.add { blob in
@@ -159,8 +143,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         Communicator.shared.contextUpdatedObservers.add { context in
             Current.Log.verbose("Received context: \(context)")
 
-            if let connInfoStr = context.content["connection_info"] as? String {
-                let connInfo = try? JSONDecoder().decode(ConnectionInfo.self, from: connInfoStr.data(using: .utf8)!)
+            _ = HomeAssistantAPI.SyncWatchContext()
+
+            let realm = Realm.live()
+
+            if let connInfoData = context.content["connection_info"] as? Data {
+                let connInfo = try? JSONDecoder().decode(ConnectionInfo.self, from: connInfoData)
                 Current.settingsStore.connectionInfo = connInfo
 
                 if let api = HomeAssistantAPI.authenticatedAPI() {
@@ -170,8 +158,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 }
             }
 
-            if let tokenInfoStr = context.content["token_info"] as? String {
-                let tokenInfo = try? JSONDecoder().decode(TokenInfo.self, from: tokenInfoStr.data(using: .utf8)!)
+            if let tokenInfoData = context.content["token_info"] as? Data {
+                let tokenInfo = try? JSONDecoder().decode(TokenInfo.self, from: tokenInfoData)
                 Current.settingsStore.tokenInfo = tokenInfo
 
                 if let api = HomeAssistantAPI.authenticatedAPI() {
@@ -181,32 +169,40 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 }
             }
 
+            if let actionsDictionary = context.content["actions"] as? [[String: Any]] {
+                let actions = actionsDictionary.compactMap { Action(JSON: $0) }
+
+                Current.Log.verbose("Updating actions from context \(actions)")
+
+                try? realm.write {
+                    realm.delete(realm.objects(Action.self))
+                    realm.add(actions, update: true)
+                }
+            }
+
+            if let complicationsDictionary = context.content["complications"] as? [[String: Any]] {
+                let complications = complicationsDictionary.compactMap { WatchComplication(JSON: $0) }
+
+                Current.Log.verbose("Updating complications from context \(complications)")
+
+                try? realm.write {
+                    realm.delete(realm.objects(WatchComplication.self))
+                    realm.add(complications, update: true)
+                }
+
+                self.updateComplications()
+
+                CLKComplicationServer.sharedInstance().activeComplications?.forEach {
+                    CLKComplicationServer.sharedInstance().reloadTimeline(for: $0)
+                }
+            }
+
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
 
         Communicator.shared.complicationInfoReceivedObservers.add { complicationInfo in
             Current.Log.verbose("Received complication info: \(complicationInfo)")
 
-            _ = HomeAssistantAPI.SyncWatchContext()
-
-            let realm = Realm.live()
-
-            for (family, data) in complicationInfo.content {
-                Current.Log.verbose("Family \(family)")
-                Current.Log.verbose("Data \(data)")
-
-                if let dataDict = data as? [String: Any], let complicationConfig = WatchComplication(JSON: dataDict) {
-                    // swiftlint:disable:next force_try
-                    try! realm.write {
-                        Current.Log.verbose("Writing \(complicationConfig.Family)")
-                        realm.add(complicationConfig, update: true)
-                    }
-                }
-            }
-
-            CLKComplicationServer.sharedInstance().activeComplications?.forEach {
-                CLKComplicationServer.sharedInstance().reloadTimeline(for: $0)
-            }
             self.endWatchConnectivityBackgroundTaskIfNecessary()
         }
     }

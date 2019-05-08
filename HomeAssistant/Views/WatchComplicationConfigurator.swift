@@ -16,7 +16,11 @@ import ColorPickerRow
 import Iconic
 
 // swiftlint:disable:next type_body_length
-class WatchComplicationConfigurator: FormViewController {
+class WatchComplicationConfigurator: FormViewController, TypedRowControllerType {
+
+    var row: RowOf<ButtonRow>!
+    /// A closure to be called when the controller disappears.
+    public var onDismissCallback: ((UIViewController) -> Void)?
 
     var config: WatchComplication = WatchComplication()
     var newConfig: Bool = true
@@ -289,6 +293,7 @@ class WatchComplicationConfigurator: FormViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         if self.isBeingDismissed || self.isMovingFromParent {
+            self.onDismissCallback?(self)
             let realm = Current.realm()
 
             // swiftlint:disable:next force_try
@@ -304,7 +309,7 @@ class WatchComplicationConfigurator: FormViewController {
 
     @objc
     func getInfoAction(_ sender: Any) {
-        Current.Log.verbose("getInfoAction hit, open docs page!")
+        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/next/integrations/apple-watch")!)
     }
 
     func renderTemplateForRow(rowTag: String) {

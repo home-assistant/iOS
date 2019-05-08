@@ -14,11 +14,14 @@ import IntentsUI
 import PromiseKit
 import RealmSwift
 import UserNotifications
-import Communicator
 import Firebase
 
 // swiftlint:disable:next type_body_length
-class SettingsDetailViewController: FormViewController {
+class SettingsDetailViewController: FormViewController, TypedRowControllerType {
+
+    var row: RowOf<ButtonRow>!
+    /// A closure to be called when the controller disappears.
+    public var onDismissCallback: ((UIViewController) -> Void)?
 
     var detailGroup: String = "display"
 
@@ -34,6 +37,7 @@ class SettingsDetailViewController: FormViewController {
             self.navigationItem.rightBarButtonItem = nil
             self.doneButton = false
         }
+        self.onDismissCallback?(self)
     }
 
     // swiftlint:disable:next function_body_length cyclomatic_complexity
@@ -126,8 +130,7 @@ class SettingsDetailViewController: FormViewController {
                         }
                     })
 
-            let realm = Current.realm()
-            let zoneEntities = realm.objects(RLMZone.self).map { $0 }
+            let zoneEntities = self.realm.objects(RLMZone.self).map { $0 }
             for zone in zoneEntities {
                 self.form
                     +++ Section(header: zone.Name, footer: "") {
@@ -349,7 +352,7 @@ class SettingsDetailViewController: FormViewController {
                         }
                     })
 
-        case "watchSettings":
+        case "watch":
             self.title = L10n.SettingsDetails.Watch.title
 
             let infoButton = UIButton(type: .infoLight)
@@ -360,48 +363,7 @@ class SettingsDetailViewController: FormViewController {
 
             self.navigationItem.rightBarButtonItem = infoBarButtonItem
 
-            let sends = Communicator.shared.currentWatchState.numberOfComplicationInfoTransfersAvailable.description
-
-            self.form
-                +++ Section {
-                    $0.tag = "watch_data"
-                }
-                <<< LabelRow {
-                    $0.tag = "remaining_complication_sends"
-                    $0.title = L10n.SettingsDetails.Watch.RemainingSends.title
-                    $0.value = sends
-                }
-
-                <<< ButtonRow {
-                        $0.title = L10n.SettingsDetails.Watch.SendNow.title
-                    }.onCellSelection { _, _ in
-
-                        var complications: [String: Any] = [String: Any]()
-
-                        for config in self.realm.objects(WatchComplication.self) {
-                            Current.Log.verbose("Config \(config)")
-                            Current.Log.verbose("Running toJSON! \(config.toJSON())")
-                            complications[config.Family.rawValue] = config.toJSON()
-                        }
-
-                        Current.Log.verbose("Sending \(complications)")
-
-                        let complicationInfo = ComplicationInfo(content: complications)
-
-                        do {
-                            try Communicator.shared.transfer(complicationInfo: complicationInfo)
-                        } catch let error as NSError {
-                            Current.Log.error("Error transferring complication info: \(error)")
-                        }
-
-                        if let remainingRow = self.form.rowBy(tag: "remaining_complication_sends") as? LabelRow {
-                            // swiftlint:disable:next line_length
-                            remainingRow.value = Communicator.shared.currentWatchState.numberOfComplicationInfoTransfersAvailable.description
-                            self.tableView.reloadData()
-                        }
-                    }
-
-            let existingComplications = Current.realm().objects(WatchComplication.self)
+            let existingComplications = self.realm.objects(WatchComplication.self)
 
             for group in ComplicationGroup.allCases {
                 let members = group.members
@@ -426,16 +388,16 @@ class SettingsDetailViewController: FormViewController {
                         <<< ButtonRow {
                             $0.cellStyle = .subtitle
                             $0.title = member.shortName
-                            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                            $0.presentationMode = .show(controllerProvider: .callback {
                                     return WatchComplicationConfigurator(config)
-                                }, onDismiss: { vc in
-                                    _ = vc.navigationController?.popViewController(animated: true)
+                            }, onDismiss: { vc in
+                                _ = vc.navigationController?.popViewController(animated: true)
                             })
-                            }.cellUpdate({ (cell, _) in
-                                cell.detailTextLabel?.text = member.description
-                                cell.detailTextLabel?.numberOfLines = 0
-                                cell.detailTextLabel?.lineBreakMode = .byWordWrapping
-                            })
+                        }.cellUpdate({ (cell, _) in
+                            cell.detailTextLabel?.text = member.description
+                            cell.detailTextLabel?.numberOfLines = 0
+                            cell.detailTextLabel?.lineBreakMode = .byWordWrapping
+                        })
                 }
 
             }
@@ -743,10 +705,6 @@ class SettingsDetailViewController: FormViewController {
             try! realm.write {
                 realm.delete(realm.objects(Action.self).filter("ID IN %@", deletedIDs))
             }
-
-            UIApplication.shared.shortcutItems = realm.objects(Action.self).sorted(byKeyPath: "Position").map {
-                return $0.uiShortcut
-            }
         }
     }
 
@@ -839,29 +797,12 @@ class SettingsDetailViewController: FormViewController {
 
                         Current.Log.verbose("Saving action! \(vc.action)")
 
-                        let realm = Current.realm()
-
                         do {
-                            try realm.write {
-                                realm.add(vc.action, update: true)
+                            try self.realm.write {
+                                self.realm.add(vc.action, update: true)
                             }
                         } catch let error as NSError {
                             Current.Log.error("Error while saving to Realm!: \(error)")
-                        }
-
-                        let allActions = Array(realm.objects(Action.self).sorted(byKeyPath: "Position"))
-
-                        UIApplication.shared.shortcutItems = allActions.map { $0.uiShortcut }
-
-                        let message = GuaranteedMessage(identifier: "actions",
-                                                        content: ["data": allActions.toJSON()])
-
-                        Current.Log.verbose("Sending actions message \(message)")
-
-                        do {
-                            try Communicator.shared.send(guaranteedMessage: message)
-                        } catch let error as NSError {
-                            Current.Log.error("Sending actions failed: \(error)")
                         }
                     }
                 })
