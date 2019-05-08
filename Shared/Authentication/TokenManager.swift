@@ -157,7 +157,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             throw TokenError.tokenUnavailable
         }
 
-        guard !tokenInfo.needsRefresh else {
+        guard tokenInfo.needsRefresh == false else {
             Current.Log.error("Token is expired")
             throw TokenError.expired
         }
