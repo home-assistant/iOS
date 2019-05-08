@@ -352,6 +352,14 @@ class SettingsDetailViewController: FormViewController {
         case "watchSettings":
             self.title = L10n.SettingsDetails.Watch.title
 
+            let infoButton = UIButton(type: .infoLight)
+
+            infoButton.addTarget(self, action: #selector(watchHelp), for: .touchUpInside)
+
+            let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
+
+            self.navigationItem.rightBarButtonItem = infoBarButtonItem
+
             let sends = Communicator.shared.currentWatchState.numberOfComplicationInfoTransfersAvailable.description
 
             self.form
@@ -663,6 +671,10 @@ class SettingsDetailViewController: FormViewController {
 
     @objc func actionsHelp(_ sender: Any) {
         openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/next/integrations/actions")!)
+    }
+
+    @objc func watchHelp(_ sender: Any) {
+        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/next/integrations/apple-watch")!)
     }
 
     override func tableView(_ tableView: UITableView, willBeginReorderingRowAtIndexPath indexPath: IndexPath) {
