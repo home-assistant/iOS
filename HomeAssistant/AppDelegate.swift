@@ -152,8 +152,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {}
 
-    func application(_ application: UIApplication,
-                     didFailToRegisterForRemoteNotificationsWithError error: Swift.Error) {
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         Current.Log.error("Error when trying to register for push: \(error)")
     }
 
@@ -167,11 +166,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             tokenType = .sandbox
         }
 
+        Messaging.messaging().apnsToken = deviceToken
         Messaging.messaging().setAPNSToken(deviceToken, type: tokenType)
     }
 
-    func application(_ application: UIApplication,
-                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         Current.Log.verbose("Received remote notification in completion handler!")
 
@@ -238,8 +237,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ app: UIApplication,
-                     open url: URL,
-                     options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+                     open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         Current.Log.verbose("Received URL: \(url)")
         var serviceData: [String: String] = [:]
         if let queryItems = url.queryItems {
@@ -750,9 +748,9 @@ extension AppConfiguration {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    public func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                       didReceive response: UNNotificationResponse,
+    public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
+        Messaging.messaging().appDidReceiveMessage(response.notification.request.content.userInfo)
         var userText: String?
         if let textInput = response as? UNTextInputNotificationResponse {
             userText = textInput.userText
