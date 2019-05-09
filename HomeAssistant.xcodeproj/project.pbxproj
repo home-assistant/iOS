@@ -1166,6 +1166,18 @@
 		B6FD0564228407C400AC45BA /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		B6FD0565228407C400AC45BA /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B6FD0566228407C400AC45BA /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B6FD05692284119600AC45BA /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-ES"; path = "es-ES.lproj/Intents.strings"; sourceTree = "<group>"; };
+		B6FD056A2284119600AC45BA /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-ES"; path = "es-ES.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		B6FD056B2284119600AC45BA /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-ES"; path = "es-ES.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		B6FD056C2284119600AC45BA /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-ES"; path = "es-ES.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		B6FD056D228411A600AC45BA /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Intents.strings"; sourceTree = "<group>"; };
+		B6FD056E228411A700AC45BA /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		B6FD056F228411A700AC45BA /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		B6FD0570228411A700AC45BA /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		B6FD0571228411B200AC45BA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Intents.strings; sourceTree = "<group>"; };
+		B6FD0572228411B200AC45BA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B6FD0573228411B200AC45BA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B6FD0574228411B200AC45BA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B7A8B1C3DDCDA0CE667420BF /* Pods-SharedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B9C43F9F3C9B007EC2C1DDD9 /* Pods_SiriIntents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SiriIntents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA1CF6494DCB053F130AF00A /* Pods-APNSAttachmentService.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.beta.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.beta.xcconfig"; sourceTree = "<group>"; };
@@ -2740,6 +2752,9 @@
 				nb,
 				fi,
 				sv,
+				"es-ES",
+				"es-MX",
+				ru,
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -4032,6 +4047,9 @@
 				B67CE819221FB1480034C1D0 /* nb */,
 				B6FD05612284079E00AC45BA /* fi */,
 				B6FD0565228407C400AC45BA /* sv */,
+				B6FD056B2284119600AC45BA /* es-ES */,
+				B6FD056F228411A700AC45BA /* es-MX */,
+				B6FD0573228411B200AC45BA /* ru */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -4051,6 +4069,9 @@
 				B655E927227FF19E00CFDC94 /* nb */,
 				B6FD055F2284079E00AC45BA /* fi */,
 				B6FD0563228407C400AC45BA /* sv */,
+				B6FD05692284119600AC45BA /* es-ES */,
+				B6FD056D228411A600AC45BA /* es-MX */,
+				B6FD0571228411B200AC45BA /* ru */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -4079,6 +4100,9 @@
 				B6C2A5E82276C29A00A85ECA /* nb */,
 				B6FD05602284079E00AC45BA /* fi */,
 				B6FD0564228407C400AC45BA /* sv */,
+				B6FD056A2284119600AC45BA /* es-ES */,
+				B6FD056E228411A700AC45BA /* es-MX */,
+				B6FD0572228411B200AC45BA /* ru */,
 			);
 			name = Onboarding.storyboard;
 			sourceTree = "<group>";
@@ -4105,6 +4129,9 @@
 				B67CE81A221FB1480034C1D0 /* nb */,
 				B6FD05622284079E00AC45BA /* fi */,
 				B6FD0566228407C400AC45BA /* sv */,
+				B6FD056C2284119600AC45BA /* es-ES */,
+				B6FD0570228411A700AC45BA /* es-MX */,
+				B6FD0574228411B200AC45BA /* ru */,
 			);
 			name = Localizable.strings;
 			path = .;
