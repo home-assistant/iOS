@@ -11,6 +11,9 @@ import Alamofire
 #if os(iOS)
 import SystemConfiguration.CaptiveNetwork
 #endif
+#if os(watchOS)
+import Communicator
+#endif
 
 public class ConnectionInfo: Codable {
     public private(set) var externalURL: URL? {
@@ -223,6 +226,11 @@ public class ConnectionInfo: Codable {
     public var isOnInternalNetwork: Bool {
         #if targetEnvironment(simulator)
         return true
+        #elseif os(watchOS)
+        if let isOnNetwork = Communicator.shared.mostRecentlyReceievedContext.content["isOnInternalNetwork"] as? Bool {
+            return isOnNetwork
+        }
+        return false
         #else
         guard let internalSSIDs = self.internalSSIDs, let currentSSID = ConnectionInfo.CurrentWiFiSSID else {
             return false
