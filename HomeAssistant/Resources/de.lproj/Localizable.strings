@@ -662,5 +662,5 @@ an dieses Gerät gesschickt.";
 "settings_details.notifications.rate_limits.errors" = "Fehler";
 "settings_details.notifications.rate_limits.total" = "Gesamt";
 "settings_details.notifications.rate_limits.resets_in" = "Zeit bis zum Reset";
-"on_label" = "On";
-"off_label" = "Off";
+"on_label" = "An";
+"off_label" = "Aus";

@@ -1411,7 +1411,7 @@ internal enum L10n {
         internal static let delivered = L10n.tr("Localizable", "settings_details.notifications.rate_limits.delivered")
         /// Errors
         internal static let errors = L10n.tr("Localizable", "settings_details.notifications.rate_limits.errors")
-        /// Rate limits reset at midnight UTC.
+        /// You are allowed 150 push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).
         internal static let footer = L10n.tr("Localizable", "settings_details.notifications.rate_limits.footer")
         /// Rate Limits
         internal static let header = L10n.tr("Localizable", "settings_details.notifications.rate_limits.header")
