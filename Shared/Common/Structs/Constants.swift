@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import KeychainAccess
+import Iconic
 
 /// Contains shared constants
 public struct Constants {
@@ -16,6 +17,14 @@ public struct Constants {
     public static var blue: UIColor {
         return #colorLiteral(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
     }
+
+    /// Help icon UIBarButtonItem
+    #if os(iOS)
+    public static var helpBarButtonItem: UIBarButtonItem {
+        let icon = MaterialDesignIcons.helpCircleOutlineIcon.image(ofSize: CGSize(width: 30, height: 30), color: .blue)
+        return UIBarButtonItem(image: icon, style: .plain, target: nil, action: nil)
+    }
+    #endif
 
     /// The Bundle ID used for the AppGroupID
     public static var BundleID: String {

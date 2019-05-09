@@ -39,16 +39,11 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
-        // Create the info button
-        let infoButton = UIButton(type: .infoLight)
+        let infoBarButtonItem = Constants.helpBarButtonItem
 
-        // You will need to configure the target action for the button itself, not the bar button item
-        infoButton.addTarget(self, action: #selector(getInfoAction), for: .touchUpInside)
+        infoBarButtonItem.action = #selector(getInfoAction)
+        infoBarButtonItem.target = self
 
-        // Create a bar button item using the info button as its custom view
-        let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
-
-        // Use it as required
         self.navigationItem.rightBarButtonItem = infoBarButtonItem
 
         self.title = self.config.Family.name

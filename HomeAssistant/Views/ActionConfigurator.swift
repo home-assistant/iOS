@@ -53,16 +53,14 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
                                                                  action: saveSelector)
 
-//        let infoButton = UIButton(type: .infoLight)
-//
-//        infoButton.addTarget(self, action: #selector(ActionConfigurator.getInfoAction),
-//                             for: .touchUpInside)
-//
-//        let infoButtonView = UIBarButtonItem(customView: infoButton)
-//
-//        self.setToolbarItems([infoButtonView], animated: false)
-//
-//        self.navigationController?.setToolbarHidden(false, animated: false)
+        let infoBarButtonItem = Constants.helpBarButtonItem
+
+        infoBarButtonItem.action = #selector(getInfoAction)
+        infoBarButtonItem.target = self
+
+        self.setToolbarItems([infoBarButtonItem], animated: false)
+
+        self.navigationController?.setToolbarHidden(false, animated: false)
 
         self.title = L10n.ActionsConfigurator.title
 

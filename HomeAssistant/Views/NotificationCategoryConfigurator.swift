@@ -54,19 +54,17 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
                                                                  action: saveSelector)
 
-        let infoButton = UIButton(type: .infoLight)
+        let infoBarButtonItem = Constants.helpBarButtonItem
 
-        infoButton.addTarget(self, action: #selector(NotificationCategoryConfigurator.getInfoAction),
-                             for: .touchUpInside)
-
-        let infoButtonView = UIBarButtonItem(customView: infoButton)
+        infoBarButtonItem.action = #selector(getInfoAction)
+        infoBarButtonItem.target = self
 
         let previewButton = UIBarButtonItem(withIcon: .eyeIcon, size: CGSize(width: 25, height: 25), target: self,
                                             action: #selector(NotificationCategoryConfigurator.preview))
 
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
 
-        self.setToolbarItems([infoButtonView, flexibleSpace, previewButton], animated: false)
+        self.setToolbarItems([infoBarButtonItem, flexibleSpace, previewButton], animated: false)
 
         self.navigationController?.setToolbarHidden(false, animated: false)
 

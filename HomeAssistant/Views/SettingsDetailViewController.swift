@@ -180,11 +180,10 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         case "watch":
             self.title = L10n.SettingsDetails.Watch.title
 
-            let infoButton = UIButton(type: .infoLight)
+            let infoBarButtonItem = Constants.helpBarButtonItem
 
-            infoButton.addTarget(self, action: #selector(watchHelp), for: .touchUpInside)
-
-            let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
+            infoBarButtonItem.action = #selector(watchHelp)
+            infoBarButtonItem.target = self
 
             self.navigationItem.rightBarButtonItem = infoBarButtonItem
 
@@ -374,11 +373,10 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             self.title = L10n.SettingsDetails.Actions.title
             let actions = realm.objects(Action.self).sorted(byKeyPath: "Position")
 
-            let infoButton = UIButton(type: .infoLight)
+            let infoBarButtonItem = Constants.helpBarButtonItem
 
-            infoButton.addTarget(self, action: #selector(actionsHelp), for: .touchUpInside)
-
-            let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
+            infoBarButtonItem.action = #selector(actionsHelp)
+            infoBarButtonItem.target = self
 
             self.navigationItem.rightBarButtonItem = infoBarButtonItem
 
@@ -405,11 +403,10 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             }
         case "privacy":
             self.title = L10n.SettingsDetails.Privacy.title
-            let infoButton = UIButton(type: .infoLight)
+            let infoBarButtonItem = Constants.helpBarButtonItem
 
-            infoButton.addTarget(self, action: #selector(firebasePrivacy), for: .touchUpInside)
-
-            let infoBarButtonItem = UIBarButtonItem(customView: infoButton)
+            infoBarButtonItem.action = #selector(firebasePrivacy)
+            infoBarButtonItem.target = self
 
             self.navigationItem.rightBarButtonItem = infoBarButtonItem
 
