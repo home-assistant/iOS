@@ -210,22 +210,27 @@ class NotificationSettingsViewController: FormViewController {
             <<< LabelRow {
                 $0.tag = "attemptsCount"
                 $0.title = L10n.SettingsDetails.Notifications.RateLimits.attempts
+                $0.value = "0"
             }
             <<< LabelRow {
                 $0.tag = "deliveredCount"
                 $0.title = L10n.SettingsDetails.Notifications.RateLimits.delivered
+                $0.value = "0"
             }
             <<< LabelRow {
                 $0.tag = "errorCount"
                 $0.title = L10n.SettingsDetails.Notifications.RateLimits.errors
+                $0.value = "0"
             }
             <<< LabelRow {
                 $0.tag = "totalCount"
                 $0.title = L10n.SettingsDetails.Notifications.RateLimits.total
+                $0.value = "0"
             }
             <<< LabelRow {
                 $0.tag = "resetsIn"
                 $0.title = L10n.SettingsDetails.Notifications.RateLimits.resetsIn
+                $0.value = "0"
             }
     }
 
