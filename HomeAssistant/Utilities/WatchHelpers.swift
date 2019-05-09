@@ -120,8 +120,15 @@ extension HomeAssistantAPI {
     }
 
     public func updateComplications() -> Promise<[WatchComplication]> {
+        let payload = HomeAssistantAPI.BuildWatchRenderTemplatePayload()
+
+        if payload.isEmpty {
+            Current.Log.verbose("No complications have templates, not sending the request!")
+            return Promise.value([WatchComplication]())
+        }
+
         return firstly { () -> Promise<Any> in
-            return self.webhook("render_template", payload: HomeAssistantAPI.BuildWatchRenderTemplatePayload(),
+            return self.webhook("render_template", payload: payload,
                                 callingFunctionName: "updateComplications")
         }.then { (respJSON: Any) -> Promise<[WatchComplication]> in
             Current.Log.verbose("Got JSON \(respJSON)")
