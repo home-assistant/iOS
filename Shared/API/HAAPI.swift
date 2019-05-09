@@ -691,7 +691,7 @@ public class HomeAssistantAPI {
     }
 
     public func ensureVersion(_ currentVersionStr: String) -> APIError? {
-        let currentVersion = Version(stringLiteral: currentVersionStr.replacingOccurrences(of: ".dev0", with: ""))
+        let currentVersion = Version(stringLiteral: currentVersionStr.prefix(6))
         if HomeAssistantAPI.minimumRequiredVersion > currentVersion {
             return APIError.mustUpgradeHomeAssistant(currentVersion)
         }
