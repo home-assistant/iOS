@@ -21,8 +21,10 @@ public class NotificationAction: Object {
     @objc dynamic var AuthenticationRequired: Bool = false
 
     // Text Input Options
-    @objc dynamic var TextInputButtonTitle: String?
-    @objc dynamic var TextInputPlaceholder: String?
+    // swiftlint:disable line_length
+    @objc dynamic var TextInputButtonTitle: String = L10n.NotificationsConfigurator.Action.Rows.TextInputButtonTitle.title
+    @objc dynamic var TextInputPlaceholder: String = L10n.NotificationsConfigurator.Action.Rows.TextInputPlaceholder.title
+    // swiftlint:enable line_length
 
     let categories = LinkingObjects(fromType: NotificationCategory.self, property: "Actions")
     var Category: NotificationCategory? { return categories.first }
@@ -43,8 +45,8 @@ public class NotificationAction: Object {
     var action: UNNotificationAction {
         if self.TextInput {
             return UNTextInputNotificationAction(identifier: self.Identifier, title: self.Title, options: self.options,
-                                                 textInputButtonTitle: self.TextInputButtonTitle!,
-                                                 textInputPlaceholder: self.TextInputPlaceholder!)
+                                                 textInputButtonTitle: self.TextInputButtonTitle,
+                                                 textInputPlaceholder: self.TextInputPlaceholder)
         }
 
         return UNNotificationAction(identifier: self.Identifier, title: self.Title, options: self.options)

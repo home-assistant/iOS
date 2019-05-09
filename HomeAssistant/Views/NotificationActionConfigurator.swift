@@ -191,8 +191,12 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
 
                 self.action.Title = formVals["title"] as! String
                 self.action.TextInput = formVals["textInput"] as? Bool ?? false
-                self.action.TextInputButtonTitle = formVals["textInputButtonTitle"] as? String
-                self.action.TextInputPlaceholder = formVals["textInputPlaceholder"] as? String
+                if let buttonTitle = formVals["textInputButtonTitle"] as? String {
+                    self.action.TextInputButtonTitle = buttonTitle
+                }
+                if let inputPlaceholder = formVals["textInputPlaceholder"] as? String {
+                    self.action.TextInputPlaceholder = inputPlaceholder
+                }
 
                 if let foreground = formVals["foreground"] as? Bool {
                     self.action.Foreground = foreground
