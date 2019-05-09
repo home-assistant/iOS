@@ -1158,6 +1158,10 @@
 		B6F02BFB1CB4800C0029ABE7 /* Services.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
 		B6FBE3961D46A4E500EE0E36 /* Beacons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Beacons.swift; sourceTree = "<group>"; };
 		B6FD055E2284072700AC45BA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		B6FD055F2284079E00AC45BA /* fi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/Intents.strings; sourceTree = "<group>"; };
+		B6FD05602284079E00AC45BA /* fi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B6FD05612284079E00AC45BA /* fi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B6FD05622284079E00AC45BA /* fi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B7A8B1C3DDCDA0CE667420BF /* Pods-SharedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B9C43F9F3C9B007EC2C1DDD9 /* Pods_SiriIntents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SiriIntents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA1CF6494DCB053F130AF00A /* Pods-APNSAttachmentService.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.beta.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.beta.xcconfig"; sourceTree = "<group>"; };
@@ -2730,6 +2734,7 @@
 				de,
 				fr,
 				nb,
+				fi,
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -4020,6 +4025,7 @@
 				B60248071FBD36A800998205 /* de */,
 				B67CE816221FB13C0034C1D0 /* fr */,
 				B67CE819221FB1480034C1D0 /* nb */,
+				B6FD05612284079E00AC45BA /* fi */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -4037,6 +4043,7 @@
 				B655E923227FF19C00CFDC94 /* de */,
 				B655E925227FF19D00CFDC94 /* fr */,
 				B655E927227FF19E00CFDC94 /* nb */,
+				B6FD055F2284079E00AC45BA /* fi */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -4063,6 +4070,7 @@
 				B6C2A5E42276C28E00A85ECA /* de */,
 				B6C2A5E62276C29800A85ECA /* fr */,
 				B6C2A5E82276C29A00A85ECA /* nb */,
+				B6FD05602284079E00AC45BA /* fi */,
 			);
 			name = Onboarding.storyboard;
 			sourceTree = "<group>";
@@ -4087,6 +4095,7 @@
 				B60247ED1FBD21C600998205 /* de */,
 				B67CE817221FB13C0034C1D0 /* fr */,
 				B67CE81A221FB1480034C1D0 /* nb */,
+				B6FD05622284079E00AC45BA /* fi */,
 			);
 			name = Localizable.strings;
 			path = .;
