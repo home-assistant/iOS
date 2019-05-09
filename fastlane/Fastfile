@@ -127,7 +127,7 @@ platform :ios do
 
   desc "Download latest localization files from Lokalize"
   lane :update_strings do
-    lokalise(destination: "HomeAssistant/Resources/", use_original: true, languages: ['de', 'en', 'es', 'fr', 'it', 'nb', 'nl', 'zh-Hans', 'zh-Hant'])
+    lokalise(destination: "HomeAssistant/Resources/", use_original: true)
     sh("cd ../ && ./Pods/SwiftGen/bin/swiftgen config run --config ./swiftgen.yml")
   end
 
