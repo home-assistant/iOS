@@ -1274,11 +1274,11 @@ public enum ComplicationTemplate: String {
 extension ComplicationTemplate: CaseIterable {}
 
 public enum ComplicationTextAreas: String, CaseIterable {
+    case Header = "Header"
     case Body1 = "Body 1"
     case Body2 = "Body 2"
-    case Bottom = "Bottom"
     case Center = "Center"
-    case Header = "Header"
+    case Bottom = "Bottom"
     case Inner = "Inner"
     case InsideRing = "Inside Ring"
     case Leading = "Leading"
