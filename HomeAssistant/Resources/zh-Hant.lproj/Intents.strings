@@ -1,134 +1,67 @@
-"2KWKqM" = "Failed to call service, Home Assistant is not currently reachable";
-
-"30yAOG" = "Failed to call service, the clipboard contents could not be parsed";
-
-"47v44G" = "Fire an event to the Home Assistant event bus. Expects a JSON object on the clipboard like {\"eventName\": \"my.event\", \"eventData\": {\"foo\": \"bar\"}}";
-
-"4fFx9y" = "Location updated to current location";
-
-"4k18T7" = "Failed to get camera image, the clipboard contents could not be parsed for a valid entity ID";
-
-"4wVIAN" = "Call a service on Home Assistant. Expects a JSON object on the clipboard like {\"service\": \"homeassistant.turn_on\", \"serviceData\": {\"foo\": \"bar\"}}";
-
-"5MGDot" = "Send location";
-
-"5rztv4" = "Get a single still frame from the entity ID found on the clipboard and place it on the clipboard";
-
-"7NpJ76-0cl84c" = "Location updated to contents of clipboard that were parsed as Stored value";
-
-"7NpJ76-50P1YJ" = "Location updated to contents of clipboard that were parsed as Address";
-
-"7NpJ76-F708zM" = "Location updated to contents of clipboard that were parsed as Current Location";
-
-"7NpJ76-dC8g33" = "Location updated to contents of clipboard that were parsed as Coordinates";
-
-"8BMgur" = "Successfully sent ${eventName} to Home Assistant";
-
-"B4bXyc" = "Successfully rendered template";
-
-"CiB3s6" = "Call service ${serviceDomain}.${service} with clipboard data";
-
-"FBQiVD" = "Call a service on the Home Assistant instance";
-
-"FN8zqO" = "Get a single still frame from ${cameraID} and place it on the clipboard";
-
-"FZ9qkT" = "Render Template";
-
-"GoLNMt" = "Fires an event named ${eventName} to the Home Assistant event bus with ${eventData}.";
-
-"KHH48D" = "Failed to update location, Home Assistant is not currently reachable";
-
-"KJS2jk" = "Failed to update location with error: ${error}";
-
-"KU19Ap" = "Failed to fire event, the clipboard contents could not be parsed";
-
-"KzOHYA" = "Failed to get camera image with error: ${error}";
-
-"MDmaRg" = "Call service ￼${serviceDomain}.${service}";
-
-"N9iJpK" = "Get Camera Image";
-
-"NdG9Jz" = "Renders the Home Assistant template";
-
-"P3EyZ7" = "Render the provided template";
-
-"QFNpIx" = "Send ${location} to Home Assistant";
-
-"RMQY3r" = "Send location to Home Assistant";
-
+"2KWKqM" = "執行服務失敗，目前無法連線至 Home Assistant";
+"30yAOG" = "執行服務失敗，剪貼簿內容無法解析";
+"47v44G" = "於 Home Assistant 事件系統匯流排執行事件，以 JSON 物件匯出至剪貼簿、內容如 {\"eventName\": \"my.event\", \"eventData\": {\"foo\": \"bar\"}}";
+"4fFx9y" = "已更新目前座標位置";
+"4k18T7" = "取得鏡頭影像失敗，剪貼簿內容無法解析有效物件 ID";
+"4wVIAN" = "於 Home Assistant 執行服務。以 JSON 物件匯出至剪貼簿、內容如 {\"service\": \"homeassistant.turn_on\", \"serviceData\": {\"foo\": \"bar\"}}";
+"5MGDot" = "傳送座標";
+"5rztv4" = "由剪貼簿找到的物件 ID 取得靜態圖像，並貼回至剪貼簿 ";
+"7NpJ76-0cl84c" = "剪貼簿內容已解析為儲存值、進行座標更新";
+"7NpJ76-50P1YJ" = "剪貼簿內容已解析為位址、進行座標更新";
+"7NpJ76-dC8g33" = "更新座標至剪貼簿內容";
+"8BMgur" = "成功傳送 ${eventName} 至 Home Assistant";
+"B4bXyc" = "成功產生模板";
+"CiB3s6" = "以剪貼簿資料執行 ${serviceDomain}.${service}";
+"FBQiVD" = "於 Home Assistant 物件執行事件";
+"FN8zqO" = "由 ${cameraID} 取得靜態圖像，並貼回至剪貼簿";
+"FZ9qkT" = "產生模板";
+"GoLNMt" = "於 Home Assistant 事件系統匯流排中，以 ${eventData} 執行事件 ${eventName}。";
+"KHH48D" = "更新座標失敗，目前無法連線至 Home Assistant";
+"KJS2jk" = "更新座標失敗，錯誤：${error}";
+"KU19Ap" = "觸發事件失敗，剪貼簿內容無法解析";
+"KzOHYA" = "取得鏡頭圖像失敗，錯誤：${error}";
+"MDmaRg" = "執行 ￼${serviceDomain}.${service} 服務";
+"N9iJpK" = "取得鏡頭圖像";
+"NdG9Jz" = "產生 Home Assistant 模板";
+"P3EyZ7" = "產生提供模板";
+"QFNpIx" = "傳送 ${location} 至 Home Assistant";
+"RMQY3r" = "傳送座標至 Home Assistant";
 "SGxPSB" = "${serviceDescription}";
-
-"VEQtEQ" = "Get Camera Image from ${cameraID}";
-
-"VGzL7U" = "Failed to update location, the clipboard contents could not be parsed";
-
-"WXKbGy" = "Send a location to Home Assistant. Will attempt to use clipboard contents as location, otherwise will use current location.";
-
-"YyQQL1" = "JSON was found on the clipboard but was invalid.";
-
-"ZwJ0Xx" = "Renders the found text on the clipboard";
-
-"boiLEw" = "JSON was found on the clipboard but was invalid.";
-
-"c00c45" = "Fire event";
-
-"cK9jdK" = "Failed to render template with error: ${error}";
-
-"cnzI5h" = "Renders ${template}";
-
-"foI0Fv" = "Failed to render template, Home Assistant is not currently reachable";
-
-"glRCfJ" = "Failed to fire event, Home Assistant is not currently reachable";
-
-"hsrlTY" = "Get a single still frame from a camera and place it on the clipboard";
-
-"khd61N" = "Render text found on clipboard";
-
-"le6NdS" = "Call service ${serviceDomain}.${service} with data: ${payload}";
-
-"lnrohM" = "Fire ${eventName} with clipboard data";
-
-"lxHlyQ" = "Fire Event";
-
-"mAibJP" = "Failed to get camera image, Home Assistant is not currently reachable";
-
-"mgspvx" = "Latest still from camera entity found on clipboard,${cameraID}, placed on clipboard";
-
-"nIl9ET" = "Fires an event named ${eventName} to the Home Assistant event bus. Will send clipboard contents as event data.";
-
-"ntnbP2" = "Call Service";
-
-"nzqmFA" = "Latest still from ${cameraID} placed on clipboard";
-
-"oIWFyR" = "Failed to send ${eventName} to Home Assistant with error: ${error}";
-
-"q0SnlK" = "Get Camera Image";
-
-"qayMH6" = "Call Service";
-
-"qfHa79" = "Successfully sent ${eventName} with clipboard contents to Home Assistant";
-
-"qzje4k" = "Failed to call service with error: ${error}";
-
-"rFSNpu" = "Called ${domain}.${service}";
-
-"ri4H1h" = "Successfully sent ${domain}.${service} with clipboard contents to Home Assistant";
-
-"rlOS6H" = "Successfully rendered template from clipboard";
-
-"rwj6u7" = "Report your current location as ${location} to Home Assistant";
-
-"sbkx4E" = "Failed to geocode ${pasteboardContents} to a valid location";
-
-"tHPm96" = "Location updated to your current location";
-
-"uUk5RX" = "Call ${serviceDomain}.${service} with data";
-
-"v7TSD5" = "Send Location";
-
-"wKnW1P" = "Call service ${serviceDomain}.${service} with clipboard data";
-
-"wfPQQQ" = "Fire an event to the Home Assistant event bus";
-
-"yS9QV0" = "Fire ${eventName} with data";
-
+"VEQtEQ" = "由 ${cameraID}取得鏡頭圖像";
+"VGzL7U" = "更新座標失敗，剪貼簿內容無法解析";
+"WXKbGy" = "傳送座標至Home Assistant。將會嘗試以剪貼簿內容作為座標，否則則以目前座標傳送。";
+"ZwJ0Xx" = "由剪貼簿產生找到的文字";
+"c00c45" = "觸發事件";
+"cK9jdK" = "產生模板失敗，錯誤：${error}";
+"cnzI5h" = "產生 ${template}";
+"foI0Fv" = "產生模板失敗，目前無法連線至 Home Assistant";
+"glRCfJ" = "觸發事件失敗，目前無法連線至 Home Assistant";
+"hsrlTY" = "由鏡頭取得靜態圖像，並貼回至剪貼簿";
+"khd61N" = "產生剪貼簿找到的文字";
+"le6NdS" = "以資料：${payload} 執行 ${serviceDomain}.${service} 服務";
+"lnrohM" = "以剪貼簿資料執行 ${eventName}";
+"lxHlyQ" = "觸發事件";
+"mAibJP" = "取得鏡頭圖像失敗，目前無法連線至 Home Assistant";
+"mgspvx" = "由剪貼簿找到的最新鏡頭物件 ${cameraID}，已貼至剪貼簿";
+"nIl9ET" = "於 Home Assistant 事件系統匯流排中執行事件 ${eventName}。將會以剪貼簿內容作為事件資料傳送。";
+"ntnbP2" = "執行服務";
+"nzqmFA" = "${cameraID} 的靜態圖像，已貼至剪貼簿";
+"oIWFyR" = "傳送 ${eventName} 至 Home Assistant 失敗，錯誤：${error}";
+"q0SnlK" = "取得鏡頭圖像";
+"qayMH6" = "執行服務";
+"qfHa79" = "傳送 ${eventName} 及剪貼簿內容至 Home Assistant 成功";
+"qzje4k" = "服務執行失敗，錯誤：${error}";
+"rFSNpu" = "${domain}.${service} 已執行";
+"ri4H1h" = "傳送 ${domain}.${service} 及剪貼簿內容至 Home Assistant 成功";
+"rlOS6H" = "成功由剪貼簿產生模板";
+"rwj6u7" = "以 ${location} 為目前座標回傳至 Home Assistant";
+"sbkx4E" = "轉換 ${clipboardContents} 內 Geocodeto 至有效座標失敗";
+"uUk5RX" = "以資料執行 ${serviceDomain}.${service}";
+"v7TSD5" = "傳送座標";
+"wKnW1P" = "以剪貼簿資料執行 ${serviceDomain}.${service}";
+"wfPQQQ" = "於 Home Assistant 事件系統匯流排中執行事件";
+"yS9QV0" = "以資料執行 ${eventName}";
+"7NpJ76-F708zM" = "剪貼簿內容已解析為位置、進行座標更新";
+"YyQQL1" = "由剪貼簿找到 JSON 無效。";
+"boiLEw" = "由剪貼簿找到 JSON 無效。";
+"tHPm96" = "已更新目前座標位置";

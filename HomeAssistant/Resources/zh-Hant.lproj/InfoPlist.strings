@@ -1,8 +1,8 @@
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "建議您使用「永遠允許提供座標」以獲得最好的定位體驗。「只允許在使用 app 的期間提供座標資訊」將會自動關閉 iBeacons、地理圍欄、背景更新等功能。";
 "NSLocationAlwaysUsageDescription" = "程式需要提供以下權限，如存取 iBeacons、地址圍欄、背景運作等功能來取得目前的座標更新與精確度回報資訊。";
 "NSLocationWhenInUseUsageDescription" = "只允許在使用 App 的期間內提供座標資訊，將會自動關閉 iBeacons、地理圍欄、背景座標更新與精確度回報資訊。";
-"NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
-"NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
-"NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
+"NSMotionUsageDescription" = "動作用以使用動作類別改善座標更新，及提供基本計步資料。";
+"NSSiriUsageDescription" = "使用 Siri 以允許建立捷徑與 App 進行互動。";
+"NSPhotoLibraryAddUsageDescription" = "必須取得照片庫存取權，方能由網頁儲存照片。";
+"NSPhotoLibraryUsageDescription" = "必須取得照片庫存取權，方能由網頁儲存照片。";
+"SEND_LOCATION_APP_SHORTCUT_TITLE" = "傳送座標";

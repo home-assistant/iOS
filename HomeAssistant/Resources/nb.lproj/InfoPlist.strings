@@ -1,8 +1,8 @@
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
-"NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
-"NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Vi foreslår at du velger \"Alltid tillat\" for den beste opplevelsen. Hvis du velger \"Kun mens du bruker appen\", deaktiveres iBeacons, geofences, oppdateringer for bakgrunnsplassering og nøyaktig rapportering.";
+"NSLocationAlwaysUsageDescription" = "Vi trenger tilgang til posisjonen din for funksjoner som iBeacons, geofences, oppdateringer for bakgrunnssteder og nøyaktig rapportering.";
+"NSLocationWhenInUseUsageDescription" = "Bare tillatelse for tilgang til plass mens appen er i bruk, deaktiverer iBeacons, geofences, oppdateringer for bakgrunnsplassering og nøyaktig rapportering.";
+"NSMotionUsageDescription" = "Bevegelse brukes til å forbedre posisjonsoppdateringer med gjeldende bevegelsestype, samt gi grunnleggende pedometerdata.";
+"NSSiriUsageDescription" = "Vi bruker Siri til å tillate opprettede snarveier for å kommunisere med appen.";
+"NSPhotoLibraryAddUsageDescription" = "Tilgang til fotobibliotek er nødvendig for å tillate lagring av bilder fra nettvisningen.";
+"NSPhotoLibraryUsageDescription" = "Tilgang til fotobibliotek er nødvendig for å tillate lagring av bilder fra nettvisningen.";
+"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send plassering";
