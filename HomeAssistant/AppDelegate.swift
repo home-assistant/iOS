@@ -198,6 +198,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         Current.Log.error("Error when attempting to submit location update: \(error)")
                         completionHandler(.failed)
                     }
+                case "clear_badge":
+                    Current.Log.verbose("Setting badge to 0 as requested")
+                    UIApplication.shared.applicationIconBadgeNumber = 0
                 default:
                     Current.Log.warning("Received unknown command via APNS! \(userInfo)")
                     completionHandler(.noData)
