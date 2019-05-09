@@ -44,7 +44,15 @@ class ManualSetupViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
         if segueType == .setupManualInstance, let vc = segue.destination as? AuthenticationViewController {
-            guard let fieldVal = self.urlField.text, let url = URL(string: fieldVal) else { return }
+            guard let fieldVal = self.urlField.text else {
+                // swiftlint:disable:next line_length
+                Current.Log.error("Unable to get text! Field is \(String(describing: self.urlField)), text \(String(describing: self.urlField.text))")
+                return
+            }
+            guard let url = URL(string: fieldVal) else {
+                Current.Log.error("Unable to convert text to URL! Text was \(fieldVal)")
+                return
+            }
 
             vc.instance = DiscoveredHomeAssistant(baseURL: url, name: "Manual", version: "0.92.0")
         }
