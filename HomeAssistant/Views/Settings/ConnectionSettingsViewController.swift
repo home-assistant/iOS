@@ -193,7 +193,10 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
 
     func confirmURL(_ connectionURL: URL) -> Promise<Void> {
         return Promise { seal in
-            let webhookID = Current.settingsStore.connectionInfo!.webhookID
+            guard let webhookID = Current.settingsStore.connectionInfo?.webhookID else {
+                seal.reject(HomeAssistantAPI.APIError.cantBuildURL)
+                return
+            }
             let url = connectionURL.appendingPathComponent("api/webhook/\(webhookID)")
             Current.Log.verbose("Confirming URL at \(url)")
 
