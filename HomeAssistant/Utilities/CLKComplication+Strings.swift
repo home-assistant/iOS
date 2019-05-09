@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import Iconic
 import WatchKit
-import Shared
 #if os(watchOS)
 import ClockKit
 #endif
@@ -23,7 +22,7 @@ public enum ComplicationGroup: String {
     case modular
     case utilitarian
 
-    var name: String {
+    public var name: String {
         switch self {
         case .circularSmall:
             return L10n.Watch.Labels.ComplicationGroup.CircularSmall.name
@@ -38,7 +37,7 @@ public enum ComplicationGroup: String {
         }
     }
 
-    var description: String {
+    public var description: String {
         switch self {
         case .circularSmall:
             return L10n.Watch.Labels.ComplicationGroup.CircularSmall.description
@@ -53,7 +52,7 @@ public enum ComplicationGroup: String {
         }
     }
 
-    var members: [ComplicationGroupMember] {
+    public var members: [ComplicationGroupMember] {
         switch self {
         case .circularSmall:
             return [ComplicationGroupMember.circularSmall]
@@ -86,7 +85,7 @@ public enum ComplicationGroupMember: String {
     case utilitarianSmall
     case utilitarianSmallFlat
 
-    init(name: String) {
+    public init(name: String) {
         switch name {
         case "circularSmall":
             self = .circularSmall
@@ -117,7 +116,7 @@ public enum ComplicationGroupMember: String {
     }
 
     #if os(watchOS)
-    init(family: CLKComplicationFamily) {
+    public init(family: CLKComplicationFamily) {
         switch family {
         case CLKComplicationFamily.circularSmall:
             self = .circularSmall
@@ -147,7 +146,7 @@ public enum ComplicationGroupMember: String {
         }
     }
 
-    var family: CLKComplicationFamily {
+    public var family: CLKComplicationFamily {
         switch self {
         case .circularSmall:
             return .circularSmall
@@ -204,7 +203,7 @@ public enum ComplicationGroupMember: String {
 //    }
 //    #endif
 
-    var name: String {
+    public var name: String {
         switch self {
         case .circularSmall:
             return L10n.Watch.Labels.ComplicationGroupMember.CircularSmall.name
@@ -231,7 +230,7 @@ public enum ComplicationGroupMember: String {
         }
     }
 
-    var shortName: String {
+    public var shortName: String {
         switch self {
         case .circularSmall:
             return L10n.Watch.Labels.ComplicationGroupMember.CircularSmall.shortName
@@ -258,7 +257,7 @@ public enum ComplicationGroupMember: String {
         }
     }
 
-    var group: ComplicationGroup {
+    public var group: ComplicationGroup {
         switch self {
         case .circularSmall:
             return ComplicationGroup.circularSmall
@@ -273,7 +272,7 @@ public enum ComplicationGroupMember: String {
         }
     }
 
-    var description: String {
+    public var description: String {
         switch self {
         case .circularSmall:
             return L10n.Watch.Labels.ComplicationGroupMember.CircularSmall.description
@@ -300,7 +299,7 @@ public enum ComplicationGroupMember: String {
         }
     }
 
-    var templates: [ComplicationTemplate] {
+    public var templates: [ComplicationTemplate] {
         switch self {
         case .circularSmall:
             return [.CircularSmallRingImage, .CircularSmallSimpleImage, .CircularSmallStackImage,
@@ -334,7 +333,7 @@ public enum ComplicationGroupMember: String {
     }
 
     #if os(watchOS)
-    var errorTemplate: CLKComplicationTemplate? {
+    public var errorTemplate: CLKComplicationTemplate? {
         MaterialDesignIcons.register()
 
         let logoImage = UIImage(named: "RoundLogo")!
@@ -462,7 +461,7 @@ public enum ComplicationTemplate: String {
     case GraphicRectangularTextGauge
     case GraphicRectangularLargeImage
 
-    var style: String {
+    public var style: String {
         switch self {
         case .CircularSmallRingImage, .ExtraLargeRingImage, .ModularSmallRingImage, .UtilitarianSmallRingImage:
             return L10n.Watch.Labels.ComplicationTemplate.Style.ringImage
@@ -517,7 +516,7 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    var description: String {
+    public var description: String {
         switch self {
         case .CircularSmallRingImage:
             return L10n.Watch.Labels.ComplicationTemplate.CircularSmallRingImage.description
@@ -610,7 +609,7 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    var type: String {
+    public var type: String {
         switch self {
         case .CircularSmallRingImage, .CircularSmallSimpleImage, .CircularSmallStackImage:
             return "image"
@@ -651,7 +650,7 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    var group: ComplicationGroup {
+    public var group: ComplicationGroup {
         switch self {
         case .CircularSmallRingImage, .CircularSmallSimpleImage, .CircularSmallStackImage, .CircularSmallRingText,
              .CircularSmallSimpleText, .CircularSmallStackText:
@@ -675,7 +674,7 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    var groupMember: ComplicationGroupMember {
+    public var groupMember: ComplicationGroupMember {
         switch self {
         case .CircularSmallRingImage, .CircularSmallSimpleImage, .CircularSmallStackImage, .CircularSmallRingText,
              .CircularSmallSimpleText, .CircularSmallStackText:
@@ -707,7 +706,7 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    var textAreas: [ComplicationTextAreas] {
+    public var textAreas: [ComplicationTextAreas] {
         switch self {
         case .CircularSmallRingImage:
             return []
@@ -802,7 +801,7 @@ public enum ComplicationTemplate: String {
 
     #if os(watchOS)
     // swiftlint:disable:next function_body_length
-    init(_ template: CLKComplicationTemplate) {
+    public init(_ template: CLKComplicationTemplate) {
         switch template {
         case is CLKComplicationTemplateCircularSmallRingImage:
             self = .CircularSmallRingImage
@@ -898,7 +897,7 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    var CLKComplicationTemplate: CLKComplicationTemplate {
+    public var CLKComplicationTemplate: CLKComplicationTemplate {
         switch self {
         case .CircularSmallRingImage:
             return CLKComplicationTemplateCircularSmallRingImage()
@@ -992,7 +991,7 @@ public enum ComplicationTemplate: String {
     }
 
     // https://gist.github.com/robbiet480/2a38d499323cb964d47b2f5d8004694a
-    var imageSize: CGSize? {
+    public var imageSize: CGSize? {
         // Template: Device Size: Image Size @1x
         let imageSizes: [String: [Int: CGSize]] = [
             "CircularSmallRingImage": [
@@ -1138,7 +1137,7 @@ public enum ComplicationTemplate: String {
         return nil
     }
 
-    var placeholderImageSize: CGSize? {
+    public var placeholderImageSize: CGSize? {
         // Template: Device Size: Image Size @1x
         let imageSizes: [String: [Int: CGSize]] = [
             "circularSmall": [
@@ -1199,7 +1198,7 @@ public enum ComplicationTemplate: String {
     }
     #endif
 
-    var hasRing: Bool {
+    public var hasRing: Bool {
         switch self {
         case .CircularSmallRingImage, .CircularSmallRingText, .ExtraLargeRingImage, .ExtraLargeRingText,
              .ModularSmallRingImage, .ModularSmallRingText, .UtilitarianSmallRingImage, .UtilitarianSmallRingText:
@@ -1209,7 +1208,7 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    var hasGauge: Bool {
+    public var hasGauge: Bool {
         switch self {
         case .GraphicCircularClosedGaugeImage, .GraphicCircularClosedGaugeText, .GraphicCircularOpenGaugeImage,
              .GraphicCircularOpenGaugeRangeText, .GraphicCircularOpenGaugeSimpleText, .GraphicCornerGaugeImage,
@@ -1220,7 +1219,7 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    var gaugeCanBeEitherStyle: Bool {
+    public var gaugeCanBeEitherStyle: Bool {
         switch self {
         case .GraphicCornerGaugeImage, .GraphicCornerGaugeText, .GraphicRectangularTextGauge:
             return true
@@ -1229,7 +1228,7 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    var gaugeIsOpenStyle: Bool {
+    public var gaugeIsOpenStyle: Bool {
         switch self {
         case .GraphicCircularOpenGaugeImage, .GraphicCircularOpenGaugeRangeText, .GraphicCircularOpenGaugeSimpleText:
             return true
@@ -1238,7 +1237,7 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    var gaugeIsClosedStyle: Bool {
+    public var gaugeIsClosedStyle: Bool {
         switch self {
         case .GraphicCircularClosedGaugeImage, .GraphicCircularClosedGaugeText:
             return true
@@ -1247,7 +1246,7 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    var hasImage: Bool {
+    public var hasImage: Bool {
         switch self {
         case .CircularSmallRingImage, .CircularSmallSimpleImage, .CircularSmallStackImage, .ExtraLargeRingImage,
              .ExtraLargeSimpleImage, .ExtraLargeStackImage, .GraphicCircularClosedGaugeImage, .GraphicCircularImage,
@@ -1262,7 +1261,7 @@ public enum ComplicationTemplate: String {
         }
     }
 
-    var supportsRow2Alignment: Bool {
+    public var supportsRow2Alignment: Bool {
         switch self {
         case .ModularLargeColumns, .ModularLargeTable, .ExtraLargeColumnsText:
             return true
@@ -1294,7 +1293,7 @@ public enum ComplicationTextAreas: String, CaseIterable {
     case Row3Column2 = "Row 3, Column 2"
     case Trailing = "Trailing"
 
-    var description: String {
+    public var description: String {
         switch self {
         case .Body1:
             return L10n.Watch.Labels.ComplicationTextAreas.Body1.description
@@ -1335,7 +1334,7 @@ public enum ComplicationTextAreas: String, CaseIterable {
         }
     }
 
-    var label: String {
+    public var label: String {
         switch self {
         case .Body1:
             return L10n.Watch.Labels.ComplicationTextAreas.Body1.label
@@ -1376,7 +1375,7 @@ public enum ComplicationTextAreas: String, CaseIterable {
         }
     }
 
-    var slug: String {
+    public var slug: String {
         var cleanLocation = self.rawValue
         cleanLocation = cleanLocation.replacingOccurrences(of: " ", with: "")
         cleanLocation = cleanLocation.replacingOccurrences(of: ",", with: "")

@@ -208,7 +208,6 @@
 		B63CCDCC2164714900123C50 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; };
 		B63CCDCD2164714900123C50 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; };
 		B63D28BD215D9E3600F3B907 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
-		B63D28C1215DB72100F3B907 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
 		B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */; };
 		B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */; };
 		B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */; };
@@ -230,7 +229,6 @@
 		B658AA7B2250AE4900C9BFE3 /* String+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF302214D8F0300D1D360 /* String+HA.swift */; };
 		B658AA7E2250B2A000C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
 		B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */; };
-		B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
 		B65B14E52273157A00635D5C /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B65B14E72273157A00635D5C /* Onboarding.storyboard */; };
 		B65B14FF227317D700635D5C /* Colors.json in Resources */ = {isa = PBXBuildFile; fileRef = B65B14FE227317D700635D5C /* Colors.json */; };
 		B65B15012273184600635D5C /* Roboto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65B15002273184600635D5C /* Roboto.swift */; };
@@ -265,12 +263,9 @@
 		B66C58BD21509934004AB261 /* ShortcutServiceConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58BC21509934004AB261 /* ShortcutServiceConfigurator.swift */; };
 		B66D6B1C222782BF009D8B90 /* MapNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1B222782BF009D8B90 /* MapNotificationController.swift */; };
 		B66D6B1E22279691009D8B90 /* CameraNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1D22279691009D8B90 /* CameraNotificationController.swift */; };
-		B66D6B222227A808009D8B90 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
-		B66D6B232227AC47009D8B90 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
 		B66F9F24216B1E61000CAA0F /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F9F23216B1E61000CAA0F /* NotificationCenter.framework */; };
 		B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66F9F26216B1E61000CAA0F /* TodayViewController.swift */; };
 		B66F9F2E216B1E61000CAA0F /* TodayWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B66F9F22216B1E61000CAA0F /* TodayWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		B66F9F36216B2C74000CAA0F /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
 		B66F9F37216B2D89000CAA0F /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
 		B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
 		B672333F225DB68B0031D629 /* WebSocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672333D225DB68B0031D629 /* WebSocketMessage.swift */; };
@@ -305,7 +300,6 @@
 		B672AB292215114A00175465 /* release@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB232215114900175465 /* release@2x.png */; };
 		B672AB2A2215114A00175465 /* dev@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B672AB242215114A00175465 /* dev@2x.png */; };
 		B672AB2D2215341800175465 /* ShortcutEventConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B672AB2C2215341800175465 /* ShortcutEventConfigurator.swift */; };
-		B672AB502216883300175465 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
 		B672AB522216A1E200175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B672AB532216A1E200175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B672AB542216A1F100175465 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
@@ -401,7 +395,6 @@
 		B68EDD07215F215E00DD6B28 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD06215F215E00DD6B28 /* Notifications.swift */; };
 		B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */; };
 		B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
-		B69769842162430300FFFAD6 /* WKInterfaceDevice+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69769832162430300FFFAD6 /* WKInterfaceDevice+Size.swift */; };
 		B6976985216243CC00FFFAD6 /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
 		B69933951E232AEA0054453D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		B699339C1E2338960054453D /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B699339B1E2338960054453D /* SnapshotHelper.swift */; };
@@ -414,11 +407,17 @@
 		B6AAD7A41D827DD40090B220 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AAD7A31D827DD40090B220 /* NotificationService.swift */; };
 		B6AAD7A81D827DD40090B220 /* APNSAttachmentService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6AAD7A11D827DD40090B220 /* APNSAttachmentService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E69F216A940700D39A26 /* ActionRow.swift */; };
-		B6B2E6A2216AC21400D39A26 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
 		B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A4216ACE4400D39A26 /* ActionConfigurator.swift */; };
 		B6B6B14A215B137C003DE2DD /* WatchComplicationConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B149215B137C003DE2DD /* WatchComplicationConfigurator.swift */; };
-		B6B6B14C215B1E86003DE2DD /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
-		B6B6B15B215B6D39003DE2DD /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
+		B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
+		B6B74CB7228397D100D58A68 /* WatchHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6B1F2227A2EA009D8B90 /* WatchHelpers.swift */; };
+		B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
+		B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14E215B6866003DE2DD /* WatchComplication.swift */; };
+		B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
+		B6B74CBB2283983900D58A68 /* CLKComplication+Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */; };
+		B6B74CBC228398DD00D58A68 /* WKInterfaceDevice+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = B69769832162430300FFFAD6 /* WKInterfaceDevice+Size.swift */; };
+		B6B74CBD228399AB00D58A68 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
+		B6B74CBE228399AC00D58A68 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B2E6A1216AC21400D39A26 /* Action.swift */; };
 		B6BDBBC72177FFB10044E0B9 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6C0911F2151F90300A326DC /* DeviceTrackerSee.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0911A2151F90300A326DC /* DeviceTrackerSee.swift */; };
 		B6C091232151F90300A326DC /* LocationHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0911E2151F90300A326DC /* LocationHistory.swift */; };
@@ -3615,7 +3614,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B661FC8D226D5A0700E541DD /* ConnectInstanceViewController.swift in Sources */,
-				B6B6B15B215B6D39003DE2DD /* WatchComplication.swift in Sources */,
 				B648AE262275918F006972AF /* Scenes.swift in Sources */,
 				B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */,
 				B66528201F9D870C00EBE6D4 /* ManifestJSON.swift in Sources */,
@@ -3630,7 +3628,6 @@
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				B658AA782250AC8000C9BFE3 /* String+HA.swift in Sources */,
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
-				B6B6B14C215B1E86003DE2DD /* CLKComplication+Strings.swift in Sources */,
 				B616B29A227ED69300828165 /* InternetAddress.swift in Sources */,
 				B6DF8BC1221C890600370A59 /* UIImageView+UIActivityIndicator.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
@@ -3638,7 +3635,6 @@
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				D0EEF336214EB7B800D1D360 /* Strings.swift in Sources */,
 				B65B15032273184F00635D5C /* Colors.swift in Sources */,
-				B6B2E6A2216AC21400D39A26 /* Action.swift in Sources */,
 				B6A5D9F5215233EC0013963F /* SiriIntents+ConvenienceInits.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
 				B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */,
@@ -3648,7 +3644,6 @@
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				B66C58BD21509934004AB261 /* ShortcutServiceConfigurator.swift in Sources */,
 				B67CE8D02220EF1D0034C1D0 /* ObjectMapper+RealmList.swift in Sources */,
-				B66D6B222227A808009D8B90 /* WatchHelpers.swift in Sources */,
 				B672AB2D2215341800175465 /* ShortcutEventConfigurator.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
 				B60221FA226D9BC200E8DBFE /* PermissionLineItemView.swift in Sources */,
@@ -3722,7 +3717,6 @@
 				B66F9F27216B1E61000CAA0F /* TodayViewController.swift in Sources */,
 				B66F9F37216B2D89000CAA0F /* UIColor+CSS3+Hex.swift in Sources */,
 				B6DF8BC2221C890F00370A59 /* UIImageView+UIActivityIndicator.swift in Sources */,
-				B66F9F36216B2C74000CAA0F /* Action.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3747,6 +3741,7 @@
 				B6A258462232485300ADD202 /* Alamofire+EncryptedResponses.swift in Sources */,
 				B67CE87622200F220034C1D0 /* Notifications.swift in Sources */,
 				B67CE88E22200F220034C1D0 /* Fan.swift in Sources */,
+				B6B74CBB2283983900D58A68 /* CLKComplication+Strings.swift in Sources */,
 				B67CE88222200F220034C1D0 /* InputSelect.swift in Sources */,
 				B67CE89122200F220034C1D0 /* Thermostat.swift in Sources */,
 				B67CE87C22200F220034C1D0 /* PushRegistrationRequest.swift in Sources */,
@@ -3765,13 +3760,16 @@
 				B67CE8B422200F220034C1D0 /* URL+Extensions.swift in Sources */,
 				B67CE88022200F220034C1D0 /* Automation.swift in Sources */,
 				B67CE89F22200F220034C1D0 /* Events.swift in Sources */,
+				B6B74CBC228398DD00D58A68 /* WKInterfaceDevice+Size.swift in Sources */,
 				B67CE88922200F220034C1D0 /* Switch.swift in Sources */,
 				B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				B67CE8BA22200F220034C1D0 /* Constants.swift in Sources */,
 				B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */,
 				B67CE8A522200F220034C1D0 /* Identify.swift in Sources */,
 				B67CE88B22200F220034C1D0 /* Group.swift in Sources */,
+				B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */,
 				B67CE87D22200F220034C1D0 /* IdentifyRequest.swift in Sources */,
+				B6B74CBE228399AC00D58A68 /* Action.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
@@ -3797,6 +3795,7 @@
 				B67CE89E22200F220034C1D0 /* DiscoveryInfo.swift in Sources */,
 				B67CE88422200F220034C1D0 /* Climate.swift in Sources */,
 				B67CE8A422200F220034C1D0 /* ManifestJSON.swift in Sources */,
+				B6B74CB7228397D100D58A68 /* WatchHelpers.swift in Sources */,
 				B67CE89422200F220034C1D0 /* Entity.swift in Sources */,
 				B67CE8A022200F220034C1D0 /* History.swift in Sources */,
 				B67CE8B022200F220034C1D0 /* CLLocation+ToDoubleArray.swift in Sources */,
@@ -3829,10 +3828,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B69769842162430300FFFAD6 /* WKInterfaceDevice+Size.swift in Sources */,
-				B672AB502216883300175465 /* Action.swift in Sources */,
 				B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */,
-				B63D28C1215DB72100F3B907 /* WatchComplication.swift in Sources */,
 				B672AB582216B5E000175465 /* Date+ComplicationDivination.swift in Sources */,
 				B658AA7B2250AE4900C9BFE3 /* String+HA.swift in Sources */,
 				B6B2E6A0216A940700D39A26 /* ActionRow.swift in Sources */,
@@ -3840,10 +3836,8 @@
 				B67CE8C4222011A60034C1D0 /* Strings.swift in Sources */,
 				B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */,
 				B66D6B1C222782BF009D8B90 /* MapNotificationController.swift in Sources */,
-				B66D6B232227AC47009D8B90 /* WatchHelpers.swift in Sources */,
 				B6976985216243CC00FFFAD6 /* UIColor+CSS3+Hex.swift in Sources */,
 				B66D6B1E22279691009D8B90 /* CameraNotificationController.swift in Sources */,
-				B65A38C9215DB93D003BCD8E /* CLKComplication+Strings.swift in Sources */,
 				B675ECC7221BDF4500C65D31 /* BackgroundRefreshScheduler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3855,6 +3849,7 @@
 				D0EEF327214DF31D00D1D360 /* Notifications.swift in Sources */,
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
 				D0EEF315214DD7A400D1D360 /* Beacons.swift in Sources */,
+				B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */,
 				D0EEF332214EB2BC00D1D360 /* OneShotLocationManager.swift in Sources */,
 				D0EEF32E214DF99500D1D360 /* PushRegistrationRequest.swift in Sources */,
 				B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
@@ -3875,6 +3870,7 @@
 				B6C091442151F93D00A326DC /* Light.swift in Sources */,
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
 				B6C0914E2151F93D00A326DC /* Thermostat.swift in Sources */,
+				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
 				D0EEF31A214DD7A400D1D360 /* PushConfiguration.swift in Sources */,
 				B6C091462151F93D00A326DC /* Switch.swift in Sources */,
 				D0C3DC142134CD4E000C9EE1 /* CMMotion+StringExtensions.swift in Sources */,
@@ -3909,6 +3905,7 @@
 				D0EEF2FF214D8D4C00D1D360 /* CLError+DebugDescription.swift in Sources */,
 				D0EEF30C214DD79100D1D360 /* ManifestJSON.swift in Sources */,
 				B62CD2A5225B099D008DF3C5 /* WebhookSensor.swift in Sources */,
+				B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */,
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* WebhookSensors.swift in Sources */,
 				B672334A225DDF410031D629 /* Event.swift in Sources */,
@@ -3923,6 +3920,7 @@
 				B6C091472151F93D00A326DC /* Script.swift in Sources */,
 				B6C091452151F93D00A326DC /* Zone.swift in Sources */,
 				B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
+				B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */,
 				B6624E4F22584F8F00354CDF /* CrashlyticsLogDestination.swift in Sources */,
 				B6C0913D2151F93D00A326DC /* Automation.swift in Sources */,
 				B6C0913E2151F93D00A326DC /* BinarySensor.swift in Sources */,

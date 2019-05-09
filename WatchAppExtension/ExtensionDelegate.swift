@@ -214,46 +214,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         self.watchConnectivityTask?.setTaskCompleted()
     }
 
-    var activeFamilies: [String] {
-        guard let activeComplications = CLKComplicationServer.sharedInstance().activeComplications else { return [] }
-        return activeComplications.map { ComplicationGroupMember(family: $0.family).rawValue }
-    }
-
-    func buildRenderTemplatePayload() -> [String: Any] {
-        //var json: [String: Any] = [:]
-
-        var templates = [String: [String: String]]()
-
-        let realm = Realm.live()
-
-        let complications = realm.objects(WatchComplication.self)
-
-        // Current.Log.verbose("complications", complications)
-
-        // Current.Log.verbose("activeComplications", self.activeComplications)
-
-        for complication in complications {
-            if self.activeFamilies.contains(complication.Family.rawValue) {
-                // Current.Log.verbose("ACTIVE COMPLICATION!", complication, complication.Data)
-                if let textAreas = complication.Data["textAreas"] as? [String: [String: Any]] {
-                    for (textAreaKey, textArea) in textAreas {
-                        let key = "\(complication.Template.rawValue)|\(textAreaKey)"
-                        // Current.Log.verbose("Got textArea", key, textArea)
-                        if let needsRender = textArea["textNeedsRender"] as? Bool,
-                            let text = textArea["text"] as? String, needsRender {
-                            // Current.Log.verbose("TEXT NEEDS RENDER!", key)
-                            templates[key] = ["template": text]
-                        }
-                    }
-                }
-            }
-        }
-
-        Current.Log.verbose("JSON payload to send \(templates)")
-
-        return templates
-    }
-
     func updateComplications() {
         let urlID = NSUUID().uuidString
 
@@ -263,71 +223,16 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         backgroundConfigObject.sessionSendsLaunchEvents = true
 
         guard let api = HomeAssistantAPI.authenticatedAPI(urlConfig: backgroundConfigObject) else {
-            fatalError("Couldn't get HAAPI instance")
+            Current.Log.error("Couldn't get HAAPI instance")
+            return
         }
 
-        _ = api.webhook("render_template", payload: self.buildRenderTemplatePayload(),
-                        callingFunctionName: "renderComplications").done { (respJSON: Any) in
-
-            Current.Log.verbose("Got JSON \(respJSON)")
-            guard let jsonDict = respJSON as? [String: String] else {
-                Current.Log.error("Unable to cast JSON to [String: [String: String]]!")
-                return
-            }
-
-            Current.Log.verbose("JSON Dict1 \(jsonDict)")
-
-            var updatedComplications: [WatchComplication] = []
-
-            for (templateKey, renderedText) in jsonDict {
-                let components = templateKey.components(separatedBy: "|")
-                let rawTemplate = components[0]
-                let textAreaKey = components[1]
-                let pred = NSPredicate(format: "rawTemplate == %@", rawTemplate)
-                let realm = Realm.live()
-                guard let complication = realm.objects(WatchComplication.self).filter(pred).first else {
-                    Current.Log.error("Couldn't get complication from DB for \(rawTemplate)")
-                    continue
-                }
-
-                guard var storedAreas = complication.Data["textAreas"] as? [String: [String: Any]] else {
-                    Current.Log.error("Couldn't cast stored areas")
-                    continue
-                }
-
-                storedAreas[textAreaKey]!["renderedText"] = renderedText
-
-                // swiftlint:disable:next force_try
-                try! realm.write {
-                    complication.Data["textAreas"] = storedAreas
-                }
-
-                updatedComplications.append(complication)
-
-                Current.Log.verbose("complication \(complication.Data)")
-            }
-
-            CLKComplicationServer.sharedInstance().activeComplications?.forEach {
-                CLKComplicationServer.sharedInstance().reloadTimeline(for: $0)
-            }
-
-        }.ensure {
+        _ = api.updateComplications().ensure {
             self.bgTask?.setTaskCompleted()
-        }.catch { err in
-            Current.Log.error("Error when rendering complications: \(err)")
+        }.catch { error in
+            Current.Log.error("Error updating complications! \(error)")
         }
     }
-}
-
-func getModelName() -> String {
-    var systemInfo = utsname()
-    uname(&systemInfo)
-    let machineMirror = Mirror(reflecting: systemInfo.machine)
-    let identifier = machineMirror.children.reduce("") { identifier, element in
-        guard let value = element.value as? Int8, value != 0 else { return identifier }
-        return identifier + String(UnicodeScalar(UInt8(value)))
-    }
-    return identifier
 }
 
 extension ExtensionDelegate: UNUserNotificationCenterDelegate {

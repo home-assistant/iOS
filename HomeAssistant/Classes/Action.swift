@@ -13,15 +13,15 @@ import ObjectMapper
 import Iconic
 
 public class Action: Object, Mappable, NSCoding {
-    @objc dynamic var ID: String = UUID().uuidString
-    @objc dynamic var Name: String = ""
-    @objc dynamic var Position: Int = 0
-    @objc dynamic var BackgroundColor: String = UIColor.randomColor().hexString()
-    @objc dynamic var IconName: String = MaterialDesignIcons.allCases.randomElement()!.name
-    @objc dynamic var IconColor: String = UIColor.randomColor().hexString()
-    @objc dynamic var Text: String = "Action"
-    @objc dynamic var TextColor: String = UIColor.randomColor().hexString()
-    @objc dynamic var CreatedAt = Date()
+    @objc dynamic public var ID: String = UUID().uuidString
+    @objc dynamic public var Name: String = ""
+    @objc dynamic public var Position: Int = 0
+    @objc dynamic public var BackgroundColor: String = UIColor.randomColor().hexString()
+    @objc dynamic public var IconName: String = MaterialDesignIcons.allCases.randomElement()!.name
+    @objc dynamic public var IconColor: String = UIColor.randomColor().hexString()
+    @objc dynamic public var Text: String = "Action"
+    @objc dynamic public var TextColor: String = UIColor.randomColor().hexString()
+    @objc dynamic public var CreatedAt = Date()
 
     override public static func primaryKey() -> String? {
         return "ID"
@@ -67,14 +67,14 @@ public class Action: Object, Mappable, NSCoding {
     }
 
     #if os(iOS)
-    var uiShortcut: UIApplicationShortcutItem {
+    public var uiShortcut: UIApplicationShortcutItem {
         return UIApplicationShortcutItem(type: self.ID, localizedTitle: self.Text)
     }
     #endif
 }
 
 extension UIColor {
-    static func randomColor() -> UIColor {
+    public static func randomColor() -> UIColor {
         let random = {CGFloat(arc4random_uniform(255)) / 255.0}
         return UIColor(red: random(), green: random(), blue: random(), alpha: 1)
     }

@@ -21,6 +21,7 @@ ENV['CUSTOM_FONT_NAME'] = 'MaterialDesignIcons'
 def shared_pods
     pod 'Alamofire', '~> 4.8.2'
     pod 'AlamofireImage', '~> 3.5.2'
+    pod 'Communicator'
     pod 'DeviceKit', '~> 2.0'
     pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
     pod 'KeychainAccess', '~> 3.2.0'
@@ -45,7 +46,6 @@ target 'HomeAssistant' do
     pod 'AlamofireNetworkActivityIndicator', '~> 2.3.0'
     pod 'CallbackURLKit'
     pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
-    pod 'Communicator'
     pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
     pod 'Firebase/Core'
     pod 'Firebase/Firestore'
@@ -103,7 +103,6 @@ target 'WatchAppExtension' do
 
     shared_pods
 
-    pod 'Communicator'
     pod 'EMTLoadingIndicator', '~> 4.0.0'
 end
 

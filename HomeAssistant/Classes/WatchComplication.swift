@@ -12,7 +12,6 @@ import RealmSwift
 import ObjectMapper
 import Iconic
 import UIColor_Hex_Swift
-import Shared
 #if os(watchOS)
 import ClockKit
 #endif
@@ -45,7 +44,7 @@ public class WatchComplication: Object, Mappable {
             rawTemplate = newValue.rawValue
         }
     }
-    @objc dynamic var Data: [String: Any] {
+    @objc dynamic public var Data: [String: Any] {
         get {
             guard let dictionaryData = complicationData else {
                 return [String: Any]()
@@ -68,9 +67,9 @@ public class WatchComplication: Object, Mappable {
         }
     }
     @objc fileprivate dynamic var complicationData: Data?
-    @objc dynamic var CreatedAt = Date()
+    @objc dynamic public var CreatedAt = Date()
 
-    @objc dynamic var RenderedData: [String: Any] = [String: Any]()
+    @objc dynamic public var RenderedData: [String: Any] = [String: Any]()
 
     override public static func primaryKey() -> String? {
         return "rawFamily"
@@ -105,7 +104,7 @@ public class WatchComplication: Object, Mappable {
 
     #if os(watchOS)
 
-    var textDataProviders: [String: CLKTextProvider] {
+    public var textDataProviders: [String: CLKTextProvider] {
         var providers: [String: CLKTextProvider] = [String: CLKTextProvider]()
 
         if let textAreas = self.Data["textAreas"] as? [String: [String: Any]] {
@@ -122,7 +121,7 @@ public class WatchComplication: Object, Mappable {
                 if let renderedText = textArea["renderedText"] as? String {
                     provider = CLKSimpleTextProvider(text: renderedText)
                 }
-                provider.tintColor = UIColor(hex: color)
+                provider.tintColor = UIColor(color)
                 providers[key] = provider
             }
         }
@@ -130,45 +129,45 @@ public class WatchComplication: Object, Mappable {
         return providers
     }
 
-    var iconProvider: CLKImageProvider? {
+    public var iconProvider: CLKImageProvider? {
         if let iconDict = self.Data["icon"] as? [String: String], let iconName = iconDict["icon"],
             let iconColor = iconDict["icon_color"], let iconSize = self.Template.imageSize {
             let icon = MaterialDesignIcons(named: iconName)
             let image = icon.image(ofSize: iconSize, color: .clear)
             let provider = CLKImageProvider(onePieceImage: image)
-            provider.tintColor = UIColor(hex: iconColor)
+            provider.tintColor = UIColor(iconColor)
             return provider
         }
 
         return nil
     }
 
-    var fullColorImageProvider: CLKFullColorImageProvider? {
+    public var fullColorImageProvider: CLKFullColorImageProvider? {
         if let iconDict = self.Data["icon"] as? [String: String], let iconName = iconDict["icon"],
             let iconColor = iconDict["icon_color"], let iconSize = self.Template.imageSize {
             let icon = MaterialDesignIcons(named: iconName)
-            let image = icon.image(ofSize: iconSize, color: UIColor(hex: iconColor))
+            let image = icon.image(ofSize: iconSize, color: UIColor(iconColor))
             return CLKFullColorImageProvider(fullColorImage: image)
         }
 
         return nil
     }
 
-    var gaugeProvider: CLKSimpleGaugeProvider? {
+    public var gaugeProvider: CLKSimpleGaugeProvider? {
         if let gaugeDict = self.Data["gauge"] as? [String: String], let gaugeValue = gaugeDict["gauge"],
             let floatVal = Float(gaugeValue), let gaugeColor = gaugeDict["gauge_color"],
             let gaugeStyle = gaugeDict["gauge_style"] {
 
             let style = (gaugeStyle == "fill" ? CLKGaugeProviderStyle.fill : CLKGaugeProviderStyle.ring)
 
-            return CLKSimpleGaugeProvider(style: style, gaugeColor: UIColor(hex: gaugeColor), fillFraction: floatVal)
+            return CLKSimpleGaugeProvider(style: style, gaugeColor: UIColor(gaugeColor), fillFraction: floatVal)
         }
 
         return nil
     }
 
     // swiftlint:disable:next large_tuple
-    var ringData: (Float, CLKComplicationRingStyle, UIColor) {
+    public var ringData: (Float, CLKComplicationRingStyle, UIColor) {
         guard let ringDict = self.Data["ring"] as? [String: String], let ringValue = ringDict["ring"],
             let floatVal = Float(ringValue), let ringColor = ringDict["ring_color"],
             let ringStyle = ringDict["ring_style"] else {
@@ -178,11 +177,11 @@ public class WatchComplication: Object, Mappable {
 
         let style = (ringStyle == "open" ? CLKComplicationRingStyle.open : CLKComplicationRingStyle.closed)
 
-        return (floatVal, style, UIColor(hex: ringColor))
+        return (floatVal, style, UIColor(ringColor))
     }
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
-    func CLKComplicationTemplate(family: CLKComplicationFamily) -> CLKComplicationTemplate? {
+    public func CLKComplicationTemplate(family: CLKComplicationFamily) -> CLKComplicationTemplate? {
         if self.Template.groupMember != ComplicationGroupMember(family: family) {
             Current.Log.warning("Would have returned template (\(self.Template)) outside expected family (\(family)")
             return nil

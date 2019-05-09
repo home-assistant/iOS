@@ -141,12 +141,12 @@ public class HomeAssistantAPI {
     }
 
     public func Connect() -> Promise<ConfigResponse> {
-
         return firstly {
             self.UpdateRegistration()
-        }.then { _ -> Promise<(ConfigResponse, [Zone], Void)> in
-            return when(fulfilled: self.GetConfig(), self.GetZones(), self.UpdateSensors(.Unknown).asVoid())
-        }.map { config, zones, _ in
+        }.then { _ -> Promise<(ConfigResponse, [Zone], Void, [WatchComplication])> in
+            return when(fulfilled: self.GetConfig(), self.GetZones(), self.UpdateSensors(.Unknown).asVoid(),
+                        self.updateComplications())
+        }.map { config, zones, _, _ in
             if let oldHA = self.ensureVersion(config.Version) {
                 throw oldHA
             }
@@ -483,10 +483,12 @@ public class HomeAssistantAPI {
             }
 
             return payloadDict
-        }.then { (payload: [String: Any]) -> Promise<([String: WebhookSensorResponse], Any, [String: Any])> in
+                                                    // swiftlint:disable:next line_length
+        }.then { (payload: [String: Any]) -> Promise<([String: WebhookSensorResponse], Any, [String: Any], [WatchComplication])> in
             let locUpdate: Promise<Any> = self.webhook("update_location",
                                                        payload: payload, callingFunctionName: "\(#function)")
-            return when(fulfilled: self.UpdateSensors(updateType, location), locUpdate, Promise.value(payload))
+            return when(fulfilled: self.UpdateSensors(updateType, location), locUpdate, Promise.value(payload),
+                        self.updateComplications())
         }.then { (resp) -> Promise<Bool> in
             Current.Log.verbose("Device seen via webhook!")
             self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: resp.2)

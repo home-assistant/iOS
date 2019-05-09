@@ -215,28 +215,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        if prefs.bool(forKey: "locationUpdateOnBackgroundFetch") == false {
-            completionHandler(UIBackgroundFetchResult.noData)
-            return
-        }
-
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
+
+        var updatePromise: Promise<Void> = api.UpdateSensors(.BackgroundFetch).asVoid()
+
         if Current.settingsStore.locationEnabled && prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
-            api.GetAndSendLocation(trigger: .BackgroundFetch).done { _ in
-                Current.Log.verbose("Sending location via background fetch")
-                completionHandler(UIBackgroundFetchResult.newData)
-                }.catch { error in
-                    Current.Log.error("Error attempting to submit location update during background fetch: \(error)")
-                    completionHandler(UIBackgroundFetchResult.failed)
-            }
-        } else {
-            api.UpdateSensors(.BackgroundFetch).done { _ in
-                completionHandler(UIBackgroundFetchResult.newData)
-            }.catch { error in
-                Current.Log.error("Error when attempting to update sensors during background fetch: \(error)")
-                completionHandler(UIBackgroundFetchResult.failed)
-            }
+            updatePromise = api.GetAndSendLocation(trigger: .BackgroundFetch).asVoid()
+        }
+
+        firstly {
+            return when(fulfilled: [updatePromise, api.updateComplications().asVoid()])
+        }.done { _ in
+            completionHandler(.newData)
+        }.catch { error in
+            Current.Log.error("Error when attempting to update data during background fetch: \(error)")
+            completionHandler(.failed)
         }
     }
 
@@ -524,7 +518,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         Communicator.shared.contextUpdatedObservers.add { context in
-            Current.Log.verbose("Received context: \(context)")
+            Current.Log.verbose("Received context: \(context.content.keys) \(context.content)")
 
             if let modelIdentifier = context.content["watchModel"] as? String {
                 Current.setUserProperty?(modelIdentifier, "PairedAppleWatch")
