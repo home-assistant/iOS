@@ -86,7 +86,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
         urlObserver = self.webView.observe(\.url) { (webView, _) in
             if let currentURL = webView.url?.absoluteString.replacingOccurrences(of: "?external_auth=1", with: ""),
-                let cleanURL = URL(string: currentURL) {
+                let cleanURL = URL(string: currentURL), cleanURL.scheme != nil {
                 self.userActivity = NSUserActivity(activityType: "io.robbie.HomeAssistant.frontend")
                 self.userActivity?.isEligibleForHandoff = true
                 self.userActivity?.webpageURL = cleanURL
