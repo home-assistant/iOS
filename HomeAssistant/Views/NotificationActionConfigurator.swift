@@ -46,15 +46,6 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
                                                                  action: saveSelector)
 
-        let previewButton = UIBarButtonItem(withIcon: .eyeIcon, size: CGSize(width: 25, height: 25), target: self,
-                                            action: #selector(NotificationActionConfigurator.preview))
-
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
-
-        self.setToolbarItems([flexibleSpace, previewButton], animated: false)
-
-        self.navigationController?.setToolbarHidden(false, animated: false)
-
         TextRow.defaultCellUpdate = { cell, row in
             if !row.isValid {
                 cell.textLabel?.textColor = .red
