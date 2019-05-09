@@ -18,6 +18,8 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet weak var tableView: WKInterfaceTable!
     @IBOutlet weak var noActionsLabel: WKInterfaceLabel!
 
+    var notificationToken: NotificationToken?
+
     var actions: Results<Action>?
 
     override func awake(withContext context: Any?) {
@@ -43,28 +45,59 @@ class InterfaceController: WKInterfaceController {
 
         let actions = realm.objects(Action.self).sorted(byKeyPath: "Position")
 
-        self.tableView.setNumberOfRows(actions.count, withRowType: "actionRowType")
+        notificationToken = actions.observe { (changes: RealmCollectionChange) in
+            guard let tableView = self.tableView else { return }
+            switch changes {
+            case .initial:
+                // Results are now populated and can be accessed without blocking the UI
+                self.tableView.setNumberOfRows(actions.count, withRowType: "actionRowType")
 
-        self.noActionsLabel.setText(L10n.Watch.Labels.noAction)
-        self.noActionsLabel.setHidden(actions.count > 0)
+                self.noActionsLabel.setText(L10n.Watch.Labels.noAction)
+                self.noActionsLabel.setHidden(actions.count > 0)
 
-        for (i, action) in actions.enumerated() {
-            if let row = self.tableView.rowController(at: i) as? ActionRowType {
-                Current.Log.verbose("Setup row \(i) with action \(action)")
-                row.group.setBackgroundColor(UIColor(hex: action.BackgroundColor))
-                row.indicator = EMTLoadingIndicator(interfaceController: self, interfaceImage: row.image,
-                                                    width: 24, height: 24, style: .dot)
-                row.icon = MaterialDesignIcons.init(named: action.IconName)
-                let iconColor = UIColor(hex: action.IconColor)
-                row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24), color: iconColor))
-                row.image.setAlpha(1)
-                row.label.setText(action.Text)
-                row.label.setTextColor(UIColor(hex: action.TextColor))
+                self.actions = actions
+
+                for idx in actions.indices {
+                    self.setupRow(idx)
+                }
+            case .update(_, let deletions, let insertions, let modifications):
+                self.actions = actions
+
+                let insertionsSet = NSMutableIndexSet()
+                insertions.forEach(insertionsSet.add)
+
+                tableView.insertRows(at: IndexSet(insertionsSet), withRowType: "actionRowType")
+
+                insertions.forEach(self.setupRow)
+
+                let deletionsSet = NSMutableIndexSet()
+                deletions.forEach(deletionsSet.add)
+
+                tableView.removeRows(at: IndexSet(deletionsSet))
+
+                modifications.forEach(self.setupRow)
+            case .error(let error):
+                // An error occurred while opening the Realm file on the background worker thread
+                Current.Log.error("Error during Realm notifications! \(error)")
             }
         }
+    }
 
-        self.actions = actions
-
+    func setupRow(_ index: Int) {
+        DispatchQueue.main.async {
+            guard let row = self.tableView.rowController(at: index) as? ActionRowType,
+                let action = self.actions?[index] else { return }
+            Current.Log.verbose("Setup row \(index) with action \(action)")
+            row.group.setBackgroundColor(UIColor(hex: action.BackgroundColor))
+            row.indicator = EMTLoadingIndicator(interfaceController: self, interfaceImage: row.image,
+                                                width: 24, height: 24, style: .dot)
+            row.icon = MaterialDesignIcons.init(named: action.IconName)
+            let iconColor = UIColor(hex: action.IconColor)
+            row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24), color: iconColor))
+            row.image.setAlpha(1)
+            row.label.setText(action.Text)
+            row.label.setTextColor(UIColor(hex: action.TextColor))
+        }
     }
 
     override func table(_ table: WKInterfaceTable, didSelectRowAt rowIndex: Int) {
@@ -88,49 +121,53 @@ class InterfaceController: WKInterfaceController {
                                                  replyHandler: { replyDict in
                                                     Current.Log.verbose("Received reply dictionary \(replyDict)")
 
-                                                    self.handleActionSuccess(row)
+                                                    self.handleActionSuccess(row, rowIndex)
             }, errorHandler: { err in
                 Current.Log.error("Received error when sending immediate message \(err)")
 
-                self.handleActionFailure(row)
+                self.handleActionFailure(row, rowIndex)
             })
 
             Current.Log.verbose("Sending ActionRowPressed message \(actionMessage)")
 
             do {
                 try Communicator.shared.send(immediateMessage: actionMessage)
-                self.handleActionSuccess(row)
+                self.handleActionSuccess(row, rowIndex)
             } catch let error {
                 Current.Log.error("Action notification send failed: \(error)")
 
-                self.handleActionFailure(row)
+                self.handleActionFailure(row, rowIndex)
             }
         } else if Communicator.shared.currentReachability == .notReachable { // Phone isn't connected
             Current.Log.verbose("Signaling action pressed via watch")
             HomeAssistantAPI.authenticatedAPIPromise.then { api in
                 api.HandleAction(actionID: selectedAction.ID, actionName: selectedAction.Name, source: .Watch)
             }.done { _ in
-                self.handleActionSuccess(row)
+                self.handleActionSuccess(row, rowIndex)
             }.catch { err -> Void in
                 Current.Log.error("Error during action event fire: \(err)")
-                self.handleActionFailure(row)
+                self.handleActionFailure(row, rowIndex)
             }
         }
     }
 
-    func handleActionSuccess(_ row: ActionRowType) {
+    func handleActionSuccess(_ row: ActionRowType, _ index: Int) {
         WKInterfaceDevice.current().play(.success)
 
         row.image.stopAnimating()
 
-        row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24), color: .white))
+        self.setupRow(index)
     }
 
-    func handleActionFailure(_ row: ActionRowType) {
+    func handleActionFailure(_ row: ActionRowType, _ index: Int) {
         WKInterfaceDevice.current().play(.failure)
 
         row.image.stopAnimating()
 
-        row.image.setImage(row.icon.image(ofSize: CGSize(width: 24, height: 24), color: .white))
+        self.setupRow(index)
+    }
+
+    deinit {
+        notificationToken?.invalidate()
     }
 }
