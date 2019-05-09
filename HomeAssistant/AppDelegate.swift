@@ -115,7 +115,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                           message: L10n.Alerts.AuthRequired.message, preferredStyle: .alert)
 
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: { _ in
-                navController.popToViewController(webView, animated: true)
+                navController.popToViewController(navController.viewControllers[1], animated: true)
                 webView.showSettingsViewController()
             }))
 
