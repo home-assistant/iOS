@@ -1,4 +1,4 @@
-osx_image: xcode10.1
+osx_image: xcode10.2
 language: objective-c
 cache:
   - bundler
@@ -10,6 +10,8 @@ before_install:
   - git config --global user.name "Travis CI"
   - git config --global user.email "travis@travis-ci.org"
   - echo -e "machine github.com\n login $HOMEASSISTANT_CERTIFICATE_USER\n password $HOMEASSISTANT_GITHUB_API_TOKEN" >> ~/.netrc
+  - gem update --system
+  - gem install bundler
 after_success:
   - sleep 6
 rvm: 2.4.2
