@@ -12,37 +12,22 @@ import UIKit
 
 // swiftlint:disable explicit_type_interface identifier_name line_length type_body_length type_name
 internal enum StoryboardScene {
-  internal enum BetaLaunchScreen: StoryboardType {
-    internal static let storyboardName = "Beta LaunchScreen"
-
-    internal static let initialScene = InitialSceneType<UIKit.UIViewController>(storyboard: BetaLaunchScreen.self)
-  }
-  internal enum DebugLaunchScreen: StoryboardType {
-    internal static let storyboardName = "Debug LaunchScreen"
-
-    internal static let initialScene = InitialSceneType<UIKit.UIViewController>(storyboard: DebugLaunchScreen.self)
-  }
   internal enum Onboarding: StoryboardType {
     internal static let storyboardName = "Onboarding"
 
-    internal static let initialScene = InitialSceneType<OnboardingNavigationViewController>(storyboard: Onboarding.self)
+    internal static let initialScene = InitialSceneType<HomeAssistant.OnboardingNavigationViewController>(storyboard: Onboarding.self)
 
-    internal static let chooseDiscoveredInstance = SceneType<ChooseDiscoveredInstanceViewController>(storyboard: Onboarding.self, identifier: "chooseDiscoveredInstance")
+    internal static let chooseDiscoveredInstance = SceneType<HomeAssistant.ChooseDiscoveredInstanceViewController>(storyboard: Onboarding.self, identifier: "chooseDiscoveredInstance")
 
-    internal static let discoverInstances = SceneType<DiscoverInstancesViewController>(storyboard: Onboarding.self, identifier: "discoverInstances")
+    internal static let discoverInstances = SceneType<HomeAssistant.DiscoverInstancesViewController>(storyboard: Onboarding.self, identifier: "discoverInstances")
 
-    internal static let manualSetup = SceneType<ManualSetupViewController>(storyboard: Onboarding.self, identifier: "manualSetup")
+    internal static let manualSetup = SceneType<HomeAssistant.ManualSetupViewController>(storyboard: Onboarding.self, identifier: "manualSetup")
 
-    internal static let navController = SceneType<OnboardingNavigationViewController>(storyboard: Onboarding.self, identifier: "navController")
+    internal static let navController = SceneType<HomeAssistant.OnboardingNavigationViewController>(storyboard: Onboarding.self, identifier: "navController")
 
-    internal static let permissions = SceneType<PermissionsViewController>(storyboard: Onboarding.self, identifier: "permissions")
+    internal static let permissions = SceneType<HomeAssistant.PermissionsViewController>(storyboard: Onboarding.self, identifier: "permissions")
 
-    internal static let welcome = SceneType<WelcomeViewController>(storyboard: Onboarding.self, identifier: "welcome")
-  }
-  internal enum ReleaseLaunchScreen: StoryboardType {
-    internal static let storyboardName = "Release LaunchScreen"
-
-    internal static let initialScene = InitialSceneType<UIKit.UIViewController>(storyboard: ReleaseLaunchScreen.self)
+    internal static let welcome = SceneType<HomeAssistant.WelcomeViewController>(storyboard: Onboarding.self, identifier: "welcome")
   }
 }
 // swiftlint:enable explicit_type_interface identifier_name line_length type_body_length type_name

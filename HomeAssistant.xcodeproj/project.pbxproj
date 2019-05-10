@@ -3351,7 +3351,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"$PODS_ROOT\"/SwiftGen/bin/swiftgen config run --config ./swiftgen.yml\n";
+			shellScript = "\"$PODS_ROOT/SwiftGen/bin/swiftgen\"\n";
 		};
 		B6624E4122584AD500354CDF /* Fabric */ = {
 			isa = PBXShellScriptBuildPhase;
