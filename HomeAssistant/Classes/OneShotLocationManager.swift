@@ -55,10 +55,6 @@ public class OneShotLocationManager: NSObject, CLLocationManagerDelegate {
                 realm.add(locErr)
             }
             Current.Log.error("Received CLError: \(clErr)")
-            if clErr.code == CLError.locationUnknown {
-                // locationUnknown just means that GPS may be taking an extra moment, so don't throw an error.
-                return
-            }
             onLocationUpdated(nil, clErr)
         } else {
             Current.Log.error("Received non-CLError when we only expected CLError: \(error)")
