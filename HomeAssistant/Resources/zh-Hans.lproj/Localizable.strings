@@ -662,3 +662,4 @@
 "settings_details.notifications.rate_limits.resets_in" = "重置";
 "on_label" = "开";
 "off_label" = "关";
+"location_update_error_notification.title" = "Error sending %@ location update to Home Assistant.";

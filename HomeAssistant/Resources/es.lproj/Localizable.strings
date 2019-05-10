@@ -656,3 +656,4 @@
 "settings_details.notifications.rate_limits.resets_in" = "Reinicia en";
 "on_label" = "Encendido";
 "off_label" = "Apagado";
+"location_update_error_notification.title" = "Error sending %@ location update to Home Assistant.";

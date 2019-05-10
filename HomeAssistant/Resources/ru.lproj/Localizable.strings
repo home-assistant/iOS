@@ -656,3 +656,4 @@
 "settings_details.notifications.rate_limits.resets_in" = "Resets In";
 "on_label" = "On";
 "off_label" = "Off";
+"location_update_error_notification.title" = "Error sending %@ location update to Home Assistant.";

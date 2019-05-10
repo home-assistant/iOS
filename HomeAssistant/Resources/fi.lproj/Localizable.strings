@@ -656,3 +656,4 @@
 "settings_details.notifications.rate_limits.resets_in" = "Nollaantuu";
 "on_label" = "Päällä";
 "off_label" = "Pois";
+"location_update_error_notification.title" = "Error sending %@ location update to Home Assistant.";
