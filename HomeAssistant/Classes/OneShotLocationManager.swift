@@ -25,6 +25,14 @@ public class OneShotLocationManager: NSObject, CLLocationManagerDelegate {
         locationManager.requestLocation()
 
         if let location = locationManager.location {
+            guard location.horizontalAccuracy <= 200 else {
+                let inaccurateLocationMessage = "Ignoring one shot location with accuracy over threshold." +
+                "Accuracy: \(location.horizontalAccuracy)m"
+                Current.clientEventStore.addEvent(ClientEvent(text: inaccurateLocationMessage, type: .locationUpdate))
+                locationManager.requestLocation()
+                return
+            }
+
             Current.Log.verbose("LocationManager: Got location stored on manager \(location)")
             onLocationUpdated(location, nil)
             locationManager.delegate = nil
