@@ -21,6 +21,7 @@ import SafariServices
 import Shared
 import UIKit
 import UserNotifications
+import Crashlytics
 
 let keychain = Constants.Keychain
 
@@ -876,6 +877,8 @@ enum XCallbackError: FailureCallbackError {
 extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
         Current.Log.info("Firebase registration token refreshed, new token: \(fcmToken)")
+
+        Crashlytics.sharedInstance().setObjectValue(fcmToken, forKey: "pushToken")
 
         Current.settingsStore.pushID = fcmToken
 
