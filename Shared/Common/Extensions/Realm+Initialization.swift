@@ -28,7 +28,9 @@ extension Realm {
             .appendingPathComponent("dataStore", isDirectory: true)
 
         guard let directoryURL = storeDirectoryURL else {
-            fatalError("Unable to get datastoreURL.")
+            Current.Log.error("Unable to get directory URL! AppGroupID: \(Constants.AppGroupID)")
+            Realm.handleFatalError("Unable to get datastoreURL for Realm!.", HomeAssistantAPI.APIError.unknown)
+            return URL(string: "http://somethingbroke.fake")!
         }
 
         return directoryURL
@@ -51,7 +53,7 @@ extension Realm {
             }
         }
 
-        let storeURL =  directoryURL.appendingPathComponent("store.realm", isDirectory: false)
+        let storeURL = directoryURL.appendingPathComponent("store.realm", isDirectory: false)
 
         #if targetEnvironment(simulator)
             Current.Log.info("Realm is stored at \(storeURL.description)")
@@ -103,7 +105,7 @@ extension Realm {
         try? realm.commitWrite()
     }
 
-    private static func handleFatalError(_ message: String, _ error: NSError) {
+    private static func handleFatalError(_ message: String, _ error: Swift.Error) {
         let errMsg = "\(message): \(error)"
         Current.Log.error(errMsg)
         #if os(iOS)
