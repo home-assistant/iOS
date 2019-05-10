@@ -878,6 +878,10 @@ extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
         Current.Log.info("Firebase registration token refreshed, new token: \(fcmToken)")
 
+        if let existingToken = Current.settingsStore.pushID, existingToken != fcmToken {
+            Current.Log.warning("FCM token has changed from \(existingToken) to \(fcmToken)")
+        }
+
         Crashlytics.sharedInstance().setObjectValue(fcmToken, forKey: "pushToken")
 
         Current.settingsStore.pushID = fcmToken
