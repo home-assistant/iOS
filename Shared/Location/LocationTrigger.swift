@@ -25,7 +25,7 @@ public enum LocationUpdateTrigger: String {
     case BeaconRegionEnter = "iBeacon Region Entered"
     case BeaconRegionExit = "iBeacon Region Exited"
     case Manual = "Manual"
-    case SignificantLocationUpdate = "Significant Location Update"
+    case SignificantLocationUpdate = "Significant Location Change"
     case BackgroundFetch = "Background Fetch"
     case PushNotification = "Push Notification"
     case URLScheme = "URL Scheme"
