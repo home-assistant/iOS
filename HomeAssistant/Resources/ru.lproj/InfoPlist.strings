@@ -1,8 +1,8 @@
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
-"NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
-"NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Рекомендуется «Всегда» для работы всех гео-функций. Если выбрать «При использовании программы», перестанут работать iBeacons, геозоны и фоновая отправка геопозиции.";
+"NSLocationAlwaysUsageDescription" = "Постоянный доступ к геопозиции необходим для таких функций, как iBeacons, геозоны и фоновая отправка геопозиции.";
+"NSLocationWhenInUseUsageDescription" = "Если выбрать «При использовании программы», перестанут работать iBeacons, геозоны и фоновая отправка геопозиции.";
+"NSMotionUsageDescription" = "Отправляют состояние движения телефона вместе с данными геопозиции, и предоставляют данные шагомера";
+"NSSiriUsageDescription" = "Siri нужна, чтобы создавать команды, взаимодействующие с приложением";
+"NSPhotoLibraryAddUsageDescription" = "Доступ к фотографиям нужен для сохранения картинок из основного окна программы";
+"NSPhotoLibraryUsageDescription" = "Доступ к фотографиям нужен для сохранения картинок из основного окна программы";
+"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Отправить местоположение";

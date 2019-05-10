@@ -54,13 +54,13 @@
 "settings_details.location.notifications.location_change.title" = "Notis om betydande platsändring";
 "settings_details.location.notifications.background_fetch.title" = "Notis om bakgrundshämtning";
 "settings_details.location.zones.enter_exit_tracked.title" = "In/ut spåras";
-"settings_details.location.zones.location.title" = "Plats";
+"settings_details.location.zones.location.title" = "Position";
 "settings_details.location.zones.radius.title" = "Radie";
 "settings_details.location.zones.beacon.prop_not_set.value" = "Inte inställt";
 "settings_details.location.zones.beacon_uuid.title" = "iBeacon UUID";
 "settings_details.location.zones.beacon_major.title" = "iBeacon Major";
 "settings_details.location.zones.beacon_minor.title" = "iBeacon Minor";
-"settings_details.location.zones.footer" = "To disable location tracking add track_ios: false to each zones settings or under customize.";
+"settings_details.location.zones.footer" = "Om du vill inaktivera platsspårning lägger du till track_ios: false för varje zon i configuration.yaml eller i customize.";
 "settings_details.notifications.title" = "Notiser";
 "settings_details.notifications.push_id_section.header" = "Push-ID";
 "settings_details.notifications.push_id_section.footer" = "Detta är målet som ska användas i din Home Assistant-konfiguration. Tryck för att kopiera eller dela.";
@@ -88,7 +88,7 @@
 "about.title" = "Om";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Väck ditt hem";
-"about.acknowledgements.title" = "Tack";
+"about.acknowledgements.title" = "Tack till";
 "about.website.title" = "Webbplats";
 "about.forums.title" = "Forum";
 "about.chat.title" = "Chatt";
@@ -113,7 +113,7 @@
 "no_label" = "Nej";
 "alerts.open_url_from_notification.title" = "Öppna URL?";
 "alerts.open_url_from_notification.message" = "Öppna URL (%@) i notisen?";
-"settings_details.location.updates.header" = "Uppdatera källor";
+"settings_details.location.updates.header" = "Uppdatering från";
 "settings_details.location.updates.footer" = "Manuella platsuppdateringar kan alltid utlösas";
 "settings_details.location.updates.zone.title" = "Zon in / ut";
 "settings_details.location.updates.background.title" = "Hämtning i bakgrunden";
@@ -617,9 +617,9 @@
 "delete" = "Ta bort";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
 "settings.connection_section.internal_base_url.placeholder" = "http://hassio.local:8123/";
-"settings.connection_section.internal_url_ssids.header" = "SSID:er";
+"settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "MittRoligaNätverksNamn";
-"settings.connection_section.internal_url_ssids.footer" = "Intern URL kommer att användas vid anslutning till angivna SSID:er";
+"settings.connection_section.internal_url_ssids.footer" = "Internt URL kommer att användas vid anslutning till angivna SSID";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Lägg till nytt SSID";
 "settings.connection_section.internal_url_ssids.add_current_ssid" = "Lägg till aktuellt SSID% %@";
 "onboarding.connection_test_result.ssl_container.description" = "Vi upptäckte ett fel när du ansluter till din instans. %@ På grund av iOS-begränsningar kommer du inte att kunna fortsätta med konfigurationen förrän ett giltigt SSL-certifikat har installerats. Vi rekommenderar Let's Encrypt eller NABU Casa Remote UI.";
@@ -641,13 +641,13 @@
 "settings.connection_section.nabu_casa_cloud" = "Nabu Casa Cloud";
 "settings.connection_section.cloud_available" = "Moln tillgängligt";
 "settings.connection_section.cloudhook_available" = "Cloudhook tillgänglig";
-"settings.connection_section.remote_ui_available" = "Remote UI Tillgängligt";
+"settings.connection_section.remote_ui_available" = "Remote UI tillgänglig";
 "settings.connection_section.log_out" = "Logga ut";
 "errors.no_remote_ui_url" = "Appen kommer automatiskt att upptäcka din Nabu Casa Remote UI, du kan inte ange det manuellt.";
 "settings.connection_section.cloudhook_url.title" = "Cloudhook URL";
 "settings.connection_section.remote_ui.title" = "Home Assistant Cloud";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
-"onboarding.connection_test_result.no_base_url_discovered.description" = "Ingen http. base_url hittades i identifierings informationen. Lägg till en giltig http. base_url till din configuration.yaml och starta om Home Assistant för att fortsätta med automatisk installation eller konfiguration manuellt.";
+"onboarding.connection_test_result.no_base_url_discovered.description" = "Ingen http.base_url upptäcktes. Lägg till giltig http.base_url i din configuration.yaml och starta om Home Assistant för att fortsätta med den automatiska installationen, eller konfigurera manuellt.";
 "settings_details.notifications.rate_limits.header" = "Begränsningar";
 "settings_details.notifications.rate_limits.footer" = "Du kan skicka 150 push-meddelande per 24 timmar. begränsningen återställs vid midnatt Universal Coordinated Time (UTC).";
 "settings_details.notifications.rate_limits.attempts" = "Försök";
@@ -657,4 +657,4 @@
 "settings_details.notifications.rate_limits.resets_in" = "Återställs om";
 "on_label" = "På";
 "off_label" = "Av";
-"location_update_error_notification.title" = "Error sending %@ location update to Home Assistant.";
+"location_update_error_notification.title" = "Fel vid sändning av %@ platsuppdatering till Home Assistant.";

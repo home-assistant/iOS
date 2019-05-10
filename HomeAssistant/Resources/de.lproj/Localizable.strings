@@ -664,4 +664,4 @@ an dieses Gerät gesschickt.";
 "settings_details.notifications.rate_limits.resets_in" = "Zeit bis zum Reset";
 "on_label" = "An";
 "off_label" = "Aus";
-"location_update_error_notification.title" = "Error sending %@ location update to Home Assistant.";
+"location_update_error_notification.title" = "Fehler beim Senden von %@ Standortaktualisierung an Home Assistant.";

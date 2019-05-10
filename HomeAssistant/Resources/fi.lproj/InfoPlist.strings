@@ -1,8 +1,8 @@
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
 "NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
 "NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
-"NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
-"NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
+"NSMotionUsageDescription" = "Liikettä käytetään parantamaan sijaintipäivityksiä nykyisellä liiketyypillä, sekä tarjoamaan perusdataa askelmittarille.";
+"NSSiriUsageDescription" = "Käytämme Siriä, jotta luodut oikotiet voivat vuorovaikuttaa sovelluksen kanssa.";
+"NSPhotoLibraryAddUsageDescription" = "Kuvakirjaston käytön salliminen on edelletty valokuvien tallentamiseen Web-näkymästä.";
+"NSPhotoLibraryUsageDescription" = "Kuvakirjaston käytön salliminen on edelletty valokuvien tallentamiseen Web-näkymästä.";
+"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Lähetä sijainti";

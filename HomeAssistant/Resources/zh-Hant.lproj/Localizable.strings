@@ -656,4 +656,4 @@
 "settings_details.notifications.rate_limits.resets_in" = "重置時間";
 "on_label" = "開啟";
 "off_label" = "關閉";
-"location_update_error_notification.title" = "Error sending %@ location update to Home Assistant.";
+"location_update_error_notification.title" = "傳送座標%@至 Home Assistant錯誤。";
