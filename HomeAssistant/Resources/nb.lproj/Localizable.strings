@@ -101,10 +101,10 @@
 "url_handler.no_service.message" = "% @ er ikke en gyldig rute";
 "url_handler.call_service.success.title" = "Utfør tjeneste";
 "url_handler.call_service.success.message" = "Utført hendelse er vellykket%@";
-"url_handler.call_service.error.message" = "An error occurred while attempting to call service %@: %@";
+"url_handler.call_service.error.message" = "Det oppstod en feil under forsøk på å kalle tjenesten% @:% @";
 "url_handler.fire_event.success.title" = "Utfør hendelse";
 "url_handler.fire_event.success.message" = "Utført hendelse er vellykket%@";
-"url_handler.fire_event.error.message" = "An error occurred while attempting to fire event %@: %@";
+"url_handler.fire_event.error.message" = "Det oppstod en feil under forsøk på å utføre hendelsen% @:% @";
 "url_handler.send_location.success.title" = "Send plassering";
 "url_handler.send_location.success.message" = "Send plassering";
 "url_handler.send_location.error.message" = "Det oppstod en ukjent feil under forsøk på å sende plasseringen: %@";
@@ -163,12 +163,12 @@
 "cl_error.description.location_unknown" = "Plasseringsbehandleren kunne ikke få en plasseringsverdi akkurat nå.";
 "cl_error.description.network" = "Nettverket er utilgjengelig, eller det oppstod en nettverksfeil.";
 "cl_error.description.ranging_failure" = "A general ranging error occurred.";
-"cl_error.description.ranging_unavailable" = "Ranging is disabled.";
+"cl_error.description.ranging_unavailable" = "Ranging er deaktivert.";
 "cl_error.description.region_monitoring_denied" = "Access to the region monitoring service was denied by the user.";
 "cl_error.description.region_monitoring_failure" = "Den registrerte regionen kan ikke overvåkes.";
 "cl_error.description.region_monitoring_response_delayed" = "Core Location will deliver events but they may be delayed.";
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location could not initialize the region monitoring feature immediately.";
-"cl_error.description.unknown" = "Unknown Core Location error";
+"cl_error.description.unknown" = "Ukjent Core Location-feil";
 "client_events.event_type.networkRequest" = "Nettverksforespørselen";
 "client_events.event_type.notification.title" = "Mottok en push-varsling: %@";
 "client_events.event_type.request.log" = "Forespørsel (SSID: %@ - %@ )";

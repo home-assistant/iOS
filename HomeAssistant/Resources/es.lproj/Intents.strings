@@ -61,7 +61,7 @@
 "wKnW1P" = "Llama al servicio $ {serviceDomain} . $ {service} con datos del portapapeles";
 "wfPQQQ" = "Dispara un evento al bus de eventos Home Assistant";
 "yS9QV0" = "Ejecutar ${eventName} con datos";
-"7NpJ76-F708zM" = "Location updated to contents of clipboard that were parsed as Current Location";
-"YyQQL1" = "JSON was found on the clipboard but was invalid.";
-"boiLEw" = "JSON was found on the clipboard but was invalid.";
-"tHPm96" = "Location updated to your current location";
+"7NpJ76-F708zM" = "Ubicación actualizada a los contenidos del portapapeles que se analizaron como ubicación actualizada";
+"YyQQL1" = "Se encontró JSON en el portapapeles, pero no fue válido.";
+"boiLEw" = "Se encontró JSON en el portapapeles, pero no fue válido.";
+"tHPm96" = "Ubicación actualizada a la ubicación actual";

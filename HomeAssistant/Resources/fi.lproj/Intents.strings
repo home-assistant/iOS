@@ -61,7 +61,7 @@
 "wKnW1P" = "Call service ${serviceDomain}.${service} with clipboard data";
 "wfPQQQ" = "Fire an event to the Home Assistant event bus";
 "yS9QV0" = "Fire ${eventName} with data";
-"7NpJ76-F708zM" = "Location updated to contents of clipboard that were parsed as Current Location";
-"YyQQL1" = "JSON was found on the clipboard but was invalid.";
-"boiLEw" = "JSON was found on the clipboard but was invalid.";
-"tHPm96" = "Location updated to your current location";
+"7NpJ76-F708zM" = "Sijainti päivitettiin leikepöydältä, joka on jäsennelty nykyiseksi sijainniksi";
+"YyQQL1" = "JSON löytyi leikepöydältä, mutta se oli virheellinen.";
+"boiLEw" = "JSON löytyi leikepöydältä, mutta se oli virheellinen.";
+"tHPm96" = "Sijainti päivitetty nykyiseen sijaintiin";

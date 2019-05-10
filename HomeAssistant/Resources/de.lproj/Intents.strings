@@ -55,7 +55,7 @@
 "ri4H1h" = "${domain}.${service} wurde erfolgreich mit dem Inhalt der Zwischenablage an Home Assistant gesendet";
 "rlOS6H" = "Erfolgreich gerenderte Vorlage aus der Zwischenablage";
 "rwj6u7" = "Sende deinen aktuellen Standort als ${location} an Home Assistant";
-"sbkx4E" = "Es ist nicht gelungen, ${clipboardContents} an einen gültigen Ort zu geocodieren.";
+"sbkx4E" = "Es ist nicht gelungen, ${pasteboardContents} an einen gültigen Ort zu geokodieren.";
 "uUk5RX" = "Service ${serviceDomain}.${service} mit Daten aufrufen";
 "v7TSD5" = "Standort senden";
 "wKnW1P" = "Service ￼${serviceDomain}.${service} mit Daten aus der Zwischenablage aufrufen";

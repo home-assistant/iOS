@@ -208,7 +208,7 @@
 "notifications_configurator.identifier" = "Identificatore";
 "notifications_configurator.new_action.title" = "Nuova azione";
 "notifications_configurator.settings.header" = "Impostazioni";
-"notifications_configurator.settings.footer" = "L'Identificatore deve contenere solo lettere e trattini bassi. Deve essere univoco a livello globale per l'app.";
+"notifications_configurator.settings.footer" = "L'Identificatore deve contenere solo lettere minuscole e trattini bassi. Deve essere univoco a livello globale per l'app.";
 "notifications_configurator.settings.footer.id_set" = "L'identificativo non può essere modificato dopo la creazione. È necessario eliminare e ricreare l'azione per modificare l'identificatore.";
 "preview_output" = "Anteprima dell'output";
 "settings.advanced_connection_settings_section.title" = "Impostazioni avanzate di connessione";
