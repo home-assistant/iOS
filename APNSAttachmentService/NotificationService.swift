@@ -10,6 +10,7 @@ import UserNotifications
 import MobileCoreServices
 import Shared
 import Alamofire
+import PromiseKit
 
 final class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?
@@ -25,28 +26,32 @@ final class NotificationService: UNNotificationServiceExtension {
                                 payload: request.content.userInfo as? [String: Any])
         Current.clientEventStore.addEvent(event)
 
+        Current.Log.debug("Added client event")
+
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
 
-        func failEarly() {
+        Current.Log.debug("Set bestAttemptContent")
+
+        func failEarly(_ reason: String) {
+            Current.Log.error("Failing early because \(reason)!")
             contentHandler(request.content)
         }
 
         guard let content = (request.content.mutableCopy() as? UNMutableNotificationContent) else {
-            return failEarly()
+            return failEarly("Unable to get mutable copy of notification content")
         }
 
-        var incomingAttachment: [String: Any] = [:]
-
-        if let iAttachment = content.userInfo["attachment"] as? [String: Any] {
-            incomingAttachment = iAttachment
+        guard var incomingAttachment = content.userInfo["attachment"] as? [String: Any] else {
+            return failEarly("Attachment dictionary not in payload")
         }
 
         var needsAuth = false
 
-        if content.categoryIdentifier == "camera" && incomingAttachment["url"] == nil {
+        if content.categoryIdentifier.hasPrefix("camera") && incomingAttachment["url"] == nil {
+            Current.Log.debug("Camera cat prefix")
             guard let entityId = content.userInfo["entity_id"] as? String else {
-                return failEarly()
+                return failEarly("Category identifier was prefixed camera but no entity_id was set")
             }
 
             incomingAttachment["url"] = "/api/camera_proxy/\(entityId)"
@@ -55,24 +60,27 @@ final class NotificationService: UNNotificationServiceExtension {
             }
 
             needsAuth = true
+            Current.Log.debug("Camera so requiring auth")
         } else {
+            Current.Log.debug("Not a camera notification")
             // Check if we still have an empty dictionary
             if incomingAttachment.isEmpty {
                 // Attachment wasn't there/not a string:any, and this isn't a camera category, so we should fail
-                return failEarly()
+                return failEarly("Content dictionary was not empty")
             }
         }
 
         guard let attachmentString = incomingAttachment["url"] as? String else {
-            return failEarly()
+            return failEarly("url string did not exist in dictionary")
         }
 
         if attachmentString.hasPrefix("/") { // URL is something like /api or /www so lets prepend base URL
+            Current.Log.debug("Appears to be local URL, requiring auth")
             needsAuth = true
         }
 
         guard let attachmentURL = URL(string: attachmentString) else {
-            return failEarly()
+            return failEarly("Could not convert string to URL")
         }
 
         var attachmentOptions: [String: Any] = [:]
@@ -85,18 +93,24 @@ final class NotificationService: UNNotificationServiceExtension {
             attachmentOptions[UNNotificationAttachmentOptionsThumbnailHiddenKey] = attachmentHideThumbnail
         }
 
-        _ = HomeAssistantAPI.authenticatedAPI()?.DownloadDataAt(url: attachmentURL,
-                                                                needsAuth: needsAuth).done { fileURL in
+        Current.Log.debug("Set attachment options to \(attachmentOptions)s")
 
+        Current.Log.verbose("Going to get URL at \(attachmentURL)")
+
+        firstly {
+            return HomeAssistantAPI.authenticatedAPIPromise
+        }.then { api in
+            return api.DownloadDataAt(url: attachmentURL, needsAuth: needsAuth)
+        }.done { fileURL in
             do {
                 let attachment = try UNNotificationAttachment(identifier: attachmentURL.lastPathComponent, url: fileURL,
                                                               options: attachmentOptions)
                 content.attachments.append(attachment)
             } catch let error {
-                Current.Log.error("Error when building UNNotificationAttachment: \(error)")
-
-                return failEarly()
+                return failEarly("Unable to build UNNotificationAttachment: \(error)")
             }
+
+            Current.Log.debug("Successfully created and appended attachment \(content.attachments)")
 
             // Attempt to fill in the summary argument with the thread or category ID if it doesn't exist in payload.
             if #available(iOS 12.0, *) {
@@ -109,18 +123,22 @@ final class NotificationService: UNNotificationServiceExtension {
                 }
             }
 
-            if let copiedContent = content.copy() as? UNNotificationContent {
-                contentHandler(copiedContent)
+            Current.Log.debug("About to return")
+
+            guard let copiedContent = content.copy() as? UNNotificationContent else {
+                return failEarly("Unable to copy contents")
             }
+
+            Current.Log.debug("Returning \(copiedContent)")
+
+            contentHandler(copiedContent)
         }.catch { error in
-
+            var reason = "Error when getting attachment data! \(error)"
             if let error = error as? AFError {
-                Current.Log.error("Alamofire error while getting attachment data: \(error)")
-            } else {
-                Current.Log.error("Error when getting attachment data! \(error)")
+                reason = "Alamofire error while getting attachment data: \(error)"
             }
 
-            return failEarly()
+            return failEarly(reason)
         }
     }
 
@@ -128,6 +146,7 @@ final class NotificationService: UNNotificationServiceExtension {
         // Called just before the extension will be terminated by the system.
         // Use this as an opportunity to deliver your "best attempt" at modified content,
         // otherwise the original push payload will be used.
+        Current.Log.warning("serviceExtensionTimeWillExpire")
         if let contentHandler = contentHandler, let bestAttemptContent =  bestAttemptContent {
             contentHandler(bestAttemptContent)
         }
