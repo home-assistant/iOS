@@ -11,6 +11,7 @@ import Foundation
 import Shared
 import os
 import UIKit
+import UserNotifications
 
 private let kLocationMaximumAge: TimeInterval = 10.0
 
@@ -128,6 +129,8 @@ class RegionManager: NSObject {
                 type: .locationUpdate)
             Current.clientEventStore.addEvent(event)
             Current.Log.error("Error sending location after region trigger event: \(error)")
+
+            self.notifyOnError(trigger, error)
         }
     }
 
@@ -198,12 +201,24 @@ class RegionManager: NSObject {
             return false
         }
     }
+
+    func notifyOnError(_ trigger: LocationUpdateTrigger, _ error: Error) {
+        let content = UNMutableNotificationContent()
+        content.title = L10n.LocationUpdateErrorNotification.title(trigger.rawValue)
+        content.body = error.localizedDescription
+        content.sound = .default
+
+        let notificationRequest = UNNotificationRequest(identifier: "error_updating_location", content: content,
+                                                        trigger: nil)
+        UNUserNotificationCenter.current().add(notificationRequest)
+    }
 }
 
 // MARK: CLLocationManagerDelegate
 
 extension RegionManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didVisit visit: CLVisit) {
+        Current.Log.verbose("didVisit \(visit)")
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             return
         }
@@ -216,12 +231,15 @@ extension RegionManager: CLLocationManagerDelegate {
         }
 
         let location = CLLocation(latitude: visit.coordinate.latitude, longitude: visit.coordinate.longitude)
-        api.SubmitLocation(updateType: .Visit, location: location,
-                           zone: nil).catch { Current.Log.error("Error submitting location: \($0)" )}
+        api.SubmitLocation(updateType: .Visit, location: location, zone: nil).catch { error in
+            Current.Log.error("Error submitting location: \(error)")
+            self.notifyOnError(.Visit, error)
+        }
         self.lastLocationDate = Current.date()
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        Current.Log.verbose("didUpdateLocations \(locations)")
         guard let api = HomeAssistantAPI.authenticatedAPI() else {
             return
         }
@@ -250,15 +268,17 @@ extension RegionManager: CLLocationManagerDelegate {
             return
         }
 
-        api.SubmitLocation(updateType: .SignificantLocationUpdate, location: last,
-                           zone: nil).catch { Current.Log.error("Error submitting location: \($0)" )}
+        api.SubmitLocation(updateType: .SignificantLocationUpdate, location: last, zone: nil).catch { error in
+            Current.Log.error("Error submitting location: \(error)")
+            self.notifyOnError(.SignificantLocationUpdate, error)
+        }
 
         self.lastLocation = last
         self.lastLocationDate = Current.date()
-//        locationManager.stopUpdatingLocation()
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Current.Log.error("didFailWithError \(error)")
         if let clErr = error as? CLError {
             let realm = Current.realm()
             // swiftlint:disable:next force_try
@@ -287,6 +307,7 @@ extension RegionManager: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
+        Current.Log.verbose("didStartMonitoringFor \(region)")
         guard let zone = zones.zoneForRegion(region) else {
             return
         }
@@ -297,7 +318,7 @@ extension RegionManager: CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState,
                          for region: CLRegion) {
-        Current.Log.verbose("\(state.description) region: \(region)")
+        Current.Log.verbose("didDetermineState \(state.description) region: \(region)")
         guard state != .unknown else {
             return
         }

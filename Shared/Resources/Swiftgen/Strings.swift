@@ -402,6 +402,13 @@ internal enum L10n {
     }
   }
 
+  internal enum LocationUpdateErrorNotification {
+    /// Error sending %@ location update to Home Assistant.
+    internal static func title(_ p1: String) -> String {
+      return L10n.tr("Localizable", "location_update_error_notification.title", p1)
+    }
+  }
+
   internal enum ManualLocationUpdateFailedNotification {
     /// Failed to send current location to server. The error was %@
     internal static func message(_ p1: String) -> String {
