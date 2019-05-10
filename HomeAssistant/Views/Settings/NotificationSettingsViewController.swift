@@ -11,6 +11,7 @@ import Eureka
 import Shared
 import Realm
 import Firebase
+import PromiseKit
 
 // swiftlint:disable:next type_body_length
 class NotificationSettingsViewController: FormViewController {
@@ -67,6 +68,31 @@ class NotificationSettingsViewController: FormViewController {
             }.cellSetup { cell, _ in
                 cell.textView.addGestureRecognizer(UITapGestureRecognizer(target: self,
                                                                           action: #selector(self.tapPushID(_:))))
+            }
+            <<< ButtonRow {
+                $0.tag = "resetPushID"
+                $0.title = L10n.Settings.ResetSection.ResetRow.title
+            }.cellUpdate { cell, _ in
+                cell.textLabel?.textColor = .red
+            }.onCellSelection { cell, _ in
+                Current.Log.verbose("Resetting push token!")
+                firstly {
+                    return self.resetInstanceID()
+                }.done { token in
+                    Current.settingsStore.pushID = token
+                    guard let idRow = self.form.rowBy(tag: "pushID") as? TextAreaRow else { return }
+                    idRow.value = token
+                    idRow.updateCell()
+                }.catch { error in
+                    Current.Log.error("Error resetting push token: \(error)")
+                    let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
+                                                  preferredStyle: .alert)
+
+                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+
+                    self.present(alert, animated: true, completion: nil)
+                    alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
+                }
             }
 
         let categories = Current.realm().objects(NotificationCategory.self).sorted(byKeyPath: "Identifier")
@@ -359,6 +385,28 @@ class NotificationSettingsViewController: FormViewController {
             try! realm.write {
                 realm.delete(realm.objects(NotificationCategory.self).filter("Identifier IN %@", deletedIDs))
             }
+        }
+    }
+
+    func deleteInstanceID() -> Promise<Void> {
+        return Promise { seal in
+            InstanceID.instanceID().deleteID(handler: seal.resolve)
+        }
+    }
+
+    func createInstanceID() -> Promise<String> {
+        return Promise { seal in
+            InstanceID.instanceID().instanceID(handler: { (result, error) in
+                seal.resolve(result?.token, error)
+            })
+        }
+    }
+
+    func resetInstanceID() -> Promise<String> {
+        return firstly {
+            return self.deleteInstanceID()
+        }.then { _ in
+            return self.createInstanceID()
         }
     }
 }
