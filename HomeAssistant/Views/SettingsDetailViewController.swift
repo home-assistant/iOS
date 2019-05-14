@@ -74,6 +74,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                             let icon = AppIcon(rawValue: altIconName) {
                             $0.value = icon
                         }
+                        $0.displayValueFor = { $0?.title }
                     }.onPresent { _, to in
                         to.selectableRowCellUpdate = { (cell, row) in
                             cell.height = { return 72 }
