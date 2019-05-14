@@ -189,11 +189,9 @@ public class ConnectionInfo: Codable {
 
         if self.activeURLType == .internal {
             baseURL = self.internalURL!
-        }
-        // FIXME: Re-enable Cloudhook once mobile_app is fixed.
-        /* else if let cloudURL = self.cloudhookURL {
+        } else if let cloudURL = self.cloudhookURL {
             return cloudURL
-        }*/
+        }
 
         return baseURL.appendingPathComponent("api/webhook/\(self.webhookID)", isDirectory: false)
     }
