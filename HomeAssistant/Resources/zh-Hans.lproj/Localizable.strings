@@ -244,11 +244,11 @@
 "watch.labels.complication_group.utilitarian.description" = "在实用，动态，米老鼠和米妮表盘中使用复杂功能显示内容。";
 "watch.labels.complication_group.utilitarian.name" = "复杂功能";
 "watch.labels.complication_group_member.circular_small.description" = "彩色表盘中使用复杂功能的小圆形区域复杂功能。";
-"watch.labels.complication_group_member.circular_small.name" = "圆形小";
-"watch.labels.complication_group_member.circular_small.short_name" = "圆形小";
+"watch.labels.complication_group_member.circular_small.name" = "小圆环";
+"watch.labels.complication_group_member.circular_small.short_name" = "小圆环";
 "watch.labels.complication_group_member.extra_large.description" = "大文字表盘中使用的大方形区域复杂功能。";
-"watch.labels.complication_group_member.extra_large.name" = "超大号";
-"watch.labels.complication_group_member.extra_large.short_name" = "超大号";
+"watch.labels.complication_group_member.extra_large.name" = "超大";
+"watch.labels.complication_group_member.extra_large.short_name" = "超大";
 "watch.labels.complication_group_member.graphic_bezel.description" = "在模块表盘中使用复杂功能的小方形区域复杂功能。";
 "watch.labels.complication_group_member.graphic_bezel.name" = "图形表圈";
 "watch.labels.complication_group_member.graphic_bezel.short_name" = "面板";
@@ -275,7 +275,7 @@
 "watch.labels.complication_group_member.utilitarian_small.short_name" = "小";
 "watch.labels.complication_group_member.utilitarian_small_flat.description" = "在图文模块表盘中使用的大方框区域复杂功能。";
 "watch.labels.complication_group_member.utilitarian_small_flat.name" = "小方框复杂功能";
-"watch.labels.complication_group_member.utilitarian_small_flat.short_name" = "小公寓";
+"watch.labels.complication_group_member.utilitarian_small_flat.short_name" = "小方框";
 "watch.labels.complication_template.circular_small_ring_image.description" = "显示进度环的单个图片的配置模板";
 "watch.labels.complication_template.circular_small_ring_text.description" = "显示由可配置进度环圈出的短文本字符串的模板。";
 "watch.labels.complication_template.circular_small_simple_image.description" = "显示单张图片的模板。";
@@ -614,7 +614,7 @@
 "settings_details.notifications.sounds.import_custom" = "导入自定义铃声";
 "settings_details.notifications.sounds.import_file_sharing" = "从iTunes文件共享导入铃声";
 "settings_details.notifications.sounds.import_system" = "导入系统铃声";
-"settings_details.notifications.sounds.imported_alert.message" = "%d声音已导入。请重新启动手机以完成导入。";
+"settings_details.notifications.sounds.imported_alert.message" = "%d个声音已导入。请重新启动手机以完成导入。";
 "settings_details.notifications.sounds.imported_alert.title" = "铃声已导入";
 "settings_details.notifications.sounds.system" = "系统";
 "settings_details.notifications.sounds.title" = "通知铃声";
@@ -637,8 +637,8 @@
 "onboarding.connection_test_result.server_error.description" = "服务器错误： %@";
 "onboarding.connection_test_result.too_old.description" = "您必须升级Home Assistant版本。";
 "onboarding.connection_test_result.unknown_error.description" = "未知错误：%@";
-"onboarding.discovery.results_label.plural" = "我们在您的网络上找到了%d Home Assistants。";
-"onboarding.discovery.results_label.singular" = "我们在您的网络上找到了%d Home Assistant。";
+"onboarding.discovery.results_label.plural" = "我们在您的网络上找到了%d 个Home Assistants。";
+"onboarding.discovery.results_label.singular" = "我们在您的网络上找到了%d 个Home Assistant。";
 "onboarding.connect.title" = "连接到%@";
 "settings.connection_section.details" = "细节";
 "settings.connection_section.connecting_via" = "链接于";
@@ -662,4 +662,4 @@
 "settings_details.notifications.rate_limits.resets_in" = "剩余重置时间";
 "on_label" = "开";
 "off_label" = "关";
-"location_update_error_notification.title" = "将%@位置更新发送到Home Assistant时出错。";
+"location_update_error_notification.title" = "将%@个位置更新发送到Home Assistant时出错。";

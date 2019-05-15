@@ -489,7 +489,7 @@ internal enum L10n {
         internal enum CategorySummary {
           /// %%u notifications in %%@
           internal static let `default` = L10n.tr("Localizable", "notifications_configurator.category.rows.category_summary.default")
-          /// A format string for the summary description used when the system groups the category’s notifications. You can optionally uses '%%u' to show the number of notifications in the group and '%%@' to show the summary argument provided in the push payload.
+          /// A format string for the summary description used when the system groups the category’s notifications. You can optionally use '%%u' to show the number of notifications in the group and '%%@' to show the summary argument provided in the push payload.
           internal static let footer = L10n.tr("Localizable", "notifications_configurator.category.rows.category_summary.footer")
           /// Category Summary
           internal static let header = L10n.tr("Localizable", "notifications_configurator.category.rows.category_summary.header")

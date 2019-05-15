@@ -206,7 +206,7 @@
 "notifications_configurator.category.rows.actions.header" = "Actions";
 "addButtonLabel" = "Add";
 "notifications_configurator.category.rows.category_summary.header" = "Category Summary";
-"notifications_configurator.category.rows.category_summary.footer" = "A format string for the summary description used when the system groups the category’s notifications. You can optionally uses '%%u' to show the number of notifications in the group and '%%@' to show the summary argument provided in the push payload.";
+"notifications_configurator.category.rows.category_summary.footer" = "A format string for the summary description used when the system groups the category’s notifications. You can optionally use '%%u' to show the number of notifications in the group and '%%@' to show the summary argument provided in the push payload.";
 "notifications_configurator.category.rows.category_summary.default" = "%%u notifications in %%@";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u notifications";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Hidden Preview Placeholder";

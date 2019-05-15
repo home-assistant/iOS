@@ -11,7 +11,7 @@
 "7NpJ76-dC8g33" = "Plasseringen oppdatert til innholdet fra utklippstavlen som ble analysert som koordinater";
 "8BMgur" = "Sendingen $ {eventName} til Home Assistant var vellykket";
 "B4bXyc" = "Vellykket gjengitt mal";
-"CiB3s6" = "Utfør tjeneste $ {serviceDomain} . $ {service} med data fra utklippstavlen";
+"CiB3s6" = "Utfør tjeneste ${serviceDomain}.${service} med data fra utklippstavlen";
 "FBQiVD" = "Påkall en tjeneste i Home Assistant";
 "FN8zqO" = "Få et enkelt stillbilde fra ${cameraID} og plassere det i utklippstavlen";
 "FZ9qkT" = "Gjengi mal";
@@ -55,13 +55,13 @@
 "ri4H1h" = "Vellykket sendt $ {domain} . $ {service} med utklippstavleinnhold til Home Assistant";
 "rlOS6H" = "Vellykket gjengitt mal fra utklippstavlen";
 "rwj6u7" = "Rapporten din nåværende posisjon som ${location} Home Assistant";
-"sbkx4E" = "Kunne ikke geokode $ {clipboardContents} til et gyldig sted";
+"sbkx4E" = "Kunne ikke geokode ${pasteboardContents} til et gyldig sted";
 "uUk5RX" = "Utfør ${serviceDomain}.${service} med data";
 "v7TSD5" = "Send plassering";
-"wKnW1P" = "Utfør tjeneste $ {serviceDomain} . $ {service} med data fra utklippstavlen";
+"wKnW1P" = "Utfør tjeneste ${serviceDomain}.${service} med data fra utklippstavlen";
 "wfPQQQ" = "Utfør en hendelse til Home Assistant Event Bus";
 "yS9QV0" = "Start ${Hendelsesnavn} data";
-"7NpJ76-F708zM" = "Location updated to contents of clipboard that were parsed as Current Location";
+"7NpJ76-F708zM" = "Plasseringen oppdatert til innholdet i utklippstavlen som ble analysert som gjeldende plassering";
 "YyQQL1" = "JSON ble funnet på utklippstavlen, men er ikke gyldig.";
 "boiLEw" = "JSON ble funnet på utklippstavlen, men er ikke gyldig.";
 "tHPm96" = "Plassering oppdatert til din nåværende posisjon";

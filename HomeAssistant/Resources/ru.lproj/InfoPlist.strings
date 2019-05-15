@@ -5,4 +5,4 @@
 "NSSiriUsageDescription" = "Siri нужна, чтобы создавать команды, взаимодействующие с приложением";
 "NSPhotoLibraryAddUsageDescription" = "Доступ к фотографиям нужен для сохранения картинок из основного окна программы";
 "NSPhotoLibraryUsageDescription" = "Доступ к фотографиям нужен для сохранения картинок из основного окна программы";
-"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Отправить местоположение";
+"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Отправить геопозицию";
