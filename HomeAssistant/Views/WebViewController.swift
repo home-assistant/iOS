@@ -497,7 +497,7 @@ extension WebViewController: WKScriptMessageHandler {
         }
     }
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    // swiftlint:disable:next cyclomatic_complexity
     func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let incomingMessage = WebSocketMessage(dictionary) else {
             Current.Log.error("Received invalid external message \(dictionary)")
@@ -552,7 +552,7 @@ extension WebViewController: WKScriptMessageHandler {
 
             let script = "window.externalBus(\(jsonString))"
             // Current.Log.verbose("Sending message to externalBus \(script)")
-            self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
+            self.webView.evaluateJavaScript(script, completionHandler: { (_, error) in
                 if let error = error {
                     Current.Log.error("Failed to fire message to externalBus: \(error)")
                 }

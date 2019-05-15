@@ -135,7 +135,7 @@ class AuthenticationViewController: UIViewController {
 
     // swiftlint:disable:next function_body_length
     private func testConnection(_ baseURL: URL) -> Promise<DiscoveredHomeAssistant> {
-        let discoveryInfoURL = baseURL.appendingPathComponent("api/discovery_info")
+        let discoveryURL = baseURL.appendingPathComponent("api/discovery_info")
         return Promise { seal in
             let sessionManager = Alamofire.SessionManager.default
             let delegate: Alamofire.SessionDelegate = sessionManager.delegate
@@ -158,7 +158,7 @@ class AuthenticationViewController: UIViewController {
                     completion(.cancelAuthenticationChallenge, nil)
                 }
             }
-            sessionManager.request(discoveryInfoURL).responseObject { (response: DataResponse<DiscoveredHomeAssistant>) in
+            sessionManager.request(discoveryURL).responseObject { (response: DataResponse<DiscoveredHomeAssistant>) in
                 Current.Log.verbose("Request: \(String(describing: response.request))")
                 Current.Log.verbose("Response: \(String(describing: response.response))")
                 Current.Log.verbose("Result: \(response.result)")

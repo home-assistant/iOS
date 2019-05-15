@@ -409,4 +409,5 @@ class NotificationSettingsViewController: FormViewController {
             return self.createInstanceID()
         }
     }
+// swiftlint:disable:next file_length
 }

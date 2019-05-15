@@ -15,6 +15,7 @@ import SystemConfiguration.CaptiveNetwork
 import Communicator
 #endif
 
+// swiftlint:disable:next type_body_length
 public class ConnectionInfo: Codable {
     public private(set) var externalURL: URL? {
         didSet {
