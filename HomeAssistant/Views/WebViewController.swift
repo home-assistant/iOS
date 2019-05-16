@@ -14,6 +14,8 @@ import MaterialComponents.MaterialButtons
 import Iconic
 import SwiftMessages
 import Shared
+import AVFoundation
+import AVKit
 
 // swiftlint:disable:next type_body_length
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
@@ -23,6 +25,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     var urlObserver: NSKeyValueObservation?
 
     let refreshControl = UIRefreshControl()
+
+    var remotePlayer = RemoteMediaPlayer()
+
+    var keepAliveTimer: Timer?
 
     let settingsButton: MDCFloatingButton! = {
         let button = MDCFloatingButton()
@@ -41,6 +47,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.becomeFirstResponder()
+        self.remotePlayer.delegate = self
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(WebViewController.loadActiveURLIfNeeded),
                                                name: UIApplication.didBecomeActiveNotification,
@@ -69,6 +76,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         userContentController.add(self, name: "externalBus")
         userContentController.add(self, name: "themesUpdated")
         userContentController.add(self, name: "currentUser")
+        userContentController.add(self, name: "mediaPlayerCommand")
+
+        if let webhookID = Current.settingsStore.connectionInfo?.webhookID {
+            let webhookGlobal = "window.webhookID = '\(webhookID)';"
+            userContentController.addUserScript(WKUserScript(source: webhookGlobal, injectionTime: .atDocumentStart,
+                                                             forMainFrameOnly: false))
+        }
 
         guard let wsBridgeJSPath = Bundle.main.path(forResource: "WebSocketBridge", ofType: "js"),
             let wsBridgeJS = try? String(contentsOfFile: wsBridgeJSPath) else {
@@ -401,12 +415,19 @@ extension String {
 }
 
 extension WebViewController: WKScriptMessageHandler {
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let messageBody = message.body as? [String: Any] else { return }
 
         // Current.Log.verbose("Received script message \(message.name) \(message.body)")
 
-        if message.name == "externalBus" {
+        if message.name == "mediaPlayerCommand" {
+            guard let cmdStr = messageBody["type"] as? String, let cmd = RemotePlayerCommands(rawValue: cmdStr) else {
+                Current.Log.error("No command type in payload! \(messageBody)")
+                return
+            }
+            self.remotePlayer.handleCommand(cmd, messageBody["data"])
+        } else if message.name == "externalBus" {
             self.handleExternalMessage(messageBody)
         } else if message.name == "currentUser", let user = AuthenticatedUser(messageBody) {
             Current.settingsStore.authenticatedUser = user
@@ -574,6 +595,50 @@ extension WebViewController: UIScrollViewDelegate {
             scrollView.contentOffset.y = scrollView.contentSize.height - scrollView.bounds.height
         }
     }
+}
+
+extension WebViewController: RemoteMediaPlayerDelegate {
+    func sendStatus(_ state: RemotePlayerState) {
+        guard let webhookID = Current.settingsStore.connectionInfo?.webhookID else {
+            Current.Log.error("Unable to get webhookID!")
+            return
+        }
+        var jsonStr: String = "{}"
+        do {
+            let data = try JSONEncoder().encode(state)
+            jsonStr = String(data: data, encoding: .utf8) ?? "{}"
+        } catch {
+            Current.Log.error("Error while encoding RemotePlayerState: \(error)")
+            return
+        }
+        // swiftlint:disable:next line_length
+        let script = "window.activeHassConnection.sendMessage({type: 'mobile_app/update_media_player_state', webhook_id: '\(webhookID)', player_state: \(jsonStr)});"
+        Current.Log.verbose("Sending message \(script)")
+        self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
+            if let error = error {
+                Current.Log.error("Failed to update player state: \(error)")
+                return
+            }
+
+            Current.Log.verbose("Success when updating player state: \(String(describing: result))")
+        })
+    }
+
+    func showPlayer(_ playerViewController: AVPlayerViewController) {
+        // https://stackoverflow.com/a/40739474/486182
+        self.keepAliveTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { (_) in
+            self.webView.evaluateJavaScript("1+1", completionHandler: nil)
+        }
+        self.present(playerViewController, animated: true) {
+            Current.Log.verbose("Playing!")
+            playerViewController.player?.play()
+        }
+    }
+
+    func donePlaying() {
+        self.keepAliveTimer?.invalidate()
+    }
+
 }
 
 extension ConnectionInfo {

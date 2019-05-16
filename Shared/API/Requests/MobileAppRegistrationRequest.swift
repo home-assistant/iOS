@@ -20,6 +20,7 @@ class MobileAppRegistrationRequest: Mappable {
     var OSName: String?
     var OSVersion: String?
     var SupportsEncryption: Bool = true
+    var SupportsMediaPlayer: Bool = true
 
     init() {}
 
@@ -36,5 +37,6 @@ class MobileAppRegistrationRequest: Mappable {
         OSName              <- map["os_name"]
         OSVersion           <- map["os_version"]
         SupportsEncryption  <- map["supports_encryption"]
+        SupportsMediaPlayer <- map["supports_media_player"]
     }
 }
