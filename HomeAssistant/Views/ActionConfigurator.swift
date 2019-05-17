@@ -81,9 +81,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
         }
 
         self.form
-            +++ Section()
-
-            <<< TextRow {
+            +++ TextRow {
                     $0.tag = "name"
                     $0.title = L10n.ActionsConfigurator.Rows.Name.title
                     $0.add(rule: RuleRequired())
@@ -97,8 +95,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                 }
             }
 
-            +++ Section()
-            <<< TextRow("text") {
+            +++ TextRow("text") {
                 $0.title = L10n.ActionsConfigurator.Rows.Text.title
                 $0.value = self.action.Text
             }.onChange { row in
@@ -188,8 +185,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                     }
             }
 
-            +++ Section()
-            <<< ViewRow<ActionPreview>("preview").cellSetup { (cell, _) in
+            +++ ViewRow<ActionPreview>("preview").cellSetup { (cell, _) in
                 cell.backgroundColor = UIColor.clear
                 cell.preservesSuperviewLayoutMargins = false
                 self.preview.setup(self.action)

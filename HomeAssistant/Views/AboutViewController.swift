@@ -86,8 +86,7 @@ class AboutViewController: FormViewController {
                     openURLInBrowser(urlToOpen: URL(string: urlStr)!)
             }
 
-            +++ Section()
-            <<< ButtonRow {
+            +++ ButtonRow {
                     $0.title = L10n.About.Website.title
                 }.onCellSelection { _, _  in
                     openURLInBrowser(urlToOpen: URL(string: "https://www.home-assistant.io/")!)

@@ -89,9 +89,7 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                 }
             }
 
-        +++ Section()
-
-        <<< SwitchRow {
+        +++ SwitchRow {
                 $0.tag = "textInput"
                 $0.title = L10n.NotificationsConfigurator.Action.TextInput.title
                 if !self.newAction {

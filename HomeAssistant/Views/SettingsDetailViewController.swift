@@ -55,8 +55,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         case "general":
             self.title = L10n.SettingsDetails.General.title
             self.form
-                +++ Section()
-                <<< SwitchRow("openInChrome") {
+                +++ SwitchRow("openInChrome") {
                     $0.title = L10n.SettingsDetails.General.Chrome.title
                     $0.value = prefs.bool(forKey: "openInChrome")
                     }.onChange { row in
@@ -64,8 +63,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         prefs.synchronize()
                 }
 
-                +++ Section()
-                <<< PushRow<AppIcon>("appIcon") {
+                +++ PushRow<AppIcon>("appIcon") {
                         $0.title = L10n.SettingsDetails.General.AppIcon.title
                         $0.selectorTitle = $0.title
                         $0.options = AppIcon.allCases
