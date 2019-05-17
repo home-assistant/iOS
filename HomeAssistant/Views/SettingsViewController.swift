@@ -15,6 +15,7 @@ import Lokalise
 import ZIPFoundation
 import UserNotifications
 import Firebase
+import WebKit
 
 // swiftlint:disable:next type_body_length
 class SettingsViewController: FormViewController {
@@ -217,6 +218,17 @@ class SettingsViewController: FormViewController {
 
                 self.present(alert, animated: true, completion: nil)
                 alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
+        }
+
+        <<< ButtonRow("resetWebData") {
+            $0.title = L10n.Settings.ResetSection.ResetWebCache.title
+        }.cellUpdate { cell, _ in
+            cell.textLabel?.textColor = .red
+        }.onCellSelection { _, _ in
+            WKWebsiteDataStore.default().removeData(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(),
+                                                    modifiedSince: Date(timeIntervalSince1970: 0), completionHandler: {
+                Current.Log.verbose("Reset browser caches!")
+            })
         }
 
         +++ Section(header: L10n.Settings.Developer.header, footer: L10n.Settings.Developer.footer) {

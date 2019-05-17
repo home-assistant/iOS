@@ -1164,6 +1164,10 @@ internal enum L10n {
         /// Reset
         internal static let title = L10n.tr("Localizable", "settings.reset_section.reset_row.title")
       }
+      internal enum ResetWebCache {
+        /// Reset frontend cache
+        internal static let title = L10n.tr("Localizable", "settings.reset_section.reset_web_cache.title")
+      }
     }
     internal enum StatusSection {
       /// Status
