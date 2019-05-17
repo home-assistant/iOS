@@ -26,7 +26,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     let refreshControl = UIRefreshControl()
 
-    var remotePlayer = RemoteMediaPlayer()
+    // var remotePlayer = RemoteMediaPlayer()
 
     var keepAliveTimer: Timer?
 
@@ -47,7 +47,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.becomeFirstResponder()
-        self.remotePlayer.delegate = self
+        // self.remotePlayer.delegate = self
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(WebViewController.loadActiveURLIfNeeded),
                                                name: UIApplication.didBecomeActiveNotification,
@@ -415,19 +415,18 @@ extension String {
 }
 
 extension WebViewController: WKScriptMessageHandler {
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let messageBody = message.body as? [String: Any] else { return }
 
         // Current.Log.verbose("Received script message \(message.name) \(message.body)")
 
-        if message.name == "mediaPlayerCommand" {
+        /* if message.name == "mediaPlayerCommand" {
             guard let cmdStr = messageBody["type"] as? String, let cmd = RemotePlayerCommands(rawValue: cmdStr) else {
                 Current.Log.error("No command type in payload! \(messageBody)")
                 return
             }
             self.remotePlayer.handleCommand(cmd, messageBody["data"])
-        } else if message.name == "externalBus" {
+        } else */ if message.name == "externalBus" {
             self.handleExternalMessage(messageBody)
         } else if message.name == "currentUser", let user = AuthenticatedUser(messageBody) {
             Current.settingsStore.authenticatedUser = user
@@ -597,7 +596,7 @@ extension WebViewController: UIScrollViewDelegate {
     }
 }
 
-extension WebViewController: RemoteMediaPlayerDelegate {
+/* extension WebViewController: RemoteMediaPlayerDelegate {
     func sendStatus(_ state: RemotePlayerState) {
         guard let webhookID = Current.settingsStore.connectionInfo?.webhookID else {
             Current.Log.error("Unable to get webhookID!")
@@ -639,7 +638,7 @@ extension WebViewController: RemoteMediaPlayerDelegate {
         self.keepAliveTimer?.invalidate()
     }
 
-}
+} */
 
 extension ConnectionInfo {
     func webviewURL() -> URL? {

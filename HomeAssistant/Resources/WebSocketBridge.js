@@ -9,13 +9,13 @@ const handleThemeUpdate = (event) => {
 }
 
 window.hassConnection.then(({ conn }) => {
-  window.activeHassConnection = conn
+  // window.activeHassConnection = conn
   conn.sendMessagePromise({type: 'auth/current_user'}).then((user) => {
     window.webkit.messageHandlers.currentUser.postMessage(user);
   });
-  conn.subscribeMessage((msg) => {
-    window.webkit.messageHandlers.mediaPlayerCommand.postMessage(msg);
-  }, {type: 'mobile_app/subscribe_media_player', webhook_id: window.webhookID});
+  // conn.subscribeMessage((msg) => {
+  //  window.webkit.messageHandlers.mediaPlayerCommand.postMessage(msg);
+  // }, {type: 'mobile_app/subscribe_media_player', webhook_id: window.webhookID});
   conn.sendMessagePromise({type: 'frontend/get_themes'}).then(handleThemeUpdate);
   conn.subscribeEvents(handleThemeUpdate, 'themes_updated');
 });

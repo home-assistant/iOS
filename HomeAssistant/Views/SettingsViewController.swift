@@ -407,4 +407,5 @@ class SettingsViewController: FormViewController {
                                                         trigger: trigger)
         UNUserNotificationCenter.current().add(notificationRequest)
     }
+// swiftlint:disable:next file_length
 }
