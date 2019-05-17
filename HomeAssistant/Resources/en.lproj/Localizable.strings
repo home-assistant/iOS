@@ -41,7 +41,6 @@
 "settings.details_section.enable_notification_row.title" = "Enable notifications";
 "settings.details_section.notification_settings_row.title" = "Notifications";
 "settings.reset_section.reset_row.title" = "Reset";
-"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_alert.message" = "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.";
 "settings_details.general.title" = "General";
@@ -658,3 +657,4 @@
 "on_label" = "On";
 "off_label" = "Off";
 "location_update_error_notification.title" = "Error sending %@ location update to Home Assistant.";
+"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";

@@ -15,10 +15,10 @@
 "SnL-y3-0HP.text" = "Mi Home Assistant";
 "TEX-zW-Byk.text" = "Para la mejor experiencia al usar el Home Assistant Companion, por favor conceda los siguientes permisos:";
 "Tqw-iY-A2S.normalTitle" = "Más Información";
-"UKm-Ju-0Yr.text" = "We encountered an error while connecting to your instance. Your SSL certificate is invalid. Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.";
+"UKm-Ju-0Yr.text" = "Se detectó un error al conectarse a su instancia. Su certificado SSL no es válido. Debido a limitaciones de iOS, no podrá continuar con la configuración hasta que se instale un certificado SSL válido. Recomendamos Let's Encrypt o Nabu Casa Remote UI.";
 "XyQ-gy-yHY.text" = "Conectado";
 "bP1-C8-fgs.text" = "Integración Creada";
-"d97-7H-RBe.text" = "Encrypted Communications Established";
+"d97-7H-RBe.text" = "Establecida la comunicación encriptada";
 "djx-xj-AwF.text" = "Para continuar con la configuración automática, conéctese a la red Wi-Fi de su casa.";
 "f1j-Ol-pW5.normalTitle" = "Conectar";
 "fqx-lo-wDB.normalTitle" = "Introducir la dirección manualmente";

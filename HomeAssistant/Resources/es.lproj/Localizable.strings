@@ -222,7 +222,7 @@
 "settings_details.siri.title" = "Siri Shortcuts";
 "siri_shortcuts.configurator.fields.section.footer" = "Sugerencia: %@";
 "siri_shortcuts.configurator.fields.section.header" = "Fields";
-"siri_shortcuts.configurator.fields.use_default_value" = "Use default value";
+"siri_shortcuts.configurator.fields.use_default_value" = "Usar valor predeterminado";
 "siri_shortcuts.configurator.fields.use_suggested_value" = "Usar el valor sugerido";
 "siri_shortcuts.configurator.settings.name.title" = "Shortcut name";
 "siri_shortcuts.configurator.settings.notify_on_run.title" = "Enviar notificación cuando se ejecuta";
@@ -554,11 +554,11 @@
 "sensors.cellular_provider.name" = "Proveedor Celular %@";
 "sensors.cellular_provider.attributes.carrier_id" = "Carrier ID";
 "sensors.cellular_provider.attributes.carrier_name" = "Carrier Name";
-"sensors.cellular_provider.attributes.mobile_country_code" = "Mobile Country Code";
-"sensors.cellular_provider.attributes.mobile_network_code" = "Mobile Network Code";
-"sensors.cellular_provider.attributes.iso_country_code" = "ISO Country Code";
+"sensors.cellular_provider.attributes.mobile_country_code" = "Código de país para el móvil";
+"sensors.cellular_provider.attributes.mobile_network_code" = "Código de red móvil";
+"sensors.cellular_provider.attributes.iso_country_code" = "Código de país ISO";
 "sensors.cellular_provider.attributes.allows_voip" = "Permite VoIP";
-"sensors.cellular_provider.attributes.radio_tech" = "Current Radio Technology";
+"sensors.cellular_provider.attributes.radio_tech" = "Tecnología de radio actual";
 "sensors.cellular_provider.radio_tech.gprs" = "General Packet Radio Service (GPRS)";
 "sensors.cellular_provider.radio_tech.edge" = "Enhanced Data rates for GSM Evolution (EDGE)";
 "sensors.cellular_provider.radio_tech.cdma_1x" = "Code Division Multiple Access (CDMA 1X)";
@@ -656,4 +656,5 @@
 "settings_details.notifications.rate_limits.resets_in" = "Reinicia en";
 "on_label" = "Encendido";
 "off_label" = "Apagado";
-"location_update_error_notification.title" = "Error sending %@ location update to Home Assistant.";
+"location_update_error_notification.title" = "Error al enviar la actualización de ubicación %@ a Home Assistant.";
+"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";

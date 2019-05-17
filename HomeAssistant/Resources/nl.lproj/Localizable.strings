@@ -663,3 +663,4 @@
 "on_label" = "Aan";
 "off_label" = "Uit";
 "location_update_error_notification.title" = "Error sending %@ location update to Home Assistant.";
+"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";

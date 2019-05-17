@@ -657,3 +657,4 @@
 "on_label" = "Вкл";
 "off_label" = "Выкл";
 "location_update_error_notification.title" = "Не удалось отправить %@ обновлений геопозиции в Home Assistant";
+"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";

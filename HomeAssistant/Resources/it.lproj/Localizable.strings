@@ -657,3 +657,4 @@
 "on_label" = "Acceso";
 "off_label" = "Spento";
 "location_update_error_notification.title" = "Errore durante l'invio della posizione %@ a Home Assistant.";
+"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
