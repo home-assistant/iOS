@@ -2,5 +2,7 @@
 DEVELOPMENT_TEAM = UTQFCBPQRF
 BUNDLE_ID_PREFIX = io.robbie
 
+PROVISIONING_PROFILE_SPECIFIER = ${PROVISIONING_PROFILE_SPECIFIER_PREFIX} ${PRODUCT_BUNDLE_IDENTIFIER}
+
 // Create this file to override configuration. It's ignored by git
 #include? "HomeAssistant.overrides.xcconfig"
