@@ -17,6 +17,10 @@
 		6DFADFAFF2B1E4A5C7A00D10 /* Pods_SiriIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C43F9F3C9B007EC2C1DDD9 /* Pods_SiriIntents.framework */; };
 		6EDD98D41F2594F18D2F3E38 /* Pods-WatchAppExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */; };
 		7A06D3D7A5B4746FE6F5BFA6 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C23068FBA9B7BE1478936B11 /* Pods_HomeAssistant.framework */; };
+		9C4E5E23229D98530044C8EC /* HomeAssistant.release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */; };
+		9C4E5E24229D98580044C8EC /* HomeAssistant.debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */; };
+		9C4E5E26229D986B0044C8EC /* HomeAssistant.beta.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9C4E5E25229D986B0044C8EC /* HomeAssistant.beta.xcconfig */; };
+		9C4E5E28229D992A0044C8EC /* HomeAssistant.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9C4E5E27229D992A0044C8EC /* HomeAssistant.xcconfig */; };
 		9E0BAD90B73333854D6D31E1 /* Pods_TodayWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3744F977190C345382928F90 /* Pods_TodayWidget.framework */; };
 		9EE703BEA1A769299E20ADBB /* Pods-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0CE51F0910A76C0B0D8B795E /* Pods-Shared-watchOS-metadata.plist */; };
 		A704AB29C110E538318CF129 /* Pods-Shared-iOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = BBABE84031827AE56C8043E8 /* Pods-Shared-iOS-metadata.plist */; };
@@ -721,6 +725,10 @@
 		93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-NotificationContentExtension-metadata.plist"; path = "Pods/Pods-NotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
 		94309E9FC28067C2D07463D7 /* Pods_NotificationContentExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationContentExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94F2E1DA1A69FE4CED834348 /* Pods-HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.debug.xcconfig"; sourceTree = "<group>"; };
+		9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = HomeAssistant.debug.xcconfig; sourceTree = "<group>"; };
+		9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.release.xcconfig; sourceTree = "<group>"; };
+		9C4E5E25229D986B0044C8EC /* HomeAssistant.beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.beta.xcconfig; sourceTree = "<group>"; };
+		9C4E5E27229D992A0044C8EC /* HomeAssistant.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HomeAssistant.xcconfig; sourceTree = "<group>"; };
 		A773539FA6CBDC538A9D2EDD /* Pods-HomeAssistantTests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.beta.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.beta.xcconfig"; sourceTree = "<group>"; };
 		AE58041D3926107C95F27BE7 /* Pods-SiriIntents.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SiriIntents.beta.xcconfig"; path = "Pods/Target Support Files/Pods-SiriIntents/Pods-SiriIntents.beta.xcconfig"; sourceTree = "<group>"; };
 		AFE8CD1D3AC8718C166E0F36 /* Pods_WatchAppExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WatchAppExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1393,6 +1401,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		9C4E5E20229D97FA0044C8EC /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				9C4E5E27229D992A0044C8EC /* HomeAssistant.xcconfig */,
+				9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */,
+				9C4E5E25229D986B0044C8EC /* HomeAssistant.beta.xcconfig */,
+				9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
 		AAB60FA4DE371AD957F6907B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1640,6 +1659,7 @@
 		B657A8DD1CA646EB00121384 = {
 			isa = PBXGroup;
 			children = (
+				9C4E5E20229D97FA0044C8EC /* Configuration */,
 				B657A8E81CA646EB00121384 /* HomeAssistant */,
 				D03D891820E0A85300D4F28D /* Shared */,
 				B6AAD7A21D827DD40090B220 /* APNSAttachmentService */,
@@ -2837,6 +2857,7 @@
 				B606169C1D1F117800249C11 /* US-EN-Alexa-Wife-Is-Arriving.wav in Resources */,
 				B60616211D1F117700249C11 /* US-EN-Morgan-Freeman-Liquor-Cabinet-Opened.wav in Resources */,
 				B60616331D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav in Resources */,
+				9C4E5E23229D98530044C8EC /* HomeAssistant.release.xcconfig in Resources */,
 				B658AA7322506AD400C9BFE3 /* GoogleService-Info-Development.plist in Resources */,
 				B60221FC226D9FB800E8DBFE /* notification.json in Resources */,
 				B606164E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Light.wav in Resources */,
@@ -2849,8 +2870,10 @@
 				B6E2D4B82270406B00446DFA /* Beta LaunchScreen.storyboard in Resources */,
 				B60616561D1F117700249C11 /* US-EN-Morgan-Freeman-Welcome-Home.wav in Resources */,
 				B657A8F61CA646EB00121384 /* Release LaunchScreen.storyboard in Resources */,
+				9C4E5E24229D98580044C8EC /* HomeAssistant.debug.xcconfig in Resources */,
 				B672AB1222150ED600175465 /* white@2x.png in Resources */,
 				B60616431D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Kitchen-Light.wav in Resources */,
+				9C4E5E26229D986B0044C8EC /* HomeAssistant.beta.xcconfig in Resources */,
 				B60616341D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Smoke.wav in Resources */,
 				B60616841D1F117700249C11 /* US-EN-Alexa-Girlfriend-Is-Arriving.wav in Resources */,
 				B672AB292215114A00175465 /* release@2x.png in Resources */,
@@ -2962,6 +2985,7 @@
 				B672AB1A22150ED600175465 /* red@3x.png in Resources */,
 				B60616441D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Light.wav in Resources */,
 				B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */,
+				9C4E5E28229D992A0044C8EC /* HomeAssistant.xcconfig in Resources */,
 				B60616361D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav in Resources */,
 				B6D8A3282271448E00FA765D /* error.json in Resources */,
 				B672AB1D22150ED600175465 /* black@2x.png in Resources */,
@@ -4217,6 +4241,7 @@
 		};
 		B637242F21697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9C4E5E25229D986B0044C8EC /* HomeAssistant.beta.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -4549,6 +4574,7 @@
 		};
 		B657A90E1CA646EB00121384 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -4611,6 +4637,7 @@
 		};
 		B657A90F1CA646EB00121384 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
