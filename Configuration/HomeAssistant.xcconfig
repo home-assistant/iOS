@@ -1,3 +1,5 @@
 
+DEVELOPMENT_TEAM = UTQFCBPQRF
+
 // Create this file to override configuration. It's ignored by git
 #include? "HomeAssistant.overrides.xcconfig"
