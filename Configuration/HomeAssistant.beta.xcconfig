@@ -1,0 +1,3 @@
+PROVISIONING_PROFILE_SPECIFIER_PREFIX = match AppStore
+
+#include "HomeAssistant.xcconfig"
