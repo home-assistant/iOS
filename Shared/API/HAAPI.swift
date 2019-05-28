@@ -198,7 +198,7 @@ public class HomeAssistantAPI {
 
             guard let downloadPath = self.getDownloadDataPath(finalURL) else {
                 Current.Log.error("Unable to get download path!")
-                seal.reject(NSError(domain: "io.robbie.HomeAssistant", code: 500, userInfo: nil))
+                seal.reject(APIError.cantBuildURL)
                 return
             }
 
