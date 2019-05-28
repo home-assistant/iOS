@@ -73,3 +73,6 @@ push_certs/*
 Tools/*.py
 Tools/*.ttf
 dSYMs/
+
+# Local configuration overrides
+Configuration/HomeAssistant.overrides.xcconfig
