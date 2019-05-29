@@ -2609,9 +2609,9 @@
 				TargetAttributes = {
 					B627CB061D83C87B0057173E = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = "${DEVELOPMENT_TEAM}";
+						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = "${CODE_SIGN_STYLE}";
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.AccessWiFi = {
 								enabled = 1;
@@ -2626,8 +2626,9 @@
 					};
 					B657A8E51CA646EB00121384 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = "${DEVELOPMENT_TEAM}";
+						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 1020;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.AccessWiFi = {
 								enabled = 1;
@@ -2657,21 +2658,23 @@
 					};
 					B657A8FB1CA646EB00121384 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = "${DEVELOPMENT_TEAM}";
+						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 1020;
+						ProvisioningStyle = Manual;
 						TestTargetID = B657A8E51CA646EB00121384;
 					};
 					B657A9061CA646EB00121384 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = "${DEVELOPMENT_TEAM}";
+						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 1020;
+						ProvisioningStyle = Manual;
 						TestTargetID = B657A8E51CA646EB00121384;
 					};
 					B66C58A4215086F0004AB261 = {
 						CreatedOnToolsVersion = 10.0;
-						DevelopmentTeam = "${DEVELOPMENT_TEAM}";
+						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = "${CODE_SIGN_STYLE}";
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.AccessWiFi = {
 								enabled = 1;
@@ -2686,9 +2689,9 @@
 					};
 					B66F9F21216B1E61000CAA0F = {
 						CreatedOnToolsVersion = 10.0;
-						DevelopmentTeam = "${DEVELOPMENT_TEAM}";
+						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = "${CODE_SIGN_STYLE}";
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.AccessWiFi = {
 								enabled = 1;
@@ -2703,15 +2706,15 @@
 					};
 					B67CE82322200D420034C1D0 = {
 						CreatedOnToolsVersion = 10.1;
-						DevelopmentTeam = "${DEVELOPMENT_TEAM}";
+						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = "${CODE_SIGN_STYLE}";
+						ProvisioningStyle = Manual;
 					};
 					B6AAD7A01D827DD40090B220 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = "${DEVELOPMENT_TEAM}";
+						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = "${CODE_SIGN_STYLE}";
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.AccessWiFi = {
 								enabled = 1;
@@ -2726,8 +2729,8 @@
 					};
 					B6CC5D812159D10D00833E5D = {
 						CreatedOnToolsVersion = 10.0;
-						DevelopmentTeam = "${DEVELOPMENT_TEAM}";
-						ProvisioningStyle = "${CODE_SIGN_STYLE}";
+						DevelopmentTeam = UTQFCBPQRF;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -2736,9 +2739,9 @@
 					};
 					B6CC5D8D2159D10E00833E5D = {
 						CreatedOnToolsVersion = 10.0;
-						DevelopmentTeam = "${DEVELOPMENT_TEAM}";
+						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = "${CODE_SIGN_STYLE}";
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -2750,15 +2753,15 @@
 					};
 					D03D891620E0A85200D4F28D = {
 						CreatedOnToolsVersion = 9.4.1;
-						DevelopmentTeam = "${DEVELOPMENT_TEAM}";
+						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = "${CODE_SIGN_STYLE}";
+						ProvisioningStyle = Manual;
 					};
 					D03D894120E0BC1800D4F28D = {
 						CreatedOnToolsVersion = 9.4.1;
-						DevelopmentTeam = "${DEVELOPMENT_TEAM}";
+						DevelopmentTeam = UTQFCBPQRF;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = "${CODE_SIGN_STYLE}";
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
