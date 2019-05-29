@@ -15,8 +15,6 @@
 	</array>
 	<key>com.apple.developer.networking.wifi-info</key>
 	<true/>
-	<key>com.apple.developer.usernotifications.critical-alerts</key>
-	<true/>
 	<key>keychain-access-groups</key>
 	<array>
 		<string>$(AppIdentifierPrefix)$(BUNDLE_ID_PREFIX).HomeAssistant.dev</string>
