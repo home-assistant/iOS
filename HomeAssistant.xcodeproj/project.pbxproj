@@ -2377,6 +2377,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B657A9101CA646EB00121384 /* Build configuration list for PBXNativeTarget "HomeAssistant" */;
 			buildPhases = (
+				9C08D123229F187E001B4F73 /* Enable Critical Alerts */,
 				120054CCBDBFE9476AF3222E /* [CP] Check Pods Manifest.lock */,
 				B65B150722731CE300635D5C /* SwiftGen */,
 				B641BC261E20BAF3002CCBC1 /* Swiftlint */,
@@ -2389,7 +2390,6 @@
 				B6CC5DA62159D10F00833E5D /* Embed Watch Content */,
 				8A763BD9E9F25F0704269545 /* [CP] Embed Pods Frameworks */,
 				B6624E4122584AD500354CDF /* Fabric */,
-				9C08D123229F187E001B4F73 /* Enable Critical Alerts */,
 			);
 			buildRules = (
 			);
