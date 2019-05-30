@@ -83,6 +83,18 @@ platform :ios do
     }
   end
 
+  def provisioning_profile_template_name(environment="")
+    if !get_xcconfig_value(name: "ENABLE_CRITICAL_ALERTS", path: "Configuration/HomeAssistant.xcconfig").to_i.zero?
+      if environment == "Debug" || environment == "Development" || environment == "Dev"
+        return "Critical Alerts iOS (Dev)"
+      else
+        return "Critical Alerts iOS (Dist)"
+      end
+    end
+
+    return nil
+  end
+
   before_all do
     setup
   end
@@ -103,10 +115,10 @@ platform :ios do
   lane :certs do
     match(app_identifier: [bundle_id(), bundle_id("beta")],
           type: "appstore",
-          template_name: "Critical Alerts iOS (Dist)")
+          template_name: provisioning_profile_template_name())
     match(app_identifier: bundle_id("dev"),
           type: "development",
-          template_name: "Critical Alerts iOS (Dev)")
+          template_name: provisioning_profile_template_name("Dev"))
 
     appstore_ids = bundle_ids("Release") + bundle_ids("Beta")
 
@@ -244,7 +256,7 @@ platform :ios do
       match(app_identifier: app_ids,
             type: "appstore",
             readonly: true,
-            template_name: "Critical Alerts iOS (Dist)",
+            template_name: provisioning_profile_template_name(),
             keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
             keychain_password: ENV["MATCH_PASSWORD"])
 
