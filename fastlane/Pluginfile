@@ -4,3 +4,4 @@
 
 gem 'fastlane-plugin-synx'
 gem 'fastlane-plugin-appicon'
+gem 'fastlane-plugin-xcconfig'

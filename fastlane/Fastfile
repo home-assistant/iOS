@@ -34,6 +34,47 @@ platform :ios do
     return version_string(get_version_number(target: "HomeAssistant"), get_build_number)
   end
 
+  def bundle_id(suffix="")
+    prefix = get_xcconfig_value(name: "BUNDLE_ID_PREFIX", path: "Configuration/HomeAssistant.xcconfig")
+
+    "#{prefix}.HomeAssistant" + (suffix.empty? ? "" : ".#{suffix}")
+  end
+
+  def bundle_ids(environment="Release")
+    prefixed_bundle_id = bundle_id()
+
+    if environment == "Debug" || environment == "Development" || environment == "Dev"
+      prefixed_bundle_id = bundle_id("dev")
+    elsif environment == "Beta"
+      prefixed_bundle_id = bundle_id("beta")
+    end
+
+    ids = [
+      "APNSAttachmentService",
+      "Intents",
+      "NotificationContentExtension",
+      "TodayWidget",
+      "watchkitapp",
+      "watchkitapp.watchkitextension"
+    ].map { |id| "#{prefixed_bundle_id}.#{id}"}
+
+    ids.unshift("#{prefixed_bundle_id}")
+
+    return ids
+  end
+
+  def provisioning_profile_map(suffix="")
+    id = bundle_id(suffix)
+    return {
+      "#{id}" => "match AppStore #{id}",
+      "#{id}.APNSAttachmentService" => "match AppStore #{id}.APNSAttachmentService",
+      "#{id}.NotificationContentExtension" => "match AppStore #{id}.NotificationContentExtension",
+      "#{id}.Intents" => "match AppStore #{id}.Intents",
+      "#{id}.watchkitapp" => "match AppStore #{id}.watchkitapp",
+      "#{id}.watchkitapp.watchkitextension" => "match AppStore #{id}.watchkitapp.watchkitextension",
+    }
+  end
+
   before_all do
     setup
   end
@@ -51,42 +92,22 @@ platform :ios do
 
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
   lane :certs do
-    match(app_identifier: [
-            "io.robbie.HomeAssistant",
-            "io.robbie.HomeAssistant.beta"],
+    match(app_identifier: [bundle_id(), bundle_id("beta")],
           type: "appstore",
           template_name: "Critical Alerts iOS (Dist)")
-    match(app_identifier: "io.robbie.HomeAssistant.dev",
+    match(app_identifier: bundle_id("dev"),
           type: "development",
           template_name: "Critical Alerts iOS (Dev)")
 
-    match(app_identifier: [
-            "io.robbie.HomeAssistant.APNSAttachmentService",
-            "io.robbie.HomeAssistant.NotificationContentExtension",
-            "io.robbie.HomeAssistant.Intents",
-            "io.robbie.HomeAssistant.TodayWidget",
-            "io.robbie.HomeAssistant.watchkitapp",
-            "io.robbie.HomeAssistant.watchkitapp.watchkitextension",
-            "io.robbie.HomeAssistant.beta.APNSAttachmentService",
-            "io.robbie.HomeAssistant.beta.NotificationContentExtension",
-            "io.robbie.HomeAssistant.beta.Intents",
-            "io.robbie.HomeAssistant.beta.TodayWidget",
-            "io.robbie.HomeAssistant.beta.watchkitapp",
-            "io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension"],
-          type: "appstore")
-    match(app_identifier: [
-            "io.robbie.HomeAssistant.dev.APNSAttachmentService",
-            "io.robbie.HomeAssistant.dev.NotificationContentExtension",
-            "io.robbie.HomeAssistant.dev.Intents",
-            "io.robbie.HomeAssistant.dev.TodayWidget",
-            "io.robbie.HomeAssistant.dev.watchkitapp",
-            "io.robbie.HomeAssistant.dev.watchkitapp.watchkitextension"],
-          type: "development")
+    appstore_ids = bundle_ids("Release") + bundle_ids("Beta")
+
+    match(app_identifier: appstore_ids, type: "appstore")
+    match(app_identifier: bundle_ids("Dev"), type: "development")
   end
 
   lane :refresh_dsyms do
     FileUtils.mkdir_p '../dSYMs'
-    download_dsyms(output_directory: "./dSYMs", app_identifier: "io.robbie.HomeAssistant")
+    download_dsyms(output_directory: "./dSYMs", app_identifier: bundle_id())
     dir = "../dSYMS"
     files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
     upload_symbols_to_crashlytics(gsp_path: "./HomeAssistant/Resources/GoogleService-Info-Release.plist",
@@ -96,7 +117,7 @@ platform :ios do
 
   lane :refresh_beta_dsyms do
     FileUtils.mkdir_p '../dSYMs'
-    download_dsyms(output_directory: "./dSYMs", app_identifier: "io.robbie.HomeAssistant.beta")
+    download_dsyms(output_directory: "./dSYMs", app_identifier: bundle_id("beta"))
     dir = "../dSYMS"
     files = Dir.foreach(dir).map { |x| File.expand_path("#{dir}/#{x}") }.select { |x| File.file?(x) }
     upload_symbols_to_crashlytics(gsp_path: "./HomeAssistant/Resources/GoogleService-Info-Beta.plist",
@@ -106,12 +127,12 @@ platform :ios do
 
   desc "Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password."
   lane :push_certs do
-    pem(app_identifier: "io.robbie.HomeAssistant", output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
-    pem(app_identifier: "io.robbie.HomeAssistant", development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+    pem(app_identifier: bundle_id(), output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+    pem(app_identifier: bundle_id(), development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
 
-    pem(app_identifier: "io.robbie.HomeAssistant.beta", output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+    pem(app_identifier: bundle_id("beta"), output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
 
-    pem(app_identifier: "io.robbie.HomeAssistant.dev", development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
+    pem(app_identifier: bundle_id("dev"), development: true, output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
   end
 
   desc "Generate proper icons for all build trains"
@@ -163,7 +184,7 @@ platform :ios do
 
   lane :set_beta_version do
     increment_version_number(version_number: get_version_number(target: "HomeAssistant"))
-    increment_build_number(build_number: latest_testflight_build_number(app_identifier: "io.robbie.HomeAssistant.beta", version: get_version_number(target: "HomeAssistant")) + 1)
+    increment_build_number(build_number: latest_testflight_build_number(app_identifier: bundle_id("beta"), version: get_version_number(target: "HomeAssistant")) + 1)
   end
 
   private_lane :finalize_bump do
@@ -206,15 +227,9 @@ platform :ios do
       app_ids = []
 
       if git_branch == "master"
-        app_ids = ["io.robbie.HomeAssistant", "io.robbie.HomeAssistant.APNSAttachmentService",
-                 "io.robbie.HomeAssistant.NotificationContentExtension", "io.robbie.HomeAssistant.Intents",
-                 "io.robbie.HomeAssistant.watchkitapp",
-                 "io.robbie.HomeAssistant.watchkitapp.watchkitextension", "io.robbie.HomeAssistant.TodayWidget"]
+        app_ids = bundle_ids()
       elsif git_branch == "beta"
-        app_ids = ["io.robbie.HomeAssistant.beta", "io.robbie.HomeAssistant.beta.APNSAttachmentService",
-                   "io.robbie.HomeAssistant.beta.NotificationContentExtension",
-                   "io.robbie.HomeAssistant.beta.Intents", "io.robbie.HomeAssistant.beta.watchkitapp",
-                   "io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension", "io.robbie.HomeAssistant.beta.TodayWidget"]
+        app_ids = bundle_ids("Beta")
       end
 
       match(app_identifier: app_ids,
@@ -259,32 +274,16 @@ platform :ios do
     if git_branch == "master"
       scheme = "Release"
       config = "Release"
-      app_id = "io.robbie.HomeAssistant"
-      provisioningProfiles = {
-        "io.robbie.HomeAssistant" => "match AppStore io.robbie.HomeAssistant",
-        "io.robbie.HomeAssistant.APNSAttachmentService" => "match AppStore io.robbie.HomeAssistant.APNSAttachmentService",
-        "io.robbie.HomeAssistant.NotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.NotificationContentExtension",
-        "io.robbie.HomeAssistant.Intents" => "match AppStore io.robbie.HomeAssistant.Intents",
-        "io.robbie.HomeAssistant.watchkitapp" => "match AppStore io.robbie.HomeAssistant.watchkitapp",
-        "io.robbie.HomeAssistant.watchkitapp.watchkitextension" => "match AppStore io.robbie.HomeAssistant.watchkitapp.watchkitextension",
-      }
+      app_id = bundle_id()
+      provisioningProfiles = provisioning_profile_map()
     elsif git_branch == "beta"
       scheme = "Beta"
       config = "Beta"
-      app_id = "io.robbie.HomeAssistant.beta"
-      provisioningProfiles = {
-        "io.robbie.HomeAssistant.beta" => "match AppStore io.robbie.HomeAssistant.beta",
-        "io.robbie.HomeAssistant.beta.APNSAttachmentService" => "match AppStore io.robbie.HomeAssistant.beta.APNSAttachmentService",
-        "io.robbie.HomeAssistant.beta.NotificationContentExtension" => "match AppStore io.robbie.HomeAssistant.beta.NotificationContentExtension",
-        "io.robbie.HomeAssistant.beta.Intents" => "match AppStore io.robbie.HomeAssistant.beta.Intents",
-        "io.robbie.HomeAssistant.beta.watchkitapp" => "match AppStore io.robbie.HomeAssistant.beta.watchkitapp",
-        "io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension" => "match AppStore io.robbie.HomeAssistant.beta.watchkitapp.watchkitextension",
-      }
+      app_id = bundle_id("beta")
+      provisioningProfiles = provisioning_profile_map("beta")
     end
 
-    gym(scheme: scheme, configuration: config, export_options: {
-      provisioningProfiles: provisioningProfiles
-    })
+    gym(scheme: scheme, configuration: config, export_options: { provisioningProfiles: provisioningProfiles }, xcconfig: "Configuration/HomeAssistant.#{config.downcase}.xcconfig")
 
     if is_ci
       slack(message: "Build complete, now uploading to TestFlight, this will take 15-60 minutes")
