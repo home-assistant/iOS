@@ -88,6 +88,7 @@ platform :ios do
     ENV["SIGH_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
     ENV["LOKALISE_API_TOKEN"] = ENV["HOMEASSISTANT_LOKALIZE_TOKEN"]
     ENV["LOKALISE_PROJECT_ID"] = ENV["HOMEASSISTANT_LOKALIZE_PROJECT_ID"]
+    ENV["PILOT_ITC_PROVIDER"] = ENV["HOMEASSISTANT_ITUNES_TEAM_ID"]
   end
 
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
