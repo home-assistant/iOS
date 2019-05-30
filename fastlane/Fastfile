@@ -63,15 +63,23 @@ platform :ios do
     return ids
   end
 
-  def provisioning_profile_map(suffix="")
-    id = bundle_id(suffix)
+  def provisioning_profile_map(environment="")
+    id = bundle_id()
+    destination = "AppStore"
+    if environment == "Debug" || environment == "Development" || environment == "Dev"
+      id = bundle_id("dev")
+      destination = "Development"
+    elsif environment == "Beta"
+      id = bundle_id("beta")
+    end
+
     return {
-      "#{id}" => "match AppStore #{id}",
-      "#{id}.APNSAttachmentService" => "match AppStore #{id}.APNSAttachmentService",
-      "#{id}.NotificationContentExtension" => "match AppStore #{id}.NotificationContentExtension",
-      "#{id}.Intents" => "match AppStore #{id}.Intents",
-      "#{id}.watchkitapp" => "match AppStore #{id}.watchkitapp",
-      "#{id}.watchkitapp.watchkitextension" => "match AppStore #{id}.watchkitapp.watchkitextension",
+      "#{id}" => "match #{destination} #{id}",
+      "#{id}.APNSAttachmentService" => "match #{destination} #{id}.APNSAttachmentService",
+      "#{id}.NotificationContentExtension" => "match #{destination} #{id}.NotificationContentExtension",
+      "#{id}.Intents" => "match #{destination} #{id}.Intents",
+      "#{id}.watchkitapp" => "match #{destination} #{id}.watchkitapp",
+      "#{id}.watchkitapp.watchkitextension" => "match #{destination} #{id}.watchkitapp.watchkitextension",
     }
   end
 
@@ -281,7 +289,7 @@ platform :ios do
       scheme = "Beta"
       config = "Beta"
       app_id = bundle_id("beta")
-      provisioningProfiles = provisioning_profile_map("beta")
+      provisioningProfiles = provisioning_profile_map("Beta")
     end
 
     gym(scheme: scheme, configuration: config, export_options: { provisioningProfiles: provisioningProfiles }, xcconfig: "Configuration/HomeAssistant.#{config.downcase}.xcconfig")
