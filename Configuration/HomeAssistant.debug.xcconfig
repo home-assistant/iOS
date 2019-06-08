@@ -1,3 +1,4 @@
 PROVISIONING_PROFILE_SPECIFIER_PREFIX = match Development
+CODE_SIGN_IDENTITY = iPhone Developer
 
 #include "HomeAssistant.xcconfig"
