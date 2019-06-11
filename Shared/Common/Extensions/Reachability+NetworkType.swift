@@ -151,6 +151,7 @@ extension Reachability {
     static func getWWANNetworkType() -> NetworkType {
         let ctT = CTTelephonyNetworkInfo()
         if #available(iOS 13.0, *) {
+            // swiftlint:disable:next line_length
             guard let serviceID = ctT.dataServiceIdentifier, let techDict = ctT.serviceCurrentRadioAccessTechnology, let currentType = techDict[serviceID] else {
                 return .unknown
             }

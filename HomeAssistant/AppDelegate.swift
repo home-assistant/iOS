@@ -720,7 +720,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         Current.setUserProperty = { (value: String?, name: String) -> Void in
-            Current.Log.verbose("Setting user property \(name) to \(value)")
+            Current.Log.verbose("Setting user property \(name) to \(String(describing: value))")
             Analytics.setUserProperty(value, forName: name)
         }
     }

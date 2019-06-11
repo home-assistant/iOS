@@ -88,7 +88,7 @@ extension HomeAssistantAPI {
 
         #if os(iOS)
         let context = Communicator.shared.mostRecentlyReceievedContext.content
-        Current.Log.verbose("mostRecentlyReceievedContext.content \(context["activeFamilies"]) \(context.keys)")
+        // Current.Log.verbose("mostRecentlyReceievedContext.content \(context["activeFamilies"]) \(context.keys)")
         guard let contextFamilies = context["activeFamilies"] as? [String] else { return [:] }
         Current.Log.verbose("contextFamilies \(contextFamilies)")
         activeFamilies = contextFamilies
