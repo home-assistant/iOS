@@ -13,9 +13,7 @@ import UserNotifications
 public class NotificationCategory: Object {
     @objc dynamic var Name: String = ""
     @objc dynamic var Identifier: String = ""
-    // iOS 11+ only
     @objc dynamic var HiddenPreviewsBodyPlaceholder: String?
-    // iOS 12+ only
     @objc dynamic var CategorySummaryFormat: String?
 
     // Options
@@ -38,10 +36,8 @@ public class NotificationCategory: Object {
 
         if self.SendDismissActions { categoryOptions.insert(.customDismissAction) }
 
-        if #available(iOS 11.0, *) {
-            if self.HiddenPreviewsShowTitle { categoryOptions.insert(.hiddenPreviewsShowTitle) }
-            if self.HiddenPreviewsShowSubtitle { categoryOptions.insert(.hiddenPreviewsShowSubtitle) }
-        }
+        if self.HiddenPreviewsShowTitle { categoryOptions.insert(.hiddenPreviewsShowTitle) }
+        if self.HiddenPreviewsShowSubtitle { categoryOptions.insert(.hiddenPreviewsShowSubtitle) }
 
         return categoryOptions
     }
@@ -50,18 +46,10 @@ public class NotificationCategory: Object {
 
         let allActions = Array(self.Actions.map({ $0.action }))
 
-        if #available(iOS 12.0, *) {
-            return UNNotificationCategory(identifier: self.Identifier, actions: allActions, intentIdentifiers: [],
-                                          hiddenPreviewsBodyPlaceholder: self.HiddenPreviewsBodyPlaceholder,
-                                          categorySummaryFormat: self.CategorySummaryFormat,
-                                          options: self.options)
-        } else if #available(iOS 11.0, *), let placeholder = self.HiddenPreviewsBodyPlaceholder {
-            return UNNotificationCategory(identifier: self.Identifier, actions: allActions, intentIdentifiers: [],
-                                          hiddenPreviewsBodyPlaceholder: placeholder,
-                                          options: self.options)
-        }
-
-        return UNNotificationCategory(identifier: self.Identifier, actions: allActions, intentIdentifiers: [],
+        return UNNotificationCategory(identifier: self.Identifier, actions: allActions,
+                                      intentIdentifiers: [],
+                                      hiddenPreviewsBodyPlaceholder: self.HiddenPreviewsBodyPlaceholder,
+                                      categorySummaryFormat: self.CategorySummaryFormat,
                                       options: self.options)
 
     }

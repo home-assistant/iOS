@@ -11,6 +11,9 @@ import Foundation
 import PromiseKit
 import ObjectMapper
 import Sodium
+#if os(iOS)
+import Reachability
+#endif
 
 extension HomeAssistantAPI {
     // MARK: - Helper methods for reducing boilerplate.

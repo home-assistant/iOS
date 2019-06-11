@@ -113,13 +113,11 @@ final class NotificationService: UNNotificationServiceExtension {
             Current.Log.debug("Successfully created and appended attachment \(content.attachments)")
 
             // Attempt to fill in the summary argument with the thread or category ID if it doesn't exist in payload.
-            if #available(iOS 12.0, *) {
-                if content.summaryArgument == "" {
-                    if content.threadIdentifier != "" {
-                        content.summaryArgument = content.threadIdentifier
-                    } else if content.categoryIdentifier != "" {
-                        content.summaryArgument = content.categoryIdentifier
-                    }
+            if content.summaryArgument == "" {
+                if content.threadIdentifier != "" {
+                    content.summaryArgument = content.threadIdentifier
+                } else if content.categoryIdentifier != "" {
+                    content.summaryArgument = content.categoryIdentifier
                 }
             }
 

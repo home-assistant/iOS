@@ -82,7 +82,7 @@ public class RemoteMediaPlayer: NSObject {
         Current.Log.verbose("Asset \(asset)")
 
         asset.loadValuesAsynchronously(forKeys: ["playable"]) {
-            var error: NSError? = nil
+            var error: NSError?
             let status = asset.statusOfValue(forKey: "playable", error: &error)
 
             switch status {

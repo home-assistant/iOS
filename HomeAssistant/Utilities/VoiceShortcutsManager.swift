@@ -10,7 +10,6 @@ import Foundation
 import Intents
 import Shared
 
-@available(iOS 12, *)
 public class VoiceShortcutsManager {
 
     public var voiceShortcuts: [INVoiceShortcut] = []

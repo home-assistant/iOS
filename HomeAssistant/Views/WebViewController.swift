@@ -63,7 +63,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         statusBarView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         statusBarView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         statusBarView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        statusBarView.bottomAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
+        statusBarView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
 
         statusBarView.translatesAutoresizingMaskIntoConstraints = false
 

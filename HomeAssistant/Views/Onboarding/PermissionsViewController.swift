@@ -43,9 +43,7 @@ class PermissionsViewController: UIViewController, PermissionViewChangeDelegate 
         Current.Log.verbose("Permission \(forPermission.title) status changed to \(toStatus.description)")
 
         // Don't need to set .locationEnabled because it comes direct from CLLocationManager.
-        if forPermission == .motion {
-            Current.settingsStore.motionEnabled = toStatus == .authorized
-        } else if forPermission == .notification {
+        if forPermission == .notification {
             Current.settingsStore.notificationsEnabled = toStatus == .authorized
         }
     }

@@ -33,7 +33,9 @@ class WelcomeViewController: UIViewController {
         self.animationView.loopMode = .playOnce
         self.animationView.play(toMarker: "Circles Formed")
 
-        // FIXME: This is a hack due to changes in CNCopyCurrentNetworkInfo. Move permissions screen to first position to properly fix. More info: https://twitter.com/Robbie/status/1138320059867123712
+        // FIXME: This is a hack due to changes in CNCopyCurrentNetworkInfo.
+        // Move permissions screen to first position to properly fix.
+        // More info: https://twitter.com/Robbie/status/1138320059867123712
         PermissionType.location.request { (success, status) in
             print("Request permission gave us", success, status)
         }

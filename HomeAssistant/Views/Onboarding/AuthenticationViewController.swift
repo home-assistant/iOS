@@ -194,7 +194,6 @@ class AuthenticationViewController: UIViewController, ASWebAuthenticationPresent
         }
     }
 
-    @available(iOS 12.0, *)
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         return self.view.window!
     }

@@ -10,7 +10,6 @@ import Foundation
 import RealmSwift
 import Intents
 
-@available(iOS 12, *)
 class SiriShortcut: Object {
     @objc dynamic var Identifier: String?
     @objc dynamic var InvocationPhrase: String?

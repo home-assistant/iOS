@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 import Shared
+import Intents
 
 class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
-
     func confirm(intent: CallServiceIntent, completion: @escaping (CallServiceIntentResponse) -> Void) {
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
             Current.Log.error("Can't get a authenticated API \(error)")
@@ -127,5 +127,18 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
             resp.error = "Unable to unwrap intent.serviceDomain and intent.serviceName"
             completion(resp)
         }
+    }
+
+    // swiftlint:disable:next line_length
+    func resolveServiceDomain(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+        completion(INStringResolutionResult.success(with: intent.serviceDomain!))
+    }
+
+    func resolveService(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+        completion(INStringResolutionResult.success(with: intent.service!))
+    }
+
+    func resolvePayload(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+        completion(INStringResolutionResult.success(with: intent.payload!))
     }
 }

@@ -23,8 +23,7 @@ class AuthenticationController: NSObject {
 
     private var promiseResolver: Resolver<String>?
     private var authenticationObserver: NSObjectProtocol?
-    private var authenticationViewController: Any?
-    private var authStyle: String = "SFAuthenticationSession"
+    private var authenticationViewController: ASWebAuthenticationSession?
 
     override init() {
         super.init()
@@ -78,40 +77,29 @@ class AuthenticationController: NSObject {
 
             let newStyleAuthCallback = { (callbackURL: URL?, error: Error?) in
                 if let authErr = error {
-                    Current.Log.error("Error during \(self.authStyle) authentication: \(authErr)")
+                    Current.Log.error("Error during ASWebAuthenticationSession authentication: \(authErr)")
                     return
                 }
 
                 guard let successURL = callbackURL else {
-                    Current.Log.error("CallbackURL was empty during \(self.authStyle) authentication")
+                    Current.Log.error("CallbackURL was empty during ASWebAuthenticationSession authentication")
                     return
                 }
 
                 self.handleSuccess(successURL)
             }
 
-            if #available(iOS 12.0, *) {
-                self.authStyle = "ASWebAuthenticationSession"
-                let webAuthSession = ASWebAuthenticationSession(url: authURL, callbackURLScheme: self.redirectURI,
-                                                                completionHandler: newStyleAuthCallback)
+            let webAuthSession = ASWebAuthenticationSession(url: authURL, callbackURLScheme: self.redirectURI,
+                                                            completionHandler: newStyleAuthCallback)
 
-                if #available(iOS 13.0, *) {
-                    // swiftlint:disable:next line_length force_cast
-                    webAuthSession.presentationContextProvider = (view as! ASWebAuthenticationPresentationContextProviding)
-                    webAuthSession.prefersEphemeralWebBrowserSession = true
-                }
-                webAuthSession.start()
-
-                self.authenticationViewController = webAuthSession
-            } else if #available(iOS 11.0, *) {
-                self.authStyle = "SFAuthenticationSession"
-                let webAuthSession = SFAuthenticationSession(url: authURL, callbackURLScheme: self.redirectURI,
-                                                             completionHandler: newStyleAuthCallback)
-
-                webAuthSession.start()
-
-                self.authenticationViewController = webAuthSession
+            if #available(iOS 13.0, *) {
+                // swiftlint:disable:next force_cast
+                webAuthSession.presentationContextProvider = (view as! ASWebAuthenticationPresentationContextProviding)
+                webAuthSession.prefersEphemeralWebBrowserSession = true
             }
+            webAuthSession.start()
+
+            self.authenticationViewController = webAuthSession
         }
     }
 
@@ -123,22 +111,14 @@ class AuthenticationController: NSObject {
         let queue = OperationQueue.main
         self.authenticationObserver = notificationCenter.addObserver(forName: notificationName, object: nil,
                                                                      queue: queue) { notification in
-            if #available(iOS 12.0, *) {
-                (self.authenticationViewController as? ASWebAuthenticationSession)?.cancel()
-            } else if #available(iOS 11.0, *) {
-                (self.authenticationViewController as? SFAuthenticationSession)?.cancel()
-            }
+            self.authenticationViewController?.cancel()
             guard let url = notification.userInfo?["url"] as? URL else {
                     return
             }
 
             self.handleSuccess(url)
 
-            if #available(iOS 12.0, *) {
-                (self.authenticationViewController as? ASWebAuthenticationSession)?.cancel()
-            } else if #available(iOS 11.0, *) {
-                (self.authenticationViewController as? SFAuthenticationSession)?.cancel()
-            }
+            self.authenticationViewController?.cancel()
 
             self.cleanUp()
         }

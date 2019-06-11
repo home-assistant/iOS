@@ -159,7 +159,7 @@ class SendLocationIntentHandler: NSObject, SendLocationIntentHandling {
 
 extension SendLocationIntentResponse {
     convenience init(code: SendLocationIntentResponseCode, userActivity: NSUserActivity?, place: CLPlacemark?,
-                     source: SendLocationPasteboardLocationParsedAs, pasteboardContents: String?) {
+                     source: PasteboardLocationParsedAs, pasteboardContents: String?) {
         self.init(code: code, userActivity: userActivity, pasteboardContents: pasteboardContents)
         Current.Log.verbose("Confirming send location as place \(place.debugDescription) derived via \(source)")
 

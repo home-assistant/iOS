@@ -5,6 +5,12 @@
 	<key>INEnums</key>
 	<array>
 		<dict>
+			<key>INEnumDisplayName</key>
+			<string>Pasteboard Location Parsed As</string>
+			<key>INEnumDisplayNameID</key>
+			<string>g6WWvd</string>
+			<key>INEnumGeneratesHeader</key>
+			<true/>
 			<key>INEnumName</key>
 			<string>PasteboardLocationParsedAs</string>
 			<key>INEnumType</key>
@@ -16,8 +22,6 @@
 					<string>Unknown</string>
 					<key>INEnumValueDisplayNameID</key>
 					<string>xa9Bk7</string>
-					<key>INEnumValueIndex</key>
-					<integer>0</integer>
 					<key>INEnumValueName</key>
 					<string>unknown</string>
 				</dict>
@@ -65,32 +69,44 @@
 		</dict>
 	</array>
 	<key>INIntentDefinitionModelVersion</key>
-	<string>1.0</string>
+	<string>1.1</string>
+	<key>INIntentDefinitionNamespace</key>
+	<string>6UBwqz</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>18E226</string>
+	<string>18F132</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>10E1001</string>
+	<string>11M336w</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>10.2.1</string>
+	<string>11.0</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
 			<key>INIntentCategory</key>
 			<string>generic</string>
+			<key>INIntentConfigurable</key>
+			<true/>
 			<key>INIntentDescription</key>
 			<string>Call a service on the Home Assistant instance</string>
 			<key>INIntentDescriptionID</key>
 			<string>FBQiVD</string>
 			<key>INIntentLastParameterTag</key>
-			<integer>6</integer>
+			<integer>8</integer>
+			<key>INIntentManagedParameterCombinations</key>
+			<dict>
+				<key>serviceDomain,service,payload</key>
+				<dict>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationUpdatesLinked</key>
+					<true/>
+				</dict>
+			</dict>
 			<key>INIntentName</key>
 			<string>CallService</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
 				<key></key>
 				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
 					<string>Call a service on Home Assistant. Expects a JSON object on the clipboard like {"service": "homeassistant.turn_on", "serviceData": {"foo": "bar"}}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
@@ -119,8 +135,6 @@
 				</dict>
 				<key>serviceDescription,serviceDomain,service</key>
 				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
 					<string>${serviceDescription}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
@@ -134,8 +148,6 @@
 				</dict>
 				<key>serviceDomain,service</key>
 				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
 					<string>Call service ￼${serviceDomain}.${service}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
@@ -151,48 +163,147 @@
 			<key>INIntentParameters</key>
 			<array>
 				<dict>
+					<key>INIntentParameterDisplayName</key>
+					<string>Service Domain</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>Yvuy1M</string>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>1</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataCapitalization</key>
+						<string>None</string>
+						<key>INIntentParameterMetadataDefaultValue</key>
+						<string>light</string>
+						<key>INIntentParameterMetadataDefaultValueID</key>
+						<string>K0Pj4E</string>
+						<key>INIntentParameterMetadataDisableAutocorrect</key>
+						<true/>
+						<key>INIntentParameterMetadataDisableSmartDashes</key>
+						<true/>
+						<key>INIntentParameterMetadataDisableSmartQuotes</key>
+						<true/>
+					</dict>
 					<key>INIntentParameterName</key>
 					<string>serviceDomain</string>
-					<key>INIntentParameterSupportsMultipleValues</key>
-					<false/>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>What is the service domain?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>Xp9h6r</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Primary</string>
+						</dict>
+					</array>
+					<key>INIntentParameterSupportsResolution</key>
+					<true/>
 					<key>INIntentParameterTag</key>
 					<integer>1</integer>
 					<key>INIntentParameterType</key>
 					<string>String</string>
 				</dict>
 				<dict>
+					<key>INIntentParameterDisplayName</key>
+					<string>Service Name</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>V5wbCW</string>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>2</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataCapitalization</key>
+						<string>None</string>
+						<key>INIntentParameterMetadataDefaultValue</key>
+						<string>turn_on</string>
+						<key>INIntentParameterMetadataDefaultValueID</key>
+						<string>8nwGe4</string>
+						<key>INIntentParameterMetadataDisableAutocorrect</key>
+						<true/>
+						<key>INIntentParameterMetadataDisableSmartDashes</key>
+						<true/>
+						<key>INIntentParameterMetadataDisableSmartQuotes</key>
+						<true/>
+					</dict>
 					<key>INIntentParameterName</key>
 					<string>service</string>
-					<key>INIntentParameterSupportsMultipleValues</key>
-					<false/>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>What is the service name?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>WwT6hv</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Primary</string>
+						</dict>
+					</array>
+					<key>INIntentParameterSupportsResolution</key>
+					<true/>
 					<key>INIntentParameterTag</key>
 					<integer>5</integer>
 					<key>INIntentParameterType</key>
 					<string>String</string>
 				</dict>
 				<dict>
+					<key>INIntentParameterDisplayName</key>
+					<string>Payload</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>IU8bBX</string>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>3</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataCapitalization</key>
+						<string>None</string>
+						<key>INIntentParameterMetadataDefaultValue</key>
+						<string>{"entity_id": "light.robbies_room"}</string>
+						<key>INIntentParameterMetadataDefaultValueID</key>
+						<string>yrb3qA</string>
+						<key>INIntentParameterMetadataDisableAutocorrect</key>
+						<true/>
+						<key>INIntentParameterMetadataDisableSmartDashes</key>
+						<true/>
+						<key>INIntentParameterMetadataDisableSmartQuotes</key>
+						<true/>
+					</dict>
 					<key>INIntentParameterName</key>
 					<string>payload</string>
-					<key>INIntentParameterSupportsMultipleValues</key>
-					<false/>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>What is the payload to send?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>A2b1BA</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Primary</string>
+						</dict>
+					</array>
+					<key>INIntentParameterSupportsResolution</key>
+					<true/>
 					<key>INIntentParameterTag</key>
-					<integer>4</integer>
+					<integer>8</integer>
 					<key>INIntentParameterType</key>
 					<string>String</string>
 				</dict>
 				<dict>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>4</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataCapitalization</key>
+						<string>None</string>
+					</dict>
 					<key>INIntentParameterName</key>
 					<string>serviceDescription</string>
-					<key>INIntentParameterSupportsMultipleValues</key>
-					<false/>
 					<key>INIntentParameterTag</key>
 					<integer>6</integer>
 					<key>INIntentParameterType</key>
@@ -205,16 +316,6 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to call service with error: ${error}</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>qzje4k</string>
-						<key>INIntentResponseCodeName</key>
-						<string>failure</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
-					</dict>
-					<dict>
-						<key>INIntentResponseCodeFormatString</key>
 						<string>Called ${domain}.${service}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>rFSNpu</string>
@@ -225,13 +326,19 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to call service with error: ${error}</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>qzje4k</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
 						<string>Failed to call service, the clipboard contents could not be parsed</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>30yAOG</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failurePasteboardNotParseable</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
@@ -240,8 +347,6 @@
 						<string>2KWKqM</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failureConnectivity</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
@@ -260,8 +365,6 @@
 						<string>YyQQL1</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failureInvalidJSON</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
 					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
@@ -273,8 +376,6 @@
 						<integer>1</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>domain</string>
-						<key>INIntentResponseParameterSupportsMultipleValues</key>
-						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>2</integer>
 						<key>INIntentResponseParameterType</key>
@@ -285,8 +386,6 @@
 						<integer>2</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>service</string>
-						<key>INIntentResponseParameterSupportsMultipleValues</key>
-						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>3</integer>
 						<key>INIntentResponseParameterType</key>
@@ -297,8 +396,6 @@
 						<integer>3</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>error</string>
-						<key>INIntentResponseParameterSupportsMultipleValues</key>
-						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>4</integer>
 						<key>INIntentResponseParameterType</key>
@@ -306,16 +403,12 @@
 					</dict>
 				</array>
 			</dict>
-			<key>INIntentRestrictions</key>
-			<integer>0</integer>
 			<key>INIntentTitle</key>
 			<string>Call Service</string>
 			<key>INIntentTitleID</key>
 			<string>qayMH6</string>
 			<key>INIntentType</key>
 			<string>Custom</string>
-			<key>INIntentUserConfirmationRequired</key>
-			<false/>
 			<key>INIntentVerb</key>
 			<string>Do</string>
 		</dict>
@@ -349,8 +442,6 @@
 				</dict>
 				<key>location</key>
 				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
 					<string>Report your current location as ${location} to Home Assistant</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
@@ -368,10 +459,13 @@
 				<dict>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>1</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataType</key>
+						<string>Name</string>
+					</dict>
 					<key>INIntentParameterName</key>
 					<string>location</string>
-					<key>INIntentParameterSupportsMultipleValues</key>
-					<false/>
 					<key>INIntentParameterTag</key>
 					<integer>2</integer>
 					<key>INIntentParameterType</key>
@@ -384,16 +478,6 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to update location with error: ${error}</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>KJS2jk</string>
-						<key>INIntentResponseCodeName</key>
-						<string>failure</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
-					</dict>
-					<dict>
-						<key>INIntentResponseCodeFormatString</key>
 						<string>Location updated to current location</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>4fFx9y</string>
@@ -404,13 +488,19 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to update location with error: ${error}</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>KJS2jk</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
 						<string>Failed to update location, the clipboard contents could not be parsed</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>VGzL7U</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failurePasteboardNotParseable</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
@@ -419,8 +509,6 @@
 						<string>KHH48D</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failureConnectivity</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
@@ -439,8 +527,6 @@
 						<string>sbkx4E</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failureGeocoding</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
@@ -462,8 +548,6 @@
 						<integer>1</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>location</string>
-						<key>INIntentResponseParameterSupportsMultipleValues</key>
-						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>2</integer>
 						<key>INIntentResponseParameterType</key>
@@ -474,10 +558,10 @@
 						<integer>2</integer>
 						<key>INIntentResponseParameterEnumType</key>
 						<string>PasteboardLocationParsedAs</string>
+						<key>INIntentResponseParameterEnumTypeNamespace</key>
+						<string>6UBwqz</string>
 						<key>INIntentResponseParameterName</key>
 						<string>source</string>
-						<key>INIntentResponseParameterSupportsMultipleValues</key>
-						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>4</integer>
 						<key>INIntentResponseParameterType</key>
@@ -488,8 +572,6 @@
 						<integer>3</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>pasteboardContents</string>
-						<key>INIntentResponseParameterSupportsMultipleValues</key>
-						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>5</integer>
 						<key>INIntentResponseParameterType</key>
@@ -500,8 +582,6 @@
 						<integer>4</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>error</string>
-						<key>INIntentResponseParameterSupportsMultipleValues</key>
-						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>6</integer>
 						<key>INIntentResponseParameterType</key>
@@ -509,16 +589,12 @@
 					</dict>
 				</array>
 			</dict>
-			<key>INIntentRestrictions</key>
-			<integer>0</integer>
 			<key>INIntentTitle</key>
 			<string>Send Location</string>
 			<key>INIntentTitleID</key>
 			<string>v7TSD5</string>
 			<key>INIntentType</key>
 			<string>Custom</string>
-			<key>INIntentUserConfirmationRequired</key>
-			<false/>
 			<key>INIntentVerb</key>
 			<string>Send</string>
 		</dict>
@@ -537,8 +613,6 @@
 			<dict>
 				<key></key>
 				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
 					<string>Fire an event to the Home Assistant event bus. Expects a JSON object on the clipboard like {"eventName": "my.event", "eventData": {"foo": "bar"}}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
@@ -552,8 +626,6 @@
 				</dict>
 				<key>eventName</key>
 				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
 					<string>Fires an event named ${eventName} to the Home Assistant event bus. Will send clipboard contents as event data.</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
@@ -586,10 +658,13 @@
 				<dict>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>1</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataCapitalization</key>
+						<string>None</string>
+					</dict>
 					<key>INIntentParameterName</key>
 					<string>eventName</string>
-					<key>INIntentParameterSupportsMultipleValues</key>
-					<false/>
 					<key>INIntentParameterTag</key>
 					<integer>1</integer>
 					<key>INIntentParameterType</key>
@@ -598,10 +673,13 @@
 				<dict>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>2</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataCapitalization</key>
+						<string>None</string>
+					</dict>
 					<key>INIntentParameterName</key>
 					<string>eventData</string>
-					<key>INIntentParameterSupportsMultipleValues</key>
-					<false/>
 					<key>INIntentParameterTag</key>
 					<integer>2</integer>
 					<key>INIntentParameterType</key>
@@ -614,16 +692,6 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to send ${eventName} to Home Assistant with error: ${error}</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>oIWFyR</string>
-						<key>INIntentResponseCodeName</key>
-						<string>failure</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
-					</dict>
-					<dict>
-						<key>INIntentResponseCodeFormatString</key>
 						<string>Successfully sent ${eventName} to Home Assistant</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>8BMgur</string>
@@ -634,13 +702,19 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to send ${eventName} to Home Assistant with error: ${error}</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>oIWFyR</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
 						<string>Failed to fire event, the clipboard contents could not be parsed</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>KU19Ap</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failurePasteboardNotParseable</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
@@ -649,8 +723,6 @@
 						<string>glRCfJ</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failureConnectivity</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
@@ -669,8 +741,6 @@
 						<string>boiLEw</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failureInvalidJSON</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
 					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
@@ -682,8 +752,6 @@
 						<integer>1</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>eventName</string>
-						<key>INIntentResponseParameterSupportsMultipleValues</key>
-						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>1</integer>
 						<key>INIntentResponseParameterType</key>
@@ -694,8 +762,6 @@
 						<integer>2</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>error</string>
-						<key>INIntentResponseParameterSupportsMultipleValues</key>
-						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>2</integer>
 						<key>INIntentResponseParameterType</key>
@@ -703,16 +769,12 @@
 					</dict>
 				</array>
 			</dict>
-			<key>INIntentRestrictions</key>
-			<integer>0</integer>
 			<key>INIntentTitle</key>
 			<string>Fire Event</string>
 			<key>INIntentTitleID</key>
 			<string>lxHlyQ</string>
 			<key>INIntentType</key>
 			<string>Custom</string>
-			<key>INIntentUserConfirmationRequired</key>
-			<false/>
 			<key>INIntentVerb</key>
 			<string>Do</string>
 		</dict>
@@ -746,8 +808,6 @@
 				</dict>
 				<key>cameraID</key>
 				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
 					<string>Get a single still frame from ${cameraID} and place it on the clipboard</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
@@ -765,10 +825,13 @@
 				<dict>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>1</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataCapitalization</key>
+						<string>None</string>
+					</dict>
 					<key>INIntentParameterName</key>
 					<string>cameraID</string>
-					<key>INIntentParameterSupportsMultipleValues</key>
-					<false/>
 					<key>INIntentParameterTag</key>
 					<integer>1</integer>
 					<key>INIntentParameterType</key>
@@ -781,16 +844,6 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to get camera image with error: ${error}</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>KzOHYA</string>
-						<key>INIntentResponseCodeName</key>
-						<string>failure</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
-					</dict>
-					<dict>
-						<key>INIntentResponseCodeFormatString</key>
 						<string>Latest still from ${cameraID} placed on clipboard</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>nzqmFA</string>
@@ -801,13 +854,19 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to get camera image with error: ${error}</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>KzOHYA</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
 						<string>Failed to get camera image, the clipboard contents could not be parsed for a valid entity ID</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>4k18T7</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failurePasteboardNotParseable</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
@@ -816,8 +875,6 @@
 						<string>mAibJP</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failureConnectivity</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
@@ -839,8 +896,6 @@
 						<integer>1</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>error</string>
-						<key>INIntentResponseParameterSupportsMultipleValues</key>
-						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>2</integer>
 						<key>INIntentResponseParameterType</key>
@@ -851,8 +906,6 @@
 						<integer>2</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>cameraID</string>
-						<key>INIntentResponseParameterSupportsMultipleValues</key>
-						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>3</integer>
 						<key>INIntentResponseParameterType</key>
@@ -860,16 +913,12 @@
 					</dict>
 				</array>
 			</dict>
-			<key>INIntentRestrictions</key>
-			<integer>0</integer>
 			<key>INIntentTitle</key>
 			<string>Get Camera Image</string>
 			<key>INIntentTitleID</key>
 			<string>N9iJpK</string>
 			<key>INIntentType</key>
 			<string>Custom</string>
-			<key>INIntentUserConfirmationRequired</key>
-			<false/>
 			<key>INIntentVerb</key>
 			<string>Do</string>
 		</dict>
@@ -903,8 +952,6 @@
 				</dict>
 				<key>template</key>
 				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<false/>
 					<key>INIntentParameterCombinationSubtitle</key>
 					<string>Renders ${template}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
@@ -922,10 +969,13 @@
 				<dict>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>1</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataCapitalization</key>
+						<string>None</string>
+					</dict>
 					<key>INIntentParameterName</key>
 					<string>template</string>
-					<key>INIntentParameterSupportsMultipleValues</key>
-					<false/>
 					<key>INIntentParameterTag</key>
 					<integer>1</integer>
 					<key>INIntentParameterType</key>
@@ -938,16 +988,6 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to render template with error: ${error}</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>cK9jdK</string>
-						<key>INIntentResponseCodeName</key>
-						<string>failure</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
-					</dict>
-					<dict>
-						<key>INIntentResponseCodeFormatString</key>
 						<string>Successfully rendered template</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>B4bXyc</string>
@@ -958,13 +998,19 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
+						<string>Failed to render template with error: ${error}</string>
+						<key>INIntentResponseCodeFormatStringID</key>
+						<string>cK9jdK</string>
+						<key>INIntentResponseCodeName</key>
+						<string>failure</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseCodeFormatString</key>
 						<string>Failed to render template, Home Assistant is not currently reachable</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>foI0Fv</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failureConnectivity</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<false/>
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
@@ -986,8 +1032,6 @@
 						<integer>1</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>error</string>
-						<key>INIntentResponseParameterSupportsMultipleValues</key>
-						<false/>
 						<key>INIntentResponseParameterTag</key>
 						<integer>1</integer>
 						<key>INIntentResponseParameterType</key>
@@ -995,19 +1039,17 @@
 					</dict>
 				</array>
 			</dict>
-			<key>INIntentRestrictions</key>
-			<integer>0</integer>
 			<key>INIntentTitle</key>
 			<string>Render Template</string>
 			<key>INIntentTitleID</key>
 			<string>FZ9qkT</string>
 			<key>INIntentType</key>
 			<string>Custom</string>
-			<key>INIntentUserConfirmationRequired</key>
-			<false/>
 			<key>INIntentVerb</key>
 			<string>Do</string>
 		</dict>
 	</array>
+	<key>INTypes</key>
+	<array/>
 </dict>
 </plist>

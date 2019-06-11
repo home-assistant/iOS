@@ -59,7 +59,6 @@ extension CLAuthorizationStatus {
     }
 }
 
-@available(iOS 11.0, *)
 extension CMAuthorizationStatus {
     var genericStatus: PermissionStatus {
         switch self {
@@ -139,10 +138,7 @@ public enum PermissionType: Int {
         case .location:
             return CLLocationManager.authorizationStatus().genericStatus
         case .motion:
-            if #available(iOS 11.0, *) {
-                return CMMotionActivityManager.authorizationStatus().genericStatus
-            }
-            return .denied
+            return CMMotionActivityManager.authorizationStatus().genericStatus
         case .notification:
             guard let authorizationStatus = self.fetchNotificationsAuthorizationStatus() else { return .denied }
             return authorizationStatus.genericStatus
@@ -201,10 +197,8 @@ public enum PermissionType: Int {
                 return
             })
         case .notification:
-            var opts: UNAuthorizationOptions = [.alert, .badge, .sound]
-            if #available(iOS 12.0, *) {
-                opts.formUnion([.criticalAlert, .providesAppNotificationSettings])
-            }
+            // swiftlint:disable:next line_length
+            let opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
             UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
                 if let error = error {
                     Current.Log.error("Error when requesting notifications permissions: \(error)")

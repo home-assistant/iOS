@@ -149,7 +149,16 @@ extension Reachability {
     }
 
     static func getWWANNetworkType() -> NetworkType {
-        guard let currentRadioAccessTechnology = CTTelephonyNetworkInfo().currentRadioAccessTechnology else {
+        let ctT = CTTelephonyNetworkInfo()
+        if #available(iOS 13.0, *) {
+            guard let serviceID = ctT.dataServiceIdentifier, let techDict = ctT.serviceCurrentRadioAccessTechnology, let currentType = techDict[serviceID] else {
+                return .unknown
+            }
+            return NetworkType(currentType)
+        }
+        // No way in iOS 12 to get something like 13's dataServiceIdentifier so
+        // we can't access the active radio tech type.
+        guard let currentRadioAccessTechnology = ctT.currentRadioAccessTechnology else {
             return .unknown
         }
         return NetworkType(currentRadioAccessTechnology)

@@ -123,11 +123,9 @@ public class WebhookSensors {
     public var CellularProviderSensors: [WebhookSensor] {
         let networkInfo = CTTelephonyNetworkInfo()
 
-        if #available(iOS 12.0, *), let providers = networkInfo.serviceSubscriberCellularProviders {
+        if let providers = networkInfo.serviceSubscriberCellularProviders {
             let radioTech = networkInfo.serviceCurrentRadioAccessTechnology
             return providers.map { self.makeCarrierSensor($0.value, radioTech?[$0.key], $0.key) }
-        } else if let provider = networkInfo.subscriberCellularProvider {
-            return [self.makeCarrierSensor(provider, networkInfo.currentRadioAccessTechnology)]
         }
 
         return [WebhookSensor]()
@@ -381,7 +379,7 @@ public class WebhookSensors {
     }
 
     private func parsePlacemarkToPostalAddress(_ placemark: CLPlacemark) -> CNPostalAddress {
-        if #available(iOS 11.0, watchOS 4.0, *), let address = placemark.postalAddress {
+        if let address = placemark.postalAddress {
             return address
         }
 

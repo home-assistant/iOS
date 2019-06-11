@@ -72,7 +72,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         HomeAssistantAPI.ProvideNotificationCategoriesToSystem()
 
-        if #available(iOS 12.0, *) { setupiOS12Features() }
+        setupiOS12Features()
 
         self.setupView()
 
@@ -183,7 +183,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        if var userInfoDict = userInfo as? [String: Any],
+        if let userInfoDict = userInfo as? [String: Any],
             let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
                 switch command {
                 case "request_location_update":
@@ -392,17 +392,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func fireEventURLHandler(_ url: URL, _ serviceData: [String: String]) {
         // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
 
-        if #available(iOS 12.0, *) {
-            let interaction = INInteraction(intent: FireEventIntent(eventName: url.pathComponents[1],
-                                                                    payload: url.query), response: nil)
+        let interaction = INInteraction(intent: FireEventIntent(eventName: url.pathComponents[1],
+                                                                payload: url.query), response: nil)
 
-            interaction.donate { (error) in
-                if error != nil {
-                    if let error = error as NSError? {
-                        Current.Log.error("FireEvent Interaction donation failed: \(error)")
-                    } else {
-                        Current.Log.verbose("FireEvent Successfully donated interaction")
-                    }
+        interaction.donate { (error) in
+            if error != nil {
+                if let error = error as NSError? {
+                    Current.Log.error("FireEvent Interaction donation failed: \(error)")
+                } else {
+                    Current.Log.verbose("FireEvent Successfully donated interaction")
                 }
             }
         }
@@ -426,18 +424,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let domain = url.pathComponents[1].components(separatedBy: ".")[0]
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
 
-        if #available(iOS 12.0, *) {
-            let intent = CallServiceIntent(domain: domain, service: service, payload: url.query)
+        let intent = CallServiceIntent(domain: domain, service: service, payload: url.query)
 
-            let interaction = INInteraction(intent: intent, response: nil)
+        let interaction = INInteraction(intent: intent, response: nil)
 
-            interaction.donate { (error) in
-                if error != nil {
-                    if let error = error as NSError? {
-                        Current.Log.error("CallService Interaction donation failed: \(error)")
-                    } else {
-                        Current.Log.verbose("CallService Successfully donated interaction")
-                    }
+        interaction.donate { (error) in
+            if error != nil {
+                if let error = error as NSError? {
+                    Current.Log.error("CallService Interaction donation failed: \(error)")
+                } else {
+                    Current.Log.verbose("CallService Successfully donated interaction")
                 }
             }
         }
@@ -528,7 +524,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @available(iOS 12.0, *)
     func suggestSiriShortcuts() {
         let generics: [INIntent] = [FireEventIntent(), SendLocationIntent(), CallServiceIntent(),
                                     GetCameraImageIntent(), RenderTemplateIntent()]
@@ -569,7 +564,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @available(iOS 12.0, *)
     func setupiOS12Features() {
         // Tell the system we have a app notification settings screen and want critical alerts
         // This is effectively a migration
