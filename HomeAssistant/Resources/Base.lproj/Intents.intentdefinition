@@ -3,71 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>INEnums</key>
-	<array>
-		<dict>
-			<key>INEnumDisplayName</key>
-			<string>Pasteboard Location Parsed As</string>
-			<key>INEnumDisplayNameID</key>
-			<string>g6WWvd</string>
-			<key>INEnumGeneratesHeader</key>
-			<true/>
-			<key>INEnumName</key>
-			<string>PasteboardLocationParsedAs</string>
-			<key>INEnumType</key>
-			<string>Regular</string>
-			<key>INEnumValues</key>
-			<array>
-				<dict>
-					<key>INEnumValueDisplayName</key>
-					<string>Unknown</string>
-					<key>INEnumValueDisplayNameID</key>
-					<string>xa9Bk7</string>
-					<key>INEnumValueName</key>
-					<string>unknown</string>
-				</dict>
-				<dict>
-					<key>INEnumValueDisplayName</key>
-					<string>Coordinates</string>
-					<key>INEnumValueDisplayNameID</key>
-					<string>dC8g33</string>
-					<key>INEnumValueIndex</key>
-					<integer>1</integer>
-					<key>INEnumValueName</key>
-					<string>latlong</string>
-				</dict>
-				<dict>
-					<key>INEnumValueDisplayName</key>
-					<string>Address</string>
-					<key>INEnumValueDisplayNameID</key>
-					<string>50P1YJ</string>
-					<key>INEnumValueIndex</key>
-					<integer>2</integer>
-					<key>INEnumValueName</key>
-					<string>address</string>
-				</dict>
-				<dict>
-					<key>INEnumValueDisplayName</key>
-					<string>Stored value</string>
-					<key>INEnumValueDisplayNameID</key>
-					<string>0cl84c</string>
-					<key>INEnumValueIndex</key>
-					<integer>3</integer>
-					<key>INEnumValueName</key>
-					<string>stored</string>
-				</dict>
-				<dict>
-					<key>INEnumValueDisplayName</key>
-					<string>Current Location</string>
-					<key>INEnumValueDisplayNameID</key>
-					<string>F708zM</string>
-					<key>INEnumValueIndex</key>
-					<integer>4</integer>
-					<key>INEnumValueName</key>
-					<string>currentLocation</string>
-				</dict>
-			</array>
-		</dict>
-	</array>
+	<array/>
 	<key>INIntentDefinitionModelVersion</key>
 	<string>1.1</string>
 	<key>INIntentDefinitionNamespace</key>
@@ -335,31 +271,36 @@
 		<dict>
 			<key>INIntentCategory</key>
 			<string>share</string>
+			<key>INIntentConfigurable</key>
+			<true/>
 			<key>INIntentDescription</key>
 			<string>Send location to Home Assistant</string>
 			<key>INIntentDescriptionID</key>
 			<string>RMQY3r</string>
+			<key>INIntentInput</key>
+			<string>location</string>
+			<key>INIntentKeyParameter</key>
+			<string>location</string>
 			<key>INIntentLastParameterTag</key>
 			<integer>2</integer>
+			<key>INIntentManagedParameterCombinations</key>
+			<dict>
+				<key>location</key>
+				<dict>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Send ${location} to Home Assistant</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>9nU7h0</string>
+					<key>INIntentParameterCombinationUpdatesLinked</key>
+					<true/>
+				</dict>
+			</dict>
 			<key>INIntentName</key>
 			<string>SendLocation</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
-				<key></key>
-				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<true/>
-					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Send a location to Home Assistant. Will attempt to use clipboard contents as location, otherwise will use current location.</string>
-					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>WXKbGy</string>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Send location</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>5MGDot</string>
-				</dict>
 				<key>location</key>
 				<dict>
 					<key>INIntentParameterCombinationSubtitle</key>
@@ -377,15 +318,34 @@
 			<key>INIntentParameters</key>
 			<array>
 				<dict>
+					<key>INIntentParameterDisplayName</key>
+					<string>Location</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>PpMTK3</string>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>1</integer>
 					<key>INIntentParameterMetadata</key>
 					<dict>
 						<key>INIntentParameterMetadataType</key>
-						<string>Name</string>
+						<string>Address</string>
 					</dict>
 					<key>INIntentParameterName</key>
 					<string>location</string>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>What location do you want to send?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>loh85H</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Primary</string>
+						</dict>
+					</array>
+					<key>INIntentParameterSupportsResolution</key>
+					<true/>
 					<key>INIntentParameterTag</key>
 					<integer>2</integer>
 					<key>INIntentParameterType</key>
@@ -397,8 +357,12 @@
 				<key>INIntentResponseCodes</key>
 				<array>
 					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Location updated to ${location}</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>13VqSq</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Location updated to current location</string>
+						<string>Location updated to ${location}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>4fFx9y</string>
 						<key>INIntentResponseCodeName</key>
@@ -407,6 +371,10 @@
 						<true/>
 					</dict>
 					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Failed to update location with error: ${error}</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>Qv663E</string>
 						<key>INIntentResponseCodeFormatString</key>
 						<string>Failed to update location with error: ${error}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
@@ -415,14 +383,10 @@
 						<string>failure</string>
 					</dict>
 					<dict>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to update location, the clipboard contents could not be parsed</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>VGzL7U</string>
-						<key>INIntentResponseCodeName</key>
-						<string>failurePasteboardNotParseable</string>
-					</dict>
-					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Failed to update location, Home Assistant is not currently reachable</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>k8N66i</string>
 						<key>INIntentResponseCodeFormatString</key>
 						<string>Failed to update location, Home Assistant is not currently reachable</string>
 						<key>INIntentResponseCodeFormatStringID</key>
@@ -430,40 +394,16 @@
 						<key>INIntentResponseCodeName</key>
 						<string>failureConnectivity</string>
 					</dict>
-					<dict>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Location updated to contents of clipboard that were parsed as ${source}</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>7NpJ76</string>
-						<key>INIntentResponseCodeName</key>
-						<string>successViaPasteboard</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<true/>
-					</dict>
-					<dict>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to geocode ${pasteboardContents} to a valid location</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>sbkx4E</string>
-						<key>INIntentResponseCodeName</key>
-						<string>failureGeocoding</string>
-					</dict>
-					<dict>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Location updated to your current location</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>tHPm96</string>
-						<key>INIntentResponseCodeName</key>
-						<string>successViaCurrentLocation</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<true/>
-					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
 				<integer>6</integer>
 				<key>INIntentResponseParameters</key>
 				<array>
 					<dict>
+						<key>INIntentResponseParameterDisplayName</key>
+						<string>Location</string>
+						<key>INIntentResponseParameterDisplayNameID</key>
+						<string>cJXn0E</string>
 						<key>INIntentResponseParameterDisplayPriority</key>
 						<integer>1</integer>
 						<key>INIntentResponseParameterName</key>
@@ -474,32 +414,12 @@
 						<string>Placemark</string>
 					</dict>
 					<dict>
+						<key>INIntentResponseParameterDisplayName</key>
+						<string>Error</string>
+						<key>INIntentResponseParameterDisplayNameID</key>
+						<string>YHqOEA</string>
 						<key>INIntentResponseParameterDisplayPriority</key>
 						<integer>2</integer>
-						<key>INIntentResponseParameterEnumType</key>
-						<string>PasteboardLocationParsedAs</string>
-						<key>INIntentResponseParameterEnumTypeNamespace</key>
-						<string>6UBwqz</string>
-						<key>INIntentResponseParameterName</key>
-						<string>source</string>
-						<key>INIntentResponseParameterTag</key>
-						<integer>4</integer>
-						<key>INIntentResponseParameterType</key>
-						<string>Integer</string>
-					</dict>
-					<dict>
-						<key>INIntentResponseParameterDisplayPriority</key>
-						<integer>3</integer>
-						<key>INIntentResponseParameterName</key>
-						<string>pasteboardContents</string>
-						<key>INIntentResponseParameterTag</key>
-						<integer>5</integer>
-						<key>INIntentResponseParameterType</key>
-						<string>String</string>
-					</dict>
-					<dict>
-						<key>INIntentResponseParameterDisplayPriority</key>
-						<integer>4</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>error</string>
 						<key>INIntentResponseParameterTag</key>
