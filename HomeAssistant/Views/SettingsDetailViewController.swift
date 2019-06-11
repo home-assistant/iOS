@@ -562,7 +562,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
                     do {
                         try realm.write {
-                            realm.add(vc.action, update: true)
+                            realm.add(vc.action, update: .all)
                         }
                     } catch let error as NSError {
                         Current.Log.error("Error while saving to Realm!: \(error)")

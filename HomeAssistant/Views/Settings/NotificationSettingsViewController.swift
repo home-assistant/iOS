@@ -351,7 +351,7 @@ class NotificationSettingsViewController: FormViewController {
 
                         // swiftlint:disable:next force_try
                         try! realm.write {
-                            realm.add(vc.category, update: true)
+                            realm.add(vc.category, update: .all)
                         }
                     }
 

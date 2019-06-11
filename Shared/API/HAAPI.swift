@@ -416,7 +416,7 @@ public class HomeAssistantAPI {
             } else {
                 // swiftlint:disable:next force_try
                 try! realm.write {
-                    realm.add(RLMZone(zone: zone), update: true)
+                    realm.add(RLMZone(zone: zone), update: .all)
                 }
             }
         }

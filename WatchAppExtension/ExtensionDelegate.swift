@@ -176,7 +176,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
                 try? realm.write {
                     realm.delete(realm.objects(Action.self))
-                    realm.add(actions, update: true)
+                    realm.add(actions, update: .all)
                 }
             }
 
@@ -187,7 +187,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
                 try? realm.write {
                     realm.delete(realm.objects(WatchComplication.self))
-                    realm.add(complications, update: true)
+                    realm.add(complications, update: .all)
                 }
 
                 self.updateComplications()
