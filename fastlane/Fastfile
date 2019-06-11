@@ -113,17 +113,18 @@ platform :ios do
 
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
   lane :certs do
-    match(app_identifier: [bundle_id(), bundle_id("beta")],
-          type: "appstore",
-          template_name: provisioning_profile_template_name())
+    # match(app_identifier: [bundle_id(), bundle_id("beta")],
+    #       type: "appstore",
+    #       template_name: provisioning_profile_template_name())
     match(app_identifier: bundle_id("dev"),
           type: "development",
+          force_for_new_devices: true,
           template_name: provisioning_profile_template_name("Dev"))
 
     appstore_ids = bundle_ids("Release") + bundle_ids("Beta")
 
-    match(app_identifier: appstore_ids, type: "appstore")
-    match(app_identifier: bundle_ids("Dev"), type: "development")
+    # match(app_identifier: appstore_ids, type: "appstore")
+    match(app_identifier: bundle_ids("Dev"), type: "development", force_for_new_devices: true)
   end
 
   lane :refresh_dsyms do

@@ -27,7 +27,8 @@ def shared_pods
     pod 'KeychainAccess', '~> 3.2.0'
     pod 'ObjectMapper', :git => 'https://github.com/tristanhimmelman/ObjectMapper.git', :branch => 'master'
     pod 'PromiseKit', '~> 6.8.4'
-    pod 'RealmSwift', '~> 3.14.1'
+    pod 'Realm', git: 'https://github.com/realm/realm-cocoa.git', branch: 'master', submodules: true
+    pod 'RealmSwift', git: 'https://github.com/realm/realm-cocoa.git', branch: 'master', submodules: true
     pod 'Sodium'
     pod 'UIColor_Hex_Swift', '~> 5.1.0'
     pod 'Version', :git => 'https://github.com/guykogus/Version.git', :branch => 'master'

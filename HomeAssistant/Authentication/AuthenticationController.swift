@@ -13,7 +13,8 @@ import AuthenticationServices
 import Shared
 
 /// Manages browser verification to retrive an access code that can be exchanged for an authentication token.
-class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
+class AuthenticationController: NSObject {
+
     enum AuthenticationControllerError: Error {
         case invalidURL
         case userCancelled
@@ -23,92 +24,95 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
     private var promiseResolver: Resolver<String>?
     private var authenticationObserver: NSObjectProtocol?
     private var authenticationViewController: Any?
-    private var authStyle: String = "SFSafariViewController"
+    private var authStyle: String = "SFAuthenticationSession"
 
     override init() {
         super.init()
         self.configureAuthenticationObserver()
     }
 
-    /// Opens a browser to the URL for obtaining an access code.
-    // swiftlint:disable:next function_body_length
-    func authenticateWithBrowser(at baseURL: URL) -> Promise<String> {
+    var clientID: String {
+        var clientID = "https://home-assistant.io/iOS"
+
+        if Current.appConfiguration == .Debug {
+            clientID = "https://home-assistant.io/iOS/dev-auth"
+        } else if Current.appConfiguration == .Beta {
+            clientID = "https://home-assistant.io/iOS/beta-auth"
+        }
+
+        return clientID
+    }
+
+    var redirectURI: String {
+        var redirectURI = "homeassistant://auth-callback"
+
+        if Current.appConfiguration == .Debug {
+            redirectURI = "homeassistant-dev://auth-callback"
+        } else if Current.appConfiguration == .Beta {
+            redirectURI = "homeassistant-beta://auth-callback"
+        }
+
+        return redirectURI
+    }
+
+    func authURL(_ baseURL: URL) -> URL? {
+        var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
+        components?.path = "/auth/authorize"
+        let responseTypeQuery = URLQueryItem(name: "response_type", value: "code")
+        let clientIDQuery = URLQueryItem(name: "client_id", value: self.clientID)
+        let redirectQuery = URLQueryItem(name: "redirect_uri", value: self.redirectURI)
+        components?.queryItems = [responseTypeQuery, clientIDQuery, redirectQuery]
+
+        return components?.url
+    }
+
+    /// Opens a browser to the URL for obtaining an access code.
+    func authenticateWithBrowser(at baseURL: URL, view: UIViewController? = nil) -> Promise<String> {
         return Promise { (resolver: Resolver<String>) in
             self.promiseResolver = resolver
 
-            var redirectURI = "homeassistant://auth-callback"
-
-            var clientID = "https://home-assistant.io/iOS"
-
-            if Current.appConfiguration == .Debug {
-                clientID = "https://home-assistant.io/iOS/dev-auth"
-                redirectURI = "homeassistant-dev://auth-callback"
-            } else if Current.appConfiguration == .Beta {
-                clientID = "https://home-assistant.io/iOS/beta-auth"
-                redirectURI = "homeassistant-beta://auth-callback"
-            }
-
-            var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
-            components?.path = "/auth/authorize"
-            let responseTypeQuery = URLQueryItem(name: "response_type", value: "code")
-            let clientIDQuery = URLQueryItem(name: "client_id", value: clientID)
-            let redirectQuery = URLQueryItem(name: "redirect_uri", value: redirectURI)
-            components?.queryItems = [responseTypeQuery, clientIDQuery, redirectQuery]
-            if let authURL = try components?.asURL() {
-
-                let newStyleAuthCallback = { (callbackURL: URL?, error: Error?) in
-                    if let authErr = error {
-                        Current.Log.error("Error during \(self.authStyle) authentication: \(authErr)")
-                        return
-                    }
-
-                    guard let successURL = callbackURL else {
-                        Current.Log.error("CallbackURL was empty during \(self.authStyle) authentication")
-                        return
-                    }
-
-                    self.handleSuccess(successURL)
-                }
-
-                if #available(iOS 12.0, *) {
-                    self.authStyle = "ASWebAuthenticationSession"
-                    let webAuthSession = ASWebAuthenticationSession(url: authURL, callbackURLScheme: redirectURI,
-                                                                    completionHandler: newStyleAuthCallback)
-
-                    webAuthSession.start()
-
-                    self.authenticationViewController = webAuthSession
-                } else if #available(iOS 11.0, *) {
-                    self.authStyle = "SFAuthenticationSession"
-                    let webAuthSession = SFAuthenticationSession(url: authURL, callbackURLScheme: redirectURI,
-                                                                 completionHandler: newStyleAuthCallback)
-
-                    webAuthSession.start()
-
-                    self.authenticationViewController = webAuthSession
-                } else {
-                    let safariVC = SFSafariViewController(url: authURL)
-                    if #available(iOS 11.0, *) { safariVC.dismissButtonStyle = .cancel }
-                    safariVC.delegate = self
-
-                    self.authenticationViewController = safariVC
-                    Current.authenticationControllerPresenter?(safariVC)
-                }
-            } else {
+            guard let authURL = self.authURL(baseURL) else {
                 resolver.reject(AuthenticationControllerError.invalidURL)
+                return
+            }
+
+            let newStyleAuthCallback = { (callbackURL: URL?, error: Error?) in
+                if let authErr = error {
+                    Current.Log.error("Error during \(self.authStyle) authentication: \(authErr)")
+                    return
+                }
+
+                guard let successURL = callbackURL else {
+                    Current.Log.error("CallbackURL was empty during \(self.authStyle) authentication")
+                    return
+                }
+
+                self.handleSuccess(successURL)
+            }
+
+            if #available(iOS 12.0, *) {
+                self.authStyle = "ASWebAuthenticationSession"
+                let webAuthSession = ASWebAuthenticationSession(url: authURL, callbackURLScheme: self.redirectURI,
+                                                                completionHandler: newStyleAuthCallback)
+
+                if #available(iOS 13.0, *) {
+                    // swiftlint:disable:next line_length force_cast
+                    webAuthSession.presentationContextProvider = (view as! ASWebAuthenticationPresentationContextProviding)
+                    webAuthSession.prefersEphemeralWebBrowserSession = true
+                }
+                webAuthSession.start()
+
+                self.authenticationViewController = webAuthSession
+            } else if #available(iOS 11.0, *) {
+                self.authStyle = "SFAuthenticationSession"
+                let webAuthSession = SFAuthenticationSession(url: authURL, callbackURLScheme: self.redirectURI,
+                                                             completionHandler: newStyleAuthCallback)
+
+                webAuthSession.start()
+
+                self.authenticationViewController = webAuthSession
             }
         }
-    }
-
-    // MARK: - SFSafariViewControllerDelegate
-
-    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        guard let resolver = self.promiseResolver else {
-            return
-        }
-
-        resolver.reject(AuthenticationControllerError.userCancelled)
-        self.cleanUp()
     }
 
     // MARK: - Private helpers
@@ -123,9 +127,6 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
                 (self.authenticationViewController as? ASWebAuthenticationSession)?.cancel()
             } else if #available(iOS 11.0, *) {
                 (self.authenticationViewController as? SFAuthenticationSession)?.cancel()
-            } else {
-                (self.authenticationViewController as? SFSafariViewController)?.dismiss(animated: true,
-                                                                                        completion: nil)
             }
             guard let url = notification.userInfo?["url"] as? URL else {
                     return
@@ -137,9 +138,6 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
                 (self.authenticationViewController as? ASWebAuthenticationSession)?.cancel()
             } else if #available(iOS 11.0, *) {
                 (self.authenticationViewController as? SFAuthenticationSession)?.cancel()
-            } else {
-                (self.authenticationViewController as? SFSafariViewController)?.dismiss(animated: true,
-                                                                                        completion: nil)
             }
 
             self.cleanUp()

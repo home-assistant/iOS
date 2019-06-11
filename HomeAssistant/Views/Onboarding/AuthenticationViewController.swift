@@ -13,8 +13,9 @@ import Alamofire
 import MaterialComponents.MaterialButtons
 import MBProgressHUD
 import ObjectMapper
+import AuthenticationServices
 
-class AuthenticationViewController: UIViewController {
+class AuthenticationViewController: UIViewController, ASWebAuthenticationPresentationContextProviding {
 
     let authenticationController: AuthenticationController = AuthenticationController()
 
@@ -108,7 +109,8 @@ class AuthenticationViewController: UIViewController {
         Current.Log.verbose("Attempting browser auth to: \(connectionInfo.activeURL)")
         let url = connectionInfo.activeURL
         let tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: nil)
-        self.authenticationController.authenticateWithBrowser(at: url).then { (code: String) -> Promise<TokenInfo> in
+        // swiftlint:disable:next line_length
+        self.authenticationController.authenticateWithBrowser(at: url, view: self).then { (code: String) -> Promise<TokenInfo> in
             Current.Log.verbose("Browser auth succeeded, getting token")
             return tokenManager.initialTokenWithCode(code)
         }.then { tokenInfo -> Promise<ConfigResponse> in
@@ -162,7 +164,7 @@ class AuthenticationViewController: UIViewController {
                 Current.Log.verbose("Request: \(String(describing: response.request))")
                 Current.Log.verbose("Response: \(String(describing: response.response))")
                 Current.Log.verbose("Result: \(response.result)")
-                Current.Log.error("Error: \(response.error)")
+                Current.Log.error("Error: \(String(describing: response.error))")
 
                 if let error = response.error {
                     let errorCode = (error as NSError).code
@@ -190,6 +192,11 @@ class AuthenticationViewController: UIViewController {
                 seal.resolve(response.result.value, nil)
             }
         }
+    }
+
+    @available(iOS 12.0, *)
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        return self.view.window!
     }
 }
 

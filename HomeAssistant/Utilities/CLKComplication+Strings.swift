@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 import Iconic
-import WatchKit
 #if os(watchOS)
+import WatchKit
 import ClockKit
 #endif
 

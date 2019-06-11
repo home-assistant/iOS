@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.$(BUNDLE_ID_PREFIX).homeassistant.dev</string>
+		<string>group.io.robbie.homeassistant.dev</string>
 	</array>
 </dict>
 </plist>
