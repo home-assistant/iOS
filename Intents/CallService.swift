@@ -10,135 +10,164 @@ import Foundation
 import UIKit
 import Shared
 import Intents
+import PromiseKit
 
 class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
     func confirm(intent: CallServiceIntent, completion: @escaping (CallServiceIntentResponse) -> Void) {
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
             Current.Log.error("Can't get a authenticated API \(error)")
-            completion(CallServiceIntentResponse(code: .failureConnectivity, userActivity: nil))
+            let resp = CallServiceIntentResponse(code: .failureConnectivity, userActivity: nil)
+            resp.service = intent.service
+            resp.error = "Can't get a authenticated API \(error)"
+            completion(resp)
             return
         }
 
-        completion(CallServiceIntentResponse(code: .ready, userActivity: nil))
+        if let payload = intent.payload {
+            if let data = payload.data(using: .utf8) {
+                do {
+                    _ = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
+                } catch {
+                    Current.Log.error("Unable to parse JSON string to dictionary: \(payload)")
+                    let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
+                    resp.service = intent.service
+                    resp.error = "Unable to parse JSON string to dictionary"
+                    completion(resp)
+                    return
+                }
+            } else {
+                Current.Log.error("Unable to convert String to Data, check JSON syntax")
+                let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
+                resp.service = intent.service
+                resp.error = "Unable to convert String to Data, check JSON syntax"
+                completion(resp)
+                return
+            }
+        }
+
+        let resp = CallServiceIntentResponse(code: .ready, userActivity: nil)
+        resp.service = intent.service
+        completion(resp)
     }
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    // swiftlint:disable:next function_body_length
     func handle(intent: CallServiceIntent, completion: @escaping (CallServiceIntentResponse) -> Void) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            completion(CallServiceIntentResponse(code: .failureConnectivity, userActivity: nil))
+        HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
+            Current.Log.error("Can't get a authenticated API \(error)")
+            let resp = CallServiceIntentResponse(code: .failureConnectivity, userActivity: nil)
+            resp.service = intent.service
+            resp.error = "Can't get a authenticated API \(error)"
+            completion(resp)
             return
         }
-
-        var successCode: CallServiceIntentResponseCode = .success
-
         var payloadDict: [String: Any] = [:]
 
-        if intent.serviceDomain != nil && intent.service != nil {
-            // Service name and data was already set
-            Current.Log.verbose("Service name and data was already set")
-
-            if let payload = intent.payload {
-                let data = payload.data(using: .utf8)!
+        if let payload = intent.payload {
+            if let data = payload.data(using: .utf8) {
                 do {
                     if let jsonArray = try JSONSerialization.jsonObject(with: data,
                                                                         options: .allowFragments) as? [String: Any] {
                         payloadDict = jsonArray
                     } else {
-                        Current.Log.error("Unable to parse stored payload: \(payload)")
-                        completion(.failure(error: "Unable to parse stored payload"))
+                        Current.Log.error("Unable to parse JSON string to dictionary: \(payload)")
+                        let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
+                        resp.service = intent.service
+                        resp.error = "Unable to parse JSON string to dictionary"
+                        completion(resp)
                         return
                     }
                 } catch let error as NSError {
-                    Current.Log.error("Error when parsing stored payload to JSON during CallService \(error)")
-                    let errStr = "Error when parsing stored payload to JSON during CallService: \(error)"
-                    completion(.failure(error: errStr))
+                    Current.Log.error("Error when parsing payload to JSON \(error)")
+                    let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
+                    resp.service = intent.service
+                    resp.error = "Error when parsing payload to JSON: \(error)"
+                    completion(resp)
                     return
                 }
-            }
-        } else if let pasteboardString = UIPasteboard.general.string {
-            Current.Log.verbose("Intent is not configured, expecting all values on pasteboard")
-
-            // Nothing was set, hope there's a JSON object on pasteboard containing service name and data.
-            // Alternatively, it could just be the payload to send if we don't find the keys that define a generic data.
-            // JSON object should be same payload as we send to HA + a service key
-            Current.Log.verbose("Nothing was set, hope there's JSON on pasteboard containing service name and data")
-            let data = pasteboardString.data(using: .utf8)!
-
-            let validJSON = ((try? JSONSerialization.jsonObject(with: data, options: .allowFragments)) != nil)
-            if pasteboardString.prefix(1) == "{" && !validJSON {
-                Current.Log.error("Pasteboard has something that looks like JSON but it's invalid: \(pasteboardString)")
-                completion(CallServiceIntentResponse(code: .failureInvalidJSON, userActivity: nil))
-                return
-            }
-
-            do {
-                if let jsonArray = try JSONSerialization.jsonObject(with: data,
-                                                                    options: .allowFragments) as? [String: Any] {
-                    var isGenericPayload: Bool = true
-                    Current.Log.verbose("Got JSON dictionary \(jsonArray)")
-                    if let serviceToSplit = jsonArray["service"] as? String {
-                        let split = serviceToSplit.components(separatedBy: ".")
-                        intent.serviceDomain = split[0]
-                        intent.service = split[1]
-                        isGenericPayload = false
-                    }
-                    if let data = jsonArray["serviceData"] as? [String: Any] {
-                        payloadDict = data
-                        isGenericPayload = false
-                    }
-                    // We didn't find any of the above keys in the payload, let's assume this is a generic payload
-                    // and use the decoded data as the payload.
-                    if isGenericPayload {
-                        Current.Log.verbose("No known keys found, assuming generic payload")
-                        payloadDict = jsonArray
-                    }
-
-                    successCode = .successViaPasteboard
-                } else {
-                    Current.Log.error("Unable to parse pasteboard JSON: \(pasteboardString)")
-                    completion(CallServiceIntentResponse(code: .failurePasteboardNotParseable, userActivity: nil))
-                    return
-                }
-            } catch let error as NSError {
-                Current.Log.error("Error when parsing pasteboard contents to JSON during CallService: \(error)")
-                completion(CallServiceIntentResponse(code: .failurePasteboardNotParseable, userActivity: nil))
+            } else {
+                Current.Log.error("Unable to convert String to Data, check JSON syntax")
+                let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
+                resp.service = intent.service
+                resp.error = "Unable to convert String to Data, check JSON syntax"
+                completion(resp)
                 return
             }
         }
 
         Current.Log.verbose("Configured intent \(intent)")
 
-        if let domain = intent.serviceDomain, let service = intent.service {
+        if let id = intent.service?.identifier {
+            let splitID = id.components(separatedBy: ".")
+            let domain = splitID[0]
+            let service = splitID[1]
             Current.Log.verbose("Handling call service shortcut \(domain), \(service)")
 
-            api.CallService(domain: domain, service: service, serviceData: payloadDict, shouldLog: true).done { _ in
+            firstly {
+                HomeAssistantAPI.authenticatedAPIPromise
+            }.then { api in
+                api.CallService(domain: domain, service: service, serviceData: payloadDict, shouldLog: true)
+            }.done { _ in
                 Current.Log.verbose("Successfully called service during shortcut")
-                completion(CallServiceIntentResponse(code: successCode, userActivity: nil))
+                let resp = CallServiceIntentResponse(code: .success, userActivity: nil)
+                resp.service = intent.service
+                completion(resp)
             }.catch { error in
                 Current.Log.error("Error when calling service in shortcut \(error)")
                 let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
-                resp.error = "Error during api.callService: \(error.localizedDescription)"
+                resp.error = "Error during api.callService: \(error)"
+                resp.service = intent.service
                 completion(resp)
             }
-
         } else {
-            Current.Log.warning("Unable to unwrap intent.serviceDomain and intent.serviceName \(intent)")
+            Current.Log.warning("Unable to unwrap service \(intent)")
             let resp = CallServiceIntentResponse(code: .failure, userActivity: nil)
-            resp.error = "Unable to unwrap intent.serviceDomain and intent.serviceName"
+            resp.error = "Unable to unwrap service parameter"
+            resp.service = intent.service
             completion(resp)
         }
     }
 
-    // swiftlint:disable:next line_length
-    func resolveServiceDomain(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
-        completion(INStringResolutionResult.success(with: intent.serviceDomain!))
+    func resolveService(for intent: CallServiceIntent, with completion: @escaping (ServiceResolutionResult) -> Void) {
+        guard let service = intent.service else {
+            completion(ServiceResolutionResult.needsValue())
+            return
+        }
+        completion(ServiceResolutionResult.success(with: service))
+        return
     }
 
-    func resolveService(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
-        completion(INStringResolutionResult.success(with: intent.service!))
+    func provideServiceOptions(for intent: CallServiceIntent, with completion: @escaping ([Service]?, Error?) -> Void) {
+
+        firstly {
+            HomeAssistantAPI.authenticatedAPIPromise
+        }.then { api in
+            api.GetServices()
+        }.map { servicesResp -> [Service] in
+            var allServices: [Service] = []
+
+            for aDomain in servicesResp {
+                for aService in aDomain.Services {
+                    let id = aDomain.Domain + "." + aService.key
+                    let service = Service(identifier: id, display: id)
+                    service.serviceDescription = aService.value.Description
+                    allServices.append(service)
+                }
+            }
+
+            return allServices.sorted { $0.identifier! < $1.identifier! }
+        }.done { services in
+            completion(services, nil)
+        }.catch { err in
+            completion(nil, err)
+        }
     }
 
     func resolvePayload(for intent: CallServiceIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
-        completion(INStringResolutionResult.success(with: intent.payload!))
+        if let payload = intent.payload {
+            completion(INStringResolutionResult.success(with: payload))
+            return
+        }
+
+        completion(INStringResolutionResult.notRequired())
     }
 }

@@ -89,14 +89,22 @@
 			<string>Call a service on the Home Assistant instance</string>
 			<key>INIntentDescriptionID</key>
 			<string>FBQiVD</string>
+			<key>INIntentInput</key>
+			<string>payload</string>
+			<key>INIntentKeyParameter</key>
+			<string>service</string>
 			<key>INIntentLastParameterTag</key>
-			<integer>8</integer>
+			<integer>11</integer>
 			<key>INIntentManagedParameterCombinations</key>
 			<dict>
-				<key>serviceDomain,service,payload</key>
+				<key>payload,service</key>
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Call ${service} with data ${payload}</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>lhT2Gy</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
 					<true/>
 				</dict>
@@ -105,150 +113,91 @@
 			<string>CallService</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
-				<key></key>
+				<key>payload,service</key>
 				<dict>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Call a service on Home Assistant. Expects a JSON object on the clipboard like {"service": "homeassistant.turn_on", "serviceData": {"foo": "bar"}}</string>
+					<string>${payload}</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>4wVIAN</string>
+					<string>G6n661</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Call Service</string>
+					<string>Call service ${service} with payload</string>
 					<key>INIntentParameterCombinationTitleID</key>
-					<string>ntnbP2</string>
+					<string>P9OK5b</string>
 				</dict>
-				<key>service,serviceDomain,payload</key>
+				<key>service</key>
 				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<true/>
-					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Call service ${serviceDomain}.${service} with data: ${payload}</string>
-					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>le6NdS</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Call ${serviceDomain}.${service} with data</string>
+					<string>Call service ${service}</string>
 					<key>INIntentParameterCombinationTitleID</key>
-					<string>uUk5RX</string>
-				</dict>
-				<key>serviceDescription,serviceDomain,service</key>
-				<dict>
-					<key>INIntentParameterCombinationSubtitle</key>
-					<string>${serviceDescription}</string>
-					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>SGxPSB</string>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Call service ${serviceDomain}.${service} with clipboard data</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>CiB3s6</string>
-				</dict>
-				<key>serviceDomain,service</key>
-				<dict>
-					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Call service ￼${serviceDomain}.${service}</string>
-					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>MDmaRg</string>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Call service ${serviceDomain}.${service} with clipboard data</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>wKnW1P</string>
+					<string>Sjrsjo</string>
 				</dict>
 			</dict>
 			<key>INIntentParameters</key>
 			<array>
 				<dict>
-					<key>INIntentParameterDisplayName</key>
-					<string>Service Domain</string>
-					<key>INIntentParameterDisplayNameID</key>
-					<string>Yvuy1M</string>
-					<key>INIntentParameterDisplayPriority</key>
-					<integer>1</integer>
-					<key>INIntentParameterMetadata</key>
-					<dict>
-						<key>INIntentParameterMetadataCapitalization</key>
-						<string>None</string>
-						<key>INIntentParameterMetadataDefaultValue</key>
-						<string>light</string>
-						<key>INIntentParameterMetadataDefaultValueID</key>
-						<string>K0Pj4E</string>
-						<key>INIntentParameterMetadataDisableAutocorrect</key>
-						<true/>
-						<key>INIntentParameterMetadataDisableSmartDashes</key>
-						<true/>
-						<key>INIntentParameterMetadataDisableSmartQuotes</key>
-						<true/>
-					</dict>
-					<key>INIntentParameterName</key>
-					<string>serviceDomain</string>
-					<key>INIntentParameterPromptDialogs</key>
-					<array>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>What is the service domain?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>Xp9h6r</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Primary</string>
-						</dict>
-					</array>
-					<key>INIntentParameterSupportsResolution</key>
+					<key>INIntentParameterCustomDisambiguation</key>
 					<true/>
-					<key>INIntentParameterTag</key>
-					<integer>1</integer>
-					<key>INIntentParameterType</key>
-					<string>String</string>
-				</dict>
-				<dict>
 					<key>INIntentParameterDisplayName</key>
-					<string>Service Name</string>
+					<string>Service</string>
 					<key>INIntentParameterDisplayNameID</key>
-					<string>V5wbCW</string>
+					<string>gDIgvL</string>
 					<key>INIntentParameterDisplayPriority</key>
-					<integer>2</integer>
-					<key>INIntentParameterMetadata</key>
-					<dict>
-						<key>INIntentParameterMetadataCapitalization</key>
-						<string>None</string>
-						<key>INIntentParameterMetadataDefaultValue</key>
-						<string>turn_on</string>
-						<key>INIntentParameterMetadataDefaultValueID</key>
-						<string>8nwGe4</string>
-						<key>INIntentParameterMetadataDisableAutocorrect</key>
-						<true/>
-						<key>INIntentParameterMetadataDisableSmartDashes</key>
-						<true/>
-						<key>INIntentParameterMetadataDisableSmartQuotes</key>
-						<true/>
-					</dict>
+					<integer>1</integer>
 					<key>INIntentParameterName</key>
 					<string>service</string>
+					<key>INIntentParameterObjectType</key>
+					<string>Service</string>
+					<key>INIntentParameterObjectTypeNamespace</key>
+					<string>6UBwqz</string>
 					<key>INIntentParameterPromptDialogs</key>
 					<array>
 						<dict>
 							<key>INIntentParameterPromptDialogCustom</key>
 							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>What is the service name?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>WwT6hv</string>
 							<key>INIntentParameterPromptDialogType</key>
 							<string>Primary</string>
 						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>There are ${count} options matching ‘${service}’.</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>z0Vyy3</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>DisambiguationIntroduction</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Which one?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>6sViWi</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>DisambiguationSelection</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Just to confirm, you wanted ‘${service}’?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>X3VZWl</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Confirmation</string>
+						</dict>
 					</array>
+					<key>INIntentParameterSupportsDynamicEnumeration</key>
+					<true/>
 					<key>INIntentParameterSupportsResolution</key>
 					<true/>
 					<key>INIntentParameterTag</key>
-					<integer>5</integer>
+					<integer>11</integer>
 					<key>INIntentParameterType</key>
-					<string>String</string>
+					<string>Object</string>
 				</dict>
 				<dict>
 					<key>INIntentParameterDisplayName</key>
@@ -256,20 +205,18 @@
 					<key>INIntentParameterDisplayNameID</key>
 					<string>IU8bBX</string>
 					<key>INIntentParameterDisplayPriority</key>
-					<integer>3</integer>
+					<integer>2</integer>
 					<key>INIntentParameterMetadata</key>
 					<dict>
 						<key>INIntentParameterMetadataCapitalization</key>
 						<string>None</string>
-						<key>INIntentParameterMetadataDefaultValue</key>
-						<string>{"entity_id": "light.robbies_room"}</string>
-						<key>INIntentParameterMetadataDefaultValueID</key>
-						<string>yrb3qA</string>
 						<key>INIntentParameterMetadataDisableAutocorrect</key>
 						<true/>
 						<key>INIntentParameterMetadataDisableSmartDashes</key>
 						<true/>
 						<key>INIntentParameterMetadataDisableSmartQuotes</key>
+						<true/>
+						<key>INIntentParameterMetadataMultiline</key>
 						<true/>
 					</dict>
 					<key>INIntentParameterName</key>
@@ -294,29 +241,18 @@
 					<key>INIntentParameterType</key>
 					<string>String</string>
 				</dict>
-				<dict>
-					<key>INIntentParameterDisplayPriority</key>
-					<integer>4</integer>
-					<key>INIntentParameterMetadata</key>
-					<dict>
-						<key>INIntentParameterMetadataCapitalization</key>
-						<string>None</string>
-					</dict>
-					<key>INIntentParameterName</key>
-					<string>serviceDescription</string>
-					<key>INIntentParameterTag</key>
-					<integer>6</integer>
-					<key>INIntentParameterType</key>
-					<string>String</string>
-				</dict>
 			</array>
 			<key>INIntentResponse</key>
 			<dict>
 				<key>INIntentResponseCodes</key>
 				<array>
 					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Called ${service}</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>gh0037</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Called ${domain}.${service}</string>
+						<string>Called ${service}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>rFSNpu</string>
 						<key>INIntentResponseCodeName</key>
@@ -325,6 +261,10 @@
 						<true/>
 					</dict>
 					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Failed to call service with error: ${error}</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>vbvDDS</string>
 						<key>INIntentResponseCodeFormatString</key>
 						<string>Failed to call service with error: ${error}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
@@ -333,14 +273,10 @@
 						<string>failure</string>
 					</dict>
 					<dict>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to call service, the clipboard contents could not be parsed</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>30yAOG</string>
-						<key>INIntentResponseCodeName</key>
-						<string>failurePasteboardNotParseable</string>
-					</dict>
-					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Failed to call service, Home Assistant is not currently reachable</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>OOlKin</string>
 						<key>INIntentResponseCodeFormatString</key>
 						<string>Failed to call service, Home Assistant is not currently reachable</string>
 						<key>INIntentResponseCodeFormatStringID</key>
@@ -348,58 +284,42 @@
 						<key>INIntentResponseCodeName</key>
 						<string>failureConnectivity</string>
 					</dict>
-					<dict>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Successfully sent ${domain}.${service} with clipboard contents to Home Assistant</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>ri4H1h</string>
-						<key>INIntentResponseCodeName</key>
-						<string>successViaPasteboard</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<true/>
-					</dict>
-					<dict>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>JSON was found on the clipboard but was invalid.</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>YyQQL1</string>
-						<key>INIntentResponseCodeName</key>
-						<string>failureInvalidJSON</string>
-					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
-				<integer>4</integer>
+				<integer>6</integer>
 				<key>INIntentResponseParameters</key>
 				<array>
 					<dict>
+						<key>INIntentResponseParameterDisplayName</key>
+						<string>Error</string>
+						<key>INIntentResponseParameterDisplayNameID</key>
+						<string>K4yV9D</string>
 						<key>INIntentResponseParameterDisplayPriority</key>
 						<integer>1</integer>
-						<key>INIntentResponseParameterName</key>
-						<string>domain</string>
-						<key>INIntentResponseParameterTag</key>
-						<integer>2</integer>
-						<key>INIntentResponseParameterType</key>
-						<string>String</string>
-					</dict>
-					<dict>
-						<key>INIntentResponseParameterDisplayPriority</key>
-						<integer>2</integer>
-						<key>INIntentResponseParameterName</key>
-						<string>service</string>
-						<key>INIntentResponseParameterTag</key>
-						<integer>3</integer>
-						<key>INIntentResponseParameterType</key>
-						<string>String</string>
-					</dict>
-					<dict>
-						<key>INIntentResponseParameterDisplayPriority</key>
-						<integer>3</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>error</string>
 						<key>INIntentResponseParameterTag</key>
 						<integer>4</integer>
 						<key>INIntentResponseParameterType</key>
 						<string>String</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseParameterDisplayName</key>
+						<string>Service</string>
+						<key>INIntentResponseParameterDisplayNameID</key>
+						<string>rNiLHO</string>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>2</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>service</string>
+						<key>INIntentResponseParameterObjectType</key>
+						<string>Service</string>
+						<key>INIntentResponseParameterObjectTypeNamespace</key>
+						<string>6UBwqz</string>
+						<key>INIntentResponseParameterTag</key>
+						<integer>6</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>Object</string>
 					</dict>
 				</array>
 			</dict>
@@ -1050,6 +970,147 @@
 		</dict>
 	</array>
 	<key>INTypes</key>
-	<array/>
+	<array>
+		<dict>
+			<key>INTypeDisplayName</key>
+			<string>Service</string>
+			<key>INTypeDisplayNameID</key>
+			<string>zYcoH1</string>
+			<key>INTypeLastPropertyTag</key>
+			<integer>104</integer>
+			<key>INTypeName</key>
+			<string>Service</string>
+			<key>INTypeProperties</key>
+			<array>
+				<dict>
+					<key>INTypePropertyDefault</key>
+					<true/>
+					<key>INTypePropertyDisplayPriority</key>
+					<integer>1</integer>
+					<key>INTypePropertyName</key>
+					<string>identifier</string>
+					<key>INTypePropertyTag</key>
+					<integer>1</integer>
+					<key>INTypePropertyType</key>
+					<string>String</string>
+				</dict>
+				<dict>
+					<key>INTypePropertyDefault</key>
+					<true/>
+					<key>INTypePropertyDisplayPriority</key>
+					<integer>2</integer>
+					<key>INTypePropertyName</key>
+					<string>displayString</string>
+					<key>INTypePropertyTag</key>
+					<integer>2</integer>
+					<key>INTypePropertyType</key>
+					<string>String</string>
+				</dict>
+				<dict>
+					<key>INTypePropertyDefault</key>
+					<true/>
+					<key>INTypePropertyDisplayPriority</key>
+					<integer>3</integer>
+					<key>INTypePropertyName</key>
+					<string>pronunciationHint</string>
+					<key>INTypePropertyTag</key>
+					<integer>3</integer>
+					<key>INTypePropertyType</key>
+					<string>String</string>
+				</dict>
+				<dict>
+					<key>INTypePropertyDefault</key>
+					<true/>
+					<key>INTypePropertyDisplayPriority</key>
+					<integer>4</integer>
+					<key>INTypePropertyName</key>
+					<string>alternativeSpeakableMatches</string>
+					<key>INTypePropertySupportsMultipleValues</key>
+					<true/>
+					<key>INTypePropertyTag</key>
+					<integer>4</integer>
+					<key>INTypePropertyType</key>
+					<string>SpeakableString</string>
+				</dict>
+				<dict>
+					<key>INTypePropertyDisplayName</key>
+					<string>Description</string>
+					<key>INTypePropertyDisplayNameID</key>
+					<string>dwUcfd</string>
+					<key>INTypePropertyDisplayPriority</key>
+					<integer>5</integer>
+					<key>INTypePropertyName</key>
+					<string>serviceDescription</string>
+					<key>INTypePropertyTag</key>
+					<integer>104</integer>
+					<key>INTypePropertyType</key>
+					<string>String</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>INTypeDisplayName</key>
+			<string>Entity</string>
+			<key>INTypeDisplayNameID</key>
+			<string>gypvjQ</string>
+			<key>INTypeLastPropertyTag</key>
+			<integer>99</integer>
+			<key>INTypeName</key>
+			<string>Entity</string>
+			<key>INTypeProperties</key>
+			<array>
+				<dict>
+					<key>INTypePropertyDefault</key>
+					<true/>
+					<key>INTypePropertyDisplayPriority</key>
+					<integer>1</integer>
+					<key>INTypePropertyName</key>
+					<string>identifier</string>
+					<key>INTypePropertyTag</key>
+					<integer>1</integer>
+					<key>INTypePropertyType</key>
+					<string>String</string>
+				</dict>
+				<dict>
+					<key>INTypePropertyDefault</key>
+					<true/>
+					<key>INTypePropertyDisplayPriority</key>
+					<integer>2</integer>
+					<key>INTypePropertyName</key>
+					<string>displayString</string>
+					<key>INTypePropertyTag</key>
+					<integer>2</integer>
+					<key>INTypePropertyType</key>
+					<string>String</string>
+				</dict>
+				<dict>
+					<key>INTypePropertyDefault</key>
+					<true/>
+					<key>INTypePropertyDisplayPriority</key>
+					<integer>3</integer>
+					<key>INTypePropertyName</key>
+					<string>pronunciationHint</string>
+					<key>INTypePropertyTag</key>
+					<integer>3</integer>
+					<key>INTypePropertyType</key>
+					<string>String</string>
+				</dict>
+				<dict>
+					<key>INTypePropertyDefault</key>
+					<true/>
+					<key>INTypePropertyDisplayPriority</key>
+					<integer>4</integer>
+					<key>INTypePropertyName</key>
+					<string>alternativeSpeakableMatches</string>
+					<key>INTypePropertySupportsMultipleValues</key>
+					<true/>
+					<key>INTypePropertyTag</key>
+					<integer>4</integer>
+					<key>INTypePropertyType</key>
+					<string>SpeakableString</string>
+				</dict>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

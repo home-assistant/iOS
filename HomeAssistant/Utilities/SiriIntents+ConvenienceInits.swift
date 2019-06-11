@@ -13,15 +13,16 @@ import MapKit
 extension CallServiceIntent {
     convenience init(domain: String, service: String, description: String?) {
         self.init()
-        self.serviceDomain = domain
-        self.service = service
-        self.serviceDescription = description
+        let id = "\(domain).\(service)"
+        let siriService = Service(identifier: id, display: id)
+        siriService.serviceDescription = description
+        self.service = siriService
     }
 
     convenience init(domain: String, service: String, payload: Any?) {
         self.init()
-        self.serviceDomain = domain
-        self.service = service
+        let id = "\(domain).\(service)"
+        self.service = Service(identifier: id, display: id)
 
         if let payload = payload, let jsonData = try? JSONSerialization.data(withJSONObject: payload, options: []),
             let jsonString = String(data: jsonData, encoding: .utf8) {
