@@ -621,35 +621,40 @@
 		<dict>
 			<key>INIntentCategory</key>
 			<string>generic</string>
+			<key>INIntentConfigurable</key>
+			<true/>
 			<key>INIntentDescription</key>
-			<string>Get a single still frame from a camera and place it on the clipboard</string>
+			<string>Get a snapshot from a camera</string>
 			<key>INIntentDescriptionID</key>
 			<string>hsrlTY</string>
+			<key>INIntentInput</key>
+			<string>cameraID</string>
+			<key>INIntentKeyParameter</key>
+			<string>cameraID</string>
 			<key>INIntentLastParameterTag</key>
-			<integer>1</integer>
+			<integer>6</integer>
+			<key>INIntentManagedParameterCombinations</key>
+			<dict>
+				<key>cameraID</key>
+				<dict>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Get Camera Image from ${cameraID}</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>zWnTPf</string>
+					<key>INIntentParameterCombinationUpdatesLinked</key>
+					<true/>
+				</dict>
+			</dict>
 			<key>INIntentName</key>
 			<string>GetCameraImage</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
-				<key></key>
-				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<true/>
-					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Get a single still frame from the entity ID found on the clipboard and place it on the clipboard</string>
-					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>5rztv4</string>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Get Camera Image</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>q0SnlK</string>
-				</dict>
 				<key>cameraID</key>
 				<dict>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Get a single still frame from ${cameraID} and place it on the clipboard</string>
+					<string>Get a snapshot from ${cameraID} </string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>FN8zqO</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -663,19 +668,55 @@
 			<key>INIntentParameters</key>
 			<array>
 				<dict>
+					<key>INIntentParameterCustomDisambiguation</key>
+					<true/>
+					<key>INIntentParameterDisplayName</key>
+					<string>Entity ID</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>yICUzb</string>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>1</integer>
-					<key>INIntentParameterMetadata</key>
-					<dict>
-						<key>INIntentParameterMetadataCapitalization</key>
-						<string>None</string>
-					</dict>
 					<key>INIntentParameterName</key>
 					<string>cameraID</string>
+					<key>INIntentParameterObjectType</key>
+					<string>EntityID</string>
+					<key>INIntentParameterObjectTypeNamespace</key>
+					<string>6UBwqz</string>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>There are ${count} options matching ‘${cameraID}’.</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>RHKYp2</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>DisambiguationIntroduction</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Which one?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>FVYafb</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>DisambiguationSelection</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Just to confirm, you wanted ‘${cameraID}’?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>bBJ9MA</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Confirmation</string>
+						</dict>
+					</array>
+					<key>INIntentParameterSupportsDynamicEnumeration</key>
+					<true/>
+					<key>INIntentParameterSupportsResolution</key>
+					<true/>
 					<key>INIntentParameterTag</key>
-					<integer>1</integer>
+					<integer>6</integer>
 					<key>INIntentParameterType</key>
-					<string>String</string>
+					<string>Object</string>
 				</dict>
 			</array>
 			<key>INIntentResponse</key>
@@ -683,8 +724,12 @@
 				<key>INIntentResponseCodes</key>
 				<array>
 					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Got camera snapshot ${image}</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>nuMijs</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Latest still from ${cameraID} placed on clipboard</string>
+						<string>Got camera snapshot ${image}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>nzqmFA</string>
 						<key>INIntentResponseCodeName</key>
@@ -693,6 +738,10 @@
 						<true/>
 					</dict>
 					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Failed to get camera image with error: ${error}</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>8C9Ohl</string>
 						<key>INIntentResponseCodeFormatString</key>
 						<string>Failed to get camera image with error: ${error}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
@@ -701,14 +750,10 @@
 						<string>failure</string>
 					</dict>
 					<dict>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Failed to get camera image, the clipboard contents could not be parsed for a valid entity ID</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>4k18T7</string>
-						<key>INIntentResponseCodeName</key>
-						<string>failurePasteboardNotParseable</string>
-					</dict>
-					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>Failed to get camera image, Home Assistant is not currently reachable</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>moQzqx</string>
 						<key>INIntentResponseCodeFormatString</key>
 						<string>Failed to get camera image, Home Assistant is not currently reachable</string>
 						<key>INIntentResponseCodeFormatStringID</key>
@@ -716,24 +761,38 @@
 						<key>INIntentResponseCodeName</key>
 						<string>failureConnectivity</string>
 					</dict>
-					<dict>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Latest still from camera entity found on clipboard,${cameraID}, placed on clipboard</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>mgspvx</string>
-						<key>INIntentResponseCodeName</key>
-						<string>successViaPasteboard</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<true/>
-					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
-				<integer>3</integer>
+				<integer>8</integer>
+				<key>INIntentResponseOutput</key>
+				<string>image</string>
 				<key>INIntentResponseParameters</key>
 				<array>
 					<dict>
+						<key>INIntentResponseParameterDisplayName</key>
+						<string>Entity</string>
+						<key>INIntentResponseParameterDisplayNameID</key>
+						<string>PcuTYZ</string>
 						<key>INIntentResponseParameterDisplayPriority</key>
 						<integer>1</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>cameraID</string>
+						<key>INIntentResponseParameterObjectType</key>
+						<string>EntityID</string>
+						<key>INIntentResponseParameterObjectTypeNamespace</key>
+						<string>6UBwqz</string>
+						<key>INIntentResponseParameterTag</key>
+						<integer>6</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>Object</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseParameterDisplayName</key>
+						<string>Error</string>
+						<key>INIntentResponseParameterDisplayNameID</key>
+						<string>QlRwwy</string>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>2</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>error</string>
 						<key>INIntentResponseParameterTag</key>
@@ -742,14 +801,18 @@
 						<string>String</string>
 					</dict>
 					<dict>
+						<key>INIntentResponseParameterDisplayName</key>
+						<string>Image</string>
+						<key>INIntentResponseParameterDisplayNameID</key>
+						<string>dAJnQU</string>
 						<key>INIntentResponseParameterDisplayPriority</key>
-						<integer>2</integer>
-						<key>INIntentResponseParameterName</key>
-						<string>cameraID</string>
-						<key>INIntentResponseParameterTag</key>
 						<integer>3</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>image</string>
+						<key>INIntentResponseParameterTag</key>
+						<integer>8</integer>
 						<key>INIntentResponseParameterType</key>
-						<string>String</string>
+						<string>File</string>
 					</dict>
 				</array>
 			</dict>
@@ -970,13 +1033,13 @@
 		</dict>
 		<dict>
 			<key>INTypeDisplayName</key>
-			<string>Entity</string>
+			<string>Entity ID</string>
 			<key>INTypeDisplayNameID</key>
 			<string>gypvjQ</string>
 			<key>INTypeLastPropertyTag</key>
 			<integer>99</integer>
 			<key>INTypeName</key>
-			<string>Entity</string>
+			<string>EntityID</string>
 			<key>INTypeProperties</key>
 			<array>
 				<dict>
