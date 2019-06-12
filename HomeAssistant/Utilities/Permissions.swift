@@ -198,7 +198,10 @@ public enum PermissionType: Int {
             })
         case .notification:
             // swiftlint:disable:next line_length
-            let opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
+            var opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
+            if #available(iOS 13.0, *) {
+                opts.insert(.announcement)
+            }
             UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
                 if let error = error {
                     Current.Log.error("Error when requesting notifications permissions: \(error)")

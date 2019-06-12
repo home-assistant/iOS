@@ -38,7 +38,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
         UNUserNotificationCenter.current().delegate = self
 
-        let opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
+        var opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
+        if #available(iOS 13.0, *) {
+            opts.insert(.announcement)
+        }
         UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
             Current.Log.verbose("Requested notifications access \(granted), \(String(describing: error))")
         }
