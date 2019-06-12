@@ -16,6 +16,7 @@ import PromiseKit
 import ObjectMapper
 import ViewRow
 
+@available(iOS 13.0, *)
 class ShortcutEventConfigurator: FormViewController {
 
     // swiftlint:disable function_body_length
@@ -170,6 +171,7 @@ class ShortcutEventConfigurator: FormViewController {
     }
 }
 
+@available(iOS 13.0, *)
 extension ShortcutEventConfigurator: INUIAddVoiceShortcutViewControllerDelegate {
 
     func addVoiceShortcutViewController(_ controller: INUIAddVoiceShortcutViewController,
@@ -195,6 +197,7 @@ extension ShortcutEventConfigurator: INUIAddVoiceShortcutViewControllerDelegate 
 
 // MARK: - INUIEditVoiceShortcutViewControllerDelegate
 
+@available(iOS 13.0, *)
 extension ShortcutEventConfigurator: INUIEditVoiceShortcutViewControllerDelegate {
 
     func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,

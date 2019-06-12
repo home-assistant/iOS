@@ -63,12 +63,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
 
-        // MARK: Registering Launch Handlers for Tasks
-        // swiftlint:disable:next line_length
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "\(Constants.BundleID).ReportStateToHA", using: nil) { task in
-            // Downcast the parameter to an app refresh task as this identifier is used for a refresh request.
-            // swiftlint:disable:next force_cast
-            self.handleAppRefresh(task: task as! BGAppRefreshTask)
+        if #available(iOS 13.0, *) {
+            // MARK: Registering Launch Handlers for Tasks
+            // swiftlint:disable:next line_length
+            BGTaskScheduler.shared.register(forTaskWithIdentifier: "\(Constants.BundleID).ReportStateToHA", using: nil) { task in
+                // Downcast the parameter to an app refresh task as this identifier is used for a refresh request.
+                // swiftlint:disable:next force_cast
+                self.handleAppRefresh(task: task as! BGAppRefreshTask)
+            }
         }
 
         Iconic.registerMaterialDesignIcons()
@@ -79,7 +81,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         HomeAssistantAPI.ProvideNotificationCategoriesToSystem()
 
-        setupiOS12Features()
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+            guard settings.authorizationStatus == .authorized else {return}
+            var opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert,
+                                                .providesAppNotificationSettings]
+            if #available(iOS 13.0, *) {
+                opts.insert(.announcement)
+            }
+            UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
+                Current.Log.verbose("Requested critical alert access \(granted), \(String(describing: error))")
+            }
+        }
+
+        if #available(iOS 13.0, *) {
+            self.suggestSiriShortcuts()
+        }
 
         self.setupView()
 
@@ -389,30 +405,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func fireEventURLHandler(_ url: URL, _ serviceData: [String: String]) {
         // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
 
-        let interaction = INInteraction(intent: FireEventIntent(eventName: url.pathComponents[1],
-                                                                payload: url.query), response: nil)
+        if #available(iOS 13.0, *) {
+            let interaction = INInteraction(intent: FireEventIntent(eventName: url.pathComponents[1],
+                                                                    payload: url.query), response: nil)
 
-        interaction.donate { (error) in
-            if error != nil {
-                if let error = error as NSError? {
-                    Current.Log.error("FireEvent Interaction donation failed: \(error)")
-                } else {
-                    Current.Log.verbose("FireEvent Successfully donated interaction")
+            interaction.donate { (error) in
+                if error != nil {
+                    if let error = error as NSError? {
+                        Current.Log.error("FireEvent Interaction donation failed: \(error)")
+                    } else {
+                        Current.Log.verbose("FireEvent Successfully donated interaction")
+                    }
                 }
             }
         }
 
         _ = firstly {
             HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
-            }.done { _ in
-                showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
-                          message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
-            }.catch { error -> Void in
-                showAlert(title: L10n.errorLabel,
-                          message: L10n.UrlHandler.FireEvent.Error.message(url.pathComponents[1],
-                                                                           error.localizedDescription))
+        }.then { api in
+            api.CreateEvent(eventType: url.pathComponents[1], eventData: serviceData)
+        }.done { _ in
+            showAlert(title: L10n.UrlHandler.FireEvent.Success.title,
+                      message: L10n.UrlHandler.FireEvent.Success.message(url.pathComponents[1]))
+        }.catch { error -> Void in
+            showAlert(title: L10n.errorLabel,
+                      message: L10n.UrlHandler.FireEvent.Error.message(url.pathComponents[1],
+                                                                       error.localizedDescription))
         }
     }
 
@@ -421,31 +439,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let domain = url.pathComponents[1].components(separatedBy: ".")[0]
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
 
-        let intent = CallServiceIntent(domain: domain, service: service, payload: url.query)
+        if #available(iOS 13.0, *) {
+            let intent = CallServiceIntent(domain: domain, service: service, payload: url.query)
 
-        let interaction = INInteraction(intent: intent, response: nil)
+            let interaction = INInteraction(intent: intent, response: nil)
 
-        interaction.donate { (error) in
-            if error != nil {
-                if let error = error as NSError? {
-                    Current.Log.error("CallService Interaction donation failed: \(error)")
-                } else {
-                    Current.Log.verbose("CallService Successfully donated interaction")
+            interaction.donate { (error) in
+                if error != nil {
+                    if let error = error as NSError? {
+                        Current.Log.error("CallService Interaction donation failed: \(error)")
+                    } else {
+                        Current.Log.verbose("CallService Successfully donated interaction")
+                    }
                 }
             }
         }
 
         _ = firstly {
             HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.CallService(domain: domain, service: service, serviceData: serviceData)
-            }.done { _ in
-                showAlert(title: L10n.UrlHandler.CallService.Success.title,
-                          message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
-            }.catch { error in
-                showAlert(title: L10n.errorLabel,
-                          message: L10n.UrlHandler.CallService.Error.message(url.pathComponents[1],
-                                                                             error.localizedDescription))
+        }.then { api in
+            api.CallService(domain: domain, service: service, serviceData: serviceData)
+        }.done { _ in
+            showAlert(title: L10n.UrlHandler.CallService.Success.title,
+                      message: L10n.UrlHandler.CallService.Success.message(url.pathComponents[1]))
+        }.catch { error in
+            showAlert(title: L10n.errorLabel,
+                      message: L10n.UrlHandler.CallService.Error.message(url.pathComponents[1],
+                                                                         error.localizedDescription))
         }
     }
 
@@ -521,6 +541,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    @available(iOS 13.0, *)
     func suggestSiriShortcuts() {
         let generics: [INIntent] = [FireEventIntent(), SendLocationIntent(), CallServiceIntent(),
                                     GetCameraImageIntent(), RenderTemplateIntent()]
@@ -559,25 +580,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
                 INVoiceShortcutCenter.shared.setShortcutSuggestions(shortcutsToSuggest)
         }
-    }
-
-    func setupiOS12Features() {
-        // Tell the system we have a app notification settings screen and want critical alerts
-        // This is effectively a migration
-
-        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
-            guard settings.authorizationStatus == .authorized else {return}
-            var opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert,
-                                                .providesAppNotificationSettings]
-            if #available(iOS 13.0, *) {
-                opts.insert(.announcement)
-            }
-            UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
-                Current.Log.verbose("Requested critical alert access \(granted), \(String(describing: error))")
-            }
-        }
-
-        suggestSiriShortcuts()
     }
 
     func setupFastlaneSnapshotConfiguration() {
@@ -725,6 +727,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    @available(iOS 13.0, *)
     func scheduleAppRefresh() {
         let bgRefresh = BGAppRefreshTaskRequest(identifier: "\(Constants.BundleID).ReportStateToHA")
         do {
@@ -752,6 +755,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return when(fulfilled: [updatePromise, api.updateComplications().asVoid()])
     }
 
+    @available(iOS 13.0, *)
     func handleAppRefresh(task: BGAppRefreshTask) {
         self.scheduleAppRefresh()
 

@@ -16,6 +16,7 @@ import PromiseKit
 import ObjectMapper
 import ViewRow
 
+@available(iOS 13.0, *)
 // swiftlint:disable:next type_body_length
 class ShortcutServiceConfigurator: FormViewController {
 
@@ -368,6 +369,7 @@ class ShortcutServiceConfigurator: FormViewController {
     }
 }
 
+@available(iOS 13.0, *)
 extension ShortcutServiceConfigurator: INUIAddVoiceShortcutViewControllerDelegate {
 
     func addVoiceShortcutViewController(_ controller: INUIAddVoiceShortcutViewController,
@@ -392,7 +394,7 @@ extension ShortcutServiceConfigurator: INUIAddVoiceShortcutViewControllerDelegat
 }
 
 // MARK: - INUIEditVoiceShortcutViewControllerDelegate
-
+@available(iOS 13.0, *)
 extension ShortcutServiceConfigurator: INUIEditVoiceShortcutViewControllerDelegate {
 
     func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,

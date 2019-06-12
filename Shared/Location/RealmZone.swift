@@ -107,22 +107,40 @@ public class RLMZone: Object {
             return nil
         }
 
-        var beaconRegion = CLBeaconRegion(uuid: uuid, identifier: self.ID)
-        if let major = self.BeaconMajor.value, let minor = self.BeaconMinor.value {
-            beaconRegion = CLBeaconRegion(
-                uuid: uuid,
-                major: CLBeaconMajorValue(major),
-                minor: CLBeaconMinorValue(minor),
-                identifier: self.ID
-            )
-        } else if let major = self.BeaconMajor.value {
-            beaconRegion = CLBeaconRegion(
-                uuid: uuid,
-                major: CLBeaconMajorValue(major),
-                identifier: self.ID
-            )
+        var beaconRegion = CLBeaconRegion()
+        if #available(iOS 13.0, *) {
+            beaconRegion = CLBeaconRegion(uuid: uuid, identifier: self.ID)
+            if let major = self.BeaconMajor.value, let minor = self.BeaconMinor.value {
+                beaconRegion = CLBeaconRegion(
+                    uuid: uuid,
+                    major: CLBeaconMajorValue(major),
+                    minor: CLBeaconMinorValue(minor),
+                    identifier: self.ID
+                )
+            } else if let major = self.BeaconMajor.value {
+                beaconRegion = CLBeaconRegion(
+                    uuid: uuid,
+                    major: CLBeaconMajorValue(major),
+                    identifier: self.ID
+                )
+            }
+        } else {
+            beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: self.ID)
+            if let major = self.BeaconMajor.value, let minor = self.BeaconMinor.value {
+                beaconRegion = CLBeaconRegion(
+                    proximityUUID: uuid,
+                    major: CLBeaconMajorValue(major),
+                    minor: CLBeaconMinorValue(minor),
+                    identifier: self.ID
+                )
+            } else if let major = self.BeaconMajor.value {
+                beaconRegion = CLBeaconRegion(
+                    proximityUUID: uuid,
+                    major: CLBeaconMajorValue(major),
+                    identifier: self.ID
+                )
+            }
         }
-
         beaconRegion.notifyEntryStateOnDisplay = true
         beaconRegion.notifyOnEntry = true
         beaconRegion.notifyOnExit = true

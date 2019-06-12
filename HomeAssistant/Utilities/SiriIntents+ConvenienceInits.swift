@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import MapKit
 
+@available(iOS 13.0, *)
 extension CallServiceIntent {
     convenience init(domain: String, service: String, description: String?) {
         self.init()
@@ -31,6 +32,7 @@ extension CallServiceIntent {
     }
 }
 
+@available(iOS 13.0, *)
 extension FireEventIntent {
     convenience init(eventName: String) {
         self.init()
@@ -48,6 +50,7 @@ extension FireEventIntent {
     }
 }
 
+@available(iOS 13.0, *)
 extension SendLocationIntent {
     convenience init(place: CLPlacemark) {
         self.init()
