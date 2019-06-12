@@ -24,11 +24,11 @@ extension UIImageView {
     func showActivityIndicator() {
 
         if self.activityIndicator == nil {
-            self.activityIndicator = UIActivityIndicatorView(style: .gray)
+            self.activityIndicator = UIActivityIndicatorView(style: .medium)
 
             self.activityIndicator.hidesWhenStopped = true
             self.activityIndicator.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-            self.activityIndicator.style = UIActivityIndicatorView.Style.whiteLarge
+            self.activityIndicator.style = .large
             self.activityIndicator.center = CGPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)
             self.activityIndicator.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin,
                                                        .flexibleTopMargin, .flexibleBottomMargin]

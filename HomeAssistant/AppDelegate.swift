@@ -22,6 +22,7 @@ import Shared
 import UIKit
 import UserNotifications
 import Crashlytics
+import BackgroundTasks
 
 let keychain = Constants.Keychain
 
@@ -62,7 +63,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
 
-        UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
+        // MARK: Registering Launch Handlers for Tasks
+        // swiftlint:disable:next line_length
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "\(Constants.BundleID).ReportStateToHA", using: nil) { task in
+            // Downcast the parameter to an app refresh task as this identifier is used for a refresh request.
+            // swiftlint:disable:next force_cast
+            self.handleAppRefresh(task: task as! BGAppRefreshTask)
+        }
 
         Iconic.registerMaterialDesignIcons()
 
@@ -134,6 +141,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.entered_background", eventData: [:])
+        if #available(iOS 13.0, *) {
+            self.scheduleAppRefresh()
+        } else {
+            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
+        }
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {}
@@ -212,23 +224,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
-            Current.Log.warning("Background fetch failed because api was not authenticated")
-            completionHandler(.failed)
-            return
-        }
-
-        let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
-        Current.Log.verbose("Background fetch activated at \(timestamp)!")
-
-        var updatePromise: Promise<Void> = api.UpdateSensors(.BackgroundFetch).asVoid()
-
-        if Current.settingsStore.locationEnabled && prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
-            updatePromise = api.GetAndSendLocation(trigger: .BackgroundFetch).asVoid()
-        }
-
         firstly {
-            return when(fulfilled: [updatePromise, api.updateComplications().asVoid()])
+            self.handleBackgroundUpdate()
         }.done { _ in
             completionHandler(.newData)
         }.catch { error in
@@ -725,6 +722,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.setUserProperty = { (value: String?, name: String) -> Void in
             Current.Log.verbose("Setting user property \(name) to \(String(describing: value))")
             Analytics.setUserProperty(value, forName: name)
+        }
+    }
+
+    func scheduleAppRefresh() {
+        let bgRefresh = BGAppRefreshTaskRequest(identifier: "\(Constants.BundleID).ReportStateToHA")
+        do {
+            try BGTaskScheduler.shared.submit(bgRefresh)
+        } catch {
+            print("Could not schedule app refresh: \(error)")
+        }
+    }
+
+    func handleBackgroundUpdate() -> Promise<Void> {
+        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+            Current.Log.warning("Background fetch failed because api was not authenticated")
+            return Promise(error: HomeAssistantAPI.APIError.managerNotAvailable)
+        }
+
+        let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
+        Current.Log.verbose("Background fetch activated at \(timestamp)!")
+
+        var updatePromise: Promise<Void> = api.UpdateSensors(.BackgroundFetch).asVoid()
+
+        if Current.settingsStore.locationEnabled && prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
+            updatePromise = api.GetAndSendLocation(trigger: .BackgroundFetch).asVoid()
+        }
+
+        return when(fulfilled: [updatePromise, api.updateComplications().asVoid()])
+    }
+
+    func handleAppRefresh(task: BGAppRefreshTask) {
+        self.scheduleAppRefresh()
+
+        firstly {
+            self.handleBackgroundUpdate()
+        }.done { _ in
+            task.setTaskCompleted(success: true)
+        }.catch { error in
+            Current.Log.error("Error when attempting to update data during background app refresh task: \(error)")
+            task.setTaskCompleted(success: false)
         }
     }
 }

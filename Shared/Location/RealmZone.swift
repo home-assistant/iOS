@@ -107,17 +107,17 @@ public class RLMZone: Object {
             return nil
         }
 
-        var beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: self.ID)
+        var beaconRegion = CLBeaconRegion(uuid: uuid, identifier: self.ID)
         if let major = self.BeaconMajor.value, let minor = self.BeaconMinor.value {
             beaconRegion = CLBeaconRegion(
-                proximityUUID: uuid,
+                uuid: uuid,
                 major: CLBeaconMajorValue(major),
                 minor: CLBeaconMinorValue(minor),
                 identifier: self.ID
             )
         } else if let major = self.BeaconMajor.value {
             beaconRegion = CLBeaconRegion(
-                proximityUUID: uuid,
+                uuid: uuid,
                 major: CLBeaconMajorValue(major),
                 identifier: self.ID
             )

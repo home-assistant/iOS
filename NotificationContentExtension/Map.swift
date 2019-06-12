@@ -46,7 +46,7 @@ class MapViewController: UIView, NotificationCategory, MKMapViewDelegate {
         self.mapView.frame = vc.view.frame
 
         self.mapView.showsUserLocation = (haDict["shows_user_location"] != nil)
-        self.mapView.showsPointsOfInterest = (haDict["shows_points_of_interest"] != nil)
+        self.mapView.pointOfInterestFilter = haDict["shows_points_of_interest"] != nil ? .includingAll : .excludingAll
         self.mapView.showsCompass = (haDict["shows_compass"] != nil)
         self.mapView.showsScale = (haDict["shows_scale"] != nil)
         self.mapView.showsTraffic = (haDict["shows_traffic"] != nil)

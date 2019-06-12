@@ -244,7 +244,11 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
         self.mapView.frame = view.frame
         self.mapView.delegate = self
         self.mapView.showsUserLocation = false
-        self.mapView.showsPointsOfInterest = false
+        if #available(iOS 13.0, *) {
+            self.mapView.pointOfInterestFilter = .excludingAll
+        } else {
+            self.mapView.showsPointsOfInterest = false
+        }
         view.addSubview(self.mapView)
     }
 }
