@@ -39,11 +39,15 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         UNUserNotificationCenter.current().delegate = self
 
         var opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
-        if #available(iOS 13.0, *) {
+        if #available(watchOS 13.0, *) {
             opts.insert(.announcement)
         }
         UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
             Current.Log.verbose("Requested notifications access \(granted), \(String(describing: error))")
+
+            if granted {
+                WKExtension.shared().registerForRemoteNotifications()
+            }
         }
 
         setupWatchCommunicator()
@@ -235,6 +239,15 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }.catch { error in
             Current.Log.error("Error updating complications! \(error)")
         }
+    }
+
+    func didRegisterForRemoteNotifications(withDeviceToken deviceToken: Data) {
+        let apnsToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        Current.Log.verbose("Successfully registered for push notifications! APNS token: \(apnsToken)")
+    }
+
+    func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {
+        Current.Log.error("Error when trying to register for push: \(error)")
     }
 }
 
