@@ -203,14 +203,15 @@ class RegionManager: NSObject {
     }
 
     func notifyOnError(_ trigger: LocationUpdateTrigger, _ error: Error) {
-        let content = UNMutableNotificationContent()
+        Current.Log.error("Error when sending location update triggered by \(trigger.rawValue): \(error)")
+        /* let content = UNMutableNotificationContent()
         content.title = L10n.LocationUpdateErrorNotification.title(trigger.rawValue)
         content.body = error.localizedDescription
         content.sound = .default
 
         let notificationRequest = UNNotificationRequest(identifier: "error_updating_location", content: content,
                                                         trigger: nil)
-        UNUserNotificationCenter.current().add(notificationRequest)
+        UNUserNotificationCenter.current().add(notificationRequest) */
     }
 }
 
