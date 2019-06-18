@@ -22,9 +22,10 @@ final class NotificationService: UNNotificationServiceExtension {
         Current.Log.verbose("APNSAttachmentService started!")
         Current.Log.verbose("Received userInfo \(request.content.userInfo)")
 
-        let event = ClientEvent(text: request.content.clientEventTitle, type: .notification,
+        // FIXME: Memory leak caued by ClientEvent/Realm.
+        /* let event = ClientEvent(text: request.content.clientEventTitle, type: .notification,
                                 payload: request.content.userInfo as? [String: Any])
-        Current.clientEventStore.addEvent(event)
+        Current.clientEventStore.addEvent(event) */
 
         Current.Log.debug("Added client event")
 
