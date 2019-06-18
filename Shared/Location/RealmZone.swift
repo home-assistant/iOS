@@ -14,6 +14,7 @@ import RealmSwift
 public class RLMZone: Object {
 
     @objc public dynamic var ID: String = ""
+    @objc public dynamic var FriendlyName: String?
     @objc public dynamic var Latitude: Double = 0.0
     @objc public dynamic var Longitude: Double = 0.0
     @objc public dynamic var Radius: Double = 0.0
@@ -33,6 +34,8 @@ public class RLMZone: Object {
 
     public func mapping(map: Map) {
         ID                       <- map["entity_id"]
+
+        FriendlyName             <- map["attributes.friendly_name"]
 
         Latitude                 <- map["attributes.latitude"]
         Longitude                <- map["attributes.longitude"]
@@ -147,6 +150,7 @@ public class RLMZone: Object {
 
     public var Name: String {
         if self.isInvalidated { return "Deleted" }
+        if let fName = self.FriendlyName { return fName }
         return self.ID.replacingOccurrences(of: "\(self.Domain).",
                                             with: "").replacingOccurrences(of: "_",
                                                                            with: " ").capitalized
