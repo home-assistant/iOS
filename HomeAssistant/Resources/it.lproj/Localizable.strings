@@ -644,7 +644,7 @@
 "settings.connection_section.log_out" = "Disconnetti";
 "errors.no_remote_ui_url" = "L'applicazione rileverà automaticamente la tua Nabu Casa Remote UI, non è possibile inserirla manualmente.";
 "settings.connection_section.cloudhook_url.title" = "Cloudhook URL";
-"settings.connection_section.remote_ui.title" = "Home Assistant Cloud";
+"settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "Non è stato possibile individuare il corretto http.base_url. Si prega di aggiungere http.base_url nel tuo file configuration.yaml e di riavviare Home Assistant per continuare con il setup automatico o, in alternativa, di procedere con la configurazione manuale.";
 "settings_details.notifications.rate_limits.header" = "Notifiche push:";
@@ -657,4 +657,4 @@
 "on_label" = "Acceso";
 "off_label" = "Spento";
 "location_update_error_notification.title" = "Errore durante l'invio della posizione %@ a Home Assistant.";
-"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
+"settings.reset_section.reset_web_cache.title" = "Reimposta la cache del frontend";

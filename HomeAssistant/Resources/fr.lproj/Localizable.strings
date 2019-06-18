@@ -644,7 +644,7 @@
 "settings.connection_section.log_out" = "Déconnexion";
 "errors.no_remote_ui_url" = "L'application détectera automatiquement votre interface utilisateur à distance Nabu Casa, vous ne pouvez pas la saisir manuellement.";
 "settings.connection_section.cloudhook_url.title" = "URL Cloudhook";
-"settings.connection_section.remote_ui.title" = "Cloud Home Assistant";
+"settings.connection_section.home_assistant_cloud.title" = "Cloud Home Assistant";
 "settings.connection_section.remote_ui_url.title" = "URL d'interface utilisateur distante";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "Aucun Http.base_url n'a pas été trouvé dans les informations de découverte. Veuillez ajouter un http.base_url valide à votre configuration.yaml et redémarrez Home Assistant pour poursuivre la configuration automatique ou manuellement.";
 "settings_details.notifications.rate_limits.header" = "Taux limite";

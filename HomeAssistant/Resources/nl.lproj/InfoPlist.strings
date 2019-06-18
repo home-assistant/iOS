@@ -4,5 +4,5 @@
 "NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
 "NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
 "NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
+"NSPhotoLibraryUsageDescription" = "Toegang tot de fotobibliotheek is nodig om foto's vanuit de webweergave op te slaan.";
+"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Stuur locatie";

@@ -644,7 +644,7 @@
 "settings.connection_section.log_out" = "登出";
 "errors.no_remote_ui_url" = "App 將會自動偵測 Nabu Casa Remote UI，無法手動輸入。";
 "settings.connection_section.cloudhook_url.title" = "Cloudhook URL";
-"settings.connection_section.remote_ui.title" = "Home Assistant Cloud 服務";
+"settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud 服務";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "於發現的資訊中找不到 http.base_url。請於 configuration.yaml 檔案中加入有效 http.base_url 後，重啟 Home Assistant 以繼續自動設定或手動設定。";
 "settings_details.notifications.rate_limits.header" = "頻率限制";

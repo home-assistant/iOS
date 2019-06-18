@@ -11,8 +11,8 @@
 "7NpJ76-dC8g33" = "Location updated to contents of clipboard that were parsed as Coordinates";
 "8BMgur" = "${eventName} отправлено в Home Assistant";
 "B4bXyc" = "Шаблон успешно обработан";
-"CiB3s6" = "Call service ${serviceDomain}.${service} with clipboard data";
-"FBQiVD" = "Call a service on the Home Assistant instance";
+"CiB3s6" = "Вызвать службу ${serviceDomain}.${service} с данными буфера обмена";
+"FBQiVD" = "Вызвать службу в Home Assistant";
 "FN8zqO" = "Get a single still frame from ${cameraID} and place it on the clipboard";
 "FZ9qkT" = "Интерпретировать шаблон";
 "GoLNMt" = "Fires an event named ${eventName} to the Home Assistant event bus with ${eventData}.";
@@ -33,7 +33,7 @@
 "ZwJ0Xx" = "Renders the found text on the clipboard";
 "c00c45" = "Создание события";
 "cK9jdK" = "Не удалось отобразить шаблон: ${error}";
-"cnzI5h" = "Renders ${template}";
+"cnzI5h" = "Отрисовать шаблон ${template}";
 "foI0Fv" = "Failed to render template, Home Assistant is not currently reachable";
 "glRCfJ" = "Failed to fire event, Home Assistant is not currently reachable";
 "hsrlTY" = "Get a single still frame from a camera and place it on the clipboard";

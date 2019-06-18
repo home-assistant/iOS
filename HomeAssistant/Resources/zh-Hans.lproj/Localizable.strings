@@ -650,7 +650,7 @@
 "settings.connection_section.log_out" = "登出";
 "errors.no_remote_ui_url" = "该应用程序将自动检测您的 Nabu Casa 远程UI, 你不能手动输入它。";
 "settings.connection_section.cloudhook_url.title" = "Cloudhook URL";
-"settings.connection_section.remote_ui.title" = "Home Assistant Cloud";
+"settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.remote_ui_url.title" = "远程UI URL";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "在discovery:中找不到http.base_url。请将有效的http.base_url添加到configuration.yaml并重新启动Home Assistant。以确保继续进行自动设置或手动设置。";
 "settings_details.notifications.rate_limits.header" = "通知详情";
@@ -663,4 +663,4 @@
 "on_label" = "开";
 "off_label" = "关";
 "location_update_error_notification.title" = "将%@个位置更新发送到Home Assistant时出错。";
-"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
+"settings.reset_section.reset_web_cache.title" = "重置前端缓存";

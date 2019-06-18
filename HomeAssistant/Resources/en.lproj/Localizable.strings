@@ -644,7 +644,7 @@
 "settings.connection_section.log_out" = "Log out";
 "errors.no_remote_ui_url" = "The app will automatically detect your Nabu Casa Remote UI, you can not manually enter it.";
 "settings.connection_section.cloudhook_url.title" = "Cloudhook URL";
-"settings.connection_section.remote_ui.title" = "Home Assistant Cloud";
+"settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "No http.base_url was found in the discovery information. Please add a valid http.base_url to your configuration.yaml and restart Home Assistant to continue with automatic setup or setup manually.";
 "settings_details.notifications.rate_limits.header" = "Rate Limits";

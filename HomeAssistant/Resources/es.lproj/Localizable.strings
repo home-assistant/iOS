@@ -535,7 +535,7 @@
 "ha_api.api_error.not_configured" = "API de HA no configurada";
 "ha_api.api_error.mobile_app_component_not_loaded" = "El componente mobile_app no está cargado. Por favor, añádalo a su configuración, reinicie Home Assistant e inténtelo de nuevo.";
 "ha_api.api_error.webhook_gone" = "mobile_app integration has been deleted, you must reconfigure the app.";
-"ha_api.api_error.must_upgrade_home_assistant" = "Your Home Assistant version (%@) is too old, you must upgrade to at least version %@ to use the app.";
+"ha_api.api_error.must_upgrade_home_assistant" = "Su versión de Home Assistant ( %@ ) es antigua, debe actualizar por lo menos a la versión %@ para usar la aplicación.";
 "ha_api.api_error.unknown" = "Un error desconocido ocurrió.";
 "sensors.unknown_state" = "Desconocido";
 "sensors.not_available_state" = "N/A";
@@ -644,7 +644,7 @@
 "settings.connection_section.log_out" = "Cerrar sesión";
 "errors.no_remote_ui_url" = "La aplicación detectará automáticamente su interfaz de usuario remota de Nabu Casa, no puede ingresarla manualmente.";
 "settings.connection_section.cloudhook_url.title" = "URL de Cloudhook";
-"settings.connection_section.remote_ui.title" = "Home Assistant Cloud";
+"settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.remote_ui_url.title" = "URL de la IU remota";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "No se encontró http.base_url en la información de descubrimiento. Agregue un http.base_url válido a su configuration.yaml y reinicie Home Assistant para continuar con la configuración automática o configurelo manualmente.";
 "settings_details.notifications.rate_limits.header" = "Límites de tasa";

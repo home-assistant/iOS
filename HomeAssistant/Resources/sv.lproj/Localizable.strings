@@ -60,7 +60,7 @@
 "settings_details.location.zones.beacon_uuid.title" = "iBeacon UUID";
 "settings_details.location.zones.beacon_major.title" = "iBeacon Major";
 "settings_details.location.zones.beacon_minor.title" = "iBeacon Minor";
-"settings_details.location.zones.footer" = "Om du vill inaktivera platsspårning lägger du till track_ios: false för varje zon i configuration.yaml eller i customize.";
+"settings_details.location.zones.footer" = "Om du vill inaktivera platsspårning, lägg till track_ios: false för varje zon i configuration.yaml eller i customize.";
 "settings_details.notifications.title" = "Notiser";
 "settings_details.notifications.push_id_section.header" = "Push-ID";
 "settings_details.notifications.push_id_section.footer" = "Detta är målet som ska användas i din Home Assistant-konfiguration. Tryck för att kopiera eller dela.";
@@ -645,7 +645,7 @@
 "settings.connection_section.log_out" = "Logga ut";
 "errors.no_remote_ui_url" = "Appen kommer automatiskt att upptäcka din Nabu Casa Remote UI, du kan inte ange det manuellt.";
 "settings.connection_section.cloudhook_url.title" = "Cloudhook URL";
-"settings.connection_section.remote_ui.title" = "Home Assistant Cloud";
+"settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "Ingen http.base_url upptäcktes. Lägg till giltig http.base_url i din configuration.yaml och starta om Home Assistant för att fortsätta med den automatiska installationen, eller konfigurera manuellt.";
 "settings_details.notifications.rate_limits.header" = "Begränsningar";
@@ -658,4 +658,4 @@
 "on_label" = "På";
 "off_label" = "Av";
 "location_update_error_notification.title" = "Fel vid sändning av %@ platsuppdatering till Home Assistant.";
-"settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
+"settings.reset_section.reset_web_cache.title" = "Återställ frontend cache";

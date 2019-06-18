@@ -974,6 +974,10 @@ internal enum L10n {
         /// External URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.external_base_url.title")
       }
+      internal enum HomeAssistantCloud {
+        /// Home Assistant Cloud
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.home_assistant_cloud.title")
+      }
       internal enum InternalBaseUrl {
         /// http://hassio.local:8123/
         internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.internal_base_url.placeholder")
@@ -1003,10 +1007,6 @@ internal enum L10n {
       internal enum NetworkName {
         /// Current Network Name
         internal static let title = L10n.tr("Localizable", "settings.connection_section.network_name.title")
-      }
-      internal enum RemoteUi {
-        /// Home Assistant Cloud
-        internal static let title = L10n.tr("Localizable", "settings.connection_section.remote_ui.title")
       }
       internal enum RemoteUiUrl {
         /// Remote UI URL
