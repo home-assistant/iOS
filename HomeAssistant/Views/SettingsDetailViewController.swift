@@ -410,18 +410,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             self.navigationItem.rightBarButtonItem = infoBarButtonItem
 
             self.form
-                +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Analytics.description)
-                <<< SwitchRow("analytics") {
-                    $0.title = L10n.SettingsDetails.Privacy.Analytics.title
-                    $0.value = prefs.bool(forKey: "analyticsEnabled")
-                }.onChange { row in
-                    guard let rowVal = row.value else { return }
-                    prefs.setValue(rowVal, forKey: "analyticsEnabled")
-                    prefs.synchronize()
-
-                    Current.Log.warning("Firebase analytics is now: \(rowVal)")
-                    Analytics.setAnalyticsCollectionEnabled(rowVal)
-                }
                 +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Messaging.description)
                 <<< SwitchRow("messaging") {
                     $0.title = L10n.SettingsDetails.Privacy.Messaging.title
@@ -438,9 +426,21 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 <<< SwitchRow("crashlytics") {
                     $0.title = L10n.SettingsDetails.Privacy.Crashlytics.title
                     $0.value = prefs.bool(forKey: "crashlyticsEnabled")
+                }.onChange { row in
+                    guard let rowVal = row.value else { return }
+                    Current.setCrashlyticsEnabled(enabled: rowVal)
+                }
+                +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Analytics.description)
+                <<< SwitchRow("analytics") {
+                    $0.title = L10n.SettingsDetails.Privacy.Analytics.title
+                    $0.value = prefs.bool(forKey: "analyticsEnabled")
                     }.onChange { row in
                         guard let rowVal = row.value else { return }
-                        Current.setCrashlyticsEnabled(enabled: rowVal)
+                        prefs.setValue(rowVal, forKey: "analyticsEnabled")
+                        prefs.synchronize()
+
+                        Current.Log.warning("Firebase analytics is now: \(rowVal)")
+                        Analytics.setAnalyticsCollectionEnabled(rowVal)
                 }
 
         default:
