@@ -56,10 +56,29 @@ public class ConnectionInfo: Codable {
             Current.settingsStore.connectionInfo = self
         }
     }
+    public var useCloud: Bool = false {
+        didSet {
+            Current.settingsStore.connectionInfo = self
+            if self.useCloud {
+                if self.internalURL != nil && self.isOnInternalNetwork {
+                    self.activeURLType = .internal
+                } else {
+                    self.activeURLType = .remoteUI
+                }
+            } else {
+                if self.internalURL != nil && self.isOnInternalNetwork {
+                    self.activeURLType = .internal
+                } else {
+                    self.activeURLType = .external
+                }
+            }
+        }
+    }
 
     public var activeURLType: URLType = .external {
         didSet {
-            guard oldValue != self.activeURLType else { return }
+            guard oldValue != self.activeURLType else { print("No change", oldValue, self.activeURLType); return }
+            Current.settingsStore.connectionInfo = self
             var oldURL: String = "Unknown URL"
             switch oldValue {
             case .internal:
@@ -70,6 +89,9 @@ public class ConnectionInfo: Codable {
                 oldURL = self.externalURL?.absoluteString ?? oldURL
             }
             Current.Log.verbose("Updated URL from \(oldValue) (\(oldURL)) to \(activeURLType) \(self.activeURL)")
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connectioninfo.activeurltype_changed"),
+                                            object: nil,
+                                            userInfo: ["oldType": oldValue, "newType": activeURLType])
         }
     }
 
@@ -85,19 +107,35 @@ public class ConnectionInfo: Codable {
 
         if self.internalURL != nil && self.internalSSIDs != nil && self.isOnInternalNetwork {
             self.activeURLType = .internal
-        } else if self.externalURL != nil {
-            self.activeURLType = .external
-        } else if self.remoteUIURL != nil {
-            self.activeURLType = .remoteUI
+        } else {
+            if self.useCloud && self.remoteUIURL != nil {
+                self.activeURLType = .remoteUI
+            } else {
+                self.activeURLType = .external
+            }
         }
     }
 
-    public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible {
+    // https://stackoverflow.com/a/53237340/486182
+    required public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.externalURL = try container.decodeIfPresent(URL.self, forKey: .externalURL)
+        self.internalURL = try container.decodeIfPresent(URL.self, forKey: .internalURL)
+        self.remoteUIURL = try container.decodeIfPresent(URL.self, forKey: .remoteUIURL)
+        self.webhookID = try container.decode(String.self, forKey: .webhookID)
+        self.webhookSecret = try container.decodeIfPresent(String.self, forKey: .webhookSecret)
+        self.cloudhookURL = try container.decodeIfPresent(URL.self, forKey: .cloudhookURL)
+        self.internalSSIDs = try container.decodeIfPresent(Array<String>.self, forKey: .internalSSIDs)
+        self.activeURLType = try container.decode(URLType.self, forKey: .activeURLType)
+        self.useCloud = try container.decodeIfPresent(Bool.self, forKey: .useCloud) ?? false
+    }
+
+    public enum URLType: Int, Codable, CaseIterable, CustomStringConvertible, CustomDebugStringConvertible {
         case `internal`
         case remoteUI
         case external
 
-        public var description: String {
+        public var debugDescription: String {
             switch self {
             case .internal:
                 return "Internal URL"
@@ -107,15 +145,27 @@ public class ConnectionInfo: Codable {
                 return "External URL"
             }
         }
+
+        public var description: String {
+            switch self {
+            case .internal:
+                return L10n.Settings.ConnectionSection.InternalBaseUrl.title
+            case .remoteUI:
+                return L10n.Settings.ConnectionSection.RemoteUiUrl.title
+            case .external:
+                return L10n.Settings.ConnectionSection.ExternalBaseUrl.title
+            }
+        }
     }
 
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
     public var activeURL: URL {
+        print("Should return URL type", self.activeURLType.description)
         switch self.activeURLType {
         case .internal:
             if let url = self.internalURL {
                 guard self.isOnInternalNetwork else {
-                    if self.remoteUIURL != nil {
+                    if self.useCloud && self.remoteUIURL != nil {
                         self.activeURLType = .remoteUI
                     } else {
                         self.activeURLType = .external
@@ -123,6 +173,14 @@ public class ConnectionInfo: Codable {
                     return self.activeURL
                 }
                 return url
+            } else {
+                // No internal URL available, so fallback to an external URL
+                if self.useCloud && self.remoteUIURL != nil {
+                    self.activeURLType = .remoteUI
+                } else {
+                    self.activeURLType = .external
+                }
+                return self.activeURL
             }
         case .remoteUI:
             if let url = self.remoteUIURL {
@@ -131,6 +189,9 @@ public class ConnectionInfo: Codable {
                     return internalURL
                 }
                 return url
+            } else if self.externalURL != nil {
+                self.activeURLType = .external
+                return self.activeURL
             }
         case .external:
             if let url = self.externalURL {
@@ -139,10 +200,14 @@ public class ConnectionInfo: Codable {
                     return internalURL
                 }
                 return url
+            } else if self.useCloud, self.remoteUIURL != nil {
+                self.activeURLType = .remoteUI
+                return self.activeURL
             }
         }
 
-        let errMsg = "Unable to get \(self.activeURLType), even though its active!"
+        // swiftlint:disable:next line_length
+        let errMsg = "Unable to get \(self.activeURLType), even though its active! Internal URL: \(self.internalURL), External URL: \(self.externalURL), Remote UI URL: \(self.remoteUIURL)"
         Current.Log.error(errMsg)
 
         #if os(iOS)
@@ -186,36 +251,48 @@ public class ConnectionInfo: Codable {
     }
 
     public var webhookURL: URL {
-        var baseURL: URL = self.activeURL
-
-        if self.activeURLType == .internal {
-            baseURL = self.internalURL!
-        } else if let cloudURL = self.cloudhookURL {
+        if self.useCloud, let cloudURL = self.cloudhookURL {
             return cloudURL
         }
 
-        return baseURL.appendingPathComponent("api/webhook/\(self.webhookID)", isDirectory: false)
+        return self.activeURL.appendingPathComponent("api/webhook/\(self.webhookID)", isDirectory: false)
     }
 
     /// Updates the stored address for the given addressType.
+    // swiftlint:disable:next cyclomatic_complexity
     public func setAddress(_ address: URL?, _ addressType: URLType) {
-        guard let address = address else { return }
         switch addressType {
         case .internal:
             self.internalURL = address
-            if self.isOnInternalNetwork {
+            if self.internalURL == nil {
+                if self.useCloud && self.remoteUIURL != nil {
+                    self.activeURLType = .remoteUI
+                } else {
+                    self.activeURLType = .external
+                }
+            } else if self.internalURL != nil && self.isOnInternalNetwork {
                 self.activeURLType = .internal
             }
         case .external:
             self.externalURL = address
-            self.remoteUIURL = nil
-            if self.activeURLType != .internal {
+            if self.externalURL == nil {
+                if self.internalURL != nil && self.isOnInternalNetwork {
+                    self.activeURLType = .internal
+                } else if self.useCloud && self.remoteUIURL != nil {
+                    self.activeURLType = .remoteUI
+                }
+            } else if self.activeURLType != .internal {
                 self.activeURLType = .external
             }
         case .remoteUI:
             self.remoteUIURL = address
-            self.externalURL = nil
-            if self.activeURLType != .internal {
+            if self.remoteUIURL == nil {
+                if self.internalURL != nil && self.isOnInternalNetwork {
+                    self.activeURLType = .internal
+                } else if self.externalURL != nil {
+                    self.activeURLType = .external
+                }
+            } else if self.activeURLType != .internal && self.useCloud {
                 self.activeURLType = .remoteUI
             }
         }
@@ -330,7 +407,7 @@ public class ConnectionInfo: Codable {
             }
             return true
         } else if isInternalURLFailure {
-            if self.remoteUIURL != nil {
+            if self.useCloud && self.remoteUIURL != nil {
                 self.activeURLType = .remoteUI
             } else if self.externalURL != nil {
                 self.activeURLType = .external

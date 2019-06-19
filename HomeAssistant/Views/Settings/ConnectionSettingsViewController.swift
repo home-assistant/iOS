@@ -16,11 +16,16 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
 
     public var onDismissCallback: ((UIViewController) -> Void)?
 
-    // swiftlint:disable:next function_body_length
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.title = L10n.Settings.ConnectionSection.header
+
+        NotificationCenter.default.addObserver(self, selector: #selector(ActiveURLTypeChanged(_:)),
+                                               // swiftlint:disable:next line_length
+                                               name: NSNotification.Name(rawValue: "connectioninfo.activeurltype_changed"),
+                                               object: nil)
 
         form
             +++ Section(header: L10n.Settings.StatusSection.header, footer: "") {
@@ -48,11 +53,11 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 $0.value = Current.settingsStore.authenticatedUser?.Name
             }
 
-            <<< ButtonRow("logout") {
+            /* <<< ButtonRow("logout") {
                 $0.title = L10n.Settings.ConnectionSection.logOut
             }.cellUpdate { cell, _ in
                 cell.textLabel?.textColor = .red
-            }
+            } */
 
             +++ Section(L10n.Settings.ConnectionSection.details)
             <<< LabelRow("connectionPath") {
@@ -60,38 +65,8 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 $0.value = Current.settingsStore.connectionInfo?.activeURLType.description
             }
 
-            <<< URLRow("internalURL") {
-                $0.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
-                $0.value = Current.settingsStore.connectionInfo?.internalURL
-                $0.placeholder = L10n.Settings.ConnectionSection.InternalBaseUrl.placeholder
-                }.onCellHighlightChanged { (cell, row) in
-                    if !row.isHighlighted {
-                        guard let newURL = row.value else { return }
-
-                        if let host = newURL.host, host.contains("nabu.casa") {
-                            let alert = UIAlertController(title: L10n.errorLabel, message: L10n.Errors.noRemoteUiUrl,
-                                                          preferredStyle: .alert)
-                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-                            self.present(alert, animated: true, completion: nil)
-                            alert.popoverPresentationController?.sourceView = cell.contentView
-                            return
-                        }
-                        self.confirmURL(newURL).done { _ in
-                            Current.settingsStore.connectionInfo?.setAddress(newURL, .internal)
-                        }.catch { error in
-                            row.value = Current.settingsStore.connectionInfo?.internalURL
-                            row.updateCell()
-                            let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
-                                                          preferredStyle: .alert)
-                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-                            self.present(alert, animated: true, completion: nil)
-                            alert.popoverPresentationController?.sourceView = cell.contentView
-                        }
-                    }
-            }
-
-            <<< LabelRow("remoteUIURL") {
-                $0.title = L10n.Settings.ConnectionSection.RemoteUi.title
+            <<< LabelRow("cloudAvailable") {
+                $0.title = L10n.Settings.ConnectionSection.HomeAssistantCloud.title
                 $0.value = Current.settingsStore.connectionInfo?.remoteUIURL != nil ? "✔️" : "✖️"
                 $0.hidden = Condition(booleanLiteral: Current.settingsStore.connectionInfo?.remoteUIURL == nil)
             }.onCellSelection { cell, _ in
@@ -102,14 +77,88 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 alert.popoverPresentationController?.sourceView = cell.contentView
             }
 
+            <<< SwitchRow("useCloud") {
+                $0.title = "Connect via Cloud"
+                $0.value = Current.settingsStore.connectionInfo?.useCloud
+                $0.hidden = Condition(booleanLiteral: Current.settingsStore.connectionInfo?.remoteUIURL == nil)
+            }.onChange { row in
+                guard let value = row.value else { return }
+                if value == false {
+                    guard let externalURLRow = self.form.rowBy(tag: "externalURL") as? URLRow else { return }
+
+                    if externalURLRow.value == nil {
+                        row.value = true
+                        row.updateCell()
+
+                        let alert = UIAlertController(title: L10n.errorLabel,
+                                                      message: L10n.Settings.ConnectionSection.Errors.cantDisableCloud,
+                                                      preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                        alert.popoverPresentationController?.sourceView = row.cell.contentView
+                        return
+                    }
+                }
+                Current.settingsStore.connectionInfo?.useCloud = value
+            }
+
+            <<< URLRow("internalURL") {
+                $0.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
+                $0.value = Current.settingsStore.connectionInfo?.internalURL
+                $0.placeholder = L10n.Settings.ConnectionSection.InternalBaseUrl.placeholder
+            }.onCellHighlightChanged { (cell, row) in
+                if !row.isHighlighted {
+                    guard let newURL = row.value else {
+                        Current.settingsStore.connectionInfo?.setAddress(nil, .internal)
+                        return
+                    }
+
+                    if let host = newURL.host, host.contains("nabu.casa") {
+                        let alert = UIAlertController(title: L10n.errorLabel, message: L10n.Errors.noRemoteUiUrl,
+                                                      preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                        alert.popoverPresentationController?.sourceView = cell.contentView
+                        return
+                    }
+                    self.confirmURL(newURL).done { _ in
+                        Current.settingsStore.connectionInfo?.setAddress(newURL, .internal)
+                    }.catch { error in
+                        row.value = Current.settingsStore.connectionInfo?.internalURL
+                        row.updateCell()
+                        let alert = UIAlertController(title: L10n.errorLabel, message: error.localizedDescription,
+                                                      preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                        alert.popoverPresentationController?.sourceView = cell.contentView
+                    }
+                }
+            }
+
             <<< URLRow("externalURL") {
                 $0.title = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
                 $0.value = Current.settingsStore.connectionInfo?.externalURL
                 $0.placeholder = L10n.Settings.ConnectionSection.ExternalBaseUrl.placeholder
-                $0.hidden = Condition(booleanLiteral: Current.settingsStore.connectionInfo?.remoteUIURL != nil)
             }.onCellHighlightChanged { (cell, row) in
                 if !row.isHighlighted {
-                    guard let newURL = row.value else { return }
+                    guard let newURL = row.value else {
+
+                        if Current.settingsStore.connectionInfo?.remoteUIURL != nil {
+                            Current.settingsStore.connectionInfo?.setAddress(nil, .external)
+                            guard let useCloudRow = self.form.rowBy(tag: "useCloud") as? SwitchRow else { return }
+                            useCloudRow.value = true
+                            useCloudRow.updateCell()
+                        } else {
+                            let alert = UIAlertController(title: L10n.errorLabel,
+                                                          // swiftlint:disable:next line_length
+                                                          message: L10n.Settings.ConnectionSection.Errors.noCloudExternalUrlRequired,
+                                                          preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                            alert.popoverPresentationController?.sourceView = cell.contentView
+                        }
+                        return
+                    }
                     if let host = newURL.host, host.contains("nabu.casa") {
                         let alert = UIAlertController(title: L10n.errorLabel, message: L10n.Errors.noRemoteUiUrl,
                                                       preferredStyle: .alert)
@@ -211,5 +260,13 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                 }
             }
         }
+    }
+
+    @objc func ActiveURLTypeChanged(_ notification: Notification) {
+        guard let userInfo = notification.userInfo as? [String: ConnectionInfo.URLType],
+            let newType = userInfo["newType"],
+            let pathRow = self.form.rowBy(tag: "connectionPath") as? LabelRow else { return }
+        pathRow.value = newType.description
+        pathRow.updateCell()
     }
 }

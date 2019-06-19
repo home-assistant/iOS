@@ -50,7 +50,12 @@ public class SettingsStore {
                     return nil
             }
 
-            return try? JSONDecoder().decode(ConnectionInfo.self, from: unwrappedData)
+            do {
+                return try JSONDecoder().decode(ConnectionInfo.self, from: unwrappedData)
+            } catch let error {
+                Current.Log.error("Error when decoding Keychain ConnectionInfo: \(error)")
+            }
+            return nil
         }
         set {
             guard let info = newValue else {

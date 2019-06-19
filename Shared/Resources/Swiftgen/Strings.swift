@@ -968,6 +968,12 @@ internal enum L10n {
         /// Error enabling notifications
         internal static let title = L10n.tr("Localizable", "settings.connection_section.error_enabling_notifications.title")
       }
+      internal enum Errors {
+        /// External URL must be set to disable cloud
+        internal static let cantDisableCloud = L10n.tr("Localizable", "settings.connection_section.errors.cant_disable_cloud")
+        /// Cloud is not available, you can not remove external URL
+        internal static let noCloudExternalUrlRequired = L10n.tr("Localizable", "settings.connection_section.errors.no_cloud_external_url_required")
+      }
       internal enum ExternalBaseUrl {
         /// https://homeassistant.myhouse.com
         internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.external_base_url.placeholder")

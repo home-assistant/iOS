@@ -176,18 +176,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             return "[Non-HASS URL]\(url.path)"
         }
 
-        let urlText: String
-
-        switch urlType {
-        case .internal:
-            urlText = L10n.Settings.ConnectionSection.InternalBaseUrl.title
-        case .external:
-            urlText = L10n.Settings.ConnectionSection.ExternalBaseUrl.title
-        case .remoteUI:
-            urlText = L10n.Settings.ConnectionSection.RemoteUiUrl.title
-        }
-
-        return "[\(urlText)]\(url.path)"
+        return "[\(urlType.description)]\(url.path)"
     }
 
     private var currentToken: Promise<String> {

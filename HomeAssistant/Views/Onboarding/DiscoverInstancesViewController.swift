@@ -85,7 +85,7 @@ class DiscoverInstancesViewController: UIViewController {
     }
 
     @objc func HomeAssistantDiscovered(_ notification: Notification) {
-        if let userInfo = (notification as Notification).userInfo as? [String: Any] {
+        if let userInfo = notification.userInfo as? [String: Any] {
             guard let discoveryInfo = DiscoveredHomeAssistant(JSON: userInfo) else {
                 Current.Log.error("Unable to parse discovered HA Instance")
                 return
@@ -96,7 +96,7 @@ class DiscoverInstancesViewController: UIViewController {
     }
 
     @objc func HomeAssistantUndiscovered(_ notification: Notification) {
-        if let userInfo = (notification as Notification).userInfo, let name = userInfo["name"] as? String {
+        if let userInfo = notification.userInfo, let name = userInfo["name"] as? String {
             Current.Log.verbose("Remove discovered instance \(name)")
         }
     }
