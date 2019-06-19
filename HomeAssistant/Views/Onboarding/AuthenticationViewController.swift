@@ -38,7 +38,7 @@ class AuthenticationViewController: UIViewController {
             navVC.styleButton(self.goBackButton)
         }
 
-        guard let baseURL = self.instance.BaseURL else {
+        guard let instance = self.instance, let baseURL = instance.BaseURL else {
             let instanceDesc = String(describing: self.instance)
             let errMsg = "No base URL is set in discovery, this should not be possible! \(instanceDesc)"
             Current.Log.error(errMsg)

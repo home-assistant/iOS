@@ -100,7 +100,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
         urlObserver = self.webView.observe(\.url) { (webView, _) in
             if let currentURL = webView.url?.absoluteString.replacingOccurrences(of: "?external_auth=1", with: ""),
-                let cleanURL = URL(string: currentURL), cleanURL.scheme != nil {
+                let cleanURL = URL(string: currentURL), let scheme = cleanURL.scheme {
+                if !scheme.hasPrefix("http") {
+                    Current.Log.warning("Was going to provide invalid URL to NSUserActivity! \(currentURL)")
+                    return
+                }
                 self.userActivity = NSUserActivity(activityType: "\(Constants.BundleID).frontend")
                 self.userActivity?.isEligibleForHandoff = true
                 self.userActivity?.webpageURL = cleanURL
