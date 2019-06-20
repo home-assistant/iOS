@@ -97,11 +97,6 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant on Facebook";
 "about.github.title" = "GitHub";
 "about.github_issue_tracker.title" = "GitHub Issue Tracker";
-"about.donate.title" = "Donate";
-"about.donate.description" = "You can support the ongoing development of Home Assistant Companion via a in-app purchase or Patreon.";
-"about.donate.patreon" = "Support on Patreon";
-"about.donate.one_time_iap_section.title" = "One Time Donation";
-"about.donate.recurring_iap_section.title" = "Recurring Donation";
 "url_handler.error.title" = "Error";
 "url_handler.no_service.message" = "%@ is not a valid route";
 "url_handler.call_service.success.title" = "Called service";
@@ -648,8 +643,6 @@
 "settings.connection_section.remote_ui_available" = "Remote UI Available";
 "settings.connection_section.log_out" = "Log out";
 "errors.no_remote_ui_url" = "The app will automatically detect your Nabu Casa Remote UI, you can not manually enter it.";
-"settings.connection_section.errors.no_cloud_external_url_required" = "Cloud is not available, you can not remove external URL";
-"settings.connection_section.errors.cant_disable_cloud" = "External URL must be set to disable cloud";
 "settings.connection_section.cloudhook_url.title" = "Cloudhook URL";
 "settings.connection_section.home_assistant_cloud.title" = "Home Assistant Cloud";
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
@@ -665,3 +658,10 @@
 "off_label" = "Off";
 "location_update_error_notification.title" = "Error sending %@ location update to Home Assistant.";
 "settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
+"settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud is not set up, you can not remove external URL";
+"settings.connection_section.errors.cant_disable_cloud" = "External URL must be set to disable cloud";
+"about.donate.title" = "Donate";
+"about.donate.description" = "You can support the ongoing development of Home Assistant Companion via an in-app purchase or backing on Patreon.";
+"about.donate.patreon" = "Support on Patreon";
+"about.donate.one_time_iap_section.title" = "One Time Donation";
+"about.donate.recurring_iap_section.title" = "Recurring Donation";

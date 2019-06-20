@@ -56,7 +56,7 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "about.documentation.title")
     }
     internal enum Donate {
-      /// You can support the ongoing development of Home Assistant Companion via a in-app purchase or Patreon.
+      /// You can support the ongoing development of Home Assistant Companion via an in-app purchase or backing on Patreon.
       internal static let description = L10n.tr("Localizable", "about.donate.description")
       /// Support on Patreon
       internal static let patreon = L10n.tr("Localizable", "about.donate.patreon")
@@ -987,7 +987,7 @@ internal enum L10n {
       internal enum Errors {
         /// External URL must be set to disable cloud
         internal static let cantDisableCloud = L10n.tr("Localizable", "settings.connection_section.errors.cant_disable_cloud")
-        /// Cloud is not available, you can not remove external URL
+        /// Home Assistant Cloud is not set up, you can not remove external URL
         internal static let noCloudExternalUrlRequired = L10n.tr("Localizable", "settings.connection_section.errors.no_cloud_external_url_required")
       }
       internal enum ExternalBaseUrl {
