@@ -16,6 +16,7 @@ import SwiftMessages
 import Shared
 import AVFoundation
 import AVKit
+import WhatsNewKit
 
 // swiftlint:disable:next type_body_length
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
@@ -47,6 +48,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.becomeFirstResponder()
+        self.showWhatsNew()
         // self.remotePlayer.delegate = self
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(WebViewController.loadActiveURLIfNeeded),
@@ -400,6 +402,126 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         }
 
         return nil
+    }
+
+    // swiftlint:disable:next function_body_length
+    func showWhatsNew() {
+        let iconSize = CGSize(width: 100, height: 100)
+        let iconColor = Constants.blue
+        let major = WhatsNew.Version.current().major
+        let minor = WhatsNew.Version.current().minor
+        let whatsNew = WhatsNew(
+            title: L10n.WhatsNew.title("\(major).\(minor)"),
+            items: [
+                WhatsNew.Item(
+                    title: L10n.WhatsNew.TwoDotZero.Items.Donations.title,
+                    subtitle: L10n.WhatsNew.TwoDotZero.Items.Donations.subtitle,
+                    image: MaterialDesignIcons.currencyUsdIcon.image(ofSize: iconSize, color: iconColor)
+                ),
+                WhatsNew.Item(
+                    title: L10n.WhatsNew.TwoDotZero.Items.HomeAssistantCloudSupport.title,
+                    subtitle: L10n.WhatsNew.TwoDotZero.Items.HomeAssistantCloudSupport.subtitle,
+                    image: MaterialDesignIcons.cloudIcon.image(ofSize: iconSize, color: iconColor)
+                ),
+                WhatsNew.Item(
+                    title: L10n.WhatsNew.TwoDotZero.Items.ImprovedIntegration.title,
+                    subtitle: L10n.WhatsNew.TwoDotZero.Items.ImprovedIntegration.subtitle,
+                    image: MaterialDesignIcons.linkVariantIcon.image(ofSize: iconSize, color: iconColor)
+                ),
+                WhatsNew.Item(
+                    title: L10n.WhatsNew.TwoDotZero.Items.CriticalAlerts.title,
+                    subtitle: L10n.WhatsNew.TwoDotZero.Items.CriticalAlerts.subtitle,
+                    image: MaterialDesignIcons.alertIcon.image(ofSize: iconSize, color: iconColor)
+                ),
+                WhatsNew.Item(
+                    title: L10n.WhatsNew.TwoDotZero.Items.InAppNotificationCategoryEditor.title,
+                    subtitle: L10n.WhatsNew.TwoDotZero.Items.InAppNotificationCategoryEditor.subtitle,
+                    image: MaterialDesignIcons.bellRingIcon.image(ofSize: iconSize, color: iconColor)
+                ),
+                WhatsNew.Item(
+                    title: L10n.WhatsNew.TwoDotZero.Items.NotificationSounds.title,
+                    subtitle: L10n.WhatsNew.TwoDotZero.Items.NotificationSounds.subtitle,
+                    image: MaterialDesignIcons.volumeHighIcon.image(ofSize: iconSize, color: iconColor)
+                ),
+                WhatsNew.Item(
+                    title: L10n.WhatsNew.TwoDotZero.Items.WebViewCleanup.title,
+                    subtitle: L10n.WhatsNew.TwoDotZero.Items.WebViewCleanup.subtitle,
+                    image: MaterialDesignIcons.sprayBottleIcon.image(ofSize: iconSize, color: iconColor)
+                ),
+                WhatsNew.Item(
+                    title: L10n.WhatsNew.TwoDotZero.Items.TodayWidget.title,
+                    subtitle: L10n.WhatsNew.TwoDotZero.Items.TodayWidget.subtitle,
+                    image: MaterialDesignIcons.widgetsIcon.image(ofSize: iconSize, color: iconColor)
+                ),
+                WhatsNew.Item(
+                    title: L10n.WhatsNew.TwoDotZero.Items.MoreData.title,
+                    subtitle: L10n.WhatsNew.TwoDotZero.Items.MoreData.subtitle,
+                    image: MaterialDesignIcons.databaseIcon.image(ofSize: iconSize, color: iconColor)
+                ),
+                WhatsNew.Item(
+                    title: L10n.WhatsNew.TwoDotZero.Items.Themes.title,
+                    subtitle: L10n.WhatsNew.TwoDotZero.Items.Themes.subtitle,
+                    image: MaterialDesignIcons.formatPaintIcon.image(ofSize: iconSize, color: iconColor)
+                ),
+                WhatsNew.Item(
+                    title: L10n.WhatsNew.TwoDotZero.Items.AppIcons.title,
+                    subtitle: L10n.WhatsNew.TwoDotZero.Items.AppIcons.subtitle,
+                    image: MaterialDesignIcons.imageFrameIcon.image(ofSize: iconSize, color: iconColor)
+                ),
+                WhatsNew.Item(
+                    title: L10n.WhatsNew.TwoDotZero.Items.AndSoMuchMore.title,
+                    subtitle: L10n.WhatsNew.TwoDotZero.Items.AndSoMuchMore.subtitle,
+                    image: MaterialDesignIcons.starCircleOutlineIcon.image(ofSize: iconSize, color: iconColor)
+                )
+            ]
+        )
+
+        var config = WhatsNewViewController.Configuration()
+        config.apply(animation: .fade)
+
+        config.titleView.secondaryColor = .init(
+            startIndex: 13,
+            length: 29,
+            color: Constants.blue
+        )
+
+        var detailButton = WhatsNewViewController.DetailButton(
+            title: L10n.WhatsNew.Buttons.ReadMore.title,
+            action: .website(url: "https://home-assistant.io/ios/whats-new")
+        )
+
+        detailButton.titleColor = Constants.blue
+        detailButton.hapticFeedback = .impact(.medium)
+
+        config.detailButton = detailButton
+
+        let completionButton = WhatsNewViewController.CompletionButton(
+            title: L10n.WhatsNew.Buttons.Completion.title,
+            action: .custom(action: { [weak self] whatsNewVC in
+                let alert = UIAlertController(title: L10n.WhatsNew.TwoDotZero.ThankYou.title,
+                                              message: L10n.WhatsNew.TwoDotZero.ThankYou.message,
+                                              preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: L10n.WhatsNew.TwoDotZero.ThankYou.okButton, style: .default,
+                                              handler: { _ in
+                                                self?.dismiss(animated: true, completion: nil)
+                }))
+                whatsNewVC.present(alert, animated: true, completion: nil)
+                alert.popoverPresentationController?.sourceView = whatsNewVC.view
+            })
+        )
+
+        config.completionButton = completionButton
+
+        config.completionButton.backgroundColor = Constants.blue
+        config.completionButton.hapticFeedback = .impact(.medium)
+
+        let versionStore = KeyValueWhatsNewVersionStore(keyValueable: prefs)
+
+        guard let whatsNewViewController = WhatsNewViewController(whatsNew: whatsNew,
+                                                                  configuration: config,
+                                                                  versionStore: versionStore) else { return }
+
+        self.present(whatsNewViewController, animated: true)
     }
 }
 

@@ -2323,6 +2323,107 @@ internal enum L10n {
       }
     }
   }
+
+  internal enum WhatsNew {
+    /// What's New in\nHome Assistant Companion %@
+    internal static func title(_ p1: String) -> String {
+      return L10n.tr("Localizable", "whats_new.title", p1)
+    }
+    internal enum TwoDotZero {
+      internal enum Items {
+        internal enum AndSoMuchMore {
+          /// 2.0 took over 300 hours to create and added almost 35,000 lines of new code, so only so many features could be presented here. There's plenty more major improvements under the hood!
+          internal static let subtitle = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.and_so_much_more.subtitle")
+          /// And so much more
+          internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.and_so_much_more.title")
+        }
+        internal enum AppIcons {
+          /// A fresh new app icon as well as alternatives you can choose from. You can also now trigger automations by 3D Touching the app icon.
+          internal static let subtitle = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.app_icons.subtitle")
+          /// App Icons
+          internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.app_icons.title")
+        }
+        internal enum CriticalAlerts {
+          /// When you send a notification as a Critical Alert, it will bypass Do Not Disturb and volume settings.
+          internal static let subtitle = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.critical_alerts.subtitle")
+          /// Critical Alerts
+          internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.critical_alerts.title")
+        }
+        internal enum Donations {
+          /// After being asked to accept donations for years, I finally am! Tap Donate on the About screen for more info.
+          internal static let subtitle = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.donations.subtitle")
+          /// Donations
+          internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.donations.title")
+        }
+        internal enum HomeAssistantCloudSupport {
+          /// Native support for Home Assistant Cloud.
+          internal static let subtitle = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.subtitle")
+          /// Home Assistant Cloud Support
+          internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title")
+        }
+        internal enum ImprovedIntegration {
+          /// Thanks to the new mobile_app component, Home Assistant Companion is a better... companion than ever before!
+          internal static let subtitle = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.improved_integration.subtitle")
+          /// Improved integration
+          internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.improved_integration.title")
+        }
+        internal enum InAppNotificationCategoryEditor {
+          /// Forget about YAML, edit categories in the app and see results in real time.
+          internal static let subtitle = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.subtitle")
+          /// In App Notification Category Editor
+          internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title")
+        }
+        internal enum MoreData {
+          /// Newly added sensors for steps, distance traveled, pace, connection information and more.
+          internal static let subtitle = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.more_data.subtitle")
+          /// More Data
+          internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.more_data.title")
+        }
+        internal enum NotificationSounds {
+          /// Use system sounds for your notifications and manage sounds entirely in app. No more iTunes!
+          internal static let subtitle = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.notification_sounds.subtitle")
+          /// Notification Sounds
+          internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.notification_sounds.title")
+        }
+        internal enum Themes {
+          /// The app now matches your active frontend theme, in real time!
+          internal static let subtitle = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.themes.subtitle")
+          /// Themes
+          internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.themes.title")
+        }
+        internal enum TodayWidget {
+          /// Allow running automations in Home Assistant from the Today View.
+          internal static let subtitle = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.today_widget.subtitle")
+          /// Today Widget
+          internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.today_widget.title")
+        }
+        internal enum WebViewCleanup {
+          /// No more toolbars, the app is now tightly integrated with the frontend. Settings can be found in the Sidebar and pull to refresh has been added.
+          internal static let subtitle = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.web_view_cleanup.subtitle")
+          /// Web View Cleanup
+          internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.items.web_view_cleanup.title")
+        }
+      }
+      internal enum ThankYou {
+        /// Thank you.\n\nThank you for using Home Assistant Companion.\n\nThank you for using Home Assistant.\n\nThank you for putting up with me over the last 3 years of work.\n\nThank you for putting up with me for the last 10 months of development of 2.0.\n\nThank you for filing bug reports on GitHub.\n\nThank you for helping out fellow users when they needed it and I wasn't available.\n\nThank you for sending me emails at 2 AM describing in extreme detail how this button is 2 pixels off.\n\nThank you for being you and supporting me.\n\nYour consistently positive feedback and appreciation is what keeps me going.\n\nI really hope you like Home Assistant Companion 2.0.\n\nThank you.\n\n--Robbie
+        internal static let message = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.thank_you.message")
+        /// You're welcome!
+        internal static let okButton = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.thank_you.ok_button")
+        /// One more thing...
+        internal static let title = L10n.tr("Localizable", "whats_new.Two_Dot_Zero.thank_you.title")
+      }
+    }
+    internal enum Buttons {
+      internal enum Completion {
+        /// Let's Go
+        internal static let title = L10n.tr("Localizable", "whats_new.buttons.completion.title")
+      }
+      internal enum ReadMore {
+        /// Read More
+        internal static let title = L10n.tr("Localizable", "whats_new.buttons.read_more.title")
+      }
+    }
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

@@ -62,6 +62,7 @@ target 'HomeAssistant' do
     pod 'SwiftMessages', :git => 'https://github.com/SwiftKickMobile/SwiftMessages.git', :branch => 'master'
     pod 'SwiftyStoreKit'
     pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
+    pod 'WhatsNewKit'
     pod 'ZIPFoundation', '~> 0.9'
 
     target 'HomeAssistantTests' do
