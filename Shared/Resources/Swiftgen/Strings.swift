@@ -55,6 +55,22 @@ internal enum L10n {
       /// Documentation
       internal static let title = L10n.tr("Localizable", "about.documentation.title")
     }
+    internal enum Donate {
+      /// You can support the ongoing development of Home Assistant Companion via a in-app purchase or Patreon.
+      internal static let description = L10n.tr("Localizable", "about.donate.description")
+      /// Support on Patreon
+      internal static let patreon = L10n.tr("Localizable", "about.donate.patreon")
+      /// Donate
+      internal static let title = L10n.tr("Localizable", "about.donate.title")
+      internal enum OneTimeIapSection {
+        /// One Time Donation
+        internal static let title = L10n.tr("Localizable", "about.donate.one_time_iap_section.title")
+      }
+      internal enum RecurringIapSection {
+        /// Recurring Donation
+        internal static let title = L10n.tr("Localizable", "about.donate.recurring_iap_section.title")
+      }
+    }
     internal enum EasterEgg {
       /// i love you
       internal static let message = L10n.tr("Localizable", "about.easter_egg.message")

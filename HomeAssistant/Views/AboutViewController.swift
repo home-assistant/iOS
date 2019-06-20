@@ -56,6 +56,13 @@ class AboutViewController: FormViewController {
             }
 
             <<< ButtonRow {
+                $0.title = L10n.About.Donate.title
+                $0.presentationMode = .show(controllerProvider: .callback {
+                    return DonateViewController()
+                }, onDismiss: nil)
+            }
+
+            <<< ButtonRow {
                     $0.title = L10n.About.Beta.title
                     $0.disabled = Condition(booleanLiteral: Current.appConfiguration == .Beta)
                 }.onCellSelection { _, _  in

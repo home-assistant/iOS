@@ -97,6 +97,11 @@
 "about.home_assistant_on_facebook.title" = "Home Assistant on Facebook";
 "about.github.title" = "GitHub";
 "about.github_issue_tracker.title" = "GitHub Issue Tracker";
+"about.donate.title" = "Donate";
+"about.donate.description" = "You can support the ongoing development of Home Assistant Companion via a in-app purchase or Patreon.";
+"about.donate.patreon" = "Support on Patreon";
+"about.donate.one_time_iap_section.title" = "One Time Donation";
+"about.donate.recurring_iap_section.title" = "Recurring Donation";
 "url_handler.error.title" = "Error";
 "url_handler.no_service.message" = "%@ is not a valid route";
 "url_handler.call_service.success.title" = "Called service";

@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '10.0'
+platform :ios, '10.3'
 # Uncomment this line if you're using Swift
 use_frameworks!
 
@@ -56,9 +56,11 @@ target 'HomeAssistant' do
     pod 'MaterialComponents/Buttons'
     pod 'MaterialComponents/Buttons+ButtonThemer'
     pod 'MBProgressHUD', '~> 1.1.0'
+    pod 'SwiftConfettiView'
     pod 'SwiftGen', '~> 6.1.0'
     pod 'SwiftLint', '~> 0.31.0'
     pod 'SwiftMessages', :git => 'https://github.com/SwiftKickMobile/SwiftMessages.git', :branch => 'master'
+    pod 'SwiftyStoreKit'
     pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
     pod 'ZIPFoundation', '~> 0.9'
 

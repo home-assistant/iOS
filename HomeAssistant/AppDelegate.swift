@@ -22,6 +22,7 @@ import Shared
 import UIKit
 import UserNotifications
 import Crashlytics
+import SwiftyStoreKit
 
 let keychain = Constants.Keychain
 
@@ -48,6 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UNUserNotificationCenter.current().delegate = self
 
         self.setupFirebase()
+        self.setupInAppPurchase()
 
         self.configureLokalise()
 
@@ -728,6 +730,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.setUserProperty = { (value: String?, name: String) -> Void in
             Current.Log.verbose("Setting user property \(name) to \(value)")
             Analytics.setUserProperty(value, forName: name)
+        }
+    }
+
+    func setupInAppPurchase() {
+        SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
+            for purchase in purchases {
+                switch purchase.transaction.transactionState {
+                case .purchased, .restored:
+                    if purchase.needsFinishTransaction {
+                        // Deliver content from server, then:
+                        SwiftyStoreKit.finishTransaction(purchase.transaction)
+                    }
+                // Unlock content
+                case .failed, .purchasing, .deferred:
+                    break // do nothing
+                @unknown default:
+                    break
+                }
+            }
         }
     }
 }

@@ -146,6 +146,175 @@ platform :ios do
     clean_build_artifacts
   end
 
+  desc "Create in-app purchases"
+  lane :create_iap do
+    require "spaceship"
+    Spaceship::Tunes.login
+    app = Spaceship::Tunes::Application.find(bundle_id("dev"))
+    app.in_app_purchases.create!(
+      type: Spaceship::Tunes::IAPType::NON_CONSUMABLE,
+      versions: {
+        "en-US" => {
+          name: "Massive Donation",
+          description: "A massive donation to help ongoing dev"
+        }
+      },
+      reference_name: "Massive",
+      product_id: bundle_id("dev.Massive"),
+      cleared_for_sale: true,
+      review_notes: "This is for use in the tip jar in the app.",
+      pricing_intervals:
+        [
+          {
+            country: "WW",
+            begin_date: nil,
+            end_date: nil,
+            tier: 20
+          }
+        ]
+    )
+    app.in_app_purchases.create!(
+      type: Spaceship::Tunes::IAPType::NON_CONSUMABLE,
+      versions: {
+        "en-US" => {
+          name: "Huge Donation",
+          description: "A huge donation to help ongoing dev"
+        }
+      },
+      reference_name: "Huge",
+      product_id: bundle_id("dev.Huge"),
+      cleared_for_sale: true,
+      review_notes: "This is for use in the tip jar in the app.",
+      pricing_intervals:
+        [
+          {
+            country: "WW",
+            begin_date: nil,
+            end_date: nil,
+            tier: 10
+          }
+        ]
+    )
+    app.in_app_purchases.create!(
+      type: Spaceship::Tunes::IAPType::NON_CONSUMABLE,
+      versions: {
+        "en-US" => {
+          name: "Large Donation",
+          description: "A large donation to help ongoing dev"
+        }
+      },
+      reference_name: "Large",
+      product_id: bundle_id("dev.Large"),
+      cleared_for_sale: true,
+      review_notes: "This is for use in the tip jar in the app.",
+      pricing_intervals:
+        [
+          {
+            country: "WW",
+            begin_date: nil,
+            end_date: nil,
+            tier: 5
+          }
+        ]
+    )
+    app.in_app_purchases.create!(
+      type: Spaceship::Tunes::IAPType::NON_CONSUMABLE,
+      versions: {
+        "en-US" => {
+          name: "Medium Donation",
+          description: "A medium donation to help ongoing dev"
+        }
+      },
+      reference_name: "Medium",
+      product_id: bundle_id("dev.Medium"),
+      cleared_for_sale: true,
+      review_notes: "This is for use in the tip jar in the app.",
+      pricing_intervals:
+        [
+          {
+            country: "WW",
+            begin_date: nil,
+            end_date: nil,
+            tier: 2
+          }
+        ]
+    )
+    app.in_app_purchases.create!(
+      type: Spaceship::Tunes::IAPType::NON_CONSUMABLE,
+      versions: {
+        "en-US" => {
+          name: "Small Donation",
+          description: "A small donation to help ongoing dev"
+        }
+      },
+      reference_name: "Small",
+      product_id: bundle_id("dev.Small"),
+      cleared_for_sale: true,
+      review_notes: "This is for use in the tip jar in the app.",
+      pricing_intervals:
+        [
+          {
+            country: "WW",
+            begin_date: nil,
+            end_date: nil,
+            tier: 1
+          }
+        ]
+    )
+    app.in_app_purchases.create!(
+      type: Spaceship::Tunes::IAPType::RECURRING,
+      versions: {
+        "en-US" => {
+          name: "Monthly Donation",
+          description: "A monthly donation to fund ongoing dev."
+        }
+      },
+      reference_name: "Monthly",
+      product_id: bundle_id("dev.Monthly"),
+      cleared_for_sale: true,
+      review_notes: "This is for use in the tip jar in the app.",
+      subscription_price_target: {
+        currency: "USD",
+        tier: 1
+      },
+      pricing_intervals:
+        [
+          {
+            country: "WW",
+            begin_date: nil,
+            end_date: nil,
+            tier: 1
+          }
+        ]
+    )
+    app.in_app_purchases.create!(
+      type: Spaceship::Tunes::IAPType::RECURRING,
+      versions: {
+        "en-US" => {
+          name: "Yearly Donation",
+          description: "A yearly donation to fund ongoing dev."
+        }
+      },
+      reference_name: "Yearly",
+      product_id: bundle_id("dev.Yearly"),
+      cleared_for_sale: true,
+      review_notes: "This is for use in the tip jar in the app.",
+      subscription_price_target: {
+        currency: "USD",
+        tier: 5
+      },
+      pricing_intervals:
+        [
+          {
+            country: "WW",
+            begin_date: nil,
+            end_date: nil,
+            tier: 5
+          }
+        ]
+    )
+  end
+
   desc "Fetches the push notification certificates and saves them as p12 files in push_certs/, perfect for direct upload to AWS SNS. p12 password is password."
   lane :push_certs do
     pem(app_identifier: bundle_id(), output_path: "push_certs/", generate_p12: true, team_id: ENV["HOMEASSISTANT_TEAM_ID"], username: ENV["HOMEASSISTANT_APPLE_ID"], p12_password: "password")
