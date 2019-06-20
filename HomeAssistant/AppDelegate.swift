@@ -36,10 +36,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private(set) var regionManager: RegionManager!
 
-    override init() {
-        super.init()
-        UIFont.overrideInitialize()
-    }
+//    override init() {
+//        super.init()
+//        UIFont.overrideInitialize()
+//    }
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
