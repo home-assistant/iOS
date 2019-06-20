@@ -665,7 +665,8 @@
 "about.donate.patreon" = "Support on Patreon";
 "about.donate.one_time_iap_section.title" = "One Time Donation";
 "about.donate.recurring_iap_section.title" = "Recurring Donation";
-"whats_new.title" = "What's New in\nHome Assistant Companion %@";
+"whats_new.title" = "What's New in\
+Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Read More";
 "whats_new.buttons.completion.title" = "Let's Go";
 "whats_new.Two_Dot_Zero.thank_you.title" = "One more thing...";
