@@ -17,7 +17,7 @@
 	<true/>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)$(BUNDLE_ID_PREFIX).HomeAssistant</string>
+		<string>$(BUNDLE_ID_PREFIX).HomeAssistant</string>
 	</array>
 	<key>com.apple.developer.siri</key>
 	<true/>
