@@ -28,6 +28,16 @@ class SettingsViewController: FormViewController {
         super.viewDidLoad()
         self.becomeFirstResponder()
 
+        ButtonRow.defaultCellSetup = { cell, row in
+            cell.accessibilityIdentifier = row.tag
+            cell.accessibilityLabel = row.title
+        }
+
+        LabelRow.defaultCellSetup = { cell, row in
+            cell.accessibilityIdentifier = row.tag
+            cell.accessibilityLabel = row.title
+        }
+
         let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
                                           style: .plain, target: self,
                                           action: #selector(SettingsViewController.openAbout(_:)))
@@ -325,12 +335,12 @@ class SettingsViewController: FormViewController {
 
             alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
         }
-        <<< ButtonRow {
+        <<< ButtonRow("camera_notification_test") {
             $0.title = L10n.Settings.Developer.CameraNotification.title
         }.onCellSelection { _, _ in
             self.showCameraContentExtension()
         }
-        <<< ButtonRow {
+        <<< ButtonRow("map_notification_test") {
             $0.title = L10n.Settings.Developer.MapNotification.title
         }.onCellSelection { _, _ in
             self.showMapContentExtension()
@@ -391,8 +401,35 @@ class SettingsViewController: FormViewController {
         let content = UNMutableNotificationContent()
         content.body = L10n.Settings.Developer.MapNotification.Notification.body
         content.sound = .default
-        content.userInfo = ["homeassistant": ["latitude": "40.785091", "longitude": "-73.968285",
-                                              "second_latitude": "40.758896", "second_longitude": "-73.985130"]]
+
+        var firstPinLatitude = "40.785091"
+        var firstPinLongitude = "-73.968285"
+
+        if Current.appConfiguration == .FastlaneSnapshot,
+            let lat = UserDefaults.standard.string(forKey: "mapPin1Latitude"),
+            let lon = UserDefaults.standard.string(forKey: "mapPin1Longitude") {
+            firstPinLatitude = lat
+            firstPinLongitude = lon
+        }
+
+        var secondPinLatitude = "40.758896"
+        var secondPinLongitude = "-73.985130"
+
+        if Current.appConfiguration == .FastlaneSnapshot,
+            let lat = UserDefaults.standard.string(forKey: "mapPin2Latitude"),
+            let lon = UserDefaults.standard.string(forKey: "mapPin2Longitude") {
+            secondPinLatitude = lat
+            secondPinLongitude = lon
+        }
+
+        content.userInfo = [
+            "homeassistant": [
+                "latitude": firstPinLatitude,
+                "longitude": firstPinLongitude,
+                "second_latitude": secondPinLatitude,
+                "second_longitude": secondPinLongitude
+            ]
+        ]
         content.categoryIdentifier = "map"
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
@@ -406,7 +443,15 @@ class SettingsViewController: FormViewController {
         let content = UNMutableNotificationContent()
         content.body = L10n.Settings.Developer.CameraNotification.Notification.body
         content.sound = .default
-        content.userInfo = ["entity_id": "camera.vstarcamera_one"]
+
+        var entityID = "camera.amcrest_camera"
+
+        if Current.appConfiguration == .FastlaneSnapshot,
+            let snapshotEntityID = UserDefaults.standard.string(forKey: "cameraEntityID") {
+            entityID = snapshotEntityID
+        }
+
+        content.userInfo = ["entity_id": entityID]
         content.categoryIdentifier = "camera"
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)

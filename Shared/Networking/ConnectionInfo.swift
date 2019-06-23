@@ -160,7 +160,6 @@ public class ConnectionInfo: Codable {
 
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
     public var activeURL: URL {
-        print("Should return URL type", self.activeURLType.description)
         switch self.activeURLType {
         case .internal:
             if let url = self.internalURL {
@@ -448,4 +447,5 @@ public class ConnectionInfo: Codable {
 
         return nil
     }
+// swiftlint:disable:next file_length
 }

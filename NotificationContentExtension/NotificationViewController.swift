@@ -34,6 +34,8 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     var controller: NotificationCategory?
 
     func didReceive(_ notification: UNNotification) {
+        self.view.accessibilityIdentifier = "notification_view"
+
         let catID = notification.request.content.categoryIdentifier.lowercased()
         if let category = NotificationCategories(rawValue: catID) {
             Current.Log.verbose("Received a \(category) notif with userInfo \(notification.request.content.userInfo)")

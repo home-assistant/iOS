@@ -41,6 +41,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         // #ff9800 orange
         button.backgroundColor = UIColor(red: 1.00, green: 0.60, blue: 0.00, alpha: 1.0)
         button.translatesAutoresizingMaskIntoConstraints = false
+        if Current.appConfiguration == .FastlaneSnapshot {
+            button.alpha = 0
+        }
         return button
     }()
 
@@ -93,6 +96,21 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
         userContentController.addUserScript(WKUserScript(source: wsBridgeJS, injectionTime: .atDocumentEnd,
                                                          forMainFrameOnly: false))
+
+        if Current.appConfiguration == .FastlaneSnapshot {
+            let hideDemoCardScript = WKUserScript(source: "localStorage.setItem('hide_demo_card', '1');",
+                                                  injectionTime: .atDocumentStart,
+                                                  forMainFrameOnly: false)
+            userContentController.addUserScript(hideDemoCardScript)
+
+            if let langCode = Locale.current.languageCode {
+                // swiftlint:disable:next line_length
+                let setLanguageScript = WKUserScript(source: "localStorage.setItem('selectedLanguage', '\"\(langCode)\"');",
+                                                     injectionTime: .atDocumentStart,
+                                                     forMainFrameOnly: false)
+                userContentController.addUserScript(setLanguageScript)
+            }
+        }
 
         config.userContentController = userContentController
 
@@ -406,6 +424,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     // swiftlint:disable:next function_body_length
     func showWhatsNew() {
+        if Current.appConfiguration == .FastlaneSnapshot { return }
         let iconSize = CGSize(width: 100, height: 100)
         let iconColor = Constants.blue
         let major = WhatsNew.Version.current().major
@@ -564,6 +583,7 @@ extension WebViewController: WKScriptMessageHandler {
                 tokenManager.authDictionaryForWebView.done { dictionary in
                     let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
                     if let jsonString = String(data: jsonData!, encoding: .utf8) {
+                        // Current.Log.verbose("Responding to getExternalAuth with: \(callbackName)(true, \(jsonString))")
                         let script = "\(callbackName)(true, \(jsonString))"
                         self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in
                             if let error = error {
@@ -768,7 +788,10 @@ extension WebViewController: UIScrollViewDelegate {
 
 extension ConnectionInfo {
     func webviewURL() -> URL? {
-        guard var components = URLComponents(url: self.activeURL, resolvingAgainstBaseURL: false) else {
+        if Current.appConfiguration == .FastlaneSnapshot, UserDefaults.standard.object(forKey: "useDemo") != nil {
+            return URL(string: "https://demo.home-assistant.io")!
+        }
+        guard var components = URLComponents(url: self.activeURL, resolvingAgainstBaseURL: true) else {
             return nil
         }
 

@@ -47,6 +47,7 @@ class CameraViewController: UIView, NotificationCategory {
         let imageView = UIImageView()
         imageView.frame = vc.view.frame
         imageView.accessibilityIdentifier = "camera_notification_imageview"
+        // imageView.accessibilityLabel = "camera_notification_imageview"
         imageView.contentMode = .redraw
 
         var frameCount = 0

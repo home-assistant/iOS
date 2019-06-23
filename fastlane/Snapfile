@@ -2,13 +2,39 @@
 
 # A list of devices you want to take the screenshots from
 devices([
+  "iPhone 5s",
+  "iPhone 6",
+  "iPhone 6 Plus",
+  "iPhone 6s",
+  "iPhone 6s Plus",
+  "iPad Air",
+  "iPad Air 2",
+  "iPad Pro",
+  "iPhone 5s",
+  "iPhone 6",
+  "iPhone 6 Plus",
+  "iPhone 6s",
+  "iPhone 6s Plus",
+  "iPhone 7",
+  "iPhone 7 Plus",
   "iPhone 8",
   "iPhone 8 Plus",
   "iPhone SE",
   "iPhone X",
-  "iPhone XS Max",
+  "iPhone Xs",
+  "iPhone Xs Max",
+  "iPhone Xʀ",
+  "iPad Air",
+  "iPad Air 2",
+  "iPad Pro (9.7-inch)",
   "iPad Pro (12.9-inch)",
-  "iPad Pro (9.7-inch)"
+  "iPad (5th generation)",
+  "iPad Pro (12.9-inch) (2nd generation)",
+  "iPad Pro (10.5-inch)",
+  "iPad (6th generation)",
+  "iPad Pro (11-inch)",
+  "iPad Pro (12.9-inch) (3rd generation)",
+  "iPad Air (3rd generation)"
 ])
 
 languages([
@@ -16,13 +42,19 @@ languages([
   "en-US",
   "es-ES",
   "es-MX",
+  "es",
+  "fi",
+  "fr",
   "it",
-  "nl-NL",
+  "nb",
+  "nl",
+  "ru",
+  "sv",
   "zh-Hans",
-  "zh-Hant",
+  "zh-Hant"
 ])
 
-erase_simulator(true)
+# erase_simulator(true)
 
 # The name of the scheme which contains the UI Tests
 scheme("HomeAssistantUITests")
@@ -31,10 +63,14 @@ scheme("HomeAssistantUITests")
 # output_directory("./screenshots")
 
 # remove the '#' to clear all previously generated screenshots before creating new ones
-# clear_previous_screenshots(true)
+clear_previous_screenshots(true)
 
 # Arguments to pass to the app on launch. See https://docs.fastlane.tools/actions/snapshot/#launch-arguments
-# launch_arguments(["-favColor red"])
+base_args = "-useDemo true -url #{ENV["HOMEASSISTANT_SNAPSHOT_URL"]} -token #{ENV["HOMEASSISTANT_SNAPSHOT_TOKEN"]} -webhookID #{ENV["HOMEASSISTANT_SNAPSHOT_WEBHOOK_ID"]} -webhookSecret #{ENV["HOMEASSISTANT_SNAPSHOT_WEBHOOK_SECRET"]} -cameraEntityID camera.amcrest_camera"
+launch_arguments([
+  # NYC
+  "#{base_args} -mapPin1Latitude 40.785091 -mapPin1Longitude -73.968285 -mapPin2Latitude 40.758896 -mapPin2Latitude -73.985130"
+])
 
 # For more information about all available options run
 # fastlane action snapshot

@@ -56,6 +56,7 @@ target 'HomeAssistant' do
     pod 'MaterialComponents/Buttons'
     pod 'MaterialComponents/Buttons+ButtonThemer'
     pod 'MBProgressHUD', '~> 1.1.0'
+    pod 'SimulatorStatusMagic', :configurations => ['Debug']
     pod 'SwiftConfettiView'
     pod 'SwiftGen', '~> 6.1.0'
     pod 'SwiftLint', '~> 0.31.0'
