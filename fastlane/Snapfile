@@ -58,8 +58,6 @@ scheme("HomeAssistantUITests")
 
 clear_previous_screenshots(true)
 
-waitForAnimations(false)
-
 localize_simulator(true)
 
 concurrent_simulators(true)

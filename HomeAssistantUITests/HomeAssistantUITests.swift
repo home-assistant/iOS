@@ -17,7 +17,7 @@ class HomeAssistantUITests: XCTestCase {
         continueAfterFailure = false
 
         // Enable Fastlane snapshots
-        setupSnapshot(app)
+        setupSnapshot(app, waitForAnimations: false)
         XCUIApplication().launch()
 
         let handler = addUIInterruptionMonitor(withDescription: "System Dialog") { (alert) -> Bool in
