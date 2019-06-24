@@ -595,12 +595,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         SDStatusBarManager.sharedInstance()?.enableOverrides()
 
-        // swiftlint:disable line_length
-        UserDefaults.standard.set("http://192.168.1.50:8123", forKey: "url")
-        UserDefaults.standard.set("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiN2M2MDk0ZDliOWQ0N2RjYmZhOWU0Nzg2OWRjODE4YiIsImlhdCI6MTU2MTA4MDY0NiwiZXhwIjoxODc2NDQwNjQ2fQ.5a0txOKDyUeNcV1ISdAE_0XxRwPf5FvO1TN8ixvSjtY", forKey: "token")
-
-        UserDefaults.standard.set("0827005427a7904c49a13ff0a2c3e937affa156882ac8b82fe2f05151d4a82cc", forKey: "webhookID")
-        UserDefaults.standard.set("422e7bff58b71c3a8df804ee7a7803ce719c0e7935763e23a67c83223cfb515e", forKey: "webhookSecret")
+        UIView.setAnimationsEnabled(false)
 
         guard let urlStr = UserDefaults.standard.string(forKey: "url"), let url = URL(string: urlStr),
             let token = UserDefaults.standard.string(forKey: "token"),
