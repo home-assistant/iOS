@@ -52,9 +52,9 @@ class HomeAssistantUITests: XCTestCase {
 
         snapshot("01MapContentExtension")
 
-        XCTAssert(springboard.buttons["Dismiss"].firstMatch.exists)
+        XCTAssert(springboard.buttons.matching(identifier: "dismiss-expanded-button").firstMatch.exists)
 
-        springboard.buttons["Dismiss"].firstMatch.tap()
+        springboard.buttons.matching(identifier: "dismiss-expanded-button").firstMatch.tap()
 
         sleep(5)
 
@@ -65,9 +65,9 @@ class HomeAssistantUITests: XCTestCase {
 
         snapshot("02CameraContentExtension")
 
-        XCTAssert(springboard.buttons["Dismiss"].firstMatch.exists)
+        XCTAssert(springboard.buttons.matching(identifier: "dismiss-expanded-button").firstMatch.exists)
 
-        springboard.buttons["Dismiss"].firstMatch.tap()
+        springboard.buttons.matching(identifier: "dismiss-expanded-button").firstMatch.tap()
 
         snapshot("03Frontend")
     }

@@ -6,7 +6,7 @@ devices([
   "iPhone 6s Plus",
   "iPad Air",
   "iPad Air 2",
-  "iPad Pro",
+  # "iPad Pro",
   "iPhone 5s",
   "iPhone 6",
   "iPhone 6 Plus",
@@ -62,7 +62,7 @@ namespace_log_files(true)
 
 result_bundle(true)
 
-base_args = "-useDemo true -url #{ENV["HOMEASSISTANT_SNAPSHOT_URL"]} -token #{ENV["HOMEASSISTANT_SNAPSHOT_TOKEN"]} -webhookID #{ENV["HOMEASSISTANT_SNAPSHOT_WEBHOOK_ID"]} -webhookSecret #{ENV["HOMEASSISTANT_SNAPSHOT_WEBHOOK_SECRET"]} -cameraEntityID camera.amcrest_camera"
+base_args = "-useDemo true -url #{ENV["HOMEASSISTANT_SNAPSHOT_URL"]} -token #{ENV["HOMEASSISTANT_SNAPSHOT_TOKEN"]} -webhookID #{ENV["HOMEASSISTANT_SNAPSHOT_WEBHOOK_ID"]} -webhookSecret #{ENV["HOMEASSISTANT_SNAPSHOT_WEBHOOK_SECRET"]} -cameraEntityID camera.staticshot"
 launch_arguments([
   # Lat/Long is NYC
   "#{base_args} -mapPin1Latitude 40.785091 -mapPin1Longitude -73.968285 -mapPin2Latitude 40.758896 -mapPin2Latitude -73.985130"
