@@ -790,7 +790,7 @@ extension WebViewController: UIScrollViewDelegate {
 
 extension ConnectionInfo {
     func webviewURL() -> URL? {
-        if Current.appConfiguration == .FastlaneSnapshot, UserDefaults.standard.object(forKey: "useDemo") != nil {
+        if Current.appConfiguration == .FastlaneSnapshot, prefs.object(forKey: "useDemo") != nil {
             return URL(string: "https://demo.home-assistant.io")!
         }
         guard var components = URLComponents(url: self.activeURL, resolvingAgainstBaseURL: true) else {

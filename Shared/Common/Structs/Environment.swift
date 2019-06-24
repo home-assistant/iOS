@@ -76,7 +76,7 @@ public class Environment {
     // This is private because the use of 'appConfiguration' is preferred.
     private let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
 
-    private let isFastlaneSnapshot = UserDefaults.standard.bool(forKey: "FASTLANE_SNAPSHOT")
+    private let isFastlaneSnapshot = prefs.bool(forKey: "FASTLANE_SNAPSHOT")
 
     // This can be used to add debug statements.
     public var isDebug: Bool {

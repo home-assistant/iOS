@@ -406,8 +406,8 @@ class SettingsViewController: FormViewController {
         var firstPinLongitude = "-73.968285"
 
         if Current.appConfiguration == .FastlaneSnapshot,
-            let lat = UserDefaults.standard.string(forKey: "mapPin1Latitude"),
-            let lon = UserDefaults.standard.string(forKey: "mapPin1Longitude") {
+            let lat = prefs.string(forKey: "mapPin1Latitude"),
+            let lon = prefs.string(forKey: "mapPin1Longitude") {
             firstPinLatitude = lat
             firstPinLongitude = lon
         }
@@ -416,8 +416,8 @@ class SettingsViewController: FormViewController {
         var secondPinLongitude = "-73.985130"
 
         if Current.appConfiguration == .FastlaneSnapshot,
-            let lat = UserDefaults.standard.string(forKey: "mapPin2Latitude"),
-            let lon = UserDefaults.standard.string(forKey: "mapPin2Longitude") {
+            let lat = prefs.string(forKey: "mapPin2Latitude"),
+            let lon = prefs.string(forKey: "mapPin2Longitude") {
             secondPinLatitude = lat
             secondPinLongitude = lon
         }
@@ -447,7 +447,7 @@ class SettingsViewController: FormViewController {
         var entityID = "camera.amcrest_camera"
 
         if Current.appConfiguration == .FastlaneSnapshot,
-            let snapshotEntityID = UserDefaults.standard.string(forKey: "cameraEntityID") {
+            let snapshotEntityID = prefs.string(forKey: "cameraEntityID") {
             entityID = snapshotEntityID
         }
 
