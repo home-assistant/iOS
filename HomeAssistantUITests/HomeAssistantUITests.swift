@@ -35,24 +35,22 @@ class HomeAssistantUITests: XCTestCase {
 
     func testScreenshots() {
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        let app = XCUIApplication()
+        /* let app = XCUIApplication()
         let web = app.webViews
 
         let sidebarToggle = web.buttons["Sidebar Toggle"]
 
         wait(for: sidebarToggle, timeout: 20)
 
-        snapshot("01Frontend")
-
         sidebarToggle.tap(withNumberOfTaps: 2, numberOfTouches: 1)
         web.links["App Configuration"].firstMatch.tap()
 
         // Map Notification Screenshot
-        app.tables.cells["map_notification_test"].tap()
+        app.tables.cells["map_notification_test"].tap() */
 
         ensureMapNotification()
 
-        snapshot("02MapContentExtension")
+        snapshot("01MapContentExtension")
 
         XCTAssert(springboard.buttons["Dismiss"].firstMatch.exists)
 
@@ -61,15 +59,17 @@ class HomeAssistantUITests: XCTestCase {
         sleep(5)
 
         // Camera Notification Screenshot
-        app.tables.cells["camera_notification_test"].tap()
+        // app.tables.cells["camera_notification_test"].tap()
 
         ensureCameraNotification()
 
-        snapshot("03CameraContentExtension")
+        snapshot("02CameraContentExtension")
 
         XCTAssert(springboard.buttons["Dismiss"].firstMatch.exists)
 
         springboard.buttons["Dismiss"].firstMatch.tap()
+
+        snapshot("03Frontend")
     }
 
     func ensureMapNotification() {

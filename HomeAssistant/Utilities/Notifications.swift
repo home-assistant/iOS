@@ -15,7 +15,12 @@ import PromiseKit
 extension HomeAssistantAPI {
     public static func ProvideNotificationCategoriesToSystem() {
         let realm = Current.realm()
-        let categories = Set<UNNotificationCategory>(realm.objects(NotificationCategory.self).map({ $0.category }))
+        var categories = Set<UNNotificationCategory>(realm.objects(NotificationCategory.self).map({ $0.category }))
+
+        if Current.appConfiguration == .FastlaneSnapshot {
+            categories.insert(UNNotificationCategory(identifier: "camera", actions: [], intentIdentifiers: [], options: UNNotificationCategoryOptions([.customDismissAction])))
+            categories.insert(UNNotificationCategory(identifier: "map", actions: [], intentIdentifiers: [], options: UNNotificationCategoryOptions([.customDismissAction])))
+        }
 
         Current.Log.verbose("Providing \(categories.count) categories to system: \(categories)")
 

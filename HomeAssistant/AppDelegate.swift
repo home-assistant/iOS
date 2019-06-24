@@ -797,6 +797,9 @@ extension AppConfiguration {
 extension AppDelegate: UNUserNotificationCenterDelegate {
     public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
+        if Current.appConfiguration == .FastlaneSnapshot && response.actionIdentifier == UNNotificationDismissActionIdentifier && response.notification.request.content.categoryIdentifier == "map" {
+            SettingsViewController.showCameraContentExtension()
+        }
         Messaging.messaging().appDidReceiveMessage(response.notification.request.content.userInfo)
         var userText: String?
         if let textInput = response as? UNTextInputNotificationResponse {

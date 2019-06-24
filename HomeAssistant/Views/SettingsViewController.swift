@@ -338,12 +338,12 @@ class SettingsViewController: FormViewController {
         <<< ButtonRow("camera_notification_test") {
             $0.title = L10n.Settings.Developer.CameraNotification.title
         }.onCellSelection { _, _ in
-            self.showCameraContentExtension()
+            SettingsViewController.showCameraContentExtension()
         }
         <<< ButtonRow("map_notification_test") {
             $0.title = L10n.Settings.Developer.MapNotification.title
         }.onCellSelection { _, _ in
-            self.showMapContentExtension()
+            SettingsViewController.showMapContentExtension()
         }
     }
 
@@ -397,7 +397,7 @@ class SettingsViewController: FormViewController {
         }
     }
 
-    func showMapContentExtension() {
+    static func showMapContentExtension() {
         let content = UNMutableNotificationContent()
         content.body = L10n.Settings.Developer.MapNotification.Notification.body
         content.sound = .default
@@ -439,7 +439,7 @@ class SettingsViewController: FormViewController {
         UNUserNotificationCenter.current().add(notificationRequest)
     }
 
-    func showCameraContentExtension() {
+    static func showCameraContentExtension() {
         let content = UNMutableNotificationContent()
         content.body = L10n.Settings.Developer.CameraNotification.Notification.body
         content.sound = .default

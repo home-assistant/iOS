@@ -110,6 +110,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                                                      forMainFrameOnly: false)
                 userContentController.addUserScript(setLanguageScript)
             }
+
+            SettingsViewController.showMapContentExtension()
         }
 
         config.userContentController = userContentController
