@@ -1,6 +1,3 @@
-# Uncomment the lines below you want to change by removing the # in the beginning
-
-# A list of devices you want to take the screenshots from
 devices([
   "iPhone 5s",
   "iPhone 6",
@@ -60,14 +57,13 @@ clear_previous_screenshots(true)
 
 localize_simulator(true)
 
-concurrent_simulators(true)
+output_simulator_logs(true)
+namespace_log_files(true)
 
-# Arguments to pass to the app on launch. See https://docs.fastlane.tools/actions/snapshot/#launch-arguments
+result_bundle(true)
+
 base_args = "-useDemo true -url #{ENV["HOMEASSISTANT_SNAPSHOT_URL"]} -token #{ENV["HOMEASSISTANT_SNAPSHOT_TOKEN"]} -webhookID #{ENV["HOMEASSISTANT_SNAPSHOT_WEBHOOK_ID"]} -webhookSecret #{ENV["HOMEASSISTANT_SNAPSHOT_WEBHOOK_SECRET"]} -cameraEntityID camera.amcrest_camera"
 launch_arguments([
-  # NYC
+  # Lat/Long is NYC
   "#{base_args} -mapPin1Latitude 40.785091 -mapPin1Longitude -73.968285 -mapPin2Latitude 40.758896 -mapPin2Latitude -73.985130"
 ])
-
-# For more information about all available options run
-# fastlane action snapshot

@@ -597,17 +597,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UIView.setAnimationsEnabled(false)
 
-        guard let urlStr = UserDefaults.standard.string(forKey: "url"), let url = URL(string: urlStr),
-            let token = UserDefaults.standard.string(forKey: "token"),
-            let webhookID = UserDefaults.standard.string(forKey: "webhookID") else {
-                fatalError("We are in a Fastlane Snapshot configuration but required arguments were not provided!")
+        guard let urlStr = prefs.string(forKey: "url"), let url = URL(string: urlStr) else {
+            fatalError("Required fastlane argument 'url' not provided or invalid!")
+        }
+
+        guard let token = prefs.string(forKey: "token") else {
+            fatalError("Required fastlane argument 'token' not provided or invalid!")
+        }
+
+        guard let webhookID = prefs.string(forKey: "webhookID") else {
+            fatalError("Required fastlane argument 'webhookID' not provided or invalid!")
         }
 
         prefs.set(true, forKey: "onboarding_complete_newconninfo")
 
         let connectionInfo = ConnectionInfo(externalURL: url, internalURL: nil, cloudhookURL: nil, remoteUIURL: nil,
                                             webhookID: webhookID,
-                                            webhookSecret: UserDefaults.standard.string(forKey: "webhookSecret"),
+                                            webhookSecret: prefs.string(forKey: "webhookSecret"),
                                             internalSSIDs: nil)
 
         let tokenInfo = TokenInfo(accessToken: token, refreshToken: "", expiration: Date.distantFuture)
