@@ -1,4 +1,4 @@
-Controlla e monitora la tua casa da qualsiasi parte del mondo. Home Assistant per iOS ti consente di controllare tutti i tuoi dispositivi e fornisce motori di localizzazione e notifica avanzati per consentire complesse automazioni mobili. 
+Controlla e monitora la tua casa da qualsiasi parte del mondo. Home Assistant Companion ti consente di controllare tutti i tuoi dispositivi e fornisce motori di localizzazione e notifica avanzati per consentire complesse automazioni mobili. 
 
 Home Assistant è una piattaforma domotica open source in esecuzione su Python 3. I prodotti supportati includono: 
 
@@ -24,4 +24,4 @@ Home Assistant è una piattaforma domotica open source in esecuzione su Python 3
  - Wink 
  - Z-Wave 
 
-Home Assistant per iOS richiede un iPhone con iOS 9.3 o successivo ed un'istanza di Home Assistant configurata in precedenza. L'istanza deve essere accessibile da Internet e protetta con un certificato SSL valido, non autofirmato, per il rilevamento della posizione. Le notifiche di base funzionano senza accesso esterno.
+Home Assistant Companion richiede un iPhone con iOS 9.3 o successivo ed un'istanza di Home Assistant configurata in precedenza. L'istanza deve essere accessibile da Internet e protetta con un certificato SSL valido, non autofirmato, per il rilevamento della posizione. Le notifiche di base funzionano senza accesso esterno.

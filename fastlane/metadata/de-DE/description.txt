@@ -1,13 +1,27 @@
-Another week, another new Home Assistant for iOS build!
+Kontrolliere und überwache dein Zuhause von überall auf der Welt. Home Assistant Companion lässt dich all deine Geräte kontrollieren und bietet erweiterte Standortbestimmungs- und Benachrichtigungsengines um komplexe mobile Automatisierungen zu ermöglichen.
 
-- More localization support! We now support Chinese (Traditional and Simplified), Dutch and Spanish. Minor updates were also made to the existing German translation.
-- Add support for granular control of location update triggers (in Settings->Location)
-- Support customization of notification display options (see online docs for this, but allows you to specify badge/alert/sound or any combination of the three for each notification)
-- Add ability to send URL in push notification which opens upon tap
-- Add confirmation dialogs when opening a homeassistant:// URL
-- Re-enable Fabric so I can start tracking crashes again
-- Improve notification permission check
-- Lots of other localization work
-- Bug fixes
+Home Assistant ist eine Open-Source Heimautomatisierungsplattform in Python 3. Unterstützte Produkte umfassen:
 
-Please submit a rating if you haven't already, it's my fuel that keeps me going!
+- Amazon Echo (Alexa)
+- Apple TV
+- Arduino
+- Belkin WeMo
+- Dark Sky
+- ecobee
+- Google Assistant
+- Google Cast
+- IFTTT
+- IKEA Trådfri (Tradfri)
+- Kodi/XBMC
+- MQTT
+- MySensors
+- Nest
+- Owntracks
+- Philips Hue
+- Plex
+- Pushbullet
+- Sonos
+- Wink
+- Z-Wave
+
+Home Assistant Companion setzt ein iPhone mit iOS 10.3 oder neuer voraus und eine bereits konfigurierte Home Assistant Instanz. Für die Standortbestimmung muss die Instanz aus dem Internet erreichbar und mit einem gültigen, nicht selbstsignierten SSL Zertifikat gesichert sein. Einfache Benachrichtigungen funktionieren ohne externen Zugriff.

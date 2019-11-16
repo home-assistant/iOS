@@ -20,6 +20,8 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
         case cantFindURLHandler
     }
 
+    public var asWebContext: Any?
+
     private var promiseResolver: Resolver<String>?
     private var authenticationObserver: NSObjectProtocol?
     private var authenticationViewController: Any?
@@ -74,6 +76,10 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
                     self.authStyle = "ASWebAuthenticationSession"
                     let webAuthSession = ASWebAuthenticationSession(url: authURL, callbackURLScheme: redirectURI,
                                                                     completionHandler: newStyleAuthCallback)
+
+                    if #available(iOS 13.0, *) {
+                        webAuthSession.presentationContextProvider = self.asWebContext as? ASWebAuthenticationPresentationContextProviding
+                    }
 
                     webAuthSession.start()
 

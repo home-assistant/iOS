@@ -1,13 +1,12 @@
-Un'altra settimana, un'altra nuova versione di Home Assistant per iOS! 
+Benvenuto in Home Assistant Companion versione 2019.1, noto anche come 2.0! È passato molto tempo, ma finalmente è arrivato. Ecco alcune delle nuove funzionalità di questa versione:
 
- - Più supporto per la localizzazione! Ora supportiamo cinese (tradizionale e semplificato), olandese e spagnolo. Sono stati apportati anche piccoli aggiornamenti alla traduzione tedesca esistente. 
- - Aggiunto il supporto per il controllo granulare dei trigger di aggiornamento della posizione (in Impostazioni-> Posizione) 
- - Supporto per la personalizzazione delle opzioni di visualizzazione delle notifiche (consulta la documentazione online per questo, consente di specificare badge / avviso / suono o qualsiasi combinazione dei tre per ciascuna notifica) 
- - Aggiunta la possibilità di inviare URL nella notifica push che si apre su tap 
- - Aggiunta la finestra di conferma durante l'apertura di un URL homeassistant://
- - Riattivato Fabric in modo da poter avviare nuovamente il tracciamento degli arresti anomali 
- - Migliorato il controllo dei permessi di notifica 
- - Molte altre modifiche alla localizzazione 
- - Correzioni di bug 
+- Nuovissimo motore di notifica push, alimentato da Firebase, per notifiche ancora più complesse che mai, comprese le notifiche critiche e molto altro ancora
+- Scorciatoie Siri: ora puoi interagire con l'assistente domestico tramite Siri e l'app Scorciatoie
+- Apple Watch: controlla la tua casa tramite l'app Apple Watch e monitora il suo stato con Complications
+- Widget: attiva rapidamente le azioni a casa tramite un widget. Disponibile anche tramite l'icona della schermata principale
+- Supporto di Nabu Casa Cloud: Cloudhooks e UI remota sono qui in modo che tu (facoltativamente) non possa mai più aprire una porta nel tuo router
+- Nuovo motore di connessione: ora puoi avere URL interni ed esterni per la totale personalizzazione
 
- Invia una valutazione se non l'hai già fatto, è il carburante che mi fa andare avanti!
+Ci sono molte altre nuove funzionalità e miglioramenti da scoprire invece. Controlla i forum e la nuova documentazione per ulteriori informazioni.
+
+Grazie per aver utilizzato Home Assistant Companion!

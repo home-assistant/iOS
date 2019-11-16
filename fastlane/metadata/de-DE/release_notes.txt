@@ -1,1 +1,12 @@
+Willkommen bei Home Assistant Companion Version 2019.1, auch bekannt als 2.0! Es hat sehr lange gedauert, aber es ist endlich da. Hier sind einige der neuen Funktionen in dieser Version:
 
+- Brandneue Push-Benachrichtigungs-Engine von Firebase für noch komplexere Benachrichtigungen als je zuvor, einschließlich kritischer Benachrichtigungen und vielem mehr
+- Siri Shortcuts: Jetzt können Sie mit Ihrem Home Assistant über Siri und die Shortcuts-App interagieren
+- Apple Watch: Steuern Sie Ihr Zuhause über die Apple Watch-App und überwachen Sie den Status mithilfe von Komplikationen
+- Widget: Über ein Widget können Sie schnell Aktionen zu Hause auslösen. Auch über das Startbildschirmsymbol verfügbar
+- Nabu Casa Cloud-Unterstützung: Cloudhooks und Remote-Benutzeroberfläche sind hier, sodass Sie (optional) nie wieder einen Port in Ihrem Router öffnen können
+- Neue Verbindungs-Engine: Jetzt können Sie interne und externe URLs für vollständige Anpassbarkeit verwenden
+
+Stattdessen gibt es viele neue Funktionen und Verbesserungen zu entdecken. Weitere Informationen finden Sie in den Foren und in der neuen Dokumentation.
+
+Vielen Dank, dass Sie Home Assistant Companion verwenden!

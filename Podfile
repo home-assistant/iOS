@@ -19,19 +19,19 @@ puts "Setting CUSTOM_FONT_NAME to 'MaterialDesignIcons'"
 ENV['CUSTOM_FONT_NAME'] = 'MaterialDesignIcons'
 
 def shared_pods
-    pod 'Alamofire', '~> 4.8.2'
-    pod 'AlamofireImage', '~> 3.5.2'
+    pod 'Alamofire'
+    pod 'AlamofireImage'
     pod 'Communicator'
-    pod 'DeviceKit', '~> 2.0'
-    pod 'Iconic', :git => 'https://github.com/robbiet480/Iconic.git', :branch => 'swift-4.2'
-    pod 'KeychainAccess', '~> 3.2.0'
+    pod 'DeviceKit'
+    pod 'Iconic', :git => 'https://github.com/home-assistant/Iconic.git', :branch => 'master'
+    pod 'KeychainAccess'
     pod 'ObjectMapper', :git => 'https://github.com/tristanhimmelman/ObjectMapper.git', :branch => 'master'
-    pod 'PromiseKit', '~> 6.8.4'
-    pod 'RealmSwift', '~> 3.14.1'
+    pod 'PromiseKit'
+    pod 'RealmSwift'
     pod 'Sodium'
-    pod 'UIColor_Hex_Swift', '~> 5.1.0'
+    pod 'UIColor_Hex_Swift'
     pod 'Version', :git => 'https://github.com/guykogus/Version.git', :branch => 'master'
-    pod 'XCGLogger', '~> 7.0.0'
+    pod 'XCGLogger'
 end
 
 def ios_shared_pods
@@ -107,7 +107,7 @@ target 'WatchAppExtension' do
 
     shared_pods
 
-    pod 'EMTLoadingIndicator', '~> 4.0.0'
+    pod 'EMTLoadingIndicator', :git => 'https://github.com/hirokimu/EMTLoadingIndicator', :branch => 'master'
 end
 
 target 'TodayWidget' do

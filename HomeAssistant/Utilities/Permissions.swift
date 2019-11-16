@@ -205,6 +205,9 @@ public enum PermissionType: Int {
             if #available(iOS 12.0, *) {
                 opts.formUnion([.criticalAlert, .providesAppNotificationSettings])
             }
+            if #available(iOS 13.0, *) {
+                opts.insert(.announcement)
+            }
             UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
                 if let error = error {
                     Current.Log.error("Error when requesting notifications permissions: \(error)")

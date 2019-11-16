@@ -19,10 +19,15 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
 
     public var onDismissCallback: ((UIViewController) -> Void)?
 
-    let reachability = Reachability()!
+    // swiftlint:disable:next force_try
+    let reachability = try! Reachability()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        if #available(iOS 13.0, *) {
+            // Always adopt a light interface style.
+            overrideUserInterfaceStyle = .light
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

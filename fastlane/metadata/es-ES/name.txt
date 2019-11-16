@@ -1,1 +1,1 @@
-Home Assistant para iOS
+Home Assistant Companion

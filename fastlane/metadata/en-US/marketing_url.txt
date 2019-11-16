@@ -1,1 +1,1 @@
-https://home-assistant.io/docs/ecosystem/ios/
+https://companion.home-assistant.io

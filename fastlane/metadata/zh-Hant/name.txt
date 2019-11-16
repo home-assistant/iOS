@@ -1,1 +1,1 @@
-Home Assistant iOS版本
+Home Assistant Companion

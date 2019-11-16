@@ -4,8 +4,8 @@
 "8JC-7Y-FvP.text" = "http://hassio.local:8123";
 "CIS-8C-niN.text" = "Uh Oh!";
 "Kj7-hM-8gN.text" = "Kobler til Min Home Assistant";
-"Kwy-Pt-nws.text" = "Grunnleggende HTTP-brukernavn";
-"LCc-oP-eTO.text" = "Grunnleggende HTTP-passord";
+"Kwy-Pt-nws.text" = "HTTP Basic-brukernavn";
+"LCc-oP-eTO.text" = "HTTP Basic-passord";
 "N4h-WC-wIw.normalTitle" = "Fortsett";
 "NJM-pS-Fuc.text" = "Vi fant 1 Home Assistant";
 "O7a-0s-trd.text" = "Nabu Casa Cloud oppdaget";

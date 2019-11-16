@@ -691,10 +691,10 @@ public class HomeAssistantAPI {
     }
 
     public func ensureVersion(_ currentVersionStr: String) -> APIError? {
-        let currentVersion = Version(stringLiteral: String(currentVersionStr.prefix(6)))
-        if HomeAssistantAPI.minimumRequiredVersion > currentVersion {
-            return APIError.mustUpgradeHomeAssistant(currentVersion)
-        }
+//        let currentVersion = Version(stringLiteral: String(currentVersionStr.prefix(6)))
+//        if HomeAssistantAPI.minimumRequiredVersion > currentVersion {
+//            return APIError.mustUpgradeHomeAssistant(currentVersion)
+//        }
         return nil
     }
 }

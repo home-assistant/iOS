@@ -5,7 +5,7 @@
 "4k18T7" = "取得鏡頭影像失敗，剪貼簿內容無法解析有效物件 ID";
 "4wVIAN" = "於 Home Assistant 執行服務。以 JSON 物件匯出至剪貼簿、內容如 {\"service\": \"homeassistant.turn_on\", \"serviceData\": {\"foo\": \"bar\"}}";
 "5MGDot" = "傳送座標";
-"5rztv4" = "由剪貼簿找到的物件 ID 取得靜態圖像，並貼回至剪貼簿 ";
+"5rztv4" = "由剪貼簿找到的物件 ID 取得靜態圖像，並貼回至剪貼簿";
 "7NpJ76-0cl84c" = "剪貼簿內容已解析為儲存值、進行座標更新";
 "7NpJ76-50P1YJ" = "剪貼簿內容已解析為位址、進行座標更新";
 "7NpJ76-dC8g33" = "更新座標至剪貼簿內容";
@@ -55,10 +55,10 @@
 "ri4H1h" = "傳送 ${domain}.${service} 及剪貼簿內容至 Home Assistant 成功";
 "rlOS6H" = "成功由剪貼簿產生模板";
 "rwj6u7" = "以 ${location} 為目前座標回傳至 Home Assistant";
-"sbkx4E" = "轉換 ${clipboardContents} 內 Geocodeto 至有效座標失敗";
+"sbkx4E" = "轉換 ${pasteboardContents}  內 Geocodeto 至有效座標失敗";
 "uUk5RX" = "以資料執行 ${serviceDomain}.${service}";
 "v7TSD5" = "傳送座標";
-"wKnW1P" = "以剪貼簿資料執行 ${serviceDomain}.${service}";
+"wKnW1P" = "以剪貼簿資料執行 {serviceDomain}.${service}";
 "wfPQQQ" = "於 Home Assistant 事件系統匯流排中執行事件";
 "yS9QV0" = "以資料執行 ${eventName}";
 "7NpJ76-F708zM" = "剪貼簿內容已解析為位置、進行座標更新";

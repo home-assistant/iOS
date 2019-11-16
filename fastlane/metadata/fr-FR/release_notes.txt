@@ -1,0 +1,13 @@
+Une autre semaine, une nouvelle version de Home Assistant Companion ! 
+
+ - Plus de traduction ! Nous prenons maintenant en charge le chinois (traditionnel et simplifié), le néerlandais et l'espagnol. Des mises à jour mineures ont également été apportées à la traduction allemande existante. 
+ - Ajout du support pour le contrôle granulaire des déclencheurs de mise à jour d'emplacement (dans Paramètres- > Emplacement) 
+ - Prise en charge de la personnalisation des options d'affichage des notifications (voir la documentation en ligne à ce sujet, mais vous permet de spécifier un badge / une alerte / un son ou toute combinaison des trois pour chaque notification) 
+ - Ajout de la possibilité d'envoyer une URL dans une notification push qui s'ouvre au toucher 
+ - Ajout de boîtes de dialogue de confirmation lors de l’ouverture d'homeassistant: // URL 
+ - Réactivation de Fabric afin de pouvoir suivre les problèmes
+ - Amélioration du contrôle des autorisations de notification 
+ - Beaucoup de travail sur la traduction 
+ - Corrections de bugs 
+
+ S'il vous plaît donnez une note si vous ne l'avez pas déjà fait, c'est mon carburant qui me permet de continuer!

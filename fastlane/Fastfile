@@ -11,8 +11,8 @@
 
 # This is the minimum version number required.
 # Update this, if you use features of a newer version
-fastlane_version "2.123.0"
-REQUIRED_XCODE_VERSION = "10.1"
+fastlane_version "2.134.0"
+REQUIRED_XCODE_VERSION = "11.1"
 default_platform :ios
 
 platform :ios do

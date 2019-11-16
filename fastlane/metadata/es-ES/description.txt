@@ -24,4 +24,4 @@ Controle y monitorize su hogar desde cualquier lugar del mundo. Home Assistant p
  - Wink
  - Z-Wave 
 
- Home Assistant para iOS requiere un iPhone con iOS 9.3 o posterior y una instancia de Home Assistant configurada previamente. La instancia debe ser accesible desde Internet y estar protegida con un certificado SSL válido, no autofirmado, para el seguimiento de la ubicación. Las notificaciones básicas funcionan sin acceso externo.
+Home Assistant Companion requiere un iPhone con iOS 9.3 o posterior y una instancia de Home Assistant configurada previamente. La instancia debe ser accesible desde Internet y estar protegida con un certificado SSL válido, no autofirmado, para el seguimiento de la ubicación. Las notificaciones básicas funcionan sin acceso externo.

@@ -1,1 +1,1 @@
-home automation,open source,alexa,hue,wemo,smarthome,internet of things,push notifications,location
+Heimautomatisierung,Open Source,Alexa,Hue,Wemo,Smart Home,Internet of things,Pushbenachrichtigungen

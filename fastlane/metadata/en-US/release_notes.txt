@@ -1,13 +1,12 @@
-Another week, another new Home Assistant for iOS build!
+Welcome to Home Assistant Companion version 2019.1, also known as 2.0! It's been a very long time coming but it's finally here. Here's some of the new features in this release:
 
-- More localization support! We now support Chinese (Traditional and Simplified), Dutch and Spanish. Minor updates were also made to the existing German translation.
-- Add support for granular control of location update triggers (in Settings->Location)
-- Support customization of notification display options (see online docs for this, but allows you to specify badge/alert/sound or any combination of the three for each notification)
-- Add ability to send URL in push notification which opens upon tap
-- Add confirmation dialogs when opening a homeassistant:// URL
-- Re-enable Fabric so I can start tracking crashes again
-- Improve notification permission check
-- Lots of other localization work
-- Bug fixes
+- Brand new push notification engine, powered by Firebase, for even more complex notifications than ever before, including critical notifications and much much more
+- Siri Shortcuts: Now, you can interact with your Home Assistant via Siri and the Shortcuts app
+- Apple Watch: Control your home via the Apple Watch app and monitor its status with Complications
+- Widget: Quickly trigger actions at home via a widget. Also available via home screen icon
+- Nabu Casa Cloud support: Cloudhooks and remote UI are here so you can (optionally) never open a port in your router again
+- New connection engine: now you can have internal and external URLs for total customizability
 
-Please submit a rating if you haven't already, it's my fuel that keeps me going!
+There's plenty more new features and improvements to discover instead. Check the forums and the new documentation for more information.
+
+Thanks for using Home Assistant Companion!

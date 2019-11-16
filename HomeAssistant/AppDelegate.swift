@@ -581,8 +581,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UNUserNotificationCenter.current().getNotificationSettings { (settings) in
             guard settings.authorizationStatus == .authorized else {return}
-            let opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert,
+            var opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert,
                                                 .providesAppNotificationSettings]
+            if #available(iOS 13.0, *) {
+                opts.insert(.announcement)
+            }
             UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
                 Current.Log.verbose("Requested critical alert access \(granted), \(String(describing: error))")
             }
@@ -592,9 +595,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupFastlaneSnapshotConfiguration() {
-
+        #if targetEnvironment(simulator)
         SDStatusBarManager.sharedInstance()?.enableOverrides()
-
+        #endif
+        
         UIView.setAnimationsEnabled(false)
 
         guard let urlStr = prefs.string(forKey: "url"), let url = URL(string: urlStr) else {

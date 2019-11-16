@@ -113,7 +113,7 @@ enum NetworkType: Int, CaseIterable {
 extension Reachability {
 
     static func getSimpleNetworkType() -> NetworkType {
-        guard let reachability: Reachability = Reachability() else { return .unknown }
+        guard let reachability: Reachability = try? Reachability() else { return .unknown }
         do {
             try reachability.startNotifier()
 
@@ -124,6 +124,8 @@ extension Reachability {
                 return .wifi
             case .cellular:
                 return .cellular
+            case .unavailable:
+                return .noConnection
             }
         } catch {
             return .unknown
@@ -131,7 +133,7 @@ extension Reachability {
     }
 
     static func getNetworkType() -> NetworkType {
-        guard let reachability: Reachability = Reachability() else { return .unknown }
+        guard let reachability: Reachability = try? Reachability() else { return .unknown }
         do {
             try reachability.startNotifier()
 
@@ -142,6 +144,8 @@ extension Reachability {
                 return .wifi
             case .cellular:
                 return Reachability.getWWANNetworkType()
+            case .unavailable:
+                return .noConnection
             }
         } catch {
             return .unknown

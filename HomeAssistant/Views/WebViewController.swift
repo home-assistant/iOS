@@ -467,7 +467,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                 WhatsNew.Item(
                     title: L10n.WhatsNew.TwoDotZero.Items.WebViewCleanup.title,
                     subtitle: L10n.WhatsNew.TwoDotZero.Items.WebViewCleanup.subtitle,
-                    image: MaterialDesignIcons.sprayBottleIcon.image(ofSize: iconSize, color: iconColor)
+                    image: MaterialDesignIcons.sprayIcon.image(ofSize: iconSize, color: iconColor)
                 ),
                 WhatsNew.Item(
                     title: L10n.WhatsNew.TwoDotZero.Items.TodayWidget.title,
@@ -487,12 +487,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                 WhatsNew.Item(
                     title: L10n.WhatsNew.TwoDotZero.Items.AppIcons.title,
                     subtitle: L10n.WhatsNew.TwoDotZero.Items.AppIcons.subtitle,
-                    image: MaterialDesignIcons.imageFrameIcon.image(ofSize: iconSize, color: iconColor)
+                    image: MaterialDesignIcons.imageFilterFramesIcon.image(ofSize: iconSize, color: iconColor)
                 ),
                 WhatsNew.Item(
                     title: L10n.WhatsNew.TwoDotZero.Items.AndSoMuchMore.title,
                     subtitle: L10n.WhatsNew.TwoDotZero.Items.AndSoMuchMore.subtitle,
-                    image: MaterialDesignIcons.starCircleOutlineIcon.image(ofSize: iconSize, color: iconColor)
+                    image: MaterialDesignIcons.starCircleIcon.image(ofSize: iconSize, color: iconColor)
                 )
             ]
         )

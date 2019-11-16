@@ -13,6 +13,7 @@ import Alamofire
 import MaterialComponents.MaterialButtons
 import MBProgressHUD
 import ObjectMapper
+import AuthenticationServices
 
 class AuthenticationViewController: UIViewController {
 
@@ -30,6 +31,10 @@ class AuthenticationViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if #available(iOS 13.0, *) {
+            self.authenticationController.asWebContext = self
+        }
 
         MBProgressHUD.showAdded(to: self.view, animated: true)
 
@@ -63,10 +68,10 @@ class AuthenticationViewController: UIViewController {
             var connInfo = ConnectionInfo(externalURL: baseURL, internalURL: nil, cloudhookURL: nil,
                                           remoteUIURL: nil, webhookID: "", webhookSecret: nil, internalSSIDs: ssids)
 
-            if baseURLIsInternal {
-                connInfo = ConnectionInfo(externalURL: nil, internalURL: baseURL, cloudhookURL: nil,
-                                          remoteUIURL: nil, webhookID: "", webhookSecret: nil, internalSSIDs: ssids)
-            }
+//            if baseURLIsInternal {
+//                connInfo = ConnectionInfo(externalURL: nil, internalURL: baseURL, cloudhookURL: nil,
+//                                          remoteUIURL: nil, webhookID: "", webhookSecret: nil, internalSSIDs: ssids)
+//            }
 
             self.connectionInfo = connInfo
 
@@ -190,6 +195,13 @@ class AuthenticationViewController: UIViewController {
                 seal.resolve(response.result.value, nil)
             }
         }
+    }
+}
+
+@available(iOS 13, *)
+extension AuthenticationViewController: ASWebAuthenticationPresentationContextProviding {
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        return self.view.window ?? ASPresentationAnchor()
     }
 }
 

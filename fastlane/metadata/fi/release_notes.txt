@@ -1,0 +1,13 @@
+Toinen viikko, toinen uusi Kotiavustaja-kumppanin julkaisu!
+
+- Lisää lokalisointitukea! Tuemme nyt Kiinaa (perinteistä ja yksinkertaistettua), hollantia ja espanjaa. Myös saksankielisessä käännöksessä tehtiin pieniä päivityksiä.
+- Lisää tuki yksityiskohtaisemman ohjauksen sijaintipäivityksien laukaisuun (Asetukset-> Sijainti)
+- Tuki ilmoituksien näyttämisen vaihtoehtojen räätälöintimiseen (Lue enemmän online-dokumentteistä, mutta voit määrittää merkin/hälytyksen/äänen tai minkä tahansa yhdistelmän näistä kolmesta)
+- Lisää mahdollisuus lähettää URL:ia push-ilmoituksessa, minkä aukeaa naputettaessa
+- Lisää vahvistusdialogeja avattaessa homeassistant://URL:eja
+- Fabric on taas otettu käyttään, jotta voin seurata ohjelman kaatumisia uudestaan
+- Ilmoituksien lupien tarkistus parannettu
+- Paljon muita lokalisointitöitä
+- Korjauksia
+
+Ole hyvä ja arvioi sovellusta, ellet jo ole sitä tehnyt, se on polttoaineeni mikä pitää minut menossa!
