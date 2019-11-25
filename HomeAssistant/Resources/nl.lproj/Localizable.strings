@@ -664,11 +664,7 @@
 "settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud is niet ingesteld, je kunt de externe URL niet verwijderen";
 "settings.connection_section.errors.cant_disable_cloud" = "Externe URL moet worden ingesteld om cloud uit te schakelen";
-"about.donate.title" = "Doneer";
-"about.donate.description" = "Je kunt de voortdurende ontwikkeling van Home Assistant Companion ondersteunen via een in-app-aankoop of een donatie op Patreon.";
 "about.donate.patreon" = "Steun op Patreon";
-"about.donate.one_time_iap_section.title" = "Eenmalige donatie";
-"about.donate.recurring_iap_section.title" = "Terugkerende donatie";
 "whats_new.title" = "Wat is er nieuw in\
 Home Assistent Companion %@";
 "whats_new.buttons.read_more.title" = "Lees verder";

@@ -660,11 +660,7 @@
 "settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud is not set up, you can not remove external URL";
 "settings.connection_section.errors.cant_disable_cloud" = "External URL must be set to disable cloud";
-"about.donate.title" = "Donate";
-"about.donate.description" = "You can support the ongoing development of Home Assistant Companion via an in-app purchase or backing on Patreon.";
 "about.donate.patreon" = "Support on Patreon";
-"about.donate.one_time_iap_section.title" = "One Time Donation";
-"about.donate.recurring_iap_section.title" = "Recurring Donation";
 "whats_new.title" = "What's New in\
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Read More";

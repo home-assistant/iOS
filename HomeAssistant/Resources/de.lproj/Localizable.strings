@@ -668,11 +668,7 @@ an dieses Gerät gesschickt.";
 "settings.reset_section.reset_web_cache.title" = "Frontend Cache zurücksetzen";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Es ist keine Cloud Verbindung eingerichtet, die externe URL deshalb nicht entfernt werden.";
 "settings.connection_section.errors.cant_disable_cloud" = "Um die Verbindung über Home Assistant Cloud zu deaktivieren muss eine externe URL gesetzt sein";
-"about.donate.title" = "Spenden";
-"about.donate.description" = "Du kannst die Weiterentwicklung von Home Assistant Companion durch einen In-App-Kauf oder über Patreon unterstützen.";
 "about.donate.patreon" = "Unterstützung auf Patreon";
-"about.donate.one_time_iap_section.title" = "Einmalige Spende";
-"about.donate.recurring_iap_section.title" = "Regelmäßige Spende";
 "whats_new.title" = "Was ist neu in\
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Mehr erfahren";

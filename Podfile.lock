@@ -229,13 +229,11 @@ PODS:
     - Realm (= 3.19.0)
   - SimulatorStatusMagic (2.4.1)
   - Sodium (0.8.0)
-  - SwiftConfettiView (0.1.0)
   - SwiftGen (6.1.0)
   - SwiftLint (0.31.0)
   - SwiftMessages (7.0.1):
     - SwiftMessages/App (= 7.0.1)
   - SwiftMessages/App (7.0.1)
-  - SwiftyStoreKit (0.15.0)
   - TABObserverSet (2.1.0)
   - UIColor_Hex_Swift (5.1.0)
   - Version (0.6.3)
@@ -277,11 +275,9 @@ DEPENDENCIES:
   - RealmSwift
   - SimulatorStatusMagic
   - Sodium
-  - SwiftConfettiView
   - SwiftGen (~> 6.1.0)
   - SwiftLint (~> 0.31.0)
   - SwiftMessages (from `https://github.com/SwiftKickMobile/SwiftMessages.git`, branch `master`)
-  - SwiftyStoreKit
   - UIColor_Hex_Swift
   - Version (from `https://github.com/guykogus/Version.git`, branch `master`)
   - ViewRow (from `https://github.com/EurekaCommunity/ViewRow`, branch `master`)
@@ -333,10 +329,8 @@ SPEC REPOS:
     - RealmSwift
     - SimulatorStatusMagic
     - Sodium
-    - SwiftConfettiView
     - SwiftGen
     - SwiftLint
-    - SwiftyStoreKit
     - TABObserverSet
     - UIColor_Hex_Swift
     - WhatsNewKit
@@ -450,11 +444,9 @@ SPEC CHECKSUMS:
   RealmSwift: 35f284a537989f2187b413e5917091948cb87a3f
   SimulatorStatusMagic: 28d4a9d1a500ac7cea0b2b5a43c1c6ddb40ba56c
   Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
-  SwiftConfettiView: 1bdbc2e6913b6b1c76d8070802b212508ad5c352
   SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
   SwiftLint: 7a0227733d786395817373b2d0ca799fd0093ff3
   SwiftMessages: 717510963fb9c9215c58f38bbc74801e4bf134c6
-  SwiftyStoreKit: 033d06b6f87955405d3f844a18a7687c2438592a
   TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
   UIColor_Hex_Swift: 8be7432edacb7fa91c78aa05ef3c30b66e4f9415
   Version: d735da1cdc6734c97e5208b1449d0b51d385e58b
@@ -463,6 +455,6 @@ SPEC CHECKSUMS:
   XCGLogger: 0434f15e3909cdc450bb63faf638b8792ab782ab
   ZIPFoundation: 89df685c971926b0323087952320bdfee9f0b6ef
 
-PODFILE CHECKSUM: a008caca512be8d0f9e8aaaf9dfd5feadf9811f0
+PODFILE CHECKSUM: af07ddf60a1f17c0cfa4cdd23555a5ad187269ff
 
 COCOAPODS: 1.8.4

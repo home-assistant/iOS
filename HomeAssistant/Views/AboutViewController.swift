@@ -55,12 +55,12 @@ class AboutViewController: FormViewController {
                 $0.tag = "logoView"
             }
 
-            <<< ButtonRow {
-                $0.title = L10n.About.Donate.title
-                $0.presentationMode = .show(controllerProvider: .callback {
-                    return DonateViewController()
-                }, onDismiss: nil)
-            }
+             +++ ButtonRow {
+                   $0.title = L10n.About.Donate.patreon
+               }.onCellSelection { _, _  in
+                   let urlStr = "https://patreon.com/robbiet480/"
+                   openURLInBrowser(urlToOpen: URL(string: urlStr)!)
+               }
 
             <<< ButtonRow {
                     $0.title = L10n.About.Beta.title

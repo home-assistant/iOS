@@ -660,11 +660,7 @@
 "settings.reset_section.reset_web_cache.title" = "Tilbakestill frontend-hurtigbuffer";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud er ikke konfigurert, du kan ikke fjerne ekstern nettadresse";
 "settings.connection_section.errors.cant_disable_cloud" = "Ekstern URL må angis for å deaktivere cloud";
-"about.donate.title" = "Donere";
-"about.donate.description" = "Du kan støtte den pågående utviklingen av Home Assistant Companion via et kjøp i appen eller på Patreon.";
 "about.donate.patreon" = "Støtte på Patreon";
-"about.donate.one_time_iap_section.title" = "En gangs donasjon";
-"about.donate.recurring_iap_section.title" = "Gjentakende donasjon";
 "whats_new.title" = "Hva er nytt i \
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Les mer";
