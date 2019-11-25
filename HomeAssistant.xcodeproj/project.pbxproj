@@ -17,10 +17,6 @@
 		6DFADFAFF2B1E4A5C7A00D10 /* Pods_SiriIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C43F9F3C9B007EC2C1DDD9 /* Pods_SiriIntents.framework */; };
 		6EDD98D41F2594F18D2F3E38 /* Pods-WatchAppExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */; };
 		7A06D3D7A5B4746FE6F5BFA6 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C23068FBA9B7BE1478936B11 /* Pods_HomeAssistant.framework */; };
-		9C4E5E23229D98530044C8EC /* HomeAssistant.release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9C4E5E22229D98530044C8EC /* HomeAssistant.release.xcconfig */; };
-		9C4E5E24229D98580044C8EC /* HomeAssistant.debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9C4E5E21229D98220044C8EC /* HomeAssistant.debug.xcconfig */; };
-		9C4E5E26229D986B0044C8EC /* HomeAssistant.beta.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9C4E5E25229D986B0044C8EC /* HomeAssistant.beta.xcconfig */; };
-		9C4E5E28229D992A0044C8EC /* HomeAssistant.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9C4E5E27229D992A0044C8EC /* HomeAssistant.xcconfig */; };
 		9E0BAD90B73333854D6D31E1 /* Pods_TodayWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3744F977190C345382928F90 /* Pods_TodayWidget.framework */; };
 		9EE703BEA1A769299E20ADBB /* Pods-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0CE51F0910A76C0B0D8B795E /* Pods-Shared-watchOS-metadata.plist */; };
 		A704AB29C110E538318CF129 /* Pods-Shared-iOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = BBABE84031827AE56C8043E8 /* Pods-Shared-iOS-metadata.plist */; };
@@ -2606,7 +2602,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1010;
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1120;
 				ORGANIZATIONNAME = "Robbie Trencheny";
 				TargetAttributes = {
 					B627CB061D83C87B0057173E = {
@@ -2866,7 +2862,6 @@
 				B606169C1D1F117800249C11 /* US-EN-Alexa-Wife-Is-Arriving.wav in Resources */,
 				B60616211D1F117700249C11 /* US-EN-Morgan-Freeman-Liquor-Cabinet-Opened.wav in Resources */,
 				B60616331D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Carbon-Monoxide.wav in Resources */,
-				9C4E5E23229D98530044C8EC /* HomeAssistant.release.xcconfig in Resources */,
 				B658AA7322506AD400C9BFE3 /* GoogleService-Info-Development.plist in Resources */,
 				B60221FC226D9FB800E8DBFE /* notification.json in Resources */,
 				B606164E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Light.wav in Resources */,
@@ -2879,10 +2874,8 @@
 				B6E2D4B82270406B00446DFA /* Beta LaunchScreen.storyboard in Resources */,
 				B60616561D1F117700249C11 /* US-EN-Morgan-Freeman-Welcome-Home.wav in Resources */,
 				B657A8F61CA646EB00121384 /* Release LaunchScreen.storyboard in Resources */,
-				9C4E5E24229D98580044C8EC /* HomeAssistant.debug.xcconfig in Resources */,
 				B672AB1222150ED600175465 /* white@2x.png in Resources */,
 				B60616431D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Kitchen-Light.wav in Resources */,
-				9C4E5E26229D986B0044C8EC /* HomeAssistant.beta.xcconfig in Resources */,
 				B60616341D1F117700249C11 /* US-EN-Morgan-Freeman-Smartthings-Detected-Smoke.wav in Resources */,
 				B60616841D1F117700249C11 /* US-EN-Alexa-Girlfriend-Is-Arriving.wav in Resources */,
 				B672AB292215114A00175465 /* release@2x.png in Resources */,
@@ -2994,7 +2987,6 @@
 				B672AB1A22150ED600175465 /* red@3x.png in Resources */,
 				B60616441D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Light.wav in Resources */,
 				B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */,
-				9C4E5E28229D992A0044C8EC /* HomeAssistant.xcconfig in Resources */,
 				B60616361D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Garage.wav in Resources */,
 				B6D8A3282271448E00FA765D /* error.json in Resources */,
 				B672AB1D22150ED600175465 /* black@2x.png in Resources */,
