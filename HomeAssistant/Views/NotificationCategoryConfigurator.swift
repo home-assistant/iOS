@@ -261,7 +261,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
                     // swiftlint:disable:next force_try
                     try! self.realm.write {
-                        self.realm.add(vc.action, update: true)
+                        self.realm.add(vc.action, update: .all)
                         self.category.Actions.append(vc.action)
                     }
                 }

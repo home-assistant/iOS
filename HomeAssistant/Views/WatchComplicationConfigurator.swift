@@ -297,7 +297,7 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
 
                 Current.Log.verbose("COMPLICATION \(self.config) \(self.config.Data)")
 
-                realm.add(self.config, update: true)
+                realm.add(self.config, update: .all)
             }
         }
     }

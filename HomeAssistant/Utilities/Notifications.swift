@@ -70,7 +70,7 @@ extension HomeAssistantAPI {
 
                         // swiftlint:disable:next force_try
                         try! realm.write {
-                            realm.add(localAction, update: true)
+                            realm.add(localAction, update: .all)
                             localCategory.Actions.append(localAction)
                         }
                     }
@@ -78,7 +78,7 @@ extension HomeAssistantAPI {
 
                 // swiftlint:disable:next force_try
                 try! realm.write {
-                    realm.add(localCategory, update: true)
+                    realm.add(localCategory, update: .all)
                 }
                 cats.append(localCategory)
             }

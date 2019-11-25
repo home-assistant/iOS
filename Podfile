@@ -21,7 +21,7 @@ ENV['CUSTOM_FONT_NAME'] = 'MaterialDesignIcons'
 def shared_pods
     pod 'Alamofire'
     pod 'AlamofireImage'
-    pod 'Communicator'
+    pod 'Communicator', '~> 3.3.0'
     pod 'DeviceKit'
     pod 'Iconic', :git => 'https://github.com/home-assistant/Iconic.git', :branch => 'master'
     pod 'KeychainAccess'
