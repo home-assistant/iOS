@@ -9,8 +9,25 @@
 import Foundation
 import UIKit
 import Shared
+import Intents
 
 class FireEventIntentHandler: NSObject, FireEventIntentHandling {
+    func resolveEventName(for intent: FireEventIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+        if let eventName = intent.eventName {
+            completion(.success(with: eventName))
+            return
+        }
+        completion(.confirmationRequired(with: intent.eventName))
+    }
+
+    func resolveEventData(for intent: FireEventIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+        if let eventData = intent.eventData {
+            completion(.success(with: eventData))
+            return
+        }
+        completion(.confirmationRequired(with: intent.eventData))
+    }
+
     func confirm(intent: FireEventIntent, completion: @escaping (FireEventIntentResponse) -> Void) {
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
             Current.Log.error("Can't get a authenticated API \(error)")
@@ -29,19 +46,6 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
         }
 
         Current.Log.verbose("Handling fire event shortcut \(intent)")
-
-        var successCode: FireEventIntentResponseCode = .success
-
-        if intent.eventData == nil, let boardStr = UIPasteboard.general.string, let data = boardStr.data(using: .utf8) {
-            let validJSON = ((try? JSONSerialization.jsonObject(with: data, options: .allowFragments)) != nil)
-            if boardStr.prefix(1) == "{" && !validJSON {
-                Current.Log.error("Pasteboard has something that looks like JSON but it's invalid: \(boardStr)")
-                completion(FireEventIntentResponse(code: .failureInvalidJSON, userActivity: nil))
-                return
-            }
-            intent.eventData = boardStr
-            successCode = .successViaPasteboard
-        }
 
         var eventDataDict: [String: Any] = [:]
 
@@ -75,14 +79,18 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
                 }
             } catch let error as NSError {
                 Current.Log.error("Error when parsing event data to JSON during FireEvent: \(error)")
-                completion(FireEventIntentResponse(code: .failurePasteboardNotParseable, userActivity: nil))
+                let resp = FireEventIntentResponse(code: .failure, userActivity: nil)
+                resp.error = "Service data not dictionary or JSON"
+                completion(resp)
                 return
             }
         }
 
         api.CreateEvent(eventType: intent.eventName!, eventData: eventDataDict).done { _ in
             Current.Log.verbose("Successfully fired event during shortcut")
-            completion(FireEventIntentResponse(code: successCode, userActivity: nil))
+            let resp = FireEventIntentResponse(code: .success, userActivity: nil)
+            resp.eventName = intent.eventName
+            completion(resp)
         }.catch { error in
             Current.Log.error("Error when firing event in shortcut \(error)")
             let resp = FireEventIntentResponse(code: .failure, userActivity: nil)

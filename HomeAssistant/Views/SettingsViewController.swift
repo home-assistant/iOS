@@ -130,15 +130,15 @@ class SettingsViewController: FormViewController {
             })
         }
 
-        <<< ButtonRow("siriShortcuts") {
-            $0.hidden = Condition(booleanLiteral: UIDevice.current.systemVersion == "12")
-            $0.title = L10n.Settings.DetailsSection.SiriShortcutsRow.title
-            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                let view = SettingsDetailViewController()
-                view.detailGroup = "siri"
-                return view
-            }, onDismiss: nil)
-        }
+//        <<< ButtonRow("siriShortcuts") {
+//            $0.hidden = Condition(booleanLiteral: UIDevice.current.systemVersion == "12")
+//            $0.title = L10n.Settings.DetailsSection.SiriShortcutsRow.title
+//            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+//                let view = SettingsDetailViewController()
+//                view.detailGroup = "siri"
+//                return view
+//            }, onDismiss: nil)
+//        }
 
         +++ ButtonRow("privacy") {
             $0.title = L10n.SettingsDetails.Privacy.title

@@ -12,17 +12,14 @@ import MapKit
 
 @available(iOS 12, *)
 extension CallServiceIntent {
-    convenience init(domain: String, service: String, description: String?) {
+    convenience init(domain: String, service: String) {
         self.init()
-        self.serviceDomain = domain
-        self.service = service
-        self.serviceDescription = description
+        self.service = "\(domain).\(service)"
     }
 
     convenience init(domain: String, service: String, payload: Any?) {
         self.init()
-        self.serviceDomain = domain
-        self.service = service
+        self.service = "\(domain).\(service)"
 
         if let payload = payload, let jsonData = try? JSONSerialization.data(withJSONObject: payload, options: []),
             let jsonString = String(data: jsonData, encoding: .utf8) {

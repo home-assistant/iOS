@@ -9,8 +9,17 @@
 import Foundation
 import UIKit
 import Shared
+import Intents
 
 class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
+    func resolveTemplate(for intent: RenderTemplateIntent,
+                         with completion: @escaping (INStringResolutionResult) -> Void) {
+        if let templateStr = intent.template {
+            completion(.success(with: templateStr))
+            return
+        }
+        completion(.confirmationRequired(with: intent.template))
+    }
 
     func confirm(intent: RenderTemplateIntent, completion: @escaping (RenderTemplateIntentResponse) -> Void) {
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
@@ -28,36 +37,27 @@ class RenderTemplateIntentHandler: NSObject, RenderTemplateIntentHandling {
             return
         }
 
-        var successCode: RenderTemplateIntentResponseCode = .success
-
-        if intent.template == nil, let pasteboardString = UIPasteboard.general.string {
-            intent.template = pasteboardString
-            successCode = .successViaPasteboard
-        } else {
-            completion(.failure(error: "Template not previously set and no template found on pasteboard"))
-            return
-        }
-
-        if let templateStr = intent.template {
-            Current.Log.verbose("Rendering template \(templateStr)")
-
-            api.RenderTemplate(templateStr: templateStr).done { rendered in
-                Current.Log.verbose("Successfully renderedTemplate")
-
-                UIPasteboard.general.string = rendered
-
-                completion(RenderTemplateIntentResponse(code: successCode, userActivity: nil))
-            }.catch { error in
-                Current.Log.error("Error when rendering template in shortcut \(error)")
-                let resp = RenderTemplateIntentResponse(code: .failure, userActivity: nil)
-                resp.error = "Error during api.RenderTemplate: \(error.localizedDescription)"
-                completion(resp)
-            }
-
-        } else {
+        guard let templateStr = intent.template else {
             Current.Log.error("Unable to unwrap intent.template")
             let resp = RenderTemplateIntentResponse(code: .failure, userActivity: nil)
             resp.error = "Unable to unwrap intent.template"
+            completion(resp)
+            return
+        }
+
+        Current.Log.verbose("Rendering template \(templateStr)")
+
+        api.RenderTemplate(templateStr: templateStr).done { rendered in
+            Current.Log.verbose("Successfully renderedTemplate")
+
+            let resp = RenderTemplateIntentResponse(code: .success, userActivity: nil)
+            resp.renderedTemplate = rendered
+
+            completion(resp)
+        }.catch { error in
+            Current.Log.error("Error when rendering template in shortcut \(error)")
+            let resp = RenderTemplateIntentResponse(code: .failure, userActivity: nil)
+            resp.error = "Error during api.RenderTemplate: \(error.localizedDescription)"
             completion(resp)
         }
     }

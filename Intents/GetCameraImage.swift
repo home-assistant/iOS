@@ -10,8 +10,42 @@ import Foundation
 import MobileCoreServices
 import UIKit
 import Shared
+import Intents
 
 class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
+    func resolveCameraID(for intent: GetCameraImageIntent,
+                         with completion: @escaping (INStringResolutionResult) -> Void) {
+        guard let cameraID = intent.cameraID else {
+            completion(.confirmationRequired(with: intent.cameraID))
+            return
+        }
+
+        if !cameraID.hasPrefix("camera.") {
+            completion(.confirmationRequired(with: intent.cameraID))
+            return
+        }
+
+        completion(.success(with: cameraID))
+    }
+
+    func provideCameraIDOptions(for intent: GetCameraImageIntent,
+                                with completion: @escaping ([String]?, Error?) -> Void) {
+        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+            completion(nil, HomeAssistantAPI.APIError.managerNotAvailable)
+            return
+        }
+
+        api.GetStates().compactMapValues { entity -> String? in
+            if entity.Domain == "camera" {
+                return entity.ID
+            }
+            return nil
+        }.done { cameraIDs in
+            completion(cameraIDs.sorted(), nil)
+        }.catch { error in
+            completion(nil, error)
+        }
+    }
 
     func confirm(intent: GetCameraImageIntent, completion: @escaping (GetCameraImageIntentResponse) -> Void) {
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
@@ -29,17 +63,6 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
             return
         }
 
-        var successCode: GetCameraImageIntentResponseCode = .success
-
-        if intent.cameraID == nil, let pasteboardString = UIPasteboard.general.string,
-            pasteboardString.hasPrefix("camera.") {
-            intent.cameraID = pasteboardString
-            successCode = .successViaPasteboard
-        } else {
-            completion(GetCameraImageIntentResponse(code: .failurePasteboardNotParseable, userActivity: nil))
-            return
-        }
-
         if let cameraID = intent.cameraID {
             Current.Log.verbose("Getting camera frame for \(cameraID)")
 
@@ -52,9 +75,11 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
                     return
                 }
 
-                UIPasteboard.general.setData(pngData, forPasteboardType: kUTTypePNG as String)
-
-                completion(GetCameraImageIntentResponse(code: successCode, userActivity: nil))
+                let resp = GetCameraImageIntentResponse(code: .success, userActivity: nil)
+                resp.cameraImage = INFile(data: pngData, filename: "\(cameraID)_still.png",
+                    typeIdentifier: kUTTypePNG as String)
+                resp.cameraID = cameraID
+                completion(resp)
             }.catch { error in
                 Current.Log.error("Error when getting camera image in shortcut \(error)")
                 let resp = GetCameraImageIntentResponse(code: .failure, userActivity: nil)

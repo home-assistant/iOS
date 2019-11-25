@@ -533,43 +533,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @available(iOS 12.0, *)
     func suggestSiriShortcuts() {
-        let generics: [INIntent] = [FireEventIntent(), SendLocationIntent(), CallServiceIntent(),
-                                    GetCameraImageIntent(), RenderTemplateIntent()]
-        var shortcutsToSuggest: [INShortcut] = generics.compactMap { INShortcut(intent: $0) }
-
-        _ = HomeAssistantAPI.authenticatedAPIPromise.then { api in
-            api.GetEvents()
-            }.then { eventsResp -> Promise<HomeAssistantAPI> in
-                for event in eventsResp {
-                    if let eventName = event.Event {
-                        if eventName == "*" {
-                            continue
-                        }
-                        if let shortcut = INShortcut(intent: FireEventIntent(eventName: eventName)) {
-                            shortcutsToSuggest.append(shortcut)
-                        }
-                    }
-                }
-
-                return HomeAssistantAPI.authenticatedAPIPromise
-            }.then { api in
-                api.GetServices()
-            }.done { serviceResp in
-                for domainContainer in serviceResp {
-                    let domain = domainContainer.Domain
-                    for service in domainContainer.Services {
-                        let desc = service.value.Description
-                        if let shortcut = INShortcut(intent: CallServiceIntent(domain: domain, service: service.key,
-                                                                               description: desc)) {
-                            shortcutsToSuggest.append(shortcut)
-                        }
-                    }
-                }
-
-                Current.Log.verbose("Suggesting \(shortcutsToSuggest.count) shortcuts to Siri")
-
-                INVoiceShortcutCenter.shared.setShortcutSuggestions(shortcutsToSuggest)
-        }
+        let shortcuts: [INShortcut] = [FireEventIntent(), SendLocationIntent(), CallServiceIntent(),
+                                       GetCameraImageIntent(),
+                                       RenderTemplateIntent()].compactMap { INShortcut(intent: $0) }
+        INVoiceShortcutCenter.shared.setShortcutSuggestions(shortcuts)
     }
 
     @available(iOS 12.0, *)

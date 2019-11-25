@@ -913,6 +913,7 @@
 		B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrationRequest.swift; sourceTree = "<group>"; };
 		B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyRequest.swift; sourceTree = "<group>"; };
 		B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookSensor.swift; sourceTree = "<group>"; };
+		B630F295238C9A1200C6E4BE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
 		B637243A21697AA7006B102A /* HomeAssistant Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant Beta.entitlements"; sourceTree = "<group>"; };
 		B637243C21697B06006B102A /* APNSAttachmentService Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "APNSAttachmentService Beta.entitlements"; sourceTree = "<group>"; };
 		B637243D21697B19006B102A /* SiriIntents Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "SiriIntents Beta.entitlements"; sourceTree = "<group>"; };
@@ -938,7 +939,6 @@
 		B648AE232275918E006972AF /* Segues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Segues.swift; sourceTree = "<group>"; };
 		B648AE242275918E006972AF /* Scenes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scenes.swift; sourceTree = "<group>"; };
 		B64BB3A71E9C6551001E8B46 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
-		B655E917227FF19200CFDC94 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
 		B655E919227FF19400CFDC94 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Intents.strings"; sourceTree = "<group>"; };
 		B655E91B227FF19600CFDC94 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Intents.strings"; sourceTree = "<group>"; };
 		B655E91D227FF19800CFDC94 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Intents.strings; sourceTree = "<group>"; };
@@ -4116,7 +4116,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				B63CCDCE2164714900123C50 /* Base */,
-				B655E917227FF19200CFDC94 /* en */,
 				B655E919227FF19400CFDC94 /* zh-Hans */,
 				B655E91B227FF19600CFDC94 /* zh-Hant */,
 				B655E91D227FF19800CFDC94 /* es */,
@@ -4130,6 +4129,7 @@
 				B6FD05692284119600AC45BA /* es-ES */,
 				B6FD056D228411A600AC45BA /* es-MX */,
 				B6FD0571228411B200AC45BA /* ru */,
+				B630F295238C9A1200C6E4BE /* en */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -4500,7 +4500,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Intents/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
@@ -4841,7 +4841,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Intents/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -4876,7 +4876,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Intents/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
