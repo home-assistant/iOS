@@ -150,7 +150,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                             let theIcon = MaterialDesignIcons(named: value)
                             cell.imageView?.image = theIcon.image(ofSize: CGSize(width: CGFloat(30),
                                                                                  height: CGFloat(30)),
-                                                                  color: .black)
+                                                                  color: .systemGray)
                         }
                     }
                     to.selectableRowCellUpdate = { cell, row in
