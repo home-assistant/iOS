@@ -78,7 +78,8 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
                                                                     completionHandler: newStyleAuthCallback)
 
                     if #available(iOS 13.0, *) {
-                        webAuthSession.presentationContextProvider = self.asWebContext as? ASWebAuthenticationPresentationContextProviding
+                        let ctx = self.asWebContext as? ASWebAuthenticationPresentationContextProviding
+                        webAuthSession.presentationContextProvider = ctx
                     }
 
                     webAuthSession.start()

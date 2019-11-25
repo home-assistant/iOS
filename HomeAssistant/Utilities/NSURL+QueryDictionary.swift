@@ -13,7 +13,7 @@ extension URL {
             var dictionary = [String: [String]]()
 
             for keyValueString in query.components(separatedBy: "&") {
-                var parts = keyValueString.components(separatedBy: "=")
+                let parts = keyValueString.components(separatedBy: "=")
                 if parts.count < 2 { continue; }
 
                 let key = parts[0].removingPercentEncoding!

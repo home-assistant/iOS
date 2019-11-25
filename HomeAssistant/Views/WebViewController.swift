@@ -585,6 +585,7 @@ extension WebViewController: WKScriptMessageHandler {
                 tokenManager.authDictionaryForWebView.done { dictionary in
                     let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
                     if let jsonString = String(data: jsonData!, encoding: .utf8) {
+                        // swiftlint:disable:next line_length
                         // Current.Log.verbose("Responding to getExternalAuth with: \(callbackName)(true, \(jsonString))")
                         let script = "\(callbackName)(true, \(jsonString))"
                         self.webView.evaluateJavaScript(script, completionHandler: { (result, error) in

@@ -65,7 +65,7 @@ class AuthenticationViewController: UIViewController {
                 ssids.append(currentSSID)
             }
             Current.Log.verbose("URL \(baseURL) resolves to internal? \(baseURLIsInternal)")
-            var connInfo = ConnectionInfo(externalURL: baseURL, internalURL: nil, cloudhookURL: nil,
+            let connInfo = ConnectionInfo(externalURL: baseURL, internalURL: nil, cloudhookURL: nil,
                                           remoteUIURL: nil, webhookID: "", webhookSecret: nil, internalSSIDs: ssids)
 
 //            if baseURLIsInternal {

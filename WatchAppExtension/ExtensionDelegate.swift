@@ -241,7 +241,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             Current.Log.error("Error updating complications! \(error)")
         }
     }
-    
+
     func didRegisterForRemoteNotifications(withDeviceToken deviceToken: Data) {
         let apnsToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         Current.Log.verbose("Successfully registered for push notifications! APNS token: \(apnsToken)")

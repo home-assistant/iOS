@@ -18,8 +18,15 @@ extension HomeAssistantAPI {
         var categories = Set<UNNotificationCategory>(realm.objects(NotificationCategory.self).map({ $0.category }))
 
         if Current.appConfiguration == .FastlaneSnapshot {
-            categories.insert(UNNotificationCategory(identifier: "camera", actions: [], intentIdentifiers: [], options: UNNotificationCategoryOptions([.customDismissAction])))
-            categories.insert(UNNotificationCategory(identifier: "map", actions: [], intentIdentifiers: [], options: UNNotificationCategoryOptions([.customDismissAction])))
+            let cameraCat = UNNotificationCategory(identifier: "camera",
+                                                   actions: [],
+                                                   intentIdentifiers: [],
+                                                   options: UNNotificationCategoryOptions([.customDismissAction]))
+            let mapCat = UNNotificationCategory(identifier: "map",
+                                                actions: [],
+                                                intentIdentifiers: [],
+                                                options: UNNotificationCategoryOptions([.customDismissAction]))
+            categories.formUnion([cameraCat, mapCat])
         }
 
         Current.Log.verbose("Providing \(categories.count) categories to system: \(categories)")

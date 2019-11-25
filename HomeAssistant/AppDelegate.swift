@@ -186,7 +186,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        if var userInfoDict = userInfo as? [String: Any],
+        if let userInfoDict = userInfo as? [String: Any],
             let hadict = userInfoDict["homeassistant"] as? [String: String], let command = hadict["command"] {
                 switch command {
                 case "request_location_update":
@@ -596,7 +596,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #if targetEnvironment(simulator)
         SDStatusBarManager.sharedInstance()?.enableOverrides()
         #endif
-        
+
         UIView.setAnimationsEnabled(false)
 
         guard let urlStr = prefs.string(forKey: "url"), let url = URL(string: urlStr) else {
@@ -779,9 +779,12 @@ extension AppConfiguration {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
+    // swiftlint:disable:next function_body_length
     public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
-        if Current.appConfiguration == .FastlaneSnapshot && response.actionIdentifier == UNNotificationDismissActionIdentifier && response.notification.request.content.categoryIdentifier == "map" {
+        if Current.appConfiguration == .FastlaneSnapshot &&
+            response.actionIdentifier == UNNotificationDismissActionIdentifier &&
+            response.notification.request.content.categoryIdentifier == "map" {
             SettingsViewController.showCameraContentExtension()
         }
         Messaging.messaging().appDidReceiveMessage(response.notification.request.content.userInfo)
