@@ -364,9 +364,11 @@ class NotificationSoundsViewController: FormViewController, UIDocumentPickerDele
                 seal.reject(SoundError(soundURL: nil, kind: .copyError, underlying: error))
             }
 
-            if self.form.rowBy(tag: newURL.lastPathComponent) === nil,
-                let section = self.form.sectionBy(tag: formSectionTag) {
-                section.append(self.getSoundRow(newURL))
+            DispatchQueue.main.async {
+                if self.form.rowBy(tag: newURL.lastPathComponent) === nil,
+                    let section = self.form.sectionBy(tag: formSectionTag) {
+                    section.append(self.getSoundRow(newURL))
+                }
             }
 
             seal.fulfill(newURL)
