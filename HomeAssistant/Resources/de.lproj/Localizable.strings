@@ -132,7 +132,7 @@ an dieses Gerät gesschickt.";
 "location_change_notification.region_enter.body" = "%@ betreten";
 "location_change_notification.region_exit.body" = "%@ verlassen";
 "location_change_notification.significant_location_update.body" = "Standortaktualisierung: Erhebliche Standortänderung";
-"location_change_notification.background_fetch.body" = "Standortaktualisierung: Hintergrundaktualisierungt";
+"location_change_notification.background_fetch.body" = "Standortaktualisierung: Hintergrundaktualisierung";
 "about.review.title" = "Bewerte diese App";
 "settings.event_log.title" = "Ereignisprotokoll";
 "settings_details.location.notifications.push_notification.title" = "Anfrage via Push";
