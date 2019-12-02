@@ -274,7 +274,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        let name = shortcutItem.localizedTitle
+        let name = shortcutItem.userInfo
         let actionPromise = api.HandleAction(actionID: shortcutItem.type, actionName: name,
                                              source: .AppShortcut)
 
