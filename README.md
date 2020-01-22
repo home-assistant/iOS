@@ -64,6 +64,9 @@ To keep the Xcode layout mirrored with on-disk layout we're using [Synx](https:/
 - [MBProgressHUD](https://github.com/jdg/MBProgressHUD): MBProgressHUD + Customizations
 - [Whisper](https://github.com/hyperoslo/Whisper): Whisper is a component that will make the task of display messages and in-app notifications simple. It has three different views inside
 
+### Translations
+-  [Lokalise](https://lokalise.com/public/834452985a05254348aee2.46389241/): Translations are handled through Lokalise and not through this repository. To contribute to the translations please join the [Lokalise](https://lokalise.com/public/834452985a05254348aee2.46389241/) team.
+
 ### Utilities
 
 - [DeviceKit](https://github.com/dennisweissmann/DeviceKit): DeviceKit is a value-type replacement of UIDevice.
