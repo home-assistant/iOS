@@ -237,7 +237,7 @@ public class WebhookSensors {
             return nil
         }
 
-        return WebhookSensor(name: "Floors Ascended", uniqueID: "pedometer_floors_ascended", icon: "mdi:slope-uphill",
+        return WebhookSensor(name: "Floors Ascended", uniqueID: "pedometer_floors_ascended", icon: "mdi:stairs-up",
                              state: intVal, unit: "floors")
     }
 
@@ -247,7 +247,7 @@ public class WebhookSensors {
         }
 
         return WebhookSensor(name: "Floors Descended", uniqueID: "pedometer_floors_descended",
-                             icon: "mdi:slope-downhill", state: intVal, unit: "floors")
+                             icon: "mdi:stairs-down", state: intVal, unit: "floors")
     }
 
     private var steps: WebhookSensor? {
