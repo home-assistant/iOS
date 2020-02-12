@@ -634,8 +634,12 @@ extension WebViewController: WKScriptMessageHandler {
     func handleThemeUpdate(_ messageBody: [String: Any]) {
         if let styles = messageBody["styles"] as? [String: String] {
             // Current.Log.verbose("Styles \(styles)")
+            var headerKey = "primary-color"
+            if styles["app-header-background-color"] != nil {
+                headerKey = "app-header-background-color"
+            }
             let backgroundColor = self.parseThemeStyle("primary-background-color", styles)
-            let headerColor = self.parseThemeStyle("primary-color", styles)
+            let headerColor = self.parseThemeStyle(headerKey, styles)
             let refreshTintColor = self.parseThemeStyle("text-primary-color", styles)
             self.styleUI(backgroundColor, headerColor, refreshTintColor)
         } else {
