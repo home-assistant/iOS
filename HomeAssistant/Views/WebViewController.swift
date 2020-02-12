@@ -342,10 +342,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         }
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
-        }.then { api in
-            api.GetAndSendLocation(trigger: .Manual)
-        }.done {_ in
-            Current.Log.verbose("Sending current location via button press")
+        }.then { api -> Promise<Void> in
+            if Current.settingsStore.locationEnabled {
+                return api.GetAndSendLocation(trigger: .Manual).asVoid()
+            } else {
+                return when(fulfilled: [api.UpdateSensors(.Manual).asVoid(), api.updateComplications().asVoid()])
+            }
         }.catch {error in
             self.showSwiftMessageError((error as NSError).localizedDescription)
 //            let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
