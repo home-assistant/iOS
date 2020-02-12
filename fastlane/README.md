@@ -31,11 +31,6 @@ fastlane ios refresh_dsyms
 fastlane ios refresh_beta_dsyms
 ```
 
-### ios create_iap
-```
-fastlane ios create_iap
-```
-Create in-app purchases
 ### ios push_certs
 ```
 fastlane ios push_certs
