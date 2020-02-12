@@ -196,11 +196,11 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
                     return TextRow {
                         $0.placeholder = L10n.Settings.ConnectionSection.InternalUrlSsids.placeholder
                         $0.value = self.currentSSID
-                    }.onCellHighlightChanged { _, _ in self.storeSSIDs() }
+                    }.onCellHighlightChanged { self.addSSID($1.value) }
                 }
 
                 $0.append(contentsOf: Current.settingsStore.connectionInfo?.internalSSIDs?.map { ssid in
-                    return TextRow { $0.value = ssid }.onCellHighlightChanged { _, _ in self.storeSSIDs() }
+                    return TextRow { $0.value = ssid }.onCellHighlightChanged { self.addSSID($1.value) }
                 } ?? [TextRow]())
             }
     }
@@ -231,15 +231,18 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
 
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at indexes: [IndexPath]) {
         super.rowsHaveBeenRemoved(rows, at: indexes)
-        self.storeSSIDs()
+        let values = rows.compactMap { $0.baseValue as? String }
+        Current.settingsStore.connectionInfo?.internalSSIDs?.removeAll { values.contains($0) }
     }
 
-    func storeSSIDs() {
-        if let section = self.form.sectionBy(tag: "internalSSIDs") as? MultivaluedSection {
-            Current.settingsStore.connectionInfo?.internalSSIDs = section.values().compactMap { $0 as? String }
+    func addSSID(_ ssid: String?) {
+        guard let value = ssid else { return }
+        guard let ssids = Current.settingsStore.connectionInfo?.internalSSIDs else { return }
+        if !ssids.contains(value) {
+            Current.settingsStore.connectionInfo?.internalSSIDs?.append(value)
         }
     }
-
+    
     func confirmURL(_ connectionURL: URL) -> Promise<Void> {
         return Promise { seal in
             guard let webhookID = Current.settingsStore.connectionInfo?.webhookID else {
