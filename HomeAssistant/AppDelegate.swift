@@ -274,18 +274,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        let name = shortcutItem.localizedTitle
-        let actionPromise = api.HandleAction(actionID: shortcutItem.type, actionName: name,
-                                             source: .AppShortcut)
-
-        var promises = [actionPromise]
+        var action: Promise<Bool>?
 
         if shortcutItem.type == "sendLocation" {
-            promises.append(api.GetAndSendLocation(trigger: .AppShortcut))
+            action = api.GetAndSendLocation(trigger: .AppShortcut)
+        } else if let userInfo = shortcutItem.userInfo, let name = userInfo["name"] as? String {
+            action = api.HandleAction(actionID: shortcutItem.type, actionName: name, source: .AppShortcut)
         }
 
-        when(fulfilled: promises).done { worked in
-            completionHandler(worked[0])
+        guard let actionPromise = action else {
+            Current.Log.error("Shortcut promises is nil!!! Shortcut type was \(shortcutItem.type)")
+            completionHandler(false)
+            return
+        }
+
+        actionPromise.done { worked in
+            completionHandler(worked)
         }.catch { error in
             Current.Log.error("Received error from handleAction during App Shortcut: \(error)")
             completionHandler(false)

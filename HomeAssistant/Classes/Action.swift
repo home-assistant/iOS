@@ -68,7 +68,9 @@ public class Action: Object, Mappable, NSCoding {
 
     #if os(iOS)
     public var uiShortcut: UIApplicationShortcutItem {
-        return UIApplicationShortcutItem(type: self.ID, localizedTitle: self.Text)
+        return UIApplicationShortcutItem(type: self.ID, localizedTitle: self.Text,
+                                         localizedSubtitle: nil, icon: nil,
+                                         userInfo: ["name": self.Name as NSSecureCoding])
     }
     #endif
 }
