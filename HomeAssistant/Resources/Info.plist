@@ -1,417 +1,542 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
+    <dict>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>en</string>
+        <key>CFBundleDisplayName</key>
+        <string>$(PRODUCT_NAME)</string>
+        <key>CFBundleExecutable</key>
+        <string>$(EXECUTABLE_NAME)</string>
+        <key>CFBundleIcons</key>
+        <dict>
+            <key>CFBundleAlternateIcons</key>
+            <dict>
+                <key>beta</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>beta</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>black</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>black</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>blue</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>blue</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>caribbean-green</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>caribbean-green</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>cornflower-blue</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>cornflower-blue</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>crimson</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>crimson</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>dev</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>dev</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>electric-violet</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>electric-violet</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>fire-orange</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>fire-orange</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>green</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>green</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>ha-blue</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>ha-blue</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>old-beta</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>old-beta</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>old-dev</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>old-dev</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>old-release</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>old-release</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>orange</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>orange</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>pink</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>pink</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>purple</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>purple</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>red</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>red</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>release</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>release</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+                <key>white</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>white</string>
+                    </array>
+                    <key>UIPrerenderedIcon</key>
+                    <true />
+                </dict>
+            </dict>
+            <key>CFBundlePrimaryIcon</key>
+            <dict>
+                <key>CFBundleIconFiles</key>
+                <array>
+                    <string>AppIcon</string>
+                </array>
+                <key>UIPrerenderedIcon</key>
+                <true />
+            </dict>
+        </dict>
+        <key>CFBundleIcons~ipad</key>
+        <dict>
+            <key>CFBundleAlternateIcons</key>
+            <dict>
+                <key>beta</key>
 <dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
-	<key>CFBundleDisplayName</key>
-	<string>$(PRODUCT_NAME)</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIcons</key>
-	<dict>
-		<key>CFBundleAlternateIcons</key>
-		<dict>
-			<key>beta</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>beta</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>black</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>black</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>blue</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>blue</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>dev</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>dev</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>green</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>green</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>old-beta</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>old-beta</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>old-dev</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>old-dev</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>old-release</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>old-release</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>orange</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>orange</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>purple</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>purple</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>red</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>red</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>release</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>release</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>white</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>white</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-		</dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>AppIcon</string>
-			</array>
-			<key>UIPrerenderedIcon</key>
-			<true/>
-		</dict>
-	</dict>
-	<key>CFBundleIcons~ipad</key>
-	<dict>
-		<key>CFBundleAlternateIcons</key>
-		<dict>
-			<key>beta</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>beta</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>black</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>black</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>blue</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>blue</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>dev</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>dev</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>green</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>green</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>old-beta</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>old-beta</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>old-dev</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>old-dev</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>old-release</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>old-release</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>orange</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>orange</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>purple</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>purple</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>red</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>red</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>release</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>release</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>white</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>white</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-		</dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>AppIcon</string>
-			</array>
-			<key>UIPrerenderedIcon</key>
-			<true/>
-		</dict>
-	</dict>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>2.0.0</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>${ENV_URL_HANDLER}</string>
-			</array>
-		</dict>
-	</array>
-	<key>CFBundleVersion</key>
-	<string>70</string>
-	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
-	<false/>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<false/>
-	<key>FirebaseMessagingAutoInitEnabled</key>
-	<false/>
-	<key>IS_SANDBOXED</key>
-	<string>${IS_SANDBOXED}</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>googlechrome</string>
-		<string>googlechromes</string>
-		<string>googlechrome-x-callback</string>
-		<string>fb</string>
-		<string>tweetbot</string>
-		<string>twitter</string>
-		<string>shortcuts</string>
-	</array>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We suggest selecting "Always Allow" for the best location experience.
-            Selecting "Only While Using the App" will disable iBeacons, geofences, background location updates and accurate reporting.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.</string>
-	<key>NSMotionUsageDescription</key>
-	<string>Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Photo Library access is needed to allow saving photos from the web view.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo Library access is needed to allow saving photos from the web view.</string>
-	<key>NSSiriUsageDescription</key>
-	<string>We use Siri to allow created shortcuts to interact with the app.</string>
-	<key>NSUserActivityTypes</key>
-	<array>
-		<string>CallServiceIntent</string>
-		<string>FireEventIntent</string>
-		<string>GetCameraImageIntent</string>
-		<string>RenderTemplateIntent</string>
-		<string>SendLocationIntent</string>
-	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Roboto-Black.ttf</string>
-		<string>Roboto-BlackItalic.ttf</string>
-		<string>Roboto-Bold.ttf</string>
-		<string>Roboto-BoldItalic.ttf</string>
-		<string>Roboto-Italic.ttf</string>
-		<string>Roboto-Light.ttf</string>
-		<string>Roboto-LightItalic.ttf</string>
-		<string>Roboto-Medium.ttf</string>
-		<string>Roboto-MediumItalic.ttf</string>
-		<string>Roboto-Regular.ttf</string>
-		<string>Roboto-Thin.ttf</string>
-		<string>Roboto-ThinItalic.ttf</string>
-	</array>
-	<key>UIApplicationShortcutItems</key>
-	<array>
-		<dict>
-			<key>UIApplicationShortcutItemIconType</key>
-			<string>UIApplicationShortcutIconTypeMarkLocation</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>SEND_LOCATION_APP_SHORTCUT_TITLE</string>
-			<key>UIApplicationShortcutItemType</key>
-			<string>sendLocation</string>
-		</dict>
-	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>location</string>
-		<string>remote-notification</string>
-	</array>
-	<key>UIFileSharingEnabled</key>
-	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>$(LAUNCHSCREEN_STORYBOARD)</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
-	<key>UIStatusBarTintParameters</key>
-	<dict>
-		<key>UINavigationBar</key>
-		<dict>
-			<key>Style</key>
-			<string>UIBarStyleDefault</string>
-			<key>Translucent</key>
-			<false/>
-		</dict>
-	</dict>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>firebase_crashlytics_collection_enabled</key>
-	<false/>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>beta</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
 </dict>
+<key>black</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>black</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>blue</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>blue</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>caribbean-green</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>caribbean-green</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>cornflower-blue</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>cornflower-blue</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>crimson</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>crimson</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>dev</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>dev</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>electric-violet</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>electric-violet</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>fire-orange</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>fire-orange</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>green</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>green</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>ha-blue</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>ha-blue</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>old-beta</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>old-beta</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>old-dev</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>old-dev</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>old-release</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>old-release</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>orange</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>orange</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>pink</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>pink</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>purple</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>purple</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>red</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>red</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>release</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>release</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+<key>white</key>
+<dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>white</string>
+    </array>
+    <key>UIPrerenderedIcon</key>
+    <true/>
+</dict>
+            </dict>
+            <key>CFBundlePrimaryIcon</key>
+            <dict>
+                <key>CFBundleIconFiles</key>
+                <array>
+                    <string>AppIcon</string>
+                </array>
+                <key>UIPrerenderedIcon</key>
+                <true />
+            </dict>
+        </dict>
+        <key>CFBundleIdentifier</key>
+        <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.0</string>
+        <key>CFBundleName</key>
+        <string>$(PRODUCT_NAME)</string>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>CFBundleShortVersionString</key>
+        <string>2.0.0</string>
+        <key>CFBundleSignature</key>
+        <string>????</string>
+        <key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleURLName</key>
+                <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                    <string>${ENV_URL_HANDLER}</string>
+                </array>
+            </dict>
+        </array>
+        <key>CFBundleVersion</key>
+        <string>70</string>
+        <key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+        <false />
+        <key>FirebaseAppDelegateProxyEnabled</key>
+        <false />
+        <key>FirebaseMessagingAutoInitEnabled</key>
+        <false />
+        <key>IS_SANDBOXED</key>
+        <string>${IS_SANDBOXED}</string>
+        <key>ITSAppUsesNonExemptEncryption</key>
+        <false />
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+            <string>googlechrome</string>
+            <string>googlechromes</string>
+            <string>googlechrome-x-callback</string>
+            <string>fb</string>
+            <string>tweetbot</string>
+            <string>twitter</string>
+            <string>shortcuts</string>
+        </array>
+        <key>LSRequiresIPhoneOS</key>
+        <true />
+        <key>NSAppTransportSecurity</key>
+        <dict>
+            <key>NSAllowsArbitraryLoads</key>
+            <true />
+        </dict>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>We suggest selecting "Always Allow" for the best location experience.
+            Selecting "Only While Using the App" will disable iBeacons, geofences, background location updates and accurate reporting.</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.</string>
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.</string>
+        <key>NSMotionUsageDescription</key>
+        <string>Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.</string>
+        <key>NSPhotoLibraryAddUsageDescription</key>
+        <string>Photo Library access is needed to allow saving photos from the web view.</string>
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>Photo Library access is needed to allow saving photos from the web view.</string>
+        <key>NSSiriUsageDescription</key>
+        <string>We use Siri to allow created shortcuts to interact with the app.</string>
+        <key>NSUserActivityTypes</key>
+        <array>
+            <string>CallServiceIntent</string>
+            <string>FireEventIntent</string>
+            <string>GetCameraImageIntent</string>
+            <string>RenderTemplateIntent</string>
+            <string>SendLocationIntent</string>
+        </array>
+        <key>UIAppFonts</key>
+        <array>
+            <string>Roboto-Black.ttf</string>
+            <string>Roboto-BlackItalic.ttf</string>
+            <string>Roboto-Bold.ttf</string>
+            <string>Roboto-BoldItalic.ttf</string>
+            <string>Roboto-Italic.ttf</string>
+            <string>Roboto-Light.ttf</string>
+            <string>Roboto-LightItalic.ttf</string>
+            <string>Roboto-Medium.ttf</string>
+            <string>Roboto-MediumItalic.ttf</string>
+            <string>Roboto-Regular.ttf</string>
+            <string>Roboto-Thin.ttf</string>
+            <string>Roboto-ThinItalic.ttf</string>
+        </array>
+        <key>UIApplicationShortcutItems</key>
+        <array>
+            <dict>
+                <key>UIApplicationShortcutItemIconType</key>
+                <string>UIApplicationShortcutIconTypeMarkLocation</string>
+                <key>UIApplicationShortcutItemTitle</key>
+                <string>SEND_LOCATION_APP_SHORTCUT_TITLE</string>
+                <key>UIApplicationShortcutItemType</key>
+                <string>sendLocation</string>
+            </dict>
+        </array>
+        <key>UIBackgroundModes</key>
+        <array>
+            <string>fetch</string>
+            <string>location</string>
+            <string>remote-notification</string>
+        </array>
+        <key>UIFileSharingEnabled</key>
+        <true />
+        <key>UILaunchStoryboardName</key>
+        <string>$(LAUNCHSCREEN_STORYBOARD)</string>
+        <key>UIRequiredDeviceCapabilities</key>
+        <array>
+            <string>armv7</string>
+        </array>
+        <key>UIStatusBarTintParameters</key>
+        <dict>
+            <key>UINavigationBar</key>
+            <dict>
+                <key>Style</key>
+                <string>UIBarStyleDefault</string>
+                <key>Translucent</key>
+                <false />
+            </dict>
+        </dict>
+        <key>UISupportedInterfaceOrientations</key>
+        <array>
+            <string>UIInterfaceOrientationPortrait</string>
+            <string>UIInterfaceOrientationPortraitUpsideDown</string>
+            <string>UIInterfaceOrientationLandscapeLeft</string>
+            <string>UIInterfaceOrientationLandscapeRight</string>
+        </array>
+        <key>UISupportedInterfaceOrientations~ipad</key>
+        <array>
+            <string>UIInterfaceOrientationPortrait</string>
+            <string>UIInterfaceOrientationPortraitUpsideDown</string>
+            <string>UIInterfaceOrientationLandscapeLeft</string>
+            <string>UIInterfaceOrientationLandscapeRight</string>
+        </array>
+        <key>firebase_crashlytics_collection_enabled</key>
+        <false />
+    </dict>
 </plist>

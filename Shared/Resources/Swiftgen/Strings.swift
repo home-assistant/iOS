@@ -1237,10 +1237,22 @@ internal enum L10n {
           internal static let black = L10n.tr("Localizable", "settings_details.general.app_icon.enum.black")
           /// Blue
           internal static let blue = L10n.tr("Localizable", "settings_details.general.app_icon.enum.blue")
+          /// Caribbean Green
+          internal static let caribbeanGreen = L10n.tr("Localizable", "settings_details.general.app_icon.enum.caribbean_green")
+          /// Cornflower Blue
+          internal static let cornflowerBlue = L10n.tr("Localizable", "settings_details.general.app_icon.enum.cornflower_blue")
+          /// Crimson
+          internal static let crimson = L10n.tr("Localizable", "settings_details.general.app_icon.enum.crimson")
           /// Dev
           internal static let dev = L10n.tr("Localizable", "settings_details.general.app_icon.enum.dev")
+          /// Electric Violet
+          internal static let electricViolet = L10n.tr("Localizable", "settings_details.general.app_icon.enum.electric_violet")
+          /// Fire Orange
+          internal static let fireOrange = L10n.tr("Localizable", "settings_details.general.app_icon.enum.fire_orange")
           /// Green
           internal static let green = L10n.tr("Localizable", "settings_details.general.app_icon.enum.green")
+          /// Home Assistant Blue
+          internal static let haBlue = L10n.tr("Localizable", "settings_details.general.app_icon.enum.ha_blue")
           /// Old Beta
           internal static let oldBeta = L10n.tr("Localizable", "settings_details.general.app_icon.enum.old_beta")
           /// Old Dev
@@ -1249,6 +1261,8 @@ internal enum L10n {
           internal static let oldRelease = L10n.tr("Localizable", "settings_details.general.app_icon.enum.old_release")
           /// Orange
           internal static let orange = L10n.tr("Localizable", "settings_details.general.app_icon.enum.orange")
+          /// Pink
+          internal static let pink = L10n.tr("Localizable", "settings_details.general.app_icon.enum.pink")
           /// Purple
           internal static let purple = L10n.tr("Localizable", "settings_details.general.app_icon.enum.purple")
           /// Red

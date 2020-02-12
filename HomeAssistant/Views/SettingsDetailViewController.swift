@@ -583,43 +583,64 @@ enum AppIcon: String, CaseIterable {
     case Dev = "dev"
     case Black = "black"
     case Blue = "blue"
+    case CaribbeanGreen = "caribbean-green"
+    case CornflowerBlue = "cornflower-blue"
+    case Crimson = "crimson"
+    case ElectricViolet = "electric-violet"
+    case FireOrange = "fire-orange"
     case Green = "green"
+    case HaBlue = "ha-blue"
+    case OldBeta = "old-beta"
+    case OldDev = "old-dev"
+    case OldRelease = "old-release"
     case Orange = "orange"
+    case Pink = "pink"
     case Purple = "purple"
     case Red = "red"
     case White = "white"
-    case OldRelease = "old-release"
-    case OldBeta = "old-beta"
-    case OldDev = "old-dev"
 
     var title: String {
         switch self {
+        case .Release:
+            return L10n.SettingsDetails.General.AppIcon.Enum.release
         case .Beta:
             return L10n.SettingsDetails.General.AppIcon.Enum.beta
         case .Dev:
             return L10n.SettingsDetails.General.AppIcon.Enum.dev
-        case .Release:
-            return L10n.SettingsDetails.General.AppIcon.Enum.release
         case .Black:
             return L10n.SettingsDetails.General.AppIcon.Enum.black
         case .Blue:
             return L10n.SettingsDetails.General.AppIcon.Enum.blue
+        case .CaribbeanGreen:
+            return L10n.SettingsDetails.General.AppIcon.Enum.caribbeanGreen
+        case .CornflowerBlue:
+            return L10n.SettingsDetails.General.AppIcon.Enum.cornflowerBlue
+        case .Crimson:
+            return L10n.SettingsDetails.General.AppIcon.Enum.crimson
+        case .ElectricViolet:
+            return L10n.SettingsDetails.General.AppIcon.Enum.electricViolet
+        case .FireOrange:
+            return L10n.SettingsDetails.General.AppIcon.Enum.fireOrange
         case .Green:
             return L10n.SettingsDetails.General.AppIcon.Enum.green
+        case .HaBlue:
+            return L10n.SettingsDetails.General.AppIcon.Enum.haBlue
+        case .OldBeta:
+            return L10n.SettingsDetails.General.AppIcon.Enum.oldBeta
+        case .OldDev:
+            return L10n.SettingsDetails.General.AppIcon.Enum.oldDev
+        case .OldRelease:
+            return L10n.SettingsDetails.General.AppIcon.Enum.oldRelease
         case .Orange:
             return L10n.SettingsDetails.General.AppIcon.Enum.orange
+        case .Pink:
+            return L10n.SettingsDetails.General.AppIcon.Enum.pink
         case .Purple:
             return L10n.SettingsDetails.General.AppIcon.Enum.purple
         case .Red:
             return L10n.SettingsDetails.General.AppIcon.Enum.red
         case .White:
             return L10n.SettingsDetails.General.AppIcon.Enum.white
-        case .OldRelease:
-            return L10n.SettingsDetails.General.AppIcon.Enum.oldRelease
-        case .OldBeta:
-            return L10n.SettingsDetails.General.AppIcon.Enum.oldBeta
-        case .OldDev:
-            return L10n.SettingsDetails.General.AppIcon.Enum.oldDev
         }
     }
 }

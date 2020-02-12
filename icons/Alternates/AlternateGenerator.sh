@@ -1,7 +1,7 @@
 #!/bin/bash
 for filename in *.png; do
-  convert "$filename" -resize 120x120 "../../HomeAssistant/Resources/Alternate Icons/${filename%.png}@2x.png"
-  convert "$filename" -resize 180x180 "../../HomeAssistant/Resources/Alternate Icons/${filename%.png}@3x.png"
+  sips -Z 120x120 "$filename" --out "../../HomeAssistant/Resources/Alternate Icons/${filename%.png}@2x.png"
+  sips -Z 180x180 "$filename" --out "../../HomeAssistant/Resources/Alternate Icons/${filename%.png}@3x.png"
 
   echo "<key>${filename%.png}</key>
     <dict>
