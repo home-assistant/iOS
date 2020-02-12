@@ -137,10 +137,12 @@ public class SettingsStore {
 
     public var notificationsEnabled: Bool {
         get {
+            if prefs.object(forKey: "messagingEnabled") != nil && prefs.bool(forKey: "messagingEnabled") == false {
+                return false
+            }
             return prefs.bool(forKey: "notificationsEnabled")
         }
         set {
-            prefs.set(newValue, forKey: "messagingEnabled")
             prefs.set(newValue, forKey: "notificationsEnabled")
         }
     }
