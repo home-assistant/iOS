@@ -421,7 +421,7 @@
             </dict>
         </array>
         <key>CFBundleVersion</key>
-        <string>70</string>
+        <string>71</string>
         <key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
         <false />
         <key>FirebaseAppDelegateProxyEnabled</key>
