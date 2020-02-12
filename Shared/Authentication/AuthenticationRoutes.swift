@@ -65,11 +65,11 @@ enum AuthenticationRoute {
     private var path: String {
         switch self {
         case .token:
-            return "/auth/token"
+            return "auth/token"
         case .refreshToken:
-            return "/auth/token"
+            return "auth/token"
         case .revokeToken:
-            return "/auth/token"
+            return "auth/token"
         }
     }
 }
