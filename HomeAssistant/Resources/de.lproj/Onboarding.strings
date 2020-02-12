@@ -23,11 +23,11 @@
 "f1j-Ol-pW5.normalTitle" = "Verbinden";
 "fqx-lo-wDB.normalTitle" = "Adresse manuell eingeben";
 "gld-QQ-oTD.normalTitle" = "Verbinden";
-"jrL-9x-fFX.normalTitle" = "Schließen";
+"jrL-9x-fFX.normalTitle" = "Weiter";
 "lM3-aA-jqO.text" = "Authentifizierung";
 "mse-YA-DiV.text" = "Willkommen bei Home Assistant Companion!";
 "nJr-sw-A9l.text" = "Authentifiziert";
-"wsC-f5-jbO.text" = "Wir sind jetzt bereit, uns mit deinem Home Assistant zu verbinden und die erste Authentifizierung durchzuführen. Wenn du unten auf die Schaltfläche Verbinden klickst, öffnet sich ein Browser, in dem du dich einloggen können.";
+"wsC-f5-jbO.text" = "Wir sind jetzt bereit, uns mit deinem Home Assistant zu verbinden und die initiale Authentifizierung durchzuführen. Wenn du unten auf die Schaltfläche Verbinden klickst, öffnet sich ein Browser, in dem du dich einloggen kannst.";
 "suf-pJ-Nle.normalTitle" = "Von vorn anfangen";
 "7iT-bd-cdY.text" = "Manuelle Konfiguration";
 "PIW-dY-j0P.text" = "Bitte gib deine Home Assistant-URL ein, um fortzufahren. Es muss sich um eine vollständige URL im Format \"http://hassio.local 8123\" handeln (d. h. sie enthält Protokoll, Hostnamen und Port).";

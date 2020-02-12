@@ -628,7 +628,7 @@
 "onboarding.connection_test_result.ssl_expired.description" = "Votre certificat SSL a expiré.";
 "onboarding.connection_test_result.client_certificate.description" = "L'authentification par certificat client n'est pas prise en charge.";
 "onboarding.connection_test_result.connection_error.description" = "Erreur de connexion générale %@ .";
-"onboarding.connection_test_result.server_error.description" = "Erreur serveur%@.";
+"onboarding.connection_test_result.server_error.description" = "Erreur serveur: %@";
 "onboarding.connection_test_result.too_old.description" = "Vous devez mettre à niveau votre version de Home Assistant.";
 "onboarding.connection_test_result.unknown_error.description" = "Erreur inconnue: %@";
 "onboarding.discovery.results_label.plural" = "Nous avons trouvé %d Home Assistants sur votre réseau.";
