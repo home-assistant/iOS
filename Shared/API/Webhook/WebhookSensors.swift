@@ -56,9 +56,9 @@ public class WebhookSensors {
             }
         case .unplugged(let level):
             state = "Not Charging"
-            if level <= 5 {
-                icon = "mdi:battery-alert"
-            } else if level > 5 && level < 95 {
+            if level < 10 {
+                icon = "mdi:battery-outline"
+            } else if level >= 10 {
                 let rounded = Int(round(Double(level / 10) - 0.01)) * 10
                 icon = "mdi:battery-\(rounded)"
             }
