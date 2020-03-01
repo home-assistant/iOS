@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 import WebKit
 import KeychainAccess
 import PromiseKit
@@ -117,6 +118,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         config.userContentController = userContentController
 
         self.webView = WKWebView(frame: self.view!.frame, configuration: config)
+        self.webView.customUserAgent = SessionManager.defaultHTTPHeaders["User-Agent"]
         self.webView.isOpaque = false
         self.view!.addSubview(webView)
 
