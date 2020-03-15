@@ -9,7 +9,7 @@
 import Foundation
 import RealmSwift
 
-/// Contains data about an event that occured on the client, used for logging.
+/// Contains data about an event that occurred on the client, used for logging.
 public class ClientEvent: Object {
     /// The type of event being logged.
     public enum EventType: String {
@@ -27,7 +27,7 @@ public class ClientEvent: Object {
         self.jsonPayload = payload
     }
 
-    /// The date the event occured.
+    /// The date the event occurred.
     @objc public dynamic var date: Date = Current.date()
 
     /// The text describing the event.
