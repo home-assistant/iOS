@@ -142,7 +142,7 @@ public class WebhookSensors {
                                           state: "Unknown")
         }
 
-        carrierSensor.State = carrier.carrierName
+        carrierSensor.State = carrier.carrierName ?? "N/A"
         carrierSensor.Attributes = [
             "Carrier ID": key ?? "N/A",
             "Carrier Name": carrier.carrierName ?? "N/A",
