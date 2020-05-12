@@ -204,6 +204,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 case "clear_badge":
                     Current.Log.verbose("Setting badge to 0 as requested")
                     UIApplication.shared.applicationIconBadgeNumber = 0
+                case "clear_notification":
+                    guard let notificationId = userInfo["apns-collapse-id"] as? String else {
+                        completionHandler(.noData)
+                        return
+                    }
+                    Current.Log.verbose("Remove notification with identifier \(notificationId) ")
+
+                    UNUserNotificationCenter.current().removeDeliveredNotifications(
+                        withIdentifiers: [notificationId]
+                    )
+                    completionHandler(.noData)
                 default:
                     Current.Log.warning("Received unknown command via APNS! \(userInfo)")
                     completionHandler(.noData)
