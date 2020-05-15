@@ -453,7 +453,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     }
 
     @objc func actionsHelp(_ sender: Any) {
-        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/core/actions")!)
+        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/docs/core/actions")!)
     }
 
     @objc func watchHelp(_ sender: Any) {
