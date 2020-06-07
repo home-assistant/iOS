@@ -53,12 +53,6 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
                                                                  action: saveSelector)
 
-        self.title = L10n.ActionsConfigurator.title
-
-        if newAction == false {
-            self.title = action.Name
-        }
-
         TextRow.defaultCellUpdate = { cell, row in
             if !row.isValid {
                 cell.textLabel?.textColor = .red
@@ -248,7 +242,12 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
     }
 
     private func updatePreviews() {
-        title = action.Name
+        if action.Name.isEmpty && newAction {
+            title = L10n.ActionsConfigurator.title
+        } else {
+            title = action.Name
+        }
+        
         preview.setup(action)
         
         if let row = form.rowBy(tag: "trigger-yaml") as? TextAreaRow {
