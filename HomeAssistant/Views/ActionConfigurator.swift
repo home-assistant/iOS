@@ -23,7 +23,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
     var action: Action = Action() {
         didSet {
-            self.preview.setup(self.action)
+            self.updatePreviews()
         }
     }
     var newAction: Bool = true
@@ -52,15 +52,6 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
                                                                  action: saveSelector)
-
-        let infoBarButtonItem = Constants.helpBarButtonItem
-
-        infoBarButtonItem.action = #selector(getInfoAction)
-        infoBarButtonItem.target = self
-
-        self.setToolbarItems([infoBarButtonItem], animated: false)
-
-        self.navigationController?.setToolbarHidden(false, animated: false)
 
         self.title = L10n.ActionsConfigurator.title
 
@@ -91,7 +82,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }.onChange { row in
                 if let value = row.value {
                     self.action.Name = value
-                    self.preview.setup(self.action)
+                    self.updatePreviews()
                 }
             }
 
@@ -101,7 +92,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }.onChange { row in
                 if let value = row.value {
                     self.action.Text = value
-                    self.preview.setup(self.action)
+                    self.updatePreviews()
                 }
             }
 
@@ -113,7 +104,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }.onChange { row in
                 if let value = row.value {
                     self.action.TextColor = value.hexString()
-                    self.preview.setup(self.action)
+                    self.updatePreviews()
                 }
             }
 
@@ -125,7 +116,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                 }.onChange { row in
                     if let value = row.value {
                         self.action.BackgroundColor = value.hexString()
-                        self.preview.setup(self.action)
+                        self.updatePreviews()
                     }
             }
 
@@ -159,7 +150,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                 }.onChange { row in
                     if let value = row.value {
                         self.action.IconName = value
-                        self.preview.setup(self.action)
+                        self.updatePreviews()
                     }
             }
 
@@ -174,7 +165,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
                     self.action.IconColor = picker.value!.hexString()
 
-                    self.preview.setup(self.action)
+                    self.updatePreviews()
                     if let iconRow = self.form.rowBy(tag: "icon") as? PushRow<String> {
                         if let value = iconRow.value {
                             let theIcon = MaterialDesignIcons(named: value)
@@ -188,10 +179,39 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             +++ ViewRow<ActionPreview>("preview").cellSetup { (cell, _) in
                 cell.backgroundColor = UIColor.clear
                 cell.preservesSuperviewLayoutMargins = false
-                self.preview.setup(self.action)
-
+                self.updatePreviews()
                 cell.view = self.preview
-        }
+            }
+        
+            +++ Section(header: L10n.ActionsConfigurator.TriggerExample.title, footer: nil)
+                
+            <<< TextAreaRow("trigger-yaml") { row in
+                row.value = "test"
+                row.textAreaHeight = .dynamic(initialTextViewHeight: 100)
+                
+                row.cellSetup { cell, row in
+                    // a little smaller than the body size
+                    let baseSize = UIFont.preferredFont(forTextStyle: .body).pointSize - 2.0
+                    cell.textView.font = {
+                        if #available(iOS 13, *) {
+                            return UIFont.monospacedSystemFont(ofSize: baseSize, weight: .regular)
+                        } else {
+                            return UIFont(name: "Menlo", size: baseSize)
+                        }
+                    }()
+                }
+            }
+        
+            <<< ButtonRow() { row in
+                row.title = L10n.ActionsConfigurator.TriggerExample.share
+                
+                row.onCellSelection { _, _ in
+                    // although this could be done via presentationMode, we want to preserve the 'button' look
+                    let value = self.action.exampleTrigger
+                    let controller = UIActivityViewController(activityItems: [ value ], applicationActivities: [])
+                    self.present(controller, animated: true, completion: nil)
+                }
+            }
 
     }
 
@@ -227,6 +247,15 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
         onDismissCallback?(self)
     }
 
+    private func updatePreviews() {
+        title = action.Name
+        preview.setup(action)
+        
+        if let row = form.rowBy(tag: "trigger-yaml") as? TextAreaRow {
+            row.value = action.exampleTrigger
+            row.updateCell()
+        }
+    }
 }
 
 class ActionPreview: UIView {

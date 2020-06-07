@@ -445,6 +445,8 @@
 "actions_configurator.rows.text.title" = "Text";
 "actions_configurator.rows.text_color.title" = "Text Color";
 "actions_configurator.title" = "New Action";
+"actions_configurator.trigger_example.title" = "Example Trigger";
+"actions_configurator.trigger_example.share" = "Share Contents";
 "alerts.alert.ok" = "OK";
 "alerts.confirm.cancel" = "Cancel";
 "alerts.confirm.ok" = "OK";
