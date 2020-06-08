@@ -608,17 +608,23 @@ public class HomeAssistantAPI {
             allSensors.append(triggerSensor)
             allSensors.append(self.sensorsConfig.GeocodedLocationSensorConfig)
 
-            // swiftlint:disable:next line_length
-            let promises: [Promise<WebhookSensorResponse>] = allSensors.compactMap { sensor -> Promise<WebhookSensorResponse>? in
-                let promise: Promise<WebhookSensorResponse> = self.webhook("register_sensor", payload: sensor.toJSON(),
-                                                                           callingFunctionName: "\(#function)")
-                if let limit = limitSensors {
-                    if let uniqID = sensor.UniqueID, limit.contains(uniqID) {
-                        return promise
+            let sensorsToRegister: [WebhookSensor]
+            
+            if let limitSensors = limitSensors {
+                sensorsToRegister = allSensors.filter {
+                    if let uniqueID = $0.UniqueID {
+                        return limitSensors.contains(uniqueID)
+                    } else {
+                        return false
                     }
-                    return nil
                 }
-                return promise
+            } else {
+                sensorsToRegister = allSensors
+            }
+            
+            let promises: [Promise<WebhookSensorResponse>] = sensorsToRegister.map { sensor in
+                return self.webhook("register_sensor", payload: sensor.toJSON(),
+                                    callingFunctionName: "\(#function)")
             }
 
             Current.Log.verbose("Registering sensors \(promises)")
