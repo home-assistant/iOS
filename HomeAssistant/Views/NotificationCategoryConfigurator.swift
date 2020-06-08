@@ -236,7 +236,9 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         }
     }
 
-    func getActionRow(_ action: NotificationAction?) -> ButtonRowWithPresent<NotificationActionConfigurator> {
+    func getActionRow(_ existingAction: NotificationAction?) -> ButtonRowWithPresent<NotificationActionConfigurator> {
+        var action = existingAction
+        
         var identifier = "new_action_"+UUID().uuidString
         var title = L10n.NotificationsConfigurator.NewAction.title
 
@@ -245,16 +247,19 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
             title = action.Title
         }
 
-        return ButtonRowWithPresent<NotificationActionConfigurator> {
-            $0.tag = identifier
-            $0.title = title
+        return ButtonRowWithPresent<NotificationActionConfigurator> { row in
+            row.tag = identifier
+            row.title = title
 
-            $0.presentationMode = PresentationMode.show(controllerProvider: ControllerProvider.callback {
+            row.presentationMode = PresentationMode.show(controllerProvider: ControllerProvider.callback {
                 return NotificationActionConfigurator(action: action)
             }, onDismiss: { vc in
                 vc.navigationController?.popViewController(animated: true)
 
                 if let vc = vc as? NotificationActionConfigurator {
+                    // if the user goes to re-edit the action before saving the category, we want to show the same one
+                    action = vc.action
+                    row.tag = vc.action.Identifier
                     vc.row.title = vc.action.Title
                     vc.row.updateCell()
                     Current.Log.verbose("action \(vc.action)")

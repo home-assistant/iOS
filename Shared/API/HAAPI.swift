@@ -564,28 +564,33 @@ public class HomeAssistantAPI {
             }
         }
     }
+    
+    public class func actionEvent(actionID: String, actionName: String, source: ActionSource) -> (eventType: String, eventData: [String: String]) {
+        let device = Device.current
+        
+        return (eventType: "ios.action_fired", eventData: [
+            "actionName": actionName,
+            "actionID": actionID,
+            "triggerSource": source.description,
+            "sourceDevicePermanentID": Constants.PermanentID,
+            "sourceDeviceName": device.name ?? "Unknown",
+            "sourceDeviceID": Current.settingsStore.deviceID
+        ])
+    }
 
     public func HandleAction(actionID: String, actionName: String, source: ActionSource) -> Promise<Bool> {
         return Promise { seal in
             guard let api = HomeAssistantAPI.authenticatedAPI() else {
                 throw APIError.notConfigured
             }
+            
+            let action = Self.actionEvent(actionID: actionID, actionName: actionName, source: source)
+            Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
 
-            let device = Device.current
-            let eventData: [String: Any] = ["actionName": actionName,
-                                            "actionID": actionID,
-                                            "triggerSource": source.description,
-                                            "sourceDevicePermanentID": Constants.PermanentID,
-                                            "sourceDeviceName": device.name ?? "Unknown",
-                                            "sourceDeviceID": Current.settingsStore.deviceID]
-
-            Current.Log.verbose("Sending action payload: \(eventData)")
-
-            let eventType = "ios.action_fired"
-            api.CreateEvent(eventType: eventType, eventData: eventData).done { _ -> Void in
+            api.CreateEvent(eventType: action.eventType, eventData: action.eventData).done { _ -> Void in
                 seal.fulfill(true)
-                }.catch {error in
-                    seal.reject(error)
+            }.catch {error in
+                seal.reject(error)
             }
         }
     }
@@ -603,17 +608,23 @@ public class HomeAssistantAPI {
             allSensors.append(triggerSensor)
             allSensors.append(self.sensorsConfig.GeocodedLocationSensorConfig)
 
-            // swiftlint:disable:next line_length
-            let promises: [Promise<WebhookSensorResponse>] = allSensors.compactMap { sensor -> Promise<WebhookSensorResponse>? in
-                let promise: Promise<WebhookSensorResponse> = self.webhook("register_sensor", payload: sensor.toJSON(),
-                                                                           callingFunctionName: "\(#function)")
-                if let limit = limitSensors {
-                    if let uniqID = sensor.UniqueID, limit.contains(uniqID) {
-                        return promise
+            let sensorsToRegister: [WebhookSensor]
+            
+            if let limitSensors = limitSensors {
+                sensorsToRegister = allSensors.filter {
+                    if let uniqueID = $0.UniqueID {
+                        return limitSensors.contains(uniqueID)
+                    } else {
+                        return false
                     }
-                    return nil
                 }
-                return promise
+            } else {
+                sensorsToRegister = allSensors
+            }
+            
+            let promises: [Promise<WebhookSensorResponse>] = sensorsToRegister.map { sensor in
+                return self.webhook("register_sensor", payload: sensor.toJSON(),
+                                    callingFunctionName: "\(#function)")
             }
 
             Current.Log.verbose("Registering sensors \(promises)")
@@ -683,7 +694,12 @@ public class HomeAssistantAPI {
 
             Current.Log.warning("Errors detected during sensor update, re-registering sensors \(failures) now")
 
-            return self.RegisterSensors(failures).then { _ -> Promise<[String: WebhookSensorResponse]> in
+            return self.RegisterSensors(failures).then { output -> Promise<[String: WebhookSensorResponse]> in
+                guard output.allSatisfy({ $0.Success }) else {
+                    Current.Log.error("couldn't register sensor(s), not going to do an update")
+                    throw APIError.invalidResponse
+                }
+
                 return self.UpdateSensors(trigger)
             }
         }
