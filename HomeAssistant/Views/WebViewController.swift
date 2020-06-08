@@ -617,12 +617,13 @@ extension WebViewController: WKScriptMessageHandler {
                 Current.tokenManager = nil
                 Current.settingsStore.connectionInfo = nil
                 Current.settingsStore.tokenInfo = nil
-                self.showSettingsViewController()
                 let script = "\(callbackName)(true)"
 
                 Current.Log.verbose("Running revoke external auth callback \(script)")
 
                 self.webView.evaluateJavaScript(script, completionHandler: { (_, error) in
+                    Current.signInRequiredCallback?(.logout)
+
                     if let error = error {
                         Current.Log.error("Failed calling sign out callback: \(error)")
                     }

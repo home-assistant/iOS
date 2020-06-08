@@ -143,6 +143,10 @@ public class HomeAssistantAPI {
     public func Connect() -> Promise<ConfigResponse> {
         return firstly {
             self.UpdateRegistration()
+        }.recover { _ -> Promise<MobileAppRegistrationResponse> in
+            let message = "Failed to update integration; trying to register instead."
+            Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest))
+            return self.Register()
         }.then { _ -> Promise<(ConfigResponse, [Zone], Void, [WatchComplication])> in
             return when(fulfilled: self.GetConfig(), self.GetZones(), self.UpdateSensors(.Unknown).asVoid(),
                         self.updateComplications())
@@ -368,7 +372,7 @@ public class HomeAssistantAPI {
         ident.AppIdentifier = Constants.BundleID
         ident.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
         ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
-        // ident.DeviceID = Current.settingsStore.deviceID
+        ident.DeviceID = Current.settingsStore.integrationDeviceID
         ident.DeviceName = deviceKitDevice.name
         ident.Manufacturer = "Apple"
         ident.Model = deviceKitDevice.description
@@ -390,7 +394,7 @@ public class HomeAssistantAPI {
             ]
         }
         ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
-        // ident.DeviceID = Current.settingsStore.deviceID
+        ident.DeviceID = Current.settingsStore.integrationDeviceID
         ident.DeviceName = deviceKitDevice.name
         ident.Manufacturer = "Apple"
         ident.Model = deviceKitDevice.description
