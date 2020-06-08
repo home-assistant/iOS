@@ -813,11 +813,5 @@ extension ConnectionInfo {
 
         return try? components.asURL()
     }
-}
-
-extension WKWebView {
-    override open var safeAreaInsets: UIEdgeInsets {
-        return .zero
-    }
 // swiftlint:disable:next file_length
 }
