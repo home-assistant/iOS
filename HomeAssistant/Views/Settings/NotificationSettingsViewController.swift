@@ -318,8 +318,10 @@ class NotificationSettingsViewController: FormViewController {
         self.dismiss(animated: true, completion: nil)
     }
 
-    func getNotificationCategoryRow(_ category: NotificationCategory?) ->
+    func getNotificationCategoryRow(_ existingCategory: NotificationCategory?) ->
         ButtonRowWithPresent<NotificationCategoryConfigurator> {
+            var category = existingCategory
+            
             var identifier = "new_category_"+UUID().uuidString
             var title = L10n.SettingsDetails.Notifications.NewCategory.title
 
@@ -328,10 +330,10 @@ class NotificationSettingsViewController: FormViewController {
                 title = category.Name
             }
 
-            return ButtonRowWithPresent<NotificationCategoryConfigurator> {
-                $0.tag = identifier
-                $0.title = title
-                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+            return ButtonRowWithPresent<NotificationCategoryConfigurator> { row in
+                row.tag = identifier
+                row.title = title
+                row.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     return NotificationCategoryConfigurator(category: category)
                 }, onDismiss: { vc in
                     _ = vc.navigationController?.popViewController(animated: true)
@@ -341,7 +343,10 @@ class NotificationSettingsViewController: FormViewController {
                             Current.Log.verbose("Not saving category to DB and returning early!")
                             return
                         }
-
+                        
+                        // if the user goes to re-edit the category after saving it, we want to show the same one
+                        category = vc.category
+                        row.tag = vc.category.Identifier
                         vc.row.title = vc.category.Name
                         vc.row.updateCell()
 
