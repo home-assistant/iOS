@@ -50,7 +50,7 @@ target 'HomeAssistant' do
     pod 'Firebase/Core'
     pod 'Firebase/Firestore'
     pod 'Firebase/Messaging'
-    pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
+    pod 'Eureka', '~> 5.2.1'
     pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
     pod 'MaterialComponents/Buttons'

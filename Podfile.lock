@@ -182,7 +182,7 @@ PODS:
     - Fabric (~> 1.10.2)
   - DeviceKit (2.3.0)
   - EMTLoadingIndicator (4.0.0)
-  - Eureka (5.1.0)
+  - Eureka (5.2.1)
   - Fabric (1.10.2)
   - Firebase/Core (6.13.0):
     - Firebase/CoreOnly
@@ -416,7 +416,7 @@ DEPENDENCIES:
   - Crashlytics
   - DeviceKit
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
-  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
+  - Eureka (~> 5.2.1)
   - Fabric
   - Firebase/Core
   - Firebase/Firestore
@@ -455,6 +455,7 @@ SPEC REPOS:
     - Communicator
     - Crashlytics
     - DeviceKit
+    - Eureka
     - Fabric
     - Firebase
     - FirebaseAnalytics
@@ -507,9 +508,6 @@ EXTERNAL SOURCES:
   EMTLoadingIndicator:
     :branch: master
     :git: https://github.com/hirokimu/EMTLoadingIndicator
-  Eureka:
-    :branch: master
-    :git: https://github.com/xmartlabs/Eureka.git
   Iconic:
     :branch: master
     :git: https://github.com/home-assistant/Iconic.git
@@ -536,9 +534,6 @@ CHECKOUT OPTIONS:
   EMTLoadingIndicator:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
-  Eureka:
-    :commit: 8e5fc2f07e9449b88d49b8ee166cd3c7b66cd5b4
-    :git: https://github.com/xmartlabs/Eureka.git
   Iconic:
     :commit: 2e16c4a7665a03e203c4ef913858d2428e40f3ae
     :git: https://github.com/home-assistant/Iconic.git
@@ -568,7 +563,7 @@ SPEC CHECKSUMS:
   Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   DeviceKit: da103891aa928d89f64ea8dd8aca738c5f3d8ac0
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
-  Eureka: 18a5076dcf0c41f9cd9748aa1c42f4d11434bdae
+  Eureka: c883105488e05bc65539f583246ecf9657cabbfe
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   Firebase: 458d109512200d1aca2e1b9b6cf7d68a869a4a46
   FirebaseAnalytics: 45f36d9c429fc91d206283900ab75390cd05ee8a
@@ -586,7 +581,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 547a86735c6f0ee30ad17e94df4fc21f616b71cb
   "gRPC-C++": 9dfe7b44821e7b3e44aacad2af29d2c21f7cde83
   gRPC-Core: c9aef9a261a1247e881b18059b84d597293c9947
-  Iconic: c1a7242e32d3cec44f5d7c4b2e6801dc853001a3
+  Iconic: 7c57ac9a0f6520dd90fe712880ed462ea0cda05e
   KeychainAccess: 445e28864fe6d3458b41fa211bcdc39890e8bd5a
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   Lokalise: bc42066e2dde59b43b46e88ecc0b92b7d593dc72
@@ -616,6 +611,6 @@ SPEC CHECKSUMS:
   XCGLogger: 0434f15e3909cdc450bb63faf638b8792ab782ab
   ZIPFoundation: 89df685c971926b0323087952320bdfee9f0b6ef
 
-PODFILE CHECKSUM: 06566c9332359125b236e267474d474f15a1cf43
+PODFILE CHECKSUM: 0252fdc4f051abffedd9f9c3776756b27791d6bc
 
-COCOAPODS: 1.9.0.beta.3
+COCOAPODS: 1.9.3
