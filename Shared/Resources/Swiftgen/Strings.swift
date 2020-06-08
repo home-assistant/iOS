@@ -134,6 +134,12 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "actions_configurator.rows.text_color.title")
       }
     }
+    internal enum TriggerExample {
+      /// Share Contents
+      internal static let share = L10n.tr("Localizable", "actions_configurator.trigger_example.share")
+      /// Example Trigger
+      internal static let title = L10n.tr("Localizable", "actions_configurator.trigger_example.title")
+    }
   }
 
   internal enum Alerts {
