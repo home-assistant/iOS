@@ -201,7 +201,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                 
                 row.onCellSelection { _, _ in
                     // although this could be done via presentationMode, we want to preserve the 'button' look
-                    let value = self.action.exampleTrigger
+                    let value = (self.form.rowBy(tag: "trigger-yaml") as? TextAreaRow)?.value ?? self.action.exampleTrigger
                     let controller = UIActivityViewController(activityItems: [ value ], applicationActivities: [])
                     self.present(controller, animated: true, completion: nil)
                 }
