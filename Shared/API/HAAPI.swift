@@ -564,28 +564,33 @@ public class HomeAssistantAPI {
             }
         }
     }
+    
+    public class func actionEvent(actionID: String, actionName: String, source: ActionSource) -> (eventType: String, eventData: [String: String]) {
+        let device = Device.current
+        
+        return (eventType: "ios.action_fired", eventData: [
+            "actionName": actionName,
+            "actionID": actionID,
+            "triggerSource": source.description,
+            "sourceDevicePermanentID": Constants.PermanentID,
+            "sourceDeviceName": device.name ?? "Unknown",
+            "sourceDeviceID": Current.settingsStore.deviceID
+        ])
+    }
 
     public func HandleAction(actionID: String, actionName: String, source: ActionSource) -> Promise<Bool> {
         return Promise { seal in
             guard let api = HomeAssistantAPI.authenticatedAPI() else {
                 throw APIError.notConfigured
             }
+            
+            let action = Self.actionEvent(actionID: actionID, actionName: actionName, source: source)
+            Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
 
-            let device = Device.current
-            let eventData: [String: Any] = ["actionName": actionName,
-                                            "actionID": actionID,
-                                            "triggerSource": source.description,
-                                            "sourceDevicePermanentID": Constants.PermanentID,
-                                            "sourceDeviceName": device.name ?? "Unknown",
-                                            "sourceDeviceID": Current.settingsStore.deviceID]
-
-            Current.Log.verbose("Sending action payload: \(eventData)")
-
-            let eventType = "ios.action_fired"
-            api.CreateEvent(eventType: eventType, eventData: eventData).done { _ -> Void in
+            api.CreateEvent(eventType: action.eventType, eventData: action.eventData).done { _ -> Void in
                 seal.fulfill(true)
-                }.catch {error in
-                    seal.reject(error)
+            }.catch {error in
+                seal.reject(error)
             }
         }
     }
