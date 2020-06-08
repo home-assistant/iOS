@@ -688,7 +688,12 @@ public class HomeAssistantAPI {
 
             Current.Log.warning("Errors detected during sensor update, re-registering sensors \(failures) now")
 
-            return self.RegisterSensors(failures).then { _ -> Promise<[String: WebhookSensorResponse]> in
+            return self.RegisterSensors(failures).then { output -> Promise<[String: WebhookSensorResponse]> in
+                guard output.allSatisfy({ $0.Success }) else {
+                    Current.Log.error("couldn't register sensor(s), not going to do an update")
+                    throw APIError.invalidResponse
+                }
+
                 return self.UpdateSensors(trigger)
             }
         }
