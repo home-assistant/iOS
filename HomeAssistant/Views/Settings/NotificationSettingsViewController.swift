@@ -97,7 +97,7 @@ class NotificationSettingsViewController: FormViewController {
 
         let categories = Current.realm().objects(NotificationCategory.self).sorted(byKeyPath: "Identifier")
 
-        let mvOpts: MultivaluedOptions = [.Insert, .Delete, .Reorder]
+        let mvOpts: MultivaluedOptions = [.Insert, .Delete]
         let header = L10n.SettingsDetails.Notifications.Categories.header
 
         self.form
