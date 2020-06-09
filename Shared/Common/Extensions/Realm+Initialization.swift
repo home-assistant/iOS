@@ -60,7 +60,7 @@ extension Realm {
         #endif
 
         let config = Realm.Configuration(fileURL: storeURL, schemaVersion: 4,
-                                         migrationBlock: nil, deleteRealmIfMigrationNeeded: true)
+                                         migrationBlock: nil, deleteRealmIfMigrationNeeded: false)
         var configuredRealm: Realm!
         do {
             configuredRealm = try Realm(configuration: config)
