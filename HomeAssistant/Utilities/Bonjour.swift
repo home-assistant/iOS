@@ -28,7 +28,14 @@ public class BonjourDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDel
     public func netServiceDidResolveAddress(_ sender: NetService) {
         Current.Log.verbose("BonjourDelegate.Browser.netServiceDidResolveAddress")
         if let txtRecord = sender.txtRecordData() {
-            let serviceDict = NetService.dictionary(fromTXTRecord: txtRecord)
+            let potentialServiceDict = NetService.dictionary(fromTXTRecord: txtRecord) as NSDictionary
+
+            // This fixes a crash in 0.110, the root cause is the dictionary returned
+            // above contains NSNull instead of NSData, which Swift will crash trying
+            // to cast to the Swift dictionary. So we do it the hard way.
+            let serviceDict = (potentialServiceDict as? [String: Any])?
+                .compactMapValues { $0 as? Data } ?? [:]
+
             let discoveryInfo = DiscoveryInfoFromDict(locationName: sender.name, netServiceDictionary: serviceDict)
             discoveryInfo.AnnouncedFrom = sender.addresses?.compactMap { InternetAddress(data: $0)?.host } ?? []
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "homeassistant.discovered"),
