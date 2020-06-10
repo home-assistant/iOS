@@ -114,9 +114,27 @@ public class SettingsStore {
         }
     }
 
-    public var locationEnabled: Bool {
-        return CLLocationManager.authorizationStatus() == .authorizedAlways
+    #if os(iOS)
+    public func isLocationEnabled(for state: UIApplication.State) -> Bool {
+        switch CLLocationManager.authorizationStatus() {
+        case .authorizedAlways:
+            return true
+        case .authorizedWhenInUse:
+            switch state {
+            case .active, .inactive:
+                return true
+            case .background:
+                return false
+            @unknown default:
+                return false
+            }
+        case .denied, .notDetermined, .restricted:
+            return false
+        @unknown default:
+            return false
+        }
     }
+    #endif
 
     public var motionEnabled: Bool {
         get {

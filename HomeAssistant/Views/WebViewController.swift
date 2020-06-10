@@ -18,6 +18,7 @@ import Shared
 import AVFoundation
 import AVKit
 import WhatsNewKit
+import CoreLocation
 
 // swiftlint:disable:next type_body_length
 class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
@@ -345,10 +346,22 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api -> Promise<Void> in
-            if Current.settingsStore.locationEnabled {
-                return api.GetAndSendLocation(trigger: .Manual).asVoid()
-            } else {
+            func updateWithoutLocation() -> Promise<Void> {
                 return when(fulfilled: [api.UpdateSensors(.Manual).asVoid(), api.updateComplications().asVoid()])
+            }
+
+            if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
+                return api.GetAndSendLocation(trigger: .Manual).asVoid()
+                    .recover { error -> Promise<Void> in
+                        if error is CLError {
+                            Current.Log.info("couldn't get location, sending remaining sensor data")
+                            return updateWithoutLocation()
+                        } else {
+                            throw error
+                        }
+                    }
+            } else {
+                return updateWithoutLocation()
             }
         }.catch {error in
             self.showSwiftMessageError((error as NSError).localizedDescription)
