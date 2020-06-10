@@ -126,6 +126,15 @@ public class TokenManager: RequestAdapter, RequestRetrier {
                 let event = ClientEvent(text: message, type: .networkRequest)
                 Current.clientEventStore.addEvent(event)
                 completion(true, TimeInterval(2 * request.retryCount))
+            } else if let error = error as? AFError, error.responseCode == 401 {
+                let event = ClientEvent(text: "Server indicated token is invalid, showing onboarding", type: .networkRequest)
+                Current.clientEventStore.addEvent(event)
+
+                completion(false, 0)
+
+                DispatchQueue.main.async {
+                    Current.signInRequiredCallback?(.error)
+                }
             } else {
                 completion(false, 0)
             }
@@ -235,9 +244,12 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             if let networkError = error as? AFError, let statusCode = networkError.responseCode,
                 statusCode == 400 {
                 /// Server rejected the refresh token. All is lost.
+                let event = ClientEvent(text: "Refresh token is invalid, showing onboarding", type: .networkRequest)
+                Current.clientEventStore.addEvent(event)
+
                 self.tokenInfo = nil
                 Current.settingsStore.tokenInfo = nil
-                Current.signInRequiredCallback?()
+                Current.signInRequiredCallback?(.error)
             }
         }
 

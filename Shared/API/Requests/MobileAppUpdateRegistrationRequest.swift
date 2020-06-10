@@ -13,6 +13,7 @@ class MobileAppUpdateRegistrationRequest: Mappable {
     var AppData: [String: Any]?
     var AppVersion: String?
     var DeviceName: String?
+    var DeviceID: String?
     var Manufacturer: String?
     var Model: String?
     var OSVersion: String?
@@ -25,6 +26,7 @@ class MobileAppUpdateRegistrationRequest: Mappable {
         AppData             <- map["app_data"]
         AppVersion          <- map["app_version"]
         DeviceName          <- map["device_name"]
+        DeviceID            <- map["device_id"]
         Manufacturer        <- map["manufacturer"]
         Model               <- map["model"]
         OSVersion           <- map["os_version"]
