@@ -9,6 +9,7 @@
 import UIKit
 import Shared
 import MaterialComponents.MaterialButtons
+import PromiseKit
 
 class ManualSetupViewController: UIViewController {
 
@@ -38,7 +39,20 @@ class ManualSetupViewController: UIViewController {
 
     @IBAction func connectButtonTapped(_ sender: UIButton) {
         Current.Log.verbose("Connect button tapped")
-        self.perform(segue: StoryboardSegue.Onboarding.setupManualInstance)
+
+        firstly {
+            validatedURL(from: urlField.text)
+        }.done { updated in
+            self.urlField.text = updated
+            self.perform(segue: StoryboardSegue.Onboarding.setupManualInstance)
+        }.catch { error in
+            Current.Log.error("Couldn't make a URL: \(error)")
+
+            showAlert(
+                title: L10n.Onboarding.ManualSetup.CouldntMakeUrl.title,
+                message: L10n.Onboarding.ManualSetup.CouldntMakeUrl.message(self.urlField.text ?? "")
+            )
+        }
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -56,6 +70,63 @@ class ManualSetupViewController: UIViewController {
 
             vc.instance = DiscoveredHomeAssistant(baseURL: url, name: "Manual", version: "0.92.0")
         }
+    }
+
+    enum ValidateError: Error {
+        case emptyString
+        case cannotConvert
+        case noScheme
+        case invalidScheme
+    }
+
+    private func promptForScheme(for string: String) -> Promise<String> {
+        return Promise { seal in
+            let alert = UIAlertController(
+                title: L10n.Onboarding.ManualSetup.NoScheme.title,
+                message: L10n.Onboarding.ManualSetup.NoScheme.message,
+                preferredStyle: .alert
+            )
+
+            func action(for scheme: String) -> UIAlertAction {
+                return UIAlertAction(title: scheme, style: .default, handler: { _ in
+                    seal.fulfill(scheme + string)
+                })
+            }
+
+            alert.addAction(action(for: "http://"))
+            alert.addAction(action(for: "https://"))
+            alert.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: { _ in
+                seal.reject(ValidateError.noScheme)
+            }))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+
+    private func validatedURL(from inputString: String?) -> Promise<String> {
+        let start = Promise<String?>.value(inputString)
+
+        return start
+            .map { (string: String?) -> String in
+                if let trimmed = string?.trimmingCharacters(in: .whitespacesAndNewlines), trimmed.isEmpty == false {
+                    return trimmed
+                } else {
+                    throw ValidateError.emptyString
+                }
+            }.then { (string: String) -> Promise<String> in
+                if string.starts(with: "http://") || string.starts(with: "https://") {
+                    return .value(string)
+                } else if string.contains("://") == false {
+                    return self.promptForScheme(for: string)
+                } else {
+                    throw ValidateError.invalidScheme
+                }
+            }.map { (string: String) -> String in
+                if URL(string: string) != nil {
+                    return string
+                } else {
+                    throw ValidateError.cannotConvert
+                }
+            }
     }
 
     @objc func keyboardWillShow(notification: NSNotification) {
