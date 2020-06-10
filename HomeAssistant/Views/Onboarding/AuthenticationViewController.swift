@@ -249,7 +249,7 @@ public struct ConnectionTestResult: LocalizedError {
     }
 
     public var DocumentationURL: URL {
-        return URL(string: "https://companion.home-assistant.io/en/misc/errors#\(self.kind.rawValue)")!
+        return URL(string: "https://companion.home-assistant.io/docs/troubleshooting/errors#\(self.kind.rawValue)")!
     }
 }
 
