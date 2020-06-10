@@ -20,6 +20,14 @@ class NotificationSettingsViewController: FormViewController {
 
     let utc = TimeZone(identifier: "UTC")!
 
+    private var observerTokens: [Any] = []
+
+    deinit {
+        for token in observerTokens {
+            NotificationCenter.default.removeObserver(token)
+        }
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if self.doneButton {
@@ -46,6 +54,9 @@ class NotificationSettingsViewController: FormViewController {
         self.title = L10n.SettingsDetails.Notifications.title
 
         self.form
+            +++ Section()
+            <<< notificationPermissionRow()
+
             +++ SwitchRow("confirmBeforeOpeningUrl") {
                 $0.title = L10n.SettingsDetails.Notifications.PromptToOpenUrls.title
                 $0.value = prefs.bool(forKey: "confirmBeforeOpeningUrl")
@@ -412,6 +423,74 @@ class NotificationSettingsViewController: FormViewController {
             return self.deleteInstanceID()
         }.then { _ in
             return self.createInstanceID()
+        }
+    }
+
+    private class func openSettings() {
+        UIApplication.shared.open(
+            URL(string: UIApplication.openSettingsURLString)!,
+            options: [:],
+            completionHandler: nil
+        )
+    }
+
+    private func notificationPermissionRow() -> BaseRow {
+        var lastPermissionSeen: UNAuthorizationStatus?
+
+        func update(_ row: LabelRow) {
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                DispatchQueue.main.async {
+                    lastPermissionSeen = settings.authorizationStatus
+
+                    row.value = {
+                        switch settings.authorizationStatus {
+                        case .authorized, .provisional:
+                            return L10n.SettingsDetails.Notifications.Permission.enabled
+                        case .denied:
+                            return L10n.SettingsDetails.Notifications.Permission.disabled
+                        case .notDetermined:
+                            return L10n.SettingsDetails.Notifications.Permission.needsRequest
+                        @unknown default:
+                            return L10n.SettingsDetails.Notifications.Permission.disabled
+                        }
+                    }()
+                    row.updateCell()
+                }
+            }
+        }
+
+        return LabelRow { row in
+            row.title = L10n.SettingsDetails.Notifications.Permission.title
+            update(row)
+
+            observerTokens.append(NotificationCenter.default.addObserver(
+                forName: UIApplication.didBecomeActiveNotification,
+                object: nil,
+                queue: .main
+            ) { _ in
+                // in case the user jumps to settings and changes while we're open, update the value
+                update(row)
+            })
+
+            row.cellUpdate { cell, _ in
+                cell.accessoryType = .disclosureIndicator
+                cell.selectionStyle = .default
+            }
+
+            row.onCellSelection { _, row in
+                UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { _, _ in
+                    DispatchQueue.main.async {
+                        update(row)
+                        row.deselect(animated: true)
+
+                        if lastPermissionSeen != .notDetermined {
+                            // if we weren't prompting for permission with this request, open settings
+                            // we can't avoid the request code-path since getting settings is async
+                            Self.openSettings()
+                        }
+                    }
+                }
+            }
         }
     }
 // swiftlint:disable:next file_length
