@@ -1447,6 +1447,16 @@ internal enum L10n {
         /// New Category
         internal static let title = L10n.tr("Localizable", "settings_details.notifications.new_category.title")
       }
+      internal enum Permission {
+        /// Denied
+        internal static let disabled = L10n.tr("Localizable", "settings_details.notifications.permission.disabled")
+        /// Enabled
+        internal static let enabled = L10n.tr("Localizable", "settings_details.notifications.permission.enabled")
+        /// Disabled
+        internal static let needsRequest = L10n.tr("Localizable", "settings_details.notifications.permission.needs_request")
+        /// Permission
+        internal static let title = L10n.tr("Localizable", "settings_details.notifications.permission.title")
+      }
       internal enum PromptToOpenUrls {
         /// Confirm before opening URL
         internal static let title = L10n.tr("Localizable", "settings_details.notifications.prompt_to_open_urls.title")

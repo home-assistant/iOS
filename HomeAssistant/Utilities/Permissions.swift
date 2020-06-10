@@ -201,14 +201,7 @@ public enum PermissionType: Int {
                 return
             })
         case .notification:
-            var opts: UNAuthorizationOptions = [.alert, .badge, .sound]
-            if #available(iOS 12.0, *) {
-                opts.formUnion([.criticalAlert, .providesAppNotificationSettings])
-            }
-            if #available(iOS 13.0, *) {
-                opts.insert(.announcement)
-            }
-            UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
+            UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { (granted, error) in
                 if let error = error {
                     Current.Log.error("Error when requesting notifications permissions: \(error)")
                 }
@@ -219,6 +212,19 @@ public enum PermissionType: Int {
                 }
             }
         }
+    }
+}
+
+public extension UNAuthorizationOptions {
+    static var defaultOptions: UNAuthorizationOptions {
+        var opts: UNAuthorizationOptions = [.alert, .badge, .sound]
+        if #available(iOS 12.0, *) {
+            opts.formUnion([.criticalAlert, .providesAppNotificationSettings])
+        }
+        if #available(iOS 13.0, *) {
+            opts.insert(.announcement)
+        }
+        return opts
     }
 }
 

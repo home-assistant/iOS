@@ -581,12 +581,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UNUserNotificationCenter.current().getNotificationSettings { (settings) in
             guard settings.authorizationStatus == .authorized else {return}
-            var opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert,
-                                                .providesAppNotificationSettings]
-            if #available(iOS 13.0, *) {
-                opts.insert(.announcement)
-            }
-            UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
+
+            UNUserNotificationCenter.current().requestAuthorization(options: .defaultOptions) { (granted, error) in
                 Current.Log.verbose("Requested critical alert access \(granted), \(String(describing: error))")
             }
         }
