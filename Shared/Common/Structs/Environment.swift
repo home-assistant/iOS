@@ -56,7 +56,19 @@ public class Environment {
     public var authenticationControllerPresenter: ((UIViewController) -> Void)?
     #endif
 
-    public var signInRequiredCallback: (() -> Void)?
+    public enum SignInRequiredType {
+        case logout
+        case error
+
+        public var shouldShowError: Bool {
+            switch self {
+            case .logout: return false
+            case .error:  return true
+            }
+        }
+    }
+
+    public var signInRequiredCallback: ((SignInRequiredType) -> Void)?
 
     public var onboardingComplete: (() -> Void)?
 

@@ -77,59 +77,63 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if #available(iOS 12.0, *) { setupiOS12Features() }
 
-        self.setupView()
+        setupWindow()
+        setupView()
 
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
 
         return true
     }
 
+    func setupWindow() {
+        let window = UIWindow.init(frame: UIScreen.main.bounds)
+        window.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
+        window.makeKeyAndVisible()
+        self.window = window
+    }
+
     func setupView() {
         if Current.appConfiguration == .FastlaneSnapshot { setupFastlaneSnapshotConfiguration() }
 
-        window = UIWindow.init(frame: UIScreen.main.bounds)
-        window?.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
-
-        let webView = WebViewController()
-
-        var navController = UINavigationController(rootViewController: webView)
-
-        if prefs.object(forKey: "onboarding_complete_newconninfo") == nil {
-            navController = StoryboardScene.Onboarding.navController.instantiate()
+        if requiresOnboarding {
+            Current.Log.info("showing onboarding")
+            window?.rootViewController = onboardingNavigationController()
+        } else {
+            Current.Log.info("showing web view controller")
+            let navController = webViewNavigationController(rootViewController: WebViewController())
+            window?.rootViewController = navController
         }
-
-        self.window!.rootViewController = navController
-        self.window!.makeKeyAndVisible()
 
         if let tokenInfo = Current.settingsStore.tokenInfo, let connectionInfo = Current.settingsStore.connectionInfo {
             Current.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
         }
 
         Current.authenticationControllerPresenter = { controller in
-            if let presentedController = navController.topViewController?.presentedViewController {
-                presentedController.present(controller, animated: true, completion: nil)
-                return
+            var presenter: UIViewController? = self.window?.rootViewController
+
+            while let next = presenter?.presentedViewController {
+                presenter = next
             }
 
-            navController.topViewController?.present(controller, animated: true, completion: nil)
+            presenter?.present(controller, animated: true, completion: nil)
         }
 
-        Current.signInRequiredCallback = {
-            let alert = UIAlertController(title: L10n.Alerts.AuthRequired.title,
-                                          message: L10n.Alerts.AuthRequired.message, preferredStyle: .alert)
+        Current.signInRequiredCallback = { type in
+            let controller = self.onboardingNavigationController()
+            self.window?.rootViewController = controller
 
-            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: { _ in
-                navController.popToViewController(navController.viewControllers[1], animated: true)
-                webView.showSettingsViewController()
-            }))
+            if type.shouldShowError {
+                let alert = UIAlertController(title: L10n.Alerts.AuthRequired.title,
+                                              message: L10n.Alerts.AuthRequired.message, preferredStyle: .alert)
 
-            navController.present(alert, animated: true, completion: nil)
+                alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
 
-            alert.popoverPresentationController?.sourceView = self.window?.rootViewController?.view
+                controller.present(alert, animated: true, completion: nil)
+            }
         }
 
         Current.onboardingComplete = {
-            self.window!.rootViewController = UINavigationController(rootViewController: webView)
+            self.window?.rootViewController = self.webViewNavigationController(rootViewController: WebViewController())
         }
     }
 
@@ -307,6 +311,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // MARK: - Private helpers
+
+    private var requiresOnboarding: Bool {
+        if HomeAssistantAPI.authenticatedAPI() == nil {
+            Current.Log.info("requiring onboarding due to no auth token")
+            return true
+        }
+
+        if prefs.object(forKey: "onboarding_complete_newconninfo") == nil {
+            Current.Log.info("requiring onboarding due to onboarding not being finished")
+            return true
+        }
+
+        return false
+    }
+
+    private func onboardingNavigationController() -> UINavigationController {
+        return StoryboardScene.Onboarding.navController.instantiate()
+    }
+
+    private func webViewNavigationController(rootViewController: UIViewController? = nil) -> UINavigationController {
+        let navigationController = UINavigationController()
+        if let rootViewController = rootViewController {
+            navigationController.viewControllers = [rootViewController]
+        }
+        return navigationController
+    }
 
     // swiftlint:disable:next function_body_length
     private func registerCallbackURLKitHandlers() {

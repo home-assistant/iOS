@@ -11,6 +11,11 @@ import KeychainAccess
 import DeviceKit
 import CoreLocation
 import CoreMotion
+#if os(iOS)
+import UIKit
+#elseif os(watchOS)
+import WatchKit
+#endif
 
 public class SettingsStore {
     let keychain = Constants.Keychain
@@ -103,6 +108,18 @@ public class SettingsStore {
         set {
            prefs.setValue(newValue, forKeyPath: "pushID")
         }
+    }
+
+    public var integrationDeviceID: String {
+        #if os(iOS)
+            return UIDevice.current.identifierForVendor?.uuidString ?? deviceID
+        #elseif os(watchOS)
+            if #available(watchOS 6.2, *) {
+                return WKInterfaceDevice.current().identifierForVendor?.uuidString ?? deviceID
+            } else {
+                return deviceID
+            }
+        #endif
     }
 
     public var deviceID: String {
