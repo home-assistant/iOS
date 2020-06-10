@@ -1307,6 +1307,28 @@ internal enum L10n {
     internal enum Location {
       /// Location
       internal static let title = L10n.tr("Localizable", "settings_details.location.title")
+      internal enum LocationPermission {
+        /// Always
+        internal static let always = L10n.tr("Localizable", "settings_details.location.location_permission.always")
+        /// Disabled
+        internal static let needsRequest = L10n.tr("Localizable", "settings_details.location.location_permission.needs_request")
+        /// Never
+        internal static let never = L10n.tr("Localizable", "settings_details.location.location_permission.never")
+        /// Location Permission
+        internal static let title = L10n.tr("Localizable", "settings_details.location.location_permission.title")
+        /// While In Use
+        internal static let whileInUse = L10n.tr("Localizable", "settings_details.location.location_permission.while_in_use")
+      }
+      internal enum MotionPermission {
+        /// Denied
+        internal static let denied = L10n.tr("Localizable", "settings_details.location.motion_permission.denied")
+        /// Enabled
+        internal static let enabled = L10n.tr("Localizable", "settings_details.location.motion_permission.enabled")
+        /// Disabled
+        internal static let needsRequest = L10n.tr("Localizable", "settings_details.location.motion_permission.needs_request")
+        /// Motion Permission
+        internal static let title = L10n.tr("Localizable", "settings_details.location.motion_permission.title")
+      }
       internal enum Notifications {
         /// Location Notifications
         internal static let header = L10n.tr("Localizable", "settings_details.location.notifications.header")
