@@ -394,7 +394,6 @@ public class HomeAssistantAPI {
             ]
         }
         ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
-        ident.DeviceID = Current.settingsStore.integrationDeviceID
         ident.DeviceName = deviceKitDevice.name
         ident.Manufacturer = "Apple"
         ident.Model = deviceKitDevice.description
