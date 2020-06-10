@@ -230,7 +230,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         var updatePromise: Promise<Void> = api.UpdateSensors(.BackgroundFetch).asVoid()
 
-        if Current.settingsStore.locationEnabled && prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
+        if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
+            prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
             updatePromise = api.GetAndSendLocation(trigger: .BackgroundFetch).asVoid()
         }
 
