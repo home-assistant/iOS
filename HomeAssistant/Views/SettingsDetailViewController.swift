@@ -14,6 +14,7 @@ import IntentsUI
 import PromiseKit
 import RealmSwift
 import Firebase
+import CoreMotion
 
 // swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController, TypedRowControllerType {
@@ -93,6 +94,8 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         case "location":
             self.title = L10n.SettingsDetails.Location.title
             self.form
+                +++ locationPermissionsSection()
+
                 +++ Section(header: L10n.SettingsDetails.Location.Updates.header,
                             footer: L10n.SettingsDetails.Location.Updates.footer)
                 <<< SwitchRow {
@@ -573,6 +576,124 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }
                 }
             })
+        }
+    }
+
+    private func locationPermissionsSection() -> Section {
+        let section = Section()
+
+        section <<< locationPermissionRow()
+
+        if #available(iOS 11, *) {
+            section <<< motionPermissionRow()
+        }
+
+        return section
+    }
+
+    private class func openSettings() {
+        UIApplication.shared.open(
+            URL(string: UIApplication.openSettingsURLString)!,
+            options: [:],
+            completionHandler: nil
+        )
+    }
+
+    private func locationPermissionRow() -> BaseRow {
+        // swiftlint:ignore:next nesting
+        class PermissionWatchingDelegate: NSObject, CLLocationManagerDelegate {
+            let row: LabelRow
+
+            init(row: LabelRow) {
+                self.row = row
+            }
+
+            func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+                row.value = {
+                    switch status {
+                    case .authorizedAlways:
+                        return L10n.SettingsDetails.Location.LocationPermission.always
+                    case .authorizedWhenInUse:
+                        return L10n.SettingsDetails.Location.LocationPermission.whileInUse
+                    case .denied, .restricted:
+                        return L10n.SettingsDetails.Location.LocationPermission.never
+                    case .notDetermined:
+                        return L10n.SettingsDetails.Location.LocationPermission.needsRequest
+                    @unknown default:
+                        return L10n.SettingsDetails.Location.LocationPermission.never
+                    }
+                }()
+                row.updateCell()
+            }
+        }
+
+        return LabelRow {
+            let locationManager = CLLocationManager()
+            let permissionDelegate = PermissionWatchingDelegate(row: $0)
+
+            $0.title = L10n.SettingsDetails.Location.LocationPermission.title
+
+            $0.cellUpdate { cell, _ in
+                // setting the delegate also has the side effect of triggering a status update, which sets the value
+                locationManager.delegate = permissionDelegate
+
+                cell.accessoryType = .disclosureIndicator
+                cell.selectionStyle = .default
+            }
+            $0.onCellSelection { _, row in
+                if CLLocationManager.authorizationStatus() == .notDetermined {
+                    locationManager.requestAlwaysAuthorization()
+                } else {
+                    Self.openSettings()
+                }
+
+                row.deselect(animated: true)
+            }
+        }
+    }
+
+    @available(iOS 11, *)
+    func motionPermissionRow() -> BaseRow {
+        func update(_ row: LabelRow) {
+            row.value = {
+                switch CMMotionActivityManager.authorizationStatus() {
+                case .authorized:
+                    return L10n.SettingsDetails.Location.MotionPermission.enabled
+                case .denied, .restricted:
+                    return L10n.SettingsDetails.Location.MotionPermission.denied
+                case .notDetermined:
+                    return L10n.SettingsDetails.Location.MotionPermission.needsRequest
+                @unknown default:
+                    return L10n.SettingsDetails.Location.MotionPermission.denied
+                }
+            }()
+            row.updateCell()
+        }
+
+        return LabelRow {
+            let manager = CMMotionActivityManager()
+
+            $0.title = L10n.SettingsDetails.Location.MotionPermission.title
+            update($0)
+
+            $0.cellUpdate { cell, _ in
+                cell.accessoryType = .disclosureIndicator
+                cell.selectionStyle = .default
+            }
+
+            $0.onCellSelection { _, row in
+                if CMMotionActivityManager.authorizationStatus() == .notDetermined {
+                    let now = Date()
+                    manager.queryActivityStarting(from: now, to: now, to: .main, withHandler: { _, _ in
+                        update(row)
+                    })
+                } else {
+                    // if the user changes the value in settings, we'll be killed, so we don't need to watch anything
+                    Self.openSettings()
+                }
+
+                row.deselect(animated: true)
+            }
         }
     }
 }

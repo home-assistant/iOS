@@ -113,6 +113,15 @@
 "no_label" = "No";
 "alerts.open_url_from_notification.title" = "Open URL?";
 "alerts.open_url_from_notification.message" = "Open URL (%@) found in notification?";
+"settings_details.location.location_permission.title" = "Location Permission";
+"settings_details.location.location_permission.always" = "Always";
+"settings_details.location.location_permission.while_in_use" = "While In Use";
+"settings_details.location.location_permission.never" = "Never";
+"settings_details.location.location_permission.needs_request" = "Disabled";
+"settings_details.location.motion_permission.title" = "Motion Permission";
+"settings_details.location.motion_permission.enabled" = "Enabled";
+"settings_details.location.motion_permission.denied" = "Denied";
+"settings_details.location.motion_permission.needs_request" = "Disabled";
 "settings_details.location.updates.header" = "Update sources";
 "settings_details.location.updates.footer" = "Manual location updates can always be triggered";
 "settings_details.location.updates.zone.title" = "Zone enter/exit";
