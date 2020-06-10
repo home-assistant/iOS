@@ -19,6 +19,7 @@ public class OneShotLocationManager: NSObject, CLLocationManagerDelegate {
     public init(onLocation: @escaping OnLocationUpdated) {
         onLocationUpdated = onLocation
         super.init()
+        locationManager.stopMonitoringSignificantLocationChanges()
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
         locationManager.delegate = self
@@ -35,6 +36,7 @@ public class OneShotLocationManager: NSObject, CLLocationManagerDelegate {
 
             Current.Log.verbose("LocationManager: Got location stored on manager \(location)")
             onLocationUpdated(location, nil)
+            locationManager.startMonitoringSignificantLocationChanges()
             locationManager.delegate = nil
         }
     }
@@ -42,6 +44,7 @@ public class OneShotLocationManager: NSObject, CLLocationManagerDelegate {
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         Current.Log.verbose("LocationManager: Got \(locations.count) locations, stopping updates!")
         onLocationUpdated(locations.first, nil)
+        locationManager.startMonitoringSignificantLocationChanges()
         manager.delegate = nil
     }
 
@@ -60,5 +63,6 @@ public class OneShotLocationManager: NSObject, CLLocationManagerDelegate {
             Current.Log.error("Received non-CLError when we only expected CLError: \(error)")
             onLocationUpdated(nil, error)
         }
+        locationManager.startMonitoringSignificantLocationChanges()
     }
 }
