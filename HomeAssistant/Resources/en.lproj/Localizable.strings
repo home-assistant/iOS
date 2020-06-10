@@ -640,6 +640,10 @@
 "onboarding.connection_test_result.server_error.description" = "Server error: %@";
 "onboarding.connection_test_result.too_old.description" = "You must upgrade your Home Assistant version.";
 "onboarding.connection_test_result.unknown_error.description" = "Unknown error: %@";
+"onboarding.manual_setup.no_scheme.title" = "URL entered without scheme";
+"onboarding.manual_setup.no_scheme.message" = "Should we try connecting using http:// or https://?";
+"onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
+"onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
 "onboarding.discovery.results_label.plural" = "We found %d Home Assistants on your network.";
 "onboarding.discovery.results_label.singular" = "We found %d Home Assistant on your network.";
 "onboarding.connect.title" = "Connecting to %@";

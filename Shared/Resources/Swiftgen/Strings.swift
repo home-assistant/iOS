@@ -611,6 +611,22 @@ internal enum L10n {
         }
       }
     }
+    internal enum ManualSetup {
+      internal enum CouldntMakeUrl {
+        /// The value '%@' was not a valid URL.
+        internal static func message(_ p1: String) -> String {
+          return L10n.tr("Localizable", "onboarding.manual_setup.couldnt_make_url.message", p1)
+        }
+        /// Could not create a URL
+        internal static let title = L10n.tr("Localizable", "onboarding.manual_setup.couldnt_make_url.title")
+      }
+      internal enum NoScheme {
+        /// Should we try connecting using http:// or https://?
+        internal static let message = L10n.tr("Localizable", "onboarding.manual_setup.no_scheme.message")
+        /// URL entered without scheme
+        internal static let title = L10n.tr("Localizable", "onboarding.manual_setup.no_scheme.title")
+      }
+    }
   }
 
   internal enum Permissions {
