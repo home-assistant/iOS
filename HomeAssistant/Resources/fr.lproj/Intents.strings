@@ -94,7 +94,7 @@
 "X4A8Cc" = "Service Domain";
 "Xq7UuD" = "Render the provided template";
 "YNQXwq" = "Erreur";
-"ZApPxB" = "Service Name";
+"ZApPxB" = "Nom du service";
 "ZT9Mld" = "Nom de l'événement";
 "ZmUm9Q" = "What template would you like to render?";
 "bqPSU7" = "Impossible d'obtenir l'image de la caméra, Home Assistant n'est pas joignable actuellement.";
@@ -110,8 +110,8 @@
 "mJ6CrP" = "Échec d’envoi de ${eventName} à Home Assistant avec l’erreur suivante: ${error}";
 "mZnRHS" = "Envoi avec succès de ${eventName} à Home Assistant";
 "mi6B62" = "Quelles données voulez-vous envoyer avec l'événement ?";
-"pQhTjo" = "Failed to fire event, Home Assistant is not currently reachable";
+"pQhTjo" = "Échec du déclenchement de l'événement, Home Assistant n'est actuellement pas accessible.";
 "rOlW1x" = "Quel lieu voulez-vous envoyer ?";
 "sQJAJS" = "Erreur";
-"sfDGvk" = "Rendered Template";
+"sfDGvk" = "Rendu du modèle";
 "yyjTxO" = "Erreur";

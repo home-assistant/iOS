@@ -15,7 +15,7 @@
 "SnL-y3-0HP.text" = "Moj Home Assistant";
 "TEX-zW-Byk.text" = "Za najboljšo izkušnjo uporabe programa Home Assistant Companion potrdite naslednja dovoljenja:";
 "Tqw-iY-A2S.normalTitle" = "Več informacij";
-"UKm-Ju-0Yr.text" = "We encountered an error while connecting to your instance. Your SSL certificate is invalid. Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.";
+"UKm-Ju-0Yr.text" = "Med povezavo z vašim primerkom smo naleteli na napako. Vaše potrdilo SSL ni veljavno. Zaradi omejitev iOS-a ne boste mogli nadaljevati z nastavitvijo, dokler ne namestite veljavnega SSL potrdila. Priporočamo Lets Encrypt ali Nabu Casa Remote UI.";
 "XyQ-gy-yHY.text" = "Povezani";
 "bP1-C8-fgs.text" = "Integracija ustvarjena";
 "d97-7H-RBe.text" = "Vzpostavljena šifrirana komunikacija";

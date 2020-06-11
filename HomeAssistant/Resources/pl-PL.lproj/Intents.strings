@@ -76,7 +76,7 @@
 "7boBzr" = "Uruchom ${service} z danymi";
 "CmlkE4" = "shortcut_event";
 "DKg2kH" = "Potwierdzając, chcesz wybrać ‘${cameraID}’?";
-"DdnZyl" = "Got the latest still from${cameraID}";
+"DdnZyl" = "Pobierz obraz z kamery ${cameraID}";
 "FtQqoU" = "Lokalizacja zaktualizowana";
 "HCM8Oe" = "Uruchom ${eventName} z danymi";
 "HSLcG7" = "Nazwa zdarzenia";

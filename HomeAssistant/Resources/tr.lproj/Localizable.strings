@@ -73,7 +73,7 @@
 "settings_details.notifications.sounds_section.footer" = "Custom push notification sounds can be added via iTunes.";
 "settings_details.notifications.sounds_section.button.title" = "Import Sounds";
 "settings_details.notifications.sounds_section.imported_alert.title" = "Sounds Imported";
-"settings_details.notifications.sounds_section.imported_alert.message" = "%d sounds were imported. Please restart your phone to complete the import.";
+"settings_details.notifications.sounds_section.imported_alert.message" = "%li sounds were imported. Please restart your phone to complete the import.";
 "settings_details.notifications.badge_section.button.title" = "Reset badge to 0";
 "settings_details.notifications.badge_section.reset_alert.title" = "Badge reset";
 "settings_details.notifications.badge_section.reset_alert.message" = "The badge has been reset to 0.";
@@ -181,7 +181,7 @@
 "extensions.notification_content.error.no_entity_id" = "No entity_id found in payload!";
 "extensions.notification_content.error.request.auth_failed" = "Authentication failed!";
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
-"extensions.notification_content.error.request.other" = "Got non-200 status code (%d)";
+"extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
 "extensions.notification_content.error.request.unknown" = "Unknown error!";
 "extensions.notification_content.hud.loading" = "Loading %@...";
 "location_change_notification.siri.body" = "Location update triggered by Siri";
@@ -375,7 +375,7 @@
 "watch.labels.complication_text_areas.row3_column2.label" = "Row 3, Column 2";
 "watch.labels.complication_text_areas.trailing.description" = "The text to display on the trailing edge of the gauge.";
 "watch.labels.complication_text_areas.trailing.label" = "Trailing";
-"settings_details.location.zones.radius.label" = "%d m";
+"settings_details.location.zones.radius.label" = "%li m";
 "settings_details.notifications.categories.header" = "Kategoriler";
 "settings_details.notifications.new_category.title" = "Yeni kategori";
 "settings_details.watch.title" = "Apple Watch";
@@ -667,7 +667,31 @@ Home Assistant Companion %@";
 "whats_new.buttons.completion.title" = "Hadi gidelim";
 "whats_new.Two_Dot_Zero.thank_you.title" = "Bir şey daha...";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Rica ederim!";
-"whats_new.Two_Dot_Zero.thank_you.message" = "Thank you.\n\nThank you for using Home Assistant Companion.\n\nThank you for using Home Assistant.\n\nThank you for putting up with me over the last 3 years of work.\n\nThank you for putting up with me for the last 10 months of development of 2.0.\n\nThank you for filing bug reports on GitHub.\n\nThank you for helping out fellow users when they needed it and I wasn't available.\n\nThank you for sending me emails at 2 AM describing in extreme detail how this button is 2 pixels off.\n\nThank you for being you and supporting me.\n\nYour consistently positive feedback and appreciation is what keeps me going.\n\nI really hope you like Home Assistant Companion 2.0.\n\nThank you.\n\n--Robbie";
+"whats_new.Two_Dot_Zero.thank_you.message" = "Thank you.\
+\
+Thank you for using Home Assistant Companion.\
+\
+Thank you for using Home Assistant.\
+\
+Thank you for putting up with me over the last 3 years of work.\
+\
+Thank you for putting up with me for the last 10 months of development of 2.0.\
+\
+Thank you for filing bug reports on GitHub.\
+\
+Thank you for helping out fellow users when they needed it and I wasn't available.\
+\
+Thank you for sending me emails at 2 AM describing in extreme detail how this button is 2 pixels off.\
+\
+Thank you for being you and supporting me.\
+\
+Your consistently positive feedback and appreciation is what keeps me going.\
+\
+I really hope you like Home Assistant Companion 2.0.\
+\
+Thank you.\
+\
+--Robbie";
 "whats_new.Two_Dot_Zero.items.donations.title" = "Bağışlar";
 "whats_new.Two_Dot_Zero.items.donations.subtitle" = "Yıllarca benden bağış yapmam istendi ve şimdi tamam! Hakkında ekranındayken Bağış tuşuna basarak daha fazlasına ulaşabilirsiniz.";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Home Assistant Cloud Desteği";
@@ -692,3 +716,29 @@ Home Assistant Companion %@";
 "whats_new.Two_Dot_Zero.items.app_icons.subtitle" = "A fresh new app icon as well as alternatives you can choose from. You can also now trigger automations by 3D Touching the app icon.";
 "whats_new.Two_Dot_Zero.items.and_so_much_more.title" = "Ve çok daha fazlası";
 "whats_new.Two_Dot_Zero.items.and_so_much_more.subtitle" = "2.0 took over 300 hours to create and added almost 35,000 lines of new code, so only so many features could be presented here. There's plenty more major improvements under the hood!";
+"settings_details.notifications.permission.title" = "Permission";
+"settings_details.notifications.permission.enabled" = "Enabled";
+"settings_details.notifications.permission.disabled" = "Denied";
+"settings_details.notifications.permission.needs_request" = "Disabled";
+"settings_details.location.location_permission.title" = "Location Permission";
+"settings_details.location.location_permission.always" = "Always";
+"settings_details.location.location_permission.while_in_use" = "While In Use";
+"settings_details.location.location_permission.never" = "Never";
+"settings_details.location.location_permission.needs_request" = "Disabled";
+"settings_details.location.motion_permission.title" = "Motion Permission";
+"settings_details.location.motion_permission.enabled" = "Enabled";
+"settings_details.location.motion_permission.denied" = "Denied";
+"settings_details.location.motion_permission.needs_request" = "Disabled";
+"actions_configurator.trigger_example.title" = "Example Trigger";
+"actions_configurator.trigger_example.share" = "Share Contents";
+"settings_details.general.app_icon.enum.caribbean_green" = "Caribbean Green";
+"settings_details.general.app_icon.enum.cornflower_blue" = "Cornflower Blue";
+"settings_details.general.app_icon.enum.crimson" = "Crimson";
+"settings_details.general.app_icon.enum.electric_violet" = "Electric Violet";
+"settings_details.general.app_icon.enum.fire_orange" = "Fire Orange";
+"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant Blue";
+"settings_details.general.app_icon.enum.pink" = "Pink";
+"onboarding.manual_setup.no_scheme.title" = "URL entered without scheme";
+"onboarding.manual_setup.no_scheme.message" = "Should we try connecting using http:// or https://?";
+"onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
+"onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
