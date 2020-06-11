@@ -1011,7 +1011,7 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings.connection_section.home_assistant_cloud.title")
       }
       internal enum InternalBaseUrl {
-        /// http://hassio.local:8123/
+        /// http://homeassistant.local:8123/
         internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.internal_base_url.placeholder")
         /// Internal URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.internal_base_url.title")
