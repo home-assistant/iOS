@@ -58,7 +58,7 @@
 "sbkx4E" = "Es ist nicht gelungen, ${pasteboardContents} an einen gültigen Ort zu geokodieren.";
 "uUk5RX" = "Service ${serviceDomain}.${service} mit Daten aufrufen";
 "v7TSD5" = "Standort senden";
-"wKnW1P" = "Service ￼${serviceDomain}.${service} mit Daten aus der Zwischenablage aufrufen";
+"wKnW1P" = "Dienst ${serviceDomain}.${service} mit Daten aus der Zwischenablage aufrufen";
 "wfPQQQ" = "Sende ein Ereignis an den Home Assistant Event Bus";
 "yS9QV0" = "Ereignis ${eventName} mit Daten auslösen";
 "7NpJ76-F708zM" = "Der Standort wurde mit dem Inhalt der Zwischenablage aktualisiert, die als Adresse ausgelesen wurde";

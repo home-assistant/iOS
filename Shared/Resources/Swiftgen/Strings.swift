@@ -303,7 +303,7 @@ internal enum L10n {
           internal static func entityNotFound(_ p1: String) -> String {
             return L10n.tr("Localizable", "extensions.notification_content.error.request.entity_not_found", p1)
           }
-          /// Got non-200 status code (%d)
+          /// Got non-200 status code (%li)
           internal static func other(_ p1: Int) -> String {
             return L10n.tr("Localizable", "extensions.notification_content.error.request.other", p1)
           }
@@ -601,11 +601,11 @@ internal enum L10n {
     }
     internal enum Discovery {
       internal enum ResultsLabel {
-        /// We found %d Home Assistants on your network.
+        /// We found %li Home Assistants on your network.
         internal static func plural(_ p1: Int) -> String {
           return L10n.tr("Localizable", "onboarding.discovery.results_label.plural", p1)
         }
-        /// We found %d Home Assistant on your network.
+        /// We found %li Home Assistant on your network.
         internal static func singular(_ p1: Int) -> String {
           return L10n.tr("Localizable", "onboarding.discovery.results_label.singular", p1)
         }
@@ -1425,7 +1425,7 @@ internal enum L10n {
           internal static let title = L10n.tr("Localizable", "settings_details.location.zones.location.title")
         }
         internal enum Radius {
-          /// %d m
+          /// %li m
           internal static func label(_ p1: Int) -> String {
             return L10n.tr("Localizable", "settings_details.location.zones.radius.label", p1)
           }
@@ -1551,7 +1551,7 @@ internal enum L10n {
           }
         }
         internal enum ImportedAlert {
-          /// %d sounds were imported. Please restart your phone to complete the import.
+          /// %li sounds were imported. Please restart your phone to complete the import.
           internal static func message(_ p1: Int) -> String {
             return L10n.tr("Localizable", "settings_details.notifications.sounds.imported_alert.message", p1)
           }
@@ -1567,7 +1567,7 @@ internal enum L10n {
           internal static let title = L10n.tr("Localizable", "settings_details.notifications.sounds_section.button.title")
         }
         internal enum ImportedAlert {
-          /// %d sounds were imported. Please restart your phone to complete the import.
+          /// %li sounds were imported. Please restart your phone to complete the import.
           internal static func message(_ p1: Int) -> String {
             return L10n.tr("Localizable", "settings_details.notifications.sounds_section.imported_alert.message", p1)
           }
