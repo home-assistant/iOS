@@ -870,8 +870,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             let navController = UINavigationController(rootViewController: view)
             rootViewController?.present(navController, animated: true, completion: nil)
         })
-        let navController = UINavigationController(rootViewController: view)
-        rootViewController?.present(navController, animated: true, completion: nil)
     }
 }
 
