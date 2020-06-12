@@ -284,9 +284,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             completionHandler(false)
         }))
 
-        self.navigationController?.present(alertController, animated: true, completion: nil)
-
         alertController.popoverPresentationController?.sourceView = self.webView
+        present(alertController, animated: true, completion: nil)
     }
 
     func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?,
@@ -309,22 +308,20 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             completionHandler(nil)
         }))
 
-        self.navigationController?.present(alertController, animated: true, completion: nil)
-
         alertController.popoverPresentationController?.sourceView = self.webView
+        present(alertController, animated: true, completion: nil)
     }
 
     func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String,
                  initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
-        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
 
         alertController.addAction(UIAlertAction(title: L10n.Alerts.Alert.ok, style: .default, handler: { _ in
             completionHandler()
         }))
 
-        self.navigationController?.present(alertController, animated: true, completion: nil)
-
         alertController.popoverPresentationController?.sourceView = self.webView
+        present(alertController, animated: true, completion: nil)
     }
 
     @objc func loadActiveURLIfNeeded() {
