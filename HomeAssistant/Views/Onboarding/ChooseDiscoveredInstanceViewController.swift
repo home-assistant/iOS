@@ -48,7 +48,7 @@ class ChooseDiscoveredInstanceViewController: UIViewController {
 extension ChooseDiscoveredInstanceViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedInstance = self.instances[indexPath.row]
-        Current.Log.verbose("Selected row at \(indexPath.row) \(self.selectedInstance)")
+        Current.Log.verbose("Selected row at \(indexPath.row) \(String(describing: self.selectedInstance))")
         self.perform(segue: StoryboardSegue.Onboarding.setupDiscoveredInstance, sender: self.selectedInstance)
     }
 }

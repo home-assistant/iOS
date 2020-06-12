@@ -206,7 +206,7 @@ public class ConnectionInfo: Codable {
         }
 
         // swiftlint:disable:next line_length
-        let errMsg = "Unable to get \(self.activeURLType), even though its active! Internal URL: \(self.internalURL), External URL: \(self.externalURL), Remote UI URL: \(self.remoteUIURL)"
+        let errMsg = "Unable to get \(self.activeURLType), even though its active! Internal URL: \(String(describing: self.internalURL)), External URL: \(String(describing: self.externalURL)), Remote UI URL: \(String(describing: self.remoteUIURL))"
         Current.Log.error(errMsg)
 
         #if os(iOS)
@@ -237,11 +237,10 @@ public class ConnectionInfo: Codable {
         win.makeKeyAndVisible()
         vc.present(alert, animated: true, completion: nil)
 
+        return URL(string: "http://somethingbroke.fake")!
         #else
         fatalError(errMsg)
         #endif
-
-        return URL(string: "http://somethingbroke.fake")!
     }
 
     /// Returns the activeURL with /api appended.

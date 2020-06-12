@@ -127,7 +127,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
                 Current.clientEventStore.addEvent(event)
                 completion(true, TimeInterval(2 * request.retryCount))
             } else if let error = error as? AFError, error.responseCode == 401 {
-                let event = ClientEvent(text: "Server indicated token is invalid, showing onboarding", type: .networkRequest)
+                let event = ClientEvent(text: "Server indicated token is invalid, onboarding", type: .networkRequest)
                 Current.clientEventStore.addEvent(event)
 
                 completion(false, 0)

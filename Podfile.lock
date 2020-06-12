@@ -466,7 +466,7 @@ PODS:
   - SimulatorStatusMagic (2.4.1)
   - Sodium (0.8.0)
   - SwiftGen (6.1.0)
-  - SwiftLint (0.31.0)
+  - SwiftLint (0.39.2)
   - SwiftMessages (7.0.1):
     - SwiftMessages/App (= 7.0.1)
   - SwiftMessages/App (7.0.1)
@@ -512,7 +512,7 @@ DEPENDENCIES:
   - SimulatorStatusMagic
   - Sodium
   - SwiftGen (~> 6.1.0)
-  - SwiftLint (~> 0.31.0)
+  - SwiftLint (~> 0.39.2)
   - SwiftMessages (from `https://github.com/SwiftKickMobile/SwiftMessages.git`, branch `master`)
   - UIColor_Hex_Swift
   - Version (from `https://github.com/guykogus/Version.git`, branch `master`)
@@ -687,7 +687,7 @@ SPEC CHECKSUMS:
   SimulatorStatusMagic: 28d4a9d1a500ac7cea0b2b5a43c1c6ddb40ba56c
   Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
   SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
-  SwiftLint: 7a0227733d786395817373b2d0ca799fd0093ff3
+  SwiftLint: 22ccbbe3b8008684be5955693bab135e0ed6a447
   SwiftMessages: 717510963fb9c9215c58f38bbc74801e4bf134c6
   TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
   UIColor_Hex_Swift: 8be7432edacb7fa91c78aa05ef3c30b66e4f9415
@@ -697,6 +697,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 60f708ddc090783d32a272839f5533bb41e3fd62
+PODFILE CHECKSUM: ea5f85d843543fe7cc1f216d89ef93aee205403b
 
 COCOAPODS: 1.9.3

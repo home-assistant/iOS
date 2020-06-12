@@ -73,14 +73,14 @@ public class Action: Object, Mappable, NSCoding {
                                          userInfo: ["name": self.Name as NSSecureCoding])
     }
     #endif
-    
+
     public var exampleTrigger: String {
         let data = HomeAssistantAPI.actionEvent(actionID: ID, actionName: Name, source: .Preview)
         let eventDataStrings = data.eventData.map { $0 + ": " + $1 }.sorted()
         let sourceStrings = HomeAssistantAPI.ActionSource.allCases.map { $0.description }.sorted()
-        
+
         let indentation = "\n    "
-        
+
         return """
         - platform: event
           event_type: \(data.eventType)

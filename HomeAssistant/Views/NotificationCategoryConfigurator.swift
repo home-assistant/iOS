@@ -238,7 +238,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
     func getActionRow(_ existingAction: NotificationAction?) -> ButtonRowWithPresent<NotificationActionConfigurator> {
         var action = existingAction
-        
+
         var identifier = "new_action_"+UUID().uuidString
         var title = L10n.NotificationsConfigurator.NewAction.title
 

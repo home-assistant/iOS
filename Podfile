@@ -2,6 +2,7 @@
 platform :ios, '10.3'
 # Uncomment this line if you're using Swift
 use_frameworks!
+inhibit_all_warnings!
 
 plugin 'cocoapods-acknowledgements'
 
@@ -58,7 +59,7 @@ target 'HomeAssistant' do
     pod 'MBProgressHUD', '~> 1.1.0'
     pod 'SimulatorStatusMagic', :configurations => ['Debug']
     pod 'SwiftGen', '~> 6.1.0'
-    pod 'SwiftLint', '~> 0.31.0'
+    pod 'SwiftLint', '~> 0.39.2'
     pod 'SwiftMessages', :git => 'https://github.com/SwiftKickMobile/SwiftMessages.git', :branch => 'master'
     pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
     pod 'WhatsNewKit'
