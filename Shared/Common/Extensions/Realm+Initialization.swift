@@ -38,6 +38,14 @@ extension Realm {
 
     /// The live data store, located in shared storage.
     public static let live: () -> Realm = {
+        if NSClassFromString("XCTest") != nil {
+            do {
+                return try Realm(configuration: .init(inMemoryIdentifier: "Tests", deleteRealmIfMigrationNeeded: true))
+            } catch {
+                fatalError("couldn't create realm in unit test")
+            }
+        }
+
         let fileManager = FileManager.default
 
         let directoryURL = Realm.storeDirectoryURL
