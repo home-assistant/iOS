@@ -16,6 +16,8 @@ import ZIPFoundation
 import UserNotifications
 import Firebase
 import WebKit
+import MBProgressHUD
+import PromiseKit
 
 // swiftlint:disable:next type_body_length
 class SettingsViewController: FormViewController {
@@ -360,14 +362,34 @@ class SettingsViewController: FormViewController {
 
     func ResetApp() {
         Current.Log.verbose("Resetting app!")
-        Analytics.resetAnalyticsData()
-        resetStores()
-        setDefaults()
-        let bundleId = Bundle.main.bundleIdentifier!
-        UserDefaults.standard.removePersistentDomain(forName: bundleId)
-        UserDefaults.standard.synchronize()
-        prefs.removePersistentDomain(forName: bundleId)
-        prefs.synchronize()
+
+        let hud = MBProgressHUD.showAdded(to: view, animated: true)
+        hud.label.text = L10n.Settings.ResetSection.ResetAlert.progressMessage
+        hud.show(animated: true)
+
+        let waitAtLeast = after(seconds: 3.0)
+
+        firstly {
+            race(
+                Current.tokenManager?.revokeToken().asVoid().recover { _ in () } ?? .value(()),
+                after(seconds: 10.0)
+            )
+        }.then {
+            waitAtLeast
+        }.done {
+            hud.hide(animated: true)
+
+            Analytics.resetAnalyticsData()
+            resetStores()
+            setDefaults()
+            let bundleId = Bundle.main.bundleIdentifier!
+            UserDefaults.standard.removePersistentDomain(forName: bundleId)
+            UserDefaults.standard.synchronize()
+            prefs.removePersistentDomain(forName: bundleId)
+            prefs.synchronize()
+
+            Current.signInRequiredCallback?(.logout)
+        }
     }
 
     override var canBecomeFirstResponder: Bool {
