@@ -1313,6 +1313,10 @@ internal enum L10n {
         /// Page Zoom
         internal static let title = L10n.tr("Localizable", "settings_details.general.page_zoom.title")
       }
+      internal enum Restoration {
+        /// Remember Last Page
+        internal static let title = L10n.tr("Localizable", "settings_details.general.restoration.title")
+      }
     }
     internal enum Location {
       /// Location

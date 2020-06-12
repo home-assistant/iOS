@@ -43,9 +43,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        UIFont.overrideInitialize()
 //    }
 
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    enum StateRestorationKey: String {
+        case mainWindow
+        case webViewNavigationController
+    }
 
+    func application(
+        _ application: UIApplication,
+        willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
         setDefaults()
 
         UNUserNotificationCenter.current().delegate = self
@@ -77,7 +83,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if #available(iOS 12.0, *) { setupiOS12Features() }
 
+        // window must be created before willFinishLaunching completes, or state restoration will not occur
         setupWindow()
+
+        return true
+    }
+
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         setupView()
 
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
@@ -87,6 +100,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func setupWindow() {
         let window = UIWindow.init(frame: UIScreen.main.bounds)
+        window.restorationIdentifier = StateRestorationKey.mainWindow.rawValue
         window.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
         window.makeKeyAndVisible()
         self.window = window
@@ -99,9 +113,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Current.Log.info("showing onboarding")
             window?.rootViewController = onboardingNavigationController()
         } else {
-            Current.Log.info("showing web view controller")
-            let navController = webViewNavigationController(rootViewController: WebViewController())
-            window?.rootViewController = navController
+            if let rootController = window?.rootViewController, !rootController.children.isEmpty {
+                Current.Log.info("state restoration loaded controller, not creating a new one")
+            } else {
+                Current.Log.info("state restoration didn't load anything, constructing controllers manually")
+                let navController = webViewNavigationController(rootViewController: WebViewController())
+                window?.rootViewController = navController
+            }
         }
 
         if let tokenInfo = Current.settingsStore.tokenInfo, let connectionInfo = Current.settingsStore.connectionInfo {
@@ -159,6 +177,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {}
+
+    func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
+        if requiresOnboarding {
+            Current.Log.info("disallowing state to be restored due to onboarding")
+            return false
+        }
+
+        if Current.appConfiguration == .FastlaneSnapshot {
+            Current.Log.info("disallowing state to be restored due to fastlane snapshot")
+            return false
+        }
+
+        Current.Log.info("allowing state to be restored")
+        return true
+    }
+
+    func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
+        if Current.settingsStore.restoreLastURL == false {
+            // if we let it capture state -- even if we don't use the url -- it will take a screenshot
+            Current.Log.info("disallowing state to be saved due to setting")
+            return false
+        }
+
+        Current.Log.info("allowing state to be saved")
+        return true
+    }
+
+    func application(
+        _ application: UIApplication,
+        viewControllerWithRestorationIdentifierPath identifierComponents: [String],
+        coder: NSCoder
+    ) -> UIViewController? {
+        if identifierComponents == [StateRestorationKey.webViewNavigationController.rawValue] {
+            let navigationController = webViewNavigationController()
+            window?.rootViewController = navigationController
+            return navigationController
+        } else {
+            return nil
+        }
+    }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         Current.Log.error("Error when trying to register for push: \(error)")
@@ -342,6 +400,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func webViewNavigationController(rootViewController: UIViewController? = nil) -> UINavigationController {
         let navigationController = UINavigationController()
+        navigationController.restorationIdentifier = StateRestorationKey.webViewNavigationController.rawValue
         if let rootViewController = rootViewController {
             navigationController.viewControllers = [rootViewController]
         }
