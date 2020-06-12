@@ -263,7 +263,7 @@ platform :ios do
       sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["HOMEASSISTANT_CERTIFICATE_KEY"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
 
       itunes
-    elsif !is_ci || ENV["TRAVIS_PULL_REQUEST"] == "true"
+    elsif !is_ci || ENV["TRAVIS_PULL_REQUEST"] != "false"
       run_tests(workspace: 'HomeAssistant.xcworkspace',
                 scheme: 'Debug')
     end
