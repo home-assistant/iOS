@@ -43,6 +43,7 @@
 "settings.reset_section.reset_row.title" = "Reset";
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_alert.message" = "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.";
+"settings.reset_section.reset_alert.progress_message" = "Resetting…";
 "settings_details.general.title" = "General";
 "settings_details.general.chrome.title" = "Open links in Chrome";
 "settings_details.location.title" = "Location";

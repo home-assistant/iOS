@@ -1189,6 +1189,8 @@ internal enum L10n {
       internal enum ResetAlert {
         /// Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.
         internal static let message = L10n.tr("Localizable", "settings.reset_section.reset_alert.message")
+        /// Resetting…
+        internal static let progressMessage = L10n.tr("Localizable", "settings.reset_section.reset_alert.progress_message")
         /// Reset
         internal static let title = L10n.tr("Localizable", "settings.reset_section.reset_alert.title")
       }
