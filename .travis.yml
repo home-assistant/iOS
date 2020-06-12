@@ -11,4 +11,4 @@ before_install:
   - echo -e "machine github.com\n login $HOMEASSISTANT_CERTIFICATE_USER\n password $HOMEASSISTANT_GITHUB_API_TOKEN" >> ~/.netrc
 after_success:
   - sleep 6
-rvm: 2.4.2
+rvm: 2.7.1
