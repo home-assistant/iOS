@@ -88,7 +88,7 @@ public class WebSocketMessage: Codable {
 extension WebSocketMessage: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         // swiftlint:disable:next line_length
-        return "WebSocketMessage(type: \(self.MessageType), id: \(self.ID), payload: \(self.Payload), result: \(self.Result), success: \(self.Success))"
+        return "WebSocketMessage(type: \(self.MessageType), id: \(String(describing: self.ID)), payload: \(String(describing: self.Payload)), result: \(String(describing: self.Result)), success: \(String(describing: self.Success)))"
     }
 
     public var debugDescription: String {

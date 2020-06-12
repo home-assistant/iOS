@@ -167,7 +167,7 @@ class AuthenticationViewController: UIViewController {
                 Current.Log.verbose("Request: \(String(describing: response.request))")
                 Current.Log.verbose("Response: \(String(describing: response.response))")
                 Current.Log.verbose("Result: \(response.result)")
-                Current.Log.error("Error: \(response.error)")
+                Current.Log.error("Error: \(String(describing: response.error))")
 
                 if let error = response.error {
                     let errorCode = (error as NSError).code

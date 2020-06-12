@@ -562,10 +562,13 @@ public class HomeAssistantAPI {
             }
         }
     }
-    
-    public class func actionEvent(actionID: String, actionName: String, source: ActionSource) -> (eventType: String, eventData: [String: String]) {
+
+    public class func actionEvent(
+        actionID: String,
+        actionName: String,
+        source: ActionSource
+    ) -> (eventType: String, eventData: [String: String]) {
         let device = Device.current
-        
         return (eventType: "ios.action_fired", eventData: [
             "actionName": actionName,
             "actionID": actionID,
@@ -581,7 +584,7 @@ public class HomeAssistantAPI {
             guard let api = HomeAssistantAPI.authenticatedAPI() else {
                 throw APIError.notConfigured
             }
-            
+
             let action = Self.actionEvent(actionID: actionID, actionName: actionName, source: source)
             Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
 
@@ -607,7 +610,7 @@ public class HomeAssistantAPI {
             allSensors.append(self.sensorsConfig.GeocodedLocationSensorConfig)
 
             let sensorsToRegister: [WebhookSensor]
-            
+
             if let limitSensors = limitSensors {
                 sensorsToRegister = allSensors.filter {
                     if let uniqueID = $0.UniqueID {
@@ -619,7 +622,7 @@ public class HomeAssistantAPI {
             } else {
                 sensorsToRegister = allSensors
             }
-            
+
             let promises: [Promise<WebhookSensorResponse>] = sensorsToRegister.map { sensor in
                 return self.webhook("register_sensor", payload: sensor.toJSON(),
                                     callingFunctionName: "\(#function)")
@@ -651,16 +654,9 @@ public class HomeAssistantAPI {
                 lastUpdateTriggerSensor.State = trigger.rawValue
             }
 
-            var allSensors = sensors
-            allSensors.append(lastUpdateTriggerSensor)
-
             let mapper = Mapper<WebhookSensor>(context: WebhookSensorContext(update: true),
                                                shouldIncludeNilValues: false)
-            let payload = mapper.toJSONArray(allSensors)
-
-            // Current.Log.verbose("Update sensors payload: \(mapper.toJSONString(allSensors, prettyPrint: true)!)")
-
-            return payload
+            return mapper.toJSONArray(sensors + [ lastUpdateTriggerSensor ])
         }.then { (payload) -> Promise<Any> in
             return self.webhook("update_sensor_states", payload: payload, callingFunctionName: "updateSensors")
         }.map { resp -> [String: WebhookSensorResponse] in

@@ -100,7 +100,7 @@ open class _SearchPushRow<Cell: CellType>: SelectorRow<Cell> where Cell: BaseCel
     }
 }
 
-public final class SearchPushRow<T: Equatable> : _SearchPushRow<PushSelectorCell<T>>, RowType where T: SearchItem {
+public final class SearchPushRow<T: Equatable>: _SearchPushRow<PushSelectorCell<T>>, RowType where T: SearchItem {
     public required init(tag: String?) {
         super.init(tag: tag)
     }

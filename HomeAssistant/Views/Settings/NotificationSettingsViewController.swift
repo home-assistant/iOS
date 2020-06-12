@@ -332,7 +332,7 @@ class NotificationSettingsViewController: FormViewController {
     func getNotificationCategoryRow(_ existingCategory: NotificationCategory?) ->
         ButtonRowWithPresent<NotificationCategoryConfigurator> {
             var category = existingCategory
-            
+
             var identifier = "new_category_"+UUID().uuidString
             var title = L10n.SettingsDetails.Notifications.NewCategory.title
 
@@ -354,7 +354,7 @@ class NotificationSettingsViewController: FormViewController {
                             Current.Log.verbose("Not saving category to DB and returning early!")
                             return
                         }
-                        
+
                         // if the user goes to re-edit the category after saving it, we want to show the same one
                         category = vc.category
                         row.tag = vc.category.Identifier

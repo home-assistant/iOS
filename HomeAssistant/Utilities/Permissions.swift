@@ -204,7 +204,9 @@ public enum PermissionType: Int {
             let now = Date()
 
             manager.queryActivityStarting(from: now, to: now, to: .main, withHandler: { (_, error: Error?) -> Void in
-                if let error = error as? CMError, error == CMErrorMotionActivityNotAuthorized {
+                if let error = error as NSError?,
+                    error.domain == CMErrorDomain,
+                    error.code == CMErrorMotionActivityNotAuthorized.rawValue {
                     completionHandler(false, .denied)
                     return
                 }

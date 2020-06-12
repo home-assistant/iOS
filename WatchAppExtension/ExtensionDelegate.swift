@@ -25,7 +25,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     fileprivate var watchConnectivityTask: WKWatchConnectivityRefreshBackgroundTask? {
         didSet {
-            oldValue?.setTaskCompleted()
+            oldValue?.setTaskCompletedWithSnapshot(false)
         }
     }
 
@@ -219,7 +219,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // First check we're not expecting more data
         guard !Communicator.shared.hasPendingDataToBeReceived else { return }
         // And then end the task (if there is one!)
-        self.watchConnectivityTask?.setTaskCompleted()
+        self.watchConnectivityTask?.setTaskCompletedWithSnapshot(false)
     }
 
     func updateComplications() {
@@ -236,7 +236,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
 
         _ = api.updateComplications().ensure {
-            self.bgTask?.setTaskCompleted()
+            self.bgTask?.setTaskCompletedWithSnapshot(false)
         }.catch { error in
             Current.Log.error("Error updating complications! \(error)")
         }

@@ -242,7 +242,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
             Current.settingsStore.connectionInfo?.internalSSIDs?.append(value)
         }
     }
-    
+
     func confirmURL(_ connectionURL: URL) -> Promise<Void> {
         return Promise { seal in
             guard let webhookID = Current.settingsStore.connectionInfo?.webhookID else {
