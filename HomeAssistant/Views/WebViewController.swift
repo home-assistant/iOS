@@ -178,6 +178,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
         self.view.bottomAnchor.constraint(equalTo: self.settingsButton.bottomAnchor, constant: 16.0).isActive = true
         self.view.rightAnchor.constraint(equalTo: self.settingsButton.rightAnchor, constant: 16.0).isActive = true
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateWebViewSettings),
+            name: SettingsStore.webViewRelatedSettingDidChange,
+            object: nil
+        )
+        updateWebViewSettings()
     }
 
     public func showSettingsViewController() {
@@ -439,6 +447,17 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         }
 
         return nil
+    }
+
+    @objc private func updateWebViewSettings() {
+        if #available(iOS 12, *) {
+            // This is quasi-private API that has existed since pre-iOS 10, but the implementation
+            // changed in iOS 12 to be like the +/- zoom buttons in Safari, which scale content without
+            // resizing the scrolling viewport.
+            let viewScale  = Current.settingsStore.pageZoom.viewScale
+            Current.Log.info("setting view scale to \(viewScale)")
+            webView.setValue(viewScale, forKey: "viewScale")
+        }
     }
 
     // swiftlint:disable:next function_body_length

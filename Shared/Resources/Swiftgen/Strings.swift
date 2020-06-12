@@ -1011,7 +1011,7 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings.connection_section.home_assistant_cloud.title")
       }
       internal enum InternalBaseUrl {
-        /// http://homeassistant.local:8123/
+        /// http://hassio.local:8123/
         internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.internal_base_url.placeholder")
         /// Internal URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.internal_base_url.title")
@@ -1302,6 +1302,14 @@ internal enum L10n {
       internal enum Chrome {
         /// Open links in Chrome
         internal static let title = L10n.tr("Localizable", "settings_details.general.chrome.title")
+      }
+      internal enum PageZoom {
+        /// %@ (Default)
+        internal static func `default`(_ p1: String) -> String {
+          return L10n.tr("Localizable", "settings_details.general.page_zoom.default", p1)
+        }
+        /// Page Zoom
+        internal static let title = L10n.tr("Localizable", "settings_details.general.page_zoom.title")
       }
     }
     internal enum Location {
