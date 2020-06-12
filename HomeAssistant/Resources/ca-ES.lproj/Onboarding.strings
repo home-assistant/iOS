@@ -1,7 +1,7 @@
 "4qQ-ND-WGB.text" = "Scanning your network for Home Assistant";
 "5td-Yc-nnx.text" = "The most advanced Home Automation app on iOS";
 "87t-Ca-ZJb.normalTitle" = "Error";
-"8JC-7Y-FvP.text" = "http://hassio.local:8123";
+"8JC-7Y-FvP.text" = "http://homeassistant.local:8123/";
 "CIS-8C-niN.text" = "Uh Oh!";
 "Kj7-hM-8gN.text" = "Connecting to My Home Assistant";
 "Kwy-Pt-nws.text" = "Nom d'usuari bàsic  de HTTP";
@@ -30,4 +30,4 @@
 "wsC-f5-jbO.text" = "We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. ";
 "suf-pJ-Nle.normalTitle" = "Start Over";
 "7iT-bd-cdY.text" = "Manual Configuration";
-"PIW-dY-j0P.text" = "Si us plau, introduïu l'adreça URL del seu Home Assistant per continuar. Ha de ser una adreça URL completa amb el format format \"http://hassio.local:8123\" (és a dir, que conté un esquema/protocol, nom del host i port).";
+"PIW-dY-j0P.text" = "Si us plau, introduïu l'adreça URL del seu Home Assistant per continuar. Ha de ser una adreça URL completa amb el format format \"http://homeassistant.local:8123\" (és a dir, que conté un esquema/protocol, nom del host i port).";

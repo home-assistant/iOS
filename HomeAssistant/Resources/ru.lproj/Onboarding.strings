@@ -1,7 +1,7 @@
 "4qQ-ND-WGB.text" = "Поиск Home Assistant в домашней сети";
 "5td-Yc-nnx.text" = "Передовое приложение для домашней автоматизации на iOS";
 "87t-Ca-ZJb.normalTitle" = "Ошибка";
-"8JC-7Y-FvP.text" = "http://hassio.local:8123";
+"8JC-7Y-FvP.text" = "http://homeassistant.local:8123/";
 "CIS-8C-niN.text" = "О нет!";
 "Kj7-hM-8gN.text" = "Подключение к Home Assistant";
 "Kwy-Pt-nws.text" = "Имя пользователя HTTP basic";
@@ -30,4 +30,4 @@
 "wsC-f5-jbO.text" = "Всё готово для авторизации в Home Assistant. Нажмите «Подключиться» и войдите в систему в открывшемся браузере.";
 "suf-pJ-Nle.normalTitle" = "Перезапуск";
 "7iT-bd-cdY.text" = "Ручная настройка";
-"PIW-dY-j0P.text" = "Для продолжения введите адрес Home Assistant. Необходим полный URL в формате «http://hassio.local:8123», содержащий протокол, адрес сервера и порт.";
+"PIW-dY-j0P.text" = "Для продолжения введите адрес Home Assistant. Необходим полный URL в формате «http://homeassistant.local:8123», содержащий протокол, адрес сервера и порт.";

@@ -1,7 +1,7 @@
 "4qQ-ND-WGB.text" = "扫描您的网络中的Home Assistant";
 "5td-Yc-nnx.text" = "iOS上最先进的家庭自动化应用程序";
 "87t-Ca-ZJb.normalTitle" = "错误";
-"8JC-7Y-FvP.text" = "http://hassio.local:8123";
+"8JC-7Y-FvP.text" = "http://homeassistant.local:8123/";
 "CIS-8C-niN.text" = "Uh Oh!";
 "Kj7-hM-8gN.text" = "连接到Home Assistant中";
 "Kwy-Pt-nws.text" = "HTTP 基本用户名";
@@ -30,4 +30,4 @@
 "wsC-f5-jbO.text" = "我们现在可以连接到您的Home Assistant并进行初始身份验证。点击下面的“连接”按钮将打开浏览器以便您登录。";
 "suf-pJ-Nle.normalTitle" = "重新开始";
 "7iT-bd-cdY.text" = "手动配置";
-"PIW-dY-j0P.text" = "请输入您的主页助理网址以继续。它必须是格式为“http://hassio.local:8123”的正确格式化的URL（即包含方案/协议，主机名和端口）。";
+"PIW-dY-j0P.text" = "请输入您的主页助理网址以继续。它必须是格式为“http://homeassistant.local:8123”的正确格式化的URL（即包含方案/协议，主机名和端口）。";

@@ -1,7 +1,7 @@
 "4qQ-ND-WGB.text" = "Kotiavustajaa etsitään verkostasi";
 "5td-Yc-nnx.text" = "iOS:n kehittynein kotiautomatisointisovellus";
 "87t-Ca-ZJb.normalTitle" = "Virhe";
-"8JC-7Y-FvP.text" = "http://hassio.local:8123";
+"8JC-7Y-FvP.text" = "http://homeassistant.local:8123/";
 "CIS-8C-niN.text" = "Voi ei!";
 "Kj7-hM-8gN.text" = "Yhteys muodostetaan Kotiavustajaan";
 "Kwy-Pt-nws.text" = "HTTP Basic Username";
@@ -30,4 +30,4 @@
 "wsC-f5-jbO.text" = "Olemme nyt valmiita muodostamaan yhteyden Kotiavustajaan ja ensimmäiseen todennukseen. Kun napautat alla olevaa Yhdistä-painiketta, selain avautuu, jotta voit kirjautua sisään. ";
 "suf-pJ-Nle.normalTitle" = "Aloita alusta";
 "7iT-bd-cdY.text" = "Manuaalinen konfigurointi";
-"PIW-dY-j0P.text" = "Syötä Kotiavustajan URL-osoitetta jatkaaksesi. Sen on oltava täysin muodostettu URL-osoite, jonka muoto on \"http://hassio.local:8123\" (eli sisältää kaavio/protokolla, palvelinnimi ja portti).";
+"PIW-dY-j0P.text" = "Syötä Kotiavustajan URL-osoitetta jatkaaksesi. Sen on oltava täysin muodostettu URL-osoite, jonka muoto on \"http://homeassistant.local:8123\" (eli sisältää kaavio/protokolla, palvelinnimi ja portti).";
