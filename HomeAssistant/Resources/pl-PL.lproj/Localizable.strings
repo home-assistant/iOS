@@ -615,7 +615,7 @@
 "settings_details.notifications.sounds.imported" = "Importowane";
 "delete" = "Usuń";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.mojdom.pl";
-"settings.connection_section.internal_base_url.placeholder" = "http://hassio.local:8123";
+"settings.connection_section.internal_base_url.placeholder" = "http://homeassistant.local:8123/";
 "settings.connection_section.internal_url_ssids.header" = "SSID-y (sieci Wi-Fi)";
 "settings.connection_section.internal_url_ssids.placeholder" = "MojaŚmiesznaNazwaSieci";
 "settings.connection_section.internal_url_ssids.footer" = "Wewnętrzny adres URL będzie używany po podłączeniu do wymienionych identyfikatorów SSID (sieci Wi-Fi)";
@@ -717,3 +717,6 @@
 "onboarding.manual_setup.no_scheme.message" = "Should we try connecting using http:// or https://?";
 "onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
 "onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
+"settings.reset_section.reset_alert.progress_message" = "Resetting…";
+"settings_details.general.page_zoom.title" = "Page Zoom";
+"settings_details.general.page_zoom.default" = "%@ (Default)";

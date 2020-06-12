@@ -1,7 +1,7 @@
 "4qQ-ND-WGB.text" = "Sto cercando Home Assistant nella tua rete";
 "5td-Yc-nnx.text" = "La più avanzata app per la Domotica su iOS";
 "87t-Ca-ZJb.normalTitle" = "Errore";
-"8JC-7Y-FvP.text" = "http://hassio.local:8123";
+"8JC-7Y-FvP.text" = "http://homeassistant.local:8123/";
 "CIS-8C-niN.text" = "Uh Oh!";
 "Kj7-hM-8gN.text" = "Mi sto connettendo a Home Assistant";
 "Kwy-Pt-nws.text" = "Nome utente di base HTTP";
@@ -30,4 +30,4 @@
 "wsC-f5-jbO.text" = "Siamo pronti per la connessione al tuo Home Assistant e l'autenticazione iniziale. Toccando il pulsante Connetti qui sotto, si aprirà una pagina per farti effettuare l'accesso.";
 "suf-pJ-Nle.normalTitle" = "Ricomincia";
 "7iT-bd-cdY.text" = "Configurazione manuale";
-"PIW-dY-j0P.text" = "Inserisci l'URL di Home Assistant per continuare. Deve essere un URL completo del formato \"http: //hassio.local:8123\" (e cioè schema/protocollo, nome host e porta).";
+"PIW-dY-j0P.text" = "Inserisci l'URL di Home Assistant per continuare. Deve essere un URL completo del formato \"http://homeassistant.local:8123\" (e cioè schema/protocollo, nome host e porta).";

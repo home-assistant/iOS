@@ -1,7 +1,7 @@
 "4qQ-ND-WGB.text" = "Scannen van uw netwerk voor Home Assistant";
 "5td-Yc-nnx.text" = "De meest geavanceerde Home Automation-app op iOS";
 "87t-Ca-ZJb.normalTitle" = "Fout";
-"8JC-7Y-FvP.text" = "http://hassio.local:8123";
+"8JC-7Y-FvP.text" = "http://homeassistant.local:8123/";
 "CIS-8C-niN.text" = "Uh Oh!";
 "Kj7-hM-8gN.text" = "Verbinding maken met Mijn Home Assistant";
 "Kwy-Pt-nws.text" = "HTTP-basisgebruikersnaam";
@@ -30,4 +30,4 @@
 "wsC-f5-jbO.text" = "We zijn nu klaar om verbinding te maken met uw Home Assistant en de eerste authenticatie te doen. Als u op de knop Verbinden hieronder tikt, wordt er een browser geopend waarop u zich kunt aanmelden.";
 "suf-pJ-Nle.normalTitle" = "Opnieuw beginnen";
 "7iT-bd-cdY.text" = "Handmatige configuratie";
-"PIW-dY-j0P.text" = "Voer je Home Assistant URL in om door te gaan. Het moet een volledig gevormde URL zijn van het formaat \"http: //hassio.local: 8123\" (dat een schema / protocol, hostnaam en poort bevat).";
+"PIW-dY-j0P.text" = "Voer je Home Assistant URL in om door te gaan. Het moet een volledig gevormde URL zijn van het formaat \"http://homeassistant.local:8123\" (dat een schema / protocol, hostnaam en poort bevat).";

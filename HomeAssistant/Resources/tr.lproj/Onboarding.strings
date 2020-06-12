@@ -1,7 +1,7 @@
 "4qQ-ND-WGB.text" = "Home Assistant için ağınız taranıyor";
 "5td-Yc-nnx.text" = "iOS'un en gelişmiş Ev Otomasyonu uygulaması";
 "87t-Ca-ZJb.normalTitle" = "Hata";
-"8JC-7Y-FvP.text" = "http://hassio.local:8123";
+"8JC-7Y-FvP.text" = "http://homeassistant.local:8123";
 "CIS-8C-niN.text" = "Uh Oh!";
 "Kj7-hM-8gN.text" = "Home Assistant'ıma Bağlanılıyor";
 "Kwy-Pt-nws.text" = "HTTP Temel Kullanıcı Adı";
@@ -30,4 +30,4 @@
 "wsC-f5-jbO.text" = "We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. ";
 "suf-pJ-Nle.normalTitle" = "Baştan başlamak";
 "7iT-bd-cdY.text" = "Manuel Yapılandırma";
-"PIW-dY-j0P.text" = "Devam etmek için lütfen Home Assistant URL si giriniz. Tam formatlı uygun URL formatında olmalıdır \"http://hassio.local:8123\" (protokol, sunucu adı ve portu).";
+"PIW-dY-j0P.text" = "Devam etmek için lütfen Home Assistant URL si giriniz. Tam formatlı uygun URL formatında olmalıdır \"http://homeassistant.local:8123\" (protokol, sunucu adı ve portu).";

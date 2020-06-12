@@ -43,7 +43,6 @@
 "settings.reset_section.reset_row.title" = "Reset";
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_alert.message" = "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.";
-"settings.reset_section.reset_alert.progress_message" = "Resetting…";
 "settings_details.general.title" = "General";
 "settings_details.general.chrome.title" = "Open links in Chrome";
 "settings_details.location.title" = "Location";
@@ -483,8 +482,6 @@
 "settings_details.general.app_icon.enum.release" = "Release";
 "settings_details.general.app_icon.enum.white" = "White";
 "settings_details.general.app_icon.title" = "App Icon";
-"settings_details.general.page_zoom.title" = "Page Zoom";
-"settings_details.general.page_zoom.default" = "%@ (Default)";
 "settings_details.location.notifications.visit.title" = "Visit Location Notifications";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL Location Notifications";
 "settings_details.notifications.import_legacy_settings.alert.message" = "The push notification categories and actions have been imported from the server.";
@@ -618,7 +615,7 @@
 "settings_details.notifications.sounds.imported" = "Imported";
 "delete" = "Delete";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
-"settings.connection_section.internal_base_url.placeholder" = "http://hassio.local:8123/";
+"settings.connection_section.internal_base_url.placeholder" = "http://homeassistant.local:8123/";
 "settings.connection_section.internal_url_ssids.header" = "SSIDs";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
 "settings.connection_section.internal_url_ssids.footer" = "Internal URL will be used when connected to listed SSIDs";
@@ -745,3 +742,6 @@ Thank you.\
 "onboarding.manual_setup.no_scheme.message" = "Should we try connecting using http:// or https://?";
 "onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
 "onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
+"settings.reset_section.reset_alert.progress_message" = "Resetting…";
+"settings_details.general.page_zoom.title" = "Page Zoom";
+"settings_details.general.page_zoom.default" = "%@ (Default)";

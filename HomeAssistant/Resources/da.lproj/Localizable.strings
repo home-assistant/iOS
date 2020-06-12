@@ -615,7 +615,7 @@
 "settings_details.notifications.sounds.imported" = "Importerede";
 "delete" = "Slet";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.mithjem.dk";
-"settings.connection_section.internal_base_url.placeholder" = "http://hassio.local:8123/";
+"settings.connection_section.internal_base_url.placeholder" = "http://homeassistant.local:8123/";
 "settings.connection_section.internal_url_ssids.header" = "SSID'er";
 "settings.connection_section.internal_url_ssids.placeholder" = "MitSjoveNetværksnavn";
 "settings.connection_section.internal_url_ssids.footer" = "Intern webadresse vil blive brugt, når der er oprettet forbindelse til tilføjede SSID'er";
@@ -718,3 +718,6 @@ Home Assistant Companion %@";
 "onboarding.manual_setup.no_scheme.message" = "Should we try connecting using http:// or https://?";
 "onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
 "onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
+"settings.reset_section.reset_alert.progress_message" = "Resetting…";
+"settings_details.general.page_zoom.title" = "Page Zoom";
+"settings_details.general.page_zoom.default" = "%@ (Default)";

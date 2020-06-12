@@ -2,11 +2,11 @@
 "manual_location_update_notification.title" = "Plasseringen oppdatert";
 "manual_location_update_notification.message" = "Vellykket sendt plasseringen til serveren";
 "manual_location_update_failed_notification.title" = "Plasseringen kunne ikke oppdateres";
-"manual_location_update_failed_notification.message" = "Kunne ikke sende nåværende posisjon til server. Feilen var %@";
+"manual_location_update_failed_notification.message" = "Kan ikke sende gjeldende plassering til serveren. Feilen var %@";
 "settings.navigation_bar.title" = "Innstillinger";
 "settings.navigation_bar.about_button.title" = "Om";
 "settings.connection_error_notification.title" = "Tilkoblingsfeil";
-"settings.connection_error_notification.message" = "Det oppstod en feil under tilkobling til Home Assistant. Bekreft at innstillingene er riktige og lagre for å forsøke å koble til på ny. Feilmelding: %@";
+"settings.connection_error_notification.message" = "Det oppstod en feil under tilkobling til Home Assistant. Kontroller at innstillingene er riktige og lagre for å forsøke å koble til på nytt. Feilen var: %@";
 "settings.certificate_error_notification.title" = "Selvsignert eller ugyldig sertifikat oppdaget";
 "settings.certificate_error_notification.message" = "Et selvsignert eller ugyldig SSL-sertifikat er blitt oppdaget. Sertifikater av denne typen støttes ikke av Home Assistant Companion. Vennligst trykk på Mer info-knappen for mer informasjon.";
 "settings.discovery_section.header" = "Innstallasjoner";
@@ -98,13 +98,13 @@
 "about.github.title" = "GitHub";
 "about.github_issue_tracker.title" = "GitHub Issue Tracker";
 "url_handler.error.title" = "Feil";
-"url_handler.no_service.message" = "% @ er ikke en gyldig rute";
+"url_handler.no_service.message" = "%@ er ikke en gyldig rute";
 "url_handler.call_service.success.title" = "Utfør tjeneste";
-"url_handler.call_service.success.message" = "Utført hendelse er vellykket%@";
-"url_handler.call_service.error.message" = "Det oppstod en feil under forsøk på å kalle tjenesten% @:% @";
+"url_handler.call_service.success.message" = "Utført hendelse er vellykket %@";
+"url_handler.call_service.error.message" = "Det oppstod en feil under forsøk på å kalle tjenesten %@: %@";
 "url_handler.fire_event.success.title" = "Utfør hendelse";
-"url_handler.fire_event.success.message" = "Utført hendelse er vellykket%@";
-"url_handler.fire_event.error.message" = "Det oppstod en feil under forsøk på å utføre hendelsen% @:% @";
+"url_handler.fire_event.success.message" = "Utført hendelse er vellykket %@";
+"url_handler.fire_event.error.message" = "Det oppstod en feil under forsøk på å utløse hendelsen %@: %@";
 "url_handler.send_location.success.title" = "Send plassering";
 "url_handler.send_location.success.message" = "Send plassering";
 "url_handler.send_location.error.message" = "Det oppstod en ukjent feil under forsøk på å sende plasseringen: %@";
@@ -112,7 +112,7 @@
 "yes_label" = "Ja";
 "no_label" = "Nei";
 "alerts.open_url_from_notification.title" = "Åpne URL?";
-"alerts.open_url_from_notification.message" = "Åpne URL ( %@ ) funnet i varsling?";
+"alerts.open_url_from_notification.message" = "Åpne URL ( %@ ) funnet i varsel?";
 "settings_details.location.updates.header" = "Oppdater kilder";
 "settings_details.location.updates.footer" = "Manuell plasseringsoppdateringer kan alltid utløses";
 "settings_details.location.updates.zone.title" = "Sone inn/ut";
@@ -121,8 +121,8 @@
 "settings_details.location.updates.notification.title" = "Forespørsel om push-varsling";
 "location_change_notification.beacon_region_enter.body" = "%@ ankommer via iBeacon";
 "location_change_notification.beacon_region_exit.body" = "%@ forlater via iBeacon";
-"location_change_notification.region_enter.body" = "% @ ankommer";
-"location_change_notification.region_exit.body" = "% @ forlater";
+"location_change_notification.region_enter.body" = "%@ ankommer";
+"location_change_notification.region_exit.body" = "%@ forlater";
 "location_change_notification.significant_location_update.body" = "Betydelig plasseringsendring oppdaget";
 "location_change_notification.background_fetch.body" = "Nåværende plassering utløst via bakgrunnsinnhenting";
 "about.review.title" = "Legg igjen en anmeldelse";
@@ -375,7 +375,7 @@
 "watch.labels.complication_text_areas.row3_column2.label" = "Rad 3, kolonne 2";
 "watch.labels.complication_text_areas.trailing.description" = "Teksten som skal vises på den etterfølgende kanten av måleren.";
 "watch.labels.complication_text_areas.trailing.label" = "Etterfølgende";
-"settings_details.location.zones.radius.label" = "%d m";
+"settings_details.location.zones.radius.label" = "%li m";
 "settings_details.notifications.categories.header" = "Kategorier";
 "settings_details.notifications.new_category.title" = "Ny kategori";
 "settings_details.watch.title" = "Apple Watch";
@@ -458,7 +458,7 @@
 "settings.details_section.integrations.header" = "Integrasjoner";
 "settings.developer.camera_notification.notification.body" = "Utvid dette for å vise kameraets innholdsutvidelse";
 "settings.developer.camera_notification.title" = "Vis innholdsutvidelsen for kameravarsling";
-"settings.developer.copy_realm.alert.message" = "Kopiert Realm fra% @ til% @";
+"settings.developer.copy_realm.alert.message" = "Kopiert område fra %@ til %@";
 "settings.developer.copy_realm.alert.title" = "Kopiert Realm";
 "settings.developer.copy_realm.title" = "Kopier Realm fra App Group til Dokumenter";
 "settings.developer.export_log_files.title" = "Eksporter loggfiler";
@@ -513,7 +513,7 @@
 "settings.developer.debug_strings.title" = "Feilsøk strenger";
 "settings_details.general.autohide_toolbar.title" = "Skjul oppgavelinjen automatisk";
 "rate_limit_notification.title" = "Varslingsfrekvens begrenset";
-"rate_limit_notification.body" = "Du har nå sendt mer enn %@ varsler i dag. Du vil ikke motta nye meldinger til midnatt UTC.";
+"rate_limit_notification.body" = "Du har nå sendt mer enn %@ varsler i dag. Du vil ikke motta nye varsler før midnatt UTC.";
 "watch.labels.no_action" = "Ingen handlinger konfigurert. Konfigurere handlinger på telefonen din for å fjerne denne meldingen.";
 "settings.status_section.mobile_app_component_loaded_row.title" = "Lastet inn mobilapp-komponenten";
 "settings_details.privacy.title" = "Personvern";
@@ -535,7 +535,7 @@
 "ha_api.api_error.not_configured" = "HA API er ikke konfigurert";
 "ha_api.api_error.mobile_app_component_not_loaded" = "Komponenten mobile_app er ikke lastet inn. Legg den til i konfigurasjonen din, start Home Assistant på nytt og prøv igjen.";
 "ha_api.api_error.webhook_gone" = "mobile_app integrasjonen er slettet, du må konfigurere appen på nytt.";
-"ha_api.api_error.must_upgrade_home_assistant" = "Din Home Assistent versjon (%@) er for gammel, må du oppgradere til siste versjon %@ for å bruke appen.";
+"ha_api.api_error.must_upgrade_home_assistant" = "Home Assistant-versjonen (%@) er for gammel, du må oppgradere til minst versjon %@ for å kunne bruke appen.";
 "ha_api.api_error.unknown" = "En ukjent feil oppstod.";
 "sensors.unknown_state" = "Ukjent";
 "sensors.not_available_state" = "N/A";
@@ -551,7 +551,7 @@
 "sensors.ssid.name" = "SSID";
 "sensors.connection_type.name" = "Tilkoblingstype";
 "sensors.connection_type.attributes.cell_tech_type" = "Mobil Teknologi";
-"sensors.cellular_provider.name" = "Mobilleverandør%@";
+"sensors.cellular_provider.name" = "Mobilleverandør %@";
 "sensors.cellular_provider.attributes.carrier_id" = "Operatør-ID";
 "sensors.cellular_provider.attributes.carrier_name" = "Operatørens Navn";
 "sensors.cellular_provider.attributes.mobile_country_code" = "Mobil landskode";
@@ -599,41 +599,41 @@
 "sensors.geocoded_location.attributes.thoroughfare" = "Hovedvei";
 "sensors.geocoded_location.attributes.time_zone" = "Tidssone";
 "settings_details.notifications.sounds.bundled" = "Samlet";
-"settings_details.notifications.sounds.error.cant_build_library_sounds_path" = "Kan ikke skape ~/Library/Lyder bane: %@";
-"settings_details.notifications.sounds.error.cant_get_directory_contents" = "Kan ikke vise katalog innholdet:%@";
-"settings_details.notifications.sounds.error.cant_get_file_sharing_path" = "Får ikke tilgang til lyd katalogen for fildeling:%@";
-"settings_details.notifications.sounds.error.conversion_failed" = "Klarte ikke å konvertere audio til PCM 32 bit 48 khz: %@";
-"settings_details.notifications.sounds.error.copy_error" = "Kan ikke kopiere filen:%@";
+"settings_details.notifications.sounds.error.cant_build_library_sounds_path" = "Kan ikke bygge ~/Bibliotek/Lyder-bane: %@";
+"settings_details.notifications.sounds.error.cant_get_directory_contents" = "Kan ikke vise kataloginnhold: %@";
+"settings_details.notifications.sounds.error.cant_get_file_sharing_path" = "Får ikke tilgang til mappen for fildelingslyder: %@";
+"settings_details.notifications.sounds.error.conversion_failed" = "Kunne ikke konvertere lyd til PCM 32 bit 48 kHz: %@";
+"settings_details.notifications.sounds.error.copy_error" = "Kan ikke kopiere filen: %@";
 "settings_details.notifications.sounds.error.delete_error" = "Kunne ikke slette filen: %@";
 "settings_details.notifications.sounds.import_custom" = "Importere egendefinert lyd";
 "settings_details.notifications.sounds.import_file_sharing" = "Importer lyder fra iTunes Fildeling";
 "settings_details.notifications.sounds.import_system" = "Importere system lyder";
-"settings_details.notifications.sounds.imported_alert.message" = "%d lyder ble importert. Vennligst start telefonen på nytt for å fullføre importen.";
+"settings_details.notifications.sounds.imported_alert.message" = "%li lyder ble importert. Start telefonen på nytt for å fullføre importen.";
 "settings_details.notifications.sounds.imported_alert.title" = "Lyder importert";
 "settings_details.notifications.sounds.system" = "System";
 "settings_details.notifications.sounds.title" = "Lyder";
 "settings_details.notifications.sounds.imported" = "Importert";
 "delete" = "Slett";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
-"settings.connection_section.internal_base_url.placeholder" = "http://hassio.local:8123";
+"settings.connection_section.internal_base_url.placeholder" = "http://homeassistant.local:8123/";
 "settings.connection_section.internal_url_ssids.header" = "SSIDer";
 "settings.connection_section.internal_url_ssids.placeholder" = "MittRareNettverksNavn";
 "settings.connection_section.internal_url_ssids.footer" = "Intern URL-adresse vil bli brukt når du er koblet til oppførte SSID-er";
 "settings.connection_section.internal_url_ssids.add_new_ssid" = "Legg til ny SSID";
-"settings.connection_section.internal_url_ssids.add_current_ssid" = "Legg til gjeldende SSID%@";
-"onboarding.connection_test_result.ssl_container.description" = "Det oppstod en feil under tilkobling til ditt eksempel. %@ Dette skyldes iOS begrensningene, du vil ikke være i stand til å fortsette med oppsettet før du installerer et gyldig SSL-sertifikat. Vi anbefaler Lets Encrypt eller Nabu Casa Ekstern UI.";
+"settings.connection_section.internal_url_ssids.add_current_ssid" = "Legge til gjeldende SSID %@";
+"onboarding.connection_test_result.ssl_container.description" = "Vi oppdaget en feil under tilkobling til forekomsten din. %@ På grunn av iOS-begrensninger vil du ikke kunne fortsette med installasjonen før et gyldig SSL-sertifikat er installert. Vi anbefaler at Lets Kryptere eller Nabu Casa Remote UI.";
 "onboarding.connection_test_result.basic_auth.description" = "HTTP Basic-godkjenning støttes ikke.";
-"onboarding.connection_test_result.authentication_unsupported.description" = "Autentiseringstype støttes ikke %@ .";
-"onboarding.connection_test_result.ssl_untrusted.description" = "SSL-sertifikatet ditt er usikkert. %@ .";
+"onboarding.connection_test_result.authentication_unsupported.description" = "Godkjenningstypen støttes ikke%@.";
+"onboarding.connection_test_result.ssl_untrusted.description" = "SSL-sertifikatet ditt er ikke klarert. %@.";
 "onboarding.connection_test_result.ssl_expired.description" = "SSL-sertifikatet er utløpt.";
 "onboarding.connection_test_result.client_certificate.description" = "Klientsertifikatgodkjenning støttes ikke.";
 "onboarding.connection_test_result.connection_error.description" = "Generell tilkoblingsfeil%@.";
 "onboarding.connection_test_result.server_error.description" = "Serverfeil: %@";
 "onboarding.connection_test_result.too_old.description" = "Du må oppgradere din Home Assistant-versjon.";
 "onboarding.connection_test_result.unknown_error.description" = "Ukjent feil: %@";
-"onboarding.discovery.results_label.plural" = "Vi fant %d Home Assistant på nettverket ditt.";
-"onboarding.discovery.results_label.singular" = "Vi fant %d Home Assistant på nettverket ditt.";
-"onboarding.connect.title" = "Kobler til%@";
+"onboarding.discovery.results_label.plural" = "Vi fant %li Home Assistant i nettverket ditt.";
+"onboarding.discovery.results_label.singular" = "Vi fant %li Home Assistant i nettverket ditt.";
+"onboarding.connect.title" = "Kobler til %@";
 "settings.connection_section.details" = "Detaljer";
 "settings.connection_section.connecting_via" = "Tilkoblet via";
 "settings.connection_section.logged_in_as" = "Pålogget som";
@@ -656,18 +656,42 @@
 "settings_details.notifications.rate_limits.resets_in" = "Tilbakestiller innen";
 "on_label" = "På";
 "off_label" = "Av";
-"location_update_error_notification.title" = "Feil ved sending av %@ plasseringsoppdatering til Home Assistant.";
+"location_update_error_notification.title" = "Feil ved sending av %@ posisjonsoppdatering til Home Assistant.";
 "settings.reset_section.reset_web_cache.title" = "Tilbakestill frontend-hurtigbuffer";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud er ikke konfigurert, du kan ikke fjerne ekstern nettadresse";
 "settings.connection_section.errors.cant_disable_cloud" = "Ekstern URL må angis for å deaktivere cloud";
 "about.donate.patreon" = "Støtte på Patreon";
-"whats_new.title" = "Hva er nytt i \
-Home Assistant Companion %@";
+"whats_new.title" = "Hva er nytt i\
+Assistent for Home Assistant %@";
 "whats_new.buttons.read_more.title" = "Les mer";
 "whats_new.buttons.completion.title" = "Start her";
 "whats_new.Two_Dot_Zero.thank_you.title" = "En ting til...";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Værsågod!";
-"whats_new.Two_Dot_Zero.thank_you.message" = "Takk skal du ha.\n\nTakk for at du bruker Home Assistant Companion.\n\nTakk for at du bruker Home Assistant.\n\nTakk for at du har holdt ut med meg de siste 3 års arbeid.\n\nTakk skal du ha for å ha holdt med meg de siste 10 månedene med utvikling av 2.0.\n\nTakk for at du sendte feilrapporter på GitHub.\n\nTakk for at du hjalp med andre brukere da de trengte det, og jeg var ikke tilgjengelig.\n\nTakk for at du sendte meg e-postmeldinger klokken 2 om i detalj hvor denne knappen er 2 piksler av.\n\nTakk for at du er du og støtter meg.\n\nDin konsekvent positive tilbakemelding og forståelse er det som holder meg i gang.\n\nJeg håper virkelig du liker Home Assistant Companion 2.0.\n\nTakk.\n\n--Robbie";
+"whats_new.Two_Dot_Zero.thank_you.message" = "takk.\
+\
+Takk for at du bruker Home Assistant Companion.\
+\
+Takk for at du bruker Home Assistant.\
+\
+Takk for at du har holdt ut med meg de siste 3 årene med arbeid.\
+\
+Takk for at du holdt ut med meg de siste 10 månedene av utviklingen av 2.0.\
+\
+Takk for at du arkiverer feilrapporter på GitHub.\
+\
+Takk for at du hjalp andre brukere når de trengte det, og jeg var ikke tilgjengelig.\
+\
+Takk for at du sender meg e-post på 2 AM beskriver i ekstreme detalj hvordan denne knappen er 2 piksler av.\
+\
+Takk for at du støtter meg.\
+\
+Din konsekvent positive tilbakemelding og takknemlighet er det som holder meg gående.\
+\
+Jeg håper virkelig du liker Home Assistant Companion 2.0.\
+\
+takk.\
+\
+--Robbie";
 "whats_new.Two_Dot_Zero.items.donations.title" = "Donasjoner";
 "whats_new.Two_Dot_Zero.items.donations.subtitle" = "Etter å ha blitt bedt om å akseptere donasjoner i årevis, har jeg endelig fått lagt det inn. Trykk på Doner på om-skjermen for å vite mer.";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Home Assistant Cloud-støtte";
@@ -692,29 +716,32 @@ Home Assistant Companion %@";
 "whats_new.Two_Dot_Zero.items.app_icons.subtitle" = "Et nytt app-ikon samt alternativer du kan velge mellom. Du kan nå også utløse automatiseringer ved hjelp av 3D-touch på app-ikonet.";
 "whats_new.Two_Dot_Zero.items.and_so_much_more.title" = "Og så mye mer";
 "whats_new.Two_Dot_Zero.items.and_so_much_more.subtitle" = "2,0 tok over 300 timer å lage og lagt til nesten 35 000 linjer med ny kode, så bare så mange funksjoner kan bli presentert her. Det er mange flere store forbedringer under panseret!";
-"settings_details.notifications.permission.title" = "Permission";
-"settings_details.notifications.permission.enabled" = "Enabled";
-"settings_details.notifications.permission.disabled" = "Denied";
-"settings_details.notifications.permission.needs_request" = "Disabled";
-"settings_details.location.location_permission.title" = "Location Permission";
-"settings_details.location.location_permission.always" = "Always";
-"settings_details.location.location_permission.while_in_use" = "While In Use";
-"settings_details.location.location_permission.never" = "Never";
-"settings_details.location.location_permission.needs_request" = "Disabled";
-"settings_details.location.motion_permission.title" = "Motion Permission";
-"settings_details.location.motion_permission.enabled" = "Enabled";
-"settings_details.location.motion_permission.denied" = "Denied";
-"settings_details.location.motion_permission.needs_request" = "Disabled";
-"actions_configurator.trigger_example.title" = "Example Trigger";
-"actions_configurator.trigger_example.share" = "Share Contents";
-"settings_details.general.app_icon.enum.caribbean_green" = "Caribbean Green";
-"settings_details.general.app_icon.enum.cornflower_blue" = "Cornflower Blue";
-"settings_details.general.app_icon.enum.crimson" = "Crimson";
-"settings_details.general.app_icon.enum.electric_violet" = "Electric Violet";
-"settings_details.general.app_icon.enum.fire_orange" = "Fire Orange";
-"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant Blue";
-"settings_details.general.app_icon.enum.pink" = "Pink";
-"onboarding.manual_setup.no_scheme.title" = "URL entered without scheme";
-"onboarding.manual_setup.no_scheme.message" = "Should we try connecting using http:// or https://?";
-"onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
-"onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
+"settings_details.notifications.permission.title" = "Tillatelse";
+"settings_details.notifications.permission.enabled" = "Aktivert";
+"settings_details.notifications.permission.disabled" = "Nektet";
+"settings_details.notifications.permission.needs_request" = "Deaktivert";
+"settings_details.location.location_permission.title" = "Tillatelse for plassering";
+"settings_details.location.location_permission.always" = "Alltid";
+"settings_details.location.location_permission.while_in_use" = "Mens den er i bruk";
+"settings_details.location.location_permission.never" = "Aldri";
+"settings_details.location.location_permission.needs_request" = "Deaktivert";
+"settings_details.location.motion_permission.title" = "Bevegelsestillatelse";
+"settings_details.location.motion_permission.enabled" = "Aktivert";
+"settings_details.location.motion_permission.denied" = "Nektet";
+"settings_details.location.motion_permission.needs_request" = "Deaktivert";
+"actions_configurator.trigger_example.title" = "Eksempel utløser";
+"actions_configurator.trigger_example.share" = "Del innhold";
+"settings_details.general.app_icon.enum.caribbean_green" = "Karibisk Grønn";
+"settings_details.general.app_icon.enum.cornflower_blue" = "Blomsterblå";
+"settings_details.general.app_icon.enum.crimson" = "Høyrød";
+"settings_details.general.app_icon.enum.electric_violet" = "Elektrisk Fiolett";
+"settings_details.general.app_icon.enum.fire_orange" = "Brann Oransje";
+"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant Blå";
+"settings_details.general.app_icon.enum.pink" = "Rosa";
+"onboarding.manual_setup.no_scheme.title" = "URL angitt uten skjema";
+"onboarding.manual_setup.no_scheme.message" = "Skal vi prøve å koble til ved hjelp av http:// eller https://?";
+"onboarding.manual_setup.couldnt_make_url.title" = "Kan ikke opprette en URL-adresse";
+"onboarding.manual_setup.couldnt_make_url.message" = "Verdien %@ var ikke en gyldig URL-adresse.";
+"settings.reset_section.reset_alert.progress_message" = "Resetting…";
+"settings_details.general.page_zoom.title" = "Page Zoom";
+"settings_details.general.page_zoom.default" = "%@ (Default)";
