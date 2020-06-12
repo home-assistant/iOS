@@ -1,7 +1,7 @@
 "2KWKqM" = "執行服務失敗，目前無法連線至 Home Assistant";
 "30yAOG" = "執行服務失敗，剪貼簿內容無法解析";
 "47v44G" = "於 Home Assistant 事件系統匯流排執行事件，以 JSON 物件匯出至剪貼簿、內容如 {\"eventName\": \"my.event\", \"eventData\": {\"foo\": \"bar\"}}";
-"4fFx9y" = "已更新目前座標位置";
+"4fFx9y" = "座標已更新";
 "4k18T7" = "取得鏡頭影像失敗，剪貼簿內容無法解析有效物件 ID";
 "4wVIAN" = "於 Home Assistant 執行服務。以 JSON 物件匯出至剪貼簿、內容如 {\"service\": \"homeassistant.turn_on\", \"serviceData\": {\"foo\": \"bar\"}}";
 "5MGDot" = "傳送座標";
@@ -36,7 +36,7 @@
 "cnzI5h" = "產生 ${template}";
 "foI0Fv" = "產生模板失敗，目前無法連線至 Home Assistant";
 "glRCfJ" = "觸發事件失敗，目前無法連線至 Home Assistant";
-"hsrlTY" = "由鏡頭取得靜態圖像，並貼回至剪貼簿";
+"hsrlTY" = "由鏡頭取得靜態圖像";
 "khd61N" = "產生剪貼簿找到的文字";
 "le6NdS" = "以資料：${payload} 執行 ${serviceDomain}.${service} 服務";
 "lnrohM" = "以剪貼簿資料執行 ${eventName}";
@@ -45,7 +45,7 @@
 "mgspvx" = "由剪貼簿找到的最新鏡頭物件 ${cameraID}，已貼至剪貼簿";
 "nIl9ET" = "於 Home Assistant 事件系統匯流排中執行事件 ${eventName}。將會以剪貼簿內容作為事件資料傳送。";
 "ntnbP2" = "執行服務";
-"nzqmFA" = "${cameraID} 的靜態圖像，已貼至剪貼簿";
+"nzqmFA" = "from${cameraID} 的靜態圖像，已貼至剪貼簿";
 "oIWFyR" = "傳送 ${eventName} 至 Home Assistant 失敗，錯誤：${error}";
 "q0SnlK" = "取得鏡頭圖像";
 "qayMH6" = "執行服務";

@@ -1,7 +1,7 @@
 "4qQ-ND-WGB.text" = "Skanner nettverket for Home Assistant";
 "5td-Yc-nnx.text" = "Den mest avanserte Hjemme Automasjon-appen på iOS";
 "87t-Ca-ZJb.normalTitle" = "Feil";
-"8JC-7Y-FvP.text" = "http://hassio.local:8123";
+"8JC-7Y-FvP.text" = "http://homeassistant.local:8123/";
 "CIS-8C-niN.text" = "Uh Oh!";
 "Kj7-hM-8gN.text" = "Kobler til Min Home Assistant";
 "Kwy-Pt-nws.text" = "HTTP Basic-brukernavn";
@@ -30,4 +30,4 @@
 "wsC-f5-jbO.text" = "Vi er nå klar til å koble til din Home Assistant og gjøre den første godkjenningen. Hvis du trykker på koble til-knappen nedenfor, åpnes en nettleser som du kan logge på.";
 "suf-pJ-Nle.normalTitle" = "Starte På Nytt";
 "7iT-bd-cdY.text" = "Manuell konfigurasjon";
-"PIW-dY-j0P.text" = "Vennligst oppgi din Home Assistent URL for å fortsette. Det må være et fullt dannet URL-adressen i formatet \"http://hassio.local:8123\" (som inneholder en ordning/protokoll, vertsnavn og port).";
+"PIW-dY-j0P.text" = "Vennligst oppgi din Home Assistent URL for å fortsette. Det må være et fullt dannet URL-adressen i formatet \"http://homeassistant.local:8123\" (som inneholder en ordning/protokoll, vertsnavn og port).";

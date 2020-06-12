@@ -73,13 +73,13 @@
 "settings_details.notifications.sounds_section.footer" = "可透過 iTunes 加入自訂推播通知音效";
 "settings_details.notifications.sounds_section.button.title" = "匯入音效";
 "settings_details.notifications.sounds_section.imported_alert.title" = "音效已匯入";
-"settings_details.notifications.sounds_section.imported_alert.message" = "已匯入 %d 個音效，請重啟手機以完成匯入動作。";
+"settings_details.notifications.sounds_section.imported_alert.message" = "已匯入 %li 個音效，請重啟手機以完成匯入動作。";
 "settings_details.notifications.badge_section.button.title" = "重置標記";
 "settings_details.notifications.badge_section.reset_alert.title" = "標記重置";
 "settings_details.notifications.badge_section.reset_alert.message" = "標記數字已重置為 0。";
-"permissions.location.message" = "我們使用此功能以通知\nHome Assistant 你的裝置位置與狀態。";
-"permissions.notification.message" = "我們使用此功能\n以便傳送通知至你的裝置。";
-"devices_map.title" = "裝置與區域";
+"permissions.location.message" = "我們使用此功能以通知\nHome Assistant 你的設備位置與狀態。";
+"permissions.notification.message" = "我們使用此功能\r以便傳送通知至你的設備。";
+"devices_map.title" = "設備與區域";
 "devices_map.map_types.standard" = "標準圖";
 "devices_map.map_types.hybrid" = "綜合圖層";
 "devices_map.map_types.satellite" = "衛星圖";
@@ -181,7 +181,7 @@
 "extensions.notification_content.error.no_entity_id" = "Payload 中未找到 entity_id！";
 "extensions.notification_content.error.request.auth_failed" = "驗證失敗！";
 "extensions.notification_content.error.request.entity_not_found" = "找不到物件 '%@'！";
-"extensions.notification_content.error.request.other" = "取得 non-200 狀態代碼（%d）";
+"extensions.notification_content.error.request.other" = "取得 non-200 狀態代碼（%li）";
 "extensions.notification_content.error.request.unknown" = "未知錯誤！";
 "extensions.notification_content.hud.loading" = "正在載入 %@...";
 "location_change_notification.siri.body" = "Siri 觸發座標更新";
@@ -194,14 +194,14 @@
 "notifications_configurator.action.rows.destructive.title" = "Desctructive";
 "notifications_configurator.action.rows.destructive.footer" = "開啟後、觸發動作按鈕將會以特殊標明顯示，以表示正在執行 Destructive 任務。";
 "notifications_configurator.action.rows.authentication_required.title" = "需要驗證";
-"notifications_configurator.action.rows.authentication_required.footer" = "當使用者選擇此選項操作，系統將會提示使用者解鎖裝置。解鎖後，Home Assistant 將會通知所選擇的觸發動作。";
+"notifications_configurator.action.rows.authentication_required.footer" = "當使用者選擇此選項操作，系統將會提示使用者解鎖設備。解鎖後，Home Assistant 將會通知所選擇的觸發動作。";
 "notifications_configurator.category.navigation_bar.title" = "類別編輯器";
 "notifications_configurator.category.rows.name.title" = "名稱";
 "notifications_configurator.category.rows.actions.header" = "Actions";
 "addButtonLabel" = "新增";
 "notifications_configurator.category.rows.category_summary.header" = "類別摘要";
 "notifications_configurator.category.rows.category_summary.footer" = "當系統群組 Category 通知時，所顯示的摘要說明字串格式。可使用'%%u' 顯示群組內通知數字、'%%@' 顯示通知 Payload 中提供的摘要參數。";
-"notifications_configurator.category.rows.category_summary.default" = "於 %%@ 發送 %%u 通知";
+"notifications_configurator.category.rows.category_summary.default" = "於 %%u 發送 %%@通知";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u 通知";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "隱藏預覽 Placeholder";
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "此文字僅於隱藏通知預覽時顯示，使用 '%%u' 為使用相同 Identifier 的訊息數。";
@@ -239,7 +239,7 @@
 "watch.labels.complication_group.utilitarian.name" = "實用";
 "watch.labels.complication_group_member.circular_small.description" = "小環形區域使用於彩色錶面。";
 "watch.labels.complication_group_member.circular_small.name" = "小型圓形";
-"watch.labels.complication_group_member.circular_small.short_name" = "小型圓形";
+"watch.labels.complication_group_member.circular_small.short_name" = "小圓環";
 "watch.labels.complication_group_member.extra_large.description" = "大方形區域使用於大字體錶面。";
 "watch.labels.complication_group_member.extra_large.name" = "巨大";
 "watch.labels.complication_group_member.extra_large.short_name" = "巨大";
@@ -307,7 +307,7 @@
 "watch.labels.complication_template.modular_small_ring_text.description" = "文字環繞可設定進度圓環模板";
 "watch.labels.complication_template.modular_small_simple_image.description" = "圖片顯示模板。";
 "watch.labels.complication_template.modular_small_simple_text.description" = "一小段文字顯示模版";
-"watch.labels.complication_template.modular_small_stack_image.description" = "單圖片下短行文字顯示模版。";
+"watch.labels.complication_template.modular_small_stack_image.description" = "單圖片下一行簡短文字顯示模版";
 "watch.labels.complication_template.modular_small_stack_text.description" = "兩行字串相互堆疊顯示模版。";
 "watch.labels.complication_template.style.circular_image" = "圓形圖片";
 "watch.labels.complication_template.style.circular_text" = "環形文字";
@@ -375,7 +375,7 @@
 "watch.labels.complication_text_areas.row3_column2.label" = "第 3 行第 2 列";
 "watch.labels.complication_text_areas.trailing.description" = "於測量靠右對齊顯示文字。";
 "watch.labels.complication_text_areas.trailing.label" = "靠右對齊";
-"settings_details.location.zones.radius.label" = "%d 公尺";
+"settings_details.location.zones.radius.label" = "%li 公尺";
 "settings_details.notifications.categories.header" = "Categories";
 "settings_details.notifications.new_category.title" = "新類別";
 "settings_details.watch.title" = "Apple Watch";
@@ -412,7 +412,7 @@
 "watch.configurator.sections.ring.header" = "圓環";
 "watch.configurator.sections.ring.footer" = "文字周圍的圓環顯示進度。";
 "permissions.location.initial.title" = "允許座標存取？";
-"permissions.location.initial.message" = "需要獲得您的允許\r\以供 Home Assistant 使用您的裝置座標與狀態。";
+"permissions.location.initial.message" = "需要獲得您的允許\r\以供 Home Assistant 使用您的設備座標與狀態。";
 "permissions.location.initial.button.allow" = "允許";
 "permissions.location.initial.button.deny" = "拒絕";
 "permissions.location.reenable.title" = "重啟座標存取？";
@@ -428,7 +428,7 @@
 "permissions.motion.reenable.button.allow" = "重啟";
 "permissions.motion.reenable.button.deny" = "保持關閉";
 "permissions.notification.initial.title" = "允許訊息通知？";
-"permissions.notification.initial.message" = "需要獲得您的允許\r\方能傳送通知至指定的裝置。";
+"permissions.notification.initial.message" = "需要獲得您的允許\r\方能傳送通知至指定的設備。";
 "permissions.notification.initial.button.allow" = "允許";
 "permissions.notification.initial.button.deny" = "拒絕";
 "permissions.notification.reenable.title" = "重啟訊息通知？";
@@ -513,16 +513,16 @@
 "settings.developer.debug_strings.title" = "偵錯字串";
 "settings_details.general.autohide_toolbar.title" = "自動隱藏工具列";
 "rate_limit_notification.title" = "通知頻率限制";
-"rate_limit_notification.body" = "今日已經傳送超過 %@ 則通知，直到 UTC 午夜前將不會再收到任何新通知。";
+"rate_limit_notification.body" = "今日已經傳送超過  則通知，直到 UTC 午夜前將不會再收到任何新通知。%@";
 "watch.labels.no_action" = "尚未設定動作。於手機上設定動作以關閉此訊息。";
 "settings.status_section.mobile_app_component_loaded_row.title" = "Mobile App 元件已載入";
 "settings_details.privacy.title" = "隱私權";
 "settings_details.privacy.analytics.title" = "Google Analytics";
-"settings_details.privacy.analytics.description" = "允許收集關於裝置與 App 整合的基本資訊。將不會與 Google 分享任何有關於使用者身份資料，包含您的 Home Assistant URL 與密鑰等。必須重新啟動應用程式，變更的設定方能作用。";
+"settings_details.privacy.analytics.description" = "允許收集關於設備與 App 整合的基本資訊。將不會與 Google 分享任何有關於使用者身份資料，包含您的 Home Assistant URL 與密鑰等。必須重新啟動應用程式，變更的設定方能作用。";
 "settings_details.privacy.messaging.title" = "Firebase 雲端訊息";
 "settings_details.privacy.messaging.description" = "必須啟用 Firebase 雲端訊息方能使用推播訊息。";
 "settings_details.privacy.crashlytics.title" = "Firebase Crashlytics";
-"settings_details.privacy.crashlytics.description" = "Crashlytics 允許針對應用程式當機或其他錯誤進行更深入的追蹤。有助於更快修正錯誤推出。僅會傳送基本裝置資料，不會傳送任何使用者身份資料。必須重新啟動應用程式，變更的設定方能作用。";
+"settings_details.privacy.crashlytics.description" = "Crashlytics 允許針對應用程式當機或其他錯誤進行更深入的追蹤。有助於更快修正錯誤推出。僅會傳送基本設備資料，不會傳送任何使用者身份資料。必須重新啟動應用程式，變更的設定方能作用。";
 "settings_details.privacy.performance_monitoring.title" = "Firebase 效能監視器";
 "settings_details.privacy.performance_monitoring.description" = "Firebase 效能監視器允許遠端監控應用程式效能，讓效能改善更為方便。必須重新啟動應用程式，變更的設定方能作用。";
 "settings.developer.sync_watch_context.title" = "同步手錶內容";
@@ -608,14 +608,14 @@
 "settings_details.notifications.sounds.import_custom" = "匯入自訂音效";
 "settings_details.notifications.sounds.import_file_sharing" = "由 iTunes 檔案共享匯入音效";
 "settings_details.notifications.sounds.import_system" = "匯入系統音效";
-"settings_details.notifications.sounds.imported_alert.message" = "已匯入 %d 個音效，請重啟手機以完成匯入動作。";
+"settings_details.notifications.sounds.imported_alert.message" = "已匯入 %li 個音效，請重啟手機以完成匯入動作。";
 "settings_details.notifications.sounds.imported_alert.title" = "音效已匯入";
 "settings_details.notifications.sounds.system" = "系統";
 "settings_details.notifications.sounds.title" = "音效";
 "settings_details.notifications.sounds.imported" = "已匯入";
 "delete" = "刪除";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
-"settings.connection_section.internal_base_url.placeholder" = "http://hassio.local:8123/";
+"settings.connection_section.internal_base_url.placeholder" = "http://homeassistant.local:8123/";
 "settings.connection_section.internal_url_ssids.header" = "SSID";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
 "settings.connection_section.internal_url_ssids.footer" = "當連線至列表 SSID 時將使用內部 URL 連線";
@@ -630,9 +630,9 @@
 "onboarding.connection_test_result.connection_error.description" = "一般連線錯誤%@。";
 "onboarding.connection_test_result.server_error.description" = "伺服器錯誤：%@";
 "onboarding.connection_test_result.too_old.description" = "必須更新 Home Assistant 版本。";
-"onboarding.connection_test_result.unknown_error.description" = "未知錯誤: %@";
-"onboarding.discovery.results_label.plural" = "於網路中搜尋到 %d 組 Home Assistant。";
-"onboarding.discovery.results_label.singular" = "於網路中搜尋到 %d 組 Home Assistant。";
+"onboarding.connection_test_result.unknown_error.description" = "未知錯誤：%@";
+"onboarding.discovery.results_label.plural" = "於網路中搜尋到%li組 Home Assistant。";
+"onboarding.discovery.results_label.singular" = "於網路中搜尋到%li組 Home Assistant。";
 "onboarding.connect.title" = "連線至%@";
 "settings.connection_section.details" = "詳細";
 "settings.connection_section.connecting_via" = "連線：";
@@ -667,7 +667,31 @@
 "whats_new.buttons.completion.title" = "開始使用";
 "whats_new.Two_Dot_Zero.thank_you.title" = "還有一件事...";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "謝謝！";
-"whats_new.Two_Dot_Zero.thank_you.message" = "謝謝。\n\n謝謝使用 Home Assistant Companion。\n\n謝謝使用 Home Assistant。\n\n謝謝支援使用我過去三年的開發工作。\n\n謝謝支援使用最近十個月的 2.0 版開發工作。\n\n謝謝於 Github 上填寫錯誤回報。\n\n謝謝在我正忙碌時，協助其他使用者排除問題。\n\n謝謝於凌晨兩點發送郵件詳述按鈕便宜兩個像素的位移問題。\n\n謝謝你忠於自己與支持我的工作。\n\n你們持續的正面回饋與感謝，是推動我不斷前進的動力。\n\n希望你喜歡 Home Assistant Companion 2.0 的改版。\n\n謝謝。\n\n--Robbie";
+"whats_new.Two_Dot_Zero.thank_you.message" = "謝謝。\
+\
+謝謝使用 Home Assistant Companion。\
+\
+謝謝使用 Home Assistant。\
+\
+謝謝支援使用我過去三年的開發工作。\
+\
+謝謝支援使用最近十個月的 2.0 版開發工作。\
+\
+謝謝於 Github 上填寫錯誤回報。\
+\
+謝謝在我正忙碌時，協助其他使用者排除問題。\
+\
+謝謝於凌晨兩點發送郵件詳述按鈕便宜兩個像素的位移問題。\
+\
+謝謝你忠於自己與支持我的工作。\
+\
+你們持續的正面回饋與感謝，是推動我不斷前進的動力。\
+\
+希望你喜歡 Home Assistant Companion 2.0 的改版。\
+\
+謝謝。\
+\
+--Robbie";
 "whats_new.Two_Dot_Zero.items.donations.title" = "贊助";
 "whats_new.Two_Dot_Zero.items.donations.subtitle" = "在不斷的被詢問及贊助功能，終於加入了！點選關於畫面內的贊助，以獲得更多資訊。";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "支援 Home Assistant Cloud 服務";
@@ -692,29 +716,32 @@
 "whats_new.Two_Dot_Zero.items.app_icons.subtitle" = "新增全新的 App 圖示，或者你也可以自行選擇。也可以透過 3D Touch 功能、按下程式圖示執行自動化。";
 "whats_new.Two_Dot_Zero.items.and_so_much_more.title" = "還有更多功能";
 "whats_new.Two_Dot_Zero.items.and_so_much_more.subtitle" = "2.0 版耗費超過 300 個小時的開發時間，增加了將近 35,000 行新程式碼。不過限於篇幅，只能在這裡介紹主要功能，還有更多重大改善等著你去發現！";
-"settings_details.notifications.permission.title" = "Permission";
-"settings_details.notifications.permission.enabled" = "Enabled";
-"settings_details.notifications.permission.disabled" = "Denied";
-"settings_details.notifications.permission.needs_request" = "Disabled";
-"settings_details.location.location_permission.title" = "Location Permission";
-"settings_details.location.location_permission.always" = "Always";
-"settings_details.location.location_permission.while_in_use" = "While In Use";
-"settings_details.location.location_permission.never" = "Never";
-"settings_details.location.location_permission.needs_request" = "Disabled";
-"settings_details.location.motion_permission.title" = "Motion Permission";
-"settings_details.location.motion_permission.enabled" = "Enabled";
-"settings_details.location.motion_permission.denied" = "Denied";
-"settings_details.location.motion_permission.needs_request" = "Disabled";
-"actions_configurator.trigger_example.title" = "Example Trigger";
-"actions_configurator.trigger_example.share" = "Share Contents";
-"settings_details.general.app_icon.enum.caribbean_green" = "Caribbean Green";
-"settings_details.general.app_icon.enum.cornflower_blue" = "Cornflower Blue";
-"settings_details.general.app_icon.enum.crimson" = "Crimson";
-"settings_details.general.app_icon.enum.electric_violet" = "Electric Violet";
-"settings_details.general.app_icon.enum.fire_orange" = "Fire Orange";
-"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant Blue";
-"settings_details.general.app_icon.enum.pink" = "Pink";
-"onboarding.manual_setup.no_scheme.title" = "URL entered without scheme";
-"onboarding.manual_setup.no_scheme.message" = "Should we try connecting using http:// or https://?";
-"onboarding.manual_setup.couldnt_make_url.title" = "Could not create a URL";
-"onboarding.manual_setup.couldnt_make_url.message" = "The value '%@' was not a valid URL.";
+"settings_details.notifications.permission.title" = "權限";
+"settings_details.notifications.permission.enabled" = "已啟用";
+"settings_details.notifications.permission.disabled" = "已拒絕";
+"settings_details.notifications.permission.needs_request" = "已關閉";
+"settings_details.location.location_permission.title" = "座標權限";
+"settings_details.location.location_permission.always" = "總是允許";
+"settings_details.location.location_permission.while_in_use" = "使用時允許";
+"settings_details.location.location_permission.never" = "從不";
+"settings_details.location.location_permission.needs_request" = "已關閉";
+"settings_details.location.motion_permission.title" = "移動權限";
+"settings_details.location.motion_permission.enabled" = "已啟用";
+"settings_details.location.motion_permission.denied" = "已拒絕";
+"settings_details.location.motion_permission.needs_request" = "已關閉";
+"actions_configurator.trigger_example.title" = "觸發範例";
+"actions_configurator.trigger_example.share" = "分享內容";
+"settings_details.general.app_icon.enum.caribbean_green" = "加勒比綠";
+"settings_details.general.app_icon.enum.cornflower_blue" = "矢車菊藍";
+"settings_details.general.app_icon.enum.crimson" = "深紅";
+"settings_details.general.app_icon.enum.electric_violet" = "靛紫";
+"settings_details.general.app_icon.enum.fire_orange" = "火橙";
+"settings_details.general.app_icon.enum.ha_blue" = "Home Assistant 藍";
+"settings_details.general.app_icon.enum.pink" = "粉紅";
+"onboarding.manual_setup.no_scheme.title" = "所輸入 URL 不符結構";
+"onboarding.manual_setup.no_scheme.message" = "是否要嘗試以 http:// 或 https:// 進行連線？";
+"onboarding.manual_setup.couldnt_make_url.title" = "無法製作 URL";
+"onboarding.manual_setup.couldnt_make_url.message" = "數值 '%@' 並非有效 URL。";
+"settings.reset_section.reset_alert.progress_message" = "Resetting…";
+"settings_details.general.page_zoom.title" = "Page Zoom";
+"settings_details.general.page_zoom.default" = "%@ (Default)";

@@ -108,10 +108,10 @@
 "j9Oxa5" = "Which one?";
 "lNmaCR" = "Template";
 "mJ6CrP" = "Failed to send ${eventName} to Home Assistant with error: ${error}";
-"mZnRHS" = "Successfully sent ${eventName} to Home Assistant";
-"mi6B62" = "What data do you want to send with the event?";
+"mZnRHS" = "Wedi llwyddo i anfon $ {eventName} at Home Assistant";
+"mi6B62" = "Pa ddata ydych chi am eu hanfon gyda'r digwyddiad?";
 "pQhTjo" = "Failed to fire event, Home Assistant is not currently reachable";
-"rOlW1x" = "What location do you want to send?";
-"sQJAJS" = "Error";
+"rOlW1x" = "Pa leoliad ydych chi am ei anfon?";
+"sQJAJS" = "Gwall";
 "sfDGvk" = "Rendered Template";
-"yyjTxO" = "Error";
+"yyjTxO" = "Gwall";
