@@ -1,8 +1,10 @@
 osx_image: xcode11.5
 language: objective-c
 cache:
-  - bundler
-  - cocoapods
+  bundler: true
+  cocoapods: true
+  directories:
+    - /Users/travis/.rvm/
 script:
   - bundle exec fastlane ci
 before_install:
