@@ -223,7 +223,7 @@ platform :ios do
     push_to_git_remote(remote_branch: git_branch)
 
     set_github_release(
-      repository_name: "home-assistant/home-assistant-iOS",
+      repository_name: "home-assistant/ios",
       api_token: ENV["HOMEASSISTANT_GITHUB_API_TOKEN"],
       name: complete_version_number,
       tag_name: tag_name("testflight", get_version_number(target: "HomeAssistant"), get_build_number),
