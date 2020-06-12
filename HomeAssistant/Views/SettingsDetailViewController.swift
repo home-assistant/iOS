@@ -56,14 +56,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         case "general":
             self.title = L10n.SettingsDetails.General.title
             self.form
-                +++ SwitchRow("openInChrome") {
-                    $0.title = L10n.SettingsDetails.General.Chrome.title
-                    $0.value = prefs.bool(forKey: "openInChrome")
-                    }.onChange { row in
-                        prefs.setValue(row.value, forKey: "openInChrome")
-                        prefs.synchronize()
-                }
-
                 +++ PushRow<AppIcon>("appIcon") {
                         $0.title = L10n.SettingsDetails.General.AppIcon.title
                         $0.selectorTitle = $0.title
@@ -90,6 +82,28 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
                         UIApplication.shared.setAlternateIconName(newAppIconName.rawValue)
                     }
+
+                +++ SwitchRow("openInChrome") {
+                    $0.title = L10n.SettingsDetails.General.Chrome.title
+                    $0.value = prefs.bool(forKey: "openInChrome")
+                }.onChange { row in
+                    prefs.setValue(row.value, forKey: "openInChrome")
+                    prefs.synchronize()
+                }
+
+                <<< PushRow<SettingsStore.PageZoom> { row in
+                    row.title = L10n.SettingsDetails.General.PageZoom.title
+                    row.options = SettingsStore.PageZoom.allCases
+
+                    if #available(iOS 12, *) {
+                        row.value = Current.settingsStore.pageZoom
+                        row.onChange { row in
+                            Current.settingsStore.pageZoom = row.value ?? .default
+                        }
+                    } else {
+                        row.hidden = true
+                    }
+                }
 
         case "location":
             self.title = L10n.SettingsDetails.Location.title

@@ -21,6 +21,8 @@ public class SettingsStore {
     let keychain = Constants.Keychain
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
+    public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")
+
     public var tokenInfo: TokenInfo? {
         get {
             guard let tokenData = ((try? keychain.getData("tokenInfo")) as Data??),
@@ -197,6 +199,63 @@ public class SettingsStore {
         }
         set {
             prefs.setValue(newValue, forKey: "time_zone")
+        }
+    }
+
+    public struct PageZoom: CaseIterable, Equatable, CustomStringConvertible {
+        public let zoom: Int
+
+        internal init?(preference: Int) {
+            guard Self.allCases.contains(where: { $0.zoom == preference }) else {
+                // in case one of the options causes problems, removing it from allCases will kill it
+                Current.Log.info("disregarding zoom preference for \(preference)")
+                return nil
+            }
+
+            self.zoom = preference
+        }
+
+        internal init(_ zoom: IntegerLiteralType) {
+            self.zoom = zoom
+        }
+
+        public var description: String {
+            let zoomString = String(format: "%d%%", zoom)
+
+            if zoom == 100 {
+                return L10n.SettingsDetails.General.PageZoom.default(zoomString)
+            } else {
+                return zoomString
+            }
+        }
+
+        public var viewScale: String {
+            return String(format: "%.02f", CGFloat(zoom) / 100.0)
+        }
+
+        public static let `default`: PageZoom = .init(100)
+
+        public static let allCases: [PageZoom] = [
+            // similar zooms to Safari, but with nothing above 200%
+            .init(50), .init(75), .init(85),
+            .init(100), .init(115), .init(125), .init(150), .init(175),
+            .init(200)
+        ]
+    }
+
+    // prior to iOS 12, this didn't work very well in WKWebView
+    @available(iOS 12, *)
+    public var pageZoom: PageZoom {
+        get {
+            if let pageZoom = PageZoom(preference: prefs.integer(forKey: "page_zoom")) {
+                return pageZoom
+            } else {
+                return .default
+            }
+        }
+        set {
+            prefs.set(newValue.zoom, forKey: "page_zoom")
+            NotificationCenter.default.post(name: Self.webViewRelatedSettingDidChange, object: nil)
         }
     }
 
