@@ -27,8 +27,13 @@ class PermissionsViewController: UIViewController, PermissionViewChangeDelegate 
         }
 
         self.locationPermissionView.delegate = self
+        self.locationPermissionView.permission.updateInitial()
+
         self.motionPermissionView.delegate = self
+        self.motionPermissionView.permission.updateInitial()
+
         self.notificationsPermissionView.delegate = self
+        self.notificationsPermissionView.permission.updateInitial()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -45,8 +50,6 @@ class PermissionsViewController: UIViewController, PermissionViewChangeDelegate 
         // Don't need to set .locationEnabled because it comes direct from CLLocationManager.
         if forPermission == .motion {
             Current.settingsStore.motionEnabled = toStatus == .authorized
-        } else if forPermission == .notification {
-            Current.settingsStore.notificationsEnabled = toStatus == .authorized
         }
     }
 }
