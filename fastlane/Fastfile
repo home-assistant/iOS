@@ -264,6 +264,7 @@ platform :ios do
 
       itunes
     elsif !is_ci || ENV["TRAVIS_PULL_REQUEST"] != "false"
+      cocoapods(try_repo_update_on_error: true)
       run_tests(workspace: 'HomeAssistant.xcworkspace',
                 scheme: 'Debug')
     end
