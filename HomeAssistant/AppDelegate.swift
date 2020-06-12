@@ -196,9 +196,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 case "request_location_update":
                     if prefs.bool(forKey: "locationUpdateOnNotification") == false {
                         completionHandler(.noData)
+                        return
                     }
+
                     Current.Log.verbose("Received remote request to provide a location update")
-                    api.GetAndSendLocation(trigger: .PushNotification).done { success in
+
+                    application.backgroundTask(withName: "push-location-request") {
+                        api.GetAndSendLocation(trigger: .PushNotification)
+                    }.done { success in
                         Current.Log.verbose("Did successfully send location when requested via APNS? \(success)")
                         completionHandler(.newData)
                     }.catch { error in
@@ -228,15 +233,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
-        var updatePromise: Promise<Void> = api.UpdateSensors(.BackgroundFetch).asVoid()
+        let updatePromise: Promise<Void>
 
         if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
             prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
             updatePromise = api.GetAndSendLocation(trigger: .BackgroundFetch).asVoid()
+        } else {
+            updatePromise = api.UpdateSensors(.BackgroundFetch).asVoid()
         }
 
-        firstly {
-            return when(fulfilled: [updatePromise, api.updateComplications().asVoid()])
+        application.backgroundTask(withName: "background-fetch") {
+            when(fulfilled: [updatePromise, api.updateComplications().asVoid()])
         }.done { _ in
             completionHandler(.newData)
         }.catch { error in
@@ -293,7 +300,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        actionPromise.done { worked in
+        application.backgroundTask(withName: "shortcut-item") {
+            actionPromise
+        }.done { worked in
             completionHandler(worked)
         }.catch { error in
             Current.Log.error("Received error from handleAction during App Shortcut: \(error)")

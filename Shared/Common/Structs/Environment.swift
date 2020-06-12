@@ -112,6 +112,10 @@ public class Environment {
     }
 
     public var Log: XCGLogger = {
+        if NSClassFromString("XCTest") != nil {
+            return XCGLogger()
+        }
+
         // Create a logger object with no destinations
         let log = XCGLogger(identifier: "advancedLogger", includeDefaultDestinations: false)
 
@@ -154,7 +158,7 @@ public class Environment {
         // Add the destination to the logger
         log.add(destination: fileDestination)
 
-        #if os(iOS)
+        #if os(iOS) && !DEBUG
         log.add(destination: CrashlyticsLogDestination())
         #endif
 
