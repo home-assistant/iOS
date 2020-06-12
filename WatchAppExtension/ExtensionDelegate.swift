@@ -42,13 +42,13 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         if #available(watchOS 13.0, *) {
             opts.insert(.announcement)
         }
+
+        if #available(watchOSApplicationExtension 6.0, *) {
+            WKExtension.shared().registerForRemoteNotifications()
+        }
+
         UNUserNotificationCenter.current().requestAuthorization(options: opts) { (granted, error) in
             Current.Log.verbose("Requested notifications access \(granted), \(String(describing: error))")
-            if granted {
-                if #available(watchOSApplicationExtension 6.0, *) {
-                    WKExtension.shared().registerForRemoteNotifications()
-                }
-            }
         }
 
         setupWatchCommunicator()

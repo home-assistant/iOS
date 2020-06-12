@@ -175,6 +175,17 @@ public enum PermissionType: Int {
         return notificationSettings?.authorizationStatus
     }
 
+    func updateInitial() {
+        switch self {
+        case .notification:
+            // if the user has already given permission, this allows us to register before the next launch
+            // if they haven't, this is still fine; you don't need permission to register for remote ones
+            UIApplication.shared.registerForRemoteNotifications()
+        case .location, .motion:
+            break
+        }
+    }
+
     func request(_ completionHandler: @escaping (Bool, PermissionStatus) -> Void) {
         switch self {
         case .location:
@@ -205,8 +216,8 @@ public enum PermissionType: Int {
                 if let error = error {
                     Current.Log.error("Error when requesting notifications permissions: \(error)")
                 }
-                UIApplication.shared.registerForRemoteNotifications()
                 DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
                     let status: PermissionStatus = granted ? .authorized : .denied
                     completionHandler(granted, status)
                 }
@@ -266,7 +277,14 @@ private class PermissionsLocationDelegate: NSObject, CLLocationManagerDelegate {
     }
 
     var isAuthorized: Bool {
-        return CLLocationManager.authorizationStatus() == .authorizedAlways
+        switch CLLocationManager.authorizationStatus() {
+        case .authorizedAlways, .authorizedWhenInUse:
+            return true
+        case .denied, .notDetermined, .restricted:
+            return false
+        @unknown default:
+            return false
+        }
     }
 
     deinit {

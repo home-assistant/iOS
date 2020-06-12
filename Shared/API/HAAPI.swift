@@ -77,11 +77,6 @@ public class HomeAssistantAPI {
         self.webhookManager.adapter = handler
         self.webhookManager.retrier = handler
         self.webhookHandler = handler
-
-        UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { (settings) in
-            let notificationsAllowed = settings.authorizationStatus == UNAuthorizationStatus.authorized
-            Current.settingsStore.notificationsEnabled = notificationsAllowed
-        })
     }
 
     private static func configureSessionManager(urlConfig: URLSessionConfiguration = .default) -> SessionManager {

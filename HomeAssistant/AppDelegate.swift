@@ -747,10 +747,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Messaging.messaging().delegate = self
 
-        if Current.settingsStore.notificationsEnabled {
-            Current.Log.verbose("Calling UIApplication.shared.registerForRemoteNotifications()")
-            UIApplication.shared.registerForRemoteNotifications()
-        }
+        Current.Log.verbose("Calling UIApplication.shared.registerForRemoteNotifications()")
+        UIApplication.shared.registerForRemoteNotifications()
 
         Current.loadCrashlytics()
 

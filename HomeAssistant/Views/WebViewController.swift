@@ -156,9 +156,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             if let connectionInfo = Current.settingsStore.connectionInfo,
                 let webviewURL = connectionInfo.webviewURL() {
                 api.Connect().done {_ in
-                    if Current.settingsStore.notificationsEnabled {
-                        UIApplication.shared.registerForRemoteNotifications()
-                    }
                     Current.Log.verbose("Connected!")
                     self.webView.load(URLRequest(url: webviewURL))
                     return
