@@ -103,7 +103,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
                 +++ PushRow<OpenInBrowser>("openInBrowser") {
                     $0.title = L10n.SettingsDetails.General.OpenInBrowser.title
-                    $0.value = prefs.string(forKey: "openInBrowser").flatMap{ OpenInBrowser(rawValue: $0) } ?? .Safari
+                    $0.value = prefs.string(forKey: "openInBrowser").flatMap { OpenInBrowser(rawValue: $0) } ?? .Safari
                     $0.selectorTitle = $0.title
                     $0.options = OpenInBrowser.allCases.filter { $0.isInstalled }
                     $0.displayValueFor = { $0?.title }
