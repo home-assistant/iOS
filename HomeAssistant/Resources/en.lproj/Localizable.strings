@@ -745,3 +745,4 @@ Thank you.\
 "settings.reset_section.reset_alert.progress_message" = "Resetting…";
 "settings_details.general.page_zoom.title" = "Page Zoom";
 "settings_details.general.page_zoom.default" = "%@ (Default)";
+"settings_details.general.restoration.title" = "Remember Last Page";

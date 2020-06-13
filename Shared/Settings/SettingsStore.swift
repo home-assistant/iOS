@@ -247,6 +247,19 @@ public class SettingsStore {
         }
     }
 
+    public var restoreLastURL: Bool {
+        get {
+            if let value = prefs.object(forKey: "restoreLastURL") as? NSNumber {
+                return value.boolValue
+            } else {
+                return true
+            }
+        }
+        set {
+            prefs.set(newValue, forKey: "restoreLastURL")
+        }
+    }
+
     // MARK: - Private helpers
 
     private var hasMigratedConnection: Bool {

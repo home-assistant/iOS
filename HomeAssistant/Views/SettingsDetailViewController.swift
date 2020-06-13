@@ -91,6 +91,14 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     prefs.synchronize()
                 }
 
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.General.Restoration.title
+                    $0.value = Current.settingsStore.restoreLastURL
+                    $0.onChange { row in
+                        Current.settingsStore.restoreLastURL = row.value ?? false
+                    }
+                }
+
                 <<< PushRow<SettingsStore.PageZoom> { row in
                     row.title = L10n.SettingsDetails.General.PageZoom.title
                     row.options = SettingsStore.PageZoom.allCases
