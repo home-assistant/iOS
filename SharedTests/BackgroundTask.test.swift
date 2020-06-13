@@ -10,6 +10,7 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
 
     func testExpiredDeliversError() {
         let expectedIdentifier: Int = 123456
+        let expectedRemaining: TimeInterval = 456
 
         let wrappingExpectation = expectation(description: "wrapping")
         let endExpectation = expectation(description: "endBackgroundTask")
@@ -17,17 +18,18 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
 
         let promise: Promise<String> = HomeAssistantBackgroundTask.execute(
             withName: "name",
-            beginBackgroundTask: { (inName, inExpire) -> Int in
+            beginBackgroundTask: { (inName, inExpire) -> (Int, TimeInterval) in
                 XCTAssertEqual(inName, "name")
                 expire = inExpire
-                return expectedIdentifier
+                return (expectedIdentifier, expectedRemaining)
             }, endBackgroundTask: { (inIdentifier: Int) in
                 if inIdentifier == expectedIdentifier {
                     endExpectation.fulfill()
                 } else {
                     XCTFail("should not have called with identifier \(inIdentifier)")
                 }
-            }, wrapping: {
+            }, wrapping: { givenRemaining in
+                XCTAssertEqual(givenRemaining, expectedRemaining)
                 wrappingExpectation.fulfill()
                 return .value("hello!")
             }
@@ -47,6 +49,7 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
         let (underlyingPromise, underlyingSeal) = Promise<String>.pending()
 
         let endExpectedIdentifier: Int = 123456
+        let expectedRemaining: TimeInterval = 456
 
         let wrappingExpectation = expectation(description: "wrapping")
 
@@ -54,16 +57,17 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
 
         let promise: Promise<String> = HomeAssistantBackgroundTask.execute(
             withName: "name",
-            beginBackgroundTask: { (inName, _) -> Int in
+            beginBackgroundTask: { (inName, _) -> (Int, TimeInterval) in
                 XCTAssertEqual(inName, "name")
-                return endExpectedIdentifier
+                return (endExpectedIdentifier, expectedRemaining)
             }, endBackgroundTask: { (inIdentifier: Int) in
                 if inIdentifier == endExpectedIdentifier {
                     endExpectation.fulfill()
                 } else {
                     XCTFail("should not have called with identifier \(inIdentifier)")
                 }
-            }, wrapping: {
+            }, wrapping: { givenRemaining in
+                XCTAssertEqual(givenRemaining, expectedRemaining)
                 wrappingExpectation.fulfill()
                 return underlyingPromise
             }
@@ -83,22 +87,24 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
         let (underlyingPromise, underlyingSeal) = Promise<String>.pending()
 
         let expectedIdentifier: Int = 123456
+        let expectedRemaining: TimeInterval = 456
 
         let wrappingExpectation = expectation(description: "wrapping")
         let endExpectation = expectation(description: "endBackgroundTask")
 
         let promise: Promise<String> = HomeAssistantBackgroundTask.execute(
             withName: "name",
-            beginBackgroundTask: { (inName, _) -> Int in
+            beginBackgroundTask: { (inName, _) -> (Int, TimeInterval) in
                 XCTAssertEqual(inName, "name")
-                return expectedIdentifier
+                return (expectedIdentifier, expectedRemaining)
             }, endBackgroundTask: { (inIdentifier: Int) in
                 if inIdentifier == expectedIdentifier {
                     endExpectation.fulfill()
                 } else {
                     XCTFail("should not have called with identifier \(inIdentifier)")
                 }
-            }, wrapping: {
+            }, wrapping: { givenRemaining in
+                XCTAssertEqual(givenRemaining, expectedRemaining)
                 wrappingExpectation.fulfill()
                 return underlyingPromise
             }

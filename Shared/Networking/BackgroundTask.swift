@@ -12,9 +12,9 @@ public enum BackgroundTaskError: Error {
 public enum HomeAssistantBackgroundTask {
     public static func execute<ReturnType, IdentifierType>(
         withName name: String,
-        beginBackgroundTask: @escaping (String, @escaping () -> Void) -> IdentifierType?,
+        beginBackgroundTask: @escaping (String, @escaping () -> Void) -> (IdentifierType?, TimeInterval?),
         endBackgroundTask: @escaping (IdentifierType) -> Void,
-        wrapping: () -> Promise<ReturnType>
+        wrapping: (TimeInterval?) -> Promise<ReturnType>
     ) -> Promise<ReturnType> {
         func describe(_ identifier: IdentifierType?) -> String {
             if let identifier = identifier {
@@ -33,12 +33,13 @@ public enum HomeAssistantBackgroundTask {
         }
 
         var identifier: IdentifierType?
+        var remaining: TimeInterval?
 
         // we can't guarantee to Swift that this will be assigned, but it will
         var finished: () -> Void = {}
 
         let promise = Promise<Void> { seal in
-            identifier = beginBackgroundTask(name) {
+            (identifier, remaining) = beginBackgroundTask(name) {
                 seal.reject(BackgroundTaskError.outOfTime)
             }
 
@@ -66,7 +67,7 @@ public enum HomeAssistantBackgroundTask {
         }
 
         // make sure we only invoke the promise-returning block once, in case it has side-effects
-        let underlying = wrapping()
+        let underlying = wrapping(remaining)
 
         let underlyingWithFinished = underlying
             .ensure { finished() }
