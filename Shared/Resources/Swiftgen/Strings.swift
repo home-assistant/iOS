@@ -29,6 +29,8 @@ internal enum L10n {
   internal static let onLabel = L10n.tr("Localizable", "on_label")
   /// Preview Output
   internal static let previewOutput = L10n.tr("Localizable", "preview_output")
+  /// Retry
+  internal static let retryLabel = L10n.tr("Localizable", "retry_label")
   /// Success
   internal static let successLabel = L10n.tr("Localizable", "success_label")
   /// Username
@@ -1669,6 +1671,27 @@ internal enum L10n {
         /// Send now
         internal static let title = L10n.tr("Localizable", "settings_details.watch.send_now.title")
       }
+    }
+  }
+
+  internal enum SettingsSensors {
+    /// Sensors
+    internal static let title = L10n.tr("Localizable", "settings_sensors.title")
+    internal enum Detail {
+      /// Attributes
+      internal static let attributes = L10n.tr("Localizable", "settings_sensors.detail.attributes")
+      /// Device Class
+      internal static let deviceClass = L10n.tr("Localizable", "settings_sensors.detail.device_class")
+      /// Icon
+      internal static let icon = L10n.tr("Localizable", "settings_sensors.detail.icon")
+      /// State
+      internal static let state = L10n.tr("Localizable", "settings_sensors.detail.state")
+      /// Unique ID
+      internal static let uniqueId = L10n.tr("Localizable", "settings_sensors.detail.unique_id")
+    }
+    internal enum LoadingError {
+      /// Failed to load sensors
+      internal static let title = L10n.tr("Localizable", "settings_sensors.loading_error.title")
     }
   }
 

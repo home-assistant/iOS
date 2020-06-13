@@ -103,6 +103,13 @@ class SettingsViewController: FormViewController {
             }, onDismiss: nil)
         }
 
+        <<< ButtonRow {
+            $0.title = L10n.SettingsSensors.title
+            $0.presentationMode = .show(controllerProvider: .callback {
+                SensorListViewController()
+            }, onDismiss: nil)
+        }
+
         +++ Section(L10n.Settings.DetailsSection.Integrations.header)
         <<< ButtonRow {
             $0.tag = "actions"

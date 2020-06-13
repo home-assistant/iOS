@@ -17,6 +17,8 @@
 		11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */; };
+		11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D74B2495377B00C05BBA /* SensorListViewController.swift */; };
+		11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */; };
 		36D6C02C95DA3AA629947952 /* Pods_Shared_watchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76519B1977F02AC5D1309705 /* Pods_Shared_watchOS.framework */; };
 		3A9474676287819D0F5A8A37 /* Pods-TodayWidget-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F3D32AC650F6D7A0F3C3D08 /* Pods-TodayWidget-metadata.plist */; };
 		474AA46EC65ABB974EFC74A4 /* Pods-APNSAttachmentService-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B8A292E4944AD7D9EBC2B14 /* Pods-APNSAttachmentService-metadata.plist */; };
@@ -719,6 +721,8 @@
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11B7FD732493225200E60ED9 /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
 		11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
+		11F3D74B2495377B00C05BBA /* SensorListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorListViewController.swift; sourceTree = "<group>"; };
+		11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailViewController.swift; sourceTree = "<group>"; };
 		1C5332DAFA7CC79107B5429E /* Pods-Shared-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS/Pods-Shared-iOS.release.xcconfig"; sourceTree = "<group>"; };
 		1E42E3B8B9E9B8F7FC915A94 /* Pods-TodayWidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayWidget.release.xcconfig"; path = "Pods/Target Support Files/Pods-TodayWidget/Pods-TodayWidget.release.xcconfig"; sourceTree = "<group>"; };
 		22DFD473C941D5E380068120 /* Pods-Shared-iOS-SharedTests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS-SharedTests.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS-SharedTests/Pods-Shared-iOS-SharedTests.beta.xcconfig"; sourceTree = "<group>"; };
@@ -1438,6 +1442,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11F3D74F2495433800C05BBA /* Sensors */ = {
+			isa = PBXGroup;
+			children = (
+				11F3D74B2495377B00C05BBA /* SensorListViewController.swift */,
+				11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */,
+			);
+			path = Sensors;
+			sourceTree = "<group>";
+		};
 		29278BB24639BA945D3D86B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1819,6 +1832,7 @@
 		B661FB6B226BCC8500E541DD /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				11F3D74F2495433800C05BBA /* Sensors */,
 				B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */,
 				B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */,
 			);
@@ -3980,6 +3994,7 @@
 				B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */,
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
+				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
 				B6DAC737215F06B100727D2A /* NotificationAction.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
@@ -3987,6 +4002,7 @@
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
 				B616B29A227ED69300828165 /* InternetAddress.swift in Sources */,
 				B6DF8BC1221C890600370A59 /* UIImageView+UIActivityIndicator.swift in Sources */,
+				11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
