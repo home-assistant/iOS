@@ -285,7 +285,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration,
                  for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
         if navigationAction.targetFrame == nil {
-            openURLInBrowser(urlToOpen: navigationAction.request.url!)
+            openURLInBrowser(navigationAction.request.url!, self)
         }
         return nil
     }

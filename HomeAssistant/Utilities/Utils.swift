@@ -10,6 +10,7 @@ import Foundation
 import KeychainAccess
 import Shared
 import RealmSwift
+import SafariServices
 
 func resetStores() {
     do {
@@ -28,12 +29,29 @@ func resetStores() {
     Realm.reset()
 }
 
-func openURLInBrowser(urlToOpen: URL) {
-    if OpenInChromeController.sharedInstance.isChromeInstalled() && prefs.bool(forKey: "openInChrome") {
-        _ = OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
-    } else {
-        UIApplication.shared.open(urlToOpen, options: [:],
-                                  completionHandler: nil)
+func openURLInBrowser(_ urlToOpen: URL, _ view: UIViewController) {
+    func fallback() {
+        prefs.setValue(OpenInBrowser.Safari, forKey: "openInBrowser")
+        prefs.synchronize()
+        UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
+        return
+    }
+
+    guard let browserPreference = prefs.object(forKey: "openInBrowser") as? OpenInBrowser else { fallback(); return }
+    switch browserPreference {
+    case .Chrome:
+        if !OpenInChromeController.sharedInstance.isChromeInstalled() { fallback() }
+        OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
+        break
+    case .Firefox:
+        if !OpenInFirefoxControllerSwift().openInFirefox(urlToOpen) { fallback() }
+        break
+    case .SafariInApp:
+        let sfv = SFSafariViewController(url: urlToOpen)
+        view.present(sfv, animated: true)
+    default:
+        UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
+        break
     }
 }
 
@@ -67,8 +85,12 @@ func setDefaults() {
         prefs.set(combined, forKey: "lastInstalledVersion")
     }
 
-    if prefs.object(forKey: "openInChrome") == nil && OpenInChromeController().isChromeInstalled() {
-        prefs.setValue(true, forKey: "openInChrome")
+    if prefs.object(forKey: "openInBrowser") == nil {
+        prefs.setValue(OpenInBrowser.Safari, forKey: "openInBrowser")
+    }
+
+    if prefs.bool(forKey: "openInChrome") {
+        prefs.setValue(OpenInBrowser.Chrome, forKey: "openInBrowser")
     }
 
     if prefs.object(forKey: "confirmBeforeOpeningUrl") == nil {
