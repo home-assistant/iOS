@@ -16,7 +16,21 @@ public class OneShotLocationManager: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
     var onLocationUpdated: OnLocationUpdated
 
-    public init(onLocation: @escaping OnLocationUpdated) {
+    // this is a shim to allow testing both this and the new version
+    class func promise() -> Promise<CLLocation> {
+        return Promise { seal in
+            var managerStrongReference: OneShotLocationManager?
+            managerStrongReference = OneShotLocationManager(onLocation: { location, error in
+                // this just lies to the compiler to make it think we actually care about the strong ref
+                withExtendedLifetime(managerStrongReference) {
+                    seal.resolve(location, error)
+                }
+                managerStrongReference = nil
+            })
+        }
+    }
+
+    private init(onLocation: @escaping OnLocationUpdated) {
         onLocationUpdated = onLocation
         super.init()
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters

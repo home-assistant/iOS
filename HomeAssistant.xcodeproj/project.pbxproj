@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		0C6645270B5B70DF1C404144 /* Pods-SiriIntents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */; };
+		113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */; };
+		113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */; };
+		113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */; };
+		113D29E324946F930014067C /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E224946F930014067C /* OneShotLocationManager.swift */; };
+		113D29E424946F930014067C /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E224946F930014067C /* OneShotLocationManager.swift */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
 		11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
@@ -398,7 +403,6 @@
 		B67CE8BC22200F220034C1D0 /* ClientEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79CB20D778B50034574D /* ClientEvent.swift */; };
 		B67CE8BD22200F220034C1D0 /* ClientEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79CD20D85C3A0034574D /* ClientEventStore.swift */; };
 		B67CE8C4222011A60034C1D0 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
-		B67CE8C5222013B60034C1D0 /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BC82130CA0D00678C2C /* OneShotLocationManager.swift */; };
 		B67CE8C7222015E30034C1D0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE8C6222015E30034C1D0 /* CoreLocation.framework */; };
 		B67CE8C9222015E80034C1D0 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B67CE8C8222015E80034C1D0 /* UserNotifications.framework */; };
 		B67CE8CD22201EFA0034C1D0 /* RegionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BCA2130CA2D00678C2C /* RegionManager.swift */; };
@@ -548,7 +552,6 @@
 		D0EEF32D214DF94900D1D360 /* PushRegistrationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */; };
 		D0EEF32E214DF99500D1D360 /* PushRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */; };
 		D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF330214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift */; };
-		D0EEF332214EB2BC00D1D360 /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B25BC82130CA0D00678C2C /* OneShotLocationManager.swift */; };
 		D0EEF335214EB77100D1D360 /* CLLocation+ToDoubleArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */; };
 		D0EEF336214EB7B800D1D360 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
@@ -709,6 +712,9 @@
 /* Begin PBXFileReference section */
 		09D3A786745B7C6D0D364BF0 /* Pods-Shared-watchOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-watchOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-watchOS/Pods-Shared-watchOS.debug.xcconfig"; sourceTree = "<group>"; };
 		0CE51F0910A76C0B0D8B795E /* Pods-Shared-watchOS-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-watchOS-metadata.plist"; path = "Pods/Pods-Shared-watchOS-metadata.plist"; sourceTree = "<group>"; };
+		113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+OneShotLocation.swift"; sourceTree = "<group>"; };
+		113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+OneShotLocationTests.swift"; sourceTree = "<group>"; };
+		113D29E224946F930014067C /* OneShotLocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneShotLocationManager.swift; sourceTree = "<group>"; };
 		1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11B7FD732493225200E60ED9 /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
@@ -1277,7 +1283,6 @@
 		D06C750F20D87FAF00E9DB7F /* ClientEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventCell.swift; sourceTree = "<group>"; };
 		D0A6367120DB7D1100E5C49B /* ClientEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventTests.swift; sourceTree = "<group>"; };
 		D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Realm+Initialization.swift"; sourceTree = "<group>"; };
-		D0B25BC82130CA0D00678C2C /* OneShotLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneShotLocationManager.swift; sourceTree = "<group>"; };
 		D0B25BCA2130CA2D00678C2C /* RegionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionManager.swift; sourceTree = "<group>"; };
 		D0B25BCC2130CAB400678C2C /* Bonjour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bonjour.swift; sourceTree = "<group>"; };
 		D0B25BD121323CA600678C2C /* ClientEventPayloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientEventPayloadViewController.swift; sourceTree = "<group>"; };
@@ -2147,7 +2152,6 @@
 			isa = PBXGroup;
 			children = (
 				B63CAE682150CE5100A68AFB /* SiriShortcut.swift */,
-				D0B25BC82130CA0D00678C2C /* OneShotLocationManager.swift */,
 				D0B25BCA2130CA2D00678C2C /* RegionManager.swift */,
 				B6B6B14E215B6866003DE2DD /* WatchComplication.swift */,
 				B6DAC734215F069300727D2A /* NotificationCategory.swift */,
@@ -2237,6 +2241,7 @@
 				D03D894620E0BC1800D4F28D /* Info.plist */,
 				D0BE441121043B8100C74314 /* AuthorizationTests.swift */,
 				11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */,
+				113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */,
 			);
 			path = SharedTests;
 			sourceTree = "<group>";
@@ -2273,6 +2278,8 @@
 				B6EE36A120CF593E001494E3 /* RealmZone.swift */,
 				D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */,
 				B6A3EE612164B0550051A8A1 /* RealmDeviceTracker.swift */,
+				113D29E224946F930014067C /* OneShotLocationManager.swift */,
+				113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */,
 			);
 			path = Location;
 			sourceTree = "<group>";
@@ -4078,7 +4085,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6A258492232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
-				B67CE8C5222013B60034C1D0 /* OneShotLocationManager.swift in Sources */,
 				B67CE88F22200F220034C1D0 /* Sun.swift in Sources */,
 				B67CE88722200F220034C1D0 /* Light.swift in Sources */,
 				B67CE88A22200F220034C1D0 /* Script.swift in Sources */,
@@ -4116,6 +4122,7 @@
 				B67CE89F22200F220034C1D0 /* Events.swift in Sources */,
 				B6B74CBC228398DD00D58A68 /* WKInterfaceDevice+Size.swift in Sources */,
 				B67CE88922200F220034C1D0 /* Switch.swift in Sources */,
+				113D29E424946F930014067C /* OneShotLocationManager.swift in Sources */,
 				B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
 				B67CE8BA22200F220034C1D0 /* Constants.swift in Sources */,
 				B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */,
@@ -4132,6 +4139,7 @@
 				B6D3B4EE225B26910082BB4F /* WebhookSensors.swift in Sources */,
 				B67CE8B322200F220034C1D0 /* Realm+Initialization.swift in Sources */,
 				B67CE87B22200F220034C1D0 /* RealmDeviceTracker.swift in Sources */,
+				113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				B67CE8AD22200F220034C1D0 /* AuthenticationAPI.swift in Sources */,
 				B67CE88122200F220034C1D0 /* BinarySensor.swift in Sources */,
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
@@ -4204,7 +4212,6 @@
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
 				D0EEF315214DD7A400D1D360 /* Beacons.swift in Sources */,
 				B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */,
-				D0EEF332214EB2BC00D1D360 /* OneShotLocationManager.swift in Sources */,
 				D0EEF32E214DF99500D1D360 /* PushRegistrationRequest.swift in Sources */,
 				B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
 				B6C0914D2151F93D00A326DC /* GarageDoor.swift in Sources */,
@@ -4215,6 +4222,7 @@
 				B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */,
 				D0EEF335214EB77100D1D360 /* CLLocation+ToDoubleArray.swift in Sources */,
 				B675ECC5221BD76300C65D31 /* Identify.swift in Sources */,
+				113D29E324946F930014067C /* OneShotLocationManager.swift in Sources */,
 				B6723341225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				D0EEF318214DD7A400D1D360 /* Events.swift in Sources */,
 				B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */,
@@ -4250,6 +4258,7 @@
 				B6C0914A2151F93D00A326DC /* DeviceTracker.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
+				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				D0EEF32C214DF83800D1D360 /* IdentifyRequest.swift in Sources */,
 				D03D893920E0AF8E00D4F28D /* ClientEvent.swift in Sources */,
 				B6C091482151F93D00A326DC /* Group.swift in Sources */,
@@ -4298,6 +4307,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */,
+				113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */,
 				11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */,
 				D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */,
 			);

@@ -7,7 +7,6 @@
 //
 
 import XCTest
-import Alamofire
 import PromiseKit
 @testable import Shared
 

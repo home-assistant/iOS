@@ -259,8 +259,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
                     Current.Log.verbose("Received remote request to provide a location update")
 
-                    application.backgroundTask(withName: "push-location-request") {
-                        api.GetAndSendLocation(trigger: .PushNotification)
+                    application.backgroundTask(withName: "push-location-request") { remaining in
+                        api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
                     }.done { success in
                         Current.Log.verbose("Did successfully send location when requested via APNS? \(success)")
                         completionHandler(.newData)
@@ -291,18 +291,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
-        let updatePromise: Promise<Void>
+        application.backgroundTask(withName: "background-fetch") { remaining in
+            let updatePromise: Promise<Void>
 
-        if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
-            prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
-            updatePromise = api.GetAndSendLocation(trigger: .BackgroundFetch).asVoid()
-        } else {
-            updatePromise = api.UpdateSensors(.BackgroundFetch).asVoid()
-        }
+            if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
+                prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
+                updatePromise = api.GetAndSendLocation(
+                    trigger: .BackgroundFetch,
+                    maximumBackgroundTime: remaining
+                ).asVoid()
+            } else {
+                updatePromise = api.UpdateSensors(.BackgroundFetch).asVoid()
+            }
 
-        application.backgroundTask(withName: "background-fetch") {
-            when(fulfilled: [updatePromise, api.updateComplications().asVoid()])
-        }.done { _ in
+            return when(fulfilled: [updatePromise, api.updateComplications().asVoid()]).asVoid()
+        }.done {
             completionHandler(.newData)
         }.catch { error in
             Current.Log.error("Error when attempting to update data during background fetch: \(error)")
@@ -344,22 +347,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        var action: Promise<Bool>?
-
-        if shortcutItem.type == "sendLocation" {
-            action = api.GetAndSendLocation(trigger: .AppShortcut)
-        } else if let userInfo = shortcutItem.userInfo, let name = userInfo["name"] as? String {
-            action = api.HandleAction(actionID: shortcutItem.type, actionName: name, source: .AppShortcut)
-        }
-
-        guard let actionPromise = action else {
-            Current.Log.error("Shortcut promises is nil!!! Shortcut type was \(shortcutItem.type)")
-            completionHandler(false)
-            return
-        }
-
-        application.backgroundTask(withName: "shortcut-item") {
-            actionPromise
+        application.backgroundTask(withName: "shortcut-item") { remaining in
+            if shortcutItem.type == "sendLocation" {
+                return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
+            } else if let userInfo = shortcutItem.userInfo, let name = userInfo["name"] as? String {
+                return api.HandleAction(actionID: shortcutItem.type, actionName: name, source: .AppShortcut)
+            } else {
+                enum NoSuchAction: Error {
+                    case noSuchAction(String)
+                }
+                return Promise(error: NoSuchAction.noSuchAction(String(describing: shortcutItem.userInfo)))
+            }
         }.done { worked in
             completionHandler(worked)
         }.catch { error in

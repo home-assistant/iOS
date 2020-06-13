@@ -154,6 +154,14 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         }
                     })
 
+                +++ Section(header: nil, footer: L10n.SettingsDetails.Location.NewOneShot.description)
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Location.NewOneShot.title
+                    $0.value = Current.settingsStore.useNewOneShotLocation
+                }.onChange { row in
+                    Current.settingsStore.useNewOneShotLocation = row.value ?? false
+                }
+
             let zoneEntities = self.realm.objects(RLMZone.self).map { $0 }
             for zone in zoneEntities {
                 self.form

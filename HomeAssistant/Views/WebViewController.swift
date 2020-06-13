@@ -442,15 +442,17 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             }
 
             if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
-                return api.GetAndSendLocation(trigger: .Manual).asVoid()
-                    .recover { error -> Promise<Void> in
-                        if error is CLError {
-                            Current.Log.info("couldn't get location, sending remaining sensor data")
-                            return updateWithoutLocation()
-                        } else {
-                            throw error
-                        }
+                return UIApplication.shared.backgroundTask(withName: "manual-location-update") { remaining in
+                    return api.GetAndSendLocation(trigger: .Manual, maximumBackgroundTime: remaining).asVoid()
+                        .recover { error -> Promise<Void> in
+                            if error is CLError {
+                                Current.Log.info("couldn't get location, sending remaining sensor data")
+                                return updateWithoutLocation()
+                            } else {
+                                throw error
+                            }
                     }
+                }
             } else {
                 return updateWithoutLocation()
             }
