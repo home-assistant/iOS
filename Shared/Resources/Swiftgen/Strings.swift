@@ -1332,7 +1332,7 @@ internal enum L10n {
         internal static let safari = L10n.tr("Localizable", "settings_details.general.open_in_browser.safari")
         /// Apple Safari (in app)
         internal static let safariInApp = L10n.tr("Localizable", "settings_details.general.open_in_browser.safari_in_app")
-        /// Browser to open links in
+        /// Open Links In
         internal static let title = L10n.tr("Localizable", "settings_details.general.open_in_browser.title")
       }
       internal enum DeviceName {
