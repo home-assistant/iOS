@@ -30,28 +30,24 @@ func resetStores() {
 }
 
 func openURLInBrowser(_ urlToOpen: URL, _ view: UIViewController) {
-    func fallback() {
-        prefs.setValue(OpenInBrowser.Safari, forKey: "openInBrowser")
-        prefs.synchronize()
+    guard ["http", "https"].contains(urlToOpen.scheme?.lowercased()) else {
         UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
         return
     }
 
-    guard let browserPreference = prefs.object(forKey: "openInBrowser") as? OpenInBrowser else { fallback(); return }
+    let browserPreference = prefs.string(forKey: "openInBrowser")
+        .flatMap { OpenInBrowser(rawValue: $0) } ?? .Safari
+
     switch browserPreference {
-    case .Chrome:
-        if !OpenInChromeController.sharedInstance.isChromeInstalled() { fallback() }
+    case .Chrome where OpenInChromeController.sharedInstance.isChromeInstalled():
         OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
-        break
-    case .Firefox:
-        if !OpenInFirefoxControllerSwift().openInFirefox(urlToOpen) { fallback() }
-        break
+    case .Firefox where OpenInFirefoxControllerSwift().isFirefoxInstalled():
+        OpenInFirefoxControllerSwift().openInFirefox(urlToOpen)
     case .SafariInApp:
         let sfv = SFSafariViewController(url: urlToOpen)
         view.present(sfv, animated: true)
     default:
         UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
-        break
     }
 }
 
@@ -86,11 +82,11 @@ func setDefaults() {
     }
 
     if prefs.object(forKey: "openInBrowser") == nil {
-        prefs.setValue(OpenInBrowser.Safari, forKey: "openInBrowser")
+        prefs.setValue(OpenInBrowser.Safari.rawValue, forKey: "openInBrowser")
     }
 
     if prefs.bool(forKey: "openInChrome") {
-        prefs.setValue(OpenInBrowser.Chrome, forKey: "openInBrowser")
+        prefs.setValue(OpenInBrowser.Chrome.rawValue, forKey: "openInBrowser")
     }
 
     if prefs.object(forKey: "confirmBeforeOpeningUrl") == nil {

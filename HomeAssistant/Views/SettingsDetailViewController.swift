@@ -103,16 +103,13 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
                 +++ PushRow<OpenInBrowser>("openInBrowser") {
                     $0.title = L10n.SettingsDetails.General.OpenInBrowser.title
-                    $0.value = .Safari
-                    if let browserPreference = prefs.object(forKey: "openInBrowser") as? OpenInBrowser {
-                        $0.value = browserPreference
-                    }
+                    $0.value = prefs.string(forKey: "openInBrowser").flatMap{ OpenInBrowser(rawValue: $0) } ?? .Safari
                     $0.selectorTitle = $0.title
                     $0.options = OpenInBrowser.allCases.filter { $0.isInstalled }
                     $0.displayValueFor = { $0?.title }
                 }.onChange { row in
                     guard let browserChoice = row.value else { return }
-                    prefs.setValue(browserChoice, forKey: "openInBrowser")
+                    prefs.setValue(browserChoice.rawValue, forKey: "openInBrowser")
                     prefs.synchronize()
                 }
 
@@ -863,7 +860,7 @@ enum AppIcon: String, CaseIterable {
     }
 }
 
-enum OpenInBrowser: CaseIterable {
+enum OpenInBrowser: String, CaseIterable {
     case Chrome
     case Firefox
     case Safari
@@ -884,12 +881,12 @@ enum OpenInBrowser: CaseIterable {
 
     var isInstalled: Bool {
         switch self {
-            case .Chrome:
-                return OpenInChromeController.sharedInstance.isChromeInstalled()
-            case .Firefox:
-                return OpenInFirefoxControllerSwift().isFirefoxInstalled()
-            default:
-                return true
+        case .Chrome:
+            return OpenInChromeController.sharedInstance.isChromeInstalled()
+        case .Firefox:
+            return OpenInFirefoxControllerSwift().isFirefoxInstalled()
+        default:
+            return true
         }
     }
 }

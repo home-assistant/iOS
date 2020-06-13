@@ -22,25 +22,22 @@ open class OpenInFirefoxControllerSwift {
     let app = UIApplication.shared
 
     fileprivate func encodeByAddingPercentEscapes(_ input: String) -> String {
-        return NSString(string: input).addingPercentEncoding(withAllowedCharacters: CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[]"))!
+        return NSString(string: input).addingPercentEncoding(
+            withAllowedCharacters: CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[]")
+        )!
     }
 
     open func isFirefoxInstalled() -> Bool {
         return app.canOpenURL(basicURL)
     }
 
-    open func openInFirefox(_ url: URL) ->  Bool {
-        if !isFirefoxInstalled() {
-            return false
-        }
-
+    open func openInFirefox(_ url: URL) {
         let scheme = url.scheme
         if scheme == "http" || scheme == "https" {
             let escaped = encodeByAddingPercentEscapes(url.absoluteString)
             if let firefoxURL = URL(string: "firefox://open-url?url=\(escaped)") {
-                return app.openURL(firefoxURL)
+                app.open(firefoxURL, options: [:], completionHandler: nil)
             }
         }
-        return false
     }
 }
