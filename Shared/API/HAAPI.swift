@@ -136,7 +136,12 @@ public class HomeAssistantAPI {
     public func Connect() -> Promise<ConfigResponse> {
         return firstly {
             self.UpdateRegistration()
-        }.recover { _ -> Promise<MobileAppRegistrationResponse> in
+        }.recover { error -> Promise<MobileAppRegistrationResponse> in
+            guard (error as NSError).domain != NSURLErrorDomain else {
+                Current.Log.info("not re-registering because of network error")
+                throw error
+            }
+
             let message = "Failed to update integration; trying to register instead."
             Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest))
             return self.Register()
