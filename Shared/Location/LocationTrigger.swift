@@ -35,6 +35,27 @@ public enum LocationUpdateTrigger: String {
     case AppShortcut = "App Shortcut"
     case Unknown = "Unknown"
 
+    func oneShotTimeout(maximum: TimeInterval?) -> TimeInterval {
+        if let maximum = maximum {
+            // the system appears to have given us a reasonable baseline, leave some time for network call
+            return max(maximum - 5.0, 1.0)
+        }
+
+        switch self {
+        case .RegionEnter, .RegionExit, .GPSRegionEnter, .GPSRegionExit, .BeaconRegionEnter, .BeaconRegionExit, .Visit:
+            // location events, we've probably got a bit more freedom
+            return 20.0
+        case .SignificantLocationUpdate, .BackgroundFetch, .PushNotification:
+            // background events we know are usually time sensitive
+            return 10.0
+        case .Manual, .URLScheme, .XCallbackURL, .AppShortcut, .Siri:
+            // user is actively doing this, so wait a little longer
+            return 30.0
+        case .Unknown:
+            return 10.0
+        }
+    }
+
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     public func notificationOptionsFor(zoneName: String) -> NotificationOptions {
         let shouldNotify: Bool

@@ -1313,6 +1313,10 @@ internal enum L10n {
         /// Page Zoom
         internal static let title = L10n.tr("Localizable", "settings_details.general.page_zoom.title")
       }
+      internal enum Restoration {
+        /// Remember Last Page
+        internal static let title = L10n.tr("Localizable", "settings_details.general.restoration.title")
+      }
     }
     internal enum Location {
       /// Location
@@ -1338,6 +1342,12 @@ internal enum L10n {
         internal static let needsRequest = L10n.tr("Localizable", "settings_details.location.motion_permission.needs_request")
         /// Motion Permission
         internal static let title = L10n.tr("Localizable", "settings_details.location.motion_permission.title")
+      }
+      internal enum NewOneShot {
+        /// This may or may not deliver good results for the sources above. Your feedback is appreciated.
+        internal static let description = L10n.tr("Localizable", "settings_details.location.new_one_shot.description")
+        /// In-Development Updating
+        internal static let title = L10n.tr("Localizable", "settings_details.location.new_one_shot.title")
       }
       internal enum Notifications {
         /// Location Notifications

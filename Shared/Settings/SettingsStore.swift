@@ -190,6 +190,18 @@ public class SettingsStore {
         }
     }
 
+    public var useNewOneShotLocation: Bool {
+        get {
+            if Current.isTestFlight, prefs.object(forKey: "use_new_one_shot") == nil {
+                return true
+            }
+            return prefs.bool(forKey: "use_new_one_shot")
+        }
+        set {
+            prefs.set(newValue, forKey: "use_new_one_shot")
+        }
+    }
+
     public struct PageZoom: CaseIterable, Equatable, CustomStringConvertible {
         public let zoom: Int
 
@@ -244,6 +256,19 @@ public class SettingsStore {
         set {
             prefs.set(newValue.zoom, forKey: "page_zoom")
             NotificationCenter.default.post(name: Self.webViewRelatedSettingDidChange, object: nil)
+        }
+    }
+
+    public var restoreLastURL: Bool {
+        get {
+            if let value = prefs.object(forKey: "restoreLastURL") as? NSNumber {
+                return value.boolValue
+            } else {
+                return true
+            }
+        }
+        set {
+            prefs.set(newValue, forKey: "restoreLastURL")
         }
     }
 

@@ -21,7 +21,7 @@ import WhatsNewKit
 import CoreLocation
 
 // swiftlint:disable:next type_body_length
-class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
+class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, UIViewControllerRestoration {
 
     var webView: WKWebView!
 
@@ -32,6 +32,17 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     // var remotePlayer = RemoteMediaPlayer()
 
     var keepAliveTimer: Timer?
+    private var initialURL: URL?
+
+    static func viewController(
+        withRestorationIdentifierPath identifierComponents: [String],
+        coder: NSCoder
+    ) -> UIViewController? {
+        let webViewController = WebViewController()
+        // although the system is also going to call through this restoration method, it's going to do it _too late_
+        webViewController.decodeRestorableState(with: coder)
+        return webViewController
+    }
 
     let settingsButton: MDCFloatingButton! = {
         let button = MDCFloatingButton()
@@ -49,9 +60,32 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         return button
     }()
 
+    enum RestorableStateKey: String {
+        case lastURL
+    }
+
+    override func encodeRestorableState(with coder: NSCoder) {
+        super.encodeRestorableState(with: coder)
+        coder.encode(webView.url as NSURL?, forKey: RestorableStateKey.lastURL.rawValue)
+    }
+
+    override func decodeRestorableState(with coder: NSCoder) {
+        guard !isViewLoaded else {
+            // this is state decoding late in the cycle, not our initial one; ignore.
+            return
+        }
+
+        initialURL = coder.decodeObject(of: NSURL.self, forKey: RestorableStateKey.lastURL.rawValue) as URL?
+        super.decodeRestorableState(with: coder)
+    }
+
     // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        restorationClass = Self.self
+        restorationIdentifier = String(describing: Self.self)
+
         self.becomeFirstResponder()
         // self.showWhatsNew()
         // self.remotePlayer.delegate = self
@@ -157,7 +191,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                 let webviewURL = connectionInfo.webviewURL() {
                 api.Connect().done {_ in
                     Current.Log.verbose("Connected!")
-                    self.webView.load(URLRequest(url: webviewURL))
+
+                    if self.webView.url == nil || self.webView.url?.baseIsEqual(to: webviewURL) == false {
+                        // only load again if it would produce a different result
+                        self.webView.load(URLRequest(url: webviewURL))
+                    }
                     return
                 }.catch {err -> Void in
                     Current.Log.error("Error on connect!!! \(err)")
@@ -210,7 +248,17 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
         if let connectionInfo = Current.settingsStore.connectionInfo,
             let webviewURL = connectionInfo.webviewURL() {
-            let myRequest = URLRequest(url: webviewURL)
+            let myRequest: URLRequest
+
+            if Current.settingsStore.restoreLastURL,
+                let initialURL = initialURL, initialURL.baseIsEqual(to: webviewURL) {
+                Current.Log.info("restoring initial url")
+                myRequest = URLRequest(url: initialURL)
+            } else {
+                Current.Log.info("loading default url")
+                myRequest = URLRequest(url: webviewURL)
+            }
+
             self.webView.load(myRequest)
         }
     }
@@ -274,6 +322,47 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         self.refreshControl.endRefreshing()
+
+        // in case the view appears again, don't reload
+        initialURL = nil
+    }
+
+    func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationResponse: WKNavigationResponse,
+        decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void
+    ) {
+        guard navigationResponse.isForMainFrame else {
+            // we don't need to modify the response if it's for a sub-frame
+            decisionHandler(.allow)
+            return
+        }
+
+        guard let httpResponse = navigationResponse.response as? HTTPURLResponse, httpResponse.statusCode >= 400 else {
+            // not an error response, we don't need to inspect at all
+            decisionHandler(.allow)
+            return
+        }
+
+        // error response, let's inspect if it's restoring a page or normal navigation
+        if navigationResponse.response.url != initialURL {
+            // just a normal loading error
+            decisionHandler(.allow)
+        } else {
+            // first: clear that saved url, it's bad
+            initialURL = nil
+
+            // it's for the restored page, let's load the default url
+
+            if let connectionInfo = Current.settingsStore.connectionInfo,
+                let webviewURL = connectionInfo.webviewURL() {
+                decisionHandler(.cancel)
+                webView.load(URLRequest(url: webviewURL))
+            } else {
+                // we don't have anything we can do about this
+                decisionHandler(.allow)
+            }
+        }
     }
 
     // WKUIDelegate
@@ -353,15 +442,17 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             }
 
             if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
-                return api.GetAndSendLocation(trigger: .Manual).asVoid()
-                    .recover { error -> Promise<Void> in
-                        if error is CLError {
-                            Current.Log.info("couldn't get location, sending remaining sensor data")
-                            return updateWithoutLocation()
-                        } else {
-                            throw error
-                        }
+                return UIApplication.shared.backgroundTask(withName: "manual-location-update") { remaining in
+                    return api.GetAndSendLocation(trigger: .Manual, maximumBackgroundTime: remaining).asVoid()
+                        .recover { error -> Promise<Void> in
+                            if error is CLError {
+                                Current.Log.info("couldn't get location, sending remaining sensor data")
+                                return updateWithoutLocation()
+                            } else {
+                                throw error
+                            }
                     }
+                }
             } else {
                 return updateWithoutLocation()
             }

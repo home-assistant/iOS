@@ -52,8 +52,6 @@ public class HomeAssistantAPI {
 
     public private(set) var webhookHandler: WebhookHandler!
 
-    public var oneShotLocationManager: OneShotLocationManager?
-
     public var MobileAppComponentLoaded: Bool {
         return HomeAssistantAPI.LoadedComponents.contains("mobile_app")
     }
@@ -496,31 +494,31 @@ public class HomeAssistantAPI {
 
     }
 
-    public func GetAndSendLocation(trigger: LocationUpdateTrigger?) -> Promise<Bool> {
+    public func GetAndSendLocation(
+        trigger: LocationUpdateTrigger?,
+        maximumBackgroundTime: TimeInterval? = nil
+    ) -> Promise<Bool> {
         var updateTrigger: LocationUpdateTrigger = .Manual
         if let trigger = trigger {
             updateTrigger = trigger
         }
         Current.Log.verbose("getAndSendLocation called via \(String(describing: updateTrigger))")
 
-        return Promise { seal in
-            Current.isPerformingSingleShotLocationQuery = true
-            self.oneShotLocationManager = OneShotLocationManager { location, error in
-                guard let location = location else {
-                    seal.reject(error ?? APIError.unknown)
-                    return
-                }
-
-                Current.isPerformingSingleShotLocationQuery = false
-                firstly {
-                    self.SubmitLocation(updateType: updateTrigger, location: location,
-                                        zone: nil)
-                    }.done { worked in
-                        seal.fulfill(worked)
-                    }.catch { error in
-                        seal.reject(error)
-                }
+        Current.isPerformingSingleShotLocationQuery = true
+        return firstly { () -> Promise<CLLocation> in
+            if Current.settingsStore.useNewOneShotLocation {
+                return CLLocationManager.oneShotLocation(
+                    timeout: updateTrigger.oneShotTimeout(maximum: maximumBackgroundTime)
+                )
+            } else {
+                return OneShotLocationManager.promise()
             }
+        }.ensure {
+            Current.isPerformingSingleShotLocationQuery = false
+        }.then { location in
+            self.SubmitLocation(updateType: updateTrigger, location: location, zone: nil)
+        }.recover { _ -> Promise<Bool> in
+            .value(false)
         }
     }
 

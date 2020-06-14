@@ -85,8 +85,8 @@ public class Environment {
         self.settingsStore.connectionInfo = authenticatedAPI.connectionInfo
     }
 
-    // This is private because the use of 'appConfiguration' is preferred.
-    private let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+    // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
+    public let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
 
     private let isFastlaneSnapshot = UserDefaults(suiteName: Constants.AppGroupID)!.bool(forKey: "FASTLANE_SNAPSHOT")
 

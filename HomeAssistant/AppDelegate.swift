@@ -43,9 +43,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        UIFont.overrideInitialize()
 //    }
 
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    enum StateRestorationKey: String {
+        case mainWindow
+        case webViewNavigationController
+    }
 
+    func application(
+        _ application: UIApplication,
+        willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
         setDefaults()
 
         UNUserNotificationCenter.current().delegate = self
@@ -77,7 +83,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if #available(iOS 12.0, *) { setupiOS12Features() }
 
+        // window must be created before willFinishLaunching completes, or state restoration will not occur
         setupWindow()
+
+        return true
+    }
+
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         setupView()
 
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
@@ -87,6 +100,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func setupWindow() {
         let window = UIWindow.init(frame: UIScreen.main.bounds)
+        window.restorationIdentifier = StateRestorationKey.mainWindow.rawValue
         window.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
         window.makeKeyAndVisible()
         self.window = window
@@ -99,9 +113,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Current.Log.info("showing onboarding")
             window?.rootViewController = onboardingNavigationController()
         } else {
-            Current.Log.info("showing web view controller")
-            let navController = webViewNavigationController(rootViewController: WebViewController())
-            window?.rootViewController = navController
+            if let rootController = window?.rootViewController, !rootController.children.isEmpty {
+                Current.Log.info("state restoration loaded controller, not creating a new one")
+            } else {
+                Current.Log.info("state restoration didn't load anything, constructing controllers manually")
+                let navController = webViewNavigationController(rootViewController: WebViewController())
+                window?.rootViewController = navController
+            }
         }
 
         if let tokenInfo = Current.settingsStore.tokenInfo, let connectionInfo = Current.settingsStore.connectionInfo {
@@ -160,6 +178,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {}
 
+    func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
+        if requiresOnboarding {
+            Current.Log.info("disallowing state to be restored due to onboarding")
+            return false
+        }
+
+        if Current.appConfiguration == .FastlaneSnapshot {
+            Current.Log.info("disallowing state to be restored due to fastlane snapshot")
+            return false
+        }
+
+        Current.Log.info("allowing state to be restored")
+        return true
+    }
+
+    func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
+        if Current.settingsStore.restoreLastURL == false {
+            // if we let it capture state -- even if we don't use the url -- it will take a screenshot
+            Current.Log.info("disallowing state to be saved due to setting")
+            return false
+        }
+
+        Current.Log.info("allowing state to be saved")
+        return true
+    }
+
+    func application(
+        _ application: UIApplication,
+        viewControllerWithRestorationIdentifierPath identifierComponents: [String],
+        coder: NSCoder
+    ) -> UIViewController? {
+        if identifierComponents == [StateRestorationKey.webViewNavigationController.rawValue] {
+            let navigationController = webViewNavigationController()
+            window?.rootViewController = navigationController
+            return navigationController
+        } else {
+            return nil
+        }
+    }
+
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         Current.Log.error("Error when trying to register for push: \(error)")
     }
@@ -201,8 +259,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
                     Current.Log.verbose("Received remote request to provide a location update")
 
-                    application.backgroundTask(withName: "push-location-request") {
-                        api.GetAndSendLocation(trigger: .PushNotification)
+                    application.backgroundTask(withName: "push-location-request") { remaining in
+                        api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
                     }.done { success in
                         Current.Log.verbose("Did successfully send location when requested via APNS? \(success)")
                         completionHandler(.newData)
@@ -233,18 +291,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .full)
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
-        let updatePromise: Promise<Void>
+        application.backgroundTask(withName: "background-fetch") { remaining in
+            let updatePromise: Promise<Void>
 
-        if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
-            prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
-            updatePromise = api.GetAndSendLocation(trigger: .BackgroundFetch).asVoid()
-        } else {
-            updatePromise = api.UpdateSensors(.BackgroundFetch).asVoid()
-        }
+            if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
+                prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
+                updatePromise = api.GetAndSendLocation(
+                    trigger: .BackgroundFetch,
+                    maximumBackgroundTime: remaining
+                ).asVoid()
+            } else {
+                updatePromise = api.UpdateSensors(.BackgroundFetch).asVoid()
+            }
 
-        application.backgroundTask(withName: "background-fetch") {
-            when(fulfilled: [updatePromise, api.updateComplications().asVoid()])
-        }.done { _ in
+            return when(fulfilled: [updatePromise, api.updateComplications().asVoid()]).asVoid()
+        }.done {
             completionHandler(.newData)
         }.catch { error in
             Current.Log.error("Error when attempting to update data during background fetch: \(error)")
@@ -286,22 +347,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        var action: Promise<Bool>?
-
-        if shortcutItem.type == "sendLocation" {
-            action = api.GetAndSendLocation(trigger: .AppShortcut)
-        } else if let userInfo = shortcutItem.userInfo, let name = userInfo["name"] as? String {
-            action = api.HandleAction(actionID: shortcutItem.type, actionName: name, source: .AppShortcut)
-        }
-
-        guard let actionPromise = action else {
-            Current.Log.error("Shortcut promises is nil!!! Shortcut type was \(shortcutItem.type)")
-            completionHandler(false)
-            return
-        }
-
-        application.backgroundTask(withName: "shortcut-item") {
-            actionPromise
+        application.backgroundTask(withName: "shortcut-item") { remaining in
+            if shortcutItem.type == "sendLocation" {
+                return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
+            } else if let userInfo = shortcutItem.userInfo, let name = userInfo["name"] as? String {
+                return api.HandleAction(actionID: shortcutItem.type, actionName: name, source: .AppShortcut)
+            } else {
+                enum NoSuchAction: Error {
+                    case noSuchAction(String)
+                }
+                return Promise(error: NoSuchAction.noSuchAction(String(describing: shortcutItem.userInfo)))
+            }
         }.done { worked in
             completionHandler(worked)
         }.catch { error in
@@ -342,6 +398,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func webViewNavigationController(rootViewController: UIViewController? = nil) -> UINavigationController {
         let navigationController = UINavigationController()
+        navigationController.restorationIdentifier = StateRestorationKey.webViewNavigationController.rawValue
         if let rootViewController = rootViewController {
             navigationController.viewControllers = [rootViewController]
         }
