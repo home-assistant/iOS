@@ -115,7 +115,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         userContentController.add(self, name: "getExternalAuth")
         userContentController.add(self, name: "revokeExternalAuth")
         userContentController.add(self, name: "externalBus")
-        userContentController.add(self, name: "themesUpdated")
+        userContentController.add(self, name: "updateThemeColors")
         userContentController.add(self, name: "currentUser")
         userContentController.add(self, name: "mediaPlayerCommand")
 
@@ -251,18 +251,26 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         self.urlObserver = nil
     }
 
-    func styleUI(_ backgroundColor: UIColor? = UIColor(red: 0.98, green: 0.98, blue: 0.98, alpha: 1.0),
-                 _ headerColor: UIColor? = UIColor(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0),
-                 _ refreshTintColor: UIColor? = UIColor.white) {
+    func styleUI() {
+        let cachedColors = ThemeColors.cachedThemeColors
 
-        self.webView?.backgroundColor = backgroundColor
-        self.webView?.scrollView.backgroundColor = backgroundColor
+        self.webView?.backgroundColor = cachedColors[.primaryBackgroundColor]
+        self.webView?.scrollView.backgroundColor = cachedColors[.primaryBackgroundColor]
 
         if let statusBarView = self.view.viewWithTag(111) {
-            statusBarView.backgroundColor = headerColor
+            statusBarView.backgroundColor = cachedColors[.appHeaderBackgroundColor]
         }
 
-        self.refreshControl.tintColor = refreshTintColor
+        self.refreshControl.tintColor = cachedColors[.primaryColor]
+
+        let headerBackgroundIsLight = cachedColors[.appHeaderBackgroundColor].isLight
+        if #available(iOS 13, *) {
+            self.underlyingPreferredStatusBarStyle = headerBackgroundIsLight ? .darkContent : .lightContent
+        } else {
+            self.underlyingPreferredStatusBarStyle = headerBackgroundIsLight ? .default : .lightContent
+        }
+
+        setNeedsStatusBarAppearanceUpdate()
     }
 
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration,
@@ -493,8 +501,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         self.showSettingsViewController()
     }
 
+    private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        return underlyingPreferredStatusBarStyle
     }
 
     func userReconnected() {
@@ -687,7 +696,7 @@ extension WebViewController: WKScriptMessageHandler {
             self.handleExternalMessage(messageBody)
         } else if message.name == "currentUser", let user = AuthenticatedUser(messageBody) {
             Current.settingsStore.authenticatedUser = user
-        } else if message.name == "themesUpdated" {
+        } else if message.name == "updateThemeColors" {
             self.handleThemeUpdate(messageBody)
         } else if message.name == "getExternalAuth", let callbackName = messageBody["callback"] {
             if let tokenManager = Current.tokenManager {
@@ -743,20 +752,8 @@ extension WebViewController: WKScriptMessageHandler {
     }
 
     func handleThemeUpdate(_ messageBody: [String: Any]) {
-        if let styles = messageBody["styles"] as? [String: String] {
-            // Current.Log.verbose("Styles \(styles)")
-            var headerKey = "primary-color"
-            if styles["app-header-background-color"] != nil {
-                headerKey = "app-header-background-color"
-            }
-            let backgroundColor = self.parseThemeStyle("primary-background-color", styles)
-            let headerColor = self.parseThemeStyle(headerKey, styles)
-            let refreshTintColor = self.parseThemeStyle("text-primary-color", styles)
-            self.styleUI(backgroundColor, headerColor, refreshTintColor)
-        } else {
-            // Assume default theme
-            self.styleUI()
-        }
+        ThemeColors.updateCache(with: messageBody)
+        styleUI()
     }
 
     func handleHaptic(_ hapticType: String) {
