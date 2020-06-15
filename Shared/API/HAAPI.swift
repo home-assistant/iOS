@@ -41,6 +41,7 @@ public class HomeAssistantAPI {
     }
 
     static let minimumRequiredVersion = Version(major: 0, minor: 92, patch: 2)
+    public static let didConnectNotification = Notification.Name(rawValue: "HomeAssistantAPIConnected")
 
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
@@ -136,7 +137,12 @@ public class HomeAssistantAPI {
     public func Connect() -> Promise<ConfigResponse> {
         return firstly {
             self.UpdateRegistration()
-        }.recover { _ -> Promise<MobileAppRegistrationResponse> in
+        }.recover { error -> Promise<MobileAppRegistrationResponse> in
+            guard (error as NSError).domain != NSURLErrorDomain else {
+                Current.Log.info("not re-registering because of network error")
+                throw error
+            }
+
             let message = "Failed to update integration; trying to register instead."
             Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest))
             return self.Register()
@@ -148,7 +154,7 @@ public class HomeAssistantAPI {
                 throw oldHA
             }
 
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
+            NotificationCenter.default.post(name: Self.didConnectNotification,
                                             object: nil, userInfo: nil)
 
             self.storeZones(zones: zones)

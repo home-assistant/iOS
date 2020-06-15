@@ -94,6 +94,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupView()
 
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
+        connectAPI(reason: .cold)
 
         return true
     }
@@ -161,10 +162,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.entered_background", eventData: [:])
     }
 
-    func applicationWillEnterForeground(_ application: UIApplication) {}
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        connectAPI(reason: .warm)
+    }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.became_active", eventData: [:])
+
         Lokalise.shared.checkForUpdates { (updated, error) in
             if let error = error {
                 Current.Log.error("Error when updating Lokalise: \(error)")
@@ -403,6 +407,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             navigationController.viewControllers = [rootViewController]
         }
         return navigationController
+    }
+
+    enum ConnectAPIReason {
+        case cold
+        case warm
+    }
+
+    private func connectAPI(reason: ConnectAPIReason) {
+        firstly {
+            HomeAssistantAPI.authenticatedAPIPromise
+        }.then {
+            $0.Connect().asVoid()
+        }.done {
+            Current.Log.info("Connect finished for reason \(reason)")
+        }.catch { error in
+            // if the error is e.g. token is invalid, we'll force onboarding through status-code-watching mechanisms
+            Current.Log.error("Couldn't connect for reason \(reason): \(error)")
+        }
     }
 
     // swiftlint:disable:next function_body_length
