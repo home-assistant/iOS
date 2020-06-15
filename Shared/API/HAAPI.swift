@@ -41,6 +41,7 @@ public class HomeAssistantAPI {
     }
 
     static let minimumRequiredVersion = Version(major: 0, minor: 92, patch: 2)
+    public static let didConnectNotification = Notification.Name(rawValue: "HomeAssistantAPIConnected")
 
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
 
@@ -153,7 +154,7 @@ public class HomeAssistantAPI {
                 throw oldHA
             }
 
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
+            NotificationCenter.default.post(name: Self.didConnectNotification,
                                             object: nil, userInfo: nil)
 
             self.storeZones(zones: zones)

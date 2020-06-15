@@ -91,7 +91,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         // self.remotePlayer.delegate = self
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(WebViewController.loadActiveURLIfNeeded),
-                                               name: UIApplication.didBecomeActiveNotification,
+                                               name: HomeAssistantAPI.didConnectNotification,
                                                object: nil)
 
         let statusBarView: UIView = UIView(frame: UIApplication.shared.statusBarFrame)
@@ -185,27 +185,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         refreshControl.addTarget(self, action: #selector(self.pullToRefresh(_:)), for: .valueChanged)
         webView.scrollView.addSubview(refreshControl)
         webView.scrollView.bounces = true
-
-        if let api = HomeAssistantAPI.authenticatedAPI() {
-            if let connectionInfo = Current.settingsStore.connectionInfo,
-                let webviewURL = connectionInfo.webviewURL() {
-                api.Connect().done {_ in
-                    Current.Log.verbose("Connected!")
-
-                    if self.webView.url == nil || self.webView.url?.baseIsEqual(to: webviewURL) == false {
-                        // only load again if it would produce a different result
-                        self.webView.load(URLRequest(url: webviewURL))
-                    }
-                    return
-                }.catch {err -> Void in
-                    Current.Log.error("Error on connect!!! \(err)")
-                    self.openSettingsWithError(error: err)
-                }
-            }
-        } else {
-            Current.Log.error("Couldn't get authenticated API, showing settings")
-            self.openSettingsWithError(error: HomeAssistantAPI.APIError.managerNotAvailable)
-        }
 
         self.settingsButton.addTarget(self, action: #selector(self.openSettingsView(_:)), for: .touchDown)
 
