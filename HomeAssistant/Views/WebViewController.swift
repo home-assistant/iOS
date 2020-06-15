@@ -151,9 +151,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }
 
         config.userContentController = userContentController
+        config.applicationNameForUserAgent = SessionManager.defaultHTTPHeaders["User-Agent"]
 
         self.webView = WKWebView(frame: self.view!.frame, configuration: config)
-        self.webView.customUserAgent = SessionManager.defaultHTTPHeaders["User-Agent"]
         self.webView.isOpaque = false
         self.view!.addSubview(webView)
 
