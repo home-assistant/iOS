@@ -1,17 +1,16 @@
-osx_image: xcode11.2
+osx_image: xcode11.5
 language: objective-c
 cache:
-  - bundler
-install:
-  - bundle install
+  bundler: true
+  cocoapods: true
+  directories:
+    - /Users/travis/.rvm/
 script:
   - bundle exec fastlane ci
 before_install:
   - git config --global user.name "Travis CI"
   - git config --global user.email "travis@travis-ci.org"
   - echo -e "machine github.com\n login $HOMEASSISTANT_CERTIFICATE_USER\n password $HOMEASSISTANT_GITHUB_API_TOKEN" >> ~/.netrc
-  - gem update --system
-  - gem install bundler
 after_success:
   - sleep 6
-rvm: 2.4.2
+rvm: 2.7.1
