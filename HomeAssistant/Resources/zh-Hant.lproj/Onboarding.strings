@@ -1,7 +1,7 @@
 "4qQ-ND-WGB.text" = "搜尋網路中的 Home Assistant";
 "5td-Yc-nnx.text" = "iOS 上最先進的家庭自動化 App";
 "87t-Ca-ZJb.normalTitle" = "錯誤";
-"8JC-7Y-FvP.text" = "http://homeassistant.local:8123/";
+"8JC-7Y-FvP.text" = "http://homeassistant.local:8123";
 "CIS-8C-niN.text" = "喔喔！";
 "Kj7-hM-8gN.text" = "連線至我的 Home Assistant";
 "Kwy-Pt-nws.text" = "HTTP 基本驗證使用者名稱";
@@ -30,4 +30,4 @@
 "wsC-f5-jbO.text" = "現在正準備連線至您的 Home Assistant 並進行初始驗證。點選下方連線按鈕、將開啟瀏覽器進行登入。";
 "suf-pJ-Nle.normalTitle" = "重新開始";
 "7iT-bd-cdY.text" = "手動設定";
-"PIW-dY-j0P.text" = "請輸入 Home Assistant URL 位址以繼續。必須為完整網址格式，如http://homeassistant.local:8123（即包含通訊協定、主機名稱與通訊埠）。";
+"PIW-dY-j0P.text" = "請輸入 Home Assistant URL 位址以繼續。必須為完整網址格式，如 \"http://homeassistant.local:8123\"（即包含通訊協定、主機名稱與通訊埠）。";

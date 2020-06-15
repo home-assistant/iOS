@@ -135,7 +135,6 @@
 "location_change_notification.unknown.body" = "Location updated via unknown method";
 "cancel_label" = "Cancel";
 "username_label" = "Username";
-"retry_label" = "Retry";
 "client_events.event_type.service_call" = "Service Call";
 "client_events.event_type.notification" = "Notification";
 "client_events.event_type.location_update" = "Location Update";
@@ -730,9 +729,6 @@ Thank you.\
 "settings_details.location.motion_permission.enabled" = "Enabled";
 "settings_details.location.motion_permission.denied" = "Denied";
 "settings_details.location.motion_permission.needs_request" = "Disabled";
-"settings_details.location.background_refresh.title" = "Background Refresh";
-"settings_details.location.background_refresh.enabled" = "Enabled";
-"settings_details.location.background_refresh.disabled" = "Disabled";
 "actions_configurator.trigger_example.title" = "Example Trigger";
 "actions_configurator.trigger_example.share" = "Share Contents";
 "settings_details.general.app_icon.enum.caribbean_green" = "Caribbean Green";
@@ -749,6 +745,10 @@ Thank you.\
 "settings.reset_section.reset_alert.progress_message" = "Resetting…";
 "settings_details.general.page_zoom.title" = "Page Zoom";
 "settings_details.general.page_zoom.default" = "%@ (Default)";
+"retry_label" = "Retry";
+"settings_details.location.background_refresh.title" = "Background Refresh";
+"settings_details.location.background_refresh.enabled" = "Enabled";
+"settings_details.location.background_refresh.disabled" = "Disabled";
 "settings_details.general.restoration.title" = "Remember Last Page";
 "settings_details.location.new_one_shot.title" = "In-Development Updating";
 "settings_details.location.new_one_shot.description" = "This may or may not deliver good results for the sources above. Your feedback is appreciated.";
