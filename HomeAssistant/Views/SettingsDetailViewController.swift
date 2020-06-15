@@ -30,7 +30,12 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
     private let realm = Current.realm()
     private var notificationTokens: [NotificationToken] = []
+    private var notificationCenterTokens: [AnyObject] = []
     private var reorderingRows: [String: BaseRow] = [:]
+
+    deinit {
+        notificationCenterTokens.forEach(NotificationCenter.default.removeObserver)
+    }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -124,6 +129,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 <<< SwitchRow {
                         $0.title = L10n.SettingsDetails.Location.Updates.Zone.title
                         $0.value = prefs.bool(forKey: "locationUpdateOnZone")
+                        $0.disabled = .locationPermissionNotAlways
                     }.onChange({ (row) in
                         if let val = row.value {
                             prefs.set(val, forKey: "locationUpdateOnZone")
@@ -132,6 +138,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 <<< SwitchRow {
                         $0.title = L10n.SettingsDetails.Location.Updates.Background.title
                         $0.value = prefs.bool(forKey: "locationUpdateOnBackgroundFetch")
+                        $0.disabled = .locationNotAlwaysOrBackgroundRefreshNotAvailable
                     }.onChange({ (row) in
                         if let val = row.value {
                             prefs.set(val, forKey: "locationUpdateOnBackgroundFetch")
@@ -140,6 +147,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 <<< SwitchRow {
                         $0.title = L10n.SettingsDetails.Location.Updates.Significant.title
                         $0.value = prefs.bool(forKey: "locationUpdateOnSignificant")
+                        $0.disabled = .locationPermissionNotAlways
                     }.onChange({ (row) in
                         if let val = row.value {
                             prefs.set(val, forKey: "locationUpdateOnSignificant")
@@ -148,6 +156,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 <<< SwitchRow {
                         $0.title = L10n.SettingsDetails.Location.Updates.Notification.title
                         $0.value = prefs.bool(forKey: "locationUpdateOnNotification")
+                        $0.disabled = .locationPermissionNotAlways
                     }.onChange({ (row) in
                         if let val = row.value {
                             prefs.set(val, forKey: "locationUpdateOnNotification")
@@ -630,6 +639,8 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             section <<< motionPermissionRow()
         }
 
+        section <<< backgroundRefreshRow()
+
         return section
     }
 
@@ -644,32 +655,19 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     private func locationPermissionRow() -> BaseRow {
         // swiftlint:disable:next nesting
         class PermissionWatchingDelegate: NSObject, CLLocationManagerDelegate {
-            let row: LabelRow
+            let row: LocationPermissionRow
 
-            init(row: LabelRow) {
+            init(row: LocationPermissionRow) {
                 self.row = row
             }
 
             func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-                row.value = {
-                    switch status {
-                    case .authorizedAlways:
-                        return L10n.SettingsDetails.Location.LocationPermission.always
-                    case .authorizedWhenInUse:
-                        return L10n.SettingsDetails.Location.LocationPermission.whileInUse
-                    case .denied, .restricted:
-                        return L10n.SettingsDetails.Location.LocationPermission.never
-                    case .notDetermined:
-                        return L10n.SettingsDetails.Location.LocationPermission.needsRequest
-                    @unknown default:
-                        return L10n.SettingsDetails.Location.LocationPermission.never
-                    }
-                }()
+                row.value = status
                 row.updateCell()
             }
         }
 
-        return LabelRow {
+        return LocationPermissionRow("locationPermission") {
             let locationManager = CLLocationManager()
             let permissionDelegate = PermissionWatchingDelegate(row: $0)
 
@@ -695,45 +693,68 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     }
 
     @available(iOS 11, *)
-    func motionPermissionRow() -> BaseRow {
-        func update(_ row: LabelRow) {
-            row.value = {
-                switch CMMotionActivityManager.authorizationStatus() {
-                case .authorized:
-                    return L10n.SettingsDetails.Location.MotionPermission.enabled
-                case .denied, .restricted:
-                    return L10n.SettingsDetails.Location.MotionPermission.denied
-                case .notDetermined:
-                    return L10n.SettingsDetails.Location.MotionPermission.needsRequest
-                @unknown default:
-                    return L10n.SettingsDetails.Location.MotionPermission.denied
+    private func motionPermissionRow() -> BaseRow {
+        return MotionPermissionRow { row in
+            func update(isInitial: Bool) {
+                row.value = CMMotionActivityManager.authorizationStatus()
+
+                if !isInitial {
+                    row.updateCell()
                 }
-            }()
-            row.updateCell()
-        }
+            }
 
-        return LabelRow {
-            let manager = CMMotionActivityManager()
+            row.title = L10n.SettingsDetails.Location.MotionPermission.title
+            update(isInitial: true)
 
-            $0.title = L10n.SettingsDetails.Location.MotionPermission.title
-            update($0)
-
-            $0.cellUpdate { cell, _ in
+            row.cellUpdate { cell, _ in
                 cell.accessoryType = .disclosureIndicator
                 cell.selectionStyle = .default
             }
 
-            $0.onCellSelection { _, row in
+            let manager = CMMotionActivityManager()
+            row.onCellSelection { _, row in
                 if CMMotionActivityManager.authorizationStatus() == .notDetermined {
                     let now = Date()
                     manager.queryActivityStarting(from: now, to: now, to: .main, withHandler: { _, _ in
-                        update(row)
+                        update(isInitial: false)
                     })
                 } else {
                     // if the user changes the value in settings, we'll be killed, so we don't need to watch anything
                     Self.openSettings()
                 }
 
+                row.deselect(animated: true)
+            }
+        }
+    }
+
+    private func backgroundRefreshRow() -> BaseRow {
+        return BackgroundRefreshStatusRow("backgroundRefresh") { row in
+            func updateRow(isInitial: Bool) {
+                row.value = UIApplication.shared.backgroundRefreshStatus
+
+                if !isInitial {
+                    row.updateCell()
+                }
+            }
+
+            notificationCenterTokens.append(NotificationCenter.default.addObserver(
+                forName: UIApplication.backgroundRefreshStatusDidChangeNotification,
+                object: nil,
+                queue: .main
+            ) { _ in
+                updateRow(isInitial: false)
+            })
+
+            updateRow(isInitial: true)
+
+            row.title = L10n.SettingsDetails.Location.BackgroundRefresh.title
+            row.cellUpdate { cell, _ in
+                cell.accessoryType = .disclosureIndicator
+                cell.selectionStyle = .default
+            }
+            row.onCellSelection { _, row in
+                Self.openSettings()
                 row.deselect(animated: true)
             }
         }

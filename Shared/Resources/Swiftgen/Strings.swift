@@ -1323,6 +1323,14 @@ internal enum L10n {
     internal enum Location {
       /// Location
       internal static let title = L10n.tr("Localizable", "settings_details.location.title")
+      internal enum BackgroundRefresh {
+        /// Disabled
+        internal static let disabled = L10n.tr("Localizable", "settings_details.location.background_refresh.disabled")
+        /// Enabled
+        internal static let enabled = L10n.tr("Localizable", "settings_details.location.background_refresh.enabled")
+        /// Background Refresh
+        internal static let title = L10n.tr("Localizable", "settings_details.location.background_refresh.title")
+      }
       internal enum LocationPermission {
         /// Always
         internal static let always = L10n.tr("Localizable", "settings_details.location.location_permission.always")

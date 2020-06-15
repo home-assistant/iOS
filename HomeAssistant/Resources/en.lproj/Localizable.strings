@@ -730,6 +730,9 @@ Thank you.\
 "settings_details.location.motion_permission.enabled" = "Enabled";
 "settings_details.location.motion_permission.denied" = "Denied";
 "settings_details.location.motion_permission.needs_request" = "Disabled";
+"settings_details.location.background_refresh.title" = "Background Refresh";
+"settings_details.location.background_refresh.enabled" = "Enabled";
+"settings_details.location.background_refresh.disabled" = "Disabled";
 "actions_configurator.trigger_example.title" = "Example Trigger";
 "actions_configurator.trigger_example.share" = "Share Contents";
 "settings_details.general.app_icon.enum.caribbean_green" = "Caribbean Green";
