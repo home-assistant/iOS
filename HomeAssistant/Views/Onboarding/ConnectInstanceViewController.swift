@@ -160,7 +160,7 @@ class ConnectInstanceViewController: UIViewController {
                 throw oldHA
             }
 
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "connected"),
+            NotificationCenter.default.post(name: HomeAssistantAPI.didConnectNotification,
                                             object: nil, userInfo: nil)
 
             api.storeZones(zones: zones)
