@@ -135,6 +135,7 @@
 "location_change_notification.unknown.body" = "Location updated via unknown method";
 "cancel_label" = "Cancel";
 "username_label" = "Username";
+"retry_label" = "Retry";
 "client_events.event_type.service_call" = "Service Call";
 "client_events.event_type.notification" = "Notification";
 "client_events.event_type.location_update" = "Location Update";
@@ -748,3 +749,10 @@ Thank you.\
 "settings_details.general.restoration.title" = "Remember Last Page";
 "settings_details.location.new_one_shot.title" = "In-Development Updating";
 "settings_details.location.new_one_shot.description" = "This may or may not deliver good results for the sources above. Your feedback is appreciated.";
+"settings_sensors.title" = "Sensors";
+"settings_sensors.loading_error.title" = "Failed to load sensors";
+"settings_sensors.detail.unique_id" = "Unique ID";
+"settings_sensors.detail.state" = "State";
+"settings_sensors.detail.attributes" = "Attributes";
+"settings_sensors.detail.device_class" = "Device Class";
+"settings_sensors.detail.icon" = "Icon";
