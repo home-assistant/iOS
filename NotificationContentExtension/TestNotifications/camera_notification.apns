@@ -1,0 +1,11 @@
+{
+	"aps": {
+		"alert": {
+			"title": "title here",
+			"body": "body here"
+		},
+		"sound": "default",
+		"category": "camera"
+	},
+	"entity_id": "camera.outside"
+}

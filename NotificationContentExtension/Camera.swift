@@ -45,10 +45,30 @@ class CameraViewController: UIView, NotificationCategory {
         }
 
         let imageView = UIImageView()
-        imageView.frame = vc.view.frame
+
+        var aspectRatioConstraint: NSLayoutConstraint?
+
+        func updateAspectRatioConstraint(size: CGSize) {
+            guard size.height > 0 else {
+                return
+            }
+
+            let ratio = size.width/size.height
+
+            guard aspectRatioConstraint?.multiplier != ratio else {
+                return
+            }
+
+            let constraint = imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: ratio)
+            constraint.isActive = true
+            aspectRatioConstraint = constraint
+        }
+
+        // assume we're going to be playing a 16:9 video, and adjust
+        updateAspectRatioConstraint(size: CGSize(width: 16.0, height: 9.0))
+
+        imageView.contentMode = .scaleAspectFit
         imageView.accessibilityIdentifier = "camera_notification_imageview"
-        // imageView.accessibilityLabel = "camera_notification_imageview"
-        imageView.contentMode = .redraw
 
         var frameCount = 0
 
@@ -88,7 +108,16 @@ class CameraViewController: UIView, NotificationCategory {
                         hud.hide(animated: true)
                     })
 
-                    vc.view.addSubview(imageView)
+                    if imageView.superview == nil {
+                        vc.view.addSubview(imageView)
+                        imageView.translatesAutoresizingMaskIntoConstraints = false
+                        NSLayoutConstraint.activate([
+                            imageView.topAnchor.constraint(equalTo: vc.view.topAnchor),
+                            imageView.leadingAnchor.constraint(equalTo: vc.view.leadingAnchor),
+                            imageView.trailingAnchor.constraint(equalTo: vc.view.trailingAnchor),
+                            imageView.bottomAnchor.constraint(equalTo: vc.view.bottomAnchor)
+                        ])
+                    }
 
                     extensionContext?.mediaPlayingStarted()
                 }
@@ -97,6 +126,8 @@ class CameraViewController: UIView, NotificationCategory {
                     image.accessibilityIdentifier = "camera_notification_image"
                     imageView.image = image
                     imageView.image?.accessibilityIdentifier = image.accessibilityIdentifier
+                    
+                    updateAspectRatioConstraint(size: image.size)
                 }
             }
 
