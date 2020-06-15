@@ -368,7 +368,19 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     // WKUIDelegate
     func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String,
                  initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
-        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
+        let style: UIAlertController.Style = {
+            switch webView.traitCollection.userInterfaceIdiom {
+            case .carPlay, .phone, .tv:
+                return .actionSheet
+            case .pad, .unspecified:
+                // without a touch to tell us where, an action sheet in the middle of the screen isn't great
+                return .alert
+            @unknown default:
+                return .alert
+            }
+        }()
+
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: style)
 
         alertController.addAction(UIAlertAction(title: L10n.Alerts.Confirm.ok, style: .default, handler: { _ in
             completionHandler(true)
@@ -378,7 +390,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             completionHandler(false)
         }))
 
-        alertController.popoverPresentationController?.sourceView = self.webView
         present(alertController, animated: true, completion: nil)
     }
 
@@ -402,7 +413,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             completionHandler(nil)
         }))
 
-        alertController.popoverPresentationController?.sourceView = self.webView
         present(alertController, animated: true, completion: nil)
     }
 
