@@ -67,6 +67,14 @@ public class WebhookSensor: Mappable {
             UnitOfMeasurement <-  map["unit_of_measurement"]
         }
     }
+
+    public var StateDescription: String? {
+        if let value = State {
+            return String(describing: value) + (UnitOfMeasurement ?? "")
+        } else {
+            return nil
+        }
+    }
 }
 
 public enum DeviceClass: String, CaseIterable {

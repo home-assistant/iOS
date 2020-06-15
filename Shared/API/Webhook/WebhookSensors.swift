@@ -20,6 +20,8 @@ import Reachability
 
 // swiftlint:disable:next type_body_length
 public class WebhookSensors {
+    public init() { }
+
     public var AllSensors: Promise<[WebhookSensor]> {
         return firstly {
             when(fulfilled: self.Activity, self.Pedometer)
