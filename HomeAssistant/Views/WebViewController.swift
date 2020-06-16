@@ -422,6 +422,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         guard webView.url == nil || webView.url?.baseIsEqual(to: desiredURL) == false else {
             Current.Log.info("not changing webview url - we're okay with what we have")
+            // we also tell the webview -- maybe it failed to connect itself? -- to refresh if needed
+            webView.evaluateJavaScript("checkForMissingHassConnectionAndReload()", completionHandler: nil)
             return
         }
 
