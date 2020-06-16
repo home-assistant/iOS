@@ -272,6 +272,25 @@ public class SettingsStore {
         }
     }
 
+    public var periodicUpdateInterval: TimeInterval? {
+        get {
+            if prefs.object(forKey: "periodicUpdateInterval") == nil {
+                return 300.0
+            } else {
+                let doubleValue = prefs.double(forKey: "periodicUpdateInterval")
+                return doubleValue > 0 ? doubleValue : nil
+            }
+        }
+        set {
+            if let newValue = newValue {
+                precondition(newValue > 0)
+                prefs.set(newValue, forKey: "periodicUpdateInterval")
+            } else {
+                prefs.set(-1, forKey: "periodicUpdateInterval")
+            }
+        }
+    }
+
     // MARK: - Private helpers
 
     private var hasMigratedConnection: Bool {
