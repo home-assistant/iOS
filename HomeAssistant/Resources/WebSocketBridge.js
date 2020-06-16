@@ -27,6 +27,14 @@ const waitForHassConnection = () => {
     });
 }
 
+const checkForMissingHassConnectionAndReload = () => {
+    // this is invoked when we think connect status is changed, to avoid the user needing to tap reload
+    window.hassConnection.catch(() => {
+        // this is the action taken by the frontend when the user taps, anyway -- we're just doing it for them
+        location.reload();
+    });
+};
+
 waitForHassConnection().then(({ conn }) => {
     conn.sendMessagePromise({type: 'auth/current_user'}).then((user) => {
         window.webkit.messageHandlers.currentUser.postMessage(user);
