@@ -1701,6 +1701,14 @@ internal enum L10n {
       /// Failed to load sensors
       internal static let title = L10n.tr("Localizable", "settings_sensors.loading_error.title")
     }
+    internal enum PeriodicUpdate {
+      /// When enabled, these sensors will update after the app has been continually open for this long.
+      internal static let description = L10n.tr("Localizable", "settings_sensors.periodic_update.description")
+      /// Off
+      internal static let off = L10n.tr("Localizable", "settings_sensors.periodic_update.off")
+      /// Periodic Update
+      internal static let title = L10n.tr("Localizable", "settings_sensors.periodic_update.title")
+    }
   }
 
   internal enum SiriShortcuts {

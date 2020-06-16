@@ -37,6 +37,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var safariVC: SFSafariViewController?
 
     private(set) var regionManager: RegionManager!
+    private var periodicUpdateTimer: Timer? {
+        willSet {
+            if periodicUpdateTimer != newValue {
+                periodicUpdateTimer?.invalidate()
+            }
+        }
+    }
 
 //    override init() {
 //        super.init()
@@ -160,6 +167,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.entered_background", eventData: [:])
+        invalidatePeriodicUpdateTimer()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -412,18 +420,48 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     enum ConnectAPIReason {
         case cold
         case warm
+        case periodic
+    }
+
+    private func invalidatePeriodicUpdateTimer() {
+        periodicUpdateTimer = nil
+    }
+
+    private func schedulePeriodicUpdateTimer() {
+        guard periodicUpdateTimer == nil || periodicUpdateTimer?.isValid == false else {
+            return
+        }
+
+        guard UIApplication.shared.applicationState != .background else {
+            // it's fine to schedule, but we don't wanna fire two when we come back to foreground later
+            Current.Log.info("not scheduling periodic update; backgrounded")
+            return
+        }
+
+        guard let interval = Current.settingsStore.periodicUpdateInterval else {
+            Current.Log.info("not scheduling periodic update; disabled")
+            return
+        }
+
+        periodicUpdateTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
+            self?.connectAPI(reason: .periodic)
+        }
     }
 
     private func connectAPI(reason: ConnectAPIReason) {
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
-        }.then {
-            $0.Connect().asVoid()
+        }.then { api in
+            return UIApplication.shared.backgroundTask(withName: "connect-api") { _ in
+                api.Connect().asVoid()
+            }
         }.done {
             Current.Log.info("Connect finished for reason \(reason)")
         }.catch { error in
             // if the error is e.g. token is invalid, we'll force onboarding through status-code-watching mechanisms
             Current.Log.error("Couldn't connect for reason \(reason): \(error)")
+        }.finally {
+            self.schedulePeriodicUpdateTimer()
         }
     }
 
@@ -913,8 +951,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
-            api.handlePushAction(identifier: response.actionIdentifier, userInfo: userInfo,
-                                 userInput: userText)
+            UIApplication.shared.backgroundTask(withName: "handle-push-action") { _ in
+                api.handlePushAction(identifier: response.actionIdentifier, userInfo: userInfo,
+                                     userInput: userText)
+            }
         }.ensure {
             completionHandler()
         }.catch { err -> Void in
