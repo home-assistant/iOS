@@ -735,3 +735,6 @@
 "settings_sensors.detail.attributes" = "Attributes";
 "settings_sensors.detail.device_class" = "Device Class";
 "settings_sensors.detail.icon" = "Icon";
+"settings_sensors.periodic_update.title" = "Periodic Update";
+"settings_sensors.periodic_update.description" = "When enabled, these sensors will update after the app has been continually open for this long.";
+"settings_sensors.periodic_update.off" = "Off";
