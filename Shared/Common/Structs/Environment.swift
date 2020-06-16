@@ -104,7 +104,7 @@ public class Environment {
             return .FastlaneSnapshot
         } else if isDebug {
             return .Debug
-        } else if isTestFlight {
+        } else if (Bundle.main.bundleIdentifier ?? "").lowercased().contains("beta") && isTestFlight {
             return .Beta
         } else {
             return .Release
