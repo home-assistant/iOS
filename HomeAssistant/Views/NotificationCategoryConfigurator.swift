@@ -277,7 +277,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
     @objc
     func getInfoAction(_ sender: Any) {
-        Current.Log.verbose("getInfoAction hit, open docs page!")
+        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/docs/notifications/actionable-notifications")!)
     }
 
     @objc
