@@ -14,11 +14,27 @@ extension UIImage {
 
         MaterialDesignIcons.register()
 
-        var fixedIconIdentifier = iconIdentifier.replacingOccurrences(of: "mdi:", with: "")
-        fixedIconIdentifier = fixedIconIdentifier.replacingOccurrences(of: ":", with: "-")
-        let mdi = MaterialDesignIcons.init(named: fixedIconIdentifier, fallbackIconName: "help")
+        let mdi = MaterialDesignIcons(named: iconIdentifier.normalizingIconString, fallbackIconName: "help")
 
         return mdi.image(ofSize: CGSize(width: CGFloat(iconWidth), height: CGFloat(iconHeight)), color: color)
     }
+}
 
+public extension MaterialDesignIcons {
+    init(serversideValueNamed value: String, fallbackIcon: String? = nil) {
+        if let fallbackIcon = fallbackIcon {
+            self.init(named: value.normalizingIconString, fallbackIconName: fallbackIcon)
+        } else {
+            self.init(named: value.normalizingIconString)
+        }
+    }
+}
+
+private extension String {
+    var normalizingIconString: String {
+        return self
+            .replacingOccurrences(of: "mdi:", with: "")
+            .replacingOccurrences(of: ":", with: "_")
+            .replacingOccurrences(of: "-", with: "_")
+    }
 }
