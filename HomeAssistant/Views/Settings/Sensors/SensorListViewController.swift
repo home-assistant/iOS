@@ -98,7 +98,7 @@ class SensorListViewController: FormViewController {
 
                     cell.imageView?.image =
                         sensor.Icon
-                            .flatMap(MaterialDesignIcons.init(named:))?
+                            .flatMap({ MaterialDesignIcons(serversideValueNamed: $0) })?
                             .image(ofSize: CGSize(width: 28, height: 28), color: .black)
                             .withRenderingMode(.alwaysTemplate)
                 }
