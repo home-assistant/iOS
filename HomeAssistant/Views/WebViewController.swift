@@ -415,16 +415,18 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         present(alertController, animated: true, completion: nil)
     }
 
-    @objc func loadActiveURLIfNeeded() {
-        if HomeAssistantAPI.authenticatedAPI() != nil,
-            let connectionInfo = Current.settingsStore.connectionInfo,
-            let webviewURL = connectionInfo.webviewURL() {
-            if let currentURL = self.webView.url, !currentURL.baseIsEqual(to: webviewURL) {
-                Current.Log.verbose("Changing webview to current active URL!")
-                let myRequest = URLRequest(url: webviewURL)
-                self.webView.load(myRequest)
-            }
+    @objc private func loadActiveURLIfNeeded() {
+        guard let desiredURL = Current.settingsStore.connectionInfo?.webviewURL() else {
+            return
         }
+
+        guard webView.url == nil || webView.url?.baseIsEqual(to: desiredURL) == false else {
+            Current.Log.info("not changing webview url - we're okay with what we have")
+            return
+        }
+
+        Current.Log.verbose("Changing webview to current active URL!")
+        webView.load(URLRequest(url: desiredURL))
     }
 
     @objc func pullToRefresh(_ sender: UIRefreshControl) {
@@ -504,10 +506,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     private var underlyingPreferredStatusBarStyle: UIStatusBarStyle = .lightContent
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return underlyingPreferredStatusBarStyle
-    }
-
-    func userReconnected() {
-        self.loadActiveURLIfNeeded()
     }
 
     func parseThemeStyle(_ styleKey: String, _ allStyles: [String: String]) -> UIColor? {
