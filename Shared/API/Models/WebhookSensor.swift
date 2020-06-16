@@ -70,7 +70,7 @@ public class WebhookSensor: Mappable {
 
     public var StateDescription: String? {
         if let value = State {
-            return String(describing: value) +  (UnitOfMeasurement.flatMap { " " + $0 } ?? "")
+            return String(describing: value) + (UnitOfMeasurement.flatMap { " " + $0 } ?? "")
         } else {
             return nil
         }
