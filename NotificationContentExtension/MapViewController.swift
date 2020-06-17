@@ -11,30 +11,40 @@ import UserNotifications
 import UserNotificationsUI
 import MapKit
 import MBProgressHUD
+import PromiseKit
 
-class MapViewController: UIView, NotificationCategory, MKMapViewDelegate {
+class MapViewController: UIViewController, NotificationCategory, MKMapViewDelegate {
+    private var mapView: MKMapView!
 
-    var view: UIView = UIView(frame: .zero)
+    enum MapError: LocalizedError {
+        case missingPayload
+        case missingLatitude
+        case missingLongitude
 
-    var mapView: MKMapView!
+        var errorDescription: String? {
+            switch self {
+            case .missingPayload:
+                return L10n.Extensions.Map.PayloadMissingHomeassistant.message
+            case .missingLatitude:
+                return L10n.Extensions.Map.ValueMissingOrUncastable.Latitude.message
+            case .missingLongitude:
+                return L10n.Extensions.Map.ValueMissingOrUncastable.Longitude.message
+            }
+        }
+    }
 
     // swiftlint:disable:next function_body_length
-    func didReceive(_ notification: UNNotification, vc: UIViewController, extensionContext: NSExtensionContext?,
-                    hud: MBProgressHUD, completionHandler: @escaping (String?) -> Void) {
-
+    func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) -> Promise<Void> {
         let userInfo = notification.request.content.userInfo
 
         guard let haDict = userInfo["homeassistant"] as? [String: Any] else {
-            completionHandler(L10n.Extensions.Map.PayloadMissingHomeassistant.message)
-            return
+            return .init(error: MapError.missingPayload)
         }
         guard let latitudeString = haDict["latitude"] as? String else {
-            completionHandler(L10n.Extensions.Map.ValueMissingOrUncastable.Latitude.message)
-            return
+            return .init(error: MapError.missingLatitude)
         }
         guard let longitudeString = haDict["longitude"] as? String else {
-            completionHandler(L10n.Extensions.Map.ValueMissingOrUncastable.Longitude.message)
-            return
+            return .init(error: MapError.missingLongitude)
         }
         let latitude = Double.init(latitudeString)! as CLLocationDegrees
         let longitude = Double.init(longitudeString)! as CLLocationDegrees
@@ -43,7 +53,7 @@ class MapViewController: UIView, NotificationCategory, MKMapViewDelegate {
 
         self.mapView.delegate = self
         self.mapView.mapType = .standard
-        self.mapView.frame = vc.view.frame
+        self.mapView.frame = view.frame
 
         self.mapView.showsUserLocation = (haDict["shows_user_location"] != nil)
         self.mapView.showsPointsOfInterest = (haDict["shows_points_of_interest"] != nil)
@@ -56,7 +66,7 @@ class MapViewController: UIView, NotificationCategory, MKMapViewDelegate {
         let span = MKCoordinateSpan.init(latitudeDelta: 0.1, longitudeDelta: 0.1)
         let region = MKCoordinateRegion(center: location, span: span)
         self.mapView.setRegion(region, animated: true)
-        vc.view.addSubview(self.mapView)
+        view.addSubview(self.mapView)
 
         let dropPin = MKPointAnnotation()
         dropPin.coordinate = location
@@ -91,8 +101,14 @@ class MapViewController: UIView, NotificationCategory, MKMapViewDelegate {
             mapView.camera.altitude *= 1.4
         }
 
-        completionHandler(nil)
+        return .value(())
     }
+
+    var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType?
+    var mediaPlayPauseButtonFrame: CGRect?
+    var mediaPlayPauseButtonTintColor: UIColor?
+    func mediaPlay() {}
+    func mediaPause() {}
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation is MKUserLocation {
