@@ -13,14 +13,14 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
     private let seal: Resolver<Void>
     private var observationTokens: [NSKeyValueObservation] = []
 
-    enum HLSError: Error {
+    enum HLSError: LocalizedError {
         case noPath
         case avPlayer(Error?)
 
         var errorDescription: String? {
             switch self {
             case .noPath:
-                return L10n.Extensions.NotificationContent.Error.Request.authFailed
+                return L10n.Extensions.NotificationContent.Error.Request.hlsUnavailable
             case .avPlayer(let error):
                 return error?.localizedDescription ?? L10n.Extensions.NotificationContent.Error.Request.other(-1)
             }

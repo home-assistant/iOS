@@ -101,9 +101,18 @@ class CameraViewController: UIViewController, NotificationCategory {
         activeViewController?.pause()
     }
 
-    enum CameraViewControllerError: Error {
+    enum CameraViewControllerError: LocalizedError {
         case noControllers
         case accumulated([Error])
+
+        var errorDescription: String? {
+            switch self {
+            case .noControllers:
+                return nil
+            case .accumulated(let errors):
+                return errors.map { $0.localizedDescription }.joined(separator: "\n\n")
+            }
+        }
     }
 
     private static var possibleControllers: [(UIViewController & CameraStreamHandler).Type] { [
