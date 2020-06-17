@@ -121,4 +121,7 @@ post_install do |installer|
             end
         end
     end
+
+    puts "Replacing generated MaterialDesignIcons"
+    %x(cp -f Tools/MaterialDesignIcons.swift Pods/Iconic/Source/MaterialDesignIcons.swift)
 end
