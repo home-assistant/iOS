@@ -109,7 +109,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func setupWindow() {
         let window = UIWindow.init(frame: UIScreen.main.bounds)
         window.restorationIdentifier = StateRestorationKey.mainWindow.rawValue
-        window.backgroundColor = UIColor(red: 0.90, green: 0.90, blue: 0.90, alpha: 1.0)
         window.makeKeyAndVisible()
         self.window = window
     }
