@@ -16,6 +16,7 @@ import RealmSwift
 import Firebase
 import CoreMotion
 import NotificationCenter
+import FirebaseCrashlytics
 
 // swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController, TypedRowControllerType {
@@ -479,10 +480,10 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Crashlytics.description)
                 <<< SwitchRow("crashlytics") {
                     $0.title = L10n.SettingsDetails.Privacy.Crashlytics.title
-                    $0.value = prefs.bool(forKey: "crashlyticsEnabled")
+                    $0.value = Crashlytics.crashlytics().isCrashlyticsCollectionEnabled()
                 }.onChange { row in
                     guard let rowVal = row.value else { return }
-                    Current.setCrashlyticsEnabled(enabled: rowVal)
+                    Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(rowVal)
                 }
                 +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Analytics.description)
                 <<< SwitchRow("analytics") {

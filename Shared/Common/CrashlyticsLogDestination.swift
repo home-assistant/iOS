@@ -8,7 +8,7 @@
 
 import Foundation
 import XCGLogger
-import Crashlytics
+import FirebaseCrashlytics
 
 open class CrashlyticsLogDestination: BaseQueuedDestination {
 
@@ -24,7 +24,7 @@ open class CrashlyticsLogDestination: BaseQueuedDestination {
 
         let outputClosure = {
             let aTextArray: [CVarArg] = [message]
-            CLSLogv("%@", getVaList(aTextArray))
+            Crashlytics.crashlytics().log(format: "%@", arguments: getVaList(aTextArray))
         }
 
         if let logQueue = logQueue {

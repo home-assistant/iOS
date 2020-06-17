@@ -78,18 +78,18 @@ To keep the Xcode layout mirrored with on-disk layout we're using [Synx](https:/
 
 - [SwiftLint](https://github.com/realm/SwiftLint): A tool to enforce Swift style and conventions.
 - [SwiftGen](https://github.com/AliSoftware/SwiftGen): A collection of Swift tools to generate Swift code (enums for your assets, storyboards, Localizable.strings, …)
-- [Fabric](https://docs.fabric.io/apple/fabric/overview.html): Fabric is a mobile platform with modular kits you can mix and match to build the best apps
-- [Crashlytics](https://fabric.io/kits/ios/crashlytics/install): The most powerful, yet lightest weight crash reporting solution
+- [Firebase](https://firebase.google.com/): Firebase gives you functionality like analytics, databases, messaging and crash reporting so you can move quickly and focus on your users.
+- [Crashlytics](https://firebase.google.com/products/crashlytics): The most powerful, yet lightest weight crash reporting solution
 - [Synx](https://github.com/venmo/synx): A command-line tool that reorganizes your Xcode project folder to match your Xcode groups
 - [Fastlane](https://github.com/fastlane/fastlane): The easiest way to automate building and releasing your iOS and Android apps
 
 ## Continuous Integration
 
-We are using [Travis](https://travis-ci.org/home-assistant/home-assistant-iOS) alongside [Fastlane](https://fastlane.tools/) to perform continuous integration both by unit testing and deploying to [Fabric](https://fabric.io) or [iTunes Connect](https://itunesconnect.apple.com) later on.
+We are using [Travis](https://travis-ci.org/home-assistant/home-assistant-iOS) alongside [Fastlane](https://fastlane.tools/) to perform continuous integration both by unit testing and deploying to [App Store Connect](https://appstoreconnect.apple.com) later on.
 
 ### Environment variables
 
-To make sure Fabric and iTunes can deploy, make sure you have them set to something similar to the following environment variables. **The values are only examples!**.
+To make sure iTunes can deploy, make sure you have them set to something similar to the following environment variables. **The values are only examples!**.
 
 **Note:** For ENV variables to work in Xcode you to set `$ defaults write com.apple.dt.Xcode UseSanitizedBuildSystemEnvironment -bool NO` and launch Xcode from the terminal. [Apple Developer Forums](https://forums.developer.apple.com/thread/8451)
 
@@ -100,11 +100,6 @@ To make sure Fabric and iTunes can deploy, make sure you have them set to someth
 - `HOMEASSISTANT_CERTIFICATE_TOKEN`: The access token for the git being where Match is saving the Certificates.
 - `HOMEASSISTANT_CERTIFICATE_GIT`: The address or the git being where Match is saving the Certificates. (e.g. https://gitlab.com/username/Certificates)
 
-#### Fabric deployment
-
-- `HOMEASSISTANT_FABRIC_CLIENT_ID`: API Key from [Fabric Organization](https://www.fabric.io/settings/organizations)
-- `HOMEASSISTANT_FABRIC_SECRET`: Build Secret from [Fabric Organization](https://www.fabric.io/settings/organizations)
-
 #### iTunes deployment
 
 - `HOMEASSISTANT_TEAM_ID`: Team ID from [iTunes Membership](https://developer.apple.com/account/#/membership)
@@ -114,12 +109,6 @@ To make sure Fabric and iTunes can deploy, make sure you have them set to someth
 ### Deployment
 
 Although all the deployment is done through Travis, you can do it manually through [Fastlane](https://github.com/home-assistant/home-assistant-iOS/blob/master/fastlane/README.md):
-
-#### Deployment to Fabric
-
-```bash
-bundle exec fastlane fabric
-```
 
 ### Deployment to iTunes Connect
 
