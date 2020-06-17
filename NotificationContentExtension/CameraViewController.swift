@@ -73,11 +73,13 @@ class CameraViewController: UIViewController, NotificationCategory {
             return .value(StreamCameraResponse(fallbackEntityID: entityId))
         }.then { [weak self] (result) -> Promise<Void> in
             let controllers = Self.possibleControllers
-                .compactMap { (controllerClass) -> Promise<UIViewController & CameraStreamHandler> in
-                    do {
-                        return .value(try controllerClass.init(api: api, response: result))
-                    } catch {
-                        return Promise(error: error)
+                .compactMap { (controllerClass) -> () -> Promise<UIViewController & CameraStreamHandler> in
+                    return {
+                        do {
+                            return .value(try controllerClass.init(api: api, response: result))
+                        } catch {
+                            return Promise(error: error)
+                        }
                     }
                 }.makeIterator()
 
@@ -110,7 +112,7 @@ class CameraViewController: UIViewController, NotificationCategory {
     ] }
 
     private func viewController(
-        from controllers: AnyIterator<Promise<UIViewController & CameraStreamHandler>>
+        from controllers: AnyIterator<() -> Promise<UIViewController & CameraStreamHandler>>
     ) -> Promise<UIViewController & CameraStreamHandler> {
         var accumulatedErrors = [Error]()
         var promise: Promise<UIViewController & CameraStreamHandler> = .init(error:
@@ -128,7 +130,7 @@ class CameraViewController: UIViewController, NotificationCategory {
                     accumulatedErrors.append(error)
                 }
                 // now try this latest one
-                return nextPromise
+                return nextPromise()
             }.get { [weak self, extensionContext] controller in
                 // configure the latest one
                 var lastState: CameraStreamHandlerState?
