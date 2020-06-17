@@ -262,7 +262,7 @@ platform :ios do
 
       sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["HOMEASSISTANT_CERTIFICATE_KEY"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
 
-      testflight
+      asc
     end
   end
 
@@ -272,7 +272,7 @@ platform :ios do
   end
 
   desc "Submit a new beta build to TestFlight"
-  lane :testflight do |options|
+  lane :asc do |options|
 
     # Needed so that the changelog doesn"t include the version bump commit
     change_log = change_log_since_last_tag
