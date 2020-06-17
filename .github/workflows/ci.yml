@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+
+env:
+  FASTLANE_SKIP_UPDATE_CHECK: true
+  FASTLANE_XCODE_LIST_TIMEOUT: 30
+  MATCH_KEYCHAIN_NAME: "gh_actions"
+
+jobs:
+  SwiftLint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: GitHub Action for SwiftLint
+        uses: norio-nomura/action-swiftlint@3.1.0
+
+  test:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/cache@v2
+      with:
+        path: Pods
+        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pods-
+
+    - uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-gems-
+
+    - name: Install Gems
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+
+    - name: Install Pods
+      run: bundle exec pod install --repo-update
+
+    - name: Run tests
+      run: bundle exec fastlane ios test --verbose
