@@ -99,8 +99,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         view.addSubview(statusBarView)
 
-        self.styleUI()
-
         statusBarView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         statusBarView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         statusBarView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
@@ -200,6 +198,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             object: nil
         )
         updateWebViewSettings()
+
+        styleUI()
     }
 
     public func showSettingsViewController() {
@@ -252,6 +252,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     }
 
     func styleUI() {
+        precondition(isViewLoaded && webView != nil)
+
         let cachedColors = ThemeColors.cachedThemeColors
 
         self.webView?.backgroundColor = cachedColors[.primaryBackgroundColor]
