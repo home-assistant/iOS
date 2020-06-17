@@ -19,9 +19,11 @@ else
 fi
 
 # Get the MDI TTF
-# versions >=5.0 do not work with the version of SwiftGen in Iconic, this is locking at version v4.9.95
+# versions >=5.0 do not work with the version of SwiftGen in Iconic
+# for a version that works with Iconic, replace master with c8ed1f706deb089e05cb46655a786210991f1e92
+# this will migrate to a newer Iconic after https://github.com/SwiftGen/SwiftGen/pull/638
 echo "Downloading the latest MaterialDesignIcons TTF"
-curl -O --silent https://raw.githubusercontent.com/Templarian/MaterialDesign-Webfont/c8ed1f706deb089e05cb46655a786210991f1e92/fonts/materialdesignicons-webfont.ttf
+curl -O --silent https://raw.githubusercontent.com/Templarian/MaterialDesign-Webfont/master/fonts/materialdesignicons-webfont.ttf
 echo "Downloaded the latest MaterialDesignIcons TTF"
 
 # Rename file
