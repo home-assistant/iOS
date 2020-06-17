@@ -86,7 +86,6 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
     private var lastSize: CGSize? {
         didSet {
             if oldValue != lastSize, let size = lastSize {
-                // during an HLS stream, the size will sometimes bounce around between (0, 0), (1, 1) and a real size
                 aspectRatioConstraint = Self.aspectRatioConstraint(on: playerViewController.view, size: size)
             }
         }
