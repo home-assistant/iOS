@@ -80,9 +80,9 @@ class CameraViewController: UIViewController, NotificationCategory {
                             return Promise(error: error)
                         }
                     }
-                }.makeIterator()
+                }
 
-            return self?.viewController(from: AnyIterator(controllers)).asVoid() ?? .value(())
+            return self?.viewController(from: controllers).asVoid() ?? .value(())
         }
     }
 
@@ -120,14 +120,14 @@ class CameraViewController: UIViewController, NotificationCategory {
     ] }
 
     private func viewController(
-        from controllers: AnyIterator<() -> Promise<UIViewController & CameraStreamHandler>>
+        from controllerPromises: [() -> Promise<UIViewController & CameraStreamHandler>]
     ) -> Promise<UIViewController & CameraStreamHandler> {
         var accumulatedErrors = [Error]()
         var promise: Promise<UIViewController & CameraStreamHandler> = .init(error:
             CameraViewControllerError.noControllers
         )
 
-        while let nextPromise = controllers.next() {
+        for nextPromise in controllerPromises {
             promise = promise.recover { [extensionContext] error -> Promise<UIViewController & CameraStreamHandler> in
                 // always tell the extension context the previous one failed, aka go back to showing pause
                 extensionContext?.mediaPlayingPaused()
