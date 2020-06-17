@@ -40,7 +40,7 @@ class NotificationErrorViewController: UIViewController, NotificationCategory {
     func didReceive(notification: UNNotification, extensionContext: NSExtensionContext?) -> Promise<Void> {
         .value(())
     }
-    var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType?
+    var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType { .none }
     var mediaPlayPauseButtonFrame: CGRect?
     var mediaPlayPauseButtonTintColor: UIColor?
     func mediaPlay() {}

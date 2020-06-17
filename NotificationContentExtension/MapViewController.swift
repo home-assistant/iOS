@@ -10,7 +10,6 @@ import UIKit
 import UserNotifications
 import UserNotificationsUI
 import MapKit
-import MBProgressHUD
 import PromiseKit
 
 class MapViewController: UIViewController, NotificationCategory, MKMapViewDelegate {
@@ -104,7 +103,7 @@ class MapViewController: UIViewController, NotificationCategory, MKMapViewDelega
         return .value(())
     }
 
-    var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType?
+    var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType { .none }
     var mediaPlayPauseButtonFrame: CGRect?
     var mediaPlayPauseButtonTintColor: UIColor?
     func mediaPlay() {}

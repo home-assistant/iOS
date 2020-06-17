@@ -9,7 +9,6 @@
 import UIKit
 import UserNotifications
 import UserNotificationsUI
-import MBProgressHUD
 import KeychainAccess
 import Shared
 import Alamofire
@@ -87,7 +86,7 @@ class CameraViewController: UIViewController, NotificationCategory {
         }
     }
 
-    var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType? {
+    var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType {
         .overlay
     }
 

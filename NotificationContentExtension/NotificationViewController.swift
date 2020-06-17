@@ -61,12 +61,6 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         }
 
         Current.Log.verbose("Received a \(category) notif with userInfo \(notification.request.content.userInfo)")
-
-        let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        let loadTxt = L10n.Extensions.NotificationContent.Hud.loading(category.rawValue)
-        hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
-        hud.detailsLabel.text = loadTxt
-
         let controller: (UIViewController & NotificationCategory)
 
         switch category {
@@ -76,13 +70,26 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             controller = MapViewController()
         }
 
+        let hud: MBProgressHUD? = {
+            guard controller.mediaPlayPauseButtonType == .none else {
+                // don't show the HUD for a screen that has pause/play because it already acts like a loading indicator
+                return nil
+            }
+
+            let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+            let loadTxt = L10n.Extensions.NotificationContent.Hud.loading(category.rawValue)
+            hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset+50)
+            hud.detailsLabel.text = loadTxt
+            return hud
+        }()
+
         activeViewController = controller
 
         controller.didReceive(
             notification: notification,
             extensionContext: extensionContext
         ).ensure {
-            hud.hide(animated: true)
+            hud?.hide(animated: true)
         }.catch { [weak self] error in
             Current.Log.error("finally failed: \(error)")
             self?.activeViewController = NotificationErrorViewController(error: error)
@@ -124,7 +131,7 @@ protocol NotificationCategory: NSObjectProtocol {
     // Implementing this method and returning a button type other that "None" will
     // make the notification attempt to draw a play/pause button correctly styled
     // for that type.
-    var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType? { get }
+    var mediaPlayPauseButtonType: UNNotificationContentExtensionMediaPlayPauseButtonType { get }
 
     // Implementing this method and returning a non-empty frame will make
     // the notification draw a button that allows the user to play and pause
