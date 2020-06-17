@@ -132,36 +132,39 @@ class CameraViewController: UIViewController, NotificationCategory {
                 // always tell the extension context the previous one failed, aka go back to showing pause
                 extensionContext?.mediaPlayingPaused()
                 // accumulate the error
-                if  case CameraViewControllerError.noControllers = error {
+                if case CameraViewControllerError.noControllers = error {
                     // except the empty one that we started with to make this code nicer
                 } else {
                     accumulatedErrors.append(error)
                 }
-                // now try this latest one
-                return nextPromise()
-            }.get { [weak self, extensionContext] controller in
-                // configure the latest one
-                var lastState: CameraStreamHandlerState?
-                controller.didUpdateState = { state in
-                    guard lastState != state else {
-                        return
+
+                return firstly {
+                    // now try this latest one
+                    nextPromise()
+                }.get { [weak self, extensionContext] controller in
+                    // configure it -- this isn't part of the one-level-up chain because it would run for each one
+                    var lastState: CameraStreamHandlerState?
+                    controller.didUpdateState = { state in
+                        guard lastState != state else {
+                            return
+                        }
+
+                        switch state {
+                        case .playing:
+                            extensionContext?.mediaPlayingStarted()
+                        case .paused:
+                            extensionContext?.mediaPlayingPaused()
+                        }
+
+                        lastState = state
                     }
 
-                    switch state {
-                    case .playing:
-                        extensionContext?.mediaPlayingStarted()
-                    case .paused:
-                        extensionContext?.mediaPlayingPaused()
-                    }
-
-                    lastState = state
+                    // add it to hirearchy and constrain
+                    self?.activeViewController = controller
+                }.then { value in
+                    // make sure we wait until the controller figures out if it started or failed
+                    value.promise.map { value }
                 }
-
-                // add it to hirearchy and constrain
-                self?.activeViewController = controller
-            }.then { value in
-                // make sure we wait until the controller figures out if it started or failed
-                value.promise.map { value }
             }
         }
 

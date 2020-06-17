@@ -107,7 +107,7 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
         videoPlayer.play()
 
         observationTokens.append(videoPlayer.observe(\.status) { [weak self] player, _ in
-            Current.Log.error("player status update: \(player.status) error: \(String(describing: player.error))")
+            Current.Log.error("player status: \(player.status.rawValue) error: \(String(describing: player.error))")
             switch player.status {
             case .readyToPlay:
                 // we won't get a rate update on initial play, but it's _happening_!
