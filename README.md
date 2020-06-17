@@ -1,14 +1,14 @@
 Home Assistant for iOS
 =================
 
-[![TestFlight Beta invite](https://img.shields.io/badge/TestFlight-Beta-blue.svg)](https://testflight.apple.com/join/XCUga7ko)
+[![TestFlight Beta invite](https://img.shields.io/badge/TestFlight-Beta-blue.svg)](https://www.home-assistant.io/ios/beta/)
 [![Download on the App Store](https://img.shields.io/itunes/v/1099568401.svg)](https://itunes.apple.com/app/home-assistant-open-source-home-automation/id1099568401)
 [![Swift 3.0](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)](https://developer.apple.com/swift/)
 [![Platform iOS](https://img.shields.io/badge/Platforms-iOS-lightgray.svg?style=flat)](https://developer.apple.com/swift/)
-[![Build Status](https://travis-ci.org/home-assistant/home-assistant-iOS.svg?branch=master)](https://travis-ci.org/home-assistant/home-assistant-iOS)
-[![codebeat badge](https://codebeat.co/badges/c6e6173b-c64f-44be-a692-29b922891db7)](https://codebeat.co/projects/github-com-home-assistant-home-assistant-ios)
-[![GitHub issues](https://img.shields.io/github/issues/home-assistant/home-assistant-iOS.svg?style=flat)](https://github.com/home-assistant/home-assistant-iOS/issues)
-[![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/home-assistant/home-assistant-iOS/blob/master/LICENSE)
+[![Build Status](https://github.com/home-assistant/iOS/workflows/API/CI.svg)](https://github.com/home-assistant/iOS/actions)
+[![codebeat badge](https://codebeat.co/badges/c6e6173b-c64f-44be-a692-29b922891db7)](https://codebeat.co/projects/github-com-home-assistant-iOS)
+[![GitHub issues](https://img.shields.io/github/issues/home-assistant/iOS.svg?style=flat)](https://github.com/home-assistant/iOS/issues)
+[![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/home-assistant/iOS/blob/master/LICENSE)
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/home_assistant.svg?style=social)](https://twitter.com/home_assistant)
 
 ## Getting Started
@@ -23,8 +23,8 @@ xcode-select --install
 The following commands will clone the repo and install all the required dependencies.
 
 ```bash
-git clone https://github.com/home-assistant/home-assistant-iOS.git
-cd home-assistant-iOS
+git clone https://github.com/home-assistant/iOS.git
+cd iOS
 bundle install
 pod install --repo-update
 bundle exec pod install
@@ -85,11 +85,11 @@ To keep the Xcode layout mirrored with on-disk layout we're using [Synx](https:/
 
 ## Continuous Integration
 
-We are using [Travis](https://travis-ci.org/home-assistant/home-assistant-iOS) alongside [Fastlane](https://fastlane.tools/) to perform continuous integration both by unit testing and deploying to [App Store Connect](https://appstoreconnect.apple.com) later on.
+We are using [Github Actions](https://github.com/home-assistant/iOS/actions) alongside [Fastlane](https://fastlane.tools/) to perform continuous integration both by unit testing and deploying to [App Store Connect](https://appstoreconnect.apple.com) later on.
 
 ### Environment variables
 
-To make sure iTunes can deploy, make sure you have them set to something similar to the following environment variables. **The values are only examples!**.
+To make sure Fabric and App Store Connect can deploy, make sure you have them set to something similar to the following environment variables. **The values are only examples!**.
 
 **Note:** For ENV variables to work in Xcode you to set `$ defaults write com.apple.dt.Xcode UseSanitizedBuildSystemEnvironment -bool NO` and launch Xcode from the terminal. [Apple Developer Forums](https://forums.developer.apple.com/thread/8451)
 
@@ -100,20 +100,20 @@ To make sure iTunes can deploy, make sure you have them set to something similar
 - `HOMEASSISTANT_CERTIFICATE_TOKEN`: The access token for the git being where Match is saving the Certificates.
 - `HOMEASSISTANT_CERTIFICATE_GIT`: The address or the git being where Match is saving the Certificates. (e.g. https://gitlab.com/username/Certificates)
 
-#### iTunes deployment
+#### App Store Connect deployment
 
-- `HOMEASSISTANT_TEAM_ID`: Team ID from [iTunes Membership](https://developer.apple.com/account/#/membership)
-- `HOMEASSISTANT_ITUNES_TEAM_ID`: Team ID from [iTunes Connect](https://itunesconnect.apple.com/). (`$ pilot list` to check the number)
+- `HOMEASSISTANT_TEAM_ID`: Team ID from [App Store Connect Membership](https://developer.apple.com/account/#/membership)
+- `HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID`: Team ID from [App Store Connect](https://appstoreconnect.apple.com/). (`$ pilot list` to check the number)
 - `HOMEASSISTANT_APPLE_ID`: Your Apple ID (e.g. john@apple.com)
 
 ### Deployment
 
-Although all the deployment is done through Travis, you can do it manually through [Fastlane](https://github.com/home-assistant/home-assistant-iOS/blob/master/fastlane/README.md):
+Although all the deployment is done through Github Actions, you can do it manually through [Fastlane](https://github.com/home-assistant/iOS/blob/master/fastlane/README.md):
 
-### Deployment to iTunes Connect
+### Deployment to App Store Connect
 
 ```bash
-bundle exec fastlane itc
+bundle exec fastlane asc
 ```
 
 ## Contributing

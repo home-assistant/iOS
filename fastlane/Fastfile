@@ -108,7 +108,7 @@ platform :ios do
     ENV["SIGH_USERNAME"] = ENV["HOMEASSISTANT_APPLE_ID"]
     ENV["LOKALISE_API_TOKEN"] = ENV["HOMEASSISTANT_LOKALIZE_TOKEN"]
     ENV["LOKALISE_PROJECT_ID"] = ENV["HOMEASSISTANT_LOKALIZE_PROJECT_ID"]
-    ENV["PILOT_ITC_PROVIDER"] = ENV["HOMEASSISTANT_ITUNES_TEAM_ID"]
+    ENV["PILOT_ITC_PROVIDER"] = ENV["HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID"]
   end
 
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
@@ -173,13 +173,13 @@ platform :ios do
     sh("cd ../ && ./Pods/SwiftGen/bin/swiftgen strings --output Shared/Resources/SwiftGen/Strings.swift --templateName structured-swift4 HomeAssistant/Resources/en.lproj/Localizable.strings")
   end
 
-  desc "Upload iTunes Connect metadata to Lokalise"
+  desc "Upload App Store Connect metadata to Lokalise"
   lane :update_lokalise_metadata do
     lokalise_metadata(action: "update_lokalise", override_translation: true)
   end
 
-  desc "Download iTunes metadata from Lokalise and upload to iTunes Connect"
-  lane :update_itunes_metadata do
+  desc "Download App Store Connect metadata from Lokalise and upload to App Store Connect Connect"
+  lane :update_asc_metadata do
     lokalise_metadata(action: "update_itunes")
   end
 
@@ -232,12 +232,12 @@ platform :ios do
     )
   end
 
-  desc "Runs build when on Travis"
+  desc "Continous Integration"
   lane :ci do
-    if is_ci && ENV["TRAVIS_PULL_REQUEST"] == "false" && (git_branch == "master" || git_branch == "beta")
-      ENV["FASTLANE_PASSWORD"] = ENV["HOMEASSISTANT_ITUNES_PASSWORD"]
+    if is_ci && (git_branch == "master" || git_branch == "beta")
+      ENV["FASTLANE_PASSWORD"] = ENV["HOMEASSISTANT_APP_STORE_CONNECT_PASSWORD"]
 
-      slack(message: "Beginning Travis CI build")
+      slack(message: "Beginning CI build")
       create_keychain(
         name: ENV["MATCH_KEYCHAIN_NAME"],
         password: ENV["MATCH_PASSWORD"],
@@ -262,15 +262,17 @@ platform :ios do
 
       sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["HOMEASSISTANT_CERTIFICATE_KEY"]} #{ENV["MATCH_KEYCHAIN_NAME"]}")
 
-      itunes
-    elsif !is_ci || ENV["TRAVIS_PULL_REQUEST"] != "false"
-      run_tests(workspace: 'HomeAssistant.xcworkspace',
-                scheme: 'Debug')
+      testflight
     end
   end
 
+  desc "Run tests"
+  lane :test do
+    run_tests(workspace: 'HomeAssistant.xcworkspace', scheme: 'Debug')
+  end
+
   desc "Submit a new beta build to TestFlight"
-  lane :itunes do |options|
+  lane :testflight do |options|
 
     # Needed so that the changelog doesn"t include the version bump commit
     change_log = change_log_since_last_tag
