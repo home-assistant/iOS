@@ -20118,6 +20118,7 @@ extension MaterialDesignIcons : IconDrawable {
         case .zodiacScorpioIcon: return "zodiac_scorpio"
         case .zodiacTaurusIcon: return "zodiac_taurus"
         case .zodiacVirgoIcon: return "zodiac_virgo"
+        default: fatalError()
         }
     }
 
@@ -25101,6 +25102,7 @@ extension MaterialDesignIcons : IconDrawable {
         case .zodiacScorpioIcon: return "\u{FA85}"
         case .zodiacTaurusIcon: return "\u{FA86}"
         case .zodiacVirgoIcon: return "\u{FA87}"
+        default: fatalError()
         }
     }
 }
