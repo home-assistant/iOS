@@ -19,7 +19,7 @@ import UserNotifications
 import Intents
 import Version
 #if os(iOS)
-import Crashlytics
+import FirebaseCrashlytics
 import Reachability
 #endif
 
@@ -251,7 +251,7 @@ public class HomeAssistantAPI {
             self.prefs.setValue(config.ThemeColor, forKey: "themeColor")
 
             #if os(iOS)
-            Crashlytics.sharedInstance().setObjectValue(config.Version, forKey: "HA_Version")
+            Crashlytics.crashlytics().setCustomValue(config.Version, forKey: "HA_Version")
             #endif
 
             return Promise.value(config)

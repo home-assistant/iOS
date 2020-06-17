@@ -48,6 +48,7 @@ target 'HomeAssistant' do
     pod 'CallbackURLKit'
     pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
     pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
+    pod 'Firebase/Analytics'
     pod 'Firebase/Core'
     pod 'Firebase/Firestore'
     pod 'Firebase/Messaging'
@@ -73,8 +74,7 @@ end
 target 'Shared-iOS' do
     ios_shared_pods
 
-    pod 'Crashlytics'
-    pod 'Fabric'
+    pod 'Firebase/Crashlytics'
 
     target 'SharedTests' do
       

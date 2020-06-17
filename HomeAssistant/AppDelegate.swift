@@ -21,7 +21,7 @@ import SafariServices
 import Shared
 import UIKit
 import UserNotifications
-import Crashlytics
+import FirebaseCrashlytics
 #if DEBUG
 import SimulatorStatusMagic
 #endif
@@ -842,7 +842,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupFirebase() {
-        var fileName = "GoogleService-Info-Development"
+        var fileName = "GoogleService-Info-Debug"
 
         if Current.appConfiguration == .Beta {
             fileName = "GoogleService-Info-Beta"
@@ -865,8 +865,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Current.Log.verbose("Calling UIApplication.shared.registerForRemoteNotifications()")
         UIApplication.shared.registerForRemoteNotifications()
-
-        Current.loadCrashlytics()
 
         Messaging.messaging().isAutoInitEnabled = prefs.bool(forKey: "messagingEnabled")
         Analytics.setAnalyticsCollectionEnabled(prefs.bool(forKey: "analyticsEnabled"))
@@ -1039,7 +1037,7 @@ extension AppDelegate: MessagingDelegate {
             Current.Log.warning("FCM token has changed from \(existingToken) to \(fcmToken)")
         }
 
-        Crashlytics.sharedInstance().setObjectValue(fcmToken, forKey: "pushToken")
+        Crashlytics.crashlytics().setCustomValue(fcmToken, forKey: "pushToken")
 
         Current.settingsStore.pushID = fcmToken
 
