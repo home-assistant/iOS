@@ -21,6 +21,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install Gems
+      run: bundle install
+
     - name: Install Pods
       run: pod install --repo-update
 
