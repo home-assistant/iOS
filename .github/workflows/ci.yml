@@ -21,6 +21,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Run fastlane setup
-      run: |
-        fastlane ios test --verbose
+    - name: Install Pods
+      run: pod install --repo-update
+
+    - name: Run tests
+      run: bundle exec fastlane ios test --verbose
