@@ -11,6 +11,7 @@ env:
 jobs:
   SwiftLint:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     steps:
       - uses: actions/checkout@v2
       - name: GitHub Action for SwiftLint
@@ -18,6 +19,7 @@ jobs:
 
   test:
     runs-on: macos-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     steps:
     - uses: actions/checkout@v2
 
