@@ -11,19 +11,22 @@ env:
 jobs:
   SwiftLint:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     steps:
       - uses: actions/checkout@v2
+      - id: log
+        run: echo "::set-output name=message::$(git log --no-merges -1 --oneline)"
       - name: GitHub Action for SwiftLint
+        if: "!contains(steps.log.outputs.message, '[ci skip]')"
         uses: norio-nomura/action-swiftlint@3.1.0
 
   test:
     runs-on: macos-latest
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     steps:
     - uses: actions/checkout@v2
-
+    - id: log
+      run: echo "::set-output name=message::$(git log --no-merges -1 --oneline)"
     - uses: actions/cache@v2
+      if: "!contains(steps.log.outputs.message, '[ci skip]')"
       with:
         path: Pods
         key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
@@ -31,6 +34,7 @@ jobs:
           ${{ runner.os }}-pods-
 
     - uses: actions/cache@v2
+      if: "!contains(steps.log.outputs.message, '[ci skip]')"
       with:
         path: vendor/bundle
         key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
@@ -38,12 +42,15 @@ jobs:
           ${{ runner.os }}-gems-
 
     - name: Install Gems
+      if: "!contains(steps.log.outputs.message, '[ci skip]')"
       run: |
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
 
     - name: Install Pods
+      if: "!contains(steps.log.outputs.message, '[ci skip]')"
       run: bundle exec pod install --repo-update
 
     - name: Run tests
+      if: "!contains(steps.log.outputs.message, '[ci skip]')"
       run: bundle exec fastlane ios test --verbose
