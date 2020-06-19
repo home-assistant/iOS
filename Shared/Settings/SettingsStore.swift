@@ -133,6 +133,15 @@ public class SettingsStore {
         }
     }
 
+    public var overrideDeviceName: String? {
+        get {
+            return prefs.string(forKey: "override_device_name")
+        }
+        set {
+            prefs.set(newValue, forKey: "override_device_name")
+        }
+    }
+
     #if os(iOS)
     public func isLocationEnabled(for state: UIApplication.State) -> Bool {
         switch CLLocationManager.authorizationStatus() {
