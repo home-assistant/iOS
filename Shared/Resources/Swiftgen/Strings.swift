@@ -305,6 +305,8 @@ internal enum L10n {
           internal static func entityNotFound(_ p1: String) -> String {
             return L10n.tr("Localizable", "extensions.notification_content.error.request.entity_not_found", p1)
           }
+          /// HLS stream unavailable
+          internal static let hlsUnavailable = L10n.tr("Localizable", "extensions.notification_content.error.request.hls_unavailable")
           /// Got non-200 status code (%li)
           internal static func other(_ p1: Int) -> String {
             return L10n.tr("Localizable", "extensions.notification_content.error.request.other", p1)

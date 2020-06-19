@@ -358,6 +358,12 @@ public class HomeAssistantAPI {
         return self.request(path: "ios/push", callingFunctionName: "\(#function)")
     }
 
+    public func StreamCamera(entityId: String) -> Promise<StreamCameraResponse> {
+        return self.webhook("stream_camera",
+                            payload: ["camera_entity_id": entityId],
+                            callingFunctionName: "streamCamera")
+    }
+
     private func buildMobileAppRegistration() -> [String: Any] {
         let deviceKitDevice = Device.current
 

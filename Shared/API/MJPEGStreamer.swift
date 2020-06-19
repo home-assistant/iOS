@@ -52,7 +52,11 @@ public class MJPEGStreamer {
         }
     }
 
+    public var isActive: Bool {
+        return self.request != nil
+    }
     public func cancel() {
         self.request?.cancel()
+        self.request = nil
     }
 }

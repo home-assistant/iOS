@@ -1,0 +1,14 @@
+{
+	"aps": {
+		"alert": {
+			"title": "title here",
+			"body": "body here"
+		},
+		"sound": "default",
+		"category": "map"
+	},
+    "homeassistant": {
+        "latitude": "37",
+        "longitude": "-122"
+    }
+}

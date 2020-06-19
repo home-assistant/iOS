@@ -183,6 +183,7 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
 "extensions.notification_content.error.request.unknown" = "Unknown error!";
+"extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "extensions.notification_content.hud.loading" = "Loading %@...";
 "location_change_notification.siri.body" = "Location update triggered by Siri";
 "notifications_configurator.action.rows.title.title" = "Title";
