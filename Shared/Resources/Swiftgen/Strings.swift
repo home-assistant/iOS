@@ -368,9 +368,17 @@ internal enum L10n {
         return L10n.tr("Localizable", "location_change_notification.beacon_region_exit.body", p1)
       }
     }
+    internal enum Launch {
+      /// Location updated via app launch
+      internal static let body = L10n.tr("Localizable", "location_change_notification.launch.body")
+    }
     internal enum Manual {
       /// Location update triggered by user
       internal static let body = L10n.tr("Localizable", "location_change_notification.manual.body")
+    }
+    internal enum Periodic {
+      /// Location updated via periodic update
+      internal static let body = L10n.tr("Localizable", "location_change_notification.periodic.body")
     }
     internal enum PushNotification {
       /// Location updated via push notification

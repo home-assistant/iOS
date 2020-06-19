@@ -133,6 +133,8 @@
 "location_change_notification.url_scheme.body" = "Location updated via URL Scheme";
 "location_change_notification.manual.body" = "Location update triggered by user";
 "location_change_notification.unknown.body" = "Location updated via unknown method";
+"location_change_notification.launch.body" = "Location updated via app launch";
+"location_change_notification.periodic.body" = "Location updated via periodic update";
 "cancel_label" = "Cancel";
 "username_label" = "Username";
 "client_events.event_type.service_call" = "Service Call";
