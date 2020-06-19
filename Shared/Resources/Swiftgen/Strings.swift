@@ -1307,6 +1307,10 @@ internal enum L10n {
         /// Open links in Chrome
         internal static let title = L10n.tr("Localizable", "settings_details.general.chrome.title")
       }
+      internal enum DeviceName {
+        /// Device Name
+        internal static let title = L10n.tr("Localizable", "settings_details.general.device_name.title")
+      }
       internal enum PageZoom {
         /// %@ (Default)
         internal static func `default`(_ p1: String) -> String {
