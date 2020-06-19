@@ -33,6 +33,8 @@ public enum LocationUpdateTrigger: String {
     case Siri = "Siri"
     case Visit = "Visit"
     case AppShortcut = "App Shortcut"
+    case Launch = "Launch"
+    case Periodic = "Periodic"
     case Unknown = "Unknown"
 
     func oneShotTimeout(maximum: TimeInterval?) -> TimeInterval {
@@ -48,7 +50,7 @@ public enum LocationUpdateTrigger: String {
         case .SignificantLocationUpdate, .BackgroundFetch, .PushNotification:
             // background events we know are usually time sensitive
             return 10.0
-        case .Manual, .URLScheme, .XCallbackURL, .AppShortcut, .Siri:
+        case .Manual, .URLScheme, .XCallbackURL, .AppShortcut, .Siri, .Launch, .Periodic:
             // user is actively doing this, so wait a little longer
             return 30.0
         case .Unknown:
@@ -114,6 +116,12 @@ public enum LocationUpdateTrigger: String {
             shouldNotify = false
         case .RegionExit, .RegionEnter, .Unknown:
             body = L10n.LocationChangeNotification.Unknown.body
+            shouldNotify = false
+        case .Launch:
+            body = L10n.LocationChangeNotification.Launch.body
+            shouldNotify = false
+        case .Periodic:
+            body = L10n.LocationChangeNotification.Periodic.body
             shouldNotify = false
         }
 

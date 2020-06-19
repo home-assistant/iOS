@@ -416,12 +416,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return navigationController
     }
 
-    enum ConnectAPIReason {
-        case cold
-        case warm
-        case periodic
-    }
-
     private func invalidatePeriodicUpdateTimer() {
         periodicUpdateTimer = nil
     }
@@ -447,12 +441,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    private func connectAPI(reason: ConnectAPIReason) {
+    private func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
             return UIApplication.shared.backgroundTask(withName: "connect-api") { _ in
-                api.Connect().asVoid()
+                api.Connect(reason: reason).asVoid()
             }
         }.done {
             Current.Log.info("Connect finished for reason \(reason)")

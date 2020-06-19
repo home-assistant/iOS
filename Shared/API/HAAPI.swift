@@ -134,7 +134,22 @@ public class HomeAssistantAPI {
         return MJPEGStreamer(manager: newManager)
     }
 
-    public func Connect() -> Promise<ConfigResponse> {
+    public enum ConnectReason {
+        case cold
+        case warm
+        case periodic
+
+        var updateSensorTrigger: LocationUpdateTrigger {
+            switch self {
+            case .cold, .warm:
+                return .Launch
+            case .periodic:
+                return .Periodic
+            }
+        }
+    }
+
+    public func Connect(reason: ConnectReason) -> Promise<ConfigResponse> {
         return firstly {
             self.UpdateRegistration()
         }.recover { error -> Promise<MobileAppRegistrationResponse> in
@@ -147,8 +162,12 @@ public class HomeAssistantAPI {
             Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest))
             return self.Register()
         }.then { _ -> Promise<(ConfigResponse, [Zone], Void, [WatchComplication])> in
-            return when(fulfilled: self.GetConfig(), self.GetZones(), self.UpdateSensors(.Unknown).asVoid(),
-                        self.updateComplications())
+            return when(fulfilled:
+                self.GetConfig(),
+                self.GetZones(),
+                self.UpdateSensors(reason.updateSensorTrigger).asVoid(),
+                self.updateComplications()
+            )
         }.map { config, zones, _, _ in
             if let oldHA = self.ensureVersion(config.Version) {
                 throw oldHA
@@ -644,7 +663,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func UpdateSensors(_ trigger: LocationUpdateTrigger = .Unknown,
+    public func UpdateSensors(_ trigger: LocationUpdateTrigger,
                               _ location: CLLocation? = nil) -> Promise<[String: WebhookSensorResponse]> {
         return firstly {
             return self.sensorsConfig.AllSensors
