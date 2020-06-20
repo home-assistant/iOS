@@ -102,7 +102,7 @@ extension WebhookSensor {
                     return "mdi:slope-uphill"
                 }
             case .floorsDescended:
-                if Current.serverVersion() >= Version(major: 0, minor: 105, patch: 0) {
+                if Current.serverVersion() >= Version(major: 0, minor: 105) {
                     return "mdi:stairs-down"
                 } else {
                     return "mdi:slope-downhill"

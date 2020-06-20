@@ -82,8 +82,19 @@ public class SettingsStore {
 
     internal var serverVersion: Version {
         // access this publicly using Environment
-        let sanitizedString = prefs.string(forKey: "version")?.replacingOccurrences(of: ".dev", with: "-dev")
-        return sanitizedString.flatMap(Version.init(_:)) ?? HomeAssistantAPI.minimumRequiredVersion
+        let fallback = HomeAssistantAPI.minimumRequiredVersion
+
+        guard let string = prefs.string(forKey: "version") else {
+            Current.Log.info("couldn't find version string, falling back")
+            return fallback
+        }
+
+        do {
+            return try Version(hassVersion: string)
+        } catch {
+            Current.Log.error("couldn't parse version '\(string)': \(error)")
+            return fallback
+        }
     }
 
     public var authenticatedUser: AuthenticatedUser? {
