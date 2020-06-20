@@ -481,11 +481,6 @@
 "settings_details.general.app_icon.enum.red" = "Red";
 "settings_details.general.app_icon.enum.release" = "Release";
 "settings_details.general.app_icon.enum.white" = "White";
-"settings_details.general.app_icon.enum.pride_bi" = "Pride: Bi";
-"settings_details.general.app_icon.enum.pride_poc" = "Pride: POC";
-"settings_details.general.app_icon.enum.pride_rainbow" = "Pride: Rainbow";
-"settings_details.general.app_icon.enum.pride_rainbow_invert" = "Pride: Rainbow (Inverted)";
-"settings_details.general.app_icon.enum.pride_trans" = "Pride: Trans";
 "settings_details.general.app_icon.title" = "App Icon";
 "settings_details.location.notifications.visit.title" = "Visit Location Notifications";
 "settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL Location Notifications";
@@ -771,3 +766,8 @@ Thank you.\
 "location_change_notification.periodic.body" = "Location updated via periodic update";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "settings_details.general.device_name.title" = "Device Name";
+"settings_details.general.app_icon.enum.pride_bi" = "Pride: Bi";
+"settings_details.general.app_icon.enum.pride_poc" = "Pride: POC";
+"settings_details.general.app_icon.enum.pride_rainbow" = "Pride: Rainbow";
+"settings_details.general.app_icon.enum.pride_rainbow_invert" = "Pride: Rainbow (Inverted)";
+"settings_details.general.app_icon.enum.pride_trans" = "Pride: Trans";
