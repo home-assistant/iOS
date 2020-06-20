@@ -12,6 +12,7 @@ extension WebhookSensor {
                 activity(),
                 pedometer(),
                 battery(),
+                storage(),
                 connectivity(),
                 geocoder(location: location),
                 lastUpdate(trigger: trigger)
