@@ -19,6 +19,9 @@
 		113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */; };
 		113D29E324946F930014067C /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E224946F930014067C /* OneShotLocationManager.swift */; };
 		113D29E424946F930014067C /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E224946F930014067C /* OneShotLocationManager.swift */; };
+		119385A4249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */; };
+		119385A5249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */; };
+		119385A7249E9F930097F497 /* WebhookSensor+Storage.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
 		11AF4D13249C7E08006C74C0 /* WebhookSensor+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */; };
 		11AF4D14249C7E09006C74C0 /* WebhookSensor+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */; };
@@ -752,6 +755,8 @@
 		113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+OneShotLocationTests.swift"; sourceTree = "<group>"; };
 		113D29E224946F930014067C /* OneShotLocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneShotLocationManager.swift; sourceTree = "<group>"; };
 		1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.swift"; sourceTree = "<group>"; };
+		119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.test.swift"; sourceTree = "<group>"; };
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Activity.swift"; sourceTree = "<group>"; };
 		11AF4D15249C8082006C74C0 /* With.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = With.swift; sourceTree = "<group>"; };
@@ -1489,6 +1494,7 @@
 				11AF4D21249C924B006C74C0 /* WebhookSensor+Geocoder.swift */,
 				11AF4D24249D1931006C74C0 /* WebhookSensor+LastUpdateTrigger.swift */,
 				11AF4D18249C8253006C74C0 /* WebhookSensor+Pedometer.swift */,
+				119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */,
 			);
 			path = Sensors;
 			sourceTree = "<group>";
@@ -1502,6 +1508,7 @@
 				11AF4D2D249DA5AF006C74C0 /* WebhookSensor+Geocoder.test.swift */,
 				11CB98C5249DE15B00B05222 /* WebhookSensor+LastUpdateTrigger.test.swift */,
 				11CB98C7249DE24000B05222 /* WebhookSensor+Pedometer.test.swift */,
+				119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */,
 			);
 			path = WebhookSensor;
 			sourceTree = "<group>";
@@ -4236,6 +4243,7 @@
 				B67CE87B22200F220034C1D0 /* RealmDeviceTracker.swift in Sources */,
 				113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				11AF4D17249C8083006C74C0 /* With.swift in Sources */,
+				119385A5249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */,
 				B67CE8AD22200F220034C1D0 /* AuthenticationAPI.swift in Sources */,
 				B67CE88122200F220034C1D0 /* BinarySensor.swift in Sources */,
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
@@ -4392,6 +4400,7 @@
 				B6C091452151F93D00A326DC /* Zone.swift in Sources */,
 				B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */,
+				119385A4249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */,
 				B6624E4F22584F8F00354CDF /* CrashlyticsLogDestination.swift in Sources */,
 				B6C0913D2151F93D00A326DC /* Automation.swift in Sources */,
 				B6C0913E2151F93D00A326DC /* BinarySensor.swift in Sources */,
@@ -4413,6 +4422,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				119385A7249E9F930097F497 /* WebhookSensor+Storage.test.swift in Sources */,
 				11AF4D2C249D965C006C74C0 /* WebhookSensor+Battery.test.swift in Sources */,
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
 				11AF4D2E249DA5AF006C74C0 /* WebhookSensor+Geocoder.test.swift in Sources */,

@@ -203,6 +203,17 @@ public class Environment {
         public lazy var batteryLevel: () -> Int = { Device.current.batteryLevel ?? 0 }
         public lazy var batteryState: () -> Device.BatteryState = { Device.current.batteryState ?? .full }
         public lazy var isLowPowerMode: () -> Bool = { Device.current.batteryState?.lowPowerMode ?? false }
+        public lazy var volumes: () -> [URLResourceKey: Int64]? = {
+            #if os(iOS)
+            if #available(iOS 11, *) {
+                return Device.volumes
+            } else {
+                return nil
+            }
+            #else
+                return nil
+            #endif
+        }
     }
     public var device = DeviceWrapper()
 
