@@ -20,18 +20,18 @@ puts "Setting CUSTOM_FONT_NAME to 'MaterialDesignIcons'"
 ENV['CUSTOM_FONT_NAME'] = 'MaterialDesignIcons'
 
 def shared_pods
-    pod 'Alamofire'
-    pod 'AlamofireImage'
+    pod 'Alamofire', '~> 4.0'
+    pod 'AlamofireImage', '~> 3.5'
     pod 'Communicator', '~> 3.3.0'
     pod 'DeviceKit'
     pod 'Iconic', :git => 'https://github.com/home-assistant/Iconic.git', :branch => 'master'
     pod 'KeychainAccess'
     pod 'ObjectMapper', :git => 'https://github.com/tristanhimmelman/ObjectMapper.git', :branch => 'master'
     pod 'PromiseKit'
-    pod 'RealmSwift'
+    pod 'RealmSwift', '~> 5.0'
     pod 'Sodium'
     pod 'UIColor_Hex_Swift'
-    pod 'Version', :git => 'https://github.com/guykogus/Version.git', :branch => 'master'
+    pod 'Version'
     pod 'XCGLogger'
 end
 
@@ -44,7 +44,6 @@ end
 target 'HomeAssistant' do
     ios_shared_pods
 
-    pod 'AlamofireNetworkActivityIndicator', '~> 2.3.0'
     pod 'CallbackURLKit'
     pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
     pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
@@ -57,7 +56,7 @@ target 'HomeAssistant' do
     pod 'lottie-ios'
     pod 'MaterialComponents/Buttons'
     pod 'MaterialComponents/Buttons+ButtonThemer'
-    pod 'MBProgressHUD', '~> 1.1.0'
+    pod 'MBProgressHUD', '~> 1.2.0'
     pod 'SimulatorStatusMagic', :configurations => ['Debug']
     pod 'SwiftGen', '~> 6.1.0'
     pod 'SwiftLint', '~> 0.39.2'
@@ -94,7 +93,7 @@ end
 target 'NotificationContentExtension' do
     ios_shared_pods
 
-    pod 'MBProgressHUD', '~> 1.1.0'
+    pod 'MBProgressHUD', '~> 1.2.0'
 end
 
 target 'SiriIntents' do
@@ -121,7 +120,4 @@ post_install do |installer|
             end
         end
     end
-
-    puts "Replacing generated MaterialDesignIcons"
-    %x(cp -f Tools/MaterialDesignIcons.swift Pods/Iconic/Source/MaterialDesignIcons.swift)
 end

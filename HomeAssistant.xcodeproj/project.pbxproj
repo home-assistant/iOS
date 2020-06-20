@@ -19,6 +19,19 @@
 		113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */; };
 		113D29E324946F930014067C /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E224946F930014067C /* OneShotLocationManager.swift */; };
 		113D29E424946F930014067C /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E224946F930014067C /* OneShotLocationManager.swift */; };
+		119385A4249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */; };
+		119385A5249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */; };
+		119385A7249E9F930097F497 /* WebhookSensor+Storage.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */; };
+		11810D4A249EAF8D00E741A4 /* rainbow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D40249EAF8B00E741A4 /* rainbow@2x.png */; };
+		11810D4B249EAF8D00E741A4 /* trans@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D41249EAF8C00E741A4 /* trans@3x.png */; };
+		11810D4C249EAF8D00E741A4 /* trans@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D42249EAF8C00E741A4 /* trans@2x.png */; };
+		11810D4D249EAF8D00E741A4 /* rainbow@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D43249EAF8C00E741A4 /* rainbow@3x.png */; };
+		11810D4E249EAF8D00E741A4 /* bi_pride@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D44249EAF8C00E741A4 /* bi_pride@2x.png */; };
+		11810D4F249EAF8D00E741A4 /* rainbow_invert@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D45249EAF8C00E741A4 /* rainbow_invert@2x.png */; };
+		11810D50249EAF8D00E741A4 /* POC_pride@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D46249EAF8C00E741A4 /* POC_pride@2x.png */; };
+		11810D51249EAF8D00E741A4 /* rainbow_invert@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D47249EAF8C00E741A4 /* rainbow_invert@3x.png */; };
+		11810D52249EAF8D00E741A4 /* bi_pride@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D48249EAF8C00E741A4 /* bi_pride@3x.png */; };
+		11810D53249EAF8D00E741A4 /* POC_pride@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D49249EAF8D00E741A4 /* POC_pride@3x.png */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
 		11AF4D13249C7E08006C74C0 /* WebhookSensor+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */; };
 		11AF4D14249C7E09006C74C0 /* WebhookSensor+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */; };
@@ -752,6 +765,18 @@
 		113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+OneShotLocationTests.swift"; sourceTree = "<group>"; };
 		113D29E224946F930014067C /* OneShotLocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneShotLocationManager.swift; sourceTree = "<group>"; };
 		1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.swift"; sourceTree = "<group>"; };
+		119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.test.swift"; sourceTree = "<group>"; };
+		11810D40249EAF8B00E741A4 /* rainbow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow@2x.png"; sourceTree = "<group>"; };
+		11810D41249EAF8C00E741A4 /* trans@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@3x.png"; sourceTree = "<group>"; };
+		11810D42249EAF8C00E741A4 /* trans@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@2x.png"; sourceTree = "<group>"; };
+		11810D43249EAF8C00E741A4 /* rainbow@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow@3x.png"; sourceTree = "<group>"; };
+		11810D44249EAF8C00E741A4 /* bi_pride@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bi_pride@2x.png"; sourceTree = "<group>"; };
+		11810D45249EAF8C00E741A4 /* rainbow_invert@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow_invert@2x.png"; sourceTree = "<group>"; };
+		11810D46249EAF8C00E741A4 /* POC_pride@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "POC_pride@2x.png"; sourceTree = "<group>"; };
+		11810D47249EAF8C00E741A4 /* rainbow_invert@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow_invert@3x.png"; sourceTree = "<group>"; };
+		11810D48249EAF8C00E741A4 /* bi_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bi_pride@3x.png"; sourceTree = "<group>"; };
+		11810D49249EAF8D00E741A4 /* POC_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "POC_pride@3x.png"; sourceTree = "<group>"; };
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Activity.swift"; sourceTree = "<group>"; };
 		11AF4D15249C8082006C74C0 /* With.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = With.swift; sourceTree = "<group>"; };
@@ -1489,6 +1514,7 @@
 				11AF4D21249C924B006C74C0 /* WebhookSensor+Geocoder.swift */,
 				11AF4D24249D1931006C74C0 /* WebhookSensor+LastUpdateTrigger.swift */,
 				11AF4D18249C8253006C74C0 /* WebhookSensor+Pedometer.swift */,
+				119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */,
 			);
 			path = Sensors;
 			sourceTree = "<group>";
@@ -1502,6 +1528,7 @@
 				11AF4D2D249DA5AF006C74C0 /* WebhookSensor+Geocoder.test.swift */,
 				11CB98C5249DE15B00B05222 /* WebhookSensor+LastUpdateTrigger.test.swift */,
 				11CB98C7249DE24000B05222 /* WebhookSensor+Pedometer.test.swift */,
+				119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */,
 			);
 			path = WebhookSensor;
 			sourceTree = "<group>";
@@ -1973,6 +2000,8 @@
 			children = (
 				B64E753E23F3BFF200472C04 /* beta@2x.png */,
 				B64E752E23F3BFED00472C04 /* beta@3x.png */,
+				11810D44249EAF8C00E741A4 /* bi_pride@2x.png */,
+				11810D48249EAF8C00E741A4 /* bi_pride@3x.png */,
 				B64E753F23F3BFF200472C04 /* black@2x.png */,
 				B64E753823F3BFF000472C04 /* black@3x.png */,
 				B64E753C23F3BFF100472C04 /* blue@2x.png */,
@@ -2003,12 +2032,20 @@
 				B64E752D23F3BFED00472C04 /* orange@3x.png */,
 				B64E753A23F3BFF000472C04 /* pink@2x.png */,
 				B64E751B23F3BFE700472C04 /* pink@3x.png */,
+				11810D46249EAF8C00E741A4 /* POC_pride@2x.png */,
+				11810D49249EAF8D00E741A4 /* POC_pride@3x.png */,
 				B64E752223F3BFEA00472C04 /* purple@2x.png */,
 				B64E752023F3BFE900472C04 /* purple@3x.png */,
+				11810D45249EAF8C00E741A4 /* rainbow_invert@2x.png */,
+				11810D47249EAF8C00E741A4 /* rainbow_invert@3x.png */,
+				11810D40249EAF8B00E741A4 /* rainbow@2x.png */,
+				11810D43249EAF8C00E741A4 /* rainbow@3x.png */,
 				B64E753D23F3BFF100472C04 /* red@2x.png */,
 				B64E752923F3BFEC00472C04 /* red@3x.png */,
 				B64E752523F3BFEC00472C04 /* release@2x.png */,
 				B64E753423F3BFEE00472C04 /* release@3x.png */,
+				11810D42249EAF8C00E741A4 /* trans@2x.png */,
+				11810D41249EAF8C00E741A4 /* trans@3x.png */,
 				B64E753B23F3BFF100472C04 /* white@2x.png */,
 				B64E752B23F3BFED00472C04 /* white@3x.png */,
 			);
@@ -3052,6 +3089,7 @@
 				B64E754523F3BFF200472C04 /* old-release@2x.png in Resources */,
 				B606167B1D1F117700249C11 /* US-EN-Alexa-Back-Door-Opened.wav in Resources */,
 				B64E754C23F3BFF200472C04 /* ha-blue@3x.png in Resources */,
+				11810D51249EAF8D00E741A4 /* rainbow_invert@3x.png in Resources */,
 				B661FC8F226D606600E541DD /* 5401-loading-19-satellite-dish.json in Resources */,
 				B60616481D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Air-Conditioner.wav in Resources */,
 				B60616911D1F117700249C11 /* US-EN-Alexa-Patio-Door-Unlocked.wav in Resources */,
@@ -3069,6 +3107,7 @@
 				B64E754A23F3BFF200472C04 /* purple@2x.png in Resources */,
 				B60616891D1F117700249C11 /* US-EN-Alexa-Motion-At-Back-Door.wav in Resources */,
 				B6E2D4B82270406B00446DFA /* Beta LaunchScreen.storyboard in Resources */,
+				11810D4C249EAF8D00E741A4 /* trans@2x.png in Resources */,
 				B60616561D1F117700249C11 /* US-EN-Morgan-Freeman-Welcome-Home.wav in Resources */,
 				B657A8F61CA646EB00121384 /* Release LaunchScreen.storyboard in Resources */,
 				B60616431D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Kitchen-Light.wav in Resources */,
@@ -3092,6 +3131,7 @@
 				B60616B21D1F117800249C11 /* US-EN-Daisy-Garage-Door-Open.wav in Resources */,
 				B60616171D1F117700249C11 /* US-EN-Morgan-Freeman-Friend-Is-Arriving.wav in Resources */,
 				B606160C1D1F117700249C11 /* US-EN-Morgan-Freeman-Back-Door-Opened.wav in Resources */,
+				11810D53249EAF8D00E741A4 /* POC_pride@3x.png in Resources */,
 				B64E754923F3BFF200472C04 /* crimson@3x.png in Resources */,
 				B60616241D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Bedroom.wav in Resources */,
 				B65B14E52273157A00635D5C /* Onboarding.storyboard in Resources */,
@@ -3101,6 +3141,7 @@
 				B60616B51D1F117800249C11 /* US-EN-Daisy-Kitchen-Window-Open.wav in Resources */,
 				B64E755223F3BFF200472C04 /* blue@3x.png in Resources */,
 				B606161C1D1F117700249C11 /* US-EN-Morgan-Freeman-Garage-Door-Closed.wav in Resources */,
+				11810D4E249EAF8D00E741A4 /* bi_pride@2x.png in Resources */,
 				B60616291D1F117700249C11 /* US-EN-Morgan-Freeman-Motion-In-Theater.wav in Resources */,
 				B60616141D1F117700249C11 /* US-EN-Morgan-Freeman-Cleaning-Supplies-Closet-Opened.wav in Resources */,
 				B60616881D1F117700249C11 /* US-EN-Alexa-Mail-Has-Arrived.wav in Resources */,
@@ -3124,6 +3165,7 @@
 				B64E755E23F3BFF200472C04 /* cornflower-blue@3x.png in Resources */,
 				B60616921D1F117800249C11 /* US-EN-Alexa-Smoke-Detected-Generic.wav in Resources */,
 				B64E756323F3BFF200472C04 /* white@2x.png in Resources */,
+				11810D4B249EAF8D00E741A4 /* trans@3x.png in Resources */,
 				B64E756123F3BFF200472C04 /* dev@3x.png in Resources */,
 				B60616301D1F117700249C11 /* US-EN-Morgan-Freeman-Searching-For-Car-Keys.wav in Resources */,
 				B64E754F23F3BFF200472C04 /* electric-violet@3x.png in Resources */,
@@ -3151,6 +3193,7 @@
 				B60616991D1F117800249C11 /* US-EN-Alexa-Water-Detected-In-Garage.wav in Resources */,
 				B60616411D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Family-Room-Lights.wav in Resources */,
 				B69933951E232AEA0054453D /* Localizable.strings in Resources */,
+				11810D52249EAF8D00E741A4 /* bi_pride@3x.png in Resources */,
 				B60616851D1F117700249C11 /* US-EN-Alexa-Good-Morning.wav in Resources */,
 				B606162B1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Closed.wav in Resources */,
 				B60616371D1F117700249C11 /* US-EN-Morgan-Freeman-Smoke-Detected-In-Kitchen.wav in Resources */,
@@ -3185,6 +3228,7 @@
 				B60221F6226D84B500E8DBFE /* loader-success-failed.json in Resources */,
 				B64E754323F3BFF200472C04 /* pink@3x.png in Resources */,
 				B606162E1D1F117700249C11 /* US-EN-Morgan-Freeman-Patio-Door-Unlocked.wav in Resources */,
+				11810D4A249EAF8D00E741A4 /* rainbow@2x.png in Resources */,
 				B64E755323F3BFF200472C04 /* white@3x.png in Resources */,
 				B60616441D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Light.wav in Resources */,
 				B641BC231E209CA9002CCBC1 /* HomeAssistantLogoView.xib in Resources */,
@@ -3215,10 +3259,13 @@
 				D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */,
 				B606162F1D1F117700249C11 /* US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav in Resources */,
 				B64E755823F3BFF200472C04 /* green@3x.png in Resources */,
+				11810D4D249EAF8D00E741A4 /* rainbow@3x.png in Resources */,
 				B60616131D1F117700249C11 /* US-EN-Morgan-Freeman-Boyfriend-Is-Arriving.wav in Resources */,
 				B64E755623F3BFF200472C04 /* beta@3x.png in Resources */,
 				B606163E1D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-Off-The-Air-Conditioner.wav in Resources */,
 				B60616551D1F117700249C11 /* US-EN-Morgan-Freeman-Water-Detected-In-Kitchen.wav in Resources */,
+				11810D50249EAF8D00E741A4 /* POC_pride@2x.png in Resources */,
+				11810D4F249EAF8D00E741A4 /* rainbow_invert@2x.png in Resources */,
 				B60616871D1F117700249C11 /* US-EN-Alexa-Husband-Is-Arriving.wav in Resources */,
 				B60616501D1F117700249C11 /* US-EN-Morgan-Freeman-Turning-On-The-Mood-Lights.wav in Resources */,
 				B42EC0201B3E045A771E909C /* Pods-HomeAssistant-metadata.plist in Resources */,
@@ -3435,7 +3482,6 @@
 				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant-HomeAssistantTests/Pods-HomeAssistant-HomeAssistantTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire-iOS/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage-iOS/AlamofireImage.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
 				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
 				"${BUILT_PRODUCTS_DIR}/CPDAcknowledgements/CPDAcknowledgements.framework",
 				"${BUILT_PRODUCTS_DIR}/CallbackURLKit/CallbackURLKit.framework",
@@ -3480,7 +3526,6 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityIndicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CPDAcknowledgements.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CallbackURLKit.framework",
@@ -3535,7 +3580,6 @@
 				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire-iOS/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage-iOS/AlamofireImage.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
 				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
 				"${BUILT_PRODUCTS_DIR}/CPDAcknowledgements/CPDAcknowledgements.framework",
 				"${BUILT_PRODUCTS_DIR}/CallbackURLKit/CallbackURLKit.framework",
@@ -3580,7 +3624,6 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityIndicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CPDAcknowledgements.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CallbackURLKit.framework",
@@ -4236,6 +4279,7 @@
 				B67CE87B22200F220034C1D0 /* RealmDeviceTracker.swift in Sources */,
 				113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				11AF4D17249C8083006C74C0 /* With.swift in Sources */,
+				119385A5249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */,
 				B67CE8AD22200F220034C1D0 /* AuthenticationAPI.swift in Sources */,
 				B67CE88122200F220034C1D0 /* BinarySensor.swift in Sources */,
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
@@ -4392,6 +4436,7 @@
 				B6C091452151F93D00A326DC /* Zone.swift in Sources */,
 				B6A258482232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				B6B74CBA2283983800D58A68 /* CLKComplication+Strings.swift in Sources */,
+				119385A4249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */,
 				B6624E4F22584F8F00354CDF /* CrashlyticsLogDestination.swift in Sources */,
 				B6C0913D2151F93D00A326DC /* Automation.swift in Sources */,
 				B6C0913E2151F93D00A326DC /* BinarySensor.swift in Sources */,
@@ -4413,6 +4458,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				119385A7249E9F930097F497 /* WebhookSensor+Storage.test.swift in Sources */,
 				11AF4D2C249D965C006C74C0 /* WebhookSensor+Battery.test.swift in Sources */,
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
 				11AF4D2E249DA5AF006C74C0 /* WebhookSensor+Geocoder.test.swift in Sources */,

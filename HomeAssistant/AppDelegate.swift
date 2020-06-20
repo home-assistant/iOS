@@ -7,7 +7,6 @@
 //
 
 import Alamofire
-import AlamofireNetworkActivityIndicator
 import CallbackURLKit
 import Communicator
 import Firebase
@@ -81,8 +80,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
 
         Iconic.registerMaterialDesignIcons()
-
-        NetworkActivityIndicatorManager.shared.isEnabled = true
 
         setupWatchCommunicator()
 
