@@ -1299,6 +1299,16 @@ internal enum L10n {
           internal static let orange = L10n.tr("Localizable", "settings_details.general.app_icon.enum.orange")
           /// Pink
           internal static let pink = L10n.tr("Localizable", "settings_details.general.app_icon.enum.pink")
+          /// Pride: Bi
+          internal static let prideBi = L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_bi")
+          /// Pride: POC
+          internal static let pridePoc = L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_poc")
+          /// Pride: Rainbow
+          internal static let prideRainbow = L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_rainbow")
+          /// Pride: Rainbow (Inverted)
+          internal static let prideRainbowInvert = L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_rainbow_invert")
+          /// Pride: Trans
+          internal static let prideTrans = L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_trans")
           /// Purple
           internal static let purple = L10n.tr("Localizable", "settings_details.general.app_icon.enum.purple")
           /// Red
