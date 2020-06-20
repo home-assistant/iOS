@@ -189,11 +189,12 @@ public class Environment {
 
     /// Wrapper around CMPedometeer
     public struct Pedometer {
+        private let underlyingPedometer = CMPedometer()
         public var isStepCountingAvailable: () -> Bool = CMPedometer.isStepCountingAvailable
-        public var queryStartEndHandler: (
+        public lazy var queryStartEndHandler: (
             Date, Date, @escaping CMPedometerHandler
-        ) -> Void = { start, end, handler in
-            CMPedometer().queryPedometerData(from: start, to: end, withHandler: handler)
+        ) -> Void = { [underlyingPedometer] start, end, handler in
+            underlyingPedometer.queryPedometerData(from: start, to: end, withHandler: handler)
         }
     }
     public var pedometer = Pedometer()
