@@ -10,6 +10,14 @@ import Foundation
 import PromiseKit
 import RealmSwift
 import XCGLogger
+import CoreMotion
+import DeviceKit
+import CoreLocation
+import Version
+#if os(iOS)
+import CoreTelephony
+import Reachability
+#endif
 
 public enum AppConfiguration: Int, CaseIterable {
     case FastlaneSnapshot
@@ -37,6 +45,7 @@ public var Current = Environment()
 public class Environment {
     /// Provides URLs usable for storing data.
     public var date: () -> Date = Date.init
+    public var calendar: () -> Calendar = { Calendar.autoupdatingCurrent }
 
     /// Provides the Client Event store used for local logging.
     public var clientEventStore = ClientEventStore()
@@ -47,6 +56,8 @@ public class Environment {
     public var tokenManager: TokenManager?
 
     public var settingsStore = SettingsStore()
+
+    public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
 
     #if os(iOS)
     public var authenticationControllerPresenter: ((UIViewController) -> Void)?
@@ -163,4 +174,70 @@ public class Environment {
 
         return log
     }()
+
+    /// Wrapper around CMMotionActivityManager
+    public struct Motion {
+        private let underlyingManager = CMMotionActivityManager()
+        public var isActivityAvailable: () -> Bool = CMMotionActivityManager.isActivityAvailable
+        public lazy var queryStartEndOnQueueHandler: (
+            Date, Date, OperationQueue, @escaping CMMotionActivityQueryHandler
+        ) -> Void = { [underlyingManager] start, end, queue, handler in
+            underlyingManager.queryActivityStarting(from: start, to: end, to: queue, withHandler: handler)
+        }
+    }
+    public var motion = Motion()
+
+    /// Wrapper around CMPedometeer
+    public struct Pedometer {
+        public var isStepCountingAvailable: () -> Bool = CMPedometer.isStepCountingAvailable
+        public var queryStartEndHandler: (
+            Date, Date, @escaping CMPedometerHandler
+        ) -> Void = { start, end, handler in
+            CMPedometer().queryPedometerData(from: start, to: end, withHandler: handler)
+        }
+    }
+    public var pedometer = Pedometer()
+
+    /// Wrapper around DeviceKit
+    public struct DeviceWrapper {
+        public lazy var batteryLevel: () -> Int = { Device.current.batteryLevel ?? 0 }
+        public lazy var batteryState: () -> Device.BatteryState = { Device.current.batteryState ?? .full }
+        public lazy var isLowPowerMode: () -> Bool = { Device.current.batteryState?.lowPowerMode ?? false }
+    }
+    public var device = DeviceWrapper()
+
+    /// Wrapper around CLGeocoder
+    public struct Geocoder {
+        public var geocode: (CLLocation) -> Promise<[CLPlacemark]> = CLGeocoder.geocode(location:)
+    }
+    public var geocoder = Geocoder()
+
+    /// Wrapper around CoreTelephony, Reachability
+    public struct Connectivity {
+        public var currentWiFiSSID: () -> String? = { ConnectionInfo.CurrentWiFiSSID }
+        public var currentWiFiBSSID: () -> String? = { ConnectionInfo.CurrentWiFiBSSID }
+        #if os(iOS)
+        public var simpleNetworkType: () -> NetworkType = Reachability.getSimpleNetworkType
+        public var cellularNetworkType: () -> NetworkType = Reachability.getNetworkType
+
+        public var telephonyCarriers: () -> [String: CTCarrier]? = {
+            let info = CTTelephonyNetworkInfo()
+
+            if #available(iOS 12, *) {
+                return info.serviceSubscriberCellularProviders
+            } else {
+                return info.subscriberCellularProvider.flatMap { ["1": $0] }
+            }
+        }
+        public var telephonyRadioAccessTechnology: () -> [String: String]? = {
+            let info = CTTelephonyNetworkInfo()
+            if #available(iOS 12, *) {
+                return info.serviceCurrentRadioAccessTechnology
+            } else {
+                return info.currentRadioAccessTechnology.flatMap { ["1": $0] }
+            }
+        }
+        #endif
+    }
+    public var connectivity = Connectivity()
 }

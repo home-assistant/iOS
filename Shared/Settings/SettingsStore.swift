@@ -11,6 +11,7 @@ import KeychainAccess
 import DeviceKit
 import CoreLocation
 import CoreMotion
+import Version
 #if os(iOS)
 import UIKit
 #elseif os(watchOS)
@@ -76,6 +77,23 @@ public class SettingsStore {
             } catch {
                 assertionFailure("Error while saving token info: \(error)")
             }
+        }
+    }
+
+    internal var serverVersion: Version {
+        // access this publicly using Environment
+        let fallback = HomeAssistantAPI.minimumRequiredVersion
+
+        guard let string = prefs.string(forKey: "version") else {
+            Current.Log.info("couldn't find version string, falling back")
+            return fallback
+        }
+
+        do {
+            return try Version(hassVersion: string)
+        } catch {
+            Current.Log.error("couldn't parse version '\(string)': \(error)")
+            return fallback
         }
     }
 
@@ -163,23 +181,6 @@ public class SettingsStore {
         }
     }
     #endif
-
-    public var motionEnabled: Bool {
-        get {
-            if #available(iOS 11.0, *) {
-                return CMPedometer.authorizationStatus() == .authorized
-            } else {
-                return prefs.bool(forKey: "motionEnabled")
-            }
-        }
-        set {
-            if #available(iOS 11.0, *) {
-                return
-            } else {
-                prefs.set(newValue, forKey: "motionEnabled")
-            }
-        }
-    }
 
     public var showAdvancedConnectionSettings: Bool {
         get {
