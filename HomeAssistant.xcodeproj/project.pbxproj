@@ -19,9 +19,6 @@
 		113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */; };
 		113D29E324946F930014067C /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E224946F930014067C /* OneShotLocationManager.swift */; };
 		113D29E424946F930014067C /* OneShotLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E224946F930014067C /* OneShotLocationManager.swift */; };
-		119385A4249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */; };
-		119385A5249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */; };
-		119385A7249E9F930097F497 /* WebhookSensor+Storage.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */; };
 		11810D4A249EAF8D00E741A4 /* rainbow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D40249EAF8B00E741A4 /* rainbow@2x.png */; };
 		11810D4B249EAF8D00E741A4 /* trans@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D41249EAF8C00E741A4 /* trans@3x.png */; };
 		11810D4C249EAF8D00E741A4 /* trans@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D42249EAF8C00E741A4 /* trans@2x.png */; };
@@ -32,6 +29,9 @@
 		11810D51249EAF8D00E741A4 /* rainbow_invert@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D47249EAF8C00E741A4 /* rainbow_invert@3x.png */; };
 		11810D52249EAF8D00E741A4 /* bi_pride@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D48249EAF8C00E741A4 /* bi_pride@3x.png */; };
 		11810D53249EAF8D00E741A4 /* POC_pride@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D49249EAF8D00E741A4 /* POC_pride@3x.png */; };
+		119385A4249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */; };
+		119385A5249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */; };
+		119385A7249E9F930097F497 /* WebhookSensor+Storage.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
 		11AF4D13249C7E08006C74C0 /* WebhookSensor+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */; };
 		11AF4D14249C7E09006C74C0 /* WebhookSensor+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */; };
@@ -765,8 +765,6 @@
 		113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+OneShotLocationTests.swift"; sourceTree = "<group>"; };
 		113D29E224946F930014067C /* OneShotLocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneShotLocationManager.swift; sourceTree = "<group>"; };
 		1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.swift"; sourceTree = "<group>"; };
-		119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.test.swift"; sourceTree = "<group>"; };
 		11810D40249EAF8B00E741A4 /* rainbow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow@2x.png"; sourceTree = "<group>"; };
 		11810D41249EAF8C00E741A4 /* trans@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@3x.png"; sourceTree = "<group>"; };
 		11810D42249EAF8C00E741A4 /* trans@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@2x.png"; sourceTree = "<group>"; };
@@ -777,6 +775,8 @@
 		11810D47249EAF8C00E741A4 /* rainbow_invert@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow_invert@3x.png"; sourceTree = "<group>"; };
 		11810D48249EAF8C00E741A4 /* bi_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bi_pride@3x.png"; sourceTree = "<group>"; };
 		11810D49249EAF8D00E741A4 /* POC_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "POC_pride@3x.png"; sourceTree = "<group>"; };
+		119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.swift"; sourceTree = "<group>"; };
+		119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.test.swift"; sourceTree = "<group>"; };
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Activity.swift"; sourceTree = "<group>"; };
 		11AF4D15249C8082006C74C0 /* With.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = With.swift; sourceTree = "<group>"; };
