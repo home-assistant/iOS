@@ -192,6 +192,51 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
+			<key>trans</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>trans</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>rainbow_invert</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>rainbow_invert</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>rainbow</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>rainbow</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>bi_pride</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>bi_pride</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>POC_pride</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>POC_pride</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
 		</dict>
 		<key>CFBundlePrimaryIcon</key>
 		<dict>
@@ -383,6 +428,51 @@
 				<key>CFBundleIconFiles</key>
 				<array>
 					<string>white</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>trans</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>trans</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>rainbow_invert</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>rainbow_invert</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>rainbow</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>rainbow</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>bi_pride</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>bi_pride</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>POC_pride</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>POC_pride</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>

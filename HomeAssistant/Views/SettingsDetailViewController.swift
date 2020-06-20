@@ -794,6 +794,11 @@ enum AppIcon: String, CaseIterable {
     case Purple = "purple"
     case Red = "red"
     case White = "white"
+    case BiPride = "bi_pride"
+    case POCPride = "POC_pride"
+    case Rainbow = "rainbow"
+    case RainbowInvert = "rainbow_invert"
+    case Trans = "trans"
 
     var title: String {
         switch self {
@@ -837,6 +842,16 @@ enum AppIcon: String, CaseIterable {
             return L10n.SettingsDetails.General.AppIcon.Enum.red
         case .White:
             return L10n.SettingsDetails.General.AppIcon.Enum.white
+        case .BiPride:
+            return L10n.SettingsDetails.General.AppIcon.Enum.prideBi
+        case .POCPride:
+            return L10n.SettingsDetails.General.AppIcon.Enum.pridePoc
+        case .Rainbow:
+            return L10n.SettingsDetails.General.AppIcon.Enum.prideRainbow
+        case .RainbowInvert:
+            return L10n.SettingsDetails.General.AppIcon.Enum.prideRainbowInvert
+        case .Trans:
+            return L10n.SettingsDetails.General.AppIcon.Enum.prideTrans
         }
     }
 }
