@@ -11,6 +11,7 @@ import KeychainAccess
 import DeviceKit
 import CoreLocation
 import CoreMotion
+import Version
 #if os(iOS)
 import UIKit
 #elseif os(watchOS)
@@ -77,6 +78,12 @@ public class SettingsStore {
                 assertionFailure("Error while saving token info: \(error)")
             }
         }
+    }
+
+    internal var serverVersion: Version {
+        // access this publicly using Environment
+        let sanitizedString = prefs.string(forKey: "version")?.replacingOccurrences(of: ".dev", with: "-dev")
+        return sanitizedString.flatMap(Version.init(_:)) ?? HomeAssistantAPI.minimumRequiredVersion
     }
 
     public var authenticatedUser: AuthenticatedUser? {

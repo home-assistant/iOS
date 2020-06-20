@@ -13,6 +13,7 @@ import XCGLogger
 import CoreMotion
 import DeviceKit
 import CoreLocation
+import Version
 #if os(iOS)
 import CoreTelephony
 import Reachability
@@ -55,6 +56,8 @@ public class Environment {
     public var tokenManager: TokenManager?
 
     public var settingsStore = SettingsStore()
+
+    public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
 
     #if os(iOS)
     public var authenticationControllerPresenter: ((UIViewController) -> Void)?
