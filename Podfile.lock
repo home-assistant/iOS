@@ -215,8 +215,6 @@ PODS:
   - Alamofire (4.9.1)
   - AlamofireImage (3.6.0):
     - Alamofire (~> 4.9)
-  - AlamofireNetworkActivityIndicator (2.3.0):
-    - Alamofire (~> 4.7)
   - BoringSSL-GRPC (0.0.7):
     - BoringSSL-GRPC/Implementation (= 0.0.7)
     - BoringSSL-GRPC/Interface (= 0.0.7)
@@ -235,54 +233,48 @@ PODS:
   - DeviceKit (3.2.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.2.1)
-  - Firebase/Analytics (6.26.0):
+  - Firebase/Analytics (6.27.0):
     - Firebase/Core
-  - Firebase/Core (6.26.0):
+  - Firebase/Core (6.27.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (= 6.6.0)
-  - Firebase/CoreOnly (6.26.0):
-    - FirebaseCore (= 6.7.2)
-  - Firebase/Crashlytics (6.26.0):
+    - FirebaseAnalytics (= 6.6.1)
+  - Firebase/CoreOnly (6.27.0):
+    - FirebaseCore (= 6.8.0)
+  - Firebase/Crashlytics (6.27.0):
     - Firebase/CoreOnly
-    - FirebaseCrashlytics (~> 4.1.1)
-  - Firebase/Firestore (6.26.0):
+    - FirebaseCrashlytics (~> 4.2.0)
+  - Firebase/Firestore (6.27.0):
     - Firebase/CoreOnly
-    - FirebaseFirestore (~> 1.15.0)
-  - Firebase/Messaging (6.26.0):
+    - FirebaseFirestore (~> 1.16.0)
+  - Firebase/Messaging (6.27.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 4.4.1)
-  - FirebaseAnalytics (6.6.0):
-    - FirebaseCore (~> 6.7)
-    - FirebaseInstallations (~> 1.3)
-    - GoogleAppMeasurement (= 6.6.0)
+    - FirebaseMessaging (~> 4.5.0)
+  - FirebaseAnalytics (6.6.1):
+    - FirebaseCore (~> 6.8)
+    - FirebaseInstallations (~> 1.4)
+    - GoogleAppMeasurement (= 6.6.1)
     - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
     - GoogleUtilities/MethodSwizzler (~> 6.0)
     - GoogleUtilities/Network (~> 6.0)
     - "GoogleUtilities/NSData+zlib (~> 6.0)"
     - nanopb (~> 1.30905.0)
-  - FirebaseAnalyticsInterop (1.5.0)
-  - FirebaseAuthInterop (1.1.0)
-  - FirebaseCore (6.7.2):
+  - FirebaseCore (6.8.0):
     - FirebaseCoreDiagnostics (~> 1.3)
-    - FirebaseCoreDiagnosticsInterop (~> 1.2)
     - GoogleUtilities/Environment (~> 6.5)
     - GoogleUtilities/Logger (~> 6.5)
-  - FirebaseCoreDiagnostics (1.3.0):
-    - FirebaseCoreDiagnosticsInterop (~> 1.2)
+  - FirebaseCoreDiagnostics (1.4.0):
     - GoogleDataTransportCCTSupport (~> 3.1)
     - GoogleUtilities/Environment (~> 6.5)
     - GoogleUtilities/Logger (~> 6.5)
     - nanopb (~> 1.30905.0)
-  - FirebaseCoreDiagnosticsInterop (1.2.0)
-  - FirebaseCrashlytics (4.1.1):
-    - FirebaseAnalyticsInterop (~> 1.2)
-    - FirebaseCore (~> 6.6)
+  - FirebaseCrashlytics (4.2.0):
+    - FirebaseCore (~> 6.8)
     - FirebaseInstallations (~> 1.1)
     - GoogleDataTransport (~> 6.1)
     - GoogleDataTransportCCTSupport (~> 3.1)
     - nanopb (~> 1.30905.0)
     - PromisesObjC (~> 1.2)
-  - FirebaseFirestore (1.15.0):
+  - FirebaseFirestore (1.16.0):
     - abseil/algorithm (= 0.20200225.0)
     - abseil/base (= 0.20200225.0)
     - abseil/memory (= 0.20200225.0)
@@ -290,38 +282,36 @@ PODS:
     - abseil/strings/strings (= 0.20200225.0)
     - abseil/time (= 0.20200225.0)
     - abseil/types (= 0.20200225.0)
-    - FirebaseAuthInterop (~> 1.0)
-    - FirebaseCore (~> 6.2)
+    - FirebaseCore (~> 6.8)
     - "gRPC-C++ (~> 1.28.0)"
     - leveldb-library (~> 1.22)
     - nanopb (~> 1.30905.0)
-  - FirebaseInstallations (1.3.0):
-    - FirebaseCore (~> 6.6)
+  - FirebaseInstallations (1.4.0):
+    - FirebaseCore (~> 6.8)
     - GoogleUtilities/Environment (~> 6.6)
     - GoogleUtilities/UserDefaults (~> 6.6)
     - PromisesObjC (~> 1.2)
-  - FirebaseInstanceID (4.3.4):
-    - FirebaseCore (~> 6.6)
+  - FirebaseInstanceID (4.4.0):
+    - FirebaseCore (~> 6.8)
     - FirebaseInstallations (~> 1.0)
     - GoogleUtilities/Environment (~> 6.5)
     - GoogleUtilities/UserDefaults (~> 6.5)
-  - FirebaseMessaging (4.4.1):
-    - FirebaseAnalyticsInterop (~> 1.5)
-    - FirebaseCore (~> 6.6)
+  - FirebaseMessaging (4.5.0):
+    - FirebaseCore (~> 6.8)
     - FirebaseInstanceID (~> 4.3)
     - GoogleUtilities/AppDelegateSwizzler (~> 6.5)
     - GoogleUtilities/Environment (~> 6.5)
     - GoogleUtilities/Reachability (~> 6.5)
     - GoogleUtilities/UserDefaults (~> 6.5)
     - Protobuf (>= 3.9.2, ~> 3.9)
-  - GoogleAppMeasurement (6.6.0):
+  - GoogleAppMeasurement (6.6.1):
     - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
     - GoogleUtilities/MethodSwizzler (~> 6.0)
     - GoogleUtilities/Network (~> 6.0)
     - "GoogleUtilities/NSData+zlib (~> 6.0)"
     - nanopb (~> 1.30905.0)
   - GoogleDataTransport (6.2.1)
-  - GoogleDataTransportCCTSupport (3.1.0):
+  - GoogleDataTransportCCTSupport (3.2.0):
     - GoogleDataTransport (~> 6.1)
     - nanopb (~> 1.30905.0)
   - GoogleUtilities/AppDelegateSwizzler (6.6.0):
@@ -372,9 +362,9 @@ PODS:
   - leveldb-library (1.22)
   - Lokalise (0.10.0)
   - lottie-ios (3.1.8)
-  - MaterialComponents/AnimationTiming (109.6.0)
-  - MaterialComponents/Availability (109.6.0)
-  - MaterialComponents/Buttons (109.6.0):
+  - MaterialComponents/AnimationTiming (109.8.0)
+  - MaterialComponents/Availability (109.8.0)
+  - MaterialComponents/Buttons (109.8.0):
     - MaterialComponents/Elevation
     - MaterialComponents/Ink
     - MaterialComponents/private/Math
@@ -386,65 +376,65 @@ PODS:
     - MaterialComponents/Typography
     - MDFInternationalization
     - MDFTextAccessibility
-  - "MaterialComponents/Buttons+ButtonThemer (109.6.0)":
+  - "MaterialComponents/Buttons+ButtonThemer (109.8.0)":
     - MaterialComponents/Buttons
     - "MaterialComponents/Buttons+ColorThemer"
     - "MaterialComponents/Buttons+ShapeThemer"
     - "MaterialComponents/Buttons+TypographyThemer"
     - MaterialComponents/Palettes
-  - "MaterialComponents/Buttons+ColorThemer (109.6.0)":
+  - "MaterialComponents/Buttons+ColorThemer (109.8.0)":
     - MaterialComponents/Buttons
     - MaterialComponents/schemes/Color
-  - "MaterialComponents/Buttons+ShapeThemer (109.6.0)":
+  - "MaterialComponents/Buttons+ShapeThemer (109.8.0)":
     - MaterialComponents/Buttons
     - MaterialComponents/schemes/Shape
-  - "MaterialComponents/Buttons+TypographyThemer (109.6.0)":
+  - "MaterialComponents/Buttons+TypographyThemer (109.8.0)":
     - MaterialComponents/Buttons
     - MaterialComponents/schemes/Typography
-  - MaterialComponents/Elevation (109.6.0):
+  - MaterialComponents/Elevation (109.8.0):
     - MaterialComponents/Availability
     - MaterialComponents/private/Color
     - MaterialComponents/private/Math
-  - MaterialComponents/Ink (109.6.0):
+  - MaterialComponents/Ink (109.8.0):
     - MaterialComponents/Availability
     - MaterialComponents/private/Color
     - MaterialComponents/private/Math
-  - MaterialComponents/Palettes (109.6.0)
-  - MaterialComponents/private/Application (109.6.0)
-  - MaterialComponents/private/Color (109.6.0):
+  - MaterialComponents/Palettes (109.8.0)
+  - MaterialComponents/private/Application (109.8.0)
+  - MaterialComponents/private/Color (109.8.0):
     - MaterialComponents/Availability
-  - MaterialComponents/private/Math (109.6.0)
-  - MaterialComponents/Ripple (109.6.0):
+  - MaterialComponents/private/Math (109.8.0)
+  - MaterialComponents/Ripple (109.8.0):
     - MaterialComponents/AnimationTiming
     - MaterialComponents/Availability
     - MaterialComponents/private/Color
     - MaterialComponents/private/Math
-  - MaterialComponents/schemes/Color (109.6.0):
+  - MaterialComponents/schemes/Color (109.8.0):
     - MaterialComponents/Availability
     - MaterialComponents/private/Color
-  - MaterialComponents/schemes/Shape (109.6.0):
+  - MaterialComponents/schemes/Shape (109.8.0):
     - MaterialComponents/ShapeLibrary
     - MaterialComponents/Shapes
-  - MaterialComponents/schemes/Typography (109.6.0):
+  - MaterialComponents/schemes/Typography (109.8.0):
     - "MaterialComponents/schemes/Typography+BasicFontScheme"
     - "MaterialComponents/schemes/Typography+Scheming"
     - MaterialComponents/Typography
-  - "MaterialComponents/schemes/Typography+BasicFontScheme (109.6.0)"
-  - "MaterialComponents/schemes/Typography+Scheming (109.6.0)"
-  - MaterialComponents/ShadowElevations (109.6.0)
-  - MaterialComponents/ShadowLayer (109.6.0):
+  - "MaterialComponents/schemes/Typography+BasicFontScheme (109.8.0)"
+  - "MaterialComponents/schemes/Typography+Scheming (109.8.0)"
+  - MaterialComponents/ShadowElevations (109.8.0)
+  - MaterialComponents/ShadowLayer (109.8.0):
     - MaterialComponents/ShadowElevations
-  - MaterialComponents/ShapeLibrary (109.6.0):
+  - MaterialComponents/ShapeLibrary (109.8.0):
     - MaterialComponents/private/Math
     - MaterialComponents/Shapes
-  - MaterialComponents/Shapes (109.6.0):
+  - MaterialComponents/Shapes (109.8.0):
     - MaterialComponents/private/Color
     - MaterialComponents/private/Math
     - MaterialComponents/ShadowLayer
-  - MaterialComponents/Typography (109.6.0):
+  - MaterialComponents/Typography (109.8.0):
     - MaterialComponents/private/Application
     - MaterialComponents/private/Math
-  - MBProgressHUD (1.1.0)
+  - MBProgressHUD (1.2.0)
   - MDFInternationalization (2.0.0)
   - MDFTextAccessibility (2.0.0)
   - nanopb (1.30905.0):
@@ -468,11 +458,11 @@ PODS:
   - PromisesObjC (1.2.9)
   - Protobuf (3.12.0)
   - ReachabilitySwift (5.0.0)
-  - Realm (5.0.2):
-    - Realm/Headers (= 5.0.2)
-  - Realm/Headers (5.0.2)
-  - RealmSwift (5.0.2):
-    - Realm (= 5.0.2)
+  - Realm (5.0.3):
+    - Realm/Headers (= 5.0.3)
+  - Realm/Headers (5.0.3)
+  - RealmSwift (5.0.3):
+    - Realm (= 5.0.3)
   - SimulatorStatusMagic (2.4.1)
   - Sodium (0.8.0)
   - SwiftGen (6.1.0)
@@ -482,10 +472,10 @@ PODS:
   - SwiftMessages/App (7.0.1)
   - TABObserverSet (2.1.0)
   - UIColor_Hex_Swift (5.1.0)
-  - Version (0.6.3)
+  - Version (0.8.0)
   - ViewRow (0.8):
     - Eureka (>= 5.0.0)
-  - WhatsNewKit (1.3.3)
+  - WhatsNewKit (1.3.4)
   - XCGLogger (7.0.1):
     - XCGLogger/Core (= 7.0.1)
   - XCGLogger/Core (7.0.1):
@@ -493,9 +483,8 @@ PODS:
   - ZIPFoundation (0.9.11)
 
 DEPENDENCIES:
-  - Alamofire
-  - AlamofireImage
-  - AlamofireNetworkActivityIndicator (~> 2.3.0)
+  - Alamofire (~> 4.0)
+  - AlamofireImage (~> 3.5)
   - CallbackURLKit
   - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `master`)
   - Communicator (~> 3.3.0)
@@ -514,18 +503,18 @@ DEPENDENCIES:
   - lottie-ios
   - MaterialComponents/Buttons
   - "MaterialComponents/Buttons+ButtonThemer"
-  - MBProgressHUD (~> 1.1.0)
+  - MBProgressHUD (~> 1.2.0)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - PromiseKit
   - ReachabilitySwift
-  - RealmSwift
+  - RealmSwift (~> 5.0)
   - SimulatorStatusMagic
   - Sodium
   - SwiftGen (~> 6.1.0)
   - SwiftLint (~> 0.39.2)
   - SwiftMessages (from `https://github.com/SwiftKickMobile/SwiftMessages.git`, branch `master`)
   - UIColor_Hex_Swift
-  - Version (from `https://github.com/guykogus/Version.git`, branch `master`)
+  - Version
   - ViewRow (from `https://github.com/EurekaCommunity/ViewRow`, branch `master`)
   - WhatsNewKit
   - XCGLogger
@@ -536,18 +525,14 @@ SPEC REPOS:
     - abseil
     - Alamofire
     - AlamofireImage
-    - AlamofireNetworkActivityIndicator
     - BoringSSL-GRPC
     - CallbackURLKit
     - Communicator
     - DeviceKit
     - Firebase
     - FirebaseAnalytics
-    - FirebaseAnalyticsInterop
-    - FirebaseAuthInterop
     - FirebaseCore
     - FirebaseCoreDiagnostics
-    - FirebaseCoreDiagnosticsInterop
     - FirebaseCrashlytics
     - FirebaseFirestore
     - FirebaseInstallations
@@ -581,6 +566,7 @@ SPEC REPOS:
     - SwiftLint
     - TABObserverSet
     - UIColor_Hex_Swift
+    - Version
     - WhatsNewKit
     - XCGLogger
     - ZIPFoundation
@@ -607,9 +593,6 @@ EXTERNAL SOURCES:
   SwiftMessages:
     :branch: master
     :git: https://github.com/SwiftKickMobile/SwiftMessages.git
-  Version:
-    :branch: master
-    :git: https://github.com/guykogus/Version.git
   ViewRow:
     :branch: master
     :git: https://github.com/EurekaCommunity/ViewRow
@@ -625,7 +608,7 @@ CHECKOUT OPTIONS:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   Eureka:
-    :commit: 62484db23cbb1db5b90cd9e6df08dd5e976c4d8a
+    :commit: 7e98517da7deef25725d1422cf1491b4d37e6210
     :git: https://github.com/xmartlabs/Eureka.git
   Iconic:
     :commit: 48b595d947e5fbb4a239340bd7cac176f053313c
@@ -636,9 +619,6 @@ CHECKOUT OPTIONS:
   SwiftMessages:
     :commit: 3dacbdef7f681c9ca40b215cc3dd05b5d49197dd
     :git: https://github.com/SwiftKickMobile/SwiftMessages.git
-  Version:
-    :commit: 4c7377234ca33fa4020730d42b8500ff60946da0
-    :git: https://github.com/guykogus/Version.git
   ViewRow:
     :commit: 448675ebb274b69d47105c18a8e9e7ab1d2652b1
     :git: https://github.com/EurekaCommunity/ViewRow
@@ -647,7 +627,6 @@ SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
   AlamofireImage: be9963c6582d68b39e89191f64c82a7d7bf40fdd
-  AlamofireNetworkActivityIndicator: 18346ff6d770d9513d0ac6f2d99706f40f93dbaa
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   CallbackURLKit: a940d1b869c70e1fa700ea06f988ba2a8963dafb
   ColorPickerRow: 409acc262ca04283eb56f54e813e775d2e99741e
@@ -656,21 +635,18 @@ SPEC CHECKSUMS:
   DeviceKit: d081659419cce07c0b5239dbc9fb39ed7413c7fe
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: c883105488e05bc65539f583246ecf9657cabbfe
-  Firebase: 7cf5f9c67f03cb3b606d1d6535286e1080e57eb6
-  FirebaseAnalytics: 96634d356482d4f3af8fe459a0ebf19a99c71b75
-  FirebaseAnalyticsInterop: 3f86269c38ae41f47afeb43ebf32a001f58fcdae
-  FirebaseAuthInterop: a0f37ae05833af156e72028f648d313f7e7592e9
-  FirebaseCore: f42e5e5f382cdcf6b617ed737bf6c871a6947b17
-  FirebaseCoreDiagnostics: 4a773a47bd83bbd5a9b1ccf1ce7caa8b2d535e67
-  FirebaseCoreDiagnosticsInterop: 296e2c5f5314500a850ad0b83e9e7c10b011a850
-  FirebaseCrashlytics: a87cce5746d3335995bd18b1b60d073cd05a6920
-  FirebaseFirestore: 8c158bdde010fa397386333a74570eaef033e62d
-  FirebaseInstallations: 6f5f680e65dc374397a483c32d1799ba822a395b
-  FirebaseInstanceID: cef67c4967c7cecb56ea65d8acbb4834825c587b
-  FirebaseMessaging: 29543feb343b09546ab3aa04d008ee8595b43c44
-  GoogleAppMeasurement: 67458367830514fb20fd9e233496f1eef9d90185
+  Firebase: fc4cbf6f1592636431821ef9a3c557e4dfd9f268
+  FirebaseAnalytics: 0ea640473474f036cabbc2576e20c2d63671c92f
+  FirebaseCore: feda061cb1ee6d8ad4824f4a4a8ffbcfe284f595
+  FirebaseCoreDiagnostics: 4505e4d4009b1d93f605088ee7d7764d5f0d1c84
+  FirebaseCrashlytics: 7d0fa02ea8842cc4b2ab07b0735edafde1ad77d6
+  FirebaseFirestore: 4291ab811ad323a2b807a4a481cd5df2e445a676
+  FirebaseInstallations: 293f567159b6d66d1c990f13bb868066096c94ec
+  FirebaseInstanceID: 3b119bfe90e904851218159c9a4ecb847cc51d18
+  FirebaseMessaging: ad9e1a80ea64905e01a0ce1b3eb76a2944544151
+  GoogleAppMeasurement: 2fd5c5a56c069db635c8e7b92d4809a9591d0a69
   GoogleDataTransport: 9a8a16f79feffc7f42096743de2a7c4815e84020
-  GoogleDataTransportCCTSupport: d70a561f7d236af529fee598835caad5e25f6d3d
+  GoogleDataTransportCCTSupport: 489c1265d2c85b68187a83a911913d190012158d
   GoogleUtilities: 39530bc0ad980530298e9c4af8549e991fd033b1
   "gRPC-C++": 13d8ccef97d5c3c441b7e3c529ef28ebee86fad2
   gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
@@ -679,8 +655,8 @@ SPEC CHECKSUMS:
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   Lokalise: bc42066e2dde59b43b46e88ecc0b92b7d593dc72
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
-  MaterialComponents: 7c5a7d77fbe08aca9383fc97aeb7423b1fbce6b4
-  MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
+  MaterialComponents: 00df0652f52cd6968b02d531bd2e6956b0f907b8
+  MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   MDFInternationalization: 010097556d6b09d2c4ea38e0820ea6d37be6a314
   MDFTextAccessibility: 85c09a1bd9c321f494348e632a25063bcda35a53
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
@@ -690,8 +666,8 @@ SPEC CHECKSUMS:
   PromisesObjC: b48e0338dbbac2207e611750777895f7a5811b75
   Protobuf: 2793fcd0622a00b546c60e7cbbcc493e043e9bb9
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Realm: 6b6f096671b64b04d08974177cabb2ff9343d153
-  RealmSwift: a3db6be0488bf3e1d5314c2956cefe98a65cdd01
+  Realm: bfca1699b61b0b17c3a69ae0e648314eae91fbdb
+  RealmSwift: 493c9f089cd3893b3959007973c0e4f640906ba0
   SimulatorStatusMagic: 28d4a9d1a500ac7cea0b2b5a43c1c6ddb40ba56c
   Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
   SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
@@ -699,12 +675,12 @@ SPEC CHECKSUMS:
   SwiftMessages: 717510963fb9c9215c58f38bbc74801e4bf134c6
   TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
   UIColor_Hex_Swift: 8be7432edacb7fa91c78aa05ef3c30b66e4f9415
-  Version: d735da1cdc6734c97e5208b1449d0b51d385e58b
+  Version: de5907f2c5d0f3cf21708db7801d1d5401139486
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
-  WhatsNewKit: 3cbe30a202cc387086a977deba52af50f61c656f
+  WhatsNewKit: 35f25faa0e17f3ad9b825ba46b13a14279972973
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 654236e77e081cd3a6d9523c3333ed20df1e1f76
+PODFILE CHECKSUM: 688129178234f0a92367485836888dd801508c30
 
 COCOAPODS: 1.9.3
