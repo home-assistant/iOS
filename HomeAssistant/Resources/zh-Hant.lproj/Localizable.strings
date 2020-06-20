@@ -762,3 +762,7 @@
 "settings_sensors.periodic_update.title" = "週期更新";
 "settings_sensors.periodic_update.description" = "開啟後、傳感器將會開啟設定時間長持續更新。";
 "settings_sensors.periodic_update.off" = "關閉";
+"location_change_notification.launch.body" = "Location updated via app launch";
+"location_change_notification.periodic.body" = "Location updated via periodic update";
+"extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
+"settings_details.general.device_name.title" = "Device Name";

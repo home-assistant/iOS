@@ -14,8 +14,8 @@
 "settings.connection_section.header" = "Forbindelse";
 "settings.connection_section.invalid_url_scheme_notification.title" = "Ugyldig webadresse";
 "settings.connection_section.invalid_url_scheme_notification.message" = "Webadressen skal begynde med enten http:// eller https://.";
-"settings.connection_section.error_enabling_notifications.title" = "Fejl under aktivering af meddelelser";
-"settings.connection_section.error_enabling_notifications.message" = "Der opstod en fejl under aktivering af meddelelser. Prøv igen.";
+"settings.connection_section.error_enabling_notifications.title" = "Fejl under aktivering af notifikationer";
+"settings.connection_section.error_enabling_notifications.message" = "Der opstod en fejl under aktivering af notifikationer. Prøv igen.";
 "settings.connection_section.api_password_row.title" = "Adgangskode";
 "settings.connection_section.api_password_row.placeholder" = "adgangskode";
 "settings.connection_section.connect_row.title" = "Opret forbindelse";
@@ -32,27 +32,27 @@
 "settings.status_section.connected_to_sse_row.title" = "Forbundet";
 "settings.status_section.ios_component_loaded_row.title" = "iOS-komponent indlæst";
 "settings.status_section.device_tracker_component_loaded_row.title" = "Komponent til enhedssporing indlæst";
-"settings.status_section.notify_platform_loaded_row.title" = "iOS-meddelelsesplatform indlæst";
-"settings.device_id_section.footer" = "Enheds-id er det id, der bruges, når der sendes lokalitetsopdateringer til Home Assistant, samt målet push-meddelelser sendes til.";
+"settings.status_section.notify_platform_loaded_row.title" = "iOS-notifikationsplatform indlæst";
+"settings.device_id_section.footer" = "Enheds-id er det id, der bruges, når der sendes lokalitetsopdateringer til Home Assistant, samt målet push-notifikationer sendes til.";
 "settings.device_id_section.device_id_row.title" = "Enheds-id";
 "settings.general_settings_button.title" = "Generelt";
 "settings.details_section.enable_location_row.title" = "Aktivér sporing af lokalitet";
 "settings.details_section.location_settings_row.title" = "Lokalitet";
-"settings.details_section.enable_notification_row.title" = "Aktivér meddelelser";
-"settings.details_section.notification_settings_row.title" = "Meddelelser";
+"settings.details_section.enable_notification_row.title" = "Aktivér notifikationer";
+"settings.details_section.notification_settings_row.title" = "Notifikationer";
 "settings.reset_section.reset_row.title" = "Nulstil";
 "settings.reset_section.reset_alert.title" = "Nulstil";
-"settings.reset_section.reset_alert.message" = "Dine indstillinger nulstilles, og denne enhed vil blive afregistreret fra push-meddelelser og fjernes fra din Home Assistant-konfiguration.";
+"settings.reset_section.reset_alert.message" = "Dine indstillinger nulstilles, og denne enhed vil blive afregistreret fra push-notifikationer og fjernes fra din Home Assistant-konfiguration.";
 "settings_details.general.title" = "Generelt";
 "settings_details.general.chrome.title" = "Åbn links i Chrome";
 "settings_details.location.title" = "Lokalitet";
-"settings_details.location.notifications.header" = "Lokalitetsmeddelelser";
-"settings_details.location.notifications.enter.title" = "Ankom til zone-meddelelser";
-"settings_details.location.notifications.exit.title" = "Forlod zone-meddelelser";
-"settings_details.location.notifications.beacon_enter.title" = "Ankom til zone via iBeacon-meddelelser";
-"settings_details.location.notifications.beacon_exit.title" = "Forlod zone via iBeacon-meddelelser";
-"settings_details.location.notifications.location_change.title" = "Meddelelser om signifikant lokalitetsændring";
-"settings_details.location.notifications.background_fetch.title" = "Hent meddelelser i baggrunden";
+"settings_details.location.notifications.header" = "Lokalitetsnotifikationer";
+"settings_details.location.notifications.enter.title" = "Ankom til zone-notifikationer";
+"settings_details.location.notifications.exit.title" = "Forlod zone-notifikationer";
+"settings_details.location.notifications.beacon_enter.title" = "Ankom til zone via iBeacon-notifikationer";
+"settings_details.location.notifications.beacon_exit.title" = "Forlod zone via iBeacon-notifikationer";
+"settings_details.location.notifications.location_change.title" = "Notifikationer om signifikant lokalitetsændring";
+"settings_details.location.notifications.background_fetch.title" = "Hent notifikationer i baggrunden";
 "settings_details.location.zones.enter_exit_tracked.title" = "Ankom/forlad sporet";
 "settings_details.location.zones.location.title" = "Lokalitet";
 "settings_details.location.zones.radius.title" = "Radius";
@@ -61,24 +61,24 @@
 "settings_details.location.zones.beacon_major.title" = "iBeacon Major";
 "settings_details.location.zones.beacon_minor.title" = "iBeacon Minor";
 "settings_details.location.zones.footer" = "For at deaktivere lokalitetssporing skal du tilføje 'track_ios: false' til hver zones indstillinger eller under tilpasning.";
-"settings_details.notifications.title" = "Meddelelser";
-"settings_details.notifications.push_id_section.header" = "Push-ID";
+"settings_details.notifications.title" = "Notifikationer";
+"settings_details.notifications.push_id_section.header" = "Push-id";
 "settings_details.notifications.push_id_section.footer" = "Dette er det mål, du skal bruge i din Home Assistant-konfiguration. Tryk for at kopiere eller dele.";
-"settings_details.notifications.push_id_section.placeholder" = "Push-ID";
-"settings_details.notifications.push_id_section.not_registered" = "Ikke registreret til fjern-meddelelser";
+"settings_details.notifications.push_id_section.placeholder" = "Push-id";
+"settings_details.notifications.push_id_section.not_registered" = "Ikke registreret til fjern-notifikationer";
 "settings_details.notifications.update_section.footer" = "Opdatering af push-indstillinger vil anmode om de nyeste push-handlinger og -kategorier fra Home Assistant.";
 "settings_details.notifications.update_section.button.title" = "Opdater push-indstillinger";
 "settings_details.notifications.update_section.updated_alert.title" = "Indstillinger importeret";
 "settings_details.notifications.update_section.updated_alert.message" = "Push-indstillinger importeret fra Home Assistant.";
-"settings_details.notifications.sounds_section.footer" = "Brugerdefinerede push-meddelelseslyde kan tilføjes via iTunes.";
+"settings_details.notifications.sounds_section.footer" = "Brugerdefinerede push-notifikationslyde kan tilføjes via iTunes.";
 "settings_details.notifications.sounds_section.button.title" = "Importér lyde";
 "settings_details.notifications.sounds_section.imported_alert.title" = "Lyde importeret";
-"settings_details.notifications.sounds_section.imported_alert.message" = "%d lyde blev importeret. Genstart telefonen for at fuldføre importen.";
+"settings_details.notifications.sounds_section.imported_alert.message" = "%li lyde blev importeret. Genstart telefonen for at fuldføre importen.";
 "settings_details.notifications.badge_section.button.title" = "Nulstil badge til 0";
 "settings_details.notifications.badge_section.reset_alert.title" = "Nulstilling af badge";
 "settings_details.notifications.badge_section.reset_alert.message" = "Badget er blevet nulstillet til 0.";
 "permissions.location.message" = "Vi bruger dette til at informere\r\Home Assistant om din enheds lokalitet og tilstand.";
-"permissions.notification.message" = "Vi bruger dette til at\r\sende meddelelser til din enhed.";
+"permissions.notification.message" = "Vi bruger dette til at\r\sende notifikationer til din enhed.";
 "devices_map.title" = "Enheder & zoner";
 "devices_map.map_types.standard" = "Standard";
 "devices_map.map_types.hybrid" = "Hybrid";
@@ -101,7 +101,7 @@
 "url_handler.no_service.message" = "%@ er ikke en gyldig rute";
 "url_handler.call_service.success.title" = "Kaldte service";
 "url_handler.call_service.success.message" = "Det lykkedes at kalde %@";
-"url_handler.call_service.error.message" = "Der opstod en fejl under forsøg på at kalde service %@: %@";
+"url_handler.call_service.error.message" = "Der opstod en fejl under forsøg på at kalde tjeneste %@: %@";
 "url_handler.fire_event.success.title" = "Afsendte hændelse";
 "url_handler.fire_event.success.message" = "Afsendte hændelse %@";
 "url_handler.fire_event.error.message" = "Der opstod en fejl under forsøget på at afsende hændelsen %@: %@";
@@ -112,13 +112,13 @@
 "yes_label" = "Ja";
 "no_label" = "Nej";
 "alerts.open_url_from_notification.title" = "Åbn webadresse?";
-"alerts.open_url_from_notification.message" = "Åbn webadresse (%@) der blev fundet i meddelelsen?";
+"alerts.open_url_from_notification.message" = "Åbn webadresse (%@) der blev fundet i notifikationen?";
 "settings_details.location.updates.header" = "Opdater kilder";
 "settings_details.location.updates.footer" = "Manuelle lokalitetsopdateringer kan altid udløses";
 "settings_details.location.updates.zone.title" = "Ankom/forlad zone";
 "settings_details.location.updates.background.title" = "Baggrundshentning";
 "settings_details.location.updates.significant.title" = "Signifikant lokalitetsændring";
-"settings_details.location.updates.notification.title" = "Push-meddelelsesanmodning";
+"settings_details.location.updates.notification.title" = "Push-notifikationsanmodning";
 "location_change_notification.beacon_region_enter.body" = "ankom til %@ via iBeacon";
 "location_change_notification.beacon_region_exit.body" = "forlod %@ via iBeacon";
 "location_change_notification.region_enter.body" = "ankom til %@";
@@ -127,16 +127,16 @@
 "location_change_notification.background_fetch.body" = "Nuværende lokalitetslevering udløst via baggrundshentning";
 "about.review.title" = "Skriv en anmeldelse";
 "settings.event_log.title" = "Hændelseslog";
-"settings_details.location.notifications.push_notification.title" = "Pushede lokalitetsanmodningsmeddelelser";
-"settings_details.location.notifications.url_scheme.title" = "URL-scheme lokalitetsmeddelelser";
-"location_change_notification.push_notification.body" = "Lokalitet opdateret via push-meddelelse";
+"settings_details.location.notifications.push_notification.title" = "Pushede lokalitetsanmodningsnotifikationer";
+"settings_details.location.notifications.url_scheme.title" = "URL-scheme lokalitetsnotifikationer";
+"location_change_notification.push_notification.body" = "Lokalitet opdateret via push-notifikation";
 "location_change_notification.url_scheme.body" = "Lokalitet opdateret via URL-scheme";
 "location_change_notification.manual.body" = "Lokalitetsopdatering udløst af bruger";
 "location_change_notification.unknown.body" = "Lokalitet opdateret via ukendt metode";
 "cancel_label" = "Annuller";
 "username_label" = "Brugernavn";
 "client_events.event_type.service_call" = "Servicekald";
-"client_events.event_type.notification" = "Meddelse";
+"client_events.event_type.notification" = "Notifikation";
 "client_events.event_type.location_update" = "Lokalitetsopdatering";
 "client_events.event_type.unknown" = "Ukendt";
 "client_events.view.clear" = "Ryd";
@@ -170,7 +170,7 @@
 "cl_error.description.region_monitoring_setup_delayed" = "Core Location kunne ikke initialisere områdeovervågningsfunktionen med det samme.";
 "cl_error.description.unknown" = "Ukendt Core Location-fejl";
 "client_events.event_type.networkRequest" = "Netværksanmodning";
-"client_events.event_type.notification.title" = "Modtog en push-meddelelse: %@";
+"client_events.event_type.notification.title" = "Modtog en push-notifikation: %@";
 "client_events.event_type.request.log" = "Anmod (SSID: %@ - %@)";
 "error_label" = "Fejl";
 "extensions.map.location.new" = "Ny lokalitet";
@@ -181,7 +181,7 @@
 "extensions.notification_content.error.no_entity_id" = "Intet entity_id fundet i payload!";
 "extensions.notification_content.error.request.auth_failed" = "Godkendelse mislykkedes!";
 "extensions.notification_content.error.request.entity_not_found" = "Entiteten '%@' blev ikke fundet!";
-"extensions.notification_content.error.request.other" = "Modtog en ikke-200 statuskode (%d)";
+"extensions.notification_content.error.request.other" = "Modtog en ikke-200 statuskode (%li)";
 "extensions.notification_content.error.request.unknown" = "Ukendt fejl!";
 "extensions.notification_content.hud.loading" = "Indlæser %@...";
 "location_change_notification.siri.body" = "Lokalitetsopdatering udløst af Siri";
@@ -190,7 +190,7 @@
 "notifications_configurator.action.rows.text_input_button_title.title" = "Knap-titel";
 "notifications_configurator.action.rows.text_input_placeholder.title" = "Pladsholder";
 "notifications_configurator.action.rows.foreground.title" = "Start app";
-"notifications_configurator.action.rows.foreground.footer" = "Aktivering af denne vil få appen til at starte, hvis den er i baggrunden, når du trykker på en meddelelse.";
+"notifications_configurator.action.rows.foreground.footer" = "Aktivering af denne vil få appen til at starte, hvis den er i baggrunden, når du trykker på en notifikation.";
 "notifications_configurator.action.rows.destructive.title" = "Destruktiv";
 "notifications_configurator.action.rows.destructive.footer" = "Når den er aktiveret, vises handlingsknappen med særlig fremhævning for at indikere, at den udfører en destruktiv opgave.";
 "notifications_configurator.action.rows.authentication_required.title" = "Godkendelse påkrævet";
@@ -200,11 +200,11 @@
 "notifications_configurator.category.rows.actions.header" = "Handlinger";
 "addButtonLabel" = "Tilføj";
 "notifications_configurator.category.rows.category_summary.header" = "Kategori-resume";
-"notifications_configurator.category.rows.category_summary.footer" = "En formatstreng til den oversigtsbeskrivelse, der bruges, når systemet grupperer kategoriens meddelelser. Du kan valgfrit bruge '%%u' til at vise antallet af meddelelser i gruppen og '%%@' til at vise det resume, der er angivet i push-payload.";
-"notifications_configurator.category.rows.category_summary.default" = "%%u meddelelser i %%@";
-"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%%u meddelelser";
+"notifications_configurator.category.rows.category_summary.footer" = "En formatstreng til den oversigtsbeskrivelse, der bruges, når systemet grupperer kategoriens notifikationer. Du kan valgfrit bruge '%%u' til at vise antallet af notifkationer i gruppen og '%%@' til at vise det resume, der er angivet i push-payload.";
+"notifications_configurator.category.rows.category_summary.default" = "%%u notifikationer i %%@";
+"notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%u% notifikationer";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Skjult forhåndsvisnings-pladsholder";
-"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Denne tekst vises kun, hvis du har skjult meddelelseseksempler. Brug '%%u' for antallet af meddelelser med samme trådidentifikator.";
+"notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Denne tekst vises kun, hvis du har skjult notifikationseksempler. Brug '%%u' for antallet af meddelelser med samme trådidentifikator.";
 "notifications_configurator.identifier" = "Id";
 "notifications_configurator.new_action.title" = "Ny handling";
 "notifications_configurator.settings.header" = "Indstillinger";
@@ -225,7 +225,7 @@
 "siri_shortcuts.configurator.fields.use_default_value" = "Brug standardværdi";
 "siri_shortcuts.configurator.fields.use_suggested_value" = "Brug foreslået værdi";
 "siri_shortcuts.configurator.settings.name.title" = "Genvejsnavn";
-"siri_shortcuts.configurator.settings.notify_on_run.title" = "Send meddelse, når den køres";
+"siri_shortcuts.configurator.settings.notify_on_run.title" = "Send notifikation, når den køres";
 "success_label" = "Succes!";
 "watch.labels.complication_group.circular_small.description" = "Brug cirkulære små komplikationer til at vise indhold i hjørnerne af Farve-urskiven.";
 "watch.labels.complication_group.circular_small.name" = "Cirkulær lille";
@@ -375,7 +375,7 @@
 "watch.labels.complication_text_areas.row3_column2.label" = "Række 3, kolonne 2";
 "watch.labels.complication_text_areas.trailing.description" = "Tekst der skal vises på målerens bagkant.";
 "watch.labels.complication_text_areas.trailing.label" = "Bagkant";
-"settings_details.location.zones.radius.label" = "%d m";
+"settings_details.location.zones.radius.label" = "%li m";
 "settings_details.notifications.categories.header" = "Kategorier";
 "settings_details.notifications.new_category.title" = "Ny kategori";
 "settings_details.watch.title" = "Apple Watch";
@@ -427,12 +427,12 @@
 "permissions.motion.reenable.message" = "Du har tidligere tilladt brug af bevægelsesdata, men det ser nu ud til at være deaktiveret. Ønsker du at aktivere bevægelsesdata for at forbedre lokalitetsopdateringer?";
 "permissions.motion.reenable.button.allow" = "Genaktiver";
 "permissions.motion.reenable.button.deny" = "Behold deaktiveret";
-"permissions.notification.initial.title" = "Tillad meddelelser?";
-"permissions.notification.initial.message" = "Vi har brug for tilladelse til at\r\sende meddelelser til enheden.";
+"permissions.notification.initial.title" = "Tillad notifikationer?";
+"permissions.notification.initial.message" = "Vi har brug for tilladelse til at\r\sende notifikationer til enheden.";
 "permissions.notification.initial.button.allow" = "Tillad";
 "permissions.notification.initial.button.deny" = "Afvis";
-"permissions.notification.reenable.title" = "Genaktiver meddelelser?";
-"permissions.notification.reenable.message" = "Du har tidligere haft meddelelser aktiveret, men de er nu deaktiveret. Vil du genaktivere meddelelser?";
+"permissions.notification.reenable.title" = "Genaktiver notifikationer?";
+"permissions.notification.reenable.message" = "Du har tidligere haft notifikationer aktiveret, men de er nu deaktiveret. Vil du genaktivere notifikationer?";
 "permissions.notification.reenable.button.allow" = "Genaktiver";
 "permissions.notification.reenable.button.deny" = "Behold deaktiveret";
 "about.help_localize.title" = "Hjælp med at oversætte appen!";
@@ -452,12 +452,12 @@
 "alerts.prompt.ok" = "OK";
 "location_change_notification.visit.body" = "Lokalitet opdateret via Visit";
 "location_change_notification.x_callback_url.body" = "Lokalitet opdateret via X-Callback-URL";
-"notifications_configurator.category.preview_notification.body" = "Dette er en testmeddelse for meddelelseskategorien %@";
-"notifications_configurator.category.preview_notification.title" = "Testmeddelelse";
+"notifications_configurator.category.preview_notification.body" = "Dette er en testnotifikation for notifikationskategorien %@";
+"notifications_configurator.category.preview_notification.title" = "Testnotifikation";
 "notifications_configurator.category.rows.actions.footer" = "Kategorier kan maksimalt have 10 handlinger.";
 "settings.details_section.integrations.header" = "Integrationer";
 "settings.developer.camera_notification.notification.body" = "Udvid dette for at vise indholdsudvidelse til kameraindhold";
-"settings.developer.camera_notification.title" = "Vis indholdsudvidelse til kamerameddelelse";
+"settings.developer.camera_notification.title" = "Vis indholdsudvidelse til kameranotifikationer";
 "settings.developer.copy_realm.alert.message" = "Kopierede Realm fra %@ til %@";
 "settings.developer.copy_realm.alert.title" = "Kopierede Realm";
 "settings.developer.copy_realm.title" = "Kopiér Realm fra appgruppe til Dokumenter";
@@ -465,7 +465,7 @@
 "settings.developer.footer" = "Brug ikke disse, hvis du ikke ved, hvad du laver!";
 "settings.developer.header" = "Udvikler";
 "settings.developer.map_notification.notification.body" = "Udvid dette for at vise kortindholdsudvidelsen";
-"settings.developer.map_notification.title" = "Vis indholdsudvidelse til kortmeddelelser";
+"settings.developer.map_notification.title" = "Vis indholdsudvidelse til kortnotifikationer";
 "settings_details.actions.footer" = "Handlinger bruges i Apple Watch-appen, App-ikonhandlinger og widgeten 'I dag'";
 "settings_details.actions.title" = "Handlinger";
 "settings_details.general.app_icon.enum.beta" = "Beta";
@@ -482,9 +482,9 @@
 "settings_details.general.app_icon.enum.release" = "Udgivelse";
 "settings_details.general.app_icon.enum.white" = "Hvid";
 "settings_details.general.app_icon.title" = "App-ikon";
-"settings_details.location.notifications.visit.title" = "Gå til lokalitetsmeddelelser";
-"settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL lokalitetsmeddelser";
-"settings_details.notifications.import_legacy_settings.alert.message" = "Kategorierne og handlingerne for pushmeddelelser er blevet importeret fra serveren.";
+"settings_details.location.notifications.visit.title" = "Gå til lokalitetsnotifikationer";
+"settings_details.location.notifications.x_callback_url.title" = "X-Callback-URL lokalitetsnotifikationer";
+"settings_details.notifications.import_legacy_settings.alert.message" = "Kategorierne og handlingerne for pushnotifikationer er blevet importeret fra serveren.";
 "settings_details.notifications.import_legacy_settings.alert.title" = "Server push-konfiguration importeret";
 "settings_details.notifications.import_legacy_settings.button.title" = "Importer push-konfiguration fra server";
 "settings_details.siri.section.existing.title" = "Eksisterende genveje";
@@ -513,19 +513,19 @@
 "settings.developer.debug_strings.title" = "Fejlfindingsstrenge";
 "settings_details.general.autohide_toolbar.title" = "Skjul værktøjslinjen automatisk";
 "rate_limit_notification.title" = "Antal notifikationer begrænset";
-"rate_limit_notification.body" = "Du har nu sendt mere end %@ meddelelser i dag. Du vil ikke modtage nye meddelelser før midnat UTC.";
+"rate_limit_notification.body" = "Du har nu sendt mere end %@ meddelelser i dag. Du vil ikke modtage nye notifikationer før midnat UTC.";
 "watch.labels.no_action" = "Der er ikke konfigureret nogen handlinger. Konfigurer handlinger på telefonen for at fjerne denne meddelelse.";
 "settings.status_section.mobile_app_component_loaded_row.title" = "Mobilapp-konponent indlæst";
 "settings_details.privacy.title" = "Privatliv";
 "settings_details.privacy.analytics.title" = "Google Analytics";
 "settings_details.privacy.analytics.description" = "Giver mulighed for indsamling af grundlæggende oplysninger om din enhed og interaktioner med appen. Der deles ingen brugeridentificerbare data med Google, herunder webadresser og tokens til Home Assistant. Du skal genstarte appen, for at ændringer af denne indstilling kan træde i kraft.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
-"settings_details.privacy.messaging.description" = "Firebase Cloud Messaging skal være aktiveret for at push-meddelelser kan fungere.";
+"settings_details.privacy.messaging.description" = "Firebase Cloud Messaging skal være aktiveret for at push-notifikationer kan fungere.";
 "settings_details.privacy.crashlytics.title" = "Firebase Crashlytics";
 "settings_details.privacy.crashlytics.description" = "Crashlytics giver mulighed for dybere sporing af nedbrud og andre fejl i appen, hvilket betyder at der hurtigere kan laves rettelser. Der sendes ingen brugeridentificerbare oplysninger, bortset fra grundlæggende enhedsoplysninger. Du skal genstarte appen, for at ændringer af denne indstilling kan træde i kraft.";
 "settings_details.privacy.performance_monitoring.title" = "Firebase Performance Monitoring";
 "settings_details.privacy.performance_monitoring.description" = "Firebase Performance Monitoring giver mulighed for fjernovervågning af den samlede applikationsydelse, hvilket gør det muligt lettere at foretage hastighedsforbedringer. Du skal genstarte appen før ændringer til denne indstilling træder i kraft.";
-"settings.developer.sync_watch_context.title" = "Sync Watch Context";
+"settings.developer.sync_watch_context.title" = "Synkroniser urkontekst";
 "token_error.token_unavailable" = "Token er ikke tilgængelig.";
 "token_error.expired" = "Token er udløbet.";
 "token_error.connection_failed" = "Forbindelsen mislykkedes.";
@@ -608,7 +608,7 @@
 "settings_details.notifications.sounds.import_custom" = "Importer brugerdefinerede lyde";
 "settings_details.notifications.sounds.import_file_sharing" = "Importer lyde fra iTunes-fildeling";
 "settings_details.notifications.sounds.import_system" = "Importer systemlyde";
-"settings_details.notifications.sounds.imported_alert.message" = "%d lyde blev importeret. Genstart telefonen for at fuldføre importen.";
+"settings_details.notifications.sounds.imported_alert.message" = "%li lyde blev importeret. Genstart telefonen for at fuldføre importen.";
 "settings_details.notifications.sounds.imported_alert.title" = "Importerede lyde";
 "settings_details.notifications.sounds.system" = "System";
 "settings_details.notifications.sounds.title" = "Lyde";
@@ -631,8 +631,8 @@
 "onboarding.connection_test_result.server_error.description" = "Serverfejl: %@";
 "onboarding.connection_test_result.too_old.description" = "Du skal opgradere din Home Assistant-version.";
 "onboarding.connection_test_result.unknown_error.description" = "Ukendt fejl: %@";
-"onboarding.discovery.results_label.plural" = "Vi fandt %d Home Assistants på netværket.";
-"onboarding.discovery.results_label.singular" = "Vi fandt %d Home Assistant på netværket.";
+"onboarding.discovery.results_label.plural" = "Vi fandt %li Home Assistants på netværket.";
+"onboarding.discovery.results_label.singular" = "Vi fandt %li Home Assistant på netværket.";
 "onboarding.connect.title" = "Opretter forbindelse til %@";
 "settings.connection_section.details" = "Detaljer";
 "settings.connection_section.connecting_via" = "Tilsluttet via";
@@ -648,7 +648,7 @@
 "settings.connection_section.remote_ui_url.title" = "Web-adresse til ekstern UI";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "Der blev ikke fundet nogen http.base_url i registreringsoplysningerne. Tilføj en gyldig http.base_url til din configuration.yaml og genstart Home Assistant for at fortsætte med automatisk opsætning eller opsæt manuelt.";
 "settings_details.notifications.rate_limits.header" = "Forbrugsgrænser";
-"settings_details.notifications.rate_limits.footer" = "Du har mulighed for 150 push-meddelelser pr. 24 timer. Forbrugsgrænser nulstilles ved midnat Universel koordineret tid (UTC).";
+"settings_details.notifications.rate_limits.footer" = "Du har mulighed for 150 push-notifikationer pr. 24 timer. Forbrugsgrænser nulstilles ved midnat Universel koordineret tid (UTC).";
 "settings_details.notifications.rate_limits.attempts" = "Forsøg";
 "settings_details.notifications.rate_limits.delivered" = "Leverede";
 "settings_details.notifications.rate_limits.errors" = "Fejl";
@@ -667,7 +667,31 @@ Home Assistant Companion %@";
 "whats_new.buttons.completion.title" = "Lad os gå i gang";
 "whats_new.Two_Dot_Zero.thank_you.title" = "Lige en ekstra ting...";
 "whats_new.Two_Dot_Zero.thank_you.ok_button" = "Selv tak!";
-"whats_new.Two_Dot_Zero.thank_you.message" = "Tak skal du have.\n\nTak, fordi du bruger Home Assistant Companion.\n\nTak, fordi du bruger Home Assistant.\n\nTak, fordi du har holdt mig ud gennem de sidste 3 års arbejde.\n\nTak, fordi du har holdt mig ud gennem de sidste 10 måneders  udvikling af 2.0.\n\nTak, fordi du har indrapporteret fejl på GitHub.\n\nTak, fordi du hjalp andre brugere, når de havde brug for det, og jeg var ikke tilgængelig.\n\nTak, fordi du sendte mig e-mails kl. 2, hvor du, i ekstrem detalje beskriver, hvordan en knap er placeret 2 pixels forkert.\n\nTak, fordi du var dig og støtter mig.\n\nDin konstant positive feedback og påskønnelse er det, der holder mig i gang.\n\nJeg håber virkelig, at du kan lide Home Assistant Companion 2.0.\n\nTak.\n\n--Robbie";
+"whats_new.Two_Dot_Zero.thank_you.message" = "Tak skal du have.\
+\
+Tak, fordi du bruger Home Assistant Companion.\
+\
+Tak, fordi du bruger Home Assistant.\
+\
+Tak, fordi du har holdt mig ud gennem de sidste 3 års arbejde.\
+\
+Tak, fordi du har holdt mig ud gennem de sidste 10 måneders udvikling af 2.0.\
+\
+Tak, fordi du har indrapporteret fejl på GitHub.\
+\
+Tak, fordi du hjalp andre brugere, når de havde brug for det, og jeg var ikke tilgængelig.\
+\
+Tak, fordi du sendte mig emails kl. 2 om natten, hvor du, i ekstrem detalje beskriver, hvordan en knap er placeret 2 pixels forkert.\
+\
+Tak, fordi du var dig og støtter mig.\
+\
+Din konstant positive feedback og påskønnelse er det, der holder mig i gang.\
+\
+Jeg håber virkelig, at du kan lide Home Assistant Companion 2.0.\
+\
+Tak.\
+\
+--Robbie";
 "whats_new.Two_Dot_Zero.items.donations.title" = "Donationer";
 "whats_new.Two_Dot_Zero.items.donations.subtitle" = "Efter at være blevet bedt om at acceptere donationer i årevis, gør jeg det endelig! Tryk på Donér på skærmen 'Om' for at finde flere oplysninger.";
 "whats_new.Two_Dot_Zero.items.home_assistant_cloud_support.title" = "Understøttelse af Home Assistant Cloud";
@@ -675,11 +699,11 @@ Home Assistant Companion %@";
 "whats_new.Two_Dot_Zero.items.improved_integration.title" = "Forbedret integration";
 "whats_new.Two_Dot_Zero.items.improved_integration.subtitle" = "Takket være den nye mobile_app-komponent er Home Assistant Companion en bedre...ledsager end nogensinde før!";
 "whats_new.Two_Dot_Zero.items.critical_alerts.title" = "Kritiske advarsler";
-"whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Når du sender en meddelelse som en kritisk advarsel, vil den omgå Forstyr ikke og lydstyrkeindstillinger.";
-"whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "Redigering af meddelseskategori i appen";
+"whats_new.Two_Dot_Zero.items.critical_alerts.subtitle" = "Når du sender en notifikation som en kritisk advarsel, vil den omgå Forstyr ikke og lydstyrkeindstillinger.";
+"whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.title" = "Redigering af notifikationskategori i appen";
 "whats_new.Two_Dot_Zero.items.in_app_notification_category_editor.subtitle" = "Glem alt om YAML. Rediger kategorier i appen og se resultater i realtid.";
-"whats_new.Two_Dot_Zero.items.notification_sounds.title" = "Meddelelseslyde";
-"whats_new.Two_Dot_Zero.items.notification_sounds.subtitle" = "Brug systemlyde til dine meddelelser, og administrer lyde i appen. Ikke mere iTunes!";
+"whats_new.Two_Dot_Zero.items.notification_sounds.title" = "Notifikationslyde";
+"whats_new.Two_Dot_Zero.items.notification_sounds.subtitle" = "Brug systemlyde til dine notifikationer, og administrer lyde i appen. Ikke mere iTunes!";
 "whats_new.Two_Dot_Zero.items.web_view_cleanup.title" = "Oprydning i webvisning";
 "whats_new.Two_Dot_Zero.items.web_view_cleanup.subtitle" = "Slut med værktøjslinjer. Appen er nu tæt integreret med brugerfladen. Indstillinger kan findes i sidepanelet, og 'træk for at opdatere' er blevet tilføjet.";
 "whats_new.Two_Dot_Zero.items.today_widget.title" = "'I dag'-widget";
@@ -721,20 +745,24 @@ Home Assistant Companion %@";
 "settings.reset_section.reset_alert.progress_message" = "Nulstiller...";
 "settings_details.general.page_zoom.title" = "Sidezoom";
 "settings_details.general.page_zoom.default" = "%@ (Standard)";
-"retry_label" = "Retry";
-"settings_details.location.background_refresh.title" = "Background Refresh";
-"settings_details.location.background_refresh.enabled" = "Enabled";
-"settings_details.location.background_refresh.disabled" = "Disabled";
-"settings_details.general.restoration.title" = "Remember Last Page";
-"settings_details.location.new_one_shot.title" = "In-Development Updating";
-"settings_details.location.new_one_shot.description" = "This may or may not deliver good results for the sources above. Your feedback is appreciated.";
-"settings_sensors.title" = "Sensors";
-"settings_sensors.loading_error.title" = "Failed to load sensors";
-"settings_sensors.detail.unique_id" = "Unique ID";
-"settings_sensors.detail.state" = "State";
-"settings_sensors.detail.attributes" = "Attributes";
-"settings_sensors.detail.device_class" = "Device Class";
-"settings_sensors.detail.icon" = "Icon";
-"settings_sensors.periodic_update.title" = "Periodic Update";
-"settings_sensors.periodic_update.description" = "When enabled, these sensors will update after the app has been continually open for this long.";
-"settings_sensors.periodic_update.off" = "Off";
+"retry_label" = "Prøv igen";
+"settings_details.location.background_refresh.title" = "Opdater i baggrunden";
+"settings_details.location.background_refresh.enabled" = "Aktiveret";
+"settings_details.location.background_refresh.disabled" = "Deaktiveret";
+"settings_details.general.restoration.title" = "Husk sidste side";
+"settings_details.location.new_one_shot.title" = "Opdatering der er under udvikling";
+"settings_details.location.new_one_shot.description" = "Dette giver muligvis ikke gode resultater for ovenstående kilder. Din feedback værdsættes.";
+"settings_sensors.title" = "Sensorer";
+"settings_sensors.loading_error.title" = "Sensorer kunne ikke indlæses";
+"settings_sensors.detail.unique_id" = "Unikt id";
+"settings_sensors.detail.state" = "Tilstand";
+"settings_sensors.detail.attributes" = "Egenskaber";
+"settings_sensors.detail.device_class" = "Enhedsklasse";
+"settings_sensors.detail.icon" = "Ikon";
+"settings_sensors.periodic_update.title" = "Periodisk opdatering";
+"settings_sensors.periodic_update.description" = "Når aktiveret, opdateres disse sensorer, når appen har været konstant åben i så lang tid.";
+"settings_sensors.periodic_update.off" = "Fra";
+"location_change_notification.launch.body" = "Location updated via app launch";
+"location_change_notification.periodic.body" = "Location updated via periodic update";
+"extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
+"settings_details.general.device_name.title" = "Device Name";

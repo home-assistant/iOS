@@ -133,8 +133,6 @@
 "location_change_notification.url_scheme.body" = "Location updated via URL Scheme";
 "location_change_notification.manual.body" = "Location update triggered by user";
 "location_change_notification.unknown.body" = "Location updated via unknown method";
-"location_change_notification.launch.body" = "Location updated via app launch";
-"location_change_notification.periodic.body" = "Location updated via periodic update";
 "cancel_label" = "Cancel";
 "username_label" = "Username";
 "client_events.event_type.service_call" = "Service Call";
@@ -185,7 +183,6 @@
 "extensions.notification_content.error.request.entity_not_found" = "Entity '%@' not found!";
 "extensions.notification_content.error.request.other" = "Got non-200 status code (%li)";
 "extensions.notification_content.error.request.unknown" = "Unknown error!";
-"extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "extensions.notification_content.hud.loading" = "Loading %@...";
 "location_change_notification.siri.body" = "Location update triggered by Siri";
 "notifications_configurator.action.rows.title.title" = "Title";
@@ -435,7 +432,7 @@
 "permissions.notification.initial.button.allow" = "Allow";
 "permissions.notification.initial.button.deny" = "Deny";
 "permissions.notification.reenable.title" = "Re-enable Notifications?";
-"permissions.notification.reenable.message" = "You previously had notifications enabled but they now appears disabled. Do you wish to re-enable notifications?";
+"permissions.notification.reenable.message" = "You previously had notifications enabled but they now appear to be disabled. Do you wish to re-enable notifications?";
 "permissions.notification.reenable.button.allow" = "Re-enable";
 "permissions.notification.reenable.button.deny" = "Leave disabled";
 "about.help_localize.title" = "Help localize the app!";
@@ -471,7 +468,6 @@
 "settings.developer.map_notification.title" = "Show map notification content extension";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions and the Today widget";
 "settings_details.actions.title" = "Actions";
-"settings_details.general.device_name.title" = "Device Name";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Black";
 "settings_details.general.app_icon.enum.blue" = "Blue";
@@ -766,3 +762,7 @@ Thank you.\
 "settings_sensors.periodic_update.title" = "Periodic Update";
 "settings_sensors.periodic_update.description" = "When enabled, these sensors will update after the app has been continually open for this long.";
 "settings_sensors.periodic_update.off" = "Off";
+"location_change_notification.launch.body" = "Location updated via app launch";
+"location_change_notification.periodic.body" = "Location updated via periodic update";
+"extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
+"settings_details.general.device_name.title" = "Device Name";

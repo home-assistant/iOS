@@ -712,7 +712,7 @@ internal enum L10n {
         }
       }
       internal enum Reenable {
-        /// You previously had notifications enabled but they now appears disabled. Do you wish to re-enable notifications?
+        /// You previously had notifications enabled but they now appear to be disabled. Do you wish to re-enable notifications?
         internal static let message = L10n.tr("Localizable", "permissions.notification.reenable.message")
         /// Re-enable Notifications?
         internal static let title = L10n.tr("Localizable", "permissions.notification.reenable.title")

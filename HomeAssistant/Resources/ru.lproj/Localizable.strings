@@ -432,7 +432,7 @@
 "permissions.notification.initial.button.allow" = "Разрешить";
 "permissions.notification.initial.button.deny" = "Запретить";
 "permissions.notification.reenable.title" = "Re-enable Notifications?";
-"permissions.notification.reenable.message" = "You previously had notifications enabled but they now appears disabled. Do you wish to re-enable notifications?";
+"permissions.notification.reenable.message" = "You previously had notifications enabled but they now appear to be disabled. Do you wish to re-enable notifications?";
 "permissions.notification.reenable.button.allow" = "Включить";
 "permissions.notification.reenable.button.deny" = "Оставить выключенным";
 "about.help_localize.title" = "Помочь с переводом!";
@@ -762,3 +762,7 @@ Thank you.\
 "settings_sensors.periodic_update.title" = "Periodic Update";
 "settings_sensors.periodic_update.description" = "When enabled, these sensors will update after the app has been continually open for this long.";
 "settings_sensors.periodic_update.off" = "Off";
+"location_change_notification.launch.body" = "Location updated via app launch";
+"location_change_notification.periodic.body" = "Location updated via periodic update";
+"extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
+"settings_details.general.device_name.title" = "Device Name";
