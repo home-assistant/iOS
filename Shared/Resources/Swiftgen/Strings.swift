@@ -305,6 +305,8 @@ internal enum L10n {
           internal static func entityNotFound(_ p1: String) -> String {
             return L10n.tr("Localizable", "extensions.notification_content.error.request.entity_not_found", p1)
           }
+          /// HLS stream unavailable
+          internal static let hlsUnavailable = L10n.tr("Localizable", "extensions.notification_content.error.request.hls_unavailable")
           /// Got non-200 status code (%li)
           internal static func other(_ p1: Int) -> String {
             return L10n.tr("Localizable", "extensions.notification_content.error.request.other", p1)
@@ -368,9 +370,17 @@ internal enum L10n {
         return L10n.tr("Localizable", "location_change_notification.beacon_region_exit.body", p1)
       }
     }
+    internal enum Launch {
+      /// Location updated via app launch
+      internal static let body = L10n.tr("Localizable", "location_change_notification.launch.body")
+    }
     internal enum Manual {
       /// Location update triggered by user
       internal static let body = L10n.tr("Localizable", "location_change_notification.manual.body")
+    }
+    internal enum Periodic {
+      /// Location updated via periodic update
+      internal static let body = L10n.tr("Localizable", "location_change_notification.periodic.body")
     }
     internal enum PushNotification {
       /// Location updated via push notification
@@ -702,7 +712,7 @@ internal enum L10n {
         }
       }
       internal enum Reenable {
-        /// You previously had notifications enabled but they now appears disabled. Do you wish to re-enable notifications?
+        /// You previously had notifications enabled but they now appear to be disabled. Do you wish to re-enable notifications?
         internal static let message = L10n.tr("Localizable", "permissions.notification.reenable.message")
         /// Re-enable Notifications?
         internal static let title = L10n.tr("Localizable", "permissions.notification.reenable.title")
@@ -1306,6 +1316,10 @@ internal enum L10n {
       internal enum Chrome {
         /// Open links in Chrome
         internal static let title = L10n.tr("Localizable", "settings_details.general.chrome.title")
+      }
+      internal enum DeviceName {
+        /// Device Name
+        internal static let title = L10n.tr("Localizable", "settings_details.general.device_name.title")
       }
       internal enum PageZoom {
         /// %@ (Default)

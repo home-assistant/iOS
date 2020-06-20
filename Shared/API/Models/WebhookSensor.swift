@@ -36,7 +36,7 @@ public class WebhookSensor: Mappable {
         self.UnitOfMeasurement = unit
     }
 
-    convenience init(name: String, uniqueID: String, icon: String, state: Any, unit: String? = nil) {
+    convenience init(name: String, uniqueID: String, icon: String?, state: Any, unit: String? = nil) {
         self.init(name: name, uniqueID: uniqueID, state: state, unit: unit)
         self.Icon = icon
     }

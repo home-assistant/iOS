@@ -441,12 +441,15 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api -> Promise<Void> in
             func updateWithoutLocation() -> Promise<Void> {
-                return when(fulfilled: [api.UpdateSensors(.Manual).asVoid(), api.updateComplications().asVoid()])
+                return when(fulfilled: [
+                    api.UpdateSensors(trigger: .Manual).asVoid(),
+                    api.updateComplications().asVoid()
+                ])
             }
 
             if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
                 return UIApplication.shared.backgroundTask(withName: "manual-location-update") { remaining in
-                    return api.GetAndSendLocation(trigger: .Manual, maximumBackgroundTime: remaining).asVoid()
+                    return api.GetAndSendLocation(trigger: .Manual, maximumBackgroundTime: remaining)
                         .recover { error -> Promise<Void> in
                             if error is CLError {
                                 Current.Log.info("couldn't get location, sending remaining sensor data")

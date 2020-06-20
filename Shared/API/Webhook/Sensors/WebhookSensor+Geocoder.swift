@@ -1,0 +1,139 @@
+import Foundation
+import PromiseKit
+import Iconic
+import CoreLocation
+import Contacts
+
+extension WebhookSensor {
+    public enum GeocoderError: Error {
+        case noLocation
+    }
+
+    public enum Location {
+        case registration
+        case location(CLLocation)
+    }
+
+    public static func geocoder(
+        location: Location?
+    ) -> Promise<[WebhookSensor]> {
+        guard let location = location else {
+            return .init(error: GeocoderError.noLocation)
+        }
+
+        return firstly { () -> Promise<[CLPlacemark]> in
+            switch location {
+            case .registration:
+                throw GeocoderError.noLocation
+            case .location(let location):
+                return Current.geocoder.geocode(location)
+            }
+        }.recover { (error: Error) -> Promise<[CLPlacemark]> in
+            guard case GeocoderError.noLocation = error, case .registration = location else { throw error }
+            return .value([])
+        }.map { (placemarks: [CLPlacemark]) -> [WebhookSensor] in
+            let sensor = with(WebhookSensor(name: "Geocoded Location", uniqueID: "geocoded_location")) {
+                $0.State = "Unknown"
+                $0.Icon = "mdi:\(MaterialDesignIcons.mapIcon.name)"
+            }
+
+            guard !placemarks.isEmpty else {
+                return [sensor]
+            }
+
+            let address: String? = placemarks
+                .compactMap(Self.postalAddress(for:))
+                .map { CNPostalAddressFormatter.string(from: $0, style: .mailingAddress) }
+                .first(where: { $0.isEmpty == false })
+
+            if let address = address {
+                sensor.State = address
+            }
+
+            sensor.Attributes = Self.attributes(for: placemarks)
+
+            return [sensor]
+        }
+    }
+
+    private static func attributes(for placemarks: [CLPlacemark]) -> [String: Any] {
+        let bestLocation = Self.best(from: placemarks, keyPath: \.location)
+
+        func value(_ keyPath: KeyPath<CLPlacemark, String?>) -> String {
+            Self.best(from: placemarks, keyPath: keyPath) ?? "N/A"
+        }
+
+        return [
+            "Administrative Area": value(\.administrativeArea),
+            "Areas Of Interest": Self.best(from: placemarks, keyPath: \.areasOfInterest) ?? "N/A",
+            "Country": value(\.country),
+            "Inland Water": value(\.inlandWater),
+            "ISO Country Code": value(\.isoCountryCode),
+            "Locality": value(\.locality),
+            "Location": bestLocation.flatMap { [$0.coordinate.latitude, $0.coordinate.longitude] } ?? "N/A",
+            "Name": value(\.name),
+            "Ocean": value(\.ocean),
+            "Postal Code": value(\.postalCode),
+            "Sub Administrative Area": value(\.subAdministrativeArea),
+            "Sub Locality": value(\.subLocality),
+            "Sub Thoroughfare": value(\.subThoroughfare),
+            "Thoroughfare": value(\.thoroughfare),
+            "Time Zone": Self.best(from: placemarks, keyPath: \.timeZone?.identifier) ?? TimeZone.current.identifier
+        ]
+    }
+
+    private static func best<ElementType, ReturnType>(
+        from: [ElementType],
+        keyPath: KeyPath<ElementType, ReturnType?>
+    ) -> ReturnType? {
+        let results = from.compactMap { $0[keyPath: keyPath] }
+        if let nonEmpty = results.first(where: { ($0 as? String)?.isEmpty == false }) {
+            return nonEmpty
+        } else {
+            return results.first
+        }
+    }
+
+    private static func postalAddress(for placemark: CLPlacemark) -> CNPostalAddress? {
+        if #available(iOS 11.0, watchOS 4.0, *), let address = placemark.postalAddress {
+            return address
+        }
+
+        return with(CNMutablePostalAddress()) {
+            $0.street = placemark.thoroughfare ?? ""
+            $0.city =  placemark.locality ?? ""
+            $0.state = placemark.administrativeArea ?? ""
+            $0.postalCode = placemark.postalCode ?? ""
+
+            // matching behavior with iOS 11+, prefer iso country code
+            $0.country = placemark.isoCountryCode ?? placemark.country ?? ""
+
+            if #available(iOS 10.3, *) {
+                $0.subLocality = placemark.subLocality ?? ""
+                $0.subAdministrativeArea = placemark.subAdministrativeArea ?? ""
+            }
+        }
+    }
+}
+
+public extension CLGeocoder {
+    static func geocode(location: CLLocation) -> Promise<[CLPlacemark]> {
+        return Promise { seal in
+            let geocoder = CLGeocoder()
+            var strongGeocoder: CLGeocoder? = geocoder
+
+            let completionHandler: ([CLPlacemark]?, Error?) -> Void = { results, error in
+                withExtendedLifetime(strongGeocoder) {
+                    seal.resolve(results, error)
+                    strongGeocoder = nil
+                }
+            }
+
+            if #available(iOS 11, *) {
+                geocoder.reverseGeocodeLocation(location, preferredLocale: nil, completionHandler: completionHandler)
+            } else {
+                geocoder.reverseGeocodeLocation(location, completionHandler: completionHandler)
+            }
+        }
+    }
+}

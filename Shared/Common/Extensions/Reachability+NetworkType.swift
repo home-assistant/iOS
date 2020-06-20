@@ -12,7 +12,7 @@ import Foundation
 import Reachability
 import CoreTelephony
 
-enum NetworkType: Int, CaseIterable {
+public enum NetworkType: Int, CaseIterable {
     case unknown
     case noConnection
     case wifi
@@ -110,7 +110,7 @@ enum NetworkType: Int, CaseIterable {
     }
 }
 
-extension Reachability {
+public extension Reachability {
 
     static func getSimpleNetworkType() -> NetworkType {
         guard let reachability: Reachability = try? Reachability() else { return .unknown }

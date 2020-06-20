@@ -432,7 +432,7 @@
 "permissions.notification.initial.button.allow" = "Dovoli";
 "permissions.notification.initial.button.deny" = "Zavrni";
 "permissions.notification.reenable.title" = "Ali želite znova omogočiti obvestila?";
-"permissions.notification.reenable.message" = "You previously had notifications enabled but they now appears disabled. Do you wish to re-enable notifications?";
+"permissions.notification.reenable.message" = "You previously had notifications enabled but they now appear to be disabled. Do you wish to re-enable notifications?";
 "permissions.notification.reenable.button.allow" = "Ponovno omogočite";
 "permissions.notification.reenable.button.deny" = "Pustite onemogočeno";
 "about.help_localize.title" = "Help localize the app!";
@@ -737,3 +737,7 @@
 "settings_sensors.periodic_update.title" = "Periodic Update";
 "settings_sensors.periodic_update.description" = "When enabled, these sensors will update after the app has been continually open for this long.";
 "settings_sensors.periodic_update.off" = "Off";
+"location_change_notification.launch.body" = "Location updated via app launch";
+"location_change_notification.periodic.body" = "Location updated via periodic update";
+"extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
+"settings_details.general.device_name.title" = "Device Name";

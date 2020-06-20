@@ -50,12 +50,12 @@ Download latest localization files from Lokalize
 ```
 fastlane ios update_lokalise_metadata
 ```
-Upload iTunes Connect metadata to Lokalise
-### ios update_itunes_metadata
+Upload App Store Connect metadata to Lokalise
+### ios update_asc_metadata
 ```
-fastlane ios update_itunes_metadata
+fastlane ios update_asc_metadata
 ```
-Download iTunes metadata from Lokalise and upload to iTunes Connect
+Download App Store Connect metadata from Lokalise and upload to App Store Connect Connect
 ### ios bump_build
 ```
 fastlane ios bump_build
@@ -75,10 +75,15 @@ fastlane ios set_beta_version
 ```
 fastlane ios ci
 ```
-Runs build when on Travis
-### ios itunes
+Continous Integration
+### ios test
 ```
-fastlane ios itunes
+fastlane ios test
+```
+Run tests
+### ios asc
+```
+fastlane ios asc
 ```
 Submit a new beta build to TestFlight
 

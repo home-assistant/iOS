@@ -312,7 +312,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     maximumBackgroundTime: remaining
                 ).asVoid()
             } else {
-                updatePromise = api.UpdateSensors(.BackgroundFetch).asVoid()
+                updatePromise = api.UpdateSensors(trigger: .BackgroundFetch).asVoid()
             }
 
             return when(fulfilled: [updatePromise, api.updateComplications().asVoid()]).asVoid()
@@ -358,7 +358,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        application.backgroundTask(withName: "shortcut-item") { remaining in
+        application.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
             if shortcutItem.type == "sendLocation" {
                 return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
             } else if let userInfo = shortcutItem.userInfo, let name = userInfo["name"] as? String {
@@ -369,8 +369,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
                 return Promise(error: NoSuchAction.noSuchAction(String(describing: shortcutItem.userInfo)))
             }
-        }.done { worked in
-            completionHandler(worked)
+        }.done {
+            completionHandler(true)
         }.catch { error in
             Current.Log.error("Received error from handleAction during App Shortcut: \(error)")
             completionHandler(false)
@@ -416,12 +416,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return navigationController
     }
 
-    enum ConnectAPIReason {
-        case cold
-        case warm
-        case periodic
-    }
-
     private func invalidatePeriodicUpdateTimer() {
         periodicUpdateTimer = nil
     }
@@ -447,12 +441,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    private func connectAPI(reason: ConnectAPIReason) {
+    private func connectAPI(reason: HomeAssistantAPI.ConnectReason) {
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
             return UIApplication.shared.backgroundTask(withName: "connect-api") { _ in
-                api.Connect().asVoid()
+                api.Connect(reason: reason).asVoid()
             }
         }.done {
             Current.Log.info("Connect finished for reason \(reason)")

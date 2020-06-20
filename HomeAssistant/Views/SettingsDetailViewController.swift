@@ -17,6 +17,7 @@ import Firebase
 import CoreMotion
 import NotificationCenter
 import FirebaseCrashlytics
+import DeviceKit
 
 // swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController, TypedRowControllerType {
@@ -63,7 +64,17 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         case "general":
             self.title = L10n.SettingsDetails.General.title
             self.form
-                +++ PushRow<AppIcon>("appIcon") {
+                +++ Section()
+                <<< TextRow {
+                    $0.title = L10n.SettingsDetails.General.DeviceName.title
+                    $0.placeholder = Device.current.name
+                    $0.value = Current.settingsStore.overrideDeviceName
+                    $0.onChange { row in
+                        Current.settingsStore.overrideDeviceName = row.value
+                    }
+                }
+
+                <<< PushRow<AppIcon>("appIcon") {
                         $0.title = L10n.SettingsDetails.General.AppIcon.title
                         $0.selectorTitle = $0.title
                         $0.options = AppIcon.allCases
