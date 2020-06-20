@@ -164,23 +164,6 @@ public class SettingsStore {
     }
     #endif
 
-    public var motionEnabled: Bool {
-        get {
-            if #available(iOS 11.0, *) {
-                return CMPedometer.authorizationStatus() == .authorized
-            } else {
-                return prefs.bool(forKey: "motionEnabled")
-            }
-        }
-        set {
-            if #available(iOS 11.0, *) {
-                return
-            } else {
-                prefs.set(newValue, forKey: "motionEnabled")
-            }
-        }
-    }
-
     public var showAdvancedConnectionSettings: Bool {
         get {
             return prefs.bool(forKey: "showAdvancedConnectionSettings")

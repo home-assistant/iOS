@@ -7,7 +7,6 @@ import PromiseKit
 class SensorListViewController: FormViewController {
     private let sensorSection = Section()
     private let refreshControl = UIRefreshControl()
-    private let sensors = WebhookSensors()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,7 +61,7 @@ class SensorListViewController: FormViewController {
         refreshControl.beginRefreshing()
 
         firstly {
-            sensors.AllSensors
+            WebhookSensor.allSensors(location: nil, trigger: .Manual)
         }.map {
             $0.map { Self.row(for: $0) }
         }.done {
