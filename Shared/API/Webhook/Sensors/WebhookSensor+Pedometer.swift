@@ -1,6 +1,7 @@
 import Foundation
 import PromiseKit
 import CoreMotion
+import Version
 
 extension WebhookSensor {
     public enum PedometerError: Error {
@@ -94,8 +95,18 @@ extension WebhookSensor {
         private var icon: String? {
             switch self {
             case .distance: return "mdi:hiking"
-            case .floorsAscended: return "mdi:slope-uphill"
-            case .floorsDescended: return "mdi:slope-downhill"
+            case .floorsAscended:
+                if Current.serverVersion() >= Version(major: 0, minor: 105) {
+                    return "mdi:stairs-up"
+                } else {
+                    return "mdi:slope-uphill"
+                }
+            case .floorsDescended:
+                if Current.serverVersion() >= Version(major: 0, minor: 105) {
+                    return "mdi:stairs-down"
+                } else {
+                    return "mdi:slope-downhill"
+                }
             case .steps: return "mdi:walk"
             case .averageActivePace: return "mdi:speedometer"
             case .currentPace: return "mdi:speedometer"

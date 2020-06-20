@@ -2,6 +2,7 @@ import Foundation
 import CoreMotion
 import XCTest
 import PromiseKit
+import Version
 @testable import Shared
 
 class WebhookSensorPedometerTests: XCTestCase {
@@ -77,7 +78,8 @@ class WebhookSensorPedometerTests: XCTestCase {
         XCTAssertEqual(sensor?.State as? Int, 123)
     }
 
-    func testWithFloorsAscended() throws {
+    func testWithFloorsAscendedBefore105() throws {
+        Current.serverVersion = { Version(major: 0, minor: 104) }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
             hand(with(FakePedometerData()) {
@@ -97,7 +99,29 @@ class WebhookSensorPedometerTests: XCTestCase {
         XCTAssertEqual(sensor?.State as? Int, 234)
     }
 
-    func testWithFloorsDescended() throws {
+    func testWithFloorsAscendedAfter105() throws {
+        Current.serverVersion = { Version(major: 0, minor: 105) }
+        Current.pedometer.isStepCountingAvailable = { true }
+        Current.pedometer.queryStartEndHandler = { _, _, hand in
+            hand(with(FakePedometerData()) {
+                $0.overrideFloorsAscended = NSNumber(value: 234)
+            }, nil)
+        }
+
+        let promise = WebhookSensor.pedometer()
+        let sensors = try hang(promise)
+
+        let sensor = sensors.first(where: { $0.UniqueID == "pedometer_floors_ascended" })
+
+        XCTAssertEqual(sensor?.UniqueID, "pedometer_floors_ascended")
+        XCTAssertEqual(sensor?.Name, "Floors Ascended")
+        XCTAssertEqual(sensor?.Icon, "mdi:stairs-up")
+        XCTAssertEqual(sensor?.UnitOfMeasurement, "floors")
+        XCTAssertEqual(sensor?.State as? Int, 234)
+    }
+
+    func testWithFloorsDescendedBefore105() throws {
+        Current.serverVersion = { Version(major: 0, minor: 104) }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
             hand(with(FakePedometerData()) {
@@ -113,6 +137,27 @@ class WebhookSensorPedometerTests: XCTestCase {
         XCTAssertEqual(sensor?.UniqueID, "pedometer_floors_descended")
         XCTAssertEqual(sensor?.Name, "Floors Descended")
         XCTAssertEqual(sensor?.Icon, "mdi:slope-downhill")
+        XCTAssertEqual(sensor?.UnitOfMeasurement, "floors")
+        XCTAssertEqual(sensor?.State as? Int, 345)
+    }
+
+    func testWithFloorsDescendedAfter105() throws {
+        Current.serverVersion = { Version(major: 0, minor: 105) }
+        Current.pedometer.isStepCountingAvailable = { true }
+        Current.pedometer.queryStartEndHandler = { _, _, hand in
+            hand(with(FakePedometerData()) {
+                $0.overrideFloorsDescended = NSNumber(value: 345)
+            }, nil)
+        }
+
+        let promise = WebhookSensor.pedometer()
+        let sensors = try hang(promise)
+
+        let sensor = sensors.first(where: { $0.UniqueID == "pedometer_floors_descended" })
+
+        XCTAssertEqual(sensor?.UniqueID, "pedometer_floors_descended")
+        XCTAssertEqual(sensor?.Name, "Floors Descended")
+        XCTAssertEqual(sensor?.Icon, "mdi:stairs-down")
         XCTAssertEqual(sensor?.UnitOfMeasurement, "floors")
         XCTAssertEqual(sensor?.State as? Int, 345)
     }
