@@ -711,9 +711,10 @@ extension WebViewController: WKScriptMessageHandler {
         } else if message.name == "updateThemeColors" {
             self.handleThemeUpdate(messageBody)
         } else if message.name == "getExternalAuth", let callbackName = messageBody["callback"] {
+            let force = messageBody["force"] as? Bool ?? false
             if let tokenManager = Current.tokenManager {
-                Current.Log.verbose("getExternalAuth called")
-                tokenManager.authDictionaryForWebView.done { dictionary in
+                Current.Log.verbose("getExternalAuth called, forced: \(force)")
+                tokenManager.authDictionaryForWebView(forceRefresh: force).done { dictionary in
                     let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: [])
                     if let jsonString = String(data: jsonData!, encoding: .utf8) {
                         // swiftlint:disable:next line_length
