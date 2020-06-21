@@ -750,3 +750,8 @@ Home Assistant Companion %@";
 "location_change_notification.periodic.body" = "Location updated via periodic update";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "settings_details.general.device_name.title" = "Device Name";
+"settings_details.general.app_icon.enum.pride_bi" = "Pride: Bi";
+"settings_details.general.app_icon.enum.pride_poc" = "Pride: POC";
+"settings_details.general.app_icon.enum.pride_rainbow" = "Pride: Rainbow";
+"settings_details.general.app_icon.enum.pride_rainbow_invert" = "Pride: Rainbow (Inverted)";
+"settings_details.general.app_icon.enum.pride_trans" = "Pride: Trans";

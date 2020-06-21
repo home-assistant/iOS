@@ -35,6 +35,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var safariVC: SFSafariViewController?
 
+    private var webViewControllerPromise: Guarantee<WebViewController>
+    private var webViewControllerSeal: (WebViewController) -> Void
+
     private(set) var regionManager: RegionManager!
     private var periodicUpdateTimer: Timer? {
         willSet {
@@ -44,10 +47,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-//    override init() {
-//        super.init()
-//        UIFont.overrideInitialize()
-//    }
+    override init() {
+        (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
+        super.init()
+    }
 
     enum StateRestorationKey: String {
         case mainWindow
@@ -110,19 +113,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = window
     }
 
+    func updateRootViewController(to newValue: UIViewController) {
+        let newWebViewController = newValue.children.compactMap { $0 as? WebViewController }.first
+
+        // must be before the seal fires, or it may request during deinit of an old one
+        window?.rootViewController = newValue
+
+        if let newWebViewController = newWebViewController {
+            // any kind of ->webviewcontroller is the same, even if we are for some reason replacing an existing one
+            if webViewControllerPromise.isFulfilled {
+                webViewControllerPromise = .value(newWebViewController)
+            } else {
+                webViewControllerSeal(newWebViewController)
+            }
+        } else if webViewControllerPromise.isFulfilled {
+            // replacing one, so set up a new promise if necessary
+            (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
+        }
+    }
+
     func setupView() {
         if Current.appConfiguration == .FastlaneSnapshot { setupFastlaneSnapshotConfiguration() }
 
         if requiresOnboarding {
             Current.Log.info("showing onboarding")
-            window?.rootViewController = onboardingNavigationController()
+            updateRootViewController(to: onboardingNavigationController())
         } else {
             if let rootController = window?.rootViewController, !rootController.children.isEmpty {
                 Current.Log.info("state restoration loaded controller, not creating a new one")
+                // not changing anything, but handle the promises
+                updateRootViewController(to: rootController)
             } else {
                 Current.Log.info("state restoration didn't load anything, constructing controllers manually")
-                let navController = webViewNavigationController(rootViewController: WebViewController())
-                window?.rootViewController = navController
+                let webViewController = WebViewController()
+                let navController = webViewNavigationController(rootViewController: webViewController)
+                updateRootViewController(to: navController)
             }
         }
 
@@ -142,7 +167,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Current.signInRequiredCallback = { type in
             let controller = self.onboardingNavigationController()
-            self.window?.rootViewController = controller
+            self.updateRootViewController(to: controller)
 
             if type.shouldShowError {
                 let alert = UIAlertController(title: L10n.Alerts.AuthRequired.title,
@@ -155,7 +180,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         Current.onboardingComplete = {
-            self.window?.rootViewController = self.webViewNavigationController(rootViewController: WebViewController())
+            self.updateRootViewController(to: self.webViewNavigationController(rootViewController: WebViewController()))
         }
     }
 
@@ -913,27 +938,39 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
         }
 
-        if let openUrl = userInfo["url"] as? String,
-            let url = URL(string: openUrl) {
-            if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
-                let alert = UIAlertController(title: L10n.Alerts.OpenUrlFromNotification.title,
-                                              message: L10n.Alerts.OpenUrlFromNotification.message(openUrl),
-                                              preferredStyle: UIAlertController.Style.alert)
-                alert.addAction(UIAlertAction(title: L10n.noLabel, style: UIAlertAction.Style.default, handler: nil))
-                alert.addAction(UIAlertAction(title: L10n.yesLabel, style: UIAlertAction.Style.default, handler: { _ in
-                    UIApplication.shared.open(url,
-                                              options: [:],
-                                              completionHandler: nil)
-                }))
-                var rootViewController = UIApplication.shared.keyWindow?.rootViewController
-                if let navigationController = rootViewController as? UINavigationController {
-                    rootViewController = navigationController.viewControllers.first
+        if let openUrlRaw = userInfo["url"] as? String {
+            if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw) {
+                webViewControllerPromise.done { webViewController in
+                    webViewController.open(inline: webviewURL)
                 }
-                rootViewController?.present(alert, animated: true, completion: nil)
-                alert.popoverPresentationController?.sourceView = rootViewController?.view
-            } else {
-                UIApplication.shared.open(url, options: [:],
-                                          completionHandler: nil)
+            } else if let url = URL(string: openUrlRaw) {
+                if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
+                    let alert = UIAlertController(title: L10n.Alerts.OpenUrlFromNotification.title,
+                                                  message: L10n.Alerts.OpenUrlFromNotification.message(openUrlRaw),
+                                                  preferredStyle: UIAlertController.Style.alert)
+                    alert.addAction(UIAlertAction(
+                        title: L10n.noLabel,
+                        style: UIAlertAction.Style.default,
+                        handler: nil
+                    ))
+                    alert.addAction(UIAlertAction(
+                        title: L10n.yesLabel,
+                        style: UIAlertAction.Style.default
+                    ) { _ in
+                        UIApplication.shared.open(url,
+                                                  options: [:],
+                                                  completionHandler: nil)
+                    })
+                    var rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                    if let navigationController = rootViewController as? UINavigationController {
+                        rootViewController = navigationController.viewControllers.first
+                    }
+                    rootViewController?.present(alert, animated: true, completion: nil)
+                    alert.popoverPresentationController?.sourceView = rootViewController?.view
+                } else {
+                    UIApplication.shared.open(url, options: [:],
+                                              completionHandler: nil)
+                }
             }
         }
         firstly {
