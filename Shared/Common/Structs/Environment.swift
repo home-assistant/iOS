@@ -178,6 +178,13 @@ public class Environment {
     /// Wrapper around CMMotionActivityManager
     public struct Motion {
         private let underlyingManager = CMMotionActivityManager()
+        public var isAuthorized: () -> Bool = {
+            if #available(iOS 11, *) {
+                return CMMotionActivityManager.authorizationStatus() == .authorized
+            } else {
+                return true
+            }
+        }
         public var isActivityAvailable: () -> Bool = CMMotionActivityManager.isActivityAvailable
         public lazy var queryStartEndOnQueueHandler: (
             Date, Date, OperationQueue, @escaping CMMotionActivityQueryHandler
@@ -190,6 +197,14 @@ public class Environment {
     /// Wrapper around CMPedometeer
     public struct Pedometer {
         private let underlyingPedometer = CMPedometer()
+        public var isAuthorized: () -> Bool = {
+            if #available(iOS 11, *) {
+                return CMPedometer.authorizationStatus() == .authorized
+            } else {
+                return true
+            }
+        }
+
         public var isStepCountingAvailable: () -> Bool = CMPedometer.isStepCountingAvailable
         public lazy var queryStartEndHandler: (
             Date, Date, @escaping CMPedometerHandler

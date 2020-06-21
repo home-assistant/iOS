@@ -5,6 +5,7 @@ import Version
 
 extension WebhookSensor {
     public enum PedometerError: Error {
+        case unauthorized
         case unavailable
         case noData
     }
@@ -26,8 +27,13 @@ extension WebhookSensor {
     }
 
     private static func latestPedometerData() -> Promise<CMPedometerData> {
+        guard Current.pedometer.isAuthorized() else {
+            Current.Log.warning("Pedometer is not authorized")
+            return .init(error: PedometerError.unauthorized)
+        }
+
         guard Current.pedometer.isStepCountingAvailable() else {
-            Current.Log.warning("Step counting is not available")
+            Current.Log.warning("Pedometer is not available")
             return .init(error: PedometerError.unavailable)
         }
 
