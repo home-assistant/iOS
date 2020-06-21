@@ -744,7 +744,12 @@
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";
 "settings_details.general.device_name.title" = "Device Name";
 "settings_details.general.app_icon.enum.pride_bi" = "Pride: Bi";
-"settings_details.general.app_icon.enum.pride_poc" = "Pride: POC";
+"settings_details.general.app_icon.enum.pride_poc" = "Pride: 8-Color";
 "settings_details.general.app_icon.enum.pride_rainbow" = "Pride: Rainbow";
 "settings_details.general.app_icon.enum.pride_rainbow_invert" = "Pride: Rainbow (Inverted)";
 "settings_details.general.app_icon.enum.pride_trans" = "Pride: Trans";
+"settings_details.general.open_in_browser.title" = "Open Links In";
+"settings_details.general.open_in_browser.chrome" = "Google Chrome";
+"settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
+"settings_details.general.open_in_browser.safari" = "Apple Safari";
+"settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";

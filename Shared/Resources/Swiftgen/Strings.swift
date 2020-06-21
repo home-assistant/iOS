@@ -535,7 +535,7 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "notifications_configurator.new_action.title")
     }
     internal enum Settings {
-      /// Identifier must contain only letters and underscores. It must be globally unique to the app.
+      /// Identifier must contain only letters and underscores and be uppercase. It must be globally unique to the app.
       internal static let footer = L10n.tr("Localizable", "notifications_configurator.settings.footer")
       /// Settings
       internal static let header = L10n.tr("Localizable", "notifications_configurator.settings.header")
@@ -1301,7 +1301,7 @@ internal enum L10n {
           internal static let pink = L10n.tr("Localizable", "settings_details.general.app_icon.enum.pink")
           /// Pride: Bi
           internal static let prideBi = L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_bi")
-          /// Pride: POC
+          /// Pride: 8-Color
           internal static let pridePoc = L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_poc")
           /// Pride: Rainbow
           internal static let prideRainbow = L10n.tr("Localizable", "settings_details.general.app_icon.enum.pride_rainbow")
@@ -1322,6 +1322,10 @@ internal enum L10n {
       internal enum AutohideToolbar {
         /// Automatically hide toolbar
         internal static let title = L10n.tr("Localizable", "settings_details.general.autohide_toolbar.title")
+      }
+      internal enum Chrome {
+        /// Open links in Chrome
+        internal static let title = L10n.tr("Localizable", "settings_details.general.chrome.title")
       }
       internal enum DeviceName {
         /// Device Name
