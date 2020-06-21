@@ -56,6 +56,6 @@ class ConnectionErrorViewController: UIViewController {
 
     @IBAction func moreInfoTapped(_ sender: UIButton) {
         guard let error = self.error as? ConnectionTestResult else { return }
-        openURLInBrowser(urlToOpen: error.DocumentationURL)
+        openURLInBrowser(error.DocumentationURL, self)
     }
 }

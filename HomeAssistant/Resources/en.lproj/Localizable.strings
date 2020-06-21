@@ -44,7 +44,11 @@
 "settings.reset_section.reset_alert.title" = "Reset";
 "settings.reset_section.reset_alert.message" = "Your settings will be reset and this device will be unregistered from push notifications as well as removed from your Home Assistant configuration.";
 "settings_details.general.title" = "General";
-"settings_details.general.chrome.title" = "Open links in Chrome";
+"settings_details.general.open_in_browser.title" = "Open Links In";
+"settings_details.general.open_in_browser.chrome" = "Google Chrome";
+"settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
+"settings_details.general.open_in_browser.safari" = "Apple Safari";
+"settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_details.location.title" = "Location";
 "settings_details.location.notifications.header" = "Location Notifications";
 "settings_details.location.notifications.enter.title" = "Enter Zone Notifications";

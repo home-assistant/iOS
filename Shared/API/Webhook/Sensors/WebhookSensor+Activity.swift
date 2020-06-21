@@ -4,6 +4,7 @@ import CoreMotion
 
 extension WebhookSensor {
     public enum ActivityError: Error {
+        case unauthorized
         case unavailable
         case noData
     }
@@ -26,6 +27,11 @@ extension WebhookSensor {
     }
 
     private static func latestMotionActivity() -> Promise<CMMotionActivity> {
+        guard Current.motion.isAuthorized() else {
+            Current.Log.warning("Activity is not authorized")
+            return .init(error: ActivityError.unauthorized)
+        }
+
         guard Current.motion.isActivityAvailable() else {
             Current.Log.warning("Activity is not available")
             return .init(error: ActivityError.unavailable)

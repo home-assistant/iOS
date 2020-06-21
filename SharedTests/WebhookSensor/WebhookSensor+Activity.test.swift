@@ -13,11 +13,20 @@ class WebhookSensorActivityTests: XCTestCase {
         super.setUp()
 
         // start by assuming nothing is enabled/available
+        Current.motion.isAuthorized = { false  }
         Current.motion.isActivityAvailable = { false }
         Current.motion.queryStartEndOnQueueHandler = { _, _, _, handler in handler([], nil) }
     }
 
+    func testUnauthorizedReturnsError() {
+        let promise = WebhookSensor.activity()
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? WebhookSensor.ActivityError, .unauthorized)
+        }
+    }
+
     func testUnavailableReturnsError() {
+        Current.motion.isAuthorized = { true }
         let promise = WebhookSensor.activity()
         XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual(error as? WebhookSensor.ActivityError, .unavailable)
@@ -25,6 +34,7 @@ class WebhookSensorActivityTests: XCTestCase {
     }
 
     func testNoDataReturnsError() {
+        Current.motion.isAuthorized = { true }
         Current.motion.isActivityAvailable = { true }
         let promise = WebhookSensor.activity()
         XCTAssertThrowsError(try hang(promise)) { error in
@@ -33,6 +43,7 @@ class WebhookSensorActivityTests: XCTestCase {
     }
 
     func testQueryReturnsContractuallyImpossibleErrorReturnsError() {
+        Current.motion.isAuthorized = { true }
         Current.motion.isActivityAvailable = { true }
         Current.motion.queryStartEndOnQueueHandler = { _, _, _, handler in handler(nil, nil) }
 
@@ -43,6 +54,7 @@ class WebhookSensorActivityTests: XCTestCase {
     }
 
     func testQueryErrorsReturnsError() {
+        Current.motion.isAuthorized = { true }
         Current.motion.isActivityAvailable = { true }
         Current.motion.queryStartEndOnQueueHandler = { _, _, _, hand in hand(nil, TestError.someError) }
 
@@ -57,6 +69,7 @@ class WebhookSensorActivityTests: XCTestCase {
             $0.walking = true
         }
 
+        Current.motion.isAuthorized = { true }
         Current.motion.isActivityAvailable = { true }
         Current.motion.queryStartEndOnQueueHandler = { _, _, _, hand in hand([anyActivity], nil) }
 
@@ -68,6 +81,7 @@ class WebhookSensorActivityTests: XCTestCase {
     }
 
     func testQueryActivitiesReturnSensors() throws {
+        Current.motion.isAuthorized = { true }
         Current.motion.isActivityAvailable = { true }
 
         // swiftlint:disable opening_brace

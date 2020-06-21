@@ -304,7 +304,7 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
 
     @objc
     func getInfoAction(_ sender: Any) {
-        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!)
+        openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!, self)
     }
 
     func renderTemplateForRow(rowTag: String) {
