@@ -225,8 +225,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         self.navigationController?.setNavigationBarHidden(true, animated: false)
 
+        // if we aren't showing a url or it's an incorrect url, update it -- otherwise, leave it alone
         if let connectionInfo = Current.settingsStore.connectionInfo,
-            let webviewURL = connectionInfo.webviewURL() {
+            let webviewURL = connectionInfo.webviewURL(),
+            webView.url == nil || webView.url?.baseIsEqual(to: webviewURL) == false {
             let myRequest: URLRequest
 
             if Current.settingsStore.restoreLastURL,
@@ -273,6 +275,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }
 
         setNeedsStatusBarAppearanceUpdate()
+    }
+
+    public func open(inline url: URL) {
+        loadViewIfNeeded()
+        webView.load(URLRequest(url: url))
     }
 
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration,
@@ -921,6 +928,20 @@ extension ConnectionInfo {
         }
 
         return try? components.asURL()
+    }
+
+    func webviewURL(from raw: String) -> URL? {
+        guard let baseURL = webviewURL() else {
+            return nil
+        }
+
+        if raw.starts(with: "/") {
+            return baseURL.appendingPathComponent(raw)
+        } else if let url = URL(string: raw), url.baseIsEqual(to: baseURL) {
+            return url
+        } else {
+            return nil
+        }
     }
 // swiftlint:disable:next file_length
 }

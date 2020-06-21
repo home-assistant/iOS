@@ -21,6 +21,7 @@ App version:
 <!-- Please give the version number of Home Assistant Core you are running -->
 
 **Describe the bug**
+<!-- For location issues, please specify if using the new "In-Development Updating" option under App Configuration > Location -->
 
 **To Reproduce**
 
