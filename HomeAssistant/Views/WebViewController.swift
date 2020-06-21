@@ -639,7 +639,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
         var detailButton = WhatsNewViewController.DetailButton(
             title: L10n.WhatsNew.Buttons.ReadMore.title,
-            action: .website(url: "https://home-assistant.io/ios/whats-new")
+            action: .website(url: "https://companion.home-assistant.io/app/ios/whats-new")
         )
 
         detailButton.titleColor = Constants.blue
@@ -917,7 +917,7 @@ extension WebViewController: UIScrollViewDelegate {
 extension ConnectionInfo {
     func webviewURL() -> URL? {
         if Current.appConfiguration == .FastlaneSnapshot, prefs.object(forKey: "useDemo") != nil {
-            return URL(string: "https://demo.home-assistant.io")!
+            return URL(string: "https://companion.home-assistant.io/app/ios/demo")!
         }
         guard var components = URLComponents(url: self.activeURL, resolvingAgainstBaseURL: true) else {
             return nil

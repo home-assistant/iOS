@@ -58,7 +58,7 @@ class AboutViewController: FormViewController {
              +++ ButtonRow {
                    $0.title = L10n.About.Donate.patreon
                }.onCellSelection { _, _  in
-                   let urlStr = "https://patreon.com/robbiet480/"
+                   let urlStr = "https://companion.home-assistant.io/app/ios/patreon"
                    openURLInBrowser(URL(string: urlStr)!, self)
                }
 
@@ -66,7 +66,7 @@ class AboutViewController: FormViewController {
                     $0.title = L10n.About.Beta.title
                     $0.disabled = Condition(booleanLiteral: Current.appConfiguration == .Beta)
                 }.onCellSelection { _, _  in
-                    let urlStr = "https://home-assistant.io/ios/beta/"
+                    let urlStr = "https://companion.home-assistant.io/app/ios/beta"
                     // We want to open this in Safari so the TestFlight redirect works.
                     UIApplication.shared.open(URL(string: urlStr)!, options: [:], completionHandler: nil)
                 }
@@ -83,14 +83,14 @@ class AboutViewController: FormViewController {
             <<< ButtonRow {
                     $0.title = L10n.About.Review.title
                 }.onCellSelection { _, _  in
-                    let urlStr = "https://itunes.apple.com/app/id1099568401?action=write-review&mt=8"
+                    let urlStr = "https://companion.home-assistant.io/app/ios/review"
                     UIApplication.shared.open(URL(string: urlStr)!, options: [:], completionHandler: nil)
                 }
 
             <<< ButtonRow {
                 $0.title = L10n.About.HelpLocalize.title
                 }.onCellSelection { _, _  in
-                    let urlStr = "https://developers.home-assistant.io/docs/en/internationalization_translation.html"
+                    let urlStr = "https://companion.home-assistant.io/app/ios/translate"
                     openURLInBrowser(URL(string: urlStr)!, self)
             }
 
@@ -109,13 +109,13 @@ class AboutViewController: FormViewController {
             <<< ButtonRow {
                     $0.title = L10n.About.Chat.title
                 }.onCellSelection { _, _  in
-                    openURLInBrowser(URL(string: "https://discord.gg/C7fXPmt")!, self)
+                    openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/chat")!, self)
                 }
 
             <<< ButtonRow {
                     $0.title = L10n.About.Documentation.title
                 }.onCellSelection { _, _  in
-                    openURLInBrowser(URL(string: "https://www.home-assistant.io/docs/ecosystem/ios/")!, self)
+                    openURLInBrowser(URL(string: "https://companion.home-assistant.io")!, self)
                 }
 
             <<< ButtonRow {
@@ -135,13 +135,13 @@ class AboutViewController: FormViewController {
             <<< ButtonRow {
                     $0.title = L10n.About.Github.title
                 }.onCellSelection { _, _  in
-                    openURLInBrowser(URL(string: "https://github.com/home-assistant/home-assistant-iOS")!, self)
+                    openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/repo")!, self)
                 }
 
             <<< ButtonRow {
                     $0.title = L10n.About.GithubIssueTracker.title
                 }.onCellSelection { _, _ in
-                    openURLInBrowser(URL(string: "https://github.com/home-assistant/home-assistant-iOS/issues")!, self)
+                    openURLInBrowser(URL(string: "https://companion.home-assistant.io/app/ios/issues")!, self)
                 }
     }
 

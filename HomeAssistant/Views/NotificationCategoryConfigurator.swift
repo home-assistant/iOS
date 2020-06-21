@@ -278,7 +278,7 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
     @objc
     func getInfoAction(_ sender: Any) {
         openURLInBrowser(
-            URL(string: "https://companion.home-assistant.io/docs/notifications/actionable-notifications")!,
+            URL(string: "https://companion.home-assistant.io/app/ios/actionable-notifications")!,
             self
         )
     }
