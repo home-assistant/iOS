@@ -530,6 +530,7 @@
 		B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA3C7222691A5000DE811C /* AKConverter.swift */; };
 		B6DAC735215F069300727D2A /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC734215F069300727D2A /* NotificationCategory.swift */; };
 		B6DAC737215F06B100727D2A /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
+		B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */; };
 		B6DF8BC1221C890600370A59 /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
 		B6DF8BC2221C890F00370A59 /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
 		B6DF8BC4221D047400370A59 /* GetCameraImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC3221D047400370A59 /* GetCameraImage.swift */; };
@@ -1293,6 +1294,7 @@
 		B6DA3C7222691A5000DE811C /* AKConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKConverter.swift; sourceTree = "<group>"; };
 		B6DAC734215F069300727D2A /* NotificationCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategory.swift; sourceTree = "<group>"; };
 		B6DAC736215F06B100727D2A /* NotificationAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAction.swift; sourceTree = "<group>"; };
+		B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenInFirefoxControllerSwift.swift; sourceTree = "<group>"; };
 		B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+UIActivityIndicator.swift"; sourceTree = "<group>"; };
 		B6DF8BC3221D047400370A59 /* GetCameraImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCameraImage.swift; sourceTree = "<group>"; };
 		B6E2D4B92270406B00446DFA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/Beta LaunchScreen.storyboard"; sourceTree = "<group>"; };
@@ -2119,6 +2121,7 @@
 				119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */,
 				1100D51E2496F63400B1073C /* ThemeColors.swift */,
 				1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */,
+				B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -4131,6 +4134,7 @@
 				B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */,
 				B65B15012273184600635D5C /* Roboto.swift in Sources */,
 				B6B6B14A215B137C003DE2DD /* WatchComplicationConfigurator.swift in Sources */,
+				B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */,
 				B64BB3A81E9C6551001E8B46 /* WebViewController.swift in Sources */,
 				B66C58BD21509934004AB261 /* ShortcutServiceConfigurator.swift in Sources */,
 				B67CE8D02220EF1D0034C1D0 /* ObjectMapper+RealmList.swift in Sources */,

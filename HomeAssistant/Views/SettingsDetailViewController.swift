@@ -101,11 +101,21 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         UIApplication.shared.setAlternateIconName(newAppIconName.rawValue)
                     }
 
-                +++ SwitchRow("openInChrome") {
-                    $0.title = L10n.SettingsDetails.General.Chrome.title
-                    $0.value = prefs.bool(forKey: "openInChrome")
+                +++ PushRow<OpenInBrowser>("openInBrowser") {
+                    $0.title = L10n.SettingsDetails.General.OpenInBrowser.title
+
+                    if let value = prefs.string(forKey: "openInBrowser").flatMap({ OpenInBrowser(rawValue: $0) }),
+                        value.isInstalled {
+                        $0.value = value
+                    } else {
+                        $0.value = .Safari
+                    }
+                    $0.selectorTitle = $0.title
+                    $0.options = OpenInBrowser.allCases.filter { $0.isInstalled }
+                    $0.displayValueFor = { $0?.title }
                 }.onChange { row in
-                    prefs.setValue(row.value, forKey: "openInChrome")
+                    guard let browserChoice = row.value else { return }
+                    prefs.setValue(browserChoice.rawValue, forKey: "openInBrowser")
                     prefs.synchronize()
                 }
 
@@ -515,15 +525,15 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     }
 
     @objc func firebasePrivacy(_ sender: Any) {
-        openURLInBrowser(urlToOpen: URL(string: "https://firebase.google.com/support/privacy/")!)
+        openURLInBrowser(URL(string: "https://firebase.google.com/support/privacy/")!, self)
     }
 
     @objc func actionsHelp(_ sender: Any) {
-        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/docs/core/actions")!)
+        openURLInBrowser(URL(string: "https://companion.home-assistant.io/docs/core/actions")!, self)
     }
 
     @objc func watchHelp(_ sender: Any) {
-        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/next/integrations/apple-watch")!)
+        openURLInBrowser(URL(string: "https://companion.home-assistant.io/next/integrations/apple-watch")!, self)
     }
 
     override func tableView(_ tableView: UITableView, willBeginReorderingRowAtIndexPath indexPath: IndexPath) {
@@ -852,6 +862,37 @@ enum AppIcon: String, CaseIterable {
             return L10n.SettingsDetails.General.AppIcon.Enum.prideRainbowInvert
         case .Trans:
             return L10n.SettingsDetails.General.AppIcon.Enum.prideTrans
+        }
+    }
+}
+
+enum OpenInBrowser: String, CaseIterable {
+    case Chrome
+    case Firefox
+    case Safari
+    case SafariInApp
+
+    var title: String {
+        switch self {
+        case .Chrome:
+            return L10n.SettingsDetails.General.OpenInBrowser.chrome
+        case .Firefox:
+            return L10n.SettingsDetails.General.OpenInBrowser.firefox
+        case .Safari:
+            return L10n.SettingsDetails.General.OpenInBrowser.safari
+        case .SafariInApp:
+            return L10n.SettingsDetails.General.OpenInBrowser.safariInApp
+        }
+    }
+
+    var isInstalled: Bool {
+        switch self {
+        case .Chrome:
+            return OpenInChromeController.sharedInstance.isChromeInstalled()
+        case .Firefox:
+            return OpenInFirefoxControllerSwift().isFirefoxInstalled()
+        default:
+            return true
         }
     }
 }

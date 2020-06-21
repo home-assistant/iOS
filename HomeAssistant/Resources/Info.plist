@@ -532,6 +532,7 @@
 		<string>tweetbot</string>
 		<string>twitter</string>
 		<string>shortcuts</string>
+		<string>firefox</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
