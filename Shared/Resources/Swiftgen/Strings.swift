@@ -1323,6 +1323,10 @@ internal enum L10n {
         /// Automatically hide toolbar
         internal static let title = L10n.tr("Localizable", "settings_details.general.autohide_toolbar.title")
       }
+      internal enum DeviceName {
+        /// Device Name
+        internal static let title = L10n.tr("Localizable", "settings_details.general.device_name.title")
+      }
       internal enum OpenInBrowser {
         /// Google Chrome
         internal static let chrome = L10n.tr("Localizable", "settings_details.general.open_in_browser.chrome")
@@ -1334,10 +1338,6 @@ internal enum L10n {
         internal static let safariInApp = L10n.tr("Localizable", "settings_details.general.open_in_browser.safari_in_app")
         /// Open Links In
         internal static let title = L10n.tr("Localizable", "settings_details.general.open_in_browser.title")
-      }
-      internal enum DeviceName {
-        /// Device Name
-        internal static let title = L10n.tr("Localizable", "settings_details.general.device_name.title")
       }
       internal enum PageZoom {
         /// %@ (Default)

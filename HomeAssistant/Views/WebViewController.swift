@@ -693,6 +693,7 @@ extension String {
 }
 
 extension WebViewController: WKScriptMessageHandler {
+    // swiftlint:disable:next function_body_length
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let messageBody = message.body as? [String: Any] else { return }
 

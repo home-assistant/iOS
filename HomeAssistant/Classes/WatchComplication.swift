@@ -584,7 +584,7 @@ public class WatchComplication: Object, Mappable {
             }
             return template
         case .GraphicBezelCircularText:
-            // FIXME: need to implement CLKComplicationTemplateGraphicCircular
+            // TODO: need to implement CLKComplicationTemplateGraphicCircular
             return nil
 //            let template = CLKComplicationTemplateGraphicBezelCircularText()
 //            if let textProvider = self.textDataProviders["Center"] {

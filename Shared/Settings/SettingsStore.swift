@@ -18,6 +18,7 @@ import UIKit
 import WatchKit
 #endif
 
+// swiftlint:disable:next type_body_length
 public class SettingsStore {
     let keychain = Constants.Keychain
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!

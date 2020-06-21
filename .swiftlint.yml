@@ -1,5 +1,6 @@
 disabled_rules:
   - identifier_name
+  - todo
 excluded:
   - fastlane
   - HomeAssistantTests
