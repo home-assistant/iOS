@@ -14,11 +14,20 @@ class WebhookSensorPedometerTests: XCTestCase {
         super.setUp()
 
         // start by assuming nothing is enabled/available
+        Current.pedometer.isAuthorized = { false }
         Current.pedometer.isStepCountingAvailable = { false }
         Current.pedometer.queryStartEndHandler = { _, _, handler in handler(nil, nil) }
     }
 
+    func testUnauthorizedReturnsError() {
+        let promise = WebhookSensor.pedometer()
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? WebhookSensor.PedometerError, .unauthorized)
+        }
+    }
+
     func testUnavailableReturnsError() {
+        Current.pedometer.isAuthorized = { true }
         let promise = WebhookSensor.pedometer()
         XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual(error as? WebhookSensor.PedometerError, .unavailable)
@@ -26,6 +35,7 @@ class WebhookSensorPedometerTests: XCTestCase {
     }
 
     func testNoDataReturnsError() {
+        Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         let promise = WebhookSensor.pedometer()
         XCTAssertThrowsError(try hang(promise)) { error in
@@ -34,6 +44,7 @@ class WebhookSensorPedometerTests: XCTestCase {
     }
 
     func testQueryErrorsReturnsError() {
+        Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in hand(nil, TestError.someError) }
 
@@ -44,6 +55,7 @@ class WebhookSensorPedometerTests: XCTestCase {
     }
 
     func testWithOnlyRequiredSteps() throws {
+        Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in hand(FakePedometerData(), nil) }
 
@@ -59,6 +71,7 @@ class WebhookSensorPedometerTests: XCTestCase {
     }
 
     func testWithDistance() throws {
+        Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
             hand(with(FakePedometerData()) {
@@ -80,6 +93,7 @@ class WebhookSensorPedometerTests: XCTestCase {
 
     func testWithFloorsAscendedBefore105() throws {
         Current.serverVersion = { Version(major: 0, minor: 104) }
+        Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
             hand(with(FakePedometerData()) {
@@ -101,6 +115,7 @@ class WebhookSensorPedometerTests: XCTestCase {
 
     func testWithFloorsAscendedAfter105() throws {
         Current.serverVersion = { Version(major: 0, minor: 105) }
+        Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
             hand(with(FakePedometerData()) {
@@ -122,6 +137,7 @@ class WebhookSensorPedometerTests: XCTestCase {
 
     func testWithFloorsDescendedBefore105() throws {
         Current.serverVersion = { Version(major: 0, minor: 104) }
+        Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
             hand(with(FakePedometerData()) {
@@ -143,6 +159,7 @@ class WebhookSensorPedometerTests: XCTestCase {
 
     func testWithFloorsDescendedAfter105() throws {
         Current.serverVersion = { Version(major: 0, minor: 105) }
+        Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
             hand(with(FakePedometerData()) {
@@ -163,6 +180,7 @@ class WebhookSensorPedometerTests: XCTestCase {
     }
 
     func testWithAverageActivePace() throws {
+        Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
             hand(with(FakePedometerData()) {
@@ -183,6 +201,7 @@ class WebhookSensorPedometerTests: XCTestCase {
     }
 
     func testWithCurrentPace() throws {
+        Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
             hand(with(FakePedometerData()) {
@@ -203,6 +222,7 @@ class WebhookSensorPedometerTests: XCTestCase {
     }
 
     func testWithCurrentCadence() throws {
+        Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in
             hand(with(FakePedometerData()) {
