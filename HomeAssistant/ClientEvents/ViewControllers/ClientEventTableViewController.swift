@@ -53,6 +53,14 @@ extension ClientEventTableViewController {
         return self.results?.count ?? 0
     }
 
+    public override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if results?[indexPath.row].jsonPayload == nil {
+            return nil
+        } else {
+            return indexPath
+        }
+    }
+
     override public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as UITableViewCell
         if let results = self.results, results.count > indexPath.item, let eventCell = cell as? ClientEventCell {
@@ -60,6 +68,14 @@ extension ClientEventTableViewController {
             eventCell.titleLabel.text = item.text
             eventCell.dateLabel.text = self.dateFormatter.string(from: item.date)
             eventCell.typeLabel.text = item.type.displayText
+
+            if item.jsonPayload != nil {
+                eventCell.accessoryType = .disclosureIndicator
+                eventCell.selectionStyle = .default
+            } else {
+                eventCell.accessoryType = .none
+                eventCell.selectionStyle = .none
+            }
         }
         return cell
     }
