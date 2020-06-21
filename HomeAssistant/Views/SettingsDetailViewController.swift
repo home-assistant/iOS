@@ -515,15 +515,15 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     }
 
     @objc func firebasePrivacy(_ sender: Any) {
-        openURLInBrowser(urlToOpen: URL(string: "https://firebase.google.com/support/privacy/")!)
+        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/app/ios/firebase-privacy")!)
     }
 
     @objc func actionsHelp(_ sender: Any) {
-        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/docs/core/actions")!)
+        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/app/ios/actions")!)
     }
 
     @objc func watchHelp(_ sender: Any) {
-        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/next/integrations/apple-watch")!)
+        openURLInBrowser(urlToOpen: URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!)
     }
 
     override func tableView(_ tableView: UITableView, willBeginReorderingRowAtIndexPath indexPath: IndexPath) {
