@@ -82,11 +82,12 @@ func setDefaults() {
     }
 
     if prefs.object(forKey: "openInBrowser") == nil {
-        prefs.setValue(OpenInBrowser.Safari.rawValue, forKey: "openInBrowser")
-    }
-
-    if prefs.bool(forKey: "openInChrome") {
-        prefs.setValue(OpenInBrowser.Chrome.rawValue, forKey: "openInBrowser")
+        if prefs.bool(forKey: "openInChrome") {
+            prefs.set(OpenInBrowser.Chrome.rawValue, forKey: "openInBrowser")
+            prefs.removeObject(forKey: "openInChrome")
+        } else {
+            prefs.set(OpenInBrowser.Safari.rawValue, forKey: "openInBrowser")
+        }
     }
 
     if prefs.object(forKey: "confirmBeforeOpeningUrl") == nil {
