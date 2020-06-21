@@ -19,7 +19,32 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
     private var tokenInfo: TokenInfo?
     private var authenticationAPI: AuthenticationAPI
-    private var refreshPromiseCache: Promise<String>?
+
+    private class RefreshPromiseCache {
+        // we can be asked to refresh from any queue - alamofire's utility queue, webview's main queue, so guard
+        // accessing the underlying promise here without being on the queue is programmer error
+        let queue: DispatchQueue
+        private let queueSpecific = DispatchSpecificKey<Bool>()
+
+        init() {
+            queue = DispatchQueue(label: "refresh-promise-cache-mutex", qos: .userInitiated)
+            queue.setSpecific(key: queueSpecific, value: true)
+        }
+
+        private var underlyingPromise: Promise<String>?
+
+        var promise: Promise<String>? {
+            get {
+                assert(DispatchQueue.getSpecific(key: queueSpecific) == true)
+                return underlyingPromise
+            }
+            set {
+                assert(DispatchQueue.getSpecific(key: queueSpecific) == true)
+                underlyingPromise = newValue
+            }
+        }
+    }
+    private let refreshPromiseCache = RefreshPromiseCache()
     private let connectionInfo: ConnectionInfo
 
     public var isAuthenticated: Bool {
@@ -66,19 +91,25 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         }
     }
 
-    public var authDictionaryForWebView: Promise<[String: Any]> {
-        return firstly {
-                self.bearerToken
-            }.map { _ -> [String: Any] in
-                // TokenInfo is refreshed at this point.
-                guard let info = self.tokenInfo  else {
-                    throw TokenError.tokenUnavailable
-                }
+    public func authDictionaryForWebView(forceRefresh: Bool) -> Promise<[String: Any]> {
+        return firstly { () -> Promise<String> in
+            if forceRefresh {
+                Current.Log.info("forcing a refresh of token")
+                return refreshToken
+            } else {
+                Current.Log.info("using existing token")
+                return bearerToken
+            }
+        }.map { _ -> [String: Any] in
+            // TokenInfo is refreshed at this point.
+            guard let info = self.tokenInfo  else {
+                throw TokenError.tokenUnavailable
+            }
 
-                var dictionary: [String: Any] = [:]
-                dictionary["access_token"] = info.accessToken
-                dictionary["expires_in"] = Int(info.expiration.timeIntervalSince(Current.date()))
-                return dictionary
+            var dictionary: [String: Any] = [:]
+            dictionary["access_token"] = info.accessToken
+            dictionary["expires_in"] = Int(info.expiration.timeIntervalSince(Current.date()))
+            return dictionary
         }
     }
 
@@ -220,41 +251,55 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         return connectionInfo.checkURLMatches(url)
     }
 
-    private var newCodePromise: Promise<Void>?
     private var refreshToken: Promise<String> {
-        guard let tokenInfo = self.tokenInfo else {
-            return Promise(error: TokenError.tokenUnavailable)
-        }
-
-        if let refreshPromise = self.refreshPromiseCache {
-            return refreshPromise
-        }
-
-        let promise: Promise<String> =
-            self.authenticationAPI.refreshTokenWith(tokenInfo: tokenInfo).map { tokenInfo in
-            self.refreshPromiseCache = nil
-            Current.settingsStore.tokenInfo = tokenInfo
-            self.tokenInfo = tokenInfo
-            return tokenInfo.accessToken
-        }.ensure {
-            self.refreshPromiseCache = nil
-        }
-
-        promise.catch { error in
-            if let networkError = error as? AFError, let statusCode = networkError.responseCode,
-                statusCode == 400 {
-                /// Server rejected the refresh token. All is lost.
-                let event = ClientEvent(text: "Refresh token is invalid, showing onboarding", type: .networkRequest)
-                Current.clientEventStore.addEvent(event)
-
-                self.tokenInfo = nil
-                Current.settingsStore.tokenInfo = nil
-                Current.signInRequiredCallback?(.error)
+        refreshPromiseCache.queue.sync {
+            guard let tokenInfo = self.tokenInfo else {
+                Current.Log.error("no token info, can't refresh")
+                return Promise(error: TokenError.tokenUnavailable)
             }
-        }
 
-        self.refreshPromiseCache = promise
-        return promise
+            if let refreshPromise = self.refreshPromiseCache.promise {
+                Current.Log.info("using cached refreshToken promise")
+                return refreshPromise
+            }
+
+            let promise: Promise<String> = firstly {
+                self.authenticationAPI.refreshTokenWith(tokenInfo: tokenInfo)
+            }.map { tokenInfo in
+                Current.Log.info("storing refresh token")
+                Current.settingsStore.tokenInfo = tokenInfo
+                self.tokenInfo = tokenInfo
+                return tokenInfo.accessToken
+            }.ensure(on: refreshPromiseCache.queue) {
+                Current.Log.info("reset cached refreshToken promise")
+                self.refreshPromiseCache.promise = nil
+            }.tap { result in
+                switch result {
+                case .rejected(let error):
+                    Current.Log.error("refresh token got error: \(error)")
+
+                    if let networkError = error as? AFError, let statusCode = networkError.responseCode,
+                        statusCode == 400 {
+                        /// Server rejected the refresh token. All is lost.
+                        let event = ClientEvent(
+                            text: "Refresh token is invalid, showing onboarding",
+                            type: .networkRequest
+                        )
+                        Current.clientEventStore.addEvent(event)
+
+                        self.tokenInfo = nil
+                        Current.settingsStore.tokenInfo = nil
+                        Current.signInRequiredCallback?(.error)
+                    }
+                case .fulfilled:
+                    Current.Log.info("refresh token got success")
+                }
+            }
+
+            Current.Log.info("starting refreshToken cache")
+            self.refreshPromiseCache.promise = promise
+            return promise
+        }
     }
 }
 
