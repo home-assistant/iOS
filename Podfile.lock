@@ -376,18 +376,19 @@ PODS:
     - MaterialComponents/Typography
     - MDFInternationalization
     - MDFTextAccessibility
-  - "MaterialComponents/Buttons+ButtonThemer (109.8.0)":
-    - MaterialComponents/Buttons
-    - "MaterialComponents/Buttons+ColorThemer"
-    - "MaterialComponents/Buttons+ShapeThemer"
-    - "MaterialComponents/Buttons+TypographyThemer"
-    - MaterialComponents/Palettes
   - "MaterialComponents/Buttons+ColorThemer (109.8.0)":
     - MaterialComponents/Buttons
     - MaterialComponents/schemes/Color
   - "MaterialComponents/Buttons+ShapeThemer (109.8.0)":
     - MaterialComponents/Buttons
     - MaterialComponents/schemes/Shape
+  - "MaterialComponents/Buttons+Theming (109.8.0)":
+    - MaterialComponents/Buttons
+    - "MaterialComponents/Buttons+ColorThemer"
+    - "MaterialComponents/Buttons+ShapeThemer"
+    - "MaterialComponents/Buttons+TypographyThemer"
+    - MaterialComponents/schemes/Container
+    - MaterialComponents/ShadowElevations
   - "MaterialComponents/Buttons+TypographyThemer (109.8.0)":
     - MaterialComponents/Buttons
     - MaterialComponents/schemes/Typography
@@ -399,7 +400,6 @@ PODS:
     - MaterialComponents/Availability
     - MaterialComponents/private/Color
     - MaterialComponents/private/Math
-  - MaterialComponents/Palettes (109.8.0)
   - MaterialComponents/private/Application (109.8.0)
   - MaterialComponents/private/Color (109.8.0):
     - MaterialComponents/Availability
@@ -412,6 +412,10 @@ PODS:
   - MaterialComponents/schemes/Color (109.8.0):
     - MaterialComponents/Availability
     - MaterialComponents/private/Color
+  - MaterialComponents/schemes/Container (109.8.0):
+    - MaterialComponents/schemes/Color
+    - MaterialComponents/schemes/Shape
+    - MaterialComponents/schemes/Typography
   - MaterialComponents/schemes/Shape (109.8.0):
     - MaterialComponents/ShapeLibrary
     - MaterialComponents/Shapes
@@ -502,7 +506,7 @@ DEPENDENCIES:
   - Lokalise (~> 0.10.0)
   - lottie-ios
   - MaterialComponents/Buttons
-  - "MaterialComponents/Buttons+ButtonThemer"
+  - "MaterialComponents/Buttons+Theming"
   - MBProgressHUD (~> 1.2.0)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
   - PromiseKit
@@ -681,6 +685,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 77e87036e6ec9194b49d5c9927ba5e1e7d5ccf8e
+PODFILE CHECKSUM: c2f61f2ba58f06e7af53aebcb4a2eebc16fe20d1
 
 COCOAPODS: 1.9.3

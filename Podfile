@@ -55,7 +55,7 @@ target 'HomeAssistant' do
     pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
     pod 'MaterialComponents/Buttons'
-    pod 'MaterialComponents/Buttons+ButtonThemer'
+    pod 'MaterialComponents/Buttons+Theming'
     pod 'MBProgressHUD', '~> 1.2.0'
     pod 'SimulatorStatusMagic', :configurations => ['Debug']
     pod 'SwiftGen', '~> 6.1.0'

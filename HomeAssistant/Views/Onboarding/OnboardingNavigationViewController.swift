@@ -10,9 +10,7 @@ import UIKit
 import Eureka
 import Shared
 import MaterialComponents.MaterialButtons
-import MaterialComponents.MaterialButtons_ButtonThemer
-import MaterialComponents.MaterialButtons_ColorThemer
-import MaterialComponents.MDCContainedButtonThemer
+import MaterialComponents.MaterialButtons_Theming
 import Reachability
 
 class OnboardingNavigationViewController: UINavigationController, RowControllerType {
@@ -61,13 +59,10 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
     */
 
     func styleButton(_ button: MDCButton) {
-        let buttonScheme = MDCButtonScheme()
-        MDCContainedButtonThemer.applyScheme(buttonScheme, to: button)
-
-        let containerScheme = MDCSemanticColorScheme(defaults: .material201804)
-        containerScheme.primaryColor = .white
-        containerScheme.secondaryColor = Constants.blue
-        MDCContainedButtonColorThemer.applySemanticColorScheme(containerScheme, to: button)
+        let containerScheme = MDCContainerScheme()
+        containerScheme.colorScheme.primaryColor = .white
+        containerScheme.colorScheme.secondaryColor = Constants.blue
+        button.applyContainedTheme(withScheme: containerScheme)
 
         button.setTitleColor(Constants.blue, for: .normal)
 
