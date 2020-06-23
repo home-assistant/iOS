@@ -12,6 +12,7 @@
 		1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51E2496F63400B1073C /* ThemeColors.swift */; };
 		1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
+		1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F82324A25A41002590F2 /* SensorContainer.test.swift */; };
 		110FB44C2499C1A3000865B4 /* CameraStreamHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44B2499C1A3000865B4 /* CameraStreamHandler.swift */; };
 		110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44D2499C1CF000865B4 /* CameraStreamHLSViewController.swift */; };
 		110FB4502499CE34000865B4 /* CameraStreamMJPEGViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */; };
@@ -760,6 +761,7 @@
 		1100D51E2496F63400B1073C /* ThemeColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeColors.swift; sourceTree = "<group>"; };
 		1100D52024974D6700B1073C /* camera_notification.apns */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = camera_notification.apns; sourceTree = "<group>"; };
 		1109F81E24A1C011002590F2 /* SensorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorProvider.swift; sourceTree = "<group>"; };
+		1109F82324A25A41002590F2 /* SensorContainer.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorContainer.test.swift; sourceTree = "<group>"; };
 		110FB44B2499C1A3000865B4 /* CameraStreamHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHandler.swift; sourceTree = "<group>"; };
 		110FB44D2499C1CF000865B4 /* CameraStreamHLSViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHLSViewController.swift; sourceTree = "<group>"; };
 		110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamMJPEGViewController.swift; sourceTree = "<group>"; };
@@ -1535,6 +1537,7 @@
 				11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */,
 				11CB98C7249DE24000B05222 /* PedometerSensor.test.swift */,
 				119385A6249E9F930097F497 /* StorageSensor.test.swift */,
+				1109F82324A25A41002590F2 /* SensorContainer.test.swift */,
 			);
 			path = Sensors;
 			sourceTree = "<group>";
