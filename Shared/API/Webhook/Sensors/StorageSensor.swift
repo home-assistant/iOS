@@ -2,7 +2,7 @@ import Foundation
 import PromiseKit
 import DeviceKit
 
-extension WebhookSensor {
+public struct StorageSensor: SensorProvider {
     public enum StorageError: Error, Equatable {
         case noData
         case invalidData
@@ -10,11 +10,11 @@ extension WebhookSensor {
     }
 
     #if os(watchOS)
-    public static func storage() -> Promise<[WebhookSensor]> {
+    public static func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]> {
         return .init(error: StorageError.noData)
     }
     #else
-    public static func storage() -> Promise<[WebhookSensor]> {
+    public static func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]> {
         firstly {
             Promise<Void>.value(())
         }.map(on: .global(qos: .userInitiated)) {

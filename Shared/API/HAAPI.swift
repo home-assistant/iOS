@@ -126,6 +126,16 @@ public class HomeAssistantAPI {
         }
     }
 
+    public let sensors = with(SensorContainer()) {
+        $0.register(provider: ActivitySensor.self)
+        $0.register(provider: PedometerSensor.self)
+        $0.register(provider: BatterySensor.self)
+        $0.register(provider: StorageSensor.self)
+        $0.register(provider: ConnectivitySensor.self)
+        $0.register(provider: GeocoderSensor.self)
+        $0.register(provider: LastUpdateSensor.self)
+    }
+
     public func VideoStreamer() -> MJPEGStreamer? {
         guard let newManager = self.authenticatedSessionManager() else {
             return nil
@@ -165,7 +175,11 @@ public class HomeAssistantAPI {
             return when(fulfilled:
                 self.GetConfig(),
                 self.GetZones(),
-                self.UpdateSensors(trigger: reason.updateSensorTrigger).asVoid(),
+                self.UpdateEverything(
+                    request: .everything,
+                    trigger: reason.updateSensorTrigger,
+                    remainingTime: nil
+                ).asVoid(),
                 self.updateComplications()
             )
         }.map { config, zones, _, _ in
@@ -525,7 +539,7 @@ public class HomeAssistantAPI {
         }.asVoid()
     }
 
-    public func GetAndSendLocation(
+    private func GetAndSendLocation(
         trigger: LocationUpdateTrigger?,
         maximumBackgroundTime: TimeInterval? = nil
     ) -> Promise<Void> {
@@ -628,7 +642,10 @@ public class HomeAssistantAPI {
         limitSensors: [String]? = nil
     ) -> Promise<[WebhookSensorResponse]> {
         return firstly {
-            WebhookSensor.allSensors(location: location.flatMap { .location($0) } ?? .registration, trigger: .Unknown)
+            return sensors.sensors(request: .init(
+                reason: .registration,
+                location: location
+            ))
         }.filterValues { (sensor: WebhookSensor) -> Bool in
             if let limitSensors = limitSensors, let uniqueID = sensor.UniqueID {
                 return limitSensors.contains(uniqueID)
@@ -643,10 +660,63 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func UpdateSensors(trigger: LocationUpdateTrigger,
+    public enum UpdateRequest {
+        case everything
+        case sensorsOnly
+
+        #if os(iOS)
+        public init(applicationState: UIApplication.State) {
+            if Current.settingsStore.isLocationEnabled(for: applicationState) {
+                self = .everything
+            } else {
+                self = .sensorsOnly
+            }
+        }
+        #endif
+
+        var includeLocation: Bool {
+            switch self {
+            case .everything: return true
+            case .sensorsOnly: return false
+            }
+        }
+    }
+
+    public func UpdateEverything(
+        request: UpdateRequest,
+        trigger: LocationUpdateTrigger,
+        remainingTime: TimeInterval?
+    ) -> Promise<Void> {
+        func updateWithoutLocation() -> Promise<Void> {
+            return when(fulfilled: [
+                UpdateSensors(trigger: .Manual).asVoid(),
+                updateComplications().asVoid()
+            ])
+        }
+
+        if request.includeLocation {
+            return firstly {
+                GetAndSendLocation(trigger: trigger, maximumBackgroundTime: remainingTime)
+            }.recover { error -> Promise<Void> in
+                if error is CLError {
+                    Current.Log.info("couldn't get location, sending remaining sensor data")
+                    return updateWithoutLocation()
+                } else {
+                    throw error
+                }
+            }
+        } else {
+            return updateWithoutLocation()
+        }
+    }
+
+    private func UpdateSensors(trigger: LocationUpdateTrigger,
                               location: CLLocation? = nil) -> Promise<[String: WebhookSensorResponse]> {
         return firstly {
-            WebhookSensor.allSensors(location: location.flatMap { .location($0) }, trigger: trigger)
+            sensors.sensors(request: .init(
+                reason: .trigger(trigger.rawValue),
+                location: location
+            ))
         }.map { sensors in
             Current.Log.info("updating sensors \(sensors.map { $0.UniqueID ?? "unknown" })")
 

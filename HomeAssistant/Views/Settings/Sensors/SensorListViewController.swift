@@ -4,7 +4,7 @@ import Shared
 import Iconic
 import PromiseKit
 
-class SensorListViewController: FormViewController {
+class SensorListViewController: FormViewController, SensorObserver {
     private let sensorSection = Section()
     private let refreshControl = UIRefreshControl()
 
@@ -13,7 +13,19 @@ class SensorListViewController: FormViewController {
 
         title = L10n.SettingsSensors.title
 
-        updateSensors(section: sensorSection)
+        tableView.refreshControl = refreshControl
+        refreshControl.beginRefreshing()
+
+        HomeAssistantAPI
+            .authenticatedAPIPromise
+            .done { [weak self] api in
+                guard let self = self else { return }
+                // triggers a refreesh
+                api.sensors.register(observer: self)
+            }.cauterize()
+
+        tableView.alwaysBounceVertical = true
+
         form +++ Section(header: nil, footer: L10n.SettingsSensors.PeriodicUpdate.description)
         <<< PushRow<TimeInterval?> {
             $0.title =  L10n.SettingsSensors.PeriodicUpdate.title
@@ -47,26 +59,44 @@ class SensorListViewController: FormViewController {
 
         form +++ sensorSection
 
-        tableView.addSubview(refreshControl)
         refreshControl.addTarget(self, action: #selector(refresh), for: .primaryActionTriggered)
     }
 
     @objc private func refresh() {
-        updateSensors(section: sensorSection)
-    }
-
-    private func updateSensors(section: Section) {
-        guard !refreshControl.isRefreshing else { return }
-
         refreshControl.beginRefreshing()
 
         firstly {
-            WebhookSensor.allSensors(location: nil, trigger: .Manual)
+            HomeAssistantAPI.authenticatedAPIPromise
+        }.then { api in
+            return UIApplication.shared.backgroundTask(withName: "manual-location-update-settings") { remaining in
+                return api.UpdateEverything(
+                    request: .init(applicationState: UIApplication.shared.applicationState),
+                    trigger: .Manual,
+                    remainingTime: remaining
+                )
+            }
+        }.ensure { [refreshControl] in
+            refreshControl.endRefreshing()
+        }.cauterize()
+    }
+
+    func sensorContainer(_ container: SensorContainer, didUpdate sensors: Promise<[WebhookSensor]>, on date: Date) {
+        firstly {
+            sensors
         }.map {
             $0.map { Self.row(for: $0) }
-        }.done {
-            section.removeAll()
-            section.append(contentsOf: $0)
+        }.done { [sensorSection] value in
+            let sinceFormatter = DateFormatter()
+            sinceFormatter.formattingContext = .middleOfSentence
+            sinceFormatter.dateStyle = .none
+            sinceFormatter.timeStyle = .medium
+
+            sensorSection.removeAll()
+            sensorSection.append(contentsOf: value)
+            sensorSection.footer = HeaderFooterView(
+                title: L10n.SettingsSensors.LastUpdated.footer(sinceFormatter.string(from: date))
+            )
+            sensorSection.reload(with: .none)
         }.ensure { [refreshControl] in
             refreshControl.endRefreshing()
         }.catch { error in

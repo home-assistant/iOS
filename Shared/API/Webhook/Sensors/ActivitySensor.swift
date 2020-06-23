@@ -2,14 +2,14 @@ import Foundation
 import PromiseKit
 import CoreMotion
 
-extension WebhookSensor {
+struct ActivitySensor: SensorProvider {
     public enum ActivityError: Error {
         case unauthorized
         case unavailable
         case noData
     }
 
-    public static func activity() -> Promise<[WebhookSensor]> {
+    public static func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]> {
         firstly {
             latestMotionActivity()
         }.map { activity in

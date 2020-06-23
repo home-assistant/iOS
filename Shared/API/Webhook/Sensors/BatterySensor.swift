@@ -1,9 +1,9 @@
 import Foundation
 import PromiseKit
 
-extension WebhookSensor {
+public struct BatterySensor: SensorProvider {
     // swiftlint:disable:next function_body_length
-    public static func battery() -> Promise<[WebhookSensor]> {
+    public static func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]> {
         var level = Current.device.batteryLevel()
         if level == -100 { // simulator fix
             level = 100

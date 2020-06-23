@@ -447,36 +447,15 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api -> Promise<Void> in
-            func updateWithoutLocation() -> Promise<Void> {
-                return when(fulfilled: [
-                    api.UpdateSensors(trigger: .Manual).asVoid(),
-                    api.updateComplications().asVoid()
-                ])
+            return UIApplication.shared.backgroundTask(withName: "manual-location-update") { remaining in
+                return api.UpdateEverything(
+                    request: .init(applicationState: UIApplication.shared.applicationState),
+                    trigger: .Manual,
+                    remainingTime: remaining
+                )
             }
-
-            if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState) {
-                return UIApplication.shared.backgroundTask(withName: "manual-location-update") { remaining in
-                    return api.GetAndSendLocation(trigger: .Manual, maximumBackgroundTime: remaining)
-                        .recover { error -> Promise<Void> in
-                            if error is CLError {
-                                Current.Log.info("couldn't get location, sending remaining sensor data")
-                                return updateWithoutLocation()
-                            } else {
-                                throw error
-                            }
-                    }
-                }
-            } else {
-                return updateWithoutLocation()
-            }
-        }.catch {error in
+        }.catch { error in
             self.showSwiftMessageError((error as NSError).localizedDescription)
-//            let message = L10n.ManualLocationUpdateFailedNotification.message(nserror.localizedDescription)
-//            let alert = UIAlertController(title: L10n.ManualLocationUpdateFailedNotification.title,
-//                                          message: message, preferredStyle: .alert)
-//            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-//            self.navigationController?.present(alert, animated: true, completion: nil)
-//            alert.popoverPresentationController?.sourceView = self.webView
         }
     }
 

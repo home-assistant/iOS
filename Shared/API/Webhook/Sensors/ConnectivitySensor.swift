@@ -5,13 +5,13 @@ import CoreTelephony
 import Reachability
 #endif
 
-extension WebhookSensor {
+public struct ConnectivitySensor: SensorProvider {
     public enum ConnectivityError: Error {
         case unsupportedPlatform
         case noCarriers
     }
 
-    public static func connectivity() -> Promise<[WebhookSensor]> {
+    public static func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]> {
         #if os(iOS)
         return firstly {
             when(resolved: [

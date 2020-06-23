@@ -3,14 +3,14 @@ import PromiseKit
 import CoreMotion
 import Version
 
-extension WebhookSensor {
+public struct PedometerSensor: SensorProvider {
     public enum PedometerError: Error {
         case unauthorized
         case unavailable
         case noData
     }
 
-    public static func pedometer() -> Promise<[WebhookSensor]> {
+    public static func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]> {
         firstly { () -> Promise<CMPedometerData> in
             latestPedometerData()
         }.then { data in
