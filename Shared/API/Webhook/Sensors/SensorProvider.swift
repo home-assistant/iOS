@@ -25,6 +25,7 @@ public struct SensorProviderRequest {
     }
 }
 
-public protocol SensorProvider {
-    static func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]>
+public protocol SensorProvider: AnyObject {
+    init(request: SensorProviderRequest)
+    func sensors() -> Promise<[WebhookSensor]>
 }

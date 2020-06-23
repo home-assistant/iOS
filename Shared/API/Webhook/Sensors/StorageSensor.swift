@@ -2,19 +2,24 @@ import Foundation
 import PromiseKit
 import DeviceKit
 
-public struct StorageSensor: SensorProvider {
+public class StorageSensor: SensorProvider {
     public enum StorageError: Error, Equatable {
         case noData
         case invalidData
         case missingData(URLResourceKey)
     }
 
+    public let request: SensorProviderRequest
+    required public init(request: SensorProviderRequest) {
+        self.request = request
+    }
+
     #if os(watchOS)
-    public static func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]> {
+    public func sensors() -> Promise<[WebhookSensor]> {
         return .init(error: StorageError.noData)
     }
     #else
-    public static func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]> {
+    public func sensors() -> Promise<[WebhookSensor]> {
         firstly {
             Promise<Void>.value(())
         }.map(on: .global(qos: .userInitiated)) {
@@ -25,7 +30,7 @@ public struct StorageSensor: SensorProvider {
             }
         }.map { (volumes: [URLResourceKey: Int64]) -> [WebhookSensor] in
             if #available(iOS 11, *) {
-                return [ try sensor(for: volumes) ]
+                return [ try Self.sensor(for: volumes) ]
             } else {
                 return []
             }

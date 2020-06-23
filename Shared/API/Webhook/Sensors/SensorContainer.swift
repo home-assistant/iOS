@@ -55,11 +55,16 @@ public class SensorContainer {
 
     internal func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]> {
         let sensors = firstly {
-            when(resolved: providers.map { $0.sensors(request: request) })
-        }.map { (sensors: [Result<[WebhookSensor]>]) throws -> [WebhookSensor] in
-            sensors.compactMap { (result: Result<[WebhookSensor]>) -> [WebhookSensor]? in
+            let promises = providers
+                .map { providerType in providerType.init(request: request) }
+                .map { provider in provider.sensors().map { ($0, provider) } }
+
+            return when(resolved: promises)
+        }.map { (sensors: [Result<([WebhookSensor], SensorProvider)>]) throws -> [WebhookSensor] in
+            // now that we are done, we don't need to keep a strong reference to the provider instance anymore
+            sensors.compactMap { (result: Result<([WebhookSensor], SensorProvider)>) -> [WebhookSensor]? in
                 if case .fulfilled(let value) = result {
-                    return value
+                    return value.0
                 } else {
                     return nil
                 }

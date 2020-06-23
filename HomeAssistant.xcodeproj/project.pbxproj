@@ -33,7 +33,7 @@
 		11810D53249EAF8D00E741A4 /* POC_pride@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D49249EAF8D00E741A4 /* POC_pride@3x.png */; };
 		119385A4249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
 		119385A5249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
-		119385A7249E9F930097F497 /* WebhookSensor+Storage.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */; };
+		119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* StorageSensor.test.swift */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
 		11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
 		11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
@@ -49,17 +49,17 @@
 		11AF4D23249C924B006C74C0 /* GeocoderSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D21249C924B006C74C0 /* GeocoderSensor.swift */; };
 		11AF4D25249D1931006C74C0 /* LastUpdateSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D24249D1931006C74C0 /* LastUpdateSensor.swift */; };
 		11AF4D26249D1931006C74C0 /* LastUpdateSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D24249D1931006C74C0 /* LastUpdateSensor.swift */; };
-		11AF4D2A249D88C5006C74C0 /* WebhookSensor+Activity.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D29249D88C5006C74C0 /* WebhookSensor+Activity.test.swift */; };
-		11AF4D2C249D965C006C74C0 /* WebhookSensor+Battery.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D2B249D965C006C74C0 /* WebhookSensor+Battery.test.swift */; };
-		11AF4D2E249DA5AF006C74C0 /* WebhookSensor+Geocoder.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D2D249DA5AF006C74C0 /* WebhookSensor+Geocoder.test.swift */; };
-		11AF4D30249DCA88006C74C0 /* WebhookSensor+Connectivity.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D2F249DCA87006C74C0 /* WebhookSensor+Connectivity.test.swift */; };
+		11AF4D2A249D88C5006C74C0 /* ActivitySensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D29249D88C5006C74C0 /* ActivitySensor.test.swift */; };
+		11AF4D2C249D965C006C74C0 /* BatterySensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D2B249D965C006C74C0 /* BatterySensor.test.swift */; };
+		11AF4D2E249DA5AF006C74C0 /* GeocoderSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D2D249DA5AF006C74C0 /* GeocoderSensor.test.swift */; };
+		11AF4D30249DCA88006C74C0 /* ConnectivitySensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D2F249DCA87006C74C0 /* ConnectivitySensor.test.swift */; };
 		11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */; };
 		11C65CC0249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
 		11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
-		11CB98C6249DE15B00B05222 /* WebhookSensor+LastUpdateTrigger.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C5249DE15B00B05222 /* WebhookSensor+LastUpdateTrigger.test.swift */; };
-		11CB98C8249DE24100B05222 /* WebhookSensor+Pedometer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C7249DE24000B05222 /* WebhookSensor+Pedometer.test.swift */; };
+		11CB98C6249DE15B00B05222 /* LastUpdateSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */; };
+		11CB98C8249DE24100B05222 /* PedometerSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C7249DE24000B05222 /* PedometerSensor.test.swift */; };
 		11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C9249E62E700B05222 /* Version+HA.swift */; };
 		11CB98CB249E62E700B05222 /* Version+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C9249E62E700B05222 /* Version+HA.swift */; };
 		11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98CC249E637300B05222 /* Version+HA.test.swift */; };
@@ -780,7 +780,7 @@
 		11810D48249EAF8C00E741A4 /* bi_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bi_pride@3x.png"; sourceTree = "<group>"; };
 		11810D49249EAF8D00E741A4 /* POC_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "POC_pride@3x.png"; sourceTree = "<group>"; };
 		119385A3249E8E360097F497 /* StorageSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.swift; sourceTree = "<group>"; };
-		119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.test.swift"; sourceTree = "<group>"; };
+		119385A6249E9F930097F497 /* StorageSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.test.swift; sourceTree = "<group>"; };
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitySensor.swift; sourceTree = "<group>"; };
 		11AF4D15249C8082006C74C0 /* With.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = With.swift; sourceTree = "<group>"; };
@@ -789,15 +789,15 @@
 		11AF4D1E249C8AF0006C74C0 /* ConnectivitySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivitySensor.swift; sourceTree = "<group>"; };
 		11AF4D21249C924B006C74C0 /* GeocoderSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeocoderSensor.swift; sourceTree = "<group>"; };
 		11AF4D24249D1931006C74C0 /* LastUpdateSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastUpdateSensor.swift; sourceTree = "<group>"; };
-		11AF4D29249D88C5006C74C0 /* WebhookSensor+Activity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Activity.test.swift"; sourceTree = "<group>"; };
-		11AF4D2B249D965C006C74C0 /* WebhookSensor+Battery.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Battery.test.swift"; sourceTree = "<group>"; };
-		11AF4D2D249DA5AF006C74C0 /* WebhookSensor+Geocoder.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Geocoder.test.swift"; sourceTree = "<group>"; };
-		11AF4D2F249DCA87006C74C0 /* WebhookSensor+Connectivity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Connectivity.test.swift"; sourceTree = "<group>"; };
+		11AF4D29249D88C5006C74C0 /* ActivitySensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitySensor.test.swift; sourceTree = "<group>"; };
+		11AF4D2B249D965C006C74C0 /* BatterySensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatterySensor.test.swift; sourceTree = "<group>"; };
+		11AF4D2D249DA5AF006C74C0 /* GeocoderSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeocoderSensor.test.swift; sourceTree = "<group>"; };
+		11AF4D2F249DCA87006C74C0 /* ConnectivitySensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivitySensor.test.swift; sourceTree = "<group>"; };
 		11B7FD732493225200E60ED9 /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
 		11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamCameraResponse.swift; sourceTree = "<group>"; };
-		11CB98C5249DE15B00B05222 /* WebhookSensor+LastUpdateTrigger.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+LastUpdateTrigger.test.swift"; sourceTree = "<group>"; };
-		11CB98C7249DE24000B05222 /* WebhookSensor+Pedometer.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Pedometer.test.swift"; sourceTree = "<group>"; };
+		11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastUpdateSensor.test.swift; sourceTree = "<group>"; };
+		11CB98C7249DE24000B05222 /* PedometerSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSensor.test.swift; sourceTree = "<group>"; };
 		11CB98C9249E62E700B05222 /* Version+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Version+HA.swift"; sourceTree = "<group>"; };
 		11CB98CC249E637300B05222 /* Version+HA.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Version+HA.test.swift"; sourceTree = "<group>"; };
 		11F3D74B2495377B00C05BBA /* SensorListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorListViewController.swift; sourceTree = "<group>"; };
@@ -1525,18 +1525,18 @@
 			path = Sensors;
 			sourceTree = "<group>";
 		};
-		11AF4D28249D88B2006C74C0 /* WebhookSensor */ = {
+		11AF4D28249D88B2006C74C0 /* Sensors */ = {
 			isa = PBXGroup;
 			children = (
-				11AF4D29249D88C5006C74C0 /* WebhookSensor+Activity.test.swift */,
-				11AF4D2B249D965C006C74C0 /* WebhookSensor+Battery.test.swift */,
-				11AF4D2F249DCA87006C74C0 /* WebhookSensor+Connectivity.test.swift */,
-				11AF4D2D249DA5AF006C74C0 /* WebhookSensor+Geocoder.test.swift */,
-				11CB98C5249DE15B00B05222 /* WebhookSensor+LastUpdateTrigger.test.swift */,
-				11CB98C7249DE24000B05222 /* WebhookSensor+Pedometer.test.swift */,
-				119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */,
+				11AF4D29249D88C5006C74C0 /* ActivitySensor.test.swift */,
+				11AF4D2B249D965C006C74C0 /* BatterySensor.test.swift */,
+				11AF4D2F249DCA87006C74C0 /* ConnectivitySensor.test.swift */,
+				11AF4D2D249DA5AF006C74C0 /* GeocoderSensor.test.swift */,
+				11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */,
+				11CB98C7249DE24000B05222 /* PedometerSensor.test.swift */,
+				119385A6249E9F930097F497 /* StorageSensor.test.swift */,
 			);
-			path = WebhookSensor;
+			path = Sensors;
 			sourceTree = "<group>";
 		};
 		11F3D74F2495433800C05BBA /* Sensors */ = {
@@ -2352,7 +2352,7 @@
 		D03D894320E0BC1800D4F28D /* SharedTests */ = {
 			isa = PBXGroup;
 			children = (
-				11AF4D28249D88B2006C74C0 /* WebhookSensor */,
+				11AF4D28249D88B2006C74C0 /* Sensors */,
 				D0A6367120DB7D1100E5C49B /* ClientEventTests.swift */,
 				D03D894620E0BC1800D4F28D /* Info.plist */,
 				D0BE441121043B8100C74314 /* AuthorizationTests.swift */,
@@ -4468,17 +4468,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				119385A7249E9F930097F497 /* WebhookSensor+Storage.test.swift in Sources */,
-				11AF4D2C249D965C006C74C0 /* WebhookSensor+Battery.test.swift in Sources */,
+				1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */,
+				119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */,
+				11AF4D2C249D965C006C74C0 /* BatterySensor.test.swift in Sources */,
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
-				11AF4D2E249DA5AF006C74C0 /* WebhookSensor+Geocoder.test.swift in Sources */,
-				11CB98C6249DE15B00B05222 /* WebhookSensor+LastUpdateTrigger.test.swift in Sources */,
+				11AF4D2E249DA5AF006C74C0 /* GeocoderSensor.test.swift in Sources */,
+				11CB98C6249DE15B00B05222 /* LastUpdateSensor.test.swift in Sources */,
 				D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */,
 				113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */,
-				11AF4D30249DCA88006C74C0 /* WebhookSensor+Connectivity.test.swift in Sources */,
-				11CB98C8249DE24100B05222 /* WebhookSensor+Pedometer.test.swift in Sources */,
+				11AF4D30249DCA88006C74C0 /* ConnectivitySensor.test.swift in Sources */,
+				11CB98C8249DE24100B05222 /* PedometerSensor.test.swift in Sources */,
 				11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */,
-				11AF4D2A249D88C5006C74C0 /* WebhookSensor+Activity.test.swift in Sources */,
+				11AF4D2A249D88C5006C74C0 /* ActivitySensor.test.swift in Sources */,
 				D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

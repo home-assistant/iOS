@@ -3,14 +3,19 @@ import PromiseKit
 import CoreMotion
 import Version
 
-public struct PedometerSensor: SensorProvider {
+public class PedometerSensor: SensorProvider {
     public enum PedometerError: Error {
         case unauthorized
         case unavailable
         case noData
     }
 
-    public static func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]> {
+    public let request: SensorProviderRequest
+    required public init(request: SensorProviderRequest) {
+        self.request = request
+    }
+
+    public func sensors() -> Promise<[WebhookSensor]> {
         firstly { () -> Promise<CMPedometerData> in
             latestPedometerData()
         }.then { data in
@@ -26,7 +31,7 @@ public struct PedometerSensor: SensorProvider {
         }
     }
 
-    private static func latestPedometerData() -> Promise<CMPedometerData> {
+    private func latestPedometerData() -> Promise<CMPedometerData> {
         guard Current.pedometer.isAuthorized() else {
             Current.Log.warning("Pedometer is not authorized")
             return .init(error: PedometerError.unauthorized)

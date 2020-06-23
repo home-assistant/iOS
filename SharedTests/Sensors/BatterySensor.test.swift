@@ -6,7 +6,7 @@ import DeviceKit
 
 // swiftlint:disable large_tuple
 
-class WebhookSensorBatteryTests: XCTestCase {
+class BatterySensorTests: XCTestCase {
     func testBattery0() throws {
         let (uLevel, uState, cLevel, cState) = try sensors(level: 0)
         XCTAssertEqual(uLevel.Icon, "mdi:battery-outline")
@@ -167,7 +167,7 @@ class WebhookSensorBatteryTests: XCTestCase {
         Current.device.batteryLevel = { -100 }
         Current.device.batteryState = { .full }
 
-        let promise = WebhookSensor.battery()
+        let promise = BatterySensor(request: .init(reason: .trigger("unit-test"))).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 2)
 
@@ -197,7 +197,7 @@ class WebhookSensorBatteryTests: XCTestCase {
         Current.device.batteryState = { level == 100 ? .full : .unplugged(level) }
         Current.device.isLowPowerMode = { true }
 
-        let uPromise = WebhookSensor.battery()
+        let uPromise = BatterySensor(request: .init(reason: .trigger("unit-test"))).sensors()
         let uSensors = try hang(uPromise)
         XCTAssertEqual(uSensors.count, 2)
 
@@ -216,7 +216,7 @@ class WebhookSensorBatteryTests: XCTestCase {
         Current.device.batteryState = { level == 100 ? .full : .charging(level) }
         Current.device.isLowPowerMode = { true }
 
-        let cPromise = WebhookSensor.battery()
+        let cPromise = BatterySensor(request: .init(reason: .trigger("unit-test"))).sensors()
         let cSensors = try hang(cPromise)
         XCTAssertEqual(cSensors.count, 2)
 

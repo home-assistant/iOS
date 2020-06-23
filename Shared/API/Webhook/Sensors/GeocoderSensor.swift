@@ -4,19 +4,24 @@ import Iconic
 import CoreLocation
 import Contacts
 
-public struct GeocoderSensor: SensorProvider {
+public class GeocoderSensor: SensorProvider {
     public enum GeocoderError: Error {
         case noLocation
     }
 
-    public static func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]> {
+    public let request: SensorProviderRequest
+    required public init(request: SensorProviderRequest) {
+        self.request = request
+    }
+
+    public func sensors() -> Promise<[WebhookSensor]> {
         return firstly { () -> Promise<[CLPlacemark]> in
             guard let location = request.location else {
                 throw GeocoderError.noLocation
             }
 
             return Current.geocoder.geocode(location)
-        }.recover { (error: Error) -> Promise<[CLPlacemark]> in
+        }.recover { [request] (error: Error) -> Promise<[CLPlacemark]> in
             guard case GeocoderError.noLocation = error, case .registration = request.reason else { throw error }
             return .value([])
         }.map { (placemarks: [CLPlacemark]) -> [WebhookSensor] in
