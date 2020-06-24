@@ -175,11 +175,7 @@ public class HomeAssistantAPI {
             return when(fulfilled:
                 self.GetConfig(),
                 self.GetZones(),
-                self.UpdateEverything(
-                    request: .everything,
-                    trigger: reason.updateSensorTrigger,
-                    remainingTime: nil
-                ).asVoid(),
+                self.UpdateSensors(trigger: reason.updateSensorTrigger).asVoid(),
                 self.updateComplications()
             )
         }.map { config, zones, _, _ in
@@ -539,7 +535,7 @@ public class HomeAssistantAPI {
         }.asVoid()
     }
 
-    private func GetAndSendLocation(
+    public func GetAndSendLocation(
         trigger: LocationUpdateTrigger?,
         maximumBackgroundTime: TimeInterval? = nil
     ) -> Promise<Void> {
@@ -660,57 +656,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    public enum UpdateRequest {
-        case everything
-        case sensorsOnly
-
-        #if os(iOS)
-        public init(applicationState: UIApplication.State) {
-            if Current.settingsStore.isLocationEnabled(for: applicationState) {
-                self = .everything
-            } else {
-                self = .sensorsOnly
-            }
-        }
-        #endif
-
-        var includeLocation: Bool {
-            switch self {
-            case .everything: return true
-            case .sensorsOnly: return false
-            }
-        }
-    }
-
-    public func UpdateEverything(
-        request: UpdateRequest,
-        trigger: LocationUpdateTrigger,
-        remainingTime: TimeInterval?
-    ) -> Promise<Void> {
-        func updateWithoutLocation() -> Promise<Void> {
-            return when(fulfilled: [
-                UpdateSensors(trigger: .Manual).asVoid(),
-                updateComplications().asVoid()
-            ])
-        }
-
-        if request.includeLocation {
-            return firstly {
-                GetAndSendLocation(trigger: trigger, maximumBackgroundTime: remainingTime)
-            }.recover { error -> Promise<Void> in
-                if error is CLError {
-                    Current.Log.info("couldn't get location, sending remaining sensor data")
-                    return updateWithoutLocation()
-                } else {
-                    throw error
-                }
-            }
-        } else {
-            return updateWithoutLocation()
-        }
-    }
-
-    private func UpdateSensors(trigger: LocationUpdateTrigger,
+    public func UpdateSensors(trigger: LocationUpdateTrigger,
                               location: CLLocation? = nil) -> Promise<[String: WebhookSensorResponse]> {
         return firstly {
             sensors.sensors(request: .init(

@@ -68,12 +68,8 @@ class SensorListViewController: FormViewController, SensorObserver {
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
-            return UIApplication.shared.backgroundTask(withName: "manual-location-update-settings") { remaining in
-                return api.UpdateEverything(
-                    request: .init(applicationState: UIApplication.shared.applicationState),
-                    trigger: .Manual,
-                    remainingTime: remaining
-                )
+            return UIApplication.shared.backgroundTask(withName: "manual-location-update-settings") { _ in
+                return api.UpdateSensors(trigger: .Manual)
             }
         }.ensure { [refreshControl] in
             refreshControl.endRefreshing()
@@ -85,6 +81,8 @@ class SensorListViewController: FormViewController, SensorObserver {
             sensors
         }.map {
             $0.map { Self.row(for: $0) }
+        }.ensure { [refreshControl] in
+            refreshControl.endRefreshing()
         }.done { [sensorSection] value in
             let sinceFormatter = DateFormatter()
             sinceFormatter.formattingContext = .middleOfSentence
@@ -97,8 +95,6 @@ class SensorListViewController: FormViewController, SensorObserver {
                 title: L10n.SettingsSensors.LastUpdated.footer(sinceFormatter.string(from: date))
             )
             sensorSection.reload(with: .none)
-        }.ensure { [refreshControl] in
-            refreshControl.endRefreshing()
         }.catch { error in
             let alert = UIAlertController(
                 title: L10n.SettingsSensors.LoadingError.title,

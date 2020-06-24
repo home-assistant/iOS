@@ -293,11 +293,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     Current.Log.verbose("Received remote request to provide a location update")
 
                     application.backgroundTask(withName: "push-location-request") { remaining in
-                        api.UpdateEverything(
-                            request: .everything,
-                            trigger: .PushNotification,
-                            remainingTime: remaining
-                        )
+                        api.GetAndSendLocation(trigger: .PushNotification, maximumBackgroundTime: remaining)
                     }.done { success in
                         Current.Log.verbose("Did successfully send location when requested via APNS? \(success)")
                         completionHandler(.newData)
@@ -329,20 +325,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.Log.verbose("Background fetch activated at \(timestamp)!")
 
         application.backgroundTask(withName: "background-fetch") { remaining in
-            let request: HomeAssistantAPI.UpdateRequest
+            let updatePromise: Promise<Void>
 
             if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
                 prefs.bool(forKey: "locationUpdateOnBackgroundFetch") {
-                request = .everything
+                updatePromise = api.GetAndSendLocation(
+                    trigger: .BackgroundFetch,
+                    maximumBackgroundTime: remaining
+                ).asVoid()
             } else {
-                request = .sensorsOnly
+                updatePromise = api.UpdateSensors(trigger: .BackgroundFetch).asVoid()
             }
-
-            let updatePromise = api.UpdateEverything(
-                request: request,
-                trigger: .BackgroundFetch,
-                remainingTime: remaining
-            )
 
             return when(fulfilled: [updatePromise, api.updateComplications().asVoid()]).asVoid()
         }.done {
@@ -389,11 +382,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         application.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
             if shortcutItem.type == "sendLocation" {
-                return api.UpdateEverything(
-                    request: .everything,
-                    trigger: .AppShortcut,
-                    remainingTime: remaining
-                )
+                return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
             } else if let userInfo = shortcutItem.userInfo, let name = userInfo["name"] as? String {
                 return api.HandleAction(actionID: shortcutItem.type, actionName: name, source: .AppShortcut)
             } else {
@@ -547,17 +536,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = firstly {
                 HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                UIApplication.shared.backgroundTask(withName: "xcallbackurl") { remaining in
-                    api.UpdateEverything(
-                        request: .everything,
-                        trigger: .XCallbackURL,
-                        remainingTime: remaining
-                    )
-                }
+                api.GetAndSendLocation(trigger: .XCallbackURL)
             }.done { _ in
                 success(nil)
             }.catch { error in
-                Current.Log.error("Received error from update during X-Callback-URL call: \(error)")
+                Current.Log.error("Received error from getAndSendLocation during X-Callback-URL call: \(error)")
                 failure(XCallbackError.generalError)
             }
         }
@@ -657,13 +640,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = firstly {
             HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                UIApplication.shared.backgroundTask(withName: "url-scheme") { remaining in
-                    api.UpdateEverything(
-                        request: .init(applicationState: UIApplication.shared.applicationState),
-                        trigger: .XCallbackURL,
-                        remainingTime: remaining
-                    )
-                }
+                api.GetAndSendLocation(trigger: .URLScheme)
             }.done { _ in
                 showAlert(title: L10n.UrlHandler.SendLocation.Success.title,
                           message: L10n.UrlHandler.SendLocation.Success.message)
