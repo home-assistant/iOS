@@ -76,9 +76,9 @@ class SensorListViewController: FormViewController, SensorObserver {
         }.cauterize()
     }
 
-    func sensorContainer(_ container: SensorContainer, didUpdate sensors: Promise<[WebhookSensor]>, on date: Date) {
+    func sensorContainer(_ container: SensorContainer, didUpdate update: SensorObserverUpdate) {
         firstly {
-            sensors
+            update.sensors
         }.map {
             $0.map { Self.row(for: $0) }
         }.ensure { [refreshControl] in
@@ -92,7 +92,7 @@ class SensorListViewController: FormViewController, SensorObserver {
             sensorSection.removeAll()
             sensorSection.append(contentsOf: value)
             sensorSection.footer = HeaderFooterView(
-                title: L10n.SettingsSensors.LastUpdated.footer(sinceFormatter.string(from: date))
+                title: L10n.SettingsSensors.LastUpdated.footer(sinceFormatter.string(from: update.on))
             )
             sensorSection.reload(with: .none)
         }.catch { error in

@@ -1,11 +1,20 @@
 import Foundation
 import PromiseKit
 
+public struct SensorObserverUpdate {
+    public let sensors: Guarantee<[WebhookSensor]>
+    public let on: Date
+
+    internal init(sensors: Guarantee<[WebhookSensor]>) {
+        self.sensors = sensors
+        self.on = Current.date()
+    }
+}
+
 public protocol SensorObserver: AnyObject {
     func sensorContainer(
         _ container: SensorContainer,
-        didUpdate sensors: Promise<[WebhookSensor]>,
-        on date: Date
+        didUpdate update: SensorObserverUpdate
     )
 }
 
@@ -21,7 +30,7 @@ public class SensorContainer {
         observers.add(observer)
 
         if let lastUpdate = lastUpdate {
-            update(observer: observer, lastUpdate: lastUpdate)
+            observer.sensorContainer(self, didUpdate: lastUpdate)
         }
     }
 
@@ -29,38 +38,24 @@ public class SensorContainer {
         observers.remove(observer)
     }
 
-    private struct LastUpdate {
-        let date: Date
-        let sensors: Promise<[WebhookSensor]>
-
-        init(sensors: Promise<[WebhookSensor]>) {
-            self.sensors = sensors
-            self.date = Current.date()
-        }
-    }
-
-    private var lastUpdate: LastUpdate? {
+    private var lastUpdate: SensorObserverUpdate? {
         didSet {
             guard let lastUpdate = lastUpdate else { return }
             observers
                 .allObjects
                 .compactMap { $0 as? SensorObserver }
-                .forEach { update(observer: $0, lastUpdate: lastUpdate) }
+                .forEach { $0.sensorContainer(self, didUpdate: lastUpdate) }
         }
     }
 
-    private func update(observer: SensorObserver, lastUpdate: LastUpdate) {
-        observer.sensorContainer(self, didUpdate: lastUpdate.sensors, on: lastUpdate.date)
-    }
-
-    internal func sensors(request: SensorProviderRequest) -> Promise<[WebhookSensor]> {
+    internal func sensors(request: SensorProviderRequest) -> Guarantee<[WebhookSensor]> {
         let sensors = firstly {
             let promises = providers
                 .map { providerType in providerType.init(request: request) }
                 .map { provider in provider.sensors().map { ($0, provider) } }
 
             return when(resolved: promises)
-        }.map { (sensors: [Result<([WebhookSensor], SensorProvider)>]) throws -> [WebhookSensor] in
+        }.map { (sensors: [Result<([WebhookSensor], SensorProvider)>]) -> [WebhookSensor] in
             // now that we are done, we don't need to keep a strong reference to the provider instance anymore
             sensors.compactMap { (result: Result<([WebhookSensor], SensorProvider)>) -> [WebhookSensor]? in
                 if case .fulfilled(let value) = result {
