@@ -131,7 +131,7 @@ class RegionManager: NSObject {
                 location = CLLocation(
                     coordinate: cachedLocation.coordinate,
                     altitude: cachedLocation.altitude,
-                    horizontalAccuracy: 200.0,
+                    horizontalAccuracy: exitMaximumAccuracy,
                     verticalAccuracy: cachedLocation.verticalAccuracy,
                     course: cachedLocation.course,
                     speed: cachedLocation.speed,
