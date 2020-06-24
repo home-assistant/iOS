@@ -115,9 +115,38 @@ class RegionManager: NSObject {
             return
         }
 
+        let location: CLLocation?
+
+        if let cachedLocation = locationManager.location {
+            let exitMaximumAccuracy: CLLocationAccuracy = 200.0
+
+            if trig == .GPSRegionExit, cachedLocation.horizontalAccuracy > exitMaximumAccuracy {
+                // https://github.com/home-assistant/iOS/issues/661
+                let message = String(
+                    format: "Altering accuracy of exit from %.02lf to %.02lf due to iOS bugs",
+                    cachedLocation.horizontalAccuracy,
+                    exitMaximumAccuracy
+                )
+                Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
+                location = CLLocation(
+                    coordinate: cachedLocation.coordinate,
+                    altitude: cachedLocation.altitude,
+                    horizontalAccuracy: 200.0,
+                    verticalAccuracy: cachedLocation.verticalAccuracy,
+                    course: cachedLocation.course,
+                    speed: cachedLocation.speed,
+                    timestamp: cachedLocation.timestamp
+                )
+            } else {
+                location = cachedLocation
+            }
+        } else {
+            location = nil
+        }
+
         let message = "Submitting location for zone \(zone.ID) with trigger \(trig.rawValue)."
         Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
-        api.SubmitLocation(updateType: trig, location: self.locationManager.location, zone: zone).done { _ in
+        api.SubmitLocation(updateType: trig, location: location, zone: zone).done { _ in
             let message = "Succeeded updating zone \(zone.ID) with trigger \(trig.rawValue)."
             Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
         }.ensure {
