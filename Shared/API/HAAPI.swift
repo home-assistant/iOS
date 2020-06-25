@@ -527,6 +527,7 @@ public class HomeAssistantAPI {
 
     public func GetAndSendLocation(
         trigger: LocationUpdateTrigger?,
+        zone: RLMZone? = nil,
         maximumBackgroundTime: TimeInterval? = nil
     ) -> Promise<Void> {
         var updateTrigger: LocationUpdateTrigger = .Manual
@@ -547,7 +548,7 @@ public class HomeAssistantAPI {
         }.ensure {
             Current.isPerformingSingleShotLocationQuery = false
         }.then { location in
-            self.SubmitLocation(updateType: updateTrigger, location: location, zone: nil)
+            self.SubmitLocation(updateType: updateTrigger, location: location, zone: zone)
         }.asVoid()
     }
 
