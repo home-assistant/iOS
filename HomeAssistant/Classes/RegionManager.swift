@@ -9,6 +9,7 @@
 import CoreLocation
 import Foundation
 import Shared
+import PromiseKit
 import os
 import UIKit
 import UserNotifications
@@ -117,9 +118,23 @@ class RegionManager: NSObject {
 
         let message = "Submitting location for zone \(zone.ID) with trigger \(trig.rawValue)."
         Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
-        api.SubmitLocation(updateType: trig, location: self.locationManager.location, zone: zone).done { _ in
-            let message = "Succeeded updating zone \(zone.ID) with trigger \(trig.rawValue)."
-            Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
+
+        firstly { () -> Promise<Void> in
+            if Current.settingsStore.useNewOneShotLocation {
+                return api.GetAndSendLocation(trigger: trig, zone: zone).done { _ in
+                    let message = "Succeeded updating zone \(zone.ID) with trigger \(trig.rawValue) using one-shot."
+                    Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
+                }
+            } else {
+                return api.SubmitLocation(
+                    updateType: trig,
+                    location: self.locationManager.location,
+                    zone: zone
+                ).done { _ in
+                    let message = "Succeeded updating zone \(zone.ID) with trigger \(trig.rawValue)."
+                    Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
+                }
+            }
         }.ensure {
             self.endBackgroundTaskWithName(taskName)
         }.catch { error in
