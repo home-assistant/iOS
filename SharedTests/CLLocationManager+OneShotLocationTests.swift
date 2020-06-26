@@ -495,4 +495,10 @@ private class FakeLocationManager: CLLocationManager {
     override func stopUpdatingLocation() {
         isUpdatingLocation = false
     }
+
+    override var allowsBackgroundLocationUpdates: Bool {
+        get { false }
+        // swiftlint:disable:next unused_setter_value
+        set { }
+    }
 }
