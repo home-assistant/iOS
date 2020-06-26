@@ -66,7 +66,7 @@ target 'HomeAssistant' do
     pod 'ZIPFoundation', '~> 0.9'
 
     target 'HomeAssistantTests' do
-      
+        inherit! :search_paths
     end
 end
 
