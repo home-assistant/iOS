@@ -87,7 +87,6 @@
 		6EDD98D41F2594F18D2F3E38 /* Pods-WatchAppExtension-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A01B9841CA78C97F59B6001 /* Pods-WatchAppExtension-metadata.plist */; };
 		7A06D3D7A5B4746FE6F5BFA6 /* Pods_HomeAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C23068FBA9B7BE1478936B11 /* Pods_HomeAssistant.framework */; };
 		7B89513B80682680F831CB93 /* Pods-Shared-iOS-SharedTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = FB6A838ABF06C7A70E359303 /* Pods-Shared-iOS-SharedTests-metadata.plist */; };
-		7F582B6EDB034D92D40F88FD /* Pods-HomeAssistant-HomeAssistantTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3EEB171001EFB8DAB63C4756 /* Pods-HomeAssistant-HomeAssistantTests-metadata.plist */; };
 		9E0BAD90B73333854D6D31E1 /* Pods_TodayWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3744F977190C345382928F90 /* Pods_TodayWidget.framework */; };
 		9EE703BEA1A769299E20ADBB /* Pods-Shared-watchOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0CE51F0910A76C0B0D8B795E /* Pods-Shared-watchOS-metadata.plist */; };
 		A704AB29C110E538318CF129 /* Pods-Shared-iOS-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = BBABE84031827AE56C8043E8 /* Pods-Shared-iOS-metadata.plist */; };
@@ -3339,7 +3338,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7F582B6EDB034D92D40F88FD /* Pods-HomeAssistant-HomeAssistantTests-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
