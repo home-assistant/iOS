@@ -53,6 +53,7 @@ public class Environment {
     /// Provides the Realm used for many data storage tasks.
     public var realm: () -> Realm = Realm.live
 
+    public var api: () -> HomeAssistantAPI? = { HomeAssistantAPI.authenticatedAPI() }
     public var tokenManager: TokenManager?
 
     public var settingsStore = SettingsStore()

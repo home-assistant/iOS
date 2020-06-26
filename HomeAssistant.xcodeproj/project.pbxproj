@@ -32,7 +32,20 @@
 		119385A4249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */; };
 		119385A5249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */; };
 		119385A7249E9F930097F497 /* WebhookSensor+Storage.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */; };
+		119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119C9B1E24A448A600308A54 /* ZoneManager.swift */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
+		11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C6A24A463FC00D9565F /* ZoneManagerState.swift */; };
+		11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C6C24A4641600D9565F /* ZoneManagerEvent.swift */; };
+		11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C6E24A4644A00D9565F /* ZoneManagerIgnoreReason.swift */; };
+		11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C7024A4648000D9565F /* ZoneManagerEquatableRegion.swift */; };
+		11A71C7324A4FC8A00D9565F /* ZoneManagerEquatableRegion.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C7224A4FC8A00D9565F /* ZoneManagerEquatableRegion.test.swift */; };
+		11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C7524A5028200D9565F /* ZoneManagerEvent.test.swift */; };
+		11A71C8724A5074E00D9565F /* ZoneManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C8624A5074E00D9565F /* ZoneManager.test.swift */; };
+		11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C8824A5844300D9565F /* ZoneManagerCollector.swift */; };
+		11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C8A24A5848B00D9565F /* ZoneManagerProcessor.swift */; };
+		11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C8C24A593A800D9565F /* ZoneManagerCollector.test.swift */; };
+		11A71C8F24A5946B00D9565F /* FakeCLLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C8E24A5946B00D9565F /* FakeCLLocationManager.swift */; };
+		11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C9024A598AB00D9565F /* ZoneManagerProcessor.test.swift */; };
 		11AF4D13249C7E08006C74C0 /* WebhookSensor+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */; };
 		11AF4D14249C7E09006C74C0 /* WebhookSensor+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */; };
 		11AF4D16249C8083006C74C0 /* With.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D15249C8082006C74C0 /* With.swift */; };
@@ -314,7 +327,6 @@
 		B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A8E91CA646EB00121384 /* AppDelegate.swift */; };
 		B657A8F31CA646EB00121384 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F21CA646EB00121384 /* Assets.xcassets */; };
 		B657A8F61CA646EB00121384 /* Release LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B657A8F41CA646EB00121384 /* Release LaunchScreen.storyboard */; };
-		B657A9011CA646EB00121384 /* HomeAssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A9001CA646EB00121384 /* HomeAssistantTests.swift */; };
 		B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */; };
 		B658AA6F2250692F00C9BFE3 /* GoogleService-Info-Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA6E2250692E00C9BFE3 /* GoogleService-Info-Release.plist */; };
 		B658AA7322506AD400C9BFE3 /* GoogleService-Info-Debug.plist in Resources */ = {isa = PBXBuildFile; fileRef = B658AA7222506AD400C9BFE3 /* GoogleService-Info-Debug.plist */; };
@@ -540,7 +552,6 @@
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6E42617215C761A007FEB7E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		B6E42618215C761E007FEB7E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
-		C74B79BBA0E16420A7920BF0 /* Pods_HomeAssistant_HomeAssistantTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C005709F29255E375E2ED0F /* Pods_HomeAssistant_HomeAssistantTests.framework */; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
 		D03D892920E0A85300D4F28D /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D891920E0A85300D4F28D /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03D892D20E0A85300D4F28D /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -600,6 +611,7 @@
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
 		D235C6E29022D454969DECA9 /* Pods_Shared_iOS_SharedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 079E9F68436672EB0AFCA35D /* Pods_Shared_iOS_SharedTests.framework */; };
 		E1FA731332EB8E4C346F56FA /* Pods_APNSAttachmentService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0FB96476CD7553E34787A84 /* Pods_APNSAttachmentService.framework */; };
+		EE72F26DDB4FB0874F75EB45 /* Pods_HomeAssistantTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85234822A725AD12E080425E /* Pods_HomeAssistantTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -778,7 +790,20 @@
 		11810D49249EAF8D00E741A4 /* POC_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "POC_pride@3x.png"; sourceTree = "<group>"; };
 		119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.swift"; sourceTree = "<group>"; };
 		119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.test.swift"; sourceTree = "<group>"; };
+		119C9B1E24A448A600308A54 /* ZoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManager.swift; sourceTree = "<group>"; };
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
+		11A71C6A24A463FC00D9565F /* ZoneManagerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerState.swift; sourceTree = "<group>"; };
+		11A71C6C24A4641600D9565F /* ZoneManagerEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerEvent.swift; sourceTree = "<group>"; };
+		11A71C6E24A4644A00D9565F /* ZoneManagerIgnoreReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerIgnoreReason.swift; sourceTree = "<group>"; };
+		11A71C7024A4648000D9565F /* ZoneManagerEquatableRegion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerEquatableRegion.swift; sourceTree = "<group>"; };
+		11A71C7224A4FC8A00D9565F /* ZoneManagerEquatableRegion.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerEquatableRegion.test.swift; sourceTree = "<group>"; };
+		11A71C7524A5028200D9565F /* ZoneManagerEvent.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerEvent.test.swift; sourceTree = "<group>"; };
+		11A71C8624A5074E00D9565F /* ZoneManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManager.test.swift; sourceTree = "<group>"; };
+		11A71C8824A5844300D9565F /* ZoneManagerCollector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerCollector.swift; sourceTree = "<group>"; };
+		11A71C8A24A5848B00D9565F /* ZoneManagerProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerProcessor.swift; sourceTree = "<group>"; };
+		11A71C8C24A593A800D9565F /* ZoneManagerCollector.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerCollector.test.swift; sourceTree = "<group>"; };
+		11A71C8E24A5946B00D9565F /* FakeCLLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeCLLocationManager.swift; sourceTree = "<group>"; };
+		11A71C9024A598AB00D9565F /* ZoneManagerProcessor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerProcessor.test.swift; sourceTree = "<group>"; };
 		11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Activity.swift"; sourceTree = "<group>"; };
 		11AF4D15249C8082006C74C0 /* With.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = With.swift; sourceTree = "<group>"; };
 		11AF4D18249C8253006C74C0 /* WebhookSensor+Pedometer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Pedometer.swift"; sourceTree = "<group>"; };
@@ -826,9 +851,9 @@
 		799B3F55FAE1A57812B62339 /* Pods-SiriIntents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SiriIntents.release.xcconfig"; path = "Pods/Target Support Files/Pods-SiriIntents/Pods-SiriIntents.release.xcconfig"; sourceTree = "<group>"; };
 		7B3B20465CE9CCBBBA7D0414 /* Pods-APNSAttachmentService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-APNSAttachmentService.debug.xcconfig"; path = "Pods/Target Support Files/Pods-APNSAttachmentService/Pods-APNSAttachmentService.debug.xcconfig"; sourceTree = "<group>"; };
 		81EFBEA503010FAE577D0269 /* Pods_Shared_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		85234822A725AD12E080425E /* Pods_HomeAssistantTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistantTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		87A132CFD9E75BE5545C3491 /* Pods-HomeAssistantTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistantTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistantTests/Pods-HomeAssistantTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8B99BAC287C6B3CE69C9267A /* Pods-HomeAssistant.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeAssistant.beta.xcconfig"; path = "Pods/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant.beta.xcconfig"; sourceTree = "<group>"; };
-		8C005709F29255E375E2ED0F /* Pods_HomeAssistant_HomeAssistantTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HomeAssistant_HomeAssistantTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		932F59A557F62F4F503E1820 /* Pods-Shared-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-Shared-metadata.plist"; path = "Pods/Pods-Shared-metadata.plist"; sourceTree = "<group>"; };
 		93D2F302F08DECAAD2B9C307 /* Pods-SharedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SharedTests/Pods-SharedTests.release.xcconfig"; sourceTree = "<group>"; };
 		93F0B444A811A0269A540879 /* Pods-NotificationContentExtension-metadata.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "Pods-NotificationContentExtension-metadata.plist"; path = "Pods/Pods-NotificationContentExtension-metadata.plist"; sourceTree = "<group>"; };
@@ -1132,7 +1157,6 @@
 		B657A8F51CA646EB00121384 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/Release LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		B657A8F71CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A8FC1CA646EB00121384 /* HomeAssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HomeAssistantTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B657A9001CA646EB00121384 /* HomeAssistantTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantTests.swift; sourceTree = "<group>"; };
 		B657A9021CA646EB00121384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B657A9071CA646EB00121384 /* HomeAssistantUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HomeAssistantUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantUITests.swift; sourceTree = "<group>"; };
@@ -1419,7 +1443,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C74B79BBA0E16420A7920BF0 /* Pods_HomeAssistant_HomeAssistantTests.framework in Frameworks */,
+				EE72F26DDB4FB0874F75EB45 /* Pods_HomeAssistantTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1506,6 +1530,33 @@
 			path = TestNotifications;
 			sourceTree = "<group>";
 		};
+		11A71C6924A463EE00D9565F /* ZoneManager */ = {
+			isa = PBXGroup;
+			children = (
+				119C9B1E24A448A600308A54 /* ZoneManager.swift */,
+				11A71C6A24A463FC00D9565F /* ZoneManagerState.swift */,
+				11A71C6C24A4641600D9565F /* ZoneManagerEvent.swift */,
+				11A71C6E24A4644A00D9565F /* ZoneManagerIgnoreReason.swift */,
+				11A71C7024A4648000D9565F /* ZoneManagerEquatableRegion.swift */,
+				11A71C8824A5844300D9565F /* ZoneManagerCollector.swift */,
+				11A71C8A24A5848B00D9565F /* ZoneManagerProcessor.swift */,
+			);
+			path = ZoneManager;
+			sourceTree = "<group>";
+		};
+		11A71C7424A5023200D9565F /* ZoneManager */ = {
+			isa = PBXGroup;
+			children = (
+				11A71C7224A4FC8A00D9565F /* ZoneManagerEquatableRegion.test.swift */,
+				11A71C7524A5028200D9565F /* ZoneManagerEvent.test.swift */,
+				11A71C8624A5074E00D9565F /* ZoneManager.test.swift */,
+				11A71C8C24A593A800D9565F /* ZoneManagerCollector.test.swift */,
+				11A71C8E24A5946B00D9565F /* FakeCLLocationManager.swift */,
+				11A71C9024A598AB00D9565F /* ZoneManagerProcessor.test.swift */,
+			);
+			path = ZoneManager;
+			sourceTree = "<group>";
+		};
 		11AF4D0F249C7DD8006C74C0 /* Sensors */ = {
 			isa = PBXGroup;
 			children = (
@@ -1559,10 +1610,10 @@
 				B9C43F9F3C9B007EC2C1DDD9 /* Pods_SiriIntents.framework */,
 				3744F977190C345382928F90 /* Pods_TodayWidget.framework */,
 				1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */,
-				8C005709F29255E375E2ED0F /* Pods_HomeAssistant_HomeAssistantTests.framework */,
 				079E9F68436672EB0AFCA35D /* Pods_Shared_iOS_SharedTests.framework */,
 				81EFBEA503010FAE577D0269 /* Pods_Shared_watchOS.framework */,
 				78C92C48489465D60D4914E3 /* Pods_WatchAppExtension.framework */,
+				85234822A725AD12E080425E /* Pods_HomeAssistantTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1895,8 +1946,8 @@
 		B657A8FF1CA646EB00121384 /* HomeAssistantTests */ = {
 			isa = PBXGroup;
 			children = (
-				B657A9001CA646EB00121384 /* HomeAssistantTests.swift */,
 				B657A9021CA646EB00121384 /* Info.plist */,
+				11A71C7424A5023200D9565F /* ZoneManager */,
 			);
 			path = HomeAssistantTests;
 			sourceTree = "<group>";
@@ -2261,6 +2312,7 @@
 		B6F02BE71CB4698A0029ABE7 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				11A71C6924A463EE00D9565F /* ZoneManager */,
 				B63CAE682150CE5100A68AFB /* SiriShortcut.swift */,
 				D0B25BCA2130CA2D00678C2C /* RegionManager.swift */,
 				B6B6B14E215B6866003DE2DD /* WatchComplication.swift */,
@@ -2632,7 +2684,6 @@
 				B657A8F81CA646EB00121384 /* Sources */,
 				B657A8F91CA646EB00121384 /* Frameworks */,
 				B657A8FA1CA646EB00121384 /* Resources */,
-				8252F29D46904BFB8182629F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2823,7 +2874,8 @@
 		B657A8DE1CA646EB00121384 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1010;
+				DefaultBuildSystemTypeForWorkspace = Original;
+				LastSwiftUpdateCheck = 1150;
 				LastUpgradeCheck = 1120;
 				ORGANIZATIONNAME = "Robbie Trencheny";
 				TargetAttributes = {
@@ -3469,109 +3521,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-HomeAssistant-HomeAssistantTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-HomeAssistantTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8252F29D46904BFB8182629F /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant-HomeAssistantTests/Pods-HomeAssistant-HomeAssistantTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire-iOS/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireImage-iOS/AlamofireImage.framework",
-				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
-				"${BUILT_PRODUCTS_DIR}/CPDAcknowledgements/CPDAcknowledgements.framework",
-				"${BUILT_PRODUCTS_DIR}/CallbackURLKit/CallbackURLKit.framework",
-				"${BUILT_PRODUCTS_DIR}/ColorPickerRow/ColorPickerRow.framework",
-				"${BUILT_PRODUCTS_DIR}/Communicator-iOS/Communicator.framework",
-				"${BUILT_PRODUCTS_DIR}/DeviceKit-iOS/DeviceKit.framework",
-				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleUtilities-00567490/GoogleUtilities.framework",
-				"${BUILT_PRODUCTS_DIR}/Iconic-iOS/Iconic.framework",
-				"${BUILT_PRODUCTS_DIR}/KeychainAccess-iOS/KeychainAccess.framework",
-				"${PODS_ROOT}/Lokalise/Lokalise.framework",
-				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
-				"${BUILT_PRODUCTS_DIR}/MDFInternationalization/MDFInternationalization.framework",
-				"${BUILT_PRODUCTS_DIR}/MDFTextAccessibility/MDFTextAccessibility.framework",
-				"${BUILT_PRODUCTS_DIR}/MaterialComponents/MaterialComponents.framework",
-				"${BUILT_PRODUCTS_DIR}/ObjcExceptionBridging-iOS/ObjcExceptionBridging.framework",
-				"${BUILT_PRODUCTS_DIR}/ObjectMapper-iOS/ObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
-				"${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework",
-				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
-				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
-				"${BUILT_PRODUCTS_DIR}/Realm-iOS/Realm.framework",
-				"${BUILT_PRODUCTS_DIR}/RealmSwift-iOS/RealmSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/SimulatorStatusMagic/SimulatorStatusMagic.framework",
-				"${BUILT_PRODUCTS_DIR}/Sodium-iOS/Sodium.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftMessages/SwiftMessages.framework",
-				"${BUILT_PRODUCTS_DIR}/TABObserverSet-iOS/TABObserverSet.framework",
-				"${BUILT_PRODUCTS_DIR}/UIColor_Hex_Swift-iOS/UIColor_Hex_Swift.framework",
-				"${BUILT_PRODUCTS_DIR}/Version-iOS/Version.framework",
-				"${BUILT_PRODUCTS_DIR}/ViewRow/ViewRow.framework",
-				"${BUILT_PRODUCTS_DIR}/WhatsNewKit/WhatsNewKit.framework",
-				"${BUILT_PRODUCTS_DIR}/XCGLogger-iOS/XCGLogger.framework",
-				"${BUILT_PRODUCTS_DIR}/ZIPFoundation/ZIPFoundation.framework",
-				"${BUILT_PRODUCTS_DIR}/abseil/absl.framework",
-				"${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework",
-				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
-				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
-				"${BUILT_PRODUCTS_DIR}/lottie-ios/Lottie.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CPDAcknowledgements.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CallbackURLKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ColorPickerRow.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Communicator.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Iconic.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lokalise.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MDFInternationalization.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MDFTextAccessibility.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MaterialComponents.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjcExceptionBridging.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBLPromises.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SimulatorStatusMagic.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sodium.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftMessages.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TABObserverSet.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIColor_Hex_Swift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Version.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ViewRow.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WhatsNewKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XCGLogger.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZIPFoundation.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/absl.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpcpp.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lottie.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant-HomeAssistantTests/Pods-HomeAssistant-HomeAssistantTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8A763BD9E9F25F0704269545 /* [CP] Embed Pods Frameworks */ = {
@@ -4118,6 +4072,7 @@
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				B658AA782250AC8000C9BFE3 /* String+HA.swift in Sources */,
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
+				11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */,
 				B616B29A227ED69300828165 /* InternetAddress.swift in Sources */,
 				B6DF8BC1221C890600370A59 /* UIImageView+UIActivityIndicator.swift in Sources */,
 				11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */,
@@ -4128,9 +4083,12 @@
 				D0EEF336214EB7B800D1D360 /* Strings.swift in Sources */,
 				B65B15032273184F00635D5C /* Colors.swift in Sources */,
 				B6A5D9F5215233EC0013963F /* SiriIntents+ConvenienceInits.swift in Sources */,
+				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
+				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
 				B6093CE4228CFB0A0079E661 /* RemotePlayerState.swift in Sources */,
 				B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */,
+				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,
 				B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */,
 				B65B15012273184600635D5C /* Roboto.swift in Sources */,
 				B6B6B14A215B137C003DE2DD /* WatchComplicationConfigurator.swift in Sources */,
@@ -4140,6 +4098,7 @@
 				B67CE8D02220EF1D0034C1D0 /* ObjectMapper+RealmList.swift in Sources */,
 				B672AB2D2215341800175465 /* ShortcutEventConfigurator.swift in Sources */,
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
+				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				B60221FA226D9BC200E8DBFE /* PermissionLineItemView.swift in Sources */,
 				D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */,
 				B6DAC735215F069300727D2A /* NotificationCategory.swift in Sources */,
@@ -4165,11 +4124,13 @@
 				B661FB7C226C199200E541DD /* PermissionsViewController.swift in Sources */,
 				B605C893226EC25800EF46DD /* AuthenticationViewController.swift in Sources */,
 				B661FB74226C110A00E541DD /* WelcomeViewController.swift in Sources */,
+				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
 				B63CCDCC2164714900123C50 /* Intents.intentdefinition in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				B661FB7A226C197900E541DD /* ManualSetupViewController.swift in Sources */,
+				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
 				B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */,
 				B661FC8A226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift in Sources */,
 			);
@@ -4179,7 +4140,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B657A9011CA646EB00121384 /* HomeAssistantTests.swift in Sources */,
+				11A71C7624A5028200D9565F /* ZoneManagerEvent.test.swift in Sources */,
+				11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */,
+				11A71C8F24A5946B00D9565F /* FakeCLLocationManager.swift in Sources */,
+				11A71C8724A5074E00D9565F /* ZoneManager.test.swift in Sources */,
+				11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */,
+				11A71C7324A4FC8A00D9565F /* ZoneManagerEquatableRegion.test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4846,15 +4812,15 @@
 		};
 		B637243121697585006B102A /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB11108F0557714B775510FD /* Pods-HomeAssistant-HomeAssistantTests.beta.xcconfig */;
+			baseConfigurationReference = A773539FA6CBDC538A9D2EDD /* Pods-HomeAssistantTests.beta.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = HomeAssistantTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
 			};
 			name = Beta;
 		};
@@ -5265,30 +5231,30 @@
 		};
 		B657A9141CA646EB00121384 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C601CA2C93D1D7B0B9CEDDC8 /* Pods-HomeAssistant-HomeAssistantTests.debug.xcconfig */;
+			baseConfigurationReference = 87A132CFD9E75BE5545C3491 /* Pods-HomeAssistantTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = HomeAssistantTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
 			};
 			name = Debug;
 		};
 		B657A9151CA646EB00121384 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 763E137E10EED8022E438DBB /* Pods-HomeAssistant-HomeAssistantTests.release.xcconfig */;
+			baseConfigurationReference = CCD706884B80054E107B89D5 /* Pods-HomeAssistantTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = HomeAssistantTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistantTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Home Assistant Δ.app/Home Assistant Δ";
 			};
 			name = Release;
 		};

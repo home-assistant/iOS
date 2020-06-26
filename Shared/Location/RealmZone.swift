@@ -81,15 +81,9 @@ public class RLMZone: Object {
                           timestamp: Date())
     }
 
-    public func region() -> CLRegion? {
+    public func region() -> CLRegion {
         #if os(iOS)
-        if self.BeaconUUID != nil {
-            // iBeacon
-            return self.beaconRegion
-        } else {
-            // Geofence / CircularRegion
-            return self.circularRegion()
-        }
+        return beaconRegion ?? circularRegion()
         #else
         return self.circularRegion()
         #endif
