@@ -39,16 +39,6 @@
       </MacroExpansion>
       <Testables>
          <TestableReference
-            skipped = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B657A9061CA646EB00121384"
-               BuildableName = "HomeAssistantUITests.xctest"
-               BlueprintName = "HomeAssistantUITests"
-               ReferencedContainer = "container:HomeAssistant.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"

@@ -38,7 +38,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var webViewControllerPromise: Guarantee<WebViewController>
     private var webViewControllerSeal: (WebViewController) -> Void
 
-    private(set) var regionManager: RegionManager!
+    private var regionManager: RegionManager?
+    private var zoneManager: ZoneManager?
+
     private var periodicUpdateTimer: Timer? {
         willSet {
             if periodicUpdateTimer != newValue {
@@ -61,6 +63,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        if NSClassFromString("XCTest") != nil {
+            return true
+        }
+
         setDefaults()
 
         UNUserNotificationCenter.current().delegate = self
@@ -76,9 +82,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         self.registerCallbackURLKitHandlers()
 
-        self.regionManager = RegionManager()
+        if Current.settingsStore.useNewOneShotLocation {
+            self.zoneManager = ZoneManager()
+        } else {
+            self.regionManager = RegionManager()
+        }
 
-        Current.syncMonitoredRegions = { self.regionManager.syncMonitoredRegions() }
+        Current.syncMonitoredRegions = {
+            self.regionManager?.syncMonitoredRegions()
+            self.zoneManager?.syncZones().cauterize()
+        }
 
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
 
@@ -98,6 +111,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        if NSClassFromString("XCTest") != nil {
+            return true
+        }
+
         setupView()
 
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
@@ -219,6 +236,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if Current.appConfiguration == .FastlaneSnapshot {
             Current.Log.info("disallowing state to be restored due to fastlane snapshot")
+            return false
+        }
+
+        if NSClassFromString("XCTest") != nil {
             return false
         }
 
