@@ -3,9 +3,9 @@ import Foundation
 import XCTest
 import PromiseKit
 
-class WebhookSensorLastUpdateTests: XCTestCase {
+class LastUpdateSensorTests: XCTestCase {
     func testManualTrigger() throws {
-        let promise = WebhookSensor.lastUpdate(trigger: .Manual)
+        let promise = LastUpdateSensor(request: .init(reason: .trigger("Manual"))).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
         XCTAssertEqual(sensors[0].UniqueID, "last_update_trigger")

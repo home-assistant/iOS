@@ -4,20 +4,22 @@ import XCTest
 @testable import Shared
 
 @available(iOS 11, *)
-class WebhookSensorStorageTests: XCTestCase {
+class StorageSensorTests: XCTestCase {
+    private var request: SensorProviderRequest = .init(reason:  .trigger("unit-test"))
+
     func testNilDataReturnsError() {
         Current.device.volumes = { nil }
-        let promise = WebhookSensor.storage()
+        let promise = StorageSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? WebhookSensor.StorageError, .noData)
+            XCTAssertEqual(error as? StorageSensor.StorageError, .noData)
         }
     }
 
     func testEmptyDataReturnsError() {
         Current.device.volumes = { [:] }
-        let promise = WebhookSensor.storage()
+        let promise = StorageSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? WebhookSensor.StorageError, .noData)
+            XCTAssertEqual(error as? StorageSensor.StorageError, .noData)
         }
     }
 
@@ -27,9 +29,9 @@ class WebhookSensorStorageTests: XCTestCase {
             .volumeAvailableCapacityForImportantUsageKey: 100,
             .volumeAvailableCapacityForOpportunisticUsageKey: 100
         ] }
-        let promise = WebhookSensor.storage()
+        let promise = StorageSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? WebhookSensor.StorageError, .missingData(.volumeAvailableCapacityKey))
+            XCTAssertEqual(error as? StorageSensor.StorageError, .missingData(.volumeAvailableCapacityKey))
         }
     }
 
@@ -40,9 +42,9 @@ class WebhookSensorStorageTests: XCTestCase {
             .volumeAvailableCapacityForImportantUsageKey: 100,
             .volumeAvailableCapacityForOpportunisticUsageKey: 100
         ] }
-        let promise = WebhookSensor.storage()
+        let promise = StorageSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? WebhookSensor.StorageError, .invalidData)
+            XCTAssertEqual(error as? StorageSensor.StorageError, .invalidData)
         }
     }
 
@@ -53,7 +55,7 @@ class WebhookSensorStorageTests: XCTestCase {
             .volumeAvailableCapacityForImportantUsageKey: 21_000_000_000,
             .volumeAvailableCapacityForOpportunisticUsageKey: 22_000_000_000
         ] }
-        let promise = WebhookSensor.storage()
+        let promise = StorageSensor(request: request).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
 

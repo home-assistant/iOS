@@ -9,7 +9,7 @@ import Contacts
 // it is almost certainly a testing issue, and this... well, this solves it.
 private var permanent: [CLPlacemark] = []
 
-class WebhookSensorGeocoderTests: XCTestCase {
+class GeocoderSensorTests: XCTestCase {
     enum TestError: Error {
         case someError
     }
@@ -20,7 +20,7 @@ class WebhookSensorGeocoderTests: XCTestCase {
     }
 
     func testLocationForRegistration() throws {
-        let promise = WebhookSensor.geocoder(location: .registration)
+        let promise = GeocoderSensor(request: .init(reason: .registration)).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
 
@@ -32,22 +32,28 @@ class WebhookSensorGeocoderTests: XCTestCase {
 
     func testLocationNoPlacemarks() throws {
         setUp(placemarks: [])
-        let promise = WebhookSensor.geocoder(location: .location(CLLocation(latitude: 37, longitude: -122)))
+        let promise = GeocoderSensor(
+            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+        ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
         XCTAssertEqual(sensors[0].State as? String, "Unknown")
     }
 
     func testNoLocation() throws {
-        let promise = WebhookSensor.geocoder(location: nil)
+        let promise = GeocoderSensor(
+            request: .init(reason: .trigger("unit-test"))
+        ).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? WebhookSensor.GeocoderError, .noLocation)
+            XCTAssertEqual(error as? GeocoderSensor.GeocoderError, .noLocation)
         }
     }
 
     func testPlacemarkError() throws {
         Current.geocoder.geocode = { _ in .init(error: TestError.someError) }
-        let promise = WebhookSensor.geocoder(location: .location(CLLocation(latitude: 37, longitude: -122)))
+        let promise = GeocoderSensor(
+            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+        ).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual(error as? TestError, .someError)
         }
@@ -55,7 +61,9 @@ class WebhookSensorGeocoderTests: XCTestCase {
 
     func testAddresslessPlacemark() throws {
         setUp(placemarks: [ .addressless ])
-        let promise = WebhookSensor.geocoder(location: .location(CLLocation(latitude: 37, longitude: -122)))
+        let promise = GeocoderSensor(
+            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+        ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
         XCTAssertEqual(sensors[0].State as? String, "Unknown")
@@ -66,7 +74,9 @@ class WebhookSensorGeocoderTests: XCTestCase {
         setUp(placemarks: [
             .bobsBurgers
         ])
-        let promise = WebhookSensor.geocoder(location: .location(CLLocation(latitude: 37, longitude: -122)))
+        let promise = GeocoderSensor(
+            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+        ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
         XCTAssertEqual(sensors[0].State as? String, "Ocean Ave\nLong Island NY 11001\nUS")
@@ -75,7 +85,9 @@ class WebhookSensorGeocoderTests: XCTestCase {
 
     func testTwoPlacemarksFirstOneEmpty() throws {
         setUp(placemarks: [ .empty, .bobsBurgers ])
-        let promise = WebhookSensor.geocoder(location: .location(CLLocation(latitude: 37, longitude: -122)))
+        let promise = GeocoderSensor(
+            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+        ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
         XCTAssertEqual(sensors[0].State as? String, "Ocean Ave\nLong Island NY 11001\nUS")
@@ -88,7 +100,9 @@ class WebhookSensorGeocoderTests: XCTestCase {
                 $0.hasPostalAddress = false
             }
         ])
-        let promise = WebhookSensor.geocoder(location: .location(CLLocation(latitude: 37, longitude: -122)))
+        let promise = GeocoderSensor(
+            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+        ).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
         XCTAssertEqual(sensors[0].State as? String, "Ocean Ave\nLong Island NY 11001\nUS")

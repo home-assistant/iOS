@@ -4,32 +4,25 @@ import Iconic
 import CoreLocation
 import Contacts
 
-extension WebhookSensor {
+public class GeocoderSensor: SensorProvider {
     public enum GeocoderError: Error {
         case noLocation
     }
 
-    public enum Location {
-        case registration
-        case location(CLLocation)
+    public let request: SensorProviderRequest
+    required public init(request: SensorProviderRequest) {
+        self.request = request
     }
 
-    public static func geocoder(
-        location: Location?
-    ) -> Promise<[WebhookSensor]> {
-        guard let location = location else {
-            return .init(error: GeocoderError.noLocation)
-        }
-
+    public func sensors() -> Promise<[WebhookSensor]> {
         return firstly { () -> Promise<[CLPlacemark]> in
-            switch location {
-            case .registration:
+            guard let location = request.location else {
                 throw GeocoderError.noLocation
-            case .location(let location):
-                return Current.geocoder.geocode(location)
             }
-        }.recover { (error: Error) -> Promise<[CLPlacemark]> in
-            guard case GeocoderError.noLocation = error, case .registration = location else { throw error }
+
+            return Current.geocoder.geocode(location)
+        }.recover { [request] (error: Error) -> Promise<[CLPlacemark]> in
+            guard case GeocoderError.noLocation = error, case .registration = request.reason else { throw error }
             return .value([])
         }.map { (placemarks: [CLPlacemark]) -> [WebhookSensor] in
             let sensor = with(WebhookSensor(name: "Geocoded Location", uniqueID: "geocoded_location")) {

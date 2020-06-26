@@ -762,6 +762,7 @@ Thank you.\
 "settings_sensors.periodic_update.title" = "Periodic Update";
 "settings_sensors.periodic_update.description" = "When enabled, these sensors will update after the app has been continually open for this long.";
 "settings_sensors.periodic_update.off" = "Off";
+"settings_sensors.last_updated.footer" = "Last Updated %@";
 "location_change_notification.launch.body" = "Location updated via app launch";
 "location_change_notification.periodic.body" = "Location updated via periodic update";
 "extensions.notification_content.error.request.hls_unavailable" = "HLS stream unavailable";

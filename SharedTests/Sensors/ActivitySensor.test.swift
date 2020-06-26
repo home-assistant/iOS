@@ -4,10 +4,12 @@ import PromiseKit
 import CoreMotion
 @testable import Shared
 
-class WebhookSensorActivityTests: XCTestCase {
+class ActivitySensorTests: XCTestCase {
     private enum TestError: Error {
         case someError
     }
+
+    private var request: SensorProviderRequest = .init(reason: .trigger("unit-test"))
 
     override func setUp() {
         super.setUp()
@@ -19,26 +21,26 @@ class WebhookSensorActivityTests: XCTestCase {
     }
 
     func testUnauthorizedReturnsError() {
-        let promise = WebhookSensor.activity()
+        let promise = ActivitySensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? WebhookSensor.ActivityError, .unauthorized)
+            XCTAssertEqual(error as? ActivitySensor.ActivityError, .unauthorized)
         }
     }
 
     func testUnavailableReturnsError() {
         Current.motion.isAuthorized = { true }
-        let promise = WebhookSensor.activity()
+        let promise = ActivitySensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? WebhookSensor.ActivityError, .unavailable)
+            XCTAssertEqual(error as? ActivitySensor.ActivityError, .unavailable)
         }
     }
 
     func testNoDataReturnsError() {
         Current.motion.isAuthorized = { true }
         Current.motion.isActivityAvailable = { true }
-        let promise = WebhookSensor.activity()
+        let promise = ActivitySensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? WebhookSensor.ActivityError, .noData)
+            XCTAssertEqual(error as? ActivitySensor.ActivityError, .noData)
         }
     }
 
@@ -47,9 +49,9 @@ class WebhookSensorActivityTests: XCTestCase {
         Current.motion.isActivityAvailable = { true }
         Current.motion.queryStartEndOnQueueHandler = { _, _, _, handler in handler(nil, nil) }
 
-        let promise = WebhookSensor.activity()
+        let promise = ActivitySensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? WebhookSensor.ActivityError, .noData)
+            XCTAssertEqual(error as? ActivitySensor.ActivityError, .noData)
         }
     }
 
@@ -58,7 +60,7 @@ class WebhookSensorActivityTests: XCTestCase {
         Current.motion.isActivityAvailable = { true }
         Current.motion.queryStartEndOnQueueHandler = { _, _, _, hand in hand(nil, TestError.someError) }
 
-        let promise = WebhookSensor.activity()
+        let promise = ActivitySensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual(error as? TestError, .someError)
         }
@@ -73,7 +75,7 @@ class WebhookSensorActivityTests: XCTestCase {
         Current.motion.isActivityAvailable = { true }
         Current.motion.queryStartEndOnQueueHandler = { _, _, _, hand in hand([anyActivity], nil) }
 
-        let promise = WebhookSensor.activity()
+        let promise = ActivitySensor(request: request).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
         XCTAssertEqual(sensors[0].Name, "Activity")
@@ -105,7 +107,7 @@ class WebhookSensorActivityTests: XCTestCase {
             let activity = with(FakeMotionActivity()) { testCase($0) }
             Current.motion.queryStartEndOnQueueHandler = { _, _, _, handler in handler([activity], nil) }
 
-            let promise = WebhookSensor.activity()
+            let promise = ActivitySensor(request: request).sensors()
             let sensors = try hang(promise)
             XCTAssertEqual(sensors.count, 1)
             XCTAssertEqual(sensors[0].State as? String, activity.activityTypes.first)

@@ -5,13 +5,18 @@ import CoreTelephony
 import Reachability
 #endif
 
-extension WebhookSensor {
+public class ConnectivitySensor: SensorProvider {
     public enum ConnectivityError: Error {
         case unsupportedPlatform
         case noCarriers
     }
 
-    public static func connectivity() -> Promise<[WebhookSensor]> {
+    public let request: SensorProviderRequest
+    required public init(request: SensorProviderRequest) {
+        self.request = request
+    }
+
+    public func sensors() -> Promise<[WebhookSensor]> {
         #if os(iOS)
         return firstly {
             when(resolved: [
@@ -35,7 +40,7 @@ extension WebhookSensor {
 
     #if os(iOS)
 
-    private static func ssid() -> Promise<[WebhookSensor]> {
+    private func ssid() -> Promise<[WebhookSensor]> {
         return .value([
             with(WebhookSensor(name: "SSID", uniqueID: "connectivity_ssid")) { sensor in
                 if let ssid = Current.connectivity.currentWiFiSSID() {
@@ -58,7 +63,7 @@ extension WebhookSensor {
         ])
     }
 
-    private static func connectionType() -> Promise<[WebhookSensor]> {
+    private func connectionType() -> Promise<[WebhookSensor]> {
         let simple = Current.connectivity.simpleNetworkType()
 
         return .value([
@@ -77,7 +82,7 @@ extension WebhookSensor {
         ])
     }
 
-    private static func cellularProviders() -> Promise<[WebhookSensor]> {
+    private func cellularProviders() -> Promise<[WebhookSensor]> {
         let networkInfo = Current.connectivity.telephonyCarriers()
         let radioTech = Current.connectivity.telephonyRadioAccessTechnology()
 
@@ -95,7 +100,7 @@ extension WebhookSensor {
         }
     }
 
-    private static func carrierSensor(
+    private func carrierSensor(
         carrier: CTCarrier,
         radioTech: String?,
         key: String,
@@ -131,7 +136,7 @@ extension WebhookSensor {
         ]
 
         if let radioTech = radioTech {
-            sensor.Attributes?["Current Radio Technology"] = getRadioTechName(radioTech)
+            sensor.Attributes?["Current Radio Technology"] = Self.getRadioTechName(radioTech)
         }
 
         return .value(sensor)
