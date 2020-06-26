@@ -3,7 +3,7 @@ import XCTest
 import CoreLocation
 @testable import HomeAssistant
 
-class BackgroundLocationEventTests: XCTestCase {
+class ZoneManagerEventTests: XCTestCase {
     private var beaconRegion: CLBeaconRegion!
     private var circularRegion: CLCircularRegion!
 

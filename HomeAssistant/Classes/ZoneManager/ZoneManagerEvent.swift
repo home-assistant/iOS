@@ -52,7 +52,7 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
             attributes.append(zone.ID)
         }
 
-        return "BackgroundLocationEvent(\(attributes.joined(separator: ", ")))"
+        return "ZoneManagerEvent(\(attributes.joined(separator: ", ")))"
     }
 
     var shouldOneShotLocation: Bool {
