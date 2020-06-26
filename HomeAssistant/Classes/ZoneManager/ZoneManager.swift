@@ -42,7 +42,9 @@ class ZoneManager {
             "event": event.description
         ]
 
-        firstly {
+        // although technically the processor also does this, it does it after some async processing.
+        // let's be very cofident that we're not going to miss out on an update due to being suspended
+        UIApplication.shared.backgroundTask(withName: "zone-manager-perform-event") { _ in
             processor.perform(event: event)
         }.done {
             Current.clientEventStore.addEvent(ClientEvent(

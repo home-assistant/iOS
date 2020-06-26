@@ -11,7 +11,12 @@ class ZoneManagerTests: XCTestCase {
     private var collector: FakeCollector!
     private var processor: FakeProcessor!
     private var locationManager: FakeCLLocationManager!
-    private var loggedEvents: [ClientEvent]!
+    private var loggedEventsUpdatedExpectation: XCTestExpectation?
+    private var loggedEvents: [ClientEvent]! {
+        didSet {
+            loggedEventsUpdatedExpectation?.fulfill()
+        }
+    }
 
     enum TestError: Error {
         case anyError
@@ -151,13 +156,11 @@ class ZoneManagerTests: XCTestCase {
         seal.reject(TestError.anyError)
 
         let expectation = self.expectation(description: "promise")
-        promise.ensure {
-            expectation.fulfill()
-        }.cauterize()
+        loggedEventsUpdatedExpectation = expectation
 
+        seal.fulfill(())
         wait(for: [expectation], timeout: 10)
-
-        XCTAssertTrue(loggedEvents.count == 1)
+        
         guard let loggedEvent = loggedEvents.first else {
             return
         }
@@ -184,16 +187,14 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(processor.performEvent, event)
         XCTAssertTrue(loggedEvents.isEmpty)
 
-        seal.fulfill(())
-
         let expectation = self.expectation(description: "promise")
-        promise.ensure {
-            expectation.fulfill()
-        }.cauterize()
+        loggedEventsUpdatedExpectation = expectation
 
+        seal.fulfill(())
         wait(for: [expectation], timeout: 10)
 
         XCTAssertTrue(loggedEvents.count == 1)
+
         guard let loggedEvent = loggedEvents.first else {
             return
         }
