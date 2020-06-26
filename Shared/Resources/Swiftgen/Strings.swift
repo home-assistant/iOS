@@ -1733,6 +1733,12 @@ internal enum L10n {
       /// Unique ID
       internal static let uniqueId = L10n.tr("Localizable", "settings_sensors.detail.unique_id")
     }
+    internal enum LastUpdated {
+      /// Last Updated %@
+      internal static func footer(_ p1: String) -> String {
+        return L10n.tr("Localizable", "settings_sensors.last_updated.footer", p1)
+      }
+    }
     internal enum LoadingError {
       /// Failed to load sensors
       internal static let title = L10n.tr("Localizable", "settings_sensors.loading_error.title")

@@ -5,10 +5,12 @@ import PromiseKit
 import Version
 @testable import Shared
 
-class WebhookSensorPedometerTests: XCTestCase {
+class PedometerSensorTests: XCTestCase {
     private enum TestError: Error {
         case someError
     }
+
+    private var request: SensorProviderRequest = .init(reason: .trigger("unit-test"))
 
     override func setUp() {
         super.setUp()
@@ -20,26 +22,26 @@ class WebhookSensorPedometerTests: XCTestCase {
     }
 
     func testUnauthorizedReturnsError() {
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? WebhookSensor.PedometerError, .unauthorized)
+            XCTAssertEqual(error as? PedometerSensor.PedometerError, .unauthorized)
         }
     }
 
     func testUnavailableReturnsError() {
         Current.pedometer.isAuthorized = { true }
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? WebhookSensor.PedometerError, .unavailable)
+            XCTAssertEqual(error as? PedometerSensor.PedometerError, .unavailable)
         }
     }
 
     func testNoDataReturnsError() {
         Current.pedometer.isAuthorized = { true }
         Current.pedometer.isStepCountingAvailable = { true }
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
-            XCTAssertEqual(error as? WebhookSensor.PedometerError, .noData)
+            XCTAssertEqual(error as? PedometerSensor.PedometerError, .noData)
         }
     }
 
@@ -48,7 +50,7 @@ class WebhookSensorPedometerTests: XCTestCase {
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in hand(nil, TestError.someError) }
 
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual(error as? TestError, .someError)
         }
@@ -59,7 +61,7 @@ class WebhookSensorPedometerTests: XCTestCase {
         Current.pedometer.isStepCountingAvailable = { true }
         Current.pedometer.queryStartEndHandler = { _, _, hand in hand(FakePedometerData(), nil) }
 
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         let sensors = try hang(promise)
         XCTAssertEqual(sensors.count, 1)
 
@@ -79,7 +81,7 @@ class WebhookSensorPedometerTests: XCTestCase {
             }, nil)
         }
 
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         let sensors = try hang(promise)
 
         let sensor = sensors.first(where: { $0.UniqueID == "pedometer_distance" })
@@ -101,7 +103,7 @@ class WebhookSensorPedometerTests: XCTestCase {
             }, nil)
         }
 
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         let sensors = try hang(promise)
 
         let sensor = sensors.first(where: { $0.UniqueID == "pedometer_floors_ascended" })
@@ -123,7 +125,7 @@ class WebhookSensorPedometerTests: XCTestCase {
             }, nil)
         }
 
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         let sensors = try hang(promise)
 
         let sensor = sensors.first(where: { $0.UniqueID == "pedometer_floors_ascended" })
@@ -145,7 +147,7 @@ class WebhookSensorPedometerTests: XCTestCase {
             }, nil)
         }
 
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         let sensors = try hang(promise)
 
         let sensor = sensors.first(where: { $0.UniqueID == "pedometer_floors_descended" })
@@ -167,7 +169,7 @@ class WebhookSensorPedometerTests: XCTestCase {
             }, nil)
         }
 
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         let sensors = try hang(promise)
 
         let sensor = sensors.first(where: { $0.UniqueID == "pedometer_floors_descended" })
@@ -188,7 +190,7 @@ class WebhookSensorPedometerTests: XCTestCase {
             }, nil)
         }
 
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         let sensors = try hang(promise)
 
         let sensor = sensors.first(where: { $0.UniqueID == "pedometer_avg_active_pace" })
@@ -209,7 +211,7 @@ class WebhookSensorPedometerTests: XCTestCase {
             }, nil)
         }
 
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         let sensors = try hang(promise)
 
         let sensor = sensors.first(where: { $0.UniqueID == "pedometer_current_pace" })
@@ -230,7 +232,7 @@ class WebhookSensorPedometerTests: XCTestCase {
             }, nil)
         }
 
-        let promise = WebhookSensor.pedometer()
+        let promise = PedometerSensor(request: request).sensors()
         let sensors = try hang(promise)
 
         let sensor = sensors.first(where: { $0.UniqueID == "pedometer_current_cadence" })

@@ -2,16 +2,21 @@ import Foundation
 import PromiseKit
 import CoreMotion
 
-extension WebhookSensor {
+public class ActivitySensor: SensorProvider {
     public enum ActivityError: Error {
         case unauthorized
         case unavailable
         case noData
     }
 
-    public static func activity() -> Promise<[WebhookSensor]> {
+    public let request: SensorProviderRequest
+    required public init(request: SensorProviderRequest) {
+        self.request = request
+    }
+
+    public func sensors() -> Promise<[WebhookSensor]> {
         firstly {
-            latestMotionActivity()
+            Self.latestMotionActivity()
         }.map { activity in
             with(WebhookSensor(name: "Activity", uniqueID: "activity")) {
                 $0.State = activity.activityTypes.first

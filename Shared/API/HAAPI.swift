@@ -126,6 +126,16 @@ public class HomeAssistantAPI {
         }
     }
 
+    public let sensors = with(SensorContainer()) {
+        $0.register(provider: ActivitySensor.self)
+        $0.register(provider: PedometerSensor.self)
+        $0.register(provider: BatterySensor.self)
+        $0.register(provider: StorageSensor.self)
+        $0.register(provider: ConnectivitySensor.self)
+        $0.register(provider: GeocoderSensor.self)
+        $0.register(provider: LastUpdateSensor.self)
+    }
+
     public func VideoStreamer() -> MJPEGStreamer? {
         guard let newManager = self.authenticatedSessionManager() else {
             return nil
@@ -629,7 +639,10 @@ public class HomeAssistantAPI {
         limitSensors: [String]? = nil
     ) -> Promise<[WebhookSensorResponse]> {
         return firstly {
-            WebhookSensor.allSensors(location: location.flatMap { .location($0) } ?? .registration, trigger: .Unknown)
+            return sensors.sensors(request: .init(
+                reason: .registration,
+                location: location
+            ))
         }.filterValues { (sensor: WebhookSensor) -> Bool in
             if let limitSensors = limitSensors, let uniqueID = sensor.UniqueID {
                 return limitSensors.contains(uniqueID)
@@ -647,7 +660,10 @@ public class HomeAssistantAPI {
     public func UpdateSensors(trigger: LocationUpdateTrigger,
                               location: CLLocation? = nil) -> Promise<[String: WebhookSensorResponse]> {
         return firstly {
-            WebhookSensor.allSensors(location: location.flatMap { .location($0) }, trigger: trigger)
+            sensors.sensors(request: .init(
+                reason: .trigger(trigger.rawValue),
+                location: location
+            ))
         }.map { sensors in
             Current.Log.info("updating sensors \(sensors.map { $0.UniqueID ?? "unknown" })")
 

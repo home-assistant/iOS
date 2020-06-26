@@ -6,7 +6,7 @@ import XCTest
 
 // swiftlint:disable large_tuple
 
-class WebhookSensorConnectivityTests: XCTestCase {
+class ConnectivitySensorTests: XCTestCase {
     private func setUp(
         ssid: String?,
         bssid: String?,
@@ -22,7 +22,7 @@ class WebhookSensorConnectivityTests: XCTestCase {
         Current.connectivity.telephonyCarriers = { cellular }
         Current.connectivity.telephonyRadioAccessTechnology = { radioTech }
 
-        let promise = WebhookSensor.connectivity()
+        let promise = ConnectivitySensor(request: .init(reason: .trigger("unit-test"))).sensors()
         let sensors = try hang(promise)
 
         return (
