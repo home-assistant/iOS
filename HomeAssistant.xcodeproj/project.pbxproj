@@ -32,9 +32,9 @@
 		11810D51249EAF8D00E741A4 /* rainbow_invert@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D47249EAF8C00E741A4 /* rainbow_invert@3x.png */; };
 		11810D52249EAF8D00E741A4 /* bi_pride@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D48249EAF8C00E741A4 /* bi_pride@3x.png */; };
 		11810D53249EAF8D00E741A4 /* POC_pride@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D49249EAF8D00E741A4 /* POC_pride@3x.png */; };
-		119385A4249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */; };
-		119385A5249E8E360097F497 /* WebhookSensor+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */; };
-		119385A7249E9F930097F497 /* WebhookSensor+Storage.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */; };
+		119385A4249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
+		119385A5249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
+		119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* StorageSensor.test.swift */; };
 		119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119C9B1E24A448A600308A54 /* ZoneManager.swift */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
 		11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C6A24A463FC00D9565F /* ZoneManagerState.swift */; };
@@ -49,12 +49,6 @@
 		11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C8C24A593A800D9565F /* ZoneManagerCollector.test.swift */; };
 		11A71C8F24A5946B00D9565F /* FakeCLLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C8E24A5946B00D9565F /* FakeCLLocationManager.swift */; };
 		11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C9024A598AB00D9565F /* ZoneManagerProcessor.test.swift */; };
-		11AF4D13249C7E08006C74C0 /* WebhookSensor+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */; };
-		11AF4D14249C7E09006C74C0 /* WebhookSensor+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */; };
-		119385A4249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
-		119385A5249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
-		119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* StorageSensor.test.swift */; };
-		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
 		11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
 		11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
 		11AF4D16249C8083006C74C0 /* With.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D15249C8082006C74C0 /* With.swift */; };
@@ -799,8 +793,8 @@
 		11810D47249EAF8C00E741A4 /* rainbow_invert@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow_invert@3x.png"; sourceTree = "<group>"; };
 		11810D48249EAF8C00E741A4 /* bi_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bi_pride@3x.png"; sourceTree = "<group>"; };
 		11810D49249EAF8D00E741A4 /* POC_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "POC_pride@3x.png"; sourceTree = "<group>"; };
-		119385A3249E8E360097F497 /* WebhookSensor+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.swift"; sourceTree = "<group>"; };
-		119385A6249E9F930097F497 /* WebhookSensor+Storage.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Storage.test.swift"; sourceTree = "<group>"; };
+		119385A3249E8E360097F497 /* StorageSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.swift; sourceTree = "<group>"; };
+		119385A6249E9F930097F497 /* StorageSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.test.swift; sourceTree = "<group>"; };
 		119C9B1E24A448A600308A54 /* ZoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManager.swift; sourceTree = "<group>"; };
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11A71C6A24A463FC00D9565F /* ZoneManagerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerState.swift; sourceTree = "<group>"; };
@@ -815,10 +809,6 @@
 		11A71C8C24A593A800D9565F /* ZoneManagerCollector.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerCollector.test.swift; sourceTree = "<group>"; };
 		11A71C8E24A5946B00D9565F /* FakeCLLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeCLLocationManager.swift; sourceTree = "<group>"; };
 		11A71C9024A598AB00D9565F /* ZoneManagerProcessor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerProcessor.test.swift; sourceTree = "<group>"; };
-		11AF4D10249C7DFD006C74C0 /* WebhookSensor+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebhookSensor+Activity.swift"; sourceTree = "<group>"; };
-		119385A3249E8E360097F497 /* StorageSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.swift; sourceTree = "<group>"; };
-		119385A6249E9F930097F497 /* StorageSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.test.swift; sourceTree = "<group>"; };
-		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitySensor.swift; sourceTree = "<group>"; };
 		11AF4D15249C8082006C74C0 /* With.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = With.swift; sourceTree = "<group>"; };
 		11AF4D18249C8253006C74C0 /* PedometerSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSensor.swift; sourceTree = "<group>"; };
