@@ -771,8 +771,9 @@
 "settings_details.general.app_icon.enum.pride_rainbow" = "Pride：彩虹";
 "settings_details.general.app_icon.enum.pride_rainbow_invert" = "Pride：彩虹（反向）";
 "settings_details.general.app_icon.enum.pride_trans" = "Pride：Trans";
-"settings_details.general.open_in_browser.title" = "Open Links In";
+"settings_details.general.open_in_browser.title" = "開啟連結方式";
 "settings_details.general.open_in_browser.chrome" = "Google Chrome";
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
+"settings_sensors.last_updated.footer" = "Last Updated %@";
