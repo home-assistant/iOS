@@ -91,7 +91,8 @@ class ZoneManagerTests: XCTestCase {
             zones[1].Latitude += 0.02
             addedRegions.append(zones[1].region())
         }
-        try hang(manager.syncZones())
+
+        realm.refresh()
 
         XCTAssertEqual(locationManager.monitoredRegions, currentRegions)
         XCTAssertEqual(locationManager.stopMonitoringRegions.hackilySorted(), removedRegions.hackilySorted())
@@ -104,10 +105,13 @@ class ZoneManagerTests: XCTestCase {
             realm.delete(toRemove)
         }
 
-        try hang(manager.syncZones())
+        realm.refresh()
+
         XCTAssertEqual(locationManager.monitoredRegions, currentRegions)
         XCTAssertEqual(locationManager.stopMonitoringRegions.hackilySorted(), removedRegions.hackilySorted())
         XCTAssertEqual(locationManager.startMonitoringRegions.hackilySorted(), addedRegions.hackilySorted())
+
+        withExtendedLifetime(manager) { /* silences unused variable */ }
     }
 
     func testStartingWithZoneButNoneWanted() throws {
@@ -123,9 +127,12 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(locationManager.stopMonitoringRegions, [startRegion])
         XCTAssertTrue(locationManager.monitoredRegions.isEmpty)
 
-        try hang(manager.syncZones())
+        realm.refresh()
+
         XCTAssertEqual(locationManager.stopMonitoringRegions, [startRegion])
         XCTAssertTrue(locationManager.monitoredRegions.isEmpty)
+
+        withExtendedLifetime(manager) { /* silences unused variable */ }
     }
 
     func testTrackingDisabledNotMonitored() throws {
@@ -153,15 +160,19 @@ class ZoneManagerTests: XCTestCase {
             zones[0].TrackingEnabled = true
         }
 
-        try hang(manager.syncZones())
+        realm.refresh()
+
         XCTAssertEqual(Set(locationManager.monitoredRegions.map { $0.identifier }), Set(["work" ,"home"]))
 
         try realm.write {
             zones[1].TrackingEnabled = false
         }
 
-        try hang(manager.syncZones())
+        realm.refresh()
+
         XCTAssertEqual(Set(locationManager.monitoredRegions.map { $0.identifier }), Set(["home"]))
+
+        withExtendedLifetime(manager) { /* silences unused variable */ }
     }
 
     func testBasicStartup() {

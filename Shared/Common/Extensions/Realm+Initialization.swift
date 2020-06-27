@@ -133,4 +133,15 @@ extension Realm {
         fatalError(errMsg)
         #endif
     }
+
+    public func reentrantWrite<Result>(
+        withoutNotifying tokens: [NotificationToken] = [],
+        _ block: (() throws -> Result)
+    ) throws -> Result {
+        if isInWriteTransaction {
+            return try block()
+        } else {
+            return try write(withoutNotifying: tokens, block)
+        }
+    }
 }

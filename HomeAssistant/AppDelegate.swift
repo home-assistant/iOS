@@ -90,7 +90,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         Current.syncMonitoredRegions = {
             self.regionManager?.syncMonitoredRegions()
-            self.zoneManager?.syncZones().cauterize()
+            // zoneManager observes the realm collection directly
         }
 
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
