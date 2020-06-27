@@ -2,6 +2,7 @@ import Foundation
 
 enum ZoneManagerIgnoreReason: LocalizedError, Equatable {
     case duringOneShot
+    case locationUpdateTooOld
     case locationMissingEntries
     case unknownRegionState
     case unknownRegion
@@ -17,6 +18,8 @@ enum ZoneManagerIgnoreReason: LocalizedError, Equatable {
             return "ignoring during one shot"
         case .locationMissingEntries:
             return "location update missing evennts"
+        case .locationUpdateTooOld:
+            return "location update from the past"
         case .unknownRegionState:
             return "unknown region state"
         case .unknownRegion:

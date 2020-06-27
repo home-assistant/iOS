@@ -1,6 +1,7 @@
 import Foundation
 import Shared
 import PromiseKit
+import CoreLocation
 
 protocol ZoneManagerProcessorDelegate: AnyObject {
     func processor(_ processor: ZoneManagerProcessor, didLog state: ZoneManagerState)
@@ -52,58 +53,80 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         }
     }
 
-    private func evaluate(event: ZoneManagerEvent) -> Promise<Void> {
-        func ignore(_ error: ZoneManagerIgnoreReason) -> Promise<Void> {
-            return .init(error: error)
-        }
+    private static func ignore(_ error: ZoneManagerIgnoreReason) -> Promise<Void> {
+        return .init(error: error)
+    }
 
+    private func evaluate(event: ZoneManagerEvent) -> Promise<Void> {
         guard !Current.isPerformingSingleShotLocationQuery else {
             // never do any processing while actively pulling
-            return ignore(.duringOneShot)
+            return Self.ignore(.duringOneShot)
         }
 
         switch event.eventType {
         case .locationChange(let locations):
-            if locations.isEmpty {
-                return ignore(.locationMissingEntries)
-            }
-        case .region(_, let state):
-            guard state != .unknown else {
-                return ignore(.unknownRegionState)
-            }
+            return Self.evaluateLocationChangeEvent(
+                locations: locations
+            )
+        case .region(let region, let state):
+            return Self.evaluateRegionEvent(
+                region: region,
+                state: state,
+                zone: event.associatedZone
+            )
+        }
+    }
 
-            guard let zone = event.associatedZone else {
-                return ignore(.unknownRegion)
-            }
+    private static func evaluateLocationChangeEvent(locations: [CLLocation]) -> Promise<Void> {
+        if locations.isEmpty {
+            return ignore(.locationMissingEntries)
+        }
 
-            guard zone.TrackingEnabled else {
-                // Do nothing in case we don't want to trigger an enter event
-                return ignore(.zoneDisabled)
-            }
+        if let lastLocation = locations.last, Current.date().timeIntervalSince(lastLocation.timestamp) > 10.0 {
+            // if we're just being tangentially told about locations because of creating the location manager,
+            // we want to ignore it in favor if manually getting location in a non-this-class code path
+            return ignore(.locationUpdateTooOld)
+        }
 
-            if let current = Current.connectivity.currentWiFiSSID(), zone.SSIDFilter.contains(current) {
-                // If current SSID is in the filter list stop processing region event.
-                // This is to cut down on false exits.
-                // https://github.com/home-assistant/home-assistant-iOS/issues/32
-                return ignore(.ignoredSSID(current))
-            }
+        return .value(())
+    }
 
-            let inRegion = state == .inside
-            guard zone.inRegion != inRegion else {
-                return ignore(.zoneStateAgrees)
-            }
+    private static func evaluateRegionEvent(region: CLRegion, state: CLRegionState, zone: RLMZone?) -> Promise<Void> {
+        guard state != .unknown else {
+            return ignore(.unknownRegionState)
+        }
 
-            do {
-                try zone.realm?.write {
-                    zone.inRegion = inRegion
-                }
-            } catch {
-                return ignore(.zoneUpdateFailed(error as NSError))
-            }
+        guard let zone = zone else {
+            return ignore(.unknownRegion)
+        }
 
-            guard event.asTrigger() != .BeaconRegionExit else {
-                return ignore(.beaconExitIgnored)
+        guard zone.TrackingEnabled else {
+            // Do nothing in case we don't want to trigger an enter event
+            return ignore(.zoneDisabled)
+        }
+
+        if let current = Current.connectivity.currentWiFiSSID(), zone.SSIDFilter.contains(current) {
+            // If current SSID is in the filter list stop processing region event.
+            // This is to cut down on false exits.
+            // https://github.com/home-assistant/home-assistant-iOS/issues/32
+            return ignore(.ignoredSSID(current))
+        }
+
+        let inRegion = state == .inside
+        guard zone.inRegion != inRegion else {
+            return ignore(.zoneStateAgrees)
+        }
+
+        do {
+            try zone.realm?.write {
+                zone.inRegion = inRegion
             }
+        } catch {
+            return ignore(.zoneUpdateFailed(error as NSError))
+        }
+
+        if region is CLBeaconRegion, state == .outside {
+            return ignore(.beaconExitIgnored)
         }
 
         return .value(())
