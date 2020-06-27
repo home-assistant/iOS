@@ -66,6 +66,7 @@ class ZoneManager {
         let expected = Set(
             Current.realm()
                 .objects(RLMZone.self)
+                .filter { $0.TrackingEnabled }
                 .map { $0.region() }
                 .map(ZoneManagerEquatableRegion.init(region:))
         )

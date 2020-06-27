@@ -128,6 +128,42 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertTrue(locationManager.monitoredRegions.isEmpty)
     }
 
+    func testTrackingDisabledNotMonitored() throws {
+        let zones = try addedZones([
+            with(RLMZone()) {
+                $0.ID = "home"
+                $0.Latitude = 37.1234
+                $0.Longitude = -122.4567
+                $0.Radius = 50.0
+                $0.TrackingEnabled = false
+            },
+            with(RLMZone()) {
+                $0.ID = "work"
+                $0.Latitude =  37.2345
+                $0.Longitude = -122.5678
+                $0.Radius = 100
+                $0.TrackingEnabled = true
+            }
+        ])
+
+        let manager = ZoneManager(locationManager: locationManager, collector: collector, processor: processor)
+        XCTAssertEqual(Set(locationManager.monitoredRegions.map { $0.identifier }), Set(["work"]))
+
+        try realm.write {
+            zones[0].TrackingEnabled = true
+        }
+
+        try hang(manager.syncZones())
+        XCTAssertEqual(Set(locationManager.monitoredRegions.map { $0.identifier }), Set(["work" ,"home"]))
+
+        try realm.write {
+            zones[1].TrackingEnabled = false
+        }
+
+        try hang(manager.syncZones())
+        XCTAssertEqual(Set(locationManager.monitoredRegions.map { $0.identifier }), Set(["home"]))
+    }
+
     func testBasicStartup() {
         let manager = ZoneManager(locationManager: locationManager, collector: collector, processor: processor)
         XCTAssertTrue(locationManager.isMonitoringSigLocChanges)
