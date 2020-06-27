@@ -108,6 +108,31 @@ class ZoneManagerProcessorTests: XCTestCase {
         XCTAssertEqual(try hangForIgnoreReason(promise), .locationMissingEntries)
     }
 
+    func testLocationTooOld() throws {
+        let now = Date()
+        Current.date = { now }
+
+        let locations = [
+            CLLocation(
+                coordinate: .init(latitude: 123, longitude: 1.23),
+                altitude: 3.45,
+                horizontalAccuracy: 1.25,
+                verticalAccuracy: 0.36,
+                timestamp: now.addingTimeInterval(-61.0)
+            ),
+            CLLocation(
+                coordinate: .init(latitude: 123, longitude: 1.23),
+                altitude: 3.45,
+                horizontalAccuracy: 1.25,
+                verticalAccuracy: 0.36,
+                timestamp: now.addingTimeInterval(-31.0)
+            ),
+        ]
+        let promise = processor.perform(event: ZoneManagerEvent(eventType: .locationChange(locations)))
+
+        XCTAssertEqual(try hangForIgnoreReason(promise), .locationUpdateTooOld)
+    }
+
     func testPerformingZoneStateBad() throws {
         let promise = processor.perform(event: ZoneManagerEvent(eventType: .region(circularRegion, .unknown)))
 
