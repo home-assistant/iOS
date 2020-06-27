@@ -83,18 +83,20 @@ class SensorListViewController: FormViewController, SensorObserver {
             $0.map { Self.row(for: $0) }
         }.ensure { [refreshControl] in
             refreshControl.endRefreshing()
-        }.done { [sensorSection] value in
+        }.done { [tableView, sensorSection] value in
             let sinceFormatter = DateFormatter()
             sinceFormatter.formattingContext = .middleOfSentence
             sinceFormatter.dateStyle = .none
             sinceFormatter.timeStyle = .medium
 
+            tableView?.beginUpdates()
             sensorSection.removeAll()
             sensorSection.append(contentsOf: value)
             sensorSection.footer = HeaderFooterView(
                 title: L10n.SettingsSensors.LastUpdated.footer(sinceFormatter.string(from: update.on))
             )
-            sensorSection.reload(with: .none)
+            sensorSection.reload()
+            tableView?.endUpdates()
         }.catch { error in
             let alert = UIAlertController(
                 title: L10n.SettingsSensors.LoadingError.title,
