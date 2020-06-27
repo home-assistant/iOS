@@ -13,7 +13,7 @@ public struct ClientEventStore {
     public var addEvent: (ClientEvent) -> Void = { event in
         let realm = Current.realm()
         do {
-            try realm.write {
+            try realm.reentrantWrite {
                 realm.add(event)
             }
         } catch {
@@ -32,7 +32,7 @@ public struct ClientEventStore {
         let realm = Current.realm()
 
         do {
-            try realm.write {
+            try realm.reentrantWrite {
                 realm.delete(realm.objects(ClientEvent.self))
             }
         } catch {

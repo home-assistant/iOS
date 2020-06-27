@@ -118,7 +118,7 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         }
 
         do {
-            try zone.realm?.write {
+            try zone.realm?.reentrantWrite {
                 zone.inRegion = inRegion
             }
         } catch {

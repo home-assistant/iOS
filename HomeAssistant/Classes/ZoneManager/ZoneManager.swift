@@ -3,11 +3,15 @@ import PromiseKit
 import CoreLocation
 import Shared
 import UIKit
+import RealmSwift
 
 class ZoneManager {
     let locationManager: CLLocationManager
     let collector: ZoneManagerCollector
     let processor: ZoneManagerProcessor
+    let zones: AnyRealmCollection<RLMZone>
+
+    private var notificationTokens = [NotificationToken]()
 
     init(
         locationManager: CLLocationManager = .init(),
@@ -16,18 +20,30 @@ class ZoneManager {
     ) {
         self.collector = collector
         self.processor = processor
+        self.zones = AnyRealmCollection(
+            Current.realm()
+            .objects(RLMZone.self)
+            .filter("TrackingEnabled == true")
+        )
 
         self.locationManager = with(locationManager) {
             $0.allowsBackgroundLocationUpdates = true
             $0.pausesLocationUpdatesAutomatically = false
         }
 
-        // we separate out the delegate from ourselves to force a clean separation from location manager
         self.collector.delegate = self
         self.processor.delegate = self
+        notificationTokens.append(self.zones.observe { [weak self] change in
+            switch change {
+            case .initial(let collection), .update(let collection, deletions: _, insertions: _, modifications: _):
+                self?.sync(zones: AnySequence(collection))
+            case .error(let error):
+                Current.Log.error("couldn't sync zones: \(error)")
+            }
+        })
 
         log(state: .initialize)
-        syncZones().cauterize()
+        zones.realm?.refresh()
         locationManager.delegate = collector
         locationManager.startMonitoringSignificantLocationChanges()
     }
@@ -62,11 +78,9 @@ class ZoneManager {
         }
     }
 
-    internal func syncZones() -> Promise<Void> {
+    private func sync(zones: AnySequence<RLMZone>) {
         let expected = Set(
-            Current.realm()
-                .objects(RLMZone.self)
-                .filter { $0.TrackingEnabled }
+            zones
                 .map { $0.region() }
                 .map(ZoneManagerEquatableRegion.init(region:))
         )
@@ -104,7 +118,6 @@ class ZoneManager {
                 "ended \(needsRemoval.count)"
             ].joined(separator: ", ")
         }
-        return .value(())
     }
 }
 
