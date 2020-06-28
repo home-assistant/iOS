@@ -1,12 +1,25 @@
 const notifyThemeColors = () => {
     function doWait() {
-        let style = getComputedStyle(document.documentElement);
-        window.webkit.messageHandlers.updateThemeColors.postMessage({
-            '--app-header-background-color': style.getPropertyValue('--app-header-background-color'),
-            '--primary-background-color': style.getPropertyValue('--primary-background-color'),
-            '--text-primary-color': style.getPropertyValue('--text-primary-color'),
-            '--primary-color': style.getPropertyValue('--primary-color'),
+        var colors = {};
+
+        let element = document.createElement('div');
+        document.body.appendChild(element);
+        element.style.display = 'none';
+
+        [
+            '--app-header-background-color',
+            '--primary-background-color',
+            '--text-primary-color',
+            '--primary-color',
+        ].forEach(colorVar => {
+            // this element allows us to get a canonical rgb/rgba representation rather than any string value
+            element.style.backgroundColor = 'var(' + colorVar + ')';
+            colors[colorVar] = getComputedStyle(element).getPropertyValue('background-color');
         });
+
+        document.body.removeChild(element);
+
+        window.webkit.messageHandlers.updateThemeColors.postMessage(colors);
     }
     // wait a short amount for the computed styles to change
     setTimeout(doWait, 100);
