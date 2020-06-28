@@ -70,6 +70,7 @@
 		11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */; };
+		11C590ED24A832CA0066085D /* YamlSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C590EC24A832CA0066085D /* YamlSection.swift */; };
 		11C65CC0249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
 		11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
 		11CB98C6249DE15B00B05222 /* LastUpdateSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */; };
@@ -821,6 +822,7 @@
 		11AF4D2F249DCA87006C74C0 /* ConnectivitySensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivitySensor.test.swift; sourceTree = "<group>"; };
 		11B7FD732493225200E60ED9 /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
 		11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
+		11C590EC24A832CA0066085D /* YamlSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YamlSection.swift; sourceTree = "<group>"; };
 		11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamCameraResponse.swift; sourceTree = "<group>"; };
 		11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastUpdateSensor.test.swift; sourceTree = "<group>"; };
 		11CB98C7249DE24000B05222 /* PedometerSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSensor.test.swift; sourceTree = "<group>"; };
@@ -2148,6 +2150,7 @@
 				B661FB6B226BCC8500E541DD /* Settings */,
 				B661FB72226C10AE00E541DD /* Onboarding */,
 				B6D48E6022B9FEE0009F9131 /* DonateViewController.swift */,
+				11C590EC24A832CA0066085D /* YamlSection.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -4105,6 +4108,7 @@
 				B6393F861CB255F200503916 /* EurekaLocationRow.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				B60221FA226D9BC200E8DBFE /* PermissionLineItemView.swift in Sources */,
+				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */,
 				B6DAC735215F069300727D2A /* NotificationCategory.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,

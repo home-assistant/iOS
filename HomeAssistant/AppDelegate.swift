@@ -935,7 +935,43 @@ extension AppConfiguration {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    // swiftlint:disable:next function_body_length
+    private func open(urlString openUrlRaw: String) {
+        if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw) {
+            webViewControllerPromise.done { webViewController in
+                webViewController.open(inline: webviewURL)
+            }
+        } else if let url = URL(string: openUrlRaw) {
+            if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
+                let alert = UIAlertController(title: L10n.Alerts.OpenUrlFromNotification.title,
+                                              message: L10n.Alerts.OpenUrlFromNotification.message(openUrlRaw),
+                                              preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(
+                    title: L10n.noLabel,
+                    style: UIAlertAction.Style.default,
+                    handler: nil
+                ))
+                alert.addAction(UIAlertAction(
+                    title: L10n.yesLabel,
+                    style: UIAlertAction.Style.default
+                ) { _ in
+                    UIApplication.shared.open(url,
+                                              options: [:],
+                                              completionHandler: nil)
+                })
+                var rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                while let controller = rootViewController?.presentedViewController {
+                    rootViewController = controller
+                }
+                rootViewController?.present(alert, animated: true, completion: nil)
+                alert.popoverPresentationController?.sourceView = rootViewController?.view
+            } else {
+                UIApplication.shared.open(url, options: [:],
+                                          completionHandler: nil)
+            }
+        }
+
+    }
+
     public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
         if Current.appConfiguration == .FastlaneSnapshot &&
@@ -959,47 +995,32 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
         }
 
-        if let openUrlRaw = userInfo["url"] as? String {
-            if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL(from: openUrlRaw) {
-                webViewControllerPromise.done { webViewController in
-                    webViewController.open(inline: webviewURL)
-                }
-            } else if let url = URL(string: openUrlRaw) {
-                if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
-                    let alert = UIAlertController(title: L10n.Alerts.OpenUrlFromNotification.title,
-                                                  message: L10n.Alerts.OpenUrlFromNotification.message(openUrlRaw),
-                                                  preferredStyle: UIAlertController.Style.alert)
-                    alert.addAction(UIAlertAction(
-                        title: L10n.noLabel,
-                        style: UIAlertAction.Style.default,
-                        handler: nil
-                    ))
-                    alert.addAction(UIAlertAction(
-                        title: L10n.yesLabel,
-                        style: UIAlertAction.Style.default
-                    ) { _ in
-                        UIApplication.shared.open(url,
-                                                  options: [:],
-                                                  completionHandler: nil)
-                    })
-                    var rootViewController = UIApplication.shared.keyWindow?.rootViewController
-                    if let navigationController = rootViewController as? UINavigationController {
-                        rootViewController = navigationController.viewControllers.first
-                    }
-                    rootViewController?.present(alert, animated: true, completion: nil)
-                    alert.popoverPresentationController?.sourceView = rootViewController?.view
+        if let openURLRaw = userInfo["url"] as? String {
+            open(urlString: openURLRaw)
+        } else if let openURLDictionary = userInfo["url"] as? [String: String] {
+            let url = openURLDictionary.compactMap { key, value -> String? in
+                if key.lowercased() == response.actionIdentifier.lowercased() {
+                    return value
                 } else {
-                    UIApplication.shared.open(url, options: [:],
-                                              completionHandler: nil)
+                    return nil
                 }
+            }.first
+
+            if let url = url {
+                open(urlString: url)
             }
         }
+
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
             UIApplication.shared.backgroundTask(withName: "handle-push-action") { _ in
-                api.handlePushAction(identifier: response.actionIdentifier, userInfo: userInfo,
-                                     userInput: userText)
+                api.handlePushAction(
+                    identifier: response.actionIdentifier,
+                    category: response.notification.request.content.categoryIdentifier,
+                    userInfo: userInfo,
+                    userInput: userText
+                )
             }
         }.ensure {
             completionHandler()

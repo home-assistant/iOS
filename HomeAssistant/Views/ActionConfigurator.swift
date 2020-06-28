@@ -177,37 +177,12 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                 cell.view = self.preview
             }
 
-            +++ Section(header: L10n.ActionsConfigurator.TriggerExample.title, footer: nil)
-
-            <<< TextAreaRow("trigger-yaml") { row in
-                row.value = "test"
-                row.textAreaHeight = .dynamic(initialTextViewHeight: 100)
-
-                row.cellSetup { cell, _ in
-                    // a little smaller than the body size
-                    let baseSize = UIFont.preferredFont(forTextStyle: .body).pointSize - 2.0
-                    cell.textView.font = {
-                        if #available(iOS 13, *) {
-                            return UIFont.monospacedSystemFont(ofSize: baseSize, weight: .regular)
-                        } else {
-                            return UIFont(name: "Menlo", size: baseSize)
-                        }
-                    }()
-                }
-            }
-
-            <<< ButtonRow { row in
-                row.title = L10n.ActionsConfigurator.TriggerExample.share
-
-                row.onCellSelection { _, _ in
-                    // although this could be done via presentationMode, we want to preserve the 'button' look
-                    let value = (self.form.rowBy(tag: "trigger-yaml") as? TextAreaRow)?.value
-                        ?? self.action.exampleTrigger
-                    let controller = UIActivityViewController(activityItems: [ value ], applicationActivities: [])
-                    self.present(controller, animated: true, completion: nil)
-                }
-            }
-
+            +++ YamlSection(
+                tag: "exampleTrigger",
+                header: L10n.ActionsConfigurator.TriggerExample.title,
+                yamlGetter: { [action] in action.exampleTrigger },
+                present: { [weak self] controller in self?.present(controller, animated: true, completion: nil) }
+            )
     }
 
     override func didReceiveMemoryWarning() {
@@ -251,9 +226,8 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
         preview.setup(action)
 
-        if let row = form.rowBy(tag: "trigger-yaml") as? TextAreaRow {
-            row.value = action.exampleTrigger
-            row.updateCell()
+        if let section = form.sectionBy(tag: "exampleTrigger") as? YamlSection {
+            section.update()
         }
     }
 }
