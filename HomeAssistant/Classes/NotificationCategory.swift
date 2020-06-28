@@ -63,7 +63,7 @@ public class NotificationCategory: Object {
                                               hiddenPreviewsBodyPlaceholder: placeholder,
                                               options: self.options)
             } else {
-                return UNNotificationCategory(identifier: self.Identifier.uppercased(), actions: allActions,
+                return UNNotificationCategory(identifier: anIdentifier, actions: allActions,
                                               intentIdentifiers: [], options: self.options)
             }
         }
