@@ -42,10 +42,12 @@ final public class YamlSection: Section {
             <<< ButtonRow { row in
                 row.title = L10n.ActionsConfigurator.TriggerExample.share
 
-                row.onCellSelection { [yamlRow, present, yamlGetter] _, _ in
+                row.onCellSelection { [yamlRow, present, yamlGetter] cell, _ in
                     // although this could be done via presentationMode, we want to preserve the 'button' look
                     let value = yamlRow.value ?? yamlGetter()
                     let controller = UIActivityViewController(activityItems: [ value ], applicationActivities: [])
+                    controller.popoverPresentationController?.sourceView = cell
+                    controller.popoverPresentationController?.sourceRect = cell.bounds
                     present(controller)
                 }
             }
