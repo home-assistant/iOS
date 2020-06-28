@@ -971,6 +971,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
     }
 
+    // swiftlint:disable:next function_body_length
     public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
         if Current.appConfiguration == .FastlaneSnapshot &&
