@@ -210,6 +210,13 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                         section <<< self.getActionRow(action)
                     }
                 }
+
+        form +++ YamlSection(
+            tag: "exampleServiceCall",
+            header: L10n.NotificationsConfigurator.Category.ExampleCall.title,
+            yamlGetter: { [category] in category.exampleServiceCall },
+            present: { [weak self] controller in self?.present(controller, animated: true, completion: nil) }
+        )
     }
 
     override func didReceiveMemoryWarning() {
@@ -233,6 +240,24 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                 self.addButtonRow.hidden = false
                 self.addButtonRow.evaluateHidden()
             }
+
+            self.updatePreview()
+        }
+    }
+
+    private func updatePreview() {
+        if let section = form.sectionBy(tag: "exampleServiceCall") as? YamlSection {
+            DispatchQueue.main.async {
+                section.update()
+            }
+        }
+    }
+
+    override func valueHasBeenChanged(for row: BaseRow, oldValue: Any?, newValue: Any?) {
+        super.valueHasBeenChanged(for: row, oldValue: oldValue, newValue: newValue)
+
+        if row.section?.tag != "exampleServiceCall" {
+            updatePreview()
         }
     }
 
@@ -251,8 +276,8 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
             row.tag = identifier
             row.title = title
 
-            row.presentationMode = PresentationMode.show(controllerProvider: ControllerProvider.callback {
-                return NotificationActionConfigurator(action: action)
+            row.presentationMode = PresentationMode.show(controllerProvider: ControllerProvider.callback { [category] in
+                return NotificationActionConfigurator(category: category, action: action)
             }, onDismiss: { vc in
                 vc.navigationController?.popViewController(animated: true)
 
@@ -269,8 +294,9 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                         self.realm.add(vc.action, update: .all)
                         self.category.Actions.append(vc.action)
                     }
-                }
 
+                    self.updatePreview()
+                }
             })
         }
     }

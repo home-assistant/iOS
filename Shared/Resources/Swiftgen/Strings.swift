@@ -489,6 +489,10 @@ internal enum L10n {
       }
     }
     internal enum Category {
+      internal enum ExampleCall {
+        /// Example Service Call
+        internal static let title = L10n.tr("Localizable", "notifications_configurator.category.example_call.title")
+      }
       internal enum NavigationBar {
         /// Category Configurator
         internal static let title = L10n.tr("Localizable", "notifications_configurator.category.navigation_bar.title")

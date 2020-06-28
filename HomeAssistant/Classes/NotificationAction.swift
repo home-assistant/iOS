@@ -8,6 +8,7 @@
 
 import Foundation
 import RealmSwift
+import Shared
 import UserNotifications
 
 public class NotificationAction: Object {
@@ -50,5 +51,28 @@ public class NotificationAction: Object {
         }
 
         return UNNotificationAction(identifier: self.Identifier, title: self.Title, options: self.options)
+    }
+
+    public class func exampleTrigger(
+        identifier: String,
+        category: String?,
+        textInput: Bool
+    ) -> String {
+        let data = HomeAssistantAPI.notificationActionEvent(
+            identifier: identifier,
+            category: category,
+            actionData: "# value of action_data in notify call",
+            textInput: textInput ? "# text you input" : nil
+        )
+        let eventDataStrings = data.eventData.map { $0 + ": " + String(describing: $1) }.sorted()
+
+        let indentation = "\n    "
+
+        return """
+        - platform: event
+          event_type: \(data.eventType)
+          event_data:
+            \(eventDataStrings.joined(separator: indentation))
+        """
     }
 }

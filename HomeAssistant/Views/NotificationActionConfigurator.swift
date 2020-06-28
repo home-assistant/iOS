@@ -17,17 +17,24 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
     /// A closure to be called when the controller disappears.
     public var onDismissCallback: ((UIViewController) -> Void)?
 
+    private let category: NotificationCategory
     var newAction: Bool = true
     var action: NotificationAction = NotificationAction()
 
     private let realm = Current.realm()
 
-    convenience init(action: NotificationAction?) {
-        self.init()
+    init(category: NotificationCategory, action: NotificationAction?) {
+        self.category = category
+        super.init(style: .grouped)
         if let action = action {
             self.action = action
             self.newAction = false
         }
+    }
+
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
@@ -155,6 +162,22 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                 }
             }
 
+        +++ YamlSection(
+            tag: "exampleTrigger",
+            header: L10n.ActionsConfigurator.TriggerExample.title,
+            yamlGetter: { [weak form, category] in
+                guard let form = form else { return "" }
+
+                let formVals = form.values(includeHidden: true)
+
+                return NotificationAction.exampleTrigger(
+                    identifier: formVals["identifier"] as? String ?? "",
+                    category: category.Identifier,
+                    textInput: formVals["textInput"] as? Bool ?? false
+                )
+            },
+            present: { [weak self] controller in self?.present(controller, animated: true, completion: nil) }
+        )
     }
 
     override func didReceiveMemoryWarning() {
@@ -209,4 +232,11 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
         Current.Log.verbose("Preview hit")
     }
 
+    override func valueHasBeenChanged(for row: BaseRow, oldValue: Any?, newValue: Any?) {
+        super.valueHasBeenChanged(for: row, oldValue: oldValue, newValue: newValue)
+
+        if let section = form.sectionBy(tag: "exampleTrigger") as? YamlSection, row.section != section {
+            section.update()
+        }
+    }
 }

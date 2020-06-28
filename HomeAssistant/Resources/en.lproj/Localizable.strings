@@ -207,6 +207,7 @@
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "This text is only displayed if you have notification previews hidden. Use '%%u' for the number of messages with the same thread identifier.";
 "notifications_configurator.identifier" = "Identifier";
 "notifications_configurator.new_action.title" = "New Action";
+"notifications_configurator.category.example_call.title" = "Example Service Call";
 "notifications_configurator.settings.header" = "Settings";
 "notifications_configurator.settings.footer" = "Identifier must contain only letters and underscores and be uppercase. It must be globally unique to the app.";
 "notifications_configurator.settings.footer.id_set" = "Identifier can not be changed after creation. You must delete and recreate the action to change the identifier.";

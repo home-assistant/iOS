@@ -601,6 +601,34 @@ public class HomeAssistantAPI {
         }
     }
 
+    public class func notificationActionEvent(
+        identifier: String,
+        category: String?,
+        actionData: Any?,
+        textInput: String?
+    ) -> (eventType: String, eventData: [String: Any]) {
+        let device = Device.current
+        var eventData: [String: Any] = [
+            "actionName": identifier,
+            "sourceDevicePermanentID": Constants.PermanentID,
+            "sourceDeviceName": device.name ?? "Unknown",
+            "sourceDeviceID": Current.settingsStore.deviceID
+        ]
+
+        if let category = category {
+            eventData["categoryName"] = category
+        }
+        if let actionData = actionData {
+            eventData["action_data"] = actionData
+        }
+        if let textInput = textInput {
+            eventData["response_info"] = textInput
+            eventData["textInput"] = textInput
+        }
+
+        return (eventType: "ios.notification_action_fired", eventData: eventData)
+    }
+
     public class func actionEvent(
         actionID: String,
         actionName: String,
