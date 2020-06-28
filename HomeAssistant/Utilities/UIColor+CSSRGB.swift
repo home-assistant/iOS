@@ -4,7 +4,7 @@ import UIKit
 public extension UIColor {
     convenience init?(rgbString string: String) {
         guard let pattern = try? NSRegularExpression(
-            pattern: #"rgb(?:a){0,1}\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([0-9\.]+))*\)"#,
+            pattern: #"rgb(?:a){0,1}\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([0-9\.]+))*\)"#,
             options: [.caseInsensitive]
         ) else {
                 return nil

@@ -17,8 +17,11 @@ class UIColorCSSRGBTests: XCTestCase {
     }
 
     func testWeirdSpacing() {
-        XCTAssertNotNil(UIColor(rgbString: "rgb ( 90 ,  75  ,  66   )"))
+        XCTAssertNotNil(UIColor(rgbString: "rgb(   90   ,   75   ,   66   )"))
         XCTAssertNotNil(UIColor(rgbString: "rgb(90,75,66)"))
+        XCTAssertNotNil(UIColor(rgbString: "rgb (90,75,66)"))
+        XCTAssertNotNil(UIColor(rgbString: "rgb(90,75,66) "))
+        XCTAssertNotNil(UIColor(rgbString: " rgb(90,75,66)"))
         XCTAssertNotNil(UIColor(rgbString: "rgb(90 , 75 , 66)"))
     }
 
