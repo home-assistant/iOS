@@ -80,7 +80,6 @@ public class HomeAssistantAPI {
 
     private static func configureSessionManager(urlConfig: URLSessionConfiguration = .default) -> SessionManager {
         let configuration = urlConfig
-        configuration.timeoutIntervalForRequest = 10 // seconds
         return Alamofire.SessionManager(configuration: configuration)
     }
 
