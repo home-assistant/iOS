@@ -143,7 +143,9 @@ class NotificationSettingsViewController: FormViewController {
 
                     alert.popoverPresentationController?.sourceView = cell.contentView
 
-                    let rows = cats.map { self.getNotificationCategoryRow($0) }
+                    let rows = cats
+                        .filter { self.form.rowBy(tag: $0.Identifier) == nil }
+                        .map { self.getNotificationCategoryRow($0) }
                     var section = self.form.sectionBy(tag: "notification_categories")
                     section?.insert(contentsOf: rows, at: 0)
                 }
