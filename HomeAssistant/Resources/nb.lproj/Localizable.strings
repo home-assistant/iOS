@@ -777,3 +777,4 @@ takk.\
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_sensors.last_updated.footer" = "Last Updated %@";
+"notifications_configurator.category.example_call.title" = "Example Service Call";

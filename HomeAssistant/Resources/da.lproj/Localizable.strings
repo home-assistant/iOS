@@ -776,4 +776,5 @@ Tak.\
 "settings_details.general.open_in_browser.firefox" = "Mozilla Firefox";
 "settings_details.general.open_in_browser.safari" = "Apple Safari";
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (i app)";
-"settings_sensors.last_updated.footer" = "Last Updated %@";
+"settings_sensors.last_updated.footer" = "Sidst opdateret %@";
+"notifications_configurator.category.example_call.title" = "Example Service Call";
