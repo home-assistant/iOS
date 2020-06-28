@@ -13,6 +13,8 @@ import DeviceKit
 import UserNotifications
 
 public class NotificationCategory: Object {
+    static let FallbackActionIdentifier = "_"
+
     @objc dynamic var Name: String = ""
     @objc dynamic var Identifier: String = ""
     // iOS 11+ only
@@ -81,20 +83,22 @@ public class NotificationCategory: Object {
             category: \(Identifier.uppercased())
           action_data:
             # see example trigger in action
-            # value will be in action trigger event
+            # value will be in fired event
 
-          # url can be absolute path like this
+          # url can be absolute path like:
           # "http://example.com/url"
-          # or relative like this
+          # or relative like:
           # "/lovelace/dashboard"
 
-          # pick one of the following url types:
+          # pick one of the following styles:
 
-          # always open when activating the category
+          # always open when opening notification
           url: "/lovelace/dashboard"
 
-          # open a different url based on action
+          # open a different url per action
+          # use "\(Self.FallbackActionIdentifier)" as key for no action chosen
           url:
+          - "\(Self.FallbackActionIdentifier)": "http://example.com/fallback"
           - \(urlStrings.joined(separator: indentation + "- "))
         """
     }

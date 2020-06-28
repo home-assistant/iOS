@@ -969,7 +969,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                           completionHandler: nil)
             }
         }
-
     }
 
     public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
@@ -999,7 +998,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             open(urlString: openURLRaw)
         } else if let openURLDictionary = userInfo["url"] as? [String: String] {
             let url = openURLDictionary.compactMap { key, value -> String? in
-                if key.lowercased() == response.actionIdentifier.lowercased() {
+                if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                    key.lowercased() == NotificationCategory.FallbackActionIdentifier {
+                    return value
+                } else if key.lowercased() == response.actionIdentifier.lowercased() {
                     return value
                 } else {
                     return nil
@@ -1008,7 +1010,15 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
             if let url = url {
                 open(urlString: url)
+            } else {
+                Current.Log.error(
+                    "couldn't make openable url out of \(openURLDictionary) for \(response.actionIdentifier)"
+                )
             }
+        } else if let someUrl = userInfo["url"] {
+            Current.Log.error(
+                "couldn't make openable url out of \(type(of: someUrl)): \(String(describing: someUrl))"
+            )
         }
 
         firstly {
