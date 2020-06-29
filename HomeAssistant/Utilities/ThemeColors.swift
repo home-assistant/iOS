@@ -17,7 +17,7 @@ public struct ThemeColors: Codable {
 
     subscript(_ color: Color) -> UIColor {
         if let value = values[color.rawValue] {
-            return UIColor(hex: value)
+            return UIColor(rgbString: value) ?? UIColor(hex: value)
         } else {
             return color.default
         }
@@ -30,7 +30,7 @@ public struct ThemeColors: Codable {
     }
 
     static func updateCache(with messageBody: [String: Any]) {
-        func hex(for key: Color) -> String? {
+        func rawValue(for key: Color) -> String? {
             return messageBody[key.rawValue]
                 .flatMap { $0 as? String }?
                 .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -38,7 +38,7 @@ public struct ThemeColors: Codable {
 
         var dictionary: [Color.RawValue: String] = [:]
         for color in Color.allCases {
-            dictionary[color.rawValue] = hex(for: color)
+            dictionary[color.rawValue] = rawValue(for: color)
         }
         Current.Log.verbose("caching color values \(dictionary)")
         prefs.set(dictionary, forKey: "cachedThemeColors")

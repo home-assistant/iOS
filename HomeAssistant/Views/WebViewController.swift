@@ -522,28 +522,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         return underlyingPreferredStatusBarStyle
     }
 
-    func parseThemeStyle(_ styleKey: String, _ allStyles: [String: String]) -> UIColor? {
-        guard let requestedStyle = allStyles[styleKey] else { return nil }
-
-        if !requestedStyle.hasPrefix("var") {
-            return UIColor(hex: requestedStyle)
-        }
-
-        // CSS variable like `var(--primary-text-color)` or `var(--primary-text-color, var(--secondary-text-color))`
-
-        let pattern = "var\\(--([a-zA-Z-]+)\\)*"
-
-        let styleKeys: [String] = requestedStyle.matchingStrings(regex: pattern).map { $0[1] }
-
-        for key in styleKeys {
-            if let color = self.parseThemeStyle(key, allStyles) {
-                return color
-            }
-        }
-
-        return nil
-    }
-
     @objc private func updateWebViewSettings() {
         if #available(iOS 12, *) {
             // This is quasi-private API that has existed since pre-iOS 10, but the implementation
