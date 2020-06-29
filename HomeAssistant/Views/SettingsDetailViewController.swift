@@ -18,6 +18,7 @@ import CoreMotion
 import NotificationCenter
 import FirebaseCrashlytics
 import DeviceKit
+import HomeKit
 
 // swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController, TypedRowControllerType {
@@ -29,6 +30,8 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     var detailGroup: String = "display"
 
     var doneButton: Bool = false
+
+    var hkManager: HMHomeManager?
 
     private let realm = Current.realm()
     private var notificationTokens: [NotificationToken] = []
@@ -519,6 +522,67 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         Analytics.setAnalyticsCollectionEnabled(rowVal)
                 }
 
+        case "homekit":
+            self.title = "HomeKit Sync"
+
+            self.hkManager = HMHomeManager()
+            self.hkManager?.delegate = self
+
+            self.form
+            +++ ActionSheetRow<HMHome> {
+                $0.tag = "home_select"
+                $0.title = "Home to sync with"
+                $0.selectorTitle = "Which home to sync with?"
+                $0.options = hkManager?.homes
+                $0.value = hkManager?.primaryHome
+                $0.displayValueFor = { $0?.name }
+            }
+
+            <<< SwitchRow("create_rooms") {
+                $0.title = "Create rooms?"
+                $0.value = true
+            }
+
+            <<< ButtonRow {
+                $0.title = "Preview Changes"
+            }.onCellSelection { _, _  in
+                guard let proposals = self.proposeHomeKitChanges() else {
+                    print("Failed to generate proposals!")
+                    return
+                }
+
+                let (assignments, newRooms) = proposals
+
+                print("Proposed assignments", assignments)
+                print("Proposed newRooms", newRooms)
+
+                for (room, accs) in assignments {
+                    let roomSection = Section(header: "Accessories that will be assigned to \(room.name)", footer: "")
+                    for acc in accs {
+                        roomSection
+                        <<< LabelRow {
+                            $0.title = acc.name
+                        }
+                    }
+                    if roomSection.count > 0 {
+                        self.form +++ roomSection
+                    }
+                }
+
+                for (room, accs) in newRooms {
+                    let roomSection = Section(header: "New Room \(room)", footer: "")
+                    for acc in accs {
+                        roomSection
+                        <<< LabelRow {
+                            $0.title = acc.name
+                        }
+                    }
+                    if roomSection.count > 0 {
+                        self.form +++ roomSection
+                    }
+                }
+            }
+
         default:
             Current.Log.warning("Something went wrong, no settings detail group named \(detailGroup)")
         }
@@ -781,6 +845,172 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             }
         }
     }
+
+    func getSerialNumberForAccessory(_ accessory: HMAccessory) -> String? {
+        let infoService = accessory.services.first { $0.serviceType == HMServiceTypeAccessoryInformation }
+
+        let serialNumberChar = infoService?.characteristics.first {
+            $0.characteristicType == "00000030-0000-1000-8000-0026BB765291"
+        }
+
+        return serialNumberChar?.value as? String
+    }
+
+    func proposeHomeKitChanges() -> ([HMRoom: [HMAccessory]], [String: [HMAccessory]])? {
+        guard let homeSelectRow = self.form.rowBy(tag: "home_select") as? ActionSheetRow<HMHome>,
+            let home = homeSelectRow.value else {
+            print("Unable to get select row")
+            return nil
+        }
+
+//        let testObj: [String: Any] = [
+//            "id": "9934c5949cec42768115f291de51db19",
+//            "name": "Robbie's Room",
+//            "entities": [
+//              "zwave.robbies_bedroom_multisensor",
+//              "sensor.robbies_bedroom_bed_occupancy_sensor_alarm_type",
+//              "camera.vstarcam_two_profile_001",
+//              "sensor.robbie_s_bedroom_multisensor_battery_level",
+//              "media_player.robbies_bedroom",
+//              "camera.vstarcam_two_profile_000",
+//              "camera.vstarcam_one_profile_001",
+//              "zwave.robbies_bedroom_door",
+//              "sensor.robbies_bedroom_bed_occupancy_sensor_alarm_level",
+//              "sensor.robbies_bedroom_bed_occupancy_sensor_burglar",
+//              "sensor.robbies_bedroom_multisensor_alarm_type",
+//              "sensor.robbies_bedroom_multisensor_luminance",
+//              "device_tracker.unifi_48_02_2d_40_08_6e_default",
+//              "sensor.robbie_s_bedroom_door_battery_level",
+//              "binary_sensor.robbies_bedroom_door_sensor",
+//              "binary_sensor.robbies_bedroom_multisensor_sensor",
+//              "sensor.robbies_bedroom_multisensor_ultraviolet",
+//              "binary_sensor.robbies_bedroom_bed_occupancy_sensor",
+//              "sensor.robbies_bedroom_bed_occupancy_sensor_sourcenodeid",
+//              "media_player.robbies_bedroom_speaker",
+//              "sensor.robbies_bedroom_door_alarm_level",
+//              "sensor.robbies_bedroom_multisensor_relative_humidity",
+//              "sensor.robbie_s_bedroom_bed_occupancy_sensor_battery_level",
+//              "sensor.robbies_bedroom_door_burglar",
+//              "sensor.robbies_bedroom_door_alarm_type",
+//              "sensor.robbies_bedroom_multisensor_alarm_level",
+//              "sensor.robbies_bedroom_door_sourcenodeid",
+//              "sensor.robbies_bedroom_multisensor_burglar",
+//              "zwave.robbies_bedroom_bed_occupancy_sensor",
+//              "sensor.robbies_bedroom_multisensor_temperature",
+//              "sensor.robbies_bedroom_multisensor_sourcenodeid",
+//              "camera.vstarcam_one_profile_000",
+//              "device_tracker.unifi_48_02_2e_20_06_11_default"
+//            ]
+//        ]
+
+        let testObj: [String: Any] = [
+            "id": "ebb1a057c9f04150b197709c8fbbb720",
+            "name": "Living Room",
+            "entities": [
+                "sensor.living_room_multisensor_temperature",
+                "zwave.living_room_multisensor",
+                "sensor.living_room_multisensor_alarm_level",
+                "sensor.living_room_multisensor_sourcenodeid",
+                "light.rear_lamp",
+                "sensor.living_room_multisensor_relative_humidity",
+                "light.living_room_overhead_lights_level",
+                "media_player.living_room_2",
+                "sensor.living_room_multisensor_ultraviolet",
+                "sensor.living_room_multisensor_burglar",
+                "zwave.living_room_overhead_lights",
+                "sensor.living_room_multisensor_battery_level",
+                "binary_sensor.living_room_multisensor_sensor",
+                "sensor.living_room_multisensor_luminance",
+                "media_player.living_room",
+                "sensor.living_room_multisensor_alarm_type"
+            ]
+        ]
+
+        var assignments: [HMRoom: [HMAccessory]] = [:]
+        var newRooms: [String: [HMAccessory]] = [:]
+
+        let roomMap = Dictionary(uniqueKeysWithValues: home.rooms.map { ($0.name, $0) })
+
+        let accessoryMap = Dictionary(uniqueKeysWithValues: home.accessories.map {
+            return (self.getSerialNumberForAccessory($0), $0)
+        })
+
+        print("roomMap", roomMap)
+
+        print("accessoryMap", accessoryMap)
+
+        guard let areaName = testObj["name"] as? String,
+            let entitiesArr = testObj["entities"] as? [String] else { return nil }
+
+        for entityId in entitiesArr {
+            guard let accessory = accessoryMap[entityId] else {
+                print("Accessory map doesnt contain!")
+                continue
+            }
+
+            guard let currentRoomName = accessory.room?.name else {
+                print("Bad room name!")
+                continue
+            }
+
+            if currentRoomName != areaName {
+                print("Accessory", accessory.name, "isn't in expected room name",
+                      areaName, "its actually in", currentRoomName)
+
+                if let existingRoom = roomMap[areaName] {
+                    print("Room", existingRoom.name, "already exists!")
+                    print("Moving", accessory.name, "to existing HomeKit room!")
+                    if assignments[existingRoom] == nil {
+                        assignments[existingRoom] = [HMAccessory]()
+                    }
+                    assignments[existingRoom]?.append(accessory)
+                } else {
+                    print("Room", areaName, "doesn't exist!")
+                    if newRooms[areaName] == nil {
+                        newRooms[areaName] = [HMAccessory]()
+                    }
+                    newRooms[areaName]?.append(accessory)
+                }
+            } else {
+                print("Accessory", accessory.name, "is where it should be in", areaName)
+            }
+        }
+
+        return (assignments, newRooms)
+    }
+
+    func commitHomeKitChanges(_ changes: ([HMRoom: [HMAccessory]], [String: [HMAccessory]])) {
+        guard let homeSelectRow = self.form.rowBy(tag: "home_select") as? ActionSheetRow<HMHome>,
+            let home = homeSelectRow.value else { return }
+
+        for (room, accessories) in changes.0 {
+            for accessory in accessories {
+                home.assignAccessory(accessory, to: room) { (assignErr) in
+                    if let assignErr = assignErr {
+                        print("Assign error", assignErr)
+                    }
+                }
+            }
+        }
+
+        for (roomName, accessories) in changes.1 {
+            home.addRoom(withName: roomName) { (room, createError) in
+                if let createError = createError {
+                    print("Room create error", createError)
+                }
+
+                guard let room = room else { return }
+
+                for accessory in accessories {
+                    home.assignAccessory(accessory, to: room) { (assignErr) in
+                        if let assignErr = assignErr {
+                            print("Assign error", assignErr)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 enum AppIcon: String, CaseIterable {
@@ -982,6 +1212,20 @@ extension SettingsDetailViewController: INUIEditVoiceShortcutViewControllerDeleg
         controller.dismiss(animated: true, completion: nil)
 
         return
+    }
+}
+
+extension SettingsDetailViewController: HMHomeManagerDelegate {
+    func homeManagerDidUpdateHomes(_ manager: HMHomeManager) {
+        guard let homeSelectRow = self.form.rowBy(tag: "home_select") as? ActionSheetRow<HMHome> else {
+            print("Unable to get select row")
+            return
+        }
+
+        homeSelectRow.options = manager.homes
+        homeSelectRow.value = manager.primaryHome
+        homeSelectRow.updateCell()
+        homeSelectRow.reload()
     }
 // swiftlint:disable:next file_length
 }

@@ -139,6 +139,16 @@ class SettingsViewController: FormViewController {
             })
         }
 
+        <<< ButtonRow {
+            $0.tag = "homekit"
+            $0.title = "HomeKit Sync"
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                let view = SettingsDetailViewController()
+                view.detailGroup = "homekit"
+                return view
+            }, onDismiss: nil)
+        }
+
 //        <<< ButtonRow("siriShortcuts") {
 //            $0.hidden = Condition(booleanLiteral: UIDevice.current.systemVersion == "12")
 //            $0.title = L10n.Settings.DetailsSection.SiriShortcutsRow.title

@@ -628,5 +628,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSHomeKitUsageDescription</key>
+	<string>We need HomeKit access to optionally sync Home Assistant Areas to HomeKit Rooms.</string>
 </dict>
 </plist>
