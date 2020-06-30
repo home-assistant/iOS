@@ -104,7 +104,6 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
         locationManager.delegate = self
 
         selfRetain = self
@@ -153,7 +152,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let updatedPotentialLocations = locations.map(PotentialLocation.init(location:))
-        Current.Log.verbose("LocationManager: Got potential locations: \(potentialLocations)")
+        Current.Log.verbose("got potential locations: \(updatedPotentialLocations)")
         potentialLocations.append(contentsOf: updatedPotentialLocations)
         checkPotentialLocations(outOfTime: false)
     }
