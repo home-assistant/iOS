@@ -441,7 +441,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     }
 
     @objc func pullToRefresh(_ sender: UIRefreshControl) {
-        if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL() {
         if webView.url != nil {
             webView.reload()
         } else if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL() {
