@@ -41,6 +41,10 @@ class RegionManager: NSObject {
         self.startMonitoring()
     }
 
+    deinit {
+        Current.Log.info("going away")
+    }
+
     private func startMonitoring() {
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.delegate = self
