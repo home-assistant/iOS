@@ -180,9 +180,7 @@ class NotificationSoundsViewController: FormViewController, UIDocumentPickerDele
                                                                     String(kUTTypeData)], in: .import)
         picker.delegate = self
         picker.modalPresentationStyle = .fullScreen
-        if #available(iOS 11.0, *) {
-            picker.allowsMultipleSelection = true
-        }
+        picker.allowsMultipleSelection = true
         self.present(picker, animated: true, completion: nil)
     }
 

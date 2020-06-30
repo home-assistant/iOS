@@ -180,11 +180,7 @@ public class Environment {
     public struct Motion {
         private let underlyingManager = CMMotionActivityManager()
         public var isAuthorized: () -> Bool = {
-            if #available(iOS 11, *) {
-                return CMMotionActivityManager.authorizationStatus() == .authorized
-            } else {
-                return true
-            }
+            return CMMotionActivityManager.authorizationStatus() == .authorized
         }
         public var isActivityAvailable: () -> Bool = CMMotionActivityManager.isActivityAvailable
         public lazy var queryStartEndOnQueueHandler: (
@@ -199,11 +195,7 @@ public class Environment {
     public struct Pedometer {
         private let underlyingPedometer = CMPedometer()
         public var isAuthorized: () -> Bool = {
-            if #available(iOS 11, *) {
-                return CMPedometer.authorizationStatus() == .authorized
-            } else {
-                return true
-            }
+            return CMPedometer.authorizationStatus() == .authorized
         }
 
         public var isStepCountingAvailable: () -> Bool = CMPedometer.isStepCountingAvailable
@@ -222,11 +214,7 @@ public class Environment {
         public lazy var isLowPowerMode: () -> Bool = { Device.current.batteryState?.lowPowerMode ?? false }
         public lazy var volumes: () -> [URLResourceKey: Int64]? = {
             #if os(iOS)
-            if #available(iOS 11, *) {
                 return Device.volumes
-            } else {
-                return nil
-            }
             #else
                 return nil
             #endif

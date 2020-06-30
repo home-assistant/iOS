@@ -51,10 +51,8 @@ class WatchComplicationConfigurator: FormViewController, TypedRowControllerType 
         let textSections = ComplicationTextAreas.allCases.map({ addComplicationTextAreaFormSection(location: $0) })
 
         TextAreaRow.defaultCellSetup = { cell, row in
-            if #available(iOS 11.0, *) {
-                cell.textView.smartQuotesType = .no
-                cell.textView.smartDashesType = .no
-            }
+            cell.textView.smartQuotesType = .no
+            cell.textView.smartDashesType = .no
         }
 
         let realm = Current.realm()
