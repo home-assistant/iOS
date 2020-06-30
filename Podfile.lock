@@ -469,7 +469,7 @@ PODS:
     - Realm (= 5.0.3)
   - SimulatorStatusMagic (2.4.1)
   - Sodium (0.8.0)
-  - SwiftGen (6.1.0)
+  - SwiftGen (6.2.0)
   - SwiftLint (0.39.2)
   - SwiftMessages (7.0.1):
     - SwiftMessages/App (= 7.0.1)
@@ -514,7 +514,7 @@ DEPENDENCIES:
   - RealmSwift (~> 5.0)
   - SimulatorStatusMagic
   - Sodium
-  - SwiftGen (~> 6.1.0)
+  - SwiftGen (~> 6.2.0)
   - SwiftLint (~> 0.39.2)
   - SwiftMessages (from `https://github.com/SwiftKickMobile/SwiftMessages.git`, branch `master`)
   - UIColor_Hex_Swift
@@ -674,7 +674,7 @@ SPEC CHECKSUMS:
   RealmSwift: 493c9f089cd3893b3959007973c0e4f640906ba0
   SimulatorStatusMagic: 28d4a9d1a500ac7cea0b2b5a43c1c6ddb40ba56c
   Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
-  SwiftGen: f872ca75cbd17bf7103c17f13dcfa0d9a15667b0
+  SwiftGen: 77e88c8609381660cc1084c5ba8e1dc6065de692
   SwiftLint: 22ccbbe3b8008684be5955693bab135e0ed6a447
   SwiftMessages: 717510963fb9c9215c58f38bbc74801e4bf134c6
   TABObserverSet: dcdc5087b5dee54a9dcc29e155bb554394829f30
@@ -685,6 +685,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: ef0863d8b30cf3ff132da177cb884f2908524806
+PODFILE CHECKSUM: c0d6a58943c2cc6dbca7d5f3eef842fc25338828
 
 COCOAPODS: 1.9.3

@@ -58,7 +58,7 @@ target 'HomeAssistant' do
     pod 'MaterialComponents/Buttons+Theming'
     pod 'MBProgressHUD', '~> 1.2.0'
     pod 'SimulatorStatusMagic', :configurations => ['Debug']
-    pod 'SwiftGen', '~> 6.1.0'
+    pod 'SwiftGen', '~> 6.2.0'
     pod 'SwiftLint', '~> 0.39.2'
     pod 'SwiftMessages', :git => 'https://github.com/SwiftKickMobile/SwiftMessages.git', :branch => 'master'
     pod 'ViewRow', :git => 'https://github.com/EurekaCommunity/ViewRow', :branch => 'master'
