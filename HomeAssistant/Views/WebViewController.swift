@@ -442,8 +442,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     @objc func pullToRefresh(_ sender: UIRefreshControl) {
         if let webviewURL = Current.settingsStore.connectionInfo?.webviewURL() {
-            self.webView.load(URLRequest(url: webviewURL))
+            if webView.url?.baseIsEqual(to: webviewURL) == true {
+                webView.reload()
+            } else {
+                webView.load(URLRequest(url: webviewURL))
+            }
         }
+
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api -> Promise<Void> in
