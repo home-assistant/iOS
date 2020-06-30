@@ -12,11 +12,29 @@
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
+			<key>POC_pride</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>POC_pride</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
 			<key>beta</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
 					<string>beta</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>bi_pride</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>bi_pride</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
@@ -165,6 +183,24 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
+			<key>rainbow</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>rainbow</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>rainbow_invert</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>rainbow_invert</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
 			<key>red</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -183,15 +219,6 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
-			<key>white</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>white</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
 			<key>trans</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -201,38 +228,11 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
-			<key>rainbow_invert</key>
+			<key>white</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>rainbow_invert</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>rainbow</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>rainbow</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>bi_pride</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>bi_pride</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>POC_pride</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>POC_pride</string>
+					<string>white</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
@@ -252,11 +252,29 @@
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
+			<key>POC_pride</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>POC_pride</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
 			<key>beta</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
 					<string>beta</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>bi_pride</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>bi_pride</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
@@ -405,6 +423,24 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
+			<key>rainbow</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>rainbow</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
+			<key>rainbow_invert</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>rainbow_invert</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+			</dict>
 			<key>red</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -423,15 +459,6 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
-			<key>white</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>white</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
 			<key>trans</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -441,38 +468,11 @@
 				<key>UIPrerenderedIcon</key>
 				<true/>
 			</dict>
-			<key>rainbow_invert</key>
+			<key>white</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>rainbow_invert</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>rainbow</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>rainbow</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>bi_pride</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>bi_pride</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<true/>
-			</dict>
-			<key>POC_pride</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>POC_pride</string>
+					<string>white</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<true/>
@@ -512,7 +512,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
 	<false/>
 	<key>FirebaseAppDelegateProxyEnabled</key>
@@ -542,8 +542,8 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We suggest selecting &quot;Always Allow&quot; for the best location experience.
-            Selecting &quot;Only While Using the App&quot; will disable iBeacons, geofences, background location updates and accurate reporting.</string>
+	<string>We suggest selecting "Always Allow" for the best location experience.
+            Selecting "Only While Using the App" will disable iBeacons, geofences, background location updates and accurate reporting.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
