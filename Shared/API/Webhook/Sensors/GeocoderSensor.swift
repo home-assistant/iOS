@@ -101,10 +101,8 @@ public class GeocoderSensor: SensorProvider {
             // matching behavior with iOS 11+, prefer iso country code
             $0.country = placemark.isoCountryCode ?? placemark.country ?? ""
 
-            if #available(iOS 10.3, *) {
-                $0.subLocality = placemark.subLocality ?? ""
-                $0.subAdministrativeArea = placemark.subAdministrativeArea ?? ""
-            }
+            $0.subLocality = placemark.subLocality ?? ""
+            $0.subAdministrativeArea = placemark.subAdministrativeArea ?? ""
         }
     }
 }
