@@ -191,6 +191,9 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     $0.value = Current.settingsStore.useNewOneShotLocation
                 }.onChange { row in
                     Current.settingsStore.useNewOneShotLocation = row.value ?? false
+
+                    // called to trigger a change over
+                    Current.syncMonitoredRegions?()
                 }
 
             let zoneEntities = self.realm.objects(RLMZone.self).map { $0 }

@@ -81,17 +81,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.clientEventStore.addEvent(event)
 
         self.registerCallbackURLKitHandlers()
-
-        if Current.settingsStore.useNewOneShotLocation {
-            self.zoneManager = ZoneManager()
-        } else {
-            self.regionManager = RegionManager()
-        }
-
-        Current.syncMonitoredRegions = {
-            self.regionManager?.syncMonitoredRegions()
-            // zoneManager observes the realm collection directly
-        }
+        self.registerRegionMonitoring()
 
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
 
@@ -499,6 +489,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }.finally {
             self.schedulePeriodicUpdateTimer()
         }
+    }
+
+    func registerRegionMonitoring() {
+        Current.syncMonitoredRegions = { [weak self] in
+            guard let self = self else { return }
+
+            if Current.settingsStore.useNewOneShotLocation {
+                if self.zoneManager == nil {
+                    self.regionManager = nil
+                    self.zoneManager = ZoneManager()
+                } else {
+                    // zone manager doesn't need to be manually told to sync
+                }
+            } else {
+                if self.regionManager == nil {
+                    self.zoneManager = nil
+                    self.regionManager = RegionManager()
+                } else {
+                    self.regionManager?.syncMonitoredRegions()
+                }
+            }
+        }
+        Current.syncMonitoredRegions?()
     }
 
     // swiftlint:disable:next function_body_length

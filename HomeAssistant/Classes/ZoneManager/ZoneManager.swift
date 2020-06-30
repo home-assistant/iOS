@@ -48,6 +48,10 @@ class ZoneManager {
         locationManager.startMonitoringSignificantLocationChanges()
     }
 
+    deinit {
+        Current.Log.info("going away")
+    }
+
     private func log(state: ZoneManagerState) {
          Current.Log.info(state)
     }
