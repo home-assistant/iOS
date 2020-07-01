@@ -413,7 +413,14 @@ public class HomeAssistantAPI {
         ident.OSVersion = deviceKitDevice.systemVersion
         ident.SupportsEncryption = true
 
-        return Mapper().toJSON(ident)
+        var json = Mapper().toJSON(ident)
+
+        if Current.serverVersion() < Version(major: 0, minor: 104) {
+            // device_id was added in 0.104, but prior it would error for unknown keys
+            json.removeValue(forKey: "device_id")
+        }
+
+        return json
     }
 
     private func buildMobileAppUpdateRegistration() -> [String: Any] {
