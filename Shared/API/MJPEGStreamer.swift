@@ -41,7 +41,6 @@ public class MJPEGStreamer {
                     callback(nil, error)
                 }
             })
-        self.request?.resume()
 
         request?.stream { [weak self] buffer in
             guard let this = self else {
