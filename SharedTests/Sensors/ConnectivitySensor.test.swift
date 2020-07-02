@@ -5,6 +5,7 @@ import CoreTelephony
 import XCTest
 
 // swiftlint:disable large_tuple
+// swiftlint:disable type_body_length
 
 class ConnectivitySensorTests: XCTestCase {
     private func setUp(
@@ -12,8 +13,8 @@ class ConnectivitySensorTests: XCTestCase {
         bssid: String?,
         networkType: NetworkType,
         cellularNetworkType: NetworkType?,
-        cellular: [String: CTCarrier]? = nil,
-        radioTech: [String: String]? = nil
+        cellular: [String?: CTCarrier]? = nil,
+        radioTech: [String?: String]? = nil
     ) throws -> (ssid: WebhookSensor?, bssid: WebhookSensor?, connection: WebhookSensor?, sims: [WebhookSensor]) {
         Current.connectivity.currentWiFiSSID = { ssid }
         Current.connectivity.currentWiFiBSSID = { bssid }
@@ -112,6 +113,37 @@ class ConnectivitySensorTests: XCTestCase {
         XCTAssertEqual(s.connection?.Icon, "mdi:wifi")
 
         XCTAssertEqual(s.sims.count, 1)
+        XCTAssertEqual(s.sims[0].UniqueID, "connectivity_sim_1")
+        XCTAssertEqual(s.sims[0].Name, "SIM 1")
+        XCTAssertEqual(s.sims[0].State as? String, "N/A")
+        XCTAssertEqual(s.sims[0].Icon, "mdi:sim")
+    }
+
+    func testWifiAndOneCellularWithUnknownInfoPreiOS12() throws {
+        let s = try setUp(
+            ssid: "Bob's Burgers Guest Wi-Fi",
+            bssid: "ff:ee:dd:cc:bb:aa",
+            networkType: .wifi,
+            cellularNetworkType: nil,
+            cellular: [nil: FakeCTCarrier()]
+        )
+
+        XCTAssertEqual(s.ssid?.UniqueID, "connectivity_ssid")
+        XCTAssertEqual(s.ssid?.Name, "SSID")
+        XCTAssertEqual(s.ssid?.State as? String, "Bob's Burgers Guest Wi-Fi")
+        XCTAssertEqual(s.ssid?.Icon, "mdi:wifi")
+
+        XCTAssertEqual(s.bssid?.UniqueID, "connectivity_bssid")
+        XCTAssertEqual(s.bssid?.Name, "BSSID")
+        XCTAssertEqual(s.bssid?.State as? String, "ff:ee:dd:cc:bb:aa")
+        XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-star")
+
+        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection?.Name, "Connection Type")
+        XCTAssertEqual(s.connection?.State as? String, "Wi-Fi")
+        XCTAssertEqual(s.connection?.Icon, "mdi:wifi")
+
+        XCTAssertEqual(s.sims.count, 1)
         XCTAssertEqual(s.sims[0].UniqueID, "connectivity_cellular_provider")
         XCTAssertEqual(s.sims[0].Name, "Cellular Provider")
         XCTAssertEqual(s.sims[0].State as? String, "N/A")
@@ -131,6 +163,29 @@ class ConnectivitySensorTests: XCTestCase {
             ],
             radioTech: [
                 "1": "garbage value"
+            ]
+        )
+
+        XCTAssertEqual(s.sims.count, 1)
+        XCTAssertEqual(s.sims[0].UniqueID, "connectivity_sim_1")
+        XCTAssertEqual(s.sims[0].Name, "SIM 1")
+        XCTAssertEqual(s.sims[0].State as? String, "Cellular1")
+        XCTAssertEqual(s.sims[0].Icon, "mdi:sim")
+    }
+
+    func testCellularBadRadioTechPreiOS12() throws {
+        let s = try setUp(
+            ssid: nil,
+            bssid: nil,
+            networkType: .cellular,
+            cellularNetworkType: .wwan2g,
+            cellular: [
+                nil: with(FakeCTCarrier()) {
+                    $0.overrideCarrierName = "Cellular1"
+                }
+            ],
+            radioTech: [
+                nil: "garbage value"
             ]
         )
 
@@ -198,6 +253,41 @@ class ConnectivitySensorTests: XCTestCase {
                 $0.overrideCarrierName = "Dinosaurs"
             }],
             radioTech: ["1": CTRadioAccessTechnologyLTE]
+        )
+
+        XCTAssertEqual(s.ssid?.UniqueID, "connectivity_ssid")
+        XCTAssertEqual(s.ssid?.Name, "SSID")
+        XCTAssertEqual(s.ssid?.State as? String, "Not Connected")
+        XCTAssertEqual(s.ssid?.Icon, "mdi:wifi-off")
+
+        XCTAssertEqual(s.bssid?.UniqueID, "connectivity_bssid")
+        XCTAssertEqual(s.bssid?.Name, "BSSID")
+        XCTAssertEqual(s.bssid?.State as? String, "Not Connected")
+        XCTAssertEqual(s.bssid?.Icon, "mdi:wifi-off")
+
+        XCTAssertEqual(s.connection?.UniqueID, "connectivity_connection_type")
+        XCTAssertEqual(s.connection?.Name, "Connection Type")
+        XCTAssertEqual(s.connection?.State as? String, "Cellular")
+        XCTAssertEqual(s.connection?.Icon, "mdi:signal")
+        XCTAssertEqual(s.connection?.Attributes?["Cellular Technology"] as? String, "4G")
+
+        XCTAssertEqual(s.sims.count, 1)
+        XCTAssertEqual(s.sims[0].UniqueID, "connectivity_sim_1")
+        XCTAssertEqual(s.sims[0].Name, "SIM 1")
+        XCTAssertEqual(s.sims[0].State as? String, "Dinosaurs")
+        XCTAssertEqual(s.sims[0].Icon, "mdi:sim")
+    }
+
+    func testNoWifiOneCellularPreiOS12() throws {
+        let s = try setUp(
+            ssid: nil,
+            bssid: nil,
+            networkType: .cellular,
+            cellularNetworkType: .wwan4g,
+            cellular: [nil: with(FakeCTCarrier()) {
+                $0.overrideCarrierName = "Dinosaurs"
+            }],
+            radioTech: [nil: CTRadioAccessTechnologyLTE]
         )
 
         XCTAssertEqual(s.ssid?.UniqueID, "connectivity_ssid")

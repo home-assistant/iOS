@@ -248,21 +248,21 @@ public class Environment {
         public var simpleNetworkType: () -> NetworkType = Reachability.getSimpleNetworkType
         public var cellularNetworkType: () -> NetworkType = Reachability.getNetworkType
 
-        public var telephonyCarriers: () -> [String: CTCarrier]? = {
+        public var telephonyCarriers: () -> [String?: CTCarrier]? = {
             let info = CTTelephonyNetworkInfo()
 
             if #available(iOS 12, *) {
                 return info.serviceSubscriberCellularProviders
             } else {
-                return info.subscriberCellularProvider.flatMap { ["1": $0] }
+                return info.subscriberCellularProvider.flatMap { [nil: $0] }
             }
         }
-        public var telephonyRadioAccessTechnology: () -> [String: String]? = {
+        public var telephonyRadioAccessTechnology: () -> [String?: String]? = {
             let info = CTTelephonyNetworkInfo()
             if #available(iOS 12, *) {
                 return info.serviceCurrentRadioAccessTechnology
             } else {
-                return info.currentRadioAccessTechnology.flatMap { ["1": $0] }
+                return info.currentRadioAccessTechnology.flatMap { [nil: $0] }
             }
         }
         #endif
