@@ -76,3 +76,5 @@ dSYMs/
 
 # Local configuration overrides
 Configuration/HomeAssistant.overrides.xcconfig
+
+*.profraw
