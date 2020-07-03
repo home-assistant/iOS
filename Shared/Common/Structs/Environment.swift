@@ -166,10 +166,6 @@ public class Environment {
         // Add the destination to the logger
         log.add(destination: fileDestination)
 
-        #if os(iOS) && !DEBUG
-        log.add(destination: CrashlyticsLogDestination())
-        #endif
-
         // Add basic app info, version info etc, to the start of the logs
         log.logAppDetails()
 

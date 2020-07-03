@@ -19,7 +19,6 @@ import UserNotifications
 import Intents
 import Version
 #if os(iOS)
-import FirebaseCrashlytics
 import Reachability
 #endif
 
@@ -277,10 +276,6 @@ public class HomeAssistantAPI {
             self.prefs.setValue(config.Timezone, forKey: "time_zone")
             self.prefs.setValue(config.Version, forKey: "version")
             self.prefs.setValue(config.ThemeColor, forKey: "themeColor")
-
-            #if os(iOS)
-            Crashlytics.crashlytics().setCustomValue(config.Version, forKey: "HA_Version")
-            #endif
 
             return Promise.value(config)
         }

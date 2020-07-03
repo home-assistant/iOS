@@ -49,6 +49,7 @@ target 'HomeAssistant' do
     pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
     pod 'Firebase/Analytics'
     pod 'Firebase/Core'
+    pod 'Firebase/Crashlytics'
     pod 'Firebase/Firestore'
     pod 'Firebase/Messaging'
     pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
@@ -72,8 +73,6 @@ end
 
 target 'Shared-iOS' do
     ios_shared_pods
-
-    pod 'Firebase/Crashlytics'
 
     target 'SharedTests' do
       
