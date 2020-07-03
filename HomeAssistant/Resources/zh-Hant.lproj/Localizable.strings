@@ -760,7 +760,7 @@
 "settings_sensors.detail.device_class" = "設備類別";
 "settings_sensors.detail.icon" = "圖示";
 "settings_sensors.periodic_update.title" = "週期更新";
-"settings_sensors.periodic_update.description" = "開啟後、傳感器將會開啟設定時間長持續更新。";
+"settings_sensors.periodic_update.description" = "開啟後、傳感器將會依設定更新時間持續更新。";
 "settings_sensors.periodic_update.off" = "關閉";
 "location_change_notification.launch.body" = "已透過 App 啟動更新座標";
 "location_change_notification.periodic.body" = "已透過週期更新更新座標";
