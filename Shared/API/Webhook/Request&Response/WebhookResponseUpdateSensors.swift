@@ -5,7 +5,7 @@ extension WebhookResponseIdentifier {
     static var updateSensors: Self { .init(rawValue: "updateSensors") }
 }
 
-struct UpdateSensorsHandler: WebhookResponseHandler {
+struct WebhookResponseUpdateSensors: WebhookResponseHandler {
     enum UpdateSensorsError: Error {
         case invalidResponse
     }

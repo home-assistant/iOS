@@ -658,7 +658,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
 
         if #available(iOS 12.0, *) {
-            let intent = CallServiceIntent(domain: domain, service: service, payload: url.query)
+            let intent = CallServiceIntent(domain: domain, service: service, payload: url.queryItems)
 
             let interaction = INInteraction(intent: intent, response: nil)
 

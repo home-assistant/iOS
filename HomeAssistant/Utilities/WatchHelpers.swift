@@ -132,8 +132,7 @@ extension HomeAssistantAPI {
         }
 
         return firstly { () -> Promise<Any> in
-            return self.webhook("render_template", payload: payload,
-                                callingFunctionName: "updateComplications")
+            webhookManager.sendEphemeral(request: .init(type: "render_template", data: payload))
         }.then { (respJSON: Any) -> Promise<[WatchComplication]> in
             Current.Log.verbose("Got JSON \(respJSON)")
             guard let jsonDict = respJSON as? [String: String] else {

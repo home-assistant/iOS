@@ -114,8 +114,9 @@ public class HomeAssistantAPI {
     }
 
     public let webhookManager = with(WebhookManager()) {
-        $0.register(responseHandler: UpdateSensorsHandler.self, for: .updateSensors)
-        $0.register(responseHandler: LocationHandler.self, for: .location)
+        $0.register(responseHandler: WebhookResponseUpdateSensors.self, for: .updateSensors)
+        $0.register(responseHandler: WebhookResponseLocation.self, for: .location)
+        $0.register(responseHandler: WebhookResponseServiceCall.self, for: .serviceCall)
     }
 
     public let sensors = with(SensorContainer()) {
@@ -185,9 +186,13 @@ public class HomeAssistantAPI {
     }
 
     public func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<Void> {
-        return self.webhook("fire_event",
-                            payload: ["event_type": eventType, "event_data": eventData],
-                            callingFunctionName: "\(#function)")
+        return webhookManager.send(
+            identifier: .unhandled,
+            request: .init(type: "fire_event", data: [
+                "event_type": eventType,
+                "event_data": eventData
+            ])
+        )
     }
 
     private func getDownloadDataPath(_ downloadingURL: URL) -> URL? {
@@ -245,7 +250,7 @@ public class HomeAssistantAPI {
         var promise: Promise<ConfigResponse> = self.request(path: "config", callingFunctionName: "\(#function)")
 
         if useWebhook {
-            promise = self.webhook("get_config", payload: [:], callingFunctionName: "\(#function)")
+            promise = webhookManager.sendEphemeral(request: .init(type: "get_config", data: [:]))
         }
 
         return promise.then { config -> Promise<ConfigResponse> in
@@ -289,26 +294,19 @@ public class HomeAssistantAPI {
 
     public func CallService(domain: String, service: String, serviceData: [String: Any],
                             shouldLog: Bool = true) -> Promise<Void> {
-
-        let hookPayload: [String: Any] = ["domain": domain, "service": service, "service_data": serviceData]
-        let promise: Promise<Void> = self.webhook("call_service", payload: hookPayload,
-                                                  callingFunctionName: "\(#function)")
-        if shouldLog {
-            _ = promise.then { _ -> Promise<Void> in
-                let event = ClientEvent(text: "Calling service: \(domain) - \(service)", type: .serviceCall,
-                                        payload: serviceData)
-                Current.clientEventStore.addEvent(event)
-
-                return Promise.value(())
-            }
-        }
-        return promise
+        return webhookManager.send(
+            identifier: .serviceCall,
+            request: .init(type: "call_service", data: [
+                "domain": domain,
+                "service": service,
+                "service_data": serviceData
+            ])
+        )
     }
 
     public func RenderTemplate(templateStr: String, variables: [String: Any] = [:]) -> Promise<String> {
         let hookPayload: [String: [String: Any]] = ["tpl": ["template": templateStr, "variables": variables]]
-        let req: Promise<Any> = self.webhook("render_template", payload: hookPayload,
-                                             callingFunctionName: "RenderTemplate")
+        let req: Promise<Any> = webhookManager.sendEphemeral(request: .init(type: "render_template", data: hookPayload))
         return req.then { (resp: Any) -> Promise<String> in
             guard let jsonDict = resp as? [String: String] else {
                 return Promise.value("Error")
@@ -358,12 +356,14 @@ public class HomeAssistantAPI {
     }
 
     public func UpdateRegistration() -> Promise<MobileAppRegistrationResponse> {
-        return self.webhook("update_registration", payload: buildMobileAppUpdateRegistration(),
-                            callingFunctionName: "updateRegistration")
+        webhookManager.sendEphemeral(request: .init(
+            type: "update_registration",
+            data: buildMobileAppUpdateRegistration()
+        ))
     }
 
     public func GetZones() -> Promise<[Zone]> {
-        return self.webhook("get_zones", payload: [:], callingFunctionName: "getZones")
+        webhookManager.sendEphemeral(request: .init(type: "get_zones", data: [:]))
     }
 
     public func GetPushSettings() -> Promise<PushConfiguration> {
@@ -371,9 +371,10 @@ public class HomeAssistantAPI {
     }
 
     public func StreamCamera(entityId: String) -> Promise<StreamCameraResponse> {
-        return self.webhook("stream_camera",
-                            payload: ["camera_entity_id": entityId],
-                            callingFunctionName: "streamCamera")
+        webhookManager.sendEphemeral(request: .init(
+            type: "stream_camera",
+            data: ["camera_entity_id": entityId]
+        ))
     }
 
     private func buildMobileAppRegistration() -> [String: Any] {
@@ -510,10 +511,13 @@ public class HomeAssistantAPI {
             }
 
             return payloadDict
-        }.then { payload in
+        }.then { [webhookManager] payload in
             return when(resolved:
                 self.UpdateSensors(trigger: updateType, location: location).asVoid(),
-                self.webhookManager.send(identifier: .location, request: .init(type: "update_location", data: payload)),
+                webhookManager.send(
+                    identifier: .location,
+                    request: .init(type: "update_location", data: payload)
+                ),
                 self.updateComplications().asVoid()
             )
         }.asVoid()
@@ -651,9 +655,9 @@ public class HomeAssistantAPI {
             sensors.sensors(request: .init(reason: .registration))
         }.get { sensors in
             Current.Log.verbose("Registering sensors \(sensors.map { $0.UniqueID  })")
-        }.thenMap { (sensor) -> Promise<WebhookSensorResponse> in
-            self.webhook("register_sensor", payload: sensor.toJSON(),
-                    callingFunctionName: "\(#function)")
+        }.thenMap { [webhookManager] (sensor) -> Promise<WebhookSensorResponse> in
+            // todo: make persistent
+            webhookManager.sendEphemeral(request: .init(type: "register_sensor", data: sensor.toJSON()))
         }
     }
 
@@ -670,8 +674,8 @@ public class HomeAssistantAPI {
             let mapper = Mapper<WebhookSensor>(context: WebhookSensorContext(update: true),
                                                shouldIncludeNilValues: false)
             return mapper.toJSONArray(sensors)
-        }.then { (payload) -> Promise<Void> in
-            return self.webhookManager.send(
+        }.then { [webhookManager] (payload) -> Promise<Void> in
+            webhookManager.send(
                 identifier: .updateSensors,
                 request: .init(type: "update_sensor_states", data: payload)
             )

@@ -17,7 +17,7 @@ extension Promise where T == Data? {
         options: JSONSerialization.ReadingOptions = [.allowFragments]
     ) -> Promise<Any> {
         return then { optionalData -> Promise<Any> in
-            if let data = optionalData, data.isEmpty == false {
+            if let data = optionalData {
                 return Promise<Data>.value(data).definitelyWebhookJson(
                     on: queue,
                     statusCode: statusCode,
@@ -61,8 +61,12 @@ extension Promise where T == Data {
             break
         }
 
-        return map(on: queue) { data in
-            try JSONSerialization.jsonObject(with: data, options: options)
+        return map(on: queue) { data -> Any in
+            if data.isEmpty {
+                return ()
+            } else {
+                return try JSONSerialization.jsonObject(with: data, options: options)
+            }
         }.map { object in
             guard let dictionary = object as? [String: Any],
                 let encoded = dictionary["encrypted_data"] as? String
@@ -85,7 +89,11 @@ extension Promise where T == Data {
                 throw WebhookJsonParseError.decrypt
             }
 
-            return try JSONSerialization.jsonObject(with: Data(decrypted), options: options)
+            if decrypted.isEmpty {
+                return ()
+            } else {
+                return try JSONSerialization.jsonObject(with: Data(decrypted), options: options)
+            }
         }
     }
 }

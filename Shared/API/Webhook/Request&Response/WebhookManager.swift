@@ -1,6 +1,7 @@
 import Foundation
 import PromiseKit
 import UserNotifications
+import ObjectMapper
 
 public class WebhookManager: NSObject {
     public static let URLSessionIdentifier = "hass.webhook_manager"
@@ -19,7 +20,10 @@ public class WebhookManager: NSObject {
         case noApi
         case unregisteredIdentifier
         case unexpectedType(given: String, desire: String)
+        case unmappableValue
     }
+
+    // MARK: - Lifecycle
 
     override internal init() {
         let configuration = with(URLSessionConfiguration.background(withIdentifier: Self.URLSessionIdentifier)) {
@@ -37,6 +41,8 @@ public class WebhookManager: NSObject {
             delegate: self,
             delegateQueue: queue
         )
+
+        register(responseHandler: WebhookResponseUnhandled.self, for: .unhandled)
     }
 
     internal func register(
@@ -49,6 +55,35 @@ public class WebhookManager: NSObject {
 
     public func handleBackground(for identifier: String, completionHandler: @escaping () -> Void) {
         backgroundEventCompletionQueue.addOperation(completionHandler)
+    }
+
+    // MARK: - Sending Ephemeral
+
+    public func sendEphemeral(request: WebhookRequest) -> Promise<Void> {
+        let promise: Promise<Any> = sendEphemeral(request: request)
+        return promise.asVoid()
+    }
+
+    public func sendEphemeral<MappableResult: BaseMappable>(request: WebhookRequest) -> Promise<MappableResult> {
+        let promise: Promise<Any> = sendEphemeral(request: request)
+        return promise.map {
+            if let result = Mapper<MappableResult>().map(JSONObject: $0) {
+                return result
+            } else {
+                throw WebhookManagerError.unmappableValue
+            }
+        }
+    }
+
+    public func sendEphemeral<MappableResult: BaseMappable>(request: WebhookRequest) -> Promise<[MappableResult]> {
+        let promise: Promise<Any> = sendEphemeral(request: request)
+        return promise.map {
+            if let result = Mapper<MappableResult>(shouldIncludeNilValues: false).mapArray(JSONObject: $0) {
+                return result
+            } else {
+                throw WebhookManagerError.unmappableValue
+            }
+        }
     }
 
     public func sendEphemeral<ResponseType>(request: WebhookRequest) -> Promise<ResponseType> {
@@ -88,8 +123,10 @@ public class WebhookManager: NSObject {
         }
     }
 
+    // MARK: - Sending Persistent
+
     public func send(
-        identifier: WebhookResponseIdentifier,
+        identifier: WebhookResponseIdentifier = .unhandled,
         request: WebhookRequest
     ) -> Promise<Void> {
         guard let handlerType = responseHandlers[identifier] else {
@@ -109,7 +146,7 @@ public class WebhookManager: NSObject {
             try data.write(to: temporaryFile, options: [])
             let task = backgroundUrlSession.uploadTask(with: urlRequest, fromFile: temporaryFile)
 
-            self.evaluateCancellable(by: task)
+            self.evaluateCancellable(by: task, with: promise)
             self.resolverForIdentifier[task.taskIdentifier] = seal
             task.resume()
 
@@ -121,7 +158,9 @@ public class WebhookManager: NSObject {
         return promise
     }
 
-    private func evaluateCancellable(by newTask: URLSessionTask) {
+    // MARK: - Private
+
+    private func evaluateCancellable(by newTask: URLSessionTask, with newPromise: Promise<Void>) {
         guard let newType = responseHandler(from: newTask) else {
             Current.Log.error("couldn't determine request type from \(newTask)")
             return
@@ -134,8 +173,11 @@ public class WebhookManager: NSObject {
                 } else {
                     return false
                 }
-            }.forEach {
-                $0.cancel()
+            }.forEach { existingTask in
+                if let existingResolver = self.resolverForIdentifier[existingTask.taskIdentifier] {
+                    newPromise.pipe { existingResolver.resolve($0) }
+                }
+                existingTask.cancel()
             }
         }
     }
@@ -196,12 +238,18 @@ extension WebhookManager: URLSessionDataDelegate {
     }
 
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        let data = pendingData[task.taskIdentifier]
+        pendingData.removeValue(forKey: task.taskIdentifier)
+
+        guard error?.isCancelled != true else {
+            Current.Log.info("ignoring cancelled task")
+            return
+        }
+
         let result = Promise<Data?> { seal in
             if let error = error {
                 seal.reject(error)
             } else {
-                let data = pendingData[task.taskIdentifier]
-                pendingData.removeValue(forKey: task.taskIdentifier)
                 seal.fulfill(data)
             }
         }.webhookJson(

@@ -6,7 +6,7 @@ extension WebhookResponseIdentifier {
     static var location: Self { .init(rawValue: "updateLocation") }
 }
 
-struct LocationHandler: WebhookResponseHandler {
+struct WebhookResponseLocation: WebhookResponseHandler {
     let api: HomeAssistantAPI
     init(api: HomeAssistantAPI) {
         self.api = api
