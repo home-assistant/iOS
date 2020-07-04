@@ -13,116 +13,48 @@ import ObjectMapper
 import Sodium
 
 extension HomeAssistantAPI {
+    enum WebhookParseError: Error {
+        case couldNotDecode
+    }
+
     // MARK: - Helper methods for reducing boilerplate.
 
-    func handleWebhookResponse<T>(response: DataResponse<T>, seal: Resolver<T>, callingFunctionName: String) {
-        // Current.Log.verbose("\(callingFunctionName) response timeline: \(response.timeline)")
-
-        if response.response?.statusCode == 404 { // mobile_app not loaded
-            return seal.reject(APIError.mobileAppComponentNotLoaded)
-        } else if response.response?.statusCode == 410 { // config entry removed
-            return seal.reject(APIError.webhookGone)
-        }
-
-        switch response.result {
-        case .success(let value):
-            seal.fulfill(value)
-        case .failure(let error):
-            Current.Log.error("Error on \(callingFunctionName) request: \(error)")
-            seal.reject(error)
-        }
-    }
-
-    func buildWebhookRequest(_ type: String, payload: Any) -> DataRequest {
-        return self.webhookManager.request(self.connectionInfo.webhookURL, method: .post,
-                                           parameters: WebhookRequest(type: type, data: payload).toJSON(),
-                                           encoding: JSONEncoding.default)
-
-    }
-
-    public func webhook(_ type: String, payload: Any, callingFunctionName: String) -> Promise<String> {
-        return Promise { seal in
-            _ = self.buildWebhookRequest(type, payload: payload).validate()
-                .responseString { (response: DataResponse<String>) in
-                    self.handleWebhookResponse(response: response, seal: seal,
-                                               callingFunctionName: callingFunctionName)
-            }
-
-        }
-    }
-
     public func webhook(_ type: String, payload: Any, callingFunctionName: String) -> Promise<Void> {
-        return Promise { seal in
-            _ = self.buildWebhookRequest(type, payload: payload).validate().response { (response) in
-                if response.response?.statusCode == 404 { // mobile_app not loaded
-                    return seal.reject(APIError.mobileAppComponentNotLoaded)
-                } else if response.response?.statusCode == 410 { // config entry removed
-                    return seal.reject(APIError.webhookGone)
-                }
-
-                seal.resolve(response.error)
-            }
-
-        }
+        let request = WebhookRequest(type: type, data: payload)
+        let result: Promise<Any> = webhookManager.sendEphemeral(request: request)
+        return result.asVoid()
     }
 
     public func webhook(_ type: String, payload: Any, callingFunctionName: String) -> Promise<Any> {
-        return Promise { seal in
-            _ = self.buildWebhookRequest(type, payload: payload).validate()
-                .responseEncryptedJSON { (response: DataResponse<Any>) in
-                    self.handleWebhookResponse(response: response, seal: seal,
-                                               callingFunctionName: callingFunctionName)
-            }
-
-        }
+        let request = WebhookRequest(type: type, data: payload)
+        return webhookManager.sendEphemeral(request: request)
     }
 
     public func webhook<T: BaseMappable>(_ type: String, payload: Any,
                                          callingFunctionName: String) -> Promise<T> {
-        return Promise { seal in
-            _ = self.buildWebhookRequest(type, payload: payload).validate()
-                .responseObject { (response: DataResponse<T>) in
-                    self.handleWebhookResponse(response: response, seal: seal,
-                                               callingFunctionName: callingFunctionName)
+        firstly { () -> Promise<Any> in
+            let request = WebhookRequest(type: type, data: payload)
+            return webhookManager.sendEphemeral(request: request)
+        }.map {
+            if let result = Mapper<T>().map(JSONObject: $0) {
+                return result
+            } else {
+                throw WebhookParseError.couldNotDecode
             }
-
         }
     }
 
     public func webhook<T: BaseMappable>(_ type: String, payload: Any,
                                          callingFunctionName: String) -> Promise<[T]> {
-        return Promise { seal in
-            _ = self.buildWebhookRequest(type, payload: payload).validate()
-                .responseArray { (response: DataResponse<[T]>) in
-                    self.handleWebhookResponse(response: response, seal: seal,
-                                               callingFunctionName: callingFunctionName)
+        return firstly { () -> Promise<Any> in
+            let request = WebhookRequest(type: type, data: payload)
+            return webhookManager.sendEphemeral(request: request)
+        }.map {
+            if let result = Mapper<T>(context: nil, shouldIncludeNilValues: false).mapArray(JSONObject: $0) {
+                return result
+            } else {
+                throw WebhookParseError.couldNotDecode
             }
-
         }
     }
-
-    public func webhook<T: ImmutableMappable>(_ type: String, payload: Any,
-                                              callingFunctionName: String) -> Promise<[T]> {
-        return Promise { seal in
-            _ = self.buildWebhookRequest(type, payload: payload).validate()
-                .responseArray { (response: DataResponse<[T]>) in
-                    self.handleWebhookResponse(response: response, seal: seal,
-                                               callingFunctionName: callingFunctionName)
-            }
-
-        }
-    }
-
-    public func webhook<T: ImmutableMappable>(_ type: String, payload: Any,
-                                              callingFunctionName: String) -> Promise<T> {
-        return Promise { seal in
-            _ = self.buildWebhookRequest(type, payload: payload).validate()
-                .responseObject { (response: DataResponse<T>) in
-                    self.handleWebhookResponse(response: response, seal: seal,
-                                               callingFunctionName: callingFunctionName)
-            }
-
-        }
-    }
-
 }

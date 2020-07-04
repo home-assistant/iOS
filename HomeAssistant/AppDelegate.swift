@@ -420,6 +420,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return self.application(application, open: actualURL)
     }
 
+    func application(
+        _ application: UIApplication,
+        handleEventsForBackgroundURLSession identifier: String,
+        completionHandler: @escaping () -> Void
+    ) {
+        if identifier == WebhookManager.URLSessionIdentifier {
+            if let webhookManager = HomeAssistantAPI.authenticatedAPI()?.webhookManager {
+                webhookManager.handleBackground(for: identifier, completionHandler: completionHandler)
+            } else {
+                Current.Log.error("couldn't find webhookmanager for background events")
+                completionHandler()
+            }
+        } else {
+            Current.Log.error("couldn't find appropriate session for for \(identifier)")
+            completionHandler()
+        }
+    }
+
     // MARK: - Private helpers
 
     private var requiresOnboarding: Bool {
