@@ -277,6 +277,8 @@ public class HomeAssistantAPI {
             self.prefs.setValue(config.Version, forKey: "version")
             self.prefs.setValue(config.ThemeColor, forKey: "themeColor")
 
+            Current.setUserProperty?(config.Version, "HA_Version")
+
             return Promise.value(config)
         }
     }

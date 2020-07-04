@@ -1132,6 +1132,28 @@ internal enum L10n {
           internal static let title = L10n.tr("Localizable", "settings.developer.copy_realm.alert.title")
         }
       }
+      internal enum CrashlyticsTest {
+        internal enum Fatal {
+          /// Test Crashlytics Fatal Error
+          internal static let title = L10n.tr("Localizable", "settings.developer.crashlytics_test.fatal.title")
+          internal enum Notification {
+            /// NOTE: This will not work if the debugger is connected! When you press OK, the app will crash. You must then re-open the app and wait up to 5 minutes for the crash to appear in the console
+            internal static let body = L10n.tr("Localizable", "settings.developer.crashlytics_test.fatal.notification.body")
+            /// About to crash
+            internal static let title = L10n.tr("Localizable", "settings.developer.crashlytics_test.fatal.notification.title")
+          }
+        }
+        internal enum NonFatal {
+          /// Test Crashlytics Non-Fatal Error
+          internal static let title = L10n.tr("Localizable", "settings.developer.crashlytics_test.non_fatal.title")
+          internal enum Notification {
+            /// When you press OK, a non-fatal error will be sent to Crashlytics. It may take up to 5 minutes to appear in the console.
+            internal static let body = L10n.tr("Localizable", "settings.developer.crashlytics_test.non_fatal.notification.body")
+            /// About to submit a non-fatal error
+            internal static let title = L10n.tr("Localizable", "settings.developer.crashlytics_test.non_fatal.notification.title")
+          }
+        }
+      }
       internal enum DebugStrings {
         /// Debug strings
         internal static let title = L10n.tr("Localizable", "settings.developer.debug_strings.title")

@@ -892,24 +892,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupFirebase() {
-        var fileName = "GoogleService-Info-Debug"
+        LogDestination = CrashlyticsLogDestination()
 
-        if Current.appConfiguration == .Beta {
-            fileName = "GoogleService-Info-Beta"
-        } else if Current.appConfiguration == .Release {
-            fileName = "GoogleService-Info-Release"
-        }
-
-        guard let filePath = Bundle.main.path(forResource: fileName, ofType: "plist") else {
-            fatalError("Couldn't get file named \(fileName) from bundle")
-        }
-
-        Current.Log.verbose("Setting up Firebase with plist at path: \(filePath)")
-
-        guard let fileopts = FirebaseOptions(contentsOfFile: filePath) else {
-            fatalError("Couldn't load environment specific Firebase config file")
-        }
-        FirebaseApp.configure(options: fileopts)
+        FirebaseApp.configure()
 
         Messaging.messaging().delegate = self
 
@@ -927,6 +912,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.setUserProperty = { (value: String?, name: String) -> Void in
             Current.Log.verbose("Setting user property \(name) to \(String(describing: value))")
             Analytics.setUserProperty(value, forName: name)
+            guard let value = value else { return }
+            Crashlytics.crashlytics().setCustomValue(value, forKey: name)
         }
     }
 }

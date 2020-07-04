@@ -458,6 +458,12 @@
 "settings.details_section.integrations.header" = "Integrations";
 "settings.developer.camera_notification.notification.body" = "Expand this to show the camera content extension";
 "settings.developer.camera_notification.title" = "Show camera notification content extension";
+"settings.developer.crashlytics_test.fatal.title" = "Test Crashlytics Fatal Error";
+"settings.developer.crashlytics_test.fatal.notification.title" = "About to crash";
+"settings.developer.crashlytics_test.fatal.notification.body" = "NOTE: This will not work if the debugger is connected! When you press OK, the app will crash. You must then re-open the app and wait up to 5 minutes for the crash to appear in the console";
+"settings.developer.crashlytics_test.non_fatal.title" = "Test Crashlytics Non-Fatal Error";
+"settings.developer.crashlytics_test.non_fatal.notification.title" = "About to submit a non-fatal error";
+"settings.developer.crashlytics_test.non_fatal.notification.body" = "When you press OK, a non-fatal error will be sent to Crashlytics. It may take up to 5 minutes to appear in the console.";
 "settings.developer.copy_realm.alert.message" = "Copied Realm from %@ to %@";
 "settings.developer.copy_realm.alert.title" = "Copied Realm";
 "settings.developer.copy_realm.title" = "Copy Realm from app group to Documents";
