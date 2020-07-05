@@ -91,6 +91,8 @@
 		11C4629124B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629024B14E6B00031902 /* XCGLogger+UNNotification.swift */; };
 		11C4629224B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629024B14E6B00031902 /* XCGLogger+UNNotification.swift */; };
 		11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */; };
+		11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629524B19FC700031902 /* URLSessionTask+WebhookPersisted.swift */; };
+		11C4629724B19FC800031902 /* URLSessionTask+WebhookPersisted.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629524B19FC700031902 /* URLSessionTask+WebhookPersisted.swift */; };
 		11C590ED24A832CA0066085D /* YamlSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C590EC24A832CA0066085D /* YamlSection.swift */; };
 		11C65CC0249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
 		11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
@@ -850,6 +852,7 @@
 		11C4628D24B128EF00031902 /* WebhookResponseUnhandled.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUnhandled.swift; sourceTree = "<group>"; };
 		11C4629024B14E6B00031902 /* XCGLogger+UNNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCGLogger+UNNotification.swift"; sourceTree = "<group>"; };
 		11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRateLimitsAPI.swift; sourceTree = "<group>"; };
+		11C4629524B19FC700031902 /* URLSessionTask+WebhookPersisted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSessionTask+WebhookPersisted.swift"; sourceTree = "<group>"; };
 		11C590EC24A832CA0066085D /* YamlSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YamlSection.swift; sourceTree = "<group>"; };
 		11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamCameraResponse.swift; sourceTree = "<group>"; };
 		11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastUpdateSensor.test.swift; sourceTree = "<group>"; };
@@ -1565,6 +1568,7 @@
 			isa = PBXGroup;
 			children = (
 				1141182524AF9A0500E6525C /* WebhookManager.swift */,
+				B6221F6122266C4000502A30 /* WebhookRequest.swift */,
 				1141182924AFA10900E6525C /* WebhookResponseHandler.swift */,
 				1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */,
 				11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */,
@@ -1572,6 +1576,7 @@
 				11C4628724B109C000031902 /* WebhookResponseLocation.swift */,
 				11C4628A24B1230E00031902 /* WebhookResponseServiceCall.swift */,
 				11C4628D24B128EF00031902 /* WebhookResponseUnhandled.swift */,
+				11C4629524B19FC700031902 /* URLSessionTask+WebhookPersisted.swift */,
 			);
 			path = "Request&Response";
 			sourceTree = "<group>";
@@ -2525,7 +2530,6 @@
 				B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */,
 				B6872E612226837A00C475D1 /* MobileAppRegistrationRequest.swift */,
 				B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */,
-				B6221F6122266C4000502A30 /* WebhookRequest.swift */,
 			);
 			path = Requests;
 			sourceTree = "<group>";
@@ -4267,6 +4271,7 @@
 				B67CE8A322200F220034C1D0 /* Status.swift in Sources */,
 				B67CE8B422200F220034C1D0 /* URL+Extensions.swift in Sources */,
 				B67CE88022200F220034C1D0 /* Automation.swift in Sources */,
+				11C4629724B19FC800031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */,
 				B67CE89F22200F220034C1D0 /* Events.swift in Sources */,
 				B6B74CBC228398DD00D58A68 /* WKInterfaceDevice+Size.swift in Sources */,
@@ -4409,6 +4414,7 @@
 				B6C091412151F93D00A326DC /* Climate.swift in Sources */,
 				D0EEF305214DD0D400D1D360 /* UIColor+HA.swift in Sources */,
 				B6C091432151F93D00A326DC /* InputBoolean.swift in Sources */,
+				11C4629624B19FC700031902 /* URLSessionTask+WebhookPersisted.swift in Sources */,
 				11AF4D1C249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				B6C0911F2151F90300A326DC /* DeviceTrackerSee.swift in Sources */,
 				D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */,

@@ -61,7 +61,7 @@ public enum LocationUpdateTrigger: String {
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     public func notificationOptionsFor(zoneName: String) -> NotificationOptions {
         let shouldNotify: Bool
-        var identifier: String = ""
+        var identifier: String?
         let body: String
         let title = L10n.LocationChangeNotification.title
 

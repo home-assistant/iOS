@@ -472,51 +472,43 @@ public class HomeAssistantAPI {
         storeableZone.BeaconMinor.value = zone.Minor
     }
 
-    private func buildWebhookLocationPayload(updateType: LocationUpdateTrigger,
-                                             location: CLLocation?, zone: RLMZone?) -> Promise<WebhookUpdateLocation> {
-
-        let device = Device.current
-
-        let payload = WebhookUpdateLocation(trigger: updateType, location: location, zone: zone)
-        payload.Trigger = updateType
-
-        let isBeaconUpdate = (updateType == .BeaconRegionEnter || updateType == .BeaconRegionExit)
-
-        payload.Battery = device.batteryLevel ?? 0
-        payload.SourceType = (isBeaconUpdate ? .BluetoothLowEnergy : .GlobalPositioningSystem)
-
-        return Promise.value(payload)
-
-    }
-
     public func SubmitLocation(updateType: LocationUpdateTrigger,
                                location: CLLocation?, zone: RLMZone?) -> Promise<Void> {
-
-        return self.buildWebhookLocationPayload(updateType: updateType,
-                                                location: location, zone: zone).map { payload -> [String: Any] in
-
-            var jsonPayload = "{\"missing\": \"payload\"}"
-            if let p = payload.toJSONString(prettyPrint: false) {
-                jsonPayload = p
-            }
-
-            let payloadDict: [String: Any] = Mapper<WebhookUpdateLocation>().toJSON(payload)
-
-            Current.Log.info("Location update payload: \(payloadDict)")
+        firstly {
+            .value(WebhookUpdateLocation(
+                trigger: updateType,
+                location: location,
+                zone: zone
+            ))
+        }.map { payload -> [String: Any] in
             let realm = Current.realm()
             // swiftlint:disable:next force_try
             try! realm.write {
+                var jsonPayload = "{\"missing\": \"payload\"}"
+                if let p = payload.toJSONString(prettyPrint: false) {
+                    jsonPayload = p
+                }
+
                 realm.add(LocationHistoryEntry(updateType: updateType, location: payload.cllocation,
                                                zone: zone, payload: jsonPayload))
             }
 
+            let payloadDict: [String: Any] = Mapper<WebhookUpdateLocation>().toJSON(payload)
+            Current.Log.info("Location update payload: \(payloadDict)")
             return payloadDict
         }.then { [webhookManager] payload in
             return when(resolved:
                 self.UpdateSensors(trigger: updateType, location: location).asVoid(),
                 webhookManager.send(
                     identifier: .location,
-                    request: .init(type: "update_location", data: payload)
+                    request: .init(
+                        type: "update_location",
+                        data: payload,
+                        localMetadata: WebhookResponseLocation.localMetdata(
+                            trigger: updateType,
+                            zone: zone
+                        )
+                    )
                 ),
                 self.updateComplications().asVoid()
             )
@@ -678,8 +670,6 @@ public class HomeAssistantAPI {
                 identifier: .updateSensors,
                 request: .init(type: "update_sensor_states", data: payload)
             )
-        }.tap { result in
-            print("result *** \(result)")
         }
     }
 

@@ -10,13 +10,13 @@ import Foundation
 import ObjectMapper
 import CoreLocation
 import CoreMotion
+import DeviceKit
 
 public class WebhookUpdateLocation: Mappable {
 
     public var HorizontalAccuracy: CLLocationAccuracy?
     public var Battery: Int = 0
     public var Location: CLLocationCoordinate2D?
-    public var SourceType: UpdateTypes = .GlobalPositioningSystem
     public var LocationName: String?
 
     public var Speed: CLLocationSpeed?
@@ -34,8 +34,8 @@ public class WebhookUpdateLocation: Mappable {
     public convenience init(trigger: LocationUpdateTrigger, location: CLLocation?, zone: RLMZone?) {
         self.init()
 
-        self.SourceType = (self.Trigger == .BeaconRegionEnter || self.Trigger == .BeaconRegionExit
-            ? .BluetoothLowEnergy : .GlobalPositioningSystem)
+        self.Trigger = trigger
+        self.Battery = Device.current.batteryLevel ?? 0
 
         let useLocation: Bool
 
@@ -137,7 +137,6 @@ public class WebhookUpdateLocation: Mappable {
         Battery               <-    map["battery"]
         Location              <-   (map["gps"], CLLocationCoordinate2DTransform())
         HorizontalAccuracy    <-    map["gps_accuracy"]
-        // SourceType            <-   (map["source_type"], EnumTransform<UpdateTypes>())
         LocationName          <-    map["location_name"]
 
         Speed                 <-    map["speed"]

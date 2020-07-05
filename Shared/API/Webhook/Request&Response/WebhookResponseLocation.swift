@@ -1,9 +1,30 @@
 import Foundation
 import UserNotifications
 import PromiseKit
+import ObjectMapper
 
 extension WebhookResponseIdentifier {
     static var location: Self { .init(rawValue: "updateLocation") }
+}
+
+struct WebhookResponseLocationLocalMetadata: ImmutableMappable {
+    let trigger: LocationUpdateTrigger
+    let zoneName: String
+
+    init(trigger: LocationUpdateTrigger, zone: RLMZone?) {
+        self.trigger = trigger
+        self.zoneName = zone?.ID ?? "(unknown)"
+    }
+
+    init(map: Map) throws {
+        self.trigger = try map.value("trigger")
+        self.zoneName = try map.value("zone_name")
+    }
+
+    func mapping(map: Map) {
+        trigger >>> map["trigger"]
+        zoneName >>> map["zone_name"]
+    }
 }
 
 struct WebhookResponseLocation: WebhookResponseHandler {
@@ -12,35 +33,63 @@ struct WebhookResponseLocation: WebhookResponseHandler {
         self.api = api
     }
 
-    static func shouldReplace(request current: URLSessionTask, with proposed: URLSessionTask) -> Bool {
+    static func localMetdata(
+        trigger: LocationUpdateTrigger,
+        zone: RLMZone?
+    ) -> [String: Any] {
+        WebhookResponseLocationLocalMetadata(
+            trigger: trigger,
+            zone: zone
+        ).toJSON()
+    }
+
+    static func shouldReplace(request current: WebhookRequest, with proposed: WebhookRequest) -> Bool {
         // recency should always win
         return true
     }
 
-    func handle(result: Promise<Any>) -> Guarantee<WebhookResponseHandlerResult> {
-        result.map { _ -> UNNotificationRequest? in
-            // todo: this is't actually the right data
-            let notificationOptions = LocationUpdateTrigger.BackgroundFetch.notificationOptionsFor(zoneName: "moo")
-            Current.clientEventStore.addEvent(ClientEvent(text: notificationOptions.body, type: .locationUpdate,
-                                                          payload: nil))
-            if notificationOptions.shouldNotify {
-                let content = UNMutableNotificationContent()
-                content.title = notificationOptions.title
-                content.body = notificationOptions.body
-                content.sound = UNNotificationSound.default
-                return .init(identifier: notificationOptions.identifier ?? "",
-                             content: content, trigger: nil)
+    enum HandleError: Error {
+        case missingLocalMetadata
+    }
 
-            } else {
+    func handle(
+        request: Promise<WebhookRequest>,
+        result: Promise<Any>
+    ) -> Guarantee<WebhookResponseHandlerResult> {
+        firstly {
+            when(fulfilled: request, result)
+        }.map { request, _ in
+            guard let localMetadata = Mapper<WebhookResponseLocationLocalMetadata>().map(
+                JSON: request.localMetadata ?? [:]
+            ) else {
+                throw HandleError.missingLocalMetadata
+            }
+
+            Current.logEvent?("location_update", ["trigger": localMetadata.trigger.rawValue])
+
+            let notificationOptions = localMetadata.trigger.notificationOptionsFor(zoneName: localMetadata.zoneName)
+
+            Current.clientEventStore.addEvent(ClientEvent(
+                text: notificationOptions.body,
+                type: .locationUpdate,
+                payload: try? request.asDictionary()
+            ))
+
+            guard notificationOptions.shouldNotify else {
                 return nil
             }
 
-            /*
-             Current.Log.verbose("Device seen via webhook!")
-             self.sendLocalNotification(withZone: zone, updateType: updateType, payloadDict: payload)
-             Current.logEvent?("location_update", ["trigger": updateType.rawValue as String])
-             */
+            return UNNotificationRequest(
+                identifier: notificationOptions.identifier ?? UUID().uuidString,
+                content: with(UNMutableNotificationContent()) {
+                    $0.title = notificationOptions.title
+                    $0.body = notificationOptions.body
+                    $0.sound = UNNotificationSound.default
+                },
+                trigger: nil
+            )
         }.recover { _ -> Guarantee<UNNotificationRequest?> in
+            // don't send a notification for failed
             return .value(nil)
         }.map { notification in
             var result = WebhookResponseHandlerResult.default

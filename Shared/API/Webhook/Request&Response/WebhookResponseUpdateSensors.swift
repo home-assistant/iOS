@@ -15,7 +15,10 @@ struct WebhookResponseUpdateSensors: WebhookResponseHandler {
         self.api = api
     }
 
-    func handle(result: Promise<Any>) -> Guarantee<WebhookResponseHandlerResult> {
+    func handle(
+        request: Promise<WebhookRequest>,
+        result: Promise<Any>
+    ) -> Guarantee<WebhookResponseHandlerResult> {
         let parsed = result.map { (possible: Any) throws -> [String: [String: Any]] in
             if let value = possible as? [String: [String: Any]] {
                 return value
@@ -33,29 +36,39 @@ struct WebhookResponseUpdateSensors: WebhookResponseHandler {
             }
         }
 
-        let needsRegistering = parsed.map {
-            $0.filter { _, value in
+        let needsRegistering = parsed.map { response in
+            response.filter { _, value in
                 value.Success == false && value.ErrorCode == "not_registered"
             }.compactMap { $0.key }
         }.get { keys in
-            Current.Log.info("need to register \(keys)")
-        }.then { [api] needsRegistering in
-            firstly { () -> Guarantee<[WebhookSensor]> in
+            if keys.isEmpty == false {
+                Current.Log.info("need to register \(keys)")
+            }
+        }.then { [api] needsRegistering -> Promise<Void> in
+            guard needsRegistering.isEmpty == false else {
+                return .value(())
+            }
+
+            return firstly { () -> Guarantee<[WebhookSensor]> in
                 api.sensors.sensors(request: .init(reason: .registration))
-            }.filterValues { sensor -> Bool in
-                needsRegistering.contains(sensor.UniqueID)
+            }.filterValues { sensor in
+                if let uniqueID = sensor.UniqueID {
+                    return needsRegistering.contains(uniqueID)
+                } else {
+                    return false
+                }
             }.get { sensors in
                 Current.Log.info("registering \(sensors.map { $0.UniqueID })")
             }.thenMap { sensor in
                 api.webhookManager.send(request: .init(type: "register_sensor", data: sensor.toJSON()))
-            }
+            }.asVoid()
         }
 
         return when(resolved: needsRegistering.asVoid(), parsed.asVoid())
             .map { _ in WebhookResponseHandlerResult.default }
     }
 
-    static func shouldReplace(request current: URLSessionTask, with proposed: URLSessionTask) -> Bool {
+    static func shouldReplace(request current: WebhookRequest, with proposed: WebhookRequest) -> Bool {
         // always replace an existing request with a new one
         return true
     }

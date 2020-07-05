@@ -118,14 +118,14 @@ public class WebhookManager: NSObject {
             switch result {
             case .fulfilled(let response):
                 Current.Log.info {
-                    var log = "got successful response for \(request.PayloadType ?? "(unknown)")"
+                    var log = "got successful response for \(request.type)"
                     if Current.isDebug {
                         log += ": \(response)"
                     }
                     return log
                 }
             case .rejected(let error):
-                Current.Log.error("got failure for \(request.PayloadType ?? "(unknown)"): \(error)")
+                Current.Log.error("got failure for \(request.type): \(error)")
             }
         }
     }
@@ -144,7 +144,7 @@ public class WebhookManager: NSObject {
         let (promise, seal) = Promise<Void>.pending()
 
         firstly {
-            Self.urlRequest(for: request, identifier: identifier)
+            Self.urlRequest(for: request)
         }.done { [backgroundUrlSession] urlRequest, data in
             let temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             let temporaryFile = temporaryDirectory
@@ -152,6 +152,7 @@ public class WebhookManager: NSObject {
                 .appendingPathExtension("json")
             try data.write(to: temporaryFile, options: [])
             let task = backgroundUrlSession.uploadTask(with: urlRequest, fromFile: temporaryFile)
+            task.webhookPersisted = WebhookPersisted(request: request, identifier: identifier)
 
             self.evaluateCancellable(by: task, with: promise)
             self.resolverForIdentifier[task.taskIdentifier] = seal
@@ -159,7 +160,12 @@ public class WebhookManager: NSObject {
 
             try FileManager.default.removeItem(at: temporaryFile)
         }.catch { [weak self] error in
-            self?.invoke(handler: handlerType, result: .init(error: error), resolver: seal)
+            self?.invoke(
+                handler: handlerType,
+                request: .value(request),
+                result: .init(error: error),
+                resolver: seal
+            )
         }
 
         return promise
@@ -168,20 +174,27 @@ public class WebhookManager: NSObject {
     // MARK: - Private
 
     private func evaluateCancellable(by newTask: URLSessionTask, with newPromise: Promise<Void>) {
-        guard let newType = responseHandler(from: newTask) else {
+        guard let (newType, newPersisted) = responseInfo(from: newTask) else {
             Current.Log.error("couldn't determine request type from \(newTask)")
             return
         }
 
         backgroundUrlSession.getAllTasks { tasks in
             tasks.filter { thisTask in
-                if let thisType = self.responseHandler(from: thisTask), thisType == newType, thisTask != newTask {
-                    return newType.shouldReplace(request: thisTask, with: newTask)
+                guard let (thisType, thisPersisted) = self.responseInfo(from: thisTask) else {
+                    Current.Log.error("cancelling request without persistence info: \(thisTask)")
+                    thisTask.cancel()
+                    return false
+                }
+
+                if thisType == newType, thisTask != newTask {
+                    return newType.shouldReplace(request: newPersisted.request, with: thisPersisted.request)
                 } else {
                     return false
                 }
             }.forEach { existingTask in
                 if let existingResolver = self.resolverForIdentifier[existingTask.taskIdentifier] {
+                    // connect the task we're about to cancel's promise to the replacement
                     newPromise.pipe { existingResolver.resolve($0) }
                 }
                 existingTask.cancel()
@@ -189,10 +202,7 @@ public class WebhookManager: NSObject {
         }
     }
 
-    private static func urlRequest(
-        for request: WebhookRequest,
-        identifier: WebhookResponseIdentifier? = nil
-    ) -> Promise<(URLRequest, Data)> {
+    private static func urlRequest(for request: WebhookRequest) -> Promise<(URLRequest, Data)> {
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.map { api in
@@ -200,9 +210,10 @@ public class WebhookManager: NSObject {
                 url: api.connectionInfo.webhookURL,
                 method: .post
             )
-            identifier?.augment(request: &urlRequest)
             urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            return (urlRequest, try JSONSerialization.data(withJSONObject: request.toJSON(), options: []))
+
+            let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server).toJSON(request)
+            return (urlRequest, try JSONSerialization.data(withJSONObject: jsonObject, options: []))
         }
     }
 
@@ -216,18 +227,18 @@ public class WebhookManager: NSObject {
         }
     }
 
-    private func responseHandler(from task: URLSessionTask) -> WebhookResponseHandler.Type? {
-        guard let request = task.originalRequest, let identifier = WebhookResponseIdentifier(request: request) else {
-            Current.Log.error("unknown response type for \(task)")
+    private func responseInfo(from task: URLSessionTask) -> (WebhookResponseHandler.Type, WebhookPersisted)? {
+        guard let persisted = task.webhookPersisted else {
+            Current.Log.error("no persisted info for \(task) \(task.taskDescription ?? "(nil)")")
             return nil
         }
 
-        guard let handlerType = responseHandlers[identifier] else {
-            Current.Log.error("unknown response identifier \(identifier) for \(task)")
+        guard let handlerType = responseHandlers[persisted.identifier] else {
+            Current.Log.error("unknown response identifier \(persisted.identifier) for \(task)")
             return nil
         }
 
-        return handlerType
+        return (handlerType, persisted)
     }
 }
 
@@ -264,11 +275,15 @@ extension WebhookManager: URLSessionDataDelegate {
         )
 
         // dispatch
-        if let handlerType = responseHandler(from: task) {
+        if let (handlerType, persisted) = responseInfo(from: task) {
             // logging
             result.done { body in
-                if Current.isDebug {
-                    Current.Log.info("got response for \(handlerType) \(body)")
+                Current.Log.info {
+                    if Current.isDebug {
+                        return "got response type(\(handlerType)) request(\(persisted.request)) body(\(body))"
+                    } else {
+                        return "got response type(\(handlerType)) for \(persisted.identifier)"
+                    }
                 }
             }.catch { error in
                 Current.Log.error("failed request for \(handlerType): \(error)")
@@ -276,6 +291,7 @@ extension WebhookManager: URLSessionDataDelegate {
 
             invoke(
                 handler: handlerType,
+                request: .value(persisted.request),
                 result: result,
                 resolver: resolverForIdentifier[task.taskIdentifier]
             )
@@ -287,6 +303,7 @@ extension WebhookManager: URLSessionDataDelegate {
 
     private func invoke(
         handler handlerType: WebhookResponseHandler.Type,
+        request: Promise<WebhookRequest>,
         result: Promise<Any>,
         resolver: Resolver<Void>?
     ) {
@@ -300,7 +317,7 @@ extension WebhookManager: URLSessionDataDelegate {
 
         let handler = handlerType.init(api: api)
         let handlerPromise = firstly {
-            handler.handle(result: result)
+            handler.handle(request: request, result: result)
         }.done { [weak self] result in
             // keep the handler around until it finishes
             withExtendedLifetime(handler) {

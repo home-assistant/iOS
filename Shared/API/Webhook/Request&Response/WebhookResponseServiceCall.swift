@@ -12,17 +12,28 @@ struct WebhookResponseServiceCall: WebhookResponseHandler {
         self.api = api
     }
 
-    static func shouldReplace(request current: URLSessionTask, with proposed: URLSessionTask) -> Bool {
+    static func shouldReplace(request current: WebhookRequest, with proposed: WebhookRequest) -> Bool {
         // every service call is distinct
         return false
     }
 
-    func handle(result: Promise<Any>) -> Guarantee<WebhookResponseHandlerResult> {
-        result.tap { _ in
+    func handle(
+        request: Promise<WebhookRequest>,
+        result: Promise<Any>
+    ) -> Guarantee<WebhookResponseHandlerResult> {
+        firstly {
+            when(fulfilled: request, result)
+        }.get { request, _ in
+            let requestDictionary = try request.asDictionary()
+
+            let domain = requestDictionary["domain"] as? String ?? "(unknown)"
+            let service = requestDictionary["service"] as? String ?? "(unknown)"
+            let payload = requestDictionary["service_data"] as? [String: Any] ?? [:]
+
             let event = ClientEvent(
-                text: "Calling service: TODO!", // todo \(domain) - \(service)",
+                text: "Called service: \(domain).\(service)",
                 type: .serviceCall,
-                payload: nil //TODO: yeah i['m gonna need to store metadata huh serviceData
+                payload: payload
             )
 
             Current.clientEventStore.addEvent(event)
