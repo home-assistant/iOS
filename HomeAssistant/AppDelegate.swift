@@ -18,6 +18,7 @@ import PromiseKit
 import RealmSwift
 import SafariServices
 import Shared
+import XCGLogger
 import UIKit
 import UserNotifications
 import FirebaseCrashlytics
@@ -1076,6 +1077,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                        // swiftlint:disable:next line_length
                                        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         Messaging.messaging().appDidReceiveMessage(notification.request.content.userInfo)
+
+        if notification.request.content.userInfo[XCGLogger.notifyUserInfoKey] != nil,
+            UIApplication.shared.applicationState != .background {
+            completionHandler([])
+            return
+        }
 
         var methods: UNNotificationPresentationOptions = [.alert, .badge, .sound]
         if let presentationOptions = notification.request.content.userInfo["presentation_options"] as? [String] {

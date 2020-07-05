@@ -88,6 +88,8 @@
 		11C4628C24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4628A24B1230E00031902 /* WebhookResponseServiceCall.swift */; };
 		11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4628D24B128EF00031902 /* WebhookResponseUnhandled.swift */; };
 		11C4628F24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4628D24B128EF00031902 /* WebhookResponseUnhandled.swift */; };
+		11C4629124B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629024B14E6B00031902 /* XCGLogger+UNNotification.swift */; };
+		11C4629224B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629024B14E6B00031902 /* XCGLogger+UNNotification.swift */; };
 		11C590ED24A832CA0066085D /* YamlSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C590EC24A832CA0066085D /* YamlSection.swift */; };
 		11C65CC0249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
 		11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
@@ -845,6 +847,7 @@
 		11C4628724B109C000031902 /* WebhookResponseLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookResponseLocation.swift; sourceTree = "<group>"; };
 		11C4628A24B1230E00031902 /* WebhookResponseServiceCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseServiceCall.swift; sourceTree = "<group>"; };
 		11C4628D24B128EF00031902 /* WebhookResponseUnhandled.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUnhandled.swift; sourceTree = "<group>"; };
+		11C4629024B14E6B00031902 /* XCGLogger+UNNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCGLogger+UNNotification.swift"; sourceTree = "<group>"; };
 		11C590EC24A832CA0066085D /* YamlSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YamlSection.swift; sourceTree = "<group>"; };
 		11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamCameraResponse.swift; sourceTree = "<group>"; };
 		11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastUpdateSensor.test.swift; sourceTree = "<group>"; };
@@ -2479,6 +2482,7 @@
 				B67CE8CF2220EF1D0034C1D0 /* ObjectMapper+RealmList.swift */,
 				B6723340225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift */,
 				11CB98C9249E62E700B05222 /* Version+HA.swift */,
+				11C4629024B14E6B00031902 /* XCGLogger+UNNotification.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -4246,6 +4250,7 @@
 				B6A258462232485300ADD202 /* Alamofire+EncryptedResponses.swift in Sources */,
 				11AF4D23249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
 				B67CE87622200F220034C1D0 /* Notifications.swift in Sources */,
+				11C4629224B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
 				B67CE88E22200F220034C1D0 /* Fan.swift in Sources */,
 				B6B74CBB2283983900D58A68 /* CLKComplication+Strings.swift in Sources */,
 				B67CE88222200F220034C1D0 /* InputSelect.swift in Sources */,
@@ -4387,6 +4392,7 @@
 				B675ECC5221BD76300C65D31 /* Identify.swift in Sources */,
 				113D29E324946F930014067C /* OneShotLocationManager.swift in Sources */,
 				B6723341225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
+				11C4629124B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
 				D0EEF318214DD7A400D1D360 /* Events.swift in Sources */,
 				11AF4D16249C8083006C74C0 /* With.swift in Sources */,
 				B672333E225DB68B0031D629 /* WebSocketMessage.swift in Sources */,

@@ -8,10 +8,8 @@ public class WebhookManager: NSObject {
 
     private var backingBackgroundUrlSession: URLSession!
     private var backgroundUrlSession: URLSession { return backingBackgroundUrlSession }
-    private let ephemeralUrlSession = URLSession(configuration: .ephemeral)
-    private let backgroundEventCompletionQueue: OperationQueue = with(.init()) {
-        $0.isSuspended = true
-    }
+    private let ephemeralUrlSession: URLSession
+    private let backgroundEventGroup: DispatchGroup = DispatchGroup()
     private var pendingData: [Int: Data] = [:]
     private var resolverForIdentifier: [Int: Resolver<Void>] = [:]
     private var responseHandlers = [WebhookResponseIdentifier: WebhookResponseHandler.Type]()
@@ -34,6 +32,8 @@ public class WebhookManager: NSObject {
             $0.maxConcurrentOperationCount = 1
         }
 
+        self.ephemeralUrlSession = URLSession(configuration: .ephemeral)
+
         super.init()
 
         self.backingBackgroundUrlSession = URLSession(
@@ -54,7 +54,14 @@ public class WebhookManager: NSObject {
     }
 
     public func handleBackground(for identifier: String, completionHandler: @escaping () -> Void) {
-        backgroundEventCompletionQueue.addOperation(completionHandler)
+        Current.Log.notify("handleBackground started")
+        // the pair of this enter is in urlSessionDidFinishEvents
+        backgroundEventGroup.enter()
+
+        backgroundEventGroup.notify(queue: DispatchQueue.main) {
+            Current.Log.notify("final completion")
+            completionHandler()
+        }
     }
 
     // MARK: - Sending Ephemeral
@@ -226,9 +233,8 @@ public class WebhookManager: NSObject {
 
 extension WebhookManager: URLSessionDelegate {
     public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        backgroundEventCompletionQueue.isSuspended = false
-        backgroundEventCompletionQueue.waitUntilAllOperationsAreFinished()
-        backgroundEventCompletionQueue.isSuspended = true
+        Current.Log.notify("event delivery ended")
+        backgroundEventGroup.leave()
     }
 }
 
@@ -274,6 +280,7 @@ extension WebhookManager: URLSessionDataDelegate {
                 resolver: resolverForIdentifier[task.taskIdentifier]
             )
         } else {
+            Current.Log.notify("no handler for background task")
             Current.Log.error("couldn't find appropriate handler for \(task)")
         }
     }
@@ -288,6 +295,9 @@ extension WebhookManager: URLSessionDataDelegate {
             return
         }
 
+        Current.Log.notify("starting \(handlerType)")
+        backgroundEventGroup.enter()
+
         let handler = handlerType.init(api: api)
         let handlerPromise = firstly {
             handler.handle(result: result)
@@ -298,8 +308,13 @@ extension WebhookManager: URLSessionDataDelegate {
             }
         }
 
-        when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
-            .tap { resolver?.resolve($0) }
-            .cauterize()
+        firstly {
+            when(fulfilled: [handlerPromise.asVoid(), result.asVoid()])
+        }.tap {
+            resolver?.resolve($0)
+        }.ensure { [backgroundEventGroup] in
+            Current.Log.notify("finished \(handlerType)")
+            backgroundEventGroup.leave()
+        }.cauterize()
     }
 }
