@@ -49,7 +49,7 @@ class FireEventIntentHandler: NSObject, FireEventIntentHandling {
 
         var eventDataDict: [String: Any] = [:]
 
-        if let storedData = intent.eventData, let data = storedData.data(using: .utf8) {
+        if let storedData = intent.eventData, storedData.isEmpty == false, let data = storedData.data(using: .utf8) {
             do {
                 if let jsonArray = try JSONSerialization.jsonObject(with: data,
                                                                     options: .allowFragments) as? [String: Any] {
