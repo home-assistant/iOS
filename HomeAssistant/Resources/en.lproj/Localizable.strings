@@ -648,7 +648,7 @@
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "No http.base_url was found in the discovery information. Please add a valid http.base_url to your configuration.yaml and restart Home Assistant to continue with automatic setup or setup manually.";
 "settings_details.notifications.rate_limits.header" = "Rate Limits";
-"settings_details.notifications.rate_limits.footer" = "You are allowed 150 push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "You are allowed %d push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).";
 "settings_details.notifications.rate_limits.attempts" = "Attempts";
 "settings_details.notifications.rate_limits.delivered" = "Delivered";
 "settings_details.notifications.rate_limits.errors" = "Errors";

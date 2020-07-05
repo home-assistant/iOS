@@ -244,66 +244,46 @@ class NotificationSettingsViewController: FormViewController {
                 }
             })
 
-            +++ Section(header: L10n.SettingsDetails.Notifications.RateLimits.header,
-                        footer: L10n.SettingsDetails.Notifications.RateLimits.footer)
-            <<< LabelRow {
-                $0.tag = "attemptsCount"
-                $0.title = L10n.SettingsDetails.Notifications.RateLimits.attempts
-                $0.value = "0"
-            }
-            <<< LabelRow {
-                $0.tag = "deliveredCount"
-                $0.title = L10n.SettingsDetails.Notifications.RateLimits.delivered
-                $0.value = "0"
-            }
-            <<< LabelRow {
-                $0.tag = "errorCount"
-                $0.title = L10n.SettingsDetails.Notifications.RateLimits.errors
-                $0.value = "0"
-            }
-            <<< LabelRow {
-                $0.tag = "totalCount"
-                $0.title = L10n.SettingsDetails.Notifications.RateLimits.total
-                $0.value = "0"
-            }
-            <<< LabelRow {
-                $0.tag = "resetsIn"
-                $0.title = L10n.SettingsDetails.Notifications.RateLimits.resetsIn
-                $0.value = "0"
+            +++ Section(header: L10n.SettingsDetails.Notifications.RateLimits.header, footer: nil) {
+                $0.tag = "rateLimits"
             }
     }
 
     func setupFirestoreRateLimits() {
         guard let pushID = Current.settingsStore.pushID else { return }
-        let db = Firestore.firestore()
 
-        let date = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyyMMdd"
-        dateFormatter.timeZone = self.utc
-        let dateStr = dateFormatter.string(from: date)
-
-        let path = "/rateLimits/\(dateStr)/tokens/\(pushID)"
-
-        Current.Log.verbose("Getting rate limit document at \(path)")
-
-        db.document(path).addSnapshotListener { documentSnapshot, error in
-            guard let document = documentSnapshot else {
-                Current.Log.error("Error fetching document: \(error!)")
+        firstly {
+            NotificationRateLimitsAPI.rateLimits(pushID: pushID)
+        }.done { [form] response in
+            guard let section = form.sectionBy(tag: "rateLimits") else {
                 return
             }
 
-            guard let data = document.data() else {
-                Current.Log.warning("Rate limit document was empty.")
+            section.footer = HeaderFooterView(
+                title: L10n.SettingsDetails.Notifications.RateLimits.footerWithParam(response.rateLimits.maximum)
+            )
+
+            section.removeAll()
+
+            section
+                <<< response.rateLimits.row(for: \.attempts)
+                <<< response.rateLimits.row(for: \.successful)
+                <<< response.rateLimits.row(for: \.errors)
+                <<< response.rateLimits.row(for: \.total)
+                <<< response.rateLimits.row(for: \.resetsAt)
+        }.catch { [form] error in
+            Current.Log.error("couldn't load rate limit: \(error)")
+            guard let section = form.sectionBy(tag: "rateLimits") else {
                 return
             }
 
-            for (key, val) in data {
-                guard let iVal = val as? Int else { continue }
-                guard let row = self.form.rowBy(tag: key) as? LabelRow else { continue }
-                row.value = String(iVal)
-                row.updateCell()
+            section.removeAll()
+
+            section <<< ButtonRow {
+                $0.title = L10n.retryLabel
+                $0.onCellSelection { [weak self] _, _ in
+                    self?.setupFirestoreRateLimits()
+                }
             }
         }
     }
