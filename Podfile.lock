@@ -191,6 +191,19 @@ PODS:
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
   - ObjectMapper (4.2.0)
+  - OHHTTPStubs/Core (9.0.0)
+  - OHHTTPStubs/Default (9.0.0):
+    - OHHTTPStubs/Core
+    - OHHTTPStubs/JSON
+    - OHHTTPStubs/NSURLSession
+    - OHHTTPStubs/OHPathHelpers
+  - OHHTTPStubs/JSON (9.0.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/NSURLSession (9.0.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/OHPathHelpers (9.0.0)
+  - OHHTTPStubs/Swift (9.0.0):
+    - OHHTTPStubs/Default
   - PromiseKit (6.13.1):
     - PromiseKit/CorePromise (= 6.13.1)
     - PromiseKit/Foundation (= 6.13.1)
@@ -249,6 +262,7 @@ DEPENDENCIES:
   - "MaterialComponents/Buttons+Theming"
   - MBProgressHUD (~> 1.2.0)
   - ObjectMapper (from `https://github.com/tristanhimmelman/ObjectMapper.git`, branch `master`)
+  - OHHTTPStubs/Swift
   - PromiseKit
   - ReachabilitySwift
   - RealmSwift (~> 5.0)
@@ -292,6 +306,7 @@ SPEC REPOS:
     - MDFTextAccessibility
     - nanopb
     - ObjcExceptionBridging
+    - OHHTTPStubs
     - PromiseKit
     - PromisesObjC
     - Protobuf
@@ -394,6 +409,7 @@ SPEC CHECKSUMS:
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: 5a6c9f063ef67e7fc0d7eb8958919e3121396a96
+  OHHTTPStubs: cb29d2a9d09a828ecb93349a2b0c64f99e0db89f
   PromiseKit: 28fda91c973cc377875d8c0ea4f973013c05b6db
   PromisesObjC: b48e0338dbbac2207e611750777895f7a5811b75
   Protobuf: 2793fcd0622a00b546c60e7cbbcc493e043e9bb9
@@ -413,6 +429,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: b1e5f50d7e92821a77ef020db0a979d5bcdd6fba
+PODFILE CHECKSUM: a02ac69f9537ac87987139c1c2ac488107aca31d
 
 COCOAPODS: 1.9.3
