@@ -72,6 +72,7 @@
 		11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */; };
+		11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */; };
 		11C590ED24A832CA0066085D /* YamlSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C590EC24A832CA0066085D /* YamlSection.swift */; };
 		11C65CC0249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
 		11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */; };
@@ -825,6 +826,7 @@
 		11AF4D2F249DCA87006C74C0 /* ConnectivitySensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivitySensor.test.swift; sourceTree = "<group>"; };
 		11B7FD732493225200E60ED9 /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
 		11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
+		11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRateLimitsAPI.swift; sourceTree = "<group>"; };
 		11C590EC24A832CA0066085D /* YamlSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YamlSection.swift; sourceTree = "<group>"; };
 		11C65CBF249838EB00D07FC7 /* StreamCameraResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamCameraResponse.swift; sourceTree = "<group>"; };
 		11CB98C5249DE15B00B05222 /* LastUpdateSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastUpdateSensor.test.swift; sourceTree = "<group>"; };
@@ -1980,6 +1982,7 @@
 				11F3D74F2495433800C05BBA /* Sensors */,
 				B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */,
 				B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */,
+				11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -3548,7 +3551,6 @@
 				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire-iOS/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage-iOS/AlamofireImage.framework",
-				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
 				"${BUILT_PRODUCTS_DIR}/CPDAcknowledgements/CPDAcknowledgements.framework",
 				"${BUILT_PRODUCTS_DIR}/CallbackURLKit/CallbackURLKit.framework",
 				"${BUILT_PRODUCTS_DIR}/ColorPickerRow/ColorPickerRow.framework",
@@ -3581,10 +3583,6 @@
 				"${BUILT_PRODUCTS_DIR}/WhatsNewKit/WhatsNewKit.framework",
 				"${BUILT_PRODUCTS_DIR}/XCGLogger-iOS/XCGLogger.framework",
 				"${BUILT_PRODUCTS_DIR}/ZIPFoundation/ZIPFoundation.framework",
-				"${BUILT_PRODUCTS_DIR}/abseil/absl.framework",
-				"${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework",
-				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
-				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/lottie-ios/Lottie.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -3592,7 +3590,6 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CPDAcknowledgements.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CallbackURLKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ColorPickerRow.framework",
@@ -3625,10 +3622,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WhatsNewKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XCGLogger.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZIPFoundation.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/absl.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpcpp.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lottie.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
@@ -4086,6 +4079,7 @@
 				B641BC251E20A17B002CCBC1 /* OpenInChromeController.swift in Sources */,
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
+				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
 				D0EEF336214EB7B800D1D360 /* Strings.swift in Sources */,
 				B65B15032273184F00635D5C /* Colors.swift in Sources */,
 				B6A5D9F5215233EC0013963F /* SiriIntents+ConvenienceInits.swift in Sources */,

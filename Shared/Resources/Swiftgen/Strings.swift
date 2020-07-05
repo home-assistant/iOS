@@ -1570,8 +1570,10 @@ internal enum L10n {
         internal static let delivered = L10n.tr("Localizable", "settings_details.notifications.rate_limits.delivered")
         /// Errors
         internal static let errors = L10n.tr("Localizable", "settings_details.notifications.rate_limits.errors")
-        /// You are allowed 150 push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).
-        internal static let footer = L10n.tr("Localizable", "settings_details.notifications.rate_limits.footer")
+        /// You are allowed %d push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).
+        internal static func footerWithParam(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "settings_details.notifications.rate_limits.footer_with_param", p1)
+        }
         /// Rate Limits
         internal static let header = L10n.tr("Localizable", "settings_details.notifications.rate_limits.header")
         /// Resets In
