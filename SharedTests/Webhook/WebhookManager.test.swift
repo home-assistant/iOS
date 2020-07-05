@@ -31,7 +31,7 @@ class WebhookManagerTests: XCTestCase {
 
         webhookURL = api.connectionInfo.webhookURL
 
-        Current.api = { [api] in api }
+        Current.api = { [weak self] in self?.api }
 
         manager = WebhookManager()
     }
@@ -88,6 +88,42 @@ class WebhookManagerTests: XCTestCase {
 
         XCTAssertNoThrow(try hang(manager.sendEphemeral(request: expectedRequest)))
         XCTAssertFalse(shouldFail, "aka it did a loop")
+    }
+
+    func testSendingEphemeralFailsOnceThenSucceedsWithAChangedURL() {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+
+        let nextAPI = FakeHassAPI(
+            connectionInfo: ConnectionInfo(
+                externalURL: URL(string: "http://example.changed"),
+                internalURL: nil,
+                cloudhookURL: nil,
+                remoteUIURL: nil,
+                webhookID: "given_id",
+                webhookSecret: nil,
+                internalSSIDs: nil
+            ), tokenInfo: TokenInfo(
+                accessToken: "accessToken",
+                refreshToken: "refreshToken",
+                expiration: Date()
+            )
+        )
+        let nextAPIWebhookURL = nextAPI.connectionInfo.webhookURL
+
+        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+
+            self.api = nextAPI
+
+            return HTTPStubsResponse(error: URLError(.notConnectedToInternet))
+        })
+
+        stub(condition: { req in req.url == nextAPIWebhookURL }, response: { request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+            return HTTPStubsResponse(jsonObject: [:], statusCode: 200, headers: [:])
+        })
+
+        XCTAssertNoThrow(try hang(manager.sendEphemeral(request: expectedRequest)))
     }
 
     func testSendingEphemeralExpectingString() throws {
