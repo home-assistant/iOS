@@ -650,15 +650,14 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func RegisterSensors() -> Promise<[WebhookSensorResponse]> {
+    public func RegisterSensors() -> Promise<Void> {
         return firstly {
             sensors.sensors(request: .init(reason: .registration))
         }.get { sensors in
             Current.Log.verbose("Registering sensors \(sensors.map { $0.UniqueID  })")
-        }.thenMap { [webhookManager] (sensor) -> Promise<WebhookSensorResponse> in
-            // todo: make persistent
-            webhookManager.sendEphemeral(request: .init(type: "register_sensor", data: sensor.toJSON()))
-        }
+        }.thenMap { [webhookManager] sensor in
+            webhookManager.send(request: .init(type: "register_sensor", data: sensor.toJSON()))
+        }.asVoid()
     }
 
     public func UpdateSensors(trigger: LocationUpdateTrigger,

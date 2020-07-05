@@ -42,14 +42,12 @@ struct WebhookResponseUpdateSensors: WebhookResponseHandler {
         }.then { [api] needsRegistering in
             firstly { () -> Guarantee<[WebhookSensor]> in
                 api.sensors.sensors(request: .init(reason: .registration))
-            }.filterValues { (sensor) -> Bool in
+            }.filterValues { sensor -> Bool in
                 needsRegistering.contains(sensor.UniqueID)
-            }.thenMap { sensor -> Promise<Any> in
-                Current.Log.info("registering \(sensor.UniqueID!)")
-                // todo: make not ephemeral
-                return api.webhookManager.sendEphemeral(
-                    request: .init(type: "register_sensor", data: sensor.toJSON())
-                )
+            }.get { sensors in
+                Current.Log.info("registering \(sensors.map { $0.UniqueID })")
+            }.thenMap { sensor in
+                api.webhookManager.send(request: .init(type: "register_sensor", data: sensor.toJSON()))
             }
         }
 
