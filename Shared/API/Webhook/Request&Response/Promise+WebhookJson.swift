@@ -46,7 +46,7 @@ extension Promise where T == Data {
         on queue: DispatchQueue?,
         statusCode: Int?,
         sodium: Sodium,
-        options: JSONSerialization.ReadingOptions
+        options: JSONSerialization.ReadingOptions = [.allowFragments]
     ) -> Promise<Any> {
         switch statusCode {
         case 204, 205:

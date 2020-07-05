@@ -107,6 +107,10 @@ public class Environment {
         #endif
     }
 
+    public var isRunningTests: Bool {
+        return NSClassFromString("XCTest") != nil
+    }
+
     public var appConfiguration: AppConfiguration {
         if isFastlaneSnapshot {
             return .FastlaneSnapshot

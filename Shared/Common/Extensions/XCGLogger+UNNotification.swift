@@ -10,7 +10,7 @@ extension XCGLogger {
         fileName: StaticString = #file,
         lineNumber: Int = #line
     ) {
-        if Current.isDebug {
+        if Current.isDebug, !Current.isRunningTests {
             UNUserNotificationCenter.current().add(UNNotificationRequest(
                 identifier: UUID().uuidString,
                 content: with(UNMutableNotificationContent()) {

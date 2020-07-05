@@ -3,23 +3,23 @@ import PromiseKit
 import UserNotifications
 import ObjectMapper
 
+internal enum WebhookManagerError: Error {
+    case noApi
+    case unregisteredIdentifier
+    case unexpectedType(given: String, desire: String)
+    case unmappableValue
+}
+
 public class WebhookManager: NSObject {
     public static let URLSessionIdentifier = "hass.webhook_manager"
 
     private var backingBackgroundUrlSession: URLSession!
-    private var backgroundUrlSession: URLSession { return backingBackgroundUrlSession }
-    private let ephemeralUrlSession: URLSession
+    internal var backgroundUrlSession: URLSession { return backingBackgroundUrlSession }
+    internal let ephemeralUrlSession: URLSession
     private let backgroundEventGroup: DispatchGroup = DispatchGroup()
     private var pendingData: [Int: Data] = [:]
     private var resolverForIdentifier: [Int: Resolver<Void>] = [:]
     private var responseHandlers = [WebhookResponseIdentifier: WebhookResponseHandler.Type]()
-
-    internal enum WebhookManagerError: Error {
-        case noApi
-        case unregisteredIdentifier
-        case unexpectedType(given: String, desire: String)
-        case unmappableValue
-    }
 
     // MARK: - Lifecycle
 
@@ -203,9 +203,12 @@ public class WebhookManager: NSObject {
     }
 
     private static func urlRequest(for request: WebhookRequest) -> Promise<(URLRequest, Data)> {
-        firstly {
-            HomeAssistantAPI.authenticatedAPIPromise
-        }.map { api in
+        return Promise { seal in
+            guard let api = Current.api() else {
+                seal.reject(WebhookManagerError.noApi)
+                return
+            }
+
             var urlRequest = try URLRequest(
                 url: api.connectionInfo.webhookURL,
                 method: .post
@@ -213,7 +216,12 @@ public class WebhookManager: NSObject {
             urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
             let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server).toJSON(request)
-            return (urlRequest, try JSONSerialization.data(withJSONObject: jsonObject, options: []))
+            let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
+
+            // httpBody is ignored by URLSession but is made available in tests
+            urlRequest.httpBody = data
+
+            seal.fulfill((urlRequest, data))
         }
     }
 
@@ -307,7 +315,7 @@ extension WebhookManager: URLSessionDataDelegate {
         result: Promise<Any>,
         resolver: Resolver<Void>?
     ) {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+        guard let api = Current.api() else {
             Current.Log.error("no api")
             return
         }

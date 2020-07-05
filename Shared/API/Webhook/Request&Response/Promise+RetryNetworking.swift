@@ -12,7 +12,12 @@ func attemptNetworking<T>(
         attempts += 1
         return body().recover { error -> Promise<T> in
             guard attempts < maximumRetryCount, error is URLError else { throw error }
-            return after(delayBeforeRetry).then(on: nil, attempt)
+
+            if Current.isRunningTests {
+                return attempt()
+            } else {
+                return after(delayBeforeRetry).then(on: nil, attempt)
+            }
         }
     }
     return attempt()
