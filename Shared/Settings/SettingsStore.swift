@@ -131,15 +131,26 @@ public class SettingsStore {
     }
 
     public var integrationDeviceID: String {
+        let baseString: String
+
         #if os(iOS)
-            return UIDevice.current.identifierForVendor?.uuidString ?? deviceID
+            baseString = UIDevice.current.identifierForVendor?.uuidString ?? deviceID
         #elseif os(watchOS)
             if #available(watchOS 6.2, *) {
-                return WKInterfaceDevice.current().identifierForVendor?.uuidString ?? deviceID
+                baseString = WKInterfaceDevice.current().identifierForVendor?.uuidString ?? deviceID
             } else {
-                return deviceID
+                baseString = deviceID
             }
         #endif
+
+        switch Current.appConfiguration {
+        case .Beta:
+            return "beta_" + baseString
+        case .Debug:
+            return "debug_" + baseString
+        case .FastlaneSnapshot, .Release:
+            return baseString
+        }
     }
 
     public var deviceID: String {
