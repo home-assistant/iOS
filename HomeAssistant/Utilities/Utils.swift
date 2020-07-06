@@ -29,7 +29,7 @@ func resetStores() {
     Realm.reset()
 }
 
-func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController) {
+func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController?) {
     guard ["http", "https"].contains(urlToOpen.scheme?.lowercased()) else {
         UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
         return
@@ -43,9 +43,9 @@ func openURLInBrowser(_ urlToOpen: URL, _ sender: UIViewController) {
         OpenInChromeController.sharedInstance.openInChrome(urlToOpen, callbackURL: nil)
     case .Firefox where OpenInFirefoxControllerSwift().isFirefoxInstalled():
         OpenInFirefoxControllerSwift().openInFirefox(urlToOpen)
-    case .SafariInApp:
+    case .SafariInApp where sender != nil:
         let sfv = SFSafariViewController(url: urlToOpen)
-        sender.present(sfv, animated: true)
+        sender!.present(sfv, animated: true)
     default:
         UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
     }
