@@ -113,13 +113,13 @@ public class HomeAssistantAPI {
         }
     }
 
-    public let webhookManager = with(WebhookManager()) {
+    public internal(set) var webhookManager = with(WebhookManager()) {
         $0.register(responseHandler: WebhookResponseUpdateSensors.self, for: .updateSensors)
         $0.register(responseHandler: WebhookResponseLocation.self, for: .location)
         $0.register(responseHandler: WebhookResponseServiceCall.self, for: .serviceCall)
     }
 
-    public let sensors = with(SensorContainer()) {
+    public internal(set) var sensors = with(SensorContainer()) {
         $0.register(provider: ActivitySensor.self)
         $0.register(provider: PedometerSensor.self)
         $0.register(provider: BatterySensor.self)

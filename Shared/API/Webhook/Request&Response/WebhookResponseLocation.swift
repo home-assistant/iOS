@@ -59,9 +59,9 @@ struct WebhookResponseLocation: WebhookResponseHandler {
         firstly {
             when(fulfilled: request, result)
         }.map { request, _ in
-            guard let localMetadata = Mapper<WebhookResponseLocationLocalMetadata>().map(
-                JSON: request.localMetadata ?? [:]
-            ) else {
+            guard let localMetadata = request.localMetadata.flatMap({
+                Mapper<WebhookResponseLocationLocalMetadata>().map(JSON: $0)
+            }) else {
                 throw HandleError.missingLocalMetadata
             }
 

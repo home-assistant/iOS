@@ -2,7 +2,7 @@ import Foundation
 import Sodium
 import PromiseKit
 
-enum WebhookJsonParseError: Error {
+enum WebhookJsonParseError: Error, Equatable {
     case empty
     case base64
     case missingKey
@@ -11,9 +11,10 @@ enum WebhookJsonParseError: Error {
 
 extension Promise where T == Data? {
     func webhookJson(
-        on queue: DispatchQueue?,
+        on queue: DispatchQueue? = nil,
         statusCode: Int? = nil,
-        sodium: Sodium =  Sodium(),
+        sodium: Sodium = Sodium(),
+        secretGetter: @escaping () -> String? = { Current.settingsStore.connectionInfo?.webhookSecret },
         options: JSONSerialization.ReadingOptions = [.allowFragments]
     ) -> Promise<Any> {
         return then { optionalData -> Promise<Any> in
@@ -22,6 +23,7 @@ extension Promise where T == Data? {
                     on: queue,
                     statusCode: statusCode,
                     sodium: sodium,
+                    secretGetter: secretGetter,
                     options: options
                 )
             } else {
@@ -33,12 +35,19 @@ extension Promise where T == Data? {
 
 extension Promise where T == Data {
     func webhookJson(
-        on queue: DispatchQueue?,
+        on queue: DispatchQueue? = nil,
         statusCode: Int? = nil,
-        sodium: Sodium =  Sodium(),
+        sodium: Sodium = Sodium(),
+        secretGetter: @escaping () -> String? = { Current.settingsStore.connectionInfo?.webhookSecret },
         options: JSONSerialization.ReadingOptions = [.allowFragments]
     ) -> Promise<Any> {
-        definitelyWebhookJson(on: queue, statusCode: statusCode, sodium: sodium, options: options)
+        definitelyWebhookJson(
+            on: queue,
+            statusCode: statusCode,
+            sodium: sodium,
+            secretGetter: secretGetter,
+            options: options
+        )
     }
 
     // Exists so that the Data? -> Data one doesn't accidentally refer to itself
@@ -46,6 +55,7 @@ extension Promise where T == Data {
         on queue: DispatchQueue?,
         statusCode: Int?,
         sodium: Sodium,
+        secretGetter: @escaping () -> String?,
         options: JSONSerialization.ReadingOptions = [.allowFragments]
     ) -> Promise<Any> {
         switch statusCode {
@@ -74,7 +84,7 @@ extension Promise where T == Data {
                 return object
             }
 
-            guard let secret = Current.settingsStore.connectionInfo?.webhookSecret else {
+            guard let secret = secretGetter() else {
                 throw WebhookJsonParseError.missingKey
             }
 

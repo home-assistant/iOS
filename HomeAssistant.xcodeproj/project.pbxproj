@@ -28,6 +28,7 @@
 		1141182724AF9A0500E6525C /* WebhookManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182524AF9A0500E6525C /* WebhookManager.swift */; };
 		1141182A24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
 		1141182B24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
+		114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */; };
 		117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */; };
 		117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */; };
 		11810D4A249EAF8D00E741A4 /* rainbow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D40249EAF8B00E741A4 /* rainbow@2x.png */; };
@@ -102,6 +103,10 @@
 		11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C9249E62E700B05222 /* Version+HA.swift */; };
 		11CB98CB249E62E700B05222 /* Version+HA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98C9249E62E700B05222 /* Version+HA.swift */; };
 		11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CB98CC249E637300B05222 /* Version+HA.test.swift */; };
+		11CD94B524B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94B424B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift */; };
+		11CD94B724B2CC7400BA801D /* WebhookResponseLocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94B624B2CC7400BA801D /* WebhookResponseLocation.test.swift */; };
+		11CD94B924B2D16F00BA801D /* WebhookResponseServiceCall.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */; };
+		11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */; };
 		11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D74B2495377B00C05BBA /* SensorListViewController.swift */; };
 		11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */; };
 		28F97CE2A585EB2423FB7003 /* Pods_Shared_watchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81EFBEA503010FAE577D0269 /* Pods_Shared_watchOS.framework */; };
@@ -804,6 +809,7 @@
 		113D29E224946F930014067C /* OneShotLocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneShotLocationManager.swift; sourceTree = "<group>"; };
 		1141182524AF9A0500E6525C /* WebhookManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookManager.swift; sourceTree = "<group>"; };
 		1141182924AFA10900E6525C /* WebhookResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseHandler.swift; sourceTree = "<group>"; };
+		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
 		1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.swift"; sourceTree = "<group>"; };
 		117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.test.swift"; sourceTree = "<group>"; };
@@ -861,6 +867,10 @@
 		11CB98C7249DE24000B05222 /* PedometerSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSensor.test.swift; sourceTree = "<group>"; };
 		11CB98C9249E62E700B05222 /* Version+HA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Version+HA.swift"; sourceTree = "<group>"; };
 		11CB98CC249E637300B05222 /* Version+HA.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Version+HA.test.swift"; sourceTree = "<group>"; };
+		11CD94B424B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUpdateSensors.test.swift; sourceTree = "<group>"; };
+		11CD94B624B2CC7400BA801D /* WebhookResponseLocation.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseLocation.test.swift; sourceTree = "<group>"; };
+		11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseServiceCall.test.swift; sourceTree = "<group>"; };
+		11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUnhandled.test.swift; sourceTree = "<group>"; };
 		11F3D74B2495377B00C05BBA /* SensorListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorListViewController.swift; sourceTree = "<group>"; };
 		11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailViewController.swift; sourceTree = "<group>"; };
 		1C5332DAFA7CC79107B5429E /* Pods-Shared-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS/Pods-Shared-iOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -1589,6 +1599,11 @@
 			isa = PBXGroup;
 			children = (
 				118511C124B25BEB00D18F60 /* WebhookManager.test.swift */,
+				114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */,
+				11CD94B424B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift */,
+				11CD94B624B2CC7400BA801D /* WebhookResponseLocation.test.swift */,
+				11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */,
+				11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */,
 			);
 			path = Webhook;
 			sourceTree = "<group>";
@@ -4526,17 +4541,22 @@
 			files = (
 				1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */,
 				119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */,
+				11CD94B724B2CC7400BA801D /* WebhookResponseLocation.test.swift in Sources */,
 				11AF4D2C249D965C006C74C0 /* BatterySensor.test.swift in Sources */,
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
 				11AF4D2E249DA5AF006C74C0 /* GeocoderSensor.test.swift in Sources */,
+				114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */,
 				11CB98C6249DE15B00B05222 /* LastUpdateSensor.test.swift in Sources */,
 				D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */,
 				113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */,
 				11AF4D30249DCA88006C74C0 /* ConnectivitySensor.test.swift in Sources */,
 				11CB98C8249DE24100B05222 /* PedometerSensor.test.swift in Sources */,
 				118511C224B25BEB00D18F60 /* WebhookManager.test.swift in Sources */,
+				11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */,
 				11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */,
 				11AF4D2A249D88C5006C74C0 /* ActivitySensor.test.swift in Sources */,
+				11CD94B924B2D16F00BA801D /* WebhookResponseServiceCall.test.swift in Sources */,
+				11CD94B524B2C06700BA801D /* WebhookResponseUpdateSensors.test.swift in Sources */,
 				D0BE441221043B8100C74314 /* AuthorizationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

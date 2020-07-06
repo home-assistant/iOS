@@ -24,8 +24,19 @@ public class WebhookManager: NSObject {
     // MARK: - Lifecycle
 
     override internal init() {
-        let configuration = with(URLSessionConfiguration.background(withIdentifier: Self.URLSessionIdentifier)) {
-            $0.sharedContainerIdentifier = Constants.AppGroupID
+        let configuration: URLSessionConfiguration
+
+        if Current.isRunningTests {
+            // we cannot mock http requests in a background session, so this code path has to differ
+            configuration = .ephemeral
+        } else {
+            configuration = with(.background(withIdentifier: Self.URLSessionIdentifier)) {
+                $0.sharedContainerIdentifier = Constants.AppGroupID
+                $0.httpCookieStorage = nil
+                $0.httpCookieAcceptPolicy = .never
+                $0.httpShouldSetCookies = false
+                $0.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+            }
         }
 
         let queue = with(OperationQueue()) {
@@ -152,9 +163,16 @@ public class WebhookManager: NSObject {
                 .appendingPathExtension("json")
             try data.write(to: temporaryFile, options: [])
             let task = backgroundUrlSession.uploadTask(with: urlRequest, fromFile: temporaryFile)
-            task.webhookPersisted = WebhookPersisted(request: request, identifier: identifier)
 
-            self.evaluateCancellable(by: task, with: promise)
+            let persisted = WebhookPersisted(request: request, identifier: identifier)
+            task.webhookPersisted = persisted
+
+            self.evaluateCancellable(
+                by: task,
+                type: handlerType,
+                persisted: persisted,
+                with: promise
+            )
             self.resolverForIdentifier[task.taskIdentifier] = seal
             task.resume()
 
@@ -173,12 +191,12 @@ public class WebhookManager: NSObject {
 
     // MARK: - Private
 
-    private func evaluateCancellable(by newTask: URLSessionTask, with newPromise: Promise<Void>) {
-        guard let (newType, newPersisted) = responseInfo(from: newTask) else {
-            Current.Log.error("couldn't determine request type from \(newTask)")
-            return
-        }
-
+    private func evaluateCancellable(
+        by newTask: URLSessionTask,
+        type newType: WebhookResponseHandler.Type,
+        persisted newPersisted: WebhookPersisted,
+        with newPromise: Promise<Void>
+    ) {
         backgroundUrlSession.getAllTasks { tasks in
             tasks.filter { thisTask in
                 guard let (thisType, thisPersisted) = self.responseInfo(from: thisTask) else {
