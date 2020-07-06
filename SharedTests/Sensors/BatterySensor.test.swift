@@ -150,6 +150,19 @@ class BatterySensorTests: XCTestCase {
         XCTAssertEqual(cState.State as? String, "Charging")
     }
 
+    func testBattery100ButNotFull() throws {
+        let (uLevel, uState, cLevel, cState) = try sensors(level: 100, forceNotFull: true)
+        XCTAssertEqual(uLevel.Icon, "mdi:battery")
+        XCTAssertEqual(uState.Icon, "mdi:battery")
+        XCTAssertEqual(uLevel.State as? Int, 100)
+        XCTAssertEqual(uState.State as? String, "Not Charging")
+
+        XCTAssertEqual(cLevel.Icon, "mdi:battery-charging-100")
+        XCTAssertEqual(cState.Icon, "mdi:battery-charging-100")
+        XCTAssertEqual(cLevel.State as? Int, 100)
+        XCTAssertEqual(cState.State as? String, "Charging")
+    }
+
     func testBatteryFull() throws {
         let (uLevel, uState, cLevel, cState) = try sensors(level: 100)
         XCTAssertEqual(uLevel.Icon, "mdi:battery")
@@ -190,11 +203,12 @@ class BatterySensorTests: XCTestCase {
 
     func sensors(
         level: Int,
+        forceNotFull: Bool = false,
         file: StaticString = #file,
         line: UInt = #line
     ) throws -> (uLevel: WebhookSensor, uState: WebhookSensor, cLevel: WebhookSensor, cState: WebhookSensor) {
         Current.device.batteryLevel = { level }
-        Current.device.batteryState = { level == 100 ? .full : .unplugged(level) }
+        Current.device.batteryState = { level == 100 && !forceNotFull ? .full : .unplugged(level) }
         Current.device.isLowPowerMode = { true }
 
         let uPromise = BatterySensor(request: .init(reason: .trigger("unit-test"))).sensors()
@@ -213,7 +227,7 @@ class BatterySensorTests: XCTestCase {
         XCTAssertEqual(uState.Attributes?["Low Power Mode"] as? Bool, true)
 
         Current.device.batteryLevel = { level }
-        Current.device.batteryState = { level == 100 ? .full : .charging(level) }
+        Current.device.batteryState = { level == 100 && !forceNotFull ? .full : .charging(level) }
         Current.device.isLowPowerMode = { true }
 
         let cPromise = BatterySensor(request: .init(reason: .trigger("unit-test"))).sensors()
