@@ -950,7 +950,19 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 webViewController.open(inline: webviewURL)
             }
         } else if let url = URL(string: openUrlRaw) {
-            if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
+            let presentingViewController = { () -> UIViewController? in
+                var rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                while let controller = rootViewController?.presentedViewController {
+                    rootViewController = controller
+                }
+                return rootViewController
+            }
+
+            let triggerOpen = {
+                openURLInBrowser(url, presentingViewController())
+            }
+
+            if prefs.bool(forKey: "confirmBeforeOpeningUrl"), let presenter = presentingViewController() {
                 let alert = UIAlertController(title: L10n.Alerts.OpenUrlFromNotification.title,
                                               message: L10n.Alerts.OpenUrlFromNotification.message(openUrlRaw),
                                               preferredStyle: UIAlertController.Style.alert)
@@ -963,19 +975,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                     title: L10n.yesLabel,
                     style: UIAlertAction.Style.default
                 ) { _ in
-                    UIApplication.shared.open(url,
-                                              options: [:],
-                                              completionHandler: nil)
+                    triggerOpen()
                 })
-                var rootViewController = UIApplication.shared.keyWindow?.rootViewController
-                while let controller = rootViewController?.presentedViewController {
-                    rootViewController = controller
-                }
-                rootViewController?.present(alert, animated: true, completion: nil)
-                alert.popoverPresentationController?.sourceView = rootViewController?.view
+
+                alert.popoverPresentationController?.sourceView = presenter.view
+                presenter.present(alert, animated: true, completion: nil)
             } else {
-                UIApplication.shared.open(url, options: [:],
-                                          completionHandler: nil)
+                triggerOpen()
             }
         }
     }
