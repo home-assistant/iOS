@@ -43,10 +43,6 @@ public class WebhookUpdateLocation: Mappable {
         case .BeaconRegionExit, .BeaconRegionEnter:
             // never use location for beacons
             useLocation = false
-        case .GPSRegionEnter where Current.settingsStore.useNewOneShotLocation == false:
-            // don't use location for gps enter when not using a one-shot to get location
-            // new one-shot flag controls whether we do a one-shot during region updates
-            useLocation = false
         default:
             useLocation = true
         }

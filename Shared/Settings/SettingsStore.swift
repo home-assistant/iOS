@@ -18,7 +18,6 @@ import UIKit
 import WatchKit
 #endif
 
-// swiftlint:disable:next type_body_length
 public class SettingsStore {
     let keychain = Constants.Keychain
     let prefs = UserDefaults(suiteName: Constants.AppGroupID)!
@@ -198,18 +197,6 @@ public class SettingsStore {
         }
         set {
             prefs.setValue(newValue, forKey: "time_zone")
-        }
-    }
-
-    public var useNewOneShotLocation: Bool {
-        get {
-            if Current.isTestFlight, prefs.object(forKey: "use_new_one_shot") == nil {
-                return true
-            }
-            return prefs.bool(forKey: "use_new_one_shot")
-        }
-        set {
-            prefs.set(newValue, forKey: "use_new_one_shot")
         }
     }
 

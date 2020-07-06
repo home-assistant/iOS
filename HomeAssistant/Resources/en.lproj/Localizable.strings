@@ -750,8 +750,6 @@ Thank you.\
 "settings_details.location.background_refresh.enabled" = "Enabled";
 "settings_details.location.background_refresh.disabled" = "Disabled";
 "settings_details.general.restoration.title" = "Remember Last Page";
-"settings_details.location.new_one_shot.title" = "In-Development Updating";
-"settings_details.location.new_one_shot.description" = "This may or may not deliver good results for the sources above. Your feedback is appreciated.";
 "settings_sensors.title" = "Sensors";
 "settings_sensors.loading_error.title" = "Failed to load sensors";
 "settings_sensors.detail.unique_id" = "Unique ID";
