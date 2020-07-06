@@ -1112,6 +1112,10 @@ internal enum L10n {
       internal static let footer = L10n.tr("Localizable", "settings.developer.footer")
       /// Developer
       internal static let header = L10n.tr("Localizable", "settings.developer.header")
+      internal enum AnnoyingBackgroundNotifications {
+        /// Annoying Background Info
+        internal static let title = L10n.tr("Localizable", "settings.developer.annoying_background_notifications.title")
+      }
       internal enum CameraNotification {
         /// Show camera notification content extension
         internal static let title = L10n.tr("Localizable", "settings.developer.camera_notification.title")
