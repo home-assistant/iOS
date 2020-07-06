@@ -35,6 +35,10 @@ def shared_pods
     pod 'XCGLogger'
 end
 
+def shared_tests
+    pod 'OHHTTPStubs/Swift'
+end
+
 def ios_shared_pods
     shared_pods
 
@@ -67,6 +71,7 @@ target 'HomeAssistant' do
 
     target 'HomeAssistantTests' do
         inherit! :search_paths
+        shared_tests
     end
 end
 
@@ -74,7 +79,7 @@ target 'Shared-iOS' do
     ios_shared_pods
 
     target 'SharedTests' do
-      
+      shared_tests
     end
 end
 

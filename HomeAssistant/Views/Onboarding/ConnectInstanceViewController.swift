@@ -153,7 +153,7 @@ class ConnectInstanceViewController: UIViewController {
             self.setAnimationStatus(self.encrypted, state: encryptState)
 
             return Promise.value(regResponse)
-        }.then { _ -> Promise<(ConfigResponse, [Zone], [WebhookSensorResponse])> in
+        }.then { _ -> Promise<(ConfigResponse, [Zone], Void)> in
             return when(fulfilled: api.GetConfig(), api.GetZones(), api.RegisterSensors())
         }.map { config, zones, _ in
             if let oldHA = api.ensureVersion(config.Version) {

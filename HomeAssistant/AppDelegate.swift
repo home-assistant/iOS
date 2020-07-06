@@ -18,6 +18,7 @@ import PromiseKit
 import RealmSwift
 import SafariServices
 import Shared
+import XCGLogger
 import UIKit
 import UserNotifications
 import FirebaseCrashlytics
@@ -420,6 +421,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return self.application(application, open: actualURL)
     }
 
+    func application(
+        _ application: UIApplication,
+        handleEventsForBackgroundURLSession identifier: String,
+        completionHandler: @escaping () -> Void
+    ) {
+        if identifier == WebhookManager.URLSessionIdentifier {
+            if let webhookManager = HomeAssistantAPI.authenticatedAPI()?.webhookManager {
+                webhookManager.handleBackground(for: identifier, completionHandler: completionHandler)
+            } else {
+                Current.Log.error("couldn't find webhookmanager for background events")
+                completionHandler()
+            }
+        } else {
+            Current.Log.error("couldn't find appropriate session for for \(identifier)")
+            completionHandler()
+        }
+    }
+
     // MARK: - Private helpers
 
     private var requiresOnboarding: Bool {
@@ -617,7 +636,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
 
         if #available(iOS 12.0, *) {
-            let intent = CallServiceIntent(domain: domain, service: service, payload: url.query)
+            let intent = CallServiceIntent(domain: domain, service: service, payload: url.queryItems)
 
             let interaction = INInteraction(intent: intent, response: nil)
 
@@ -1035,6 +1054,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                        // swiftlint:disable:next line_length
                                        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         Messaging.messaging().appDidReceiveMessage(notification.request.content.userInfo)
+
+        if notification.request.content.userInfo[XCGLogger.notifyUserInfoKey] != nil,
+            UIApplication.shared.applicationState != .background {
+            completionHandler([])
+            return
+        }
 
         var methods: UNNotificationPresentationOptions = [.alert, .badge, .sound]
         if let presentationOptions = notification.request.content.userInfo["presentation_options"] as? [String] {
