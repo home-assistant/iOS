@@ -62,7 +62,7 @@ class StorageSensorTests: XCTestCase {
         XCTAssertEqual(sensors[0].Name, "Storage")
         XCTAssertEqual(sensors[0].UniqueID, "storage")
         XCTAssertEqual(sensors[0].Icon, "mdi:database")
-        XCTAssertEqual(sensors[0].State as? String, "20.00")
+        XCTAssertEqual(sensors[0].State as? String, "22.00")
         XCTAssertEqual(sensors[0].UnitOfMeasurement, "% available")
         XCTAssertEqual(sensors[0].Attributes?["Total"] as? String, "100.00 GB")
         XCTAssertEqual(sensors[0].Attributes?["Available"] as? String, "20.00 GB")

@@ -96,7 +96,7 @@ public class StorageSensor: SensorProvider {
 
         func availablePercent() -> String {
             precondition(total > 0, "init should prevent this")
-            let percent = Decimal(availableOverall) / Decimal(total) * Decimal(100.0)
+            let percent = Decimal(availableOpportunistic) / Decimal(total) * Decimal(100.0)
             return String(format: "%.02lf", Double(truncating: percent as NSNumber))
         }
 
