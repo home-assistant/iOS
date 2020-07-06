@@ -82,8 +82,6 @@ public class Environment {
 
     public var isPerformingSingleShotLocationQuery = false
 
-    public var syncMonitoredRegions: (() -> Void)?
-
     public var logEvent: ((String, [String: Any]?) -> Void)?
 
     public var setUserProperty: ((String?, String) -> Void)?
