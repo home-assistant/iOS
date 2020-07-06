@@ -180,7 +180,7 @@ public class WebhookManager: NSObject {
         }.catch { [weak self] error in
             self?.invoke(
                 handler: handlerType,
-                request: .value(request),
+                request: request,
                 result: .init(error: error),
                 resolver: seal
             )
@@ -317,7 +317,7 @@ extension WebhookManager: URLSessionDataDelegate {
 
             invoke(
                 handler: handlerType,
-                request: .value(persisted.request),
+                request: persisted.request,
                 result: result,
                 resolver: resolverForIdentifier[task.taskIdentifier]
             )
@@ -329,7 +329,7 @@ extension WebhookManager: URLSessionDataDelegate {
 
     private func invoke(
         handler handlerType: WebhookResponseHandler.Type,
-        request: Promise<WebhookRequest>,
+        request: WebhookRequest,
         result: Promise<Any>,
         resolver: Resolver<Void>?
     ) {
@@ -338,12 +338,12 @@ extension WebhookManager: URLSessionDataDelegate {
             return
         }
 
-        Current.Log.notify("starting \(handlerType)")
+        Current.Log.notify("starting \(request.type) (\(handlerType))")
         backgroundEventGroup.enter()
 
         let handler = handlerType.init(api: api)
         let handlerPromise = firstly {
-            handler.handle(request: request, result: result)
+            handler.handle(request: .value(request), result: result)
         }.done { [weak self] result in
             // keep the handler around until it finishes
             withExtendedLifetime(handler) {
@@ -356,7 +356,7 @@ extension WebhookManager: URLSessionDataDelegate {
         }.tap {
             resolver?.resolve($0)
         }.ensure { [backgroundEventGroup] in
-            Current.Log.notify("finished \(handlerType)")
+            Current.Log.notify("finished \(request.type) \(handlerType)")
             backgroundEventGroup.leave()
         }.cauterize()
     }
