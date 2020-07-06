@@ -38,7 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var webViewControllerPromise: Guarantee<WebViewController>
     private var webViewControllerSeal: (WebViewController) -> Void
 
-    private var regionManager: RegionManager?
     private var zoneManager: ZoneManager?
 
     private var periodicUpdateTimer: Timer? {
@@ -81,7 +80,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.clientEventStore.addEvent(event)
 
         self.registerCallbackURLKitHandlers()
-        self.registerRegionMonitoring()
+
+        self.zoneManager = ZoneManager()
 
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
 
@@ -489,29 +489,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }.finally {
             self.schedulePeriodicUpdateTimer()
         }
-    }
-
-    func registerRegionMonitoring() {
-        Current.syncMonitoredRegions = { [weak self] in
-            guard let self = self else { return }
-
-            if Current.settingsStore.useNewOneShotLocation {
-                if self.zoneManager == nil {
-                    self.regionManager = nil
-                    self.zoneManager = ZoneManager()
-                } else {
-                    // zone manager doesn't need to be manually told to sync
-                }
-            } else {
-                if self.regionManager == nil {
-                    self.zoneManager = nil
-                    self.regionManager = RegionManager()
-                } else {
-                    self.regionManager?.syncMonitoredRegions()
-                }
-            }
-        }
-        Current.syncMonitoredRegions?()
     }
 
     // swiftlint:disable:next function_body_length

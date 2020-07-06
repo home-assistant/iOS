@@ -468,8 +468,6 @@ public class HomeAssistantAPI {
         try! realm.write {
             realm.delete(realm.objects(RLMZone.self).filter("ID IN %@", zoneIDsToDelete))
         }
-
-        Current.syncMonitoredRegions?()
     }
 
     private static func updateZone(_ storeableZone: RLMZone, withZoneEntity zone: Zone) {
@@ -549,13 +547,9 @@ public class HomeAssistantAPI {
 
         Current.isPerformingSingleShotLocationQuery = true
         return firstly { () -> Promise<CLLocation> in
-            if Current.settingsStore.useNewOneShotLocation {
-                return CLLocationManager.oneShotLocation(
-                    timeout: updateTrigger.oneShotTimeout(maximum: maximumBackgroundTime)
-                )
-            } else {
-                return OneShotLocationManager.promise()
-            }
+            return CLLocationManager.oneShotLocation(
+                timeout: updateTrigger.oneShotTimeout(maximum: maximumBackgroundTime)
+            )
         }.ensure {
             Current.isPerformingSingleShotLocationQuery = false
         }.then { location in
