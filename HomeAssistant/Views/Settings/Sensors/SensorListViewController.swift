@@ -16,13 +16,7 @@ class SensorListViewController: FormViewController, SensorObserver {
         tableView.refreshControl = refreshControl
         refreshControl.beginRefreshing()
 
-        HomeAssistantAPI
-            .authenticatedAPIPromise
-            .done { [weak self] api in
-                guard let self = self else { return }
-                // triggers a refreesh
-                api.sensors.register(observer: self)
-            }.cauterize()
+        Current.sensors.register(observer: self)
 
         tableView.alwaysBounceVertical = true
 

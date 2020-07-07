@@ -5,6 +5,8 @@ import XCTest
 
 class WebhookResponseUpdateSensorsTests: XCTestCase {
     private var api: FakeHomeAssistantAPI!
+
+    private var previousWebhookManager: WebhookManager!
     private var webhookManager: FakeWebhookManager!
 
     override func setUp() {
@@ -26,7 +28,14 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
             )
         )
         webhookManager = FakeWebhookManager()
-        api.webhookManager = webhookManager
+        previousWebhookManager = Current.webhooks
+        Current.webhooks = webhookManager
+    }
+
+    override func tearDown() {
+        super.tearDown()
+
+        Current.webhooks = previousWebhookManager
     }
 
     func testReplacement() throws {
@@ -73,7 +82,7 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
     func testUpdatedRequiringRegistration() throws {
         // it's probably too much work to mock out the sensors here, so this implicitly
         // depends on one of the registered sensors. to make this more obvious, grab one.
-        let sensors = try hang(Promise(api.sensors.sensors(request: .init(reason: .registration))))
+        let sensors = try hang(Promise(Current.sensors.sensors(request: .init(reason: .registration))))
         let handler = WebhookResponseUpdateSensors(api: api)
         let request = WebhookRequest(type: "update_sensor_states", data: [:])
 

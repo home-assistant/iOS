@@ -44,13 +44,13 @@ struct WebhookResponseUpdateSensors: WebhookResponseHandler {
             if keys.isEmpty == false {
                 Current.Log.info("need to register \(keys)")
             }
-        }.then { [api] needsRegistering -> Promise<Void> in
+        }.then { needsRegistering -> Promise<Void> in
             guard needsRegistering.isEmpty == false else {
                 return .value(())
             }
 
             return firstly { () -> Guarantee<[WebhookSensor]> in
-                api.sensors.sensors(request: .init(reason: .registration))
+                Current.sensors.sensors(request: .init(reason: .registration))
             }.filterValues { sensor in
                 if let uniqueID = sensor.UniqueID {
                     return needsRegistering.contains(uniqueID)
@@ -60,7 +60,7 @@ struct WebhookResponseUpdateSensors: WebhookResponseHandler {
             }.get { sensors in
                 Current.Log.info("registering \(sensors.map { $0.UniqueID })")
             }.thenMap { sensor in
-                api.webhookManager.send(request: .init(type: "register_sensor", data: sensor.toJSON()))
+                Current.webhooks.send(request: .init(type: "register_sensor", data: sensor.toJSON()))
             }.asVoid()
         }
 
