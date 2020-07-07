@@ -39,6 +39,8 @@ public enum AppConfiguration: Int, CaseIterable {
     }
 }
 
+public var LogDestination: DestinationProtocol?
+
 public var Current = Environment()
 /// The current "operating envrionment" the app. Implementations can be swapped out to facilitate better
 /// unit tests.
@@ -184,6 +186,10 @@ public class Environment {
 
         // Add the destination to the logger
         log.add(destination: fileDestination)
+
+        if let destination = LogDestination {
+            log.add(destination: destination)
+        }
 
         // Add basic app info, version info etc, to the start of the logs
         log.logAppDetails()

@@ -355,12 +355,51 @@ class SettingsViewController: FormViewController {
         }.onCellSelection { _, _ in
             SettingsViewController.showMapContentExtension()
         }
+        <<< ButtonRow("crashlytics_test_nonfatal") {
+            $0.title = L10n.Settings.Developer.CrashlyticsTest.NonFatal.title
+        }.onCellSelection { cell, _ in
+            let alert = UIAlertController(title: L10n.Settings.Developer.CrashlyticsTest.NonFatal.Notification.title,
+                                          message: L10n.Settings.Developer.CrashlyticsTest.NonFatal.Notification.body,
+                                          preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: { (_) in
+                let userInfo = [
+                  NSLocalizedDescriptionKey: NSLocalizedString("The request failed.", comment: ""),
+                  NSLocalizedFailureReasonErrorKey: NSLocalizedString("The response returned a 404.", comment: ""),
+                  NSLocalizedRecoverySuggestionErrorKey: NSLocalizedString("Does this page exist?", comment: ""),
+                  "ProductID": "123456",
+                  "View": "MainView"
+                ]
+
+                let error = NSError(domain: NSCocoaErrorDomain, code: -1001, userInfo: userInfo)
+
+                Crashlytics.crashlytics().record(error: error)
+            }))
+
+            self.present(alert, animated: true, completion: nil)
+            alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
+        }
+        <<< ButtonRow("crashlytics_test_fatalerror") {
+            $0.title = L10n.Settings.Developer.CrashlyticsTest.Fatal.title
+        }.onCellSelection { cell, _ in
+            let alert = UIAlertController(title: L10n.Settings.Developer.CrashlyticsTest.Fatal.Notification.title,
+                                          message: L10n.Settings.Developer.CrashlyticsTest.Fatal.Notification.body,
+                                          preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: { (_) in
+                fatalError("Crashlytics test!")
+            }))
+
+            self.present(alert, animated: true, completion: nil)
+            alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
+        }
+      
         <<< SwitchRow {
-            $0.title = L10n.Settings.Developer.AnnoyingBackgroundNotifications.title
-            $0.value = prefs.bool(forKey: XCGLogger.shouldNotifyUserDefaultsKey)
-            $0.onChange { row in
-                prefs.set(row.value ?? false, forKey: XCGLogger.shouldNotifyUserDefaultsKey)
-            }
+              $0.title = L10n.Settings.Developer.AnnoyingBackgroundNotifications.title
+              $0.value = prefs.bool(forKey: XCGLogger.shouldNotifyUserDefaultsKey)
+              $0.onChange { row in
+                  prefs.set(row.value ?? false, forKey: XCGLogger.shouldNotifyUserDefaultsKey)
+              }
         }
     }
 
