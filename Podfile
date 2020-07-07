@@ -35,6 +35,10 @@ def shared_pods
     pod 'XCGLogger'
 end
 
+def shared_tests
+    pod 'OHHTTPStubs/Swift'
+end
+
 def ios_shared_pods
     shared_pods
 
@@ -50,7 +54,6 @@ target 'HomeAssistant' do
     pod 'Firebase/Analytics'
     pod 'Firebase/Core'
     pod 'Firebase/Crashlytics'
-    pod 'Firebase/Firestore'
     pod 'Firebase/Messaging'
     pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
     pod 'Lokalise', '~> 0.10.0'
@@ -68,6 +71,7 @@ target 'HomeAssistant' do
 
     target 'HomeAssistantTests' do
         inherit! :search_paths
+        shared_tests
     end
 end
 
@@ -75,7 +79,7 @@ target 'Shared-iOS' do
     ios_shared_pods
 
     target 'SharedTests' do
-      
+      shared_tests
     end
 end
 

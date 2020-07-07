@@ -23,7 +23,9 @@ public class BatterySensor: SensorProvider {
         switch batState {
         case .charging(let level):
             state = "Charging"
-            if level > 10 {
+            if level >= 100 {
+                icon = "mdi:battery-charging-100"
+            } else if level > 10 {
                 let rounded = Int(round(Double(level / 20) - 0.01)) * 20
                 icon = "mdi:battery-charging-\(rounded)"
             } else {
@@ -31,7 +33,9 @@ public class BatterySensor: SensorProvider {
             }
         case .unplugged(let level):
             state = "Not Charging"
-            if level < 10 {
+            if level >= 100 {
+                icon = "mdi:battery"
+            } else if level < 10 {
                 icon = "mdi:battery-outline"
             } else if level >= 10 {
                 let rounded = Int(round(Double(level / 10) - 0.01)) * 10

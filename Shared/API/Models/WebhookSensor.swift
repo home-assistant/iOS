@@ -123,6 +123,11 @@ public class WebhookSensorResponse: Mappable {
     public var ErrorCode: String?
 
     init() {}
+    init(success: Bool, errorMessage: String? = nil, errorCode: String? = nil) {
+        self.Success = success
+        self.ErrorMessage = errorMessage
+        self.ErrorCode = errorCode
+    }
 
     public required init?(map: Map) {}
 

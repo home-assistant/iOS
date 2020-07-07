@@ -60,6 +60,23 @@ public class Environment {
 
     public var settingsStore = SettingsStore()
 
+    public var webhooks = with(WebhookManager()) {
+        // ^ because background url session identifiers cannot be reused, this must be a singleton-ish
+        $0.register(responseHandler: WebhookResponseUpdateSensors.self, for: .updateSensors)
+        $0.register(responseHandler: WebhookResponseLocation.self, for: .location)
+        $0.register(responseHandler: WebhookResponseServiceCall.self, for: .serviceCall)
+    }
+
+    public var sensors = with(SensorContainer()) {
+        $0.register(provider: ActivitySensor.self)
+        $0.register(provider: PedometerSensor.self)
+        $0.register(provider: BatterySensor.self)
+        $0.register(provider: StorageSensor.self)
+        $0.register(provider: ConnectivitySensor.self)
+        $0.register(provider: GeocoderSensor.self)
+        $0.register(provider: LastUpdateSensor.self)
+    }
+
     public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
 
     #if os(iOS)
@@ -84,8 +101,6 @@ public class Environment {
 
     public var isPerformingSingleShotLocationQuery = false
 
-    public var syncMonitoredRegions: (() -> Void)?
-
     public var logEvent: ((String, [String: Any]?) -> Void)?
 
     public var setUserProperty: ((String?, String) -> Void)?
@@ -107,6 +122,10 @@ public class Environment {
         #else
         return false
         #endif
+    }
+
+    public var isRunningTests: Bool {
+        return NSClassFromString("XCTest") != nil
     }
 
     public var appConfiguration: AppConfiguration {

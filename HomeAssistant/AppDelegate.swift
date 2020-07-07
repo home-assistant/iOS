@@ -18,6 +18,7 @@ import PromiseKit
 import RealmSwift
 import SafariServices
 import Shared
+import XCGLogger
 import UIKit
 import UserNotifications
 import FirebaseCrashlytics
@@ -38,7 +39,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var webViewControllerPromise: Guarantee<WebViewController>
     private var webViewControllerSeal: (WebViewController) -> Void
 
-    private var regionManager: RegionManager?
     private var zoneManager: ZoneManager?
 
     private var periodicUpdateTimer: Timer? {
@@ -81,7 +81,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.clientEventStore.addEvent(event)
 
         self.registerCallbackURLKitHandlers()
-        self.registerRegionMonitoring()
+
+        self.zoneManager = ZoneManager()
 
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
 
@@ -420,6 +421,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return self.application(application, open: actualURL)
     }
 
+    func application(
+        _ application: UIApplication,
+        handleEventsForBackgroundURLSession identifier: String,
+        completionHandler: @escaping () -> Void
+    ) {
+        if identifier == WebhookManager.URLSessionIdentifier {
+            Current.webhooks.handleBackground(for: identifier, completionHandler: completionHandler)
+        } else {
+            Current.Log.error("couldn't find appropriate session for for \(identifier)")
+            completionHandler()
+        }
+    }
+
     // MARK: - Private helpers
 
     private var requiresOnboarding: Bool {
@@ -489,29 +503,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }.finally {
             self.schedulePeriodicUpdateTimer()
         }
-    }
-
-    func registerRegionMonitoring() {
-        Current.syncMonitoredRegions = { [weak self] in
-            guard let self = self else { return }
-
-            if Current.settingsStore.useNewOneShotLocation {
-                if self.zoneManager == nil {
-                    self.regionManager = nil
-                    self.zoneManager = ZoneManager()
-                } else {
-                    // zone manager doesn't need to be manually told to sync
-                }
-            } else {
-                if self.regionManager == nil {
-                    self.zoneManager = nil
-                    self.regionManager = RegionManager()
-                } else {
-                    self.regionManager?.syncMonitoredRegions()
-                }
-            }
-        }
-        Current.syncMonitoredRegions?()
     }
 
     // swiftlint:disable:next function_body_length
@@ -640,7 +631,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
 
         if #available(iOS 12.0, *) {
-            let intent = CallServiceIntent(domain: domain, service: service, payload: url.query)
+            let intent = CallServiceIntent(domain: domain, service: service, payload: url.queryItems)
 
             let interaction = INInteraction(intent: intent, response: nil)
 
@@ -941,7 +932,19 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 webViewController.open(inline: webviewURL)
             }
         } else if let url = URL(string: openUrlRaw) {
-            if prefs.bool(forKey: "confirmBeforeOpeningUrl") {
+            let presentingViewController = { () -> UIViewController? in
+                var rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                while let controller = rootViewController?.presentedViewController {
+                    rootViewController = controller
+                }
+                return rootViewController
+            }
+
+            let triggerOpen = {
+                openURLInBrowser(url, presentingViewController())
+            }
+
+            if prefs.bool(forKey: "confirmBeforeOpeningUrl"), let presenter = presentingViewController() {
                 let alert = UIAlertController(title: L10n.Alerts.OpenUrlFromNotification.title,
                                               message: L10n.Alerts.OpenUrlFromNotification.message(openUrlRaw),
                                               preferredStyle: UIAlertController.Style.alert)
@@ -954,19 +957,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                     title: L10n.yesLabel,
                     style: UIAlertAction.Style.default
                 ) { _ in
-                    UIApplication.shared.open(url,
-                                              options: [:],
-                                              completionHandler: nil)
+                    triggerOpen()
                 })
-                var rootViewController = UIApplication.shared.keyWindow?.rootViewController
-                while let controller = rootViewController?.presentedViewController {
-                    rootViewController = controller
-                }
-                rootViewController?.present(alert, animated: true, completion: nil)
-                alert.popoverPresentationController?.sourceView = rootViewController?.view
+
+                alert.popoverPresentationController?.sourceView = presenter.view
+                presenter.present(alert, animated: true, completion: nil)
             } else {
-                UIApplication.shared.open(url, options: [:],
-                                          completionHandler: nil)
+                triggerOpen()
             }
         }
     }
@@ -1045,6 +1042,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                        // swiftlint:disable:next line_length
                                        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         Messaging.messaging().appDidReceiveMessage(notification.request.content.userInfo)
+
+        if notification.request.content.userInfo[XCGLogger.notifyUserInfoKey] != nil,
+            UIApplication.shared.applicationState != .background {
+            completionHandler([])
+            return
+        }
 
         var methods: UNNotificationPresentationOptions = [.alert, .badge, .sound]
         if let presentationOptions = notification.request.content.userInfo["presentation_options"] as? [String] {

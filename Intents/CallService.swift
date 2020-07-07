@@ -75,7 +75,7 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
 
         var payloadDict: [String: Any] = [:]
 
-        if let payload = intent.payload {
+        if let payload = intent.payload, payload.isEmpty == false {
             let data = payload.data(using: .utf8)!
             do {
                 if let jsonArray = try JSONSerialization.jsonObject(with: data,

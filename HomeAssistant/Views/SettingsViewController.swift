@@ -18,6 +18,7 @@ import Firebase
 import WebKit
 import MBProgressHUD
 import PromiseKit
+import XCGLogger
 
 // swiftlint:disable:next type_body_length
 class SettingsViewController: FormViewController {
@@ -391,6 +392,14 @@ class SettingsViewController: FormViewController {
 
             self.present(alert, animated: true, completion: nil)
             alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
+        }
+      
+        <<< SwitchRow {
+              $0.title = L10n.Settings.Developer.AnnoyingBackgroundNotifications.title
+              $0.value = prefs.bool(forKey: XCGLogger.shouldNotifyUserDefaultsKey)
+              $0.onChange { row in
+                  prefs.set(row.value ?? false, forKey: XCGLogger.shouldNotifyUserDefaultsKey)
+              }
         }
     }
 

@@ -654,7 +654,7 @@
 "settings.connection_section.remote_ui_url.title" = "Remote UI URL";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "No http.base_url was found in the discovery information. Please add a valid http.base_url to your configuration.yaml and restart Home Assistant to continue with automatic setup or setup manually.";
 "settings_details.notifications.rate_limits.header" = "Rate Limits";
-"settings_details.notifications.rate_limits.footer" = "You are allowed 150 push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).";
+"settings_details.notifications.rate_limits.footer_with_param" = "You are allowed %d push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).";
 "settings_details.notifications.rate_limits.attempts" = "Attempts";
 "settings_details.notifications.rate_limits.delivered" = "Delivered";
 "settings_details.notifications.rate_limits.errors" = "Errors";
@@ -756,8 +756,6 @@ Thank you.\
 "settings_details.location.background_refresh.enabled" = "Enabled";
 "settings_details.location.background_refresh.disabled" = "Disabled";
 "settings_details.general.restoration.title" = "Remember Last Page";
-"settings_details.location.new_one_shot.title" = "In-Development Updating";
-"settings_details.location.new_one_shot.description" = "This may or may not deliver good results for the sources above. Your feedback is appreciated.";
 "settings_sensors.title" = "Sensors";
 "settings_sensors.loading_error.title" = "Failed to load sensors";
 "settings_sensors.detail.unique_id" = "Unique ID";
@@ -784,3 +782,4 @@ Thank you.\
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_sensors.last_updated.footer" = "Last Updated %@";
 "notifications_configurator.category.example_call.title" = "Example Service Call";
+"settings.developer.annoying_background_notifications.title" = "Annoying Background Info";

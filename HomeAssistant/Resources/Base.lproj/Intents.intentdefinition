@@ -9,11 +9,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>sI7YSe</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>19B88</string>
+	<string>19F101</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>11B500</string>
+	<string>11E608c</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>11.2.1</string>
+	<string>11.5</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -119,6 +119,8 @@
 						<key>INIntentParameterMetadataDisableSmartDashes</key>
 						<true/>
 						<key>INIntentParameterMetadataDisableSmartQuotes</key>
+						<true/>
+						<key>INIntentParameterMetadataMultiline</key>
 						<true/>
 					</dict>
 					<key>INIntentParameterName</key>
@@ -478,10 +480,6 @@
 					<dict>
 						<key>INIntentParameterMetadataCapitalization</key>
 						<string>None</string>
-						<key>INIntentParameterMetadataDefaultValue</key>
-						<string>Event Data</string>
-						<key>INIntentParameterMetadataDefaultValueID</key>
-						<string>4d1VvB</string>
 						<key>INIntentParameterMetadataDisableAutocorrect</key>
 						<true/>
 						<key>INIntentParameterMetadataDisableSmartDashes</key>
