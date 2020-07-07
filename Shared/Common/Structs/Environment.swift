@@ -58,6 +58,23 @@ public class Environment {
 
     public var settingsStore = SettingsStore()
 
+    public var webhooks = with(WebhookManager()) {
+        // ^ because background url session identifiers cannot be reused, this must be a singleton-ish
+        $0.register(responseHandler: WebhookResponseUpdateSensors.self, for: .updateSensors)
+        $0.register(responseHandler: WebhookResponseLocation.self, for: .location)
+        $0.register(responseHandler: WebhookResponseServiceCall.self, for: .serviceCall)
+    }
+
+    public var sensors = with(SensorContainer()) {
+        $0.register(provider: ActivitySensor.self)
+        $0.register(provider: PedometerSensor.self)
+        $0.register(provider: BatterySensor.self)
+        $0.register(provider: StorageSensor.self)
+        $0.register(provider: ConnectivitySensor.self)
+        $0.register(provider: GeocoderSensor.self)
+        $0.register(provider: LastUpdateSensor.self)
+    }
+
     public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
 
     #if os(iOS)

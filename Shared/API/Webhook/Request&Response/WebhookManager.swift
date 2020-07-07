@@ -10,6 +10,8 @@ internal enum WebhookManagerError: Error {
     case unmappableValue
 }
 
+// swiftlint:disable file_length
+
 public class WebhookManager: NSObject {
     public static let URLSessionIdentifier = "hass.webhook_manager"
 
@@ -17,8 +19,22 @@ public class WebhookManager: NSObject {
     internal var backgroundUrlSession: URLSession { return backingBackgroundUrlSession }
     internal let ephemeralUrlSession: URLSession
     private let backgroundEventGroup: DispatchGroup = DispatchGroup()
-    private var pendingData: [Int: Data] = [:]
-    private var resolverForIdentifier: [Int: Resolver<Void>] = [:]
+
+    // must be accessed on appropriate queue
+    private let dataQueue: DispatchQueue
+    private let dataQueueSpecificKey: DispatchSpecificKey<Bool>
+
+    private var pendingData: [Int: Data] = [:] {
+        willSet {
+            assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
+        }
+    }
+    private var resolverForIdentifier: [Int: Resolver<Void>] = [:] {
+        willSet {
+            assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
+        }
+    }
+
     private var responseHandlers = [WebhookResponseIdentifier: WebhookResponseHandler.Type]()
 
     // MARK: - Lifecycle
@@ -26,7 +42,8 @@ public class WebhookManager: NSObject {
     override internal init() {
         let configuration: URLSessionConfiguration
 
-        if Current.isRunningTests {
+        if NSClassFromString("XCTest") != nil {
+            // ^ cannot reference Current here because we're being created inside Current as it is made
             // we cannot mock http requests in a background session, so this code path has to differ
             configuration = .ephemeral
         } else {
@@ -39,7 +56,14 @@ public class WebhookManager: NSObject {
             }
         }
 
+        let specificKey = DispatchSpecificKey<Bool>()
+        let underlyingQueue = DispatchQueue(label: "webhookmanager-data")
+        underlyingQueue.setSpecific(key: specificKey, value: true)
+        self.dataQueue = underlyingQueue
+        self.dataQueueSpecificKey = specificKey
+
         let queue = with(OperationQueue()) {
+            $0.underlyingQueue = underlyingQueue
             $0.maxConcurrentOperationCount = 1
         }
 
@@ -156,7 +180,7 @@ public class WebhookManager: NSObject {
 
         firstly {
             Self.urlRequest(for: request)
-        }.done { [backgroundUrlSession] urlRequest, data in
+        }.done(on: dataQueue) { [backgroundUrlSession] urlRequest, data in
             let temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             let temporaryFile = temporaryDirectory
                 .appendingPathComponent(UUID().uuidString)
@@ -175,6 +199,21 @@ public class WebhookManager: NSObject {
             )
             self.resolverForIdentifier[task.taskIdentifier] = seal
             task.resume()
+
+            Current.Log.info {
+                var values = [
+                    "taskIdentifier(\(task.taskIdentifier))",
+                    "type(\(handlerType))"
+                ]
+
+                if Current.isDebug {
+                    values += [
+                        "request(\(persisted.request))"
+                    ]
+                }
+
+                return "starting request: " + values.joined(separator: ", ")
+            }
 
             try FileManager.default.removeItem(at: temporaryFile)
         }.catch { [weak self] error in
@@ -277,23 +316,30 @@ extension WebhookManager: URLSessionDelegate {
 
 extension WebhookManager: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        pendingData[dataTask.taskIdentifier, default: Data()].append(data)
+        dataQueue.async {
+            self.pendingData[dataTask.taskIdentifier, default: Data()].append(data)
+        }
     }
 
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        let data = pendingData[task.taskIdentifier]
-        pendingData.removeValue(forKey: task.taskIdentifier)
-
         guard error?.isCancelled != true else {
             Current.Log.info("ignoring cancelled task")
+            dataQueue.async {
+                self.pendingData.removeValue(forKey: task.taskIdentifier)
+            }
             return
         }
 
         let result = Promise<Data?> { seal in
-            if let error = error {
-                seal.reject(error)
-            } else {
-                seal.fulfill(data)
+            dataQueue.async {
+                let data = self.pendingData[task.taskIdentifier]
+                self.pendingData.removeValue(forKey: task.taskIdentifier)
+
+                if let error = error {
+                    seal.reject(error)
+                } else {
+                    seal.fulfill(data)
+                }
             }
         }.webhookJson(
             on: DispatchQueue.global(qos: .utility),
@@ -303,13 +349,21 @@ extension WebhookManager: URLSessionDataDelegate {
         // dispatch
         if let (handlerType, persisted) = responseInfo(from: task) {
             // logging
-            result.done { body in
+            result.done(on: dataQueue) { body in
                 Current.Log.info {
+                    var values = [
+                        "taskIdentifier(\(task.taskIdentifier))",
+                        "type(\(handlerType))"
+                    ]
+
                     if Current.isDebug {
-                        return "got response type(\(handlerType)) request(\(persisted.request)) body(\(body))"
-                    } else {
-                        return "got response type(\(handlerType)) for \(persisted.identifier)"
+                        values += [
+                            "request(\(persisted.request))",
+                            "body(\(body))"
+                        ]
                     }
+
+                    return "got response: " + values.joined(separator: ", ")
                 }
             }.catch { error in
                 Current.Log.error("failed request for \(handlerType): \(error)")
@@ -321,6 +375,8 @@ extension WebhookManager: URLSessionDataDelegate {
                 result: result,
                 resolver: resolverForIdentifier[task.taskIdentifier]
             )
+
+            resolverForIdentifier.removeValue(forKey: task.taskIdentifier)
         } else {
             Current.Log.notify("no handler for background task")
             Current.Log.error("couldn't find appropriate handler for \(task)")
