@@ -15,7 +15,7 @@ extension XCGLogger {
             return
         }
 
-        guard Current.isDebug || Current.settingsStore.prefs.bool(forKey: Self.shouldNotifyUserDefaultsKey) else {
+        guard Current.settingsStore.prefs.bool(forKey: Self.shouldNotifyUserDefaultsKey) else {
             return
         }
 
