@@ -88,24 +88,7 @@ public class GeocoderSensor: SensorProvider {
     }
 
     private static func postalAddress(for placemark: CLPlacemark) -> CNPostalAddress? {
-        if #available(iOS 11.0, watchOS 4.0, *), let address = placemark.postalAddress {
-            return address
-        }
-
-        return with(CNMutablePostalAddress()) {
-            $0.street = placemark.thoroughfare ?? ""
-            $0.city =  placemark.locality ?? ""
-            $0.state = placemark.administrativeArea ?? ""
-            $0.postalCode = placemark.postalCode ?? ""
-
-            // matching behavior with iOS 11+, prefer iso country code
-            $0.country = placemark.isoCountryCode ?? placemark.country ?? ""
-
-            if #available(iOS 10.3, *) {
-                $0.subLocality = placemark.subLocality ?? ""
-                $0.subAdministrativeArea = placemark.subAdministrativeArea ?? ""
-            }
-        }
+        return placemark.postalAddress
     }
 }
 
@@ -122,11 +105,7 @@ public extension CLGeocoder {
                 }
             }
 
-            if #available(iOS 11, *) {
-                geocoder.reverseGeocodeLocation(location, preferredLocale: nil, completionHandler: completionHandler)
-            } else {
-                geocoder.reverseGeocodeLocation(location, completionHandler: completionHandler)
-            }
+            geocoder.reverseGeocodeLocation(location, preferredLocale: nil, completionHandler: completionHandler)
         }
     }
 }

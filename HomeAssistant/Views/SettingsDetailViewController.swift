@@ -649,9 +649,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
         section <<< locationPermissionRow()
 
-        if #available(iOS 11, *) {
-            section <<< motionPermissionRow()
-        }
+        section <<< motionPermissionRow()
 
         section <<< backgroundRefreshRow()
 
@@ -706,7 +704,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         }
     }
 
-    @available(iOS 11, *)
     private func motionPermissionRow() -> BaseRow {
         return MotionPermissionRow { row in
             func update(isInitial: Bool) {

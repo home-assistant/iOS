@@ -29,15 +29,10 @@ public class StorageSensor: SensorProvider {
                 throw StorageError.noData
             }
         }.map { (volumes: [URLResourceKey: Int64]) -> [WebhookSensor] in
-            if #available(iOS 11, *) {
-                return [ try Self.sensor(for: volumes) ]
-            } else {
-                return []
-            }
+            return [ try Self.sensor(for: volumes) ]
         }
     }
 
-    @available(iOS 11, *)
     private static func sensor(for volumes: [URLResourceKey: Int64]) throws -> WebhookSensor {
         let sensor = WebhookSensor(
             name: "Storage",
@@ -60,7 +55,6 @@ public class StorageSensor: SensorProvider {
         return sensor
     }
 
-    @available(iOS 11, *)
     struct Values {
         let availableOverall: Int64
         let availableImportant: Int64

@@ -85,7 +85,7 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
                     webAuthSession.start()
 
                     self.authenticationViewController = webAuthSession
-                } else if #available(iOS 11.0, *) {
+                } else {
                     self.authStyle = "SFAuthenticationSession"
                     let webAuthSession = SFAuthenticationSession(url: authURL, callbackURLScheme: redirectURI,
                                                                  completionHandler: newStyleAuthCallback)
@@ -93,13 +93,6 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
                     webAuthSession.start()
 
                     self.authenticationViewController = webAuthSession
-                } else {
-                    let safariVC = SFSafariViewController(url: authURL)
-                    if #available(iOS 11.0, *) { safariVC.dismissButtonStyle = .cancel }
-                    safariVC.delegate = self
-
-                    self.authenticationViewController = safariVC
-                    Current.authenticationControllerPresenter?(safariVC)
                 }
             } else {
                 resolver.reject(AuthenticationControllerError.invalidURL)
@@ -128,11 +121,8 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
                                                                      queue: queue) { notification in
             if #available(iOS 12.0, *) {
                 (self.authenticationViewController as? ASWebAuthenticationSession)?.cancel()
-            } else if #available(iOS 11.0, *) {
-                (self.authenticationViewController as? SFAuthenticationSession)?.cancel()
             } else {
-                (self.authenticationViewController as? SFSafariViewController)?.dismiss(animated: true,
-                                                                                        completion: nil)
+                (self.authenticationViewController as? SFAuthenticationSession)?.cancel()
             }
             guard let url = notification.userInfo?["url"] as? URL else {
                     return
@@ -142,11 +132,8 @@ class AuthenticationController: NSObject, SFSafariViewControllerDelegate {
 
             if #available(iOS 12.0, *) {
                 (self.authenticationViewController as? ASWebAuthenticationSession)?.cancel()
-            } else if #available(iOS 11.0, *) {
-                (self.authenticationViewController as? SFAuthenticationSession)?.cancel()
             } else {
-                (self.authenticationViewController as? SFSafariViewController)?.dismiss(animated: true,
-                                                                                        completion: nil)
+                (self.authenticationViewController as? SFAuthenticationSession)?.cancel()
             }
 
             self.cleanUp()
