@@ -88,7 +88,24 @@ public class GeocoderSensor: SensorProvider {
     }
 
     private static func postalAddress(for placemark: CLPlacemark) -> CNPostalAddress? {
-        return placemark.postalAddress
+        if let address = placemark.postalAddress {
+            return address
+        }
+
+        return with(CNMutablePostalAddress()) {
+            $0.street = placemark.thoroughfare ?? ""
+            $0.city =  placemark.locality ?? ""
+            $0.state = placemark.administrativeArea ?? ""
+            $0.postalCode = placemark.postalCode ?? ""
+
+            // matching behavior with iOS 11+, prefer iso country code
+            $0.country = placemark.isoCountryCode ?? placemark.country ?? ""
+
+            if #available(iOS 10.3, *) {
+                $0.subLocality = placemark.subLocality ?? ""
+                $0.subAdministrativeArea = placemark.subAdministrativeArea ?? ""
+            }
+        }
     }
 }
 
