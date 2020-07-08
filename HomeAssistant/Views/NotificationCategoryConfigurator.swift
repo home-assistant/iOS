@@ -134,24 +134,21 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
             }
         }
 
-        if #available(iOS 11.0, *) {
-        self.form
-            +++ Section(header: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.header,
-                        footer: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.footer)
-            <<< TextAreaRow {
-                $0.tag = "hiddenPreviewsBodyPlaceholder"
-                $0.placeholder = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
-                if !newCategory && self.category.HiddenPreviewsBodyPlaceholder != "" {
-                    $0.value = self.category.HiddenPreviewsBodyPlaceholder
-                } else {
-                    $0.value = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
-                }
-            }.onChange { row in
-                // swiftlint:disable:next force_try
-                try! self.realm.write {
-                    if let value = row.value {
-                        self.category.HiddenPreviewsBodyPlaceholder = value
-                    }
+        +++ Section(header: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.header,
+                    footer: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.footer)
+        <<< TextAreaRow {
+            $0.tag = "hiddenPreviewsBodyPlaceholder"
+            $0.placeholder = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
+            if !newCategory && self.category.HiddenPreviewsBodyPlaceholder != "" {
+                $0.value = self.category.HiddenPreviewsBodyPlaceholder
+            } else {
+                $0.value = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
+            }
+        }.onChange { row in
+            // swiftlint:disable:next force_try
+            try! self.realm.write {
+                if let value = row.value {
+                    self.category.HiddenPreviewsBodyPlaceholder = value
                 }
             }
         }

@@ -3,7 +3,6 @@ import PromiseKit
 import XCTest
 @testable import Shared
 
-@available(iOS 11, *)
 class StorageSensorTests: XCTestCase {
     private var request: SensorProviderRequest = .init(reason:  .trigger("unit-test"))
 

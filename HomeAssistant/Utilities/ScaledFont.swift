@@ -110,11 +110,7 @@ public struct ScaledFont {
                 return UIFont.preferredFont(forTextStyle: textStyle)
         }
 
-        if #available(iOS 11.0, *) {
-            let fontMetrics = UIFontMetrics(forTextStyle: textStyle)
-            return fontMetrics.scaledFont(for: font)
-        }
-
-        return font
+        let fontMetrics = UIFontMetrics(forTextStyle: textStyle)
+        return fontMetrics.scaledFont(for: font)
     }
 }

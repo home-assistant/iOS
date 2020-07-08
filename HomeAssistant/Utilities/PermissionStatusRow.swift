@@ -27,7 +27,6 @@ public final class LocationPermissionRow: Row<LabelCellOf<CLAuthorizationStatus>
     }
 }
 
-@available(iOS 11, *)
 public final class MotionPermissionRow: Row<LabelCellOf<CMAuthorizationStatus>>, RowType {
     required public init(tag: String?) {
         super.init(tag: tag)

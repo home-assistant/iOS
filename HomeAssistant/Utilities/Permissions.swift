@@ -59,7 +59,6 @@ extension CLAuthorizationStatus {
     }
 }
 
-@available(iOS 11.0, *)
 extension CMAuthorizationStatus {
     var genericStatus: PermissionStatus {
         switch self {
@@ -139,10 +138,7 @@ public enum PermissionType: Int {
         case .location:
             return CLLocationManager.authorizationStatus().genericStatus
         case .motion:
-            if #available(iOS 11.0, *) {
-                return CMMotionActivityManager.authorizationStatus().genericStatus
-            }
-            return .denied
+            return CMMotionActivityManager.authorizationStatus().genericStatus
         case .notification:
             guard let authorizationStatus = self.fetchNotificationsAuthorizationStatus() else { return .denied }
             return authorizationStatus.genericStatus

@@ -3,8 +3,7 @@
 
 import Foundation
 
-// swiftlint:disable superfluous_disable_command
-// swiftlint:disable file_length
+// swiftlint:disable superfluous_disable_command file_length implicit_return
 
 // MARK: - Strings
 
@@ -163,8 +162,8 @@ internal enum L10n {
     }
     internal enum OpenUrlFromNotification {
       /// Open URL (%@) found in notification?
-      internal static func message(_ p1: String) -> String {
-        return L10n.tr("Localizable", "alerts.open_url_from_notification.message", p1)
+      internal static func message(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "alerts.open_url_from_notification.message", String(describing: p1))
       }
       /// Open URL?
       internal static let title = L10n.tr("Localizable", "alerts.open_url_from_notification.title")
@@ -234,14 +233,14 @@ internal enum L10n {
       internal static let unknown = L10n.tr("Localizable", "client_events.event_type.unknown")
       internal enum Notification {
         /// Received a Push Notification: %@
-        internal static func title(_ p1: String) -> String {
-          return L10n.tr("Localizable", "client_events.event_type.notification.title", p1)
+        internal static func title(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "client_events.event_type.notification.title", String(describing: p1))
         }
       }
       internal enum Request {
         /// Request(SSID: %@ - %@)
-        internal static func log(_ p1: String, _ p2: String) -> String {
-          return L10n.tr("Localizable", "client_events.event_type.request.log", p1, p2)
+        internal static func log(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "client_events.event_type.request.log", String(describing: p1), String(describing: p2))
         }
       }
     }
@@ -302,8 +301,8 @@ internal enum L10n {
           /// Authentication failed!
           internal static let authFailed = L10n.tr("Localizable", "extensions.notification_content.error.request.auth_failed")
           /// Entity '%@' not found!
-          internal static func entityNotFound(_ p1: String) -> String {
-            return L10n.tr("Localizable", "extensions.notification_content.error.request.entity_not_found", p1)
+          internal static func entityNotFound(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "extensions.notification_content.error.request.entity_not_found", String(describing: p1))
           }
           /// HLS stream unavailable
           internal static let hlsUnavailable = L10n.tr("Localizable", "extensions.notification_content.error.request.hls_unavailable")
@@ -317,8 +316,8 @@ internal enum L10n {
       }
       internal enum Hud {
         /// Loading %@...
-        internal static func loading(_ p1: String) -> String {
-          return L10n.tr("Localizable", "extensions.notification_content.hud.loading", p1)
+        internal static func loading(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "extensions.notification_content.hud.loading", String(describing: p1))
         }
       }
     }
@@ -335,8 +334,8 @@ internal enum L10n {
       /// The mobile_app component is not loaded. Please add it to your configuration, restart Home Assistant, and try again.
       internal static let mobileAppComponentNotLoaded = L10n.tr("Localizable", "ha_api.api_error.mobile_app_component_not_loaded")
       /// Your Home Assistant version (%@) is too old, you must upgrade to at least version %@ to use the app.
-      internal static func mustUpgradeHomeAssistant(_ p1: String, _ p2: String) -> String {
-        return L10n.tr("Localizable", "ha_api.api_error.must_upgrade_home_assistant", p1, p2)
+      internal static func mustUpgradeHomeAssistant(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "ha_api.api_error.must_upgrade_home_assistant", String(describing: p1), String(describing: p2))
       }
       /// HA API not configured
       internal static let notConfigured = L10n.tr("Localizable", "ha_api.api_error.not_configured")
@@ -360,14 +359,14 @@ internal enum L10n {
     }
     internal enum BeaconRegionEnter {
       /// %@ entered via iBeacon
-      internal static func body(_ p1: String) -> String {
-        return L10n.tr("Localizable", "location_change_notification.beacon_region_enter.body", p1)
+      internal static func body(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "location_change_notification.beacon_region_enter.body", String(describing: p1))
       }
     }
     internal enum BeaconRegionExit {
       /// %@ exited via iBeacon
-      internal static func body(_ p1: String) -> String {
-        return L10n.tr("Localizable", "location_change_notification.beacon_region_exit.body", p1)
+      internal static func body(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "location_change_notification.beacon_region_exit.body", String(describing: p1))
       }
     }
     internal enum Launch {
@@ -388,14 +387,14 @@ internal enum L10n {
     }
     internal enum RegionEnter {
       /// %@ entered
-      internal static func body(_ p1: String) -> String {
-        return L10n.tr("Localizable", "location_change_notification.region_enter.body", p1)
+      internal static func body(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "location_change_notification.region_enter.body", String(describing: p1))
       }
     }
     internal enum RegionExit {
       /// %@ exited
-      internal static func body(_ p1: String) -> String {
-        return L10n.tr("Localizable", "location_change_notification.region_exit.body", p1)
+      internal static func body(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "location_change_notification.region_exit.body", String(describing: p1))
       }
     }
     internal enum SignificantLocationUpdate {
@@ -426,15 +425,15 @@ internal enum L10n {
 
   internal enum LocationUpdateErrorNotification {
     /// Error sending %@ location update to Home Assistant.
-    internal static func title(_ p1: String) -> String {
-      return L10n.tr("Localizable", "location_update_error_notification.title", p1)
+    internal static func title(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "location_update_error_notification.title", String(describing: p1))
     }
   }
 
   internal enum ManualLocationUpdateFailedNotification {
     /// Failed to send current location to server. The error was %@
-    internal static func message(_ p1: String) -> String {
-      return L10n.tr("Localizable", "manual_location_update_failed_notification.message", p1)
+    internal static func message(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "manual_location_update_failed_notification.message", String(describing: p1))
     }
     /// Location failed to update
     internal static let title = L10n.tr("Localizable", "manual_location_update_failed_notification.title")
@@ -499,8 +498,8 @@ internal enum L10n {
       }
       internal enum PreviewNotification {
         /// This is a test notification for the %@ notification category
-        internal static func body(_ p1: String) -> String {
-          return L10n.tr("Localizable", "notifications_configurator.category.preview_notification.body", p1)
+        internal static func body(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "notifications_configurator.category.preview_notification.body", String(describing: p1))
         }
         /// Test notification
         internal static let title = L10n.tr("Localizable", "notifications_configurator.category.preview_notification.title")
@@ -553,15 +552,15 @@ internal enum L10n {
   internal enum Onboarding {
     internal enum Connect {
       /// Connecting to %@
-      internal static func title(_ p1: String) -> String {
-        return L10n.tr("Localizable", "onboarding.connect.title", p1)
+      internal static func title(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "onboarding.connect.title", String(describing: p1))
       }
     }
     internal enum ConnectionTestResult {
       internal enum AuthenticationUnsupported {
         /// Authentication type is unsupported%@.
-        internal static func description(_ p1: String) -> String {
-          return L10n.tr("Localizable", "onboarding.connection_test_result.authentication_unsupported.description", p1)
+        internal static func description(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "onboarding.connection_test_result.authentication_unsupported.description", String(describing: p1))
         }
       }
       internal enum BasicAuth {
@@ -574,8 +573,8 @@ internal enum L10n {
       }
       internal enum ConnectionError {
         /// General connection error%@.
-        internal static func description(_ p1: String) -> String {
-          return L10n.tr("Localizable", "onboarding.connection_test_result.connection_error.description", p1)
+        internal static func description(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "onboarding.connection_test_result.connection_error.description", String(describing: p1))
         }
       }
       internal enum NoBaseUrlDiscovered {
@@ -584,14 +583,14 @@ internal enum L10n {
       }
       internal enum ServerError {
         /// Server error: %@
-        internal static func description(_ p1: String) -> String {
-          return L10n.tr("Localizable", "onboarding.connection_test_result.server_error.description", p1)
+        internal static func description(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "onboarding.connection_test_result.server_error.description", String(describing: p1))
         }
       }
       internal enum SslContainer {
         /// We encountered an error while connecting to your instance. %@ Due to iOS limitations, you will not be able to continue with setup until a valid SSL certificate is installed. We recommend Lets Encrypt or Nabu Casa Remote UI.
-        internal static func description(_ p1: String) -> String {
-          return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_container.description", p1)
+        internal static func description(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_container.description", String(describing: p1))
         }
       }
       internal enum SslExpired {
@@ -600,8 +599,8 @@ internal enum L10n {
       }
       internal enum SslUntrusted {
         /// Your SSL certificate is untrusted. %@.
-        internal static func description(_ p1: String) -> String {
-          return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_untrusted.description", p1)
+        internal static func description(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "onboarding.connection_test_result.ssl_untrusted.description", String(describing: p1))
         }
       }
       internal enum TooOld {
@@ -610,8 +609,8 @@ internal enum L10n {
       }
       internal enum UnknownError {
         /// Unknown error: %@
-        internal static func description(_ p1: String) -> String {
-          return L10n.tr("Localizable", "onboarding.connection_test_result.unknown_error.description", p1)
+        internal static func description(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "onboarding.connection_test_result.unknown_error.description", String(describing: p1))
         }
       }
     }
@@ -630,8 +629,8 @@ internal enum L10n {
     internal enum ManualSetup {
       internal enum CouldntMakeUrl {
         /// The value '%@' was not a valid URL.
-        internal static func message(_ p1: String) -> String {
-          return L10n.tr("Localizable", "onboarding.manual_setup.couldnt_make_url.message", p1)
+        internal static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "onboarding.manual_setup.couldnt_make_url.message", String(describing: p1))
         }
         /// Could not create a URL
         internal static let title = L10n.tr("Localizable", "onboarding.manual_setup.couldnt_make_url.title")
@@ -732,8 +731,8 @@ internal enum L10n {
 
   internal enum RateLimitNotification {
     /// You have now sent more than %@ notifications today. You will not receive new notifications until midnight UTC.
-    internal static func body(_ p1: String) -> String {
-      return L10n.tr("Localizable", "rate_limit_notification.body", p1)
+    internal static func body(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "rate_limit_notification.body", String(describing: p1))
     }
     /// Notifications Rate Limited
     internal static let title = L10n.tr("Localizable", "rate_limit_notification.title")
@@ -784,8 +783,8 @@ internal enum L10n {
     }
     internal enum CellularProvider {
       /// Cellular Provider%@
-      internal static func name(_ p1: String) -> String {
-        return L10n.tr("Localizable", "sensors.cellular_provider.name", p1)
+      internal static func name(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "sensors.cellular_provider.name", String(describing: p1))
       }
       internal enum Attributes {
         /// Allows VoIP
@@ -943,8 +942,8 @@ internal enum L10n {
     }
     internal enum ConnectionErrorNotification {
       /// There was an error connecting to Home Assistant. Please confirm the settings are correct and save to attempt to reconnect. The error was: %@
-      internal static func message(_ p1: String) -> String {
-        return L10n.tr("Localizable", "settings.connection_error_notification.message", p1)
+      internal static func message(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings.connection_error_notification.message", String(describing: p1))
       }
       /// Connection Error
       internal static let title = L10n.tr("Localizable", "settings.connection_error_notification.title")
@@ -1034,8 +1033,8 @@ internal enum L10n {
       }
       internal enum InternalUrlSsids {
         /// Add current SSID %@
-        internal static func addCurrentSsid(_ p1: String) -> String {
-          return L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.add_current_ssid", p1)
+        internal static func addCurrentSsid(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.add_current_ssid", String(describing: p1))
         }
         /// Add new SSID
         internal static let addNewSsid = L10n.tr("Localizable", "settings.connection_section.internal_url_ssids.add_new_ssid")
@@ -1129,8 +1128,8 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings.developer.copy_realm.title")
         internal enum Alert {
           /// Copied Realm from %@ to %@
-          internal static func message(_ p1: String, _ p2: String) -> String {
-            return L10n.tr("Localizable", "settings.developer.copy_realm.alert.message", p1, p2)
+          internal static func message(_ p1: Any, _ p2: Any) -> String {
+            return L10n.tr("Localizable", "settings.developer.copy_realm.alert.message", String(describing: p1), String(describing: p2))
           }
           /// Copied Realm
           internal static let title = L10n.tr("Localizable", "settings.developer.copy_realm.alert.title")
@@ -1375,8 +1374,8 @@ internal enum L10n {
       }
       internal enum PageZoom {
         /// %@ (Default)
-        internal static func `default`(_ p1: String) -> String {
-          return L10n.tr("Localizable", "settings_details.general.page_zoom.default", p1)
+        internal static func `default`(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "settings_details.general.page_zoom.default", String(describing: p1))
         }
         /// Page Zoom
         internal static let title = L10n.tr("Localizable", "settings_details.general.page_zoom.title")
@@ -1618,28 +1617,28 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings_details.notifications.sounds.title")
         internal enum Error {
           /// Can't build ~/Library/Sounds path: %@
-          internal static func cantBuildLibrarySoundsPath(_ p1: String) -> String {
-            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.cant_build_library_sounds_path", p1)
+          internal static func cantBuildLibrarySoundsPath(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.cant_build_library_sounds_path", String(describing: p1))
           }
           /// Can't list directory contents: %@
-          internal static func cantGetDirectoryContents(_ p1: String) -> String {
-            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.cant_get_directory_contents", p1)
+          internal static func cantGetDirectoryContents(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.cant_get_directory_contents", String(describing: p1))
           }
           /// Can't access file sharing sounds directory: %@
-          internal static func cantGetFileSharingPath(_ p1: String) -> String {
-            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.cant_get_file_sharing_path", p1)
+          internal static func cantGetFileSharingPath(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.cant_get_file_sharing_path", String(describing: p1))
           }
           /// Failed to convert audio to PCM 32 bit 48khz: %@
-          internal static func conversionFailed(_ p1: String) -> String {
-            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.conversion_failed", p1)
+          internal static func conversionFailed(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.conversion_failed", String(describing: p1))
           }
           /// Failed to copy file: %@
-          internal static func copyError(_ p1: String) -> String {
-            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.copy_error", p1)
+          internal static func copyError(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.copy_error", String(describing: p1))
           }
           /// Failed to delete file: %@
-          internal static func deleteError(_ p1: String) -> String {
-            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.delete_error", p1)
+          internal static func deleteError(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "settings_details.notifications.sounds.error.delete_error", String(describing: p1))
           }
         }
         internal enum ImportedAlert {
@@ -1761,8 +1760,8 @@ internal enum L10n {
     }
     internal enum LastUpdated {
       /// Last Updated %@
-      internal static func footer(_ p1: String) -> String {
-        return L10n.tr("Localizable", "settings_sensors.last_updated.footer", p1)
+      internal static func footer(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "settings_sensors.last_updated.footer", String(describing: p1))
       }
     }
     internal enum LoadingError {
@@ -1788,8 +1787,8 @@ internal enum L10n {
         internal static let useSuggestedValue = L10n.tr("Localizable", "siri_shortcuts.configurator.fields.use_suggested_value")
         internal enum Section {
           /// Suggested: %@
-          internal static func footer(_ p1: String) -> String {
-            return L10n.tr("Localizable", "siri_shortcuts.configurator.fields.section.footer", p1)
+          internal static func footer(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "siri_shortcuts.configurator.fields.section.footer", String(describing: p1))
           }
           /// Fields
           internal static let header = L10n.tr("Localizable", "siri_shortcuts.configurator.fields.section.header")
@@ -1859,14 +1858,14 @@ internal enum L10n {
     internal enum CallService {
       internal enum Error {
         /// An error occurred while attempting to call service %@: %@
-        internal static func message(_ p1: String, _ p2: String) -> String {
-          return L10n.tr("Localizable", "url_handler.call_service.error.message", p1, p2)
+        internal static func message(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "url_handler.call_service.error.message", String(describing: p1), String(describing: p2))
         }
       }
       internal enum Success {
         /// Successfully called %@
-        internal static func message(_ p1: String) -> String {
-          return L10n.tr("Localizable", "url_handler.call_service.success.message", p1)
+        internal static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "url_handler.call_service.success.message", String(describing: p1))
         }
         /// Called service
         internal static let title = L10n.tr("Localizable", "url_handler.call_service.success.title")
@@ -1879,14 +1878,14 @@ internal enum L10n {
     internal enum FireEvent {
       internal enum Error {
         /// An error occurred while attempting to fire event %@: %@
-        internal static func message(_ p1: String, _ p2: String) -> String {
-          return L10n.tr("Localizable", "url_handler.fire_event.error.message", p1, p2)
+        internal static func message(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "url_handler.fire_event.error.message", String(describing: p1), String(describing: p2))
         }
       }
       internal enum Success {
         /// Successfully fired event %@
-        internal static func message(_ p1: String) -> String {
-          return L10n.tr("Localizable", "url_handler.fire_event.success.message", p1)
+        internal static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "url_handler.fire_event.success.message", String(describing: p1))
         }
         /// Fired event
         internal static let title = L10n.tr("Localizable", "url_handler.fire_event.success.title")
@@ -1894,15 +1893,15 @@ internal enum L10n {
     }
     internal enum NoService {
       /// %@ is not a valid route
-      internal static func message(_ p1: String) -> String {
-        return L10n.tr("Localizable", "url_handler.no_service.message", p1)
+      internal static func message(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "url_handler.no_service.message", String(describing: p1))
       }
     }
     internal enum SendLocation {
       internal enum Error {
         /// An unknown error occurred while attempting to send location: %@
-        internal static func message(_ p1: String) -> String {
-          return L10n.tr("Localizable", "url_handler.send_location.error.message", p1)
+        internal static func message(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "url_handler.send_location.error.message", String(describing: p1))
         }
       }
       internal enum Success {
@@ -2509,8 +2508,8 @@ internal enum L10n {
 
   internal enum WhatsNew {
     /// What's New in\nHome Assistant Companion %@
-    internal static func title(_ p1: String) -> String {
-      return L10n.tr("Localizable", "whats_new.title", p1)
+    internal static func title(_ p1: Any) -> String {
+      return L10n.tr("Localizable", "whats_new.title", String(describing: p1))
     }
     internal enum TwoDotZero {
       internal enum Items {
@@ -2615,10 +2614,15 @@ internal enum L10n {
 
 extension L10n {
   private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-    // swiftlint:disable:next nslocalizedstring_key
-    let format = NSLocalizedString(key, tableName: table, bundle: Bundle(for: BundleToken.self), comment: "")
+    let format = BundleToken.bundle.localizedString(forKey: key, value: nil, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
 }
 
-private final class BundleToken {}
+// swiftlint:disable convenience_type
+private final class BundleToken {
+  static let bundle: Bundle = {
+    Bundle(for: BundleToken.self)
+  }()
+}
+// swiftlint:enable convenience_type
