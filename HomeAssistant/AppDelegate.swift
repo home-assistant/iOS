@@ -900,6 +900,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Analytics.logEvent(eventName, parameters: params)
         }
 
+        Current.logError = { error in
+            // crashlytics itself controlled by the crashlytics key, but this is more like analytics
+            guard prefs.bool(forKey: "analyticsEnabled") else { return }
+
+            Current.Log.error("logging error: \(error.debugDescription)")
+            Crashlytics.crashlytics().record(error: error)
+        }
+
         Current.setUserProperty = { (value: String?, name: String) -> Void in
             Current.Log.verbose("Setting user property \(name) to \(String(describing: value))")
             Analytics.setUserProperty(value, forName: name)

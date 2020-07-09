@@ -27,6 +27,40 @@ enum OneShotError: Error, Equatable {
     }
 }
 
+private struct ReportedError {
+    enum Code: Int {
+        case invalidLatitudeOrLongitude = 0
+        case invalidAgeOrAccuracy = 1
+    }
+
+    private static let domain = "OneShotLocationError"
+
+    let code: Code
+    let location: CLLocation
+
+    func asNsError() -> NSError {
+        // technically this doesn't have to be Double but it's really easy to accidentally send a bad value type here
+        var userInfo: [String: Double] = [
+            "location_coord_lat": location.coordinate.latitude,
+            "location_coord_lng": location.coordinate.longitude,
+            "location_altitude": location.altitude,
+            "location_floor": Double(location.floor?.level ?? -1),
+            "location_speed": location.speed,
+            "location_course": location.course,
+            "location_acc_horiz": location.horizontalAccuracy,
+            "location_acc_vert": location.verticalAccuracy,
+            "location_acc_speed": location.speedAccuracy,
+            "location_age": location.timestamp.timeIntervalSinceNow
+        ]
+
+        if #available(iOS 13.4, *) {
+            userInfo["location_acc_course"] = location.courseAccuracy
+        }
+
+        return NSError(domain: Self.domain, code: code.rawValue, userInfo: userInfo)
+    }
+}
+
 internal struct PotentialLocation: Comparable, CustomStringConvertible {
     static var desiredAccuracy: CLLocationAccuracy { 100.0 }
     static var invalidAccuracyThreshold: CLLocationAccuracy { 1500.0 }
@@ -49,6 +83,8 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
             // iOS 13.5? seems to occasionally report 0 lat/long, so ignore these locations
             Current.Log.error("Location \(location.coordinate) was super duper invalid")
             quality = .invalid
+
+            Current.logError?(ReportedError(code: .invalidLatitudeOrLongitude, location: location).asNsError())
         } else {
             // now = 0 seconds ago
             // timestamp = 100 seconds ago
@@ -58,6 +94,7 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
                 quality = .perfect
             } else if location.horizontalAccuracy > Self.invalidAccuracyThreshold || age > Self.invalidAgeThreshold {
                 quality = .invalid
+                Current.logError?(ReportedError(code: .invalidAgeOrAccuracy, location: location).asNsError())
             } else {
                 quality = .meh
             }
