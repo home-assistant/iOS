@@ -141,7 +141,7 @@ public class Environment {
         }
     }
 
-    public var Log: XCGLogger = {
+    public lazy var Log: XCGLogger = {
         if NSClassFromString("XCTest") != nil {
             return XCGLogger()
         }
@@ -170,7 +170,11 @@ public class Environment {
         // Create a file log destination
         let fileDestination = AutoRotatingFileDestination(writeToFile: logPath,
                                                           identifier: "advancedLogger.fileDestination",
-                                                          shouldAppend: true)
+                                                          shouldAppend: true,
+                                                          maxFileSize: 10_485_760,
+                                                          maxTimeInterval: 86400,
+                                                          // archived logs + 1 current, so realy this is -1'd
+                                                          targetMaxLogFiles: isTestFlight ? 8 : 4)
 
         // Optionally set some configuration options
         fileDestination.outputLevel = .verbose
