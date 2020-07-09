@@ -300,7 +300,7 @@ class OneShotLocationTests: XCTestCase {
         XCTAssertEqual(try hang(promise), location2)
     }
 
-    func testNoPerfectOnlyPoorChoicesOnAgeUntilTimeoiscut() throws {
+    func testNoPerfectOnlyPoorChoicesOnAgeUntilTimeout() throws {
         let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
         let location1 = CLLocation(
             coordinate: CLLocationCoordinate2D(latitude: 12, longitude: -12),
@@ -343,6 +343,114 @@ class OneShotLocationTests: XCTestCase {
 
         timeoutSeal(())
         XCTAssertEqual(try hang(promise), location1)
+    }
+
+    func testInvalidAgeOnlyUntilTimeout() {
+        let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
+        let location1 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 12, longitude: -12),
+            altitude: 0,
+            horizontalAccuracy: 100,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(-666)
+        )
+        let location2 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 123, longitude: -123),
+            altitude: 0,
+            horizontalAccuracy: 200,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(-601)
+        )
+        let promise = OneShotLocationProxy(
+            locationManager: locationManager,
+            timeout: timeoutPromise,
+            workQueue: workQueue
+        ).promise
+
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [ location1 ])
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [ location2 ])
+        timeoutSeal(())
+
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? OneShotError, OneShotError.outOfTime)
+        }
+    }
+
+    func testInvalidAccuracyOnlyUntilTimeout() {
+        let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
+        let location1 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 12, longitude: -12),
+            altitude: 0,
+            horizontalAccuracy: 1501,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(-30)
+        )
+        let location2 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 123, longitude: -123),
+            altitude: 0,
+            horizontalAccuracy: 2500,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(-5)
+        )
+        let promise = OneShotLocationProxy(
+            locationManager: locationManager,
+            timeout: timeoutPromise,
+            workQueue: workQueue
+        ).promise
+
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [ location1 ])
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [ location2 ])
+        timeoutSeal(())
+
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? OneShotError, OneShotError.outOfTime)
+        }
+    }
+
+    func testInvalidLatOrLongOnlyUntilTimeout() {
+        let (timeoutPromise, timeoutSeal) = Guarantee<Void>.pending()
+        let location1 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 0, longitude: -12),
+            altitude: 0,
+            horizontalAccuracy: 100,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(-20)
+        )
+        let location2 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 123, longitude: 0),
+            altitude: 0,
+            horizontalAccuracy: 200,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(-10)
+        )
+        let location3 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: -0, longitude: -12),
+            altitude: 0,
+            horizontalAccuracy: 200,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(-5)
+        )
+        let location4 = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 123, longitude: -0),
+            altitude: 0,
+            horizontalAccuracy: 200,
+            verticalAccuracy: 0,
+            timestamp: now.addingTimeInterval(0)
+        )
+        let promise = OneShotLocationProxy(
+            locationManager: locationManager,
+            timeout: timeoutPromise,
+            workQueue: workQueue
+        ).promise
+
+        locationManager.delegate?.locationManager?(locationManager, didUpdateLocations: [
+            location1, location2, location3, location4
+        ])
+        timeoutSeal(())
+
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? OneShotError, OneShotError.outOfTime)
+        }
     }
 
     func testMultipleAccuracyThenPerfect() throws {
@@ -421,8 +529,8 @@ class OneShotLocationTests: XCTestCase {
             self.location2 = location2
             // cheating a little so it's not constants hard-coded in two places
             self.hasPerfect =
-                PotentialLocation(location: location1).isPerfect ||
-                PotentialLocation(location: location2).isPerfect
+                PotentialLocation(location: location1).quality == .perfect ||
+                PotentialLocation(location: location2).quality == .perfect
             self.reason = reason
             self.file = file
             self.line = line

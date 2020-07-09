@@ -28,13 +28,44 @@ enum OneShotError: Error, Equatable {
 }
 
 internal struct PotentialLocation: Comparable, CustomStringConvertible {
-    let location: CLLocation
-
-    static var desiredAccuracy: CLLocationAccuracy { 200.0 }
+    static var desiredAccuracy: CLLocationAccuracy { 100.0 }
+    static var invalidAccuracyThreshold: CLLocationAccuracy { 1500.0 }
     static var desiredAge: TimeInterval { 30.0 }
+    static var invalidAgeThreshold: TimeInterval { 600.0 }
+
+    enum Quality {
+        case invalid
+        case meh
+        case perfect
+    }
+
+    let location: CLLocation
+    let quality: Quality
+
+    init(location: CLLocation) {
+        self.location = location
+
+        if location.coordinate.latitude == 0 || location.coordinate.longitude == 0 {
+            // iOS 13.5? seems to occasionally report 0 lat/long, so ignore these locations
+            Current.Log.error("Location \(location.coordinate) was super duper invalid")
+            quality = .invalid
+        } else {
+            // now = 0 seconds ago
+            // timestamp = 100 seconds ago
+            // so age is the positive number of seconds since this update
+            let age = Current.date().timeIntervalSince(location.timestamp)
+            if location.horizontalAccuracy <= Self.desiredAccuracy && age <= Self.desiredAge {
+                quality = .perfect
+            } else if location.horizontalAccuracy > Self.invalidAccuracyThreshold || age > Self.invalidAgeThreshold {
+                quality = .invalid
+            } else {
+                quality = .meh
+            }
+        }
+    }
 
     var description: String {
-        return "accuracy \(accuracy) from \(timestamp)"
+        return "accuracy \(accuracy) from \(timestamp) quality \(quality)"
     }
 
     var accuracy: CLLocationAccuracy {
@@ -45,30 +76,26 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
         return location.timestamp
     }
 
-    var isPerfect: Bool {
-        // now = 0 seconds ago
-        // timestamp = 100 seconds ago
-        // so age is the positive number of seconds since this update
-        let age = Current.date().timeIntervalSince(timestamp)
-        return accuracy < Self.desiredAccuracy && age <= Self.desiredAge
-    }
-
     static func == (lhs: PotentialLocation, rhs: PotentialLocation) -> Bool {
         return lhs.location == rhs.location
     }
 
     static func < (lhs: PotentialLocation, rhs: PotentialLocation) -> Bool {
-        switch (lhs.isPerfect, rhs.isPerfect) {
-        case (true, true):
+        switch (lhs.quality, rhs.quality) {
+        case (.perfect, .perfect):
             // both are 'perfect' so prefer the newer one
             return lhs.timestamp < rhs.timestamp
-        case (true, false):
+        case (.perfect, .meh),
+             (.perfect, .invalid),
+             (.meh, .invalid):
             // lhs is better, so it's 'greater'
             return false
-        case (false, true):
+        case (.meh, .perfect),
+             (.invalid, .perfect),
+             (.invalid, .meh):
             // rhs is better, so it's 'greater'
             return true
-        case (false, false):
+        case (.meh, .meh):
             // neither are perfect, which is more recent?
             // if the time difference is a lot, prefer the more recent, even if less accurate
             if lhs.timestamp.timeIntervalSince(rhs.timestamp) > 60 {
@@ -81,6 +108,9 @@ internal struct PotentialLocation: Comparable, CustomStringConvertible {
                 // prefer whichever is more accurate, since they're close in time to each other
                 return lhs.accuracy > rhs.accuracy
             }
+        case (.invalid, .invalid):
+            // nobody cares
+            return false
         }
     }
 }
@@ -103,7 +133,7 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         super.init()
 
         locationManager.allowsBackgroundLocationUpdates = true
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.delegate = self
 
         selfRetain = self
@@ -136,12 +166,19 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         let bestLocation = potentialLocations.sorted().last
 
         if let bestLocation = bestLocation {
-            if bestLocation.isPerfect {
+            switch bestLocation.quality {
+            case .perfect:
                 Current.Log.info("Got a perfect location!")
                 seal.fulfill(bestLocation.location)
-            } else if outOfTime {
-                Current.Log.info("Out of time, using \(bestLocation)")
+            case .invalid where outOfTime:
+                Current.Log.error("Out of time with only invalid location!")
+                seal.reject(OneShotError.outOfTime)
+            case .meh where outOfTime:
+                Current.Log.info("Out of time with a meh location")
                 seal.fulfill(bestLocation.location)
+            default:
+                // keep looking
+                break
             }
         } else if outOfTime {
             Current.Log.info("Out of time without any location!")
