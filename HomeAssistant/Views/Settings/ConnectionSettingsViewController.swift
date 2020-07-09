@@ -11,6 +11,7 @@ import Eureka
 import Shared
 import PromiseKit
 import Alamofire
+import ObjectMapper
 
 class ConnectionSettingsViewController: FormViewController, RowControllerType {
 
@@ -252,7 +253,10 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
             let url = connectionURL.appendingPathComponent("api/webhook/\(webhookID)")
             Current.Log.verbose("Confirming URL at \(url)")
 
-            Alamofire.request(url, method: .post, parameters: WebhookRequest(type: "get_config", data: [:]).toJSON(),
+            let request = WebhookRequest(type: "get_config", data: [:])
+            let requestJSON = Mapper<WebhookRequest>(context: WebhookRequestContext.server).toJSON(request)
+
+            Alamofire.request(url, method: .post, parameters: requestJSON,
                               encoding: JSONEncoding.default).validate().responseJSON { resp in
                 switch resp.result {
                 case .success:
