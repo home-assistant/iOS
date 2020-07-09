@@ -67,13 +67,20 @@ extension Realm {
             Current.Log.info("Realm is stored at \(storeURL.description)")
         #endif
 
-        let config = Realm.Configuration(fileURL: storeURL, schemaVersion: 4,
-                                         migrationBlock: nil, deleteRealmIfMigrationNeeded: false)
+        // 5 - 2020-07-08 v2020.4
+        let config = Realm.Configuration(
+            fileURL: storeURL,
+            schemaVersion: 5,
+            migrationBlock: nil,
+            deleteRealmIfMigrationNeeded: false
+        )
+
         var configuredRealm: Realm!
         do {
             configuredRealm = try Realm(configuration: config)
         } catch let error as NSError {
-            Realm.handleFatalError("Error while attempting to create Realm", error)
+            Current.logError?(error)
+            fatalError(error.debugDescription)
         }
         return configuredRealm
     }
