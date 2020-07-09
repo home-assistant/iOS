@@ -3751,7 +3751,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/bin/sh -e";
-			shellScript = "if [[ ${ENABLE_CRITICAL_ALERTS} -eq 1 ]]; then\n    entitlements_file=\"${TARGET_TEMP_DIR}/${FULL_PRODUCT_NAME}.xcent\"\n    /usr/libexec/PlistBuddy -c \"add com.apple.developer.usernotifications.critical-alerts bool true\" \"$entitlements_file\"\nelse\n    echo \"warning: Critical alerts disabled\"\nfi\n";
+			shellScript = "if [[ $CI ]]; then\n    echo \"warning: Critical alerts disabled for CI\"\nelif [[ ${ENABLE_CRITICAL_ALERTS} -eq 1 ]]; then\n    entitlements_file=\"${TARGET_TEMP_DIR}/${FULL_PRODUCT_NAME}.xcent\"\n    /usr/libexec/PlistBuddy -c \"add com.apple.developer.usernotifications.critical-alerts bool true\" \"$entitlements_file\"\nelse\n    echo \"warning: Critical alerts disabled\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		B641BC261E20BAF3002CCBC1 /* Swiftlint */ = {
