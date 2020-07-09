@@ -45,6 +45,7 @@
 		119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* StorageSensor.test.swift */; };
 		119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119C9B1E24A448A600308A54 /* ZoneManager.swift */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
+		119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */; };
 		11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C6A24A463FC00D9565F /* ZoneManagerState.swift */; };
 		11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C6C24A4641600D9565F /* ZoneManagerEvent.swift */; };
 		11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C6E24A4644A00D9565F /* ZoneManagerIgnoreReason.swift */; };
@@ -822,6 +823,7 @@
 		119385A6249E9F930097F497 /* StorageSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.test.swift; sourceTree = "<group>"; };
 		119C9B1E24A448A600308A54 /* ZoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManager.swift; sourceTree = "<group>"; };
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
+		119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ZeroLatitude.gpx; sourceTree = "<group>"; };
 		11A71C6A24A463FC00D9565F /* ZoneManagerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerState.swift; sourceTree = "<group>"; };
 		11A71C6C24A4641600D9565F /* ZoneManagerEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerEvent.swift; sourceTree = "<group>"; };
 		11A71C6E24A4644A00D9565F /* ZoneManagerIgnoreReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerIgnoreReason.swift; sourceTree = "<group>"; };
@@ -2034,6 +2036,7 @@
 				B657A90B1CA646EB00121384 /* HomeAssistantUITests.swift */,
 				B657A90D1CA646EB00121384 /* Info.plist */,
 				B699339B1E2338960054453D /* SnapshotHelper.swift */,
+				119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */,
 				B63CCDDE21649AE400123C50 /* BayArea.gpx */,
 			);
 			path = HomeAssistantUITests;
@@ -3415,6 +3418,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
