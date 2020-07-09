@@ -393,7 +393,7 @@ class SettingsViewController: FormViewController {
             self.present(alert, animated: true, completion: nil)
             alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
         }
-      
+
         <<< SwitchRow {
               $0.title = L10n.Settings.Developer.AnnoyingBackgroundNotifications.title
               $0.value = prefs.bool(forKey: XCGLogger.shouldNotifyUserDefaultsKey)
