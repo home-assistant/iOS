@@ -223,6 +223,7 @@ PODS:
     - Realm (= 5.0.3)
   - SimulatorStatusMagic (2.4.1)
   - Sodium (0.8.0)
+  - Starscream (4.0.3)
   - SwiftGen (6.2.0)
   - SwiftLint (0.39.2)
   - SwiftMessages (7.0.1):
@@ -268,6 +269,7 @@ DEPENDENCIES:
   - RealmSwift (~> 5.0)
   - SimulatorStatusMagic
   - Sodium
+  - Starscream
   - SwiftGen (~> 6.2.0)
   - SwiftLint (~> 0.39.2)
   - SwiftMessages (from `https://github.com/SwiftKickMobile/SwiftMessages.git`, branch `master`)
@@ -315,6 +317,7 @@ SPEC REPOS:
     - RealmSwift
     - SimulatorStatusMagic
     - Sodium
+    - Starscream
     - SwiftGen
     - SwiftLint
     - TABObserverSet
@@ -398,7 +401,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 9a8a16f79feffc7f42096743de2a7c4815e84020
   GoogleDataTransportCCTSupport: 489c1265d2c85b68187a83a911913d190012158d
   GoogleUtilities: 39530bc0ad980530298e9c4af8549e991fd033b1
-  Iconic: 6253c7913a2fb87c4a1366a9ec0befcf30173c21
+  Iconic: a714832bc864d725864a9f78ef72b8897b5b3c48
   KeychainAccess: 3f760109aa99b05d0f231e28b22642da7153e38a
   Lokalise: bc42066e2dde59b43b46e88ecc0b92b7d593dc72
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
@@ -418,6 +421,7 @@ SPEC CHECKSUMS:
   RealmSwift: 493c9f089cd3893b3959007973c0e4f640906ba0
   SimulatorStatusMagic: 28d4a9d1a500ac7cea0b2b5a43c1c6ddb40ba56c
   Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
+  Starscream: ef06f0961fff0880bca0604416d61141e4faca67
   SwiftGen: 77e88c8609381660cc1084c5ba8e1dc6065de692
   SwiftLint: 22ccbbe3b8008684be5955693bab135e0ed6a447
   SwiftMessages: 717510963fb9c9215c58f38bbc74801e4bf134c6
@@ -429,6 +433,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 5fc5a614cf0773e4730509f4209d7e02a6331f9f
+PODFILE CHECKSUM: 6f0b3eb4ebc6f2c9fb5d698180eb0e13bc633c7a
 
 COCOAPODS: 1.9.3

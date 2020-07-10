@@ -30,6 +30,7 @@ def shared_pods
     pod 'PromiseKit'
     pod 'RealmSwift', '~> 5.0'
     pod 'Sodium'
+    pod 'Starscream'
     pod 'UIColor_Hex_Swift'
     pod 'Version'
     pod 'XCGLogger'
