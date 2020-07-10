@@ -61,6 +61,11 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertTrue(didInvokeCompletion)
     }
 
+    func testUnbalancedBackgroundHandlingDoesntCrash() {
+        // not the best test: this will crash the test execution if it fails
+        manager.urlSessionDidFinishEvents(forBackgroundURLSession: manager.backgroundUrlSession)
+    }
+
     func testSendingEphemeralFailsEntirely() {
         let expectedError = URLError(.timedOut)
         let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
