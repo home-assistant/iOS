@@ -19,6 +19,7 @@ public class WebhookManager: NSObject {
     internal var backgroundUrlSession: URLSession { return backingBackgroundUrlSession }
     internal let ephemeralUrlSession: URLSession
     private let backgroundEventGroup: DispatchGroup = DispatchGroup()
+    private var pendingDidFinishEventsHandler: (() -> Void)?
 
     // must be accessed on appropriate queue
     private let dataQueue: DispatchQueue
@@ -90,8 +91,16 @@ public class WebhookManager: NSObject {
 
     public func handleBackground(for identifier: String, completionHandler: @escaping () -> Void) {
         Current.Log.notify("handleBackground started")
-        // the pair of this enter is in urlSessionDidFinishEvents
+
+        // if we're waiting for an existing paired leave, we should make sure it gets executed first
+        pendingDidFinishEventsHandler?()
+
         backgroundEventGroup.enter()
+        pendingDidFinishEventsHandler = { [backgroundEventGroup] in
+            // this is wrapped via a block -- rather than being invoked directly -- because iOS 14 (at least b1/b2)
+            // sends `urlSessionDidFinishEvents` when it didn't send `handleEventsForBackgroundURLSession`
+            backgroundEventGroup.leave()
+        }
 
         backgroundEventGroup.notify(queue: DispatchQueue.main) {
             Current.Log.notify("final completion")
@@ -310,7 +319,8 @@ public class WebhookManager: NSObject {
 extension WebhookManager: URLSessionDelegate {
     public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         Current.Log.notify("event delivery ended")
-        backgroundEventGroup.leave()
+        pendingDidFinishEventsHandler?()
+        pendingDidFinishEventsHandler = nil
     }
 }
 
