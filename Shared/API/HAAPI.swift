@@ -52,8 +52,10 @@ public class HomeAssistantAPI {
         return HomeAssistantAPI.LoadedComponents.contains("mobile_app")
     }
 
-    var tokenManager: TokenManager?
+    let tokenManager: TokenManager
     public var connectionInfo: ConnectionInfo
+
+    private let webSocket: WebSocketAPI
 
     /// Initialize an API object with an authenticated tokenManager.
     public init(connectionInfo: ConnectionInfo, tokenInfo: TokenInfo, urlConfig: URLSessionConfiguration = .default) {
@@ -64,6 +66,8 @@ public class HomeAssistantAPI {
         manager.retrier = self.tokenManager
         manager.adapter = self.tokenManager
         self.manager = manager
+
+        self.webSocket = WebSocketAPI(tokenManager: tokenManager)
     }
 
     private static func configureSessionManager(urlConfig: URLSessionConfiguration = .default) -> SessionManager {

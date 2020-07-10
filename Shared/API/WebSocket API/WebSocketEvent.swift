@@ -1,6 +1,8 @@
 import Foundation
 
-public struct WebSocketEventType: RawRepresentable, Hashable {
+public typealias WebSocketEventHandler = (WebSocketEventRegistration, WebSocketEvent) -> Void
+
+public struct WebSocketEventType: RawRepresentable, Hashable/*, Codable*/ {
     public let rawValue: String
     public init(rawValue: String) {
         self.rawValue = rawValue
@@ -24,48 +26,57 @@ public struct WebSocketEventType: RawRepresentable, Hashable {
     public static var timeChanged: Self = .init(rawValue:"time_changed")
 }
 
-public struct WebSocketEventRegistration {
-    internal let identifier: WebSocketRequestIdentifier
-    private weak var api: WebSocketAPI?
+public class WebSocketEventRegistration: Equatable {
+    internal let type: WebSocketEventType?
+    internal let handler: WebSocketEventHandler
+    internal let uniqueID = UUID()
+    internal var subscriptionIdentifier: WebSocketRequestIdentifier?
 
-    internal init(identifier: WebSocketRequestIdentifier, api: WebSocketAPI) {
-        self.identifier = identifier
-        self.api = api
+    internal init(type: WebSocketEventType?, handler: @escaping WebSocketEventHandler) {
+        self.type = type
+        self.handler = handler
     }
 
-    func unsubscribe() {
-        api?.unsubscribe(self)
+    internal func fire(_ event: WebSocketEvent) {
+        handler(self, event)
+    }
+
+    public static func == (lhs: WebSocketEventRegistration, rhs: WebSocketEventRegistration) -> Bool {
+        lhs.uniqueID == rhs.uniqueID
     }
 }
 
 public struct WebSocketEvent {
-    internal var registration: WebSocketEventRegistration
-
     public var eventType: WebSocketEventType
     public var firedAt: Date
     public var data: WebSocketData
 
-    public enum Origin: String {
+    public enum Origin: String, Codable {
         case local = "LOCAL"
         case remote = "REMOTE"
     }
 
     public var origin: Origin
 
-    init?(registration: WebSocketEventRegistration, dictionary: [String: Any]) {
+    enum CodingKeys: String, CodingKey {
+        case eventType = "event_type"
+        case firedAt = "time_fired"
+        case data
+        case origin
+    }
+
+    enum EventError: Error {
+        case missingEventType
+    }
+
+    init(dictionary: [String: Any]) throws {
         guard let eventTypeRaw = dictionary["event_type"] as? String else {
-            return nil
+            throw EventError.missingEventType
         }
 
-        guard let firedAt = HomeAssistantTimestampTransform().transformFromJSON(dictionary["time_fired"]) else {
-            return nil
-        }
+        let firedAt = HomeAssistantTimestampTransform().transformFromJSON(dictionary["time_fired"]) ?? Current.date()
+        let origin = (dictionary["origin"] as? String).flatMap { Origin(rawValue: $0) } ?? .local
 
-        guard let originRaw = dictionary["origin"] as? String, let origin = Origin(rawValue: originRaw) else {
-            return nil
-        }
-
-        self.registration = registration
         self.eventType = .init(rawValue: eventTypeRaw)
         self.firedAt = firedAt
         self.origin = origin

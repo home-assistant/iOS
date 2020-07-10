@@ -35,6 +35,8 @@
 		117166C824B8244700EF1043 /* WebSocketRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117166C624B8244700EF1043 /* WebSocketRequest.swift */; };
 		117166CA24B8246B00EF1043 /* WebSocketEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117166C924B8246B00EF1043 /* WebSocketEvent.swift */; };
 		117166CB24B8246B00EF1043 /* WebSocketEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117166C924B8246B00EF1043 /* WebSocketEvent.swift */; };
+		117166D024B8BE6200EF1043 /* WebSocketResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117166CF24B8BE6200EF1043 /* WebSocketResponse.swift */; };
+		117166D124B8BE6200EF1043 /* WebSocketResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117166CF24B8BE6200EF1043 /* WebSocketResponse.swift */; };
 		117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */; };
 		117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */; };
 		11810D4A249EAF8D00E741A4 /* rainbow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D40249EAF8B00E741A4 /* rainbow@2x.png */; };
@@ -818,6 +820,7 @@
 		117166C324B8242E00EF1043 /* WebSocketData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketData.swift; sourceTree = "<group>"; };
 		117166C624B8244700EF1043 /* WebSocketRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketRequest.swift; sourceTree = "<group>"; };
 		117166C924B8246B00EF1043 /* WebSocketEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketEvent.swift; sourceTree = "<group>"; };
+		117166CF24B8BE6200EF1043 /* WebSocketResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketResponse.swift; sourceTree = "<group>"; };
 		117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.swift"; sourceTree = "<group>"; };
 		117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.test.swift"; sourceTree = "<group>"; };
 		11810D40249EAF8B00E741A4 /* rainbow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow@2x.png"; sourceTree = "<group>"; };
@@ -1610,6 +1613,7 @@
 				117166C324B8242E00EF1043 /* WebSocketData.swift */,
 				117166C624B8244700EF1043 /* WebSocketRequest.swift */,
 				117166C924B8246B00EF1043 /* WebSocketEvent.swift */,
+				117166CF24B8BE6200EF1043 /* WebSocketResponse.swift */,
 			);
 			path = "WebSocket API";
 			sourceTree = "<group>";
@@ -4410,6 +4414,7 @@
 				11C4628924B109C100031902 /* WebhookResponseLocation.swift in Sources */,
 				11C4628C24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
 				B67CE8AA22200F220034C1D0 /* ConnectionInfo.swift in Sources */,
+				117166D124B8BE6200EF1043 /* WebSocketResponse.swift in Sources */,
 				B67CE8BC22200F220034C1D0 /* ClientEvent.swift in Sources */,
 				B67CE88522200F220034C1D0 /* Lock.swift in Sources */,
 				B67CE88C22200F220034C1D0 /* Weblink.swift in Sources */,
@@ -4556,6 +4561,7 @@
 				B6C0913E2151F93D00A326DC /* BinarySensor.swift in Sources */,
 				D05A4D32216DD206009FD1EB /* MJPEGStreamer.swift in Sources */,
 				11C4628B24B1230E00031902 /* WebhookResponseServiceCall.swift in Sources */,
+				117166D024B8BE6200EF1043 /* WebSocketResponse.swift in Sources */,
 				D0EEF30A214DD64C00D1D360 /* UIImage+Icons.swift in Sources */,
 				D0EEF303214D8F0300D1D360 /* String+HA.swift in Sources */,
 				B6723347225DC72A0031D629 /* AuthenticatedUser.swift in Sources */,

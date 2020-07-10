@@ -1,75 +1,194 @@
 import Foundation
 import PromiseKit
+import Starscream
 
 internal struct WebSocketRequestIdentifier: RawRepresentable, Hashable {
     let rawValue: Int
 }
 
-public class WebSocketAPI {
-    public typealias WebSocketEventHandler = (WebSocketEvent) -> Void
+public class WebSocketAPI: WebSocketDelegate {
+    internal var callbackQueue: DispatchQueue = .main
+    internal let connection: WebSocket
+    internal let tokenManager: TokenManager
+
+    enum Phase {
+        case disconnected
+        case auth
+        case command
+    }
+
+    enum PhaseTransitionError: Error {
+        case disconnected
+    }
+
+    private var phase: Phase = .disconnected {
+        didSet {
+            Current.Log.info("phase transition to \(phase)")
+
+            switch phase {
+            case .auth:
+                break
+            case .disconnected:
+                for (identifier, resolver) in pendingResults {
+                    Current.Log.error("failing request for \(identifier) due to phase transition")
+                    resolver.reject(PhaseTransitionError.disconnected)
+                }
+                pendingResults.removeAll()
+                disconnectEventRegistrations()
+            case .command:
+                reconnectEventRegistrations()
+            }
+        }
+    }
+
+    init(tokenManager: TokenManager) {
+        let specificKey = DispatchSpecificKey<Bool>()
+        self.dataQueue = with(DispatchQueue(label: "websocket-api-data")) {
+            $0.setSpecific(key: specificKey, value: true)
+        }
+        self.dataQueueSpecificKey = specificKey
+
+        self.tokenManager = tokenManager
+        self.connection = WebSocket(request: URLRequest(url: URL(string: "http://127.0.0.1:8123/api/websocket")!))
+        self.connection.delegate = self
+        self.connection.callbackQueue = dataQueue
+
+        subscribe(to: nil) { registration, event in
+            print("*** \(registration) received \(event)")
+        }
+
+        self.connection.connect()
+    }
 
     public func send(_ request: WebSocketRequest) -> Promise<WebSocketData> {
-        sendInternal(request).map { $1 }
+        sendInternal(request: request).map { $1 }
     }
 
     public func subscribe(
         to event: WebSocketEventType?,
         handler: @escaping WebSocketEventHandler
-    ) -> Promise<WebSocketEventRegistration> {
-        Current.Log.info("start \(event?.rawValue ?? "(all)")")
+    ) -> WebSocketEventRegistration {
+        Current.Log.info("subscribe to \(event?.rawValue ?? "(all)")")
 
-        var data: [String: String] = [:]
+        let registration = WebSocketEventRegistration(
+            type: event,
+            handler: handler
+        )
 
-        if let event = event {
-            data["event_type"] = event.rawValue
+        dataQueue.async {
+            self.eventRegistrations.append(registration)
+            self.reconnectEventRegistrations()
         }
 
-        return sendInternal(.init(
-            type: .subscribeEvents,
-            data: data
-        )).map(on: dataQueue) { identifier, data in
-            Current.Log.info("confirmed \(event?.rawValue ?? "(all)") as \(identifier.rawValue): \(data)")
-            self.eventHandlers[identifier] = handler
-            return WebSocketEventRegistration.init(identifier: identifier, api: self)
-        }
+        return registration
     }
 
     public func unsubscribe(
         _ registration: WebSocketEventRegistration
     ) {
-        Current.Log.info("start \(registration.identifier)")
+        Current.Log.info("unsubscribe \(registration)")
 
-        let remove = Promise<Void> { seal in
-            dataQueue.async {
-                self.eventHandlers[registration.identifier] = nil
-                seal.fulfill(())
+        let remove: Promise<Void>
+        let unsubscribe: Promise<Void>
+
+        if let identifier = registration.subscriptionIdentifier {
+            remove = Promise<Void> { seal in
+                dataQueue.async {
+                    self.eventRegistrations.removeAll(where: { $0 == registration })
+                    self.activeEventRegistrations[identifier] = nil
+                    registration.subscriptionIdentifier = nil
+                    seal.fulfill(())
+                }
             }
-        }
 
-        let unsubscribe = sendInternal(.init(
-            type: .unsubscribeEvents,
-            data: [
-                "subscription": registration.identifier.rawValue
-            ]
-        ))
+            unsubscribe = sendInternal(request: .init(type: .unsubscribeEvents, data: [
+                "subscription": identifier.rawValue
+            ])).asVoid()
+        } else {
+            remove = Promise<Void> { seal in
+                dataQueue.async {
+                    self.eventRegistrations.removeAll(where: { $0 == registration })
+                    seal.fulfill(())
+                }
+            }
+
+            unsubscribe = .value(())
+        }
 
         firstly {
             when(fulfilled: remove, unsubscribe)
         }.done {
-            Current.Log.info("end \(registration.identifier): \($0) \($1)")
+            Current.Log.info("end \(registration): \($0) \($1)")
         }.cauterize()
     }
 
-    private func sendInternal(_ request: WebSocketRequest) -> Promise<(WebSocketRequestIdentifier, WebSocketData)> {
+    private func sendInternal(
+        forcedIdentifier: WebSocketRequestIdentifier? = nil,
+        request: WebSocketRequest
+    ) -> Promise<(WebSocketRequestIdentifier, WebSocketData)> {
         Current.Log.info("send \(request)")
 
         return Promise { seal in
             dataQueue.async {
-                let identifier = self.identifiers.next()
+                let identifier = forcedIdentifier ?? self.identifiers.next()
                 self.pendingResults[identifier] = seal
 
-                // todo: network op
-                Current.Log.info("dropping \(request)")
+                var data = request.data
+                data["id"] = identifier.rawValue
+                data["type"] = request.type.rawValue
+
+                self.sendRaw(data).catch { error in
+                    seal.reject(error)
+                }
+            }
+        }
+    }
+
+    private func sendRaw(_ dictionary: [String: Any]) -> Promise<Void> {
+        Promise { seal in
+            do {
+                let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+                connection.write(string: String(data: data, encoding: .utf8) ?? "", completion: {
+                    seal.fulfill(())
+                })
+            } catch {
+                seal.reject(error)
+            }
+        }
+    }
+
+    private func disconnectEventRegistrations() {
+        for registration in eventRegistrations {
+            registration.subscriptionIdentifier = nil
+        }
+        activeEventRegistrations.removeAll()
+    }
+
+    private func reconnectEventRegistrations() {
+        guard phase == .command else {
+            Current.Log.verbose("not reconnecting events because phase is \(phase)")
+            return
+        }
+
+        for registration in eventRegistrations where registration.subscriptionIdentifier == nil {
+            var data: [String: Any] = [:]
+
+            if let type = registration.type {
+                data["event_type"] = type.rawValue
+            }
+
+            let identifier = identifiers.next()
+            registration.subscriptionIdentifier = identifier
+
+            Current.Log.info("reconnecting \(registration)")
+
+            firstly {
+                sendInternal(forcedIdentifier: identifier, request: .init(type: .subscribeEvents, data: data))
+            }.done(on: dataQueue) { identifier, _ in
+                self.activeEventRegistrations[identifier] = registration
+            }.catch { error in
+                registration.subscriptionIdentifier = nil
+                Current.Log.error("failed to subscribe \(registration): \(error)")
             }
         }
     }
@@ -82,57 +201,48 @@ public class WebSocketAPI {
 
     private func handle(response: [String: Any]) throws {
         Current.Log.verbose("received \(response)")
-        
-        func valueOrThrow<T>(key: String) throws -> T {
-            if let value = response[key] as? T {
-                return value
-            } else {
-                throw HandleError.missingKey(key)
-            }
-        }
 
-        let identifier = WebSocketRequestIdentifier(rawValue: try valueOrThrow(key: "id"))
-        let type: String = try valueOrThrow(key: "type")
+        switch try WebSocketResponse(dictionary: response) {
+        case .result(identifier: let identifier, data: let result):
+            if let resolver = pendingResults[identifier] {
+                pendingResults[identifier] = nil
 
-        switch type {
-        case "result":
-            guard let resolver = pendingResults[identifier] else {
-                Current.Log.error("couldn't find resolver for \(identifier)")
-                return
-            }
+                let resolverResult: Result<(WebSocketRequestIdentifier, WebSocketData)> = {
+                    switch result {
+                    case .fulfilled(let data):
+                        return .fulfilled((identifier, data))
+                    case .rejected(let error):
+                        return .rejected(error)
+                    }
+                }()
 
-            let success: Bool = try valueOrThrow(key: "success")
-
-            if success {
-                resolver.fulfill((identifier, .init(value: response["result"])))
-            } else {
-                if let error = response["error"] as? [String: Any],
-                    let code = error["code"] as? Int,
-                    let message = error["message"] as? String {
-                    resolver.reject(HandleError.responseError(code: code, message: message))
-                } else {
-                    resolver.reject(HandleError.responseErrorUnknown)
+                callbackQueue.async {
+                    resolver.resolve(resolverResult)
                 }
+            } else {
+                Current.Log.error("no resolver for response \(identifier)")
             }
-
-            pendingResults[identifier] = nil
-        case "event":
-            guard let handler = eventHandlers[identifier] else {
-                Current.Log.error("couldn't find event handler for \(identifier)")
-                return
+        case .event(identifier: let identifier, event: let event):
+            if let registration = activeEventRegistrations[identifier] {
+                callbackQueue.async {
+                    registration.fire(event)
+                }
+            } else {
+                Current.Log.error("no handler for event \(event)")
             }
-
-            guard let event = WebSocketEvent(
-                registration: .init(identifier: identifier, api: self),
-                dictionary: try valueOrThrow(key: "event")
-            ) else {
-                Current.Log.error("couldn't parse event out of \(response)")
-                return
+        case .auth(let authState):
+            switch authState {
+            case .required, .invalid:
+                // TODO: make invalid force a refresh
+                tokenManager.bearerToken.done { token in
+                    self.sendRaw([
+                        "type": "auth",
+                        "access_token": token
+                    ]).cauterize()
+                }.cauterize()
+            case .ok:
+                phase = .command
             }
-
-            handler(event)
-        default:
-            Current.Log.error("unknown response type \(type)")
         }
     }
 
@@ -154,11 +264,49 @@ public class WebSocketAPI {
             assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
         }
     }
-    private var eventHandlers = [WebSocketRequestIdentifier: WebSocketEventHandler]() {
+    private var eventRegistrations = [WebSocketEventRegistration]() {
         willSet {
             assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
         }
     }
-    private let dataQueue = DispatchQueue(label: "websocket-api-data")
-    private let dataQueueSpecificKey = DispatchSpecificKey<Bool>()
+    private var activeEventRegistrations = [WebSocketRequestIdentifier: WebSocketEventRegistration]() {
+        willSet {
+            assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
+        }
+    }
+    private let dataQueue: DispatchQueue
+    private let dataQueueSpecificKey: DispatchSpecificKey<Bool>
+
+    public func didReceive(event: Starscream.WebSocketEvent, client: WebSocket) {
+        switch event {
+        case .connected(let headers):
+            Current.Log.info("connected with headers: \(headers)")
+            phase = .auth
+        case .disconnected(let reason, let code):
+            Current.Log.info("disconnected: \(reason) with code: \(code)")
+            phase = .disconnected
+        case .text(let string):
+            print("Received text: \(string)")
+            if let data = string.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                dataQueue.async {
+                    _ = try? self.handle(response: json)
+                }
+            }
+        case .binary(let data):
+            print("Received binary data: \(data.count)")
+        case .ping, .pong:
+            break
+        case .reconnectSuggested:
+            break
+        case .viabilityChanged:
+            break
+        case .cancelled:
+            phase = .disconnected
+        case .error(let error):
+            Current.Log.error("connection error: \(String(describing: error))")
+            phase = .disconnected
+        }
+
+    }
 }

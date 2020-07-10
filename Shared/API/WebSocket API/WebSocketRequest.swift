@@ -17,6 +17,6 @@ public struct WebSocketRequestType: RawRepresentable, Hashable {
 }
 
 public struct WebSocketRequest {
-    public  var type: WebSocketRequestType
+    public var type: WebSocketRequestType
     public var data: [String: Any] // top-level
 }
