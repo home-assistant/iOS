@@ -210,32 +210,34 @@ public class ConnectionInfo: Codable {
         Current.Log.error(errMsg)
 
         #if os(iOS)
-        let alert = UIAlertController(title: "URL Unavailable",
-                                      // swiftlint:disable:next line_length
-                                      message: "Expected to have a \(self.activeURLType) but none available! Please enter the URL. App will exit after entry, please reopen.",
-                                      preferredStyle: .alert)
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: "URL Unavailable",
+                                          // swiftlint:disable:next line_length
+                                          message: "Expected to have a \(self.activeURLType) but none available! Please enter the URL. App will exit after entry, please reopen.",
+                                          preferredStyle: .alert)
 
-        var textField: UITextField?
+            var textField: UITextField?
 
-        alert.addTextField { (pTextField) in
-            pTextField.placeholder = self.activeURLType.description
-            pTextField.clearButtonMode = .whileEditing
-            pTextField.borderStyle = .none
-            textField = pTextField
+            alert.addTextField { (pTextField) in
+                pTextField.placeholder = self.activeURLType.description
+                pTextField.clearButtonMode = .whileEditing
+                pTextField.borderStyle = .none
+                textField = pTextField
+            }
+
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: { _ in
+                guard let urlStr = textField?.text, let url = URL(string: urlStr) else { return }
+                self.setAddress(url, self.activeURLType)
+                exit(1)
+            }))
+            let win = UIWindow(frame: UIScreen.main.bounds)
+            let vc = UIViewController()
+            vc.view.backgroundColor = .clear
+            win.rootViewController = vc
+            win.windowLevel = UIWindow.Level.alert + 1
+            win.makeKeyAndVisible()
+            vc.present(alert, animated: true, completion: nil)
         }
-
-        alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: { _ in
-            guard let urlStr = textField?.text, let url = URL(string: urlStr) else { return }
-            self.setAddress(url, self.activeURLType)
-            exit(1)
-        }))
-        let win = UIWindow(frame: UIScreen.main.bounds)
-        let vc = UIViewController()
-        vc.view.backgroundColor = .clear
-        win.rootViewController = vc
-        win.windowLevel = UIWindow.Level.alert + 1
-        win.makeKeyAndVisible()
-        vc.present(alert, animated: true, completion: nil)
 
         return URL(string: "http://somethingbroke.fake")!
         #else
