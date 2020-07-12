@@ -1,4 +1,5 @@
 import Foundation
+import PromiseKit
 
 public struct WebSocketRequestType: RawRepresentable, Hashable {
     public let rawValue: String
@@ -19,4 +20,19 @@ public struct WebSocketRequestType: RawRepresentable, Hashable {
 public struct WebSocketRequest {
     public var type: WebSocketRequestType
     public var data: [String: Any] // top-level
+}
+
+internal class WebSocketPendingRequest {
+    internal let request: WebSocketRequest
+    internal let resolver: Resolver<WebSocketData>
+    internal var requestIdentifier: WebSocketRequestIdentifier?
+
+    init(request: WebSocketRequest, resolver: Resolver<WebSocketData>) {
+        self.request = request
+        self.resolver = resolver
+    }
+
+    internal func fire(_ data: WebSocketData) {
+        resolver.fulfill(data)
+    }
 }

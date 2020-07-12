@@ -29,14 +29,9 @@ public class WebSocketAPI: WebSocketDelegate {
             case .auth:
                 break
             case .disconnected:
-                for (identifier, resolver) in pendingResults {
-                    Current.Log.error("failing request for \(identifier) due to phase transition")
-                    resolver.reject(PhaseTransitionError.disconnected)
-                }
-                pendingResults.removeAll()
-                disconnectEventRegistrations()
+                discardActiveItems()
             case .command:
-                reconnectEventRegistrations()
+                applyPendingItems()
             }
         }
     }
@@ -53,15 +48,26 @@ public class WebSocketAPI: WebSocketDelegate {
         self.connection.delegate = self
         self.connection.callbackQueue = dataQueue
 
-        subscribe(to: nil) { registration, event in
+        // xxx test
+        _ = subscribe(to: nil) { registration, event in
             print("*** \(registration) received \(event)")
         }
+        // xxx test
 
         self.connection.connect()
     }
 
     public func send(_ request: WebSocketRequest) -> Promise<WebSocketData> {
-        sendInternal(request: request).map { $1 }
+        let (promise, seal) = Promise<WebSocketData>.pending()
+
+        dataQueue.async {
+            self.pendingRequests.append(.init(
+                request: request,
+                resolver: seal
+            ))
+        }
+
+        return promise
     }
 
     public func subscribe(
@@ -77,7 +83,6 @@ public class WebSocketAPI: WebSocketDelegate {
 
         dataQueue.async {
             self.eventRegistrations.append(registration)
-            self.reconnectEventRegistrations()
         }
 
         return registration
@@ -125,13 +130,13 @@ public class WebSocketAPI: WebSocketDelegate {
     private func sendInternal(
         forcedIdentifier: WebSocketRequestIdentifier? = nil,
         request: WebSocketRequest
-    ) -> Promise<(WebSocketRequestIdentifier, WebSocketData)> {
+    ) -> Promise<WebSocketData> {
         Current.Log.info("send \(request)")
 
         return Promise { seal in
             dataQueue.async {
                 let identifier = forcedIdentifier ?? self.identifiers.next()
-                self.pendingResults[identifier] = seal
+                self.activeRequests[identifier] = seal
 
                 var data = request.data
                 data["id"] = identifier.rawValue
@@ -157,16 +162,22 @@ public class WebSocketAPI: WebSocketDelegate {
         }
     }
 
-    private func disconnectEventRegistrations() {
+    private func discardActiveItems() {
         for registration in eventRegistrations {
             registration.subscriptionIdentifier = nil
         }
+        for request in pendingRequests {
+            request.requestIdentifier = nil
+        }
         activeEventRegistrations.removeAll()
+        activeRequests.removeAll()
     }
 
-    private func reconnectEventRegistrations() {
+    private func applyPendingItems() {
+        precondition(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
+
         guard phase == .command else {
-            Current.Log.verbose("not reconnecting events because phase is \(phase)")
+            Current.Log.verbose("not applying pending items because phase is \(phase)")
             return
         }
 
@@ -184,11 +195,24 @@ public class WebSocketAPI: WebSocketDelegate {
 
             firstly {
                 sendInternal(forcedIdentifier: identifier, request: .init(type: .subscribeEvents, data: data))
-            }.done(on: dataQueue) { identifier, _ in
+            }.done(on: dataQueue) { _ in
                 self.activeEventRegistrations[identifier] = registration
             }.catch { error in
                 registration.subscriptionIdentifier = nil
                 Current.Log.error("failed to subscribe \(registration): \(error)")
+            }
+        }
+
+        for request in pendingRequests where request.requestIdentifier == nil {
+            let identifier = identifiers.next()
+            request.requestIdentifier = identifier
+
+            Current.Log.info("sending request \(request)")
+
+            firstly {
+                sendInternal(forcedIdentifier: identifier, request: request.request)
+            }.pipe {
+                request.resolver.resolve($0)
             }
         }
     }
@@ -204,20 +228,10 @@ public class WebSocketAPI: WebSocketDelegate {
 
         switch try WebSocketResponse(dictionary: response) {
         case .result(identifier: let identifier, data: let result):
-            if let resolver = pendingResults[identifier] {
-                pendingResults[identifier] = nil
-
-                let resolverResult: Result<(WebSocketRequestIdentifier, WebSocketData)> = {
-                    switch result {
-                    case .fulfilled(let data):
-                        return .fulfilled((identifier, data))
-                    case .rejected(let error):
-                        return .rejected(error)
-                    }
-                }()
-
+            if let resolver = activeRequests[identifier] {
+                activeRequests[identifier] = nil
                 callbackQueue.async {
-                    resolver.resolve(resolverResult)
+                    resolver.resolve(result)
                 }
             } else {
                 Current.Log.error("no resolver for response \(identifier)")
@@ -254,17 +268,31 @@ public class WebSocketAPI: WebSocketDelegate {
             return .init(rawValue: lastIdentifierInteger)
         }
     }
+
     private var identifiers = IdentifierGenerator() {
         willSet {
             assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
         }
     }
-    private var pendingResults = [WebSocketRequestIdentifier: Resolver<(WebSocketRequestIdentifier, WebSocketData)>]() {
+
+    private var pendingRequests = [WebSocketPendingRequest]() {
         willSet {
             assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
         }
+        didSet {
+            applyPendingItems()
+        }
     }
     private var eventRegistrations = [WebSocketEventRegistration]() {
+        willSet {
+            assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
+        }
+        didSet {
+            applyPendingItems()
+        }
+    }
+
+    private var activeRequests = [WebSocketRequestIdentifier: Resolver<WebSocketData>]() {
         willSet {
             assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
         }

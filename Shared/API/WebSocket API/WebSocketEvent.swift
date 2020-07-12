@@ -2,7 +2,7 @@ import Foundation
 
 public typealias WebSocketEventHandler = (WebSocketEventRegistration, WebSocketEvent) -> Void
 
-public struct WebSocketEventType: RawRepresentable, Hashable/*, Codable*/ {
+public struct WebSocketEventType: RawRepresentable, Hashable {
     public let rawValue: String
     public init(rawValue: String) {
         self.rawValue = rawValue
