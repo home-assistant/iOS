@@ -16,7 +16,7 @@ func attemptNetworking<T>(
             if Current.isRunningTests {
                 return attempt()
             } else {
-                return after(delayBeforeRetry).then(on: nil, attempt)
+                return after(delayBeforeRetry).then(on: .main, attempt)
             }
         }
     }

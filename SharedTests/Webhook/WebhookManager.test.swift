@@ -48,17 +48,69 @@ class WebhookManagerTests: XCTestCase {
     func testBackgroundHandlingCallsCompletionHandler() {
         var didInvokeCompletion = false
 
-        manager.handleBackground(for: WebhookManager.URLSessionIdentifier, completionHandler: {
+        manager.handleBackground(for: manager.currentBackgroundSessionInfo.identifier, completionHandler: {
             didInvokeCompletion = true
         })
 
-        manager.urlSessionDidFinishEvents(forBackgroundURLSession: manager.backgroundUrlSession)
+        manager.urlSessionDidFinishEvents(forBackgroundURLSession: manager.currentBackgroundSessionInfo.session)
 
         let expectation = self.expectation(description: "run loop")
         DispatchQueue.main.async { expectation.fulfill() }
 
         wait(for: [expectation], timeout: 10)
         XCTAssertTrue(didInvokeCompletion)
+    }
+
+    func testUnbalancedBackgroundHandlingDoesntCrash() {
+        // not the best test: this will crash the test execution if it fails
+        manager.urlSessionDidFinishEvents(forBackgroundURLSession: manager.currentBackgroundSessionInfo.session)
+    }
+
+    func testBackgroundHandlingForExtensionCallsAppropriateCompletionHandler() {
+        var didInvokeMainCompletion = false
+        var didInvokeExtensionCompletion = false
+
+        let mainIdentifier = manager.currentBackgroundSessionInfo.identifier
+        let testIdentifier = manager.currentBackgroundSessionInfo.identifier + "-test"
+
+        manager.handleBackground(for: mainIdentifier, completionHandler: {
+            didInvokeMainCompletion = true
+        })
+
+        manager.handleBackground(for: testIdentifier, completionHandler: {
+            didInvokeExtensionCompletion = true
+        })
+
+        func waitRunLoop() {
+            let expectation = self.expectation(description: "run loop")
+            DispatchQueue.main.async { expectation.fulfill() }
+            wait(for: [expectation], timeout: 10.0)
+        }
+
+        waitRunLoop()
+
+        XCTAssertFalse(didInvokeMainCompletion)
+        XCTAssertFalse(didInvokeExtensionCompletion)
+
+        manager.urlSessionDidFinishEvents(forBackgroundURLSession: manager.currentBackgroundSessionInfo.session)
+
+        waitRunLoop()
+
+        XCTAssertTrue(didInvokeMainCompletion)
+        XCTAssertFalse(didInvokeExtensionCompletion)
+
+        manager.urlSessionDidFinishEvents(forBackgroundURLSession: manager.backgroundSessionInfos.first(where: {
+            $0.identifier == testIdentifier
+        })!.session)
+
+        waitRunLoop()
+
+        XCTAssertTrue(didInvokeMainCompletion)
+        XCTAssertTrue(didInvokeExtensionCompletion)
+
+        // inside baseball: make sure it deallocates any references to the extension background session but not the main
+        XCTAssertTrue(manager.backgroundSessionInfos.contains(where: { $0.identifier == mainIdentifier }))
+        XCTAssertFalse(manager.backgroundSessionInfos.contains(where: { $0.identifier == testIdentifier }))
     }
 
     func testSendingEphemeralFailsEntirely() {

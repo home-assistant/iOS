@@ -426,7 +426,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         handleEventsForBackgroundURLSession identifier: String,
         completionHandler: @escaping () -> Void
     ) {
-        if identifier == WebhookManager.URLSessionIdentifier {
+        if WebhookManager.isManager(forSessionIdentifier: identifier) {
+            Current.Log.info("starting webhook handler for \(identifier)")
             Current.webhooks.handleBackground(for: identifier, completionHandler: completionHandler)
         } else {
             Current.Log.error("couldn't find appropriate session for for \(identifier)")
