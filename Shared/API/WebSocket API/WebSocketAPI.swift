@@ -231,13 +231,15 @@ public class WebSocketAPI: WebSocketDelegate {
         case .auth(let authState):
             switch authState {
             case .required, .invalid:
-                // TODO: make invalid force a refresh
-                tokenManager.bearerToken.done { token in
+                tokenManager.bearerToken(forceRefresh: authState == .invalid).done { token in
                     self.sendRaw([
                         "type": "auth",
                         "access_token": token
                     ]).cauterize()
-                }.cauterize()
+                }.catch { error in
+                    Current.Log.error("couldn't retrieve auth token, disconnecting")
+                    self.connection.disconnect(closeCode: CloseCode.goingAway.rawValue)
+                }
             case .ok:
                 phase = .command
             }

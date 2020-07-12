@@ -77,9 +77,15 @@ public class TokenManager: RequestAdapter, RequestRetrier {
         return self.authenticationAPI.revokeToken(tokenInfo: tokenInfo)
     }
 
-    public var bearerToken: Promise<String> {
-        return firstly {
-            self.currentToken
+    public func bearerToken(forceRefresh: Bool) -> Promise<String> {
+        return firstly { () -> Promise<String> in
+            if forceRefresh {
+                Current.Log.info("forcing a refresh of token")
+                return refreshToken
+            } else {
+                Current.Log.info("using existing token without forcing refresh")
+                return currentToken
+            }
         }.recover { error -> Promise<String> in
             guard let tokenError = error as? TokenError, tokenError == TokenError.expired,
                 self.tokenInfo != nil else {
@@ -93,13 +99,7 @@ public class TokenManager: RequestAdapter, RequestRetrier {
 
     public func authDictionaryForWebView(forceRefresh: Bool) -> Promise<[String: Any]> {
         return firstly { () -> Promise<String> in
-            if forceRefresh {
-                Current.Log.info("forcing a refresh of token")
-                return refreshToken
-            } else {
-                Current.Log.info("using existing token")
-                return bearerToken
-            }
+            bearerToken(forceRefresh: forceRefresh)
         }.map { _ -> [String: Any] in
             // TokenInfo is refreshed at this point.
             guard let info = self.tokenInfo  else {
