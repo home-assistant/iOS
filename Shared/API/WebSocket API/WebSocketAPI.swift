@@ -52,12 +52,20 @@ public class WebSocketAPI: WebSocketDelegate {
         _ = subscribe(to: nil) { registration, event in
             print("*** \(registration) received \(event)")
         }
+
+        send(.init(type: .getConfig, data: [:])).done { data in
+            print("*** get_config: \(data)")
+        }.catch { error in
+            print("*** failed get_config: \(error)")
+        }
         // xxx test
 
         self.connection.connect()
     }
 
     public func send(_ request: WebSocketRequest) -> Promise<WebSocketData> {
+        Current.Log.info("enqueue request \(request)")
+
         let (promise, seal) = Promise<WebSocketData>.pending()
 
         dataQueue.async {
@@ -115,20 +123,20 @@ public class WebSocketAPI: WebSocketDelegate {
         forcedIdentifier: WebSocketRequestIdentifier? = nil,
         request: WebSocketRequest
     ) -> Promise<WebSocketData> {
+        precondition(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true)
+
         Current.Log.info("send \(request)")
 
         return Promise { seal in
-            dataQueue.async {
-                let identifier = forcedIdentifier ?? self.identifiers.next()
-                self.activeRequests[identifier] = seal
+            let identifier = forcedIdentifier ?? self.identifiers.next()
+            self.activeRequests[identifier] = seal
 
-                var data = request.data
-                data["id"] = identifier.rawValue
-                data["type"] = request.type.rawValue
+            var data = request.data
+            data["id"] = identifier.rawValue
+            data["type"] = request.type.rawValue
 
-                self.sendRaw(data).catch { error in
-                    seal.reject(error)
-                }
+            self.sendRaw(data).catch { error in
+                seal.reject(error)
             }
         }
     }
@@ -303,9 +311,7 @@ public class WebSocketAPI: WebSocketDelegate {
             print("Received text: \(string)")
             if let data = string.data(using: .utf8),
                 let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                dataQueue.async {
-                    _ = try? self.handle(response: json)
-                }
+                _ = try? self.handle(response: json)
             }
         case .binary(let data):
             print("Received binary data: \(data.count)")
