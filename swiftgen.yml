@@ -5,7 +5,9 @@ strings:
     - templateName: structured-swift5
       output: Shared/Resources/SwiftGen/Strings.swift
 ib:
-  inputs: HomeAssistant/Resources/Base.lproj/Onboarding.storyboard
+  inputs:
+    - HomeAssistant/Resources/Base.lproj/Onboarding.storyboard
+    - HomeAssistant/ClientEvents/Resources/ClientEvents.storyboard
   outputs:
     - templateName: scenes-swift5
       output: HomeAssistant/Resources/Scenes.swift

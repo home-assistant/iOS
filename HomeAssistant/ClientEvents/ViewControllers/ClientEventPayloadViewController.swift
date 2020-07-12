@@ -18,7 +18,18 @@ class ClientEventPayloadViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share(_:)))
+        ]
         self.textView.text = self.jsonString
+    }
+
+    @objc private func share(_ sender: UIBarButtonItem) {
+        let controller = UIActivityViewController(activityItems: [jsonString ?? "?"], applicationActivities: nil)
+        with(controller.popoverPresentationController) {
+            $0?.barButtonItem = sender
+        }
+        present(controller, animated: true, completion: nil)
     }
 
     func showEvent(_ event: ClientEvent) {

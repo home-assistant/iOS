@@ -161,9 +161,15 @@ class SettingsViewController: FormViewController {
 
         +++ ButtonRow("eventLog") {
             $0.title = L10n.Settings.EventLog.title
-            let controllerProvider = ControllerProvider.storyBoard(storyboardId: "clientEventsList",
-                                                                   storyboardName: "ClientEvents",
-                                                                   bundle: Bundle.main)
+
+            let scene = StoryboardScene.ClientEvents.self
+
+            let controllerProvider = ControllerProvider.storyBoard(
+                storyboardId: scene.clientEventsList.identifier,
+                storyboardName: scene.storyboardName,
+                bundle: Bundle.main
+            )
+
             $0.presentationMode = .show(controllerProvider: controllerProvider, onDismiss: { vc in
                 _ = vc.navigationController?.popViewController(animated: true)
             })

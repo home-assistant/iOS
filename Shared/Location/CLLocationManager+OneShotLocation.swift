@@ -189,9 +189,6 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         if let cachedLocation = locationManager.location {
             let potentialLocation = PotentialLocation(location: cachedLocation)
             potentialLocations.append(potentialLocation)
-
-            let message = "Cached potential one-shot location of \(potentialLocation)"
-            Current.clientEventStore.addEvent(ClientEvent(text: message, type: .locationUpdate))
         }
     }
 

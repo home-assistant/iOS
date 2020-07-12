@@ -202,9 +202,6 @@ public class TokenManager: RequestAdapter, RequestRetrier {
             throw TokenError.expired
         }
 
-        let urlText = self.loggableString(for: url)
-        let networkEvent = ClientEvent(text: urlText, type: .networkRequest)
-        Current.clientEventStore.addEvent(networkEvent)
         newRequest.setValue("Bearer \(tokenInfo.accessToken)", forHTTPHeaderField: "Authorization")
         return newRequest
     }
