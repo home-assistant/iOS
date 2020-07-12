@@ -213,7 +213,7 @@ class ZoneManagerTests: XCTestCase {
         }
 
         XCTAssertTrue(loggedEvent.type == .locationUpdate)
-        XCTAssertTrue(loggedEvent.text.contains("Failed updating"))
+        XCTAssertTrue(loggedEvent.text.contains("Didn't update"))
         XCTAssertEqual(loggedEvent.jsonPayload?["start_ssid"] as? String, "wifi_name")
         XCTAssertEqual(loggedEvent.jsonPayload?["event"] as? String, event.description)
     }
