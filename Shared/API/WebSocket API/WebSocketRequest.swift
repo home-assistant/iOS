@@ -14,6 +14,7 @@ public struct WebSocketRequestType: RawRepresentable, Hashable {
     public static var getConfig: Self = .init(rawValue: "get_config")
     public static var getServices: Self = .init(rawValue: "get_services")
     public static var getPanels: Self = .init(rawValue: "get_panels")
+    public static var currentUser: Self = .init(rawValue: "auth/current_user")
     public static var ping: Self = .init(rawValue: "ping")
 }
 
