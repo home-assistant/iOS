@@ -93,38 +93,22 @@ public class WebSocketAPI: WebSocketDelegate {
     ) {
         Current.Log.info("unsubscribe \(registration)")
 
-        let remove: Promise<Void>
-        let unsubscribe: Promise<Void>
+        dataQueue.async {
+            if let identifier = registration.subscriptionIdentifier {
+                self.eventRegistrations.removeAll(where: { $0 == registration })
+                self.activeEventRegistrations[identifier] = nil
+                registration.subscriptionIdentifier = nil
 
-        if let identifier = registration.subscriptionIdentifier {
-            remove = Promise<Void> { seal in
-                dataQueue.async {
-                    self.eventRegistrations.removeAll(where: { $0 == registration })
-                    self.activeEventRegistrations[identifier] = nil
-                    registration.subscriptionIdentifier = nil
-                    seal.fulfill(())
-                }
+                self.sendInternal(request: .init(type: .unsubscribeEvents, data: [
+                    "subscription": identifier.rawValue
+                ])).done {
+                    Current.Log.info("end \(registration): \($0)")
+                }.cauterize()
+            } else {
+                self.eventRegistrations.removeAll(where: { $0 == registration })
+                Current.Log.info("ended non-pending \(registration)")
             }
-
-            unsubscribe = sendInternal(request: .init(type: .unsubscribeEvents, data: [
-                "subscription": identifier.rawValue
-            ])).asVoid()
-        } else {
-            remove = Promise<Void> { seal in
-                dataQueue.async {
-                    self.eventRegistrations.removeAll(where: { $0 == registration })
-                    seal.fulfill(())
-                }
-            }
-
-            unsubscribe = .value(())
         }
-
-        firstly {
-            when(fulfilled: remove, unsubscribe)
-        }.done {
-            Current.Log.info("end \(registration): \($0) \($1)")
-        }.cauterize()
     }
 
     private func sendInternal(
