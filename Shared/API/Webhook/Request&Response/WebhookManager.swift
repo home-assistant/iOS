@@ -168,11 +168,13 @@ public class WebhookManager: NSObject {
     }
 
     public func sendEphemeral<ResponseType>(request: WebhookRequest) -> Promise<ResponseType> {
-        attemptNetworking { [ephemeralUrlSession] in
-            firstly {
-                Self.urlRequest(for: request)
-            }.then { urlRequest, data in
-                ephemeralUrlSession.uploadTask(.promise, with: urlRequest, from: data)
+        ProcessInfo.processInfo.backgroundTask(withName: "webhook-send-ephemeral") { [ephemeralUrlSession] _ in
+            attemptNetworking {
+                firstly {
+                    Self.urlRequest(for: request)
+                }.then { urlRequest, data in
+                    ephemeralUrlSession.uploadTask(.promise, with: urlRequest, from: data)
+                }
             }
         }.then { data, response in
             Promise.value(data).webhookJson(
@@ -217,6 +219,11 @@ public class WebhookManager: NSObject {
 
         let (promise, seal) = Promise<Void>.pending()
 
+        // wrap this in a background task, but don't let the expiration cause the resolve chain to be aborted
+        // this is important because we may be woken up later and asked to continue the same request, even if timed out
+        // since, you know, background execution and whatnot
+        ProcessInfo.processInfo.backgroundTask(withName: "webhook-send") { _ in promise }.cauterize()
+        
         firstly {
             Self.urlRequest(for: request)
         }.done(on: dataQueue) { [currentBackgroundSessionInfo] urlRequest, data in
