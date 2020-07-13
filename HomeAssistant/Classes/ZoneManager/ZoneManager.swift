@@ -57,13 +57,13 @@ class ZoneManager {
     }
 
     private func perform(event: ZoneManagerEvent) {
-        let logPayload: [String: Any] = [
+        let logPayload: [String: String] = [
             "start_ssid": Current.connectivity.currentWiFiSSID() ?? "none",
             "event": event.description
         ]
 
         // although technically the processor also does this, it does it after some async processing.
-        // let's be very cofident that we're not going to miss out on an update due to being suspended
+        // let's be very confident that we're not going to miss out on an update due to being suspended
         UIApplication.shared.backgroundTask(withName: "zone-manager-perform-event") { _ in
             processor.perform(event: event)
         }.done {
@@ -74,10 +74,14 @@ class ZoneManager {
             ))
         }.catch { error in
             Current.Log.error("final error for \(event): \(error)")
+
+            var updatedPayload = logPayload
+            updatedPayload["error"] = String(describing: error)
+
             Current.clientEventStore.addEvent(ClientEvent(
-                text: "Failed updating: \(error.localizedDescription)",
+                text: "Didn't update: \(error.localizedDescription)",
                 type: .locationUpdate,
-                payload: logPayload
+                payload: updatedPayload
             ))
         }
     }

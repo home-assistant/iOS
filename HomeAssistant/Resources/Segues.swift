@@ -12,6 +12,9 @@ import UIKit
 
 // swiftlint:disable explicit_type_interface identifier_name line_length type_body_length type_name
 internal enum StoryboardSegue {
+  internal enum ClientEvents: String, SegueType {
+    case showPayload
+  }
   internal enum Onboarding: String, SegueType {
     case chooseDiscoveredInstance
     case continueManually
