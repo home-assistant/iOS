@@ -10,51 +10,76 @@ import RealmSwift
 import Shared
 import UIKit
 
-public class ClientEventTableViewController: UITableViewController {
-    var dateFormatter: DateFormatter = {
+public class ClientEventTableViewController: UITableViewController, UISearchResultsUpdating {
+    private var dateFormatter: DateFormatter = {
         var formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .medium
         return formatter
     }()
 
-    var results: Results<ClientEvent>?
-    var notificationToken: NotificationToken?
-    override public func viewDidLoad() {
-        super.viewDidLoad()
-        self.navigationItem.title = L10n.Settings.EventLog.title
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: L10n.ClientEvents.View.clear,
-                                                                 style: .plain, target: self,
-                                                                 action: #selector(clearTapped))
-        self.results = Current.clientEventStore.getEvents()
-        self.notificationToken = self.results?.observe { changes in
-            self.tableView.applyChanges(changes: changes)
+    private var results: AnyRealmCollection<ClientEvent> = AnyRealmCollection(List<ClientEvent>()) {
+        didSet {
+            tableView.reloadData()
+            notificationToken?.invalidate()
+            notificationToken = results.observe { [tableView] changes in
+                tableView?.applyChanges(changes: changes)
+            }
         }
     }
+
+    private var notificationToken: NotificationToken?
+
+    override public func viewDidLoad() {
+        super.viewDidLoad()
+
+        navigationItem.title = L10n.Settings.EventLog.title
+        navigationItem.hidesSearchBarWhenScrolling = false
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: L10n.ClientEvents.View.clear,
+            style: .plain, target: self,
+            action: #selector(clearTapped)
+        )
+        navigationItem.searchController = with(UISearchController(searchResultsController: nil)) {
+            $0.searchResultsUpdater = self
+        }
+
+        results = Current.clientEventStore.getEvents()
+    }
+
     deinit {
-        notificationToken = nil
+        notificationToken?.invalidate()
     }
 
     public override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let identifier = segue.identifier, identifier == "showPayload",
-            let selectedIndexPath = self.tableView.indexPathForSelectedRow,
-            let event = results?[selectedIndexPath.row],
-            let payloadVC = segue.destination as? ClientEventPayloadViewController {
-            payloadVC.showEvent(event)
+        guard let segueType = StoryboardSegue.ClientEvents(segue) else {
+            return
+        }
+
+        if segueType == .showPayload, let destination = segue.destination as? ClientEventPayloadViewController {
+            guard let selectedIndexPath = self.tableView.indexPathForSelectedRow else {
+                return
+            }
+            destination.showEvent(results[selectedIndexPath.row])
         }
     }
-    @objc func clearTapped() {
+
+    @objc private func clearTapped() {
         Current.clientEventStore.clearAllEvents()
+    }
+
+    public func updateSearchResults(for searchController: UISearchController) {
+        results = Current.clientEventStore.getEvents(filter: searchController.searchBar.text)
     }
 }
 
 extension ClientEventTableViewController {
     override public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.results?.count ?? 0
+        return results.count
     }
 
     public override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        if results?[indexPath.row].jsonPayload == nil {
+        if results[indexPath.row].jsonPayload == nil {
             return nil
         } else {
             return indexPath
@@ -63,7 +88,7 @@ extension ClientEventTableViewController {
 
     override public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as UITableViewCell
-        if let results = self.results, results.count > indexPath.item, let eventCell = cell as? ClientEventCell {
+        if results.count > indexPath.item, let eventCell = cell as? ClientEventCell {
             let item = results[indexPath.item]
             eventCell.titleLabel.text = item.text
             eventCell.dateLabel.text = self.dateFormatter.string(from: item.date)
@@ -90,8 +115,8 @@ extension UITableView {
 
             self.beginUpdates()
             self.insertRows(at: insertions.map(fromRow), with: .automatic)
-            self.reloadRows(at: updates.map(fromRow), with: .automatic)
             self.deleteRows(at: deletions.map(fromRow), with: .automatic)
+            self.reloadRows(at: updates.map(fromRow), with: .automatic)
             self.endUpdates()
         case .error(let error): fatalError("\(error)")
         }

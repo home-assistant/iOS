@@ -23,9 +23,14 @@ public struct ClientEventStore {
         Current.Log.info(event)
     }
 
-    public var getEvents: () -> Results<ClientEvent> = {
+    public func getEvents(filter: String? = nil) -> AnyRealmCollection<ClientEvent> {
         let realm = Current.realm()
-        return realm.objects(ClientEvent.self).sorted(byKeyPath: "date", ascending: false)
+        let objects = realm.objects(ClientEvent.self).sorted(byKeyPath: "date", ascending: false)
+        if let filter = filter, filter.isEmpty == false {
+            return AnyRealmCollection(objects.filter(NSPredicate(format: "text contains[c] %@", filter)))
+        } else {
+            return AnyRealmCollection(objects)
+        }
     }
 
     public var clearAllEvents: () -> Void = {
