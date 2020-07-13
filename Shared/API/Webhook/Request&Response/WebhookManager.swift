@@ -208,6 +208,7 @@ public class WebhookManager: NSObject {
 
     // MARK: - Sending Persistent
 
+    // swiftlint:disable:next function_body_length
     public func send(
         identifier: WebhookResponseIdentifier = .unhandled,
         request: WebhookRequest
@@ -223,7 +224,7 @@ public class WebhookManager: NSObject {
         // this is important because we may be woken up later and asked to continue the same request, even if timed out
         // since, you know, background execution and whatnot
         ProcessInfo.processInfo.backgroundTask(withName: "webhook-send") { _ in promise }.cauterize()
-        
+
         firstly {
             Self.urlRequest(for: request)
         }.done(on: dataQueue) { [currentBackgroundSessionInfo] urlRequest, data in

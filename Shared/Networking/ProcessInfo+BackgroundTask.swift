@@ -12,7 +12,7 @@ extension ProcessInfo {
         return HomeAssistantBackgroundTask.execute(
             withName: name,
             beginBackgroundTask: { name, expirationHandler -> (UUID?, TimeInterval?) in
-                self.performExpiringActivity(withReason: name) { expire in
+                performExpiringActivity(withReason: name) { expire in
                     if expire {
                         Current.Log.info("expiring \(identifier) [\(name)]")
                         expirationHandler()

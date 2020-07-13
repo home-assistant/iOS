@@ -11,8 +11,8 @@ extension UIApplication {
         HomeAssistantBackgroundTask.execute(
             withName: name,
             beginBackgroundTask: { name, expirationHandler in
-                let identifier = self.beginBackgroundTask(withName: name, expirationHandler: expirationHandler)
-                let remaining = self.backgroundTimeRemaining < 100 ? self.backgroundTimeRemaining : nil
+                let identifier = beginBackgroundTask(withName: name, expirationHandler: expirationHandler)
+                let remaining = backgroundTimeRemaining < 100 ? backgroundTimeRemaining : nil
 
                 Current.Log.info {
                     if let remaining = remaining {
