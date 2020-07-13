@@ -68,9 +68,10 @@ extension Realm {
         #endif
 
         // 5 - 2020-07-08 v2020.4
+        // 6 - 2020-07-12 v2020.4
         let config = Realm.Configuration(
             fileURL: storeURL,
-            schemaVersion: 5,
+            schemaVersion: 6,
             migrationBlock: nil,
             deleteRealmIfMigrationNeeded: false
         )

@@ -9,6 +9,16 @@ public class GeocoderSensor: SensorProvider {
         case noLocation
     }
 
+    private enum UserDefaultsKeys: String {
+        case geocodeUseZone = "geocoded_location_use_zone"
+
+        var title: String {
+            switch self {
+            case .geocodeUseZone: return L10n.Sensors.GeocodedLocation.Setting.useZones
+            }
+        }
+    }
+
     public let request: SensorProviderRequest
     required public init(request: SensorProviderRequest) {
         self.request = request
@@ -24,10 +34,17 @@ public class GeocoderSensor: SensorProvider {
         }.recover { [request] (error: Error) -> Promise<[CLPlacemark]> in
             guard case GeocoderError.noLocation = error, case .registration = request.reason else { throw error }
             return .value([])
-        }.map { (placemarks: [CLPlacemark]) -> [WebhookSensor] in
+        }.map { [request] (placemarks: [CLPlacemark]) -> [WebhookSensor] in
             let sensor = with(WebhookSensor(name: "Geocoded Location", uniqueID: "geocoded_location")) {
                 $0.State = "Unknown"
                 $0.Icon = "mdi:\(MaterialDesignIcons.mapIcon.name)"
+                $0.Settings = [
+                    .init(type: .switch(getter: {
+                        Current.settingsStore.prefs.bool(forKey: UserDefaultsKeys.geocodeUseZone.rawValue)
+                    }, setter: {
+                        Current.settingsStore.prefs.set($0, forKey: UserDefaultsKeys.geocodeUseZone.rawValue)
+                    }), title: UserDefaultsKeys.geocodeUseZone.title)
+                ]
             }
 
             guard !placemarks.isEmpty else {
@@ -43,7 +60,28 @@ public class GeocoderSensor: SensorProvider {
                 sensor.State = address
             }
 
-            sensor.Attributes = Self.attributes(for: placemarks)
+            var attributes = Self.attributes(for: placemarks)
+
+            if let location = request.location {
+                let insideZones = Current.realm().objects(RLMZone.self)
+                    .filter("TrackingEnabled == true && isPassive == false")
+                    .sorted(byKeyPath: "Radius")
+                    .filter { $0.circularRegion().contains(location.coordinate) }
+                    .map { $0.FriendlyName ?? $0.Name }
+                    .filter { $0 != "" }
+
+                if let zone = insideZones.first,
+                    Current.settingsStore.prefs.bool(forKey: UserDefaultsKeys.geocodeUseZone.rawValue)
+                {
+                    // only override if there's something to set, and only if the user wants us to do so
+                    sensor.State = zone
+                }
+
+                // needs to be explicitly typed or the JSON encoding will barf
+                attributes["Zones"] = Array(insideZones)
+            }
+
+            sensor.Attributes = attributes
 
             return [sensor]
         }

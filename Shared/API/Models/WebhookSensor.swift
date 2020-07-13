@@ -10,6 +10,15 @@ import Foundation
 import ObjectMapper
 import Iconic
 
+public struct WebhookSensorSetting {
+    public enum SettingType {
+        case `switch`(getter: () -> Bool, setter: (Bool) -> Void)
+    }
+
+    public let type: SettingType
+    public let title: String
+}
+
 public class WebhookSensor: Mappable {
     public var Attributes: [String: Any]?
     public var DeviceClass: DeviceClass?
@@ -19,6 +28,8 @@ public class WebhookSensor: Mappable {
     public var `Type`: String = "sensor"
     public var UniqueID: String?
     public var UnitOfMeasurement: String?
+
+    public var Settings: [WebhookSensorSetting] = []
 
     init() {}
 

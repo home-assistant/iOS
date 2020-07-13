@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
 import CoreLocation
 import RealmSwift
 
@@ -22,6 +21,7 @@ public class RLMZone: Object {
     @objc public dynamic var enterNotification = true
     @objc public dynamic var exitNotification = true
     @objc public dynamic var inRegion = false
+    @objc public dynamic var isPassive = false
 
     // Beacons
     @objc public dynamic var BeaconUUID: String?
@@ -32,27 +32,12 @@ public class RLMZone: Object {
     public var SSIDTrigger = List<String>()
     public var SSIDFilter = List<String>()
 
-    public func mapping(map: Map) {
-        ID                       <- map["entity_id"]
-
-        FriendlyName             <- map["attributes.friendly_name"]
-
-        Latitude                 <- map["attributes.latitude"]
-        Longitude                <- map["attributes.longitude"]
-        Radius                   <- map["attributes.radius"]
-        TrackingEnabled          <- map["attributes.track_ios"]
-
-        BeaconUUID               <- map["attributes.beacon.uuid"]
-        BeaconMajor.value        <- map["attributes.beacon.major"]
-        BeaconMinor.value        <- map["attributes.beacon.minor"]
-
-        SSIDTrigger              <- map["attributes.ssid_trigger"]
-        SSIDFilter               <- map["attributes.ssid_filter"]
-    }
-
-    convenience init(zone: Zone) {
-        self.init()
-        self.ID = zone.ID
+    func update(with zone: Zone) {
+        if realm == nil {
+            self.ID = zone.ID
+        } else {
+            precondition(zone.ID == ID)
+        }
         self.Latitude = zone.Latitude
         self.Longitude = zone.Longitude
         self.Radius = zone.Radius
@@ -60,9 +45,13 @@ public class RLMZone: Object {
         self.BeaconUUID = zone.UUID
         self.BeaconMajor.value = zone.Major
         self.BeaconMinor.value = zone.Minor
+        self.isPassive = zone.isPassive
+
+        self.SSIDTrigger.removeAll()
         if let ssidTrigger = zone.SSIDTrigger {
             self.SSIDTrigger.append(objectsIn: ssidTrigger)
         }
+        self.SSIDFilter.removeAll()
         if let ssidFilter = zone.SSIDFilter {
             self.SSIDFilter.append(objectsIn: ssidFilter)
         }
