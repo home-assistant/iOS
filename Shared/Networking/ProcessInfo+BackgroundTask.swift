@@ -14,17 +14,13 @@ extension ProcessInfo {
             beginBackgroundTask: { name, expirationHandler -> (UUID?, TimeInterval?) in
                 performExpiringActivity(withReason: name) { expire in
                     if expire {
-                        Current.Log.info("expiring \(identifier) [\(name)]")
                         expirationHandler()
                     } else {
-                        Current.Log.info("start blocking \(identifier) [\(name)]")
                         semaphore.wait()
-                        Current.Log.info("end blocking \(identifier) [\(name)]")
                     }
                 }
                 return (identifier, nil)
-            }, endBackgroundTask: { identifier in
-                Current.Log.info("signaling \(identifier) [\(name)]")
+            }, endBackgroundTask: { _ in
                 semaphore.signal()
             }, wrapping: wrapping
         )
