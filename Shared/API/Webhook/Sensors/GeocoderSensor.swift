@@ -9,7 +9,7 @@ public class GeocoderSensor: SensorProvider {
         case noLocation
     }
 
-    private enum UserDefaultsKeys: String {
+    internal enum UserDefaultsKeys: String {
         case geocodeUseZone = "geocoded_location_use_zone"
 
         var title: String {
@@ -71,8 +71,7 @@ public class GeocoderSensor: SensorProvider {
                     .filter { $0 != "" }
 
                 if let zone = insideZones.first,
-                    Current.settingsStore.prefs.bool(forKey: UserDefaultsKeys.geocodeUseZone.rawValue)
-                {
+                    Current.settingsStore.prefs.bool(forKey: UserDefaultsKeys.geocodeUseZone.rawValue) {
                     // only override if there's something to set, and only if the user wants us to do so
                     sensor.State = zone
                 }
