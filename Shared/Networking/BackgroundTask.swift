@@ -12,7 +12,7 @@ public enum BackgroundTaskError: Error {
 public enum HomeAssistantBackgroundTask {
     public static func execute<ReturnType, IdentifierType>(
         withName name: String,
-        beginBackgroundTask: @escaping (String, @escaping () -> Void) -> (IdentifierType?, TimeInterval?),
+        beginBackgroundTask: (String, @escaping () -> Void) -> (IdentifierType?, TimeInterval?),
         endBackgroundTask: @escaping (IdentifierType) -> Void,
         wrapping: (TimeInterval?) -> Promise<ReturnType>
     ) -> Promise<ReturnType> {
