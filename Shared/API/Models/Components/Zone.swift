@@ -18,6 +18,7 @@ public class Zone: Entity {
     @objc public dynamic var TrackingEnabled = true
     @objc public dynamic var enterNotification = true
     @objc public dynamic var exitNotification = true
+    @objc public dynamic var isPassive = false
 
     // Beacons
     @objc public dynamic var UUID: String?
@@ -40,6 +41,7 @@ public class Zone: Entity {
         Minor              <- map["attributes.beacon.minor"]
         SSIDTrigger        <- map["attributes.ssid_trigger"]
         SSIDFilter         <- map["attributes.ssid_filter"]
+        isPassive          <- map["attributes.passive"]
     }
 
     public func locationCoordinates() -> CLLocationCoordinate2D {

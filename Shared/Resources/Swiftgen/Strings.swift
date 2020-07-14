@@ -874,6 +874,10 @@ internal enum L10n {
         /// TimeZone
         internal static let timeZone = L10n.tr("Localizable", "sensors.geocoded_location.attributes.time_zone")
       }
+      internal enum Setting {
+        /// Use Zone Name
+        internal static let useZones = L10n.tr("Localizable", "sensors.geocoded_location.setting.use_zones")
+      }
     }
     internal enum Pedometer {
       internal enum AverageActivePace {
@@ -1775,6 +1779,12 @@ internal enum L10n {
       internal static let off = L10n.tr("Localizable", "settings_sensors.periodic_update.off")
       /// Periodic Update
       internal static let title = L10n.tr("Localizable", "settings_sensors.periodic_update.title")
+    }
+    internal enum Settings {
+      /// Changes will be applied on the next update.
+      internal static let footer = L10n.tr("Localizable", "settings_sensors.settings.footer")
+      /// Settings
+      internal static let header = L10n.tr("Localizable", "settings_sensors.settings.header")
     }
   }
 

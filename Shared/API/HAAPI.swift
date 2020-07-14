@@ -420,44 +420,31 @@ public class HomeAssistantAPI {
     public func storeZones(zones: [Zone]) {
         let realm = Current.realm()
 
-        let existingZoneIDs: [String] = realm.objects(RLMZone.self).map { $0.ID }
+        do {
+            try realm.write {
+                let existingIDs = Set(realm.objects(RLMZone.self).map(\.ID))
+                let incomingIDs = Set(zones.map(\.ID))
+                let deletedIDs = existingIDs.subtracting(incomingIDs)
 
-        var seenZoneIDs: [String] = []
+                for zone in zones {
+                    let updatingZone: RLMZone
 
-        for zone in zones {
-            seenZoneIDs.append(zone.ID)
-            if let existingZone = realm.object(ofType: RLMZone.self, forPrimaryKey: zone.ID) {
-                // swiftlint:disable:next force_try
-                try! realm.write {
-                    HomeAssistantAPI.updateZone(existingZone, withZoneEntity: zone)
+                    if let existing = realm.object(ofType: RLMZone.self, forPrimaryKey: zone.ID) {
+                        updatingZone = existing
+                    } else {
+                        Current.Log.verbose("creating \(zone.ID)")
+                        updatingZone = RLMZone()
+                    }
+
+                    updatingZone.update(with: zone)
+                    realm.add(updatingZone, update: .all)
                 }
-            } else {
-                // swiftlint:disable:next force_try
-                try! realm.write {
-                    realm.add(RLMZone(zone: zone), update: .all)
-                }
+
+                realm.delete(realm.objects(RLMZone.self).filter("ID in %@", deletedIDs))
             }
+        } catch {
+            Current.Log.error("failed to update zones: \(error)")
         }
-
-        // Now remove zones that aren't in HA anymore
-        let zoneIDsToDelete = existingZoneIDs.filter { zoneID -> Bool in
-            return seenZoneIDs.contains(zoneID) == false
-        }
-
-        // swiftlint:disable:next force_try
-        try! realm.write {
-            realm.delete(realm.objects(RLMZone.self).filter("ID IN %@", zoneIDsToDelete))
-        }
-    }
-
-    private static func updateZone(_ storeableZone: RLMZone, withZoneEntity zone: Zone) {
-        storeableZone.Latitude = zone.Latitude
-        storeableZone.Longitude = zone.Longitude
-        storeableZone.Radius = zone.Radius
-        storeableZone.TrackingEnabled = zone.TrackingEnabled
-        storeableZone.BeaconUUID = zone.UUID
-        storeableZone.BeaconMajor.value = zone.Major
-        storeableZone.BeaconMinor.value = zone.Minor
     }
 
     public func SubmitLocation(updateType: LocationUpdateTrigger,

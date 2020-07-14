@@ -4,19 +4,37 @@ import PromiseKit
 import XCTest
 import CoreLocation
 import Contacts
+import RealmSwift
 
 // forgive me but something about CLPlacemark in this file is crashing in deinit
 // it is almost certainly a testing issue, and this... well, this solves it.
 private var permanent: [CLPlacemark] = []
 
 class GeocoderSensorTests: XCTestCase {
+    private var realm: Realm!
+
     enum TestError: Error {
         case someError
+    }
+
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+
+        let executionIdentifier = UUID().uuidString
+        let realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
+        Current.realm = { realm }
+        self.realm = realm
     }
 
     private func setUp(placemarks: [FakePlacemark]) {
         permanent.append(contentsOf: placemarks)
         Current.geocoder.geocode = { _ in .value(placemarks) }
+    }
+
+    override func tearDown() {
+        super.tearDown()
+
+        Current.realm = Realm.live
     }
 
     func testLocationForRegistration() throws {
@@ -107,6 +125,167 @@ class GeocoderSensorTests: XCTestCase {
         XCTAssertEqual(sensors.count, 1)
         XCTAssertEqual(sensors[0].State as? String, "Ocean Ave\nLong Island NY 11001\nUS")
         XCTAssertEqual(sensors[0].Attributes?["Location"] as? [Double], [40.7549323, -73.741804])
+    }
+
+    func testZoneEnabledButNoZoneMatches() throws {
+        setUp(placemarks: [
+            .bobsBurgers
+        ])
+
+        Current.settingsStore.prefs.set(
+            true,
+            forKey: GeocoderSensor.UserDefaultsKeys.geocodeUseZone.rawValue
+        )
+
+        try realm.write {
+            _  = with(RLMZone()) {
+                $0.ID = "zone.outside"
+                $0.Latitude = 12.34
+                $0.Longitude = 1.337
+                realm.add($0, update: .all)
+            }
+        }
+
+        let promise = GeocoderSensor(
+            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+        ).sensors()
+        let sensors = try hang(promise)
+        XCTAssertEqual(sensors.count, 1)
+        XCTAssertEqual(sensors[0].State as? String, "Ocean Ave\nLong Island NY 11001\nUS")
+    }
+
+    func testZoneEnabledAndMatches() throws {
+        setUp(placemarks: [
+            .bobsBurgers
+        ])
+
+        Current.settingsStore.prefs.set(
+            true,
+            forKey: GeocoderSensor.UserDefaultsKeys.geocodeUseZone.rawValue
+        )
+
+        try realm.write {
+            _ = with(RLMZone()) {
+                $0.ID = "zone.inside_big"
+                $0.Latitude = 37
+                $0.Longitude = -122
+                $0.Radius = 1000
+                realm.add($0, update: .all)
+            }
+
+            _ = with(RLMZone()) {
+                $0.ID = "zone.inside_small"
+                $0.Latitude = 37
+                $0.Longitude = -122
+                $0.Radius = 100
+                realm.add($0, update: .all)
+            }
+
+            _  = with(RLMZone()) {
+                $0.ID = "zone.outside"
+                $0.Latitude = 12.34
+                $0.Longitude = 1.337
+                realm.add($0, update: .all)
+            }
+        }
+
+        let promise = GeocoderSensor(
+            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+        ).sensors()
+        let sensors = try hang(promise)
+        XCTAssertEqual(sensors.count, 1)
+        XCTAssertEqual(sensors[0].State as? String, "Inside Small")
+        XCTAssertEqual(sensors[0].Attributes?["Zones"] as? [String], ["Inside Small", "Inside Big"])
+    }
+
+    func testZoneEnabledAndMatchesButPassiveOrTrackingDisabled() throws {
+        setUp(placemarks: [
+            .bobsBurgers
+        ])
+
+        Current.settingsStore.prefs.set(
+            true,
+            forKey: GeocoderSensor.UserDefaultsKeys.geocodeUseZone.rawValue
+        )
+
+        try realm.write {
+            _ = with(RLMZone()) {
+                $0.ID = "zone.inside_tracking_disabled"
+                $0.Latitude = 37
+                $0.Longitude = -122
+                $0.Radius = 1000
+                $0.TrackingEnabled = false
+                realm.add($0, update: .all)
+            }
+
+            _ = with(RLMZone()) {
+                $0.ID = "zone.inside_passive"
+                $0.Latitude = 37
+                $0.Longitude = -122
+                $0.Radius = 100
+                $0.isPassive = true
+                realm.add($0, update: .all)
+            }
+
+            _  = with(RLMZone()) {
+                $0.ID = "zone.outside"
+                $0.Latitude = 12.34
+                $0.Longitude = 1.337
+                realm.add($0, update: .all)
+            }
+        }
+
+        let promise = GeocoderSensor(
+            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+        ).sensors()
+        let sensors = try hang(promise)
+        XCTAssertEqual(sensors.count, 1)
+        XCTAssertEqual(sensors[0].State as? String, "Ocean Ave\nLong Island NY 11001\nUS")
+        XCTAssertEqual(sensors[0].Attributes?["Zones"] as? [String], [])
+    }
+
+    func testZoneDisabledWithMatches() throws {
+        setUp(placemarks: [
+            .bobsBurgers
+        ])
+
+        Current.settingsStore.prefs.set(
+            false,
+            forKey: GeocoderSensor.UserDefaultsKeys.geocodeUseZone.rawValue
+        )
+
+        try realm.write {
+            _ = with(RLMZone()) {
+                $0.ID = "zone.inside_big"
+                $0.Latitude = 37
+                $0.Longitude = -122
+                $0.Radius = 1000
+                realm.add($0, update: .all)
+            }
+
+            _ = with(RLMZone()) {
+                $0.ID = "zone.inside_small"
+                $0.Latitude = 37
+                $0.Longitude = -122
+                $0.Radius = 100
+                realm.add($0, update: .all)
+            }
+
+            _  = with(RLMZone()) {
+                $0.ID = "zone.outside"
+                $0.Latitude = 12.34
+                $0.Longitude = 1.337
+                realm.add($0, update: .all)
+            }
+        }
+
+        let promise = GeocoderSensor(
+            request: .init(reason: .trigger("unit-test"), location: CLLocation(latitude: 37, longitude: -122))
+        ).sensors()
+        let sensors = try hang(promise)
+        XCTAssertEqual(sensors.count, 1)
+        XCTAssertEqual(sensors[0].State as? String, "Ocean Ave\nLong Island NY 11001\nUS")
+        XCTAssertEqual(sensors[0].Attributes?["Zones"] as? [String], ["Inside Small", "Inside Big"])
     }
 }
 

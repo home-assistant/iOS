@@ -51,6 +51,28 @@ class SensorDetailViewController: FormViewController {
 
         form +++ baseSection
 
+        if sensor.Settings.isEmpty == false {
+            let settingsSection = Section(
+                header: L10n.SettingsSensors.Settings.header,
+                footer: L10n.SettingsSensors.Settings.footer
+            )
+
+            settingsSection.append(contentsOf: sensor.Settings.map { setting -> BaseRow in
+                switch setting.type {
+                case .switch(let getter, let setter):
+                    return SwitchRow {
+                        $0.title = setting.title
+                        $0.value = getter()
+                        $0.onChange { row in
+                            setter(row.value ?? false)
+                        }
+                    }
+                }
+            })
+
+            form.append(settingsSection)
+        }
+
         if let attributes = sensor.Attributes {
             let attributesSection = Section(header: L10n.SettingsSensors.Detail.attributes, footer: nil)
             let attributeRows = attributes
