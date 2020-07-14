@@ -140,13 +140,15 @@ public class HomeAssistantAPI {
         return firstly {
             self.UpdateRegistration()
         }.recover { error -> Promise<MobileAppRegistrationResponse> in
-            guard (error as NSError).domain != NSURLErrorDomain else {
+            guard (error as NSError).domain != NSURLErrorDomain, !(error is BackgroundTaskError) else {
                 Current.Log.info("not re-registering because of network error")
                 throw error
             }
 
             let message = "Failed to update integration; trying to register instead."
-            Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest))
+            Current.clientEventStore.addEvent(ClientEvent(text: message, type: .networkRequest, payload: [
+                "error": String(describing: error)
+            ]))
             return self.Register()
         }.then { _ -> Promise<(ConfigResponse, [Zone], Void, [WatchComplication])> in
             return when(fulfilled:

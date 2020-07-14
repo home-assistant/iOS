@@ -106,6 +106,8 @@
 		11CD94B724B2CC7400BA801D /* WebhookResponseLocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94B624B2CC7400BA801D /* WebhookResponseLocation.test.swift */; };
 		11CD94B924B2D16F00BA801D /* WebhookResponseServiceCall.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */; };
 		11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */; };
+		11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
+		11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
 		11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D74B2495377B00C05BBA /* SensorListViewController.swift */; };
 		11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */; };
 		28F97CE2A585EB2423FB7003 /* Pods_Shared_watchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81EFBEA503010FAE577D0269 /* Pods_Shared_watchOS.framework */; };
@@ -867,6 +869,7 @@
 		11CD94B624B2CC7400BA801D /* WebhookResponseLocation.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseLocation.test.swift; sourceTree = "<group>"; };
 		11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseServiceCall.test.swift; sourceTree = "<group>"; };
 		11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUnhandled.test.swift; sourceTree = "<group>"; };
+		11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+BackgroundTask.swift"; sourceTree = "<group>"; };
 		11F3D74B2495377B00C05BBA /* SensorListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorListViewController.swift; sourceTree = "<group>"; };
 		11F3D7502495434C00C05BBA /* SensorDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDetailViewController.swift; sourceTree = "<group>"; };
 		1C5332DAFA7CC79107B5429E /* Pods-Shared-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Shared-iOS/Pods-Shared-iOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -2591,6 +2594,7 @@
 			children = (
 				D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */,
 				11B7FD732493225200E60ED9 /* BackgroundTask.swift */,
+				11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -4310,6 +4314,7 @@
 				1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
 				B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */,
 				11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */,
+				11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */,
 				B67CE88822200F220034C1D0 /* Zone.swift in Sources */,
 				11AF4D1D249C8AA0006C74C0 /* BatterySensor.swift in Sources */,
 				B67CE8A922200F220034C1D0 /* SettingsStore.swift in Sources */,
@@ -4452,6 +4457,7 @@
 				B6C091442151F93D00A326DC /* Light.swift in Sources */,
 				D0BE440E210437F900C74314 /* AuthenticationRoutes.swift in Sources */,
 				B6C0914E2151F93D00A326DC /* Thermostat.swift in Sources */,
+				11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */,
 				B6B74CBD228399AB00D58A68 /* Action.swift in Sources */,
 				11CB98CA249E62E700B05222 /* Version+HA.swift in Sources */,
 				D0EEF31A214DD7A400D1D360 /* PushConfiguration.swift in Sources */,
