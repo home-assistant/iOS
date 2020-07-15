@@ -38,10 +38,11 @@ public class ClientEventTableViewController: UITableViewController, UISearchResu
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             title: L10n.ClientEvents.View.clear,
             style: .plain, target: self,
-            action: #selector(clearTapped)
+            action: #selector(clearTapped(_:))
         )
         navigationItem.searchController = with(UISearchController(searchResultsController: nil)) {
             $0.searchResultsUpdater = self
+            $0.obscuresBackgroundDuringPresentation = false
         }
 
         results = Current.clientEventStore.getEvents()
@@ -64,8 +65,20 @@ public class ClientEventTableViewController: UITableViewController, UISearchResu
         }
     }
 
-    @objc private func clearTapped() {
-        Current.clientEventStore.clearAllEvents()
+    @objc private func clearTapped(_ sender: UIBarButtonItem) {
+        let alertController = UIAlertController(
+            title: L10n.ClientEvents.View.ClearConfirm.title,
+            message: L10n.ClientEvents.View.ClearConfirm.message,
+            preferredStyle: .actionSheet
+        )
+        alertController.popoverPresentationController?.barButtonItem = sender
+
+        alertController.addAction(UIAlertAction(title: L10n.ClientEvents.View.clear, style: .destructive) { _ in
+            Current.clientEventStore.clearAllEvents()
+        })
+        alertController.addAction(UIAlertAction(title: L10n.cancelLabel, style: .cancel, handler: nil))
+
+        present(alertController, animated: true, completion: nil)
     }
 
     public func updateSearchResults(for searchController: UISearchController) {

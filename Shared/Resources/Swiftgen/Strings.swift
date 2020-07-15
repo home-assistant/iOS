@@ -247,6 +247,12 @@ internal enum L10n {
     internal enum View {
       /// Clear
       internal static let clear = L10n.tr("Localizable", "client_events.view.clear")
+      internal enum ClearConfirm {
+        /// This cannot be undone.
+        internal static let message = L10n.tr("Localizable", "client_events.view.clear_confirm.message")
+        /// Are you sure you want to clear all events?
+        internal static let title = L10n.tr("Localizable", "client_events.view.clear_confirm.title")
+      }
     }
   }
 
