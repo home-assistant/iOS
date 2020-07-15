@@ -89,7 +89,7 @@ class ZoneManager {
     private func sync(zones: AnySequence<RLMZone>) {
         let expected = Set(
             zones
-                .map { $0.region() }
+                .flatMap { $0.regions() }
                 .map(ZoneManagerEquatableRegion.init(region:))
         )
         let actual = Set(

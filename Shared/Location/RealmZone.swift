@@ -70,11 +70,11 @@ public class RLMZone: Object {
                           timestamp: Date())
     }
 
-    public func region() -> CLRegion {
+    public func regions() -> [CLRegion] {
         #if os(iOS)
-        return beaconRegion ?? circularRegion()
+        return [beaconRegion ?? circularRegion()]
         #else
-        return self.circularRegion()
+        return [self.circularRegion()]
         #endif
     }
 
