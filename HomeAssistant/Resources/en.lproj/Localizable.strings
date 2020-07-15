@@ -140,6 +140,8 @@
 "client_events.event_type.location_update" = "Location Update";
 "client_events.event_type.unknown" = "Unknown";
 "client_events.view.clear" = "Clear";
+"client_events.view.clear_confirm.title" = "Are you sure you want to clear all events?";
+"client_events.view.clear_confirm.message" = "This cannot be undone.";
 "settings.connection_section.network_name.title" = "Current Network Name";
 "settings.connection_section.internal_base_url.title" = "Internal URL";
 "settings.connection_section.external_base_url.title" = "External URL";
