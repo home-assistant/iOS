@@ -474,7 +474,7 @@
 		B67CE8AD22200F220034C1D0 /* AuthenticationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0BE44152104410D00C74314 /* AuthenticationAPI.swift */; };
 		B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C88463211F33CE00CCB501 /* TokenManager.swift */; };
 		B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB4621193946002FCAD6 /* ObjectMapperTransformers.swift */; };
-		B67CE8B022200F220034C1D0 /* CLLocation+ToDoubleArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */; };
+		B67CE8B022200F220034C1D0 /* CLLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */; };
 		B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */; };
 		B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */; };
 		B67CE8B322200F220034C1D0 /* Realm+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */; };
@@ -632,7 +632,7 @@
 		D0EEF32D214DF94900D1D360 /* PushRegistrationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */; };
 		D0EEF32E214DF99500D1D360 /* PushRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */; };
 		D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF330214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift */; };
-		D0EEF335214EB77100D1D360 /* CLLocation+ToDoubleArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */; };
+		D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */; };
 		D0EEF336214EB7B800D1D360 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
@@ -1335,7 +1335,7 @@
 		B6C2A5E62276C29800A85ECA /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		B6C2A5E82276C29A00A85ECA /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLError+DebugDescription.swift"; sourceTree = "<group>"; };
-		B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+ToDoubleArray.swift"; sourceTree = "<group>"; };
+		B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Extensions.swift"; sourceTree = "<group>"; };
 		B6CC5D822159D10D00833E5D /* WatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CC5D852159D10D00833E5D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		B6CC5D872159D10E00833E5D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -2507,7 +2507,7 @@
 		D0A6367320DBE91300E5C49B /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				B6C2C17E20D1F64D00BD810B /* CLLocation+ToDoubleArray.swift */,
+				B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */,
 				B6C2C17C20D1EC1300BD810B /* CLError+DebugDescription.swift */,
 				B688AB44211938F1002FCAD6 /* CMMotion+StringExtensions.swift */,
 				D0A6367420DBE93400E5C49B /* Realm+Initialization.swift */,
@@ -4374,7 +4374,7 @@
 				11CB98CB249E62E700B05222 /* Version+HA.swift in Sources */,
 				B67CE89422200F220034C1D0 /* Entity.swift in Sources */,
 				B67CE8A022200F220034C1D0 /* History.swift in Sources */,
-				B67CE8B022200F220034C1D0 /* CLLocation+ToDoubleArray.swift in Sources */,
+				B67CE8B022200F220034C1D0 /* CLLocation+Extensions.swift in Sources */,
 				B67CE8A822200F220034C1D0 /* MJPEGStreamer.swift in Sources */,
 				B67CE89022200F220034C1D0 /* GarageDoor.swift in Sources */,
 				B67CE89522200F220034C1D0 /* LocationHistory.swift in Sources */,
@@ -4441,7 +4441,7 @@
 				B6872E6022267EE800C475D1 /* HAAPI.swift in Sources */,
 				B6C091402151F93D00A326DC /* Sensor.swift in Sources */,
 				B62817F2221D6CF4000BA86A /* Reachability+NetworkType.swift in Sources */,
-				D0EEF335214EB77100D1D360 /* CLLocation+ToDoubleArray.swift in Sources */,
+				D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */,
 				11AF4D1F249C8AF1006C74C0 /* ConnectivitySensor.swift in Sources */,
 				B675ECC5221BD76300C65D31 /* Identify.swift in Sources */,
 				B6723341225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,

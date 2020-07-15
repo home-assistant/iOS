@@ -66,7 +66,7 @@ public class GeocoderSensor: SensorProvider {
                 let insideZones = Current.realm().objects(RLMZone.self)
                     .filter("TrackingEnabled == true && isPassive == false")
                     .sorted(byKeyPath: "Radius")
-                    .filter { $0.circularRegion().contains(location.coordinate) }
+                    .filter { $0.circularRegion.contains(location.coordinate) }
                     .map { $0.FriendlyName ?? $0.Name }
                     .filter { $0 != "" }
 
