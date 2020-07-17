@@ -119,9 +119,22 @@ class ZoneManager {
             locationManager.startMonitoring(for: region)
         }
 
+        let beaconCount = expected.filter { $0.region is CLBeaconRegion }.count
+        let circularCount = expected.filter {$0.region is CLCircularRegion }.count
+
+        if beaconCount > 20 || circularCount > 20 {
+            Current.clientEventStore.addEvent(ClientEvent(
+                text: "Exceeded maximum monitored regions",
+                type: .locationUpdate, payload: [
+                    "beacon": beaconCount,
+                    "circular": circularCount
+                ]
+            ))
+        }
+
         Current.Log.info {
             [
-                "monitoring \(expected.count)",
+                "monitoring \(expected.count) (beacon(\(beaconCount) circular(\(circularCount)))",
                 "started \(needsAddition.count)",
                 "ended \(needsRemoval.count)"
             ].joined(separator: ", ")
