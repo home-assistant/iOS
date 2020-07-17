@@ -74,11 +74,11 @@ class ZoneManagerTests: XCTestCase {
             }
         ])
         var currentRegions: Set<CLRegion> {
-            Set(zones.map { $0.region() })
+            Set(zones.flatMap { $0.regionsForMonitoring })
         }
 
         let manager = ZoneManager(locationManager: locationManager, collector: collector, processor: processor)
-        addedRegions.append(contentsOf: zones.map { $0.region() })
+        addedRegions.append(contentsOf: zones.flatMap { $0.regionsForMonitoring })
 
         XCTAssertEqual(
             locationManager.startMonitoringRegions.hackilySorted(),
@@ -87,9 +87,9 @@ class ZoneManagerTests: XCTestCase {
 
         // mutate a zone
         try realm.write {
-            removedRegions.append(zones[1].region())
+            removedRegions.append(contentsOf: zones[1].regionsForMonitoring)
             zones[1].Latitude += 0.02
-            addedRegions.append(zones[1].region())
+            addedRegions.append(contentsOf: zones[1].regionsForMonitoring)
         }
 
         realm.refresh()
@@ -101,7 +101,7 @@ class ZoneManagerTests: XCTestCase {
         // remove a zone
         try realm.write {
             let toRemove = zones.popLast()!
-            removedRegions.append(toRemove.region())
+            removedRegions.append(contentsOf: toRemove.regionsForMonitoring)
             realm.delete(toRemove)
         }
 
@@ -141,14 +141,14 @@ class ZoneManagerTests: XCTestCase {
                 $0.ID = "home"
                 $0.Latitude = 37.1234
                 $0.Longitude = -122.4567
-                $0.Radius = 50.0
+                $0.Radius = 100
                 $0.TrackingEnabled = false
             },
             with(RLMZone()) {
                 $0.ID = "work"
                 $0.Latitude =  37.2345
                 $0.Longitude = -122.5678
-                $0.Radius = 100
+                $0.Radius = 150
                 $0.TrackingEnabled = true
             }
         ])

@@ -89,7 +89,7 @@ class ZoneManager {
     private func sync(zones: AnySequence<RLMZone>) {
         let expected = Set(
             zones
-                .map { $0.region() }
+                .flatMap { $0.regionsForMonitoring }
                 .map(ZoneManagerEquatableRegion.init(region:))
         )
         let actual = Set(
@@ -105,23 +105,50 @@ class ZoneManager {
         // this is important because the system is focused on identifier
         for region in needsRemoval.map(\.region) {
             Current.clientEventStore.addEvent(ClientEvent(
-                text: "Ending monitoring \(region)",
-                type: .locationUpdate
+                text: "Ending monitoring \(region.identifier)",
+                type: .locationUpdate,
+                payload: [
+                    "region": String(describing: region)
+                ]
             ))
             locationManager.stopMonitoring(for: region)
         }
 
         for region in needsAddition.map(\.region) {
             Current.clientEventStore.addEvent(ClientEvent(
-                text: "Initially monitoring \(region)",
-                type: .locationUpdate
+                text: "Initially monitoring \(region.identifier)",
+                type: .locationUpdate,
+                payload: [
+                    "region": String(describing: region)
+                ]
             ))
             locationManager.startMonitoring(for: region)
         }
 
+        let counts = (
+            beacon: expected.filter { $0.region is CLBeaconRegion }.count,
+            circular: expected.filter {$0.region is CLCircularRegion }.count,
+            zone: Set(zones).count
+        )
+
+        if counts.beacon > 20 || counts.circular > 20 {
+            Current.logError?(ReportedError(
+                code: .exceededRegionCount,
+                regionCount: counts
+            ).asNsError())
+            Current.clientEventStore.addEvent(ClientEvent(
+                text: "Exceeded maximum monitored regions",
+                type: .locationUpdate, payload: [
+                    "beacon": counts.beacon,
+                    "circular": counts.circular,
+                    "zones": counts.zone
+                ]
+            ))
+        }
+
         Current.Log.info {
             [
-                "monitoring \(expected.count)",
+                "monitoring \(expected.count) (\(counts))",
                 "started \(needsAddition.count)",
                 "ended \(needsRemoval.count)"
             ].joined(separator: ", ")
@@ -142,5 +169,25 @@ extension ZoneManager: ZoneManagerCollectorDelegate {
 extension ZoneManager: ZoneManagerProcessorDelegate {
     func processor(_ processor: ZoneManagerProcessor, didLog state: ZoneManagerState) {
         log(state: state)
+    }
+}
+
+private struct ReportedError {
+    enum Code: Int {
+        case exceededRegionCount = 0
+    }
+
+    private static let domain = "ZoneManagerError"
+
+    let code: Code
+    // swiftlint:disable:next large_tuple
+    let regionCount: (beacon: Int, circular: Int, zone: Int)
+
+    func asNsError() -> NSError {
+        return NSError(domain: Self.domain, code: code.rawValue, userInfo: [
+            "count_beacon": regionCount.beacon,
+            "count_circular": regionCount.circular,
+            "count_zone": regionCount.zone
+        ])
     }
 }

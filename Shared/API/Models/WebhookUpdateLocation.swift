@@ -56,7 +56,7 @@ public class WebhookUpdateLocation: Mappable {
 
     public func SetZone(zone: RLMZone) {
         self.HorizontalAccuracy = zone.Radius
-        self.Location = zone.locationCoordinates()
+        self.Location = zone.center
 
         #if os(iOS)
         // https://github.com/home-assistant/home-assistant-iOS/issues/32

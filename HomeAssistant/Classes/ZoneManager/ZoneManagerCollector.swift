@@ -44,7 +44,9 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     ) {
         let zone = Current.realm()
             .objects(RLMZone.self)
-            .first(where: { $0.ID == region.identifier })
+            .first(where: {
+                $0.ID == region.identifier || $0.ID == region.identifier.components(separatedBy: "@").first
+            })
 
         let event = ZoneManagerEvent(
             eventType: .region(region, state),

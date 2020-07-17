@@ -57,25 +57,38 @@ public class RLMZone: Object {
         }
     }
 
-    public func locationCoordinates() -> CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: CLLocationDegrees(self.Latitude),
-                                      longitude: CLLocationDegrees(self.Longitude))
+    public var center: CLLocationCoordinate2D {
+        .init(
+            latitude: Latitude,
+            longitude: Longitude
+        )
     }
 
     public func location() -> CLLocation {
-        return CLLocation(coordinate: self.locationCoordinates(),
+        return CLLocation(coordinate: center,
                           altitude: 0,
                           horizontalAccuracy: self.Radius,
                           verticalAccuracy: -1,
                           timestamp: Date())
     }
 
-    public func region() -> CLRegion {
+    public var regionsForMonitoring: [CLRegion] {
         #if os(iOS)
-        return beaconRegion ?? circularRegion()
+        if let beaconRegion = beaconRegion {
+            return [beaconRegion]
+        } else {
+            return circularRegionsForMonitoring
+        }
         #else
-        return self.circularRegion()
+        return circularRegionsForMonitoring
         #endif
+    }
+
+    public var circularRegion: CLCircularRegion {
+        let region = CLCircularRegion(center: center, radius: Radius, identifier: ID)
+        region.notifyOnEntry = true
+        region.notifyOnExit = true
+        return region
     }
 
     #if os(iOS)
@@ -116,15 +129,36 @@ public class RLMZone: Object {
     }
     #endif
 
-    public func circularRegion() -> CLCircularRegion {
-        let region = CLCircularRegion(
-            center: CLLocationCoordinate2DMake(self.Latitude, self.Longitude),
-            radius: self.Radius,
-            identifier: self.ID
-        )
-        region.notifyOnEntry = true
-        region.notifyOnExit = true
-        return region
+    public var circularRegionsForMonitoring: [CLCircularRegion] {
+        if Radius >= 100 {
+            // zone is big enough to not have false-enters
+            let region = CLCircularRegion(center: center, radius: Radius, identifier: ID)
+            region.notifyOnEntry = true
+            region.notifyOnExit = true
+            return [region]
+        } else {
+            // zone is too small for region monitoring without false-enters
+            // see https://github.com/home-assistant/iOS/issues/784
+
+            // given we're a circle centered at (lat, long) with radius R
+            // and we want to be a series of circles with radius 100m that overlap our circle as best as possible
+            let numberOfCircles = 3
+            let minimumRadius: Double = 100.0
+            let centerOffset = Measurement<UnitLength>(value: minimumRadius - Radius, unit: .meters)
+            let sliceAngle = ((2.0 * Double.pi) / Double(numberOfCircles))
+
+            let angles: [Measurement<UnitAngle>] = (0..<numberOfCircles).map { amount in
+                return .init(value: sliceAngle * Double(amount), unit: .radians)
+            }
+
+            return angles.map { angle in
+                return CLCircularRegion(
+                    center: center.moving(distance: centerOffset, direction: angle),
+                    radius: minimumRadius,
+                    identifier: String(format: "%@@%03.0f", ID, angle.converted(to: .degrees).value)
+                )
+            }
+        }
     }
 
     public override static func primaryKey() -> String? {
