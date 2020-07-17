@@ -411,7 +411,7 @@ extension WebhookManager: URLSessionDataDelegate {
         let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
 
         guard error?.isCancelled != true else {
-            Current.Log.info("ignoring cancelled task")
+            Current.Log.info("ignoring cancelled task \(taskKey)")
             dataQueue.async {
                 self.pendingDataForTask.removeValue(forKey: taskKey)
             }
