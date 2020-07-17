@@ -527,7 +527,7 @@ internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
         identifier: String,
         delegate: URLSessionDelegate,
         delegateQueue: OperationQueue,
-        background: Bool = true
+        background: Bool
     ) {
         let configuration: URLSessionConfiguration = {
             if NSClassFromString("XCTest") != nil {
