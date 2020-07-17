@@ -7,7 +7,6 @@ public class BatterySensor: SensorProvider {
         self.request = request
     }
 
-    // swiftlint:disable:next function_body_length
     public func sensors() -> Promise<[WebhookSensor]> {
         var level = Current.device.batteryLevel()
         if level == -100 { // simulator fix
@@ -23,24 +22,10 @@ public class BatterySensor: SensorProvider {
         switch batState {
         case .charging(let level):
             state = "Charging"
-            if level >= 100 {
-                icon = "mdi:battery-charging-100"
-            } else if level > 10 {
-                let rounded = Int(round(Double(level / 20) - 0.01)) * 20
-                icon = "mdi:battery-charging-\(rounded)"
-            } else {
-                icon = "mdi:battery-outline"
-            }
+            icon = Self.chargingIcon(level: level)
         case .unplugged(let level):
             state = "Not Charging"
-            if level >= 100 {
-                icon = "mdi:battery"
-            } else if level < 10 {
-                icon = "mdi:battery-outline"
-            } else if level >= 10 {
-                let rounded = Int(round(Double(level / 10) - 0.01)) * 10
-                icon = "mdi:battery-\(rounded)"
-            }
+            icon = Self.unpluggedIcon(level: level)
         case .full:
             state = "Full"
         }
@@ -75,5 +60,39 @@ public class BatterySensor: SensorProvider {
         }
 
         return .value([levelSensor, stateSensor])
+    }
+
+    // swiftlint:disable:next cyclomatic_complexity
+    static func chargingIcon(level: Int) -> String {
+        switch level {
+        case 100...: return "mdi:battery-charging-100"
+        case 90...:  return "mdi:battery-charging-80"
+        case 80...:  return "mdi:battery-charging-80"
+        case 70...:  return "mdi:battery-charging-60"
+        case 60...:  return "mdi:battery-charging-60"
+        case 50...:  return "mdi:battery-charging-40"
+        case 40...:  return "mdi:battery-charging-40"
+        case 30...:  return "mdi:battery-charging-20"
+        case 20...:  return "mdi:battery-charging-20"
+        case 10...:  return "mdi:battery-outline"
+        default:     return "mdi:battery-outline"
+        }
+    }
+
+    // swiftlint:disable:next cyclomatic_complexity
+    static func unpluggedIcon(level: Int) -> String {
+        switch level {
+        case 100...: return "mdi:battery"
+        case 90...:  return "mdi:battery-90"
+        case 80...:  return "mdi:battery-80"
+        case 70...:  return "mdi:battery-70"
+        case 60...:  return "mdi:battery-60"
+        case 50...:  return "mdi:battery-50"
+        case 40...:  return "mdi:battery-40"
+        case 30...:  return "mdi:battery-30"
+        case 20...:  return "mdi:battery-20"
+        case 10...:  return "mdi:battery-10"
+        default:     return "mdi:battery-outline"
+        }
     }
 }
