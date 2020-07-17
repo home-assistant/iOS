@@ -40,10 +40,11 @@ public enum HomeAssistantBackgroundTask {
 
         let promise = Promise<Void> { seal in
             (identifier, remaining) = beginBackgroundTask(name) {
+                Current.Log.error("out of time for background task \(name) \(describe(identifier))")
                 seal.reject(BackgroundTaskError.outOfTime)
             }
 
-            Current.Log.info("started background task \(name) (\(describe(identifier)))")
+            Current.Log.debug("started background task \(name) (\(describe(identifier)))")
 
             finished = {
                 seal.fulfill(())
@@ -52,7 +53,7 @@ public enum HomeAssistantBackgroundTask {
             guard let endableIdentifier = identifier else { return }
 
             let endBackgroundTask = {
-                Current.Log.info("ending background task \(name) (\(describe(endableIdentifier)))")
+                Current.Log.debug("ending background task \(name) (\(describe(endableIdentifier)))")
                 endBackgroundTask(endableIdentifier)
                 identifier = nil
             }

@@ -180,6 +180,8 @@ public class WebhookManager: NSObject {
             attemptNetworking {
                 firstly {
                     Self.urlRequest(for: request)
+                }.get { _, _ in
+                    Current.Log.info("sending: \(request)")
                 }.then { urlRequest, data in
                     ephemeralUrlSession.uploadTask(.promise, with: urlRequest, from: data)
                 }
@@ -201,13 +203,7 @@ public class WebhookManager: NSObject {
         }.tap { result in
             switch result {
             case .fulfilled(let response):
-                Current.Log.info {
-                    var log = "got successful response for \(request.type)"
-                    if Current.isDebug {
-                        log += ": \(response)"
-                    }
-                    return log
-                }
+                Current.Log.info("got successful response for \(request.type): \(response)")
             case .rejected(let error):
                 Current.Log.error("got failure for \(request.type): \(error)")
             }
@@ -234,12 +230,16 @@ public class WebhookManager: NSObject {
             Current.Log.info("in background, choosing to not use background session")
             return sendRegular().recover { error -> Promise<Void> in
                 Current.Log.error("in-background non-background failed: \(error)")
-                return sendBackground()
+                if error is HomeAssistantAPI.APIError {
+                    // not worth retrying, since we got a real response that we didn't like
+                    throw error
+                } else {
+                    return sendBackground()
+                }
             }
         }
     }
 
-    // swiftlint:disable:next function_body_length
     private func send(
         on sessionInfo: WebhookSessionInfo,
         identifier: WebhookResponseIdentifier,
@@ -282,17 +282,11 @@ public class WebhookManager: NSObject {
             task.resume()
 
             Current.Log.info {
-                var values = [
+                let values = [
                     "\(taskKey)",
-                    "type(\(handlerType))"
+                    "type(\(handlerType))",
+                    "request(\(persisted.request))"
                 ]
-
-                if Current.isDebug {
-                    values += [
-                        "request(\(persisted.request))"
-                    ]
-                }
-
                 return "starting request: " + values.joined(separator: ", ")
             }
 
@@ -409,6 +403,7 @@ extension WebhookManager: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         let sessionInfo = self.sessionInfo(for: session)
         let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
+        let statusCode = (task.response as? HTTPURLResponse)?.statusCode
 
         guard error?.isCancelled != true else {
             Current.Log.info("ignoring cancelled task \(taskKey)")
@@ -426,7 +421,7 @@ extension WebhookManager: URLSessionDataDelegate {
             }
         }.webhookJson(
             on: DispatchQueue.global(qos: .utility),
-            statusCode: (task.response as? HTTPURLResponse)?.statusCode
+            statusCode: statusCode
         )
 
         // dispatch
@@ -434,17 +429,13 @@ extension WebhookManager: URLSessionDataDelegate {
             // logging
             result.done(on: dataQueue) { body in
                 Current.Log.info {
-                    var values = [
+                    let values = [
                         "\(taskKey)",
-                        "type(\(handlerType))"
+                        "type(\(handlerType))",
+                        "request(\(persisted.request))",
+                        "statusCode(\(statusCode.flatMap { String(describing: $0) } ?? "none"))",
+                        "body(\(body))"
                     ]
-
-                    if Current.isDebug {
-                        values += [
-                            "request(\(persisted.request))",
-                            "body(\(body))"
-                        ]
-                    }
 
                     return "got response: " + values.joined(separator: ", ")
                 }
