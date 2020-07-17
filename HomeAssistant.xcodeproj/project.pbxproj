@@ -40,6 +40,7 @@
 		11810D52249EAF8D00E741A4 /* bi_pride@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D48249EAF8C00E741A4 /* bi_pride@3x.png */; };
 		11810D53249EAF8D00E741A4 /* POC_pride@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D49249EAF8D00E741A4 /* POC_pride@3x.png */; };
 		118511C224B25BEB00D18F60 /* WebhookManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118511C124B25BEB00D18F60 /* WebhookManager.test.swift */; };
+		11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */; };
 		119385A4249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
 		119385A5249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
 		119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* StorageSensor.test.swift */; };
@@ -821,6 +822,7 @@
 		11810D48249EAF8C00E741A4 /* bi_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bi_pride@3x.png"; sourceTree = "<group>"; };
 		11810D49249EAF8D00E741A4 /* POC_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "POC_pride@3x.png"; sourceTree = "<group>"; };
 		118511C124B25BEB00D18F60 /* WebhookManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookManager.test.swift; sourceTree = "<group>"; };
+		11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Extensions.test.swift"; sourceTree = "<group>"; };
 		119385A3249E8E360097F497 /* StorageSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.swift; sourceTree = "<group>"; };
 		119385A6249E9F930097F497 /* StorageSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.test.swift; sourceTree = "<group>"; };
 		119C9B1E24A448A600308A54 /* ZoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManager.swift; sourceTree = "<group>"; };
@@ -2492,6 +2494,7 @@
 				11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */,
 				113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */,
 				11CB98CC249E637300B05222 /* Version+HA.test.swift */,
+				11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */,
 			);
 			path = SharedTests;
 			sourceTree = "<group>";
@@ -4542,6 +4545,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */,
 				1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */,
 				119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */,
 				11CD94B724B2CC7400BA801D /* WebhookResponseLocation.test.swift in Sources */,

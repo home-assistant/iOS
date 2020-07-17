@@ -3,7 +3,7 @@ import CoreLocation
 
 extension CLLocationCoordinate2D {
     func toArray() -> [Double] {
-        return [self.latitude, self.longitude]
+        return [latitude, longitude]
     }
 
     func moving(
@@ -12,7 +12,7 @@ extension CLLocationCoordinate2D {
     ) -> CLLocationCoordinate2D {
         let latitudeMeasurement: Measurement<UnitAngle> = .init(value: latitude, unit: .degrees)
         let longitudeMeasurement: Measurement<UnitAngle> = .init(value: longitude, unit: .degrees)
-        let earthRadius: Measurement<UnitLength> = .init(value: 6_371_000, unit: .meters)
+        let earthRadius: Measurement<UnitLength> = .init(value: 6371, unit: .kilometers)
 
         // sinφ2 = sinφ1⋅cosδ + cosφ1⋅sinδ⋅cosθ
         // tanΔλ = sinθ⋅sinδ⋅cosφ1 / cosδ−sinφ1⋅sinφ2
