@@ -7,7 +7,6 @@ public class BatterySensor: SensorProvider {
         self.request = request
     }
 
-    // swiftlint:disable:next function_body_length
     public func sensors() -> Promise<[WebhookSensor]> {
         var level = Current.device.batteryLevel()
         if level == -100 { // simulator fix
@@ -63,6 +62,7 @@ public class BatterySensor: SensorProvider {
         return .value([levelSensor, stateSensor])
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     static func chargingIcon(level: Int) -> String {
         switch level {
         case 100...: return "mdi:battery-charging-100"
@@ -79,6 +79,7 @@ public class BatterySensor: SensorProvider {
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     static func unpluggedIcon(level: Int) -> String {
         switch level {
         case 100...: return "mdi:battery"
