@@ -33,6 +33,19 @@ class BatterySensorTests: XCTestCase {
         XCTAssertEqual(cState.State as? String, "Charging")
     }
 
+    func testBattery19() throws {
+        let (uLevel, uState, cLevel, cState) = try sensors(level: 19)
+        XCTAssertEqual(uLevel.Icon, "mdi:battery-10")
+        XCTAssertEqual(uState.Icon, "mdi:battery-10")
+        XCTAssertEqual(uLevel.State as? Int, 19)
+        XCTAssertEqual(uState.State as? String, "Not Charging")
+
+        XCTAssertEqual(cLevel.Icon, "mdi:battery-outline")
+        XCTAssertEqual(cState.Icon, "mdi:battery-outline")
+        XCTAssertEqual(cLevel.State as? Int, 19)
+        XCTAssertEqual(cState.State as? String, "Charging")
+    }
+
     func testBattery20() throws {
         let (uLevel, uState, cLevel, cState) = try sensors(level: 20)
         XCTAssertEqual(uLevel.Icon, "mdi:battery-20")
