@@ -43,6 +43,8 @@ class WebhookManagerTests: XCTestCase {
         HTTPStubs.removeAllStubs()
 
         ReplacingTestHandler.reset()
+
+        Current.isBackgroundRequestsImmediate = { true }
     }
 
     func testBackgroundHandlingCallsCompletionHandler() {
@@ -470,6 +472,63 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertNoThrow(try hang(promise2))
 
         XCTAssertTrue(ReplacingTestHandler.shouldReplaceInvocations.isEmpty)
+    }
+
+    func testSendPersistentWhenBackgroundRequestsForcedDiscretionarySucceeds() {
+        Current.isBackgroundRequestsImmediate = { false }
+
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+
+        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        XCTAssertNoThrow(try hang(manager.send(request: expectedRequest)))
+    }
+
+    func testSendPersistentWhenBackgroundRequestsForcedDiscretionaryFailsInitially() {
+        Current.isBackgroundRequestsImmediate = { false }
+
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+
+        var hasFailed = false
+
+        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+
+            if !hasFailed {
+                hasFailed = true
+                return HTTPStubsResponse(error: URLError(.timedOut))
+            } else {
+                return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+            }
+        })
+
+        XCTAssertNoThrow(try hang(manager.send(request: expectedRequest)))
+    }
+
+    func testSendPersistentWhenBackgroundRequestsForcedDiscretionaryFailsEverything() {
+        Current.isBackgroundRequestsImmediate = { false }
+
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+
+        var hasFailed = false
+
+        stub(condition: { [webhookURL] req in req.url == webhookURL }, response: { request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+
+            if !hasFailed {
+                hasFailed = true
+                return HTTPStubsResponse(error: URLError(.timedOut))
+            } else {
+                return HTTPStubsResponse(error: URLError(.dnsLookupFailed))
+            }
+        })
+
+        XCTAssertThrowsError(try hang(manager.send(request: expectedRequest))) { error in
+            XCTAssertEqual((error as? URLError)?.code, .dnsLookupFailed)
+        }
     }
 }
 
