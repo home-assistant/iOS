@@ -987,6 +987,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             SettingsViewController.showCameraContentExtension()
         }
         Messaging.messaging().appDidReceiveMessage(response.notification.request.content.userInfo)
+
+        guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
+            Current.Log.info("ignoring dismiss action for notification")
+            completionHandler()
+            return
+        }
+
         var userText: String?
         if let textInput = response as? UNTextInputNotificationResponse {
             userText = textInput.userText
