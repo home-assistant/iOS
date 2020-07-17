@@ -68,6 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         setDefaults()
+        Current.isBackgroundRequestsImmediate = { application.applicationState != .background }
 
         UNUserNotificationCenter.current().delegate = self
 

@@ -129,6 +129,8 @@ public class Environment {
         return NSClassFromString("XCTest") != nil
     }
 
+    public var isBackgroundRequestsImmediate = { true }
+
     public var appConfiguration: AppConfiguration {
         if isFastlaneSnapshot {
             return .FastlaneSnapshot
