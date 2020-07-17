@@ -27,6 +27,13 @@ public class WebhookManager: NSObject {
     internal var currentBackgroundSessionInfo: WebhookSessionInfo {
         backgroundSessionInfo(forIdentifier: Self.currentURLSessionIdentifier)
     }
+    internal lazy var currentRegularSessionInfo: WebhookSessionInfo = {
+        WebhookSessionInfo(
+            identifier: "non-background",
+            delegate: self,
+            delegateQueue: dataOperationQueue
+        )
+    }()
 
     // must be accessed on appropriate queue
     private let dataQueue: DispatchQueue
@@ -207,9 +214,33 @@ public class WebhookManager: NSObject {
 
     // MARK: - Sending Persistent
 
-    // swiftlint:disable:next function_body_length
     public func send(
         identifier: WebhookResponseIdentifier = .unhandled,
+        request: WebhookRequest
+    ) -> Promise<Void> {
+        let sendRegular: () -> Promise<Void> = { [self, currentRegularSessionInfo] in
+            self.send(on: currentRegularSessionInfo, identifier: identifier, request: request)
+        }
+
+        let sendBackground: () -> Promise<Void> = { [self, currentBackgroundSessionInfo] in
+            self.send(on: currentBackgroundSessionInfo, identifier: identifier, request: request)
+        }
+
+        if Current.isBackgroundRequestsImmediate() {
+            return sendBackground()
+        } else {
+            Current.Log.info("in background, choosing to not use background session")
+            return sendRegular().recover { error -> Promise<Void> in
+                Current.Log.error("in-background non-background failed: \(error)")
+                return sendBackground()
+            }
+        }
+    }
+
+    // swiftlint:disable:next function_body_length
+    private func send(
+        on sessionInfo: WebhookSessionInfo,
+        identifier: WebhookResponseIdentifier,
         request: WebhookRequest
     ) -> Promise<Void> {
         guard let handlerType = responseHandlers[identifier] else {
@@ -226,18 +257,18 @@ public class WebhookManager: NSObject {
 
         firstly {
             Self.urlRequest(for: request)
-        }.done(on: dataQueue) { [currentBackgroundSessionInfo] urlRequest, data in
+        }.done(on: dataQueue) { urlRequest, data in
             let temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             let temporaryFile = temporaryDirectory
                 .appendingPathComponent(UUID().uuidString)
                 .appendingPathExtension("json")
             try data.write(to: temporaryFile, options: [])
-            let task = currentBackgroundSessionInfo.session.uploadTask(with: urlRequest, fromFile: temporaryFile)
+            let task = sessionInfo.session.uploadTask(with: urlRequest, fromFile: temporaryFile)
 
             let persisted = WebhookPersisted(request: request, identifier: identifier)
             task.webhookPersisted = persisted
 
-            let taskKey = TaskKey(sessionInfo: currentBackgroundSessionInfo, task: task)
+            let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
 
             self.evaluateCancellable(
                 by: task,
@@ -266,7 +297,7 @@ public class WebhookManager: NSObject {
             try FileManager.default.removeItem(at: temporaryFile)
         }.catch { error in
             self.invoke(
-                sessionInfo: self.currentBackgroundSessionInfo,
+                sessionInfo: sessionInfo,
                 handler: handlerType,
                 request: request,
                 result: .init(error: error),
@@ -490,14 +521,27 @@ internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
         pendingDidFinishHandler = nil
     }
 
-    init(identifier: String, delegate: URLSessionDelegate, delegateQueue: OperationQueue) {
+    init(
+        identifier: String,
+        delegate: URLSessionDelegate,
+        delegateQueue: OperationQueue,
+        background: Bool = true
+    ) {
         let configuration: URLSessionConfiguration = {
             if NSClassFromString("XCTest") != nil {
                 // ^ cannot reference Current here because we're being created inside Current as it is made
                 // we cannot mock http requests in a background session, so this code path has to differ
                 return .ephemeral
             } else {
-                return with(URLSessionConfiguration.background(withIdentifier: identifier)) {
+                let configuration: URLSessionConfiguration
+
+                if background {
+                    configuration = URLSessionConfiguration.background(withIdentifier: identifier)
+                } else {
+                    configuration = URLSessionConfiguration.default
+                }
+
+                return with(configuration) {
                     $0.sharedContainerIdentifier = Constants.AppGroupID
                     $0.httpCookieStorage = nil
                     $0.httpCookieAcceptPolicy = .never
