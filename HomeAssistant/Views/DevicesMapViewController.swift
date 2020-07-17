@@ -225,7 +225,7 @@ class DevicesMapViewController: UIViewController, MKMapViewDelegate {
             let zones = Array(realm.objects(RLMZone.self).map { $0 })
 
             let zoneOverlays = zones.map({ zone -> HACircle in
-                let circle = HACircle.init(center: zone.locationCoordinates(),
+                let circle = HACircle.init(center: zone.center,
                                            radius: CLLocationDistance(zone.Radius))
                 circle.type = "zone"
                 return circle
