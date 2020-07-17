@@ -21,19 +21,18 @@ public class WebhookManager: NSObject {
     private static var currentURLSessionIdentifier: String {
         baseURLSessionIdentifier + Bundle.main.bundleIdentifier!
     }
+    private static var currentRegularURLSessionIdentifier: String {
+        "non-background"
+    }
 
     internal let ephemeralUrlSession: URLSession
-    internal var backgroundSessionInfos = Set<WebhookSessionInfo>()
+    internal var sessionInfos = Set<WebhookSessionInfo>()
     internal var currentBackgroundSessionInfo: WebhookSessionInfo {
-        backgroundSessionInfo(forIdentifier: Self.currentURLSessionIdentifier)
+        sessionInfo(forIdentifier: Self.currentURLSessionIdentifier)
     }
-    internal lazy var currentRegularSessionInfo: WebhookSessionInfo = {
-        WebhookSessionInfo(
-            identifier: "non-background",
-            delegate: self,
-            delegateQueue: dataOperationQueue
-        )
-    }()
+    internal var currentRegularSessionInfo: WebhookSessionInfo {
+        sessionInfo(forIdentifier: Self.currentRegularURLSessionIdentifier)
+    }
 
     // must be accessed on appropriate queue
     private let dataQueue: DispatchQueue
@@ -87,9 +86,11 @@ public class WebhookManager: NSObject {
         responseHandlers[identifier] = responseHandler
     }
 
-    private func backgroundSessionInfo(for session: URLSession) -> WebhookSessionInfo {
+    private func sessionInfo(for session: URLSession) -> WebhookSessionInfo {
+        let sessionInfos = sessionInfoQueue.sync { self.sessionInfos }
+
         guard let identifier = session.configuration.identifier else {
-            if let sameSession = backgroundSessionInfos.first(where: { $0.session == session }) {
+            if let sameSession = sessionInfos.first(where: { $0.session == session }) {
                 return sameSession
             }
 
@@ -97,21 +98,22 @@ public class WebhookManager: NSObject {
             return currentBackgroundSessionInfo
         }
 
-        return backgroundSessionInfo(forIdentifier: identifier)
+        return sessionInfo(forIdentifier: identifier)
     }
 
-    private func backgroundSessionInfo(forIdentifier identifier: String) -> WebhookSessionInfo {
+    private func sessionInfo(forIdentifier identifier: String) -> WebhookSessionInfo {
         sessionInfoQueue.sync {
-            if let sessionInfo = backgroundSessionInfos.first(where: { $0.identifier == identifier }) {
+            if let sessionInfo = sessionInfos.first(where: { $0.identifier == identifier }) {
                 return sessionInfo
             }
 
             let sessionInfo = WebhookSessionInfo(
                 identifier: identifier,
                 delegate: self,
-                delegateQueue: dataOperationQueue
+                delegateQueue: dataOperationQueue,
+                background: identifier != Self.currentRegularURLSessionIdentifier
             )
-            backgroundSessionInfos.insert(sessionInfo)
+            sessionInfos.insert(sessionInfo)
             return sessionInfo
         }
     }
@@ -120,7 +122,7 @@ public class WebhookManager: NSObject {
         precondition(Self.isManager(forSessionIdentifier: identifier))
         Current.Log.notify("handleBackground started for \(identifier)")
 
-        let sessionInfo = backgroundSessionInfo(forIdentifier: identifier)
+        let sessionInfo = self.sessionInfo(forIdentifier: identifier)
         Current.Log.info("created or retrieved: \(sessionInfo)")
 
         // enter before setting finish, in case we had another leave/enter pair set up, we want to prevent notifying
@@ -139,7 +141,7 @@ public class WebhookManager: NSObject {
         if currentBackgroundSessionInfo != sessionInfo {
             sessionInfo.eventGroup.notify(queue: .main) { [weak self] in
                 Current.Log.info("removing session info \(sessionInfo)")
-                self?.backgroundSessionInfos.remove(sessionInfo)
+                self?.sessionInfos.remove(sessionInfo)
             }
         }
     }
@@ -391,13 +393,13 @@ public class WebhookManager: NSObject {
 extension WebhookManager: URLSessionDelegate {
     public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         Current.Log.notify("event delivery ended")
-        backgroundSessionInfo(for: session).fireDidFinish()
+        sessionInfo(for: session).fireDidFinish()
     }
 }
 
 extension WebhookManager: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        let taskKey = TaskKey(sessionInfo: backgroundSessionInfo(for: session), task: dataTask)
+        let taskKey = TaskKey(sessionInfo: sessionInfo(for: session), task: dataTask)
 
         dataQueue.async {
             self.pendingDataForTask[taskKey, default: Data()].append(data)
@@ -405,7 +407,7 @@ extension WebhookManager: URLSessionDataDelegate {
     }
 
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        let sessionInfo = backgroundSessionInfo(for: session)
+        let sessionInfo = self.sessionInfo(for: session)
         let taskKey = TaskKey(sessionInfo: sessionInfo, task: task)
 
         guard error?.isCancelled != true else {

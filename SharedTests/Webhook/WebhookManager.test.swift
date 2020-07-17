@@ -99,7 +99,7 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertTrue(didInvokeMainCompletion)
         XCTAssertFalse(didInvokeExtensionCompletion)
 
-        manager.urlSessionDidFinishEvents(forBackgroundURLSession: manager.backgroundSessionInfos.first(where: {
+        manager.urlSessionDidFinishEvents(forBackgroundURLSession: manager.sessionInfos.first(where: {
             $0.identifier == testIdentifier
         })!.session)
 
@@ -109,8 +109,8 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertTrue(didInvokeExtensionCompletion)
 
         // inside baseball: make sure it deallocates any references to the extension background session but not the main
-        XCTAssertTrue(manager.backgroundSessionInfos.contains(where: { $0.identifier == mainIdentifier }))
-        XCTAssertFalse(manager.backgroundSessionInfos.contains(where: { $0.identifier == testIdentifier }))
+        XCTAssertTrue(manager.sessionInfos.contains(where: { $0.identifier == mainIdentifier }))
+        XCTAssertFalse(manager.sessionInfos.contains(where: { $0.identifier == testIdentifier }))
     }
 
     func testSendingEphemeralFailsEntirely() {
