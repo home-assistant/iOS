@@ -41,6 +41,7 @@
 		11810D53249EAF8D00E741A4 /* POC_pride@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D49249EAF8D00E741A4 /* POC_pride@3x.png */; };
 		118511C224B25BEB00D18F60 /* WebhookManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118511C124B25BEB00D18F60 /* WebhookManager.test.swift */; };
 		11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */; };
+		11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC624C131EE0036A6C6 /* RealmZone.test.swift */; };
 		119385A4249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
 		119385A5249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
 		119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* StorageSensor.test.swift */; };
@@ -823,6 +824,7 @@
 		11810D49249EAF8D00E741A4 /* POC_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "POC_pride@3x.png"; sourceTree = "<group>"; };
 		118511C124B25BEB00D18F60 /* WebhookManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookManager.test.swift; sourceTree = "<group>"; };
 		11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Extensions.test.swift"; sourceTree = "<group>"; };
+		11883CC624C131EE0036A6C6 /* RealmZone.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmZone.test.swift; sourceTree = "<group>"; };
 		119385A3249E8E360097F497 /* StorageSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.swift; sourceTree = "<group>"; };
 		119385A6249E9F930097F497 /* StorageSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.test.swift; sourceTree = "<group>"; };
 		119C9B1E24A448A600308A54 /* ZoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManager.swift; sourceTree = "<group>"; };
@@ -2495,6 +2497,7 @@
 				113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */,
 				11CB98CC249E637300B05222 /* Version+HA.test.swift */,
 				11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */,
+				11883CC624C131EE0036A6C6 /* RealmZone.test.swift */,
 			);
 			path = SharedTests;
 			sourceTree = "<group>";
@@ -4550,6 +4553,7 @@
 				119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */,
 				11CD94B724B2CC7400BA801D /* WebhookResponseLocation.test.swift in Sources */,
 				11AF4D2C249D965C006C74C0 /* BatterySensor.test.swift in Sources */,
+				11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */,
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
 				11AF4D2E249DA5AF006C74C0 /* GeocoderSensor.test.swift in Sources */,
 				114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */,

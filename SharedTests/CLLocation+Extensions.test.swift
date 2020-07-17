@@ -52,10 +52,10 @@ class CLLocationExtensionsTests: XCTestCase {
                 distance: .init(value: 1_000_000, unit: .meters),
                 direction: .init(value: angle, unit: .degrees)
             )
-            
+
             let regionContain = CLCircularRegion(center: coordinate, radius: 1_100_000, identifier: "")
             let regionInside = CLCircularRegion(center: coordinate, radius: 900_000, identifier: "")
-            
+
             XCTAssertTrue(regionContain.contains(moved))
             XCTAssertFalse(regionInside.contains(moved))
         }
