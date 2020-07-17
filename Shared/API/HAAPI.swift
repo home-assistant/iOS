@@ -36,6 +36,7 @@ public class HomeAssistantAPI {
         case mobileAppComponentNotLoaded
         case webhookGone
         case mustUpgradeHomeAssistant(Version)
+        case unacceptableStatusCode(Int)
         case unknown
     }
 
@@ -673,7 +674,7 @@ extension HomeAssistantAPI.APIError: LocalizedError {
         case .mustUpgradeHomeAssistant(let current):
             return L10n.HaApi.ApiError.mustUpgradeHomeAssistant(current.description,
                                                                 HomeAssistantAPI.minimumRequiredVersion.description)
-        case .unknown:
+        case .unknown, .unacceptableStatusCode:
             return L10n.HaApi.ApiError.unknown
         }
     }

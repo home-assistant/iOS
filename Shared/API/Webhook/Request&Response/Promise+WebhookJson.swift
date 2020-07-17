@@ -51,6 +51,7 @@ extension Promise where T == Data {
     }
 
     // Exists so that the Data? -> Data one doesn't accidentally refer to itself
+    // swiftlint:disable:next cyclomatic_complexity
     fileprivate func definitelyWebhookJson(
         on queue: DispatchQueue?,
         statusCode: Int?,
@@ -58,7 +59,7 @@ extension Promise where T == Data {
         secretGetter: @escaping () -> String?,
         options: JSONSerialization.ReadingOptions = [.allowFragments]
     ) -> Promise<Any> {
-        switch statusCode {
+        switch statusCode ?? -1 {
         case 204, 205:
             return .value(())
         case 404:
@@ -67,6 +68,9 @@ extension Promise where T == Data {
         case 410:
             // config entry removed
             return .init(error: HomeAssistantAPI.APIError.webhookGone)
+        case 400...:
+            // some other error occurred that we don't want to parse as success
+            return .init(error: HomeAssistantAPI.APIError.unacceptableStatusCode(statusCode ?? -1))
         default:
             break
         }
