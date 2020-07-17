@@ -10,6 +10,7 @@ class RealmZoneTests: XCTestCase {
         super.setUp()
 
         zone = RLMZone()
+        zone.ID = "monkeys"
         zone.Latitude = 53.2225509
         zone.Longitude = -4.2212136
     }
@@ -77,6 +78,7 @@ class RealmZoneTests: XCTestCase {
                     direction: .init(value: angle, unit: .degrees)
                 )
                 XCTAssertTrue(zone.circularRegionsForMonitoring.allSatisfy { $0.contains(moved) })
+                XCTAssertTrue(zone.circularRegionsForMonitoring.allSatisfy { $0.identifier.starts(with: "monkeys@") })
             }
         }
     }

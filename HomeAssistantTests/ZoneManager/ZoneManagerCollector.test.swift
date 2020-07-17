@@ -122,6 +122,31 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertEqual(event.associatedZone, realmZone)
     }
 
+    func testDidDetermineStateWithZoneInRealmForSmallRegionSplitIntoMultiple() throws {
+        let region = CLCircularRegion(
+            center: .init(latitude: 1.23, longitude: 4.56),
+            radius: 20,
+            identifier: "zone_identifier@100"
+        )
+        let realmZone = with(RLMZone()) {
+            $0.ID = "zone_identifier"
+        }
+
+        try realm.write {
+            realm.add(realmZone)
+        }
+
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        XCTAssertEqual(delegate.events.count, 1)
+
+        guard let event = delegate.events.first else {
+            return
+        }
+
+        XCTAssertEqual(event.eventType, .region(region, .inside))
+        XCTAssertEqual(event.associatedZone, realmZone)
+    }
+
     func testDidUpdateLocations() {
         let locations = [
             CLLocation(latitude: 1.23, longitude: 4.56),

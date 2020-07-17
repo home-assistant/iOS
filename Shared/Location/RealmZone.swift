@@ -155,7 +155,7 @@ public class RLMZone: Object {
                 return CLCircularRegion(
                     center: center.moving(distance: centerOffset, direction: angle),
                     radius: minimumRadius,
-                    identifier: String(format: "%@-%03.0f", ID, angle.converted(to: .degrees).value)
+                    identifier: String(format: "%@@%03.0f", ID, angle.converted(to: .degrees).value)
                 )
             }
         }
