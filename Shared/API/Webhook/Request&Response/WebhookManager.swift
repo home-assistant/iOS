@@ -23,17 +23,14 @@ public class WebhookManager: NSObject {
     }
 
     internal let ephemeralUrlSession: URLSession
-    internal var backgroundSessionInfos = Set<BackgroundSessionInfo>() {
-        willSet {
-            assert(Thread.isMainThread)
-        }
-    }
-    internal var currentBackgroundSessionInfo: BackgroundSessionInfo {
+    internal var backgroundSessionInfos = Set<WebhookSessionInfo>()
+    internal var currentBackgroundSessionInfo: WebhookSessionInfo {
         backgroundSessionInfo(forIdentifier: Self.currentURLSessionIdentifier)
     }
 
     // must be accessed on appropriate queue
     private let dataQueue: DispatchQueue
+    private let sessionInfoQueue = DispatchQueue(label: "webhook-session-info")
     private let dataQueueSpecificKey: DispatchSpecificKey<Bool>
     // underlying queue is the dataQueue
     private let dataOperationQueue: OperationQueue
@@ -83,7 +80,7 @@ public class WebhookManager: NSObject {
         responseHandlers[identifier] = responseHandler
     }
 
-    private func backgroundSessionInfo(for session: URLSession) -> BackgroundSessionInfo {
+    private func backgroundSessionInfo(for session: URLSession) -> WebhookSessionInfo {
         guard let identifier = session.configuration.identifier else {
             if let sameSession = backgroundSessionInfos.first(where: { $0.session == session }) {
                 return sameSession
@@ -96,18 +93,20 @@ public class WebhookManager: NSObject {
         return backgroundSessionInfo(forIdentifier: identifier)
     }
 
-    private func backgroundSessionInfo(forIdentifier identifier: String) -> BackgroundSessionInfo {
-        if let sessionInfo = backgroundSessionInfos.first(where: { $0.identifier == identifier }) {
+    private func backgroundSessionInfo(forIdentifier identifier: String) -> WebhookSessionInfo {
+        sessionInfoQueue.sync {
+            if let sessionInfo = backgroundSessionInfos.first(where: { $0.identifier == identifier }) {
+                return sessionInfo
+            }
+
+            let sessionInfo = WebhookSessionInfo(
+                identifier: identifier,
+                delegate: self,
+                delegateQueue: dataOperationQueue
+            )
+            backgroundSessionInfos.insert(sessionInfo)
             return sessionInfo
         }
-
-        let sessionInfo = BackgroundSessionInfo(
-            identifier: identifier,
-            delegate: self,
-            delegateQueue: dataOperationQueue
-        )
-        backgroundSessionInfos.insert(sessionInfo)
-        return sessionInfo
     }
 
     public func handleBackground(for identifier: String, completionHandler: @escaping () -> Void) {
@@ -436,7 +435,7 @@ extension WebhookManager: URLSessionDataDelegate {
     }
 
     private func invoke(
-        sessionInfo: BackgroundSessionInfo,
+        sessionInfo: WebhookSessionInfo,
         handler handlerType: WebhookResponseHandler.Type,
         request: WebhookRequest,
         result: Promise<Any>,
@@ -471,7 +470,7 @@ extension WebhookManager: URLSessionDataDelegate {
     }
 }
 
-internal class BackgroundSessionInfo: CustomStringConvertible, Hashable {
+internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
     let identifier: String
     let eventGroup: DispatchGroup
     let session: URLSession
@@ -513,7 +512,7 @@ internal class BackgroundSessionInfo: CustomStringConvertible, Hashable {
         self.eventGroup = DispatchGroup()
     }
 
-    static func == (lhs: BackgroundSessionInfo, rhs: BackgroundSessionInfo) -> Bool {
+    static func == (lhs: WebhookSessionInfo, rhs: WebhookSessionInfo) -> Bool {
         lhs.identifier == rhs.identifier
     }
 
@@ -526,7 +525,7 @@ private struct TaskKey: Hashable, CustomStringConvertible {
     private let sessionIdentifier: String
     private let taskIdentifier: Int
 
-    init(sessionInfo: BackgroundSessionInfo, task: URLSessionTask) {
+    init(sessionInfo: WebhookSessionInfo, task: URLSessionTask) {
         self.sessionIdentifier = sessionInfo.identifier
         self.taskIdentifier = task.taskIdentifier
     }
