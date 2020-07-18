@@ -540,6 +540,11 @@ internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
                     $0.httpCookieAcceptPolicy = .never
                     $0.httpShouldSetCookies = false
                     $0.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+
+                    // how long should this request be retried in the background?
+                    // default is 7days, but our background requests do not need to live that long
+                    let timeout = Measurement<UnitDuration>(value: 2, unit: .hours)
+                    $0.timeoutIntervalForResource = timeout.converted(to: .seconds).value
                 }
             }
         }()
@@ -547,6 +552,10 @@ internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
         self.identifier = identifier
         self.session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue)
         self.eventGroup = DispatchGroup()
+
+        session.getAllTasks { tasks in
+            Current.Log.info("\(identifier) initial tasks: \(tasks.map(\.taskIdentifier))")
+        }
     }
 
     static func == (lhs: WebhookSessionInfo, rhs: WebhookSessionInfo) -> Bool {
