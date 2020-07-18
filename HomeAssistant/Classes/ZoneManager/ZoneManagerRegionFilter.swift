@@ -79,10 +79,22 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
             return AnyCollection(startRegions)
         }
 
+        let sourceLocation: CLLocation?
+        let sourceDecision: String
+
+        if let lastLocation = lastLocation {
+            sourceLocation = lastLocation
+            sourceDecision = "last_location"
+        } else if let homeLocation = zones.first(where: \.isHome)?.location {
+            sourceLocation = homeLocation
+            sourceDecision = "home_location"
+        } else {
+            sourceLocation = nil
+            sourceDecision = "radius_and_random"
+        }
+
         // We've exceeded the limit, so we need to start reducing.
         // We aim to clip off the ones that are further away.
-        let sourceLocation = lastLocation ?? zones.first(where: \.isHome)?.location
-
         let sorted = segmented.sorted { lhs, rhs in
             if let sourceLocation = sourceLocation {
                 // We have a location to compare against, so do distance
@@ -114,16 +126,27 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
             // Note that the equality here is roughly `lhs.identifier != rhs.identifier` due to CLRegion behavior
             // We're okay with not having deep equality here (since this is an advisory log) -- deep equality
             // happens in ZoneManager when it's deciding which zones to create
-            logError(counts: startCounts, allZones: zones, strippedZones: AnyCollection(strippedZones))
+            logError(
+                counts: startCounts,
+                allZones: zones,
+                strippedZones: AnyCollection(strippedZones),
+                decisionSource: sourceDecision
+            )
         }
 
         return AnyCollection(result)
     }
 
-    private func logError(counts: Counts, allZones: AnyCollection<RLMZone>, strippedZones: AnyCollection<RLMZone>) {
+    private func logError(
+        counts: Counts,
+        allZones: AnyCollection<RLMZone>,
+        strippedZones: AnyCollection<RLMZone>,
+        decisionSource: String
+    ) {
         Current.logError?(ReportedError(
             code: .exceededRegionCount,
-            regionCount: (beacon: counts.beacon, circular: counts.circular, zone: allZones.count)
+            regionCount: (beacon: counts.beacon, circular: counts.circular, zone: allZones.count),
+            decisionSource: decisionSource
         ).asNsError())
 
         Current.clientEventStore.addEvent(ClientEvent(
@@ -132,7 +155,8 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
                 "counts": counts.eventPayload,
                 "limits": limits.eventPayload,
                 "total_zones": allZones.count,
-                "stripped_zones": strippedZones.map { $0.ID }
+                "stripped_zones": strippedZones.map { $0.ID },
+                "stripped_decision": decisionSource
             ]
         ))
     }
@@ -148,12 +172,14 @@ private struct ReportedError {
     let code: Code
     // swiftlint:disable:next large_tuple
     let regionCount: (beacon: Int, circular: Int, zone: Int)
+    let decisionSource: String
 
     func asNsError() -> NSError {
         return NSError(domain: Self.domain, code: code.rawValue, userInfo: [
             "count_beacon": regionCount.beacon,
             "count_circular": regionCount.circular,
-            "count_zone": regionCount.zone
+            "count_zone": regionCount.zone,
+            "decision": decisionSource
         ])
     }
 }
