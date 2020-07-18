@@ -3,7 +3,7 @@ import CoreLocation
 import Shared
 
 protocol ZoneManagerRegionFilter {
-    func regions(for zones: AnySequence<RLMZone>, lastLocation: CLLocation?) -> Set<CLRegion>
+    func regions(for zones: AnySequence<RLMZone>, lastLocation: CLLocation?) -> [CLRegion]
 }
 
 class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
@@ -60,7 +60,7 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
         self.limits = limits
     }
 
-    func regions(for zones: AnySequence<RLMZone>, lastLocation: CLLocation?) -> Set<CLRegion> {
+    func regions(for zones: AnySequence<RLMZone>, lastLocation: CLLocation?) -> [CLRegion] {
         var segmented = Dictionary(uniqueKeysWithValues: zones.map { ($0, $0.regionsForMonitoring) })
 
         let startRegions = segmented.values.flatMap({ $0 })
@@ -68,7 +68,7 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
 
         if startCounts < limits {
             // We're starting out with a small enough count
-            return Set(startRegions)
+            return startRegions
         }
 
         // We've exceeded the limit, so we need to start reducing.
@@ -101,7 +101,7 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
 
         logError(counts: startCounts, allZones: Array(zones), strippedZones: strippedZones)
 
-        return Set(segmented.values.flatMap { $0 })
+        return segmented.values.flatMap { $0 }
     }
 
     private func logError(counts: Counts, allZones: [RLMZone], strippedZones: [RLMZone]) {
