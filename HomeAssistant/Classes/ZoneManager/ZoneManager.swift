@@ -39,7 +39,7 @@ class ZoneManager {
         notificationTokens.append(self.zones.observe { [weak self] change in
             switch change {
             case .initial(let collection), .update(let collection, deletions: _, insertions: _, modifications: _):
-                self?.sync(zones: AnySequence(collection))
+                self?.sync(zones: AnyCollection(collection))
             case .error(let error):
                 Current.Log.error("couldn't sync zones: \(error)")
             }
@@ -72,7 +72,7 @@ class ZoneManager {
         }.tap { [weak self] _ in
             // a location change means we should consider changing our monitored regions
             guard let self = self else { return }
-            self.sync(zones: AnySequence(self.zones))
+            self.sync(zones: AnyCollection(self.zones))
         }.done {
             Current.clientEventStore.addEvent(ClientEvent(
                 text: "Updated location",
@@ -93,16 +93,16 @@ class ZoneManager {
         }
     }
 
-    private func sync(zones: AnySequence<RLMZone>) {
-        let expected = Set(
-            regionFilter.regions(for: zones, lastLocation: locationManager.location)
-                .map(ZoneManagerEquatableRegion.init(region:))
+    private func sync(zones: AnyCollection<RLMZone>) {
+        let currentRegions = locationManager.monitoredRegions
+        let desiredRegions = regionFilter.regions(
+            from: zones,
+            currentRegions: AnyCollection(currentRegions),
+            lastLocation: locationManager.location
         )
-        let actual = Set(
-            locationManager
-                .monitoredRegions
-                .map(ZoneManagerEquatableRegion.init(region:))
-        )
+
+        let actual = Set(currentRegions.map(ZoneManagerEquatableRegion.init(region:)))
+        let expected = Set(desiredRegions.map(ZoneManagerEquatableRegion.init(region:)))
 
         let needsRemoval = actual.subtracting(expected)
         let needsAddition = expected.subtracting(actual)

@@ -3,7 +3,11 @@ import CoreLocation
 import Shared
 
 protocol ZoneManagerRegionFilter {
-    func regions(for zones: AnySequence<RLMZone>, lastLocation: CLLocation?) -> [CLRegion]
+    func regions(
+        from zones: AnyCollection<RLMZone>,
+        currentRegions: AnyCollection<CLRegion>,
+        lastLocation: CLLocation?
+    ) -> AnyCollection<CLRegion>
 }
 
 class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
@@ -60,7 +64,11 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
         self.limits = limits
     }
 
-    func regions(for zones: AnySequence<RLMZone>, lastLocation: CLLocation?) -> [CLRegion] {
+    func regions(
+        from zones: AnyCollection<RLMZone>,
+        currentRegions: AnyCollection<CLRegion>,
+        lastLocation: CLLocation?
+    ) -> AnyCollection<CLRegion> {
         var segmented = Dictionary(uniqueKeysWithValues: zones.map { ($0, $0.regionsForMonitoring) })
 
         let startRegions = segmented.values.flatMap({ $0 })
@@ -68,7 +76,7 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
 
         if startCounts < limits {
             // We're starting out with a small enough count
-            return startRegions
+            return AnyCollection(startRegions)
         }
 
         // We've exceeded the limit, so we need to start reducing.
@@ -99,12 +107,20 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
             }
         }
 
-        logError(counts: startCounts, allZones: Array(zones), strippedZones: strippedZones)
+        let result = segmented.values.flatMap { $0 }
 
-        return segmented.values.flatMap { $0 }
+        if Set(result) != Set(currentRegions) {
+            // Avoid logging if we aren't changing anything
+            // Note that the equality here is roughly `lhs.identifier != rhs.identifier` due to CLRegion behavior
+            // We're okay with not having deep equality here (since this is an advisory log) -- deep equality
+            // happens in ZoneManager when it's deciding which zones to create
+            logError(counts: startCounts, allZones: zones, strippedZones: AnyCollection(strippedZones))
+        }
+
+        return AnyCollection(result)
     }
 
-    private func logError(counts: Counts, allZones: [RLMZone], strippedZones: [RLMZone]) {
+    private func logError(counts: Counts, allZones: AnyCollection<RLMZone>, strippedZones: AnyCollection<RLMZone>) {
         Current.logError?(ReportedError(
             code: .exceededRegionCount,
             regionCount: (beacon: counts.beacon, circular: counts.circular, zone: allZones.count)
