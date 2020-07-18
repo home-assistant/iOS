@@ -1,4 +1,4 @@
- import CoreLocation
+import CoreLocation
 import Foundation
 import XCTest
 import PromiseKit
