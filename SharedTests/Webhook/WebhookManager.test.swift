@@ -48,24 +48,20 @@ class WebhookManagerTests: XCTestCase {
     }
 
     func testBackgroundHandlingCallsCompletionHandler() {
-        var didInvokeCompletion = false
+        let (didInvokePromise, didInvokeSeal) = Promise<Void>.pending()
 
         manager.handleBackground(for: manager.currentBackgroundSessionInfo.identifier, completionHandler: {
-            didInvokeCompletion = true
+            didInvokeSeal.fulfill(())
         })
 
-        manager.urlSessionDidFinishEvents(forBackgroundURLSession: manager.currentBackgroundSessionInfo.session)
+        sendDidFinishEvents(for: manager.currentBackgroundSessionInfo)
 
-        let expectation = self.expectation(description: "run loop")
-        DispatchQueue.main.async { expectation.fulfill() }
-
-        wait(for: [expectation], timeout: 10)
-        XCTAssertTrue(didInvokeCompletion)
+        XCTAssertNoThrow(try hang(didInvokePromise))
     }
 
     func testUnbalancedBackgroundHandlingDoesntCrash() {
         // not the best test: this will crash the test execution if it fails
-        manager.urlSessionDidFinishEvents(forBackgroundURLSession: manager.currentBackgroundSessionInfo.session)
+        sendDidFinishEvents(for: manager.currentBackgroundSessionInfo)
     }
 
     func testBackgroundHandlingForExtensionCallsAppropriateCompletionHandler() {
@@ -94,16 +90,16 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertFalse(didInvokeMainCompletion)
         XCTAssertFalse(didInvokeExtensionCompletion)
 
-        manager.urlSessionDidFinishEvents(forBackgroundURLSession: manager.currentBackgroundSessionInfo.session)
+        sendDidFinishEvents(for: manager.currentBackgroundSessionInfo)
 
         waitRunLoop()
 
         XCTAssertTrue(didInvokeMainCompletion)
         XCTAssertFalse(didInvokeExtensionCompletion)
 
-        manager.urlSessionDidFinishEvents(forBackgroundURLSession: manager.sessionInfos.first(where: {
+        sendDidFinishEvents(for: manager.sessionInfos.first(where: {
             $0.identifier == testIdentifier
-        })!.session)
+        })!)
 
         waitRunLoop()
 
@@ -529,6 +525,13 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertThrowsError(try hang(manager.send(request: expectedRequest))) { error in
             XCTAssertEqual((error as? URLError)?.code, .dnsLookupFailed)
         }
+    }
+
+    private func sendDidFinishEvents(for sessionInfo: WebhookSessionInfo) {
+        sessionInfo.session.delegateQueue.addOperation {
+            sessionInfo.session.delegate?.urlSessionDidFinishEvents?(forBackgroundURLSession: sessionInfo.session)
+        }
+        sessionInfo.session.delegateQueue.waitUntilAllOperationsAreFinished()
     }
 }
 
