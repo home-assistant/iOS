@@ -65,6 +65,8 @@ public class HomeAssistantAPI {
         manager.retrier = self.tokenManager
         manager.adapter = self.tokenManager
         self.manager = manager
+
+        removeOldDownloadDirectory()
     }
 
     private static func configureSessionManager(urlConfig: URLSessionConfiguration = .default) -> SessionManager {
@@ -182,18 +184,19 @@ public class HomeAssistantAPI {
         )
     }
 
-    private func getDownloadDataPath(_ downloadingURL: URL) -> URL? {
+    private func getTemporaryDownloadDataPath(_ downloadingURL: URL) -> URL? {
+        return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            .appendingPathComponent(downloadingURL.lastPathComponent, isDirectory: false)
+    }
+
+    private func removeOldDownloadDirectory() {
         let fileManager = FileManager.default
 
-        let groupDirURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: Constants.AppGroupID)?
-            .appendingPathComponent("downloadedData", isDirectory: true)
-
-        guard let directoryURL = groupDirURL else {
-            assertionFailure("Unable to get groupDirURL.")
-            return nil
+        if let downloadDataDir = fileManager.containerURL(
+            forSecurityApplicationGroupIdentifier: Constants.AppGroupID
+        )?.appendingPathComponent("downloadedData", isDirectory: true) {
+            try? fileManager.removeItem(at: downloadDataDir)
         }
-
-        return directoryURL.appendingPathComponent(downloadingURL.lastPathComponent, isDirectory: false)
     }
 
     public func DownloadDataAt(url: URL, needsAuth: Bool) -> Promise<URL> {
@@ -212,7 +215,7 @@ public class HomeAssistantAPI {
                 Current.Log.verbose("Data download needs auth!")
             }
 
-            guard let downloadPath = self.getDownloadDataPath(finalURL) else {
+            guard let downloadPath = self.getTemporaryDownloadDataPath(finalURL) else {
                 Current.Log.error("Unable to get download path!")
                 seal.reject(APIError.cantBuildURL)
                 return

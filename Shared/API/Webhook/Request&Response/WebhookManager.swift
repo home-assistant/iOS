@@ -36,7 +36,6 @@ public class WebhookManager: NSObject {
 
     // must be accessed on appropriate queue
     private let dataQueue: DispatchQueue
-    private let sessionInfoQueue = DispatchQueue(label: "webhook-session-info")
     private let dataQueueSpecificKey: DispatchSpecificKey<Bool>
     // underlying queue is the dataQueue
     private let dataOperationQueue: OperationQueue
@@ -65,15 +64,17 @@ public class WebhookManager: NSObject {
         self.dataQueueSpecificKey = specificKey
         self.dataOperationQueue = with(OperationQueue()) {
             $0.underlyingQueue = underlyingQueue
-            $0.maxConcurrentOperationCount = 1
         }
 
         self.ephemeralUrlSession = URLSession(configuration: .ephemeral)
 
         super.init()
 
-        // cause the current background session to be created
-        _ = currentBackgroundSessionInfo
+        // cause the current sessions to be created
+        dataQueue.sync {
+            _ = self.currentBackgroundSessionInfo
+            _ = self.currentRegularSessionInfo
+        }
 
         register(responseHandler: WebhookResponseUnhandled.self, for: .unhandled)
     }
@@ -87,7 +88,7 @@ public class WebhookManager: NSObject {
     }
 
     private func sessionInfo(for session: URLSession) -> WebhookSessionInfo {
-        let sessionInfos = sessionInfoQueue.sync { self.sessionInfos }
+        assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true || Current.isRunningTests)
 
         guard let identifier = session.configuration.identifier else {
             if let sameSession = sessionInfos.first(where: { $0.session == session }) {
@@ -102,46 +103,48 @@ public class WebhookManager: NSObject {
     }
 
     private func sessionInfo(forIdentifier identifier: String) -> WebhookSessionInfo {
-        sessionInfoQueue.sync {
-            if let sessionInfo = sessionInfos.first(where: { $0.identifier == identifier }) {
-                return sessionInfo
-            }
+        assert(DispatchQueue.getSpecific(key: dataQueueSpecificKey) == true || Current.isRunningTests)
 
-            let sessionInfo = WebhookSessionInfo(
-                identifier: identifier,
-                delegate: self,
-                delegateQueue: dataOperationQueue,
-                background: identifier != Self.currentRegularURLSessionIdentifier
-            )
-            sessionInfos.insert(sessionInfo)
+        if let sessionInfo = sessionInfos.first(where: { $0.identifier == identifier }) {
             return sessionInfo
         }
+
+        let sessionInfo = WebhookSessionInfo(
+            identifier: identifier,
+            delegate: self,
+            delegateQueue: dataOperationQueue,
+            background: identifier != Self.currentRegularURLSessionIdentifier
+        )
+        sessionInfos.insert(sessionInfo)
+        return sessionInfo
     }
 
     public func handleBackground(for identifier: String, completionHandler: @escaping () -> Void) {
         precondition(Self.isManager(forSessionIdentifier: identifier))
         Current.Log.notify("handleBackground started for \(identifier)")
 
-        let sessionInfo = self.sessionInfo(forIdentifier: identifier)
-        Current.Log.info("created or retrieved: \(sessionInfo)")
+        dataQueue.async { [dataQueue] in
+            let sessionInfo = self.sessionInfo(forIdentifier: identifier)
+            Current.Log.info("created or retrieved: \(sessionInfo)")
 
-        // enter before setting finish, in case we had another leave/enter pair set up, we want to prevent notifying
-        sessionInfo.eventGroup.enter()
-        sessionInfo.setDidFinish {
-            // this is wrapped via a block -- rather than being invoked directly -- because iOS 14 (at least b1/b2)
-            // sends `urlSessionDidFinishEvents` when it didn't send `handleEventsForBackgroundURLSession`
-            sessionInfo.eventGroup.leave()
-        }
+            // enter before setting finish, in case we had another leave/enter pair set up, we want to prevent notifying
+            sessionInfo.eventGroup.enter()
+            sessionInfo.setDidFinish {
+                // this is wrapped via a block -- rather than being invoked directly -- because iOS 14 (at least b1/b2)
+                // sends `urlSessionDidFinishEvents` when it didn't send `handleEventsForBackgroundURLSession`
+                sessionInfo.eventGroup.leave()
+            }
 
-        sessionInfo.eventGroup.notify(queue: DispatchQueue.main) {
-            Current.Log.notify("final completion for \(identifier)")
-            completionHandler()
-        }
+            sessionInfo.eventGroup.notify(queue: DispatchQueue.main) {
+                Current.Log.notify("final completion for \(identifier)")
+                completionHandler()
+            }
 
-        if currentBackgroundSessionInfo != sessionInfo {
-            sessionInfo.eventGroup.notify(queue: .main) { [weak self] in
-                Current.Log.info("removing session info \(sessionInfo)")
-                self?.sessionInfos.remove(sessionInfo)
+            if self.currentBackgroundSessionInfo != sessionInfo {
+                sessionInfo.eventGroup.notify(queue: dataQueue) { [weak self] in
+                    Current.Log.info("removing session info \(sessionInfo)")
+                    self?.sessionInfos.remove(sessionInfo)
+                }
             }
         }
     }
@@ -216,30 +219,41 @@ public class WebhookManager: NSObject {
         identifier: WebhookResponseIdentifier = .unhandled,
         request: WebhookRequest
     ) -> Promise<Void> {
-        let sendRegular: () -> Promise<Void> = { [self, currentRegularSessionInfo] in
-            self.send(on: currentRegularSessionInfo, identifier: identifier, request: request)
-        }
+        let (promise, seal) = Promise<Void>.pending()
 
-        let sendBackground: () -> Promise<Void> = { [self, currentBackgroundSessionInfo] in
-            self.send(on: currentBackgroundSessionInfo, identifier: identifier, request: request)
-        }
+        dataQueue.async { [dataQueue] in
+            let sendRegular: () -> Promise<Void> = { [self] in
+                self.send(on: self.currentRegularSessionInfo, identifier: identifier, request: request)
+            }
 
-        if Current.isBackgroundRequestsImmediate() {
-            return sendBackground()
-        } else {
-            Current.Log.info("in background, choosing to not use background session")
-            return sendRegular().recover { error -> Promise<Void> in
-                Current.Log.error("in-background non-background failed: \(error)")
-                if error is HomeAssistantAPI.APIError {
-                    // not worth retrying, since we got a real response that we didn't like
-                    throw error
-                } else {
-                    return sendBackground()
+            let sendBackground: () -> Promise<Void> = { [self] in
+                self.send(on: self.currentBackgroundSessionInfo, identifier: identifier, request: request)
+            }
+
+            let promise: Promise<Void>
+
+            if Current.isBackgroundRequestsImmediate() {
+                promise = sendBackground()
+            } else {
+                Current.Log.info("in background, choosing to not use background session")
+                promise = sendRegular().recover(on: dataQueue) { error -> Promise<Void> in
+                    Current.Log.error("in-background non-background failed: \(error)")
+                    if error is HomeAssistantAPI.APIError {
+                        // not worth retrying, since we got a real response that we didn't like
+                        throw error
+                    } else {
+                        return sendBackground()
+                    }
                 }
             }
+
+            promise.pipe(to: { seal.resolve($0) })
         }
+
+        return promise
     }
 
+    // swiftlint:disable:next function_body_length
     private func send(
         on sessionInfo: WebhookSessionInfo,
         identifier: WebhookResponseIdentifier,
@@ -260,12 +274,24 @@ public class WebhookManager: NSObject {
         firstly {
             Self.urlRequest(for: request)
         }.done(on: dataQueue) { urlRequest, data in
-            let temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-            let temporaryFile = temporaryDirectory
-                .appendingPathComponent(UUID().uuidString)
-                .appendingPathExtension("json")
-            try data.write(to: temporaryFile, options: [])
-            let task = sessionInfo.session.uploadTask(with: urlRequest, fromFile: temporaryFile)
+            let task: URLSessionUploadTask
+            let filesToRemove: [URL]
+
+            if sessionInfo.isBackground {
+                let temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+                let temporaryFile = temporaryDirectory
+                    .appendingPathComponent(UUID().uuidString)
+                    .appendingPathExtension("json")
+                try data.write(to: temporaryFile, options: [])
+
+                task = sessionInfo.session.uploadTask(with: urlRequest, fromFile: temporaryFile)
+
+                filesToRemove = [temporaryFile]
+            } else {
+                // not writing to disk so we don't have to deal with the cleanup logic across sessions
+                task = sessionInfo.session.uploadTask(with: urlRequest, from: data)
+                filesToRemove = []
+            }
 
             let persisted = WebhookPersisted(request: request, identifier: identifier)
             task.webhookPersisted = persisted
@@ -290,7 +316,10 @@ public class WebhookManager: NSObject {
                 return "starting request: " + values.joined(separator: ", ")
             }
 
-            try FileManager.default.removeItem(at: temporaryFile)
+            for file in filesToRemove {
+                // the background session takes over ownership of the files, so that code path needs these cleaned up
+                try FileManager.default.removeItem(at: file)
+            }
         }.catch { error in
             self.invoke(
                 sessionInfo: sessionInfo,
@@ -394,10 +423,7 @@ extension WebhookManager: URLSessionDelegate {
 extension WebhookManager: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         let taskKey = TaskKey(sessionInfo: sessionInfo(for: session), task: dataTask)
-
-        dataQueue.async {
-            self.pendingDataForTask[taskKey, default: Data()].append(data)
-        }
+        pendingDataForTask[taskKey, default: Data()].append(data)
     }
 
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
@@ -407,18 +433,14 @@ extension WebhookManager: URLSessionDataDelegate {
 
         guard error?.isCancelled != true else {
             Current.Log.info("ignoring cancelled task \(taskKey)")
-            dataQueue.async {
-                self.pendingDataForTask.removeValue(forKey: taskKey)
-            }
+            pendingDataForTask.removeValue(forKey: taskKey)
             return
         }
 
         let result = Promise<Data?> { seal in
-            dataQueue.async {
-                let data = self.pendingDataForTask[taskKey]
-                self.pendingDataForTask.removeValue(forKey: taskKey)
-                seal.resolve(error, data)
-            }
+            let data = self.pendingDataForTask[taskKey]
+            self.pendingDataForTask.removeValue(forKey: taskKey)
+            seal.resolve(error, data)
         }.webhookJson(
             on: DispatchQueue.global(qos: .utility),
             statusCode: statusCode
@@ -498,6 +520,7 @@ internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
     let identifier: String
     let eventGroup: DispatchGroup
     let session: URLSession
+    let isBackground: Bool
     private var pendingDidFinishHandler: (() -> Void)?
 
     var description: String {
@@ -531,7 +554,7 @@ internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
                 if background {
                     configuration = URLSessionConfiguration.background(withIdentifier: identifier)
                 } else {
-                    configuration = URLSessionConfiguration.default
+                    configuration = URLSessionConfiguration.ephemeral
                 }
 
                 return with(configuration) {
@@ -549,6 +572,7 @@ internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
             }
         }()
 
+        self.isBackground = background
         self.identifier = identifier
         self.session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue)
         self.eventGroup = DispatchGroup()
