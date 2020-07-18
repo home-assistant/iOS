@@ -26,7 +26,7 @@ public class LocationHistoryEntry: Object {
         if let location = location {
             loc = location
         } else if let zone = zone {
-            loc = zone.location()
+            loc = zone.location
         }
 
         self.Accuracy = loc.horizontalAccuracy

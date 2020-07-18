@@ -198,7 +198,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }
                     <<< LocationRow {
                         $0.title = L10n.SettingsDetails.Location.Zones.Location.title
-                        $0.value = zone.location()
+                        $0.value = zone.location
                     }
                     <<< LabelRow {
                         $0.title = L10n.SettingsDetails.Location.Zones.Radius.title

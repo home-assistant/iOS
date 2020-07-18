@@ -66,7 +66,7 @@ public class WebhookUpdateLocation: Mappable {
         }
         #endif
 
-        if zone.ID == "zone.home" {
+        if zone.isHome {
             switch self.Trigger {
             case .RegionEnter, .GPSRegionEnter, .BeaconRegionEnter:
                 self.LocationName = LocationNames.Home.rawValue

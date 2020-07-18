@@ -10,6 +10,7 @@ class ZoneManagerTests: XCTestCase {
     private var realm: Realm!
     private var collector: FakeCollector!
     private var processor: FakeProcessor!
+    private var regionFilter: FakeRegionFilter!
     private var locationManager: FakeCLLocationManager!
     private var loggedEventsUpdatedExpectation: XCTestExpectation?
     private var loggedEvents: [ClientEvent]! {
@@ -34,6 +35,7 @@ class ZoneManagerTests: XCTestCase {
         Current.clientEventStore.addEvent = { self.loggedEvents.append($0) }
         collector = FakeCollector()
         processor = FakeProcessor()
+        regionFilter = FakeRegionFilter()
         locationManager = FakeCLLocationManager()
     }
 
@@ -42,6 +44,15 @@ class ZoneManagerTests: XCTestCase {
 
         Current.realm = Realm.live
         Current.clientEventStore.addEvent = { _ in }
+    }
+
+    private func newZoneManager() -> ZoneManager {
+        ZoneManager(
+            locationManager: locationManager,
+            collector: collector,
+            processor: processor,
+            regionFilter: regionFilter
+        )
     }
 
     private func addedZones(_ toAdd: [RLMZone]) throws -> [RLMZone] {
@@ -77,7 +88,7 @@ class ZoneManagerTests: XCTestCase {
             Set(zones.flatMap { $0.regionsForMonitoring })
         }
 
-        let manager = ZoneManager(locationManager: locationManager, collector: collector, processor: processor)
+        let manager = newZoneManager()
         addedRegions.append(contentsOf: zones.flatMap { $0.regionsForMonitoring })
 
         XCTAssertEqual(
@@ -123,7 +134,7 @@ class ZoneManagerTests: XCTestCase {
         locationManager.overrideMonitoredRegions.insert(startRegion)
         XCTAssertFalse(locationManager.monitoredRegions.isEmpty)
 
-        let manager = ZoneManager(locationManager: locationManager, collector: collector, processor: processor)
+        let manager = newZoneManager()
         XCTAssertEqual(locationManager.stopMonitoringRegions, [startRegion])
         XCTAssertTrue(locationManager.monitoredRegions.isEmpty)
 
@@ -153,7 +164,7 @@ class ZoneManagerTests: XCTestCase {
             }
         ])
 
-        let manager = ZoneManager(locationManager: locationManager, collector: collector, processor: processor)
+        let manager = newZoneManager()
         XCTAssertEqual(Set(locationManager.monitoredRegions.map { $0.identifier }), Set(["work"]))
 
         try realm.write {
@@ -175,8 +186,63 @@ class ZoneManagerTests: XCTestCase {
         withExtendedLifetime(manager) { /* silences unused variable */ }
     }
 
+    func testFilterChangesOnLocationChange() throws {
+        let zones = try addedZones([
+            with(RLMZone()) {
+                $0.ID = "home"
+                $0.Latitude = 37.1234
+                $0.Longitude = -122.4567
+                $0.Radius = 50.0
+                $0.TrackingEnabled = true
+                $0.BeaconUUID = UUID().uuidString
+                $0.BeaconMajor.value = 123
+                $0.BeaconMinor.value = 456
+            },
+            with(RLMZone()) {
+                $0.ID = "work"
+                $0.Latitude =  37.2345
+                $0.Longitude = -122.5678
+                $0.Radius = 100
+                $0.TrackingEnabled = true
+            }
+        ])
+
+        XCTAssertEqual(locationManager.monitoredRegions.count, 0)
+
+        let manager = newZoneManager()
+
+        XCTAssertEqual(locationManager.monitoredRegions.count, 2)
+
+        let expectedReplacement = CLCircularRegion(
+            center: .init(latitude: 3.33, longitude: 4.44),
+            radius: 100,
+            identifier: "replaced"
+        )
+
+        regionFilter.regionsBlock = {
+            return AnyCollection([ expectedReplacement ])
+        }
+
+        processor.promiseToReturn = .value(())
+
+        let expectation = self.expectation(description: "promise")
+        expectation.assertForOverFulfill = false // changing zones adds logs and we don't care
+        loggedEventsUpdatedExpectation = expectation
+
+        manager.collector(collector, didCollect: .init(
+            eventType: .locationChange([CLLocation(latitude: 1.23, longitude: 4.56)])
+        ))
+
+        wait(for: [expectation], timeout: 10)
+
+        XCTAssertEqual(locationManager.monitoredRegions.count, 1)
+        XCTAssertEqual(locationManager.monitoredRegions, Set([expectedReplacement]))
+
+        XCTAssertEqual(regionFilter.lastAskedZones.flatMap { Set($0) }, Set(zones))
+    }
+
     func testBasicStartup() {
-        let manager = ZoneManager(locationManager: locationManager, collector: collector, processor: processor)
+        let manager = newZoneManager()
         XCTAssertTrue(locationManager.isMonitoringSigLocChanges)
         XCTAssertTrue(locationManager.delegate === manager.collector)
         XCTAssertTrue(locationManager.delegate === collector)
@@ -185,7 +251,7 @@ class ZoneManagerTests: XCTestCase {
     }
 
     func testCollectorCollectsEventAndProcessorErrors() {
-        let manager = ZoneManager(locationManager: locationManager, collector: collector, processor: processor)
+        let manager = newZoneManager()
         let region = CLCircularRegion(
             center: .init(latitude: 42.4242, longitude: 43.4343),
             radius: 456,
@@ -219,7 +285,7 @@ class ZoneManagerTests: XCTestCase {
     }
 
     func testCollectorCollectsEventAndProcessorSucceeds() {
-        let manager = ZoneManager(locationManager: locationManager, collector: collector, processor: processor)
+        let manager = newZoneManager()
         let region = CLCircularRegion(
             center: .init(latitude: 42.4242, longitude: 43.4343),
             radius: 456,
@@ -273,5 +339,20 @@ private class FakeProcessor: ZoneManagerProcessor {
     func perform(event: ZoneManagerEvent) -> Promise<Void> {
         performEvent = event
         return promiseToReturn!
+    }
+}
+
+private class FakeRegionFilter: ZoneManagerRegionFilter {
+    var lastAskedZones: AnyCollection<RLMZone>?
+    var regionsBlock: (() -> AnyCollection<CLRegion>)?
+
+    func regions(from zones: AnyCollection<RLMZone>, currentRegions: AnyCollection<CLRegion>, lastLocation: CLLocation?) -> AnyCollection<CLRegion> {
+        lastAskedZones = zones
+
+        if let regionsBlock = regionsBlock {
+            return regionsBlock()
+        } else {
+            return AnyCollection(zones.flatMap { $0.regionsForMonitoring })
+        }
     }
 }

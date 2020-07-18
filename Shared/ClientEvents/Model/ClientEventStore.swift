@@ -20,7 +20,7 @@ public struct ClientEventStore {
             Current.Log.error("Error writing client event: \(error)")
         }
 
-        Current.Log.info(event)
+        Current.Log.info("\(event.type): \(event.text) \(event.jsonPayload ?? [:])")
     }
 
     public func getEvents(filter: String? = nil) -> AnyRealmCollection<ClientEvent> {

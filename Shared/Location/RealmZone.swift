@@ -32,6 +32,10 @@ public class RLMZone: Object {
     public var SSIDTrigger = List<String>()
     public var SSIDFilter = List<String>()
 
+    public var isHome: Bool {
+        ID == "zone.home"
+    }
+
     func update(with zone: Zone) {
         if realm == nil {
             self.ID = zone.ID
@@ -64,7 +68,7 @@ public class RLMZone: Object {
         )
     }
 
-    public func location() -> CLLocation {
+    public var location: CLLocation {
         return CLLocation(coordinate: center,
                           altitude: 0,
                           horizontalAccuracy: self.Radius,

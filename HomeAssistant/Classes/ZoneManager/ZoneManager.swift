@@ -9,6 +9,7 @@ class ZoneManager {
     let locationManager: CLLocationManager
     let collector: ZoneManagerCollector
     let processor: ZoneManagerProcessor
+    let regionFilter: ZoneManagerRegionFilter
     let zones: AnyRealmCollection<RLMZone>
 
     private var notificationTokens = [NotificationToken]()
@@ -16,10 +17,12 @@ class ZoneManager {
     init(
         locationManager: CLLocationManager = .init(),
         collector: ZoneManagerCollector = ZoneManagerCollectorImpl(),
-        processor: ZoneManagerProcessor = ZoneManagerProcessorImpl()
+        processor: ZoneManagerProcessor = ZoneManagerProcessorImpl(),
+        regionFilter: ZoneManagerRegionFilter = ZoneManagerRegionFilterImpl()
     ) {
         self.collector = collector
         self.processor = processor
+        self.regionFilter = regionFilter
         self.zones = AnyRealmCollection(
             Current.realm()
             .objects(RLMZone.self)
@@ -36,7 +39,7 @@ class ZoneManager {
         notificationTokens.append(self.zones.observe { [weak self] change in
             switch change {
             case .initial(let collection), .update(let collection, deletions: _, insertions: _, modifications: _):
-                self?.sync(zones: AnySequence(collection))
+                self?.sync(zones: AnyCollection(collection))
             case .error(let error):
                 Current.Log.error("couldn't sync zones: \(error)")
             }
@@ -66,6 +69,11 @@ class ZoneManager {
         // let's be very confident that we're not going to miss out on an update due to being suspended
         UIApplication.shared.backgroundTask(withName: "zone-manager-perform-event") { _ in
             processor.perform(event: event)
+        }.get { [weak self] _ in
+            // a location change means we should consider changing our monitored regions
+            // ^ not tap for this side effect because we don't want to do this on failure
+            guard let self = self else { return }
+            self.sync(zones: AnyCollection(self.zones))
         }.done {
             Current.clientEventStore.addEvent(ClientEvent(
                 text: "Updated location",
@@ -86,17 +94,16 @@ class ZoneManager {
         }
     }
 
-    private func sync(zones: AnySequence<RLMZone>) {
-        let expected = Set(
-            zones
-                .flatMap { $0.regionsForMonitoring }
-                .map(ZoneManagerEquatableRegion.init(region:))
+    private func sync(zones: AnyCollection<RLMZone>) {
+        let currentRegions = locationManager.monitoredRegions
+        let desiredRegions = regionFilter.regions(
+            from: zones,
+            currentRegions: AnyCollection(currentRegions),
+            lastLocation: locationManager.location
         )
-        let actual = Set(
-            locationManager
-                .monitoredRegions
-                .map(ZoneManagerEquatableRegion.init(region:))
-        )
+
+        let actual = Set(currentRegions.map(ZoneManagerEquatableRegion.init(region:)))
+        let expected = Set(desiredRegions.map(ZoneManagerEquatableRegion.init(region:)))
 
         let needsRemoval = actual.subtracting(expected)
         let needsAddition = expected.subtracting(actual)
@@ -131,21 +138,6 @@ class ZoneManager {
             zone: Set(zones).count
         )
 
-        if counts.beacon > 20 || counts.circular > 20 {
-            Current.logError?(ReportedError(
-                code: .exceededRegionCount,
-                regionCount: counts
-            ).asNsError())
-            Current.clientEventStore.addEvent(ClientEvent(
-                text: "Exceeded maximum monitored regions",
-                type: .locationUpdate, payload: [
-                    "beacon": counts.beacon,
-                    "circular": counts.circular,
-                    "zones": counts.zone
-                ]
-            ))
-        }
-
         Current.Log.info {
             [
                 "monitoring \(expected.count) (\(counts))",
@@ -169,25 +161,5 @@ extension ZoneManager: ZoneManagerCollectorDelegate {
 extension ZoneManager: ZoneManagerProcessorDelegate {
     func processor(_ processor: ZoneManagerProcessor, didLog state: ZoneManagerState) {
         log(state: state)
-    }
-}
-
-private struct ReportedError {
-    enum Code: Int {
-        case exceededRegionCount = 0
-    }
-
-    private static let domain = "ZoneManagerError"
-
-    let code: Code
-    // swiftlint:disable:next large_tuple
-    let regionCount: (beacon: Int, circular: Int, zone: Int)
-
-    func asNsError() -> NSError {
-        return NSError(domain: Self.domain, code: code.rawValue, userInfo: [
-            "count_beacon": regionCount.beacon,
-            "count_circular": regionCount.circular,
-            "count_zone": regionCount.zone
-        ])
     }
 }
