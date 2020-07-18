@@ -60,6 +60,7 @@
 		11A71C8D24A593A800D9565F /* ZoneManagerCollector.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C8C24A593A800D9565F /* ZoneManagerCollector.test.swift */; };
 		11A71C8F24A5946B00D9565F /* FakeCLLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C8E24A5946B00D9565F /* FakeCLLocationManager.swift */; };
 		11A71C9124A598AB00D9565F /* ZoneManagerProcessor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C9024A598AB00D9565F /* ZoneManagerProcessor.test.swift */; };
+		11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11ADB13D24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift */; };
 		11AF4D13249C7E08006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
 		11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */; };
 		11AF4D16249C8083006C74C0 /* With.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D15249C8082006C74C0 /* With.swift */; };
@@ -842,6 +843,7 @@
 		11A71C8C24A593A800D9565F /* ZoneManagerCollector.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerCollector.test.swift; sourceTree = "<group>"; };
 		11A71C8E24A5946B00D9565F /* FakeCLLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeCLLocationManager.swift; sourceTree = "<group>"; };
 		11A71C9024A598AB00D9565F /* ZoneManagerProcessor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerProcessor.test.swift; sourceTree = "<group>"; };
+		11ADB13D24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerRegionFilter.swift; sourceTree = "<group>"; };
 		11AF4D10249C7DFD006C74C0 /* ActivitySensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitySensor.swift; sourceTree = "<group>"; };
 		11AF4D15249C8082006C74C0 /* With.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = With.swift; sourceTree = "<group>"; };
 		11AF4D18249C8253006C74C0 /* PedometerSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedometerSensor.swift; sourceTree = "<group>"; };
@@ -1621,6 +1623,7 @@
 				11A71C7024A4648000D9565F /* ZoneManagerEquatableRegion.swift */,
 				11A71C8824A5844300D9565F /* ZoneManagerCollector.swift */,
 				11A71C8A24A5848B00D9565F /* ZoneManagerProcessor.swift */,
+				11ADB13D24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift */,
 			);
 			path = ZoneManager;
 			sourceTree = "<group>";
@@ -4211,6 +4214,7 @@
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				B6022215226DB0E500E8DBFE /* UIFontOverride.swift in Sources */,
 				B624DE181CB8369200F413CE /* DevicesMapViewController.swift in Sources */,
+				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				B6CDC096228CF5C2009355DD /* RemoteMediaPlayer.swift in Sources */,
 				B661FC88226D478300E541DD /* DiscoverInstancesViewController.swift in Sources */,
