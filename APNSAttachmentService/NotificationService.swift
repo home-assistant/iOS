@@ -43,13 +43,12 @@ final class NotificationService: UNNotificationServiceExtension {
             return failEarly("Unable to get mutable copy of notification content")
         }
 
-        guard var incomingAttachment = content.userInfo["attachment"] as? [String: Any] else {
-            return failEarly("Attachment dictionary not in payload")
-        }
+        // if there's no attachment, we want to still allow the camera category to be automatic
+        var incomingAttachment = content.userInfo["attachment"] as? [String: Any] ?? [:]
 
         var needsAuth = false
 
-        if content.categoryIdentifier.hasPrefix("camera") && incomingAttachment["url"] == nil {
+        if content.categoryIdentifier.lowercased().hasPrefix("camera") && incomingAttachment["url"] == nil {
             Current.Log.debug("Camera cat prefix")
             guard let entityId = content.userInfo["entity_id"] as? String else {
                 return failEarly("Category identifier was prefixed camera but no entity_id was set")
