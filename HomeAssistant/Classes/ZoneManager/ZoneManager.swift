@@ -69,8 +69,9 @@ class ZoneManager {
         // let's be very confident that we're not going to miss out on an update due to being suspended
         UIApplication.shared.backgroundTask(withName: "zone-manager-perform-event") { _ in
             processor.perform(event: event)
-        }.tap { [weak self] _ in
+        }.get { [weak self] _ in
             // a location change means we should consider changing our monitored regions
+            // ^ not tap for this side effect because we don't want to do this on failure
             guard let self = self else { return }
             self.sync(zones: AnyCollection(self.zones))
         }.done {
