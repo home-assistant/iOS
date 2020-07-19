@@ -38,7 +38,8 @@ open class _SearchSelectorViewController<Row: SelectableRowType, OptionsRow: Opt
             object: nil,
             queue: .main
         ) { [tableView] note in
-            guard let tableView = tableView, let screenFrameValue = note.userInfo?[UIApplication.keyboardFrameEndUserInfoKey] as? NSValue else {
+            guard let tableView = tableView,
+                let screenFrameValue = note.userInfo?[UIApplication.keyboardFrameEndUserInfoKey] as? NSValue else {
                 return
             }
 
