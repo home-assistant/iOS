@@ -1,4 +1,4 @@
-fstrings:
+strings:
   inputs:
     - HomeAssistant/Resources/en.lproj/Localizable.strings
   outputs:
