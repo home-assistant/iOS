@@ -13,10 +13,16 @@ import Eureka
 // swiftlint:disable type_name line_length
 open class _SearchSelectorViewController<Row: SelectableRowType, OptionsRow: OptionsProviderRow>: SelectorViewController<OptionsRow>, UISearchResultsUpdating where Row.Cell.Value: SearchItem {
 
+    private var notificationCenterObservers: [AnyObject] = []
+
     let searchController = UISearchController(searchResultsController: nil)
 
     var originalOptions = [ListCheckRow<Row.Cell.Value>]()
     var currentOptions = [ListCheckRow<Row.Cell.Value>]()
+
+    deinit {
+        notificationCenterObservers.forEach { NotificationCenter.default.removeObserver($0) }
+    }
 
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,19 +30,23 @@ open class _SearchSelectorViewController<Row: SelectableRowType, OptionsRow: Opt
         searchController.searchResultsUpdater = self
         searchController.dimsBackgroundDuringPresentation = false
 
-        definesPresentationContext = true
-
-        navigationItem.searchController = searchController
-    }
-
-    open override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         navigationItem.hidesSearchBarWhenScrolling = false
-    }
+        navigationItem.searchController = searchController
 
-    open override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        navigationItem.hidesSearchBarWhenScrolling = true
+        notificationCenterObservers.append(NotificationCenter.default.addObserver(
+            forName: UIApplication.keyboardWillChangeFrameNotification,
+            object: nil,
+            queue: .main
+        ) { [tableView] note in
+            guard let tableView = tableView,
+                let screenFrameValue = note.userInfo?[UIApplication.keyboardFrameEndUserInfoKey] as? NSValue else {
+                return
+            }
+
+            let overlap = tableView.convert(screenFrameValue.cgRectValue, from: nil).intersection(tableView.bounds)
+            tableView.contentInset.bottom = overlap.height
+            tableView.scrollIndicatorInsets.bottom = overlap.height
+        })
     }
 
     public func updateSearchResults(for searchController: UISearchController) {
