@@ -393,11 +393,10 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         super.tableView(tableView, willBeginReorderingRowAtIndexPath: indexPath)
     }
 
-    @objc public func tableView(_ tableView: UITableView, didEndReorderingRowAtIndexPath indexPath: IndexPath) {
-        guard let rowTag = form[indexPath].tag, let row = reorderingRows[rowTag],
-            let actionsSection = row.section as? MultivaluedSection else { return }
-
-        Current.Log.verbose("Setting action \(row) to position \(indexPath.row)")
+    private func updatePositions() {
+        guard let actionsSection = form.sectionBy(tag: "actions") as? MultivaluedSection else {
+            return
+        }
 
         let rowsDict = actionsSection.allRows.enumerated().compactMap { (entry) -> (String, Int)? in
             // Current.Log.verbose("Map \(entry.element.indexPath) \(entry.element.tag)")
@@ -417,8 +416,15 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         }
 
         try? realm.commitWrite()
+    }
 
-        reorderingRows[rowTag] = nil
+    @objc public func tableView(_ tableView: UITableView, didEndReorderingRowAtIndexPath indexPath: IndexPath) {
+        let row = form[indexPath]
+        Current.Log.verbose("Setting action \(row) to position \(indexPath.row)")
+
+        updatePositions()
+
+        reorderingRows[row.tag ?? ""] = nil
     }
 
     @objc func tableView(_ tableView: UITableView, didCancelReorderingRowAtIndexPath indexPath: IndexPath) {
@@ -461,7 +467,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     func getActionRow(_ inputAction: Action?) -> ButtonRowWithPresent<ActionConfigurator> {
         var identifier = UUID().uuidString
         var title = L10n.ActionsConfigurator.title
-        let action = inputAction
+        var action = inputAction
 
         if let passedAction = inputAction {
             identifier = passedAction.ID
@@ -473,7 +479,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             $0.title = title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 return ActionConfigurator(action: action)
-            }, onDismiss: { vc in
+            }, onDismiss: { [weak self] vc in
                 _ = vc.navigationController?.popViewController(animated: true)
 
                 if let vc = vc as? ActionConfigurator {
@@ -482,6 +488,8 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         return
                     }
 
+                    action = vc.action
+                    vc.row.tag = vc.action.ID
                     vc.row.title = vc.action.Name
                     vc.row.updateCell()
 
@@ -493,6 +501,8 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         try realm.write {
                             realm.add(vc.action, update: .all)
                         }
+
+                        self?.updatePositions()
                     } catch let error as NSError {
                         Current.Log.error("Error while saving to Realm!: \(error)")
                     }
