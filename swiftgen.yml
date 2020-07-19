@@ -1,4 +1,4 @@
-strings:
+fstrings:
   inputs:
     - HomeAssistant/Resources/en.lproj/Localizable.strings
   outputs:
@@ -23,8 +23,3 @@ colors:
   outputs:
     templateName: swift5
     output: HomeAssistant/Resources/Colors.swift
-fonts:
-  inputs: HomeAssistant/Resources/Roboto/
-  outputs:
-    templateName: swift5
-    output: HomeAssistant/Resources/Roboto/Roboto.swift

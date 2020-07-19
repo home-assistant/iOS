@@ -6,6 +6,8 @@ import CoreLocation
 import Contacts
 import RealmSwift
 
+// swiftlint:disable file_length
+
 // forgive me but something about CLPlacemark in this file is crashing in deinit
 // it is almost certainly a testing issue, and this... well, this solves it.
 private var permanent: [CLPlacemark] = []

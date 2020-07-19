@@ -12,6 +12,18 @@ import CoreLocation
 import CoreMotion
 import DeviceKit
 
+public enum UpdateTypes: String {
+    case GlobalPositioningSystem = "gps"
+    case Router = "router"
+    case Bluetooth = "bluetooth"
+    case BluetoothLowEnergy = "bluetooth_le"
+}
+
+public enum LocationNames: String {
+    case Home = "home"
+    case NotHome = "not_home"
+}
+
 public class WebhookUpdateLocation: Mappable {
 
     public var HorizontalAccuracy: CLLocationAccuracy?

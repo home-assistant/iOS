@@ -35,14 +35,14 @@ extension String {
         return color
     }
 
-    private static func intFromHexString(_ hexStr: String) -> UInt32 {
-        var hexInt: UInt32 = 0
+    private static func intFromHexString(_ hexStr: String) -> UInt64 {
+        var hexInt: UInt64 = 0
         // Create scanner
         let scanner: Scanner = Scanner(string: hexStr)
         // Tell scanner to skip the # character
         scanner.charactersToBeSkipped = CharacterSet(charactersIn: "#")
         // Scan hex value
-        scanner.scanHexInt32(&hexInt)
+        scanner.scanHexInt64(&hexInt)
         return hexInt
     }
 
