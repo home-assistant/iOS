@@ -648,7 +648,7 @@
 "settings.connection_section.remote_ui_url.title" = "遠端 UI URL";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "於發現的資訊中找不到 http.base_url。請於 configuration.yaml 檔案中加入有效 http.base_url 後，重啟 Home Assistant 以繼續自動設定或手動設定。";
 "settings_details.notifications.rate_limits.header" = "頻率限制";
-"settings_details.notifications.rate_limits.footer" = "每 24 小時允許推送 150 則通知，限制將於世界協調時間（UTC）午夜十二點時重置。";
+"settings_details.notifications.rate_limits.footer" = "每 24 小時允許推送 300 則通知，限制將於世界協調時間（UTC）午夜十二點時重置。";
 "settings_details.notifications.rate_limits.attempts" = "嘗試";
 "settings_details.notifications.rate_limits.delivered" = "推送";
 "settings_details.notifications.rate_limits.errors" = "錯誤";
@@ -778,3 +778,16 @@
 "settings_details.general.open_in_browser.safari_in_app" = "Apple Safari (in app)";
 "settings_sensors.last_updated.footer" = "最後更新%@";
 "notifications_configurator.category.example_call.title" = "服務執行範例";
+"settings_details.notifications.rate_limits.footer_with_param" = "每 24 小時允許推送 %d 則通知，限制將於世界協調時間（UTC）午夜十二點時重置。";
+"settings.developer.annoying_background_notifications.title" = "惱人的背景資訊";
+"client_events.view.clear_confirm.title" = "確定要清除所有事件？";
+"client_events.view.clear_confirm.message" = "此動作無法復原。";
+"settings.developer.crashlytics_test.fatal.title" = "測試 Crashlytics 嚴重錯誤";
+"settings.developer.crashlytics_test.fatal.notification.title" = "即將當機";
+"settings.developer.crashlytics_test.fatal.notification.body" = "注意：假如連線除錯器，此動作將無法作用。當按下 OK 時，app 將會當機，必須重新開啟 app 並等候約 5 分鐘以於控制介面中顯示當機紀錄。";
+"settings.developer.crashlytics_test.non_fatal.title" = "測試 Crashlytics 非嚴重錯誤";
+"settings.developer.crashlytics_test.non_fatal.notification.title" = "關於傳送非嚴重錯誤";
+"settings.developer.crashlytics_test.non_fatal.notification.body" = "當按下 OK 時，將會傳送非嚴重錯誤至 Crashlytics。可能需要約 5 分鐘時間才會於控制介面中顯示。";
+"sensors.geocoded_location.setting.use_zones" = "使用區域名稱";
+"settings_sensors.settings.header" = "設定";
+"settings_sensors.settings.footer" = "變更將於下次更新時生效。";
