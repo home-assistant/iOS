@@ -65,46 +65,54 @@ class WebhookManagerTests: XCTestCase {
     }
 
     func testBackgroundHandlingForExtensionCallsAppropriateCompletionHandler() {
-        var didInvokeMainCompletion = false
-        var didInvokeExtensionCompletion = false
-
         let mainIdentifier = manager.currentBackgroundSessionInfo.identifier
-        let testIdentifier = manager.currentBackgroundSessionInfo.identifier + "-test"
+        let testIdentifier = manager.currentBackgroundSessionInfo.identifier + "-test" + UUID().uuidString
+
+        let (mainPromise, mainSeal) = Promise<Void>.pending()
+        let (testPromise, testSeal) = Promise<Void>.pending()
 
         manager.handleBackground(for: mainIdentifier, completionHandler: {
-            didInvokeMainCompletion = true
+            mainSeal.fulfill(())
         })
 
         manager.handleBackground(for: testIdentifier, completionHandler: {
-            didInvokeExtensionCompletion = true
+            testSeal.fulfill(())
         })
 
-        func waitRunLoop() {
+        func waitRunLoop(queue: DispatchQueue = .main, count: Int = 1) {
             let expectation = self.expectation(description: "run loop")
-            DispatchQueue.main.async { expectation.fulfill() }
+            expectation.expectedFulfillmentCount = count
+            for _ in 0..<count {
+                queue.async { expectation.fulfill() }
+            }
             wait(for: [expectation], timeout: 10.0)
         }
 
         waitRunLoop()
 
-        XCTAssertFalse(didInvokeMainCompletion)
-        XCTAssertFalse(didInvokeExtensionCompletion)
+        XCTAssertTrue(mainPromise.isPending)
+        XCTAssertTrue(testPromise.isPending)
 
         sendDidFinishEvents(for: manager.currentBackgroundSessionInfo)
 
         waitRunLoop()
 
-        XCTAssertTrue(didInvokeMainCompletion)
-        XCTAssertFalse(didInvokeExtensionCompletion)
+        XCTAssertFalse(mainPromise.isPending)
+        XCTAssertTrue(testPromise.isPending)
 
         sendDidFinishEvents(for: manager.sessionInfos.first(where: {
             $0.identifier == testIdentifier
         })!)
 
-        waitRunLoop()
+        // for the completion block
+        XCTAssertNoThrow(try hang(mainPromise))
+        XCTAssertNoThrow(try hang(testPromise))
 
-        XCTAssertTrue(didInvokeMainCompletion)
-        XCTAssertTrue(didInvokeExtensionCompletion)
+        // for the clearing of session infos
+        waitRunLoop(
+            queue: manager.currentBackgroundSessionInfo.session.delegateQueue.underlyingQueue!,
+            count: 2
+        )
 
         // inside baseball: make sure it deallocates any references to the extension background session but not the main
         XCTAssertTrue(manager.sessionInfos.contains(where: { $0.identifier == mainIdentifier }))
