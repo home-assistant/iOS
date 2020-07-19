@@ -87,28 +87,23 @@ public class Bonjour {
 
     private func buildPublishDict() -> [String: Data] {
         var publishDict: [String: Data] = [:]
-        if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") {
-            if let stringedBundleVersion = bundleVersion as? String {
-                if let data = stringedBundleVersion.data(using: .utf8) {
-                    publishDict["buildNumber"] = data
-                }
-            }
+
+        if let data = Constants.build.data(using: .utf8) {
+            publishDict["buildNumber"] = data
         }
-        if let versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") {
-            if let stringedVersionNumber = versionNumber as? String {
-                if let data = stringedVersionNumber.data(using: .utf8) {
-                    publishDict["versionNumber"] = data
-                }
-            }
+
+        if let data = Constants.version.data(using: .utf8) {
+            publishDict["versionNumber"] = data
         }
+
         if let permanentID = Constants.PermanentID.data(using: .utf8) {
             publishDict["permanentID"] = permanentID
         }
-        if let bundleIdentifier = Bundle.main.bundleIdentifier {
-            if let data = bundleIdentifier.data(using: .utf8) {
-                publishDict["bundleIdentifier"] = data
-            }
+
+        if let data = Constants.BundleID.data(using: .utf8) {
+            publishDict["bundleIdentifier"] = data
         }
+
         return publishDict
     }
 

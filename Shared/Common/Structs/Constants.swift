@@ -102,4 +102,12 @@ public struct Constants {
 
         return newID
     }
+
+    static public var build: String {
+        SharedPlistFiles.Info.cfBundleVersion
+    }
+
+    static public var version: String {
+        SharedPlistFiles.Info.cfBundleShortVersionString
+    }
 }

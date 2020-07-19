@@ -142,7 +142,7 @@ class AuthenticationViewController: UIViewController {
     private func testConnection(_ baseURL: URL) -> Promise<DiscoveredHomeAssistant> {
         let discoveryURL = baseURL.appendingPathComponent("api/discovery_info")
         return Promise { seal in
-            let sessionManager = Alamofire.SessionManager.default
+            let sessionManager = HomeAssistantAPI.unauthenticatedManager
             let delegate: Alamofire.SessionDelegate = sessionManager.delegate
             delegate.taskDidReceiveChallengeWithCompletion = { session, task, challenge, completion in
                 let method = challenge.protectionSpace.authenticationMethod

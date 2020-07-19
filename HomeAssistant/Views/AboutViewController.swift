@@ -45,7 +45,7 @@ class AboutViewController: FormViewController {
                                                                                   bundle: nil))
                 logoHeader.onSetupView = { view, _ in
                     view.AppTitle.text = L10n.About.Logo.appTitle
-                    view.Version.text = prefs.string(forKey: "lastInstalledVersion")
+                    view.Version.text = HomeAssistantAPI.clientVersionDescription
                     view.Tagline.text = L10n.About.Logo.tagline
                     view.addGestureRecognizer(UITapGestureRecognizer(target: self,
                                                                      action: #selector(self.tapAbout(_:))))
