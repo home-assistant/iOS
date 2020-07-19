@@ -45,7 +45,9 @@ public extension UIColor {
     convenience init(hex: String?) {
         let normalizedHexString: String = UIColor.normalize(hex)
         var c: CUnsignedInt = 0
-        Scanner(string: normalizedHexString).scanHexInt32(&c)
+        var scannedInt: UInt64 = 0
+        Scanner(string: normalizedHexString).scanHexInt64(&scannedInt)
+        c = CUnsignedInt(truncatingIfNeeded: scannedInt)
         self.init(red: UIColorMasks.redValue(c), green: UIColorMasks.greenValue(c), blue: UIColorMasks.blueValue(c),
                   alpha: UIColorMasks.alphaValue(c))
     }

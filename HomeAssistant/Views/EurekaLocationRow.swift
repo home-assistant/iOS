@@ -13,6 +13,10 @@ import MapKit
 
 // MARK: LocationRow
 
+class HACircle: MKCircle {
+    var type: String = "zone"
+}
+
 public final class LocationRow: Row<PushSelectorCell<CLLocation>>, RowType {
     public required init(tag: String?) {
         super.init(tag: tag)
