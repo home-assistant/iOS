@@ -71,15 +71,8 @@ func showAlert(title: String, message: String) {
 }
 
 func setDefaults() {
-    if let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion"),
-        let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString"),
-        let stringedShortVersion = shortVersion as? String,
-        let stringedBundleVersion = bundleVersion as? String {
-        let combined = "\(stringedShortVersion) (\(stringedBundleVersion))"
-        prefs.set(stringedBundleVersion, forKey: "lastInstalledBundleVersion")
-        prefs.set(stringedShortVersion, forKey: "lastInstalledShortVersion")
-        prefs.set(combined, forKey: "lastInstalledVersion")
-    }
+    prefs.set(Constants.build, forKey: "lastInstalledBundleVersion")
+    prefs.set(Constants.version, forKey: "lastInstalledShortVersion")
 
     if prefs.object(forKey: "openInBrowser") == nil {
         if prefs.bool(forKey: "openInChrome") {

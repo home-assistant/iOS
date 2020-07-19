@@ -111,6 +111,8 @@
 		11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */; };
 		11E5CF8124BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
 		11E5CF8224BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */; };
+		11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4524C4E01500404AF8 /* SharedPlist.swift */; };
+		11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B4524C4E01500404AF8 /* SharedPlist.swift */; };
 		11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EF62D924C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift */; };
 		11F3B85724C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
 		11F3B85824C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
@@ -800,6 +802,7 @@
 		11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseServiceCall.test.swift; sourceTree = "<group>"; };
 		11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUnhandled.test.swift; sourceTree = "<group>"; };
 		11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+BackgroundTask.swift"; sourceTree = "<group>"; };
+		11EE9B4524C4E01500404AF8 /* SharedPlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedPlist.swift; sourceTree = "<group>"; };
 		11EF62D924C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerRegionFilter.test.swift; sourceTree = "<group>"; };
 		11F3B85524C4279700642676 /* Entity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 		11F3B85624C4279700642676 /* Zone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
@@ -2427,6 +2430,7 @@
 		D0EEF31E214DDD9B00D1D360 /* Swiftgen */ = {
 			isa = PBXGroup;
 			children = (
+				11EE9B4524C4E01500404AF8 /* SharedPlist.swift */,
 				D0EEF31F214DE3B300D1D360 /* Strings.swift */,
 			);
 			path = Swiftgen;
@@ -4075,6 +4079,7 @@
 			files = (
 				B6A258492232539900ADD202 /* WebhookUpdateLocation.swift in Sources */,
 				11C4628324B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
+				11EE9B4724C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				B67CE8AB22200F220034C1D0 /* TokenInfo.swift in Sources */,
 				B67CE87722200F220034C1D0 /* Strings.swift in Sources */,
 				B67CE8AE22200F220034C1D0 /* TokenManager.swift in Sources */,
@@ -4190,6 +4195,7 @@
 			files = (
 				1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */,
 				1141182A24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */,
+				11EE9B4624C4E01500404AF8 /* SharedPlist.swift in Sources */,
 				D0EEF327214DF31D00D1D360 /* Notifications.swift in Sources */,
 				1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,

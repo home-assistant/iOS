@@ -48,6 +48,9 @@ public class HomeAssistantAPI {
     public static var LoadedComponents = [String]()
 
     public private(set) var manager: Alamofire.SessionManager!
+    public static var unauthenticatedManager: Alamofire.SessionManager = {
+        return configureSessionManager()
+    }()
 
     public var MobileAppComponentLoaded: Bool {
         return HomeAssistantAPI.LoadedComponents.contains("mobile_app")
@@ -55,6 +58,26 @@ public class HomeAssistantAPI {
 
     var tokenManager: TokenManager?
     public var connectionInfo: ConnectionInfo
+
+    public static var clientVersionDescription: String {
+        "\(Constants.version) (\(Constants.build))"
+    }
+
+    public static var userAgent: String {
+        // This matches Alamofire's generated string, for consistency with the past
+        let bundle = Constants.BundleID
+        let appVersion = Constants.version
+        let appBuild = Constants.build
+
+        let osNameVersion: String = {
+            let version = ProcessInfo.processInfo.operatingSystemVersion
+            let versionString = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+            let osName: String = Device.current.systemName ?? "Unknown"
+            return "\(osName) \(versionString)"
+        }()
+
+        return "Home Assistant/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion))"
+    }
 
     /// Initialize an API object with an authenticated tokenManager.
     public init(connectionInfo: ConnectionInfo, tokenInfo: TokenInfo, urlConfig: URLSessionConfiguration = .default) {
@@ -71,6 +94,11 @@ public class HomeAssistantAPI {
 
     private static func configureSessionManager(urlConfig: URLSessionConfiguration = .default) -> SessionManager {
         let configuration = urlConfig
+
+        var headers = configuration.httpAdditionalHeaders ?? [:]
+        headers["User-Agent"] = Self.userAgent
+        configuration.httpAdditionalHeaders = headers
+
         return Alamofire.SessionManager(configuration: configuration)
     }
 
@@ -204,7 +232,7 @@ public class HomeAssistantAPI {
 
             var finalURL = url
 
-            let dataManager: Alamofire.SessionManager = needsAuth ? self.manager : Alamofire.SessionManager.default
+            let dataManager: Alamofire.SessionManager = needsAuth ? self.manager : Self.unauthenticatedManager
 
             if needsAuth {
                 if !url.absoluteString.hasPrefix(self.connectionInfo.activeURL.absoluteString) {
@@ -237,10 +265,12 @@ public class HomeAssistantAPI {
     }
 
     public func GetConfig(_ useWebhook: Bool = true) -> Promise<ConfigResponse> {
-        var promise: Promise<ConfigResponse> = self.request(path: "config", callingFunctionName: "\(#function)")
+        let promise: Promise<ConfigResponse>
 
         if useWebhook {
             promise = Current.webhooks.sendEphemeral(request: .init(type: "get_config", data: [:]))
+        } else {
+            promise = request(path: "config", callingFunctionName: "\(#function)")
         }
 
         return promise.then { config -> Promise<ConfigResponse> in
@@ -381,9 +411,10 @@ public class HomeAssistantAPI {
                 "push_token": pushID
             ]
         }
+
         ident.AppIdentifier = Constants.BundleID
         ident.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
-        ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
+        ident.AppVersion = HomeAssistantAPI.clientVersionDescription
         ident.DeviceID = Current.settingsStore.integrationDeviceID
         ident.DeviceName = Current.settingsStore.overrideDeviceName ?? deviceKitDevice.name
         ident.Manufacturer = "Apple"
@@ -412,7 +443,7 @@ public class HomeAssistantAPI {
                 "push_token": pushID
             ]
         }
-        ident.AppVersion = prefs.string(forKey: "lastInstalledVersion")
+        ident.AppVersion = HomeAssistantAPI.clientVersionDescription
         ident.DeviceName = Current.settingsStore.overrideDeviceName ?? deviceKitDevice.name
         ident.Manufacturer = "Apple"
         ident.Model = deviceKitDevice.description

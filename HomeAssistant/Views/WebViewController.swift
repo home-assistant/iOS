@@ -149,7 +149,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
         }
 
         config.userContentController = userContentController
-        config.applicationNameForUserAgent = SessionManager.defaultHTTPHeaders["User-Agent"]
+        config.applicationNameForUserAgent = HomeAssistantAPI.userAgent
 
         self.webView = WKWebView(frame: self.view!.frame, configuration: config)
         self.webView.isOpaque = false

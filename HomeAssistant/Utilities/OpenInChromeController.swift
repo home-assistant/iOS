@@ -30,6 +30,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import UIKit
+import Shared
 
 private let googleChromeHTTPScheme: String = "googlechrome:"
 private let googleChromeHTTPSScheme: String = "googlechromes:"

@@ -23,3 +23,12 @@ colors:
   outputs:
     templateName: swift5
     output: HomeAssistant/Resources/Colors.swift
+plist:
+  inputs:
+  - Shared/Info.plist
+  outputs:
+  - templateName: runtime-swift5
+    output: Shared/Resources/SwiftGen/SharedPlist.swift
+    params: 
+      enumName: SharedPlistFiles
+      forceFileNameEnum: true

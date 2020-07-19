@@ -25,7 +25,6 @@ public class WebhookManager: NSObject {
         "non-background"
     }
 
-    internal let ephemeralUrlSession: URLSession
     internal var sessionInfos = Set<WebhookSessionInfo>()
     internal var currentBackgroundSessionInfo: WebhookSessionInfo {
         sessionInfo(forIdentifier: Self.currentURLSessionIdentifier)
@@ -65,8 +64,6 @@ public class WebhookManager: NSObject {
         self.dataOperationQueue = with(OperationQueue()) {
             $0.underlyingQueue = underlyingQueue
         }
-
-        self.ephemeralUrlSession = URLSession(configuration: .ephemeral)
 
         super.init()
 
@@ -179,14 +176,14 @@ public class WebhookManager: NSObject {
     }
 
     public func sendEphemeral<ResponseType>(request: WebhookRequest) -> Promise<ResponseType> {
-        ProcessInfo.processInfo.backgroundTask(withName: "webhook-send-ephemeral") { [ephemeralUrlSession] _ in
+        ProcessInfo.processInfo.backgroundTask(withName: "webhook-send-ephemeral") { [self, dataQueue] _ in
             attemptNetworking {
                 firstly {
                     Self.urlRequest(for: request)
                 }.get { _, _ in
                     Current.Log.info("sending: \(request)")
-                }.then { urlRequest, data in
-                    ephemeralUrlSession.uploadTask(.promise, with: urlRequest, from: data)
+                }.then(on: dataQueue) { urlRequest, data in
+                    self.currentRegularSessionInfo.session.uploadTask(.promise, with: urlRequest, from: data)
                 }
             }
         }.then { data, response in
@@ -544,31 +541,33 @@ internal class WebhookSessionInfo: CustomStringConvertible, Hashable {
         background: Bool
     ) {
         let configuration: URLSessionConfiguration = {
+            let configuration: URLSessionConfiguration
+
             if NSClassFromString("XCTest") != nil {
                 // ^ cannot reference Current here because we're being created inside Current as it is made
                 // we cannot mock http requests in a background session, so this code path has to differ
-                return .ephemeral
+                configuration = .ephemeral
+            } else if background {
+                configuration = .background(withIdentifier: identifier)
             } else {
-                let configuration: URLSessionConfiguration
+                configuration = .ephemeral
+            }
 
-                if background {
-                    configuration = URLSessionConfiguration.background(withIdentifier: identifier)
-                } else {
-                    configuration = URLSessionConfiguration.ephemeral
-                }
+            return with(configuration) {
+                $0.sharedContainerIdentifier = Constants.AppGroupID
+                $0.httpCookieStorage = nil
+                $0.httpCookieAcceptPolicy = .never
+                $0.httpShouldSetCookies = false
+                $0.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
 
-                return with(configuration) {
-                    $0.sharedContainerIdentifier = Constants.AppGroupID
-                    $0.httpCookieStorage = nil
-                    $0.httpCookieAcceptPolicy = .never
-                    $0.httpShouldSetCookies = false
-                    $0.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+                $0.httpAdditionalHeaders = [
+                    "User-Agent": HomeAssistantAPI.userAgent
+                ]
 
-                    // how long should this request be retried in the background?
-                    // default is 7days, but our background requests do not need to live that long
-                    let timeout = Measurement<UnitDuration>(value: 2, unit: .hours)
-                    $0.timeoutIntervalForResource = timeout.converted(to: .seconds).value
-                }
+                // how long should this request be retried in the background?
+                // default is 7days, but our background requests do not need to live that long
+                let timeout = Measurement<UnitDuration>(value: 2, unit: .hours)
+                $0.timeoutIntervalForResource = timeout.converted(to: .seconds).value
             }
         }()
 
