@@ -1428,6 +1428,12 @@ internal enum L10n {
         /// Motion Permission
         internal static let title = L10n.tr("Localizable", "settings_details.location.motion_permission.title")
       }
+      internal enum NewOneShot {
+        /// This may or may not deliver good results for the sources above. Your feedback is appreciated.
+        internal static let description = L10n.tr("Localizable", "settings_details.location.new_one_shot.description")
+        /// In-Development Updating
+        internal static let title = L10n.tr("Localizable", "settings_details.location.new_one_shot.title")
+      }
       internal enum Notifications {
         /// Location Notifications
         internal static let header = L10n.tr("Localizable", "settings_details.location.notifications.header")
@@ -1599,6 +1605,8 @@ internal enum L10n {
         internal static let delivered = L10n.tr("Localizable", "settings_details.notifications.rate_limits.delivered")
         /// Errors
         internal static let errors = L10n.tr("Localizable", "settings_details.notifications.rate_limits.errors")
+        /// You are allowed 300 push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).
+        internal static let footer = L10n.tr("Localizable", "settings_details.notifications.rate_limits.footer")
         /// You are allowed %d push notifications per 24 hours. Rate limits reset at midnight Universal Coordinated Time (UTC).
         internal static func footerWithParam(_ p1: Int) -> String {
           return L10n.tr("Localizable", "settings_details.notifications.rate_limits.footer_with_param", p1)
