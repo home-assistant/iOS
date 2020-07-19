@@ -69,6 +69,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             +++ TextRow {
                     $0.tag = "name"
                     $0.title = L10n.ActionsConfigurator.Rows.Name.title
+                    $0.placeholder = L10n.ActionsConfigurator.Rows.Name.title
                     $0.add(rule: RuleRequired())
                     if !newAction {
                         $0.value = self.action.Name
@@ -83,6 +84,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             +++ TextRow("text") {
                 $0.title = L10n.ActionsConfigurator.Rows.Text.title
                 $0.value = self.action.Text
+                $0.placeholder = L10n.ActionsConfigurator.Rows.Text.title
             }.onChange { row in
                 if let value = row.value {
                     self.action.Text = value

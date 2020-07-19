@@ -19,7 +19,7 @@ public class Action: Object, Mappable, NSCoding {
     @objc dynamic public var BackgroundColor: String = UIColor.randomColor().hexString()
     @objc dynamic public var IconName: String = MaterialDesignIcons.allCases.randomElement()!.name
     @objc dynamic public var IconColor: String = UIColor.randomColor().hexString()
-    @objc dynamic public var Text: String = "Action"
+    @objc dynamic public var Text: String = ""
     @objc dynamic public var TextColor: String = UIColor.randomColor().hexString()
     @objc dynamic public var CreatedAt = Date()
 
