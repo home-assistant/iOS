@@ -166,7 +166,6 @@ class TestDeleteModel2: Object {
     }
 }
 
-
 class TestDeleteModel3: Object {
     @objc dynamic var identifier: String = UUID().uuidString
     @objc dynamic var createdAt: Date
