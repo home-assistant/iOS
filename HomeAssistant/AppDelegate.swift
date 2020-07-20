@@ -112,6 +112,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
         connectAPI(reason: .cold)
 
+        ModelManager.cleanup().cauterize()
+
         return true
     }
 
