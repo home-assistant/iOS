@@ -398,13 +398,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
             if shortcutItem.type == "sendLocation" {
                 return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
-            } else if let userInfo = shortcutItem.userInfo {
-                return api.HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
             } else {
-                enum NoSuchAction: Error {
-                    case noSuchAction(String)
-                }
-                return Promise(error: NoSuchAction.noSuchAction(String(describing: shortcutItem.userInfo)))
+                return api.HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
             }
         }.done {
             completionHandler(true)
