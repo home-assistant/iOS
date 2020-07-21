@@ -11,9 +11,7 @@ import UIKit
 import CoreGraphics
 import ObjectMapper
 
-public class Entity: Mappable {
-    public required init?(map: Map) {}
-
+public class Entity: StaticMappable {
     @objc public dynamic var ID: String = ""
     @objc public dynamic var State: String = ""
     @objc public dynamic var Attributes: [String: Any] {
@@ -71,5 +69,21 @@ public class Entity: Mappable {
 
     public var Domain: String {
         return self.ID.components(separatedBy: ".")[0]
+    }
+
+    public class func objectForMapping(map: Map) -> BaseMappable? {
+        guard let entityId: String = map["entity_id"].value() else {
+            return nil
+        }
+
+        let entityType = entityId.components(separatedBy: ".")[0]
+        switch entityType {
+        case "zone":
+            return Zone()
+        case "scene":
+            return Scene()
+        default:
+            return Entity()
+        }
     }
 }

@@ -468,6 +468,8 @@
 "settings.developer.map_notification.title" = "Show map notification content extension";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions and the Today widget";
 "settings_details.actions.title" = "Actions";
+"settings_details.actions.scenes.title" = "Scene Actions";
+"settings_details.actions.scenes.footer" = "When enabled, Scenes display alongside actions. When activated, they trigger scene changes.";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Black";
 "settings_details.general.app_icon.enum.blue" = "Blue";

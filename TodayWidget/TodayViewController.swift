@@ -155,7 +155,7 @@ class TodayViewController: UICollectionViewController, UICollectionViewDelegateF
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
-            api.HandleAction(actionID: action.ID, actionName: action.Name, source: .Widget)
+            api.HandleAction(actionID: action.ID, source: .Widget)
         }.done { _ in
             feedbackGenerator.notificationOccurred(.success)
         }.ensure {

@@ -30,7 +30,7 @@ public extension MaterialDesignIcons {
     }
 }
 
-private extension String {
+internal extension String {
     var normalizingIconString: String {
         return self
             .replacingOccurrences(of: "mdi:", with: "")

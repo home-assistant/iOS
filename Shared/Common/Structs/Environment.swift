@@ -56,6 +56,7 @@ public class Environment {
     public var realm: () -> Realm = Realm.live
 
     public var api: () -> HomeAssistantAPI? = { HomeAssistantAPI.authenticatedAPI() }
+    public var modelManager = ModelManager()
     public var tokenManager: TokenManager?
 
     public var settingsStore = SettingsStore()

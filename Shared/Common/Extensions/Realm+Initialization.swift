@@ -69,9 +69,10 @@ extension Realm {
 
         // 5 - 2020-07-08 v2020.4
         // 6 - 2020-07-12 v2020.4
+        // 7 - 2020-07-20 v2020.4 (added RLMScene)
         let config = Realm.Configuration(
             fileURL: storeURL,
-            schemaVersion: 6,
+            schemaVersion: 7,
             migrationBlock: nil,
             deleteRealmIfMigrationNeeded: false
         )
