@@ -331,7 +331,16 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             let update = { [tableView] (scenes: AnyCollection<RLMScene>) in
                 tableView?.beginUpdates()
                 sceneSection.removeAll()
-                sceneSection.append(contentsOf: scenes.map { Self.getSceneRow($0) })
+
+                if scenes.isEmpty {
+                    sceneSection.append(LabelRow {
+                        $0.title = L10n.SettingsDetails.Actions.Scenes.empty
+                        $0.disabled = true
+                    })
+                } else {
+                    sceneSection.append(contentsOf: scenes.map { Self.getSceneRow($0) })
+                }
+
                 sceneSection.reload()
                 tableView?.endUpdates()
             }
