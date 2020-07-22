@@ -295,6 +295,10 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
             self.navigationItem.rightBarButtonItem = infoBarButtonItem
 
+            let refreshControl = UIRefreshControl()
+            tableView.refreshControl = refreshControl
+            refreshControl.addTarget(self, action: #selector(refreshScenes(_:)), for: .valueChanged)
+
             form +++ MultivaluedSection(
                 multivaluedOptions: [.Insert, .Delete, .Reorder],
                 header: "",
@@ -500,6 +504,16 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
     @objc func closeSettingsDetailView(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+
+    @objc private func refreshScenes(_ sender: UIRefreshControl) {
+        sender.beginRefreshing()
+
+        firstly {
+            Current.modelManager.fetch()
+        }.ensure {
+            sender.endRefreshing()
+        }.cauterize()
     }
 
     static func getSceneRow(_ rlmScene: RLMScene) -> SwitchRow {
