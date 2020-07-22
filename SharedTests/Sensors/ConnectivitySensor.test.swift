@@ -4,9 +4,6 @@ import CoreTelephony
 @testable import Shared
 import XCTest
 
-// swiftlint:disable large_tuple
-// swiftlint:disable type_body_length
-
 class ConnectivitySensorTests: XCTestCase {
     private func setUp(
         ssid: String?,

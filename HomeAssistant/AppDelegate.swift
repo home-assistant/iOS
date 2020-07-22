@@ -112,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
         connectAPI(reason: .cold)
 
-        ModelManager.cleanup().cauterize()
+        setupModels()
 
         return true
     }
@@ -398,13 +398,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.backgroundTask(withName: "shortcut-item") { remaining -> Promise<Void> in
             if shortcutItem.type == "sendLocation" {
                 return api.GetAndSendLocation(trigger: .AppShortcut, maximumBackgroundTime: remaining)
-            } else if let userInfo = shortcutItem.userInfo, let name = userInfo["name"] as? String {
-                return api.HandleAction(actionID: shortcutItem.type, actionName: name, source: .AppShortcut)
             } else {
-                enum NoSuchAction: Error {
-                    case noSuchAction(String)
-                }
-                return Promise(error: NoSuchAction.noSuchAction(String(describing: shortcutItem.userInfo)))
+                return api.HandleAction(actionID: shortcutItem.type, source: .AppShortcut)
             }
         }.done {
             completionHandler(true)
@@ -497,7 +492,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             HomeAssistantAPI.authenticatedAPIPromise
         }.then { api in
             return UIApplication.shared.backgroundTask(withName: "connect-api") { _ in
-                api.Connect(reason: reason).asVoid()
+                api.Connect(reason: reason)
             }
         }.done {
             Current.Log.info("Connect finished for reason \(reason)")
@@ -700,12 +695,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if message.identifier == "ActionRowPressed" {
                 Current.Log.verbose("Received ActionRowPressed \(message) \(message.content)")
 
-                guard let actionName = message.content["ActionName"] as? String else {
-                    Current.Log.warning("actionName either does not exist or is not a string in the payload")
-                    message.replyHandler?(["fired": false])
-                    return
-                }
-
                 guard let actionID = message.content["ActionID"] as? String else {
                     Current.Log.warning("ActionID either does not exist or is not a string in the payload")
                     message.replyHandler?(["fired": false])
@@ -713,7 +702,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
 
                 HomeAssistantAPI.authenticatedAPIPromise.then { api in
-                    api.HandleAction(actionID: actionID, actionName: actionName, source: .Watch)
+                    api.HandleAction(actionID: actionID, source: .Watch)
                 }.done { _ in
                     message.replyHandler?(["fired": true])
                 }.catch { err -> Void in
@@ -918,6 +907,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             guard let value = value else { return }
             Crashlytics.crashlytics().setCustomValue(value, forKey: name)
         }
+    }
+
+    func setupModels() {
+        Current.modelManager.cleanup().cauterize()
+        Action.setupObserver()
     }
 }
 

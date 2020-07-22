@@ -7,13 +7,33 @@ import PromiseKit
 // swiftlint:disable function_body_length
 
 class ModelManagerTests: XCTestCase {
-    var realm: Realm!
-    var testQueue: DispatchQueue!
+    private var realm: Realm!
+    private var testQueue: DispatchQueue!
+    private var manager: ModelManager!
+    private var api: FakeHomeAssistantAPI!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
 
         testQueue = DispatchQueue(label: #file)
+        manager = ModelManager()
+        api = FakeHomeAssistantAPI(
+            connectionInfo: .init(
+                externalURL: nil,
+                internalURL: nil,
+                cloudhookURL: nil,
+                remoteUIURL: nil,
+                webhookID: "id",
+                webhookSecret: nil,
+                internalSSIDs: nil
+            ), tokenInfo: .init(
+                accessToken: "atoken",
+                refreshToken: "refreshtoken",
+                expiration: Date()
+            )
+        )
+
+        Current.api = { self.api }
 
         let executionIdentifier = UUID().uuidString
         try testQueue.sync {
@@ -26,10 +46,57 @@ class ModelManagerTests: XCTestCase {
         super.tearDown()
 
         Current.realm = Realm.live
+        TestStoreModel1.lastDidUpdate = []
+    }
+
+    func testObserve() throws {
+        try testQueue.sync {
+            let results = AnyRealmCollection(realm.objects(TestStoreModel1.self))
+
+            let executedExpectation = self.expectation(description: "observed")
+            executedExpectation.expectedFulfillmentCount = 3
+
+            var didObserveCount = 0
+
+            manager.observe(for: results) { collection -> Promise<Void> in
+                XCTAssertEqual(Array(collection), Array(results))
+                didObserveCount += 1
+                executedExpectation.fulfill()
+                return .value(())
+            }
+
+            realm.refresh()
+
+            XCTAssertEqual(didObserveCount, 1)
+
+            try realm.write {
+                realm.add(with(TestStoreModel1()) {
+                    $0.identifier = "123"
+                    $0.value = "456"
+                })
+            }
+
+            realm.refresh()
+
+            XCTAssertEqual(didObserveCount, 2)
+
+            try realm.write {
+                realm.add(with(TestStoreModel1()) {
+                    $0.identifier = "qrs"
+                    $0.value = "tuv"
+                })
+            }
+
+            realm.refresh()
+
+            XCTAssertEqual(didObserveCount, 3)
+
+            wait(for: [executedExpectation], timeout: 10.0)
+        }
     }
 
     func testCleanupWithoutItems() {
-        let promise = ModelManager.cleanup(definitions: [])
+        let promise = manager.cleanup(definitions: [])
         XCTAssertNoThrow(try hang(promise))
     }
 
@@ -51,7 +118,7 @@ class ModelManagerTests: XCTestCase {
 
         XCTAssertTrue(models.allSatisfy { $0.realm != nil })
 
-        let promise = ModelManager.cleanup(
+        let promise = manager.cleanup(
             definitions: [
                 .init(
                     model: TestDeleteModel1.self,
@@ -110,7 +177,7 @@ class ModelManagerTests: XCTestCase {
         XCTAssertTrue(expectedExpired.allSatisfy { $0.realm != nil })
         XCTAssertTrue(expectedAlive.allSatisfy { $0.realm != nil })
 
-        let promise = ModelManager.cleanup(
+        let promise = manager.cleanup(
             definitions: [
                 .init(
                     model: TestDeleteModel1.self,
@@ -129,6 +196,122 @@ class ModelManagerTests: XCTestCase {
         XCTAssertNoThrow(try hang(promise))
         XCTAssertTrue(expectedExpired.allSatisfy { $0.isInvalidated })
         XCTAssertTrue(expectedAlive.allSatisfy { !$0.isInvalidated })
+    }
+
+    func testFetchInvokesDefinition() {
+        let (fetchPromise1, fetchSeal1) = Promise<Void>.pending()
+        let (fetchPromise2, fetchSeal2) = Promise<Void>.pending()
+
+        let promise = manager.fetch(definitions: [
+            .init(update: { api, queue, manager -> Promise<Void> in
+                XCTAssertTrue(api === self.api)
+                XCTAssertEqual(queue, self.testQueue)
+                XCTAssertTrue(manager === self.manager)
+                return fetchPromise1
+            }),
+            .init(update: { api, queue, manager -> Promise<Void> in
+                XCTAssertTrue(api === self.api)
+                XCTAssertEqual(queue, self.testQueue)
+                XCTAssertTrue(manager === self.manager)
+                return fetchPromise2
+            }),
+        ], on: testQueue)
+
+        XCTAssertFalse(promise.isResolved)
+        fetchSeal1.fulfill(())
+        XCTAssertFalse(promise.isResolved)
+        fetchSeal2.fulfill(())
+        XCTAssertNoThrow(try hang(promise))
+    }
+
+    func testStoreWithoutModels() throws {
+        try testQueue.sync {
+            try manager.store(type: TestStoreModel1.self, sourceModels: [])
+            XCTAssertTrue(realm.objects(TestStoreModel1.self).isEmpty)
+        }
+    }
+
+    func testStoreWithModelLackingPrimaryKey() throws {
+        func doStore() throws {
+            try testQueue.sync {
+                try manager.store(type: TestStoreModel2.self, sourceModels: [])
+            }
+        }
+
+        XCTAssertThrowsError(try doStore()) { error in
+            XCTAssertEqual(error as? ModelManager.StoreError, .missingPrimaryKey)
+        }
+    }
+
+    func testStoreWithoutExistingObjects() throws {
+        try testQueue.sync {
+            let sources: [TestStoreSource1] = [
+                .init(id: "id1", value: "val1"),
+                .init(id: "id2", value: "val2")
+            ]
+
+            try manager.store(type: TestStoreModel1.self, sourceModels: sources)
+            let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
+            XCTAssertEqual(models.count, 2)
+            XCTAssertEqual(models[0].identifier, "id1")
+            XCTAssertEqual(models[0].value, "val1")
+            XCTAssertEqual(models[1].identifier, "id2")
+            XCTAssertEqual(models[1].value, "val2")
+            XCTAssertEqual(Set(TestStoreModel1.lastDidUpdate), Set(models))
+        }
+    }
+
+    func testStoreUpdatesAndDeletes() throws {
+        let start = [
+            with(TestStoreModel1()) {
+                $0.identifier = "start_id1"
+                $0.value = "start_val1"
+            },
+            with(TestStoreModel1()) {
+                $0.identifier = "start_id2"
+                $0.value = "start_val2"
+            },
+            with(TestStoreModel1()) {
+                $0.identifier = "start_id3"
+                $0.value = "start_val3"
+            },
+            with(TestStoreModel1()) {
+                $0.identifier = "start_id4"
+                $0.value = "start_val4"
+            }
+        ]
+
+        let insertedSources = [
+            TestStoreSource1(id: "ins_id1", value: "ins_val1"),
+            TestStoreSource1(id: "ins_id2", value: "ins_val2")
+        ]
+
+        let updatedSources = [
+            TestStoreSource1(id: "start_id1", value: "start_val1-2"),
+            TestStoreSource1(id: "start_id2", value: "start_val2-2")
+        ]
+
+        try testQueue.sync {
+            try realm.write {
+                realm.add(start)
+            }
+
+            try manager.store(type: TestStoreModel1.self, sourceModels: insertedSources + updatedSources)
+            let models = realm.objects(TestStoreModel1.self).sorted(byKeyPath: #keyPath(TestStoreModel1.identifier))
+            XCTAssertEqual(models.count, 4)
+
+            // inserted
+            XCTAssertEqual(models[0].identifier, "ins_id1")
+            XCTAssertEqual(models[0].value, "ins_val1")
+            XCTAssertEqual(models[1].identifier, "ins_id2")
+            XCTAssertEqual(models[1].value, "ins_val2")
+
+            // updated
+            XCTAssertEqual(models[2].identifier, "start_id1")
+            XCTAssertEqual(models[2].value, "start_val1-2")
+            XCTAssertEqual(models[3].identifier, "start_id2")
+            XCTAssertEqual(models[3].value, "start_val2-2")
+        }
     }
 }
 
@@ -181,4 +364,60 @@ class TestDeleteModel3: Object {
     override class func primaryKey() -> String? {
         return #keyPath(TestDeleteModel3.identifier)
     }
+}
+
+final class TestStoreModel1: Object, UpdatableModel {
+    static var lastDidUpdate: [TestStoreModel1] = []
+    static func didUpdate(objects: [TestStoreModel1]) {
+        lastDidUpdate = objects
+    }
+
+    @objc dynamic var identifier: String?
+    @objc dynamic var value: String?
+
+    override class func primaryKey() -> String? {
+        #keyPath(TestStoreModel1.identifier)
+    }
+
+    func update(
+        with object: TestStoreSource1,
+        using realm: Realm
+    ) {
+        if self.realm == nil {
+            identifier = object.id
+        } else {
+            XCTAssertEqual(identifier, object.id)
+        }
+        value = object.value
+    }
+}
+
+struct TestStoreSource1: UpdatableModelSource {
+    var primaryKey: String { id }
+
+    var id: String = UUID().uuidString
+    var value: String?
+}
+
+final class TestStoreModel2: Object, UpdatableModel {
+    static func didUpdate(objects: [TestStoreModel2]) {
+
+    }
+
+    @objc dynamic var identifier: String?
+
+    override class func primaryKey() -> String? {
+        nil
+    }
+
+    func update(
+        with object: TestStoreSource1,
+        using realm: Realm
+    ) {
+        XCTFail("not expected to be called in error scenario")
+    }
+}
+
+private class FakeHomeAssistantAPI: HomeAssistantAPI {
+
 }

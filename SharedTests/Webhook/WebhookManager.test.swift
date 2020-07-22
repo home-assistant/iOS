@@ -5,8 +5,6 @@ import OHHTTPStubs
 import ObjectMapper
 import PromiseKit
 
-// swiftlint:disable file_length
-// swiftlint:disable:next type_body_length
 class WebhookManagerTests: XCTestCase {
     private var manager: WebhookManager!
     private var api: FakeHassAPI!

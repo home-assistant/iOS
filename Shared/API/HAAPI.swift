@@ -167,7 +167,7 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func Connect(reason: ConnectReason) -> Promise<ConfigResponse> {
+    public func Connect(reason: ConnectReason) -> Promise<Void> {
         return firstly {
             self.UpdateRegistration()
         }.recover { error -> Promise<MobileAppRegistrationResponse> in
@@ -181,24 +181,16 @@ public class HomeAssistantAPI {
                 "error": String(describing: error)
             ]))
             return self.Register()
-        }.then { _ -> Promise<(ConfigResponse, [Zone], Void, [WatchComplication])> in
-            return when(fulfilled:
-                self.GetConfig(),
-                self.GetZones(),
+        }.then { _ in
+            return when(fulfilled: [
+                self.GetConfig().asVoid(),
+                Current.modelManager.fetch(),
                 self.UpdateSensors(trigger: reason.updateSensorTrigger).asVoid(),
-                self.updateComplications()
-            )
-        }.map { config, zones, _, _ in
-            if let oldHA = self.ensureVersion(config.Version) {
-                throw oldHA
-            }
-
+                self.updateComplications().asVoid()
+            ]).asVoid()
+        }.get { _ in
             NotificationCenter.default.post(name: Self.didConnectNotification,
                                             object: nil, userInfo: nil)
-
-            self.storeZones(zones: zones)
-
-            return config
         }
     }
 
@@ -307,6 +299,10 @@ public class HomeAssistantAPI {
     }
 
     public func GetStates() -> Promise<[Entity]> {
+        return self.request(path: "states", callingFunctionName: "\(#function)")
+    }
+
+    public func GetScenes() -> Promise<[Scene]> {
         return self.request(path: "states", callingFunctionName: "\(#function)")
     }
 
@@ -450,36 +446,6 @@ public class HomeAssistantAPI {
         ident.OSVersion = deviceKitDevice.systemVersion
 
         return Mapper().toJSON(ident)
-    }
-
-    public func storeZones(zones: [Zone]) {
-        let realm = Current.realm()
-
-        do {
-            try realm.write {
-                let existingIDs = Set(realm.objects(RLMZone.self).map(\.ID))
-                let incomingIDs = Set(zones.map(\.ID))
-                let deletedIDs = existingIDs.subtracting(incomingIDs)
-
-                for zone in zones {
-                    let updatingZone: RLMZone
-
-                    if let existing = realm.object(ofType: RLMZone.self, forPrimaryKey: zone.ID) {
-                        updatingZone = existing
-                    } else {
-                        Current.Log.verbose("creating \(zone.ID)")
-                        updatingZone = RLMZone()
-                    }
-
-                    updatingZone.update(with: zone)
-                    realm.add(updatingZone, update: .all)
-                }
-
-                realm.delete(realm.objects(RLMZone.self).filter("ID in %@", deletedIDs))
-            }
-        } catch {
-            Current.Log.error("failed to update zones: \(error)")
-        }
     }
 
     public func SubmitLocation(updateType: LocationUpdateTrigger,
@@ -631,19 +597,42 @@ public class HomeAssistantAPI {
         ])
     }
 
-    public func HandleAction(actionID: String, actionName: String, source: ActionSource) -> Promise<Void> {
+    public class func actionScene(
+        actionID: String,
+        source: ActionSource
+    ) -> (serviceDomain: String, serviceName: String, serviceData: [String: String]) {
+        return (serviceDomain: "scene", serviceName: "turn_on", serviceData: [ "entity_id": actionID ])
+    }
+
+    public func HandleAction(actionID: String, source: ActionSource) -> Promise<Void> {
         return Promise { seal in
             guard let api = HomeAssistantAPI.authenticatedAPI() else {
                 throw APIError.notConfigured
             }
 
-            let action = Self.actionEvent(actionID: actionID, actionName: actionName, source: source)
-            Current.Log.verbose("Sending action: \(action.eventType) payload: \(action.eventData)")
+            guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
+                Current.Log.error("couldn't find action with id \(actionID)")
+                throw HomeAssistantAPI.APIError.cantBuildURL
+            }
 
-            api.CreateEvent(eventType: action.eventType, eventData: action.eventData).done { _ -> Void in
-                seal.fulfill(())
-            }.catch {error in
-                seal.reject(error)
+            switch action.triggerType {
+            case .event:
+                let actionInfo = Self.actionEvent(actionID: action.ID, actionName: action.Name, source: source)
+                Current.Log.verbose("Sending action: \(actionInfo.eventType) payload: \(actionInfo.eventData)")
+
+                api.CreateEvent(
+                    eventType: actionInfo.eventType,
+                    eventData: actionInfo.eventData
+                ).pipe(to: { seal.resolve($0) })
+            case .scene:
+                let serviceInfo = Self.actionScene(actionID: action.ID, source: source)
+                Current.Log.verbose("activating scene: \(action.ID)")
+
+                api.CallService(
+                    domain: serviceInfo.serviceDomain,
+                    service: serviceInfo.serviceName,
+                    serviceData: serviceInfo.serviceData
+                ).pipe(to: { seal.resolve($0) })
             }
         }
     }
@@ -679,14 +668,6 @@ public class HomeAssistantAPI {
                 request: .init(type: "update_sensor_states", data: payload)
             )
         }
-    }
-
-    public func ensureVersion(_ currentVersionStr: String) -> APIError? {
-//        let currentVersion = Version(stringLiteral: String(currentVersionStr.prefix(6)))
-//        if HomeAssistantAPI.minimumRequiredVersion > currentVersion {
-//            return APIError.mustUpgradeHomeAssistant(currentVersion)
-//        }
-        return nil
     }
 }
 

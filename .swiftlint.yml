@@ -1,8 +1,10 @@
 disabled_rules:
   - identifier_name
   - todo
+  - large_tuple
 excluded:
   - fastlane
   - HomeAssistantTests
   - HomeAssistantUITests
+  - SharedTests
   - Pods

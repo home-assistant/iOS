@@ -1,4 +1,3 @@
-// swiftlint:disable file_length
 import CoreLocation
 import Foundation
 import PromiseKit
@@ -6,7 +5,6 @@ import XCTest
 import XCGLogger
 @testable import Shared
 
-// swiftlint:disable:next type_body_length
 class OneShotLocationTests: XCTestCase {
     private var locationManager: FakeLocationManager!
     private var now: Date!
@@ -63,7 +61,6 @@ class OneShotLocationTests: XCTestCase {
             workQueue: workQueue
         ).promise
 
-        // swiftlint:disable:next nesting
         enum SomeError: Error {
             case yep
         }
@@ -537,7 +534,6 @@ class OneShotLocationTests: XCTestCase {
         }
     }
 
-    // swiftlint:disable trailing_comma
     var testCases: [LocationTestCase] = [
         // second one always is the winner, order is done both ways to make sure logic is fine
         .init(age1:   5, acc1:   90, age2:  0, acc2:  100, "both perfect, more recent wins"),
@@ -545,7 +541,6 @@ class OneShotLocationTests: XCTestCase {
         .init(age1:  35, acc1:  500, age2: 40, acc2:  250, "close timing, more accurate wins"),
         .init(age1: 120, acc1:  100, age2: 35, acc2: 1000, "much more recent wins, even over accuracy"),
     ]
-    // swiftlint:enable trailing_comma
 
     func testSimpleTestCases() throws {
         for testCase in testCases {
@@ -584,7 +579,6 @@ private class FakeLocationManager: CLLocationManager {
         cachedLocation
     }
 
-    // swiftlint:disable weak_delegate
     var overrideDelegate: CLLocationManagerDelegate?
     override var delegate: CLLocationManagerDelegate? {
         get {
@@ -606,7 +600,6 @@ private class FakeLocationManager: CLLocationManager {
 
     override var allowsBackgroundLocationUpdates: Bool {
         get { false }
-        // swiftlint:disable:next unused_setter_value
         set { }
     }
 }

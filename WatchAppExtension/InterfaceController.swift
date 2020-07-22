@@ -116,8 +116,7 @@ class InterfaceController: WKInterfaceController {
         if Communicator.shared.currentReachability == .immediateMessaging {
             Current.Log.verbose("Signaling action pressed via phone")
             let actionMessage = ImmediateMessage(identifier: "ActionRowPressed",
-                                                 content: ["ActionID": selectedAction.ID,
-                                                           "ActionName": selectedAction.Name],
+                                                 content: ["ActionID": selectedAction.ID],
                                                  replyHandler: { replyDict in
                                                     Current.Log.verbose("Received reply dictionary \(replyDict)")
 
@@ -141,7 +140,7 @@ class InterfaceController: WKInterfaceController {
         } else if Communicator.shared.currentReachability == .notReachable { // Phone isn't connected
             Current.Log.verbose("Signaling action pressed via watch")
             HomeAssistantAPI.authenticatedAPIPromise.then { api in
-                api.HandleAction(actionID: selectedAction.ID, actionName: selectedAction.Name, source: .Watch)
+                api.HandleAction(actionID: selectedAction.ID, source: .Watch)
             }.done { _ in
                 self.handleActionSuccess(row, rowIndex)
             }.catch { err -> Void in

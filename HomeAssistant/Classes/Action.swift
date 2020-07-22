@@ -22,6 +22,7 @@ public class Action: Object, Mappable, NSCoding {
     @objc dynamic public var Text: String = ""
     @objc dynamic public var TextColor: String = UIColor.randomColor().hexString()
     @objc dynamic public var CreatedAt = Date()
+    @objc dynamic public var Scene: RLMScene?
 
     override public static func primaryKey() -> String? {
         return "ID"
@@ -68,11 +69,27 @@ public class Action: Object, Mappable, NSCoding {
 
     #if os(iOS)
     public var uiShortcut: UIApplicationShortcutItem {
-        return UIApplicationShortcutItem(type: self.ID, localizedTitle: self.Text,
-                                         localizedSubtitle: nil, icon: nil,
-                                         userInfo: ["name": self.Name as NSSecureCoding])
+        return UIApplicationShortcutItem(
+            type: self.ID,
+            localizedTitle: self.Text,
+            localizedSubtitle: nil,
+            icon: nil,
+            userInfo: [:]
+        )
     }
     #endif
+
+    public enum TriggerType {
+        case event
+        case scene
+    }
+    public var triggerType: TriggerType {
+        if Scene == nil {
+            return .event
+        } else {
+            return .scene
+        }
+    }
 
     public var exampleTrigger: String {
         let data = HomeAssistantAPI.actionEvent(actionID: ID, actionName: Name, source: .Preview)

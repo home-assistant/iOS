@@ -278,7 +278,7 @@ class ActionPreview: UIView {
             self.backgroundColor = UIColor(hex: action.BackgroundColor)
 
             let icon = MaterialDesignIcons.init(named: action.IconName)
-            self.imageView.image = icon.image(ofSize: CGSize(width: 22, height: 22),
+            self.imageView.image = icon.image(ofSize: self.imageView.bounds.size,
                                               color: UIColor(hex: action.IconColor))
             self.title.text = action.Text
             self.title.textColor = UIColor(hex: action.TextColor)
@@ -296,7 +296,7 @@ class ActionPreview: UIView {
         firstly {
             HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
-                api.HandleAction(actionID: action.ID, actionName: action.Name, source: .Preview)
+                api.HandleAction(actionID: action.ID, source: .Preview)
             }.done { _ in
                 feedbackGenerator.notificationOccurred(.success)
             }.ensure {

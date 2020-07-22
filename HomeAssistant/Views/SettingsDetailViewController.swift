@@ -12,10 +12,10 @@ import Shared
 import Intents
 import IntentsUI
 import PromiseKit
+import Iconic
 import RealmSwift
 import Firebase
 import CoreMotion
-import NotificationCenter
 import FirebaseCrashlytics
 import DeviceKit
 
@@ -284,18 +284,9 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
         case "actions":
             self.title = L10n.SettingsDetails.Actions.title
-            let actions = realm.objects(Action.self).sorted(byKeyPath: "Position")
-
-            notificationTokens.append(actions.observe { change in
-                switch change {
-                case .error: break
-                case .initial(let results), .update(let results, deletions: _, insertions: _, modifications: _):
-                    NCWidgetController().setHasContent(
-                        !results.isEmpty,
-                        forWidgetWithBundleIdentifier: Constants.BundleID.appending(".TodayWidget")
-                    )
-                }
-            })
+            let actions = realm.objects(Action.self)
+                .sorted(byKeyPath: "Position")
+                .filter("Scene == nil")
 
             let infoBarButtonItem = Constants.helpBarButtonItem
 
@@ -304,27 +295,78 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
             self.navigationItem.rightBarButtonItem = infoBarButtonItem
 
-            self.form
-                // swiftlint:disable:next line_length
-                +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "", footer: L10n.SettingsDetails.Actions.footer) { section in
-                        section.tag = "actions"
-                        section.multivaluedRowToInsertAt = { _ -> ButtonRowWithPresent<ActionConfigurator> in
-                            return self.getActionRow(nil)
-                        }
-                        section.addButtonProvider = { section in
-                            return ButtonRow {
-                                $0.title = L10n.addButtonLabel
-                                $0.cellStyle = .value1
-                                $0.tag = "add_action"
-                            }.cellUpdate { cell, _ in
-                                cell.textLabel?.textAlignment = .left
-                            }
-                        }
+            let refreshControl = UIRefreshControl()
+            tableView.refreshControl = refreshControl
+            refreshControl.addTarget(self, action: #selector(refreshScenes(_:)), for: .valueChanged)
 
-                        for action in actions {
-                            section <<< getActionRow(action)
-                        }
+            form +++ MultivaluedSection(
+                multivaluedOptions: [.Insert, .Delete, .Reorder],
+                header: "",
+                footer: L10n.SettingsDetails.Actions.footer
+            ) { section in
+                section.tag = "actions"
+                section.multivaluedRowToInsertAt = { [unowned self] _ -> ButtonRowWithPresent<ActionConfigurator> in
+                    return self.getActionRow(nil)
+                }
+                section.addButtonProvider = { section in
+                    return ButtonRow {
+                        $0.title = L10n.addButtonLabel
+                        $0.cellStyle = .value1
+                        $0.tag = "add_action"
+                    }.cellUpdate { cell, _ in
+                        cell.textLabel?.textAlignment = .left
+                    }
+                }
+
+                for action in actions {
+                    section <<< getActionRow(action)
+                }
             }
+
+            let sceneSection = Section(
+                header: L10n.SettingsDetails.Actions.Scenes.title,
+                footer: L10n.SettingsDetails.Actions.Scenes.footer
+            ) {
+                $0.tag = "scenes"
+            }
+
+            form +++ sceneSection
+
+            let update = { [tableView] (scenes: AnyCollection<RLMScene>) in
+                tableView?.beginUpdates()
+                sceneSection.removeAll()
+
+                if scenes.isEmpty {
+                    sceneSection.append(LabelRow {
+                        $0.title = L10n.SettingsDetails.Actions.Scenes.empty
+                        $0.disabled = true
+                    })
+                } else {
+                    sceneSection.append(contentsOf: scenes.map { Self.getSceneRow($0) })
+                }
+
+                sceneSection.reload()
+                tableView?.endUpdates()
+            }
+
+            let scenes = realm.objects(RLMScene.self).sorted(byKeyPath: RLMScene.positionKeyPath)
+
+            UIView.performWithoutAnimation {
+                update(AnyCollection(scenes))
+            }
+
+            notificationTokens.append(scenes.observe { change in
+                switch change {
+                case .initial:
+                    // defering a run loop here causes weird ordering issues with eureka, makes the onChange not fire
+                    break
+                case .update(let results, deletions: _, insertions: _, modifications: _):
+                    update(AnyCollection(results))
+                case .error:
+                    break
+                }
+            })
+
         case "privacy":
             self.title = L10n.SettingsDetails.Privacy.title
             let infoBarButtonItem = Constants.helpBarButtonItem
@@ -462,6 +504,43 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
     @objc func closeSettingsDetailView(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+
+    @objc private func refreshScenes(_ sender: UIRefreshControl) {
+        sender.beginRefreshing()
+
+        firstly {
+            Current.modelManager.fetch()
+        }.ensure {
+            sender.endRefreshing()
+        }.cauterize()
+    }
+
+    static func getSceneRow(_ rlmScene: RLMScene) -> SwitchRow {
+        let row = SwitchRow()
+
+        let scene = rlmScene.scene
+        row.title = scene.FriendlyName ?? scene.ID
+        row.value = rlmScene.actionEnabled
+        row.cellUpdate { cell, _ in
+            cell.imageView?.image =
+                scene.Icon
+                    .flatMap({ MaterialDesignIcons(serversideValueNamed: $0) })?
+                    .image(ofSize: CGSize(width: 28, height: 28), color: .black)
+                    .withRenderingMode(.alwaysTemplate)
+        }
+        row.onChange { row in
+            let realm = Current.realm()
+            do {
+                try realm.write {
+                    rlmScene.actionEnabled = row.value ?? true
+                }
+            } catch {
+                Current.Log.error("couldn't write action update: \(error)")
+            }
+        }
+
+        return row
     }
 
     func getActionRow(_ inputAction: Action?) -> ButtonRowWithPresent<ActionConfigurator> {

@@ -54,7 +54,7 @@ class ConnectInstanceViewController: UIViewController {
             self.configureAnimation(aView)
         }
 
-        self.Connect().done { _ in
+        self.Connect().done {
             Current.Log.verbose("Done with setup, continuing!")
 
             self.overallProgress.loopMode = .playOnce
@@ -134,7 +134,7 @@ class ConnectInstanceViewController: UIViewController {
         case noAuthenticatedAPI
     }
 
-    public func Connect() -> Promise<ConfigResponse> {
+    public func Connect() -> Promise<Void> {
         guard let api = HomeAssistantAPI.authenticatedAPI(urlConfig: .default, forceInit: true) else {
             Current.Log.error("Couldn't get authenticated API!")
             return Promise(error: ConnectionError.noAuthenticatedAPI)
@@ -153,21 +153,17 @@ class ConnectInstanceViewController: UIViewController {
             self.setAnimationStatus(self.encrypted, state: encryptState)
 
             return Promise.value(regResponse)
-        }.then { _ -> Promise<(ConfigResponse, [Zone], Void)> in
-            return when(fulfilled: api.GetConfig(), api.GetZones(), api.RegisterSensors())
-        }.map { config, zones, _ in
-            if let oldHA = api.ensureVersion(config.Version) {
-                throw oldHA
-            }
-
+        }.then { _ in
+            return when(fulfilled: [
+                api.GetConfig().asVoid(),
+                Current.modelManager.fetch(),
+                api.RegisterSensors().asVoid()
+            ]).asVoid()
+        }.map { _ in
             NotificationCenter.default.post(name: HomeAssistantAPI.didConnectNotification,
                                             object: nil, userInfo: nil)
 
-            api.storeZones(zones: zones)
-
             self.setAnimationStatus(self.sensorsConfigured, state: .success)
-
-            return config
         }
     }
 }

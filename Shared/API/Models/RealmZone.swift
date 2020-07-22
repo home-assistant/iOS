@@ -10,7 +10,7 @@ import Foundation
 import CoreLocation
 import RealmSwift
 
-public class RLMZone: Object {
+public final class RLMZone: Object, UpdatableModel {
 
     @objc public dynamic var ID: String = ""
     @objc public dynamic var FriendlyName: String?
@@ -36,7 +36,11 @@ public class RLMZone: Object {
         ID == "zone.home"
     }
 
-    func update(with zone: Zone) {
+    static func didUpdate(objects: [RLMZone]) {
+
+    }
+
+    func update(with zone: Zone, using: Realm) {
         if realm == nil {
             self.ID = zone.ID
         } else {
