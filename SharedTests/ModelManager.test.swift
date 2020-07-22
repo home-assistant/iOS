@@ -9,11 +9,13 @@ import PromiseKit
 class ModelManagerTests: XCTestCase {
     var realm: Realm!
     var testQueue: DispatchQueue!
+    var manager: ModelManager!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
 
         testQueue = DispatchQueue(label: #file)
+        manager = ModelManager()
 
         let executionIdentifier = UUID().uuidString
         try testQueue.sync {
@@ -29,7 +31,7 @@ class ModelManagerTests: XCTestCase {
     }
 
     func testCleanupWithoutItems() {
-        let promise = ModelManager.cleanup(definitions: [])
+        let promise = manager.cleanup(definitions: [])
         XCTAssertNoThrow(try hang(promise))
     }
 
@@ -51,7 +53,7 @@ class ModelManagerTests: XCTestCase {
 
         XCTAssertTrue(models.allSatisfy { $0.realm != nil })
 
-        let promise = ModelManager.cleanup(
+        let promise = manager.cleanup(
             definitions: [
                 .init(
                     model: TestDeleteModel1.self,
@@ -110,7 +112,7 @@ class ModelManagerTests: XCTestCase {
         XCTAssertTrue(expectedExpired.allSatisfy { $0.realm != nil })
         XCTAssertTrue(expectedAlive.allSatisfy { $0.realm != nil })
 
-        let promise = ModelManager.cleanup(
+        let promise = manager.cleanup(
             definitions: [
                 .init(
                     model: TestDeleteModel1.self,
