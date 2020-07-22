@@ -170,7 +170,6 @@ private struct ReportedError {
     private static let domain = "ZoneManagerRegionFilterError"
 
     let code: Code
-    // swiftlint:disable:next large_tuple
     let regionCount: (beacon: Int, circular: Int, zone: Int)
     let decisionSource: String
 

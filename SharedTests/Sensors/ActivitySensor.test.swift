@@ -86,7 +86,7 @@ class ActivitySensorTests: XCTestCase {
         Current.motion.isAuthorized = { true }
         Current.motion.isActivityAvailable = { true }
 
-        // swiftlint:disable opening_brace
+
         let testCases: [(FakeMotionActivity) -> Void] = [
             { $0.walking = true },
             { $0.running = true },
@@ -101,7 +101,6 @@ class ActivitySensorTests: XCTestCase {
             { $0.walking = true; $0.confidence = .medium },
             { $0.walking = true; $0.confidence = .high }
         ]
-        // swiftlint:enable opening_brace
 
         for testCase in testCases {
             let activity = with(FakeMotionActivity()) { testCase($0) }

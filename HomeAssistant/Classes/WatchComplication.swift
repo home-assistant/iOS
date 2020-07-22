@@ -166,7 +166,6 @@ public class WatchComplication: Object, Mappable {
         return nil
     }
 
-    // swiftlint:disable:next large_tuple
     public var ringData: (Float, CLKComplicationRingStyle, UIColor) {
         guard let ringDict = self.Data["ring"] as? [String: String], let ringValue = ringDict["ring"],
             let floatVal = Float(ringValue), let ringColor = ringDict["ring_color"],

@@ -88,7 +88,6 @@ class WebhookResponseUpdateSensorsTests: XCTestCase {
 
         let expectedRegisteredKeys = Set(sensors[0...1].map { $0.UniqueID! })
         // false-positive, changing to short hand doesn't compile
-        // swiftlint:disable:next syntactic_sugar
         let result = Dictionary<String, [String: Any]>(uniqueKeysWithValues: sensors.enumerated().map { idx, sensor in
             if idx <= 1 {
                 return (sensor.UniqueID!, WebhookSensorResponse(

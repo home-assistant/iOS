@@ -4,8 +4,6 @@ import PromiseKit
 import XCTest
 import DeviceKit
 
-// swiftlint:disable large_tuple
-
 class BatterySensorTests: XCTestCase {
     func testBattery0() throws {
         let (uLevel, uState, cLevel, cState) = try sensors(level: 0)

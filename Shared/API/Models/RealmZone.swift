@@ -37,7 +37,7 @@ public final class RLMZone: Object, UpdatableModel {
     }
 
     static func didUpdate(objects: [RLMZone]) {
-        
+
     }
 
     func update(with zone: Zone, using: Realm) {
