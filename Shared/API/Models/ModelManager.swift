@@ -103,12 +103,12 @@ public final class ModelManager {
 
         public static var defaults: [Self] = [
             .init(update: { api, queue, manager in
-                api.GetZones().done(on: queue) { manager.store(type: RLMZone.self, sourceModels: $0) }
+                api.GetZones().done(on: queue) { try manager.store(type: RLMZone.self, sourceModels: $0) }
             }),
             .init(update: { api, queue, manager in
                 api.GetStates()
                     .compactMapValues { $0 as? Scene }
-                    .done(on: queue) { manager.store(type: RLMScene.self, sourceModels: $0) }
+                    .done(on: queue) { try manager.store(type: RLMScene.self, sourceModels: $0) }
             })
         ]
     }
@@ -117,62 +117,61 @@ public final class ModelManager {
         definitions: [FetchDefinition] = FetchDefinition.defaults,
         on queue: DispatchQueue = .global(qos: .utility)
     ) -> Promise<Void> {
-        guard let api = HomeAssistantAPI.authenticatedAPI() else {
+        guard let api = Current.api() else {
             return .value(())
         }
 
         return when(fulfilled: definitions.map { $0.update(api, queue, self) })
     }
 
-    private func store<UM: Object & UpdatableModel>(
+    internal enum StoreError: Error {
+        case missingPrimaryKey
+    }
+
+    internal func store<UM: Object & UpdatableModel>(
         type realmObjectType: UM.Type,
         sourceModels: [UM.Source]
-    ) {
+    ) throws {
         let realm = Current.realm()
-
-        do {
-            try realm.write {
-                guard let realmPrimaryKey = realmObjectType.primaryKey() else {
-                    Current.Log.error("invalid realm object type: \(realmObjectType)")
-                    return
-                }
-
-                let existingIDs = Set(realm.objects(UM.self).compactMap { $0[realmPrimaryKey] as? String })
-                let incomingIDs = Set(sourceModels.map(\.primaryKey))
-
-                let deletedIDs = existingIDs.subtracting(incomingIDs)
-                let newIDs = incomingIDs.subtracting(existingIDs)
-
-                Current.Log.verbose(
-                    [
-                        "updating \(UM.self)",
-                        "from(\(existingIDs.count))",
-                        "to(\(incomingIDs.count))",
-                        "deleted(\(deletedIDs.count))",
-                        "new(\(newIDs.count))"
-                    ].joined(separator: " ")
-                )
-
-                let updatedModels: [UM] = sourceModels.map { model in
-                    let updating: UM
-
-                    if let existing = realm.object(ofType: UM.self, forPrimaryKey: model.primaryKey) {
-                        updating = existing
-                    } else {
-                        Current.Log.verbose("creating \(model.primaryKey)")
-                        updating = UM()
-                    }
-
-                    updating.update(with: model, using: realm)
-                    return updating
-                }
-
-                realm.add(updatedModels, update: .all)
-                realm.delete(realm.objects(UM.self).filter("%K in %@", realmPrimaryKey, deletedIDs))
-                UM.didUpdate(objects: updatedModels)
+        try realm.write {
+            guard let realmPrimaryKey = realmObjectType.primaryKey() else {
+                Current.Log.error("invalid realm object type: \(realmObjectType)")
+                throw StoreError.missingPrimaryKey
             }
-        } catch {
-            Current.Log.error("failed to update \(UM.self): \(error)")
+
+            let existingIDs = Set(realm.objects(UM.self).compactMap { $0[realmPrimaryKey] as? String })
+            let incomingIDs = Set(sourceModels.map(\.primaryKey))
+
+            let deletedIDs = existingIDs.subtracting(incomingIDs)
+            let newIDs = incomingIDs.subtracting(existingIDs)
+
+            Current.Log.verbose(
+                [
+                    "updating \(UM.self)",
+                    "from(\(existingIDs.count))",
+                    "to(\(incomingIDs.count))",
+                    "deleted(\(deletedIDs.count))",
+                    "new(\(newIDs.count))"
+                ].joined(separator: " ")
+            )
+
+            let updatedModels: [UM] = sourceModels.map { model in
+                let updating: UM
+
+                if let existing = realm.object(ofType: UM.self, forPrimaryKey: model.primaryKey) {
+                    updating = existing
+                } else {
+                    Current.Log.verbose("creating \(model.primaryKey)")
+                    updating = UM()
+                }
+
+                updating.update(with: model, using: realm)
+                return updating
+            }
+
+            realm.add(updatedModels, update: .all)
+            realm.delete(realm.objects(UM.self).filter("%K in %@", realmPrimaryKey, deletedIDs))
+            UM.didUpdate(objects: updatedModels)
         }
     }
 }
