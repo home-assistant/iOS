@@ -441,11 +441,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
 
-        if prefs.object(forKey: "onboarding_complete_newconninfo") == nil {
-            Current.Log.info("requiring onboarding due to onboarding not being finished")
-            return true
-        }
-
         return false
     }
 
@@ -767,8 +762,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let webhookID = prefs.string(forKey: "webhookID") else {
             fatalError("Required fastlane argument 'webhookID' not provided or invalid!")
         }
-
-        prefs.set(true, forKey: "onboarding_complete_newconninfo")
 
         let connectionInfo = ConnectionInfo(externalURL: url, internalURL: nil, cloudhookURL: nil, remoteUIURL: nil,
                                             webhookID: webhookID,
