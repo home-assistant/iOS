@@ -11,7 +11,6 @@ import CallbackURLKit
 import Communicator
 import Firebase
 import Iconic
-import Intents
 import KeychainAccess
 import Lokalise
 import PromiseKit
@@ -588,21 +587,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func fireEventURLHandler(_ url: URL, _ serviceData: [String: String]) {
         // homeassistant://fire_event/custom_event?entity_id=device_tracker.entity
 
-        if #available(iOS 12.0, *) {
-            let interaction = INInteraction(intent: FireEventIntent(eventName: url.pathComponents[1],
-                                                                    payload: url.query), response: nil)
-
-            interaction.donate { (error) in
-                if error != nil {
-                    if let error = error as NSError? {
-                        Current.Log.error("FireEvent Interaction donation failed: \(error)")
-                    } else {
-                        Current.Log.verbose("FireEvent Successfully donated interaction")
-                    }
-                }
-            }
-        }
-
         _ = firstly {
             HomeAssistantAPI.authenticatedAPIPromise
             }.then { api in
@@ -621,22 +605,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // homeassistant://call_service/device_tracker.see?entity_id=device_tracker.entity
         let domain = url.pathComponents[1].components(separatedBy: ".")[0]
         let service = url.pathComponents[1].components(separatedBy: ".")[1]
-
-        if #available(iOS 12.0, *) {
-            let intent = CallServiceIntent(domain: domain, service: service, payload: url.queryItems)
-
-            let interaction = INInteraction(intent: intent, response: nil)
-
-            interaction.donate { (error) in
-                if error != nil {
-                    if let error = error as NSError? {
-                        Current.Log.error("CallService Interaction donation failed: \(error)")
-                    } else {
-                        Current.Log.verbose("CallService Successfully donated interaction")
-                    }
-                }
-            }
-        }
 
         _ = firstly {
             HomeAssistantAPI.authenticatedAPIPromise
@@ -719,14 +687,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @available(iOS 12.0, *)
-    func suggestSiriShortcuts() {
-        let shortcuts: [INShortcut] = [FireEventIntent(), SendLocationIntent(), CallServiceIntent(),
-                                       GetCameraImageIntent(),
-                                       RenderTemplateIntent()].compactMap { INShortcut(intent: $0) }
-        INVoiceShortcutCenter.shared.setShortcutSuggestions(shortcuts)
-    }
-
-    @available(iOS 12.0, *)
     func setupiOS12Features() {
         // Tell the system we have a app notification settings screen and want critical alerts
         // This is effectively a migration
@@ -738,8 +698,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 Current.Log.verbose("Requested critical alert access \(granted), \(String(describing: error))")
             }
         }
-
-        suggestSiriShortcuts()
     }
 
     func setupFastlaneSnapshotConfiguration() {

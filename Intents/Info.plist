@@ -38,6 +38,7 @@
 				<string>CallServiceIntent</string>
 				<string>FireEventIntent</string>
 				<string>GetCameraImageIntent</string>
+				<string>PerformActionIntent</string>
 				<string>RenderTemplateIntent</string>
 				<string>SendLocationIntent</string>
 			</array>
