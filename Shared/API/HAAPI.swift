@@ -195,6 +195,11 @@ public class HomeAssistantAPI {
     }
 
     public func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<Void> {
+        if #available(iOS 12, *) {
+            let intent = FireEventIntent(eventName: eventType, payload: eventData)
+            INInteraction(intent: intent, response: nil).donate(completion: nil)
+        }
+
         return Current.webhooks.send(
             identifier: .unhandled,
             request: .init(type: "fire_event", data: [
@@ -312,6 +317,11 @@ public class HomeAssistantAPI {
 
     public func CallService(domain: String, service: String, serviceData: [String: Any],
                             shouldLog: Bool = true) -> Promise<Void> {
+        if #available(iOS 12, *) {
+            let intent = CallServiceIntent(domain: domain, service: service, payload: serviceData)
+            INInteraction(intent: intent, response: nil).donate(completion: nil)
+        }
+
         return Current.webhooks.send(
             identifier: .serviceCall,
             request: .init(type: "call_service", data: [
@@ -538,6 +548,7 @@ public class HomeAssistantAPI {
         case Widget
         case AppShortcut // UIApplicationShortcutItem
         case Preview
+        case SiriShortcut
 
         var description: String {
             switch self {
@@ -549,6 +560,8 @@ public class HomeAssistantAPI {
                 return "appShortcut"
             case .Preview:
                 return "preview"
+            case .SiriShortcut:
+                return "siriShortcut"
             }
         }
     }
@@ -613,6 +626,11 @@ public class HomeAssistantAPI {
             guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
                 Current.Log.error("couldn't find action with id \(actionID)")
                 throw HomeAssistantAPI.APIError.cantBuildURL
+            }
+
+            if #available(iOS 12, *) {
+                let intent = PerformActionIntent(action: action)
+                INInteraction(intent: intent, response: nil).donate(completion: nil)
             }
 
             switch action.triggerType {

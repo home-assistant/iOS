@@ -21,23 +21,30 @@ class IntentHandler: INExtension {
             Current.tokenManager = TokenManager(connectionInfo: connectionInfo, tokenInfo: tokenInfo)
         }
 
-        if intent is FireEventIntent {
-            return FireEventIntentHandler()
-        }
-        if intent is CallServiceIntent {
-            return CallServiceIntentHandler()
-        }
-        if intent is SendLocationIntent {
-            return SendLocationIntentHandler()
-        }
-        if intent is GetCameraImageIntent {
-            return GetCameraImageIntentHandler()
-        }
-        if intent is RenderTemplateIntent {
-            return RenderTemplateIntentHandler()
-        }
+        let handler: Any = {
+            if intent is FireEventIntent {
+                return FireEventIntentHandler()
+            }
+            if intent is CallServiceIntent {
+                return CallServiceIntentHandler()
+            }
+            if intent is SendLocationIntent {
+                return SendLocationIntentHandler()
+            }
+            if intent is GetCameraImageIntent {
+                return GetCameraImageIntentHandler()
+            }
+            if intent is RenderTemplateIntent {
+                return RenderTemplateIntentHandler()
+            }
+            if intent is PerformActionIntent {
+                return PerformActionIntentHandler()
+            }
+            return self
+        }()
 
-        return self
+        Current.Log.info("for \(intent) found handler \(handler)")
+        return handler
     }
 
 }
