@@ -48,10 +48,19 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
             self.title = L10n.NotificationsConfigurator.NewAction.title
         }
 
-        let saveSelector = #selector(NotificationActionConfigurator.save)
+        if !action.isServerControlled {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: .cancel,
+                target: self,
+                action: #selector(cancel)
+            )
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
-                                                                 action: saveSelector)
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: .save,
+                target: self,
+                action: #selector(save(_:))
+            )
+        }
 
         TextRow.defaultCellUpdate = { cell, row in
             if !row.isValid {
@@ -67,9 +76,13 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
 
 //        let existingActionIDs = Array(Current.realm().objects(NotificationAction.self).map({ $0.Identifier }))
 
-        var footer = L10n.NotificationsConfigurator.Settings.footer
+        let footer: String?
 
-        if !self.newAction {
+        if action.isServerControlled {
+            footer = nil
+        } else if newAction {
+            footer = L10n.NotificationsConfigurator.Settings.footer
+        } else {
             footer = L10n.NotificationsConfigurator.Settings.Footer.idSet
         }
 
@@ -78,13 +91,16 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                     footer: footer)
 
         <<< TextRow {
-                $0.tag = "title"
-                $0.title = L10n.NotificationsConfigurator.Action.Rows.Title.title
-                $0.add(rule: RuleRequired())
-                if !self.newAction {
-                    $0.value = self.action.Title
-                }
+            $0.tag = "title"
+            $0.title = L10n.NotificationsConfigurator.Action.Rows.Title.title
+            $0.add(rule: RuleRequired())
+            if action.isServerControlled {
+                $0.disabled = true
             }
+            if !self.newAction {
+                $0.value = self.action.Title
+            }
+        }
 
         <<< NotificationIdentifierRow {
                 $0.tag = "identifier"
@@ -96,23 +112,29 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                 }
             }
 
-        +++ SwitchRow {
-                $0.tag = "textInput"
-                $0.title = L10n.NotificationsConfigurator.Action.TextInput.title
-                if !self.newAction {
-                    $0.value = self.action.TextInput
+        +++ Section {
+            if self.action.isServerControlled {
+                $0.hidden = true
+            }
+        }
+
+        <<< SwitchRow {
+            $0.tag = "textInput"
+            $0.title = L10n.NotificationsConfigurator.Action.TextInput.title
+            if !self.newAction {
+                $0.value = self.action.TextInput
+            }
+        }.onChange { row in
+            if let value = row.value {
+                if let buttonTitle = self.form.rowBy(tag: "textInputButtonTitle") {
+                    buttonTitle.hidden = Condition(booleanLiteral: !value)
+                    buttonTitle.evaluateHidden()
                 }
-            }.onChange { row in
-                if let value = row.value {
-                    if let buttonTitle = self.form.rowBy(tag: "textInputButtonTitle") {
-                        buttonTitle.hidden = Condition(booleanLiteral: !value)
-                        buttonTitle.evaluateHidden()
-                    }
-                    if let placeholder = self.form.rowBy(tag: "textInputPlaceholder") {
-                        placeholder.hidden = Condition(booleanLiteral: !value)
-                        placeholder.evaluateHidden()
-                    }
+                if let placeholder = self.form.rowBy(tag: "textInputPlaceholder") {
+                    placeholder.hidden = Condition(booleanLiteral: !value)
+                    placeholder.evaluateHidden()
                 }
+            }
         }
 
         <<< TextRow {
@@ -135,7 +157,14 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                 }
             }
 
-        +++ Section(footer: L10n.NotificationsConfigurator.Action.Rows.Foreground.footer)
+        +++ Section(
+            footer: L10n.NotificationsConfigurator.Action.Rows.Foreground.footer
+        ) {
+            if action.isServerControlled {
+                $0.hidden = true
+            }
+        }
+
         <<< SwitchRow {
                 $0.tag = "foreground"
                 $0.title = L10n.NotificationsConfigurator.Action.Rows.Foreground.title
@@ -144,7 +173,14 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                 }
             }
 
-        +++ Section(footer: L10n.NotificationsConfigurator.Action.Rows.Destructive.footer)
+        +++ Section(
+            footer: L10n.NotificationsConfigurator.Action.Rows.Destructive.footer
+        ) {
+            if action.isServerControlled {
+                $0.hidden = true
+            }
+        }
+
         <<< SwitchRow {
                 $0.tag = "destructive"
                 $0.title = L10n.NotificationsConfigurator.Action.Rows.Destructive.title
@@ -153,7 +189,13 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
                 }
             }
 
-        +++ Section(footer: L10n.NotificationsConfigurator.Action.Rows.AuthenticationRequired.footer)
+        +++ Section(
+            footer: L10n.NotificationsConfigurator.Action.Rows.AuthenticationRequired.footer
+        ) {
+            if action.isServerControlled {
+                $0.hidden = true
+            }
+        }
         <<< SwitchRow {
                 $0.tag = "authenticationRequired"
                 $0.title = L10n.NotificationsConfigurator.Action.Rows.AuthenticationRequired.title
@@ -183,6 +225,10 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+
+    @objc private func cancel() {
+        onDismissCallback?(self)
     }
 
     @objc

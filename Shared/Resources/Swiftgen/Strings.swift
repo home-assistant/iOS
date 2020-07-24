@@ -1566,6 +1566,12 @@ internal enum L10n {
         /// Categories
         internal static let header = L10n.tr("Localizable", "settings_details.notifications.categories.header")
       }
+      internal enum CategoriesSynced {
+        /// Categories defined in .yaml are not editable on device.
+        internal static let footer = L10n.tr("Localizable", "settings_details.notifications.categories_synced.footer")
+        /// Synced Categories
+        internal static let header = L10n.tr("Localizable", "settings_details.notifications.categories_synced.header")
+      }
       internal enum ImportLegacySettings {
         internal enum Alert {
           /// The push notification categories and actions have been imported from the server.

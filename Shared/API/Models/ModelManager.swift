@@ -103,12 +103,19 @@ public final class ModelManager {
 
         public static var defaults: [Self] = [
             .init(update: { api, queue, manager in
-                api.GetZones().done(on: queue) { try manager.store(type: RLMZone.self, sourceModels: $0) }
+                api.GetZones()
+                    .done(on: queue) { try manager.store(type: RLMZone.self, sourceModels: $0) }
             }),
             .init(update: { api, queue, manager in
                 api.GetStates()
                     .compactMapValues { $0 as? Scene }
                     .done(on: queue) { try manager.store(type: RLMScene.self, sourceModels: $0) }
+            }),
+            .init(update: { api, queue, manager in
+                api.GetPushSettings()
+                    .done(on: queue) {
+                        try manager.store(type: NotificationCategory.self, sourceModels: $0.Categories ?? [])
+                    }
             })
         ]
     }
@@ -170,7 +177,12 @@ public final class ModelManager {
             }
 
             realm.add(updatedModels, update: .all)
-            realm.delete(realm.objects(UM.self).filter("%K in %@", realmPrimaryKey, deletedIDs))
+
+            realm.delete(
+                realm.objects(UM.self)
+                    .filter(UM.updateEligiblePredicate)
+                    .filter("%K in %@", realmPrimaryKey, deletedIDs)
+            )
             UM.didUpdate(objects: updatedModels)
         }
     }

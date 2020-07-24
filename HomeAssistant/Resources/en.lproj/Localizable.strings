@@ -376,6 +376,8 @@
 "watch.labels.complication_text_areas.trailing.description" = "The text to display on the trailing edge of the gauge.";
 "watch.labels.complication_text_areas.trailing.label" = "Trailing";
 "settings_details.location.zones.radius.label" = "%li m";
+"settings_details.notifications.categories_synced.header" = "Synced Categories";
+"settings_details.notifications.categories_synced.footer" = "Categories defined in .yaml are not editable on device.";
 "settings_details.notifications.categories.header" = "Categories";
 "settings_details.notifications.new_category.title" = "New Category";
 "settings_details.watch.title" = "Apple Watch";

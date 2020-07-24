@@ -7,46 +7,50 @@
 //
 
 import Foundation
-import Shared
 import RealmSwift
 import DeviceKit
 import UserNotifications
 
-public class NotificationCategory: Object {
-    static let FallbackActionIdentifier = "_"
+final public class NotificationCategory: Object, UpdatableModel {
+    public static let FallbackActionIdentifier = "_"
 
-    @objc dynamic var Name: String = ""
-    @objc dynamic var Identifier: String = ""
-    @objc dynamic var HiddenPreviewsBodyPlaceholder: String?
+    @objc public dynamic var isServerControlled: Bool = false
+
+    @objc public dynamic var Name: String = ""
+    @objc public dynamic var Identifier: String = ""
+    @objc public dynamic var HiddenPreviewsBodyPlaceholder: String?
     // iOS 12+ only
-    @objc dynamic var CategorySummaryFormat: String?
+    @objc public dynamic var CategorySummaryFormat: String?
 
     // Options
-    @objc dynamic var SendDismissActions: Bool = true
-    @objc dynamic var HiddenPreviewsShowTitle: Bool = false
-    @objc dynamic var HiddenPreviewsShowSubtitle: Bool = false
+    @objc public dynamic var SendDismissActions: Bool = true
+    @objc public dynamic var HiddenPreviewsShowTitle: Bool = false
+    @objc public dynamic var HiddenPreviewsShowSubtitle: Bool = false
 
     // Maybe someday, HA will be on CarPlay (hey that rhymes!)...
     // @objc dynamic var AllowInCarPlay: Bool = false
 
-    var Actions = List<NotificationAction>()
+    public var Actions = List<NotificationAction>()
 
     override public static func primaryKey() -> String? {
         return "Identifier"
     }
 
-    var options: UNNotificationCategoryOptions {
+    public var options: UNNotificationCategoryOptions {
         var categoryOptions = UNNotificationCategoryOptions([])
 
         if self.SendDismissActions { categoryOptions.insert(.customDismissAction) }
 
-        if self.HiddenPreviewsShowTitle { categoryOptions.insert(.hiddenPreviewsShowTitle) }
-        if self.HiddenPreviewsShowSubtitle { categoryOptions.insert(.hiddenPreviewsShowSubtitle) }
+        #if os(iOS)
+            if self.HiddenPreviewsShowTitle { categoryOptions.insert(.hiddenPreviewsShowTitle) }
+            if self.HiddenPreviewsShowSubtitle { categoryOptions.insert(.hiddenPreviewsShowSubtitle) }
+        #endif
 
         return categoryOptions
     }
 
-    var categories: [UNNotificationCategory] {
+    #if os(iOS)
+    public var categories: [UNNotificationCategory] {
         let allActions = Array(self.Actions.map({ $0.action }))
 
         // both lowercase and uppercase since this is a point of confusion
@@ -66,6 +70,7 @@ public class NotificationCategory: Object {
             }
         }
     }
+    #endif
 
     public var exampleServiceCall: String {
         let urlStrings = Actions.map { "\"\($0.Identifier)\": \"http://example.com/url\"" }
@@ -97,5 +102,50 @@ public class NotificationCategory: Object {
           - "\(Self.FallbackActionIdentifier)": "http://example.com/fallback"
           - \(urlStrings.joined(separator: indentation + "- "))
         """
+    }
+
+    static func didUpdate(objects: [NotificationCategory]) {
+
+    }
+
+    static var updateEligiblePredicate: NSPredicate {
+        .init(format: "isServerControlled == YES")
+    }
+
+    public func update(with object: PushCategory, using realm: Realm) {
+        if self.realm == nil {
+            Identifier = object.Identifier.uppercased()
+        } else {
+            precondition(Identifier == object.Identifier.uppercased())
+        }
+
+        isServerControlled = true
+        Name = object.Name
+
+        // todo: update
+        realm.delete(Actions)
+        Actions.removeAll()
+
+        Actions.append(objectsIn: (object.Actions ?? []).map { action in
+            with(NotificationAction()) {
+                $0.isServerControlled = true
+                $0.Title = action.Title
+                $0.Identifier = action.Identifier
+                $0.AuthenticationRequired = action.AuthenticationRequired
+                $0.Foreground = (action.ActivationMode.lowercased() == "foreground")
+                $0.Destructive = action.Destructive
+                $0.TextInput = (action.Behavior.lowercased() == "textinput")
+                if let title = action.TextInputButtonTitle {
+                    $0.TextInputButtonTitle = title
+                } else {
+                    $0.TextInputButtonTitle = L10n.NotificationsConfigurator.Action.Rows.TextInputButtonTitle.title
+                }
+                if let placeholder = action.TextInputPlaceholder {
+                    $0.TextInputPlaceholder = placeholder
+                } else {
+                    $0.TextInputPlaceholder = L10n.NotificationsConfigurator.Action.Rows.TextInputPlaceholder.title
+                }
+            }
+        })
     }
 }

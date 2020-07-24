@@ -9,7 +9,7 @@
 import UIKit
 import Eureka
 import Shared
-import Realm
+import RealmSwift
 import Firebase
 import PromiseKit
 
@@ -106,13 +106,22 @@ class NotificationSettingsViewController: FormViewController {
                 }
             }
 
-        let categories = Current.realm().objects(NotificationCategory.self).sorted(byKeyPath: "Identifier")
+        let localCategories = Current.realm().objects(NotificationCategory.self)
+            .filter("isServerControlled == NO")
+            .sorted(byKeyPath: "Identifier")
+        let serverCategories = Current.realm().objects(NotificationCategory.self)
+            .filter("isServerControlled == YES")
+            .sorted(byKeyPath: "Identifier")
+
+        self.form +++ serverNotificationCategorySection(collection: AnyRealmCollection(serverCategories))
 
         let mvOpts: MultivaluedOptions = [.Insert, .Delete]
-        let header = L10n.SettingsDetails.Notifications.Categories.header
 
-        self.form
-            +++ MultivaluedSection(multivaluedOptions: mvOpts, header: header, footer: "") { section in
+        self.form +++ MultivaluedSection(
+                multivaluedOptions: mvOpts,
+                header: L10n.SettingsDetails.Notifications.Categories.header,
+                footer: nil
+            ) { section in
                 section.tag = "notification_categories"
                 section.multivaluedRowToInsertAt = { index in
                     return self.getNotificationCategoryRow(nil)
@@ -126,28 +135,8 @@ class NotificationSettingsViewController: FormViewController {
                     }
                 }
 
-                for category in categories {
+                for category in localCategories {
                     section <<< getNotificationCategoryRow(category)
-                }
-            }
-
-            +++ ButtonRow {
-                $0.title = L10n.SettingsDetails.Notifications.ImportLegacySettings.Button.title
-            }.onCellSelection { cell, _ in
-                _ = HomeAssistantAPI.authenticatedAPI()?.MigratePushSettingsToLocal().done { cats in
-                    let title = L10n.SettingsDetails.Notifications.ImportLegacySettings.Alert.title
-                    let message = L10n.SettingsDetails.Notifications.ImportLegacySettings.Alert.message
-                    let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-
-                    alert.popoverPresentationController?.sourceView = cell.contentView
-
-                    let rows = cats
-                        .filter { self.form.rowBy(tag: $0.Identifier) == nil }
-                        .map { self.getNotificationCategoryRow($0) }
-                    var section = self.form.sectionBy(tag: "notification_categories")
-                    section?.insert(contentsOf: rows, at: 0)
                 }
             }
 
@@ -352,8 +341,6 @@ class NotificationSettingsViewController: FormViewController {
                             realm.add(vc.category, update: .all)
                         }
                     }
-
-                    HomeAssistantAPI.ProvideNotificationCategoriesToSystem()
                 })
             }
     }
@@ -475,5 +462,22 @@ class NotificationSettingsViewController: FormViewController {
             }
         }
     }
+
+    func serverNotificationCategorySection(collection: AnyRealmCollection<NotificationCategory>) -> Section {
+        RealmSection(
+            header: L10n.SettingsDetails.Notifications.CategoriesSynced.header,
+            footer: L10n.SettingsDetails.Notifications.CategoriesSynced.footer,
+            collection: collection,
+            getter: { [weak self] in self?.getNotificationCategoryRow($0) },
+            didUpdate: { section, collection in
+                if collection.isEmpty {
+                    section.hidden = true
+                } else {
+                    section.hidden = false
+                }
+            }
+        )
+    }
+
 // swiftlint:disable:next file_length
 }

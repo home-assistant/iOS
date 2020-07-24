@@ -91,8 +91,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setupWatchCommunicator()
 
-        HomeAssistantAPI.ProvideNotificationCategoriesToSystem()
-
         if #available(iOS 12.0, *) { setupiOS12Features() }
 
         // window must be created before willFinishLaunching completes, or state restoration will not occur
@@ -905,6 +903,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func setupModels() {
         Current.modelManager.cleanup().cauterize()
         Action.setupObserver()
+        NotificationCategory.setupObserver()
     }
 }
 

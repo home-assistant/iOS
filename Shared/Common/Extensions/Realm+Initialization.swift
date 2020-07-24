@@ -69,11 +69,18 @@ extension Realm {
 
         // 5 - 2020-07-08 v2020.4
         // 6 - 2020-07-12 v2020.4
-        // 7 - 2020-07-20 v2020.4 (added RLMScene)
+        // 7 - 2020-07-20 v2020.5 (added RLMScene)
+        // 9 - 2020-07-23 v2020.5 (primary key removal on NotificationAction)
         let config = Realm.Configuration(
             fileURL: storeURL,
-            schemaVersion: 7,
-            migrationBlock: nil,
+            schemaVersion: 9,
+            migrationBlock: { migration, oldVersion in
+                if oldVersion < 9 {
+                    migration.enumerateObjects(ofType: NotificationAction.className()) { _, newObject in
+                        newObject!["uuid"] = UUID().uuidString
+                    }
+                }
+            },
             deleteRealmIfMigrationNeeded: false
         )
 
