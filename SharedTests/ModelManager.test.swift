@@ -313,6 +313,49 @@ class ModelManagerTests: XCTestCase {
             XCTAssertEqual(models[3].value, "start_val2-2")
         }
     }
+
+    func testIneligibleNotDeleted() throws {
+        let start = [
+            with(TestStoreModel3()) {
+                $0.identifier = "start_id1"
+                $0.value = 10 // eligible
+            },
+            with(TestStoreModel3()) {
+                $0.identifier = "start_id2"
+                $0.value = 1 // not eligible
+            },
+            with(TestStoreModel3()) {
+                $0.identifier = "start_id3"
+                $0.value = 100 // eligible, will be deleted
+            },
+        ]
+
+        let insertedSources = [
+            TestStoreSource2(id: "ins_id1", value: 100),
+        ]
+
+        let updatedSources = [
+            TestStoreSource2(id: "start_id1", value: 4),
+        ]
+
+        try testQueue.sync {
+            try realm.write {
+                realm.add(start)
+            }
+
+            try manager.store(type: TestStoreModel3.self, sourceModels: insertedSources + updatedSources)
+            let models = realm.objects(TestStoreModel3.self).sorted(byKeyPath: #keyPath(TestStoreModel3.value))
+            XCTAssertEqual(models.count, 3)
+
+            XCTAssertEqual(models[0].identifier, "start_id2")
+            XCTAssertEqual(models[0].value, 1)
+            XCTAssertEqual(models[1].identifier, "start_id1")
+            XCTAssertEqual(models[1].value, 4)
+            XCTAssertEqual(models[2].identifier, "ins_id1")
+            XCTAssertEqual(models[2].value, 100)
+        }
+
+    }
 }
 
 class TestDeleteModel1: Object {
@@ -415,6 +458,42 @@ final class TestStoreModel2: Object, UpdatableModel {
         using realm: Realm
     ) {
         XCTFail("not expected to be called in error scenario")
+    }
+}
+
+struct TestStoreSource2: UpdatableModelSource {
+    var primaryKey: String { id }
+
+    var id: String = UUID().uuidString
+    var value: Int = 0
+}
+
+final class TestStoreModel3: Object, UpdatableModel {
+    static func didUpdate(objects: [TestStoreModel3]) {
+
+    }
+
+    static var updateEligiblePredicate: NSPredicate {
+        .init(format: "value > 5")
+    }
+
+    @objc dynamic var identifier: String?
+    @objc dynamic var value: Int = 0
+
+    override class func primaryKey() -> String? {
+        "identifier"
+    }
+
+    func update(
+        with object: TestStoreSource2,
+        using realm: Realm
+    ) {
+        if self.realm == nil {
+            identifier = object.id
+        } else {
+            XCTAssertEqual(identifier, object.id)
+        }
+        value = object.value
     }
 }
 

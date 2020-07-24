@@ -14,6 +14,7 @@ import RealmSwift
 import Shared
 import Iconic
 
+// swiftlint:disable type_body_length
 class NotificationCategoryConfigurator: FormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
