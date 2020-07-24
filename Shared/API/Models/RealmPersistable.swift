@@ -5,7 +5,12 @@ protocol UpdatableModel {
     associatedtype Source: UpdatableModelSource
     static func didUpdate(objects: [Self])
     static func primaryKey() -> String? // from realm, we use
+    static var updateEligiblePredicate: NSPredicate { get }
     func update(with object: Source, using realm: Realm)
+}
+
+extension UpdatableModel {
+    static var updateEligiblePredicate: NSPredicate { NSPredicate(value: true) }
 }
 
 protocol UpdatableModelSource {

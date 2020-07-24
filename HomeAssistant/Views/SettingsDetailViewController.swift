@@ -323,49 +323,21 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 }
             }
 
-            let sceneSection = Section(
-                header: L10n.SettingsDetails.Actions.Scenes.title,
-                footer: L10n.SettingsDetails.Actions.Scenes.footer
-            ) {
-                $0.tag = "scenes"
-            }
-
-            form +++ sceneSection
-
-            let update = { [tableView] (scenes: AnyCollection<RLMScene>) in
-                tableView?.beginUpdates()
-                sceneSection.removeAll()
-
-                if scenes.isEmpty {
-                    sceneSection.append(LabelRow {
-                        $0.title = L10n.SettingsDetails.Actions.Scenes.empty
-                        $0.disabled = true
-                    })
-                } else {
-                    sceneSection.append(contentsOf: scenes.map { Self.getSceneRow($0) })
-                }
-
-                sceneSection.reload()
-                tableView?.endUpdates()
-            }
-
             let scenes = realm.objects(RLMScene.self).sorted(byKeyPath: RLMScene.positionKeyPath)
 
-            UIView.performWithoutAnimation {
-                update(AnyCollection(scenes))
-            }
-
-            notificationTokens.append(scenes.observe { change in
-                switch change {
-                case .initial:
-                    // defering a run loop here causes weird ordering issues with eureka, makes the onChange not fire
-                    break
-                case .update(let results, deletions: _, insertions: _, modifications: _):
-                    update(AnyCollection(results))
-                case .error:
-                    break
+            form +++ RealmSection<RLMScene>(
+                header: L10n.SettingsDetails.Actions.Scenes.title,
+                footer: L10n.SettingsDetails.Actions.Scenes.footer,
+                collection: AnyRealmCollection(scenes),
+                emptyRows: [
+                    LabelRow {
+                        $0.title = L10n.SettingsDetails.Actions.Scenes.empty
+                        $0.disabled = true
+                    }
+                ], getter: {
+                    Self.getSceneRow($0)
                 }
-            })
+            )
 
         case "privacy":
             self.title = L10n.SettingsDetails.Privacy.title

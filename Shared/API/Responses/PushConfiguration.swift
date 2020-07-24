@@ -21,7 +21,7 @@ public class PushConfiguration: Mappable {
     }
 }
 
-public class PushCategory: Mappable {
+public class PushCategory: Mappable, UpdatableModelSource {
     public var Name: String = "Unknown"
     public var Identifier: String = "unknown"
 
@@ -36,6 +36,8 @@ public class PushCategory: Mappable {
         Identifier  <- map["identifier"]
         Actions     <- map["actions"]
     }
+
+    var primaryKey: String { Identifier.uppercased() }
 }
 
 public class PushAction: Mappable {

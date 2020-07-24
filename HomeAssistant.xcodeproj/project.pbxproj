@@ -48,6 +48,13 @@
 		119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119C9B1E24A448A600308A54 /* ZoneManager.swift */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
 		119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */; };
+		11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
+		11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
+		11A48D7D24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC734215F069300727D2A /* NotificationCategory.swift */; };
+		11A48D7E24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC734215F069300727D2A /* NotificationCategory.swift */; };
+		11A48D7F24CA7E820021BDD9 /* Action+Observation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B5624C68F5700404AF8 /* Action+Observation.swift */; };
+		11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A48D8024CA8ADB0021BDD9 /* NotificationCategory+Observation.swift */; };
+		11A48D8324CA9D010021BDD9 /* RealmSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A48D8224CA9D010021BDD9 /* RealmSection.swift */; };
 		11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C6A24A463FC00D9565F /* ZoneManagerState.swift */; };
 		11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C6C24A4641600D9565F /* ZoneManagerEvent.swift */; };
 		11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A71C6E24A4644A00D9565F /* ZoneManagerIgnoreReason.swift */; };
@@ -122,7 +129,6 @@
 		11EE9B5224C62E7800404AF8 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B5024C62E7800404AF8 /* Scene.swift */; };
 		11EE9B5424C62EB300404AF8 /* RealmScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B5324C62EB300404AF8 /* RealmScene.swift */; };
 		11EE9B5524C62EB300404AF8 /* RealmScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B5324C62EB300404AF8 /* RealmScene.swift */; };
-		11EE9B5724C68F5700404AF8 /* Action+Observation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EE9B5624C68F5700404AF8 /* Action+Observation.swift */; };
 		11EF62DA24C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EF62D924C3687D00BABB64 /* ZoneManagerRegionFilter.test.swift */; };
 		11F3B85724C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
 		11F3B85824C4279700642676 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F3B85524C4279700642676 /* Entity.swift */; };
@@ -464,7 +470,6 @@
 		B6872E672226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6872E652226842100C475D1 /* MobileAppRegistrationResponse.swift */; };
 		B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */; };
 		B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */; };
-		B68EDD07215F215E00DD6B28 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD06215F215E00DD6B28 /* Notifications.swift */; };
 		B68EDD09215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */; };
 		B68FF76A1F9D8637002BAADA /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
 		B6976985216243CC00FFFAD6 /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
@@ -511,8 +516,6 @@
 		B6D8A32A2271455300FA765D /* ConnectionErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D8A3292271455300FA765D /* ConnectionErrorViewController.swift */; };
 		B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA3C7022690B1F00DE811C /* NotificationSoundsViewController.swift */; };
 		B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DA3C7222691A5000DE811C /* AKConverter.swift */; };
-		B6DAC735215F069300727D2A /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC734215F069300727D2A /* NotificationCategory.swift */; };
-		B6DAC737215F06B100727D2A /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
 		B6DD5E6A24940F6F003A0154 /* OpenInFirefoxControllerSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */; };
 		B6DF8BC1221C890600370A59 /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
 		B6DF8BC2221C890F00370A59 /* UIImageView+UIActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */; };
@@ -767,6 +770,8 @@
 		119C9B1E24A448A600308A54 /* ZoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManager.swift; sourceTree = "<group>"; };
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ZeroLatitude.gpx; sourceTree = "<group>"; };
+		11A48D8024CA8ADB0021BDD9 /* NotificationCategory+Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCategory+Observation.swift"; sourceTree = "<group>"; };
+		11A48D8224CA9D010021BDD9 /* RealmSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmSection.swift; sourceTree = "<group>"; };
 		11A71C6A24A463FC00D9565F /* ZoneManagerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerState.swift; sourceTree = "<group>"; };
 		11A71C6C24A4641600D9565F /* ZoneManagerEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerEvent.swift; sourceTree = "<group>"; };
 		11A71C6E24A4644A00D9565F /* ZoneManagerIgnoreReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerIgnoreReason.swift; sourceTree = "<group>"; };
@@ -1209,7 +1214,6 @@
 		B689EBCD1D8B91CE0000AECE /* NotificationContentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationContentExtension.entitlements; sourceTree = "<group>"; };
 		B68EDD02215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategoryConfigurator.swift; sourceTree = "<group>"; };
 		B68EDD04215F12C900DD6B28 /* NotificationActionConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationActionConfigurator.swift; sourceTree = "<group>"; };
-		B68EDD06215F215E00DD6B28 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationIdentifierEurekaRow.swift; sourceTree = "<group>"; };
 		B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSS3+Hex.swift"; sourceTree = "<group>"; };
 		B69769832162430300FFFAD6 /* WKInterfaceDevice+Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WKInterfaceDevice+Size.swift"; sourceTree = "<group>"; };
@@ -2093,6 +2097,7 @@
 				B661FB6B226BCC8500E541DD /* Settings */,
 				B661FB72226C10AE00E541DD /* Onboarding */,
 				11C590EC24A832CA0066085D /* YamlSection.swift */,
+				11A48D8224CA9D010021BDD9 /* RealmSection.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2107,7 +2112,6 @@
 				B63CAE6A2150D2E300A68AFB /* VoiceShortcutsManager.swift */,
 				B6A5D9F4215233EC0013963F /* SiriIntents+ConvenienceInits.swift */,
 				B6B6B14B215B1E86003DE2DD /* CLKComplication+Strings.swift */,
-				B68EDD06215F215E00DD6B28 /* Notifications.swift */,
 				B68EDD08215F45EB00DD6B28 /* NotificationIdentifierEurekaRow.swift */,
 				B675ECC2221BB0E600C65D31 /* SearchPushRow.swift */,
 				B6DF8BC0221C890600370A59 /* UIImageView+UIActivityIndicator.swift */,
@@ -2235,13 +2239,10 @@
 		B6F02BE71CB4698A0029ABE7 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				11A71C6924A463EE00D9565F /* ZoneManager */,
-				B6B6B14E215B6866003DE2DD /* WatchComplication.swift */,
-				B6DAC734215F069300727D2A /* NotificationCategory.swift */,
-				B6DAC736215F06B100727D2A /* NotificationAction.swift */,
-				B6B2E6A1216AC21400D39A26 /* Action.swift */,
-				B6093CE3228CFB0A0079E661 /* RemotePlayerState.swift */,
 				11EE9B5624C68F5700404AF8 /* Action+Observation.swift */,
+				11A48D8024CA8ADB0021BDD9 /* NotificationCategory+Observation.swift */,
+				B6093CE3228CFB0A0079E661 /* RemotePlayerState.swift */,
+				11A71C6924A463EE00D9565F /* ZoneManager */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -2381,6 +2382,10 @@
 				11EE9B4D24C6089800404AF8 /* RealmPersistable.swift */,
 				11EE9B5024C62E7800404AF8 /* Scene.swift */,
 				11EE9B5324C62EB300404AF8 /* RealmScene.swift */,
+				B6B6B14E215B6866003DE2DD /* WatchComplication.swift */,
+				B6DAC734215F069300727D2A /* NotificationCategory.swift */,
+				B6DAC736215F06B100727D2A /* NotificationAction.swift */,
+				B6B2E6A1216AC21400D39A26 /* Action.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -3977,19 +3982,18 @@
 				B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */,
 				B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */,
 				B616B299227ED68E00828165 /* Bonjour.swift in Sources */,
+				11A48D7F24CA7E820021BDD9 /* Action+Observation.swift in Sources */,
 				B6022213226DAC9D00E8DBFE /* ScaledFont.swift in Sources */,
 				B68EDD03215F0E2900DD6B28 /* NotificationCategoryConfigurator.swift in Sources */,
 				D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */,
 				117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */,
 				11F3D74C2495377B00C05BBA /* SensorListViewController.swift in Sources */,
 				B6617EED1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift in Sources */,
-				B6DAC737215F06B100727D2A /* NotificationAction.swift in Sources */,
 				B626AAF11D8F972800A0D225 /* SettingsDetailViewController.swift in Sources */,
 				B658AA782250AC8000C9BFE3 /* String+HA.swift in Sources */,
 				B6022223226DBA3800E8DBFE /* OnboardingNavigationViewController.swift in Sources */,
 				11A71C6D24A4641600D9565F /* ZoneManagerEvent.swift in Sources */,
 				B616B29A227ED69300828165 /* InternetAddress.swift in Sources */,
-				11EE9B5724C68F5700404AF8 /* Action+Observation.swift in Sources */,
 				B6DF8BC1221C890600370A59 /* UIImageView+UIActivityIndicator.swift in Sources */,
 				11F3D7512495434C00C05BBA /* SensorDetailViewController.swift in Sources */,
 				D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */,
@@ -4015,7 +4019,6 @@
 				B60221FA226D9BC200E8DBFE /* PermissionLineItemView.swift in Sources */,
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */,
-				B6DAC735215F069300727D2A /* NotificationCategory.swift in Sources */,
 				B6DA3C7122690B1F00DE811C /* NotificationSoundsViewController.swift in Sources */,
 				D0C88462211ED16300CCB501 /* AuthenticationController.swift in Sources */,
 				B6D8A32A2271455300FA765D /* ConnectionErrorViewController.swift in Sources */,
@@ -4024,10 +4027,10 @@
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
 				B6CDC096228CF5C2009355DD /* RemoteMediaPlayer.swift in Sources */,
 				B661FC88226D478300E541DD /* DiscoverInstancesViewController.swift in Sources */,
+				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
 				1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */,
 				D0B25BD221323CA600678C2C /* ClientEventPayloadViewController.swift in Sources */,
 				B641BC1F1E2097EF002CCBC1 /* AboutViewController.swift in Sources */,
-				B68EDD07215F215E00DD6B28 /* Notifications.swift in Sources */,
 				B60221F8226D9AEE00E8DBFE /* PermissionButton.swift in Sources */,
 				B675ECC3221BB0E600C65D31 /* SearchPushRow.swift in Sources */,
 				B605C891226E9DAC00EF46DD /* Permissions.swift in Sources */,
@@ -4040,6 +4043,7 @@
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,
 				B63CCDCC2164714900123C50 /* Intents.intentdefinition in Sources */,
 				B63CAE6B2150D2E300A68AFB /* VoiceShortcutsManager.swift in Sources */,
+				11A48D8324CA9D010021BDD9 /* RealmSection.swift in Sources */,
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				B661FB7A226C197900E541DD /* ManualSetupViewController.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
@@ -4139,6 +4143,7 @@
 				B67CE89F22200F220034C1D0 /* Events.swift in Sources */,
 				B6B74CBC228398DD00D58A68 /* WKInterfaceDevice+Size.swift in Sources */,
 				B658AA7F2250B2A100C9BFE3 /* MobileAppUpdateRegistrationRequest.swift in Sources */,
+				11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				B67CE8BA22200F220034C1D0 /* Constants.swift in Sources */,
 				B67CE8B222200F220034C1D0 /* CMMotion+StringExtensions.swift in Sources */,
 				B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */,
@@ -4160,6 +4165,7 @@
 				B67CE8B722200F220034C1D0 /* UIImage+Icons.swift in Sources */,
 				B67CE8A222200F220034C1D0 /* Services.swift in Sources */,
 				B6221F6522266F9F00502A30 /* WebhookRequest.swift in Sources */,
+				11A48D7E24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
 				B67CE87922200F220034C1D0 /* RealmZone.swift in Sources */,
 				B67CE8BD22200F220034C1D0 /* ClientEventStore.swift in Sources */,
 				B672334E225DE1490031D629 /* SubscribeEvents.swift in Sources */,
@@ -4259,6 +4265,7 @@
 				11AF4D14249C7E09006C74C0 /* ActivitySensor.swift in Sources */,
 				D0EEF306214DD3CF00D1D360 /* ObjectMapperTransformers.swift in Sources */,
 				11AF4D22249C924B006C74C0 /* GeocoderSensor.swift in Sources */,
+				11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */,
 				D0EEF320214DE3B300D1D360 /* Strings.swift in Sources */,
 				11C4628824B109C100031902 /* WebhookResponseLocation.swift in Sources */,
 				11AF4D19249C8253006C74C0 /* PedometerSensor.swift in Sources */,
@@ -4280,6 +4287,7 @@
 				B62CD2A5225B099D008DF3C5 /* WebhookSensor.swift in Sources */,
 				11C4628224B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */,
 				B6B74CB82283983300D58A68 /* WatchComplication.swift in Sources */,
+				11A48D7D24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */,
 				D03D893820E0AF8A00D4F28D /* ClientEventStore.swift in Sources */,
 				B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */,
 				11C4628E24B128EF00031902 /* WebhookResponseUnhandled.swift in Sources */,

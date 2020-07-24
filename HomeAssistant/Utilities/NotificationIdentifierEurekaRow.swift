@@ -39,6 +39,14 @@ public final class NotificationIdentifierRow: Row<NotificationIdentifierTextCell
 public class NotificationIdentifierTextCell: TextCell {
     public var uppercaseOnly: Bool = true
 
+    public override func setup() {
+        super.setup()
+
+        textField.autocorrectionType = .no
+        textField.autocapitalizationType = .none
+        textField.keyboardType = .asciiCapable
+    }
+
     public override func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
                                    replacementString string: String) -> Bool {
 

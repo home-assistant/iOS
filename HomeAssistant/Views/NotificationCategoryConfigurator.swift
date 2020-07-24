@@ -14,6 +14,7 @@ import RealmSwift
 import Shared
 import Iconic
 
+// swiftlint:disable type_body_length
 class NotificationCategoryConfigurator: FormViewController, TypedRowControllerType {
     var row: RowOf<ButtonRow>!
     /// A closure to be called when the controller disappears.
@@ -32,7 +33,9 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         self.init()
         if let category = category {
             self.category = category
-            if self.category.Actions.count >= maxActionsForCategory {
+            if self.category.isServerControlled {
+                defaultMultivalueOptions = []
+            } else if self.category.Actions.count >= maxActionsForCategory {
                 defaultMultivalueOptions = [.Reorder, .Delete]
             }
             self.newCategory = false
@@ -44,15 +47,17 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
-        let cancelSelector = #selector(NotificationCategoryConfigurator.cancel)
+        if !category.isServerControlled {
+            let cancelSelector = #selector(NotificationCategoryConfigurator.cancel)
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self,
-                                                                 action: cancelSelector)
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self,
+                                                                    action: cancelSelector)
 
-        let saveSelector = #selector(NotificationCategoryConfigurator.save)
+            let saveSelector = #selector(NotificationCategoryConfigurator.save)
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
-                                                                 action: saveSelector)
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self,
+                                                                     action: saveSelector)
+        }
 
         let infoBarButtonItem = Constants.helpBarButtonItem
 
@@ -92,9 +97,13 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
             }
         }
 
-        var settingsFooter = L10n.NotificationsConfigurator.Settings.footer
+        let settingsFooter: String?
 
-        if !self.newCategory {
+        if category.isServerControlled {
+            settingsFooter = nil
+        } else if newCategory {
+            settingsFooter = L10n.NotificationsConfigurator.Settings.footer
+        } else {
             settingsFooter = L10n.NotificationsConfigurator.Settings.Footer.idSet
         }
 
@@ -105,6 +114,9 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
             $0.tag = "name"
             $0.title = L10n.NotificationsConfigurator.Category.Rows.Name.title
             $0.add(rule: RuleRequired())
+            if self.category.isServerControlled {
+                $0.disabled = true
+            }
             if !newCategory {
                 $0.value = self.category.Name
             }
@@ -134,8 +146,15 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
             }
         }
 
-        +++ Section(header: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.header,
-                    footer: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.footer)
+        +++ Section(
+            header: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.header,
+            footer: L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.footer
+        ) {
+            if category.isServerControlled {
+                $0.hidden = true
+            }
+        }
+
         <<< TextAreaRow {
             $0.tag = "hiddenPreviewsBodyPlaceholder"
             $0.placeholder = L10n.NotificationsConfigurator.Category.Rows.HiddenPreviewPlaceholder.default
@@ -155,8 +174,15 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
         if #available(iOS 12.0, *) {
             self.form
-                +++ Section(header: L10n.NotificationsConfigurator.Category.Rows.CategorySummary.header,
-                            footer: L10n.NotificationsConfigurator.Category.Rows.CategorySummary.footer)
+                +++ Section(
+                    header: L10n.NotificationsConfigurator.Category.Rows.CategorySummary.header,
+                    footer: L10n.NotificationsConfigurator.Category.Rows.CategorySummary.footer
+                ) {
+                    if category.isServerControlled {
+                        $0.hidden = true
+                    }
+                }
+
                 <<< TextAreaRow {
                     $0.tag = "categorySummaryFormat"
                     if !newCategory && self.category.CategorySummaryFormat != "" {
@@ -175,38 +201,44 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
         }
 
         self.form
-            +++ MultivaluedSection(multivaluedOptions: defaultMultivalueOptions,
-                                   header: L10n.NotificationsConfigurator.Category.Rows.Actions.header,
-                                   footer: L10n.NotificationsConfigurator.Category.Rows.Actions.footer) { section in
-                    section.multivaluedRowToInsertAt = { index in
-
-                        if index >= self.maxActionsForCategory - 1 {
-                            section.multivaluedOptions = [.Reorder, .Delete]
-
-                            self.addButtonRow.hidden = true
-
-                            DispatchQueue.main.async { // I'm not sure why this is necessary
-                                self.addButtonRow.evaluateHidden()
-                            }
-                        }
-
-                        return self.getActionRow(nil)
-                    }
-
-                    section.addButtonProvider = { section in
-                        self.addButtonRow = ButtonRow {
-                            $0.title = L10n.addButtonLabel
-                            $0.cellStyle = .value1
-                        }.cellUpdate { cell, _ in
-                            cell.textLabel?.textAlignment = .left
-                        }
-                        return self.addButtonRow
-                    }
-
-                    for action in self.category.Actions {
-                        section <<< self.getActionRow(action)
-                    }
+            +++ MultivaluedSection(
+                multivaluedOptions: defaultMultivalueOptions,
+                header: L10n.NotificationsConfigurator.Category.Rows.Actions.header,
+                footer: L10n.NotificationsConfigurator.Category.Rows.Actions.footer
+            ) { section in
+                if category.isServerControlled {
+                    section.footer = nil
                 }
+
+                section.multivaluedRowToInsertAt = { index in
+
+                    if index >= self.maxActionsForCategory - 1 {
+                        section.multivaluedOptions = [.Reorder, .Delete]
+
+                        self.addButtonRow.hidden = true
+
+                        DispatchQueue.main.async { // I'm not sure why this is necessary
+                            self.addButtonRow.evaluateHidden()
+                        }
+                    }
+
+                    return self.getActionRow(nil)
+                }
+
+                section.addButtonProvider = { section in
+                    self.addButtonRow = ButtonRow {
+                        $0.title = L10n.addButtonLabel
+                        $0.cellStyle = .value1
+                    }.cellUpdate { cell, _ in
+                        cell.textLabel?.textAlignment = .left
+                    }
+                    return self.addButtonRow
+                }
+
+                for action in self.category.Actions {
+                    section <<< self.getActionRow(action)
+                }
+            }
 
         form +++ YamlSection(
             tag: "exampleServiceCall",
@@ -289,7 +321,9 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
                     // swiftlint:disable:next force_try
                     try! self.realm.write {
                         self.realm.add(vc.action, update: .all)
-                        self.category.Actions.append(vc.action)
+                        if self.category.Actions.contains(vc.action) == false {
+                            self.category.Actions.append(vc.action)
+                        }
                     }
 
                     self.updatePreview()
