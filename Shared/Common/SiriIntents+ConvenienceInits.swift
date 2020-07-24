@@ -71,6 +71,8 @@ public extension PerformActionIntent {
         self.action = .init(identifier: action.ID, display: action.Name)
 
         #if os(iOS)
+        MaterialDesignIcons.register()
+
         let iconRect = CGRect(x: 0, y: 0, width: 64, height: 64)
 
         let iconData = UIKit.UIGraphicsImageRenderer(size: iconRect.size).pngData { _ in
