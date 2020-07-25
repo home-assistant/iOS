@@ -413,6 +413,10 @@ class NotificationSettingsViewController: FormViewController {
 
                     row.value = {
                         switch settings.authorizationStatus {
+                        #if compiler(>=5.3)
+                        case .ephemeral:
+                            return L10n.SettingsDetails.Notifications.Permission.enabled
+                        #endif
                         case .authorized, .provisional:
                             return L10n.SettingsDetails.Notifications.Permission.enabled
                         case .denied:

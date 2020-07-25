@@ -368,6 +368,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
             switch webView.traitCollection.userInterfaceIdiom {
             case .carPlay, .phone, .tv:
                 return .actionSheet
+            #if compiler(>=5.3)
+            case .mac:
+                return.alert
+            #endif
             case .pad, .unspecified:
                 // without a touch to tell us where, an action sheet in the middle of the screen isn't great
                 return .alert
