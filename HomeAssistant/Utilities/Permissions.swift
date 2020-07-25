@@ -86,6 +86,10 @@ extension UNAuthorizationStatus {
             return PermissionStatus.restricted
         case .denied:
             return PermissionStatus.denied
+        #if compiler(>=5.3)
+        case .ephemeral:
+            return PermissionStatus.authorized
+        #endif
         case .authorized:
             return PermissionStatus.authorized
         @unknown default:
