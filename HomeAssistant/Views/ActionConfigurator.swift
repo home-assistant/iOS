@@ -45,7 +45,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
         let cancelSelector = #selector(ActionConfigurator.cancel)
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self,
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self,
                                                                  action: cancelSelector)
 
         let saveSelector = #selector(ActionConfigurator.save)
@@ -65,23 +65,32 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }
         }
 
-        self.form
-            +++ TextRow {
-                    $0.tag = "name"
-                    $0.title = L10n.ActionsConfigurator.Rows.Name.title
-                    $0.placeholder = L10n.ActionsConfigurator.Rows.Name.title
-                    $0.add(rule: RuleRequired())
-                    if !newAction {
-                        $0.value = self.action.Name
-                    }
-            }.onChange { row in
-                if let value = row.value {
-                    self.action.Name = value
-                    self.updatePreviews()
-                }
-            }
+        let firstSection = Section()
+        form +++ firstSection
 
-            +++ TextRow("text") {
+        firstSection <<< TextRow {
+            $0.tag = "name"
+            $0.title = L10n.ActionsConfigurator.Rows.Name.title
+            $0.placeholder = L10n.ActionsConfigurator.Rows.Name.title
+            $0.add(rule: RuleRequired())
+            if !newAction {
+                $0.value = self.action.Name
+            }
+        }.onChange { row in
+            if let value = row.value {
+                self.action.Name = value
+                self.updatePreviews()
+            }
+        }
+
+        if #available(iOS 13.5, *) {
+            firstSection <<< VoiceShortcutRow {
+                $0.buttonStyle = .automaticOutline
+                $0.value = .intent(PerformActionIntent(action: action))
+            }
+        }
+
+            form +++ TextRow("text") {
                 $0.title = L10n.ActionsConfigurator.Rows.Text.title
                 $0.value = self.action.Text
                 $0.placeholder = L10n.ActionsConfigurator.Rows.Text.title
