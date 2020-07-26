@@ -162,19 +162,49 @@ class ZoneManagerProcessorTests: XCTestCase {
     }
 
     func testZoneAlreadyIn() throws {
+        // e.g. small zones getting multiple regions each with differing state
+
         try setUpZones(circular: { region, zone in
             zone.inRegion = true
         })
         let promise = processor.perform(event: ZoneManagerEvent(eventType: .region(circularRegion, .inside), associatedZone: circularRegionZone))
-        XCTAssertEqual(try hangForIgnoreReason(promise), .zoneStateAgrees)
+
+        let expectation = self.expectation(description: "promise")
+        promise.ensure {
+            expectation.fulfill()
+        }.cauterize()
+
+        // we don't care which this flow wants
+        getAndSendSeal.fulfill(())
+        submitLocationSeal.fulfill(())
+
+        wait(for: [expectation], timeout: 10.0)
+
+        XCTAssertTrue(circularRegionZone?.inRegion ?? false)
+        XCTAssertTrue(promise.isFulfilled)
     }
 
     func testZoneAlreadyOut() throws {
+        // e.g. small zones getting multiple regions each with differing state
+
         try setUpZones(circular: { region, zone in
             zone.inRegion = false
         })
         let promise = processor.perform(event: ZoneManagerEvent(eventType: .region(circularRegion, .outside), associatedZone: circularRegionZone))
-        XCTAssertEqual(try hangForIgnoreReason(promise), .zoneStateAgrees)
+
+        let expectation = self.expectation(description: "promise")
+        promise.ensure {
+            expectation.fulfill()
+        }.cauterize()
+
+        // we don't care which this flow wants
+        getAndSendSeal.fulfill(())
+        submitLocationSeal.fulfill(())
+
+        wait(for: [expectation], timeout: 10.0)
+
+        XCTAssertFalse(circularRegionZone?.inRegion ?? true)
+        XCTAssertTrue(promise.isFulfilled)
     }
 
     func testZoneUpdatedToInside() throws {
