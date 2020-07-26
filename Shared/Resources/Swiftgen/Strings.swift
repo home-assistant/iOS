@@ -1303,7 +1303,7 @@ internal enum L10n {
         internal static let customizeAction = L10n.tr("Localizable", "settings_details.actions.scenes.customize_action")
         /// No Scenes
         internal static let empty = L10n.tr("Localizable", "settings_details.actions.scenes.empty")
-        /// When enabled, Scenes display alongside actions. When activated, they trigger scene changes.
+        /// When enabled, Scenes display alongside actions. When performed, they trigger scene changes.
         internal static let footer = L10n.tr("Localizable", "settings_details.actions.scenes.footer")
         /// Scene Actions
         internal static let title = L10n.tr("Localizable", "settings_details.actions.scenes.title")
