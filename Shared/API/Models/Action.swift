@@ -92,20 +92,39 @@ public class Action: Object, Mappable, NSCoding {
     }
 
     public var exampleTrigger: String {
-        let data = HomeAssistantAPI.actionEvent(actionID: ID, actionName: Name, source: .Preview)
-        let eventDataStrings = data.eventData.map { $0 + ": " + $1 }.sorted()
-        let sourceStrings = HomeAssistantAPI.ActionSource.allCases.map { $0.description }.sorted()
+        switch triggerType {
+        case .event:
+            let data = HomeAssistantAPI.actionEvent(actionID: ID, actionName: Name, source: .Preview)
+            let eventDataStrings = data.eventData.map { $0 + ": " + $1 }.sorted()
+            let sourceStrings = HomeAssistantAPI.ActionSource.allCases.map { $0.description }.sorted()
 
-        let indentation = "\n    "
+            let indentation = "\n    "
 
-        return """
-        - platform: event
-          event_type: \(data.eventType)
-          event_data:
-            # source may be one of:
-            # - \(sourceStrings.joined(separator: indentation + "# - "))
-            \(eventDataStrings.joined(separator: indentation))
-        """
+            return """
+            - platform: event
+              event_type: \(data.eventType)
+              event_data:
+                # source may be one of:
+                # - \(sourceStrings.joined(separator: indentation + "# - "))
+                \(eventDataStrings.joined(separator: indentation))
+            """
+        case .scene:
+            let data = HomeAssistantAPI.actionScene(actionID: ID, source: .Preview)
+            let eventDataStrings = data.serviceData.map { $0 + ": " + $1 }.sorted()
+
+            let indentation = "\n      "
+
+            return """
+            # you can watch for the scene change
+            - platform: event
+              event_type: call_service
+              event_data:
+                domain: \(data.serviceDomain)
+                service: \(data.serviceName)
+                service_data:
+                  \(eventDataStrings.joined(separator: indentation))
+            """
+        }
     }
 }
 

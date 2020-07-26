@@ -99,6 +99,9 @@ public final class RLMScene: Object, UpdatableModel {
         let action = actions.first ?? Action()
         if action.realm == nil {
             action.ID = identifier
+            action.BackgroundColor = "#FFFFFF"
+            action.TextColor = "#000000"
+            action.IconColor = "#000000"
         } else {
             precondition(action.ID == identifier)
         }
@@ -106,9 +109,6 @@ public final class RLMScene: Object, UpdatableModel {
         action.Position = position
         action.Name = scene.FriendlyName ?? identifier
         action.Text = scene.FriendlyName ?? identifier
-        action.BackgroundColor = "#FFFFFF"
-        action.TextColor = "#000000"
-        action.IconColor = "#000000"
         action.Scene = self
         realm?.add(action, update: .all)
     }

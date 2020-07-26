@@ -19,6 +19,7 @@ import CoreMotion
 import FirebaseCrashlytics
 import DeviceKit
 
+// swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
@@ -29,6 +30,8 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
     var detailGroup: String = "display"
 
     var doneButton: Bool = false
+
+    private static let iconSize = CGSize(width: 28, height: 28)
 
     private let realm = Current.realm()
     private var notificationTokens: [NotificationToken] = []
@@ -335,7 +338,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         $0.disabled = true
                     }
                 ], getter: {
-                    Self.getSceneRow($0)
+                    Self.getSceneRows($0)
                 }
             )
 
@@ -488,31 +491,65 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         }.cauterize()
     }
 
-    static func getSceneRow(_ rlmScene: RLMScene) -> SwitchRow {
-        let row = SwitchRow()
+    static func getSceneRows(_ rlmScene: RLMScene) -> [BaseRow] {
+        let switchRow = SwitchRow()
+        let configure = ButtonRowWithPresent<ActionConfigurator> {
+            $0.title = L10n.SettingsDetails.Actions.Scenes.customizeAction
+            $0.disabled = .function([], { _ in switchRow.value == false })
+            $0.cellUpdate { cell, row in
+                cell.separatorInset = .zero
+                cell.textLabel?.textAlignment = .natural
+                cell.imageView?.image = UIImage(size: iconSize, color: .clear)
+                if #available(iOS 13, *) {
+                    cell.textLabel?.textColor = row.isDisabled == false ? cell.tintColor : .tertiaryLabel
+                } else {
+                    cell.textLabel?.textColor = row.isDisabled == false ? cell.tintColor : .gray
+                }
+            }
+
+            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                ActionConfigurator(action: rlmScene.actions.first!)
+            }, onDismiss: { vc in
+                _ = vc.navigationController?.popViewController(animated: true)
+
+                if let vc = vc as? ActionConfigurator, vc.shouldSave, let realm = rlmScene.realm {
+                    do {
+                        try realm.write {
+                            realm.add(vc.action, update: .all)
+                        }
+                    } catch {
+                        Current.Log.error("Error while saving to Realm!: \(error)")
+                    }
+                }
+            })
+        }
 
         let scene = rlmScene.scene
-        row.title = scene.FriendlyName ?? scene.ID
-        row.value = rlmScene.actionEnabled
-        row.cellUpdate { cell, _ in
-            cell.imageView?.image =
-                scene.Icon
-                    .flatMap({ MaterialDesignIcons(serversideValueNamed: $0) })?
-                    .image(ofSize: CGSize(width: 28, height: 28), color: .black)
-                    .withRenderingMode(.alwaysTemplate)
-        }
-        row.onChange { row in
-            let realm = Current.realm()
-            do {
-                try realm.write {
-                    rlmScene.actionEnabled = row.value ?? true
+        _ = with(switchRow) {
+            $0.title = scene.FriendlyName ?? scene.ID
+            $0.value = rlmScene.actionEnabled
+            $0.cellUpdate { cell, _ in
+                cell.imageView?.image =
+                    scene.Icon
+                        .flatMap({ MaterialDesignIcons(serversideValueNamed: $0) })?
+                        .image(ofSize: iconSize, color: .black)
+                        .withRenderingMode(.alwaysTemplate)
+            }
+            $0.onChange { row in
+                let realm = Current.realm()
+                do {
+                    try realm.write {
+                        rlmScene.actionEnabled = row.value ?? true
+                    }
+
+                    configure.evaluateDisabled()
+                } catch {
+                    Current.Log.error("couldn't write action update: \(error)")
                 }
-            } catch {
-                Current.Log.error("couldn't write action update: \(error)")
             }
         }
 
-        return row
+        return [switchRow, configure]
     }
 
     func getActionRow(_ inputAction: Action?) -> ButtonRowWithPresent<ActionConfigurator> {
@@ -528,6 +565,20 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         return ButtonRowWithPresent<ActionConfigurator> {
             $0.tag = identifier
             $0.title = title
+            $0.cellStyle = .subtitle
+            $0.displayValueFor = { _ in action?.Text ?? L10n.ActionsConfigurator.Rows.Text.title }
+            $0.cellSetup { cell, _ in
+                if #available(iOS 13, *) {
+                    cell.detailTextLabel?.textColor = .secondaryLabel
+                } else {
+                    cell.detailTextLabel?.textColor = .darkGray
+                }
+            }
+            $0.cellUpdate { cell, _ in
+                cell.imageView?.image = MaterialDesignIcons(named: action?.IconName ?? "")
+                    .image(ofSize: Self.iconSize, color: .black)
+                    .withRenderingMode(.alwaysTemplate)
+            }
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 return ActionConfigurator(action: action)
             }, onDismiss: { [weak self] vc in
@@ -802,93 +853,4 @@ enum OpenInBrowser: String, CaseIterable {
             return true
         }
     }
-}
-
-@available (iOS 12, *)
-extension SettingsDetailViewController: INUIAddVoiceShortcutViewControllerDelegate {
-
-    func addVoiceShortcutViewController(_ controller: INUIAddVoiceShortcutViewController,
-                                        didFinishWith voiceShortcut: INVoiceShortcut?,
-                                        error: Error?) {
-        if let error = error as NSError? {
-            Current.Log.error("Error adding voice shortcut: \(error)")
-            controller.dismiss(animated: true, completion: nil)
-            return
-        }
-
-        if let voiceShortcut = voiceShortcut {
-            Current.Log.verbose("Shortcut with ID \(voiceShortcut.identifier.uuidString) added")
-
-            if let existingSection = self.form.sectionBy(tag: "existing_shortcuts") {
-                let newShortcut = ButtonRow {
-                    $0.tag = voiceShortcut.identifier.uuidString
-                    $0.title = voiceShortcut.invocationPhrase
-                    $0.presentationMode = .presentModally(controllerProvider: ControllerProvider.callback {
-                        let viewController = INUIEditVoiceShortcutViewController(voiceShortcut: voiceShortcut)
-                        viewController.delegate = self
-                        return viewController
-                        }, onDismiss: { vc in
-                            _ = vc.navigationController?.popViewController(animated: true)
-                    })
-                }
-
-                existingSection.append(newShortcut)
-
-                self.tableView.reloadData()
-            }
-        }
-
-        controller.dismiss(animated: true, completion: nil)
-
-        return
-    }
-
-    func addVoiceShortcutViewControllerDidCancel(_ controller: INUIAddVoiceShortcutViewController) {
-        controller.dismiss(animated: true, completion: nil)
-    }
-}
-
-// MARK: - INUIEditVoiceShortcutViewControllerDelegate
-
-@available (iOS 12, *)
-extension SettingsDetailViewController: INUIEditVoiceShortcutViewControllerDelegate {
-
-    func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
-                                         didUpdate voiceShortcut: INVoiceShortcut?,
-                                         error: Error?) {
-        if let error = error as NSError? {
-            Current.Log.error("Error updating voice shortcut: \(error)")
-            controller.dismiss(animated: true, completion: nil)
-            return
-        }
-
-        if let voiceShortcut = voiceShortcut {
-            Current.Log.verbose("Shortcut with ID \(voiceShortcut.identifier.uuidString) updated")
-        }
-
-        controller.dismiss(animated: true, completion: nil)
-
-        return
-    }
-
-    func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController,
-                                         didDeleteVoiceShortcutWithIdentifier deletedVoiceShortcutIdentifier: UUID) {
-        Current.Log.verbose("Shortcut with ID \(deletedVoiceShortcutIdentifier.uuidString) deleted")
-
-        controller.dismiss(animated: true, completion: nil)
-
-        if let rowToDelete = self.form.rowBy(tag: deletedVoiceShortcutIdentifier.uuidString) as? ButtonRow,
-            let section = rowToDelete.section, let path = rowToDelete.indexPath {
-            section.remove(at: path.row)
-        }
-
-        return
-    }
-
-    func editVoiceShortcutViewControllerDidCancel(_ controller: INUIEditVoiceShortcutViewController) {
-        controller.dismiss(animated: true, completion: nil)
-
-        return
-    }
-// swiftlint:disable:next file_length
 }
