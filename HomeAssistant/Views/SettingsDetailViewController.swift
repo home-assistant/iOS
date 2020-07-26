@@ -536,9 +536,8 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         .withRenderingMode(.alwaysTemplate)
             }
             $0.onChange { row in
-                let realm = Current.realm()
                 do {
-                    try realm.write {
+                    try rlmScene.realm?.write {
                         rlmScene.actionEnabled = row.value ?? true
                     }
 
