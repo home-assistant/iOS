@@ -1,21 +1,40 @@
 import Foundation
 import Eureka
 import RealmSwift
+import Shared
 
 final public class RealmSection<ObjectType: Object>: Section {
     private let collection: AnyRealmCollection<ObjectType>
-    private let getter: (ObjectType) -> BaseRow?
+    private let getter: (ObjectType) -> [BaseRow]?
     private let emptyRows: [BaseRow]
     private let didUpdate: (Section, AnyRealmCollection<ObjectType>) -> Void
 
     private var observeTokens: [NotificationToken] = []
+
+    convenience init(
+        header: String? = nil,
+        footer: String? = nil,
+        collection: AnyRealmCollection<ObjectType>,
+        emptyRows: [BaseRow] = [],
+        getter: @escaping (ObjectType) -> BaseRow?,
+        didUpdate: @escaping (Section, AnyRealmCollection<ObjectType>) -> Void = { _, _ in }
+    ) {
+        self.init(
+            header: header,
+            footer: footer,
+            collection: collection,
+            emptyRows: emptyRows,
+            getter: { getter($0).flatMap { [$0] } },
+            didUpdate: didUpdate
+        )
+    }
 
     init(
         header: String? = nil,
         footer: String? = nil,
         collection: AnyRealmCollection<ObjectType>,
         emptyRows: [BaseRow] = [],
-        getter: @escaping (ObjectType) -> BaseRow?,
+        getter: @escaping (ObjectType) -> [BaseRow]?,
         didUpdate: @escaping (Section, AnyRealmCollection<ObjectType>) -> Void = { _, _ in }
     ) {
         self.collection = collection
@@ -66,17 +85,21 @@ final public class RealmSection<ObjectType: Object>: Section {
         if collection.isEmpty {
             append(contentsOf: emptyRows)
         } else {
-            append(contentsOf: collection.compactMap {
-                let row = self.getter($0)
+            let appendingRows = collection.compactMap { (object: ObjectType) -> [BaseRow]? in
+                let rows = self.getter(object)
                 // we rely on remove/insert, and eureka doesn't handle this -- even if it's the same === row!
-                row?.tag = nil
-                return row
-            })
+                rows?.forEach { $0.tag = nil }
+                return rows
+            }.flatMap { $0 }
+
+            // note: eureka has a bug if we don't wrap this in Array where it duplicates
+            append(contentsOf: Array(appendingRows))
         }
 
         didUpdate(self, collection)
 
         evaluateHidden()
+
         reload()
         tableView?.endUpdates()
     }
