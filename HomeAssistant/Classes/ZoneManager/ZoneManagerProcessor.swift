@@ -112,14 +112,9 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
             return ignore(.ignoredSSID(current))
         }
 
-        let inRegion = state == .inside
-        guard zone.inRegion != inRegion else {
-            return ignore(.zoneStateAgrees)
-        }
-
         do {
             try zone.realm?.reentrantWrite {
-                zone.inRegion = inRegion
+                zone.inRegion = state == .inside
             }
         } catch {
             return ignore(.zoneUpdateFailed(error as NSError))

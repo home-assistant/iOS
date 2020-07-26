@@ -7,7 +7,6 @@ enum ZoneManagerIgnoreReason: LocalizedError, Equatable {
     case unknownRegionState
     case unknownRegion
     case zoneDisabled
-    case zoneStateAgrees
     case ignoredSSID(String)
     case zoneUpdateFailed(NSError) // NSError so Equatable for laziness
     case beaconExitIgnored
@@ -26,8 +25,6 @@ enum ZoneManagerIgnoreReason: LocalizedError, Equatable {
             return "unknown region id"
         case .zoneDisabled:
             return "zone has tracking disabled"
-        case .zoneStateAgrees:
-            return "zone already in state"
         case .ignoredSSID(let ssid):
             return "ignored due to ssid \(ssid)"
         case .zoneUpdateFailed(let error):
