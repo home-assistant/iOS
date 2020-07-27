@@ -73,11 +73,9 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             $0.title = L10n.ActionsConfigurator.Rows.Name.title
             $0.placeholder = L10n.ActionsConfigurator.Rows.Name.title
             $0.add(rule: RuleRequired())
+            $0.disabled = .init(booleanLiteral: !action.canConfigure(\Action.Name))
             if !newAction {
                 $0.value = self.action.Name
-            }
-            if action.triggerType == .scene {
-                $0.disabled = true
             }
         }.onChange { row in
             if let value = row.value {
@@ -93,116 +91,142 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }
         }
 
-        form +++ TextRow("text") {
-            $0.title = L10n.ActionsConfigurator.Rows.Text.title
-            $0.value = self.action.Text
-            $0.placeholder = L10n.ActionsConfigurator.Rows.Text.title
-            $0.add(rule: RuleRequired())
-            if action.triggerType == .scene {
-                $0.hidden = true
-            }
-        }.onChange { row in
-            if let value = row.value {
-                self.action.Text = value
-                self.updatePreviews()
+        let visuals = Section(
+
+        )
+
+        if action.canConfigure(\Action.Text) {
+            visuals <<< TextRow("text") {
+                $0.title = L10n.ActionsConfigurator.Rows.Text.title
+                $0.value = self.action.Text
+                $0.placeholder = L10n.ActionsConfigurator.Rows.Text.title
+                $0.add(rule: RuleRequired())
+            }.onChange { row in
+                if let value = row.value {
+                    self.action.Text = value
+                    self.updatePreviews()
+                }
             }
         }
 
-        <<< InlineColorPickerRow("text_color") {
+        if action.canConfigure(\Action.TextColor) {
+            visuals <<< InlineColorPickerRow("text_color") {
                 $0.title = L10n.ActionsConfigurator.Rows.TextColor.title
                 $0.isCircular = true
                 $0.showsPaletteNames = true
                 $0.value = UIColor(hex: self.action.TextColor)
-        }.onChange { row in
-            if let value = row.value {
-                self.action.TextColor = value.hexString()
-                self.updatePreviews()
+            }.onChange { row in
+                if let value = row.value {
+                    self.action.TextColor = value.hexString()
+                    self.updatePreviews()
+                }
             }
         }
 
-        <<< InlineColorPickerRow("background_color") {
-            $0.title = L10n.ActionsConfigurator.Rows.BackgroundColor.title
-            $0.isCircular = true
-            $0.showsPaletteNames = true
-            $0.value = UIColor(hex: self.action.BackgroundColor)
+        if action.canConfigure(\Action.BackgroundColor) {
+            visuals <<< InlineColorPickerRow("background_color") {
+                $0.title = L10n.ActionsConfigurator.Rows.BackgroundColor.title
+                $0.isCircular = true
+                $0.showsPaletteNames = true
+                $0.value = UIColor(hex: self.action.BackgroundColor)
+
             }.onChange { row in
                 if let value = row.value {
                     self.action.BackgroundColor = value.hexString()
                     self.updatePreviews()
                 }
+            }
         }
 
-        <<< SearchPushRow<String> {
-            $0.options = MaterialDesignIcons.allCases.map({ $0.name })
-            $0.selectorTitle = L10n.ActionsConfigurator.Rows.Icon.title
-            $0.tag = "icon"
-            $0.title = L10n.ActionsConfigurator.Rows.Icon.title
-            $0.value = self.action.IconName
-
-            if action.triggerType == .scene {
-                $0.hidden = true
-            }
-        }.cellUpdate({ (cell, row) in
-            if let value = row.value {
-                let theIcon = MaterialDesignIcons(named: value)
-                if let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
-                    cell.imageView?.image = theIcon.image(
-                        ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
-                        color: iconColorRow.value
-                    )
-                }
-            }
-        }).onPresent { _, to in
-            to.selectableRowCellSetup = {cell, row in
-                if let value = row.selectableValue {
+        if action.canConfigure(\Action.IconName) {
+            visuals <<< SearchPushRow<String> {
+                $0.options = MaterialDesignIcons.allCases.map({ $0.name })
+                $0.selectorTitle = L10n.ActionsConfigurator.Rows.Icon.title
+                $0.tag = "icon"
+                $0.title = L10n.ActionsConfigurator.Rows.Icon.title
+                $0.value = self.action.IconName
+            }.cellUpdate({ (cell, row) in
+                if let value = row.value {
                     let theIcon = MaterialDesignIcons(named: value)
-                    cell.imageView?.image = theIcon.image(
-                        ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
-                        color: .systemGray
-                    )
+                    if let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
+                        cell.imageView?.image = theIcon.image(
+                            ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
+                            color: iconColorRow.value
+                        )
+                    }
+                }
+            }).onPresent { _, to in
+                to.selectableRowCellSetup = {cell, row in
+                    if let value = row.selectableValue {
+                        let theIcon = MaterialDesignIcons(named: value)
+                        cell.imageView?.image = theIcon.image(
+                            ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
+                            color: .systemGray
+                        )
+                    }
+                }
+                to.selectableRowCellUpdate = { cell, row in
+                    cell.textLabel?.text = row.selectableValue!
+                }
+            }.onChange { row in
+                if let value = row.value {
+                    self.action.IconName = value
+                    self.updatePreviews()
                 }
             }
-            to.selectableRowCellUpdate = { cell, row in
-                cell.textLabel?.text = row.selectableValue!
-            }
-        }.onChange { row in
-            if let value = row.value {
-                self.action.IconName = value
+        }
+
+        if action.canConfigure(\Action.IconColor) {
+            visuals <<< InlineColorPickerRow("icon_color") {
+                $0.title = L10n.ActionsConfigurator.Rows.IconColor.title
+                $0.isCircular = true
+                $0.showsPaletteNames = true
+                $0.value = UIColor(hex: self.action.IconColor)
+            }.onChange { (picker) in
+                Current.Log.verbose("icon color: \(picker.value!.hexString(false))")
+
+                self.action.IconColor = picker.value!.hexString()
+
                 self.updatePreviews()
-            }
-        }
-
-        <<< InlineColorPickerRow("icon_color") {
-            $0.title = L10n.ActionsConfigurator.Rows.IconColor.title
-            $0.isCircular = true
-            $0.showsPaletteNames = true
-            $0.value = UIColor.green
-            $0.value = UIColor(hex: self.action.IconColor)
-        }.onChange { (picker) in
-            Current.Log.verbose("icon color: \(picker.value!.hexString(false))")
-
-            self.action.IconColor = picker.value!.hexString()
-
-            self.updatePreviews()
-            if let iconRow = self.form.rowBy(tag: "icon") as? PushRow<String> {
-                if let value = iconRow.value {
-                    let theIcon = MaterialDesignIcons(named: value)
-                    iconRow.cell.imageView?.image = theIcon.image(
-                        ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
-                        color: picker.value
-                    )
+                if let iconRow = self.form.rowBy(tag: "icon") as? PushRow<String> {
+                    if let value = iconRow.value {
+                        let theIcon = MaterialDesignIcons(named: value)
+                        iconRow.cell.imageView?.image = theIcon.image(
+                            ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
+                            color: picker.value
+                        )
+                    }
                 }
             }
         }
 
-        +++ ViewRow<ActionPreview>("preview").cellSetup { (cell, _) in
+        if !visuals.isEmpty {
+            if action.triggerType == .scene {
+                let keys = [Scene.textColorKey, Scene.backgroundColorKey, Scene.iconColorKey]
+                let list: String
+
+                if #available(iOS 13, *) {
+                    list = ListFormatter.localizedString(byJoining: keys)
+                } else {
+                    list = keys.joined(separator: ", ")
+                }
+
+                visuals.footer = HeaderFooterView(
+                    stringLiteral: L10n.ActionsConfigurator.VisualSection.sceneHintFooter(list)
+                )
+            }
+
+            form.append(visuals)
+        }
+
+        form +++ ViewRow<ActionPreview>("preview").cellSetup { (cell, _) in
             cell.backgroundColor = UIColor.clear
             cell.preservesSuperviewLayoutMargins = false
             self.updatePreviews()
             cell.view = self.preview
         }
 
-        +++ YamlSection(
+        form +++ YamlSection(
             tag: "exampleTrigger",
             header: L10n.ActionsConfigurator.TriggerExample.title,
             yamlGetter: { [action] in action.exampleTrigger },

@@ -141,6 +141,12 @@ internal enum L10n {
       /// Example Trigger
       internal static let title = L10n.tr("Localizable", "actions_configurator.trigger_example.title")
     }
+    internal enum VisualSection {
+      /// You can also change these by customizing the Scene attributes: %@
+      internal static func sceneHintFooter(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "actions_configurator.visual_section.scene_hint_footer", String(describing: p1))
+      }
+    }
   }
 
   internal enum Alerts {

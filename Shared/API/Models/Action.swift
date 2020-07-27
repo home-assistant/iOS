@@ -32,6 +32,23 @@ public class Action: Object, Mappable, NSCoding {
         self.init()
     }
 
+    public func canConfigure(_ keyPath: PartialKeyPath<Action>) -> Bool {
+        switch keyPath {
+        case \Action.BackgroundColor:
+            return Scene == nil || Scene?.scene.backgroundColor == nil
+        case \Action.TextColor:
+            return Scene == nil || Scene?.scene.textColor == nil
+        case \Action.IconColor:
+            return Scene == nil || Scene?.scene.iconColor == nil
+        case \Action.IconName,
+             \Action.Name,
+             \Action.Text:
+            return Scene == nil || Scene == nil
+        default:
+            return true
+        }
+    }
+
     // NSCoding
     public func encode(with aCoder: NSCoder) {
         let jsonString = self.toJSONString() ?? ""
