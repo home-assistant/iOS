@@ -142,6 +142,8 @@ internal enum L10n {
       internal static let title = L10n.tr("Localizable", "actions_configurator.trigger_example.title")
     }
     internal enum VisualSection {
+      /// The appearance of this action is controlled by the scene configuration.
+      internal static let sceneDefined = L10n.tr("Localizable", "actions_configurator.visual_section.scene_defined")
       /// You can also change these by customizing the Scene attributes: %@
       internal static func sceneHintFooter(_ p1: Any) -> String {
         return L10n.tr("Localizable", "actions_configurator.visual_section.scene_hint_footer", String(describing: p1))

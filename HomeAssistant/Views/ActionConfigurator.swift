@@ -200,7 +200,26 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }
         }
 
-        if !visuals.isEmpty {
+        if visuals.isEmpty {
+            form +++ LabelRow {
+                switch action.triggerType {
+                case .event:
+                    // TODO: when actions sync from config
+                    $0.title = ""
+                case .scene:
+                    $0.title = L10n.ActionsConfigurator.VisualSection.sceneDefined
+                }
+                $0.cellUpdate { cell, _ in
+                    cell.textLabel?.numberOfLines = 0
+
+                    if #available(iOS 13, *) {
+                        cell.textLabel?.textColor = .secondaryLabel
+                    } else {
+                        cell.textLabel?.textColor = .gray
+                    }
+                }
+            }
+        } else {
             if action.triggerType == .scene {
                 let keys = [Scene.textColorKey, Scene.backgroundColorKey, Scene.iconColorKey]
                 let list: String

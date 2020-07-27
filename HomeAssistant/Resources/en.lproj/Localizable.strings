@@ -798,3 +798,4 @@ Thank you.\
 "settings_sensors.settings.header" = "Settings";
 "settings_sensors.settings.footer" = "Changes will be applied on the next update.";
 "actions_configurator.visual_section.scene_hint_footer" = "You can also change these by customizing the Scene attributes: %@";
+"actions_configurator.visual_section.scene_defined" = "The appearance of this action is controlled by the scene configuration.";
