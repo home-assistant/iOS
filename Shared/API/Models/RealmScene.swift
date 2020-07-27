@@ -110,6 +110,19 @@ public final class RLMScene: Object, UpdatableModel {
         action.Name = scene.FriendlyName ?? identifier
         action.Text = scene.FriendlyName ?? identifier
         action.Scene = self
+
+        if let backgroundColor = scene.backgroundColor {
+            action.BackgroundColor = backgroundColor
+        }
+
+        if let textColor = scene.textColor {
+            action.TextColor = textColor
+        }
+
+        if let iconColor = scene.iconColor {
+            action.IconColor = iconColor
+        }
+
         realm?.add(action, update: .all)
     }
 }
