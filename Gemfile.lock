@@ -139,6 +139,7 @@ GEM
     fastlane-plugin-appicon (0.15.0)
       json
       mini_magick (>= 4.9.4, < 5.0.0)
+    fastlane-plugin-clean_testflight_testers (0.3.0)
     fastlane-plugin-synx (0.1.4)
       synx
     fastlane-plugin-xcconfig (2.0.0)
@@ -259,6 +260,7 @@ DEPENDENCIES
   cocoapods-acknowledgements
   fastlane
   fastlane-plugin-appicon
+  fastlane-plugin-clean_testflight_testers
   fastlane-plugin-synx
   fastlane-plugin-xcconfig
   synx

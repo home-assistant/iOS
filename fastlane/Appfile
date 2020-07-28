@@ -1,3 +1,3 @@
 apple_id ENV["HOMEASSISTANT_APPLE_ID"]
 team_id ENV["HOMEASSISTANT_TEAM_ID"]  # Developer Portal Team ID
-itc_team_id ENV["HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID"] # iTunes Connect Team ID, different from developer portal ID
+# itc_team_id ENV["HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID"] # iTunes Connect Team ID, different from developer portal ID

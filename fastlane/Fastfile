@@ -111,6 +111,10 @@ platform :ios do
     ENV["PILOT_ITC_PROVIDER"] = ENV["HOMEASSISTANT_APP_STORE_CONNECT_TEAM_ID"]
   end
 
+  lane :clean_all_testers do
+    clean_testflight_testers(days_of_inactivity: 1, app_identifier: "io.robbie.HomeAssistant")
+  end
+
   desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
   lane :certs do
     match(app_identifier: [bundle_id(), bundle_id("beta")],
