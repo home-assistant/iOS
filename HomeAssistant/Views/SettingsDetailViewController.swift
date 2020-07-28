@@ -18,6 +18,7 @@ import Firebase
 import CoreMotion
 import FirebaseCrashlytics
 import DeviceKit
+import FirebaseMessaging
 
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length

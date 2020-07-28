@@ -12,6 +12,8 @@ import Shared
 import RealmSwift
 import Firebase
 import PromiseKit
+import FirebaseMessaging
+import FirebaseInstanceID
 
 // swiftlint:disable:next type_body_length
 class NotificationSettingsViewController: FormViewController {
