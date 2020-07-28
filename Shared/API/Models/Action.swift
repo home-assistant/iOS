@@ -15,17 +15,29 @@ import Iconic
 public class Action: Object, Mappable, NSCoding {
     @objc dynamic public var ID: String = UUID().uuidString
     @objc dynamic public var Name: String = ""
-    @objc dynamic public var Position: Int = 0
-    @objc dynamic public var BackgroundColor: String = UIColor.randomColor().hexString()
-    @objc dynamic public var IconName: String = MaterialDesignIcons.allCases.randomElement()!.name
-    @objc dynamic public var IconColor: String = UIColor.randomColor().hexString()
     @objc dynamic public var Text: String = ""
-    @objc dynamic public var TextColor: String = UIColor.randomColor().hexString()
+    @objc dynamic public var IconName: String = MaterialDesignIcons.allCases.randomElement()!.name
+    @objc dynamic public var BackgroundColor: String
+    @objc dynamic public var IconColor: String
+    @objc dynamic public var TextColor: String
+    @objc dynamic public var Position: Int = 0
     @objc dynamic public var CreatedAt = Date()
     @objc dynamic public var Scene: RLMScene?
 
     override public static func primaryKey() -> String? {
         return "ID"
+    }
+
+    public required init() {
+        let background = UIColor.randomBackgroundColor()
+        BackgroundColor = background.hexString()
+        if background.isLight {
+            TextColor = UIColor.black.hexString()
+            IconColor = UIColor.black.hexString()
+        } else {
+            TextColor = UIColor.white.hexString()
+            IconColor = UIColor.white.hexString()
+        }
     }
 
     required convenience public init?(map: Map) {
@@ -146,8 +158,16 @@ public class Action: Object, Mappable, NSCoding {
 }
 
 extension UIColor {
-    public static func randomColor() -> UIColor {
-        let random = {CGFloat(arc4random_uniform(255)) / 255.0}
-        return UIColor(red: random(), green: random(), blue: random(), alpha: 1)
+    public static func randomBackgroundColor() -> UIColor {
+        // avoiding:
+        // - super gray (low saturation)
+        // - super black (low brightness)
+        // - super white (high brightness)
+        UIColor(
+            hue: CGFloat.random(in: 0...1.0),
+            saturation: CGFloat.random(in: 0.5...1.0),
+            brightness: CGFloat.random(in: 0.25...0.75),
+            alpha: 1.0
+        )
     }
 }
