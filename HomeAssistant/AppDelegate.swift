@@ -21,6 +21,8 @@ import XCGLogger
 import UIKit
 import UserNotifications
 import FirebaseCrashlytics
+import FirebaseMessaging
+import FirebaseCore
 #if DEBUG
 import SimulatorStatusMagic
 #endif

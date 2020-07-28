@@ -19,6 +19,7 @@ import WebKit
 import MBProgressHUD
 import PromiseKit
 import XCGLogger
+import FirebaseCrashlytics
 
 // swiftlint:disable:next type_body_length
 class SettingsViewController: FormViewController {
