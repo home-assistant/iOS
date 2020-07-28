@@ -33,16 +33,6 @@ class ClientEventPayloadViewController: UIViewController {
     }
 
     func showEvent(_ event: ClientEvent) {
-        guard let payloadObject = event.jsonPayload else {
-            return
-        }
-
-        do {
-            let data: Data = try JSONSerialization.data(withJSONObject: payloadObject as Any,
-                                                        options: .prettyPrinted)
-            self.jsonString  = String(data: data, encoding: .utf8)
-        } catch _ {
-            Current.Log.error("Error printing event")
-        }
+        jsonString = event.jsonPayloadDescription
     }
 }
