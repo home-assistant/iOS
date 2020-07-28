@@ -147,13 +147,10 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                 $0.value = self.action.IconName
             }.cellUpdate({ (cell, row) in
                 if let value = row.value {
-                    let theIcon = MaterialDesignIcons(named: value)
-                    if let iconColorRow = self.form.rowBy(tag: "icon_color") as? InlineColorPickerRow {
-                        cell.imageView?.image = theIcon.image(
-                            ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
-                            color: iconColorRow.value
-                        )
-                    }
+                    cell.imageView?.image = MaterialDesignIcons(named: value).image(
+                        ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
+                        color: .black
+                    ).withRenderingMode(.alwaysTemplate)
                 }
             }).onPresent { _, to in
                 to.selectableRowCellSetup = {cell, row in
@@ -162,7 +159,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
                         cell.imageView?.image = theIcon.image(
                             ofSize: CGSize(width: CGFloat(30), height: CGFloat(30)),
                             color: .systemGray
-                        )
+                        ).withRenderingMode(.alwaysTemplate)
                     }
                 }
                 to.selectableRowCellUpdate = { cell, row in
