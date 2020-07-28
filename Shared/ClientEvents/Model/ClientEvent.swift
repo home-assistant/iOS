@@ -51,7 +51,13 @@ public class ClientEvent: Object {
             }
 
             do {
-                jsonData = try JSONSerialization.data(withJSONObject: payload, options: .prettyPrinted)
+                var writeOptions: JSONSerialization.WritingOptions = [.prettyPrinted]
+
+                if #available(iOS 13, *) {
+                    writeOptions.insert(.withoutEscapingSlashes)
+                }
+
+                jsonData = try JSONSerialization.data(withJSONObject: payload, options: writeOptions)
             } catch {
                 Current.Log.error("Error serializing json payload: \(error)")
             }
@@ -66,6 +72,10 @@ public class ClientEvent: Object {
 
             return dictionary
         }
+    }
+
+    public var jsonPayloadDescription: String? {
+        jsonData.flatMap { String(data: $0, encoding: .utf8) }
     }
 
     override public static func indexedProperties() -> [String] {
