@@ -376,8 +376,6 @@
 "watch.labels.complication_text_areas.trailing.description" = "The text to display on the trailing edge of the gauge.";
 "watch.labels.complication_text_areas.trailing.label" = "Trailing";
 "settings_details.location.zones.radius.label" = "%li m";
-"settings_details.notifications.categories_synced.header" = "Synced Categories";
-"settings_details.notifications.categories_synced.footer" = "Categories defined in .yaml are not editable on device.";
 "settings_details.notifications.categories.header" = "Categories";
 "settings_details.notifications.new_category.title" = "New Category";
 "settings_details.watch.title" = "Apple Watch";
@@ -470,10 +468,6 @@
 "settings.developer.map_notification.title" = "Show map notification content extension";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions and the Today widget";
 "settings_details.actions.title" = "Actions";
-"settings_details.actions.scenes.title" = "Scene Actions";
-"settings_details.actions.scenes.footer" = "When enabled, Scenes display alongside actions. When performed, they trigger scene changes.";
-"settings_details.actions.scenes.customize_action" = "Customize";
-"settings_details.actions.scenes.empty" = "No Scenes";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Black";
 "settings_details.general.app_icon.enum.blue" = "Blue";
@@ -666,7 +660,6 @@
 "settings.reset_section.reset_web_cache.title" = "Reset frontend cache";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud is not set up, you can not remove external URL";
 "settings.connection_section.errors.cant_disable_cloud" = "External URL must be set to disable cloud";
-"about.donate.patreon" = "Support on Patreon";
 "whats_new.title" = "What's New in\
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Read More";
@@ -797,5 +790,13 @@ Thank you.\
 "sensors.geocoded_location.setting.use_zones" = "Use Zone Name";
 "settings_sensors.settings.header" = "Settings";
 "settings_sensors.settings.footer" = "Changes will be applied on the next update.";
-"actions_configurator.visual_section.scene_hint_footer" = "You can also change these by customizing the Scene attributes: %@";
+"app_transfer_warning_notification.title" = "⚠️ Notice of upcoming major app change";
+"app_transfer_warning_notification.body" = "Please open this notification for an important update about upcoming changes to Home Assistant Companion";
+"settings_details.notifications.categories_synced.header" = "Synced Categories";
+"settings_details.notifications.categories_synced.footer" = "Categories defined in .yaml are not editable on device.";
 "actions_configurator.visual_section.scene_defined" = "The appearance of this action is controlled by the scene configuration.";
+"actions_configurator.visual_section.scene_hint_footer" = "You can also change these by customizing the Scene attributes: %@";
+"settings_details.actions.scenes.customize_action" = "Customize";
+"settings_details.actions.scenes.footer" = "When enabled, Scenes display alongside actions. When performed, they trigger scene changes.";
+"settings_details.actions.scenes.title" = "Scene Actions";
+"settings_details.actions.scenes.empty" = "No Scenes";

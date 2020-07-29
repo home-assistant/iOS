@@ -56,10 +56,6 @@ internal enum L10n {
       /// Documentation
       internal static let title = L10n.tr("Localizable", "about.documentation.title")
     }
-    internal enum Donate {
-      /// Support on Patreon
-      internal static let patreon = L10n.tr("Localizable", "about.donate.patreon")
-    }
     internal enum EasterEgg {
       /// i love you
       internal static let message = L10n.tr("Localizable", "about.easter_egg.message")
@@ -182,6 +178,13 @@ internal enum L10n {
       /// OK
       internal static let ok = L10n.tr("Localizable", "alerts.prompt.ok")
     }
+  }
+
+  internal enum AppTransferWarningNotification {
+    /// Please open this notification for an important update about upcoming changes to Home Assistant Companion
+    internal static let body = L10n.tr("Localizable", "app_transfer_warning_notification.body")
+    /// ⚠️ Notice of upcoming major app change
+    internal static let title = L10n.tr("Localizable", "app_transfer_warning_notification.title")
   }
 
   internal enum ClError {
