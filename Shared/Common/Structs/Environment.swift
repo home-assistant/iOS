@@ -107,6 +107,8 @@ public class Environment {
 
     public var setUserProperty: ((String?, String) -> Void)?
 
+    public var subscribeFCMTopic: ((String) -> Void)?
+
     public func updateWith(authenticatedAPI: HomeAssistantAPI) {
         self.tokenManager = authenticatedAPI.tokenManager
         self.settingsStore.connectionInfo = authenticatedAPI.connectionInfo

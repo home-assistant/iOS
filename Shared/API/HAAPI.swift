@@ -295,6 +295,8 @@ public class HomeAssistantAPI {
 
             Current.setUserProperty?(config.Version, "HA_Version")
 
+            Current.subscribeFCMTopic?("ha_version_\(config.Version)")
+
             return Promise.value(config)
         }
     }

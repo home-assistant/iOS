@@ -826,6 +826,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
     }
 
+    // swiftlint:disable:next function_body_length
     func setupFirebase() {
         LogDestination = CrashlyticsLogDestination()
 
@@ -858,6 +859,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             guard let value = value else { return }
             Crashlytics.crashlytics().setCustomValue(value, forKey: name)
         }
+
+        Current.subscribeFCMTopic = { (topic: String) -> Void in
+            Current.Log.verbose("Subscribing to topic \(topic)")
+
+            Messaging.messaging().subscribe(toTopic: topic) { (error) in
+                if let error = error {
+                    Current.Log.error("Error subscribing to topic \(topic): \(error)")
+                }
+                Current.Log.info("Subscribed to topic \(topic)")
+            }
+        }
+
+        if let existingTopics = prefs.array(forKey: "fcmTopics") as? [String] {
+            for topic in existingTopics {
+                Messaging.messaging().unsubscribe(fromTopic: topic) { (error) in
+                    if let error = error {
+                        Current.Log.error("Error unsubscribing from topic \(topic): \(error)")
+                    }
+                    Current.Log.info("Unsubscribed from topic \(topic)")
+                }
+            }
+        }
+
+        let newTopics = [
+            "everyone",
+            "app_version_\(Constants.version)",
+            "app_version_build_\(Constants.version)_\(Constants.build)",
+            "locale_\(Bundle.main.preferredLocalizations.first ?? "UNKNOWN")"
+        ]
+
+        for topic in newTopics {
+            Messaging.messaging().subscribe(toTopic: topic) { (error) in
+                if let error = error {
+                    Current.Log.error("Error subscribing to topic \(topic): \(error)")
+                }
+                Current.Log.info("Subscribed to topic \(topic)")
+            }
+        }
+
+        prefs.set(newTopics, forKey: "fcmTopics")
     }
 
     func setupModels() {
