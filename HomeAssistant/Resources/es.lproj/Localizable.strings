@@ -660,7 +660,6 @@
 "settings.reset_section.reset_web_cache.title" = "Restablecer caché del frontend";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud no está configurado, no puede eliminar la URL externa";
 "settings.connection_section.errors.cant_disable_cloud" = "La URL externa debe configurarse para deshabilitar la nube";
-"about.donate.patreon" = "Apoya en Patreon";
 "whats_new.title" = "Qué hay de nuevo en \
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Leer más";

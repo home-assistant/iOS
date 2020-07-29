@@ -660,7 +660,6 @@
 "settings.reset_section.reset_web_cache.title" = "Ön önbelleği sıfırla";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud kurulmamış, harici URL'yi kaldıramazsınız";
 "settings.connection_section.errors.cant_disable_cloud" = "Bulutu devre dışı bırakmak için harici URL ayarlanmalıdır";
-"about.donate.patreon" = "Patreon'da Destekle";
 "whats_new.title" = "Neler Yeni \
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Daha fazla oku";

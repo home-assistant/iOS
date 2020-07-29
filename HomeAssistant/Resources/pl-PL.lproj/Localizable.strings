@@ -660,7 +660,6 @@
 "settings.reset_section.reset_web_cache.title" = "Wyczyść pamięć podręczną interfejsu użytkownika";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Chmura Home Assistant'a nie jest skonfigurowana, nie można usunąć zewnętrznego adresu URL";
 "settings.connection_section.errors.cant_disable_cloud" = "Zewnętrzny adres URL musi być ustawiony, aby wyłączyć chmurę";
-"about.donate.patreon" = "Wsparcie na Patreon'ie";
 "whats_new.title" = "Co nowego w aplikacji Home Assistant %@";
 "whats_new.buttons.read_more.title" = "Czytaj więcej";
 "whats_new.buttons.completion.title" = "Dalej";

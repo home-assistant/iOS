@@ -660,7 +660,6 @@
 "settings.reset_section.reset_web_cache.title" = "重置前端快取";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud 未設定，無法移除外部 URL";
 "settings.connection_section.errors.cant_disable_cloud" = "外部 URL 必須設置後才能關閉 Cloud 服務";
-"about.donate.patreon" = "於 Patreon 上贊助";
 "whats_new.title" = "Home Assistant Companion %@\
 新增功能";
 "whats_new.buttons.read_more.title" = "繼續閱讀";

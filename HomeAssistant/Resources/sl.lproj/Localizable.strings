@@ -660,7 +660,6 @@
 "settings.reset_section.reset_web_cache.title" = "Ponastavi predpomnilnik frontend-a";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud ni nastavljen, zato ne morete odstraniti zunanjega URL-ja";
 "settings.connection_section.errors.cant_disable_cloud" = "Če želite onemogočiti oblak, mora biti nastavljen zunanji URL";
-"about.donate.patreon" = "Podprite na Patreonu";
 "whats_new.title" = "Kaj je novega v Home Asistant companion-u %@";
 "whats_new.buttons.read_more.title" = "Preberi Več";
 "whats_new.buttons.completion.title" = "Pojdimo";
