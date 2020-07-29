@@ -25,9 +25,9 @@ final class NotificationService: UNNotificationServiceExtension {
         // FIXME: Memory leak caused by ClientEvent/Realm.
         /* let event = ClientEvent(text: request.content.clientEventTitle, type: .notification,
                                 payload: request.content.userInfo as? [String: Any])
-        Current.clientEventStore.addEvent(event) */
+        Current.clientEventStore.addEvent(event)
 
-        Current.Log.debug("Added client event")
+        Current.Log.debug("Added client event") */
 
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
@@ -43,57 +43,64 @@ final class NotificationService: UNNotificationServiceExtension {
             return failEarly("Unable to get mutable copy of notification content")
         }
 
-        // if there's no attachment, we want to still allow the camera category to be automatic
-        var incomingAttachment = content.userInfo["attachment"] as? [String: Any] ?? [:]
-
+        // FCM Composer sets image in fcm_options.image. Let's use that if it exists, ignoring any other attachment.
+        var attachmentString: String? = ((content.userInfo["fcm_options"] as? [String: Any])?["image"] as? String)
+        var attachmentOptions: [String: Any] = [:]
         var needsAuth = false
 
-        if content.categoryIdentifier.lowercased().hasPrefix("camera") && incomingAttachment["url"] == nil {
-            Current.Log.debug("Camera cat prefix")
-            guard let entityId = content.userInfo["entity_id"] as? String else {
-                return failEarly("Category identifier was prefixed camera but no entity_id was set")
+        // If FCM set a image, lets bail out from any other image in the attachment.
+        if attachmentString == nil {
+            // if there's no attachment, we want to still allow the camera category to be automatic
+            var incomingAttachment = content.userInfo["attachment"] as? [String: Any] ?? [:]
+
+            if content.categoryIdentifier.lowercased().hasPrefix("camera") && incomingAttachment["url"] == nil {
+                Current.Log.debug("Camera cat prefix")
+                guard let entityId = content.userInfo["entity_id"] as? String else {
+                    return failEarly("Category identifier was prefixed camera but no entity_id was set")
+                }
+
+                incomingAttachment["url"] = "/api/camera_proxy/\(entityId)"
+                if incomingAttachment["content-type"] == nil {
+                    incomingAttachment["content-type"] = "jpeg"
+                }
+
+                needsAuth = true
+                Current.Log.debug("Camera so requiring auth")
+            } else {
+                Current.Log.debug("Not a camera notification")
+                // Check if we still have an empty dictionary
+                if incomingAttachment.isEmpty {
+                    // Attachment wasn't there/not a string:any, and this isn't a camera category, so we should fail
+                    return failEarly("Content dictionary was not empty")
+                }
             }
 
-            incomingAttachment["url"] = "/api/camera_proxy/\(entityId)"
-            if incomingAttachment["content-type"] == nil {
-                incomingAttachment["content-type"] = "jpeg"
+            guard let attachmentURLString = incomingAttachment["url"] as? String else {
+                return failEarly("url string did not exist in dictionary")
             }
 
-            needsAuth = true
-            Current.Log.debug("Camera so requiring auth")
-        } else {
-            Current.Log.debug("Not a camera notification")
-            // Check if we still have an empty dictionary
-            if incomingAttachment.isEmpty {
-                // Attachment wasn't there/not a string:any, and this isn't a camera category, so we should fail
-                return failEarly("Content dictionary was not empty")
+            if attachmentURLString.hasPrefix("/") { // URL is something like /api or /www so lets prepend base URL
+                Current.Log.debug("Appears to be local URL, requiring auth")
+                needsAuth = true
             }
+
+            attachmentString = attachmentURLString
+
+            if let attachmentContentType = incomingAttachment["content-type"] as? String {
+                attachmentOptions[UNNotificationAttachmentOptionsTypeHintKey] =
+                    self.contentTypeForString(attachmentContentType)
+            }
+
+            if let attachmentHideThumbnail = incomingAttachment["hide-thumbnail"] as? Bool {
+                attachmentOptions[UNNotificationAttachmentOptionsThumbnailHiddenKey] = attachmentHideThumbnail
+            }
+
+            Current.Log.debug("Set attachment options to \(attachmentOptions)s")
         }
 
-        guard let attachmentString = incomingAttachment["url"] as? String else {
-            return failEarly("url string did not exist in dictionary")
+        guard let attachmentURL = URL(string: attachmentString ?? "") else {
+            return failEarly("Unable to convert string to URL! URL string was \(attachmentString ?? "MISSING")")
         }
-
-        if attachmentString.hasPrefix("/") { // URL is something like /api or /www so lets prepend base URL
-            Current.Log.debug("Appears to be local URL, requiring auth")
-            needsAuth = true
-        }
-
-        guard let attachmentURL = URL(string: attachmentString) else {
-            return failEarly("Could not convert string to URL")
-        }
-
-        var attachmentOptions: [String: Any] = [:]
-        if let attachmentContentType = incomingAttachment["content-type"] as? String {
-            attachmentOptions[UNNotificationAttachmentOptionsTypeHintKey] =
-                self.contentTypeForString(attachmentContentType)
-        }
-
-        if let attachmentHideThumbnail = incomingAttachment["hide-thumbnail"] as? Bool {
-            attachmentOptions[UNNotificationAttachmentOptionsThumbnailHiddenKey] = attachmentHideThumbnail
-        }
-
-        Current.Log.debug("Set attachment options to \(attachmentOptions)s")
 
         Current.Log.verbose("Going to get URL at \(attachmentURL)")
 
@@ -147,7 +154,7 @@ final class NotificationService: UNNotificationServiceExtension {
         // Use this as an opportunity to deliver your "best attempt" at modified content,
         // otherwise the original push payload will be used.
         Current.Log.warning("serviceExtensionTimeWillExpire")
-        if let contentHandler = contentHandler, let bestAttemptContent =  bestAttemptContent {
+        if let contentHandler = contentHandler, let bestAttemptContent = bestAttemptContent {
             contentHandler(bestAttemptContent)
         }
     }
