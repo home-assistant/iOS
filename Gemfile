@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'cocoapods', '>= 1.7.0.beta.1'
-gem 'cocoapods-acknowledgements'
+gem 'cocoapods-acknowledgements', :git => 'https://github.com/CocoaPods/cocoapods-acknowledgements.git'
 gem 'fastlane'
 gem 'synx'
 

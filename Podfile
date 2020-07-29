@@ -55,7 +55,7 @@ target 'HomeAssistant' do
     pod 'Firebase/Core'
     pod 'Firebase/Crashlytics'
     pod 'Firebase/Messaging'
-    pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
+    pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'xcode12'
     pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
     pod 'MaterialComponents/Buttons'
@@ -115,15 +115,23 @@ target 'TodayWidget' do
     ios_shared_pods
 end
 
+# post_install do |installer|
+#     installer.pods_project.targets.each do |target|
+#         target.build_configurations.each do |config|
+#             config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '6.2'
+#             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.4'
+#             if config.build_settings['SDKROOT'] == 'watchos'
+#                 # temporarily disabling x86_64 watchos simulator until realm/sodium support it
+#                 config.build_settings['ARCHS'] = 'arm64_32 armv7s i386'
+#             end
+#         end
+#     end
+# end
+
 post_install do |installer|
     installer.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
-            config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '6.2'
-            config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.4'
-            if config.build_settings['SDKROOT'] == 'watchos'
-                # temporarily disabling x86_64 watchos simulator until realm/sodium support it
-                config.build_settings['ARCHS'] = 'arm64_32 armv7s i386'
-            end
+            config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
         end
     end
 end
