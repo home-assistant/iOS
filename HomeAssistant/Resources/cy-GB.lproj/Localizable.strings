@@ -660,7 +660,6 @@
 "settings.reset_section.reset_web_cache.title" = "Ailosod frontend cache";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Nid yw Home Assistant wedi'i sefydlu, ni allwch dileu URL allanol";
 "settings.connection_section.errors.cant_disable_cloud" = "Rhaid gosod URL allanol i analluogi Cloud";
-"about.donate.patreon" = "Cymorth ar Patreon";
 "whats_new.title" = "Beth sy'n newydd yn Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Darllen Mwy";
 "whats_new.buttons.completion.title" = "Awn ni";

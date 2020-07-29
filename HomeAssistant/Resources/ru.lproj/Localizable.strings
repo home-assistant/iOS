@@ -660,7 +660,6 @@
 "settings.reset_section.reset_web_cache.title" = "Сбросить кеш веб-интерфейса";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Home Assistant Cloud is not set up, you can not remove external URL";
 "settings.connection_section.errors.cant_disable_cloud" = "External URL must be set to disable cloud";
-"about.donate.patreon" = "Поддержать на Patreon";
 "whats_new.title" = "What's New in\
 Home Assistant Companion %@";
 "whats_new.buttons.read_more.title" = "Read More";

@@ -660,7 +660,6 @@
 "settings.reset_section.reset_web_cache.title" = "Nollaa käyttöliittymän välimuistia";
 "settings.connection_section.errors.no_cloud_external_url_required" = "Kotiavustajapilveä ei ole määritetty, et voi poistaa ulkoista URL-osoitetta";
 "settings.connection_section.errors.cant_disable_cloud" = "Ulkoisen URL-osoitetta on oltava määritetty pilven poistamiseen";
-"about.donate.patreon" = "Tue Patreonilla";
 "whats_new.title" = "Mitä on uutta Kotiavustajakumppanissa %@";
 "whats_new.buttons.read_more.title" = "Lue lisää";
 "whats_new.buttons.completion.title" = "Mennään";

@@ -56,13 +56,6 @@ class AboutViewController: FormViewController {
             }
 
              +++ ButtonRow {
-                   $0.title = L10n.About.Donate.patreon
-               }.onCellSelection { _, _  in
-                   let urlStr = "https://companion.home-assistant.io/app/ios/patreon"
-                   openURLInBrowser(URL(string: urlStr)!, self)
-               }
-
-            <<< ButtonRow {
                     $0.title = L10n.About.Beta.title
                     $0.disabled = Condition(booleanLiteral: Current.appConfiguration == .Beta)
                 }.onCellSelection { _, _  in

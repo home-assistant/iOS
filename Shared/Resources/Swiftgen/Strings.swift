@@ -56,10 +56,6 @@ internal enum L10n {
       /// Documentation
       internal static let title = L10n.tr("Localizable", "about.documentation.title")
     }
-    internal enum Donate {
-      /// Support on Patreon
-      internal static let patreon = L10n.tr("Localizable", "about.donate.patreon")
-    }
     internal enum EasterEgg {
       /// i love you
       internal static let message = L10n.tr("Localizable", "about.easter_egg.message")
