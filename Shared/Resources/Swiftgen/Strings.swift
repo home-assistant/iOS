@@ -180,6 +180,13 @@ internal enum L10n {
     }
   }
 
+  internal enum AppTransferWarningNotification {
+    /// Please open this notification for an important update about upcoming changes to Home Assistant Companion
+    internal static let body = L10n.tr("Localizable", "app_transfer_warning_notification.body")
+    /// ⚠️ Notice of upcoming major app change
+    internal static let title = L10n.tr("Localizable", "app_transfer_warning_notification.title")
+  }
+
   internal enum ClError {
     internal enum Description {
       /// Deferred mode is not supported for the requested accuracy.

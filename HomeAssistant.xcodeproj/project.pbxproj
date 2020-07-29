@@ -1077,6 +1077,14 @@
 		B641BC1D1E2097EF002CCBC1 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AboutViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B641BC221E209CA9002CCBC1 /* HomeAssistantLogoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeAssistantLogoView.xib; sourceTree = "<group>"; };
 		B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInChromeController.swift; sourceTree = "<group>"; };
+		B646B04C24D10A2900093E6A /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Intents.strings; sourceTree = "<group>"; };
+		B646B04D24D10A2900093E6A /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B646B04E24D10A2900093E6A /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B646B04F24D10A2A00093E6A /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B646B05024D10A5400093E6A /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Intents.strings; sourceTree = "<group>"; };
+		B646B05124D10A5400093E6A /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B646B05224D10A5400093E6A /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B646B05324D10A5400093E6A /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B648AE232275918E006972AF /* Segues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Segues.swift; sourceTree = "<group>"; };
 		B648AE242275918E006972AF /* Scenes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scenes.swift; sourceTree = "<group>"; };
 		B64BB3A71E9C6551001E8B46 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
@@ -2996,6 +3004,8 @@
 				"ko-KR",
 				"pl-PL",
 				"cy-GB",
+				vi,
+				uk,
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -4441,6 +4451,8 @@
 				B60409E52492B2BB00D36599 /* ko-KR */,
 				B60409EA2492B2F000D36599 /* pl-PL */,
 				B60409ED2492B30900D36599 /* cy-GB */,
+				B646B04E24D10A2900093E6A /* vi */,
+				B646B05224D10A5400093E6A /* uk */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -4470,6 +4482,8 @@
 				B60409E32492B2BB00D36599 /* ko-KR */,
 				B60409E72492B2D200D36599 /* pl-PL */,
 				B60409EB2492B30900D36599 /* cy-GB */,
+				B646B04C24D10A2900093E6A /* vi */,
+				B646B05024D10A5400093E6A /* uk */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -4508,6 +4522,8 @@
 				B60409E42492B2BB00D36599 /* ko-KR */,
 				B60409E82492B2D200D36599 /* pl-PL */,
 				B60409EC2492B30900D36599 /* cy-GB */,
+				B646B04D24D10A2900093E6A /* vi */,
+				B646B05124D10A5400093E6A /* uk */,
 			);
 			name = Onboarding.storyboard;
 			sourceTree = "<group>";
@@ -4544,6 +4560,8 @@
 				B60409E62492B2BB00D36599 /* ko-KR */,
 				B60409E92492B2E900D36599 /* pl-PL */,
 				B60409EE2492B30A00D36599 /* cy-GB */,
+				B646B04F24D10A2A00093E6A /* vi */,
+				B646B05324D10A5400093E6A /* uk */,
 			);
 			name = Localizable.strings;
 			path = .;
