@@ -279,7 +279,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             tokenType = .sandbox
         }
 
-        Messaging.messaging().apnsToken = deviceToken
         Messaging.messaging().setAPNSToken(deviceToken, type: tokenType)
     }
 
