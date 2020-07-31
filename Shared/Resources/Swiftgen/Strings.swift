@@ -643,6 +643,18 @@ internal enum L10n {
         }
       }
     }
+    internal enum LoggedOutFromMove {
+      /// The Home Assistant iOS app recently moved organizations on the App Store. This move, unfortunately, required logging you out.\n\nYour actions and local configuration will still be available after logging in.
+      internal static let body = L10n.tr("Localizable", "onboarding.logged_out_from_move.body")
+      /// Continue
+      internal static let `continue` = L10n.tr("Localizable", "onboarding.logged_out_from_move.continue")
+      /// To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in.
+      internal static let duplicateWarning = L10n.tr("Localizable", "onboarding.logged_out_from_move.duplicate_warning")
+      /// Learn more about the move.
+      internal static let learnMore = L10n.tr("Localizable", "onboarding.logged_out_from_move.learn_more")
+      /// You've been logged out :(
+      internal static let title = L10n.tr("Localizable", "onboarding.logged_out_from_move.title")
+    }
     internal enum ManualSetup {
       internal enum CouldntMakeUrl {
         /// The value '%@' was not a valid URL.
