@@ -31,3 +31,4 @@
 "suf-pJ-Nle.normalTitle" = "Aloita alusta";
 "7iT-bd-cdY.text" = "Manuaalinen konfigurointi";
 "PIW-dY-j0P.text" = "Syötä Kotiavustajan URL-osoitetta jatkaaksesi. Sen on oltava täysin muodostettu URL-osoite, jonka muoto on \"http://homeassistant.local:8123\" (eli sisältää kaavio/protokolla, palvelinnimi ja portti).";
+"xO0-K1-GJX.placeholder" = "http://homeassistant.local:8123";

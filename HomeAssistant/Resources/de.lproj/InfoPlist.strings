@@ -6,3 +6,4 @@
 "NSPhotoLibraryAddUsageDescription" = "Der Zugriff auf die Fotobibliothek ist erforderlich, um das Speichern von Fotos aus der Webansicht zu ermöglichen.";
 "NSPhotoLibraryUsageDescription" = "Der Zugriff auf die Fotobibliothek ist erforderlich, um das Speichern von Fotos aus der Webansicht zu ermöglichen.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Standort senden";
+"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";

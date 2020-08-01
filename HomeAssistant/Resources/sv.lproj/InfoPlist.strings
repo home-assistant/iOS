@@ -6,3 +6,4 @@
 "NSPhotoLibraryAddUsageDescription" = "Åtkomst till bildbiblioteket krävs för att tillåta att foton sparas från webbvyn.";
 "NSPhotoLibraryUsageDescription" = "Åtkomst till bildbiblioteket krävs för att tillåta att foton sparas från webbvyn.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Skicka plats";
+"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";

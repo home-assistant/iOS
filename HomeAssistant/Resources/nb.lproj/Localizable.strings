@@ -201,7 +201,7 @@
 "addButtonLabel" = "Legg til";
 "notifications_configurator.category.rows.category_summary.header" = "Sammendrag av kategorien";
 "notifications_configurator.category.rows.category_summary.footer" = "En formatstreng for den oppsummerte beskrivelsen som brukes når systemet grupperer varselene i kategorien. Du kan eventuelt bruke ' %%u' for å vise antall varsler i gruppen og ' %%@' for å vise sammendragsargumentet som er oppgitt i push nyttelast.";
-"notifications_configurator.category.rows.category_summary.default" = "% %u varsler i% %@";
+"notifications_configurator.category.rows.category_summary.default" = "%%u varsler i %%@";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%u varsler";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Skjult forhåndsvisning plassholder";
 "notifications_configurator.category.rows.hidden_preview_placeholder.footer" = "Denne teksten vises bare hvis du har skjult forhåndsvisning av varsling. Bruk %u for antall meldinger med samme trådidentifikator.";
@@ -790,13 +790,28 @@ takk.\
 "sensors.geocoded_location.setting.use_zones" = "Bruk sone-navn";
 "settings_sensors.settings.header" = "Innstillinger";
 "settings_sensors.settings.footer" = "Endringer blir brukt på neste oppdatering.";
-"app_transfer_warning_notification.title" = "⚠️ Notice of upcoming major app change";
-"app_transfer_warning_notification.body" = "Please open this notification for an important update about upcoming changes to Home Assistant Companion";
-"settings_details.notifications.categories_synced.header" = "Synced Categories";
-"settings_details.notifications.categories_synced.footer" = "Categories defined in .yaml are not editable on device.";
-"actions_configurator.visual_section.scene_defined" = "The appearance of this action is controlled by the scene configuration.";
-"actions_configurator.visual_section.scene_hint_footer" = "You can also change these by customizing the Scene attributes: %@";
-"settings_details.actions.scenes.customize_action" = "Customize";
-"settings_details.actions.scenes.footer" = "When enabled, Scenes display alongside actions. When performed, they trigger scene changes.";
-"settings_details.actions.scenes.title" = "Scene Actions";
-"settings_details.actions.scenes.empty" = "No Scenes";
+"app_transfer_warning_notification.title" = "⚠️ Merknad om kommende store appendring";
+"app_transfer_warning_notification.body" = "Åpne dette varselet for en viktig oppdatering om kommende endringer i Home Assistant Companion";
+"settings_details.notifications.categories_synced.header" = "Synkroniserte kategorier";
+"settings_details.notifications.categories_synced.footer" = "Kategorier definert i .yaml kan ikke redigeres på enheten.";
+"actions_configurator.visual_section.scene_defined" = "Utseendet til denne handlingen styres av scenekonfigurasjonen.";
+"actions_configurator.visual_section.scene_hint_footer" = "Du kan også endre disse ved å tilpasse Scene-attributtene: %@";
+"settings_details.actions.scenes.customize_action" = "Tilpasse";
+"settings_details.actions.scenes.footer" = "Når dette er aktivert, vises scener ved siden av handlinger. Når de blir utført, utløser de sceneendringer.";
+"settings_details.actions.scenes.title" = "Scene handlinger";
+"settings_details.actions.scenes.empty" = "Ingen scener";
+"onboarding.logged_out_from_move.title" = "You've been logged out :(";
+"onboarding.logged_out_from_move.body" = "The Home Assistant iOS app recently moved organizations on the App Store. This move, unfortunately, required logging you out.\
+\
+Your actions and local configuration will still be available after logging in.";
+"onboarding.logged_out_from_move.learn_more" = "Learn more about the move.";
+"onboarding.logged_out_from_move.duplicate_warning" = "To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in.";
+"onboarding.logged_out_from_move.continue" = "Continue";
+"settings_details.privacy.analytics.generic_title" = "Analytics";
+"settings_details.privacy.analytics.generic_description" = "Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared, including your Home Assistant URLs and tokens. You must restart the app for changes to this setting to take effect.";
+"settings_details.privacy.crash_reporting.title" = "Crash Reporting";
+"settings_details.privacy.crash_reporting.description" = "Allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information. You must restart the app for changes to this setting to take effect.";
+"settings_details.privacy.crash_reporting.sentry" = "This feature currently uses Sentry as the report destination.";
+"actions_configurator.visual_section.server_defined" = "The appearance of this action is controlled by the server configuration.";
+"settings_details.actions.actions_synced.header" = "Synced Actions";
+"settings_details.actions.actions_synced.footer" = "Actions defined in .yaml are not editable on device.";

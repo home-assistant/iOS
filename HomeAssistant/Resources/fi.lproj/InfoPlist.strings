@@ -6,3 +6,4 @@
 "NSPhotoLibraryAddUsageDescription" = "Kuvakirjaston käytön salliminen on edelletty valokuvien tallentamiseen Web-näkymästä.";
 "NSPhotoLibraryUsageDescription" = "Kuvakirjaston käytön salliminen on edelletty valokuvien tallentamiseen Web-näkymästä.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Lähetä sijainti";
+"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
