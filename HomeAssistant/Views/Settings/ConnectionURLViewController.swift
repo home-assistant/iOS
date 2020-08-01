@@ -180,9 +180,9 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
                 multivaluedOptions: [.Insert, .Delete],
                 header: L10n.Settings.ConnectionSection.InternalUrlSsids.header,
                 footer: L10n.Settings.ConnectionSection.InternalUrlSsids.footer
-            ) {
-                $0.tag = RowTag.ssids.rawValue
-                $0.addButtonProvider = { _ in
+            ) { section in
+                section.tag = RowTag.ssids.rawValue
+                section.addButtonProvider = { _ in
                     return ButtonRow {
                         $0.title = L10n.Settings.ConnectionSection.InternalUrlSsids.addNewSsid
                     }.cellUpdate { cell, _ in
@@ -197,12 +197,18 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
                     }
                 }
 
-                $0.multivaluedRowToInsertAt = { _ in
-                    row(for: ConnectionInfo.CurrentWiFiSSID)
+                section.multivaluedRowToInsertAt = { _ in
+                    let current = ConnectionInfo.CurrentWiFiSSID
+
+                    if section.allRows.contains(where: { ($0 as? TextRow)?.value == current }) {
+                        return row(for: nil)
+                    } else {
+                        return row(for: current)
+                    }
                 }
 
                 let existing = Current.settingsStore.connectionInfo?.internalSSIDs ?? []
-                $0.append(contentsOf: existing.map { row(for: $0) })
+                section.append(contentsOf: existing.map { row(for: $0) })
             }
         }
     }
