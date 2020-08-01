@@ -1,8 +1,9 @@
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Rydym yn awgrymu dewis \"Always Allow\" ar gyfer y profiad lleoliad gorau. Bydd dewis \"Only While Using the App\" yn analluogi iBeacons, geofences, diweddariadau lleoliad cefndir ac adroddiadau cywir.";
+"NSLocationAlwaysUsageDescription" = "Rydym bob amser angen mynediad i'ch lleoliad ar gyfer nodweddion fel iBeacons, geofences, diweddariadau lleoliad cefndir ac adrodd cywir.";
+"NSLocationWhenInUseUsageDescription" = "Dim ond caniatáu mynediad i leoliad tra bo ap yn cael ei ddefnyddio a fydd yn anablu iBeacons, geofences, diweddariadau lleoliad cefndir ac adrodd yn gywir.";
 "NSMotionUsageDescription" = "Defnyddir symudiad i wella diweddariadau lleoliad gyda'r math symudiad cyfredol, yn ogystal â darparu data pedomedr sylfaenol.";
 "NSSiriUsageDescription" = "Rydym yn defnyddio Siri i ganiatáu llwybrau byr wedi'u creu i ryngweithio â'r ap.";
 "NSPhotoLibraryAddUsageDescription" = "Mae angen caniatâd i agor Photo Library i ganiatáu arbed lluniau o'r we.";
 "NSPhotoLibraryUsageDescription" = "Mae angen caniatâd i agor Photo Library i ganiatáu arbed lluniau o'r we.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Anfon Lleoliad";
+"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";

@@ -15,7 +15,7 @@
 "SnL-y3-0HP.text" = "Fy Home Assistant";
 "TEX-zW-Byk.text" = "Am y profiad gorau wrth ddefnyddio Home Assistant, rhowch y caniatâd canlynol:";
 "Tqw-iY-A2S.normalTitle" = "Mwy o Wybodaeth";
-"UKm-Ju-0Yr.text" = "Rydym wedi dod ar draws gwall wrth gysylltu â'ch fersiwn. %@ Mae eich tystysgrif SSL yn annilys. Oherwydd cyfyngiadau iOS, ni fyddwch yn gallu parhau â Setup nes bod tystysgrif SSL ddilys wedi'i osod. Rydym yn awgrymu Lets Encrypt neu Nabu Casa Remote UI.";
+"UKm-Ju-0Yr.text" = "Rydym wedi dod ar draws gwall wrth gysylltu â'ch fersiwn. Mae eich tystysgrif SSL yn annilys. Oherwydd cyfyngiadau iOS, ni fyddwch yn gallu parhau â Setup nes bod tystysgrif SSL ddilys wedi'i osod. Rydym yn awgrymu Lets Encrypt neu Nabu Casa Remote UI.";
 "XyQ-gy-yHY.text" = "Wedi'i gysylltu";
 "bP1-C8-fgs.text" = "Wedi'i greu integreiddio";
 "d97-7H-RBe.text" = "Cyfathrebu Amgryptiedig Wedi'i Sefydlu";
@@ -31,3 +31,4 @@
 "suf-pJ-Nle.normalTitle" = "Dechrau eto";
 "7iT-bd-cdY.text" = "Ffurfweddiad ar law";
 "PIW-dY-j0P.text" = "Rhowch eich URL Home Assistant i barhau. Rhaid iddo fod yn URL wedi'i ffurfio'n llawn o'r fformat \"http: //homeassistant.local: 8123\" (hynny yw, sy'n cynnwys scheme/protocol, hostname and port).";
+"xO0-K1-GJX.placeholder" = "http://homeassistant.local:8123";

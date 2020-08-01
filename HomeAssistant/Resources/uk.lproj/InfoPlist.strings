@@ -1,8 +1,9 @@
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
-"NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
-"NSMotionUsageDescription" = "Motion is used to improve location updates with current motion type, as well as provide basic pedometer data.";
-"NSSiriUsageDescription" = "We use Siri to allow created shortcuts to interact with the app.";
-"NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
-"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Радимо вибрати параметр \"Дозволити завжди\" для найоптимальнішої роботи. Вибір \"тільки при використанні\" відключить iBeacons, віртуальні периметри, фонове оновлення розташування та звітність про точність.";
+"NSLocationAlwaysUsageDescription" = "Нам завжди потрібен доступ до вашого місця розташування для таких функцій, як iBeacons, віртуальні периметри, фонове оновлення та звіти про точність.";
+"NSLocationWhenInUseUsageDescription" = "Лише надання доступу до розташування під час використання додатка відключить iBeacons, віртуальні периметри, фонові оновлення та звіти про точність.";
+"NSMotionUsageDescription" = "Рух використовується для покращення оновлень розташування відповідно до поточного типу переміщення, а також для отримання основних даних крокоміра.";
+"NSSiriUsageDescription" = "Ми використовуємо Siri, щоб дозволити створеним командам взаємодіяти з застосунком.";
+"NSPhotoLibraryAddUsageDescription" = "Щоб зберегти фотографії з веб-перегляду, потрібно отримати доступ до бібліотеки фотографій.";
+"NSPhotoLibraryUsageDescription" = "Щоб зберегти фотографії з веб-перегляду, потрібно отримати доступ до бібліотеки фотографій.";
+"SEND_LOCATION_APP_SHORTCUT_TITLE" = "Надіслати розташування";
+"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
