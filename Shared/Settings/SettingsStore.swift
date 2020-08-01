@@ -301,6 +301,46 @@ public class SettingsStore {
         }
     }
 
+    public struct Privacy {
+        public var messaging: Bool
+        public var crashes: Bool
+        public var analytics: Bool
+
+        internal static func key(for keyPath: KeyPath<Privacy, Bool>) -> String {
+            switch keyPath {
+            case \.messaging: return "messagingEnabled"
+            case \.crashes: return "crashesEnabled"
+            case \.analytics: return "analyticsEnabled"
+            default: return ""
+            }
+        }
+    }
+
+    public var privacy: Privacy {
+        get {
+            func boolValue(for keyPath: KeyPath<Privacy, Bool>) -> Bool {
+                let key = Privacy.key(for: keyPath)
+                if prefs.object(forKey: key) == nil {
+                    // default to enabled for privacy settings
+                    return true
+                }
+                return prefs.bool(forKey: key)
+            }
+
+            return .init(
+                messaging: boolValue(for: \.messaging),
+                crashes: boolValue(for: \.crashes),
+                analytics: boolValue(for: \.analytics)
+            )
+        }
+        set {
+            prefs.set(newValue.messaging, forKey: Privacy.key(for: \.messaging))
+            prefs.set(newValue.crashes, forKey: Privacy.key(for: \.crashes))
+            prefs.set(newValue.analytics, forKey: Privacy.key(for: \.analytics))
+            Current.Log.info("privacy updated to \(newValue)")
+        }
+    }
+
     // MARK: - Private helpers
 
     private var hasMigratedConnection: Bool {

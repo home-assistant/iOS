@@ -19,13 +19,13 @@ import CoreTelephony
 import Reachability
 #endif
 
-public enum AppConfiguration: Int, CaseIterable {
+public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible {
     case FastlaneSnapshot
     case Debug
     case Beta
     case Release
 
-    var description: String {
+    public var description: String {
         switch self {
         case .FastlaneSnapshot:
             return "fastlane"
@@ -38,8 +38,6 @@ public enum AppConfiguration: Int, CaseIterable {
         }
     }
 }
-
-public var LogDestination: DestinationProtocol?
 
 public var Current = Environment()
 /// The current "operating envrionment" the app. Implementations can be swapped out to facilitate better
@@ -102,7 +100,7 @@ public class Environment {
 
     public var isPerformingSingleShotLocationQuery = false
 
-    public var logEvent: ((String, [String: Any]?) -> Void)?
+    public var logEvent: ((String, [String: Any]) -> Void)?
     public var logError: ((NSError) -> Void)?
 
     public var setUserProperty: ((String?, String) -> Void)?
@@ -144,7 +142,7 @@ public class Environment {
         }
     }
 
-    public lazy var Log: XCGLogger = {
+    public var Log: XCGLogger = {
         if NSClassFromString("XCTest") != nil {
             return XCGLogger()
         }
@@ -171,6 +169,7 @@ public class Environment {
         let logPath = Constants.LogsDirectory.appendingPathComponent("log.txt", isDirectory: false)
 
         // Create a file log destination
+        let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
         let fileDestination = AutoRotatingFileDestination(writeToFile: logPath,
                                                           identifier: "advancedLogger.fileDestination",
                                                           shouldAppend: true,
@@ -194,10 +193,6 @@ public class Environment {
 
         // Add the destination to the logger
         log.add(destination: fileDestination)
-
-        if let destination = LogDestination {
-            log.add(destination: destination)
-        }
 
         // Add basic app info, version info etc, to the start of the logs
         log.logAppDetails()

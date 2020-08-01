@@ -16,7 +16,6 @@ import Iconic
 import RealmSwift
 import Firebase
 import CoreMotion
-import FirebaseCrashlytics
 import DeviceKit
 import FirebaseMessaging
 
@@ -353,37 +352,31 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             self.navigationItem.rightBarButtonItem = infoBarButtonItem
 
             self.form
-                +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Messaging.description)
-                <<< SwitchRow("messaging") {
+                +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Messaging.description)
+                <<< SwitchRow {
                     $0.title = L10n.SettingsDetails.Privacy.Messaging.title
-                    $0.value = prefs.bool(forKey: "messagingEnabled")
+                    $0.value = Current.settingsStore.privacy.messaging
                 }.onChange { row in
-                    guard let rowVal = row.value else { return }
-                    prefs.setValue(rowVal, forKey: "messagingEnabled")
-                    prefs.synchronize()
-
-                    Current.Log.warning("Firebase messaging is now: \(rowVal)")
-                    Messaging.messaging().isAutoInitEnabled = rowVal
+                    Current.settingsStore.privacy.messaging = row.value ?? true
+                    Messaging.messaging().isAutoInitEnabled = Current.settingsStore.privacy.messaging
                 }
-                +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Crashlytics.description)
-                <<< SwitchRow("crashlytics") {
-                    $0.title = L10n.SettingsDetails.Privacy.Crashlytics.title
-                    $0.value = Crashlytics.crashlytics().isCrashlyticsCollectionEnabled()
+                +++ Section(
+                    header: nil,
+                    footer: L10n.SettingsDetails.Privacy.CrashReporting.description
+                        + "\n\n" + L10n.SettingsDetails.Privacy.CrashReporting.sentry
+                )
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Privacy.CrashReporting.title
+                    $0.value = Current.settingsStore.privacy.crashes
                 }.onChange { row in
-                    guard let rowVal = row.value else { return }
-                    Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(rowVal)
+                    Current.settingsStore.privacy.crashes = row.value ?? true
                 }
-                +++ Section(header: "", footer: L10n.SettingsDetails.Privacy.Analytics.description)
-                <<< SwitchRow("analytics") {
-                    $0.title = L10n.SettingsDetails.Privacy.Analytics.title
-                    $0.value = prefs.bool(forKey: "analyticsEnabled")
-                    }.onChange { row in
-                        guard let rowVal = row.value else { return }
-                        prefs.setValue(rowVal, forKey: "analyticsEnabled")
-                        prefs.synchronize()
-
-                        Current.Log.warning("Firebase analytics is now: \(rowVal)")
-                        Analytics.setAnalyticsCollectionEnabled(rowVal)
+                +++ Section(header: nil, footer: L10n.SettingsDetails.Privacy.Analytics.genericDescription)
+                <<< SwitchRow {
+                    $0.title = L10n.SettingsDetails.Privacy.Analytics.genericTitle
+                    $0.value = Current.settingsStore.privacy.analytics
+                }.onChange { row in
+                    Current.settingsStore.privacy.analytics = row.value ?? true
                 }
 
         default:

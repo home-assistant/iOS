@@ -113,14 +113,6 @@ func setDefaults() {
         prefs.set(true, forKey: "locationUpdateOnNotification")
     }
 
-    if prefs.object(forKey: "analyticsEnabled") == nil {
-        prefs.setValue(true, forKey: "analyticsEnabled")
-    }
-
-    if prefs.object(forKey: "messagingEnabled") == nil {
-        prefs.setValue(true, forKey: "messagingEnabled")
-    }
-
     prefs.synchronize()
 }
 

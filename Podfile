@@ -51,9 +51,6 @@ target 'HomeAssistant' do
     pod 'CallbackURLKit'
     pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
     pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
-    pod 'Firebase/Analytics'
-    pod 'Firebase/Core'
-    pod 'Firebase/Crashlytics'
     pod 'Firebase/Messaging'
     pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
     pod 'Lokalise', '~> 0.10.0'
@@ -61,6 +58,7 @@ target 'HomeAssistant' do
     pod 'MaterialComponents/Buttons'
     pod 'MaterialComponents/Buttons+Theming'
     pod 'MBProgressHUD', '~> 1.2.0'
+    pod 'Sentry'
     pod 'SimulatorStatusMagic', :configurations => ['Debug']
     pod 'SwiftGen', '~> 6.2.0'
     pod 'SwiftLint', '~> 0.39.2'
