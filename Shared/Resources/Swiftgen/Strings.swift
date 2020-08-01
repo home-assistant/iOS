@@ -14,6 +14,8 @@ internal enum L10n {
   internal static let addButtonLabel = L10n.tr("Localizable", "addButtonLabel")
   /// Cancel
   internal static let cancelLabel = L10n.tr("Localizable", "cancel_label")
+  /// Copy
+  internal static let copyLabel = L10n.tr("Localizable", "copy_label")
   /// Delete
   internal static let delete = L10n.tr("Localizable", "delete")
   /// Error
@@ -1002,6 +1004,8 @@ internal enum L10n {
       internal static let nabuCasaCloud = L10n.tr("Localizable", "settings.connection_section.nabu_casa_cloud")
       /// Remote UI Available
       internal static let remoteUiAvailable = L10n.tr("Localizable", "settings.connection_section.remote_ui_available")
+      /// Accessing SSIDs requires 'Always' location permission. Tap here to change your settings.
+      internal static let ssidPermissionMessage = L10n.tr("Localizable", "settings.connection_section.ssid_permission_message")
       internal enum ApiPasswordRow {
         /// password
         internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.api_password_row.placeholder")
@@ -1045,6 +1049,8 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings.connection_section.error_enabling_notifications.title")
       }
       internal enum Errors {
+        /// You cannot remove only available URL.
+        internal static let cannotRemoveLastUrl = L10n.tr("Localizable", "settings.connection_section.errors.cannot_remove_last_url")
         /// External URL must be set to disable cloud
         internal static let cantDisableCloud = L10n.tr("Localizable", "settings.connection_section.errors.cant_disable_cloud")
         /// Home Assistant Cloud is not set up, you can not remove external URL
@@ -1109,6 +1115,14 @@ internal enum L10n {
       internal enum UseLegacyAuth {
         /// Use legacy authentication
         internal static let title = L10n.tr("Localizable", "settings.connection_section.use_legacy_auth.title")
+      }
+      internal enum ValidateError {
+        /// Edit URL
+        internal static let editUrl = L10n.tr("Localizable", "settings.connection_section.validate_error.edit_url")
+        /// Error Saving URL
+        internal static let title = L10n.tr("Localizable", "settings.connection_section.validate_error.title")
+        /// Use Anyway
+        internal static let useAnyway = L10n.tr("Localizable", "settings.connection_section.validate_error.use_anyway")
       }
     }
     internal enum DetailsSection {

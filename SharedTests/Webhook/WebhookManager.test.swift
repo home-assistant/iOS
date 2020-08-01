@@ -311,6 +311,40 @@ class WebhookManagerTests: XCTestCase {
         }
     }
 
+    func testSendingTestSucceeds() throws {
+        let expectedRequest = WebhookRequest(type: "get_config", data: [:])
+
+        var newURL = URLComponents(url: webhookURL, resolvingAgainstBaseURL: false)!
+        newURL.host = "new.example.com"
+
+        stub(condition: { req in req.url == newURL.url! }, response: { request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+            return HTTPStubsResponse(data: #""result""#.data(using: .utf8)!, statusCode: 200, headers: [:])
+        })
+
+        let promise = manager.sendTest(baseURL: URL(string: "http://new.example.com")!)
+        XCTAssertNoThrow(try hang(promise))
+    }
+
+    func testSendingTestFails() throws {
+        let expectedRequest = WebhookRequest(type: "get_config", data: [:])
+        let expectedError = URLError(.timedOut)
+
+        var newURL = URLComponents(url: webhookURL, resolvingAgainstBaseURL: false)!
+        newURL.host = "new.example.com"
+
+        stub(condition: { req in req.url == newURL.url! }, response: { request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest)
+            return HTTPStubsResponse(error: expectedError)
+        })
+
+        let promise = manager.sendTest(baseURL: URL(string: "http://new.example.com")!)
+
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual((error as? URLError)?.code, expectedError.code)
+        }
+    }
+
     func testSendingUnregisteredIdentifierErrors() {
         let promise1 = manager.send(identifier: .init(rawValue: "unregistered"), request: .init(type: "test", data: ()))
         XCTAssertThrowsError(try hang(promise1)) { error in
