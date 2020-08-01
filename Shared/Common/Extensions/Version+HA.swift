@@ -9,7 +9,7 @@ extension Version {
         ]
     }
 
-    init(hassVersion: String) throws {
+    public init(hassVersion: String) throws {
         let sanitized = try Self.replacements().reduce(into: hassVersion) { result, pair in
             result = pair.regex.stringByReplacingMatches(
                 in: result,

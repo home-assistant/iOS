@@ -19,7 +19,7 @@ import WebKit
 import MBProgressHUD
 import PromiseKit
 import XCGLogger
-import FirebaseCrashlytics
+import Sentry
 
 // swiftlint:disable:next type_body_length
 class SettingsViewController: FormViewController {
@@ -362,7 +362,7 @@ class SettingsViewController: FormViewController {
         }.onCellSelection { _, _ in
             SettingsViewController.showMapContentExtension()
         }
-        <<< ButtonRow("crashlytics_test_nonfatal") {
+        <<< ButtonRow {
             $0.title = L10n.Settings.Developer.CrashlyticsTest.NonFatal.title
         }.onCellSelection { cell, _ in
             let alert = UIAlertController(title: L10n.Settings.Developer.CrashlyticsTest.NonFatal.Notification.title,
@@ -379,14 +379,13 @@ class SettingsViewController: FormViewController {
                 ]
 
                 let error = NSError(domain: NSCocoaErrorDomain, code: -1001, userInfo: userInfo)
-
-                Crashlytics.crashlytics().record(error: error)
+                Current.logError?(error)
             }))
 
             self.present(alert, animated: true, completion: nil)
             alert.popoverPresentationController?.sourceView = cell.formViewController()?.view
         }
-        <<< ButtonRow("crashlytics_test_fatalerror") {
+        <<< ButtonRow {
             $0.title = L10n.Settings.Developer.CrashlyticsTest.Fatal.title
         }.onCellSelection { cell, _ in
             let alert = UIAlertController(title: L10n.Settings.Developer.CrashlyticsTest.Fatal.Notification.title,
@@ -394,7 +393,7 @@ class SettingsViewController: FormViewController {
                                           preferredStyle: .alert)
 
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: { (_) in
-                fatalError("Crashlytics test!")
+                SentrySDK.crash()
             }))
 
             self.present(alert, animated: true, completion: nil)
@@ -440,7 +439,6 @@ class SettingsViewController: FormViewController {
         }.done {
             hud.hide(animated: true)
 
-            Analytics.resetAnalyticsData()
             resetStores()
             setDefaults()
             let bundleId = Bundle.main.bundleIdentifier!

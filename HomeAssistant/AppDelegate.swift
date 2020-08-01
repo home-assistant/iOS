@@ -20,9 +20,9 @@ import Shared
 import XCGLogger
 import UIKit
 import UserNotifications
-import FirebaseCrashlytics
 import FirebaseMessaging
 import FirebaseCore
+import Sentry
 #if DEBUG
 import SimulatorStatusMagic
 #endif
@@ -73,6 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UNUserNotificationCenter.current().delegate = self
 
+        self.setupSentry()
         self.setupFirebase()
 
         self.configureLokalise()
@@ -272,6 +273,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let apnsToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         Current.Log.verbose("Successfully registered for push notifications! APNS token: \(apnsToken)")
+        Current.setUserProperty?(apnsToken, "APNS Token")
 
         var tokenType: MessagingAPNSTokenType = .prod
 
@@ -825,9 +827,72 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
     }
 
-    func setupFirebase() {
-        LogDestination = CrashlyticsLogDestination()
+    func setupSentry() {
+        Current.Log.add(destination: SentryLogDestination())
 
+        SentrySDK.start { options in
+            options.dsn = "https://762c198b86594fa2b6bedf87028db34d@o427061.ingest.sentry.io/5372775"
+            options.debug = NSNumber(value: Current.appConfiguration == .Debug)
+            options.enableAutoSessionTracking = NSNumber(value: Current.settingsStore.privacy.analytics)
+            options.enabled = NSNumber(value: Current.settingsStore.privacy.crashes)
+            options.maxBreadcrumbs = 1000
+
+            var integrations = type(of: options).defaultIntegrations()
+
+            let analyticsIntegrations = Set([
+                NSStringFromClass(SentryAutoBreadcrumbTrackingIntegration.self),
+                NSStringFromClass(SentryAutoSessionTrackingIntegration.self)
+            ])
+
+            let crashesIntegrations = Set([
+                NSStringFromClass(SentryCrashIntegration.self)
+            ])
+
+            if !Current.settingsStore.privacy.crashes {
+                integrations.removeAll(where: { crashesIntegrations.contains($0) })
+            }
+
+            if !Current.settingsStore.privacy.analytics {
+                integrations.removeAll(where: { analyticsIntegrations.contains($0) })
+            }
+
+            Current.Log.info("enabled integrations: \(integrations)")
+            options.integrations = integrations
+        }
+
+        Current.logError = { error in
+            // crash reporting is controlled by the crashes key, but this is more like analytics
+            guard Current.settingsStore.privacy.analytics else { return}
+
+            Current.Log.error("error: \(error.debugDescription)")
+            SentrySDK.capture(error: error)
+        }
+
+        Current.logEvent = { (eventName: String, params: [String: Any]) -> Void in
+            guard Current.settingsStore.privacy.analytics else { return}
+
+            Current.Log.verbose("event \(eventName): \(params)")
+            SentrySDK.capture(message: eventName) { scope in
+                scope.setTags(params.mapValues { String(describing: $0)})
+            }
+        }
+
+        Current.setUserProperty = { (value: String?, name: String) -> Void in
+            SentrySDK.configureScope { scope in
+                scope.setEnvironment(Current.appConfiguration.description)
+
+                if let value = value {
+                    Current.Log.verbose("setting tag \(name) to '\(value)'")
+                    scope.setTag(value: value, key: name)
+                } else {
+                    Current.Log.verbose("removing tag \(name)")
+                    scope.removeTag(key: name)
+                }
+            }
+        }
+    }
+
+    func setupFirebase() {
         FirebaseApp.configure()
 
         Messaging.messaging().delegate = self
@@ -835,28 +900,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.Log.verbose("Calling UIApplication.shared.registerForRemoteNotifications()")
         UIApplication.shared.registerForRemoteNotifications()
 
-        Messaging.messaging().isAutoInitEnabled = prefs.bool(forKey: "messagingEnabled")
-        Analytics.setAnalyticsCollectionEnabled(prefs.bool(forKey: "analyticsEnabled"))
-
-        Current.logEvent = { (eventName: String, params: [String: Any]?) -> Void in
-            Current.Log.verbose("Logging event \(eventName) to analytics")
-            Analytics.logEvent(eventName, parameters: params)
-        }
-
-        Current.logError = { error in
-            // crashlytics itself controlled by the crashlytics key, but this is more like analytics
-            guard prefs.bool(forKey: "analyticsEnabled") else { return }
-
-            Current.Log.error("logging error: \(error.debugDescription)")
-            Crashlytics.crashlytics().record(error: error)
-        }
-
-        Current.setUserProperty = { (value: String?, name: String) -> Void in
-            Current.Log.verbose("Setting user property \(name) to \(String(describing: value))")
-            Analytics.setUserProperty(value, forName: name)
-            guard let value = value else { return }
-            Crashlytics.crashlytics().setCustomValue(value, forKey: name)
-        }
+        Messaging.messaging().isAutoInitEnabled = Current.settingsStore.privacy.messaging
     }
 
     func setupModels() {
@@ -1085,8 +1129,7 @@ extension AppDelegate: MessagingDelegate {
             Current.Log.warning("FCM token has changed from \(existingToken) to \(fcmToken)")
         }
 
-        Crashlytics.crashlytics().setCustomValue(fcmToken, forKey: "pushToken")
-
+        Current.setUserProperty?(fcmToken, "FCM Token")
         Current.settingsStore.pushID = fcmToken
 
         guard let api = HomeAssistantAPI.authenticatedAPI() else {

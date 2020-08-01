@@ -643,6 +643,18 @@ internal enum L10n {
         }
       }
     }
+    internal enum LoggedOutFromMove {
+      /// The Home Assistant iOS app recently moved organizations on the App Store. This move, unfortunately, required logging you out.\n\nYour actions and local configuration will still be available after logging in.
+      internal static let body = L10n.tr("Localizable", "onboarding.logged_out_from_move.body")
+      /// Continue
+      internal static let `continue` = L10n.tr("Localizable", "onboarding.logged_out_from_move.continue")
+      /// To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in.
+      internal static let duplicateWarning = L10n.tr("Localizable", "onboarding.logged_out_from_move.duplicate_warning")
+      /// Learn more about the move.
+      internal static let learnMore = L10n.tr("Localizable", "onboarding.logged_out_from_move.learn_more")
+      /// You've been logged out :(
+      internal static let title = L10n.tr("Localizable", "onboarding.logged_out_from_move.title")
+    }
     internal enum ManualSetup {
       internal enum CouldntMakeUrl {
         /// The value '%@' was not a valid URL.
@@ -1730,16 +1742,18 @@ internal enum L10n {
       /// Privacy
       internal static let title = L10n.tr("Localizable", "settings_details.privacy.title")
       internal enum Analytics {
-        /// Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared with Google, including your Home Assistant URLs and tokens. You must restart the app for changes to this setting to take effect.
-        internal static let description = L10n.tr("Localizable", "settings_details.privacy.analytics.description")
-        /// Google Analytics
-        internal static let title = L10n.tr("Localizable", "settings_details.privacy.analytics.title")
+        /// Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared, including your Home Assistant URLs and tokens. You must restart the app for changes to this setting to take effect.
+        internal static let genericDescription = L10n.tr("Localizable", "settings_details.privacy.analytics.generic_description")
+        /// Analytics
+        internal static let genericTitle = L10n.tr("Localizable", "settings_details.privacy.analytics.generic_title")
       }
-      internal enum Crashlytics {
-        /// Crashlytics allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information. You must restart the app for changes to this setting to take effect.
-        internal static let description = L10n.tr("Localizable", "settings_details.privacy.crashlytics.description")
-        /// Firebase Crashlytics
-        internal static let title = L10n.tr("Localizable", "settings_details.privacy.crashlytics.title")
+      internal enum CrashReporting {
+        /// Allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information. You must restart the app for changes to this setting to take effect.
+        internal static let description = L10n.tr("Localizable", "settings_details.privacy.crash_reporting.description")
+        /// This feature currently uses Sentry as the report destination.
+        internal static let sentry = L10n.tr("Localizable", "settings_details.privacy.crash_reporting.sentry")
+        /// Crash Reporting
+        internal static let title = L10n.tr("Localizable", "settings_details.privacy.crash_reporting.title")
       }
       internal enum Messaging {
         /// Firebase Cloud Messaging must be enabled for push notifications to function.

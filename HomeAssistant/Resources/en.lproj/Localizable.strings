@@ -517,12 +517,13 @@
 "watch.labels.no_action" = "No actions configured. Configure actions on your phone to dismiss this message.";
 "settings.status_section.mobile_app_component_loaded_row.title" = "Mobile App Component Loaded";
 "settings_details.privacy.title" = "Privacy";
-"settings_details.privacy.analytics.title" = "Google Analytics";
-"settings_details.privacy.analytics.description" = "Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared with Google, including your Home Assistant URLs and tokens. You must restart the app for changes to this setting to take effect.";
+"settings_details.privacy.analytics.generic_title" = "Analytics";
+"settings_details.privacy.analytics.generic_description" = "Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared, including your Home Assistant URLs and tokens. You must restart the app for changes to this setting to take effect.";
 "settings_details.privacy.messaging.title" = "Firebase Cloud Messaging";
 "settings_details.privacy.messaging.description" = "Firebase Cloud Messaging must be enabled for push notifications to function.";
-"settings_details.privacy.crashlytics.title" = "Firebase Crashlytics";
-"settings_details.privacy.crashlytics.description" = "Crashlytics allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information. You must restart the app for changes to this setting to take effect.";
+"settings_details.privacy.crash_reporting.title" = "Crash Reporting";
+"settings_details.privacy.crash_reporting.description" = "Allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information. You must restart the app for changes to this setting to take effect.";
+"settings_details.privacy.crash_reporting.sentry" = "This feature currently uses Sentry as the report destination.";
 "settings_details.privacy.performance_monitoring.title" = "Firebase Performance Monitoring";
 "settings_details.privacy.performance_monitoring.description" = "Firebase Performance Monitoring allows for remote monitoring of overall application performance, allowing for speed improvements to be made more easily. You must restart the app for changes to this setting to take effect.";
 "settings.developer.sync_watch_context.title" = "Sync Watch Context";
@@ -800,3 +801,8 @@ Thank you.\
 "settings_details.actions.scenes.footer" = "When enabled, Scenes display alongside actions. When performed, they trigger scene changes.";
 "settings_details.actions.scenes.title" = "Scene Actions";
 "settings_details.actions.scenes.empty" = "No Scenes";
+"onboarding.logged_out_from_move.title" = "You've been logged out :(";
+"onboarding.logged_out_from_move.body" = "The Home Assistant iOS app recently moved organizations on the App Store. This move, unfortunately, required logging you out.\n\nYour actions and local configuration will still be available after logging in.";
+"onboarding.logged_out_from_move.learn_more" = "Learn more about the move.";
+"onboarding.logged_out_from_move.duplicate_warning" = "To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in.";
+"onboarding.logged_out_from_move.continue" = "Continue";

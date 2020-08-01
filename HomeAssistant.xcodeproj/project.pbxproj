@@ -507,7 +507,7 @@
 		B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC5D972159D10E00833E5D /* ComplicationController.swift */; };
 		B6CC5D9A2159D10F00833E5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D992159D10F00833E5D /* Assets.xcassets */; };
 		B6CC5D9E2159D10F00833E5D /* WatchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B6CC5D822159D10D00833E5D /* WatchApp.app */; };
-		B6CC96D624B0097500CE53ED /* CrashlyticsLogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC96D524B0097500CE53ED /* CrashlyticsLogDestination.swift */; };
+		B6CC96D624B0097500CE53ED /* SentryLogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */; };
 		B6CDC096228CF5C2009355DD /* RemoteMediaPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CDC095228CF5C2009355DD /* RemoteMediaPlayer.swift */; };
 		B6D3B4ED225B26900082BB4F /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
 		B6D3B4EE225B26910082BB4F /* SensorContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D3B4EB225B26300082BB4F /* SensorContainer.swift */; };
@@ -1266,7 +1266,7 @@
 		B6CC5D9B2159D10F00833E5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B6CC5DA72159D14B00833E5D /* WatchApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchApp.entitlements; sourceTree = "<group>"; };
 		B6CC5DA82159D15700833E5D /* WatchAppExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchAppExtension.entitlements; sourceTree = "<group>"; };
-		B6CC96D524B0097500CE53ED /* CrashlyticsLogDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsLogDestination.swift; sourceTree = "<group>"; };
+		B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentryLogDestination.swift; sourceTree = "<group>"; };
 		B6CDC095228CF5C2009355DD /* RemoteMediaPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteMediaPlayer.swift; sourceTree = "<group>"; };
 		B6D35C632169905400D1F86B /* HomeAssistant Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant Development.entitlements"; sourceTree = "<group>"; };
 		B6D35C652169906A00D1F86B /* APNSAttachmentService Development.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "APNSAttachmentService Development.entitlements"; sourceTree = "<group>"; };
@@ -2138,7 +2138,7 @@
 				1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */,
 				B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */,
 				117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */,
-				B6CC96D524B0097500CE53ED /* CrashlyticsLogDestination.swift */,
+				B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -2567,7 +2567,6 @@
 				B627CB031D83C87B0057173E /* Sources */,
 				B627CB041D83C87B0057173E /* Frameworks */,
 				B627CB051D83C87B0057173E /* Resources */,
-				B6624E4622584CEF00354CDF /* Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -2595,7 +2594,6 @@
 				B6CC5DA62159D10F00833E5D /* Embed Watch Content */,
 				9C08D123229F187E001B4F73 /* Enable Critical Alerts */,
 				8A763BD9E9F25F0704269545 /* [CP] Embed Pods Frameworks */,
-				B6624E4122584AD500354CDF /* Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -2658,7 +2656,6 @@
 				B66C58A1215086F0004AB261 /* Sources */,
 				B66C58A2215086F0004AB261 /* Frameworks */,
 				B66C58A3215086F0004AB261 /* Resources */,
-				B6624E4722584CFF00354CDF /* Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -2677,7 +2674,6 @@
 				B66F9F1E216B1E61000CAA0F /* Sources */,
 				B66F9F1F216B1E61000CAA0F /* Frameworks */,
 				B66F9F20216B1E61000CAA0F /* Resources */,
-				B6624E4822584D1B00354CDF /* Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -2715,7 +2711,6 @@
 				B6AAD79D1D827DD40090B220 /* Sources */,
 				B6AAD79E1D827DD40090B220 /* Frameworks */,
 				B6AAD79F1D827DD40090B220 /* Resources */,
-				B6624E4522584CCE00354CDF /* Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -2774,7 +2769,6 @@
 				D03D891320E0A85200D4F28D /* Frameworks */,
 				D03D891420E0A85200D4F28D /* Headers */,
 				D03D891520E0A85200D4F28D /* Resources */,
-				B6624E56225852CD00354CDF /* Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -3497,6 +3491,7 @@
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm-iOS/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift-iOS/RealmSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/Sentry/Sentry.framework",
 				"${BUILT_PRODUCTS_DIR}/SimulatorStatusMagic/SimulatorStatusMagic.framework",
 				"${BUILT_PRODUCTS_DIR}/Sodium-iOS/Sodium.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftMessages/SwiftMessages.framework",
@@ -3536,6 +3531,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sentry.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SimulatorStatusMagic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sodium.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftMessages.framework",
@@ -3643,120 +3639,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"$PODS_ROOT/SwiftGen/bin/swiftgen\"\n";
-		};
-		B6624E4122584AD500354CDF /* Crashlytics */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-			);
-			name = Crashlytics;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "VALID_CONFIGS=(\"Debug\" \"Beta\" \"Release\")\nif [[ ! \" ${VALID_CONFIGS[@]} \" =~ \" ${CONFIGURATION} \" ]]; then\n  echo \"warning: Unknown configuration ${CONFIGURATION}, refusing to upload dSYM to Crashlytics\"\n  return\nfi\n\n\"${PODS_ROOT}/FirebaseCrashlytics/run\" -d -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist\"\n";
-		};
-		B6624E4522584CCE00354CDF /* Crashlytics */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-			);
-			name = Crashlytics;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "VALID_CONFIGS=(\"Debug\" \"Beta\" \"Release\")\nif [[ ! \" ${VALID_CONFIGS[@]} \" =~ \" ${CONFIGURATION} \" ]]; then\n  echo \"warning: Unknown configuration ${CONFIGURATION}, refusing to upload dSYM to Crashlytics\"\n  return\nfi\n\n\"${PODS_ROOT}/FirebaseCrashlytics/run\" -d -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist\"\n";
-		};
-		B6624E4622584CEF00354CDF /* Crashlytics */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-			);
-			name = Crashlytics;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "VALID_CONFIGS=(\"Debug\" \"Beta\" \"Release\")\nif [[ ! \" ${VALID_CONFIGS[@]} \" =~ \" ${CONFIGURATION} \" ]]; then\n  echo \"warning: Unknown configuration ${CONFIGURATION}, refusing to upload dSYM to Crashlytics\"\n  return\nfi\n\n\"${PODS_ROOT}/FirebaseCrashlytics/run\" -d -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist\"\n";
-		};
-		B6624E4722584CFF00354CDF /* Crashlytics */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-			);
-			name = Crashlytics;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "VALID_CONFIGS=(\"Debug\" \"Beta\" \"Release\")\nif [[ ! \" ${VALID_CONFIGS[@]} \" =~ \" ${CONFIGURATION} \" ]]; then\n  echo \"warning: Unknown configuration ${CONFIGURATION}, refusing to upload dSYM to Crashlytics\"\n  return\nfi\n\n\"${PODS_ROOT}/FirebaseCrashlytics/run\" -d -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist\"\n";
-		};
-		B6624E4822584D1B00354CDF /* Crashlytics */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-			);
-			name = Crashlytics;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "VALID_CONFIGS=(\"Debug\" \"Beta\" \"Release\")\nif [[ ! \" ${VALID_CONFIGS[@]} \" =~ \" ${CONFIGURATION} \" ]]; then\n  echo \"warning: Unknown configuration ${CONFIGURATION}, refusing to upload dSYM to Crashlytics\"\n  return\nfi\n\n\"${PODS_ROOT}/FirebaseCrashlytics/run\" -d -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist\"\n";
-		};
-		B6624E56225852CD00354CDF /* Crashlytics */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-			);
-			name = Crashlytics;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "VALID_CONFIGS=(\"Debug\" \"Beta\" \"Release\")\nif [[ ! \" ${VALID_CONFIGS[@]} \" =~ \" ${CONFIGURATION} \" ]]; then\n  echo \"warning: Unknown configuration ${CONFIGURATION}, refusing to upload dSYM to Crashlytics\"\n  return\nfi\n\n\"${PODS_ROOT}/FirebaseCrashlytics/run\" -d -gsp \"${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist\"\n";
 		};
 		B6E47E861CB9FD350027F6CA /* [CP] Copy Acknowledgements */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3988,7 +3870,7 @@
 				B661FC8D226D5A0700E541DD /* ConnectInstanceViewController.swift in Sources */,
 				B648AE262275918F006972AF /* Scenes.swift in Sources */,
 				1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */,
-				B6CC96D624B0097500CE53ED /* CrashlyticsLogDestination.swift in Sources */,
+				B6CC96D624B0097500CE53ED /* SentryLogDestination.swift in Sources */,
 				11F3B85C24C4295200642676 /* EurekaLocationRow.swift in Sources */,
 				B6DA3C7322691A5000DE811C /* AKConverter.swift in Sources */,
 				B68EDD05215F12C900DD6B28 /* NotificationActionConfigurator.swift in Sources */,

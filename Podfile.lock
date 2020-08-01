@@ -14,29 +14,12 @@ PODS:
   - DeviceKit (3.2.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.2.1)
-  - Firebase/Analytics (6.28.1):
-    - Firebase/Core
-  - Firebase/Core (6.28.1):
+  - Firebase/CoreOnly (6.29.0):
+    - FirebaseCore (= 6.9.2)
+  - Firebase/Messaging (6.29.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (= 6.6.2)
-  - Firebase/CoreOnly (6.28.1):
-    - FirebaseCore (= 6.9.1)
-  - Firebase/Crashlytics (6.28.1):
-    - Firebase/CoreOnly
-    - FirebaseCrashlytics (~> 4.3.0)
-  - Firebase/Messaging (6.28.1):
-    - Firebase/CoreOnly
-    - FirebaseMessaging (~> 4.6.0)
-  - FirebaseAnalytics (6.6.2):
-    - FirebaseCore (~> 6.8)
-    - FirebaseInstallations (~> 1.4)
-    - GoogleAppMeasurement (= 6.6.2)
-    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
-    - GoogleUtilities/MethodSwizzler (~> 6.0)
-    - GoogleUtilities/Network (~> 6.0)
-    - "GoogleUtilities/NSData+zlib (~> 6.0)"
-    - nanopb (~> 1.30905.0)
-  - FirebaseCore (6.9.1):
+    - FirebaseMessaging (~> 4.6.1)
+  - FirebaseCore (6.9.2):
     - FirebaseCoreDiagnostics (~> 1.3)
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/Logger (~> 6.7)
@@ -45,23 +28,17 @@ PODS:
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/Logger (~> 6.7)
     - nanopb (~> 1.30905.0)
-  - FirebaseCrashlytics (4.3.0):
-    - FirebaseCore (~> 6.8)
-    - FirebaseInstallations (~> 1.1)
-    - GoogleDataTransport (~> 7.0)
-    - nanopb (~> 1.30905.0)
-    - PromisesObjC (~> 1.2)
   - FirebaseInstallations (1.5.0):
     - FirebaseCore (~> 6.8)
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/UserDefaults (~> 6.7)
     - PromisesObjC (~> 1.2)
-  - FirebaseInstanceID (4.5.0):
+  - FirebaseInstanceID (4.5.1):
     - FirebaseCore (~> 6.8)
     - FirebaseInstallations (~> 1.0)
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/UserDefaults (~> 6.7)
-  - FirebaseMessaging (4.6.0):
+  - FirebaseMessaging (4.6.1):
     - FirebaseCore (~> 6.8)
     - FirebaseInstanceID (~> 4.3)
     - GoogleUtilities/AppDelegateSwizzler (~> 6.7)
@@ -69,13 +46,7 @@ PODS:
     - GoogleUtilities/Reachability (~> 6.7)
     - GoogleUtilities/UserDefaults (~> 6.7)
     - Protobuf (>= 3.9.2, ~> 3.9)
-  - GoogleAppMeasurement (6.6.2):
-    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
-    - GoogleUtilities/MethodSwizzler (~> 6.0)
-    - GoogleUtilities/Network (~> 6.0)
-    - "GoogleUtilities/NSData+zlib (~> 6.0)"
-    - nanopb (~> 1.30905.0)
-  - GoogleDataTransport (7.0.0):
+  - GoogleDataTransport (7.1.0):
     - nanopb (~> 1.30905.0)
   - GoogleUtilities/AppDelegateSwizzler (6.7.1):
     - GoogleUtilities/Environment
@@ -85,8 +56,6 @@ PODS:
     - PromisesObjC (~> 1.2)
   - GoogleUtilities/Logger (6.7.1):
     - GoogleUtilities/Environment
-  - GoogleUtilities/MethodSwizzler (6.7.1):
-    - GoogleUtilities/Logger
   - GoogleUtilities/Network (6.7.1):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
@@ -218,6 +187,9 @@ PODS:
   - Realm/Headers (5.3.1)
   - RealmSwift (5.3.1):
     - Realm (= 5.3.1)
+  - Sentry (5.2.0):
+    - Sentry/Core (= 5.2.0)
+  - Sentry/Core (5.2.0)
   - SimulatorStatusMagic (2.4.1)
   - Sodium (0.8.0)
   - SwiftGen (6.2.1)
@@ -247,9 +219,6 @@ DEPENDENCIES:
   - DeviceKit
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
-  - Firebase/Analytics
-  - Firebase/Core
-  - Firebase/Crashlytics
   - Firebase/Messaging
   - Iconic (from `https://github.com/home-assistant/Iconic.git`, branch `master`)
   - KeychainAccess
@@ -263,6 +232,7 @@ DEPENDENCIES:
   - PromiseKit
   - ReachabilitySwift
   - RealmSwift (~> 5.0)
+  - Sentry
   - SimulatorStatusMagic
   - Sodium
   - SwiftGen (~> 6.2.0)
@@ -283,14 +253,11 @@ SPEC REPOS:
     - Communicator
     - DeviceKit
     - Firebase
-    - FirebaseAnalytics
     - FirebaseCore
     - FirebaseCoreDiagnostics
-    - FirebaseCrashlytics
     - FirebaseInstallations
     - FirebaseInstanceID
     - FirebaseMessaging
-    - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
     - KeychainAccess
@@ -309,6 +276,7 @@ SPEC REPOS:
     - ReachabilitySwift
     - Realm
     - RealmSwift
+    - Sentry
     - SimulatorStatusMagic
     - Sodium
     - SwiftGen
@@ -382,18 +350,15 @@ SPEC CHECKSUMS:
   DeviceKit: d081659419cce07c0b5239dbc9fb39ed7413c7fe
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: c883105488e05bc65539f583246ecf9657cabbfe
-  Firebase: ed042590caa0029392257529a8003c25ee82bc18
-  FirebaseAnalytics: 5fa308e1b13f838d0f6dc74719ac2a72e8c5afc4
-  FirebaseCore: 687b8e6a0a4337b898a6326d68254c2f80c143af
+  Firebase: 57957c8d6eb3d8b80a560b1dc58be24724b89ff2
+  FirebaseCore: 7930a1946517d94256d857f97371ed993b55f7bd
   FirebaseCoreDiagnostics: 7535fe695737f8c5b350584292a70b7f8ff0357b
-  FirebaseCrashlytics: f6ae039fdaf07980425f2ae9f49131fc94009c58
   FirebaseInstallations: 3c520c951305cbf9ca54eb891ff9e6d1fd384881
-  FirebaseInstanceID: 358d5cb393d2750a745569ede06827c35aea530b
-  FirebaseMessaging: bdd4d573eab37ebee29bad4e7c4b0ef18fa1a952
-  GoogleAppMeasurement: 8cd1f289d60e629cf16ab03363b9e89c776b9651
-  GoogleDataTransport: 8a40cb194ad242b6f6dfe72c14fe40fc67c4dcd7
+  FirebaseInstanceID: c4ad474b87787afd27d09541800620993b457d6f
+  FirebaseMessaging: 942cfe05b4f53c95ab8959395ca35c200398b2f0
+  GoogleDataTransport: af0c79193dc59acd37630b4833d0dc6912ae6bd5
   GoogleUtilities: e121a3867449ce16b0e35ddf1797ea7a389ffdf2
-  Iconic: 6253c7913a2fb87c4a1366a9ec0befcf30173c21
+  Iconic: a714832bc864d725864a9f78ef72b8897b5b3c48
   KeychainAccess: 3f760109aa99b05d0f231e28b22642da7153e38a
   Lokalise: bc42066e2dde59b43b46e88ecc0b92b7d593dc72
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
@@ -411,6 +376,7 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Realm: 8ec860dc0c3079f7cab1085d95661a06f162d487
   RealmSwift: ca9d0df752157befb8c28034301f988a56ce91eb
+  Sentry: 6e04bc3e11bf771ca79140a112de64dcfbc7d8cb
   SimulatorStatusMagic: 28d4a9d1a500ac7cea0b2b5a43c1c6ddb40ba56c
   Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
   SwiftGen: 62e69d127507be1538d4263e137b2290cd6ab272
@@ -424,6 +390,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 060cca3a4bb0138a0a62c7701ce332fbdb094f1a
+PODFILE CHECKSUM: 7717e345768f6b533f4d36c3e304fc198897a4fc
 
 COCOAPODS: 1.9.3
