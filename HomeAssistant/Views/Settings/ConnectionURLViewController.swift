@@ -245,6 +245,7 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
             $0.title = L10n.Settings.ConnectionSection.ssidPermissionMessage
 
             $0.cellUpdate { cell, _ in
+                cell.accessibilityTraits.insert(.button)
                 cell.selectionStyle = .default
                 cell.textLabel?.numberOfLines = 0
 
