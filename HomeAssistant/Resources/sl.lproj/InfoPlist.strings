@@ -6,3 +6,4 @@
 "NSPhotoLibraryAddUsageDescription" = "Dostop do knjižnice fotografij je potreben za shranjevanje fotografij iz spletnega pogleda.";
 "NSPhotoLibraryUsageDescription" = "Dostop do knjižnice fotografij je potreben za shranjevanje fotografij iz spletnega pogleda.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Pošlji lokacijo";
+"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";

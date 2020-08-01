@@ -1,4 +1,4 @@
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "We suggest selecting \"Always Allow\" for the best location experience. Selecting \"Only While Using the App\" will disable iBeacons, geofences, background location updates and accurate reporting.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Zalecamy wybranie opcji „Zawsze”, aby uzyskać najlepszą jakość lokalizacji. Wybranie opcji „Gdy używam aplikacji” spowoduje wyłączenie iBeacons, geofence, aktualizacji lokalizacji w tle i dokładnego raportowania.";
 "NSLocationAlwaysUsageDescription" = "We always need access to your location for features like iBeacons, geofences, background location updates and accurate reporting.";
 "NSLocationWhenInUseUsageDescription" = "Only allowing location access while app is in use will disable iBeacons, geofences, background location updates and accurate reporting.";
 "NSMotionUsageDescription" = "Wykrywanie ruchu służy do ulepszania lokalizacji, a także do dostarczania podstawowych danych krokomierza.";
@@ -6,3 +6,4 @@
 "NSPhotoLibraryAddUsageDescription" = "Dostęp do Biblioteki Zdjęć jest wymagany, aby umożliwić zapisywanie zdjęć ze strony.";
 "NSPhotoLibraryUsageDescription" = "Dostęp do Biblioteki Zdjęć jest wymagany, aby umożliwić zapisywanie zdjęć ze strony.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Wyślij lokalizację";
+"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";

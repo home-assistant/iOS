@@ -771,6 +771,10 @@
 		119C9B1E24A448A600308A54 /* ZoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManager.swift; sourceTree = "<group>"; };
 		119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+BackgroundTask.swift"; sourceTree = "<group>"; };
 		119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ZeroLatitude.gpx; sourceTree = "<group>"; };
+		119EC3D724D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Intents.strings"; sourceTree = "<group>"; };
+		119EC3D824D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		119EC3D924D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		119EC3DA24D5395C00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		11A48D8024CA8ADB0021BDD9 /* NotificationCategory+Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCategory+Observation.swift"; sourceTree = "<group>"; };
 		11A48D8224CA9D010021BDD9 /* RealmSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmSection.swift; sourceTree = "<group>"; };
 		11A71C6A24A463FC00D9565F /* ZoneManagerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerState.swift; sourceTree = "<group>"; };
@@ -3000,6 +3004,7 @@
 				"cy-GB",
 				vi,
 				uk,
+				"en-GB",
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -4335,6 +4340,7 @@
 				B60409ED2492B30900D36599 /* cy-GB */,
 				B646B04E24D10A2900093E6A /* vi */,
 				B646B05224D10A5400093E6A /* uk */,
+				119EC3D924D5395B00617D51 /* en-GB */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -4366,6 +4372,7 @@
 				B60409EB2492B30900D36599 /* cy-GB */,
 				B646B04C24D10A2900093E6A /* vi */,
 				B646B05024D10A5400093E6A /* uk */,
+				119EC3D724D5395B00617D51 /* en-GB */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -4406,6 +4413,7 @@
 				B60409EC2492B30900D36599 /* cy-GB */,
 				B646B04D24D10A2900093E6A /* vi */,
 				B646B05124D10A5400093E6A /* uk */,
+				119EC3D824D5395B00617D51 /* en-GB */,
 			);
 			name = Onboarding.storyboard;
 			sourceTree = "<group>";
@@ -4444,6 +4452,7 @@
 				B60409EE2492B30A00D36599 /* cy-GB */,
 				B646B04F24D10A2A00093E6A /* vi */,
 				B646B05324D10A5400093E6A /* uk */,
+				119EC3DA24D5395C00617D51 /* en-GB */,
 			);
 			name = Localizable.strings;
 			path = .;

@@ -6,3 +6,4 @@
 "NSPhotoLibraryAddUsageDescription" = "Tilgang til fotobibliotek er nødvendig for å tillate lagring av bilder fra nettvisningen.";
 "NSPhotoLibraryUsageDescription" = "Tilgang til fotobibliotek er nødvendig for å tillate lagring av bilder fra nettvisningen.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send plassering";
+"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";

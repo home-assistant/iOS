@@ -20,7 +20,7 @@
 "KJS2jk" = "Nie udało się zaktualizować lokalizacji, wystąpił błąd: ${error}";
 "KU19Ap" = "Failed to fire event, the clipboard contents could not be parsed";
 "KzOHYA" = "Failed to get camera image with error: ${error}";
-"MDmaRg" = "Call service ￼${serviceDomain}.${service}";
+"MDmaRg" = "Wywołanie usługi ${serviceDomain}.${service}";
 "N9iJpK" = "Uzyskaj obraz z kamery";
 "NdG9Jz" = "Renders the Home Assistant template";
 "P3EyZ7" = "Render the provided template";
@@ -33,7 +33,7 @@
 "ZwJ0Xx" = "Renders the found text on the clipboard";
 "c00c45" = "Uruchom zdarzenie";
 "cK9jdK" = "Nie udało się wyrenderować szablonu, wystąpił błąd: ${error}";
-"cnzI5h" = "Renders ${template}";
+"cnzI5h" = "Renderuje ${szablon}";
 "foI0Fv" = "Nie można wyrenderować szablonu, Home Assistant jest obecnie niedostępny";
 "glRCfJ" = "Nie udało się wysłać zdarzenia, Home Assistant jest obecnie niedostępny";
 "hsrlTY" = "Uzyskaj pojedynczą klatkę z aparatu";
@@ -115,3 +115,19 @@
 "sQJAJS" = "Błąd";
 "sfDGvk" = "Wyrenderowany szablon";
 "yyjTxO" = "Błąd";
+"AnaTY4" = "Which one?";
+"DsasVx" = "Error";
+"EWqRDj" = "Failed to perform action: ${error}";
+"KM7mXC" = "Action";
+"Q2Qp4a" = "Action";
+"X02YQ2" = "${action}";
+"cLmTme" = "Action";
+"dFHPYK" = "Successfully performed ${action}.";
+"fkQXDn" = "There are ${count} options matching ‘${action}’.";
+"g8g7Af" = "Perform the action";
+"jtqxOg" = "Just to confirm, you wanted ‘${action}’?";
+"kGB23u" = "Perform Action";
+"r32M7N" = "Failed: ${error}";
+"tycImk" = "Performs an action defined in the app";
+"xhwpj4" = "Done.";
+"ypnPyU" = "Perform ${action}";

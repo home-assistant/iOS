@@ -6,3 +6,4 @@
 "NSPhotoLibraryAddUsageDescription" = "必須取得照片庫存取權，方能由網頁儲存照片。";
 "NSPhotoLibraryUsageDescription" = "必須取得照片庫存取權，方能由網頁儲存照片。";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "傳送座標";
+"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";

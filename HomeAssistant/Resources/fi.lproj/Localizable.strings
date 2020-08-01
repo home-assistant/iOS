@@ -775,3 +775,18 @@
 "settings_details.actions.scenes.footer" = "When enabled, Scenes display alongside actions. When performed, they trigger scene changes.";
 "settings_details.actions.scenes.title" = "Scene Actions";
 "settings_details.actions.scenes.empty" = "No Scenes";
+"onboarding.logged_out_from_move.title" = "You've been logged out :(";
+"onboarding.logged_out_from_move.body" = "The Home Assistant iOS app recently moved organizations on the App Store. This move, unfortunately, required logging you out.\
+\
+Your actions and local configuration will still be available after logging in.";
+"onboarding.logged_out_from_move.learn_more" = "Learn more about the move.";
+"onboarding.logged_out_from_move.duplicate_warning" = "To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in.";
+"onboarding.logged_out_from_move.continue" = "Continue";
+"settings_details.privacy.analytics.generic_title" = "Analytics";
+"settings_details.privacy.analytics.generic_description" = "Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared, including your Home Assistant URLs and tokens. You must restart the app for changes to this setting to take effect.";
+"settings_details.privacy.crash_reporting.title" = "Crash Reporting";
+"settings_details.privacy.crash_reporting.description" = "Allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information. You must restart the app for changes to this setting to take effect.";
+"settings_details.privacy.crash_reporting.sentry" = "This feature currently uses Sentry as the report destination.";
+"actions_configurator.visual_section.server_defined" = "The appearance of this action is controlled by the server configuration.";
+"settings_details.actions.actions_synced.header" = "Synced Actions";
+"settings_details.actions.actions_synced.footer" = "Actions defined in .yaml are not editable on device.";
