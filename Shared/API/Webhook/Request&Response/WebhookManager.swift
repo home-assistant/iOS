@@ -330,6 +330,23 @@ public class WebhookManager: NSObject {
         return promise
     }
 
+    // MARK: - Testing Connection Info
+    public func sendTest(baseURL: URL) -> Promise<Void> {
+        return firstly {
+            Self.urlRequest(
+                for: .init(type: "get_config", data: [:]),
+                baseURL: baseURL
+            )
+        }.then(on: dataQueue) { urlRequest, data in
+            self.currentRegularSessionInfo.session.uploadTask(.promise, with: urlRequest, from: data)
+        }.then { data, response in
+            Promise.value(data).webhookJson(
+                on: DispatchQueue.global(qos: .utility),
+                statusCode: (response as? HTTPURLResponse)?.statusCode
+            )
+        }.asVoid()
+    }
+
     // MARK: - Private
 
     private func evaluateCancellable(
@@ -362,17 +379,25 @@ public class WebhookManager: NSObject {
         }
     }
 
-    private static func urlRequest(for request: WebhookRequest) -> Promise<(URLRequest, Data)> {
+    private static func urlRequest(
+        for request: WebhookRequest,
+        baseURL: URL? = nil
+    ) -> Promise<(URLRequest, Data)> {
         return Promise { seal in
             guard let api = Current.api() else {
                 seal.reject(WebhookManagerError.noApi)
                 return
             }
 
-            var urlRequest = try URLRequest(
-                url: api.connectionInfo.webhookURL,
-                method: .post
-            )
+            let webhookURL: URL
+
+            if let baseURL = baseURL {
+                webhookURL = baseURL.appendingPathComponent(api.connectionInfo.webhookPath, isDirectory: false)
+            } else {
+                webhookURL = api.connectionInfo.webhookURL
+            }
+
+            var urlRequest = try URLRequest(url: webhookURL, method: .post)
             urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
             let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server).toJSON(request)

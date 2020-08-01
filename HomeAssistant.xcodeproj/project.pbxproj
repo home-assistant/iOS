@@ -33,6 +33,7 @@
 		1141182A24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
 		1141182B24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
 		114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */; };
+		1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */; };
 		117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */; };
 		117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */; };
 		11810D4A249EAF8D00E741A4 /* rainbow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D40249EAF8B00E741A4 /* rainbow@2x.png */; };
@@ -751,6 +752,7 @@
 		1141182924AFA10900E6525C /* WebhookResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseHandler.swift; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
 		1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionURLViewController.swift; sourceTree = "<group>"; };
 		117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.swift"; sourceTree = "<group>"; };
 		117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.test.swift"; sourceTree = "<group>"; };
 		11810D40249EAF8B00E741A4 /* rainbow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow@2x.png"; sourceTree = "<group>"; };
@@ -1949,6 +1951,7 @@
 				B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */,
 				B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */,
 				11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */,
+				1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -3922,6 +3925,7 @@
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
+				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
 				B6CDC096228CF5C2009355DD /* RemoteMediaPlayer.swift in Sources */,
 				B661FC88226D478300E541DD /* DiscoverInstancesViewController.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,

@@ -85,6 +85,7 @@
 "devices_map.map_types.satellite" = "Satellite";
 "devices_map.battery_label" = "Battery";
 "ok_label" = "OK";
+"copy_label" = "Copy";
 "about.title" = "About";
 "about.logo.app_title" = "Home Assistant Companion";
 "about.logo.tagline" = "Awaken Your Home";
@@ -815,3 +816,8 @@ Your actions and local configuration will still be available after logging in.";
 "actions_configurator.visual_section.server_defined" = "The appearance of this action is controlled by the server configuration.";
 "settings_details.actions.actions_synced.header" = "Synced Actions";
 "settings_details.actions.actions_synced.footer" = "Actions defined in .yaml are not editable on device.";
+"settings.connection_section.errors.cannot_remove_last_url" = "You cannot remove only available URL.";
+"settings.connection_section.validate_error.title" = "Error Saving URL";
+"settings.connection_section.validate_error.use_anyway" = "Use Anyway";
+"settings.connection_section.validate_error.edit_url" = "Edit URL";
+"settings.connection_section.ssid_permission_message" = "Accessing SSIDs requires 'Always' location permission. Tap here to change your settings.";

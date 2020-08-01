@@ -156,6 +156,13 @@ public class ConnectionInfo: Codable {
                 return L10n.Settings.ConnectionSection.ExternalBaseUrl.title
             }
         }
+
+        public var isAffectedBySSID: Bool {
+            switch self {
+            case .internal: return true
+            case .remoteUI, .external: return false
+            }
+        }
     }
 
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
@@ -166,7 +173,7 @@ public class ConnectionInfo: Codable {
                 guard self.isOnInternalNetwork else {
                     if self.useCloud && self.remoteUIURL != nil {
                         self.activeURLType = .remoteUI
-                    } else {
+                    } else if self.externalURL != nil {
                         self.activeURLType = .external
                     }
                     return self.activeURL
@@ -255,7 +262,19 @@ public class ConnectionInfo: Codable {
             return cloudURL
         }
 
-        return self.activeURL.appendingPathComponent("api/webhook/\(self.webhookID)", isDirectory: false)
+        return self.activeURL.appendingPathComponent(webhookPath, isDirectory: false)
+    }
+
+    public var webhookPath: String {
+        "api/webhook/\(self.webhookID)"
+    }
+
+    public func address(for addressType: URLType) -> URL? {
+        switch addressType {
+        case .internal: return internalURL
+        case .external: return externalURL
+        case .remoteUI: return remoteUIURL
+        }
     }
 
     /// Updates the stored address for the given addressType.
