@@ -144,6 +144,8 @@ internal enum L10n {
       internal static func sceneHintFooter(_ p1: Any) -> String {
         return L10n.tr("Localizable", "actions_configurator.visual_section.scene_hint_footer", String(describing: p1))
       }
+      /// The appearance of this action is controlled by the server configuration.
+      internal static let serverDefined = L10n.tr("Localizable", "actions_configurator.visual_section.server_defined")
     }
   }
 
@@ -1321,6 +1323,12 @@ internal enum L10n {
       internal static let footer = L10n.tr("Localizable", "settings_details.actions.footer")
       /// Actions
       internal static let title = L10n.tr("Localizable", "settings_details.actions.title")
+      internal enum ActionsSynced {
+        /// Actions defined in .yaml are not editable on device.
+        internal static let footer = L10n.tr("Localizable", "settings_details.actions.actions_synced.footer")
+        /// Synced Actions
+        internal static let header = L10n.tr("Localizable", "settings_details.actions.actions_synced.header")
+      }
       internal enum Scenes {
         /// Customize
         internal static let customizeAction = L10n.tr("Localizable", "settings_details.actions.scenes.customize_action")

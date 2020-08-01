@@ -396,8 +396,16 @@ public class HomeAssistantAPI {
         Current.webhooks.sendEphemeral(request: .init(type: "get_zones", data: [:]))
     }
 
-    public func GetPushSettings() -> Promise<PushConfiguration> {
-        return self.request(path: "ios/push", callingFunctionName: "\(#function)")
+    public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
+        if Current.serverVersion() < Version(major: 0, minor: 114, prerelease: "any0") {
+            return firstly { () -> Promise<MobileAppConfigPush> in
+                requestImmutable(path: "ios/push", callingFunctionName: "\(#function)")
+            }.map {
+                MobileAppConfig(push: $0)
+            }
+        } else {
+            return Current.webhooks.sendEphemeral(request: .init(type: "get_yaml_config", data: [:]))
+        }
     }
 
     public func StreamCamera(entityId: String) -> Promise<StreamCameraResponse> {

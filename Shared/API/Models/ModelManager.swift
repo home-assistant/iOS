@@ -112,9 +112,10 @@ public final class ModelManager {
                     .done(on: queue) { try manager.store(type: RLMScene.self, sourceModels: $0) }
             }),
             .init(update: { api, queue, manager in
-                api.GetPushSettings()
+                api.GetMobileAppConfig()
                     .done(on: queue) {
-                        try manager.store(type: NotificationCategory.self, sourceModels: $0.Categories ?? [])
+                        try manager.store(type: NotificationCategory.self, sourceModels: $0.push.categories)
+                        try manager.store(type: Action.self, sourceModels: $0.actions)
                     }
             })
         ]
@@ -152,12 +153,17 @@ public final class ModelManager {
             let deletedIDs = existingIDs.subtracting(incomingIDs)
             let newIDs = incomingIDs.subtracting(existingIDs)
 
+            let deleteObjects = realm.objects(UM.self)
+                .filter(UM.updateEligiblePredicate)
+                .filter("%K in %@", realmPrimaryKey, deletedIDs)
+
             Current.Log.verbose(
                 [
                     "updating \(UM.self)",
                     "from(\(existingIDs.count))",
-                    "to(\(incomingIDs.count))",
-                    "deleted(\(deletedIDs.count))",
+                    "eligible(\(incomingIDs.count))",
+                    "deleted(\(deleteObjects.count))",
+                    "ignored(\(deletedIDs.count - deleteObjects.count))",
                     "new(\(newIDs.count))"
                 ].joined(separator: " ")
             )
@@ -177,12 +183,7 @@ public final class ModelManager {
             }
 
             realm.add(updatedModels, update: .all)
-
-            realm.delete(
-                realm.objects(UM.self)
-                    .filter(UM.updateEligiblePredicate)
-                    .filter("%K in %@", realmPrimaryKey, deletedIDs)
-            )
+            realm.delete(deleteObjects)
             UM.didUpdate(objects: updatedModels)
         }
     }

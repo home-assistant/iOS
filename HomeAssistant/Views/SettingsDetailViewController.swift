@@ -302,6 +302,20 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             tableView.refreshControl = refreshControl
             refreshControl.addTarget(self, action: #selector(refreshScenes(_:)), for: .valueChanged)
 
+            form +++ RealmSection(
+                header: L10n.SettingsDetails.Actions.ActionsSynced.header,
+                footer: L10n.SettingsDetails.Actions.ActionsSynced.footer,
+                collection: AnyRealmCollection(actions.filter("isServerControlled == true")),
+                getter: { [weak self] in self?.getActionRow($0) },
+                didUpdate: { section, collection in
+                    if collection.isEmpty {
+                        section.hidden = true
+                    } else {
+                        section.hidden = false
+                    }
+                }
+            )
+
             form +++ MultivaluedSection(
                 multivaluedOptions: [.Insert, .Delete, .Reorder],
                 header: "",
@@ -321,7 +335,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }
                 }
 
-                for action in actions {
+                for action in actions.filter("isServerControlled == false") {
                     section <<< getActionRow(action)
                 }
             }

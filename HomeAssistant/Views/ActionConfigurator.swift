@@ -95,12 +95,13 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
         )
 
-        if action.canConfigure(\Action.Text) {
+        if action.canConfigure(\Action.Text) || action.isServerControlled {
             visuals <<< TextRow("text") {
                 $0.title = L10n.ActionsConfigurator.Rows.Text.title
                 $0.value = self.action.Text
                 $0.placeholder = L10n.ActionsConfigurator.Rows.Text.title
                 $0.add(rule: RuleRequired())
+                $0.disabled = .init(booleanLiteral: !action.canConfigure(\Action.Text))
             }.onChange { row in
                 if let value = row.value {
                     self.action.Text = value
@@ -201,8 +202,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             form +++ LabelRow {
                 switch action.triggerType {
                 case .event:
-                    // TODO: when actions sync from config
-                    $0.title = ""
+                    $0.title = L10n.ActionsConfigurator.VisualSection.serverDefined
                 case .scene:
                     $0.title = L10n.ActionsConfigurator.VisualSection.sceneDefined
                 }
