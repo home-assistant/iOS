@@ -1,7 +1,5 @@
 PODS:
   - Alamofire (4.9.1)
-  - AlamofireImage (3.6.0):
-    - Alamofire (~> 4.9)
   - CallbackURLKit (2.3.0):
     - CallbackURLKit/Core (= 2.3.0)
   - CallbackURLKit/Core (2.3.0)
@@ -211,7 +209,6 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.0)
-  - AlamofireImage (~> 3.5)
   - CallbackURLKit
   - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `master`)
   - Communicator (~> 3.3.0)
@@ -248,7 +245,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
-    - AlamofireImage
     - CallbackURLKit
     - Communicator
     - DeviceKit
@@ -342,7 +338,6 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
-  AlamofireImage: be9963c6582d68b39e89191f64c82a7d7bf40fdd
   CallbackURLKit: a940d1b869c70e1fa700ea06f988ba2a8963dafb
   ColorPickerRow: 409acc262ca04283eb56f54e813e775d2e99741e
   Communicator: d870b95ca54965412790334620e2f188c68f2462
@@ -390,6 +385,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 7717e345768f6b533f4d36c3e304fc198897a4fc
+PODFILE CHECKSUM: 2dc2470766afb4b1b6fe03c1f2e0bdfc83084f5d
 
 COCOAPODS: 1.9.3

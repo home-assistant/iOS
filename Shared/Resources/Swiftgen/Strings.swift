@@ -1004,7 +1004,7 @@ internal enum L10n {
       internal static let nabuCasaCloud = L10n.tr("Localizable", "settings.connection_section.nabu_casa_cloud")
       /// Remote UI Available
       internal static let remoteUiAvailable = L10n.tr("Localizable", "settings.connection_section.remote_ui_available")
-      /// Accessing SSIDs requires 'Always' location permission. Tap here to change your settings.
+      /// Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.
       internal static let ssidPermissionMessage = L10n.tr("Localizable", "settings.connection_section.ssid_permission_message")
       internal enum ApiPasswordRow {
         /// password

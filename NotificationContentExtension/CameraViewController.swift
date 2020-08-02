@@ -12,7 +12,6 @@ import UserNotificationsUI
 import KeychainAccess
 import Shared
 import Alamofire
-import AlamofireImage
 import AVFoundation
 import AVKit
 import PromiseKit

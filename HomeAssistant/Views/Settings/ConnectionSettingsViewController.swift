@@ -17,6 +17,7 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
 
     public var onDismissCallback: ((UIViewController) -> Void)?
 
+    // swiftlint:disable:next function_body_length
     override func viewDidLoad() {
         super.viewDidLoad()
 
