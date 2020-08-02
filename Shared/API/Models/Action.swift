@@ -12,7 +12,7 @@ import RealmSwift
 import ObjectMapper
 import Iconic
 
-public class Action: Object, Mappable, NSCoding {
+public class Action: Object, ImmutableMappable {
     @objc dynamic public var ID: String = UUID().uuidString
     @objc dynamic public var Name: String = ""
     @objc dynamic public var Text: String = ""
@@ -40,10 +40,6 @@ public class Action: Object, Mappable, NSCoding {
         }
     }
 
-    required convenience public init?(map: Map) {
-        self.init()
-    }
-
     public func canConfigure(_ keyPath: PartialKeyPath<Action>) -> Bool {
         switch keyPath {
         case \Action.BackgroundColor:
@@ -61,39 +57,30 @@ public class Action: Object, Mappable, NSCoding {
         }
     }
 
-    // NSCoding
-    public func encode(with aCoder: NSCoder) {
-        let jsonString = self.toJSONString() ?? ""
-        aCoder.encode(jsonString, forKey: "jsonString")
-    }
-
-    required public convenience init?(coder aDecoder: NSCoder) {
-        let jsonString = aDecoder.decodeObject(forKey: "jsonString") as? String
-        self.init(JSONString: jsonString ?? "")
+    public required init(map: Map) throws {
+        // this is used for watch<->app syncing
+        self.ID              = try map.value("ID")
+        self.Name            = try map.value("Name")
+        self.Position        = try map.value("Position")
+        self.BackgroundColor = try map.value("BackgroundColor")
+        self.IconName        = try map.value("IconName")
+        self.IconColor       = try map.value("IconColor")
+        self.Text            = try map.value("Text")
+        self.TextColor       = try map.value("TextColor")
+        self.CreatedAt       = try map.value("CreatedAt", using: DateTransform())
+        super.init()
     }
 
     public func mapping(map: Map) {
-        let realm = Realm.live()
-        let isWriteRequired = realm.isInWriteTransaction == false
-        isWriteRequired ? realm.beginWrite() : ()
-
-        if map.mappingType == .toJSON {
-            var id = self.ID
-            id <- map["ID"]
-        } else {
-            ID <- map["ID"]
-        }
-
-        Name             <- map["Name"]
-        Position         <- map["Position"]
-        BackgroundColor  <- map["BackgroundColor"]
-        IconName         <- map["IconName"]
-        IconColor        <- map["IconColor"]
-        Text             <- map["Text"]
-        TextColor        <- map["TextColor"]
-        CreatedAt        <- map["CreatedAt"]
-
-        isWriteRequired ? try? realm.commitWrite() : ()
+        ID               >>> map["ID"]
+        Name             >>> map["Name"]
+        Position         >>> map["Position"]
+        BackgroundColor  >>> map["BackgroundColor"]
+        IconName         >>> map["IconName"]
+        IconColor        >>> map["IconColor"]
+        Text             >>> map["Text"]
+        TextColor        >>> map["TextColor"]
+        CreatedAt        >>> (map["CreatedAt"], DateTransform())
     }
 
     #if os(iOS)
@@ -113,10 +100,11 @@ public class Action: Object, Mappable, NSCoding {
         case scene
     }
     public var triggerType: TriggerType {
-        if Scene == nil {
-            return .event
-        } else {
+        // we don't sync the scene information over to the watch, so checking ID which is synced
+        if ID.starts(with: "scene.") {
             return .scene
+        } else {
+            return .event
         }
     }
 
