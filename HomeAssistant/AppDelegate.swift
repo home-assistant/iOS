@@ -411,12 +411,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, continue userActivity: NSUserActivity,
                      restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb, let url = userActivity.webpageURL,
-            let actualURLStr = url.queryItems?["url"], let actualURL = URL(string: actualURLStr) else {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb, let url = userActivity.webpageURL else {
+            Current.Log.error("couldn't handle \(userActivity)")
             return false
         }
 
-        return self.application(application, open: actualURL)
+        if let actualURLStr = url.queryItems?["url"], let actualURL = URL(string: actualURLStr) {
+            return self.application(application, open: actualURL)
+        } else if url.pathComponents.starts(with: ["/", "nfc"]) {
+            let event = HomeAssistantAPI.nfcTagEvent(
+                // ["/", "nfc", "5f0ba733-172f-430d-a7f8-e4ad940c88d7"] for example
+                tagPath: url.pathComponents.dropFirst(2).joined(separator: "/")
+            )
+            Current.api()?.CreateEvent(eventType: event.eventType, eventData: event.eventData).cauterize()
+            return true
+        } else {
+            Current.Log.error("couldn't handle \(userActivity) url \(url)")
+            return false
+        }
     }
 
     func application(
