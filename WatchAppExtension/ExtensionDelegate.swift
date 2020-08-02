@@ -178,7 +178,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             }
 
             if let actionsDictionary = context.content["actions"] as? [[String: Any]] {
-                let actions = actionsDictionary.compactMap { Action(JSON: $0) }
+                let actions = actionsDictionary.compactMap { try? Action(JSON: $0) }
 
                 Current.Log.verbose("Updating actions from context \(actions)")
 
@@ -189,7 +189,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             }
 
             if let complicationsDictionary = context.content["complications"] as? [[String: Any]] {
-                let complications = complicationsDictionary.compactMap { WatchComplication(JSON: $0) }
+                let complications = complicationsDictionary.compactMap { try? WatchComplication(JSON: $0) }
 
                 Current.Log.verbose("Updating complications from context \(complications)")
 
