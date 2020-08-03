@@ -33,6 +33,7 @@
 		1141182A24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
 		1141182B24AFA10900E6525C /* WebhookResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1141182924AFA10900E6525C /* WebhookResponseHandler.swift */; };
 		114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */; };
+		1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */; };
 		117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */; };
 		117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */; };
 		11810D4A249EAF8D00E741A4 /* rainbow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D40249EAF8B00E741A4 /* rainbow@2x.png */; };
@@ -53,6 +54,7 @@
 		119385A4249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
 		119385A5249E8E360097F497 /* StorageSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A3249E8E360097F497 /* StorageSensor.swift */; };
 		119385A7249E9F930097F497 /* StorageSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119385A6249E9F930097F497 /* StorageSensor.test.swift */; };
+		119A172524D74DA800D1B66D /* WatchAppExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119C9B1E24A448A600308A54 /* ZoneManager.swift */; };
 		119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119D765E2492F8FA00183C5F /* UIApplication+BackgroundTask.swift */; };
 		119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */; };
@@ -436,10 +438,7 @@
 		B67CE87722200F220034C1D0 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		B67CE87922200F220034C1D0 /* RealmZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EE36A120CF593E001494E3 /* RealmZone.swift */; };
 		B67CE87A22200F220034C1D0 /* LocationTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */; };
-		B67CE87C22200F220034C1D0 /* PushRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */; };
-		B67CE87D22200F220034C1D0 /* IdentifyRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */; };
 		B67CE89522200F220034C1D0 /* LocationHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C0911E2151F90300A326DC /* LocationHistory.swift */; };
-		B67CE89722200F220034C1D0 /* PushRegistrationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */; };
 		B67CE89D22200F220034C1D0 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF11CB470570029ABE7 /* Config.swift */; };
 		B67CE89E22200F220034C1D0 /* DiscoveryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */; };
 		B67CE89F22200F220034C1D0 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F02BF91CB47F930029ABE7 /* Events.swift */; };
@@ -502,7 +501,6 @@
 		B6C09153215206BB00A326DC /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		B6CC5D862159D10D00833E5D /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D842159D10D00833E5D /* Interface.storyboard */; };
 		B6CC5D882159D10E00833E5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6CC5D872159D10E00833E5D /* Assets.xcassets */; };
-		B6CC5D8F2159D10E00833E5D /* WatchAppExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B6CC5D8E2159D10E00833E5D /* WatchAppExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B6CC5D942159D10E00833E5D /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC5D932159D10E00833E5D /* InterfaceController.swift */; };
 		B6CC5D962159D10E00833E5D /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC5D952159D10E00833E5D /* ExtensionDelegate.swift */; };
 		B6CC5D982159D10E00833E5D /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CC5D972159D10E00833E5D /* ComplicationController.swift */; };
@@ -570,9 +568,6 @@
 		D0EEF322214DE56B00D1D360 /* LocationTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF321214DE56B00D1D360 /* LocationTrigger.swift */; };
 		D0EEF324214DF2B700D1D360 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E857A11CB1CCCC00F96925 /* Utils.swift */; };
 		D0EEF327214DF31D00D1D360 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF326214DF31D00D1D360 /* Notifications.swift */; };
-		D0EEF32C214DF83800D1D360 /* IdentifyRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */; };
-		D0EEF32D214DF94900D1D360 /* PushRegistrationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */; };
-		D0EEF32E214DF99500D1D360 /* PushRegistrationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */; };
 		D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF330214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift */; };
 		D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */; };
 		D0EEF336214EB7B800D1D360 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
@@ -583,6 +578,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		119A172624D74DA800D1B66D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B6CC5D8D2159D10E00833E5D;
+			remoteInfo = WatchAppExtension;
+		};
 		B627CB131D83C87B0057173E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
@@ -632,13 +634,6 @@
 			remoteGlobalIDString = B6AAD7A01D827DD40090B220;
 			remoteInfo = APNSAttachmentService;
 		};
-		B6CC5D902159D10E00833E5D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B6CC5D8D2159D10E00833E5D;
-			remoteInfo = "WatchApp Extension";
-		};
 		B6CC5D9C2159D10F00833E5D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B657A8DE1CA646EB00121384 /* Project object */;
@@ -670,6 +665,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		119A172824D74DA800D1B66D /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				119A172524D74DA800D1B66D /* WatchAppExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B61DA2A7221E8D8F00AADEDD /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -691,17 +697,6 @@
 				B627CB151D83C87B0057173E /* NotificationContentExtension.appex in Embed App Extensions */,
 				B66F9F2E216B1E61000CAA0F /* TodayWidget.appex in Embed App Extensions */,
 				B66C58AC215086F0004AB261 /* SiriIntents.appex in Embed App Extensions */,
-			);
-			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B6CC5DA42159D10F00833E5D /* Embed App Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				B6CC5D8F2159D10E00833E5D /* WatchAppExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -751,6 +746,7 @@
 		1141182924AFA10900E6525C /* WebhookResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseHandler.swift; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
 		1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionURLViewController.swift; sourceTree = "<group>"; };
 		117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.swift"; sourceTree = "<group>"; };
 		117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.test.swift"; sourceTree = "<group>"; };
 		11810D40249EAF8B00E741A4 /* rainbow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow@2x.png"; sourceTree = "<group>"; };
@@ -1045,7 +1041,6 @@
 		B60615B91D1F117700249C11 /* US-EN-Daisy-Refrigerator-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Refrigerator-Leak.wav"; sourceTree = "<group>"; };
 		B60615BA1D1F117700249C11 /* US-EN-Daisy-Water-Heater-Leak.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "US-EN-Daisy-Water-Heater-Leak.wav"; sourceTree = "<group>"; };
 		B6093CE3228CFB0A0079E661 /* RemotePlayerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemotePlayerState.swift; sourceTree = "<group>"; };
-		B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrationResponse.swift; sourceTree = "<group>"; };
 		B616B28F227EAFFB00828165 /* InternetAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetAddress.swift; sourceTree = "<group>"; };
 		B616B291227EB00D00828165 /* DNSResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DNSResolver.swift; sourceTree = "<group>"; };
 		B6221F6122266C4000502A30 /* WebhookRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRequest.swift; sourceTree = "<group>"; };
@@ -1058,8 +1053,6 @@
 		B627CB121D83C87B0057173E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B62817EF221D269B000BA86A /* RenderTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderTemplate.swift; sourceTree = "<group>"; };
 		B62817F1221D6CF4000BA86A /* Reachability+NetworkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reachability+NetworkType.swift"; sourceTree = "<group>"; };
-		B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushRegistrationRequest.swift; sourceTree = "<group>"; };
-		B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyRequest.swift; sourceTree = "<group>"; };
 		B62CD2A4225B099C008DF3C5 /* WebhookSensor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookSensor.swift; sourceTree = "<group>"; };
 		B630F295238C9A1200C6E4BE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
 		B637243A21697AA7006B102A /* HomeAssistant Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant Beta.entitlements"; sourceTree = "<group>"; };
@@ -1949,6 +1942,7 @@
 				B661FB6E226BCCAD00E541DD /* ConnectionSettingsViewController.swift */,
 				B65C0B512282BA13007E057B /* NotificationSettingsViewController.swift */,
 				11C4629324B189B100031902 /* NotificationRateLimitsAPI.swift */,
+				1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2264,7 +2258,6 @@
 		B6F02BEC1CB46E810029ABE7 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
-				B60EAE9A1DBC347C0062C97C /* PushRegistrationResponse.swift */,
 				B6F02BF11CB470570029ABE7 /* Config.swift */,
 				B626AAEE1D8F44DC00A0D225 /* DiscoveryInfo.swift */,
 				B6F02BF91CB47F930029ABE7 /* Events.swift */,
@@ -2408,8 +2401,6 @@
 		D0B25BD0213218B000678C2C /* Requests */ = {
 			isa = PBXGroup;
 			children = (
-				B629E8D51DAD8CFA00040A90 /* PushRegistrationRequest.swift */,
-				B62A679F1D80E933009E46F9 /* IdentifyRequest.swift */,
 				B6872E612226837A00C475D1 /* MobileAppRegistrationRequest.swift */,
 				B658AA7C2250B25D00C9BFE3 /* MobileAppUpdateRegistrationRequest.swift */,
 			);
@@ -2730,13 +2721,13 @@
 			buildConfigurationList = B6CC5DA52159D10F00833E5D /* Build configuration list for PBXNativeTarget "WatchApp" */;
 			buildPhases = (
 				B6CC5D802159D10D00833E5D /* Resources */,
-				B6CC5DA42159D10F00833E5D /* Embed App Extensions */,
 				93C44648FF2FAE89B2ED8FC9 /* Frameworks */,
+				119A172824D74DA800D1B66D /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				B6CC5D912159D10E00833E5D /* PBXTargetDependency */,
+				119A172724D74DA800D1B66D /* PBXTargetDependency */,
 			);
 			name = WatchApp;
 			productName = WatchApp;
@@ -3473,7 +3464,6 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-HomeAssistant/Pods-HomeAssistant-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire-iOS/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireImage-iOS/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/CPDAcknowledgements/CPDAcknowledgements.framework",
 				"${BUILT_PRODUCTS_DIR}/CallbackURLKit/CallbackURLKit.framework",
 				"${BUILT_PRODUCTS_DIR}/ColorPickerRow/ColorPickerRow.framework",
@@ -3513,7 +3503,6 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CPDAcknowledgements.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CallbackURLKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ColorPickerRow.framework",
@@ -3755,7 +3744,6 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WatchAppExtension/Pods-WatchAppExtension-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire-watchOS/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireImage-watchOS/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/Communicator-watchOS/Communicator.framework",
 				"${BUILT_PRODUCTS_DIR}/DeviceKit-watchOS/DeviceKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Iconic-watchOS/Iconic.framework",
@@ -3775,7 +3763,6 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Communicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Iconic.framework",
@@ -3805,7 +3792,6 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Shared-iOS-SharedTests/Pods-Shared-iOS-SharedTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire-iOS/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireImage-iOS/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/Communicator-iOS/Communicator.framework",
 				"${BUILT_PRODUCTS_DIR}/DeviceKit-iOS/DeviceKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Iconic-iOS/Iconic.framework",
@@ -3826,7 +3812,6 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Communicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Iconic.framework",
@@ -3922,6 +3907,7 @@
 				B648AE252275918F006972AF /* Segues.swift in Sources */,
 				11ADB13E24C29E6900FF5EB2 /* ZoneManagerRegionFilter.swift in Sources */,
 				B657A8EA1CA646EB00121384 /* AppDelegate.swift in Sources */,
+				1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */,
 				B6CDC096228CF5C2009355DD /* RemoteMediaPlayer.swift in Sources */,
 				B661FC88226D478300E541DD /* DiscoverInstancesViewController.swift in Sources */,
 				11A48D8124CA8ADB0021BDD9 /* NotificationCategory+Observation.swift in Sources */,
@@ -4018,7 +4004,6 @@
 				B67CE87622200F220034C1D0 /* Notifications.swift in Sources */,
 				11C4629224B14E6B00031902 /* XCGLogger+UNNotification.swift in Sources */,
 				B6B74CBB2283983900D58A68 /* CLKComplication+Strings.swift in Sources */,
-				B67CE87C22200F220034C1D0 /* PushRegistrationRequest.swift in Sources */,
 				B6872E672226842100C475D1 /* MobileAppRegistrationResponse.swift in Sources */,
 				1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
 				B67CE8AF22200F220034C1D0 /* ObjectMapperTransformers.swift in Sources */,
@@ -4030,7 +4015,6 @@
 				11EE9B4A24C5116F00404AF8 /* ModelManager.swift in Sources */,
 				11EE9B5224C62E7800404AF8 /* Scene.swift in Sources */,
 				B67CE8B622200F220034C1D0 /* UIColor+HA.swift in Sources */,
-				B67CE89722200F220034C1D0 /* PushRegistrationResponse.swift in Sources */,
 				B67CE8B522200F220034C1D0 /* String+HA.swift in Sources */,
 				B672334B225DDF410031D629 /* Event.swift in Sources */,
 				B6872E642226841400C475D1 /* MobileAppRegistrationRequest.swift in Sources */,
@@ -4046,7 +4030,6 @@
 				B6B74CB92283983300D58A68 /* WatchComplication.swift in Sources */,
 				11C65CC1249838EB00D07FC7 /* StreamCameraResponse.swift in Sources */,
 				111858DB24CB7F9900B8CDDC /* SiriIntents+ConvenienceInits.swift in Sources */,
-				B67CE87D22200F220034C1D0 /* IdentifyRequest.swift in Sources */,
 				B6B74CBE228399AC00D58A68 /* Action.swift in Sources */,
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
@@ -4132,7 +4115,6 @@
 				1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */,
 				D0C88464211F33CE00CCB501 /* TokenManager.swift in Sources */,
 				B6B74CB6228397D100D58A68 /* WatchHelpers.swift in Sources */,
-				D0EEF32E214DF99500D1D360 /* PushRegistrationRequest.swift in Sources */,
 				B6723344225DBACF0031D629 /* AuthRequestMessage.swift in Sources */,
 				D0DD2CEE213BCA8900C3D9F7 /* URL+Extensions.swift in Sources */,
 				B6872E6022267EE800C475D1 /* HAAPI.swift in Sources */,
@@ -4176,7 +4158,6 @@
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				11C4627F24B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,
-				D0EEF32C214DF83800D1D360 /* IdentifyRequest.swift in Sources */,
 				D03D893920E0AF8E00D4F28D /* ClientEvent.swift in Sources */,
 				D03D893620E0AEFA00D4F28D /* Environment.swift in Sources */,
 				D0EEF2CE214D8AE200D1D360 /* RealmZone.swift in Sources */,
@@ -4212,7 +4193,6 @@
 				D0EEF316214DD7A400D1D360 /* Config.swift in Sources */,
 				11F3B85724C4279700642676 /* Entity.swift in Sources */,
 				11EE9B5424C62EB300404AF8 /* RealmScene.swift in Sources */,
-				D0EEF32D214DF94900D1D360 /* PushRegistrationResponse.swift in Sources */,
 				D0EEF322214DE56B00D1D360 /* LocationTrigger.swift in Sources */,
 				D0B25BD62133128800678C2C /* UNNotificationContent+ClientEvent.swift in Sources */,
 			);
@@ -4250,6 +4230,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		119A172724D74DA800D1B66D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B6CC5D8D2159D10E00833E5D /* WatchAppExtension */;
+			targetProxy = 119A172624D74DA800D1B66D /* PBXContainerItemProxy */;
+		};
 		B627CB141D83C87B0057173E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B627CB061D83C87B0057173E /* NotificationContentExtension */;
@@ -4284,11 +4269,6 @@
 			isa = PBXTargetDependency;
 			target = B6AAD7A01D827DD40090B220 /* APNSAttachmentService */;
 			targetProxy = B6AAD7A61D827DD40090B220 /* PBXContainerItemProxy */;
-		};
-		B6CC5D912159D10E00833E5D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B6CC5D8D2159D10E00833E5D /* WatchAppExtension */;
-			targetProxy = B6CC5D902159D10E00833E5D /* PBXContainerItemProxy */;
 		};
 		B6CC5D9D2159D10F00833E5D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4847,7 +4827,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Beta;
@@ -5546,7 +5525,6 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -5582,7 +5560,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;

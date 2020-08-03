@@ -7,7 +7,6 @@
 //
 
 import Alamofire
-import AlamofireImage
 import PromiseKit
 import CoreLocation
 import DeviceKit
@@ -18,6 +17,7 @@ import RealmSwift
 import UserNotifications
 import Intents
 import Version
+import UIKit
 #if os(iOS)
 import Reachability
 #endif
@@ -350,22 +350,22 @@ public class HomeAssistantAPI {
         }
     }
 
-    public func GetCameraImage(cameraEntityID: String) -> Promise<Image> {
+    public func GetCameraImage(cameraEntityID: String) -> Promise<UIImage> {
         return Promise { seal in
             let queryUrl = self.connectionInfo.activeAPIURL.appendingPathComponent("camera_proxy/\(cameraEntityID)")
             _ = manager.request(queryUrl)
                 .validate()
-                .responseImage { response in
+                .responseData { response in
                     switch response.result {
                     case .success:
-                        if let imgResponse = response.result.value {
-                            seal.fulfill(imgResponse)
+                        if let data = response.result.value, let image = UIImage(data: data) {
+                            seal.fulfill(image)
                         }
                     case .failure(let error):
                         Current.Log.error("Error when attemping to GetCameraImage(): \(error)")
                         seal.reject(error)
                     }
-            }
+                }
         }
     }
 

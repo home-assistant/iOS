@@ -36,7 +36,7 @@ class WelcomeViewController: UIViewController, UITextViewDelegate {
         self.animationView.loopMode = .playOnce
         self.animationView.play(toMarker: "Circles Formed")
 
-        if prefs.bool(forKey: "onboardingShouldShowMigrationMessage") || true {
+        if prefs.bool(forKey: "onboardingShouldShowMigrationMessage") {
             setupLoggedOutView()
         }
     }
