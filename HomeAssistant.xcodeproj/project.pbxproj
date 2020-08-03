@@ -10,7 +10,7 @@
 		0C6645270B5B70DF1C404144 /* Pods-SiriIntents-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3052AE62E057BB6257EDC1C /* Pods-SiriIntents-metadata.plist */; };
 		1100D51D2496AECE00B1073C /* PermissionStatusRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51C2496AECE00B1073C /* PermissionStatusRow.swift */; };
 		1100D51F2496F63400B1073C /* ThemeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100D51E2496F63400B1073C /* ThemeColors.swift */; };
-		1101568324D770B2009424C9 /* NFCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01624D75BD500A0E3C4 /* NFCManager.swift */; };
+		1101568324D770B2009424C9 /* iOSNFCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01624D75BD500A0E3C4 /* iOSNFCManager.swift */; };
 		1101568424D770B2009424C9 /* NFCWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D04E324D76CDB003CE877 /* NFCWriter.swift */; };
 		1101568524D770B2009424C9 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D04E124D76CD3003CE877 /* NFCReader.swift */; };
 		1101568724D7712F009424C9 /* NFCManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1101568624D7712F009424C9 /* NFCManagerProtocol.swift */; };
@@ -54,6 +54,7 @@
 		11810D53249EAF8D00E741A4 /* POC_pride@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11810D49249EAF8D00E741A4 /* POC_pride@3x.png */; };
 		118511C224B25BEB00D18F60 /* WebhookManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118511C124B25BEB00D18F60 /* WebhookManager.test.swift */; };
 		1187DE4224D77CCC00F0A6A6 /* NFCTagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1187DE4124D77CCC00F0A6A6 /* NFCTagViewController.swift */; };
+		1187DE4624D7E1BD00F0A6A6 /* SimulatorNFCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1187DE4524D7E1BD00F0A6A6 /* SimulatorNFCManager.swift */; };
 		11883CC524C12C8A0036A6C6 /* CLLocation+Extensions.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */; };
 		11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11883CC624C131EE0036A6C6 /* RealmZone.test.swift */; };
 		118F046924CB895A00CBBD5C /* UIColor+CSS3+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68FF7691F9D8637002BAADA /* UIColor+CSS3+Hex.swift */; };
@@ -755,7 +756,7 @@
 		1141182524AF9A0500E6525C /* WebhookManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookManager.swift; sourceTree = "<group>"; };
 		1141182924AFA10900E6525C /* WebhookResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseHandler.swift; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
-		1161C01624D75BD500A0E3C4 /* NFCManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCManager.swift; sourceTree = "<group>"; };
+		1161C01624D75BD500A0E3C4 /* iOSNFCManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSNFCManager.swift; sourceTree = "<group>"; };
 		1161C01A24D7634300A0E3C4 /* NFCViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCViewController.swift; sourceTree = "<group>"; };
 		1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionURLViewController.swift; sourceTree = "<group>"; };
@@ -773,6 +774,7 @@
 		11810D49249EAF8D00E741A4 /* POC_pride@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "POC_pride@3x.png"; sourceTree = "<group>"; };
 		118511C124B25BEB00D18F60 /* WebhookManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookManager.test.swift; sourceTree = "<group>"; };
 		1187DE4124D77CCC00F0A6A6 /* NFCTagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCTagViewController.swift; sourceTree = "<group>"; };
+		1187DE4524D7E1BD00F0A6A6 /* SimulatorNFCManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorNFCManager.swift; sourceTree = "<group>"; };
 		11883CC424C12C8A0036A6C6 /* CLLocation+Extensions.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Extensions.test.swift"; sourceTree = "<group>"; };
 		11883CC624C131EE0036A6C6 /* RealmZone.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmZone.test.swift; sourceTree = "<group>"; };
 		119385A3249E8E360097F497 /* StorageSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSensor.swift; sourceTree = "<group>"; };
@@ -1520,11 +1522,12 @@
 		1161C01924D7633700A0E3C4 /* NFC */ = {
 			isa = PBXGroup;
 			children = (
-				1161C01624D75BD500A0E3C4 /* NFCManager.swift */,
+				1161C01624D75BD500A0E3C4 /* iOSNFCManager.swift */,
 				113D04E124D76CD3003CE877 /* NFCReader.swift */,
 				113D04E324D76CDB003CE877 /* NFCWriter.swift */,
 				1161C01A24D7634300A0E3C4 /* NFCViewController.swift */,
 				1187DE4124D77CCC00F0A6A6 /* NFCTagViewController.swift */,
+				1187DE4524D7E1BD00F0A6A6 /* SimulatorNFCManager.swift */,
 			);
 			path = NFC;
 			sourceTree = "<group>";
@@ -3929,6 +3932,7 @@
 				B67CE8D02220EF1D0034C1D0 /* ObjectMapper+RealmList.swift in Sources */,
 				11A71C7124A4648000D9565F /* ZoneManagerEquatableRegion.swift in Sources */,
 				1101568424D770B2009424C9 /* NFCWriter.swift in Sources */,
+				1187DE4624D7E1BD00F0A6A6 /* SimulatorNFCManager.swift in Sources */,
 				B60221FA226D9BC200E8DBFE /* PermissionLineItemView.swift in Sources */,
 				11C590ED24A832CA0066085D /* YamlSection.swift in Sources */,
 				D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */,
@@ -3960,7 +3964,7 @@
 				B65C0B522282BA13007E057B /* NotificationSettingsViewController.swift in Sources */,
 				B661FB7A226C197900E541DD /* ManualSetupViewController.swift in Sources */,
 				11A71C6F24A4644A00D9565F /* ZoneManagerIgnoreReason.swift in Sources */,
-				1101568324D770B2009424C9 /* NFCManager.swift in Sources */,
+				1101568324D770B2009424C9 /* iOSNFCManager.swift in Sources */,
 				11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */,
 				B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */,
 				B661FC8A226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift in Sources */,

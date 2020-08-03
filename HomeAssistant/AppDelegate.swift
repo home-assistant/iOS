@@ -71,7 +71,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setDefaults()
         Current.isBackgroundRequestsImmediate = { application.applicationState != .background }
-        Current.nfc = NFCManagerImpl()
+
+        #if targetEnvironment(simulator)
+        Current.nfc = SimulatorNFCManager()
+        #else
+        Current.nfc = iOSNFCManager()
+        #endif
 
         UNUserNotificationCenter.current().delegate = self
 

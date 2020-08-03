@@ -40,7 +40,7 @@ class NFCViewController: FormViewController {
             }
         }
 
-        if NFCNDEFReaderSession.readingAvailable {
+        if Current.nfc.isAvailable {
             func image(for icon: MaterialDesignIcons) -> UIImage {
                 return icon.image(
                     ofSize: .init(width: 32, height: 32),

@@ -20,6 +20,7 @@ public enum NFCManagerError: LocalizedError {
 }
 
 public protocol NFCManager {
+    var isAvailable: Bool { get }
     func read() -> Promise<String>
     func write(value: String) -> Promise<String>
     func handle(userActivity: NSUserActivity) -> NFCManagerHandleResult
@@ -31,18 +32,27 @@ public extension NFCManager {
         let value = UUID().uuidString.lowercased()
         return write(value: value)
     }
+
+    func fireEvent(tag: String) -> Promise<Void> {
+        return firstly { () -> Promise<HomeAssistantAPI> in
+            HomeAssistantAPI.authenticatedAPIPromise
+        }.then { api -> Promise<Void> in
+            let event = HomeAssistantAPI.nfcTagEvent(tagPath: tag)
+            return api.CreateEvent(eventType: event.eventType, eventData: event.eventData)
+        }
+    }
 }
 
 class EmptyNFCManager: NFCManager {
+    var isAvailable: Bool {
+        false
+    }
+
     func read() -> Promise<String> {
         return .init(error: NFCManagerError.unavailable)
     }
 
     func write(value: String) -> Promise<String> {
-        return .init(error: NFCManagerError.unavailable)
-    }
-
-    func fireEvent(tag: String) -> Promise<Void> {
         return .init(error: NFCManagerError.unavailable)
     }
 

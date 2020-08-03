@@ -3,7 +3,12 @@ import PromiseKit
 import CoreNFC
 import Shared
 
-class NFCManagerImpl: NFCManager {
+// swiftlint:disable:next type_name
+class iOSNFCManager: NFCManager {
+    var isAvailable: Bool {
+        NFCNDEFReaderSession.readingAvailable
+    }
+
     func read() -> Promise<String> {
         if #available(iOS 13, *) {
             let reader = NFCReader()
@@ -66,15 +71,6 @@ class NFCManagerImpl: NFCManager {
         }
 
         return .unhandled
-    }
-
-    func fireEvent(tag: String) -> Promise<Void> {
-        return firstly { () -> Promise<HomeAssistantAPI> in
-            HomeAssistantAPI.authenticatedAPIPromise
-        }.then { api -> Promise<Void> in
-            let event = HomeAssistantAPI.nfcTagEvent(tagPath: tag)
-            return api.CreateEvent(eventType: event.eventType, eventData: event.eventData)
-        }
     }
 
     private static func url(for identifier: String) -> URL {
