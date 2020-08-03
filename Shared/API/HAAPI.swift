@@ -620,7 +620,7 @@ public class HomeAssistantAPI {
     ) -> (eventType: String, eventData: [String: String]) {
         var eventData = sharedEventDeviceInfo
         eventData["tag"] = tagPath
-        return (eventType: "nfc.tag_read", eventData: eventData)
+        return (eventType: "tag.read", eventData: eventData)
     }
 
     public func HandleAction(actionID: String, source: ActionSource) -> Promise<Void> {
