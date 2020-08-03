@@ -23,6 +23,7 @@ import UserNotifications
 import FirebaseMessaging
 import FirebaseCore
 import Sentry
+import MBProgressHUD
 #if DEBUG
 import SimulatorStatusMagic
 #endif
@@ -70,6 +71,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setDefaults()
         Current.isBackgroundRequestsImmediate = { application.applicationState != .background }
+
+        #if targetEnvironment(simulator)
+        Current.nfc = SimulatorNFCManager()
+        #else
+        Current.nfc = iOSNFCManager()
+        #endif
 
         UNUserNotificationCenter.current().delegate = self
 
@@ -411,12 +418,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, continue userActivity: NSUserActivity,
                      restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb, let url = userActivity.webpageURL,
-            let actualURLStr = url.queryItems?["url"], let actualURL = URL(string: actualURLStr) else {
-            return false
-        }
+        Current.Log.info(userActivity)
 
-        return self.application(application, open: actualURL)
+        switch Current.nfc.handle(userActivity: userActivity) {
+        case .handled:
+            let hud = MBProgressHUD.showAdded(to: window!, animated: true)
+            hud.mode = .customView
+            hud.backgroundView.style = .blur
+            hud.customView = with(IconImageView(frame: .init(x: 0, y: 0, width: 64, height: 64))) {
+                $0.iconDrawable = MaterialDesignIcons.nfcVariantIcon
+            }
+            hud.label.text = L10n.Nfc.tagRead
+            hud.hide(animated: true, afterDelay: 3)
+            return true
+        case .unhandled:
+            return false
+        case .open(let url):
+            // NFC-based URL
+            return self.application(application, open: url)
+        }
     }
 
     func application(

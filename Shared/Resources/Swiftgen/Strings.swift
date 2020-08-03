@@ -18,6 +18,8 @@ internal enum L10n {
   internal static let copyLabel = L10n.tr("Localizable", "copy_label")
   /// Delete
   internal static let delete = L10n.tr("Localizable", "delete")
+  /// Done
+  internal static let doneLabel = L10n.tr("Localizable", "done_label")
   /// Error
   internal static let errorLabel = L10n.tr("Localizable", "error_label")
   /// No
@@ -271,6 +273,11 @@ internal enum L10n {
     }
   }
 
+  internal enum Device {
+    /// Device
+    internal static let genericName = L10n.tr("Localizable", "device.generic_name")
+  }
+
   internal enum DevicesMap {
     /// Battery
     internal static let batteryLabel = L10n.tr("Localizable", "devices_map.battery_label")
@@ -465,6 +472,87 @@ internal enum L10n {
     internal static let message = L10n.tr("Localizable", "manual_location_update_notification.message")
     /// Location updated
     internal static let title = L10n.tr("Localizable", "manual_location_update_notification.title")
+  }
+
+  internal enum Nfc {
+    /// NFC is not available on this device
+    internal static let notAvailable = L10n.tr("Localizable", "nfc.not_available")
+    /// NFC Tag Read
+    internal static let tagRead = L10n.tr("Localizable", "nfc.tag_read")
+    internal enum Detail {
+      /// Copy to Pasteboard
+      internal static let copy = L10n.tr("Localizable", "nfc.detail.copy")
+      /// Create a Duplicate
+      internal static let duplicate = L10n.tr("Localizable", "nfc.detail.duplicate")
+      /// Example Trigger
+      internal static let exampleTrigger = L10n.tr("Localizable", "nfc.detail.example_trigger")
+      /// Fire Event
+      internal static let fire = L10n.tr("Localizable", "nfc.detail.fire")
+      /// Share Identifier
+      internal static let share = L10n.tr("Localizable", "nfc.detail.share")
+      /// Tag Identifier
+      internal static let tagValue = L10n.tr("Localizable", "nfc.detail.tag_value")
+      /// NFC Tag
+      internal static let title = L10n.tr("Localizable", "nfc.detail.title")
+    }
+    internal enum List {
+      /// NFC tags written by the app will show a notification when you bring your device near them. Activating the notification will launch the app and fire an event.\n\nTags will work on any device with Home Assistant installed which has hardware support to read them.
+      internal static let description = L10n.tr("Localizable", "nfc.list.description")
+      /// Learn More
+      internal static let learnMore = L10n.tr("Localizable", "nfc.list.learn_more")
+      /// Read Tag
+      internal static let readTag = L10n.tr("Localizable", "nfc.list.read_tag")
+      /// NFC Tags
+      internal static let title = L10n.tr("Localizable", "nfc.list.title")
+      /// Write Tag
+      internal static let writeTag = L10n.tr("Localizable", "nfc.list.write_tag")
+    }
+    internal enum Read {
+      /// Hold your %@ near an NFC tag
+      internal static func startMessage(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "nfc.read.start_message", String(describing: p1))
+      }
+      internal enum Error {
+        /// Failed to read tag
+        internal static let genericFailure = L10n.tr("Localizable", "nfc.read.error.generic_failure")
+        /// NFC tag is not a Home Assistant tag
+        internal static let notHomeAssistant = L10n.tr("Localizable", "nfc.read.error.not_home_assistant")
+        /// NFC tag is invalid
+        internal static let tagInvalid = L10n.tr("Localizable", "nfc.read.error.tag_invalid")
+      }
+    }
+    internal enum Write {
+      /// Hold your %@ near a writable NFC tag
+      internal static func startMessage(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "nfc.write.start_message", String(describing: p1))
+      }
+      /// Tag Written!
+      internal static let successMessage = L10n.tr("Localizable", "nfc.write.success_message")
+      internal enum Error {
+        /// NFC tag has insufficient capacity: needs %ld but only has %ld
+        internal static func capacity(_ p1: Int, _ p2: Int) -> String {
+          return L10n.tr("Localizable", "nfc.write.error.capacity", p1, p2)
+        }
+        /// NFC tag is not NDEF format
+        internal static let invalidFormat = L10n.tr("Localizable", "nfc.write.error.invalid_format")
+        /// NFC tag is read-only
+        internal static let notWritable = L10n.tr("Localizable", "nfc.write.error.not_writable")
+      }
+      internal enum IdentifierChoice {
+        /// Manual
+        internal static let manual = L10n.tr("Localizable", "nfc.write.identifier_choice.manual")
+        /// The identifier helps differentiate various tags.
+        internal static let message = L10n.tr("Localizable", "nfc.write.identifier_choice.message")
+        /// Random (Recommended)
+        internal static let random = L10n.tr("Localizable", "nfc.write.identifier_choice.random")
+        /// What kind of tag identifier?
+        internal static let title = L10n.tr("Localizable", "nfc.write.identifier_choice.title")
+      }
+      internal enum ManualInput {
+        /// What identifier for the tag?
+        internal static let title = L10n.tr("Localizable", "nfc.write.manual_input.title")
+      }
+    }
   }
 
   internal enum NotificationsConfigurator {

@@ -46,6 +46,7 @@ class InterfaceController: WKInterfaceController {
         self.noActionsLabel.setText(L10n.Watch.Labels.noAction)
 
         let actions = realm.objects(Action.self).sorted(byKeyPath: "Position")
+        self.actions = actions
 
         notificationToken = actions.observe { (changes: RealmCollectionChange) in
             guard let tableView = self.tableView else { return }
