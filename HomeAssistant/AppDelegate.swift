@@ -425,7 +425,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let hud = MBProgressHUD.showAdded(to: window!, animated: true)
             hud.mode = .customView
             hud.backgroundView.style = .blur
-            hud.customView = with(IconImageView(frame: .init(x: 0, y: 0, width: 24, height: 24))) {
+            hud.customView = with(IconImageView(frame: .init(x: 0, y: 0, width: 64, height: 64))) {
                 $0.iconDrawable = MaterialDesignIcons.nfcVariantIcon
             }
             hud.label.text = L10n.Nfc.tagRead
