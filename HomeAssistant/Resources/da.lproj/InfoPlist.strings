@@ -6,4 +6,5 @@
 "NSPhotoLibraryAddUsageDescription" = "Adgang til fotobibliotek er nødvendig for at give mulighed for at gemme fotos fra webvisningen.";
 "NSPhotoLibraryUsageDescription" = "Adgang til fotobibliotek er nødvendig for at give mulighed for at gemme fotos fra webvisningen.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send lokalitet";
-"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
+"NSLocalNetworkUsageDescription" = "Finde og kommunikere med din Home Assistant-installation.";
+"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";

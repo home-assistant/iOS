@@ -7,3 +7,4 @@
 "NSPhotoLibraryUsageDescription" = "Mae angen caniatâd i agor Photo Library i ganiatáu arbed lluniau o'r we.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Anfon Lleoliad";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
+"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";

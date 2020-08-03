@@ -200,7 +200,7 @@
 "notifications_configurator.category.rows.actions.header" = "Handlinger";
 "addButtonLabel" = "Legg til";
 "notifications_configurator.category.rows.category_summary.header" = "Sammendrag av kategorien";
-"notifications_configurator.category.rows.category_summary.footer" = "En formatstreng for den oppsummerte beskrivelsen som brukes når systemet grupperer varselene i kategorien. Du kan eventuelt bruke ' %%u' for å vise antall varsler i gruppen og ' %%@' for å vise sammendragsargumentet som er oppgitt i push nyttelast.";
+"notifications_configurator.category.rows.category_summary.footer" = "En formatstreng for sammendragsbeskrivelsen som brukes når systemet grupperer kategoriens varsler. Du kan eventuelt bruke %%u til å vise antall varsler i gruppen og %%@ for å vise sammendragsargumentet som er angitt i push-nyttelasten.";
 "notifications_configurator.category.rows.category_summary.default" = "%%u varsler i %%@";
 "notifications_configurator.category.rows.hidden_preview_placeholder.default" = "%u varsler";
 "notifications_configurator.category.rows.hidden_preview_placeholder.header" = "Skjult forhåndsvisning plassholder";
@@ -432,7 +432,7 @@
 "permissions.notification.initial.button.allow" = "Tillat";
 "permissions.notification.initial.button.deny" = "Nekte";
 "permissions.notification.reenable.title" = "Aktivere varslinger på nytt?";
-"permissions.notification.reenable.message" = "Du tidligere har hatt varsler er aktivert, men de vises nå deaktivert. Ønsker du å re-aktivere varsler?";
+"permissions.notification.reenable.message" = "Du har tidligere varslet aktiveringer, men de ser ut til å være deaktivert. Ønsker du å aktivere varsler på nytt?";
 "permissions.notification.reenable.button.allow" = "Reaktivere";
 "permissions.notification.reenable.button.deny" = "Forbli deaktivert";
 "about.help_localize.title" = "Hjelp å oversette appen!";
@@ -648,7 +648,7 @@
 "settings.connection_section.remote_ui_url.title" = "Ekstern UI URL";
 "onboarding.connection_test_result.no_base_url_discovered.description" = "Fant ingen http.base_url i søkeinformasjonen. Legg til en gyldig http.base_url i configuration.yaml og start Home Assistant på nytt for å fortsette med automatisk installasjon eller installasjon manuelt.";
 "settings_details.notifications.rate_limits.header" = "Varslingsfrekvens begrenset";
-"settings_details.notifications.rate_limits.footer" = "Du har 300 push meldinger per 24 timer. Meldingene nullstilles ved midnatt Universal koordinert tid (UTC).";
+"settings_details.notifications.rate_limits.footer" = "Du har lov til 300 push-varslinger per 24 timer. Hastighetsgrenser tilbakestilles ved midnatt Universal Coordinated Time (UTC).";
 "settings_details.notifications.rate_limits.attempts" = "Forsøk";
 "settings_details.notifications.rate_limits.delivered" = "Levert";
 "settings_details.notifications.rate_limits.errors" = "Feil";
@@ -759,7 +759,7 @@ takk.\
 "settings_sensors.detail.device_class" = "Enhetsklasse";
 "settings_sensors.detail.icon" = "Ikon";
 "settings_sensors.periodic_update.title" = "Periodisk oppdatering";
-"settings_sensors.periodic_update.description" = "Når denne er aktivert, vil disse sensorene oppdatere seg etter at appen har vært kontinuerlig åpen i så lang tid.";
+"settings_sensors.periodic_update.description" = "Når disse sensorene er aktivert, oppdateres disse sensorene med denne frekvensen mens appen er åpen i forgrunnen.";
 "settings_sensors.periodic_update.off" = "Av";
 "location_change_notification.launch.body" = "Plassering oppdatert via applansering";
 "location_change_notification.periodic.body" = "Plassering oppdatert via periodisk oppdatering";
@@ -800,18 +800,56 @@ takk.\
 "settings_details.actions.scenes.footer" = "Når dette er aktivert, vises scener ved siden av handlinger. Når de blir utført, utløser de sceneendringer.";
 "settings_details.actions.scenes.title" = "Scene handlinger";
 "settings_details.actions.scenes.empty" = "Ingen scener";
-"onboarding.logged_out_from_move.title" = "You've been logged out :(";
-"onboarding.logged_out_from_move.body" = "The Home Assistant iOS app recently moved organizations on the App Store. This move, unfortunately, required logging you out.\
+"onboarding.logged_out_from_move.title" = "Du har blitt logget ut :(";
+"onboarding.logged_out_from_move.body" = "Home Assistant iOS-appen flyttet nylig organisasjoner på App Store. Dette trekket krevde dessverre at du logget deg ut.\
 \
-Your actions and local configuration will still be available after logging in.";
-"onboarding.logged_out_from_move.learn_more" = "Learn more about the move.";
-"onboarding.logged_out_from_move.duplicate_warning" = "To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in.";
-"onboarding.logged_out_from_move.continue" = "Continue";
+Handlingene og den lokale konfigurasjonen vil fortsatt være tilgjengelige etter at du har logget inn.";
+"onboarding.logged_out_from_move.learn_more" = "Finn ut mer om flyttingen.";
+"onboarding.logged_out_from_move.duplicate_warning" = "Hvis du vil unngå dupliserte enheter, må du fjerne den eksisterende mobile_app integreringen for denne enheten i nettleseren før du logger på.";
+"onboarding.logged_out_from_move.continue" = "Fortsette";
 "settings_details.privacy.analytics.generic_title" = "Analytics";
-"settings_details.privacy.analytics.generic_description" = "Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared, including your Home Assistant URLs and tokens. You must restart the app for changes to this setting to take effect.";
-"settings_details.privacy.crash_reporting.title" = "Crash Reporting";
-"settings_details.privacy.crash_reporting.description" = "Allows for deeper tracking of crashes and other errors in the app, leading to faster fixes being published. No user identifiable information is sent, other than basic device information. You must restart the app for changes to this setting to take effect.";
-"settings_details.privacy.crash_reporting.sentry" = "This feature currently uses Sentry as the report destination.";
-"actions_configurator.visual_section.server_defined" = "The appearance of this action is controlled by the server configuration.";
-"settings_details.actions.actions_synced.header" = "Synced Actions";
-"settings_details.actions.actions_synced.footer" = "Actions defined in .yaml are not editable on device.";
+"settings_details.privacy.analytics.generic_description" = "Tillater samling av grunnleggende informasjon om enheten din og interaksjoner med appen. Ingen brukeridentifiserbare data deles, inkludert URL-adresser og symboler for Home Assistant. Du må starte appen på nytt for at endringer i denne innstillingen skal tre i kraft.";
+"settings_details.privacy.crash_reporting.title" = "Rapportering om krasj";
+"settings_details.privacy.crash_reporting.description" = "Gjør det mulig å spore krasj og andre feil i appen dypere, noe som fører til at raskere reparasjoner publiseres. Ingen brukeridentifiserbar informasjon sendes, annet enn grunnleggende enhetsinformasjon. Du må starte appen på nytt for at endringer i denne innstillingen skal tre i kraft.";
+"settings_details.privacy.crash_reporting.sentry" = "Denne funksjonen bruker Sentry for øyeblikket som rapportdestinasjon.";
+"actions_configurator.visual_section.server_defined" = "Utseendet til denne handlingen styres av serverkonfigurasjonen.";
+"settings_details.actions.actions_synced.header" = "Synkroniserte handlinger";
+"settings_details.actions.actions_synced.footer" = "Handlinger definert i .yaml kan ikke redigeres på enheten.";
+"copy_label" = "Copy";
+"done_label" = "Done";
+"settings.connection_section.errors.cannot_remove_last_url" = "You cannot remove only available URL.";
+"settings.connection_section.validate_error.title" = "Error Saving URL";
+"settings.connection_section.validate_error.use_anyway" = "Use Anyway";
+"settings.connection_section.validate_error.edit_url" = "Edit URL";
+"settings.connection_section.ssid_permission_message" = "Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.";
+"device.generic_name" = "Device";
+"nfc.list.title" = "NFC Tags";
+"nfc.list.description" = "NFC tags written by the app will show a notification when you bring your device near them. Activating the notification will launch the app and fire an event.\
+\
+Tags will work on any device with Home Assistant installed which has hardware support to read them.";
+"nfc.list.learn_more" = "Learn More";
+"nfc.list.read_tag" = "Read Tag";
+"nfc.list.write_tag" = "Write Tag";
+"nfc.detail.title" = "NFC Tag";
+"nfc.detail.tag_value" = "Tag Identifier";
+"nfc.detail.duplicate" = "Create a Duplicate";
+"nfc.detail.fire" = "Fire Event";
+"nfc.detail.example_trigger" = "Example Trigger";
+"nfc.detail.copy" = "Copy to Pasteboard";
+"nfc.detail.share" = "Share Identifier";
+"nfc.tag_read" = "NFC Tag Read";
+"nfc.not_available" = "NFC is not available on this device";
+"nfc.read.start_message" = "Hold your %@ near an NFC tag";
+"nfc.read.error.tag_invalid" = "NFC tag is invalid";
+"nfc.read.error.generic_failure" = "Failed to read tag";
+"nfc.read.error.not_home_assistant" = "NFC tag is not a Home Assistant tag";
+"nfc.write.start_message" = "Hold your %@ near a writable NFC tag";
+"nfc.write.success_message" = "Tag Written!";
+"nfc.write.identifier_choice.title" = "What kind of tag identifier?";
+"nfc.write.identifier_choice.message" = "The identifier helps differentiate various tags.";
+"nfc.write.identifier_choice.random" = "Random (Recommended)";
+"nfc.write.identifier_choice.manual" = "Manual";
+"nfc.write.manual_input.title" = "What identifier for the tag?";
+"nfc.write.error.not_writable" = "NFC tag is read-only";
+"nfc.write.error.capacity" = "NFC tag has insufficient capacity: needs %ld but only has %ld";
+"nfc.write.error.invalid_format" = "NFC tag is not NDEF format";

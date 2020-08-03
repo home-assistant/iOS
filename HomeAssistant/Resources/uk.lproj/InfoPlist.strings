@@ -6,4 +6,5 @@
 "NSPhotoLibraryAddUsageDescription" = "Щоб зберегти фотографії з веб-перегляду, потрібно отримати доступ до бібліотеки фотографій.";
 "NSPhotoLibraryUsageDescription" = "Щоб зберегти фотографії з веб-перегляду, потрібно отримати доступ до бібліотеки фотографій.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Надіслати розташування";
-"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
+"NSLocalNetworkUsageDescription" = "Визначіть та взаємодійте з вашим екземпляром Home Assistant.";
+"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";

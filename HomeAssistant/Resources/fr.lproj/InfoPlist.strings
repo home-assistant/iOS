@@ -7,3 +7,4 @@
 "NSPhotoLibraryUsageDescription" = "L'accès à la photothèque est nécessaire pour permettre la sauvegarde de photos à partir de la vue Web.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Envoyer l'emplacement";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
+"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";

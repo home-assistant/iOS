@@ -7,3 +7,4 @@
 "NSPhotoLibraryUsageDescription" = "Toegang tot de fotobibliotheek is nodig om foto's vanuit de webweergave op te slaan.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Stuur locatie";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
+"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
