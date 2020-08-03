@@ -1,7 +1,6 @@
 import Foundation
 import PromiseKit
 import Shared
-#if os(iOS)
 import CoreNFC
 
 @available(iOS 13, *)
@@ -94,5 +93,3 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
         }
     }
 }
-
-#endif
