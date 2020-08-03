@@ -543,6 +543,12 @@ public class HomeAssistantAPI {
         }
     }
 
+    private class var sharedEventDeviceInfo: [String: String] { [
+        "sourceDevicePermanentID": Constants.PermanentID,
+        "sourceDeviceName": Device.current.name ?? "Unknown",
+        "sourceDeviceID": Current.settingsStore.deviceID
+    ] }
+
     public enum ActionSource: CaseIterable {
         case Watch
         case Widget
@@ -572,13 +578,8 @@ public class HomeAssistantAPI {
         actionData: Any?,
         textInput: String?
     ) -> (eventType: String, eventData: [String: Any]) {
-        let device = Device.current
-        var eventData: [String: Any] = [
-            "actionName": identifier,
-            "sourceDevicePermanentID": Constants.PermanentID,
-            "sourceDeviceName": device.name ?? "Unknown",
-            "sourceDeviceID": Current.settingsStore.deviceID
-        ]
+        var eventData: [String: Any] = sharedEventDeviceInfo
+        eventData["actionName"] = identifier
 
         if let category = category {
             eventData["categoryName"] = category
@@ -599,15 +600,12 @@ public class HomeAssistantAPI {
         actionName: String,
         source: ActionSource
     ) -> (eventType: String, eventData: [String: String]) {
-        let device = Device.current
-        return (eventType: "ios.action_fired", eventData: [
-            "actionName": actionName,
-            "actionID": actionID,
-            "triggerSource": source.description,
-            "sourceDevicePermanentID": Constants.PermanentID,
-            "sourceDeviceName": device.name ?? "Unknown",
-            "sourceDeviceID": Current.settingsStore.deviceID
-        ])
+        var eventData = sharedEventDeviceInfo
+        eventData["actionName"] = actionName
+        eventData["actionID"] = actionID
+        eventData["triggerSource"] = source.description
+
+        return (eventType: "ios.action_fired", eventData: eventData)
     }
 
     public class func actionScene(
@@ -615,6 +613,14 @@ public class HomeAssistantAPI {
         source: ActionSource
     ) -> (serviceDomain: String, serviceName: String, serviceData: [String: String]) {
         return (serviceDomain: "scene", serviceName: "turn_on", serviceData: [ "entity_id": actionID ])
+    }
+
+    public class func nfcTagEvent(
+        tagPath: String
+    ) -> (eventType: String, eventData: [String: String]) {
+        var eventData = sharedEventDeviceInfo
+        eventData["tag"] = tagPath
+        return (eventType: "tag.read", eventData: eventData)
     }
 
     public func HandleAction(actionID: String, source: ActionSource) -> Promise<Void> {
