@@ -22,12 +22,33 @@ class NFCTagViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        func image(for icon: MaterialDesignIcons) -> UIImage {
-            icon.image(ofSize: CGSize(width: 28, height: 28), color: nil)
-                .withRenderingMode(.alwaysTemplate)
-        }
+        form +++ identifierSection()
+        form +++ actionsSection()
+        form +++ exampleTriggerSection()
+    }
 
-        form +++ Section(L10n.Nfc.Detail.tagValue)
+    private func buttonRow(icon: MaterialDesignIcons, configure: (ButtonRow) -> Void) -> ButtonRow {
+        ButtonRow {
+            $0.cellUpdate { cell, _ in
+                cell.textLabel?.textAlignment = .natural
+
+                if icon == .exportIcon {
+                    cell.imageView?.transform = .init(rotationAngle: -CGFloat.pi / 2.0)
+                } else {
+                    cell.imageView?.transform = .identity
+                }
+
+                cell.imageView?.image = icon
+                    .image(ofSize: CGSize(width: 28, height: 28), color: nil)
+                    .withRenderingMode(.alwaysTemplate)
+            }
+
+            configure($0)
+        }
+    }
+
+    private func identifierSection() -> Section {
+        return Section(L10n.Nfc.Detail.tagValue)
         <<< LabelRow {
             $0.cellStyle = .default
             $0.title = identifier
@@ -37,24 +58,14 @@ class NFCTagViewController: FormViewController {
                 cell.textLabel?.lineBreakMode = .byCharWrapping
             }
         }
-        <<< ButtonRow {
+        <<< buttonRow(icon: .contentCopyIcon) {
             $0.title = L10n.Nfc.Detail.copy
-            $0.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .natural
-                cell.imageView?.image = image(for: .contentCopyIcon)
-            }
             $0.onCellSelection { [identifier] _, _ in
                 UIPasteboard.general.string = identifier
             }
         }
-        <<< ButtonRow {
+        <<< buttonRow(icon: .exportIcon) {
             $0.title = L10n.Nfc.Detail.share
-            $0.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .natural
-                // mdi icon is rotated?
-                cell.imageView?.transform = .init(rotationAngle: -CGFloat.pi / 2.0)
-                cell.imageView?.image = image(for: .exportIcon)
-            }
             $0.onCellSelection { [weak self, identifier] cell, _ in
                 let controller = UIActivityViewController(activityItems: [ identifier ], applicationActivities: [])
                 controller.popoverPresentationController?.sourceView = cell
@@ -62,31 +73,27 @@ class NFCTagViewController: FormViewController {
                 self?.present(controller, animated: true, completion: nil)
             }
         }
+    }
 
-        form +++ Section()
-        <<< ButtonRow {
+    private func actionsSection() -> Section {
+        return Section()
+        <<< buttonRow(icon: .nfcTapIcon) {
             $0.title = L10n.Nfc.Detail.duplicate
-            $0.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .natural
-                cell.imageView?.image = image(for: .nfcTapIcon)
-            }
             $0.onCellSelection { [identifier] _, _ in
                 Current.Log.info("duplicating \(identifier)")
                 Current.nfc.write(value: identifier).cauterize()
             }
         }
-        <<< ButtonRow {
+        <<< buttonRow(icon: .bellRingOutlineIcon) {
             $0.title = L10n.Nfc.Detail.fire
-            $0.cellUpdate { cell, _ in
-                cell.textLabel?.textAlignment = .natural
-                cell.imageView?.image = image(for: .bellRingOutlineIcon)
-            }
             $0.onCellSelection { [identifier] _, _ in
                 Current.nfc.fireEvent(tag: identifier).cauterize()
             }
         }
+    }
 
-        form +++ YamlSection(
+    private func exampleTriggerSection() -> Section {
+        YamlSection(
             tag: "example-triger",
             header: L10n.Nfc.Detail.exampleTrigger,
             yamlGetter: { [identifier] () -> String in
