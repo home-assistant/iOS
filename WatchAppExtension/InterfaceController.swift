@@ -43,26 +43,24 @@ class InterfaceController: WKInterfaceController {
     func setupTable() {
         let realm = Realm.live()
 
+        self.noActionsLabel.setText(L10n.Watch.Labels.noAction)
+
         let actions = realm.objects(Action.self).sorted(byKeyPath: "Position")
 
         notificationToken = actions.observe { (changes: RealmCollectionChange) in
             guard let tableView = self.tableView else { return }
+
+            self.noActionsLabel.setHidden(actions.count > 0)
+
             switch changes {
             case .initial:
                 // Results are now populated and can be accessed without blocking the UI
                 self.tableView.setNumberOfRows(actions.count, withRowType: "actionRowType")
 
-                self.noActionsLabel.setText(L10n.Watch.Labels.noAction)
-                self.noActionsLabel.setHidden(actions.count > 0)
-
-                self.actions = actions
-
                 for idx in actions.indices {
                     self.setupRow(idx)
                 }
             case .update(_, let deletions, let insertions, let modifications):
-                self.actions = actions
-
                 let insertionsSet = NSMutableIndexSet()
                 insertions.forEach(insertionsSet.add)
 
@@ -137,7 +135,7 @@ class InterfaceController: WKInterfaceController {
 
                 self.handleActionFailure(row, rowIndex)
             }
-        } else if Communicator.shared.currentReachability == .notReachable { // Phone isn't connected
+        } else { // Phone isn't connected
             Current.Log.verbose("Signaling action pressed via watch")
             HomeAssistantAPI.authenticatedAPIPromise.then { api in
                 api.HandleAction(actionID: selectedAction.ID, source: .Watch)

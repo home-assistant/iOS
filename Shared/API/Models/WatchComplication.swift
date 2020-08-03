@@ -17,7 +17,7 @@ import ClockKit
 #endif
 
 // swiftlint:disable:next type_body_length
-public class WatchComplication: Object, Mappable {
+public class WatchComplication: Object, ImmutableMappable {
     @objc private dynamic var rawFamily: String = ""
     public var Family: ComplicationGroupMember {
         get {
@@ -79,27 +79,24 @@ public class WatchComplication: Object, Mappable {
         return ["RenderedData", "Family", "Template"]
     }
 
-    required convenience public init?(map: Map) {
-        self.init()
+    public required init() {
+
+    }
+
+    public required init(map: Map) throws {
+        // this is used for watch<->app syncing
+        self.CreatedAt = try map.value("CreatedAt", using: DateTransform())
+        super.init()
+        self.Template  = try map.value("Template")
+        self.Data      = try map.value("Data")
+        self.Family    = try map.value("Family")
     }
 
     public func mapping(map: Map) {
-        let realm = Realm.live()
-        let isWriteRequired = realm.isInWriteTransaction == false
-        isWriteRequired ? realm.beginWrite() : ()
-
-        Template  <- map["Template"]
-        Data      <- map["Data"]
-        CreatedAt <- map["CreatedAt"]
-
-        if map.mappingType == .toJSON {
-            var family = self.Family
-            family <- map["Family"]
-        } else {
-            Family <- map["Family"]
-        }
-
-        isWriteRequired ? try? realm.commitWrite() : ()
+        Template  >>> map["Template"]
+        Data      >>> map["Data"]
+        CreatedAt >>> (map["CreatedAt"], DateTransform())
+        Family    >>> map["Family"]
     }
 
     #if os(watchOS)

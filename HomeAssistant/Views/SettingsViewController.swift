@@ -121,11 +121,7 @@ class SettingsViewController: FormViewController {
                 view.detailGroup = "actions"
                 return view
             }, onDismiss: { _ in
-                _ = HomeAssistantAPI.SyncWatchContext()
 
-                let storedActions = Realm.live().objects(Action.self).sorted(byKeyPath: "Position")
-
-                UIApplication.shared.shortcutItems = storedActions.map { $0.uiShortcut }
             })
         }
 
@@ -153,16 +149,6 @@ class SettingsViewController: FormViewController {
                 $0.hidden = true
             }
         }
-
-//        <<< ButtonRow("siriShortcuts") {
-//            $0.hidden = Condition(booleanLiteral: UIDevice.current.systemVersion == "12")
-//            $0.title = L10n.Settings.DetailsSection.SiriShortcutsRow.title
-//            $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-//                let view = SettingsDetailViewController()
-//                view.detailGroup = "siri"
-//                return view
-//            }, onDismiss: nil)
-//        }
 
         +++ ButtonRow("privacy") {
             $0.title = L10n.SettingsDetails.Privacy.title
