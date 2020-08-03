@@ -141,6 +141,19 @@ class SettingsViewController: FormViewController {
             })
         }
 
+        <<< ButtonRow {
+            $0.title = L10n.Nfc.List.title
+
+            if #available(iOS 13, *) {
+                $0.hidden = false
+                $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
+                    return NFCViewController()
+                }, onDismiss: nil)
+            } else {
+                $0.hidden = true
+            }
+        }
+
 //        <<< ButtonRow("siriShortcuts") {
 //            $0.hidden = Condition(booleanLiteral: UIDevice.current.systemVersion == "12")
 //            $0.title = L10n.Settings.DetailsSection.SiriShortcutsRow.title

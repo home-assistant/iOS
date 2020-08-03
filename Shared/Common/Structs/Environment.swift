@@ -76,6 +76,8 @@ public class Environment {
         $0.register(provider: LastUpdateSensor.self)
     }
 
+    public var nfc: NFCManager = EmptyNFCManager()
+
     public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
 
     #if os(iOS)
@@ -243,6 +245,7 @@ public class Environment {
                 return nil
             #endif
         }
+        public lazy var model: () -> String = { Device.current.model ?? L10n.Device.genericName }
     }
     public var device = DeviceWrapper()
 

@@ -6,4 +6,5 @@
 "NSPhotoLibraryAddUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
 "NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
+"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send Location";

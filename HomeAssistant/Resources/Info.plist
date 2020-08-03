@@ -563,6 +563,16 @@
 	<string>Photo Library access is needed to allow saving photos from the web view.</string>
 	<key>NSSiriUsageDescription</key>
 	<string>We use Siri to allow created shortcuts to interact with the app.</string>
+	<key>NFCReaderUsageDescription</key>
+	<string>Reading and writing NFC tags allows you to trigger events.</string>
+	<key>com.apple.developer.nfc.readersession.felica.systemcodes</key>
+	<array>
+		<string>12FC</string>
+	</array>
+	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+	<array>
+		<string>D2760000850101</string>
+	</array>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>CallServiceIntent</string>
