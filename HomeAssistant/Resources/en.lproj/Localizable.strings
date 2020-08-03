@@ -833,6 +833,8 @@ Your actions and local configuration will still be available after logging in.";
 "nfc.detail.duplicate" = "Create a Duplicate";
 "nfc.detail.fire" = "Fire Event";
 "nfc.detail.example_trigger" = "Example Trigger";
+"nfc.detail.copy" = "Copy to Pasteboard";
+"nfc.detail.share" = "Share Identifier";
 "nfc.tag_read" = "NFC Tag Read";
 "nfc.not_available" = "NFC is not available on this device";
 /* parameter is e.g. iPhone, iPad, Apple Watch, etc. */

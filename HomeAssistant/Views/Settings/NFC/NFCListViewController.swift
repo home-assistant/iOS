@@ -6,7 +6,7 @@ import Shared
 import Iconic
 
 @available(iOS 13, *)
-class NFCViewController: FormViewController {
+class NFCListViewController: FormViewController {
     init() {
         super.init(style: .insetGrouped)
 

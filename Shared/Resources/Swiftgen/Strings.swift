@@ -480,12 +480,16 @@ internal enum L10n {
     /// NFC Tag Read
     internal static let tagRead = L10n.tr("Localizable", "nfc.tag_read")
     internal enum Detail {
+      /// Copy to Pasteboard
+      internal static let copy = L10n.tr("Localizable", "nfc.detail.copy")
       /// Create a Duplicate
       internal static let duplicate = L10n.tr("Localizable", "nfc.detail.duplicate")
       /// Example Trigger
       internal static let exampleTrigger = L10n.tr("Localizable", "nfc.detail.example_trigger")
       /// Fire Event
       internal static let fire = L10n.tr("Localizable", "nfc.detail.fire")
+      /// Share Identifier
+      internal static let share = L10n.tr("Localizable", "nfc.detail.share")
       /// Tag Identifier
       internal static let tagValue = L10n.tr("Localizable", "nfc.detail.tag_value")
       /// NFC Tag

@@ -143,7 +143,7 @@ class SettingsViewController: FormViewController {
             if #available(iOS 13, *) {
                 $0.hidden = false
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
-                    return NFCViewController()
+                    return NFCListViewController()
                 }, onDismiss: nil)
             } else {
                 $0.hidden = true
