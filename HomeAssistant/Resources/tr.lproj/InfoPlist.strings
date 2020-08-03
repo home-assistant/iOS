@@ -7,3 +7,4 @@
 "NSPhotoLibraryUsageDescription" = "Photo Library access is needed to allow saving photos from the web view.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Konumu Gönder";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
+"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";

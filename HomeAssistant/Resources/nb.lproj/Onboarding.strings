@@ -30,5 +30,5 @@
 "wsC-f5-jbO.text" = "Vi er nå klar til å koble til din Home Assistant og gjøre den første godkjenningen. Hvis du trykker på koble til-knappen nedenfor, åpnes en nettleser som du kan logge på.";
 "suf-pJ-Nle.normalTitle" = "Starte På Nytt";
 "7iT-bd-cdY.text" = "Manuell konfigurasjon";
-"PIW-dY-j0P.text" = "Vennligst oppgi din Home Assistent URL for å fortsette. Det må være et fullt dannet URL-adressen i formatet \"http://homeassistant.local:8123\" (som inneholder en ordning/protokoll, vertsnavn og port).";
+"PIW-dY-j0P.text" = "Skriv inn url-adressen til Home Assistant for å fortsette. Det må være en fullt utformet URL av formatet \"http://homeassistant.local:8123\" (det vil si inneholder et skjema / protokoll, vertsnavn og port).";
 "xO0-K1-GJX.placeholder" = "http://homeassistant.local:8123";
