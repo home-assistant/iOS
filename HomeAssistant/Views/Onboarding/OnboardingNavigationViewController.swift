@@ -60,11 +60,15 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
 
     func styleButton(_ button: MDCButton) {
         let containerScheme = MDCContainerScheme()
-        containerScheme.colorScheme.primaryColor = .white
-        containerScheme.colorScheme.secondaryColor = Constants.blue
+        if #available(iOS 13, *) {
+            containerScheme.colorScheme.primaryColor = .systemBackground
+        } else {
+            containerScheme.colorScheme.primaryColor = .white
+        }
+        containerScheme.colorScheme.secondaryColor = Constants.tintColor
         button.applyContainedTheme(withScheme: containerScheme)
 
-        button.setTitleColor(Constants.blue, for: .normal)
+        button.setTitleColor(Constants.tintColor, for: .normal)
 
         button.isUppercaseTitle = true
 
