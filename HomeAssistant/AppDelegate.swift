@@ -125,7 +125,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupWindow() {
-        let window = UIWindow.init(frame: UIScreen.main.bounds)
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.tintColor = Constants.tintColor
         window.restorationIdentifier = StateRestorationKey.mainWindow.rawValue
         window.makeKeyAndVisible()
         self.window = window
