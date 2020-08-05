@@ -839,6 +839,7 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "nfc.detail.copy" = "Copy to Pasteboard";
 "nfc.detail.share" = "Share Identifier";
 "nfc.tag_read" = "NFC Tag Read";
+"nfc.generic_tag_read" = "Tag Read";
 "nfc.not_available" = "NFC is not available on this device";
 "nfc.read.start_message" = "Hold your %@ near an NFC tag";
 "nfc.read.error.tag_invalid" = "NFC tag is invalid";
