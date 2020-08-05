@@ -31,6 +31,11 @@ class NotificationCategoryConfigurator: FormViewController, TypedRowControllerTy
 
     convenience init(category: NotificationCategory?) {
         self.init()
+
+        if #available(iOS 13, *) {
+            self.isModalInPresentation = true
+        }
+
         if let category = category {
             self.category = category
             if self.category.isServerControlled {

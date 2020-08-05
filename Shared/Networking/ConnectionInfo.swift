@@ -163,6 +163,13 @@ public class ConnectionInfo: Codable {
             case .remoteUI, .external: return false
             }
         }
+
+        public var isAffectedByCloud: Bool {
+            switch self {
+            case .internal: return false
+            case .remoteUI, .external: return true
+            }
+        }
     }
 
     /// Returns the url that should be used at this moment to access the Home Assistant instance.
