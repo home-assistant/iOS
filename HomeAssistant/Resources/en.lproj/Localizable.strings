@@ -822,6 +822,7 @@ Your actions and local configuration will still be available after logging in.";
 "settings.connection_section.validate_error.use_anyway" = "Use Anyway";
 "settings.connection_section.validate_error.edit_url" = "Edit URL";
 "settings.connection_section.ssid_permission_message" = "Accessing SSIDs in the background requires 'Always' location permission. Tap here to change your settings.";
+"settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
 "device.generic_name" = "Device";
 "nfc.list.title" = "NFC Tags";
 "nfc.list.description" = "NFC tags written by the app will show a notification when you bring your device near them. Activating the notification will launch the app and fire an event.\
