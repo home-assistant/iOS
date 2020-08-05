@@ -12,7 +12,13 @@ import RealmSwift
 import ObjectMapper
 import Iconic
 
-public class Action: Object, ImmutableMappable {
+public final class Action: Object, ImmutableMappable, UpdatableModel {
+    public enum PositionOffset: Int {
+        case manual = 0
+        case synced = 5_000
+        case scene = 10_000
+    }
+
     @objc dynamic public var ID: String = UUID().uuidString
     @objc dynamic public var Name: String = ""
     @objc dynamic public var Text: String = ""
@@ -23,6 +29,7 @@ public class Action: Object, ImmutableMappable {
     @objc dynamic public var Position: Int = 0
     @objc dynamic public var CreatedAt = Date()
     @objc dynamic public var Scene: RLMScene?
+    @objc dynamic public var isServerControlled: Bool = false
 
     override public static func primaryKey() -> String? {
         return "ID"
@@ -41,6 +48,10 @@ public class Action: Object, ImmutableMappable {
     }
 
     public func canConfigure(_ keyPath: PartialKeyPath<Action>) -> Bool {
+        if isServerControlled {
+            return false
+        }
+
         switch keyPath {
         case \Action.BackgroundColor:
             return Scene == nil || Scene?.scene.backgroundColor == nil
@@ -51,7 +62,7 @@ public class Action: Object, ImmutableMappable {
         case \Action.IconName,
              \Action.Name,
              \Action.Text:
-            return Scene == nil || Scene == nil
+            return Scene == nil
         default:
             return true
         }
@@ -68,6 +79,7 @@ public class Action: Object, ImmutableMappable {
         self.Text            = try map.value("Text")
         self.TextColor       = try map.value("TextColor")
         self.CreatedAt       = try map.value("CreatedAt", using: DateTransform())
+        self.isServerControlled = try map.value("isServerControlled")
         super.init()
     }
 
@@ -81,6 +93,55 @@ public class Action: Object, ImmutableMappable {
         Text             >>> map["Text"]
         TextColor        >>> map["TextColor"]
         CreatedAt        >>> (map["CreatedAt"], DateTransform())
+        isServerControlled >>> map["isServerControlled"]
+    }
+
+    static func didUpdate(objects: [Action]) {
+        for (idx, object) in objects.enumerated() {
+            object.Position = PositionOffset.synced.rawValue + idx
+        }
+    }
+
+    static var updateEligiblePredicate: NSPredicate {
+        .init(format: "isServerControlled == YES")
+    }
+
+    public func update(with object: MobileAppConfigAction, using realm: Realm) {
+        if self.realm == nil {
+            ID = object.name
+            Name = object.name
+        } else {
+            precondition(ID == object.name)
+            precondition(Name == object.name)
+        }
+
+        isServerControlled = true
+        Name = object.name
+
+        if let backgroundColor = object.backgroundColor {
+            BackgroundColor = backgroundColor
+        }
+
+        if let iconName = object.iconIcon {
+            IconName = iconName.normalizingIconString
+        } else {
+            let allCases = MaterialDesignIcons.allCases
+            IconName = allCases[abs(object.name.djb2hash % allCases.count)].name
+        }
+
+        if let iconColor = object.iconColor {
+            IconColor = iconColor
+        }
+
+        if let text = object.labelText {
+            Text = text
+        } else {
+            Text = object.name.replacingOccurrences(of: "_", with: " ").localizedCapitalized
+        }
+
+        if let textColor = object.labelColor {
+            TextColor = textColor
+        }
     }
 
     #if os(iOS)

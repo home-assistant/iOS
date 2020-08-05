@@ -69,7 +69,7 @@ public final class RLMScene: Object, UpdatableModel {
         }
 
         for (idx, object) in sorted.enumerated() {
-            object.position = 10_000 + idx
+            object.position = Action.PositionOffset.scene.rawValue + idx
         }
     }
 

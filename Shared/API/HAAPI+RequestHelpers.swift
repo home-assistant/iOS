@@ -104,4 +104,20 @@ extension HomeAssistantAPI {
 
         }
     }
+
+    func requestImmutable<T: ImmutableMappable>(path: String, callingFunctionName: String, method: HTTPMethod = .get,
+                                                parameters: Parameters? = nil,
+                                                encoding: ParameterEncoding = URLEncoding.default,
+                                                headers: HTTPHeaders? = nil) -> Promise<T> {
+        return Promise { seal in
+            let url = self.connectionInfo.activeAPIURL.appendingPathComponent(path)
+            _ = manager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
+                .validate()
+                .responseObject { (response: DataResponse<T>) in
+                    self.handleResponse(response: response, seal: seal,
+                                        callingFunctionName: callingFunctionName)
+            }
+
+        }
+    }
 }

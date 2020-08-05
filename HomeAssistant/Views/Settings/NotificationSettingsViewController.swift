@@ -115,8 +115,6 @@ class NotificationSettingsViewController: FormViewController {
             .filter("isServerControlled == YES")
             .sorted(byKeyPath: "Identifier")
 
-        self.form +++ serverNotificationCategorySection(collection: AnyRealmCollection(serverCategories))
-
         let mvOpts: MultivaluedOptions = [.Insert, .Delete]
 
         self.form +++ MultivaluedSection(
@@ -141,6 +139,8 @@ class NotificationSettingsViewController: FormViewController {
                     section <<< getNotificationCategoryRow(category)
                 }
             }
+
+            +++ serverNotificationCategorySection(collection: AnyRealmCollection(serverCategories))
 
             +++ ButtonRow {
                 $0.title = L10n.SettingsDetails.Notifications.Sounds.title
@@ -472,14 +472,23 @@ class NotificationSettingsViewController: FormViewController {
     func serverNotificationCategorySection(collection: AnyRealmCollection<NotificationCategory>) -> Section {
         RealmSection(
             header: L10n.SettingsDetails.Notifications.CategoriesSynced.header,
-            footer: L10n.SettingsDetails.Notifications.CategoriesSynced.footer,
+            footer: nil,
             collection: collection,
-            getter: { [weak self] in self?.getNotificationCategoryRow($0) },
+            emptyRows: [
+                LabelRow {
+                    $0.title = L10n.SettingsDetails.Notifications.CategoriesSynced.empty
+                    $0.disabled = true
+                }
+            ], getter: { [weak self] in self?.getNotificationCategoryRow($0) },
             didUpdate: { section, collection in
                 if collection.isEmpty {
-                    section.hidden = true
+                    section.footer = HeaderFooterView(
+                        title: L10n.SettingsDetails.Notifications.CategoriesSynced.footerNoCategories
+                    )
                 } else {
-                    section.hidden = false
+                    section.footer = HeaderFooterView(
+                        title: L10n.SettingsDetails.Notifications.CategoriesSynced.footer
+                    )
                 }
             }
         )

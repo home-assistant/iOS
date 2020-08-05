@@ -321,10 +321,33 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }
                 }
 
-                for action in actions {
+                for action in actions.filter("isServerControlled == false") {
                     section <<< getActionRow(action)
                 }
             }
+
+            form +++ RealmSection(
+                header: L10n.SettingsDetails.Actions.ActionsSynced.header,
+                footer: nil,
+                collection: AnyRealmCollection(actions.filter("isServerControlled == true")),
+                emptyRows: [
+                    LabelRow {
+                        $0.title = L10n.SettingsDetails.Actions.ActionsSynced.empty
+                        $0.disabled = true
+                    }
+                ], getter: { [weak self] in self?.getActionRow($0) },
+                didUpdate: { section, collection in
+                    if collection.isEmpty {
+                        section.footer = HeaderFooterView(
+                            title: L10n.SettingsDetails.Actions.ActionsSynced.footerNoActions
+                        )
+                    } else {
+                        section.footer = HeaderFooterView(
+                            title: L10n.SettingsDetails.Actions.ActionsSynced.footer
+                        )
+                    }
+                }
+            )
 
             let scenes = realm.objects(RLMScene.self).sorted(byKeyPath: RLMScene.positionKeyPath)
 
@@ -422,7 +445,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
 
         for storedAction in realm.objects(Action.self).sorted(byKeyPath: "Position") {
             guard let newPos = rowPositions[storedAction.ID] else { continue }
-            storedAction.Position = newPos
+            storedAction.Position = Action.PositionOffset.manual.rawValue + newPos
             // Current.Log.verbose("Update action \(storedAction.ID) to pos \(newPos)")
         }
 

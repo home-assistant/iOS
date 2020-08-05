@@ -112,35 +112,35 @@ final public class NotificationCategory: Object, UpdatableModel {
         .init(format: "isServerControlled == YES")
     }
 
-    public func update(with object: PushCategory, using realm: Realm) {
+    public func update(with object: MobileAppConfigPushCategory, using realm: Realm) {
         if self.realm == nil {
-            Identifier = object.Identifier.uppercased()
+            Identifier = object.identifier.uppercased()
         } else {
-            precondition(Identifier == object.Identifier.uppercased())
+            precondition(Identifier == object.identifier.uppercased())
         }
 
         isServerControlled = true
-        Name = object.Name
+        Name = object.name
 
         // todo: update
         realm.delete(Actions)
         Actions.removeAll()
 
-        Actions.append(objectsIn: (object.Actions ?? []).map { action in
+        Actions.append(objectsIn: (object.actions).map { action in
             with(NotificationAction()) {
                 $0.isServerControlled = true
-                $0.Title = action.Title
-                $0.Identifier = action.Identifier
-                $0.AuthenticationRequired = action.AuthenticationRequired
-                $0.Foreground = (action.ActivationMode.lowercased() == "foreground")
-                $0.Destructive = action.Destructive
-                $0.TextInput = (action.Behavior.lowercased() == "textinput")
-                if let title = action.TextInputButtonTitle {
+                $0.Title = action.title
+                $0.Identifier = action.identifier
+                $0.AuthenticationRequired = action.authenticationRequired
+                $0.Foreground = (action.activationMode.lowercased() == "foreground")
+                $0.Destructive = action.destructive
+                $0.TextInput = (action.behavior.lowercased() == "textinput")
+                if let title = action.textInputButtonTitle {
                     $0.TextInputButtonTitle = title
                 } else {
                     $0.TextInputButtonTitle = L10n.NotificationsConfigurator.Action.Rows.TextInputButtonTitle.title
                 }
-                if let placeholder = action.TextInputPlaceholder {
+                if let placeholder = action.textInputPlaceholder {
                     $0.TextInputPlaceholder = placeholder
                 } else {
                     $0.TextInputPlaceholder = L10n.NotificationsConfigurator.Action.Rows.TextInputPlaceholder.title

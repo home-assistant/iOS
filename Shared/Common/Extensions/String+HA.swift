@@ -11,6 +11,10 @@ import UIKit
 import CoreGraphics
 
 extension String {
+    var djb2hash: Int {
+        return unicodeScalars.map { $0.value }.reduce(5381) { ($0 << 5) &+ $0 &+ Int($1) }
+    }
+
     func dictionary() -> [String: Any]? {
         if let data = self.data(using: .utf8) {
             do {

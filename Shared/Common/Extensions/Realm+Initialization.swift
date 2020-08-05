@@ -67,17 +67,24 @@ extension Realm {
             Current.Log.info("Realm is stored at \(storeURL.description)")
         #endif
 
-        // 5 - 2020-07-08 v2020.4
-        // 6 - 2020-07-12 v2020.4
-        // 7 - 2020-07-20 v2020.5 (added RLMScene)
-        // 9 - 2020-07-23 v2020.5 (primary key removal on NotificationAction)
+        // 5  - 2020-07-08 v2020.4
+        // 6  - 2020-07-12 v2020.4
+        // 7  - 2020-07-20 v2020.5 (added RLMScene)
+        // 9  - 2020-07-23 v2020.5 (primary key removal on NotificationAction)
+        // 10 - 2020-07-31 v2020.5 (added isServerControlled to Action)
         let config = Realm.Configuration(
             fileURL: storeURL,
-            schemaVersion: 9,
+            schemaVersion: 10,
             migrationBlock: { migration, oldVersion in
                 if oldVersion < 9 {
                     migration.enumerateObjects(ofType: NotificationAction.className()) { _, newObject in
                         newObject!["uuid"] = UUID().uuidString
+                    }
+                }
+
+                if oldVersion < 10 {
+                    migration.enumerateObjects(ofType: Action.className()) { _, newObject in
+                        newObject!["isServerControlled"] = false
                     }
                 }
             },
