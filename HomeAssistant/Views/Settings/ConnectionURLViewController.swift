@@ -21,6 +21,10 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
         }
 
         self.title = urlType.description
+
+        if #available(iOS 13, *) {
+            self.isModalInPresentation = true
+        }
     }
 
     @available(*, unavailable)
@@ -173,6 +177,12 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
             }()
         }
 
+        if urlType.isAffectedByCloud, Current.settingsStore.connectionInfo?.useCloud == true {
+            form +++ InfoLabelRow {
+                $0.title = L10n.Settings.ConnectionSection.cloudOverridesExternal
+            }
+        }
+
         if urlType.isAffectedBySSID {
             form +++ locationPermissionSection()
 
@@ -241,19 +251,12 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
             permissionDelegate = nil
         }
 
-        section <<< LabelRow {
+        section <<< InfoLabelRow {
             $0.title = L10n.Settings.ConnectionSection.ssidPermissionMessage
 
             $0.cellUpdate { cell, _ in
                 cell.accessibilityTraits.insert(.button)
                 cell.selectionStyle = .default
-                cell.textLabel?.numberOfLines = 0
-
-                if #available(iOS 13, *) {
-                    cell.textLabel?.textColor = .secondaryLabel
-                } else {
-                    cell.textLabel?.textColor = .gray
-                }
             }
 
             $0.onCellSelection { _, _ in

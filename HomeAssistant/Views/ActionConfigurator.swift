@@ -32,6 +32,11 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
 
     convenience init(action: Action?) {
         self.init()
+
+        if #available(iOS 13, *) {
+            self.isModalInPresentation = true
+        }
+
         if let action = action {
             self.action = Action(value: action)
             self.newAction = false
@@ -199,21 +204,12 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
         }
 
         if visuals.isEmpty {
-            form +++ LabelRow {
+            form +++ InfoLabelRow {
                 switch action.triggerType {
                 case .event:
                     $0.title = L10n.ActionsConfigurator.VisualSection.serverDefined
                 case .scene:
                     $0.title = L10n.ActionsConfigurator.VisualSection.sceneDefined
-                }
-                $0.cellUpdate { cell, _ in
-                    cell.textLabel?.numberOfLines = 0
-
-                    if #available(iOS 13, *) {
-                        cell.textLabel?.textColor = .secondaryLabel
-                    } else {
-                        cell.textLabel?.textColor = .gray
-                    }
                 }
             }
         } else {

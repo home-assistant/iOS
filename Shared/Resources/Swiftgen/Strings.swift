@@ -475,6 +475,8 @@ internal enum L10n {
   }
 
   internal enum Nfc {
+    /// Tag Read
+    internal static let genericTagRead = L10n.tr("Localizable", "nfc.generic_tag_read")
     /// NFC is not available on this device
     internal static let notAvailable = L10n.tr("Localizable", "nfc.not_available")
     /// NFC Tag Read
@@ -1076,6 +1078,8 @@ internal enum L10n {
     internal enum ConnectionSection {
       /// Cloud Available
       internal static let cloudAvailable = L10n.tr("Localizable", "settings.connection_section.cloud_available")
+      /// When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.
+      internal static let cloudOverridesExternal = L10n.tr("Localizable", "settings.connection_section.cloud_overrides_external")
       /// Cloudhook Available
       internal static let cloudhookAvailable = L10n.tr("Localizable", "settings.connection_section.cloudhook_available")
       /// Connected via

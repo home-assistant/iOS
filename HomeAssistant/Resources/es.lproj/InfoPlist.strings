@@ -7,3 +7,4 @@
 "NSPhotoLibraryUsageDescription" = "El acceso a la biblioteca de fotos es necesario para poder guardar fotos desde la web.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Enviar ubicación";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
+"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";

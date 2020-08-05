@@ -14,8 +14,21 @@ import Iconic
 /// Contains shared constants
 public struct Constants {
     /// Home Assistant Blue
-    public static var blue: UIColor {
-        return #colorLiteral(red: 0.01, green: 0.66, blue: 0.96, alpha: 1.0)
+    public static var tintColor: UIColor {
+        let light = UIColor(hue: 199.0/360.0, saturation: 0.99, brightness: 0.96, alpha: 1.0)
+        let dark = UIColor(hue: 199.0/360.0, saturation: 0.99, brightness: 0.67, alpha: 1.0)
+
+        #if os(iOS)
+        if #available(iOS 13, *) {
+            return UIColor { (traitCollection: UITraitCollection) -> UIColor in
+                return traitCollection.userInterfaceStyle == .dark ? light : dark
+            }
+        } else {
+            return dark
+        }
+        #else
+        return light
+        #endif
     }
 
     /// Help icon UIBarButtonItem

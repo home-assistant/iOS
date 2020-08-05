@@ -26,6 +26,11 @@ class NotificationActionConfigurator: FormViewController, TypedRowControllerType
     init(category: NotificationCategory, action: NotificationAction?) {
         self.category = category
         super.init(style: .grouped)
+
+        if #available(iOS 13, *) {
+            self.isModalInPresentation = true
+        }
+
         if let action = action {
             self.action = action
             self.newAction = false

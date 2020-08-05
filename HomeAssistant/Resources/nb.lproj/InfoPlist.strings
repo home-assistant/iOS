@@ -6,4 +6,5 @@
 "NSPhotoLibraryAddUsageDescription" = "Tilgang til fotobibliotek er nødvendig for å tillate lagring av bilder fra nettvisningen.";
 "NSPhotoLibraryUsageDescription" = "Tilgang til fotobibliotek er nødvendig for å tillate lagring av bilder fra nettvisningen.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Send plassering";
-"NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
+"NSLocalNetworkUsageDescription" = "Finn og kommuniser med Home Assistant-forekomsten.";
+"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";

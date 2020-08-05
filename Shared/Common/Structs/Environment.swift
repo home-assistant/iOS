@@ -76,7 +76,7 @@ public class Environment {
         $0.register(provider: LastUpdateSensor.self)
     }
 
-    public var nfc: NFCManager = EmptyNFCManager()
+    public var tags: TagManager = EmptyTagManager()
 
     public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
 

@@ -623,7 +623,7 @@ public class HomeAssistantAPI {
         return (serviceDomain: "scene", serviceName: "turn_on", serviceData: [ "entity_id": actionID ])
     }
 
-    public class func nfcTagEvent(
+    public class func tagEvent(
         tagPath: String
     ) -> (eventType: String, eventData: [String: String]) {
         var eventData = sharedEventDeviceInfo
