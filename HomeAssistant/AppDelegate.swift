@@ -208,6 +208,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.entered_background", eventData: [:])
         invalidatePeriodicUpdateTimer()
+
+        #if compiler(>=5.3) && compiler(<5.4) && DEBUG
+        Current.Log.error("*** deleting realm lock file, remember this workaround? ***")
+        let lockURL = Current.realm().configuration.fileURL!.appendingPathExtension("lock")
+        try? FileManager.default.removeItem(at: lockURL)
+        #endif
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
