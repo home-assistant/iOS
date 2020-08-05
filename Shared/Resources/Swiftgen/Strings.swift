@@ -1430,8 +1430,12 @@ internal enum L10n {
       /// Actions
       internal static let title = L10n.tr("Localizable", "settings_details.actions.title")
       internal enum ActionsSynced {
+        /// No Synced Actions
+        internal static let empty = L10n.tr("Localizable", "settings_details.actions.actions_synced.empty")
         /// Actions defined in .yaml are not editable on device.
         internal static let footer = L10n.tr("Localizable", "settings_details.actions.actions_synced.footer")
+        /// Actions may be also defined in the .yaml configuration.
+        internal static let footerNoActions = L10n.tr("Localizable", "settings_details.actions.actions_synced.footer_no_actions")
         /// Synced Actions
         internal static let header = L10n.tr("Localizable", "settings_details.actions.actions_synced.header")
       }
@@ -1706,8 +1710,12 @@ internal enum L10n {
         internal static let header = L10n.tr("Localizable", "settings_details.notifications.categories.header")
       }
       internal enum CategoriesSynced {
+        /// No Synced Categories
+        internal static let empty = L10n.tr("Localizable", "settings_details.notifications.categories_synced.empty")
         /// Categories defined in .yaml are not editable on device.
         internal static let footer = L10n.tr("Localizable", "settings_details.notifications.categories_synced.footer")
+        /// Categories may be also defined in the .yaml configuration.
+        internal static let footerNoCategories = L10n.tr("Localizable", "settings_details.notifications.categories_synced.footer_no_categories")
         /// Synced Categories
         internal static let header = L10n.tr("Localizable", "settings_details.notifications.categories_synced.header")
       }

@@ -13,6 +13,12 @@ import ObjectMapper
 import Iconic
 
 public final class Action: Object, ImmutableMappable, UpdatableModel {
+    public enum PositionOffset: Int {
+        case manual = 0
+        case synced = 5_000
+        case scene = 10_000
+    }
+
     @objc dynamic public var ID: String = UUID().uuidString
     @objc dynamic public var Name: String = ""
     @objc dynamic public var Text: String = ""
@@ -92,7 +98,7 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
 
     static func didUpdate(objects: [Action]) {
         for (idx, object) in objects.enumerated() {
-            object.Position = -10_000 + idx
+            object.Position = PositionOffset.synced.rawValue + idx
         }
     }
 
