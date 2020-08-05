@@ -40,7 +40,7 @@ class NFCListViewController: FormViewController {
             }
         }
 
-        if Current.nfc.isAvailable {
+        if Current.tags.isNFCAvailable {
             func image(for icon: MaterialDesignIcons) -> UIImage {
                 return icon.image(
                     ofSize: .init(width: 32, height: 32),
@@ -90,7 +90,7 @@ class NFCListViewController: FormViewController {
         }.catch { [weak self] error in
             Current.Log.error(error)
 
-            if error is NFCManagerError {
+            if error is TagManagerError {
                 let alert = UIAlertController(
                     title: error.localizedDescription,
                     message: nil,
@@ -104,7 +104,7 @@ class NFCListViewController: FormViewController {
     }
 
     private func read(sender: UIView) {
-        perform(with: Current.nfc.read())
+        perform(with: Current.tags.readNFC())
     }
 
     private func write(sender: UIView) {
@@ -120,7 +120,7 @@ class NFCListViewController: FormViewController {
         }
 
         sheet.addAction(UIAlertAction(title: L10n.Nfc.Write.IdentifierChoice.random, style: .default, handler: { _ in
-            self.perform(with: Current.nfc.writeRandom())
+            self.perform(with: Current.tags.writeRandomNFC())
         }))
 
         sheet.addAction(UIAlertAction(title: L10n.Nfc.Write.IdentifierChoice.manual, style: .default, handler: { _ in
@@ -143,7 +143,7 @@ class NFCListViewController: FormViewController {
         let doneAction = UIAlertAction(title: L10n.doneLabel, style: .default, handler: { _ in
             if let text = question.textFields?.first?.text, text.isEmpty == false {
                 self.lastManualIdentifier = text
-                Current.nfc.write(value: text).pipe(to: seal.resolve)
+                Current.tags.writeNFC(value: text).pipe(to: seal.resolve)
             } else {
                 seal.reject(PMKError.cancelled)
             }

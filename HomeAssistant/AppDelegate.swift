@@ -73,9 +73,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.isBackgroundRequestsImmediate = { application.applicationState != .background }
 
         #if targetEnvironment(simulator)
-        Current.nfc = SimulatorNFCManager()
+        Current.tags = SimulatorTagManager()
         #else
-        Current.nfc = iOSNFCManager()
+        Current.tags = iOSTagManager()
         #endif
 
         UNUserNotificationCenter.current().delegate = self
@@ -421,15 +421,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         Current.Log.info(userActivity)
 
-        switch Current.nfc.handle(userActivity: userActivity) {
-        case .handled:
+        switch Current.tags.handle(userActivity: userActivity) {
+        case .handled(let type):
             let hud = MBProgressHUD.showAdded(to: window!, animated: true)
             hud.mode = .customView
             hud.backgroundView.style = .blur
+
+            let (icon, text) = { () -> (MaterialDesignIcons, String) in
+                switch type {
+                case .nfc:
+                    return (.nfcVariantIcon, L10n.Nfc.tagRead)
+                case .generic:
+                    return (.qrcodeIcon, L10n.Nfc.genericTagRead)
+                }
+            }()
             hud.customView = with(IconImageView(frame: .init(x: 0, y: 0, width: 64, height: 64))) {
-                $0.iconDrawable = MaterialDesignIcons.nfcVariantIcon
+                $0.iconDrawable = icon
             }
-            hud.label.text = L10n.Nfc.tagRead
+            hud.label.text = text
             hud.hide(animated: true, afterDelay: 3)
             return true
         case .unhandled:

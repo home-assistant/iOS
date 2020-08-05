@@ -475,6 +475,8 @@ internal enum L10n {
   }
 
   internal enum Nfc {
+    /// Tag Read
+    internal static let genericTagRead = L10n.tr("Localizable", "nfc.generic_tag_read")
     /// NFC is not available on this device
     internal static let notAvailable = L10n.tr("Localizable", "nfc.not_available")
     /// NFC Tag Read

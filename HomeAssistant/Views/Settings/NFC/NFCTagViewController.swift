@@ -81,13 +81,13 @@ class NFCTagViewController: FormViewController {
             $0.title = L10n.Nfc.Detail.duplicate
             $0.onCellSelection { [identifier] _, _ in
                 Current.Log.info("duplicating \(identifier)")
-                Current.nfc.write(value: identifier).cauterize()
+                Current.tags.writeNFC(value: identifier).cauterize()
             }
         }
         <<< buttonRow(icon: .bellRingOutlineIcon) {
             $0.title = L10n.Nfc.Detail.fire
             $0.onCellSelection { [identifier] _, _ in
-                Current.nfc.fireEvent(tag: identifier).cauterize()
+                Current.tags.fireEvent(tag: identifier).cauterize()
             }
         }
     }
@@ -97,7 +97,7 @@ class NFCTagViewController: FormViewController {
             tag: "example-triger",
             header: L10n.Nfc.Detail.exampleTrigger,
             yamlGetter: { [identifier] () -> String in
-                let data = HomeAssistantAPI.nfcTagEvent(tagPath: identifier)
+                let data = HomeAssistantAPI.tagEvent(tagPath: identifier)
                 let eventDataStrings = data.eventData.map { $0 + ": " + $1 }.sorted()
 
                 let indentation = "\n    "
