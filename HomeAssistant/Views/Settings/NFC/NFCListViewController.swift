@@ -24,11 +24,9 @@ class NFCListViewController: FormViewController {
         super.viewDidLoad()
 
         form +++ Section()
-        <<< LabelRow {
+        <<< InfoLabelRow {
             $0.title = L10n.Nfc.List.description
-            $0.cellUpdate { cell, _ in
-                cell.textLabel?.numberOfLines = 0
-            }
+            $0.displayType = .primary
         }
         <<< ButtonRow {
             $0.title = L10n.Nfc.List.learnMore

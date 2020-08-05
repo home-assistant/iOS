@@ -495,9 +495,9 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 cell.textLabel?.textAlignment = .natural
                 cell.imageView?.image = UIImage(size: iconSize, color: .clear)
                 if #available(iOS 13, *) {
-                    cell.textLabel?.textColor = row.isDisabled == false ? cell.tintColor : .tertiaryLabel
+                    cell.textLabel?.textColor = row.isDisabled == false ? Constants.tintColor : .tertiaryLabel
                 } else {
-                    cell.textLabel?.textColor = row.isDisabled == false ? cell.tintColor : .gray
+                    cell.textLabel?.textColor = row.isDisabled == false ? Constants.tintColor : .gray
                 }
             }
 
