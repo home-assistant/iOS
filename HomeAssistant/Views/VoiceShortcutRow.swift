@@ -3,7 +3,7 @@ import Eureka
 import IntentsUI
 import Shared
 
-@available(iOS 13.5, *)
+@available(iOS 13.0, *)
 public class VoiceShortcutCell: Cell<INShortcut>, CellType,
     INUIAddVoiceShortcutButtonDelegate,
     INUIAddVoiceShortcutViewControllerDelegate,
@@ -90,7 +90,7 @@ public class VoiceShortcutCell: Cell<INShortcut>, CellType,
     }
 }
 
-@available(iOS 13.5, *)
+@available(iOS 13.0, *)
 public final class VoiceShortcutRow: Row<VoiceShortcutCell>, RowType {
     var buttonStyle: INUIAddVoiceShortcutButtonStyle = .automatic
 

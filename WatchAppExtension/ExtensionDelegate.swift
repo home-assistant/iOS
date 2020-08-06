@@ -39,7 +39,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         UNUserNotificationCenter.current().delegate = self
 
         var opts: UNAuthorizationOptions = [.alert, .badge, .sound, .criticalAlert, .providesAppNotificationSettings]
-        if #available(watchOS 13.0, *) {
+        if #available(watchOS 6.0, *) {
             opts.insert(.announcement)
         }
 

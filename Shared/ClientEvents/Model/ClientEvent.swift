@@ -53,7 +53,7 @@ public class ClientEvent: Object {
             do {
                 var writeOptions: JSONSerialization.WritingOptions = [.prettyPrinted]
 
-                if #available(iOS 13, *) {
+                if #available(iOS 13, watchOS 6, *) {
                     writeOptions.insert(.withoutEscapingSlashes)
                 }
 

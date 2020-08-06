@@ -53,7 +53,7 @@ private struct ReportedError {
             "location_age": location.timestamp.timeIntervalSinceNow
         ]
 
-        if #available(iOS 13.4, *) {
+        if #available(iOS 13.4, watchOS 6.2, *) {
             userInfo["location_acc_course"] = location.courseAccuracy
         }
 

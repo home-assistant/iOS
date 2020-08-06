@@ -89,7 +89,7 @@ class ActionConfigurator: FormViewController, TypedRowControllerType {
             }
         }
 
-        if #available(iOS 13.5, *) {
+        if #available(iOS 13.0, *) {
             firstSection <<< VoiceShortcutRow {
                 $0.buttonStyle = .automaticOutline
                 $0.value = .intent(PerformActionIntent(action: action))
