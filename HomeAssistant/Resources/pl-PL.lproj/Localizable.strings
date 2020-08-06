@@ -65,7 +65,7 @@
 "settings_details.notifications.push_id_section.header" = "Identyfikator powiadomienia \"push\"";
 "settings_details.notifications.push_id_section.footer" = "This is the target to use in your Home Assistant configuration. Tap to copy or share.";
 "settings_details.notifications.push_id_section.placeholder" = "Identyfikator powiadomienia \"push\"";
-"settings_details.notifications.push_id_section.not_registered" = "Not registered for remote notifications";
+"settings_details.notifications.push_id_section.not_registered" = "Nie zarejestrowano do zdalnych powiadomień";
 "settings_details.notifications.update_section.footer" = "Aktualizacja ustawień powiadomień push spowoduje pobranie najnowszych akcji powiadomień push i kategorii z Home Assistant'a.";
 "settings_details.notifications.update_section.button.title" = "Zaktualizuj ustawienia powiadomień push";
 "settings_details.notifications.update_section.updated_alert.title" = "Zaimportowano ustawienia";
@@ -118,10 +118,10 @@
 "settings_details.location.updates.zone.title" = "Zone enter/exit";
 "settings_details.location.updates.background.title" = "Pobieranie w tle";
 "settings_details.location.updates.significant.title" = "Znacząca zmiana lokalizacji";
-"settings_details.location.updates.notification.title" = "Push notification request";
+"settings_details.location.updates.notification.title" = "Prośba o powiadomienie typu push";
 "location_change_notification.beacon_region_enter.body" = "%@ wejście przez iBeacon";
 "location_change_notification.beacon_region_exit.body" = "%@ opuszczono przez iBeacon";
-"location_change_notification.region_enter.body" = "%@ entered";
+"location_change_notification.region_enter.body" = "wejście do";
 "location_change_notification.region_exit.body" = "%@ opuszczono";
 "location_change_notification.significant_location_update.body" = "Wykryto znaczącą zmianę lokalizacji";
 "location_change_notification.background_fetch.body" = "Pobranie aktualnej lokalizacji zostało wyzwolone poprzez pobieranie jej w tle";
@@ -852,3 +852,9 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "nfc.write.error.not_writable" = "NFC tag is read-only";
 "nfc.write.error.capacity" = "NFC tag has insufficient capacity: needs %ld but only has %ld";
 "nfc.write.error.invalid_format" = "NFC tag is not NDEF format";
+"settings_details.notifications.categories_synced.empty" = "No Synced Categories";
+"settings_details.notifications.categories_synced.footer_no_categories" = "Categories may be also defined in the .yaml configuration.";
+"settings_details.actions.actions_synced.empty" = "No Synced Actions";
+"settings_details.actions.actions_synced.footer_no_actions" = "Actions may be also defined in the .yaml configuration.";
+"settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
+"nfc.generic_tag_read" = "Tag Read";

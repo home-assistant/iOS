@@ -7,4 +7,4 @@
 "NSPhotoLibraryUsageDescription" = "必須取得照片庫存取權，方能由網頁儲存照片。";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "傳送座標";
 "NSLocalNetworkUsageDescription" = "與 Home Assistant 物件確認與進行通訊。";
-"NFCReaderUsageDescription" = "Reading and writing NFC tags allows you to trigger events.";
+"NFCReaderUsageDescription" = "讀寫NFC標籤可觸發事件";

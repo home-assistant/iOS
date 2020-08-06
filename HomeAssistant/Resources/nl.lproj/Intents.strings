@@ -13,7 +13,7 @@
 "B4bXyc" = "Succesvol gemaakt sjabloon";
 "CiB3s6" = "Call service ${serviceDomain}.${service} met klembordgegevens";
 "FBQiVD" = "Roep een service op, op de Home Assistant instantie";
-"FN8zqO" = "Haal een enkel stilstaand beeld van $ {cameraID} op en plaats het op het klembord.";
+"FN8zqO" = "Haal een enkel stilstaand beeld van ${cameraID} op en plaats het op het klembord.";
 "FZ9qkT" = "Sjabloon renderen";
 "GoLNMt" = "Evenement gestart met de naam ${eventName} naar Home Assistant evenement bus met ${eventData}";
 "KHH48D" = "Kan locatie niet bijwerken, Home Assistant is momenteel niet bereikbaar";
@@ -32,7 +32,7 @@
 "WXKbGy" = "Verstuur een locatie naar de thuisassistent. Zal proberen de inhoud van het klembord als locatie te gebruiken, anders gebruikt het de huidige locatie.";
 "ZwJ0Xx" = "Hiermee wordt de gevonden tekst op het klembord weergegeven";
 "c00c45" = "Gebeurtenis afvuren";
-"cK9jdK" = "Kan sjabloon niet renderen met fout: $ {error}";
+"cK9jdK" = "Kan sjabloon niet renderen met fout: ${error}";
 "cnzI5h" = "Renderd ${template}";
 "foI0Fv" = "Kan sjabloon niet renderen, Home Assistant is niet bereikbaar";
 "glRCfJ" = "Kon evenement niet activeren, Home Assistant is niet bereikbaar";
@@ -55,7 +55,7 @@
 "ri4H1h" = "Succesvol ${domain}.${service} met klembordinhoud naar Home Assistant verzonden";
 "rlOS6H" = "Succesvol gemaakt sjabloon van klembord";
 "rwj6u7" = "Meld uw huidige locatie als ${locatie} aan de Home Assistant";
-"sbkx4E" = "Kan $ {pasteboardContents} niet geocoderen naar een geldige locatie";
+"sbkx4E" = "Kan ${pasteboardContents} niet geocoderen naar een geldige locatie";
 "uUk5RX" = "Call ${serviceDomain}.${service} met data";
 "v7TSD5" = "Stuur locatie";
 "wKnW1P" = "Call service ${serviceDomain}.${service} met klembordgegevens";
@@ -65,7 +65,7 @@
 "YyQQL1" = "JSON is gevonden op het klembord maar was ongeldig.";
 "boiLEw" = "JSON is gevonden op het klembord maar was ongeldig.";
 "tHPm96" = "Locatie bijgewerkt naar huidige positie";
-"0aqrcy" = "Kan sjabloon niet renderen met fout: $ {error}";
+"0aqrcy" = "Kan sjabloon niet renderen met fout: ${error}";
 "2b0Uo4" = "Service";
 "3jKamg" = "{{ now() }}";
 "4d1VvB" = "Gebeurtenisgegevens";
@@ -73,7 +73,7 @@
 "5bVvn0" = "Kan locatie niet bijwerken, fout: ${error}";
 "637QjD" = "Fout";
 "6ozAdN" = "Camerabeeld";
-"7boBzr" = "Roep $ {service} aan met gegevens";
+"7boBzr" = "Roep ${service} aan met gegevens";
 "CmlkE4" = "snelkoppeling_gebeurtenis";
 "DKg2kH" = "Ter bevestiging, je wilde '${cameraID}'?";
 "DdnZyl" = "Laatste stilstaand beeld van ${cameraID} opgehaald";

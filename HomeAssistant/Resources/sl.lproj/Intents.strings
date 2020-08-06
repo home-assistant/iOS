@@ -75,7 +75,7 @@
 "6ozAdN" = "Slika kamere";
 "7boBzr" = "Pokličite ${service} s podatki";
 "CmlkE4" = "shortcut_event";
-"DKg2kH" = "Samo za potrditev, ste želeli '$ {cameraID} '?";
+"DKg2kH" = "Samo za potrditev, ste želeli '${cameraID} '?";
 "DdnZyl" = "Najnovejša slika od ${cameraID}";
 "FtQqoU" = "Lokacija posodobljena";
 "HCM8Oe" = "Poženi ${eventName} s podatki";
@@ -107,7 +107,7 @@
 "iU3gao" = "Samo za potrditev, ste želeli '${service}'?";
 "j9Oxa5" = "Katera?";
 "lNmaCR" = "Predloga";
-"mJ6CrP" = "Ni bilo mogoče poslati $ {eventName} v Home Assistant z napako: $ {error}";
+"mJ6CrP" = "Ni bilo mogoče poslati ${eventName} v Home Assistant z napako: ${error}";
 "mZnRHS" = "${eventName} uspešno poslan v Home Assistant";
 "mi6B62" = "Katere podatke želite poslati z dogodkom?";
 "pQhTjo" = "Dogodka ni bilo mogoče pognati, Home Assistant trenutno ni dosegljiv";

@@ -38,7 +38,7 @@
 "glRCfJ" = "No se pudo disparar el evento, Home Assistant no está disponible en este momento.";
 "hsrlTY" = "Obtenga una sola imagen de una cámara y colóquela en el portapapeles.";
 "khd61N" = "Procesar el texto que se encuentra en el portapapeles";
-"le6NdS" = "Llamar al servicio ${serviceDomain}.$ {service} con datos: ${payload}";
+"le6NdS" = "Llamar al servicio ${serviceDomain}.${service} con datos: ${payload}";
 "lnrohM" = "Ejecutar ${eventName} con datos del portapapeles";
 "lxHlyQ" = "Ejecutar evento";
 "mAibJP" = "No se ha podido obtener la imagen de la cámara, Home Assistant no está disponible en este momento.";

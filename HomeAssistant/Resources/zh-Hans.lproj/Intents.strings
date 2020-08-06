@@ -13,7 +13,7 @@
 "B4bXyc" = "模板渲染成功";
 "CiB3s6" = "使用剪贴板的数据调用服务 ${serviceDomain}.${service}";
 "FBQiVD" = "从当前Home Assistant实例中调用服务";
-"FN8zqO" = "从$ {cameraID}获取一个静止帧并发送到剪贴板";
+"FN8zqO" = "从${cameraID}获取一个静止帧并发送到剪贴板";
 "FZ9qkT" = "渲染模板";
 "GoLNMt" = "将 ${eventName} 事件发送到Home Assistant事件总线，使用数据${eventData}";
 "KHH48D" = "位置更新失败，Home Assistant目前无法访问";
@@ -55,7 +55,7 @@
 "ri4H1h" = "成功将带剪贴板内容的${domain}.${service}发送到Home Assistant";
 "rlOS6H" = "成功从剪贴板内容呈送给模板";
 "rwj6u7" = "向 Home Asssiant 报告你的当前位置 ${location}";
-"sbkx4E" = "未能将地理编码 $ {clipboardContents} 转换为有效地址";
+"sbkx4E" = "未能将地理编码 ${pasteboardContents} 转换为有效地址";
 "uUk5RX" = "使用参数调用服务${serviceDomain}.${service}";
 "v7TSD5" = "发送位置";
 "wKnW1P" = "使用剪贴板的数据调用服务 ${serviceDomain}.${service}";
@@ -75,7 +75,7 @@
 "6ozAdN" = "相机影像";
 "7boBzr" = "使用数据调用服务${service}";
 "CmlkE4" = "shortcut_event";
-"DKg2kH" = "只是为了确认，您想要'$ {cameraID} '吗？";
+"DKg2kH" = "只是为了确认，您想要'${cameraID} '吗？";
 "DdnZyl" = "Got the latest still from${cameraID}";
 "FtQqoU" = "位置已更新";
 "HCM8Oe" = "带参数触发 ${eventName}";
@@ -104,7 +104,7 @@
 "gePUyy" = "位置";
 "gv7Gg6" = "位置";
 "hLFNfv" = "调用摄像头图像失败，错误信息：${error}。";
-"iU3gao" = "只是为了确认，您想要'$ {service} '吗？";
+"iU3gao" = "只是为了确认，您想要'${service} '吗？";
 "j9Oxa5" = "哪一个？";
 "lNmaCR" = "自定义模板";
 "mJ6CrP" = "向Home Assistant发送${eventName}失败，错误信息：${error}";

@@ -833,3 +833,9 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "nfc.write.error.not_writable" = "NFC tag is read-only";
 "nfc.write.error.capacity" = "NFC tag has insufficient capacity: needs %ld but only has %ld";
 "nfc.write.error.invalid_format" = "NFC tag is not NDEF format";
+"settings_details.notifications.categories_synced.empty" = "No Synced Categories";
+"settings_details.notifications.categories_synced.footer_no_categories" = "Categories may be also defined in the .yaml configuration.";
+"settings_details.actions.actions_synced.empty" = "No Synced Actions";
+"settings_details.actions.actions_synced.footer_no_actions" = "Actions may be also defined in the .yaml configuration.";
+"settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
+"nfc.generic_tag_read" = "Tag Read";

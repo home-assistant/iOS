@@ -1103,6 +1103,10 @@
 		B648AE232275918E006972AF /* Segues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Segues.swift; sourceTree = "<group>"; };
 		B648AE242275918E006972AF /* Scenes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scenes.swift; sourceTree = "<group>"; };
 		B64BB3A71E9C6551001E8B46 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		B64C5B2924DCB5390038AB3D /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Intents.strings; sourceTree = "<group>"; };
+		B64C5B2A24DCB5390038AB3D /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		B64C5B2B24DCB5390038AB3D /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B64C5B2C24DCB5390038AB3D /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B64E74BD23F3BC7500472C04 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Intents.strings; sourceTree = "<group>"; };
 		B64E74BE23F3BC7700472C04 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		B64E74BF23F3BC7900472C04 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -3029,6 +3033,7 @@
 				vi,
 				uk,
 				"en-GB",
+				cs,
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
@@ -4363,6 +4368,7 @@
 				B646B04E24D10A2900093E6A /* vi */,
 				B646B05224D10A5400093E6A /* uk */,
 				119EC3D924D5395B00617D51 /* en-GB */,
+				B64C5B2B24DCB5390038AB3D /* cs */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -4395,6 +4401,7 @@
 				B646B04C24D10A2900093E6A /* vi */,
 				B646B05024D10A5400093E6A /* uk */,
 				119EC3D724D5395B00617D51 /* en-GB */,
+				B64C5B2924DCB5390038AB3D /* cs */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -4436,6 +4443,7 @@
 				B646B04D24D10A2900093E6A /* vi */,
 				B646B05124D10A5400093E6A /* uk */,
 				119EC3D824D5395B00617D51 /* en-GB */,
+				B64C5B2A24DCB5390038AB3D /* cs */,
 			);
 			name = Onboarding.storyboard;
 			sourceTree = "<group>";
@@ -4475,6 +4483,7 @@
 				B646B04F24D10A2A00093E6A /* vi */,
 				B646B05324D10A5400093E6A /* uk */,
 				119EC3DA24D5395C00617D51 /* en-GB */,
+				B64C5B2C24DCB5390038AB3D /* cs */,
 			);
 			name = Localizable.strings;
 			path = .;

@@ -17,9 +17,9 @@
 "FZ9qkT" = "Återge mall";
 "GoLNMt" = "Kör händelse med namnet ${eventName} till Home Assistants event bus med ${eventData}.";
 "KHH48D" = "Misslyckades uppdatera plats, Home Assistant är inte tillgänglig för tillfället";
-"KJS2jk" = "Misslyckades uppdatera plats med fel: $ {error}";
+"KJS2jk" = "Misslyckades uppdatera plats med fel: ${error}";
 "KU19Ap" = "Det gick inte att köra händelsen, urklippsinnehållet kunde inte tolkas";
-"KzOHYA" = "Misslyckades få kamerabild med fel: $ {error}";
+"KzOHYA" = "Misslyckades få kamerabild med fel: ${error}";
 "MDmaRg" = "Anropa tjänst ${serviceDomain}.${service}";
 "N9iJpK" = "Hämta kamerabild";
 "NdG9Jz" = "Framställer Home assistant -mallen";
@@ -33,7 +33,7 @@
 "ZwJ0Xx" = "Återge text hittad i Urklipp";
 "c00c45" = "Utlös händelse";
 "cK9jdK" = "Misslyckades återge mall med fel: ${error}";
-"cnzI5h" = "Renderar $ {template}";
+"cnzI5h" = "Renderar ${template}";
 "foI0Fv" = "Misslyckades återge mall, Home assistant är inte tillgänglig för tillfället";
 "glRCfJ" = "Misslyckades köra händelse, Home assistant kan inte nås för tillfället";
 "hsrlTY" = "Få en enda stillbild från en kamera";
@@ -55,7 +55,7 @@
 "ri4H1h" = "Framgångsrikt skickat ${domain}.${service} med Urklippsinnehåll till Home Assistant";
 "rlOS6H" = "Framgångsrikt framställt mall från Urklipp";
 "rwj6u7" = "Rapportera din nuvarande position som ${location} till Home Assistant";
-"sbkx4E" = "Det gick inte att geokoda $ {pasteboardContents} till en giltig plats";
+"sbkx4E" = "Det gick inte att geokoda ${pasteboardContents} till en giltig plats";
 "uUk5RX" = "Anropa ${serviceDomain}.${service} med data";
 "v7TSD5" = "Skicka plats";
 "wKnW1P" = "Anropa tjänst ${serviceDomain}.${service} med Urklippsdata";

@@ -65,12 +65,12 @@
 "YyQQL1" = "JSON panoda bulundu ancak geçersizdi.";
 "boiLEw" = "JSON panoda bulundu ancak geçersizdi.";
 "tHPm96" = "Konum mevcut konumunuzla güncellendi";
-"0aqrcy" = "Hatalı şablon oluşturulamadı: $ {error}";
+"0aqrcy" = "Hatalı şablon oluşturulamadı: ${error}";
 "2b0Uo4" = "Servis";
 "3jKamg" = "{{ şimdi() }}";
 "4d1VvB" = "Olay Verileri";
 "5ZzwZD" = "Konum güncellenemedi, Ev Asistanına şu anda ulaşılamıyor";
-"5bVvn0" = "Konum hatalı olarak güncellenemedi: $ {error}";
+"5bVvn0" = "Konum hatalı olarak güncellenemedi: ${error}";
 "637QjD" = "Hata";
 "6ozAdN" = "Kamera Görüntüsü";
 "7boBzr" = "${service} 'i veri ile çağır";

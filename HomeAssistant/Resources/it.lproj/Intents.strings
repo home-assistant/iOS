@@ -33,12 +33,12 @@
 "ZwJ0Xx" = "Esegue il rendering del testo trovato negli Appunti";
 "c00c45" = "Lancia un evento";
 "cK9jdK" = "Impossibile eseguire il rendering del modello. Errore: ${error}";
-"cnzI5h" = "Renders $ {template}";
+"cnzI5h" = "Renders ${template}";
 "foI0Fv" = "Impossibile eseguire il rendering del modello, Home Assistant non è al momento raggiungibile";
 "glRCfJ" = "Impossibile Lanciare l'evento, Home Assistant non è attualmente raggiungibile";
 "hsrlTY" = "Ottenere una singola foto da una camera e metterlo negli appunti";
 "khd61N" = "Esegui il rendering del testo contenuto negli appunti";
-"le6NdS" = "Lancia il servizio $ {serviceDomain}.${service} con i dati: $ {payload}";
+"le6NdS" = "Lancia il servizio ${serviceDomain}.${service} con i dati: ${payload}";
 "lnrohM" = "Lancia ${eventName} con dati della pasteboard";
 "lxHlyQ" = "Lancia un evento";
 "mAibJP" = "Impossibile ottenere l'immagine della telecamera, Home Assistant non è attualmente raggiungibile";
@@ -55,7 +55,7 @@
 "ri4H1h" = "Inviati con successo ${domain}.${service} con il contenuto degli appunti ad Home Assistant";
 "rlOS6H" = "Modello renderizzato con successo dagli appunti";
 "rwj6u7" = "Segnala la tua posizione corrente come ${location} a Home Assistant";
-"sbkx4E" = "Impossibile geocodificare $ {clipboardContents} in una posizione valida";
+"sbkx4E" = "Impossibile geocodificare ${pasteboardContents} in una posizione valida";
 "uUk5RX" = "Chiamare ${serviceDomain}. ${service} con i dati";
 "v7TSD5" = "Invia posizione";
 "wKnW1P" = "Chiama il servizio ${serviceDomain}.$ {service} con i dati degli appunti";
@@ -104,10 +104,10 @@
 "gePUyy" = "Posizione";
 "gv7Gg6" = "Posizione";
 "hLFNfv" = "Impossibile ottenere l'immagine della telecamera con errore: ${errore}.";
-"iU3gao" = "Solo per confermare, volevi \"$ {service} \"?";
+"iU3gao" = "Solo per confermare, volevi \"${service} \"?";
 "j9Oxa5" = "Quale?";
 "lNmaCR" = "Modello";
-"mJ6CrP" = "Impossibile inviare $ {eventName} a Home Assistant con errore: $ {error}";
+"mJ6CrP" = "Impossibile inviare ${eventName} a Home Assistant con errore: ${error}";
 "mZnRHS" = "Inviato con successo ${eventName} ad Home Assistant";
 "mi6B62" = "Quali dati vuoi inviare con l'evento?";
 "pQhTjo" = "Impossibile generare l'evento, Home Assistant non è attualmente raggiungibile";

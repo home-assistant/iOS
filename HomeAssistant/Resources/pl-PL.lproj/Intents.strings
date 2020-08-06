@@ -120,7 +120,7 @@
 "EWqRDj" = "Nie udało się wykonać akcji: ${błąd}";
 "KM7mXC" = "Akcja";
 "Q2Qp4a" = "Akcja";
-"X02YQ2" = "$ {action}";
+"X02YQ2" = "${action}";
 "cLmTme" = "Akcja";
 "dFHPYK" = "Pomyślnie wykonano ${action}.";
 "fkQXDn" = "Istnieje ${count} opcji pasujących do ‘${action}’.";
