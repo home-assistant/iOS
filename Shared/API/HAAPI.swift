@@ -397,7 +397,7 @@ public class HomeAssistantAPI {
     }
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
-        if Current.serverVersion() < Version(major: 0, minor: 114, prerelease: "any0") {
+        if Current.serverVersion() < Version(major: 0, minor: 200, prerelease: "any0") {
             return firstly { () -> Promise<MobileAppConfigPush> in
                 requestImmutable(path: "ios/push", callingFunctionName: "\(#function)")
             }.map {
