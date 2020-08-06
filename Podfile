@@ -117,10 +117,6 @@ post_install do |installer|
         target.build_configurations.each do |config|
             config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
-            if config.build_settings['SDKROOT'] == 'watchos'
-                # temporarily disabling x86_64 watchos simulator until realm/sodium support it
-                config.build_settings['ARCHS'] = 'arm64_32 armv7s i386'
-            end
         end
     end
 end
