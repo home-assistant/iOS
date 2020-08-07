@@ -120,8 +120,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         connectAPI(reason: .cold)
 
         setupModels()
+        setup14Workaround()
 
         return true
+    }
+
+    static let hasAsked14Workaround = "has asked about ios 14 workaround"
+    static let hasAgreed14Workaround = "has agreed to ios 14 workaround"
+
+    private func setup14Workaround() {
+        guard !prefs.bool(forKey: Self.hasAsked14Workaround) else {
+            return
+        }
+
+        if #available(iOS 14, *), Current.isTestFlight || Current.appConfiguration == .Debug {
+            let controller = UIAlertController(
+                title: "Work around iOS 14 background crash?",
+                message: "This may at some point corrupt the app's settings, requiring you delete the app to continue.",
+                preferredStyle: .alert
+            )
+            controller.addAction(UIAlertAction(title: "Enable Workaround", style: .destructive, handler: { _ in
+                prefs.set(true, forKey: Self.hasAgreed14Workaround)
+                prefs.set(true, forKey: Self.hasAsked14Workaround)
+            }))
+            controller.addAction(UIAlertAction(title: "Do Not Work Around", style: .default, handler: { _ in
+                prefs.set(false, forKey: Self.hasAgreed14Workaround)
+                prefs.set(true, forKey: Self.hasAsked14Workaround)
+            }))
+            controller.addAction(UIAlertAction(title: "Ask Again Later", style: .cancel, handler: nil))
+            window?.rootViewController?.present(controller, animated: true, completion: nil)
+        }
     }
 
     func setupWindow() {
@@ -209,11 +237,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.entered_background", eventData: [:])
         invalidatePeriodicUpdateTimer()
 
-        #if compiler(>=5.3) && compiler(<5.4) && DEBUG
-        Current.Log.error("*** deleting realm lock file, remember this workaround? ***")
-        let lockURL = Current.realm().configuration.fileURL!.appendingPathExtension("lock")
-        try? FileManager.default.removeItem(at: lockURL)
-        #endif
+        if prefs.bool(forKey: Self.hasAgreed14Workaround) {
+            Current.Log.error("*** deleting realm lock file, remember this workaround? ***")
+            let lockURL = Current.realm().configuration.fileURL!.appendingPathExtension("lock")
+            try? FileManager.default.removeItem(at: lockURL)
+        }
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
