@@ -8,7 +8,7 @@
 
 import Foundation
 import ObjectMapper
-import Iconic
+import Shared
 
 public struct WebhookSensorSetting {
     public enum SettingType {

@@ -8,7 +8,6 @@
 
 import UIKit
 import NotificationCenter
-import Iconic
 import Shared
 import RealmSwift
 import UIColor_Hex_Swift

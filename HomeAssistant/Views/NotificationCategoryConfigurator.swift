@@ -12,7 +12,6 @@ import Eureka
 import UserNotifications
 import RealmSwift
 import Shared
-import Iconic
 
 // swiftlint:disable type_body_length
 class NotificationCategoryConfigurator: FormViewController, TypedRowControllerType {

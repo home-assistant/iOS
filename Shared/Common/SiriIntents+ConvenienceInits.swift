@@ -10,7 +10,7 @@ import Foundation
 import CoreLocation
 import MapKit
 import Intents
-import Iconic
+import Shared
 import UIColor_Hex_Swift
 
 @available(iOS 12, *)

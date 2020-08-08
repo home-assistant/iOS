@@ -63,7 +63,6 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.7.1):
     - GoogleUtilities/Logger
-  - Iconic (1.5)
   - KeychainAccess (4.2.0)
   - Lokalise (0.10.0)
   - lottie-ios (3.1.8)
@@ -217,7 +216,6 @@ DEPENDENCIES:
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
   - Firebase/Messaging
-  - Iconic (from `https://github.com/home-assistant/Iconic.git`, branch `master`)
   - KeychainAccess
   - Lokalise (~> 0.10.0)
   - lottie-ios
@@ -297,9 +295,6 @@ EXTERNAL SOURCES:
   Eureka:
     :branch: master
     :git: https://github.com/xmartlabs/Eureka.git
-  Iconic:
-    :branch: master
-    :git: https://github.com/home-assistant/Iconic.git
   ObjectMapper:
     :branch: master
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -323,9 +318,6 @@ CHECKOUT OPTIONS:
   Eureka:
     :commit: 7e98517da7deef25725d1422cf1491b4d37e6210
     :git: https://github.com/xmartlabs/Eureka.git
-  Iconic:
-    :commit: 48b595d947e5fbb4a239340bd7cac176f053313c
-    :git: https://github.com/home-assistant/Iconic.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
     :git: https://github.com/tristanhimmelman/ObjectMapper.git
@@ -353,7 +345,6 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 942cfe05b4f53c95ab8959395ca35c200398b2f0
   GoogleDataTransport: af0c79193dc59acd37630b4833d0dc6912ae6bd5
   GoogleUtilities: e121a3867449ce16b0e35ddf1797ea7a389ffdf2
-  Iconic: 6253c7913a2fb87c4a1366a9ec0befcf30173c21
   KeychainAccess: 3f760109aa99b05d0f231e28b22642da7153e38a
   Lokalise: bc42066e2dde59b43b46e88ecc0b92b7d593dc72
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
@@ -385,6 +376,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: f3be9702ce5385112815ee0295c29b5c31220d4e
+PODFILE CHECKSUM: 6b88cff222eabbf68f47455bc15449ac6b841103
 
 COCOAPODS: 1.9.3

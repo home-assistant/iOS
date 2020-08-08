@@ -3,7 +3,6 @@ import Eureka
 import CoreNFC
 import PromiseKit
 import Shared
-import Iconic
 
 @available(iOS 13, *)
 class NFCListViewController: FormViewController {
