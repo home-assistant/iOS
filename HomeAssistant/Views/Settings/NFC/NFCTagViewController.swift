@@ -1,7 +1,6 @@
 import Foundation
 import Eureka
 import Shared
-import Iconic
 
 @available(iOS 13, *)
 class NFCTagViewController: FormViewController {

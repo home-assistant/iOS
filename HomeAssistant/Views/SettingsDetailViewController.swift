@@ -12,7 +12,6 @@ import Shared
 import Intents
 import IntentsUI
 import PromiseKit
-import Iconic
 import RealmSwift
 import Firebase
 import CoreMotion

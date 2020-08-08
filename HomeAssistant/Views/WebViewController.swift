@@ -12,7 +12,6 @@ import WebKit
 import KeychainAccess
 import PromiseKit
 import MaterialComponents.MaterialButtons
-import Iconic
 import SwiftMessages
 import Shared
 import AVFoundation

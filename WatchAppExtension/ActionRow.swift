@@ -8,7 +8,7 @@
 
 import Foundation
 import WatchKit
-import Iconic
+import Shared
 import EMTLoadingIndicator
 
 class ActionRowType: NSObject {

@@ -10,7 +10,6 @@ import Alamofire
 import CallbackURLKit
 import Communicator
 import Firebase
-import Iconic
 import KeychainAccess
 import Lokalise
 import PromiseKit

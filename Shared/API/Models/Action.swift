@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import RealmSwift
 import ObjectMapper
-import Iconic
+import Shared
 
 public final class Action: Object, ImmutableMappable, UpdatableModel {
     public enum PositionOffset: Int {

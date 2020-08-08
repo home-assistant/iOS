@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import KeychainAccess
-import Iconic
+import Shared
 
 /// Contains shared constants
 public struct Constants {

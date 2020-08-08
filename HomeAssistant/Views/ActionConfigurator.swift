@@ -11,7 +11,6 @@ import UIKit
 import Eureka
 import RealmSwift
 import Shared
-import Iconic
 import ColorPickerRow
 import ViewRow
 import PromiseKit

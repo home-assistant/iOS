@@ -13,7 +13,6 @@ import Shared
 import PromiseKit
 import ObjectMapper
 import ColorPickerRow
-import Iconic
 
 // swiftlint:disable:next type_body_length
 class WatchComplicationConfigurator: FormViewController, TypedRowControllerType {

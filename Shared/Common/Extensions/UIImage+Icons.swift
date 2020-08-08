@@ -5,7 +5,7 @@
 //  Created by Stephan Vanterpool on 9/15/18.
 //  Copyright © 2018 Robbie Trencheny. All rights reserved.
 //
-import Iconic
+import Shared
 import UIKit
 
 extension UIImage {

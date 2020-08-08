@@ -8,7 +8,6 @@
 
 import Foundation
 import WatchKit
-import Iconic
 import EMTLoadingIndicator
 import RealmSwift
 import Communicator
