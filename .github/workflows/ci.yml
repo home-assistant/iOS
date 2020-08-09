@@ -29,8 +29,10 @@ jobs:
 
     - uses: actions/cache@v2
       with:
-        path: Pods
-        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+        path: 
+          - Pods
+          - Tools/MaterialDesignIcons.ttf
+        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
         restore-keys: |
           ${{ runner.os }}-pods-
 
@@ -40,13 +42,6 @@ jobs:
         key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
         restore-keys: |
           ${{ runner.os }}-gems-
-
-    - uses: actions/cache@v2
-      with:
-        path: Tools/MaterialDesignIcons.ttf
-        key: ${{ runner.os }}-mdi-${{ hashFiles('Tools/BuildMaterialDesignIconsFont.sh') }}
-        restore-keys: |
-          ${{ runner.os }}-mdi-
 
     - name: Install Gems
       run: |
