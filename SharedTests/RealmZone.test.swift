@@ -18,7 +18,7 @@ class RealmZoneTests: XCTestCase {
     private func XCTAssertEqualRegions(
         _ lhs: [CLRegion],
         _ rhs: [CLRegion],
-        file: StaticString = #file,
+        file: StaticString = #filePath,
         line: UInt = #line
     ) {
         XCTAssertEqual(lhs.count, rhs.count, file: file, line: line)
