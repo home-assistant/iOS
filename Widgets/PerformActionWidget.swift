@@ -3,7 +3,15 @@ import SwiftUI
 
 struct PerformActionWidgetProvider: TimelineProvider {
     func getSnapshot(in context: Context, completion: @escaping (PerformActionEntry) -> Void) {
-        completion(.init(text: "test 123"))
+        completion(.init(text: "snapshot"))
+    }
+
+    func getTimeline(in context: Context, completion: @escaping (Timeline<PerformActionEntry>) -> Void) {
+        completion(.init(entries: [PerformActionEntry(text: "timeline")], policy: .atEnd))
+    }
+
+    func placeholder(in context: Context) -> PerformActionEntry {
+        .init(text: "placeholder")
     }
 }
 
@@ -25,8 +33,8 @@ struct PerformActionWidget: Widget {
         StaticConfiguration(kind: "Test", provider: PerformActionWidgetProvider()) { (entry: PerformActionEntry) in
             PerformActionView(entry: entry)
         }
-        .configurationDisplayName("Game Status")
-        .description("Shows an overview of your game status")
+        .configurationDisplayName("Widget")
+        .description("Widgets")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
