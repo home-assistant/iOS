@@ -1,1 +1,4 @@
+// indirect so external team changes don't require entitlement
+ENABLE_CRITICAL_ALERTS_QMQYCKL255 = 1
+
 #include "HomeAssistant.xcconfig"

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -3020,9 +3020,7 @@
 					};
 					B657A8FB1CA646EB00121384 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = QMQYCKL255;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = Automatic;
 						TestTargetID = B657A8E51CA646EB00121384;
 					};
 					B657A9061CA646EB00121384 = {
@@ -3669,6 +3667,7 @@
 		};
 		9C08D123229F187E001B4F73 /* Enable Critical Alerts */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
