@@ -1,4 +1,1 @@
-PROVISIONING_PROFILE_SPECIFIER_PREFIX = match AppStore
-CODE_SIGN_IDENTITY = iPhone Distribution
-
 #include "HomeAssistant.xcconfig"
