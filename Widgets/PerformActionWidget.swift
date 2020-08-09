@@ -2,6 +2,18 @@ import WidgetKit
 import SwiftUI
 
 struct PerformActionWidgetProvider: TimelineProvider {
+    // start beta 3 compatibility code
+    typealias Entry = PerformActionEntry
+
+    func snapshot(with context: Self.Context, completion: @escaping (Self.Entry) -> Void) {
+        getSnapshot(in: context, completion: completion)
+    }
+
+    func timeline(with context: Self.Context, completion: @escaping (Timeline<Self.Entry>) -> Void) {
+        getTimeline(in: context, completion: completion)
+    }
+    // end beta 3 compatibility code
+
     func getSnapshot(in context: Context, completion: @escaping (PerformActionEntry) -> Void) {
         completion(.init(text: "snapshot"))
     }
