@@ -29,9 +29,9 @@ jobs:
 
     - uses: actions/cache@v2
       with:
-        path: 
-          - Pods
-          - Tools/MaterialDesignIcons.ttf
+        path: |
+          Pods
+          Tools/MaterialDesignIcons.ttf
         key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock', 'Tools/BuildMaterialDesignIconsFont.sh') }}
         restore-keys: |
           ${{ runner.os }}-pods-
