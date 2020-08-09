@@ -1,6 +1,5 @@
 import Foundation
 import PromiseKit
-import Shared
 import CoreLocation
 import Contacts
 

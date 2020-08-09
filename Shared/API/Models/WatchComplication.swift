@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import RealmSwift
 import ObjectMapper
-import Shared
 import UIColor_Hex_Swift
 #if os(watchOS)
 import ClockKit

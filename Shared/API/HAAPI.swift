@@ -397,7 +397,7 @@ public class HomeAssistantAPI {
     }
 
     public func GetMobileAppConfig() -> Promise<MobileAppConfig> {
-        if Current.serverVersion() < Version(major: 0, minor: 200, prerelease: "any0") {
+        if Current.serverVersion() < .actionSyncing {
             return firstly { () -> Promise<MobileAppConfigPush> in
                 requestImmutable(path: "ios/push", callingFunctionName: "\(#function)")
             }.recover { error -> Promise<MobileAppConfigPush> in
@@ -446,7 +446,7 @@ public class HomeAssistantAPI {
 
         var json = Mapper().toJSON(ident)
 
-        if Current.serverVersion() < Version(major: 0, minor: 104) {
+        if Current.serverVersion() < .canSendDeviceID {
             // device_id was added in 0.104, but prior it would error for unknown keys
             json.removeValue(forKey: "device_id")
         }
