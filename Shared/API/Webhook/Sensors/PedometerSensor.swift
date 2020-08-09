@@ -107,13 +107,13 @@ public class PedometerSensor: SensorProvider {
             switch self {
             case .distance: return "mdi:hiking"
             case .floorsAscended:
-                if Current.serverVersion() >= Version(major: 0, minor: 105) {
+                if Current.serverVersion() >= .pedometerIconsAvailable {
                     return "mdi:stairs-up"
                 } else {
                     return "mdi:slope-uphill"
                 }
             case .floorsDescended:
-                if Current.serverVersion() >= Version(major: 0, minor: 105) {
+                if Current.serverVersion() >= .pedometerIconsAvailable {
                     return "mdi:stairs-down"
                 } else {
                     return "mdi:slope-downhill"

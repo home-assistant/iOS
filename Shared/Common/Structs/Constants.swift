@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import KeychainAccess
-import Shared
+import Version
 
 /// Contains shared constants
 public struct Constants {
@@ -123,4 +123,10 @@ public struct Constants {
     static public var version: String {
         SharedPlistFiles.Info.cfBundleShortVersionString
     }
+}
+
+public extension Version {
+    static var canSendDeviceID: Version = .init(minor: 104)
+    static var pedometerIconsAvailable: Version = .init(minor: 105)
+    static var actionSyncing: Version = .init(minor: 200)
 }

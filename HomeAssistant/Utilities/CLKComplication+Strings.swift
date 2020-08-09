@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import Shared
 #if os(watchOS)
 import WatchKit
 import ClockKit
