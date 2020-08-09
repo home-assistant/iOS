@@ -335,7 +335,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                         LabelRow {
                             $0.title = L10n.SettingsDetails.Actions.ActionsSynced.empty
                             $0.disabled = true
-                        },
+                        }
                     ], getter: { [weak self] in self?.getActionRow($0) },
                     didUpdate: { section, collection in
                         if collection.isEmpty {
