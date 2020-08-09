@@ -1,11 +1,9 @@
 
 DEVELOPMENT_TEAM = QMQYCKL255
 BUNDLE_ID_PREFIX = io.robbie
+EXCLUDED_ARCHS[sdk=watchsimulator*] = x86_64 arm64
 
-CODE_SIGN_STYLE = Manual
-PROVISIONING_PROFILE_SPECIFIER = ${PROVISIONING_PROFILE_SPECIFIER_PREFIX} ${PRODUCT_BUNDLE_IDENTIFIER}
-
-ENABLE_CRITICAL_ALERTS = 0
+ENABLE_CRITICAL_ALERTS = 0  
 
 // Create this file to override configuration. It's ignored by git
 #include? "HomeAssistant.overrides.xcconfig"

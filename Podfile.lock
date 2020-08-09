@@ -179,11 +179,11 @@ PODS:
   - PromisesObjC (1.2.9)
   - Protobuf (3.12.0)
   - ReachabilitySwift (5.0.0)
-  - Realm (5.3.1):
-    - Realm/Headers (= 5.3.1)
-  - Realm/Headers (5.3.1)
-  - RealmSwift (5.3.1):
-    - Realm (= 5.3.1)
+  - Realm (5.3.3):
+    - Realm/Headers (= 5.3.3)
+  - Realm/Headers (5.3.3)
+  - RealmSwift (5.3.3):
+    - Realm (= 5.3.3)
   - Sentry (5.2.0):
     - Sentry/Core (= 5.2.0)
   - Sentry/Core (5.2.0)
@@ -214,7 +214,7 @@ DEPENDENCIES:
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - DeviceKit
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
-  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
+  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `xcode12`)
   - Firebase/Messaging
   - KeychainAccess
   - Lokalise (~> 0.10.0)
@@ -293,7 +293,7 @@ EXTERNAL SOURCES:
     :branch: master
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   Eureka:
-    :branch: master
+    :branch: xcode12
     :git: https://github.com/xmartlabs/Eureka.git
   ObjectMapper:
     :branch: master
@@ -316,7 +316,7 @@ CHECKOUT OPTIONS:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   Eureka:
-    :commit: 7e98517da7deef25725d1422cf1491b4d37e6210
+    :commit: f5651e328e099393e51b63f1abe78153cbacf90f
     :git: https://github.com/xmartlabs/Eureka.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
@@ -360,8 +360,8 @@ SPEC CHECKSUMS:
   PromisesObjC: b48e0338dbbac2207e611750777895f7a5811b75
   Protobuf: 2793fcd0622a00b546c60e7cbbcc493e043e9bb9
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Realm: 8ec860dc0c3079f7cab1085d95661a06f162d487
-  RealmSwift: ca9d0df752157befb8c28034301f988a56ce91eb
+  Realm: 2d57ea355bf8ca2a0964d6bfb38d28d7ff2addf6
+  RealmSwift: 0a709536ecea30eea1d3c514f6ade2ed078dee3c
   Sentry: 6e04bc3e11bf771ca79140a112de64dcfbc7d8cb
   SimulatorStatusMagic: 28d4a9d1a500ac7cea0b2b5a43c1c6ddb40ba56c
   Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
@@ -376,6 +376,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: d475952ef050c5cc06bd6ae694dff3028b1d3d77
+PODFILE CHECKSUM: 99c4e709fac437ef7daa034f14f5fb5c4cab3da5
 
 COCOAPODS: 1.9.3
