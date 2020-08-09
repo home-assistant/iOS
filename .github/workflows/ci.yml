@@ -41,6 +41,13 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gems-
 
+    - uses: actions/cache@v2
+      with:
+        path: Tools/MaterialDesignIcons.ttf
+        key: ${{ runner.os }}-mdi-${{ hashFiles('Tools/BuildMaterialDesignIconsFont.sh') }}
+        restore-keys: |
+          ${{ runner.os }}-mdi-
+
     - name: Install Gems
       run: |
         bundle config path vendor/bundle
