@@ -887,6 +887,8 @@
 		11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseServiceCall.test.swift; sourceTree = "<group>"; };
 		11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUnhandled.test.swift; sourceTree = "<group>"; };
 		11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProcessInfo+BackgroundTask.swift"; sourceTree = "<group>"; };
+		11E981E824E10DDC0095962B /* WidgetsExtension Development.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension Development.entitlements"; sourceTree = "<group>"; };
+		11E981E924E10DDC0095962B /* WidgetsExtension Beta.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension Beta.entitlements"; sourceTree = "<group>"; };
 		11EE9B4524C4E01500404AF8 /* SharedPlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedPlist.swift; sourceTree = "<group>"; };
 		11EE9B4824C5116F00404AF8 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		11EE9B4B24C5181A00404AF8 /* ModelManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.test.swift; sourceTree = "<group>"; };
@@ -1616,6 +1618,8 @@
 			isa = PBXGroup;
 			children = (
 				1171508224DFCF810065E874 /* WidgetsExtension.entitlements */,
+				11E981E924E10DDC0095962B /* WidgetsExtension Beta.entitlements */,
+				11E981E824E10DDC0095962B /* WidgetsExtension Development.entitlements */,
 				1171507124DFCDEE0065E874 /* Assets.xcassets */,
 				1171507324DFCDEE0065E874 /* Info.plist */,
 			);
