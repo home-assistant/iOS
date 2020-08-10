@@ -956,7 +956,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupFirebase() {
-        FirebaseApp.configure()
+        #if targetEnvironment(simulator)
+        if FirebaseOptions.defaultOptions() == nil {
+            Current.Log.error("*** Firebase options unavailable ***")
+        } else {
+            FirebaseApp.configure()
+        }
+        #else
+            FirebaseApp.configure()
+        #endif
 
         Messaging.messaging().delegate = self
 
