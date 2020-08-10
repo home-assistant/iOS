@@ -1,6 +1,7 @@
 import Foundation
 import Shared
 import PromiseKit
+import Intents
 
 class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
     private func action(from intent: PerformActionIntent) -> (IntentAction, Action)? {
@@ -61,5 +62,15 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
             }.joined(separator: ", ")
         }
         completion(Array(performActions), nil)
+    }
+
+    @available(iOS 14, *)
+    func provideActionOptionsCollection(
+        for intent: PerformActionIntent,
+        with completion: @escaping (INObjectCollection<IntentAction>?, Error?) -> Void
+    ) {
+        provideActionOptions(for: intent) { (actions, error) in
+            completion(actions.flatMap { .init(items: $0) }, error)
+        }
     }
 }
