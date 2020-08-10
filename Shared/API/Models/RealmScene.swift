@@ -22,8 +22,10 @@ public final class RLMScene: Object, UpdatableModel {
     @objc dynamic private var backingActionEnabled: Bool = true
     public var actionEnabled: Bool {
         set {
+            precondition(realm?.isInWriteTransaction == true)
+            guard let realm = realm else { return }
             backingActionEnabled = newValue
-            updateAction()
+            updateAction(realm: realm)
         }
         get {
             backingActionEnabled
@@ -85,13 +87,13 @@ public final class RLMScene: Object, UpdatableModel {
         }
 
         self.scene = object
-        updateAction()
+        updateAction(realm: realm)
     }
 
-    private func updateAction() {
+    private func updateAction(realm: Realm) {
         guard actionEnabled else {
             for action in actions {
-                self.realm?.delete(action)
+                realm.delete(action)
             }
             return
         }
@@ -109,7 +111,6 @@ public final class RLMScene: Object, UpdatableModel {
         action.Position = position
         action.Name = scene.FriendlyName ?? identifier
         action.Text = scene.FriendlyName ?? identifier
-        action.Scene = self
 
         if let backgroundColor = scene.backgroundColor {
             action.BackgroundColor = backgroundColor
@@ -123,6 +124,8 @@ public final class RLMScene: Object, UpdatableModel {
             action.IconColor = iconColor
         }
 
-        realm?.add(action, update: .all)
+        // we indirectly reference this action, so we _must_ manually persist it
+        action.Scene = self
+        realm.add(action, update: .all)
     }
 }

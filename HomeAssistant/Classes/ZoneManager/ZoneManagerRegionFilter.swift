@@ -143,12 +143,6 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
         strippedZones: AnyCollection<RLMZone>,
         decisionSource: String
     ) {
-        Current.logError?(ReportedError(
-            code: .exceededRegionCount,
-            regionCount: (beacon: counts.beacon, circular: counts.circular, zone: allZones.count),
-            decisionSource: decisionSource
-        ).asNsError())
-
         Current.clientEventStore.addEvent(ClientEvent(
             text: "Exceeded maximum monitored regions",
             type: .locationUpdate, payload: [
@@ -159,26 +153,5 @@ class ZoneManagerRegionFilterImpl: ZoneManagerRegionFilter {
                 "stripped_decision": decisionSource
             ]
         ))
-    }
-}
-
-private struct ReportedError {
-    enum Code: Int {
-        case exceededRegionCount = 0
-    }
-
-    private static let domain = "ZoneManagerRegionFilterError"
-
-    let code: Code
-    let regionCount: (beacon: Int, circular: Int, zone: Int)
-    let decisionSource: String
-
-    func asNsError() -> NSError {
-        return NSError(domain: Self.domain, code: code.rawValue, userInfo: [
-            "count_beacon": regionCount.beacon,
-            "count_circular": regionCount.circular,
-            "count_zone": regionCount.zone,
-            "decision": decisionSource
-        ])
     }
 }

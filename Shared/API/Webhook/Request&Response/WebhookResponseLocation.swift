@@ -65,8 +65,6 @@ struct WebhookResponseLocation: WebhookResponseHandler {
                 throw HandleError.missingLocalMetadata
             }
 
-            Current.logEvent?("location_update", ["trigger": localMetadata.trigger.rawValue])
-
             let notificationOptions = localMetadata.trigger.notificationOptionsFor(zoneName: localMetadata.zoneName)
 
             Current.clientEventStore.addEvent(ClientEvent(
