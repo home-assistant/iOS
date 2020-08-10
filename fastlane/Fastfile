@@ -194,7 +194,7 @@ platform :ios do
     increment_version_number(version_number: get_version_number(target: "HomeAssistant"))
     increment_build_number
 
-    finalize_bump
+    #finalize_bump
   end
 
   desc "Bump version number"
