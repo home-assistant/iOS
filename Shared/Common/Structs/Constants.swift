@@ -128,5 +128,6 @@ public struct Constants {
 public extension Version {
     static var canSendDeviceID: Version = .init(minor: 104)
     static var pedometerIconsAvailable: Version = .init(minor: 105)
+    static var tagWebhookAvailable: Version = .init(minor: 114, prerelease: "b5")
     static var actionSyncing: Version = .init(minor: 200)
 }
