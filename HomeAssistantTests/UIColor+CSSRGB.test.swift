@@ -52,7 +52,7 @@ class UIColorCSSRGBTests: XCTestCase {
         _ green: CGFloat,
         _ blue: CGFloat,
         _ alpha: CGFloat,
-        file: StaticString = #file,
+        file: StaticString = #filePath,
         line: UInt = #line
     ) {
         guard let color = UIColor(rgbString: string) else {

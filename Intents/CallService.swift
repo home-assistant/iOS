@@ -56,6 +56,16 @@ class CallServiceIntentHandler: NSObject, CallServiceIntentHandling {
         }
     }
 
+    @available(iOS 14, *)
+    func provideServiceOptionsCollection(
+        for intent: CallServiceIntent,
+        with completion: @escaping (INObjectCollection<NSString>?, Error?) -> Void
+    ) {
+        provideServiceOptions(for: intent) { (services, error) in
+            completion(services.flatMap { .init(items: $0.map { $0 as NSString }) }, error)
+        }
+    }
+
     func confirm(intent: CallServiceIntent, completion: @escaping (CallServiceIntentResponse) -> Void) {
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
             Current.Log.error("Can't get a authenticated API \(error)")

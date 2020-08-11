@@ -47,6 +47,16 @@ class GetCameraImageIntentHandler: NSObject, GetCameraImageIntentHandling {
         }
     }
 
+    @available(iOS 14, *)
+    func provideCameraIDOptionsCollection(
+        for intent: GetCameraImageIntent,
+        with completion: @escaping (INObjectCollection<NSString>?, Error?) -> Void
+    ) {
+        provideCameraIDOptions(for: intent) { (identifiers, error) in
+            completion(identifiers.flatMap { .init(items: $0.map { $0 as NSString }) }, error)
+        }
+    }
+
     func confirm(intent: GetCameraImageIntent, completion: @escaping (GetCameraImageIntentResponse) -> Void) {
         HomeAssistantAPI.authenticatedAPIPromise.catch { (error) in
             Current.Log.error("Can't get a authenticated API \(error)")

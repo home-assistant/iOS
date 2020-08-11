@@ -199,14 +199,14 @@ class BatterySensorTests: XCTestCase {
         XCTAssertEqual(level.State as? Int, 100)
     }
 
-    private func XCTAssertLevel(_ sensor: WebhookSensor, file: StaticString = #file, line: UInt = #line) {
+    private func XCTAssertLevel(_ sensor: WebhookSensor, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(sensor.Name, "Battery Level", file: file, line: line)
         XCTAssertEqual(sensor.UniqueID, "battery_level", file: file, line: line)
         XCTAssertEqual(sensor.DeviceClass, .battery, file: file, line: line)
         XCTAssertEqual(sensor.UnitOfMeasurement, "%", file: file, line: line)
     }
 
-    private func XCTAssertState(_ sensor: WebhookSensor, file: StaticString = #file, line: UInt = #line) {
+    private func XCTAssertState(_ sensor: WebhookSensor, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(sensor.Name, "Battery State", file: file, line: line)
         XCTAssertEqual(sensor.UniqueID, "battery_state", file: file, line: line)
         XCTAssertEqual(sensor.DeviceClass, .battery, file: file, line: line)
@@ -215,7 +215,7 @@ class BatterySensorTests: XCTestCase {
     func sensors(
         level: Int,
         forceNotFull: Bool = false,
-        file: StaticString = #file,
+        file: StaticString = #filePath,
         line: UInt = #line
     ) throws -> (uLevel: WebhookSensor, uState: WebhookSensor, cLevel: WebhookSensor, cState: WebhookSensor) {
         Current.device.batteryLevel = { level }

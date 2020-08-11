@@ -214,7 +214,7 @@ DEPENDENCIES:
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
   - DeviceKit
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
-  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `master`)
+  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `xcode12`)
   - Firebase/Messaging
   - KeychainAccess
   - Lokalise (~> 0.10.0)
@@ -293,7 +293,7 @@ EXTERNAL SOURCES:
     :branch: master
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   Eureka:
-    :branch: master
+    :branch: xcode12
     :git: https://github.com/xmartlabs/Eureka.git
   ObjectMapper:
     :branch: master
@@ -316,7 +316,7 @@ CHECKOUT OPTIONS:
     :commit: ff5b4ccf9bb424cb454e76ee91e32165d2d9c12c
     :git: https://github.com/hirokimu/EMTLoadingIndicator
   Eureka:
-    :commit: 7e98517da7deef25725d1422cf1491b4d37e6210
+    :commit: f5651e328e099393e51b63f1abe78153cbacf90f
     :git: https://github.com/xmartlabs/Eureka.git
   ObjectMapper:
     :commit: a593b4d647a970b3d184d046f8f52b945083ccf9
@@ -376,6 +376,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: d475952ef050c5cc06bd6ae694dff3028b1d3d77
+PODFILE CHECKSUM: 99c4e709fac437ef7daa034f14f5fb5c4cab3da5
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0.beta.1

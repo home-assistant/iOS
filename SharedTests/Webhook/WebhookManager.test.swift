@@ -127,7 +127,7 @@ class WebhookManagerTests: XCTestCase {
         })
 
         XCTAssertThrowsError(try hang(manager.sendEphemeral(request: expectedRequest))) { error in
-            XCTAssertEqual(error as? URLError, expectedError)
+            XCTAssertEqual((error as? URLError)?.code, expectedError.code)
         }
     }
 
@@ -578,7 +578,7 @@ class WebhookManagerTests: XCTestCase {
 private func XCTAssertEqualWebhookRequest(
     _ lhsData: Data?,
     _ rhs: WebhookRequest,
-    file: StaticString = #file,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) {
     do {
@@ -593,7 +593,7 @@ private func XCTAssertEqualWebhookRequest(
 private func XCTAssertEqualWebhookRequest(
     _ lhs: WebhookRequest,
     _ rhs: WebhookRequest,
-    file: StaticString = #file,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) {
     let mapper = Mapper<WebhookRequest>(context: WebhookRequestContext.server)

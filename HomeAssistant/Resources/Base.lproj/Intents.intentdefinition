@@ -5,15 +5,15 @@
 	<key>INEnums</key>
 	<array/>
 	<key>INIntentDefinitionModelVersion</key>
-	<string>1.1</string>
+	<string>1.2</string>
 	<key>INIntentDefinitionNamespace</key>
 	<string>sI7YSe</string>
 	<key>INIntentDefinitionSystemVersion</key>
 	<string>19G73</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>11E708</string>
+	<string>12A8179i</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>11.6</string>
+	<string>12.0</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -52,6 +52,8 @@
 			<key>INIntentParameters</key>
 			<array>
 				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
 					<key>INIntentParameterCustomDisambiguation</key>
 					<true/>
 					<key>INIntentParameterDisplayName</key>
@@ -70,28 +72,14 @@
 					<key>INIntentParameterPromptDialogs</key>
 					<array>
 						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
 							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>There are ${count} options matching ‘${service}’.</string>
+							<string>Which service?</string>
 							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>KNyYFZ</string>
+							<string>Lgymq2</string>
 							<key>INIntentParameterPromptDialogType</key>
-							<string>DisambiguationIntroduction</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Which one?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>j9Oxa5</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>DisambiguationSelection</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Just to confirm, you wanted ‘${service}’?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>iU3gao</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Confirmation</string>
+							<string>Configuration</string>
 						</dict>
 					</array>
 					<key>INIntentParameterSupportsDynamicEnumeration</key>
@@ -104,6 +92,8 @@
 					<string>String</string>
 				</dict>
 				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
 					<key>INIntentParameterDisplayName</key>
 					<string>Service Data</string>
 					<key>INIntentParameterDisplayNameID</key>
@@ -270,6 +260,8 @@
 			<key>INIntentParameters</key>
 			<array>
 				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
 					<key>INIntentParameterDisplayName</key>
 					<string>Location</string>
 					<key>INIntentParameterDisplayNameID</key>
@@ -426,6 +418,8 @@
 			<key>INIntentParameters</key>
 			<array>
 				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
 					<key>INIntentParameterDisplayName</key>
 					<string>Event Name</string>
 					<key>INIntentParameterDisplayNameID</key>
@@ -470,6 +464,8 @@
 					<string>String</string>
 				</dict>
 				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
 					<key>INIntentParameterDisplayName</key>
 					<string>Event Data</string>
 					<key>INIntentParameterDisplayNameID</key>
@@ -634,6 +630,8 @@
 			<key>INIntentParameters</key>
 			<array>
 				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
 					<key>INIntentParameterCustomDisambiguation</key>
 					<true/>
 					<key>INIntentParameterDisplayName</key>
@@ -652,28 +650,14 @@
 					<key>INIntentParameterPromptDialogs</key>
 					<array>
 						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
 							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>There are ${count} options matching ‘${cameraID}’.</string>
+							<string>Which camera?</string>
 							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>N4REJz</string>
+							<string>sNFoWe</string>
 							<key>INIntentParameterPromptDialogType</key>
-							<string>DisambiguationIntroduction</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Which one?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>TRZLwT</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>DisambiguationSelection</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Just to confirm, you wanted ‘${cameraID}’?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>DKg2kH</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Confirmation</string>
+							<string>Configuration</string>
 						</dict>
 					</array>
 					<key>INIntentParameterSupportsDynamicEnumeration</key>
@@ -822,6 +806,8 @@
 			<key>INIntentParameters</key>
 			<array>
 				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
 					<key>INIntentParameterDisplayName</key>
 					<string>Template</string>
 					<key>INIntentParameterDisplayNameID</key>
@@ -965,6 +951,8 @@
 			<string>Performs an action defined in the app</string>
 			<key>INIntentDescriptionID</key>
 			<string>tycImk</string>
+			<key>INIntentEligibleForWidgets</key>
+			<true/>
 			<key>INIntentKeyParameter</key>
 			<string>action</string>
 			<key>INIntentLastParameterTag</key>
@@ -1006,6 +994,8 @@
 			<key>INIntentParameters</key>
 			<array>
 				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
 					<key>INIntentParameterCustomDisambiguation</key>
 					<true/>
 					<key>INIntentParameterDisplayName</key>
@@ -1039,14 +1029,6 @@
 							<string>DisambiguationIntroduction</string>
 						</dict>
 						<dict>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Which one?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>AnaTY4</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>DisambiguationSelection</string>
-						</dict>
-						<dict>
 							<key>INIntentParameterPromptDialogCustom</key>
 							<true/>
 							<key>INIntentParameterPromptDialogFormatString</key>
@@ -1055,6 +1037,16 @@
 							<string>jtqxOg</string>
 							<key>INIntentParameterPromptDialogType</key>
 							<string>Confirmation</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Which action?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>flUgtx</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Configuration</string>
 						</dict>
 					</array>
 					<key>INIntentParameterSupportsDynamicEnumeration</key>

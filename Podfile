@@ -51,7 +51,7 @@ target 'HomeAssistant' do
     pod 'ColorPickerRow', :git => 'https://github.com/EurekaCommunity/ColorPickerRow', :branch => 'master'
     pod 'CPDAcknowledgements', :git => 'https://github.com/CocoaPods/CPDAcknowledgements', :branch => 'master'
     pod 'Firebase/Messaging'
-    pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'master'
+    pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'xcode12'
     pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
     pod 'MaterialComponents/Buttons'
@@ -117,6 +117,7 @@ post_install do |installer|
         target.build_configurations.each do |config|
             config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
+            config.build_settings['EXCLUDED_ARCHS[sdk=watchsimulator*]'] = 'x86_64 arm64'
         end
     end
 end

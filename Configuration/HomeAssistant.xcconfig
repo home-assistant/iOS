@@ -1,11 +1,11 @@
-
 DEVELOPMENT_TEAM = QMQYCKL255
 BUNDLE_ID_PREFIX = io.robbie
 
-CODE_SIGN_STYLE = Manual
-PROVISIONING_PROFILE_SPECIFIER = ${PROVISIONING_PROFILE_SPECIFIER_PREFIX} ${PRODUCT_BUNDLE_IDENTIFIER}
-
-ENABLE_CRITICAL_ALERTS = 0
+// watchOS simulator incompatibility with xcode 12 betas and our dependencies
+EXCLUDED_ARCHS[sdk=watchsimulator*] = x86_64 arm64
 
 // Create this file to override configuration. It's ignored by git
 #include? "HomeAssistant.overrides.xcconfig"
+
+// set after overrides in case the team is changed by them - this is customized in e.g. the Release xcconfig
+ENABLE_CRITICAL_ALERTS = $(ENABLE_CRITICAL_ALERTS_$(DEVELOPMENT_TEAM))
