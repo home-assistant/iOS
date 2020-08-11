@@ -93,4 +93,16 @@ public extension PerformActionIntent {
         __setImage(image, forParameterNamed: "action")
         #endif
     }
+
+    var actions: (intentAction: IntentAction, actionModel: Action)? {
+        guard let performAction = action, let identifier = performAction.identifier else {
+            return nil
+        }
+
+        guard let result = Current.realm().object(ofType: Action.self, forPrimaryKey: identifier) else {
+            return nil
+        }
+
+        return (.init(identifier: result.ID, display: result.Name), result)
+    }
 }

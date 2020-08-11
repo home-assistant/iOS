@@ -4,23 +4,11 @@ import PromiseKit
 import Intents
 
 class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
-    private func action(from intent: PerformActionIntent) -> (IntentAction, Action)? {
-        guard let performAction = intent.action, let identifier = performAction.identifier else {
-            return nil
-        }
-
-        guard let result = Current.realm().object(ofType: Action.self, forPrimaryKey: identifier) else {
-            return nil
-        }
-
-        return (.init(identifier: result.ID, display: result.Name), result)
-    }
-
     func handle(
         intent: PerformActionIntent,
         completion: @escaping (PerformActionIntentResponse) -> Void
     ) {
-        guard let result = action(from: intent) else {
+        guard let result = intent.actions else {
             completion(.init(code: .failure, userActivity: nil))
             return
         }
@@ -31,9 +19,9 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         }
 
         firstly {
-            api.HandleAction(actionID: result.1.ID, source: .SiriShortcut)
+            api.HandleAction(actionID: result.actionModel.ID, source: .SiriShortcut)
         }.done {
-            completion(.success(action: result.0))
+            completion(.success(action: result.intentAction))
         }.catch { error in
             completion(.failure(error: error.localizedDescription))
         }
@@ -43,8 +31,8 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         for intent: PerformActionIntent, with completion:
         @escaping (IntentActionResolutionResult) -> Void
     ) {
-        if let result = action(from: intent) {
-            completion(.success(with: result.0))
+        if let result = intent.actions {
+            completion(.success(with: result.intentAction))
         } else {
             completion(.needsValue())
         }
