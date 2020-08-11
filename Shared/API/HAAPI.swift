@@ -633,9 +633,10 @@ public class HomeAssistantAPI {
     public class func tagEvent(
         tagPath: String
     ) -> (eventType: String, eventData: [String: String]) {
-        var eventData = sharedEventDeviceInfo
-        eventData["tag"] = tagPath
-        return (eventType: "tag.read", eventData: eventData)
+        var eventData = [String: String]()
+        eventData["tag_id"] = tagPath
+        eventData["device_id"] = Current.settingsStore.integrationDeviceID
+        return (eventType: "tag_scanned", eventData: eventData)
     }
 
     public func HandleAction(actionID: String, source: ActionSource) -> Promise<Void> {
