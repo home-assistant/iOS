@@ -273,6 +273,17 @@ internal enum L10n {
     }
   }
 
+  internal enum Database {
+    internal enum Problem {
+      /// Delete Database & Quit App
+      internal static let delete = L10n.tr("Localizable", "database.problem.delete")
+      /// Quit App
+      internal static let quit = L10n.tr("Localizable", "database.problem.quit")
+      /// Database Error
+      internal static let title = L10n.tr("Localizable", "database.problem.title")
+    }
+  }
+
   internal enum Device {
     /// Device
     internal static let genericName = L10n.tr("Localizable", "device.generic_name")
