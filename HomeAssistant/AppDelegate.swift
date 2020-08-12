@@ -81,6 +81,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         self.setupSentry()
         self.setupFirebase()
+        self.setupModels()
 
         self.configureLokalise()
 
@@ -118,7 +119,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.finished_launching", eventData: [:])
         connectAPI(reason: .cold)
 
-        setupModels()
         setup14Workaround()
 
         return true
@@ -975,6 +975,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupModels() {
+        // Force Realm migration to happen now
+        _ = Realm.live()
+
         Current.modelManager.cleanup().cauterize()
         Action.setupObserver()
         NotificationCategory.setupObserver()
