@@ -182,6 +182,9 @@ public class ConnectionInfo: Codable {
                         self.activeURLType = .remoteUI
                     } else if self.externalURL != nil {
                         self.activeURLType = .external
+                    } else {
+                        // no change - we don't have one to switch to
+                        return url
                     }
                     return self.activeURL
                 }
