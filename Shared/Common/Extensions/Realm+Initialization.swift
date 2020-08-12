@@ -73,9 +73,10 @@ extension Realm {
         // 7  - 2020-07-20 v2020.5 (added RLMScene)
         // 9  - 2020-07-23 v2020.5 (primary key removal on NotificationAction)
         // 10 - 2020-07-31 v2020.5 (added isServerControlled to Action)
+        // 11 - 2020-08-12 v2020.5.2 (cleaning up duplicate NotificationCategory identifiers)
         let config = Realm.Configuration(
             fileURL: storeURL,
-            schemaVersion: 10,
+            schemaVersion: 11,
             migrationBlock: { migration, oldVersion in
                 if oldVersion < 9 {
                     migration.enumerateObjects(ofType: NotificationAction.className()) { _, newObject in
@@ -86,6 +87,21 @@ extension Realm {
                 if oldVersion < 10 {
                     migration.enumerateObjects(ofType: Action.className()) { _, newObject in
                         newObject?["isServerControlled"] = false
+                    }
+                }
+
+                if oldVersion < 11 {
+                    // Identifier is a primary key, and Realm is _suppose_ to prevent this from being possible
+                    // but it seems like some time in the past, it allowed the same identifier to be inserted >1 time
+                    var discoveredIdentifiers = Set<String>()
+                    migration.enumerateObjects(ofType: NotificationCategory.className()) { _, newObject in
+                        if let newObject = newObject, let identifier = newObject["Identifier"] as? String {
+                            if discoveredIdentifiers.contains(identifier) {
+                                migration.delete(newObject)
+                            } else {
+                                discoveredIdentifiers.insert(identifier)
+                            }
+                        }
                     }
                 }
             },
