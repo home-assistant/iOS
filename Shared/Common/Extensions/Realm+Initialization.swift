@@ -172,6 +172,7 @@ extension Realm {
             alert.addAction(UIAlertAction(title: L10n.Database.Problem.delete, style: .destructive, handler: { _ in
                 // swiftlint:disable:next force_try
                 try! FileManager.default.removeItem(at: storeDirectoryURL)
+                exit(1)
             }))
             alert.addAction(UIAlertAction(title: L10n.Database.Problem.quit, style: .cancel, handler: { _ in
                 exit(1)
