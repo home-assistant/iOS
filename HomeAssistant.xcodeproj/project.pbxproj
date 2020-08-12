@@ -24,6 +24,7 @@
 		110FB4532499DC28000865B4 /* NotificationErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */; };
 		1110836824AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */; };
 		1110836924AFEFA60027A67A /* Promise+WebhookJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */; };
+		1116D2B424E387FF00DD763A /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1116D2B324E387FF00DD763A /* CoreNFC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		111858D524CB5D4700B8CDDC /* PerformAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111858D324CB5B8900B8CDDC /* PerformAction.swift */; };
 		111858D624CB620500B8CDDC /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (codegen, ); }; };
 		111858D724CB620600B8CDDC /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (codegen, ); }; };
@@ -757,6 +758,7 @@
 		110FB4512499DB3A000865B4 /* map_notification.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = map_notification.apns; sourceTree = "<group>"; };
 		110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationErrorViewController.swift; sourceTree = "<group>"; };
 		1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.swift"; sourceTree = "<group>"; };
+		1116D2B324E387FF00DD763A /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		111858D324CB5B8900B8CDDC /* PerformAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
 		113D04E124D76CD3003CE877 /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
 		113D04E324D76CDB003CE877 /* NFCWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCWriter.swift; sourceTree = "<group>"; };
@@ -1423,6 +1425,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1116D2B424E387FF00DD763A /* CoreNFC.framework in Frameworks */,
 				D0C88460211ED11A00CCB501 /* SafariServices.framework in Frameworks */,
 				B6393F881CB2561100503916 /* MapKit.framework in Frameworks */,
 				7A06D3D7A5B4746FE6F5BFA6 /* Pods_HomeAssistant.framework in Frameworks */,
@@ -1646,6 +1649,7 @@
 		29278BB24639BA945D3D86B4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1116D2B324E387FF00DD763A /* CoreNFC.framework */,
 				D0EEF300214D8EAB00D1D360 /* CoreLocation.framework */,
 				D0C8845F211ED11900CCB501 /* SafariServices.framework */,
 				B6393F871CB2561100503916 /* MapKit.framework */,
