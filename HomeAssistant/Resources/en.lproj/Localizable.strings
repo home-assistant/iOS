@@ -859,3 +859,6 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.actions.actions_synced.footer_no_actions" = "Actions may be also defined in the .yaml configuration.";
 "settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
 "nfc.generic_tag_read" = "Tag Read";
+"database.problem.title" = "Database Error";
+"database.problem.delete" = "Delete Database & Quit App";
+"database.problem.quit" = "Quit App";
