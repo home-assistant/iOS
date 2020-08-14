@@ -150,11 +150,12 @@ public enum PermissionType: Int {
     }
 
     var isAuthorized: Bool {
-        return self.status == .authorized
-    }
-
-    var isDenied: Bool {
-        return self.status != .authorized
+        switch status {
+        case .authorized, .authorizedWhenInUse:
+            return true
+        case .denied, .notDetermined, .restricted, .unknown:
+            return false
+        }
     }
 
     private func fetchNotificationsAuthorizationStatus() -> UNAuthorizationStatus? {
@@ -195,7 +196,7 @@ public enum PermissionType: Int {
 
             PermissionsLocationDelegate.shared!.requestPermission { (status) in
                 DispatchQueue.main.async {
-                    completionHandler(status == .authorized, status)
+                    completionHandler(status == .authorized || status == .authorizedWhenInUse, status)
                     PermissionsLocationDelegate.shared = nil
                 }
             }
