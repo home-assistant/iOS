@@ -47,6 +47,7 @@ class ModelManagerTests: XCTestCase {
 
         Current.realm = Realm.live
         TestStoreModel1.lastDidUpdate = []
+        TestStoreModel1.lastWillDeleteIds = []
     }
 
     func testObserve() throws {
@@ -311,6 +312,12 @@ class ModelManagerTests: XCTestCase {
             XCTAssertEqual(models[2].value, "start_val1-2")
             XCTAssertEqual(models[3].identifier, "start_id2")
             XCTAssertEqual(models[3].value, "start_val2-2")
+
+            // deleted
+            XCTAssertEqual(Set(TestStoreModel1.lastWillDeleteIds), Set([
+                "start_id3",
+                "start_id4",
+            ]))
         }
     }
 
@@ -411,8 +418,12 @@ class TestDeleteModel3: Object {
 
 final class TestStoreModel1: Object, UpdatableModel {
     static var lastDidUpdate: [TestStoreModel1] = []
-    static func didUpdate(objects: [TestStoreModel1]) {
+    static var lastWillDeleteIds: [String] = []
+    static func didUpdate(objects: [TestStoreModel1], realm: Realm) {
         lastDidUpdate = objects
+    }
+    static func willDelete(objects: [TestStoreModel1], realm: Realm) {
+        lastWillDeleteIds = objects.compactMap(\.identifier)
     }
 
     @objc dynamic var identifier: String?
@@ -443,7 +454,11 @@ struct TestStoreSource1: UpdatableModelSource {
 }
 
 final class TestStoreModel2: Object, UpdatableModel {
-    static func didUpdate(objects: [TestStoreModel2]) {
+    static func didUpdate(objects: [TestStoreModel2], realm: Realm) {
+
+    }
+
+    static func willDelete(objects: [TestStoreModel2], realm: Realm) {
 
     }
 
@@ -469,7 +484,11 @@ struct TestStoreSource2: UpdatableModelSource {
 }
 
 final class TestStoreModel3: Object, UpdatableModel {
-    static func didUpdate(objects: [TestStoreModel3]) {
+    static func didUpdate(objects: [TestStoreModel3], realm: Realm) {
+
+    }
+
+    static func willDelete(objects: [TestStoreModel3], realm: Realm) {
 
     }
 

@@ -63,7 +63,7 @@ public final class RLMScene: Object, UpdatableModel {
         #keyPath(identifier)
     }
 
-    static func didUpdate(objects: [RLMScene]) {
+    static func didUpdate(objects: [RLMScene], realm: Realm) {
         let sorted = objects.sorted { lhs, rhs in
             let lhsText = lhs.scene.FriendlyName ?? lhs.scene.ID
             let rhsText = rhs.scene.FriendlyName ?? rhs.scene.ID
@@ -73,6 +73,13 @@ public final class RLMScene: Object, UpdatableModel {
         for (idx, object) in sorted.enumerated() {
             object.position = Action.PositionOffset.scene.rawValue + idx
         }
+    }
+
+    static func willDelete(objects: [RLMScene], realm: Realm) {
+        // also delete our paired actions if they exist
+        let actions = realm.objects(Action.self).filter("ID in %@", objects.map(\.identifier))
+        Current.Log.info("deleting actions \(Array(actions.map(\.ID)))")
+        realm.delete(actions)
     }
 
     func update(with object: Scene, using realm: Realm) {
