@@ -22,8 +22,6 @@ internal enum StoryboardScene {
 
     internal static let initialScene = InitialSceneType<HomeAssistant.OnboardingNavigationViewController>(storyboard: Onboarding.self)
 
-    internal static let chooseDiscoveredInstance = SceneType<HomeAssistant.ChooseDiscoveredInstanceViewController>(storyboard: Onboarding.self, identifier: "chooseDiscoveredInstance")
-
     internal static let discoverInstances = SceneType<HomeAssistant.DiscoverInstancesViewController>(storyboard: Onboarding.self, identifier: "discoverInstances")
 
     internal static let manualSetup = SceneType<HomeAssistant.ManualSetupViewController>(storyboard: Onboarding.self, identifier: "manualSetup")

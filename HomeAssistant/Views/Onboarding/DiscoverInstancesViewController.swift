@@ -12,13 +12,12 @@ import Lottie
 import MaterialComponents
 
 class DiscoverInstancesViewController: UIViewController {
+    private let discovery = Bonjour()
+    private var discoveredInstances: [DiscoveredHomeAssistant] = []
 
-    let discovery = Bonjour()
-
-    @IBOutlet weak var animationView: AnimationView!
-    @IBOutlet weak var manualButton: MDCButton!
-
-    var discoveredInstances: [DiscoveredHomeAssistant] = []
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var animationView: AnimationView!
+    @IBOutlet private weak var manualButton: MDCButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +27,7 @@ class DiscoverInstancesViewController: UIViewController {
         }
 
         if Current.appConfiguration == .Debug {
-            discoveredInstances = [
+            for (idx, instance) in [
                 DiscoveredHomeAssistant(baseURL: URL(string: "https://jigsaw.w3.org/HTTP/Basic/api/discovery_info")!,
                                         name: "Basic Auth", version: "0.92.0"),
                 DiscoveredHomeAssistant(baseURL: URL(string: "https://self-signed.badssl.com/")!,
@@ -37,8 +36,17 @@ class DiscoverInstancesViewController: UIViewController {
                                         version: "0.92.0"),
                 DiscoveredHomeAssistant(baseURL: URL(string: "http://http.badssl.com/")!, name: "HTTP",
                                         version: "0.92.0")
-            ]
+            ].enumerated() {
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1500 * idx)) { [weak self] in
+                    self?.add(discoveredInstance: instance)
+                }
+            }
         }
+
+        animationView.superview?.bringSubviewToFront(animationView)
+
+        // hides the empty separators
+        tableView.tableFooterView = UIView()
 
         self.animationView.contentMode = .scaleAspectFill
         self.animationView.backgroundBehavior = .pauseAndRestore
@@ -53,15 +61,6 @@ class DiscoverInstancesViewController: UIViewController {
 
             self.discovery.startDiscovery()
             self.discovery.startPublish()
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-                if self.discovery.browserIsRunning && self.discovery.publishIsRunning {
-                    self.perform(segue: StoryboardSegue.Onboarding.chooseDiscoveredInstance, sender: nil)
-                }
-
-                self.discovery.stopDiscovery()
-                self.discovery.stopPublish()
-            })
         }
 
         let center = NotificationCenter.default
@@ -84,6 +83,32 @@ class DiscoverInstancesViewController: UIViewController {
         self.discovery.stopPublish()
     }
 
+    private func add(discoveredInstance: DiscoveredHomeAssistant) {
+        guard discoveredInstances.contains(where: {
+            $0.BaseURL == discoveredInstance.BaseURL
+        }) == false else {
+            // already discovered
+            return
+        }
+
+        discoveredInstances.append(discoveredInstance)
+
+        if discoveredInstances.count == 3 {
+            UIView.transition(.promise, with: animationView, duration: 1.0) { [weak animationView] in
+                animationView?.alpha = 0
+            }.done { [weak animationView] _ in
+                animationView?.stop()
+            }
+        }
+
+        tableView.performBatchUpdates({
+            tableView.insertRows(
+                at: [IndexPath(row: discoveredInstances.count - 1, section: 0)],
+                with: .automatic
+            )
+        }, completion: nil)
+    }
+
     @objc func HomeAssistantDiscovered(_ notification: Notification) {
         if let userInfo = notification.userInfo as? [String: Any] {
             guard let discoveryInfo = DiscoveredHomeAssistant(JSON: userInfo) else {
@@ -91,7 +116,7 @@ class DiscoverInstancesViewController: UIViewController {
                 return
             }
 
-            self.discoveredInstances.append(discoveryInfo)
+            add(discoveredInstance: discoveryInfo)
         }
     }
 
@@ -103,11 +128,35 @@ class DiscoverInstancesViewController: UIViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let segueType = StoryboardSegue.Onboarding(segue) else { return }
-        if segueType == .chooseDiscoveredInstance,
-            let vc = segue.destination as? ChooseDiscoveredInstanceViewController {
-            vc.instances = self.discoveredInstances.sorted(by: { (a, b) -> Bool in
-                return a.LocationName < b.LocationName
-            })
+
+        if segueType == .setupDiscoveredInstance,
+           let sender = sender as? UITableViewCell,
+           let vc = segue.destination as? AuthenticationViewController,
+           let indexPath = tableView.indexPath(for: sender) {
+            vc.instance = discoveredInstances[indexPath.row]
         }
+    }
+}
+
+extension DiscoverInstancesViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        Current.Log.verbose("Selected row at \(indexPath.row) \(discoveredInstances[indexPath.row])")
+    }
+}
+
+extension DiscoverInstancesViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return discoveredInstances.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "discoveredInstanceCell", for: indexPath)
+
+        let instance = discoveredInstances[indexPath.row]
+
+        cell.textLabel?.text = instance.LocationName
+        cell.detailTextLabel?.text = instance.BaseURL?.absoluteString
+
+        return cell
     }
 }

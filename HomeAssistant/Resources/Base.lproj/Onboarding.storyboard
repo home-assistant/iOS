@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="k1J-B5-uSb">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17147" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="k1J-B5-uSb">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17120"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -13,17 +14,17 @@
             <objects>
                 <viewController storyboardIdentifier="welcome" id="Cpw-N3-yji" customClass="WelcomeViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FZO-9W-RiW" userLabel="Welcome View">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Home Assistant Companion!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mse-YA-DiV">
-                                <rect key="frame" x="83" y="0.0" width="209" height="54.5"/>
+                                <rect key="frame" x="83.5" y="8" width="208.5" height="54.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The most advanced Home Automation app on iOS" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5td-Yc-nnx">
-                                <rect key="frame" x="50" y="54.5" width="275" height="100"/>
+                                <rect key="frame" x="50" y="62.5" width="275" height="100"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="BGn-Ud-dKC"/>
                                 </constraints>
@@ -32,7 +33,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="wD9-TR-rVF" userLabel="Animation View" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="67.5" y="203.5" width="240" height="240"/>
+                                <rect key="frame" x="67.5" y="213.5" width="240" height="240"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="240" id="gcY-WU-qo5"/>
@@ -43,7 +44,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4h-WC-wIw" customClass="MDCButton">
-                                <rect key="frame" x="154.5" y="579" width="66" height="48"/>
+                                <rect key="frame" x="154.5" y="599" width="66" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="1d3-Wv-yWY"/>
                                 </constraints>
@@ -54,7 +55,7 @@
                                 </connections>
                             </button>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="To continue with automatic setup, please connect to your home Wi-Fi network" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="djx-xj-AwF" userLabel="Wifi Disconnected">
-                                <rect key="frame" x="50" y="128" width="275" height="100"/>
+                                <rect key="frame" x="50" y="136" width="275" height="100"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="azK-p9-4gx"/>
                                 </constraints>
@@ -63,6 +64,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="Dgm-KS-yJa"/>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -78,10 +80,9 @@
                             <constraint firstItem="djx-xj-AwF" firstAttribute="leading" secondItem="5td-Yc-nnx" secondAttribute="leading" id="uli-5n-vOS"/>
                             <constraint firstItem="Dgm-KS-yJa" firstAttribute="trailing" secondItem="5td-Yc-nnx" secondAttribute="trailing" constant="50" id="w4B-oX-Tlp"/>
                             <constraint firstItem="5td-Yc-nnx" firstAttribute="top" secondItem="mse-YA-DiV" secondAttribute="bottom" id="xjd-Mr-N2j"/>
-                            <constraint firstItem="mse-YA-DiV" firstAttribute="top" secondItem="Dgm-KS-yJa" secondAttribute="top" id="yDL-8w-3OP"/>
+                            <constraint firstItem="mse-YA-DiV" firstAttribute="top" secondItem="Dgm-KS-yJa" secondAttribute="top" constant="8" id="yDL-8w-3OP"/>
                             <constraint firstItem="mse-YA-DiV" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="FZO-9W-RiW" secondAttribute="leadingMargin" id="yWr-Dc-c25"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="Dgm-KS-yJa"/>
                     </view>
                     <navigationItem key="navigationItem" id="Na6-FR-EXQ"/>
                     <connections>
@@ -101,18 +102,58 @@
             <objects>
                 <viewController storyboardIdentifier="discoverInstances" id="zQf-lI-ZmB" userLabel="Discover Instances" customClass="DiscoverInstancesViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="lXu-nc-gsX" userLabel="Discover Instances View">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="sOg-Tl-IGk">
+                                <rect key="frame" x="0.0" y="100" width="375" height="479"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="gray" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="discoveredInstanceCell" textLabel="LVW-4r-7hW" detailTextLabel="bLi-Ty-QLQ" style="IBUITableViewCellStyleSubtitle" id="WW3-6V-g8b">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="60.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WW3-6V-g8b" id="7SZ-ee-IAN">
+                                            <rect key="frame" x="0.0" y="0.0" width="348" height="60.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="My Home Assistant" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="LVW-4r-7hW">
+                                                    <rect key="frame" x="16" y="8" width="154" height="20.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </label>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="http://homeassistant.local:8123" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="bLi-Ty-QLQ">
+                                                    <rect key="frame" x="16" y="31.5" width="215" height="18"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <connections>
+                                            <segue destination="jkw-3v-pbb" kind="show" identifier="setupDiscoveredInstance" id="WUK-ZQ-cSr"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="zQf-lI-ZmB" id="jee-4i-dUB"/>
+                                    <outlet property="delegate" destination="zQf-lI-ZmB" id="0Z0-OA-n0H"/>
+                                </connections>
+                            </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vze-fN-mpk" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="67.5" y="203.5" width="240" height="240"/>
+                                <rect key="frame" x="67.5" y="213.5" width="240" height="240"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="240" id="nlE-8B-p0u"/>
                                     <constraint firstAttribute="height" constant="240" id="yGo-6N-mP6"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fqx-lo-wDB" customClass="MDCButton">
-                                <rect key="frame" x="102" y="579" width="171" height="48"/>
+                                <rect key="frame" x="102" y="599" width="171" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="RL2-4Z-fBu"/>
                                 </constraints>
@@ -134,24 +175,29 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="YYn-sj-8lm"/>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="YYn-sj-8lm" firstAttribute="bottom" secondItem="fqx-lo-wDB" secondAttribute="bottom" constant="20" id="DZy-ti-TVy"/>
-                            <constraint firstItem="Vze-fN-mpk" firstAttribute="centerY" secondItem="lXu-nc-gsX" secondAttribute="centerY" id="NpJ-ts-QT2"/>
+                            <constraint firstItem="sOg-Tl-IGk" firstAttribute="top" secondItem="4qQ-ND-WGB" secondAttribute="bottom" id="Jfo-r1-aTT"/>
+                            <constraint firstItem="sOg-Tl-IGk" firstAttribute="leading" secondItem="lXu-nc-gsX" secondAttribute="leading" id="KH9-vW-nLM"/>
+                            <constraint firstAttribute="trailing" secondItem="sOg-Tl-IGk" secondAttribute="trailing" id="M0s-aw-O38"/>
+                            <constraint firstItem="sOg-Tl-IGk" firstAttribute="bottom" secondItem="fqx-lo-wDB" secondAttribute="top" constant="-20" id="OEl-bA-ND0"/>
                             <constraint firstItem="Vze-fN-mpk" firstAttribute="centerX" secondItem="YYn-sj-8lm" secondAttribute="centerX" id="Qgu-vg-Lij"/>
                             <constraint firstItem="4qQ-ND-WGB" firstAttribute="trailing" secondItem="lXu-nc-gsX" secondAttribute="trailingMargin" id="U2v-Rt-Ysm"/>
+                            <constraint firstItem="Vze-fN-mpk" firstAttribute="centerY" secondItem="YYn-sj-8lm" secondAttribute="centerY" id="U7N-dw-Qh0"/>
                             <constraint firstItem="4qQ-ND-WGB" firstAttribute="top" secondItem="YYn-sj-8lm" secondAttribute="top" id="WFk-Ul-VpE"/>
                             <constraint firstItem="fqx-lo-wDB" firstAttribute="centerX" secondItem="YYn-sj-8lm" secondAttribute="centerX" id="XuF-rJ-OEd"/>
                             <constraint firstItem="4qQ-ND-WGB" firstAttribute="leading" secondItem="lXu-nc-gsX" secondAttribute="leadingMargin" id="Z25-5w-LXc"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="YYn-sj-8lm"/>
                     </view>
+                    <navigationItem key="navigationItem" id="Bnc-JY-f0h"/>
                     <connections>
                         <outlet property="animationView" destination="Vze-fN-mpk" id="67q-zx-NOn"/>
                         <outlet property="manualButton" destination="fqx-lo-wDB" id="1vV-p7-IkK"/>
+                        <outlet property="tableView" destination="sOg-Tl-IGk" id="Idd-VO-kBP"/>
                         <outlet property="view" destination="lXu-nc-gsX" id="1BU-Zp-9aL"/>
-                        <segue destination="aAK-PP-uhk" kind="show" identifier="chooseDiscoveredInstance" id="fgm-KO-Tdk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="thh-Bc-uAU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -163,17 +209,18 @@
             <objects>
                 <viewController storyboardIdentifier="manualSetup" id="sGi-y7-DOI" userLabel="Manual Instance Configuration Controller" customClass="ManualSetupViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="uHB-Lo-ehZ" userLabel="Manual Configuration View">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="http://homeassistant.local:8123" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xO0-K1-GJX">
-                                <rect key="frame" x="16" y="306.5" width="343" height="34"/>
-                                <color key="tintColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <rect key="frame" x="16" y="316.5" width="343" height="34"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" systemColor="systemBlueColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="URL" returnKeyType="continue" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="url"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gld-QQ-oTD" userLabel="Connect Button" customClass="MDCButton">
-                                <rect key="frame" x="153" y="370.5" width="69" height="48"/>
+                                <rect key="frame" x="153" y="380.5" width="69" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="ony-Dh-Fz1"/>
                                 </constraints>
@@ -196,6 +243,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="qpd-6g-qfw"/>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -211,8 +259,8 @@
                             <constraint firstItem="xO0-K1-GJX" firstAttribute="centerX" secondItem="qpd-6g-qfw" secondAttribute="centerX" id="si4-53-5Kn"/>
                             <constraint firstItem="7iT-bd-cdY" firstAttribute="leading" secondItem="qpd-6g-qfw" secondAttribute="leading" constant="16" id="yt7-nX-lPb"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="qpd-6g-qfw"/>
                     </view>
+                    <navigationItem key="navigationItem" id="ffO-Ip-9NQ"/>
                     <connections>
                         <outlet property="connectButton" destination="gld-QQ-oTD" id="KZc-77-YyW"/>
                         <outlet property="urlField" destination="xO0-K1-GJX" id="9pq-ib-uAd"/>
@@ -224,110 +272,12 @@
             </objects>
             <point key="canvasLocation" x="-2474.4000000000001" y="-1343.4782608695652"/>
         </scene>
-        <!--Choose Discovered Instance Controller-->
-        <scene sceneID="Ftc-mS-ShN">
-            <objects>
-                <viewController storyboardIdentifier="chooseDiscoveredInstance" id="aAK-PP-uhk" userLabel="Choose Discovered Instance Controller" customClass="ChooseDiscoveredInstanceViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="mQY-ah-0sc" userLabel="Choose Discovered Instance View">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We found 1 Home Assistant" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NJM-pS-Fuc" userLabel="Status Label">
-                                <rect key="frame" x="16" y="0.0" width="343" height="100"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="100" id="XNP-Il-c3g"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="xcD-7Q-tXz">
-                                <rect key="frame" x="16" y="110" width="343" height="427"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="discoveredInstanceCell" textLabel="SnL-y3-0HP" detailTextLabel="8JC-7Y-FvP" style="IBUITableViewCellStyleSubtitle" id="nz7-cL-3VB">
-                                        <rect key="frame" x="0.0" y="28" width="343" height="61"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nz7-cL-3VB" id="AGo-c7-RG0">
-                                            <rect key="frame" x="0.0" y="0.0" width="317" height="61"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="My Home Assistant" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="SnL-y3-0HP">
-                                                    <rect key="frame" x="15" y="9" width="154.5" height="20.5"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="http://homeassistant.local:8123" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="8JC-7Y-FvP">
-                                                    <rect key="frame" x="15" y="32.5" width="216" height="18"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </tableViewCell>
-                                </prototypes>
-                                <connections>
-                                    <outlet property="dataSource" destination="aAK-PP-uhk" id="383-gl-fET"/>
-                                    <outlet property="delegate" destination="aAK-PP-uhk" id="RxH-tt-MoR"/>
-                                </connections>
-                            </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Re7-IX-23x" userLabel="Manual Button" customClass="MDCButton">
-                                <rect key="frame" x="102" y="579" width="171" height="48"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="48" id="Wbe-aT-sLp"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
-                                <state key="normal" title="Enter Address Manually">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <connections>
-                                    <segue destination="sGi-y7-DOI" kind="show" identifier="continueManually" id="age-hj-Hrf"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="Re7-IX-23x" firstAttribute="centerX" secondItem="MrN-V0-Pgp" secondAttribute="centerX" id="3Hk-ov-X9k"/>
-                            <constraint firstItem="NJM-pS-Fuc" firstAttribute="trailing" secondItem="mQY-ah-0sc" secondAttribute="trailingMargin" id="M35-WZ-keB"/>
-                            <constraint firstItem="xcD-7Q-tXz" firstAttribute="centerX" secondItem="MrN-V0-Pgp" secondAttribute="centerX" id="O7p-ft-7p6"/>
-                            <constraint firstItem="NJM-pS-Fuc" firstAttribute="top" secondItem="MrN-V0-Pgp" secondAttribute="top" id="QMl-Na-qA9"/>
-                            <constraint firstItem="xcD-7Q-tXz" firstAttribute="centerY" secondItem="mQY-ah-0sc" secondAttribute="centerY" id="Sxp-hw-utQ"/>
-                            <constraint firstItem="NJM-pS-Fuc" firstAttribute="leading" secondItem="mQY-ah-0sc" secondAttribute="leadingMargin" id="gS7-aP-pTp"/>
-                            <constraint firstItem="xcD-7Q-tXz" firstAttribute="top" secondItem="NJM-pS-Fuc" secondAttribute="bottom" constant="10" id="ihU-fi-Xgs"/>
-                            <constraint firstItem="xcD-7Q-tXz" firstAttribute="leading" secondItem="mQY-ah-0sc" secondAttribute="leadingMargin" id="jSj-Pk-5Ps"/>
-                            <constraint firstItem="xcD-7Q-tXz" firstAttribute="trailing" secondItem="mQY-ah-0sc" secondAttribute="trailingMargin" id="rpg-lA-pKY"/>
-                            <constraint firstItem="MrN-V0-Pgp" firstAttribute="bottom" secondItem="Re7-IX-23x" secondAttribute="bottom" constant="20" id="xE9-aI-GLR"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="MrN-V0-Pgp"/>
-                    </view>
-                    <connections>
-                        <outlet property="manualButton" destination="Re7-IX-23x" id="ymw-0i-M7Q"/>
-                        <outlet property="statusLabel" destination="NJM-pS-Fuc" id="FZC-mA-1bm"/>
-                        <outlet property="tableView" destination="xcD-7Q-tXz" id="MJi-3f-v6a"/>
-                        <outlet property="view" destination="mQY-ah-0sc" id="c54-CT-8mP"/>
-                        <segue destination="jkw-3v-pbb" kind="show" identifier="setupDiscoveredInstance" id="Nmk-e0-aiM"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Ocs-Ry-1hI" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2473" y="-582"/>
-        </scene>
         <!--Connection Error View Controller-->
         <scene sceneID="B9D-Wv-cp8">
             <objects>
                 <viewController id="MOD-3L-omt" customClass="ConnectionErrorViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1MN-NN-6Ip">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Uh Oh!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CIS-8C-niN" userLabel="Title">
@@ -355,7 +305,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tqw-iY-A2S" customClass="MDCButton">
-                                <rect key="frame" x="153" y="519" width="69" height="48"/>
+                                <rect key="frame" x="153" y="539" width="69" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="n0k-es-6p0"/>
                                 </constraints>
@@ -366,7 +316,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="suf-pJ-Nle" customClass="MDCButton">
-                                <rect key="frame" x="150" y="579" width="75" height="48"/>
+                                <rect key="frame" x="150" y="599" width="75" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="jRH-LG-4f8"/>
                                 </constraints>
@@ -378,6 +328,7 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="OqO-iB-GQA"/>
                         <color key="backgroundColor" red="0.0" green="0.65683549640000005" blue="0.96857291459999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -394,8 +345,8 @@
                             <constraint firstItem="suf-pJ-Nle" firstAttribute="centerX" secondItem="OqO-iB-GQA" secondAttribute="centerX" id="wc6-h8-gS0"/>
                             <constraint firstItem="OqO-iB-GQA" firstAttribute="bottom" secondItem="suf-pJ-Nle" secondAttribute="bottom" constant="20" id="zJ0-ex-FIA"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="OqO-iB-GQA"/>
                     </view>
+                    <navigationItem key="navigationItem" id="GkN-zi-GBf"/>
                     <connections>
                         <outlet property="animationView" destination="Ge3-1c-5KC" id="dqm-oP-ONh"/>
                         <outlet property="errorLabel" destination="UKm-Ju-0Yr" id="ukr-s7-dSj"/>
@@ -412,7 +363,7 @@
             <objects>
                 <viewController id="jkw-3v-pbb" customClass="AuthenticationViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Tgk-Fz-LIY">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Authentication" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lM3-aA-jqO">
@@ -422,14 +373,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wsC-f5-jbO">
-                                <rect key="frame" x="16" y="193" width="343" height="86.5"/>
+                                <rect key="frame" x="16" y="203" width="343" height="86.5"/>
                                 <string key="text">We are now ready to connect to your Home Assistant and do the initial authentication. Tapping the Connect button below will cause a browser to open for you to log in to. </string>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f1j-Ol-pW5" customClass="MDCButton">
-                                <rect key="frame" x="156.5" y="299.5" width="62" height="48"/>
+                                <rect key="frame" x="156.5" y="309.5" width="62" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="FXM-qV-KcU"/>
                                 </constraints>
@@ -440,7 +391,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RSW-l5-eRA" customClass="MDCButton">
-                                <rect key="frame" x="150" y="579" width="75" height="48"/>
+                                <rect key="frame" x="150" y="599" width="75" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="UDb-3K-qkT"/>
                                 </constraints>
@@ -451,6 +402,7 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="rqB-n3-MmV"/>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -466,8 +418,8 @@
                             <constraint firstItem="wsC-f5-jbO" firstAttribute="leading" secondItem="rqB-n3-MmV" secondAttribute="leading" constant="16" id="t7s-xE-sTN"/>
                             <constraint firstItem="rqB-n3-MmV" firstAttribute="trailing" secondItem="wsC-f5-jbO" secondAttribute="trailing" constant="16" id="utY-40-dLq"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="rqB-n3-MmV"/>
                     </view>
+                    <navigationItem key="navigationItem" id="zp4-Uj-4fr"/>
                     <connections>
                         <outlet property="connectButton" destination="f1j-Ol-pW5" id="VLr-HQ-06q"/>
                         <outlet property="goBackButton" destination="RSW-l5-eRA" id="dFO-Zv-18Q"/>
@@ -485,7 +437,7 @@
             <objects>
                 <viewController id="KCa-bc-FXT" userLabel="Connect Instance View Controller" customClass="ConnectInstanceViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="pvD-0u-p2i" userLabel="Connect Instance View">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting to My Home Assistant" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kj7-hM-8gN">
@@ -629,6 +581,7 @@
                                 </subviews>
                             </stackView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="0MA-9n-Q0c"/>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -641,8 +594,8 @@
                             <constraint firstItem="eaY-cI-FSy" firstAttribute="leading" secondItem="pvD-0u-p2i" secondAttribute="leadingMargin" id="mvW-HI-oNQ"/>
                             <constraint firstItem="eaY-cI-FSy" firstAttribute="top" secondItem="bTD-eO-lC0" secondAttribute="bottom" id="qCf-kO-EAQ"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="0MA-9n-Q0c"/>
                     </view>
+                    <navigationItem key="navigationItem" id="qsV-Fb-l3T"/>
                     <connections>
                         <outlet property="authenticated" destination="xaH-oE-knW" id="y7X-hK-zNI"/>
                         <outlet property="cloudStatus" destination="gw7-lF-3Zc" id="X7q-zu-DVv"/>
@@ -663,7 +616,7 @@
             <objects>
                 <viewController storyboardIdentifier="permissions" id="XKw-m3-Nah" customClass="PermissionsViewController" customModule="HomeAssistant" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Lle-dh-SMb">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="For the best experience while using Home Assistant Companion, please grant the following permissions:" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TEX-zW-Byk" userLabel="Title">
@@ -676,7 +629,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jTp-eG-rL8">
-                                <rect key="frame" x="20" y="120" width="335" height="467"/>
+                                <rect key="frame" x="20" y="120" width="335" height="487"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="YlM-SI-sh2">
                                         <rect key="frame" x="0.0" y="0.0" width="335" height="360"/>
@@ -729,7 +682,7 @@
                                 </constraints>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jrL-9x-fFX" userLabel="Continue Button" customClass="MDCButton">
-                                <rect key="frame" x="154.5" y="587" width="66" height="48"/>
+                                <rect key="frame" x="154.5" y="607" width="66" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="P7h-vB-eVY"/>
                                 </constraints>
@@ -740,6 +693,7 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="a9V-In-2AW"/>
                         <color key="backgroundColor" red="0.01176470588" green="0.66274509800000003" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -753,8 +707,8 @@
                             <constraint firstItem="jTp-eG-rL8" firstAttribute="leading" secondItem="a9V-In-2AW" secondAttribute="leading" constant="20" id="dfa-cF-oWS"/>
                             <constraint firstItem="jTp-eG-rL8" firstAttribute="bottom" secondItem="jrL-9x-fFX" secondAttribute="top" id="rlR-mp-oVb"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="a9V-In-2AW"/>
                     </view>
+                    <navigationItem key="navigationItem" id="JEo-gj-M70"/>
                     <connections>
                         <outlet property="continueButton" destination="jrL-9x-fFX" id="0JI-v4-BDo"/>
                         <outlet property="locationPermissionView" destination="tox-sk-7fZ" id="2uD-iO-QNd"/>
@@ -784,10 +738,27 @@
             <point key="canvasLocation" x="-4386.3999999999996" y="-1343.4782608695652"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="Buq-eK-7U7"/>
+        <designable name="Ge3-1c-5KC"/>
+        <designable name="N1e-YD-nWs"/>
+        <designable name="Vze-fN-mpk"/>
+        <designable name="XO8-eU-wSO"/>
+        <designable name="bTD-eO-lC0"/>
+        <designable name="d6V-o8-w1L"/>
+        <designable name="gw7-lF-3Zc"/>
+        <designable name="wD9-TR-rVF"/>
+        <designable name="xaH-oE-knW"/>
+    </designables>
     <inferredMetricsTieBreakers>
         <segue reference="KPp-1J-npF"/>
-        <segue reference="age-hj-Hrf"/>
-        <segue reference="Fz4-Qa-34b"/>
+        <segue reference="Ywb-4q-gPS"/>
+        <segue reference="ZAG-P6-gFU"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+    <resources>
+        <systemColor name="systemBlueColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>

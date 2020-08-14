@@ -425,7 +425,6 @@
 		B661FB7C226C199200E541DD /* PermissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FB7B226C199200E541DD /* PermissionsViewController.swift */; };
 		B661FC7E226C87BB00E541DD /* home.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC7D226C87BB00E541DD /* home.json */; };
 		B661FC88226D478300E541DD /* DiscoverInstancesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */; };
-		B661FC8A226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC89226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift */; };
 		B661FC8D226D5A0700E541DD /* ConnectInstanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */; };
 		B661FC8F226D606600E541DD /* 5401-loading-19-satellite-dish.json in Resources */ = {isa = PBXBuildFile; fileRef = B661FC8E226D606600E541DD /* 5401-loading-19-satellite-dish.json */; };
 		B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66C58A7215086F0004AB261 /* IntentHandler.swift */; };
@@ -1255,7 +1254,6 @@
 		B661FB7B226C199200E541DD /* PermissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsViewController.swift; sourceTree = "<group>"; };
 		B661FC7D226C87BB00E541DD /* home.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = home.json; sourceTree = "<group>"; };
 		B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverInstancesViewController.swift; sourceTree = "<group>"; };
-		B661FC89226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseDiscoveredInstanceViewController.swift; sourceTree = "<group>"; };
 		B661FC8C226D5A0700E541DD /* ConnectInstanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectInstanceViewController.swift; sourceTree = "<group>"; };
 		B661FC8E226D606600E541DD /* 5401-loading-19-satellite-dish.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "5401-loading-19-satellite-dish.json"; sourceTree = "<group>"; };
 		B66C58A5215086F0004AB261 /* SiriIntents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SiriIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2097,7 +2095,6 @@
 				B661FB73226C110A00E541DD /* WelcomeViewController.swift */,
 				B661FC87226D478300E541DD /* DiscoverInstancesViewController.swift */,
 				B661FB79226C197900E541DD /* ManualSetupViewController.swift */,
-				B661FC89226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift */,
 				B605C892226EC25800EF46DD /* AuthenticationViewController.swift */,
 				B661FB7B226C199200E541DD /* PermissionsViewController.swift */,
 				B60221F7226D9AEE00E8DBFE /* PermissionButton.swift */,
@@ -3992,7 +3989,6 @@
 				1101568324D770B2009424C9 /* iOSTagManager.swift in Sources */,
 				11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */,
 				B661FB6F226BCCAD00E541DD /* ConnectionSettingsViewController.swift in Sources */,
-				B661FC8A226D479600E541DD /* ChooseDiscoveredInstanceViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
