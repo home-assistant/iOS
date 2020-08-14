@@ -95,10 +95,14 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
         isServerControlled >>> map["isServerControlled"]
     }
 
-    static func didUpdate(objects: [Action]) {
+    static func didUpdate(objects: [Action], realm: Realm) {
         for (idx, object) in objects.enumerated() {
             object.Position = PositionOffset.synced.rawValue + idx
         }
+    }
+
+    static func willDelete(objects: [Action], realm: Realm) {
+
     }
 
     static var updateEligiblePredicate: NSPredicate {

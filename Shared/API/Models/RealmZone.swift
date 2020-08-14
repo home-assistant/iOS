@@ -36,7 +36,11 @@ public final class RLMZone: Object, UpdatableModel {
         ID == "zone.home"
     }
 
-    static func didUpdate(objects: [RLMZone]) {
+    static func didUpdate(objects: [RLMZone], realm: Realm) {
+
+    }
+
+    static func willDelete(objects: [RLMZone], realm: Realm) {
 
     }
 

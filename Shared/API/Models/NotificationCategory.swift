@@ -104,7 +104,11 @@ final public class NotificationCategory: Object, UpdatableModel {
         """
     }
 
-    static func didUpdate(objects: [NotificationCategory]) {
+    static func didUpdate(objects: [NotificationCategory], realm: Realm) {
+
+    }
+
+    static func willDelete(objects: [NotificationCategory], realm: Realm) {
 
     }
 

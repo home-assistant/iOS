@@ -183,8 +183,9 @@ public final class ModelManager {
             }
 
             realm.add(updatedModels, update: .all)
+            UM.didUpdate(objects: updatedModels, realm: realm)
+            UM.willDelete(objects: Array(deleteObjects), realm: realm)
             realm.delete(deleteObjects)
-            UM.didUpdate(objects: updatedModels)
         }
     }
 }

@@ -3,7 +3,10 @@ import RealmSwift
 
 protocol UpdatableModel {
     associatedtype Source: UpdatableModelSource
-    static func didUpdate(objects: [Self])
+
+    static func didUpdate(objects: [Self], realm: Realm)
+    static func willDelete(objects: [Self], realm: Realm)
+
     static func primaryKey() -> String? // from realm, we use
     static var updateEligiblePredicate: NSPredicate { get }
     func update(with object: Source, using realm: Realm)

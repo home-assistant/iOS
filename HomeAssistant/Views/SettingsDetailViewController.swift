@@ -570,6 +570,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         return [switchRow, configure]
     }
 
+    // swiftlint:disable:next function_body_length
     func getActionRow(_ inputAction: Action?) -> ButtonRowWithPresent<ActionConfigurator> {
         var identifier = UUID().uuidString
         var title = L10n.ActionsConfigurator.title
@@ -584,7 +585,10 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
             $0.tag = identifier
             $0.title = title
             $0.cellStyle = .subtitle
-            $0.displayValueFor = { _ in action?.Text ?? L10n.ActionsConfigurator.Rows.Text.title }
+            $0.displayValueFor = { _ in
+                guard action == nil || action?.isInvalidated == false else { return nil }
+                return action?.Text ?? L10n.ActionsConfigurator.Rows.Text.title
+            }
             $0.cellSetup { cell, _ in
                 if #available(iOS 13, *) {
                     cell.detailTextLabel?.textColor = .secondaryLabel
@@ -593,6 +597,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 }
             }
             $0.cellUpdate { cell, _ in
+                guard action == nil || action?.isInvalidated == false else { return }
                 cell.imageView?.image = MaterialDesignIcons(named: action?.IconName ?? "")
                     .image(ofSize: Self.iconSize, color: .black)
                     .withRenderingMode(.alwaysTemplate)
