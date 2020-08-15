@@ -18,6 +18,10 @@
 		1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F82324A25A41002590F2 /* SensorContainer.test.swift */; };
+		110E694024E770DA004AA96D /* WidgetActionsEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E693F24E770DA004AA96D /* WidgetActionsEntry.swift */; };
+		110E694224E7710E004AA96D /* WidgetActionsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694124E7710E004AA96D /* WidgetActionsContainerView.swift */; };
+		110E694424E77125004AA96D /* WidgetActionsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694324E77125004AA96D /* WidgetActionsProvider.swift */; };
+		110E694624E771AB004AA96D /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E694524E771AB004AA96D /* Color+Hex.swift */; };
 		110FB44C2499C1A3000865B4 /* CameraStreamHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44B2499C1A3000865B4 /* CameraStreamHandler.swift */; };
 		110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44D2499C1CF000865B4 /* CameraStreamHLSViewController.swift */; };
 		110FB4502499CE34000865B4 /* CameraStreamMJPEGViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */; };
@@ -46,7 +50,7 @@
 		1171507624DFCDEE0065E874 /* WidgetsExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1171506924DFCDE60065E874 /* WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1171507B24DFCE0D0065E874 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		1171507C24DFCE0D0065E874 /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1171508124DFCEC50065E874 /* PerformActionWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1171508024DFCEC50065E874 /* PerformActionWidget.swift */; };
+		1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1171508024DFCEC50065E874 /* WidgetActions.swift */; };
 		1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */; };
 		117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */; };
 		117D8A0A24A9381F00580913 /* UIColor+CSSRGB.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */; };
@@ -119,6 +123,7 @@
 		11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */; };
+		11BD8BBD24E76BAD004B9A54 /* WidgetActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */; };
 		11C4627F24B04CB800031902 /* Promise+RetryNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */; };
 		11C4628024B04CB800031902 /* Promise+RetryNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */; };
 		11C4628224B053A800031902 /* WebhookResponseUpdateSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C4628124B053A800031902 /* WebhookResponseUpdateSensors.swift */; };
@@ -789,6 +794,10 @@
 		1101568624D7712F009424C9 /* TagManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagManagerProtocol.swift; sourceTree = "<group>"; };
 		1109F81E24A1C011002590F2 /* SensorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorProvider.swift; sourceTree = "<group>"; };
 		1109F82324A25A41002590F2 /* SensorContainer.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorContainer.test.swift; sourceTree = "<group>"; };
+		110E693F24E770DA004AA96D /* WidgetActionsEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsEntry.swift; sourceTree = "<group>"; };
+		110E694124E7710E004AA96D /* WidgetActionsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsContainerView.swift; sourceTree = "<group>"; };
+		110E694324E77125004AA96D /* WidgetActionsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActionsProvider.swift; sourceTree = "<group>"; };
+		110E694524E771AB004AA96D /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		110FB44B2499C1A3000865B4 /* CameraStreamHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHandler.swift; sourceTree = "<group>"; };
 		110FB44D2499C1CF000865B4 /* CameraStreamHLSViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamHLSViewController.swift; sourceTree = "<group>"; };
 		110FB44F2499CE34000865B4 /* CameraStreamMJPEGViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStreamMJPEGViewController.swift; sourceTree = "<group>"; };
@@ -812,7 +821,7 @@
 		1171506F24DFCDE60065E874 /* Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Widgets.swift; sourceTree = "<group>"; };
 		1171507124DFCDEE0065E874 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1171507324DFCDEE0065E874 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1171508024DFCEC50065E874 /* PerformActionWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformActionWidget.swift; sourceTree = "<group>"; };
+		1171508024DFCEC50065E874 /* WidgetActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActions.swift; sourceTree = "<group>"; };
 		1171508224DFCF810065E874 /* WidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetsExtension.entitlements; sourceTree = "<group>"; };
 		1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionURLViewController.swift; sourceTree = "<group>"; };
 		117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.swift"; sourceTree = "<group>"; };
@@ -872,6 +881,7 @@
 		11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceShortcutRow.swift; sourceTree = "<group>"; };
 		11B7FD732493225200E60ED9 /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
 		11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
+		11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActions.swift; sourceTree = "<group>"; };
 		11C4627E24B04CB800031902 /* Promise+RetryNetworking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+RetryNetworking.swift"; sourceTree = "<group>"; };
 		11C4628124B053A800031902 /* WebhookResponseUpdateSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookResponseUpdateSensors.swift; sourceTree = "<group>"; };
 		11C4628724B109C000031902 /* WebhookResponseLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebhookResponseLocation.swift; sourceTree = "<group>"; };
@@ -1584,6 +1594,17 @@
 			path = TestNotifications;
 			sourceTree = "<group>";
 		};
+		110E693E24E770BD004AA96D /* Actions */ = {
+			isa = PBXGroup;
+			children = (
+				1171508024DFCEC50065E874 /* WidgetActions.swift */,
+				110E693F24E770DA004AA96D /* WidgetActionsEntry.swift */,
+				110E694124E7710E004AA96D /* WidgetActionsContainerView.swift */,
+				110E694324E77125004AA96D /* WidgetActionsProvider.swift */,
+			);
+			path = Actions;
+			sourceTree = "<group>";
+		};
 		1141182824AFA0F000E6525C /* Request&Response */ = {
 			isa = PBXGroup;
 			children = (
@@ -1617,9 +1638,10 @@
 		1171506E24DFCDE60065E874 /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
+				110E693E24E770BD004AA96D /* Actions */,
 				1171508324DFCF960065E874 /* Resources */,
 				1171506F24DFCDE60065E874 /* Widgets.swift */,
-				1171508024DFCEC50065E874 /* PerformActionWidget.swift */,
+				110E694524E771AB004AA96D /* Color+Hex.swift */,
 			);
 			path = Widgets;
 			sourceTree = "<group>";
@@ -2148,6 +2170,7 @@
 				B6DF8BC3221D047400370A59 /* GetCameraImage.swift */,
 				B62817EF221D269B000BA86A /* RenderTemplate.swift */,
 				111858D324CB5B8900B8CDDC /* PerformAction.swift */,
+				11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */,
 			);
 			path = Intents;
 			sourceTree = "<group>";
@@ -3710,7 +3733,6 @@
 		};
 		9C08D123229F187E001B4F73 /* Enable Critical Alerts */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -3920,8 +3942,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				110E694424E77125004AA96D /* WidgetActionsProvider.swift in Sources */,
+				110E694224E7710E004AA96D /* WidgetActionsContainerView.swift in Sources */,
+				110E694024E770DA004AA96D /* WidgetActionsEntry.swift in Sources */,
 				1171507024DFCDE60065E874 /* Widgets.swift in Sources */,
-				1171508124DFCEC50065E874 /* PerformActionWidget.swift in Sources */,
+				1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */,
+				110E694624E771AB004AA96D /* Color+Hex.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4062,6 +4088,7 @@
 				B62817F0221D269B000BA86A /* RenderTemplate.swift in Sources */,
 				B66C58A8215086F0004AB261 /* IntentHandler.swift in Sources */,
 				B66C58B32150892A004AB261 /* FireEvent.swift in Sources */,
+				11BD8BBD24E76BAD004B9A54 /* WidgetActions.swift in Sources */,
 				B66C58B12150891B004AB261 /* CallService.swift in Sources */,
 				11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */,
 				111858D524CB5D4700B8CDDC /* PerformAction.swift in Sources */,

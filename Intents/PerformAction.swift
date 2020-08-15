@@ -8,7 +8,7 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         intent: PerformActionIntent,
         completion: @escaping (PerformActionIntentResponse) -> Void
     ) {
-        guard let result = intent.actions else {
+        guard let result = intent.action?.asActionWithUpdated() else {
             completion(.init(code: .failure, userActivity: nil))
             return
         }
@@ -19,9 +19,9 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         }
 
         firstly {
-            api.HandleAction(actionID: result.actionModel.ID, source: .SiriShortcut)
+            api.HandleAction(actionID: result.action.ID, source: .SiriShortcut)
         }.done {
-            completion(.success(action: result.intentAction))
+            completion(.success(action: result.updated))
         }.catch { error in
             completion(.failure(error: error.localizedDescription))
         }
@@ -31,8 +31,8 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         for intent: PerformActionIntent, with completion:
         @escaping (IntentActionResolutionResult) -> Void
     ) {
-        if let result = intent.actions {
-            completion(.success(with: result.intentAction))
+        if let result = intent.action?.asActionWithUpdated() {
+            completion(.success(with: result.updated))
         } else {
             completion(.needsValue())
         }
@@ -43,7 +43,7 @@ class PerformActionIntentHandler: NSObject, PerformActionIntentHandling {
         with completion: @escaping ([IntentAction]?, Error?) -> Void
     ) {
         let actions = Current.realm().objects(Action.self).sorted(byKeyPath: #keyPath(Action.Position))
-        let performActions = Array(actions.map { IntentAction(identifier: $0.ID, display: $0.Name) })
+        let performActions = Array(actions.map { IntentAction(action: $0) })
         Current.Log.info { () -> String in
             return "providing " + performActions.map {
                 ($0.identifier ?? "?") + " (" + $0.displayString + ")"

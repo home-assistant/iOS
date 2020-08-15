@@ -67,7 +67,7 @@ public extension SendLocationIntent {
 public extension PerformActionIntent {
     convenience init(action: Action) {
         self.init()
-        self.action = .init(identifier: action.ID, display: action.Name)
+        self.action = .init(action: action)
 
         #if os(iOS)
         MaterialDesignIcons.register()
@@ -93,9 +93,24 @@ public extension PerformActionIntent {
         __setImage(image, forParameterNamed: "action")
         #endif
     }
+}
 
-    var actions: (intentAction: IntentAction, actionModel: Action)? {
-        guard let performAction = action, let identifier = performAction.identifier else {
+@available(iOS 12, *)
+extension IntentAction {
+    public convenience init(action: Action) {
+        self.init(identifier: action.ID, display: action.Name)
+    }
+
+    public func asActionWithUpdated() -> (updated: IntentAction, action: Action)? {
+        guard let action = asAction() else {
+            return nil
+        }
+
+        return (.init(action: action), action)
+    }
+
+    public func asAction() -> Action? {
+        guard let identifier = identifier, identifier.isEmpty == false else {
             return nil
         }
 
@@ -103,6 +118,6 @@ public extension PerformActionIntent {
             return nil
         }
 
-        return (.init(identifier: result.ID, display: result.Name), result)
+        return result
     }
 }

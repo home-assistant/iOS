@@ -581,6 +581,7 @@
 		<string>PerformActionIntent</string>
 		<string>RenderTemplateIntent</string>
 		<string>SendLocationIntent</string>
+		<string>WidgetActionsIntent</string>
 	</array>
 	<key>UIApplicationShortcutItems</key>
 	<array>
