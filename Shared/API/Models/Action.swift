@@ -207,6 +207,17 @@ public final class Action: Object, ImmutableMappable, UpdatableModel {
             """
         }
     }
+
+    public var widgetLinkURL: URL {
+        var components = URLComponents()
+        components.scheme = "homeassistant"
+        components.host = "perform_action"
+        components.path = "/" + ID.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
+        components.queryItems = [
+            .init(name: "source", value: HomeAssistantAPI.ActionSource.Widget.rawValue)
+        ]
+        return components.url!
+    }
 }
 
 extension UIColor {

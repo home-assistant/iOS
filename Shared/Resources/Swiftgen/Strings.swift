@@ -2080,6 +2080,8 @@ internal enum L10n {
       }
     }
     internal enum Error {
+      /// Action Not Found
+      internal static let actionNotFound = L10n.tr("Localizable", "url_handler.error.action_not_found")
       /// Error
       internal static let title = L10n.tr("Localizable", "url_handler.error.title")
     }
@@ -2812,6 +2814,15 @@ internal enum L10n {
         /// Read More
         internal static let title = L10n.tr("Localizable", "whats_new.buttons.read_more.title")
       }
+    }
+  }
+
+  internal enum Widgets {
+    internal enum Actions {
+      /// No Actions Configured
+      internal static let notConfigured = L10n.tr("Localizable", "widgets.actions.not_configured")
+      /// Actions
+      internal static let title = L10n.tr("Localizable", "widgets.actions.title")
     }
   }
 }

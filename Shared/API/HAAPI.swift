@@ -564,26 +564,16 @@ public class HomeAssistantAPI {
         "sourceDeviceID": Current.settingsStore.deviceID
     ] }
 
-    public enum ActionSource: CaseIterable {
-        case Watch
-        case Widget
-        case AppShortcut // UIApplicationShortcutItem
-        case Preview
-        case SiriShortcut
+    public enum ActionSource: String, CaseIterable, CustomStringConvertible {
+        case Watch = "watch"
+        case Widget = "widget"
+        case AppShortcut = "appShortcut" // UIApplicationShortcutItem
+        case Preview = "preview"
+        case SiriShortcut = "siriShortcut"
+        case URLHandler = "urlHandler"
 
-        var description: String {
-            switch self {
-            case .Watch:
-                return "watch"
-            case .Widget:
-                return "widget"
-            case .AppShortcut:
-                return "appShortcut"
-            case .Preview:
-                return "preview"
-            case .SiriShortcut:
-                return "siriShortcut"
-            }
+        public var description: String {
+            rawValue
         }
     }
 

@@ -67,7 +67,7 @@ public extension SendLocationIntent {
 public extension PerformActionIntent {
     convenience init(action: Action) {
         self.init()
-        self.action = .init(identifier: action.ID, display: action.Name)
+        self.action = .init(action: action)
 
         #if os(iOS)
         MaterialDesignIcons.register()
@@ -89,8 +89,40 @@ public extension PerformActionIntent {
 
         // this should be:
         //   setImage(image, forParameterNamed: \Self.action)
-        // but this crashes at runtime, iOS 13 at least
+        // but this crashes at runtime, iOS 13 and iOS 14 at least
         __setImage(image, forParameterNamed: "action")
         #endif
     }
+}
+
+@available(iOS 12, *)
+extension IntentAction {
+    public convenience init(action: Action) {
+        self.init(identifier: action.ID, display: action.Name)
+    }
+
+    public func asActionWithUpdated() -> (updated: IntentAction, action: Action)? {
+        guard let action = asAction() else {
+            return nil
+        }
+
+        return (.init(action: action), action)
+    }
+
+    public func asAction() -> Action? {
+        guard let identifier = identifier, identifier.isEmpty == false else {
+            return nil
+        }
+
+        guard let result = Current.realm().object(ofType: Action.self, forPrimaryKey: identifier) else {
+            return nil
+        }
+
+        return result
+    }
+}
+
+@available(iOS 12, *)
+extension WidgetActionsIntent {
+    public static let widgetKind = "WidgetActions"
 }
