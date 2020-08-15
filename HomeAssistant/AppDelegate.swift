@@ -703,18 +703,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         let source: HomeAssistantAPI.ActionSource = {
-            if let sourceString = serviceData["source"], let source = HomeAssistantAPI.ActionSource(rawValue: sourceString) {
+            if let sourceString = serviceData["source"],
+               let source = HomeAssistantAPI.ActionSource(rawValue: sourceString) {
                 return source
             } else {
                 return .URLHandler
             }
         }()
-        
-        HomeAssistantAPI.authenticatedAPI()?
-            .HandleAction(actionID: url.pathComponents[1], source: source)
-            .cauterize()
 
-        showFullScreenConfirm(icon: .checkIcon, text: "Action Performed")
+        let actionID = url.pathComponents[1]
+
+        guard let action = Current.realm().object(ofType: Action.self, forPrimaryKey: actionID) else {
+            showFullScreenConfirm(icon: .alertCircleIcon, text: L10n.UrlHandler.Error.actionNotFound)
+            return
+        }
+
+        showFullScreenConfirm(icon: MaterialDesignIcons(named: action.IconName), text: action.Text)
+
+        HomeAssistantAPI.authenticatedAPI()?
+            .HandleAction(actionID: actionID, source: source)
+            .cauterize()
     }
 
     func setupWatchCommunicator() {

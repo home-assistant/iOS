@@ -5,7 +5,7 @@ struct WidgetActionsEmptyView: View {
     var body: some View {
         ZStack {
             Color(UIColor.systemBackground)
-            Text("No Actions Configured")
+            Text(verbatim: L10n.Widgets.Actions.notConfigured)
                 .multilineTextAlignment(.center)
                 .font(.footnote)
                 .foregroundColor(.secondary)

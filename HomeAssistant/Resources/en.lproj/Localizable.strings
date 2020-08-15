@@ -862,3 +862,8 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "database.problem.title" = "Database Error";
 "database.problem.delete" = "Delete Database & Quit App";
 "database.problem.quit" = "Quit App";
+/* shown when e.g. a widget was configured with an action that is later deleted */
+"url_handler.error.action_not_found" = "Action Not Found";
+"widgets.actions.title" = "Actions";
+"widgets.actions.not_configured" = "No Actions Configured";
+

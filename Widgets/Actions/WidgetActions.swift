@@ -11,7 +11,7 @@ struct WidgetActions: Widget {
             provider: WidgetActionsProvider(),
             content: { WidgetActionsContainerView(entry: $0) }
         )
-        .configurationDisplayName("Actions")
+        .configurationDisplayName(L10n.Widgets.Actions.title)
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }

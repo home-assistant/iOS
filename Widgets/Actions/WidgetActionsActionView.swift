@@ -19,9 +19,7 @@ struct WidgetActionsActionView: View {
                     .font(.custom(MaterialDesignIcons.familyName, size: 38.0))
                     .minimumScaleFactor(0.2)
                     .foregroundColor(.init(hex: action.IconColor))
-                
                 Spacer()
-                
                 Text(verbatim: action.Text)
                     .font(family == .systemSmall ? .subheadline : .footnote)
                     .fontWeight(.bold)

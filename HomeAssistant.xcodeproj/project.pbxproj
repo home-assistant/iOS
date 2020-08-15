@@ -15,6 +15,10 @@
 		1101568524D770B2009424C9 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D04E124D76CD3003CE877 /* NFCReader.swift */; };
 		1101568724D7712F009424C9 /* TagManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1101568624D7712F009424C9 /* TagManagerProtocol.swift */; };
 		1101568824D7712F009424C9 /* TagManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1101568624D7712F009424C9 /* TagManagerProtocol.swift */; };
+		110702C024E7B12B00679B94 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
+		110702C324E7B34A00679B94 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
+		110702C524E7B38600679B94 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
+		110702C624E7B49B00679B94 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		1109F81F24A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82024A1C011002590F2 /* SensorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F81E24A1C011002590F2 /* SensorProvider.swift */; };
 		1109F82424A25A41002590F2 /* SensorContainer.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109F82324A25A41002590F2 /* SensorContainer.test.swift */; };
@@ -48,7 +52,6 @@
 		1171507224DFCDEE0065E874 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1171507124DFCDEE0065E874 /* Assets.xcassets */; };
 		1171507624DFCDEE0065E874 /* WidgetsExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1171506924DFCDE60065E874 /* WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1171507B24DFCE0D0065E874 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
-		1171507C24DFCE0D0065E874 /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1171508024DFCEC50065E874 /* WidgetActions.swift */; };
 		1178C4E524D5CEB200FDEC3E /* ConnectionURLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */; };
 		117D8A0824A9347F00580913 /* UIColor+CSSRGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */; };
@@ -605,7 +608,6 @@
 		D0EEF327214DF31D00D1D360 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF326214DF31D00D1D360 /* Notifications.swift */; };
 		D0EEF331214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF330214E41F700D1D360 /* HomeAssistantAPI+Notifications.swift */; };
 		D0EEF335214EB77100D1D360 /* CLLocation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C2C17E20D1F64D00BD810B /* CLLocation+Extensions.swift */; };
-		D0EEF336214EB7B800D1D360 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		D0FF79D220D87D200034574D /* ClientEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FF79D120D87D200034574D /* ClientEventTableViewController.swift */; };
 		D0FF79D520D87DB10034574D /* ClientEvents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0FF79D420D87DB10034574D /* ClientEvents.storyboard */; };
 		E1FA731332EB8E4C346F56FA /* Pods_APNSAttachmentService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0FB96476CD7553E34787A84 /* Pods_APNSAttachmentService.framework */; };
@@ -714,17 +716,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		1171507F24DFCE0E0065E874 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				1171507C24DFCE0D0065E874 /* Shared.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		119A172824D74DA800D1B66D /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2747,7 +2738,6 @@
 				1171506524DFCDE60065E874 /* Sources */,
 				1171506624DFCDE60065E874 /* Frameworks */,
 				1171506724DFCDE60065E874 /* Resources */,
-				1171507F24DFCE0E0065E874 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -3234,6 +3224,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1171507224DFCDEE0065E874 /* Assets.xcassets in Resources */,
+				110702C024E7B12B00679B94 /* Localizable.strings in Resources */,
 				1710EFA0554773DCAEEA4A1E /* Pods-WidgetsExtension-metadata.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3950,6 +3941,7 @@
 			files = (
 				11993D2424E78A3700627944 /* WidgetActionsActionView.swift in Sources */,
 				110E694424E77125004AA96D /* WidgetActionsProvider.swift in Sources */,
+				110702C324E7B34A00679B94 /* Strings.swift in Sources */,
 				110E694224E7710E004AA96D /* WidgetActionsContainerView.swift in Sources */,
 				1171507024DFCDE60065E874 /* Widgets.swift in Sources */,
 				1171508124DFCEC50065E874 /* WidgetActions.swift in Sources */,
@@ -3963,6 +3955,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B63CCDCB216442C200123C50 /* MapViewController.swift in Sources */,
+				110702C524E7B38600679B94 /* Strings.swift in Sources */,
 				110FB4532499DC28000865B4 /* NotificationErrorViewController.swift in Sources */,
 				B63CCDC9216442BB00123C50 /* CameraViewController.swift in Sources */,
 				110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */,
@@ -4007,10 +4000,10 @@
 				B661FB6A226BBDA900E541DD /* SettingsViewController.swift in Sources */,
 				119D765F2492F8FA00183C5F /* UIApplication+BackgroundTask.swift in Sources */,
 				11C4629424B189B100031902 /* NotificationRateLimitsAPI.swift in Sources */,
-				D0EEF336214EB7B800D1D360 /* Strings.swift in Sources */,
 				1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */,
 				B65B15032273184F00635D5C /* Colors.swift in Sources */,
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
+				110702C624E7B49B00679B94 /* Strings.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
 				B6093CE4228CFB0A0079E661 /* RemotePlayerState.swift in Sources */,
