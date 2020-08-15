@@ -419,6 +419,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fireEventURLHandler(url, serviceData)
         case "send_location":
             sendLocationURLHandler()
+        case "perform_action":
+            performActionURLHandler(url, serviceData: serviceData)
         case "auth-callback": // homeassistant://auth-callback
            NotificationCenter.default.post(name: Notification.Name("AuthCallback"), object: nil,
                                            userInfo: ["url": url])
@@ -456,23 +458,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         switch Current.tags.handle(userActivity: userActivity) {
         case .handled(let type):
-            let hud = MBProgressHUD.showAdded(to: window!, animated: true)
-            hud.mode = .customView
-            hud.backgroundView.style = .blur
-
             let (icon, text) = { () -> (MaterialDesignIcons, String) in
-                switch type {
-                case .nfc:
-                    return (.nfcVariantIcon, L10n.Nfc.tagRead)
-                case .generic:
-                    return (.qrcodeIcon, L10n.Nfc.genericTagRead)
-                }
-            }()
-            hud.customView = with(IconImageView(frame: .init(x: 0, y: 0, width: 64, height: 64))) {
-                $0.iconDrawable = icon
-            }
-            hud.label.text = text
-            hud.hide(animated: true, afterDelay: 3)
+                 switch type {
+                 case .nfc:
+                     return (.nfcVariantIcon, L10n.Nfc.tagRead)
+                 case .generic:
+                     return (.qrcodeIcon, L10n.Nfc.genericTagRead)
+                 }
+             }()
+            showFullScreenConfirm(icon: icon, text: text)
             return true
         case .unhandled:
             return false
@@ -699,6 +693,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 showAlert(title: L10n.errorLabel,
                           message: L10n.UrlHandler.SendLocation.Error.message(error.localizedDescription))
         }
+    }
+
+    private func performActionURLHandler(_ url: URL, serviceData: [String: String]) {
+        let pathComponents = url.pathComponents
+        guard pathComponents.count > 1 else {
+            Current.Log.error("not enough path components for perform action handler")
+            return
+        }
+
+        let source: HomeAssistantAPI.ActionSource = {
+            if let sourceString = serviceData["source"], let source = HomeAssistantAPI.ActionSource(rawValue: sourceString) {
+                return source
+            } else {
+                return .URLHandler
+            }
+        }()
+        
+        HomeAssistantAPI.authenticatedAPI()?
+            .HandleAction(actionID: url.pathComponents[1], source: source)
+            .cauterize()
+
+        showFullScreenConfirm(icon: .checkIcon, text: "Action Performed")
     }
 
     func setupWatchCommunicator() {

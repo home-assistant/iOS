@@ -1,6 +1,11 @@
 import WidgetKit
 import Shared
 
+struct WidgetActionsEntry: TimelineEntry {
+    var date: Date = Date()
+    var actions: [Action] = []
+}
+
 struct WidgetActionsProvider: IntentTimelineProvider {
     typealias Intent = WidgetActionsIntent
 

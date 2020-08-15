@@ -4,6 +4,7 @@ import RealmSwift
 import PromiseKit
 import NotificationCenter
 import Intents
+import WidgetKit
 
 extension Action {
     static func setupObserver() {
@@ -17,11 +18,19 @@ extension Action {
                 seal.fulfill(())
             }
 
-            let updateWidget = Promise<Void> { seal in
+            let updateTodayWidget = Promise<Void> { seal in
                 NCWidgetController().setHasContent(
                     !collection.isEmpty,
                     forWidgetWithBundleIdentifier: Constants.BundleID.appending(".TodayWidget")
                 )
+                seal.fulfill(())
+            }
+
+            let updateWidgetKitWidgets = Promise<Void> { seal in
+                if #available(iOS 14, *) {
+                    WidgetCenter.shared.reloadTimelines(ofKind: WidgetActionsIntent.widgetKind)
+                }
+
                 seal.fulfill(())
             }
 
@@ -46,7 +55,8 @@ extension Action {
 
             return when(resolved: [
                 updateShortcuts,
-                updateWidget,
+                updateTodayWidget,
+                updateWidgetKitWidgets,
                 updateWatch,
                 updateSuggestions
             ]).asVoid()

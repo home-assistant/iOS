@@ -89,7 +89,7 @@ public extension PerformActionIntent {
 
         // this should be:
         //   setImage(image, forParameterNamed: \Self.action)
-        // but this crashes at runtime, iOS 13 at least
+        // but this crashes at runtime, iOS 13 and iOS 14 at least
         __setImage(image, forParameterNamed: "action")
         #endif
     }
@@ -120,4 +120,9 @@ extension IntentAction {
 
         return result
     }
+}
+
+@available(iOS 12, *)
+extension WidgetActionsIntent {
+    public static let widgetKind = "WidgetActions"
 }
