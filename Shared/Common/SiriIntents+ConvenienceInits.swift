@@ -70,22 +70,11 @@ public extension PerformActionIntent {
         self.action = .init(action: action)
 
         #if os(iOS)
-        MaterialDesignIcons.register()
-
-        let iconRect = CGRect(x: 0, y: 0, width: 64, height: 64)
-
-        let iconData = UIKit.UIGraphicsImageRenderer(size: iconRect.size).pngData { _ in
-            let imageRect = iconRect.insetBy(dx: 8, dy: 8)
-
-            UIColor(hex: action.BackgroundColor).set()
-            UIRectFill(iconRect)
-
-            MaterialDesignIcons(named: action.IconName)
-                .image(ofSize: imageRect.size, color: UIColor(hex: action.IconColor))
-                .draw(in: imageRect)
-        }
-
-        let image = INImage(imageData: iconData)
+        let image = INImage(
+            icon: MaterialDesignIcons(named: action.IconName),
+            foreground: UIColor(hex: action.IconColor),
+            background: UIColor(hex: action.BackgroundColor)
+        )
 
         // this should be:
         //   setImage(image, forParameterNamed: \Self.action)
@@ -98,7 +87,24 @@ public extension PerformActionIntent {
 @available(iOS 12, *)
 extension IntentAction {
     public convenience init(action: Action) {
-        self.init(identifier: action.ID, display: action.Name)
+        #if os(iOS)
+            if #available(iOS 14, *) {
+                self.init(
+                    identifier: action.ID,
+                    display: action.Name,
+                    subtitle: nil,
+                    image: INImage(
+                        icon: MaterialDesignIcons(named: action.IconName),
+                        foreground: UIColor(hex: action.IconColor),
+                        background: UIColor(hex: action.BackgroundColor)
+                    )
+                )
+            } else {
+                self.init(identifier: action.ID, display: action.Name)
+            }
+        #else
+            self.init(identifier: action.ID, display: action.Name)
+        #endif
     }
 
     public func asActionWithUpdated() -> (updated: IntentAction, action: Action)? {
