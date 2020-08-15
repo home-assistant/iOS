@@ -951,8 +951,6 @@
 			<string>Performs an action defined in the app</string>
 			<key>INIntentDescriptionID</key>
 			<string>tycImk</string>
-			<key>INIntentEligibleForWidgets</key>
-			<true/>
 			<key>INIntentKeyParameter</key>
 			<string>action</string>
 			<key>INIntentLastParameterTag</key>
