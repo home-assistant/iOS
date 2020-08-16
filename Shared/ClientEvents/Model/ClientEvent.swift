@@ -44,6 +44,16 @@ public class ClientEvent: Object {
 
     /// The payload for the event.
     public var jsonPayload: [String: Any]? {
+        get {
+            guard let payloadData = self.jsonData,
+            let jsonObject = try? JSONSerialization.jsonObject(with: payloadData),
+            let dictionary = jsonObject as? [String: Any] else {
+                return nil
+            }
+
+            return dictionary
+        }
+
         set {
             guard let payload = newValue else {
                 self.jsonData = nil
@@ -61,16 +71,6 @@ public class ClientEvent: Object {
             } catch {
                 Current.Log.error("Error serializing json payload: \(error)")
             }
-        }
-
-        get {
-            guard let payloadData = self.jsonData,
-            let jsonObject = try? JSONSerialization.jsonObject(with: payloadData),
-            let dictionary = jsonObject as? [String: Any] else {
-                return nil
-            }
-
-            return dictionary
         }
     }
 

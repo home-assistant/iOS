@@ -33,10 +33,6 @@ class ManualSetupViewController: UIViewController {
 
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
     @IBAction func connectButtonTapped(_ sender: UIButton) {
         Current.Log.verbose("Connect button tapped")
 

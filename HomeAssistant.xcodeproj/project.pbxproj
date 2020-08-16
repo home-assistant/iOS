@@ -564,7 +564,6 @@
 		B6E2D4BB2270407500446DFA /* Debug LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6E2D4BD2270407500446DFA /* Debug LaunchScreen.storyboard */; };
 		B6E2D4D52270706300446DFA /* ha-loading.json in Resources */ = {isa = PBXBuildFile; fileRef = B6E2D4D42270706200446DFA /* ha-loading.json */; };
 		B6E42613215C4333007FEB7E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
-		B6E42617215C761A007FEB7E /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EEF31F214DE3B300D1D360 /* Strings.swift */; };
 		B6E42618215C761E007FEB7E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B69933931E232AEA0054453D /* Localizable.strings */; };
 		C346BC5570250C2987D7A44B /* Pods-HomeAssistantTests-metadata.plist in Resources */ = {isa = PBXBuildFile; fileRef = B9D9755DDCFA473A79F125A3 /* Pods-HomeAssistantTests-metadata.plist */; };
 		D014EEA92128E192008EA6F5 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */; };
@@ -3965,7 +3964,6 @@
 				110FB4532499DC28000865B4 /* NotificationErrorViewController.swift in Sources */,
 				B63CCDC9216442BB00123C50 /* CameraViewController.swift in Sources */,
 				110FB44E2499C1CF000865B4 /* CameraStreamHLSViewController.swift in Sources */,
-				B6E42617215C761A007FEB7E /* Strings.swift in Sources */,
 				B658AA7A2250ACFB00C9BFE3 /* String+HA.swift in Sources */,
 				B627CB0E1D83C87B0057173E /* NotificationViewController.swift in Sources */,
 				110FB44C2499C1A3000865B4 /* CameraStreamHandler.swift in Sources */,
