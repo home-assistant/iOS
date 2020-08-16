@@ -74,10 +74,12 @@ extension Realm {
         // 9  - 2020-07-23 v2020.5 (primary key removal on NotificationAction)
         // 10 - 2020-07-31 v2020.5 (added isServerControlled to Action)
         // 11 - 2020-08-12 v2020.5.2 (cleaning up duplicate NotificationCategory identifiers)
+        // 12 - 2020-08-16 v2020.6 (mdi upgrade/migration to 5.x)
         let config = Realm.Configuration(
             fileURL: storeURL,
-            schemaVersion: 11,
+            schemaVersion: 12,
             migrationBlock: { migration, oldVersion in
+                Current.Log.info("migrating from \(oldVersion)")
                 if oldVersion < 9 {
                     migration.enumerateObjects(ofType: NotificationAction.className()) { _, newObject in
                         newObject?["uuid"] = UUID().uuidString
@@ -100,6 +102,35 @@ extension Realm {
                                 migration.delete(newObject)
                             } else {
                                 discoveredIdentifiers.insert(identifier)
+                            }
+                        }
+                    }
+                }
+
+                if oldVersion < 12 {
+                    let mdiMigration = MDIMigration()
+                    migration.enumerateObjects(ofType: Action.className()) { _, newObject in
+                        let iconNameKey = "IconName"
+                        if let oldIconName = newObject?[iconNameKey] as? String {
+                            newObject?[iconNameKey] = mdiMigration.migrate(icon: oldIconName)
+                        }
+                    }
+                    migration.enumerateObjects(ofType: WatchComplication.className()) { _, newObject in
+                        let dataKey = "complicationData"
+                        let iconDictKey = "icon"
+                        let iconDictIconKey = "icon"
+
+                        if let oldData = newObject?[dataKey] as? Data,
+                           // swiftlint:disable:next line_length
+                           let oldJson = try? JSONSerialization.jsonObject(with: oldData, options: []) as? [String: Any],
+                           let oldIconDict = oldJson[iconDictKey] as? [String: String],
+                           let oldIconIcon = oldIconDict[iconDictIconKey] {
+                            var updatedIconDict = oldIconDict
+                            updatedIconDict[iconDictIconKey] = mdiMigration.migrate(icon: oldIconIcon)
+                            var updatedJson = oldJson
+                            updatedJson[iconDictKey] = updatedIconDict
+                            if let newData = try? JSONSerialization.data(withJSONObject: updatedJson, options: []) {
+                                newObject?[dataKey] = newData
                             }
                         }
                     }
