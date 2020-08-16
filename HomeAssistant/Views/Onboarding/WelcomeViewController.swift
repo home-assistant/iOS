@@ -9,7 +9,6 @@
 import UIKit
 import Shared
 import Eureka
-import MaterialComponents.MaterialButtons
 import Lottie
 import Reachability
 import RealmSwift
@@ -17,7 +16,7 @@ import RealmSwift
 class WelcomeViewController: UIViewController, UITextViewDelegate {
 
     @IBOutlet weak var animationView: AnimationView!
-    @IBOutlet weak var continueButton: MDCButton!
+    @IBOutlet weak var continueButton: UIButton!
     @IBOutlet weak var wifiWarningLabel: UILabel!
 
     private var loggedOutView: UIView?

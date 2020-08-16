@@ -9,8 +9,6 @@
 import UIKit
 import Eureka
 import Shared
-import MaterialComponents.MaterialButtons
-import MaterialComponents.MaterialButtons_Theming
 import Reachability
 
 class OnboardingNavigationViewController: UINavigationController, RowControllerType {
@@ -58,23 +56,30 @@ class OnboardingNavigationViewController: UINavigationController, RowControllerT
     }
     */
 
-    func styleButton(_ button: MDCButton) {
-        let containerScheme = MDCContainerScheme()
-        if #available(iOS 13, *) {
-            containerScheme.colorScheme.primaryColor = .systemBackground
-        } else {
-            containerScheme.colorScheme.primaryColor = .white
-        }
-        containerScheme.colorScheme.secondaryColor = Constants.tintColor
-        button.applyContainedTheme(withScheme: containerScheme)
-
+    func styleButton(_ button: UIButton) {
+        button.layer.cornerRadius = 6.0
+        button.layer.masksToBounds = true
+        button.contentEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        button.titleLabel?.font = UIFont.systemFont(
+            ofSize: UIFont.preferredFont(forTextStyle: .callout).pointSize,
+            weight: .bold
+        )
         button.setTitleColor(Constants.tintColor, for: .normal)
 
-        button.isUppercaseTitle = true
+        if #available(iOS 13, *) {
+            button.setBackgroundImage(
+                UIImage(size: CGSize(width: 1, height: 1), color: .systemBackground),
+                for: .normal
+            )
+        } else {
+            button.setBackgroundImage(
+                UIImage(size: CGSize(width: 1, height: 1), color: .white),
+                for: .normal
+            )
+        }
 
-        if let text = button.titleLabel?.text {
-            button.titleLabel?.text = text.uppercased()
-            button.setTitle(text.uppercased(), for: .normal)
+        if let title = button.title(for: .normal) {
+            button.setTitle(title.localizedUppercase, for: .normal)
         }
     }
 }

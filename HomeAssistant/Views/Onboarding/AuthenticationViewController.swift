@@ -10,7 +10,6 @@ import UIKit
 import Shared
 import PromiseKit
 import Alamofire
-import MaterialComponents.MaterialButtons
 import MBProgressHUD
 import ObjectMapper
 import AuthenticationServices
@@ -26,8 +25,8 @@ class AuthenticationViewController: UIViewController {
     var testResult: Error?
 
     @IBOutlet weak var whatsAboutToHappenLabel: UILabel!
-    @IBOutlet weak var connectButton: MDCButton!
-    @IBOutlet weak var goBackButton: MDCButton!
+    @IBOutlet weak var connectButton: UIButton!
+    @IBOutlet weak var goBackButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -8,12 +8,11 @@
 
 import UIKit
 import Shared
-import MaterialComponents.MaterialButtons
 import PromiseKit
 
 class ManualSetupViewController: UIViewController {
 
-    @IBOutlet weak var connectButton: MDCButton!
+    @IBOutlet weak var connectButton: UIButton!
     @IBOutlet weak var urlField: UITextField!
 
     public var notOnWifi: Bool = true
