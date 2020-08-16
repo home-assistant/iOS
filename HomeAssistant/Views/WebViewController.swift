@@ -255,7 +255,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
     private func styleUI() {
         precondition(isViewLoaded && webView != nil)
 
-        let cachedColors = ThemeColors.cachedThemeColors
+        let cachedColors = ThemeColors.cachedThemeColors(for: traitCollection)
 
         self.webView?.backgroundColor = cachedColors[.primaryBackgroundColor]
         self.webView?.scrollView.backgroundColor = cachedColors[.primaryBackgroundColor]
@@ -636,7 +636,7 @@ extension WebViewController: WKScriptMessageHandler {
     }
 
     func handleThemeUpdate(_ messageBody: [String: Any]) {
-        ThemeColors.updateCache(with: messageBody)
+        ThemeColors.updateCache(with: messageBody, for: traitCollection)
         styleUI()
     }
 

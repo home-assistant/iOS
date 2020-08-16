@@ -23,13 +23,41 @@ public struct ThemeColors: Codable {
         }
     }
 
-    static var cachedThemeColors: ThemeColors {
-        let cached = prefs.object(forKey: "cachedThemeColors") as? [Color.RawValue: String] ?? [:]
+    enum InterfaceStyle {
+        case light
+        case dark
+
+        var userDefaultsKey: String {
+            switch self {
+            case .light: return "cachedThemeColors-light"
+            case .dark: return "cachedThemeColors-dark"
+            }
+        }
+
+        init(traitCollection: UITraitCollection) {
+            if #available(iOS 12, *) {
+                switch traitCollection.userInterfaceStyle {
+                case .dark: self = .dark
+                case .light: self = .light
+                default: self = .light
+                }
+            } else {
+                self = .light
+            }
+        }
+    }
+
+    static func cachedThemeColors(for traitCollection: UITraitCollection) -> ThemeColors {
+        let style = InterfaceStyle(traitCollection: traitCollection)
+        let cached = prefs.object(forKey: style.userDefaultsKey) as? [Color.RawValue: String] ?? [:]
         Current.Log.verbose("loaded cached colors \(cached)")
         return ThemeColors(values: cached)
     }
 
-    static func updateCache(with messageBody: [String: Any]) {
+    static func updateCache(
+        with messageBody: [String: Any],
+        for traitCollection: UITraitCollection
+    ) {
         func rawValue(for key: Color) -> String? {
             return messageBody[key.rawValue]
                 .flatMap { $0 as? String }?
@@ -41,7 +69,8 @@ public struct ThemeColors: Codable {
             dictionary[color.rawValue] = rawValue(for: color)
         }
         Current.Log.verbose("caching color values \(dictionary)")
-        prefs.set(dictionary, forKey: "cachedThemeColors")
+        let style = InterfaceStyle(traitCollection: traitCollection)
+        prefs.set(dictionary, forKey: style.userDefaultsKey)
     }
 }
 
