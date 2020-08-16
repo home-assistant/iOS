@@ -8,14 +8,13 @@
 
 import UIKit
 import Lottie
-import MaterialComponents
 
 class ConnectionErrorViewController: UIViewController {
 
     @IBOutlet weak var animationView: AnimationView!
-    @IBOutlet weak var moreInfoButton: MDCButton!
+    @IBOutlet weak var moreInfoButton: UIButton!
     @IBOutlet weak var errorLabel: UILabel!
-    @IBOutlet weak var goBackButton: MDCButton!
+    @IBOutlet weak var goBackButton: UIButton!
 
     var error: Error!
 

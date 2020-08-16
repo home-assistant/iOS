@@ -54,8 +54,6 @@ target 'HomeAssistant' do
     pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :branch => 'xcode12'
     pod 'Lokalise', '~> 0.10.0'
     pod 'lottie-ios'
-    pod 'MaterialComponents/Buttons'
-    pod 'MaterialComponents/Buttons+Theming'
     pod 'MBProgressHUD', '~> 1.2.0'
     pod 'Sentry'
     pod 'SimulatorStatusMagic', :configurations => ['Debug']

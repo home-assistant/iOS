@@ -8,14 +8,13 @@
 
 import UIKit
 import Shared
-import MaterialComponents
 
 class PermissionsViewController: UIViewController, PermissionViewChangeDelegate {
     var instance: DiscoveredHomeAssistant!
     var connectionInfo: ConnectionInfo!
     var tokenManager: TokenManager!
 
-    @IBOutlet weak var continueButton: MDCButton!
+    @IBOutlet weak var continueButton: UIButton!
     @IBOutlet weak var locationPermissionView: PermissionLineItemView!
     @IBOutlet weak var motionPermissionView: PermissionLineItemView!
     @IBOutlet weak var notificationsPermissionView: PermissionLineItemView!

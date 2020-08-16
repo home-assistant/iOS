@@ -9,7 +9,6 @@
 import UIKit
 import Shared
 import Lottie
-import MaterialComponents
 
 class DiscoverInstancesViewController: UIViewController {
     private let discovery = Bonjour()
@@ -17,7 +16,7 @@ class DiscoverInstancesViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var animationView: AnimationView!
-    @IBOutlet private weak var manualButton: MDCButton!
+    @IBOutlet private weak var manualButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
