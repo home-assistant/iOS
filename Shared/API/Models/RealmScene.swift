@@ -10,42 +10,42 @@ public final class RLMScene: Object, UpdatableModel {
     @objc dynamic private var backingPosition: Int = 0
     public static var positionKeyPath: String { #keyPath(RLMScene.backingPosition) }
     public var position: Int {
+        get {
+            backingPosition
+        }
         set {
             backingPosition = newValue
             actions.forEach { $0.Position = newValue }
-        }
-        get {
-            backingPosition
         }
     }
 
     @objc dynamic private var backingActionEnabled: Bool = true
     public var actionEnabled: Bool {
+        get {
+            backingActionEnabled
+        }
         set {
             precondition(realm?.isInWriteTransaction == true)
             guard let realm = realm else { return }
             backingActionEnabled = newValue
             updateAction(realm: realm)
         }
-        get {
-            backingActionEnabled
-        }
     }
     public let actions = LinkingObjects<Action>(fromType: Action.self, property: #keyPath(Action.Scene))
     public var scene: Scene {
-        set {
-            do {
-                underlyingSceneData = try JSONSerialization.data(withJSONObject: newValue.toJSON(), options: [])
-            } catch {
-                fatalError("couldn't serialize scene: \(scene)")
-            }
-        }
         get {
             do {
                 let object = try JSONSerialization.jsonObject(with: underlyingSceneData, options: [])
                 return Mapper<Scene>().map(JSONObject: object)!
             } catch {
                 fatalError("couldn't deserialize scene: \(underlyingSceneData)")
+            }
+        }
+        set {
+            do {
+                underlyingSceneData = try JSONSerialization.data(withJSONObject: newValue.toJSON(), options: [])
+            } catch {
+                fatalError("couldn't serialize scene: \(scene)")
             }
         }
     }
