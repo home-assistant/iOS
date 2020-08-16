@@ -99,6 +99,7 @@ struct MDIMigration {
         "pot": "pot_steam",
         "ruby": "language_ruby",
         "sailing": "sail_boat",
+        "scooter": "human_scooter",
         "selection_mutliple": "selection_multiple",
         "settings": "cog",
         "settings_box": "cog_box",
