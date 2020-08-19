@@ -51,6 +51,7 @@ class ZoneManagerTests: XCTestCase {
         Current.realm = { self.realm }
         Current.clientEventStore.addEvent = { self.loggedEvents.append($0) }
         Current.api = { [api] in api }
+        Current.location.oneShotLocation = { _ in .value(.init(latitude: 0, longitude: 0)) }
         collector = FakeCollector()
         processor = FakeProcessor()
         regionFilter = FakeRegionFilter()
@@ -252,7 +253,9 @@ class ZoneManagerTests: XCTestCase {
             eventType: .locationChange([CLLocation(latitude: 1.23, longitude: 4.56)])
         ))
 
-        wait(for: [expectation], timeout: 10)
+        let expectation2 = self.expectation(for: .init(format: "monitoredRegions.@count == 1"), evaluatedWith: locationManager, handler: nil)
+
+        wait(for: [expectation, expectation2], timeout: 10)
 
         XCTAssertEqual(locationManager.monitoredRegions.count, 1)
         XCTAssertEqual(locationManager.monitoredRegions, Set([expectedReplacement]))

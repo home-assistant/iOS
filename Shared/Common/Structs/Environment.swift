@@ -255,6 +255,14 @@ public class Environment {
     }
     public var geocoder = Geocoder()
 
+    /// Wrapper around One Shot
+    public struct Location {
+        public lazy var oneShotLocation: (_ timeout: TimeInterval) -> Promise<CLLocation> = {
+            CLLocationManager.oneShotLocation(timeout: $0)
+        }
+    }
+    public var location = Location()
+
     /// Wrapper around CoreTelephony, Reachability
     public struct Connectivity {
         public var currentWiFiSSID: () -> String? = { ConnectionInfo.CurrentWiFiSSID }
