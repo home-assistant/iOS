@@ -388,7 +388,7 @@ class FakeZoneManagerProcessorDelegate: ZoneManagerProcessorDelegate {
     }
 }
 
-class FakeHassAPI: HomeAssistantAPI {
+private class FakeHassAPI: HomeAssistantAPI {
     var getAndSendPromise: Promise<Void>?
     var getAndSendInvocation: (
         trigger: LocationUpdateTrigger?,

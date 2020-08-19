@@ -629,6 +629,24 @@ public class HomeAssistantAPI {
         return (eventType: "tag_scanned", eventData: eventData)
     }
 
+    @available(watchOS, unavailable)
+    public class func zoneStateEvent(
+        region: CLRegion,
+        state: CLRegionState,
+        zone: RLMZone
+    ) -> (eventType: String, eventData: [String: Any]) {
+        var eventData: [String: Any] = sharedEventDeviceInfo
+        eventData["zone"] = zone.ID
+        if region.identifier.contains("@"), let subId = region.identifier.split(separator: "@").last {
+            eventData["multi_region_zone_id"] = String(subId)
+        }
+        if state == .inside {
+            return (eventType: "ios.zone_entered", eventData: eventData)
+        } else {
+            return (eventType: "ios.zone_exited", eventData: eventData)
+        }
+    }
+
     public func HandleAction(actionID: String, source: ActionSource) -> Promise<Void> {
         return Promise { seal in
             guard let api = HomeAssistantAPI.authenticatedAPI() else {
