@@ -139,11 +139,12 @@ class ZoneManager {
         )
 
         Current.Log.info {
-            [
+            let info = [
                 "monitoring \(expected.count) (\(counts))",
                 "started \(needsAddition.count)",
                 "ended \(needsRemoval.count)"
-            ].joined(separator: ", ")
+            ]
+            return info.joined(separator: ", ")
         }
     }
 }
