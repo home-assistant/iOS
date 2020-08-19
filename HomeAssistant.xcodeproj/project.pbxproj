@@ -90,6 +90,7 @@
 		119DC15824B6A33F00AAB204 /* ZeroLatitude.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 119DC15724B6A33E00AAB204 /* ZeroLatitude.gpx */; };
 		119EC3C724D5119300617D51 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfig.swift */; };
 		119EC3C824D5119300617D51 /* MobileAppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EC3C624D5119300617D51 /* MobileAppConfig.swift */; };
+		11A3F08C24ECE88C0018D84F /* WebhookUpdateLocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A3F08B24ECE88C0018D84F /* WebhookUpdateLocation.test.swift */; };
 		11A48D7B24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
 		11A48D7C24CA7D7F0021BDD9 /* NotificationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC736215F06B100727D2A /* NotificationAction.swift */; };
 		11A48D7D24CA7E4E0021BDD9 /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6DAC734215F069300727D2A /* NotificationCategory.swift */; };
@@ -852,6 +853,7 @@
 		119EC3D824D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Onboarding.strings"; sourceTree = "<group>"; };
 		119EC3D924D5395B00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		119EC3DA24D5395C00617D51 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		11A3F08B24ECE88C0018D84F /* WebhookUpdateLocation.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookUpdateLocation.test.swift; sourceTree = "<group>"; };
 		11A48D8024CA8ADB0021BDD9 /* NotificationCategory+Observation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCategory+Observation.swift"; sourceTree = "<group>"; };
 		11A48D8224CA9D010021BDD9 /* RealmSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmSection.swift; sourceTree = "<group>"; };
 		11A71C6A24A463FC00D9565F /* ZoneManagerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManagerState.swift; sourceTree = "<group>"; };
@@ -1670,6 +1672,7 @@
 				11CD94B624B2CC7400BA801D /* WebhookResponseLocation.test.swift */,
 				11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */,
 				11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */,
+				11A3F08B24ECE88C0018D84F /* WebhookUpdateLocation.test.swift */,
 			);
 			path = Webhook;
 			sourceTree = "<group>";
@@ -4352,6 +4355,7 @@
 				11EE9B4C24C5181A00404AF8 /* ModelManager.test.swift in Sources */,
 				11AF4D2C249D965C006C74C0 /* BatterySensor.test.swift in Sources */,
 				11883CC724C131EE0036A6C6 /* RealmZone.test.swift in Sources */,
+				11A3F08C24ECE88C0018D84F /* WebhookUpdateLocation.test.swift in Sources */,
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
 				11AF4D2E249DA5AF006C74C0 /* GeocoderSensor.test.swift in Sources */,
 				114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */,

@@ -12,13 +12,6 @@ import CoreLocation
 import CoreMotion
 import DeviceKit
 
-public enum UpdateTypes: String {
-    case GlobalPositioningSystem = "gps"
-    case Router = "router"
-    case Bluetooth = "bluetooth"
-    case BluetoothLowEnergy = "bluetooth_le"
-}
-
 public enum LocationNames: String {
     case Home = "home"
     case NotHome = "not_home"
@@ -47,13 +40,12 @@ public class WebhookUpdateLocation: Mappable {
         self.init()
 
         self.Trigger = trigger
-        self.Battery = Device.current.batteryLevel ?? 0
+        self.Battery = Current.device.batteryLevel()
 
         let useLocation: Bool
 
         switch trigger {
         case .BeaconRegionExit, .BeaconRegionEnter:
-            // never use location for beacons
             useLocation = false
         default:
             useLocation = true
@@ -63,6 +55,8 @@ public class WebhookUpdateLocation: Mappable {
             self.SetLocation(location: location)
         } else if let zone = zone {
             self.SetZone(zone: zone)
+        } else {
+            return nil
         }
     }
 
@@ -91,7 +85,7 @@ public class WebhookUpdateLocation: Mappable {
             }
         } else {
             switch self.Trigger {
-            case .BeaconRegionEnter:
+            case .BeaconRegionEnter where !zone.isPassive:
                 self.LocationName = zone.Name
             case .BeaconRegionExit:
                 self.ClearLocation()
