@@ -33,6 +33,7 @@ public class HomeAssistantAPI {
         case invalidResponse
         case cantBuildURL
         case notConfigured
+        case updateNotPossible
         case mobileAppComponentNotLoaded
         case webhookGone
         case mustUpgradeHomeAssistant(Version)
@@ -481,6 +482,12 @@ public class HomeAssistantAPI {
                 location: location,
                 zone: zone
             ))
+        }.map { (update: WebhookUpdateLocation?) -> WebhookUpdateLocation in
+            if let update = update {
+                return update
+            } else {
+                throw HomeAssistantAPI.APIError.updateNotPossible
+            }
         }.map { payload -> [String: Any] in
             let realm = Current.realm()
             // swiftlint:disable:next force_try
@@ -727,6 +734,8 @@ extension HomeAssistantAPI.APIError: LocalizedError {
             return L10n.HaApi.ApiError.cantBuildUrl
         case .notConfigured:
             return L10n.HaApi.ApiError.notConfigured
+        case .updateNotPossible:
+            return L10n.HaApi.ApiError.updateNotPossible
         case .mobileAppComponentNotLoaded:
             return L10n.HaApi.ApiError.mobileAppComponentNotLoaded
         case .webhookGone:
