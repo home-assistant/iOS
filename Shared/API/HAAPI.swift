@@ -527,13 +527,10 @@ public class HomeAssistantAPI {
         }
         Current.Log.verbose("getAndSendLocation called via \(String(describing: updateTrigger))")
 
-        Current.isPerformingSingleShotLocationQuery = true
         return firstly { () -> Promise<CLLocation> in
             return CLLocationManager.oneShotLocation(
                 timeout: updateTrigger.oneShotTimeout(maximum: maximumBackgroundTime)
             )
-        }.ensure {
-            Current.isPerformingSingleShotLocationQuery = false
         }.then { location in
             self.SubmitLocation(updateType: updateTrigger, location: location, zone: zone)
         }.asVoid()
