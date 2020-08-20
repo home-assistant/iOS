@@ -2,7 +2,7 @@ import Foundation
 import XCTest
 import CoreLocation
 @testable import HomeAssistant
-import Shared
+@testable import Shared
 import RealmSwift
 import PromiseKit
 
@@ -12,6 +12,7 @@ class ZoneManagerTests: XCTestCase {
     private var processor: FakeProcessor!
     private var regionFilter: FakeRegionFilter!
     private var locationManager: FakeCLLocationManager!
+    private var api: FakeHassAPI!
     private var loggedEventsUpdatedExpectation: XCTestExpectation?
     private var loggedEvents: [ClientEvent]! {
         didSet {
@@ -29,10 +30,28 @@ class ZoneManagerTests: XCTestCase {
         let executionIdentifier = UUID().uuidString
 
         realm = try Realm(configuration: .init(inMemoryIdentifier: executionIdentifier))
+        api = FakeHassAPI(
+            connectionInfo: ConnectionInfo(
+                externalURL: nil,
+                internalURL: nil,
+                cloudhookURL: nil,
+                remoteUIURL: nil,
+                webhookID: "id",
+                webhookSecret: nil,
+                internalSSIDs: nil
+            ),
+            tokenInfo: TokenInfo(
+                accessToken: "token",
+                refreshToken: "token",
+                expiration: Date()
+            )
+        )
         loggedEvents = []
         Current.connectivity.currentWiFiSSID = { "wifi_name" }
         Current.realm = { self.realm }
         Current.clientEventStore.addEvent = { self.loggedEvents.append($0) }
+        Current.api = { [api] in api }
+        Current.location.oneShotLocation = { _ in .value(.init(latitude: 0, longitude: 0)) }
         collector = FakeCollector()
         processor = FakeProcessor()
         regionFilter = FakeRegionFilter()
@@ -44,6 +63,7 @@ class ZoneManagerTests: XCTestCase {
 
         Current.realm = Realm.live
         Current.clientEventStore.addEvent = { _ in }
+        Current.api = { HomeAssistantAPI.authenticatedAPI() }
     }
 
     private func newZoneManager() -> ZoneManager {
@@ -233,7 +253,9 @@ class ZoneManagerTests: XCTestCase {
             eventType: .locationChange([CLLocation(latitude: 1.23, longitude: 4.56)])
         ))
 
-        wait(for: [expectation], timeout: 10)
+        let expectation2 = self.expectation(for: .init(format: "monitoredRegions.@count == 1"), evaluatedWith: locationManager, handler: nil)
+
+        wait(for: [expectation, expectation2], timeout: 10)
 
         XCTAssertEqual(locationManager.monitoredRegions.count, 1)
         XCTAssertEqual(locationManager.monitoredRegions, Set([expectedReplacement]))
@@ -248,6 +270,74 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertTrue(locationManager.delegate === collector)
         XCTAssertTrue(locationManager.allowsBackgroundLocationUpdates)
         XCTAssertFalse(locationManager.pausesLocationUpdatesAutomatically)
+    }
+
+    func testCollectorCollectsSingleRegionZoneAndEventFires() throws {
+        let manager = newZoneManager()
+        let region = CLCircularRegion(
+            center: .init(latitude: 42.4242, longitude: 43.4343),
+            radius: 456,
+            identifier: "dogs"
+        )
+        let zone = try addedZones([
+            with(RLMZone()) {
+                $0.ID = "zone.zid"
+                $0.Latitude = 42.2222
+                $0.Longitude = 43.3333
+                $0.Radius = 100
+                $0.TrackingEnabled = true
+            }
+        ])[0]
+        processor.promiseToReturn = .value(())
+
+        manager.collector(collector, didCollect: ZoneManagerEvent(
+            eventType: .region(region, .inside),
+            associatedZone: zone
+        ))
+        XCTAssertEqual(api.createdEvent?.eventType, "ios.zone_entered")
+        XCTAssertEqual(api.createdEvent?.eventData["zone"] as? String, "zone.zid")
+
+        manager.collector(collector, didCollect: ZoneManagerEvent(
+            eventType: .region(region, .outside),
+            associatedZone: zone
+        ))
+        XCTAssertEqual(api.createdEvent?.eventType, "ios.zone_exited")
+        XCTAssertEqual(api.createdEvent?.eventData["zone"] as? String, "zone.zid")
+    }
+
+    func testCollectorCollectsMultipleRegionZoneAndEventFires() throws {
+        let manager = newZoneManager()
+        let region = CLCircularRegion(
+            center: .init(latitude: 42.4242, longitude: 43.4343),
+            radius: 456,
+            identifier: "zone.zid@868"
+        )
+        let zone = try addedZones([
+            with(RLMZone()) {
+                $0.ID = "zone.zid"
+                $0.Latitude = 42.2222
+                $0.Longitude = 43.3333
+                $0.Radius = 99
+                $0.TrackingEnabled = true
+            }
+        ])[0]
+        processor.promiseToReturn = .value(())
+
+        manager.collector(collector, didCollect: ZoneManagerEvent(
+            eventType: .region(region, .inside),
+            associatedZone: zone
+        ))
+        XCTAssertEqual(api.createdEvent?.eventType, "ios.zone_entered")
+        XCTAssertEqual(api.createdEvent?.eventData["zone"] as? String, "zone.zid")
+        XCTAssertEqual(api.createdEvent?.eventData["multi_region_zone_id"] as? String, "868")
+
+        manager.collector(collector, didCollect: ZoneManagerEvent(
+            eventType: .region(region, .outside),
+            associatedZone: zone
+        ))
+        XCTAssertEqual(api.createdEvent?.eventType, "ios.zone_exited")
+        XCTAssertEqual(api.createdEvent?.eventData["zone"] as? String, "zone.zid")
+        XCTAssertEqual(api.createdEvent?.eventData["multi_region_zone_id"] as? String, "868")
     }
 
     func testCollectorCollectsEventAndProcessorErrors() {
@@ -354,5 +444,14 @@ private class FakeRegionFilter: ZoneManagerRegionFilter {
         } else {
             return AnyCollection(zones.flatMap { $0.regionsForMonitoring })
         }
+    }
+}
+
+private class FakeHassAPI: HomeAssistantAPI {
+    var createdEvent: (eventType: String, eventData: [String : Any])?
+
+    override func CreateEvent(eventType: String, eventData: [String : Any]) -> Promise<Void> {
+        createdEvent = (eventType: eventType, eventData: eventData)
+        return .value(())
     }
 }

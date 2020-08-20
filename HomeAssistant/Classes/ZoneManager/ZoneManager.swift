@@ -94,6 +94,16 @@ class ZoneManager {
         }
     }
 
+    private func fire(event: ZoneManagerEvent) {
+        guard let eventInfo = event.asFirableEvent() else {
+            return
+        }
+
+        Current.api()?
+            .CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData)
+            .cauterize()
+    }
+
     private func sync(zones: AnyCollection<RLMZone>) {
         let currentRegions = locationManager.monitoredRegions
         let desiredRegions = regionFilter.regions(
@@ -139,11 +149,12 @@ class ZoneManager {
         )
 
         Current.Log.info {
-            [
+            let info = [
                 "monitoring \(expected.count) (\(counts))",
                 "started \(needsAddition.count)",
                 "ended \(needsRemoval.count)"
-            ].joined(separator: ", ")
+            ]
+            return info.joined(separator: ", ")
         }
     }
 }
@@ -154,6 +165,7 @@ extension ZoneManager: ZoneManagerCollectorDelegate {
     }
 
     func collector(_ collector: ZoneManagerCollector, didCollect event: ZoneManagerEvent) {
+        fire(event: event)
         perform(event: event)
     }
 }

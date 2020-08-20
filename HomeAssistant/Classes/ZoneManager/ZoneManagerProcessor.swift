@@ -36,16 +36,25 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
             }
         }.then {
             UIApplication.shared.backgroundTask(withName: event.backgroundTaskDescription) { remaining in
-                if event.shouldOneShotLocation {
-                    return api.GetAndSendLocation(
-                        trigger: event.asTrigger(),
-                        zone: event.associatedZone,
-                        maximumBackgroundTime: remaining
-                    )
-                } else {
-                    return api.SubmitLocation(
-                        updateType: event.asTrigger(),
-                        location: event.associatedLocation,
+                let trigger = event.asTrigger()
+                return firstly { () -> Promise<CLLocation?> in
+                    if event.shouldOneShotLocation {
+                        return Current.location
+                            .oneShotLocation(trigger.oneShotTimeout(maximum: remaining))
+                            .map { $0 }
+                    } else {
+                        return .value(event.associatedLocation)
+                    }
+                }.map { location in
+                    if let location = location {
+                        return Self.sanitize(location: location, for: event)
+                    } else {
+                        return nil
+                    }
+                }.then { location in
+                    api.SubmitLocation(
+                        updateType: trigger,
+                        location: location,
                         zone: event.associatedZone
                     )
                 }
@@ -125,5 +134,49 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
         }
 
         return .value(())
+    }
+
+    private static func sanitize(location: CLLocation, for event: ZoneManagerEvent) -> CLLocation {
+        switch event.eventType {
+        case .region(let region as CLCircularRegion, .inside) where !region.contains(location.coordinate):
+            // if we're getting a region monitoring event saying that we're inside, but we're not inside from GPS
+            let centerLocation = CLLocation(latitude: region.center.latitude, longitude: region.center.longitude)
+
+            let missingAccuracy =
+                // how far away from the center we are
+                location.distance(from: centerLocation)
+                // to get to the outer radius (perimeter)
+                - region.radius
+                // adding the accuracy amount we have already
+                - location.horizontalAccuracy
+                // plus a meter to make it definitely inside regardless of rounding
+                + 1.0
+
+            if #available(iOS 13.4, *) {
+                return CLLocation(
+                    coordinate: location.coordinate,
+                    altitude: location.altitude,
+                    horizontalAccuracy: location.horizontalAccuracy + missingAccuracy,
+                    verticalAccuracy: location.verticalAccuracy,
+                    course: location.course,
+                    courseAccuracy: location.courseAccuracy,
+                    speed: location.speed,
+                    speedAccuracy: location.speedAccuracy,
+                    timestamp: location.timestamp
+                )
+            } else {
+                return CLLocation(
+                    coordinate: location.coordinate,
+                    altitude: location.altitude,
+                    horizontalAccuracy: location.horizontalAccuracy,
+                    verticalAccuracy: location.verticalAccuracy,
+                    course: location.course,
+                    speed: location.speed,
+                    timestamp: location.timestamp
+                )
+            }
+        default:
+            return location
+        }
     }
 }

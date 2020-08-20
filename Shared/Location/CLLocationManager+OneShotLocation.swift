@@ -130,6 +130,8 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
         (self.promise, self.seal) = Promise<CLLocation>.pending()
         self.locationManager = locationManager
 
+        Current.isPerformingSingleShotLocationQuery = true
+
         super.init()
 
         locationManager.allowsBackgroundLocationUpdates = true
@@ -142,6 +144,8 @@ internal final class OneShotLocationProxy: NSObject, CLLocationManagerDelegate {
             locationManager.stopUpdatingLocation()
             locationManager.delegate = nil
             self.selfRetain = nil
+
+            Current.isPerformingSingleShotLocationQuery = false
         }
 
         timeout.done(on: workQueue) { [weak self] in
