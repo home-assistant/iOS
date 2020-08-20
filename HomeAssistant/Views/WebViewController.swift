@@ -747,10 +747,10 @@ extension WebViewController: WKScriptMessageHandler {
             }.then { tagInfo in
                 Current.tags.writeNFC(value: tagInfo.tag)
             }.done { _ in
-                Current.Log.info("wrote via external bus")
+                Current.Log.info("wrote tag via external bus")
                 seal(true)
             }.catch { error in
-                Current.Log.error("couldn't write via external bus: \(error)")
+                Current.Log.error("couldn't write tag via external bus: \(error)")
                 seal(false)
             }
         default:
