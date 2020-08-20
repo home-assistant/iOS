@@ -708,42 +708,22 @@ extension WebViewController: WKScriptMessageHandler {
             }, completion: nil)
         case "tag/read":
             response = Current.tags.readNFC().map { tag in
-                WebSocketMessage(
-                    id: incomingMessage.ID!,
-                    type: "result",
-                    result: [
-                        "success": true,
-                        "tag": tag
-                    ]
-                )
+                WebSocketMessage(id: incomingMessage.ID!, type: "result", result: [ "success": true, "tag": tag ])
             }.recover { _ in
-                .value(WebSocketMessage(
-                    id: incomingMessage.ID!,
-                    type: "result",
-                    result: [
-                        "success": false
-                    ]
-                ))
+                .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: [ "success": false ] ))
             }
         case "tag/write":
             let (promise, seal) = Guarantee<Bool>.pending()
             response = promise.map { success in
-                WebSocketMessage(
-                    id: incomingMessage.ID!,
-                    type: "result",
-                    result: [
-                        "success": success
-                    ]
-                )
+                WebSocketMessage(id: incomingMessage.ID!, type: "result", result: [ "success": success ])
             }
 
             firstly { () throws -> Promise<(tag: String, name: String?)> in
-                guard let tag = incomingMessage.Payload?["tag"] as? String else {
+                if let tag = incomingMessage.Payload?["tag"] as? String, tag.isEmpty == false {
+                    return .value((tag: tag, name: incomingMessage.Payload?["name"] as? String))
+                } else {
                     throw HomeAssistantAPI.APIError.invalidResponse
                 }
-
-                let name = incomingMessage.Payload?["name"] as? String
-                return .value((tag: tag, name: name))
             }.then { tagInfo in
                 Current.tags.writeNFC(value: tagInfo.tag)
             }.done { _ in
