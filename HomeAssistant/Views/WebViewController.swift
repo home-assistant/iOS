@@ -44,7 +44,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     let settingsButton: UIButton! = {
         let button = UIButton()
-        button.setImage(MaterialDesignIcons.settingsIcon.image(ofSize: CGSize(width: 36, height: 36), color: .white),
+        button.setImage(MaterialDesignIcons.cogIcon.image(ofSize: CGSize(width: 36, height: 36), color: .white),
                         for: .normal)
         button.accessibilityLabel = L10n.Settings.NavigationBar.title
         button.contentEdgeInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)

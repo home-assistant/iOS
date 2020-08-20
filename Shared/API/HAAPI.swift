@@ -33,6 +33,7 @@ public class HomeAssistantAPI {
         case invalidResponse
         case cantBuildURL
         case notConfigured
+        case updateNotPossible
         case mobileAppComponentNotLoaded
         case webhookGone
         case mustUpgradeHomeAssistant(Version)
@@ -481,6 +482,12 @@ public class HomeAssistantAPI {
                 location: location,
                 zone: zone
             ))
+        }.map { (update: WebhookUpdateLocation?) -> WebhookUpdateLocation in
+            if let update = update {
+                return update
+            } else {
+                throw HomeAssistantAPI.APIError.updateNotPossible
+            }
         }.map { payload -> [String: Any] in
             let realm = Current.realm()
             // swiftlint:disable:next force_try
@@ -527,13 +534,10 @@ public class HomeAssistantAPI {
         }
         Current.Log.verbose("getAndSendLocation called via \(String(describing: updateTrigger))")
 
-        Current.isPerformingSingleShotLocationQuery = true
         return firstly { () -> Promise<CLLocation> in
             return CLLocationManager.oneShotLocation(
                 timeout: updateTrigger.oneShotTimeout(maximum: maximumBackgroundTime)
             )
-        }.ensure {
-            Current.isPerformingSingleShotLocationQuery = false
         }.then { location in
             self.SubmitLocation(updateType: updateTrigger, location: location, zone: zone)
         }.asVoid()
@@ -629,6 +633,24 @@ public class HomeAssistantAPI {
         return (eventType: "tag_scanned", eventData: eventData)
     }
 
+    @available(watchOS, unavailable)
+    public class func zoneStateEvent(
+        region: CLRegion,
+        state: CLRegionState,
+        zone: RLMZone
+    ) -> (eventType: String, eventData: [String: Any]) {
+        var eventData: [String: Any] = sharedEventDeviceInfo
+        eventData["zone"] = zone.ID
+        if region.identifier.contains("@"), let subId = region.identifier.split(separator: "@").last {
+            eventData["multi_region_zone_id"] = String(subId)
+        }
+        if state == .inside {
+            return (eventType: "ios.zone_entered", eventData: eventData)
+        } else {
+            return (eventType: "ios.zone_exited", eventData: eventData)
+        }
+    }
+
     public func HandleAction(actionID: String, source: ActionSource) -> Promise<Void> {
         return Promise { seal in
             guard let api = HomeAssistantAPI.authenticatedAPI() else {
@@ -712,6 +734,8 @@ extension HomeAssistantAPI.APIError: LocalizedError {
             return L10n.HaApi.ApiError.cantBuildUrl
         case .notConfigured:
             return L10n.HaApi.ApiError.notConfigured
+        case .updateNotPossible:
+            return L10n.HaApi.ApiError.updateNotPossible
         case .mobileAppComponentNotLoaded:
             return L10n.HaApi.ApiError.mobileAppComponentNotLoaded
         case .webhookGone:

@@ -380,6 +380,8 @@ internal enum L10n {
       internal static let notConfigured = L10n.tr("Localizable", "ha_api.api_error.not_configured")
       /// An unknown error occurred.
       internal static let unknown = L10n.tr("Localizable", "ha_api.api_error.unknown")
+      /// Operation could not be performed.
+      internal static let updateNotPossible = L10n.tr("Localizable", "ha_api.api_error.update_not_possible")
       /// mobile_app integration has been deleted, you must reconfigure the app.
       internal static let webhookGone = L10n.tr("Localizable", "ha_api.api_error.webhook_gone")
     }

@@ -1,0 +1,360 @@
+import Foundation
+@testable import Shared
+import XCTest
+import CoreLocation
+
+class WebhookUpdateLocationTests: XCTestCase {
+    func testMissingLocationAndZone() {
+        XCTAssertNil(WebhookUpdateLocation(trigger: .GPSRegionEnter, location: nil, zone: nil))
+        XCTAssertNil(WebhookUpdateLocation(trigger: .GPSRegionExit, location: nil, zone: nil))
+        XCTAssertNil(WebhookUpdateLocation(trigger: .BeaconRegionEnter, location: nil, zone: nil))
+        XCTAssertNil(WebhookUpdateLocation(trigger: .BeaconRegionExit, location: nil, zone: nil))
+    }
+
+    func testBeaconEnterNotPassive() {
+        Current.device.batteryLevel = { 44 }
+
+        guard let model = WebhookUpdateLocation(
+            trigger: .BeaconRegionEnter,
+            location: CLLocation(latitude: 1.23, longitude: 4.56),
+            zone: with(RLMZone()) {
+                $0.ID = "zone.given_name"
+                $0.Latitude = -2.34
+                $0.Longitude = -5.67
+                $0.Radius = 88.8
+            }
+        ) else {
+            XCTFail("model was not created")
+            return
+        }
+
+        let json = model.toJSON()
+
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertEqual(json["gps"] as? [Double], [-2.34, -5.67])
+        XCTAssertEqual(json["gps_accuracy"] as? Double, 88.8)
+        XCTAssertEqual(json["location_name"] as? String, "Given Name")
+        XCTAssertNil(json["speed"])
+        XCTAssertNil(json["altitude"])
+        XCTAssertNil(json["course"])
+        XCTAssertNil(json["vertical_accuracy"])
+    }
+
+    func testBeaconEnterPassive() {
+        guard let model = WebhookUpdateLocation(
+            trigger: .BeaconRegionEnter,
+            location: CLLocation(latitude: 1.23, longitude: 4.56),
+            zone: with(RLMZone()) {
+                $0.ID = "zone.given_name"
+                $0.Latitude = -2.34
+                $0.Longitude = -5.67
+                $0.Radius = 88.8
+                $0.isPassive = true
+            }
+        ) else {
+            XCTFail("model was not created")
+            return
+        }
+
+        let json = model.toJSON()
+
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertEqual(json["gps"] as? [Double], [-2.34, -5.67])
+        XCTAssertEqual(json["gps_accuracy"] as? Double, 88.8)
+        XCTAssertNil(json["location_name"], "location is empty because it's passive")
+        XCTAssertNil(json["speed"])
+        XCTAssertNil(json["altitude"])
+        XCTAssertNil(json["course"])
+        XCTAssertNil(json["vertical_accuracy"])
+    }
+
+    func testBeaconExitNotPassive() {
+        Current.device.batteryLevel = { 44 }
+
+        guard let model = WebhookUpdateLocation(
+            trigger: .BeaconRegionExit,
+            location: CLLocation(latitude: 1.23, longitude: 4.56),
+            zone: with(RLMZone()) {
+                $0.ID = "zone.given_name"
+                $0.Latitude = -2.34
+                $0.Longitude = -5.67
+                $0.Radius = 88.8
+            }
+        ) else {
+            XCTFail("model was not created")
+            return
+        }
+
+        let json = model.toJSON()
+
+        // In case this model is accidentally sent to the server, it's without location info
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertNil(json["gps"])
+        XCTAssertNil(json["gps_accuracy"])
+        XCTAssertNil(json["location_name"])
+        XCTAssertNil(json["speed"])
+        XCTAssertNil(json["altitude"])
+        XCTAssertNil(json["course"])
+        XCTAssertNil(json["vertical_accuracy"])
+    }
+
+    func testBeaconEnterHome() {
+        Current.device.batteryLevel = { 44 }
+
+        guard let model = WebhookUpdateLocation(
+            trigger: .BeaconRegionEnter,
+            location: CLLocation(latitude: 1.23, longitude: 4.56),
+            zone: with(RLMZone()) {
+                $0.ID = "zone.home"
+                $0.Latitude = -2.34
+                $0.Longitude = -5.67
+                $0.Radius = 88.8
+            }
+        ) else {
+            XCTFail("model was not created")
+            return
+        }
+
+        let json = model.toJSON()
+
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertEqual(json["gps"] as? [Double], [-2.34, -5.67])
+        XCTAssertEqual(json["gps_accuracy"] as? Double, 88.8)
+        XCTAssertEqual(json["location_name"] as? String, "home")
+        XCTAssertNil(json["speed"])
+        XCTAssertNil(json["altitude"])
+        XCTAssertNil(json["course"])
+        XCTAssertNil(json["vertical_accuracy"])
+    }
+
+    func testBeaconExitHome() {
+        Current.device.batteryLevel = { 44 }
+
+        guard let model = WebhookUpdateLocation(
+            trigger: .BeaconRegionExit,
+            location: CLLocation(latitude: 1.23, longitude: 4.56),
+            zone: with(RLMZone()) {
+                $0.ID = "zone.given_name"
+                $0.Latitude = -2.34
+                $0.Longitude = -5.67
+                $0.Radius = 88.8
+            }
+        ) else {
+            XCTFail("model was not created")
+            return
+        }
+
+        let json = model.toJSON()
+
+        // In case this model is accidentally sent to the server, it's without location info
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertNil(json["gps"])
+        XCTAssertNil(json["gps_accuracy"])
+        XCTAssertNil(json["location_name"])
+        XCTAssertNil(json["speed"])
+        XCTAssertNil(json["altitude"])
+        XCTAssertNil(json["course"])
+        XCTAssertNil(json["vertical_accuracy"])
+    }
+
+    func testBeaconExitPassive() {
+        Current.device.batteryLevel = { 44 }
+
+        guard let model = WebhookUpdateLocation(
+            trigger: .BeaconRegionExit,
+            location: CLLocation(latitude: 1.23, longitude: 4.56),
+            zone: with(RLMZone()) {
+                $0.ID = "zone.given_name"
+                $0.Latitude = -2.34
+                $0.Longitude = -5.67
+                $0.Radius = 88.8
+                $0.isPassive = true
+            }
+        ) else {
+            XCTFail("model was not created")
+            return
+        }
+
+        let json = model.toJSON()
+
+        // In case this model is accidentally sent to the server, it's without location info
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertNil(json["gps"])
+        XCTAssertNil(json["gps_accuracy"])
+        XCTAssertNil(json["location_name"])
+        XCTAssertNil(json["speed"])
+        XCTAssertNil(json["altitude"])
+        XCTAssertNil(json["course"])
+        XCTAssertNil(json["vertical_accuracy"])
+    }
+
+    @available(iOS 13.4, *)
+    func testGPSEnter() {
+        Current.device.batteryLevel = { 44 }
+
+        let now = Date()
+
+        guard let model = WebhookUpdateLocation(
+            trigger: .GPSRegionEnter,
+            location: CLLocation(
+                coordinate: .init(latitude: 1.23, longitude: 4.56),
+                altitude: 103,
+                horizontalAccuracy: 104,
+                verticalAccuracy: 105,
+                course: 106,
+                courseAccuracy: 107,
+                speed: 108,
+                speedAccuracy: 109,
+                timestamp: now.addingTimeInterval(-110)
+            ),
+            zone: with(RLMZone()) {
+                $0.ID = "zone.given_name"
+                $0.Latitude = -2.34
+                $0.Longitude = -5.67
+                $0.Radius = 88.8
+            }
+        ) else {
+            XCTFail("model was not created")
+            return
+        }
+
+        let json = model.toJSON()
+
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertEqual(json["gps"] as? [Double], [1.23, 4.56])
+        XCTAssertEqual(json["gps_accuracy"] as? Double, 104)
+        XCTAssertNil(json["location_name"])
+        XCTAssertEqual(json["speed"] as? Double, 108)
+        XCTAssertEqual(json["altitude"] as? Double, 103)
+        XCTAssertEqual(json["course"] as? Double, 106)
+        XCTAssertEqual(json["vertical_accuracy"] as? Double, 105)
+    }
+
+    @available(iOS 13.4, *)
+    func testGPSExit() {
+        Current.device.batteryLevel = { 44 }
+
+        let now = Date()
+
+        guard let model = WebhookUpdateLocation(
+            trigger: .GPSRegionExit,
+            location: CLLocation(
+                coordinate: .init(latitude: 1.23, longitude: 4.56),
+                altitude: 103,
+                horizontalAccuracy: 104,
+                verticalAccuracy: 105,
+                course: 106,
+                courseAccuracy: 107,
+                speed: 108,
+                speedAccuracy: 109,
+                timestamp: now.addingTimeInterval(-110)
+            ),
+            zone: with(RLMZone()) {
+                $0.ID = "zone.given_name"
+                $0.Latitude = -2.34
+                $0.Longitude = -5.67
+                $0.Radius = 88.8
+            }
+        ) else {
+            XCTFail("model was not created")
+            return
+        }
+
+        let json = model.toJSON()
+
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertEqual(json["gps"] as? [Double], [1.23, 4.56])
+        XCTAssertEqual(json["gps_accuracy"] as? Double, 104)
+        XCTAssertNil(json["location_name"])
+        XCTAssertEqual(json["speed"] as? Double, 108)
+        XCTAssertEqual(json["altitude"] as? Double, 103)
+        XCTAssertEqual(json["course"] as? Double, 106)
+        XCTAssertEqual(json["vertical_accuracy"] as? Double, 105)
+    }
+
+
+    @available(iOS 13.4, *)
+    func testGPSEnterHome() {
+        Current.device.batteryLevel = { 44 }
+
+        let now = Date()
+
+        guard let model = WebhookUpdateLocation(
+            trigger: .GPSRegionEnter,
+            location: CLLocation(
+                coordinate: .init(latitude: 1.23, longitude: 4.56),
+                altitude: 103,
+                horizontalAccuracy: 104,
+                verticalAccuracy: 105,
+                course: 106,
+                courseAccuracy: 107,
+                speed: 108,
+                speedAccuracy: 109,
+                timestamp: now.addingTimeInterval(-110)
+            ),
+            zone: with(RLMZone()) {
+                $0.ID = "zone.given_name"
+                $0.Latitude = -2.34
+                $0.Longitude = -5.67
+                $0.Radius = 88.8
+            }
+        ) else {
+            XCTFail("model was not created")
+            return
+        }
+
+        let json = model.toJSON()
+
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertEqual(json["gps"] as? [Double], [1.23, 4.56])
+        XCTAssertEqual(json["gps_accuracy"] as? Double, 104)
+        XCTAssertNil(json["location_name"])
+        XCTAssertEqual(json["speed"] as? Double, 108)
+        XCTAssertEqual(json["altitude"] as? Double, 103)
+        XCTAssertEqual(json["course"] as? Double, 106)
+        XCTAssertEqual(json["vertical_accuracy"] as? Double, 105)
+    }
+
+    @available(iOS 13.4, *)
+    func testGPSExitHome() {
+        Current.device.batteryLevel = { 44 }
+
+        let now = Date()
+
+        guard let model = WebhookUpdateLocation(
+            trigger: .GPSRegionExit,
+            location: CLLocation(
+                coordinate: .init(latitude: 1.23, longitude: 4.56),
+                altitude: 103,
+                horizontalAccuracy: 104,
+                verticalAccuracy: 105,
+                course: 106,
+                courseAccuracy: 107,
+                speed: 108,
+                speedAccuracy: 109,
+                timestamp: now.addingTimeInterval(-110)
+            ),
+            zone: with(RLMZone()) {
+                $0.ID = "zone.given_name"
+                $0.Latitude = -2.34
+                $0.Longitude = -5.67
+                $0.Radius = 88.8
+            }
+        ) else {
+            XCTFail("model was not created")
+            return
+        }
+
+        let json = model.toJSON()
+
+        XCTAssertEqual(json["battery"] as? Int, 44)
+        XCTAssertEqual(json["gps"] as? [Double], [1.23, 4.56])
+        XCTAssertEqual(json["gps_accuracy"] as? Double, 104)
+        XCTAssertNil(json["location_name"])
+        XCTAssertEqual(json["speed"] as? Double, 108)
+        XCTAssertEqual(json["altitude"] as? Double, 103)
+        XCTAssertEqual(json["course"] as? Double, 106)
+        XCTAssertEqual(json["vertical_accuracy"] as? Double, 105)
+    }
+
+}
