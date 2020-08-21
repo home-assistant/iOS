@@ -668,7 +668,7 @@ extension WebViewController: WKScriptMessageHandler {
         }
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     func handleExternalMessage(_ dictionary: [String: Any]) {
         guard let incomingMessage = WebSocketMessage(dictionary) else {
             Current.Log.error("Received invalid external message \(dictionary)")
@@ -677,11 +677,18 @@ extension WebViewController: WKScriptMessageHandler {
 
         // Current.Log.verbose("Received external bus message \(incomingMessage)")
 
-        var response: WebSocketMessage?
+        var response: Guarantee<WebSocketMessage>?
 
         switch incomingMessage.MessageType {
         case "config/get":
-            response = WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["hasSettingsScreen": true])
+            response = .value(WebSocketMessage(
+                id: incomingMessage.ID!,
+                type: "result",
+                result: [
+                    "hasSettingsScreen": true,
+                    "canWriteTag": Current.tags.isNFCAvailable
+                ]
+            ))
         case "config_screen/show":
             self.showSettingsViewController()
         case "haptic":
@@ -699,12 +706,39 @@ extension WebViewController: WKScriptMessageHandler {
             UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut, animations: {
                 self.settingsButton.alpha = connEvt == "connected" ? 0.0 : 1.0
             }, completion: nil)
+        case "tag/read":
+            response = Current.tags.readNFC().map { tag in
+                WebSocketMessage(id: incomingMessage.ID!, type: "result", result: [ "success": true, "tag": tag ])
+            }.recover { _ in
+                .value(WebSocketMessage(id: incomingMessage.ID!, type: "result", result: [ "success": false ] ))
+            }
+        case "tag/write":
+            let (promise, seal) = Guarantee<Bool>.pending()
+            response = promise.map { success in
+                WebSocketMessage(id: incomingMessage.ID!, type: "result", result: [ "success": success ])
+            }
+
+            firstly { () throws -> Promise<(tag: String, name: String?)> in
+                if let tag = incomingMessage.Payload?["tag"] as? String, tag.isEmpty == false {
+                    return .value((tag: tag, name: incomingMessage.Payload?["name"] as? String))
+                } else {
+                    throw HomeAssistantAPI.APIError.invalidResponse
+                }
+            }.then { tagInfo in
+                Current.tags.writeNFC(value: tagInfo.tag)
+            }.done { _ in
+                Current.Log.info("wrote tag via external bus")
+                seal(true)
+            }.catch { error in
+                Current.Log.error("couldn't write tag via external bus: \(error)")
+                seal(false)
+            }
         default:
             Current.Log.error("Received unknown external message \(incomingMessage)")
             return
         }
 
-        if let outgoing = response {
+        response?.done(on: .main) { outgoing in
             // Current.Log.verbose("Sending response to \(outgoing)")
 
             var encodedMsg: Data?
@@ -735,7 +769,6 @@ extension WebViewController: WKScriptMessageHandler {
                 } */
             })
         }
-
     }
 }
 

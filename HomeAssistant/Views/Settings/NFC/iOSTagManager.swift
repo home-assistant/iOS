@@ -6,7 +6,12 @@ import Shared
 // swiftlint:disable:next type_name
 class iOSTagManager: TagManager {
     var isNFCAvailable: Bool {
-        NFCNDEFReaderSession.readingAvailable
+        if #available(iOS 13, *) {
+            // We need both iOS 13 and NFC
+            return NFCNDEFReaderSession.readingAvailable
+        } else {
+            return false
+        }
     }
 
     func readNFC() -> Promise<String> {
