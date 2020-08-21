@@ -109,16 +109,10 @@ class NFCTagViewController: FormViewController {
                         \(eventDataStrings.joined(separator: indentation))
                     """
                 } else {
-                    /*
-                     NO-BREAK SPACE
-                     Unicode: U+00A0, UTF-8: C2 A0
-                     */
-                    let nbsp = "\u{00a0}"
-
                     return """
                     - platform: tag
-                      tag_id:\(nbsp)\(identifier)
-                      device_id:\(nbsp)\(Current.settingsStore.integrationDeviceID)
+                      tag_id: \(identifier)
+                      device_id: \(Current.settingsStore.integrationDeviceID)
                     """
                 }
             }, present: { [weak self] viewController in
