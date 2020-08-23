@@ -11,7 +11,9 @@ import UIKit
 import Eureka
 import Shared
 import RealmSwift
+#if !targetEnvironment(macCatalyst)
 import Lokalise
+#endif
 import ZIPFoundation
 import UserNotifications
 import Firebase
@@ -127,6 +129,7 @@ class SettingsViewController: FormViewController {
 
         <<< ButtonRow {
             $0.tag = "watch"
+            $0.hidden = .isCatalyst
             $0.title = L10n.Settings.DetailsSection.WatchRow.title
             $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                 let view = SettingsDetailViewController()
@@ -141,7 +144,7 @@ class SettingsViewController: FormViewController {
             $0.title = L10n.Nfc.List.title
 
             if #available(iOS 13, *) {
-                $0.hidden = false
+                $0.hidden = .isCatalyst
                 $0.presentationMode = .show(controllerProvider: ControllerProvider.callback {
                     return NFCListViewController()
                 }, onDismiss: nil)
@@ -341,7 +344,9 @@ class SettingsViewController: FormViewController {
         }.onCellSelection { cell, _ in
             prefs.set(!prefs.bool(forKey: "showTranslationKeys"), forKey: "showTranslationKeys")
 
+            #if !targetEnvironment(macCatalyst)
             Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
+            #endif
 
             let alert = UIAlertController(title: L10n.okLabel, message: nil, preferredStyle: .alert)
 

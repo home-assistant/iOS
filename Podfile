@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '11.4'
+platform :ios, '11.0'
 # Uncomment this line if you're using Swift
 use_frameworks!
 inhibit_all_warnings!
@@ -27,8 +27,6 @@ def shared_pods
     pod 'KeychainAccess'
     pod 'ObjectMapper', :git => 'https://github.com/tristanhimmelman/ObjectMapper.git', :branch => 'master'
     pod 'PromiseKit'
-    pod 'RealmSwift', '~> 5.0'
-    pod 'Sodium'
     pod 'UIColor_Hex_Swift'
     pod 'Version'
     pod 'XCGLogger'
@@ -117,9 +115,22 @@ end
 post_install do |installer|
     installer.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
+            xcconfig_path = config.base_configuration_reference.real_path
+            xcconfig = File.read(xcconfig_path)
+            xcconfig.sub!('-framework "Lokalise"', '')
+            File.open(xcconfig_path, "w") { |file| file << xcconfig }
+
             config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
             config.build_settings['EXCLUDED_ARCHS[sdk=watchsimulator*]'] = 'x86_64 arm64'
+        end
+
+        # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
+        # (catalyst fix)
+        if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
+            target.build_configurations.each do |config|
+                config.build_settings['CODE_SIGN_IDENTITY[sdk=macosx*]'] = '-'
+            end
         end
     end
 end

@@ -24,9 +24,15 @@ struct ZoneManagerEquatableRegion: Hashable {
         }
 
         if let lhs = lhs.beaconRegion, let rhs = rhs.beaconRegion {
-            return lhs.proximityUUID == rhs.proximityUUID &&
-                lhs.minor == rhs.minor &&
-                lhs.major == rhs.major
+            if #available(iOS 13, *) {
+                return lhs.uuid == rhs.uuid &&
+                    lhs.minor == rhs.minor &&
+                    lhs.major == rhs.major
+            } else {
+                return lhs.proximityUUID == rhs.proximityUUID &&
+                    lhs.minor == rhs.minor &&
+                    lhs.major == rhs.major
+            }
         } else if let lhs = lhs.circularReason, let rhs = rhs.circularReason {
             return lhs.center.latitude == rhs.center.latitude &&
                 lhs.center.longitude == rhs.center.longitude &&

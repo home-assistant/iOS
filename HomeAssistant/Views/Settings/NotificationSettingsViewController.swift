@@ -397,14 +397,6 @@ class NotificationSettingsViewController: FormViewController {
         }
     }
 
-    private class func openSettings() {
-        UIApplication.shared.open(
-            URL(string: UIApplication.openSettingsURLString)!,
-            options: [:],
-            completionHandler: nil
-        )
-    }
-
     private func notificationPermissionRow() -> BaseRow {
         var lastPermissionSeen: UNAuthorizationStatus?
 
@@ -461,7 +453,7 @@ class NotificationSettingsViewController: FormViewController {
                         if lastPermissionSeen != .notDetermined {
                             // if we weren't prompting for permission with this request, open settings
                             // we can't avoid the request code-path since getting settings is async
-                            Self.openSettings()
+                            UIApplication.shared.openSettings(destination: .notification)
                         }
                     }
                 }

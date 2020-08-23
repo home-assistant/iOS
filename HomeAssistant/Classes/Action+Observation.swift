@@ -2,7 +2,9 @@ import Foundation
 import Shared
 import RealmSwift
 import PromiseKit
+#if !targetEnvironment(macCatalyst)
 import NotificationCenter
+#endif
 import Intents
 import WidgetKit
 
@@ -19,10 +21,12 @@ extension Action {
             }
 
             let updateTodayWidget = Promise<Void> { seal in
+                #if !targetEnvironment(macCatalyst)
                 NCWidgetController().setHasContent(
                     !collection.isEmpty,
                     forWidgetWithBundleIdentifier: Constants.BundleID.appending(".TodayWidget")
                 )
+                #endif
                 seal.fulfill(())
             }
 

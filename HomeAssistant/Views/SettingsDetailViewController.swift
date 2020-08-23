@@ -78,6 +78,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 }
 
                 <<< PushRow<AppIcon>("appIcon") {
+                        $0.hidden = .isCatalyst
                         $0.title = L10n.SettingsDetails.General.AppIcon.title
                         $0.selectorTitle = $0.title
                         $0.options = AppIcon.allCases
@@ -105,6 +106,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     }
 
                 +++ PushRow<OpenInBrowser>("openInBrowser") {
+                    $0.hidden = .isCatalyst
                     $0.title = L10n.SettingsDetails.General.OpenInBrowser.title
 
                     if let value = prefs.string(forKey: "openInBrowser").flatMap({ OpenInBrowser(rawValue: $0) }),
@@ -648,14 +650,6 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
         return section
     }
 
-    private class func openSettings() {
-        UIApplication.shared.open(
-            URL(string: UIApplication.openSettingsURLString)!,
-            options: [:],
-            completionHandler: nil
-        )
-    }
-
     private func locationPermissionRow() -> BaseRow {
         // swiftlint:disable:next nesting
         class PermissionWatchingDelegate: NSObject, CLLocationManagerDelegate {
@@ -688,7 +682,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 if CLLocationManager.authorizationStatus() == .notDetermined {
                     locationManager.requestAlwaysAuthorization()
                 } else {
-                    Self.openSettings()
+                    UIApplication.shared.openSettings(destination: .location)
                 }
 
                 row.deselect(animated: true)
@@ -705,6 +699,8 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     row.updateCell()
                 }
             }
+
+            row.hidden = .init(booleanLiteral: !Current.motion.isActivityAvailable())
 
             row.title = L10n.SettingsDetails.Location.MotionPermission.title
             update(isInitial: true)
@@ -723,7 +719,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                     })
                 } else {
                     // if the user changes the value in settings, we'll be killed, so we don't need to watch anything
-                    Self.openSettings()
+                    UIApplication.shared.openSettings(destination: .motion)
                 }
 
                 row.deselect(animated: true)
@@ -757,7 +753,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 cell.selectionStyle = .default
             }
             row.onCellSelection { _, row in
-                Self.openSettings()
+                UIApplication.shared.openSettings(destination: .backgroundRefresh)
                 row.deselect(animated: true)
             }
         }

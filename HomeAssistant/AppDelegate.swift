@@ -11,7 +11,9 @@ import CallbackURLKit
 import Communicator
 import Firebase
 import KeychainAccess
+#if !targetEnvironment(macCatalyst)
 import Lokalise
+#endif
 import PromiseKit
 import RealmSwift
 import SafariServices
@@ -120,6 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         connectAPI(reason: .cold)
 
         setup14Workaround()
+        checkForUpdate()
 
         return true
     }
@@ -250,6 +253,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.became_active", eventData: [:])
 
+        #if !targetEnvironment(macCatalyst)
         Lokalise.shared.checkForUpdates { (updated, error) in
             if let error = error {
                 Current.Log.error("Error when updating Lokalise: \(error)")
@@ -259,6 +263,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 Current.Log.info("Lokalise updated? \(updated)")
             }
         }
+        #endif
     }
 
     func applicationWillTerminate(_ application: UIApplication) {}
@@ -725,6 +730,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             .cauterize()
     }
 
+    func checkForUpdate() {
+        guard #available(macCatalyst 13, *) else {
+            // don't need to look for updates on iOS
+            return
+        }
+
+        Current.updater.check().done { [window] update in
+            let alert = UIAlertController(
+                title: L10n.Updater.UpdateAvailable.title,
+                message: update.body,
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(
+                title: L10n.Updater.UpdateAvailable.open(update.name),
+                style: .default,
+                handler: { _ in
+                    UIApplication.shared.open(update.htmlUrl, options: [:], completionHandler: nil)
+                }
+            ))
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
+            window?.rootViewController?.present(alert, animated: true, completion: nil)
+        }.catch { error in
+            Current.Log.error("no update available: \(error)")
+        }
+    }
+
     func setupWatchCommunicator() {
         Communicator.shared.activationStateChangedObservers.add { state in
             Current.Log.verbose("Activation state changed: \(state)")
@@ -907,11 +938,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func configureLokalise() {
+        #if !targetEnvironment(macCatalyst)
         Lokalise.shared.setProjectID("834452985a05254348aee2.46389241",
                                      token: "fe314d5c54f3000871ac18ccac8b62b20c143321")
         Lokalise.shared.swizzleMainBundle()
 
         Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
+        #endif
     }
 
     func setupSentry() {
@@ -1008,6 +1041,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+#if !targetEnvironment(macCatalyst)
 extension AppConfiguration {
     var lokaliseEnv: LokaliseLocalizationType {
         if prefs.bool(forKey: "showTranslationKeys") {
@@ -1023,6 +1057,7 @@ extension AppConfiguration {
         }
     }
 }
+#endif
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     private func open(urlString openUrlRaw: String) {
@@ -1032,7 +1067,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             }
         } else if let url = URL(string: openUrlRaw) {
             let presentingViewController = { () -> UIViewController? in
-                var rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                var rootViewController = self.window!.rootViewController
                 while let controller = rootViewController?.presentedViewController {
                     rootViewController = controller
                 }

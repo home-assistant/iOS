@@ -1,6 +1,9 @@
 DEVELOPMENT_TEAM = QMQYCKL255
 BUNDLE_ID_PREFIX = io.robbie
 
+// resolves some catalyst build-time issues with frameworks and @importing in the objc header we never use
+SWIFT_INSTALL_OBJC_HEADER=NO
+
 // watchOS simulator incompatibility with xcode 12 betas and our dependencies
 EXCLUDED_ARCHS[sdk=watchsimulator*] = x86_64 arm64
 
@@ -8,4 +11,5 @@ EXCLUDED_ARCHS[sdk=watchsimulator*] = x86_64 arm64
 #include? "HomeAssistant.overrides.xcconfig"
 
 // set after overrides in case the team is changed by them - this is customized in e.g. the Release xcconfig
-ENABLE_CRITICAL_ALERTS = $(ENABLE_CRITICAL_ALERTS_$(DEVELOPMENT_TEAM))
+// only iOS, not catalyst, because no critical alerts provisioning for us exists on mac
+ENABLE_CRITICAL_ALERTS[sdk=iphoneos*] = $(ENABLE_CRITICAL_ALERTS_$(DEVELOPMENT_TEAM))
