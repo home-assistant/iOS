@@ -834,6 +834,18 @@
 		1178C4E424D5CEB200FDEC3E /* ConnectionURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionURLViewController.swift; sourceTree = "<group>"; };
 		117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.swift"; sourceTree = "<group>"; };
 		117D8A0924A9381F00580913 /* UIColor+CSSRGB.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSSRGB.test.swift"; sourceTree = "<group>"; };
+		117F07CB24F2CC450097B4D1 /* HomeAssistant Beta-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant Beta-catalyst.entitlements"; sourceTree = "<group>"; };
+		117F07CC24F2CC450097B4D1 /* HomeAssistant Development-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant Development-catalyst.entitlements"; sourceTree = "<group>"; };
+		117F07CD24F2CC450097B4D1 /* HomeAssistant-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "HomeAssistant-catalyst.entitlements"; sourceTree = "<group>"; };
+		117F07CE24F2CD070097B4D1 /* SiriIntents Development-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SiriIntents Development-catalyst.entitlements"; sourceTree = "<group>"; };
+		117F07CF24F2CD070097B4D1 /* SiriIntents-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SiriIntents-catalyst.entitlements"; sourceTree = "<group>"; };
+		117F07D024F2CD070097B4D1 /* SiriIntents Beta-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SiriIntents Beta-catalyst.entitlements"; sourceTree = "<group>"; };
+		117F07D124F2CD7B0097B4D1 /* APNSAttachmentService-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "APNSAttachmentService-catalyst.entitlements"; sourceTree = "<group>"; };
+		117F07D224F2CD7B0097B4D1 /* APNSAttachmentService Beta-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "APNSAttachmentService Beta-catalyst.entitlements"; sourceTree = "<group>"; };
+		117F07D324F2CD7B0097B4D1 /* APNSAttachmentService Development-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "APNSAttachmentService Development-catalyst.entitlements"; sourceTree = "<group>"; };
+		117F07D424F2CD9C0097B4D1 /* WidgetsExtension-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension-catalyst.entitlements"; sourceTree = "<group>"; };
+		117F07D524F2CD9C0097B4D1 /* WidgetsExtension Beta-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension Beta-catalyst.entitlements"; sourceTree = "<group>"; };
+		117F07D624F2CD9D0097B4D1 /* WidgetsExtension Development-catalyst.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WidgetsExtension Development-catalyst.entitlements"; sourceTree = "<group>"; };
 		11810D40249EAF8B00E741A4 /* rainbow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rainbow@2x.png"; sourceTree = "<group>"; };
 		11810D41249EAF8C00E741A4 /* trans@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@3x.png"; sourceTree = "<group>"; };
 		11810D42249EAF8C00E741A4 /* trans@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trans@2x.png"; sourceTree = "<group>"; };
@@ -1675,6 +1687,9 @@
 				1171508224DFCF810065E874 /* WidgetsExtension.entitlements */,
 				11E981E924E10DDC0095962B /* WidgetsExtension Beta.entitlements */,
 				11E981E824E10DDC0095962B /* WidgetsExtension Development.entitlements */,
+				117F07D524F2CD9C0097B4D1 /* WidgetsExtension Beta-catalyst.entitlements */,
+				117F07D624F2CD9D0097B4D1 /* WidgetsExtension Development-catalyst.entitlements */,
+				117F07D424F2CD9C0097B4D1 /* WidgetsExtension-catalyst.entitlements */,
 				1171507124DFCDEE0065E874 /* Assets.xcassets */,
 				1171507324DFCDEE0065E874 /* Info.plist */,
 			);
@@ -2187,6 +2202,9 @@
 				B66C58BF2150B410004AB261 /* SiriIntents.entitlements */,
 				B637243D21697B19006B102A /* SiriIntents Beta.entitlements */,
 				B6D35C692169909400D1F86B /* SiriIntents Development.entitlements */,
+				117F07D024F2CD070097B4D1 /* SiriIntents Beta-catalyst.entitlements */,
+				117F07CE24F2CD070097B4D1 /* SiriIntents Development-catalyst.entitlements */,
+				117F07CF24F2CD070097B4D1 /* SiriIntents-catalyst.entitlements */,
 				B66C58A7215086F0004AB261 /* IntentHandler.swift */,
 				B66C58A9215086F0004AB261 /* Info.plist */,
 				B66C58B02150891B004AB261 /* CallService.swift */,
@@ -2363,6 +2381,9 @@
 				B6AAD79C1D825C8D0090B220 /* HomeAssistant.entitlements */,
 				B637243A21697AA7006B102A /* HomeAssistant Beta.entitlements */,
 				B6D35C632169905400D1F86B /* HomeAssistant Development.entitlements */,
+				117F07CB24F2CC450097B4D1 /* HomeAssistant Beta-catalyst.entitlements */,
+				117F07CC24F2CC450097B4D1 /* HomeAssistant Development-catalyst.entitlements */,
+				117F07CD24F2CC450097B4D1 /* HomeAssistant-catalyst.entitlements */,
 				B657A8F71CA646EB00121384 /* Info.plist */,
 				B60247FE1FBD343000998205 /* InfoPlist.strings */,
 				B657A8F41CA646EB00121384 /* Release LaunchScreen.storyboard */,
@@ -2390,6 +2411,9 @@
 				B689EBCC1D8B91C80000AECE /* APNSAttachmentService.entitlements */,
 				B637243C21697B06006B102A /* APNSAttachmentService Beta.entitlements */,
 				B6D35C652169906A00D1F86B /* APNSAttachmentService Development.entitlements */,
+				117F07D224F2CD7B0097B4D1 /* APNSAttachmentService Beta-catalyst.entitlements */,
+				117F07D324F2CD7B0097B4D1 /* APNSAttachmentService Development-catalyst.entitlements */,
+				117F07D124F2CD7B0097B4D1 /* APNSAttachmentService-catalyst.entitlements */,
 				B6AAD7A51D827DD40090B220 /* Info.plist */,
 				B6AAD7A31D827DD40090B220 /* NotificationService.swift */,
 			);
@@ -4695,6 +4719,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "Widgets/Resources/WidgetsExtension development.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Widgets/Resources/WidgetsExtension development-catalyst.entitlements";
 				CURRENT_PROJECT_VERSION = 5;
 				DEAD_CODE_STRIPPING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -4730,6 +4755,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = Widgets/Resources/WidgetsExtension.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Widgets/Resources/WidgetsExtension-catalyst.entitlements";
 				CURRENT_PROJECT_VERSION = 5;
 				DEAD_CODE_STRIPPING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -4763,6 +4789,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "Widgets/Resources/WidgetsExtension beta.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Widgets/Resources/WidgetsExtension beta-catalyst.entitlements";
 				CURRENT_PROJECT_VERSION = 5;
 				DEAD_CODE_STRIPPING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -4898,6 +4925,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "HomeAssistant/Resources/HomeAssistant Beta.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "HomeAssistant/Resources/HomeAssistant Beta-catalyst.entitlements";
 				CURRENT_PROJECT_VERSION = 5;
 				ENV_URL_HANDLER = "homeassistant-beta";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -4975,6 +5003,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = "APNSAttachmentService/APNSAttachmentService Beta.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "APNSAttachmentService/APNSAttachmentService Beta-catalyst.entitlements";
 				CURRENT_PROJECT_VERSION = 5;
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5083,6 +5112,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "Intents/SiriIntents Beta.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Intents/SiriIntents Beta-catalyst.entitlements";
 				CURRENT_PROJECT_VERSION = 5;
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5301,6 +5331,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = "HomeAssistant/Resources/HomeAssistant Development.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "HomeAssistant/Resources/HomeAssistant Development-catalyst.entitlements";
 				CURRENT_PROJECT_VERSION = 5;
 				ENV_URL_HANDLER = "homeassistant-dev";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5347,6 +5378,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				CODE_SIGN_ENTITLEMENTS = HomeAssistant/Resources/HomeAssistant.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "HomeAssistant/Resources/HomeAssistant-catalyst.entitlements";
 				CURRENT_PROJECT_VERSION = 5;
 				ENV_URL_HANDLER = homeassistant;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5457,6 +5489,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "Intents/SiriIntents Development.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Intents/SiriIntents Development-catalyst.entitlements";
 				CURRENT_PROJECT_VERSION = 5;
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5498,6 +5531,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = Intents/SiriIntents.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Intents/SiriIntents-catalyst.entitlements";
 				CURRENT_PROJECT_VERSION = 5;
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -5739,6 +5773,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = "APNSAttachmentService/APNSAttachmentService Development.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "APNSAttachmentService/APNSAttachmentService Development-catalyst.entitlements";
 				CURRENT_PROJECT_VERSION = 5;
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -5763,6 +5798,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_ENTITLEMENTS = APNSAttachmentService/APNSAttachmentService.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "APNSAttachmentService/APNSAttachmentService-catalyst.entitlements";
 				CURRENT_PROJECT_VERSION = 5;
 				INFOPLIST_FILE = APNSAttachmentService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
