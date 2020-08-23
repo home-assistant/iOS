@@ -10,7 +10,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Copy GoogleService-Info.plist"
-               scriptText = "cp &quot;${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist&quot; &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/GoogleService-Info.plist&quot;&#10;"
+               scriptText = "if [[ $IS_MACCATALYST ]]; then&#10;    cp &quot;${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist&quot; &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/Contents/Resources/GoogleService-Info.plist&quot;&#10;else&#10;    cp &quot;${PROJECT_DIR}/HomeAssistant/Resources/GoogleService-Info-${CONFIGURATION}.plist&quot; &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/GoogleService-Info.plist&quot;&#10;fi&#10;"
                shellToInvoke = "/bin/sh">
                <EnvironmentBuildable>
                   <BuildableReference
