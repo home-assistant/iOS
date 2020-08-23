@@ -742,9 +742,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 message: update.body,
                 preferredStyle: .alert
             )
-            alert.addAction(UIAlertAction(title: L10n.Updater.UpdateAvailable.open(update.name), style: .default, handler: { _ in
-                UIApplication.shared.open(update.htmlUrl, options: [:], completionHandler: nil)
-            }))
+            alert.addAction(UIAlertAction(
+                title: L10n.Updater.UpdateAvailable.open(update.name),
+                style: .default,
+                handler: { _ in
+                    UIApplication.shared.open(update.htmlUrl, options: [:], completionHandler: nil)
+                }
+            ))
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
             window?.rootViewController?.present(alert, animated: true, completion: nil)
         }.catch { error in
