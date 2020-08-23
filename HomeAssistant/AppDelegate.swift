@@ -1040,7 +1040,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             }
         } else if let url = URL(string: openUrlRaw) {
             let presentingViewController = { () -> UIViewController? in
-                var rootViewController = UIApplication.shared.keyWindow?.rootViewController
+                var rootViewController = self.window!.rootViewController
                 while let controller = rootViewController?.presentedViewController {
                     rootViewController = controller
                 }

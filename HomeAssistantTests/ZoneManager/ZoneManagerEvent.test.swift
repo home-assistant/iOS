@@ -10,10 +10,18 @@ class ZoneManagerEventTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        beaconRegion = .init(
-            proximityUUID: UUID(),
-            identifier: "identifier"
-        )
+        if #available(iOS 13, *) {
+            beaconRegion = .init(
+                uuid: UUID(),
+                identifier: "identifier"
+            )
+        } else {
+            beaconRegion = .init(
+                proximityUUID: UUID(),
+                identifier: "identifier"
+            )
+        }
+
         circularRegion = .init(
             center: .init(latitude: 37.123, longitude: -122.456),
             radius: 25,

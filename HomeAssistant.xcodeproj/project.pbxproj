@@ -161,12 +161,12 @@
 		11CD94B724B2CC7400BA801D /* WebhookResponseLocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94B624B2CC7400BA801D /* WebhookResponseLocation.test.swift */; };
 		11CD94B924B2D16F00BA801D /* WebhookResponseServiceCall.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94B824B2D16F00BA801D /* WebhookResponseServiceCall.test.swift */; };
 		11CD94BB24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CD94BA24B2D2C100BA801D /* WebhookResponseUnhandled.test.swift */; };
-		11D15BE124F1E9A600507AEF /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 11D15BE024F1E9A600507AEF /* SwiftPackageProductDependency */; };
-		11D15BE324F1E9E400507AEF /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 11D15BE224F1E9E400507AEF /* SwiftPackageProductDependency */; };
-		11D15BE524F1E9EB00507AEF /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 11D15BE424F1E9EB00507AEF /* SwiftPackageProductDependency */; };
-		11D15BE724F1E9F900507AEF /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 11D15BE624F1E9F900507AEF /* SwiftPackageProductDependency */; };
-		11D15BF124F1ECBD00507AEF /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 11D15BF024F1ECBD00507AEF /* SwiftPackageProductDependency */; };
-		11D15BF324F1ECC100507AEF /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 11D15BF224F1ECC100507AEF /* SwiftPackageProductDependency */; };
+		11D15BE124F1E9A600507AEF /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 11D15BE024F1E9A600507AEF /* RealmSwift */; };
+		11D15BE324F1E9E400507AEF /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 11D15BE224F1E9E400507AEF /* Sodium */; };
+		11D15BE524F1E9EB00507AEF /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 11D15BE424F1E9EB00507AEF /* Sodium */; };
+		11D15BE724F1E9F900507AEF /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 11D15BE624F1E9F900507AEF /* RealmSwift */; };
+		11D15BF124F1ECBD00507AEF /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 11D15BF024F1ECBD00507AEF /* Realm */; };
+		11D15BF324F1ECC100507AEF /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 11D15BF224F1ECC100507AEF /* Realm */; };
 		11D15BF824F1EDEA00507AEF /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		11D826F124E39F2E005B8A86 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D826F024E39F2D005B8A86 /* CoreNFC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		11DC6BAB24E23780002D9FDA /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B63CCDCF2164714900123C50 /* Intents.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
@@ -1553,10 +1553,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11D15BE724F1E9F900507AEF /* BuildFile in Frameworks */,
+				11D15BE724F1E9F900507AEF /* RealmSwift in Frameworks */,
 				28F97CE2A585EB2423FB7003 /* Pods_Shared_watchOS.framework in Frameworks */,
-				11D15BF324F1ECC100507AEF /* BuildFile in Frameworks */,
-				11D15BE324F1E9E400507AEF /* BuildFile in Frameworks */,
+				11D15BF324F1ECC100507AEF /* Realm in Frameworks */,
+				11D15BE324F1E9E400507AEF /* Sodium in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1582,9 +1582,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11D15BF124F1ECBD00507AEF /* BuildFile in Frameworks */,
-				11D15BE524F1E9EB00507AEF /* BuildFile in Frameworks */,
-				11D15BE124F1E9A600507AEF /* BuildFile in Frameworks */,
+				11D15BF124F1ECBD00507AEF /* Realm in Frameworks */,
+				11D15BE524F1E9EB00507AEF /* Sodium in Frameworks */,
+				11D15BE124F1E9A600507AEF /* RealmSwift in Frameworks */,
 				D0EEF301214D8EAB00D1D360 /* CoreLocation.framework in Frameworks */,
 				D0B25BD7213312AE00678C2C /* UserNotifications.framework in Frameworks */,
 				AE8183AD1524FA72946974B8 /* Pods_Shared_iOS.framework in Frameworks */,
@@ -2914,12 +2914,13 @@
 			buildRules = (
 			);
 			dependencies = (
+				117F07AF24F22B050097B4D1 /* PBXTargetDependency */,
 			);
 			name = "Shared-watchOS";
 			packageProductDependencies = (
-				11D15BE224F1E9E400507AEF /* SwiftPackageProductDependency */,
-				11D15BE624F1E9F900507AEF /* SwiftPackageProductDependency */,
-				11D15BF224F1ECC100507AEF /* SwiftPackageProductDependency */,
+				11D15BE224F1E9E400507AEF /* Sodium */,
+				11D15BE624F1E9F900507AEF /* RealmSwift */,
+				11D15BF224F1ECC100507AEF /* Realm */,
 			);
 			productName = "Shared-watchOS";
 			productReference = B67CE82422200D420034C1D0 /* Shared.framework */;
@@ -2995,12 +2996,15 @@
 			buildRules = (
 			);
 			dependencies = (
+				117F07AD24F229830097B4D1 /* PBXTargetDependency */,
+				117F07AB24F2297F0097B4D1 /* PBXTargetDependency */,
+				117F07A924F2296C0097B4D1 /* PBXTargetDependency */,
 			);
 			name = "Shared-iOS";
 			packageProductDependencies = (
-				11D15BE024F1E9A600507AEF /* SwiftPackageProductDependency */,
-				11D15BE424F1E9EB00507AEF /* SwiftPackageProductDependency */,
-				11D15BF024F1ECBD00507AEF /* SwiftPackageProductDependency */,
+				11D15BE024F1E9A600507AEF /* RealmSwift */,
+				11D15BE424F1E9EB00507AEF /* Sodium */,
+				11D15BF024F1ECBD00507AEF /* Realm */,
 			);
 			productName = Shared;
 			productReference = D03D891720E0A85200D4F28D /* Shared.framework */;
@@ -3234,8 +3238,8 @@
 			);
 			mainGroup = B657A8DD1CA646EB00121384;
 			packageReferences = (
-				11C757AB24F1E91F009EEB48 /* RemoteSwiftPackageReference */,
-				11C757AE24F1E956009EEB48 /* RemoteSwiftPackageReference */,
+				11C757AB24F1E91F009EEB48 /* XCRemoteSwiftPackageReference "swift-sodium" */,
+				11C757AE24F1E956009EEB48 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 			);
 			productRefGroup = B657A8E71CA646EB00121384 /* Products */;
 			projectDirPath = "";
@@ -4415,6 +4419,22 @@
 			target = D03D891620E0A85200D4F28D /* Shared-iOS */;
 			targetProxy = 1171507D24DFCE0D0065E874 /* PBXContainerItemProxy */;
 		};
+		117F07A924F2296C0097B4D1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 117F07A824F2296C0097B4D1 /* Sodium */;
+		};
+		117F07AB24F2297F0097B4D1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 117F07AA24F2297F0097B4D1 /* RealmSwift */;
+		};
+		117F07AD24F229830097B4D1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 117F07AC24F229830097B4D1 /* Realm */;
+		};
+		117F07AF24F22B050097B4D1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 117F07AE24F22B050097B4D1 /* Sodium */;
+		};
 		119A172724D74DA800D1B66D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B6CC5D8D2159D10E00833E5D /* WatchAppExtension */;
@@ -4852,6 +4872,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 2020.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}";
@@ -4906,7 +4927,7 @@
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant β";
 				SUPPORTS_MACCATALYST = YES;
-				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Beta;
@@ -5196,6 +5217,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 2020.4;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -5253,6 +5275,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 2020.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}";
@@ -5307,7 +5330,7 @@
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant Δ";
 				SUPPORTS_MACCATALYST = YES;
-				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -5353,7 +5376,7 @@
 				PRODUCT_MODULE_NAME = HomeAssistant;
 				PRODUCT_NAME = "Home Assistant";
 				SUPPORTS_MACCATALYST = YES;
-				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -6137,7 +6160,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		11C757AB24F1E91F009EEB48 /* RemoteSwiftPackageReference */ = {
+		11C757AB24F1E91F009EEB48 /* XCRemoteSwiftPackageReference "swift-sodium" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jedisct1/swift-sodium";
 			requirement = {
@@ -6145,7 +6168,7 @@
 				kind = branch;
 			};
 		};
-		11C757AE24F1E956009EEB48 /* RemoteSwiftPackageReference */ = {
+		11C757AE24F1E956009EEB48 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-cocoa";
 			requirement = {
@@ -6156,34 +6179,54 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		11D15BE024F1E9A600507AEF /* SwiftPackageProductDependency */ = {
+		117F07A824F2296C0097B4D1 /* Sodium */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 11C757AE24F1E956009EEB48 /* RemoteSwiftPackageReference */;
-			productName = RealmSwift;
-		};
-		11D15BE224F1E9E400507AEF /* SwiftPackageProductDependency */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 11C757AB24F1E91F009EEB48 /* RemoteSwiftPackageReference */;
+			package = 11C757AB24F1E91F009EEB48 /* XCRemoteSwiftPackageReference "swift-sodium" */;
 			productName = Sodium;
 		};
-		11D15BE424F1E9EB00507AEF /* SwiftPackageProductDependency */ = {
+		117F07AA24F2297F0097B4D1 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 11C757AB24F1E91F009EEB48 /* RemoteSwiftPackageReference */;
-			productName = Sodium;
-		};
-		11D15BE624F1E9F900507AEF /* SwiftPackageProductDependency */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 11C757AE24F1E956009EEB48 /* RemoteSwiftPackageReference */;
+			package = 11C757AE24F1E956009EEB48 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = RealmSwift;
 		};
-		11D15BF024F1ECBD00507AEF /* SwiftPackageProductDependency */ = {
+		117F07AC24F229830097B4D1 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 11C757AE24F1E956009EEB48 /* RemoteSwiftPackageReference */;
+			package = 11C757AE24F1E956009EEB48 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = Realm;
 		};
-		11D15BF224F1ECC100507AEF /* SwiftPackageProductDependency */ = {
+		117F07AE24F22B050097B4D1 /* Sodium */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 11C757AE24F1E956009EEB48 /* RemoteSwiftPackageReference */;
+			package = 11C757AB24F1E91F009EEB48 /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
+		};
+		11D15BE024F1E9A600507AEF /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11C757AE24F1E956009EEB48 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = RealmSwift;
+		};
+		11D15BE224F1E9E400507AEF /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11C757AB24F1E91F009EEB48 /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
+		};
+		11D15BE424F1E9EB00507AEF /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11C757AB24F1E91F009EEB48 /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
+		};
+		11D15BE624F1E9F900507AEF /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11C757AE24F1E956009EEB48 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = RealmSwift;
+		};
+		11D15BF024F1ECBD00507AEF /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11C757AE24F1E956009EEB48 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = Realm;
+		};
+		11D15BF224F1ECC100507AEF /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11C757AE24F1E956009EEB48 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = Realm;
 		};
 /* End XCSwiftPackageProductDependency section */

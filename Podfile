@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '11.4'
+platform :ios, '11.0'
 # Uncomment this line if you're using Swift
 use_frameworks!
 inhibit_all_warnings!
@@ -124,6 +124,15 @@ post_install do |installer|
             config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
             config.build_settings['EXCLUDED_ARCHS[sdk=watchsimulator*]'] = 'x86_64 arm64'
+            #config.build_settings['EXCLUDED_ARCHS[sdk=macosx*]'] = 'arm64'
+        end
+
+        # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
+        # (catalyst fix)
+        if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
+            target.build_configurations.each do |config|
+                config.build_settings['CODE_SIGN_IDENTITY[sdk=macosx*]'] = '-'
+            end
         end
     end
 end

@@ -34,10 +34,18 @@ class ZoneManagerProcessorTests: XCTestCase {
             radius: 44,
             identifier: "circular_region"
         )
-        beaconRegion = CLBeaconRegion(
-            proximityUUID: UUID(),
-            identifier: "beacon_region"
-        )
+
+        if #available(iOS 13, *) {
+            beaconRegion = CLBeaconRegion(
+                uuid: UUID(),
+                identifier: "beacon_region"
+            )
+        } else {
+            beaconRegion = CLBeaconRegion(
+                proximityUUID: UUID(),
+                identifier: "beacon_region"
+            )
+        }
 
         api = FakeHassAPI(
             connectionInfo: ConnectionInfo(

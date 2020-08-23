@@ -4,6 +4,7 @@ import CoreTelephony
 @testable import Shared
 import XCTest
 
+#if !targetEnvironment(macCatalyst)
 class ConnectivitySensorTests: XCTestCase {
     private func setUp(
         ssid: String?,
@@ -324,3 +325,4 @@ private class FakeCTCarrier: CTCarrier {
     override var isoCountryCode: String? { overrideIsoCountryCode }
     override var allowsVOIP: Bool { overrideAllowsVOIP }
 }
+#endif

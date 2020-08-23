@@ -118,20 +118,44 @@ public final class RLMZone: Object, UpdatableModel {
             return nil
         }
 
-        var beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: self.ID)
+        let beaconRegion: CLBeaconRegion
+
         if let major = self.BeaconMajor.value, let minor = self.BeaconMinor.value {
-            beaconRegion = CLBeaconRegion(
-                proximityUUID: uuid,
-                major: CLBeaconMajorValue(major),
-                minor: CLBeaconMinorValue(minor),
-                identifier: self.ID
-            )
+            if #available(iOS 13, *) {
+                beaconRegion = CLBeaconRegion(
+                    uuid: uuid,
+                    major: CLBeaconMajorValue(major),
+                    minor: CLBeaconMinorValue(minor),
+                    identifier: self.ID
+                )
+            } else {
+                beaconRegion = CLBeaconRegion(
+                    proximityUUID: uuid,
+                    major: CLBeaconMajorValue(major),
+                    minor: CLBeaconMinorValue(minor),
+                    identifier: self.ID
+                )
+            }
         } else if let major = self.BeaconMajor.value {
-            beaconRegion = CLBeaconRegion(
-                proximityUUID: uuid,
-                major: CLBeaconMajorValue(major),
-                identifier: self.ID
-            )
+            if #available(iOS 13, *) {
+                beaconRegion = CLBeaconRegion(
+                    uuid: uuid,
+                    major: CLBeaconMajorValue(major),
+                    identifier: self.ID
+                )
+            } else {
+                beaconRegion = CLBeaconRegion(
+                    proximityUUID: uuid,
+                    major: CLBeaconMajorValue(major),
+                    identifier: self.ID
+                )
+            }
+        } else {
+            if #available(iOS 13, *) {
+                beaconRegion = CLBeaconRegion(uuid: uuid, identifier: self.ID)
+            } else {
+                beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: self.ID)
+            }
         }
 
         beaconRegion.notifyEntryStateOnDisplay = true

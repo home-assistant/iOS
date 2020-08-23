@@ -99,7 +99,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
                                                name: HomeAssistantAPI.didConnectNotification,
                                                object: nil)
 
-        let statusBarView: UIView = UIView(frame: UIApplication.shared.statusBarFrame)
+        let statusBarView = UIView()
         statusBarView.tag = 111
 
         view.addSubview(statusBarView)
