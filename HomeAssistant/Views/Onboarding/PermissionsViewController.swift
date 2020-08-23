@@ -30,6 +30,7 @@ class PermissionsViewController: UIViewController, PermissionViewChangeDelegate 
 
         self.motionPermissionView.delegate = self
         self.motionPermissionView.permission.updateInitial()
+        self.motionPermissionView.isHidden = !Current.motion.isActivityAvailable()
 
         self.notificationsPermissionView.delegate = self
         self.notificationsPermissionView.permission.updateInitial()
