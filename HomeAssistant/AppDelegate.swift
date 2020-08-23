@@ -122,6 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         connectAPI(reason: .cold)
 
         setup14Workaround()
+        checkForUpdate()
 
         return true
     }
@@ -727,6 +728,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         HomeAssistantAPI.authenticatedAPI()?
             .HandleAction(actionID: actionID, source: source)
             .cauterize()
+    }
+
+    func checkForUpdate() {
+        guard #available(macCatalyst 13, *) else {
+            // don't need to look for updates on iOS
+            return
+        }
+
+        Current.updater.check().done { [window] update in
+            let alert = UIAlertController(
+                title: L10n.Updater.UpdateAvailable.title,
+                message: update.body,
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: L10n.Updater.UpdateAvailable.open(update.name), style: .default, handler: { _ in
+                UIApplication.shared.open(update.htmlUrl, options: [:], completionHandler: nil)
+            }))
+            alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
+            window?.rootViewController?.present(alert, animated: true, completion: nil)
+        }.catch { error in
+            Current.Log.error("no update available: \(error)")
+        }
     }
 
     func setupWatchCommunicator() {

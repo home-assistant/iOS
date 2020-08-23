@@ -78,6 +78,8 @@ public class Environment {
 
     public var tags: TagManager = EmptyTagManager()
 
+    public var updater: Updater = Updater()
+
     public lazy var serverVersion: () -> Version = { [settingsStore] in settingsStore.serverVersion }
 
     #if os(iOS)

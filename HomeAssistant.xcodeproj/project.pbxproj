@@ -45,6 +45,8 @@
 		111D294D24F2F6CD00C8A7D1 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 111D294C24F2F6CD00C8A7D1 /* SwiftPackageProductDependency */; };
 		111D294F24F2F6D900C8A7D1 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 111D294E24F2F6D900C8A7D1 /* SwiftPackageProductDependency */; };
 		111D295124F2F6D900C8A7D1 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 111D295024F2F6D900C8A7D1 /* SwiftPackageProductDependency */; };
+		111D295624F30E2400C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
+		111D295724F30E2500C8A7D1 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D295424F30D2C00C8A7D1 /* Updater.swift */; };
 		113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */; };
 		113D29DF24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */; };
 		113D29E124946EE50014067C /* CLLocationManager+OneShotLocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D29E024946EE50014067C /* CLLocationManager+OneShotLocationTests.swift */; };
@@ -813,6 +815,7 @@
 		110FB4522499DC28000865B4 /* NotificationErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationErrorViewController.swift; sourceTree = "<group>"; };
 		1110836724AFEFA60027A67A /* Promise+WebhookJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.swift"; sourceTree = "<group>"; };
 		111858D324CB5B8900B8CDDC /* PerformAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformAction.swift; sourceTree = "<group>"; };
+		111D295424F30D2C00C8A7D1 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
 		113D04E124D76CD3003CE877 /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
 		113D04E324D76CDB003CE877 /* NFCWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCWriter.swift; sourceTree = "<group>"; };
 		113D29DD24946ED90014067C /* CLLocationManager+OneShotLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+OneShotLocation.swift"; sourceTree = "<group>"; };
@@ -1644,6 +1647,13 @@
 			path = Actions;
 			sourceTree = "<group>";
 		};
+		111D295324F30D1E00C8A7D1 /* Catalyst */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Catalyst;
+			sourceTree = "<group>";
+		};
 		1141182824AFA0F000E6525C /* Request&Response */ = {
 			isa = PBXGroup;
 			children = (
@@ -2119,6 +2129,7 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
+				111D295324F30D1E00C8A7D1 /* Catalyst */,
 				D0EEF32F214E41CE00D1D360 /* Notifications */,
 				D0C8845E211ED0BA00CCB501 /* Authentication */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
@@ -2673,6 +2684,7 @@
 		D0C8846E21212B5600CCB501 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				111D295424F30D2C00C8A7D1 /* Updater.swift */,
 				D014EEA82128E192008EA6F5 /* ConnectionInfo.swift */,
 				11B7FD732493225200E60ED9 /* BackgroundTask.swift */,
 				11E5CF8024BBCE1B009AC30F /* ProcessInfo+BackgroundTask.swift */,
@@ -4255,6 +4267,7 @@
 				B67CE8B922200F220034C1D0 /* Environment.swift in Sources */,
 				B6723342225DB82E0031D629 /* KeyedDecodingContainer+JSON.swift in Sources */,
 				B67CE8B122200F220034C1D0 /* CLError+DebugDescription.swift in Sources */,
+				111D295724F30E2500C8A7D1 /* Updater.swift in Sources */,
 				B62CD2A6225B099D008DF3C5 /* WebhookSensor.swift in Sources */,
 				B6D3B4EE225B26910082BB4F /* SensorContainer.swift in Sources */,
 				B67CE8B322200F220034C1D0 /* Realm+Initialization.swift in Sources */,
@@ -4382,6 +4395,7 @@
 				D03D893B20E0B2E300D4F28D /* Constants.swift in Sources */,
 				D03D893520E0AEF100D4F28D /* Realm+Initialization.swift in Sources */,
 				D0EEF2C9214D89A700D1D360 /* HAAPI+RequestHelpers.swift in Sources */,
+				111D295624F30E2400C8A7D1 /* Updater.swift in Sources */,
 				B672334D225DE1490031D629 /* SubscribeEvents.swift in Sources */,
 				113D29DE24946EDA0014067C /* CLLocationManager+OneShotLocation.swift in Sources */,
 				11C4627F24B04CB800031902 /* Promise+RetryNetworking.swift in Sources */,

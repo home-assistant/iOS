@@ -2064,6 +2064,17 @@ internal enum L10n {
     internal static let tokenUnavailable = L10n.tr("Localizable", "token_error.token_unavailable")
   }
 
+  internal enum Updater {
+    internal enum UpdateAvailable {
+      /// View '%@'
+      internal static func `open`(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "updater.update_available.open", String(describing: p1))
+      }
+      /// Update Available
+      internal static let title = L10n.tr("Localizable", "updater.update_available.title")
+    }
+  }
+
   internal enum UrlHandler {
     internal enum CallService {
       internal enum Error {
