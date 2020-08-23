@@ -233,7 +233,13 @@ public extension UNAuthorizationOptions {
     static var defaultOptions: UNAuthorizationOptions {
         var opts: UNAuthorizationOptions = [.alert, .badge, .sound]
         if #available(iOS 12.0, *) {
-            opts.formUnion([.criticalAlert, .providesAppNotificationSettings])
+            opts.formUnion([.providesAppNotificationSettings])
+
+            if #available(macCatalyst 13.0, *) {
+                // we don't have provisioning for critical alerts in catalyst yet, and asking for permission errors
+            } else {
+                opts.insert(.criticalAlert)
+            }
         }
         if #available(iOS 13.0, *) {
             opts.insert(.announcement)
