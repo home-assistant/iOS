@@ -101,6 +101,15 @@ class ConnectionSettingsViewController: FormViewController, RowControllerType {
             }
 
             <<< ButtonRowWithPresent<ConnectionURLViewController> { row in
+                if Current.isCatalyst {
+                    if #available(macCatalyst 14.0, *) {
+                        row.hidden = false
+                    } else {
+                        // wifi information is not available on pre-14.0 catalyst
+                        row.hidden = true
+                    }
+                }
+
                 row.cellStyle = .value1
                 row.title = L10n.Settings.ConnectionSection.InternalBaseUrl.title
                 row.displayValueFor = { _ in Current.settingsStore.connectionInfo?.internalURL?.absoluteString }

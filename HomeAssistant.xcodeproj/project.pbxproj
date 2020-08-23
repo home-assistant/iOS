@@ -134,6 +134,8 @@
 		11AF4D2E249DA5AF006C74C0 /* GeocoderSensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D2D249DA5AF006C74C0 /* GeocoderSensor.test.swift */; };
 		11AF4D30249DCA88006C74C0 /* ConnectivitySensor.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AF4D2F249DCA87006C74C0 /* ConnectivitySensor.test.swift */; };
 		11B1FFC524CCD72F00F9BCB2 /* VoiceShortcutRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */; };
+		11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */; };
+		11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */; };
 		11B7FD742493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD752493225200E60ED9 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD732493225200E60ED9 /* BackgroundTask.swift */; };
 		11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */; };
@@ -902,6 +904,8 @@
 		11AF4D2D249DA5AF006C74C0 /* GeocoderSensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeocoderSensor.test.swift; sourceTree = "<group>"; };
 		11AF4D2F249DCA87006C74C0 /* ConnectivitySensor.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivitySensor.test.swift; sourceTree = "<group>"; };
 		11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceShortcutRow.swift; sourceTree = "<group>"; };
+		11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EurekaCondition+Additions.swift"; sourceTree = "<group>"; };
+		11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenSettings.swift"; sourceTree = "<group>"; };
 		11B7FD732493225200E60ED9 /* BackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
 		11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		11BD8BBC24E76BAD004B9A54 /* WidgetActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetActions.swift; sourceTree = "<group>"; };
@@ -2329,6 +2333,7 @@
 				11B1FFC424CCD72F00F9BCB2 /* VoiceShortcutRow.swift */,
 				11948E8824DA5D50006F5657 /* InfoLabelRow.swift */,
 				11993D2124E787C700627944 /* UIApplicationDelegate+FullScreenConfirm.swift */,
+				11B62DBD24F2EDD800E5CB55 /* EurekaCondition+Additions.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2358,6 +2363,7 @@
 				B6DD5E6924940F6F003A0154 /* OpenInFirefoxControllerSwift.swift */,
 				117D8A0724A9347F00580913 /* UIColor+CSSRGB.swift */,
 				B6CC96D524B0097500CE53ED /* SentryLogDestination.swift */,
+				11B62DBF24F2F06100E5CB55 /* UIApplication+OpenSettings.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -4078,6 +4084,7 @@
 				11A71C6B24A463FC00D9565F /* ZoneManagerState.swift in Sources */,
 				110702C624E7B49B00679B94 /* Strings.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
+				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
 				B6093CE4228CFB0A0079E661 /* RemotePlayerState.swift in Sources */,
 				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,
@@ -4115,6 +4122,7 @@
 				B65B15052273188300635D5C /* Assets.swift in Sources */,
 				B661FB7C226C199200E541DD /* PermissionsViewController.swift in Sources */,
 				B605C893226EC25800EF46DD /* AuthenticationViewController.swift in Sources */,
+				11B62DBE24F2EDD800E5CB55 /* EurekaCondition+Additions.swift in Sources */,
 				B661FB74226C110A00E541DD /* WelcomeViewController.swift in Sources */,
 				11A71C8B24A5848B00D9565F /* ZoneManagerProcessor.swift in Sources */,
 				D06C751020D87FAF00E9DB7F /* ClientEventCell.swift in Sources */,

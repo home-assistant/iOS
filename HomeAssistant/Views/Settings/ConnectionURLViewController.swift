@@ -263,11 +263,7 @@ final class ConnectionURLViewController: FormViewController, TypedRowControllerT
                 if CLLocationManager.authorizationStatus() == .notDetermined {
                     locationManager?.requestAlwaysAuthorization()
                 } else {
-                    UIApplication.shared.open(
-                        URL(string: UIApplication.openSettingsURLString)!,
-                        options: [:],
-                        completionHandler: nil
-                    )
+                    UIApplication.shared.openSettings(destination: .location)
                 }
             }
         }
