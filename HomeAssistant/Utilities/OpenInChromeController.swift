@@ -35,7 +35,7 @@ import Shared
 private let googleChromeHTTPScheme: String = "googlechrome:"
 private let googleChromeHTTPSScheme: String = "googlechromes:"
 private let googleChromeCallbackScheme: String = "googlechrome-x-callback:"
-private let characterSet: CharacterSet = CharacterSet.urlQueryAllowed
+private let characterSet: CharacterSet = .urlQueryAllowed
 
 private func encodeByAddingPercentEscapes(_ input: String?) -> String {
     if let input = input {
