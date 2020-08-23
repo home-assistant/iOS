@@ -116,7 +116,13 @@ public class Environment {
 
     // Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
     public let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
-    public let isCatalyst = ProcessInfo.processInfo.isMacCatalystApp
+    public let isCatalyst: Bool = {
+        #if targetEnvironment(macCatalyst)
+        return true
+        #else
+        return false
+        #endif
+    }()
 
     private let isFastlaneSnapshot = UserDefaults(suiteName: Constants.AppGroupID)!.bool(forKey: "FASTLANE_SNAPSHOT")
 
