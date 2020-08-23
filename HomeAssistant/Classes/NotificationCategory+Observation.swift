@@ -2,7 +2,7 @@ import Foundation
 import Shared
 import RealmSwift
 import PromiseKit
-import NotificationCenter
+import UserNotifications
 
 extension NotificationCategory {
     static func setupObserver() {
