@@ -11,7 +11,9 @@ import UIKit
 import Eureka
 import Shared
 import RealmSwift
+#if !targetEnvironment(macCatalyst)
 import Lokalise
+#endif
 import ZIPFoundation
 import UserNotifications
 import Firebase
@@ -341,7 +343,9 @@ class SettingsViewController: FormViewController {
         }.onCellSelection { cell, _ in
             prefs.set(!prefs.bool(forKey: "showTranslationKeys"), forKey: "showTranslationKeys")
 
+            #if !targetEnvironment(macCatalyst)
             Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
+            #endif
 
             let alert = UIAlertController(title: L10n.okLabel, message: nil, preferredStyle: .alert)
 

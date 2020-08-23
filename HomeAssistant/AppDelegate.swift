@@ -11,7 +11,9 @@ import CallbackURLKit
 import Communicator
 import Firebase
 import KeychainAccess
+#if !targetEnvironment(macCatalyst)
 import Lokalise
+#endif
 import PromiseKit
 import RealmSwift
 import SafariServices
@@ -250,6 +252,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         _ = HomeAssistantAPI.authenticatedAPI()?.CreateEvent(eventType: "ios.became_active", eventData: [:])
 
+        #if !targetEnvironment(macCatalyst)
         Lokalise.shared.checkForUpdates { (updated, error) in
             if let error = error {
                 Current.Log.error("Error when updating Lokalise: \(error)")
@@ -259,6 +262,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 Current.Log.info("Lokalise updated? \(updated)")
             }
         }
+        #endif
     }
 
     func applicationWillTerminate(_ application: UIApplication) {}
@@ -907,11 +911,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func configureLokalise() {
+        #if !targetEnvironment(macCatalyst)
         Lokalise.shared.setProjectID("834452985a05254348aee2.46389241",
                                      token: "fe314d5c54f3000871ac18ccac8b62b20c143321")
         Lokalise.shared.swizzleMainBundle()
 
         Lokalise.shared.localizationType = Current.appConfiguration.lokaliseEnv
+        #endif
     }
 
     func setupSentry() {
@@ -1008,6 +1014,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+#if !targetEnvironment(macCatalyst)
 extension AppConfiguration {
     var lokaliseEnv: LokaliseLocalizationType {
         if prefs.bool(forKey: "showTranslationKeys") {
@@ -1023,6 +1030,7 @@ extension AppConfiguration {
         }
     }
 }
+#endif
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     private func open(urlString openUrlRaw: String) {
