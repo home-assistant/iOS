@@ -118,13 +118,11 @@ post_install do |installer|
             xcconfig_path = config.base_configuration_reference.real_path
             xcconfig = File.read(xcconfig_path)
             xcconfig.sub!('-framework "Lokalise"', '')
-            # new_xcconfig = xcconfig + 'OTHER_LDFLAGS[sdk=iphone*] = -framework "Crashlytics" -framework "Fabric"'
             File.open(xcconfig_path, "w") { |file| file << xcconfig }
 
             config.build_settings['WATCHOS_DEPLOYMENT_TARGET'] = '5.0'
             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
             config.build_settings['EXCLUDED_ARCHS[sdk=watchsimulator*]'] = 'x86_64 arm64'
-            #config.build_settings['EXCLUDED_ARCHS[sdk=macosx*]'] = 'arm64'
         end
 
         # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
