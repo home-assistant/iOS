@@ -1,6 +1,9 @@
 DEVELOPMENT_TEAM = QMQYCKL255
 BUNDLE_ID_PREFIX = io.robbie
 
+// resolves some build-time issues with frameworks and @importing in the objc header we never use
+SWIFT_INSTALL_OBJC_HEADER=NO
+
 // watchOS simulator incompatibility with xcode 12 betas and our dependencies
 EXCLUDED_ARCHS[sdk=watchsimulator*] = x86_64 arm64
 

@@ -27,8 +27,6 @@ def shared_pods
     pod 'KeychainAccess'
     pod 'ObjectMapper', :git => 'https://github.com/tristanhimmelman/ObjectMapper.git', :branch => 'master'
     pod 'PromiseKit'
-    pod 'RealmSwift', '~> 5.0'
-    pod 'Sodium'
     pod 'UIColor_Hex_Swift'
     pod 'Version'
     pod 'XCGLogger'
