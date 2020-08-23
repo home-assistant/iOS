@@ -267,7 +267,7 @@ public class Environment {
     public struct Connectivity {
         public var currentWiFiSSID: () -> String? = { ConnectionInfo.CurrentWiFiSSID }
         public var currentWiFiBSSID: () -> String? = { ConnectionInfo.CurrentWiFiBSSID }
-        #if os(iOS)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         public var simpleNetworkType: () -> NetworkType = Reachability.getSimpleNetworkType
         public var cellularNetworkType: () -> NetworkType = Reachability.getNetworkType
 

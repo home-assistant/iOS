@@ -346,7 +346,7 @@ public class ConnectionInfo: Codable {
 
     /// Returns the current SSID if it exists and the platform supports it.
     public static var CurrentWiFiSSID: String? {
-        #if os(iOS)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
         for interface in interfaces {
             guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else { continue }
@@ -358,7 +358,7 @@ public class ConnectionInfo: Codable {
 
     /// Returns the current BSSID if it exists and the platform supports it.
     public static var CurrentWiFiBSSID: String? {
-        #if os(iOS)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         guard let interfaces = CNCopySupportedInterfaces() as? [String] else { return nil }
         for interface in interfaces {
             guard let interfaceInfo = CNCopyCurrentNetworkInfo(interface as CFString) as NSDictionary? else { continue }

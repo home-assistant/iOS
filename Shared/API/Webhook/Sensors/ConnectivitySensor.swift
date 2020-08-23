@@ -17,7 +17,7 @@ public class ConnectivitySensor: SensorProvider {
     }
 
     public func sensors() -> Promise<[WebhookSensor]> {
-        #if os(iOS)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         return firstly {
             when(resolved: [
                 ssid(),
@@ -38,7 +38,7 @@ public class ConnectivitySensor: SensorProvider {
         #endif
     }
 
-    #if os(iOS)
+    #if os(iOS) && !targetEnvironment(macCatalyst)
 
     private func ssid() -> Promise<[WebhookSensor]> {
         return .value([
