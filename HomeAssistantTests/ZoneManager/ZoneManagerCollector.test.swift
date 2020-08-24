@@ -65,6 +65,9 @@ class ZoneManagerCollectorTests: XCTestCase {
     }
 
     func testDidStartMonitoringLogsAndRequestsState() {
+        let wasCatalyst = Current.isCatalyst
+        Current.isCatalyst = false
+
         let region = CLCircularRegion()
         collector.locationManager(locationManager, didStartMonitoringFor: region)
         XCTAssertEqual(delegate.states.count, 1)
@@ -82,6 +85,33 @@ class ZoneManagerCollectorTests: XCTestCase {
         }
 
         XCTAssertEqual(locationManager.requestedRegions, [region])
+
+        Current.isCatalyst = wasCatalyst
+    }
+
+    func testDidStartMonitoringLogsButDoesntRequestsStateOnCatalyst() {
+        let wasCatalyst = Current.isCatalyst
+        Current.isCatalyst = true
+
+        let region = CLCircularRegion()
+        collector.locationManager(locationManager, didStartMonitoringFor: region)
+        XCTAssertEqual(delegate.states.count, 1)
+
+        guard let state = delegate.states.first else {
+            return
+        }
+
+        switch state {
+        case .didStartMonitoring(region):
+            // pass
+            break
+        default:
+            XCTFail("expected start, got \(state)")
+        }
+
+        XCTAssertEqual(locationManager.requestedRegions, [])
+
+        Current.isCatalyst = wasCatalyst
     }
 
     func testDidDetermineStateWithNoZoneInRealm() {

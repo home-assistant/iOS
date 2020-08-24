@@ -91,9 +91,12 @@ class ZoneManagerProcessorImpl: ZoneManagerProcessor {
             return ignore(.locationMissingEntries)
         }
 
-        if let lastLocation = locations.last, Current.date().timeIntervalSince(lastLocation.timestamp) > 30.0 {
+        if let lastLocation = locations.last,
+           Current.date().timeIntervalSince(lastLocation.timestamp) > 30.0,
+           Current.isCatalyst == false {
             // if we're just being tangentially told about locations because of creating the location manager,
             // we want to ignore it in favor if manually getting location in a non-this-class code path
+            // on Catalyst we allow this to trigger a location change because region monitoring is largely unreliable
             return ignore(.locationUpdateTooOld)
         }
 
