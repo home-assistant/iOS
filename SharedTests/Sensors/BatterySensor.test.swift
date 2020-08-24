@@ -4,6 +4,18 @@ import PromiseKit
 import XCTest
 
 class BatterySensorTests: XCTestCase {
+    func testAdditionalInfo() throws {
+        Current.device.verboseBatteryInfo = { [
+            "test": true
+        ] }
+
+        let (uLevel, uState, cLevel, cState) = try sensors(level: 100)
+        XCTAssertEqual(uLevel.Attributes?["test"] as? Bool, true)
+        XCTAssertEqual(uState.Attributes?["test"] as? Bool, true)
+        XCTAssertEqual(cLevel.Attributes?["test"] as? Bool, true)
+        XCTAssertEqual(cState.Attributes?["test"] as? Bool, true)
+    }
+    
     func testBattery0() throws {
         let (uLevel, uState, cLevel, cState) = try sensors(level: 0)
         XCTAssertEqual(uLevel.Icon, "mdi:battery-outline")
@@ -186,18 +198,6 @@ class BatterySensorTests: XCTestCase {
         XCTAssertEqual(cState.State as? String, "Full")
     }
 
-    func testSimulatorLevelOverride() throws {
-        Current.device.batteryLevel = { -100 }
-        Current.device.batteryState = { .full }
-
-        let promise = BatterySensor(request: .init(reason: .trigger("unit-test"))).sensors()
-        let sensors = try hang(promise)
-        XCTAssertEqual(sensors.count, 2)
-
-        let level = sensors[0]
-        XCTAssertEqual(level.State as? Int, 100)
-    }
-
     private func XCTAssertLevel(_ sensor: WebhookSensor, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(sensor.Name, "Battery Level", file: file, line: line)
         XCTAssertEqual(sensor.UniqueID, "battery_level", file: file, line: line)
@@ -218,7 +218,7 @@ class BatterySensorTests: XCTestCase {
         line: UInt = #line
     ) throws -> (uLevel: WebhookSensor, uState: WebhookSensor, cLevel: WebhookSensor, cState: WebhookSensor) {
         Current.device.batteryLevel = { level }
-        Current.device.batteryState = { level == 100 && !forceNotFull ? .full : .unplugged(level) }
+        Current.device.batteryState = { level == 100 && !forceNotFull ? .full : .unplugged }
         Current.device.isLowPowerMode = { true }
 
         let uPromise = BatterySensor(request: .init(reason: .trigger("unit-test"))).sensors()
@@ -237,7 +237,7 @@ class BatterySensorTests: XCTestCase {
         XCTAssertEqual(uState.Attributes?["Low Power Mode"] as? Bool, true)
 
         Current.device.batteryLevel = { level }
-        Current.device.batteryState = { level == 100 && !forceNotFull ? .full : .charging(level) }
+        Current.device.batteryState = { level == 100 && !forceNotFull ? .full : .charging }
         Current.device.isLowPowerMode = { true }
 
         let cPromise = BatterySensor(request: .init(reason: .trigger("unit-test"))).sensors()

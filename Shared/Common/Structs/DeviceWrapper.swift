@@ -36,7 +36,11 @@ public class DeviceWrapper {
         defer {
             UIDevice.current.isBatteryMonitoringEnabled = isMonitoringEnabled
         }
-        return Int(round(UIDevice.current.batteryLevel * 100))
+        #if targetEnvironment(simulator)
+            return 100
+        #else
+            return Int(round(UIDevice.current.batteryLevel * 100))
+        #endif
         #elseif os(watchOS)
         let isMonitoringEnabled = WKInterfaceDevice.current().isBatteryMonitoringEnabled
         defer {
