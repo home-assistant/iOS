@@ -73,7 +73,7 @@ public class HomeAssistantAPI {
             let version = ProcessInfo.processInfo.operatingSystemVersion
             let versionString = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
 
-            var notCircularReferenceWrapper = DeviceWrapper()
+            let notCircularReferenceWrapper = DeviceWrapper()
             let osName = notCircularReferenceWrapper.systemName()
             return "\(osName) \(versionString)"
         }()

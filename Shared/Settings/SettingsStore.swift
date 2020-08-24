@@ -127,13 +127,7 @@ public class SettingsStore {
     }
 
     public var integrationDeviceID: String {
-        let baseString: String
-
-        if #available(iOS 7, watchOS 6.2, *) {
-            baseString = Current.device.identifierForVendor() ?? deviceID
-        } else {
-            baseString = deviceID
-        }
+        let baseString = Current.device.identifierForVendor() ?? deviceID
 
         switch Current.appConfiguration {
         case .Beta:

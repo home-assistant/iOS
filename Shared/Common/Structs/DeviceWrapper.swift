@@ -1,14 +1,37 @@
 import Foundation
+#if targetEnvironment(macCatalyst)
+import IOKit.ps
+#endif
 #if os(iOS)
 import UIKit
-#elseif os(watchOS)
+#endif
+#if os(watchOS)
 import WatchKit
 #endif
 
 /// Wrapper around UIDevice/WKInterfaceDevice
-public struct DeviceWrapper {
+public class DeviceWrapper {
+    public lazy var verboseBatteryInfo: () -> [String: Any] = {
+        #if targetEnvironment(macCatalyst)
+        /// keys: https://developer.apple.com/documentation/iokit/iopskeys_h/defines
+        let blob = IOPSCopyPowerSourcesInfo().takeRetainedValue()
+        let powerSources = IOPSCopyPowerSourcesList(blob).takeRetainedValue() as [CFTypeRef]
+
+        return powerSources
+            .map { IOPSGetPowerSourceDescription(blob, $0).takeUnretainedValue() }
+            .compactMap { $0 as? [String: Any] }
+            .reduce(into: [String: Any]()) { current, added in
+                current.merge(added, uniquingKeysWith: { a, _ in a })
+            }
+        #else
+        return [:]
+        #endif
+    }
+
     public lazy var batteryLevel: () -> Int = {
-        #if os(iOS)
+        #if targetEnvironment(macCatalyst)
+        return self.verboseBatteryInfo()[kIOPSCurrentCapacityKey] as? Int ?? -1
+        #elseif os(iOS)
         let isMonitoringEnabled = UIDevice.current.isBatteryMonitoringEnabled
         defer {
             UIDevice.current.isBatteryMonitoringEnabled = isMonitoringEnabled
@@ -27,6 +50,22 @@ public struct DeviceWrapper {
         case charging
         case unplugged
         case full
+
+        #if targetEnvironment(macCatalyst)
+        init(verboseInfo: [String: Any]) {
+            let isCharged = verboseInfo[kIOPSIsChargedKey] as? Bool ?? false
+            let isCharging = verboseInfo[kIOPSIsChargingKey] as? Bool ?? false
+
+            switch (isCharged, isCharging) {
+            case (true, _):
+                self = .full
+            case (false, true):
+                self = .charging
+            case (false, false):
+                self = .unplugged
+            }
+        }
+        #endif
 
         #if os(iOS)
         init(state: UIDevice.BatteryState) {
@@ -54,7 +93,9 @@ public struct DeviceWrapper {
     }
 
     public lazy var batteryState: () -> BatteryState = {
-        #if os(iOS)
+        #if targetEnvironment(macCatalyst)
+        return .init(verboseInfo: self.verboseBatteryInfo())
+        #elseif os(iOS)
         let isMonitoringEnabled = UIDevice.current.isBatteryMonitoringEnabled
         defer {
             UIDevice.current.isBatteryMonitoringEnabled = isMonitoringEnabled
@@ -94,7 +135,6 @@ public struct DeviceWrapper {
         #endif
     }
 
-    @available(iOS 7.0, watchOS 6.2, *)
     public lazy var identifierForVendor: () -> String? = {
         #if os(iOS)
             return UIDevice.current.identifierForVendor?.uuidString
