@@ -31,4 +31,4 @@
 "suf-pJ-Nle.normalTitle" = "Starte På Nytt";
 "7iT-bd-cdY.text" = "Manuell konfigurasjon";
 "PIW-dY-j0P.text" = "Skriv inn url-adressen til Home Assistant for å fortsette. Det må være en fullt utformet URL av formatet \"http://homeassistant.local:8123\" (det vil si inneholder et skjema / protokoll, vertsnavn og port).";
-"xO0-K1-GJX.placeholder" = "http://homeassistant.local:8123";
+"xO0-K1-GJX.placeholder" = "f.eks. http://homeassistant.local:8123";

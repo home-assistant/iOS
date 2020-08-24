@@ -621,7 +621,7 @@
 "settings_details.notifications.sounds.imported" = "已导入";
 "delete" = "删除";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.myhouse.com";
-"settings.connection_section.internal_base_url.placeholder" = "http://homeassistant.local:8123/";
+"settings.connection_section.internal_base_url.placeholder" = "e.g. http://homeassistant.local:8123/";
 "settings.connection_section.internal_url_ssids.header" = "无线网络";
 "settings.connection_section.internal_url_ssids.placeholder" = "MyFunnyNetworkName";
 "settings.connection_section.internal_url_ssids.footer" = "连接到列出的无线网络时将使用内部URL";
@@ -787,7 +787,7 @@
 \
 Your actions and local configuration will still be available after logging in.";
 "onboarding.logged_out_from_move.learn_more" = "Learn more about the move.";
-"onboarding.logged_out_from_move.duplicate_warning" = "To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in.";
+"onboarding.logged_out_from_move.duplicate_warning" = "To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in. Restart HA once logged so services update.";
 "onboarding.logged_out_from_move.continue" = "Continue";
 "settings_details.privacy.analytics.generic_title" = "Analytics";
 "settings_details.privacy.analytics.generic_description" = "Allows collection of basic information about your device and interactions with the app. No user identifiable data is shared, including your Home Assistant URLs and tokens. You must restart the app for changes to this setting to take effect.";
@@ -841,3 +841,19 @@ Tags will work on any device with Home Assistant installed which has hardware su
 "settings_details.actions.actions_synced.footer_no_actions" = "Actions may be also defined in the .yaml configuration.";
 "settings.connection_section.cloud_overrides_external" = "When connecting via Cloud, the External URL will not be used. You do not need to configure one unless you want to disable Cloud.";
 "nfc.generic_tag_read" = "Tag Read";
+"database.problem.title" = "Database Error";
+"database.problem.delete" = "Delete Database & Quit App";
+"database.problem.quit" = "Quit App";
+"settings.developer.show_log_files.title" = "Show log files in Finder";
+"settings_details.actions.footer_mac" = "Actions are used in the application menu and widgets.";
+"ha_api.api_error.update_not_possible" = "Operation could not be performed.";
+"settings_details.notifications.sounds.import_mac_instructions" = "Add custom sounds to your Sounds folder to use them in notifications. Use their filename without extension as the sound value in the service call.";
+"settings_details.notifications.sounds.import_mac_open_folder" = "Open Folder in Finder";
+"url_handler.error.action_not_found" = "Action Not Found";
+"widgets.actions.title" = "Actions";
+"widgets.actions.not_configured" = "No Actions Configured";
+"updater.update_available.title" = "Update Available";
+"updater.update_available.open" = "View '%@'";
+"menu.application.about" = "About %@";
+"menu.application.preferences" = "Preferences…";
+"menu.help.help" = "%@ Help";

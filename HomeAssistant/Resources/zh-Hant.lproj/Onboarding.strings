@@ -31,4 +31,4 @@
 "suf-pJ-Nle.normalTitle" = "重新開始";
 "7iT-bd-cdY.text" = "手動設定";
 "PIW-dY-j0P.text" = "請輸入 Home Assistant URL 位址以繼續。必須為完整網址格式，如 \"http://homeassistant.local:8123\"（即包含通訊協定、主機名稱與通訊埠）。";
-"xO0-K1-GJX.placeholder" = "http://homeassistant.local:8123";
+"xO0-K1-GJX.placeholder" = "例如、http://homeassistant.local:8123";

@@ -615,7 +615,7 @@
 "settings_details.notifications.sounds.imported" = "Importerede";
 "delete" = "Slet";
 "settings.connection_section.external_base_url.placeholder" = "https://homeassistant.mithjem.dk";
-"settings.connection_section.internal_base_url.placeholder" = "http://homeassistant.local:8123/";
+"settings.connection_section.internal_base_url.placeholder" = "fx http://homeassistant.local:8123/";
 "settings.connection_section.internal_url_ssids.header" = "SSID'er";
 "settings.connection_section.internal_url_ssids.placeholder" = "MitSjoveNetværksnavn";
 "settings.connection_section.internal_url_ssids.footer" = "Intern webadresse vil blive brugt, når der er oprettet forbindelse til tilføjede SSID'er";
@@ -805,7 +805,7 @@ Tak.\
 \
 Dine handlinger og din lokale konfiguration vil stadig være tilgængelige, efter du har logget ind.";
 "onboarding.logged_out_from_move.learn_more" = "Få mere at vide om skiftet.";
-"onboarding.logged_out_from_move.duplicate_warning" = "For at undgå dublerede entiteter skal du fjerne den eksisterende integration af mobile_app for denne enhed i din browser, inden du logger ind.";
+"onboarding.logged_out_from_move.duplicate_warning" = "For at undgå dublerede entiteter skal du fjerne den eksisterende integration af mobile_app for denne enhed i din browser, inden du logger ind. Genstart HA når du er logget ind så tjenester opdateres.";
 "onboarding.logged_out_from_move.continue" = "Fortsæt";
 "settings_details.privacy.analytics.generic_title" = "Analytics";
 "settings_details.privacy.analytics.generic_description" = "Giver mulighed for indsamling af grundlæggende oplysninger om din enhed og interaktioner med appen. Der deles ingen brugeridentificerbare data herunder webadresser og tokens til Home Assistant. Du skal genstarte appen, for at ændringer af denne indstilling kan træde i kraft.";
@@ -859,3 +859,19 @@ Tags vil virke på enhver enhed med Home Assistant installeret som har hardwareu
 "settings_details.actions.actions_synced.footer_no_actions" = "Handlinger kan også defineres i .yaml-konfigurationen.";
 "settings.connection_section.cloud_overrides_external" = "Når du opretter forbindelse via Cloud, bruges den eksterne webadresse ikke. Du behøver ikke at konfigurere en, medmindre du vil deaktivere Cloud.";
 "nfc.generic_tag_read" = "Tag læst";
+"database.problem.title" = "Fejl i database";
+"database.problem.delete" = "Slet database & afslut app";
+"database.problem.quit" = "Afslut app";
+"settings.developer.show_log_files.title" = "Show log files in Finder";
+"settings_details.actions.footer_mac" = "Actions are used in the application menu and widgets.";
+"ha_api.api_error.update_not_possible" = "Operation could not be performed.";
+"settings_details.notifications.sounds.import_mac_instructions" = "Add custom sounds to your Sounds folder to use them in notifications. Use their filename without extension as the sound value in the service call.";
+"settings_details.notifications.sounds.import_mac_open_folder" = "Open Folder in Finder";
+"url_handler.error.action_not_found" = "Action Not Found";
+"widgets.actions.title" = "Actions";
+"widgets.actions.not_configured" = "No Actions Configured";
+"updater.update_available.title" = "Update Available";
+"updater.update_available.open" = "View '%@'";
+"menu.application.about" = "About %@";
+"menu.application.preferences" = "Preferences…";
+"menu.help.help" = "%@ Help";

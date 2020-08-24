@@ -31,4 +31,4 @@
 "suf-pJ-Nle.normalTitle" = "Začni znova";
 "7iT-bd-cdY.text" = "Ročna konfiguracija";
 "PIW-dY-j0P.text" = "Za nadaljevanje vnesite URL svojega Home Assistant-a. To mora biti v celotni URL v obliki \"http://hassio.local:8123\" (to je, da vsebuje shemo/protokol, ime gostitelja in vrata).";
-"xO0-K1-GJX.placeholder" = "http://homeassistant.local:8123";
+"xO0-K1-GJX.placeholder" = "e.g. http://homeassistant.local:8123";

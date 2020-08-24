@@ -772,7 +772,7 @@ internal enum L10n {
       internal static let body = L10n.tr("Localizable", "onboarding.logged_out_from_move.body")
       /// Continue
       internal static let `continue` = L10n.tr("Localizable", "onboarding.logged_out_from_move.continue")
-      /// To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in.
+      /// To avoid duplicate entities, you must remove the existing mobile_app integration for this device in your browser before logging in. Restart HA once logged so services update.
       internal static let duplicateWarning = L10n.tr("Localizable", "onboarding.logged_out_from_move.duplicate_warning")
       /// Learn more about the move.
       internal static let learnMore = L10n.tr("Localizable", "onboarding.logged_out_from_move.learn_more")
@@ -1189,7 +1189,7 @@ internal enum L10n {
         internal static let title = L10n.tr("Localizable", "settings.connection_section.home_assistant_cloud.title")
       }
       internal enum InternalBaseUrl {
-        /// http://homeassistant.local:8123/
+        /// e.g. http://homeassistant.local:8123/
         internal static let placeholder = L10n.tr("Localizable", "settings.connection_section.internal_base_url.placeholder")
         /// Internal URL
         internal static let title = L10n.tr("Localizable", "settings.connection_section.internal_base_url.title")
