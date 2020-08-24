@@ -556,18 +556,26 @@ class OneShotLocationTests: XCTestCase {
 
                 if testCase.hasPerfect {
                     XCTAssertTrue(promise.isFulfilled, file: testCase.file, line: testCase.line)
+
+                    XCTAssertEqual(
+                        promise.value,
+                        testCase.winnerLocation,
+                        testCase.reason,
+                        file: testCase.file,
+                        line: testCase.line
+                    )
                 } else {
                     XCTAssertFalse(promise.isFulfilled, file: testCase.file, line: testCase.line)
                     timeoutSeal(())
-                }
 
-                XCTAssertEqual(
-                    try hang(promise),
-                    testCase.winnerLocation,
-                    testCase.reason,
-                    file: testCase.file,
-                    line: testCase.line
-                )
+                    XCTAssertEqual(
+                        try hang(promise),
+                        testCase.winnerLocation,
+                        testCase.reason,
+                        file: testCase.file,
+                        line: testCase.line
+                    )
+                }
             }
         }
     }
