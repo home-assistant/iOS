@@ -60,6 +60,7 @@
 		114E9B4E24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114E9B4F24E89B1300B43EED /* INImage+MaterialDesignIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */; };
 		114FACAE24B2ABA2006C581F /* Promise+WebhookJson.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */; };
+		115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115DA28C24F4646500C00BB1 /* MenuManager.swift */; };
 		1161C01B24D7634300A0E3C4 /* NFCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */; };
 		1171506B24DFCDE60065E874 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506A24DFCDE60065E874 /* WidgetKit.framework */; };
 		1171506D24DFCDE60065E874 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1171506C24DFCDE60065E874 /* SwiftUI.framework */; };
@@ -827,6 +828,7 @@
 		1148A44F24E9AF9200345050 /* MDIMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDIMigration.swift; sourceTree = "<group>"; };
 		114E9B4D24E89B1300B43EED /* INImage+MaterialDesignIcons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "INImage+MaterialDesignIcons.swift"; sourceTree = "<group>"; };
 		114FACAD24B2ABA2006C581F /* Promise+WebhookJson.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+WebhookJson.test.swift"; sourceTree = "<group>"; };
+		115DA28C24F4646500C00BB1 /* MenuManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuManager.swift; sourceTree = "<group>"; };
 		1161C01624D75BD500A0E3C4 /* iOSTagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSTagManager.swift; sourceTree = "<group>"; };
 		1161C01A24D7634300A0E3C4 /* NFCListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCListViewController.swift; sourceTree = "<group>"; };
 		1166363289B5E05B7BAB7204 /* Pods_Shared_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1650,13 +1652,6 @@
 			path = Actions;
 			sourceTree = "<group>";
 		};
-		111D295324F30D1E00C8A7D1 /* Catalyst */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Catalyst;
-			sourceTree = "<group>";
-		};
 		1141182824AFA0F000E6525C /* Request&Response */ = {
 			isa = PBXGroup;
 			children = (
@@ -2132,7 +2127,6 @@
 		B657A8E81CA646EB00121384 /* HomeAssistant */ = {
 			isa = PBXGroup;
 			children = (
-				111D295324F30D1E00C8A7D1 /* Catalyst */,
 				D0EEF32F214E41CE00D1D360 /* Notifications */,
 				D0C8845E211ED0BA00CCB501 /* Authentication */,
 				D03D893720E0AF1B00D4F28D /* ClientEvents */,
@@ -2355,6 +2349,7 @@
 		B679B1FA1E1F3D020071D366 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				115DA28C24F4646500C00BB1 /* MenuManager.swift */,
 				B6617EEC1CFE79AD004DEE6D /* NSURL+QueryDictionary.swift */,
 				B641BC241E20A17B002CCBC1 /* OpenInChromeController.swift */,
 				B6E857A11CB1CCCC00F96925 /* Utils.swift */,
@@ -4117,6 +4112,7 @@
 				110702C624E7B49B00679B94 /* Strings.swift in Sources */,
 				B6B2E6A5216ACE4400D39A26 /* ActionConfigurator.swift in Sources */,
 				11B62DC024F2F06100E5CB55 /* UIApplication+OpenSettings.swift in Sources */,
+				115DA29324F464DC00C00BB1 /* MenuManager.swift in Sources */,
 				11A71C8924A5844300D9565F /* ZoneManagerCollector.swift in Sources */,
 				B6093CE4228CFB0A0079E661 /* RemotePlayerState.swift in Sources */,
 				119C9B2124A44DA500308A54 /* ZoneManager.swift in Sources */,

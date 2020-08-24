@@ -487,6 +487,23 @@ internal enum L10n {
     internal static let title = L10n.tr("Localizable", "manual_location_update_notification.title")
   }
 
+  internal enum Menu {
+    internal enum Application {
+      /// About %@
+      internal static func about(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "menu.application.about", String(describing: p1))
+      }
+      /// Preferences…
+      internal static let preferences = L10n.tr("Localizable", "menu.application.preferences")
+    }
+    internal enum Help {
+      /// %@ Help
+      internal static func help(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "menu.help.help", String(describing: p1))
+      }
+    }
+  }
+
   internal enum Nfc {
     /// Tag Read
     internal static let genericTagRead = L10n.tr("Localizable", "nfc.generic_tag_read")

@@ -43,6 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var webViewControllerSeal: (WebViewController) -> Void
 
     private var zoneManager: ZoneManager?
+    private var menuManager: MenuManager?
 
     private var periodicUpdateTimer: Timer? {
         willSet {
@@ -237,6 +238,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.onboardingComplete = {
             self.updateRootViewController(to: self.webViewNavigationController(rootViewController: WebViewController()))
         }
+    }
+
+    override func buildMenu(with builder: UIMenuBuilder) {
+        if builder.system == .main {
+            menuManager = MenuManager(builder: builder)
+        }
+    }
+
+    @objc internal func openAbout() {
+        // TODO: multiple scenes, open window
+        let controller = AboutViewController()
+        let navigationController = UINavigationController(rootViewController: controller)
+        window?.rootViewController?.present(navigationController, animated: true, completion: nil)
+    }
+
+    @objc internal func openPreferences() {
+        // TODO: multiple scenes, open window
+        webViewControllerPromise.done {
+            $0.showSettingsViewController()
+        }
+    }
+
+    @objc internal func openHelp() {
+        openURLInBrowser(
+            URL(string: "https://companion.home-assistant.io")!,
+            nil
+        )
     }
 
     func applicationWillResignActive(_ application: UIApplication) {}
