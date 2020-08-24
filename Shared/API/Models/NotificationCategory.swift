@@ -8,7 +8,6 @@
 
 import Foundation
 import RealmSwift
-import DeviceKit
 import UserNotifications
 
 final public class NotificationCategory: Object, UpdatableModel {

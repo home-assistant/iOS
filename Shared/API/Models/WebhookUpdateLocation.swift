@@ -10,7 +10,6 @@ import Foundation
 import ObjectMapper
 import CoreLocation
 import CoreMotion
-import DeviceKit
 
 public enum LocationNames: String {
     case Home = "home"

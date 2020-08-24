@@ -1,6 +1,5 @@
 import Foundation
 import PromiseKit
-import DeviceKit
 
 public class StorageSensor: SensorProvider {
     public enum StorageError: Error, Equatable {

@@ -30,7 +30,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
             delegate: self,
             queue: nil
         )
-        readerSession.alertMessage = L10n.Nfc.Read.startMessage(Current.device.model())
+        readerSession.alertMessage = L10n.Nfc.Read.startMessage(Current.device.inspecificModel())
         readerSession.begin()
     }
 

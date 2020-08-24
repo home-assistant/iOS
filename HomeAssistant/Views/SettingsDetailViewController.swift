@@ -15,7 +15,6 @@ import PromiseKit
 import RealmSwift
 import Firebase
 import CoreMotion
-import DeviceKit
 import FirebaseMessaging
 import Version
 
@@ -70,7 +69,7 @@ class SettingsDetailViewController: FormViewController, TypedRowControllerType {
                 +++ Section()
                 <<< TextRow {
                     $0.title = L10n.SettingsDetails.General.DeviceName.title
-                    $0.placeholder = Device.current.name
+                    $0.placeholder = Current.device.deviceName()
                     $0.value = Current.settingsStore.overrideDeviceName
                     $0.onChange { row in
                         Current.settingsStore.overrideDeviceName = row.value

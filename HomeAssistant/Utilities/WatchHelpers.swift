@@ -8,7 +8,6 @@
 
 import Foundation
 import Communicator
-import DeviceKit
 import ObjectMapper
 import PromiseKit
 import RealmSwift
@@ -47,7 +46,7 @@ extension HomeAssistantAPI {
         }
 
         content["activeFamilies"] = activeFamilies
-        content["watchModel"] = Device.identifier
+        content["watchModel"] = Current.device.systemModel()
 
         #endif
 
