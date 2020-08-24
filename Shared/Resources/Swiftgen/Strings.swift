@@ -1803,6 +1803,10 @@ internal enum L10n {
         internal static let importCustom = L10n.tr("Localizable", "settings_details.notifications.sounds.import_custom")
         /// Import sounds from iTunes File Sharing
         internal static let importFileSharing = L10n.tr("Localizable", "settings_details.notifications.sounds.import_file_sharing")
+        /// Add custom sounds to your Sounds folder to use them in notifications. Use their filename without extension as the sound value in the service call.
+        internal static let importMacInstructions = L10n.tr("Localizable", "settings_details.notifications.sounds.import_mac_instructions")
+        /// Open Folder in Finder
+        internal static let importMacOpenFolder = L10n.tr("Localizable", "settings_details.notifications.sounds.import_mac_open_folder")
         /// Import system sounds
         internal static let importSystem = L10n.tr("Localizable", "settings_details.notifications.sounds.import_system")
         /// Imported
