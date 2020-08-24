@@ -139,7 +139,11 @@ public class DeviceWrapper {
         #if os(iOS)
             return UIDevice.current.identifierForVendor?.uuidString
         #elseif os(watchOS)
-            return WKInterfaceDevice.current().identifierForVendor?.uuidString
+            if #available(watchOS 6.2, *) {
+                return WKInterfaceDevice.current().identifierForVendor?.uuidString
+            } else {
+                return nil
+            }
         #endif
     }
 
