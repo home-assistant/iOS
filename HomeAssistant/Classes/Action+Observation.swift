@@ -9,6 +9,7 @@ import Intents
 import WidgetKit
 
 extension Action {
+    // swiftlint:disable:next function_body_length
     static func setupObserver() {
         let actions = Current.realm()
             .objects(Action.self)

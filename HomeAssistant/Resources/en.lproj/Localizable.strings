@@ -469,6 +469,7 @@
 "settings.developer.map_notification.notification.body" = "Expand this to show the map content extension";
 "settings.developer.map_notification.title" = "Show map notification content extension";
 "settings_details.actions.footer" = "Actions are used in the Apple Watch app, App Icon Actions and the Today widget";
+"settings_details.actions.footer_mac" = "Actions are used in the application menu and widgets.";
 "settings_details.actions.title" = "Actions";
 "settings_details.general.app_icon.enum.beta" = "Beta";
 "settings_details.general.app_icon.enum.black" = "Black";

@@ -1461,6 +1461,8 @@ internal enum L10n {
     internal enum Actions {
       /// Actions are used in the Apple Watch app, App Icon Actions and the Today widget
       internal static let footer = L10n.tr("Localizable", "settings_details.actions.footer")
+      /// Actions are used in the application menu and widgets.
+      internal static let footerMac = L10n.tr("Localizable", "settings_details.actions.footer_mac")
       /// Actions
       internal static let title = L10n.tr("Localizable", "settings_details.actions.title")
       internal enum ActionsSynced {
