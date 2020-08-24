@@ -44,11 +44,15 @@ class SettingsViewController: FormViewController {
             cell.accessibilityLabel = row.title
         }
 
-        let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
-                                          style: .plain, target: self,
-                                          action: #selector(SettingsViewController.openAbout(_:)))
+        if !Current.isCatalyst {
+            // About is in the Application menu on Catalyst
 
-        self.navigationItem.setLeftBarButton(aboutButton, animated: true)
+            let aboutButton = UIBarButtonItem(title: L10n.Settings.NavigationBar.AboutButton.title,
+                                              style: .plain, target: self,
+                                              action: #selector(SettingsViewController.openAbout(_:)))
+
+            self.navigationItem.setLeftBarButton(aboutButton, animated: true)
+        }
 
         let closeSelector = #selector(SettingsViewController.closeSettings(_:))
         let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self,
