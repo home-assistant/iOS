@@ -71,7 +71,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         setDefaults()
-        Current.isBackgroundRequestsImmediate = { application.applicationState != .background }
+        Current.isBackgroundRequestsImmediate = {
+            if Current.isCatalyst {
+                return false
+            } else {
+                return application.applicationState != .background
+            }
+        }
 
         #if targetEnvironment(simulator)
         Current.tags = SimulatorTagManager()
