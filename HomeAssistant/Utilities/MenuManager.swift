@@ -1,12 +1,37 @@
 import Foundation
 import UIKit
+import RealmSwift
+import Shared
+
+private extension UIMenu.Identifier {
+    static var haActions: Self { .init(rawValue: "ha.actions") }
+    static var haHelp: Self { .init(rawValue: "ha.help") }
+}
 
 class MenuManager {
     let builder: UIMenuBuilder
 
+    private var realmTokens = [NotificationToken]()
+
     init(builder: UIMenuBuilder) {
         self.builder = builder
         update()
+    }
+
+    static func url(from command: UICommand) -> URL? {
+        guard let propertyList = command.propertyList as? [String: Any] else {
+            return nil
+        }
+
+        guard let urlString = propertyList["url"] as? String else {
+            return nil
+        }
+
+        return URL(string: urlString)
+    }
+
+    static private func propertyList(for url: URL) -> Any {
+        return ["url": url.absoluteString]
     }
 
     private var appName: String {
@@ -19,6 +44,7 @@ class MenuManager {
         builder.replace(menu: .about, with: aboutMenu())
         builder.insertSibling(preferencesMenu(), afterMenu: .about)
         builder.replaceChildren(ofMenu: .help) { _ in helpMenus() }
+        builder.insertSibling(actionsMenu(), beforeMenu: .window)
     }
 
     private func aboutMenu() -> UIMenu {
@@ -73,10 +99,46 @@ class MenuManager {
             UIMenu(
                 title: title,
                 image: nil,
-                identifier: .init(rawValue: "ha.help"),
+                identifier: .haHelp,
                 options: .displayInline,
                 children: [helpCommand]
             )
         ]
+    }
+
+    private func actionsMenu() -> UIMenu {
+        // Action+Observation calls reload, so when they change this all gets run again
+        let children = Current.realm()
+            .objects(Action.self)
+            .sorted(byKeyPath: #keyPath(Action.Position))
+            .map { action -> UICommand in
+                let iconRect = CGRect(x: 0, y: 0, width: 28, height: 28)
+
+                let image = UIKit.UIGraphicsImageRenderer(size: iconRect.size).image { _ in
+                    let imageRect = iconRect.insetBy(dx: 3, dy: 3)
+
+                    UIColor(hex: action.BackgroundColor).set()
+                    UIBezierPath(roundedRect: iconRect, cornerRadius: 6.0).fill()
+
+                    MaterialDesignIcons(named: action.IconName)
+                        .image(ofSize: imageRect.size, color: UIColor(hex: action.IconColor))
+                        .draw(in: imageRect)
+                }
+
+                return UICommand(
+                    title: action.Text,
+                    image: image,
+                    action: #selector(AppDelegate.openMenuUrl(_:)),
+                    propertyList: Self.propertyList(for: action.widgetLinkURL)
+                )
+            }
+
+        return UIMenu(
+            title: L10n.Widgets.Actions.title,
+            image: nil,
+            identifier: .haActions,
+            options: [],
+            children: Array(children)
+        )
     }
 }

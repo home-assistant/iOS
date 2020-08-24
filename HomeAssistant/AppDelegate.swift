@@ -253,6 +253,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController?.present(navigationController, animated: true, completion: nil)
     }
 
+    @objc internal func openMenuUrl(_ command: AnyObject) {
+        guard let command = command as? UICommand else {
+            return
+        }
+
+        if let url = MenuManager.url(from: command) {
+            _ = application(UIApplication.shared, open: url, options: [:])
+        }
+    }
+
     @objc internal func openPreferences() {
         // TODO: multiple scenes, open window
         webViewControllerPromise.done {

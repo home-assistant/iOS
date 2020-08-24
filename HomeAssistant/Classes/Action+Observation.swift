@@ -15,6 +15,13 @@ extension Action {
             .sorted(byKeyPath: #keyPath(Action.Position))
 
         Current.modelManager.observe(for: AnyRealmCollection(actions)) { collection in
+            let invalidateMenu = Promise<Void> { seal in
+                if #available(iOS 13, *) {
+                    UIMenuSystem.main.setNeedsRebuild()
+                }
+                seal.fulfill(())
+            }
+
             let updateShortcuts = Promise<Void> { seal in
                 UIApplication.shared.shortcutItems = collection.map(\.uiShortcut)
                 seal.fulfill(())
@@ -58,6 +65,7 @@ extension Action {
             }
 
             return when(resolved: [
+                invalidateMenu,
                 updateShortcuts,
                 updateTodayWidget,
                 updateWidgetKitWidgets,
