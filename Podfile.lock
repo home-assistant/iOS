@@ -9,7 +9,6 @@ PODS:
   - Communicator (3.3.0):
     - TABObserverSet (~> 2)
   - CPDAcknowledgements (1.0.0)
-  - DeviceKit (3.2.0)
   - EMTLoadingIndicator (4.0.0)
   - Eureka (5.2.1)
   - Firebase/CoreOnly (6.30.0):
@@ -128,7 +127,6 @@ DEPENDENCIES:
   - ColorPickerRow (from `https://github.com/EurekaCommunity/ColorPickerRow`, branch `master`)
   - Communicator (~> 3.3.0)
   - CPDAcknowledgements (from `https://github.com/CocoaPods/CPDAcknowledgements`, branch `master`)
-  - DeviceKit
   - EMTLoadingIndicator (from `https://github.com/hirokimu/EMTLoadingIndicator`, branch `master`)
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, branch `xcode12`)
   - Firebase/Messaging
@@ -157,7 +155,6 @@ SPEC REPOS:
     - Alamofire
     - CallbackURLKit
     - Communicator
-    - DeviceKit
     - Firebase
     - FirebaseCore
     - FirebaseCoreDiagnostics
@@ -240,7 +237,6 @@ SPEC CHECKSUMS:
   ColorPickerRow: 409acc262ca04283eb56f54e813e775d2e99741e
   Communicator: d870b95ca54965412790334620e2f188c68f2462
   CPDAcknowledgements: 6e15e71849ba4ad5e8a17a0bb9d20938ad23bac8
-  DeviceKit: d081659419cce07c0b5239dbc9fb39ed7413c7fe
   EMTLoadingIndicator: 0d3256b0de3e6ba5ab17048acc7aa93af34e48d3
   Eureka: c883105488e05bc65539f583246ecf9657cabbfe
   Firebase: 210f41ca352067d83b1ba4fd2e7fb49a0c017397
@@ -276,6 +272,6 @@ SPEC CHECKSUMS:
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 4947112bc9a2d81df28eceb617901de5a7e48ce5
+PODFILE CHECKSUM: 9b8a817a320499f97e8a3adcee67159c468abf09
 
 COCOAPODS: 1.10.0.beta.2

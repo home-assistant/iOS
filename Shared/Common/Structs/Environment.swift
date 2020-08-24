@@ -11,7 +11,6 @@ import PromiseKit
 import RealmSwift
 import XCGLogger
 import CoreMotion
-import DeviceKit
 import CoreLocation
 import Version
 #if os(iOS)
@@ -242,20 +241,6 @@ public class Environment {
     }
     public var pedometer = Pedometer()
 
-    /// Wrapper around DeviceKit
-    public struct DeviceWrapper {
-        public lazy var batteryLevel: () -> Int = { Device.current.batteryLevel ?? 0 }
-        public lazy var batteryState: () -> Device.BatteryState = { Device.current.batteryState ?? .full }
-        public lazy var isLowPowerMode: () -> Bool = { Device.current.batteryState?.lowPowerMode ?? false }
-        public lazy var volumes: () -> [URLResourceKey: Int64]? = {
-            #if os(iOS)
-                return Device.volumes
-            #else
-                return nil
-            #endif
-        }
-        public lazy var model: () -> String = { Device.current.model ?? L10n.Device.genericName }
-    }
     public var device = DeviceWrapper()
 
     /// Wrapper around CLGeocoder

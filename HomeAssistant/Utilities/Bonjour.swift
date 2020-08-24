@@ -6,7 +6,6 @@
 //  Copyright © 2018 Robbie Trencheny. All rights reserved.
 //
 
-import DeviceKit
 import Foundation
 import Shared
 
@@ -79,10 +78,13 @@ public class Bonjour {
     public var publishIsRunning: Bool = false
 
     public init() {
-        let device = Device.current
         self.nsb = NetServiceBrowser()
-        self.nsp = NetService(domain: "local", type: "_hass-mobile-app._tcp.", name: device.name ?? "Unknown",
-                              port: 65535)
+        self.nsp = NetService(
+            domain: "local",
+            type: "_hass-mobile-app._tcp.",
+            name: Current.device.deviceName(),
+            port: 65535
+        )
     }
 
     private func buildPublishDict() -> [String: Data] {

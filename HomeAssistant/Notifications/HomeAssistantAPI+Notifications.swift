@@ -6,7 +6,6 @@
 //  Copyright © 2018 Robbie Trencheny. All rights reserved.
 //
 
-import DeviceKit
 import Foundation
 import PromiseKit
 import Shared

@@ -2,7 +2,6 @@ import Foundation
 @testable import Shared
 import PromiseKit
 import XCTest
-import DeviceKit
 
 class BatterySensorTests: XCTestCase {
     func testBattery0() throws {

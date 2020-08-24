@@ -20,10 +20,10 @@ public class BatterySensor: SensorProvider {
         let isLowPowerMode = Current.device.isLowPowerMode()
 
         switch batState {
-        case .charging(let level):
+        case .charging:
             state = "Charging"
             icon = Self.chargingIcon(level: level)
-        case .unplugged(let level):
+        case .unplugged:
             state = "Not Charging"
             icon = Self.unpluggedIcon(level: level)
         case .full:

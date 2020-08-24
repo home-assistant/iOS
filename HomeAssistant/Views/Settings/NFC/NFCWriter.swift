@@ -37,7 +37,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
             queue: nil,
             invalidateAfterFirstRead: false
         )
-        readerSession.alertMessage = L10n.Nfc.Write.startMessage(Current.device.model())
+        readerSession.alertMessage = L10n.Nfc.Write.startMessage(Current.device.inspecificModel())
         readerSession.begin()
     }
 

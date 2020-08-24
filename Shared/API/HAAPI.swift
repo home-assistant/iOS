@@ -9,7 +9,6 @@
 import Alamofire
 import PromiseKit
 import CoreLocation
-import DeviceKit
 import Foundation
 import KeychainAccess
 import ObjectMapper
@@ -73,7 +72,9 @@ public class HomeAssistantAPI {
         let osNameVersion: String = {
             let version = ProcessInfo.processInfo.operatingSystemVersion
             let versionString = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
-            let osName: String = Device.current.systemName ?? "Unknown"
+
+            var notCircularReferenceWrapper = DeviceWrapper()
+            let osName = notCircularReferenceWrapper.systemName()
             return "\(osName) \(versionString)"
         }()
 
@@ -424,27 +425,7 @@ public class HomeAssistantAPI {
     }
 
     private func buildMobileAppRegistration() -> [String: Any] {
-        let deviceKitDevice = Device.current
-
-        let ident = MobileAppRegistrationRequest()
-        if let pushID = Current.settingsStore.pushID {
-            ident.AppData = [
-                "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
-                "push_token": pushID
-            ]
-        }
-
-        ident.AppIdentifier = Constants.BundleID
-        ident.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
-        ident.AppVersion = HomeAssistantAPI.clientVersionDescription
-        ident.DeviceID = Current.settingsStore.integrationDeviceID
-        ident.DeviceName = Current.settingsStore.overrideDeviceName ?? deviceKitDevice.name
-        ident.Manufacturer = "Apple"
-        ident.Model = deviceKitDevice.description
-        ident.OSName = deviceKitDevice.systemName
-        ident.OSVersion = deviceKitDevice.systemVersion
-        ident.SupportsEncryption = true
-
+        let ident = mobileAppRegistrationRequestModel()
         var json = Mapper().toJSON(ident)
 
         if Current.serverVersion() < .canSendDeviceID {
@@ -455,21 +436,39 @@ public class HomeAssistantAPI {
         return json
     }
 
-    private func buildMobileAppUpdateRegistration() -> [String: Any] {
-        let deviceKitDevice = Device.current
+    private func mobileAppRegistrationRequestModel() -> MobileAppRegistrationRequest {
+        return with(MobileAppRegistrationRequest()) {
+            if let pushID = Current.settingsStore.pushID {
+                $0.AppData = [
+                    "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
+                    "push_token": pushID
+                ]
+            }
 
-        let ident = MobileAppUpdateRegistrationRequest()
-        if let pushID = Current.settingsStore.pushID {
-            ident.AppData = [
-                "push_url": "https://mobile-apps.home-assistant.io/api/sendPushNotification",
-                "push_token": pushID
-            ]
+            $0.AppIdentifier = Constants.BundleID
+            $0.AppName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
+            $0.AppVersion = HomeAssistantAPI.clientVersionDescription
+            $0.DeviceID = Current.settingsStore.integrationDeviceID
+            $0.DeviceName = Current.settingsStore.overrideDeviceName ?? Current.device.deviceName()
+            $0.Manufacturer = "Apple"
+            $0.Model = Current.device.systemModel()
+            $0.OSName = Current.device.systemName()
+            $0.OSVersion = Current.device.systemVersion()
+            $0.SupportsEncryption = true
         }
-        ident.AppVersion = HomeAssistantAPI.clientVersionDescription
-        ident.DeviceName = Current.settingsStore.overrideDeviceName ?? deviceKitDevice.name
-        ident.Manufacturer = "Apple"
-        ident.Model = deviceKitDevice.description
-        ident.OSVersion = deviceKitDevice.systemVersion
+    }
+
+    private func buildMobileAppUpdateRegistration() -> [String: Any] {
+        let registerRequest = mobileAppRegistrationRequestModel()
+
+        let ident = with(MobileAppUpdateRegistrationRequest()) {
+            $0.AppData = registerRequest.AppData
+            $0.AppVersion = registerRequest.AppVersion
+            $0.DeviceName = registerRequest.DeviceName
+            $0.Manufacturer = registerRequest.Manufacturer
+            $0.Model = registerRequest.Model
+            $0.OSVersion = registerRequest.OSVersion
+        }
 
         return Mapper().toJSON(ident)
     }
@@ -564,7 +563,7 @@ public class HomeAssistantAPI {
 
     private class var sharedEventDeviceInfo: [String: String] { [
         "sourceDevicePermanentID": Constants.PermanentID,
-        "sourceDeviceName": Device.current.name ?? "Unknown",
+        "sourceDeviceName": Current.device.deviceName(),
         "sourceDeviceID": Current.settingsStore.deviceID
     ] }
 
