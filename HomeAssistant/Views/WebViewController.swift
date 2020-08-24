@@ -284,7 +284,10 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, U
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
+
+        if #available(iOS 13, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            webView.evaluateJavaScript("notifyThemeColors()", completionHandler: nil)
+        }
     }
 
     public func open(inline url: URL) {
