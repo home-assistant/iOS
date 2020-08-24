@@ -179,9 +179,21 @@ class SettingsViewController: FormViewController {
         }
 
         <<< ButtonRow {
-            $0.title = L10n.Settings.Developer.ExportLogFiles.title
+            if Current.isCatalyst {
+                $0.title = L10n.Settings.Developer.ShowLogFiles.title
+            } else {
+                $0.title = L10n.Settings.Developer.ExportLogFiles.title
+            }
         }.onCellSelection { cell, _ in
             Current.Log.verbose("Logs directory is: \(Constants.LogsDirectory)")
+
+            guard !Current.isCatalyst else {
+                // on Catalyst we can just open the directory to get to Finder
+                UIApplication.shared.open(Constants.LogsDirectory, options: [:]) { success in
+                    Current.Log.info("opened log directory: \(success)")
+                }
+                return
+            }
 
             let fileManager = FileManager.default
 

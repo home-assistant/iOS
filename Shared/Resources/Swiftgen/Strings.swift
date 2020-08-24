@@ -1345,6 +1345,10 @@ internal enum L10n {
           internal static let body = L10n.tr("Localizable", "settings.developer.map_notification.notification.body")
         }
       }
+      internal enum ShowLogFiles {
+        /// Show log files in Finder
+        internal static let title = L10n.tr("Localizable", "settings.developer.show_log_files.title")
+      }
       internal enum SyncWatchContext {
         /// Sync Watch Context
         internal static let title = L10n.tr("Localizable", "settings.developer.sync_watch_context.title")

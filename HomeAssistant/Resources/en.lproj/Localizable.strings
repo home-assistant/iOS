@@ -462,6 +462,8 @@
 "settings.developer.copy_realm.alert.title" = "Copied Realm";
 "settings.developer.copy_realm.title" = "Copy Realm from app group to Documents";
 "settings.developer.export_log_files.title" = "Export log files";
+/* open the log files in Finder on Mac */
+"settings.developer.show_log_files.title" = "Show log files in Finder";
 "settings.developer.footer" = "Don't use these if you don't know what you are doing!";
 "settings.developer.header" = "Developer";
 "settings.developer.map_notification.notification.body" = "Expand this to show the map content extension";
